@@ -17,6 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.toolkits.ide;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import heros.IDETabulationProblem;
 import heros.InterproceduralCFG;
@@ -36,6 +38,7 @@ import soot.Unit;
 import com.google.common.collect.Table.Cell;
 
 public class JimpleIDESolver<D, V, I extends InterproceduralCFG<Unit,SootMethod>> extends IDESolver<Unit, D, SootMethod, V, I> {
+    private static final Logger logger = LoggerFactory.getLogger(JimpleIDESolver.class);
 
 	private final boolean DUMP_RESULTS;
 
@@ -78,7 +81,7 @@ public class JimpleIDESolver<D, V, I extends InterproceduralCFG<Unit,SootMethod>
 			out.flush();
 			out.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	

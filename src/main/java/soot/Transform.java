@@ -25,6 +25,8 @@
 
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import soot.util.*;
@@ -34,6 +36,7 @@ import soot.options.Options;
  * transformation. */
 public class Transform implements HasPhaseOptions
 {
+    private static final Logger logger = LoggerFactory.getLogger(Transform.class);
     final private boolean DEBUG;
     final String phaseName;
     final Transformer t;
@@ -81,7 +84,7 @@ public class Transform implements HasPhaseOptions
         Map<String, String> options = PhaseOptions.v().getPhaseOptions( phaseName );
         if( PhaseOptions.getBoolean( options, "enabled" ) ) {
             if( Options.v().verbose()  ) {
-                G.v().out.println( "Applying phase "+phaseName+" to the scene." );
+                logger.debug(""+ "Applying phase "+phaseName+" to the scene." );
             }
         }
 	if (DEBUG)
@@ -96,7 +99,7 @@ public class Transform implements HasPhaseOptions
         Map<String, String> options = PhaseOptions.v().getPhaseOptions( phaseName );
         if( PhaseOptions.getBoolean( options, "enabled" ) ) {
             if( Options.v().verbose() ) {
-                G.v().out.println( "Applying phase "+phaseName+" to "+b.getMethod()+"." );
+                logger.debug(""+ "Applying phase "+phaseName+" to "+b.getMethod()+"." );
             }
         }
 	if (DEBUG)

@@ -21,55 +21,50 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
+
 import java.util.*;
 
 /** Option parser for Class Hierarchy Analysis. */
-public class CHAOptions
-{
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-04-18T13:30:46.087+02:00", comments = "from soot_options.xml")
+public class CHAOptions {
+
     private Map<String, String> options;
 
-    public CHAOptions( Map<String, String> options ) {
+    public CHAOptions(Map<String, String> options) {
         this.options = options;
     }
-    
-    /** Enabled --
-    
-     * .
-    
-     * 
+
+    /**
+     * Enabled
      */
     public boolean enabled() {
-        return soot.PhaseOptions.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean(options, "enabled");
     }
-    
-    /** Verbose --
-    
+
+    /**
+     * Verbose --
      * Print statistics about the resulting call graph.
-    
+     *
      * Setting this option to true causes Soot to print out statistics 
-     * about the call graph computed by 
-     * this phase, such as the number of methods determined to be 
-     * reachable. 
+     * about the call graph computed by this phase, such as the number 
+     * of methods determined to be reachable.
      */
     public boolean verbose() {
-        return soot.PhaseOptions.getBoolean( options, "verbose" );
+        return soot.PhaseOptions.getBoolean(options, "verbose");
     }
-    
-    /** AppOnly --
-    
+
+    /**
+     * AppOnly --
      * Consider only application classes.
-    
+     *
      * Setting this option to true causes Soot to only consider 
-     * application classes when building 
-     * the callgraph. The resulting callgraph will be inherently 
-     * unsound. Still, this option can make 
-     * sense if performance optimization and memory reduction are your 
-     * primary goal. 
-     * 
+     * application classes when building the callgraph. The resulting 
+     * callgraph will be inherently unsound. Still, this option can 
+     * make sense if performance optimization and memory reduction are 
+     * your primary goal.
      */
     public boolean apponly() {
-        return soot.PhaseOptions.getBoolean( options, "apponly" );
+        return soot.PhaseOptions.getBoolean(options, "apponly");
     }
-    
+
 }
-        

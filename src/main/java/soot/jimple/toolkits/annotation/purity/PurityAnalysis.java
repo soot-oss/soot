@@ -26,6 +26,8 @@
  */
 
 package soot.jimple.toolkits.annotation.purity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import soot.G;
@@ -43,6 +45,7 @@ import soot.options.PurityOptions;
  * exceptions (throw & catch) - output nicer graphs (especially clusters!)
  */
 public class PurityAnalysis extends SceneTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(PurityAnalysis.class);
 
     Singletons.Global g;
 
@@ -58,7 +61,7 @@ public class PurityAnalysis extends SceneTransformer {
     protected void internalTransform(String phaseName, Map<String, String> options) {
         PurityOptions opts = new PurityOptions(options);
 
-        G.v().out.println("[AM] Analysing purity");
+        logger.debug("[AM] Analysing purity");
 
         CallGraph cg = Scene.v().getCallGraph();
 

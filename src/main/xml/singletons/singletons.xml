@@ -1,4 +1,4 @@
-<?xml-stylesheet type="text/xsl" href="soot_options.xsl"  ?>
+<?xml-stylesheet type="text/xsl" href="make-singletons.xsl"  ?>
 <singletons>
   <class>soot.PhaseOptions</class>
   <class>soot.jimple.toolkits.callgraph.VirtualCalls</class>
@@ -172,4 +172,6 @@
   <class>soot.jimple.spark.internal.PublicAndProtectedAccessibility</class>
   <class>soot.jimple.spark.internal.CompleteAccessibility</class>
   <class>soot.jimple.toolkits.reflection.ConstantInvokeMethodBaseTransformer</class>
+  <class>soot.jbco.jimpleTransformations.ClassRenamer</class>
+  <class>soot.jbco.jimpleTransformations.MethodRenamer</class>
 </singletons>

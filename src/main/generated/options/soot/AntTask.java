@@ -22,17 +22,18 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot;
+
+import soot.*;
 import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.types.*;
-import soot.*;
 import java.util.*;
-import java.io.*;
 
-/** Soot ant task.
+/**
+ * Soot ant task.
  * @author Ondrej Lhotak
  */
-
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-04-18T12:51:49.725+02:00", comments = "from soot_options.xml")
 public class AntTask extends MatchingTask {
     public static final boolean DEBUG = true;
     private void debug(String s) {
@@ -112,8 +113,8 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-coffi");
         }
   
-        public void setasm_backend(boolean arg) {
-            if(arg) addArg("-asm-backend");
+        public void setjasmin_backend(boolean arg) {
+            if(arg) addArg("-jasmin-backend");
         }
   
         public void sethelp(boolean arg) {

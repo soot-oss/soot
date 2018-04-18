@@ -50,6 +50,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
@@ -78,6 +80,7 @@ import soot.util.StringNumberer;
 /** Manages the SootClasses of the application being analyzed. */
 public class Scene // extends AbstractHost
 {
+	private static final Logger logger = LoggerFactory.getLogger(Scene.class);
 
 	private final int defaultSdkVersion = 15;
 	private final Map<String, Integer> maxAPIs = new HashMap<String, Integer>();
@@ -144,14 +147,14 @@ public class Scene // extends AbstractHost
 	protected StringNumberer subSigNumberer = new StringNumberer();
 	protected ArrayNumberer<Local> localNumberer = new ArrayNumberer<Local>();
 
-	private Hierarchy activeHierarchy;
-	private FastHierarchy activeFastHierarchy;
-	private CallGraph activeCallGraph;
-	private ReachableMethods reachableMethods;
-	private PointsToAnalysis activePointsToAnalysis;
-	private SideEffectAnalysis activeSideEffectAnalysis;
-	private List<SootMethod> entryPoints;
-	private ClientAccessibilityOracle accessibilityOracle;
+	protected Hierarchy activeHierarchy;
+	protected FastHierarchy activeFastHierarchy;
+	protected CallGraph activeCallGraph;
+	protected ReachableMethods reachableMethods;
+	protected PointsToAnalysis activePointsToAnalysis;
+	protected SideEffectAnalysis activeSideEffectAnalysis;
+	protected List<SootMethod> entryPoints;
+	protected ClientAccessibilityOracle accessibilityOracle;
 
 	boolean allowsPhantomRefs = false;
 
@@ -436,8 +439,7 @@ public class Scene // extends AbstractHost
 			}
 
 			if (manifestIS == null) {
-				G.v().out
-						.println("Could not find sdk version in Android manifest! Using default: " + defaultSdkVersion);
+				logger.debug("Could not find sdk version in Android manifest! Using default: " + defaultSdkVersion);
 				return defaultSdkVersion;
 			}
 
@@ -476,14 +478,14 @@ public class Scene // extends AbstractHost
 
 				});
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 
 			int APIVersion = -1;
 			if (versionInfo.sdkTargetVersion != -1) {
 				if (versionInfo.sdkTargetVersion > maxAPI && versionInfo.minSdkVersion != -1
 						&& versionInfo.minSdkVersion <= maxAPI) {
-					G.v().out.println("warning: Android API version '" + versionInfo.sdkTargetVersion
+					logger.warn("Android API version '" + versionInfo.sdkTargetVersion
 							+ "' not available, using minApkVersion '" + versionInfo.minSdkVersion + "' instead");
 					APIVersion = versionInfo.minSdkVersion;
 				} else {
@@ -492,7 +494,7 @@ public class Scene // extends AbstractHost
 			} else if (versionInfo.platformBuildVersionCode != -1) {
 				if (versionInfo.platformBuildVersionCode > maxAPI && versionInfo.minSdkVersion != -1
 						&& versionInfo.minSdkVersion <= maxAPI) {
-					G.v().out.println("warning: Android API version '" + versionInfo.platformBuildVersionCode
+					logger.warn("Android API version '" + versionInfo.platformBuildVersionCode
 							+ "' not available, using minApkVersion '" + versionInfo.minSdkVersion + "' instead");
 					APIVersion = versionInfo.minSdkVersion;
 				} else {
@@ -501,8 +503,7 @@ public class Scene // extends AbstractHost
 			} else if (versionInfo.minSdkVersion != -1) {
 				APIVersion = versionInfo.minSdkVersion;
 			} else {
-				G.v().out
-						.println("Could not find sdk version in Android manifest! Using default: " + defaultSdkVersion);
+				logger.debug("Could not find sdk version in Android manifest! Using default: " + defaultSdkVersion);
 				APIVersion = defaultSdkVersion;
 			}
 
@@ -607,7 +608,7 @@ public class Scene // extends AbstractHost
 		if (!f.exists())
 			throw new RuntimeException("file '" + jarPath + "' does not exist!");
 		else
-			G.v().out.println("Using '" + jarPath + "' as android.jar");
+			logger.debug("Using '" + jarPath + "' as android.jar");
 
 		return jarPath;
 	}
@@ -630,7 +631,7 @@ public class Scene // extends AbstractHost
 
 		File rtJar = new File(System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar");
 		if (rtJar.exists() && rtJar.isFile()) {
-			// G.v().out.println("Using JRE runtime: " +
+			// logger.debug("Using JRE runtime: " +
 			// rtJar.getAbsolutePath());
 			sb.append(rtJar.getAbsolutePath());
 		} else {
@@ -638,7 +639,7 @@ public class Scene // extends AbstractHost
 			rtJar = new File(System.getProperty("java.home") + File.separator + "jre" + File.separator + "lib"
 					+ File.separator + "rt.jar");
 			if (rtJar.exists() && rtJar.isFile()) {
-				// G.v().out.println("Using JDK runtime: " +
+				// logger.debug("Using JDK runtime: " +
 				// rtJar.getAbsolutePath());
 				sb.append(rtJar.getAbsolutePath());
 			} else {
@@ -785,9 +786,7 @@ public class Scene // extends AbstractHost
 		if (!containsClass(cname))
 			return null;
 		SootClass c = getSootClass(cname);
-		if (!c.declaresMethod(mname))
-			return null;
-		return c.getMethod(mname);
+		return c.getMethodUnsafe(mname);
 	}
 
 	public boolean containsMethod(String methodSignature) {
@@ -1646,7 +1645,7 @@ public class Scene // extends AbstractHost
 			SootClass c = iterator.next();
 			if (!c.isConcrete()) {
 				if (Options.v().verbose()) {
-					G.v().out.println("Warning: dynamic class " + c.getName()
+					logger.warn("dynamic class " + c.getName()
 							+ " is abstract or an interface, and it will not be considered.");
 				}
 				iterator.remove();
@@ -1704,7 +1703,7 @@ public class Scene // extends AbstractHost
 
 	public boolean isIncluded(SootClass sc) {
 		String name = sc.getName();
-		for (String inc : (List<String>) Options.v().include()) {
+		for (String inc : Options.v().include()) {
 			if (name.equals(inc) || ((inc.endsWith(".*") || inc.endsWith("$*"))
 					&& name.startsWith(inc.substring(0, inc.length() - 1)))) {
 				return true;
@@ -1780,7 +1779,7 @@ public class Scene // extends AbstractHost
 				SootClass c = getSootClass(classIter.next());
 				if (c.declaresMethod("main",
 						Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v())) {
-					G.v().out.println("No main class given. Inferred '" + c.getName() + "' as main class.");
+					logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
 					setMainClass(c);
 					return;
 				}
@@ -1792,7 +1791,7 @@ public class Scene // extends AbstractHost
 				SootClass c = classIter.next();
 				if (c.declaresMethod("main",
 						Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v())) {
-					G.v().out.println("No main class given. Inferred '" + c.getName() + "' as main class.");
+					logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
 					setMainClass(c);
 					return;
 				}
@@ -1868,6 +1867,23 @@ public class Scene // extends AbstractHost
 			return existing;
 		nameToClass.put(tp.getClassName(), tp);
 		return tp;
+	}
+
+	/**
+	 * <p>
+	 * <b>SOOT USERS: DO NOT CALL THIS METHOD!</b>
+	 * </p>
+	 * 
+	 * <p>
+	 * This method is a Soot-internal factory method for generating callgraph
+	 * objects. It creates non-initialized object that must then be initialized by a
+	 * callgraph algorithm
+	 * </p>
+	 * 
+	 * @return A new callgraph empty object
+	 */
+	public CallGraph internalMakeCallGraph() {
+		return new CallGraph();
 	}
 
 }

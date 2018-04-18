@@ -39,7 +39,7 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
   
   public static String dependancies[] = new String[] {"bb.jbco_iii", "bb.jbco_ful", "bb.lp"};
 
-  public String[] getDependancies() {
+  public String[] getDependencies() {
     return dependancies;
   }
   

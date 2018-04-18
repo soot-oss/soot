@@ -18,6 +18,8 @@
  */
 
 package soot.shimple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.options.Options;
@@ -32,13 +34,14 @@ import java.util.*;
  **/
 public class ShimpleTransformer extends SceneTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(ShimpleTransformer.class);
     public ShimpleTransformer( Singletons.Global g ) {}
     public static ShimpleTransformer v() { return G.v().soot_shimple_ShimpleTransformer(); }
 
     protected void internalTransform(String phaseName, Map options)
     {
         if(Options.v().verbose())
-            G.v().out.println("Transforming all classes in the Scene to Shimple...");
+            logger.debug("Transforming all classes in the Scene to Shimple...");
 
         // *** FIXME: Add debug output to indicate which class/method is being shimplified.
         // *** FIXME: Is ShimpleTransformer the right solution?  The call graph may deem

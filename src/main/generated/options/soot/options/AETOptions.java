@@ -21,46 +21,43 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
+
 import java.util.*;
 
 /** Option parser for Available Expressions Tagger. */
-public class AETOptions
-{
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-04-18T13:30:46.087+02:00", comments = "from soot_options.xml")
+public class AETOptions {
+
     private Map<String, String> options;
 
-    public AETOptions( Map<String, String> options ) {
+    public AETOptions(Map<String, String> options) {
         this.options = options;
     }
-    
-    /** Enabled --
-    
-     * .
-    
-     * 
+
+    /**
+     * Enabled
      */
     public boolean enabled() {
-        return soot.PhaseOptions.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean(options, "enabled");
     }
-    
+
     public static final int kind_optimistic = 1;
     public static final int kind_pessimistic = 2;
-    /** Kind --
-    
-     * .
-    
-     * 
+
+    /**
+     * Kind
      */
     public int kind() {
-        String s = soot.PhaseOptions.getString( options, "kind" );
-        
-        if( s.equalsIgnoreCase( "optimistic" ) )
+        String s = soot.PhaseOptions.getString(options, "kind");
+        if (s == null || s.isEmpty())
+        	return kind_optimistic;
+	
+        if (s.equalsIgnoreCase("optimistic"))
             return kind_optimistic;
-        
-        if( s.equalsIgnoreCase( "pessimistic" ) )
+        if (s.equalsIgnoreCase("pessimistic"))
             return kind_pessimistic;
-        
-        throw new RuntimeException( "Invalid value "+s+" of phase option kind" );
+
+        throw new RuntimeException(String.format("Invalid value %s of phase option kind", s));
     }
-    
+
 }
-        

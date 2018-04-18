@@ -18,6 +18,8 @@
  */
 
 package soot.shimple.internal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.options.Options;
@@ -33,6 +35,7 @@ import java.util.*;
  **/
 public class SPatchingChain extends PatchingChain<Unit>
 {
+    private static final Logger logger = LoggerFactory.getLogger(SPatchingChain.class);
     /**
      * Needed to find non-trapped Units of the body.
      **/
@@ -138,7 +141,7 @@ public class SPatchingChain extends PatchingChain<Unit>
                         // when removing a Phi node, or the user removed
                         // a Phi node and hasn't put it back yet
                         if(debug)
-                            G.v().out.println("Warning: Orphaned UnitBox to " + unit + "?  SPatchingChain will not move the pointer.");
+                            logger.warn("Orphaned UnitBox to " + unit + "?  SPatchingChain will not move the pointer.");
                         continue;
                     }
                 }

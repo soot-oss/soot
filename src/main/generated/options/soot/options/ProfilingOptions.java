@@ -21,42 +21,36 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
+
 import java.util.*;
 
 /** Option parser for Profiling Generator. */
-public class ProfilingOptions
-{
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-04-18T13:30:46.087+02:00", comments = "from soot_options.xml")
+public class ProfilingOptions {
+
     private Map<String, String> options;
 
-    public ProfilingOptions( Map<String, String> options ) {
+    public ProfilingOptions(Map<String, String> options) {
         this.options = options;
     }
-    
-    /** Enabled --
-    
-     * .
-    
-     * 
+
+    /**
+     * Enabled
      */
     public boolean enabled() {
-        return soot.PhaseOptions.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean(options, "enabled");
     }
-    
-    /** Not Main Entry --
-    
-     * Instrument runBenchmark() instead of 
-     * main().
-    
-     * Insert the calls to the 
-     * MultiCounter at the beginning 
-     * and end of methods with the signature 
-     * long runBenchmark(java.lang.String[]) 
-     * instead of the signature 
-     * void main(java.lang.String[]). 
+
+    /**
+     * Not Main Entry --
+     * Instrument runBenchmark() instead of main().
+     *
+     * Insert the calls to the MultiCounter at the beginning and end of 
+     * methods with the signature long runBenchmark(java.lang.String[]) 
+     * instead of the signature void main(java.lang.String[]).
      */
     public boolean notmainentry() {
-        return soot.PhaseOptions.getBoolean( options, "notmainentry" );
+        return soot.PhaseOptions.getBoolean(options, "notmainentry");
     }
-    
+
 }
-        

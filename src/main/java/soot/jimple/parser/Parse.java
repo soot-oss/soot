@@ -25,6 +25,8 @@
 
 
 package soot.jimple.parser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.jimple.JimpleBody;
 import soot.jimple.parser.parser.*;
@@ -40,6 +42,7 @@ import soot.*;
 @Deprecated
 public class Parse 
 {
+    private static final Logger logger = LoggerFactory.getLogger(Parse.class);
     private static final String EXT = ".jimple";
     
     private static final String USAGE = "usage: java Parse [options] " +
@@ -93,7 +96,7 @@ public class Parse
         
         // check arguments
         if (args.length < 1) {
-            G.v().out.println(USAGE);
+            logger.debug(""+USAGE);
             System.exit(0);
         }
 
@@ -112,20 +115,20 @@ public class Parse
                
                 try {
                     if (verbose)
-                        G.v().out.println(" ... looking for " + arg);
+                        logger.debug(" ... looking for " + arg);
                     inFile = new FileInputStream(arg);
                 } catch (FileNotFoundException e) {
                     if (arg.endsWith(EXT)) {
-                        G.v().out.println(" *** can't find " + arg);
+                        logger.debug(" *** can't find " + arg);
                         continue;
                     }
                     arg = arg + EXT;
                     try {
                         if (verbose)
-                            G.v().out.println(" ... looking for " + arg);
+                            logger.debug(" ... looking for " + arg);
                         inFile = new BufferedInputStream(new FileInputStream(arg));
                     } catch (FileNotFoundException ee) {
-                        G.v().out.println(" *** can't find " + arg);
+                        logger.debug(" *** can't find " + arg);
                         continue;
                     }
                 }

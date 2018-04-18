@@ -18,6 +18,8 @@
  */
 
 package soot.util.cfgcmd;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.G;
 import soot.CompilationDeathException;
@@ -32,6 +34,7 @@ import soot.CompilationDeathException;
  */
 
 public class CFGOptionMatcher {
+    private static final Logger logger = LoggerFactory.getLogger(CFGOptionMatcher.class);
 
     /**
      * The type stored within a <code>CFGOptionMatcher</code>. Options to
@@ -84,7 +87,7 @@ public class CFGOptionMatcher {
 		if (match == -1) {
 		    match = i;
 		} else {
-		    G.v().out.println(quarry + " is ambiguous; it matches " +
+		    logger.debug(""+quarry + " is ambiguous; it matches " +
 				      options[match].name() + " and " +
 				      options[i].name());
 		    throw new CompilationDeathException(
@@ -94,7 +97,7 @@ public class CFGOptionMatcher {
 	    }
 	}
 	if (match == -1) {
-	    G.v().out.println("\"" + quarry + "\"" + 
+	    logger.debug("\"" + quarry + "\"" + 
 			      " does not match any value.");
 	    throw new CompilationDeathException(
 		CompilationDeathException.COMPILATION_ABORTED,

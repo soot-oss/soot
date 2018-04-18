@@ -21,42 +21,37 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
+
 import java.util.*;
 
 /** Option parser for Rename duplicated classes. */
-public class RenameDuplicatedClasses
-{
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-04-18T13:30:46.087+02:00", comments = "from soot_options.xml")
+public class RenameDuplicatedClasses {
+
     private Map<String, String> options;
 
-    public RenameDuplicatedClasses( Map<String, String> options ) {
+    public RenameDuplicatedClasses(Map<String, String> options) {
         this.options = options;
     }
-    
-    /** Enabled --
-    
-     * .
-    
-     * 
+
+    /**
+     * Enabled
      */
     public boolean enabled() {
-        return soot.PhaseOptions.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean(options, "enabled");
     }
-    
-    /** FixedClassNames --
-    
-     * Set for 
-     * the fixed class names. .
-    
-     * Use this parameter to set some 
-     * class names unchangable even they are duplicated. 
-     * The fixed class name list cannot contain duplicated 
-     * class names. Using '-' to split 
-     * multiple class names (e.g., fcn:a.b.c-a.b.d). 
-     * 
+
+    /**
+     * FixedClassNames --
+     * Set for the fixed class names..
+     *
+     * Use this parameter to set some class names unchangable even they 
+     * are duplicated. The fixed class name list cannot contain 
+     * duplicated class names. Using '-' to split multiple class names 
+     * (e.g., fcn:a.b.c-a.b.d).
      */
     public String fixed_class_names() {
-        return soot.PhaseOptions.getString( options, "fcn" );
+        return soot.PhaseOptions.getString(options, "fcn fixed-class-names");
     }
-    
+
 }
-        

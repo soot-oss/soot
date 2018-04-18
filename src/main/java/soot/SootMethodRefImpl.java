@@ -18,12 +18,13 @@
  */
 
 package soot;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
@@ -44,6 +45,7 @@ import soot.util.NumberedString;
  */
 
 public class SootMethodRefImpl implements SootMethodRef {
+    private static final Logger logger = LoggerFactory.getLogger(SootMethodRefImpl.class);
 
 	public SootMethodRefImpl(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType,
 			boolean isStatic) {
@@ -173,7 +175,8 @@ public class SootMethodRefImpl implements SootMethodRef {
 			if (sm != null)
 				return checkStatic(sm);
 			if (Scene.v().allowsPhantomRefs() && (cl.isPhantom() || Options.v().ignore_resolution_errors())) {
-				SootMethod m = new SootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
+				SootMethod m = Scene.v().makeSootMethod(name, parameterTypes, returnType,
+						isStatic() ? Modifier.STATIC : 0);
 				m.setPhantom(true);
 				m = cl.getOrAddMethod(m);
 				return checkStatic(m);
@@ -222,7 +225,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 		if (trace == null) {
 			ClassResolutionFailedException e = new ClassResolutionFailedException();
 			if (Options.v().ignore_resolution_errors())
-				G.v().out.println(e.getMessage());
+				logger.debug(""+e.getMessage());
 			else
 				throw e;
 		}
@@ -231,15 +234,14 @@ public class SootMethodRefImpl implements SootMethodRef {
 	}
 
 	/**
-	 * Creates a method body that throws an "unresolved compilation error"
-	 * message
+	 * Creates a method body that throws an "unresolved compilation error" message
 	 * 
 	 * @param declaringClass
 	 *            The class that was supposed to contain the method
 	 * @return The created SootMethod
 	 */
 	private SootMethod createUnresolvedErrorMethod(SootClass declaringClass) {
-		SootMethod m = new SootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
+		SootMethod m = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
 		int modifiers = Modifier.PUBLIC; // we don't know who will be calling us
 		if (isStatic())
 			modifiers |= Modifier.STATIC;
@@ -251,16 +253,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 
 		// For producing valid Jimple code, we need to access all parameters.
 		// Otherwise, methods like "getThisLocal()" will fail.
-		if (!isStatic) {
-			RefType thisType = RefType.v(declaringClass);
-			Local lThis = lg.generateLocal(thisType);
-			body.getUnits().add(Jimple.v().newIdentityStmt(lThis, Jimple.v().newThisRef(thisType)));
-		}
-		for (int i = 0; i < m.getParameterCount(); i++) {
-			Type paramType = m.getParameterType(i);
-			Local lParam = lg.generateLocal(paramType);
-			body.getUnits().add(Jimple.v().newIdentityStmt(lParam, Jimple.v().newParameterRef(paramType, i)));
-		}
+		body.insertIdentityStmts(declaringClass);
 
 		// exc = new Error
 		RefType runtimeExceptionType = RefType.v("java.lang.Error");

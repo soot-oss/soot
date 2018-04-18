@@ -18,6 +18,8 @@
  */
 
 package soot.shimple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.options.*;
@@ -44,6 +46,7 @@ import java.util.*;
  **/
 public class ShimpleBody extends StmtBody
 {
+    private static final Logger logger = LoggerFactory.getLogger(ShimpleBody.class);
     /**
      * Holds our options map...
      **/
@@ -85,7 +88,7 @@ public class ShimpleBody extends StmtBody
             throw new RuntimeException("Cannot construct ShimpleBody from given Body type.");
 
         if(Options.v().verbose())
-            G.v().out.println("[" + getMethod().getName() + "] Constructing ShimpleBody...");
+            logger.debug("[" + getMethod().getName() + "] Constructing ShimpleBody...");
 
         // must happen before SPatchingChain gets created
         this.options = new ShimpleOptions(options);

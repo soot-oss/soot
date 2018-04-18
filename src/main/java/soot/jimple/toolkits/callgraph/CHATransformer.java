@@ -24,6 +24,8 @@
  */
 
 package soot.jimple.toolkits.callgraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.options.*;
 import soot.*;
@@ -35,6 +37,7 @@ import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
 /** Builds an invoke graph using Class Hierarchy Analysis. */
 public class CHATransformer extends SceneTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(CHATransformer.class);
     public CHATransformer( Singletons.Global g ) {}
     public static CHATransformer v() { return G.v().soot_jimple_toolkits_callgraph_CHATransformer(); }
 
@@ -45,7 +48,7 @@ public class CHATransformer extends SceneTransformer
         	new CallGraphBuilder( DumbPointerAnalysis.v() );
         cg.build();
         if( options.verbose() ) {
-            G.v().out.println( "Number of reachable methods: "
+            logger.debug(""+ "Number of reachable methods: "
                     +Scene.v().getReachableMethods().size() );
         }
     }

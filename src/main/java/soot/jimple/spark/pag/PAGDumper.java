@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.pag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,6 +39,7 @@ import soot.jimple.spark.solver.TopoSorter;
  * @author Ondrej Lhotak
  */
 public class PAGDumper {
+    private static final Logger logger = LoggerFactory.getLogger(PAGDumper.class);
     public PAGDumper( PAG pag , String output_dir ) {
         this.pag = pag;
         this.output_dir = output_dir;
@@ -247,7 +250,7 @@ public class PAGDumper {
             ObjectNumberer vr = me.findOrAdd( vn );
             /*
             if( vr.num > 256 ) {
-                G.v().out.println( "Var with num: "+vr.num+" is "+vn+
+                logger.debug(""+ "Var with num: "+vr.num+" is "+vn+
                         " in method "+m+" in class "+c );
             }
             */

@@ -1,10 +1,7 @@
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:redirect="http://xml.apache.org/xalan/redirect"
-    extension-element-prefixes="redirect"
->
-  <xsl:output method="text" indent="no"/>
-  <xsl:strip-space elements="*"/>
-  <xsl:template match="/singletons">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:output method="text" indent="no"/>
+    <xsl:strip-space elements="*"/>
+    <xsl:template match="/singletons">
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Ondrej Lhotak
  *
@@ -29,29 +26,34 @@
 package soot;
 
 /** A class to group together all the global variables in Soot. */
+@javax.annotation.Generated(value = "<xsl:copy-of select="system-property('xsl:vendor')"/> v<xsl:copy-of select="system-property('xsl:version')"/>", date = "<xsl:value-of select="current-dateTime()"/>", comments = "from <xsl:value-of select="tokenize(base-uri(), '/')[last()]"/>")
 public class Singletons {
+
     public final class Global {
         private Global() {}
     }
-    protected Global g = new Global();
-<xsl:for-each select="/singletons/class">
-    <xsl:variable name="class" select="."/>
-    <xsl:variable name="undottedClass" select="translate(.,'.','_')"/>
-    <xsl:variable name="instanceName">instance_<xsl:value-of select="$undottedClass"/></xsl:variable>
+
+    protected Global g = new Global();<xsl:text/>
+
+        <xsl:for-each select="/singletons/class">
+            <xsl:variable name="class" select="."/>
+            <xsl:variable name="undottedClass" select="translate(.,'.','_')"/>
+            <xsl:variable name="instanceName">instance_<xsl:value-of select="$undottedClass"/></xsl:variable>
+
     private <xsl:value-of select="$class"/><xsl:text> </xsl:text><xsl:value-of select="$instanceName"/>;
     public <xsl:value-of select="$class"/><xsl:text> </xsl:text><xsl:value-of select="$undottedClass"/>() {
-        if( <xsl:value-of select="$instanceName"/> == null ) {
+        if (<xsl:value-of select="$instanceName"/> == null) {
 	       	synchronized (this) {
-		        if( <xsl:value-of select="$instanceName"/> == null )
-	        		<xsl:value-of select="$instanceName"/> = new <xsl:value-of select="$class"/>( g );
+		        if (<xsl:value-of select="$instanceName"/> == null)
+	        		<xsl:value-of select="$instanceName"/> = new <xsl:value-of select="$class"/>(g);
 	       	}
        	}
         return <xsl:value-of select="$instanceName"/>;
     }
     protected void release_<xsl:value-of select="$undottedClass"/>() {
     	<xsl:value-of select="$instanceName"/> = null;
-    }
-</xsl:for-each>
-}
-</xsl:template>
+    }<xsl:text/>
+        </xsl:for-each>
+}<xsl:text/>
+    </xsl:template>
 </xsl:stylesheet>

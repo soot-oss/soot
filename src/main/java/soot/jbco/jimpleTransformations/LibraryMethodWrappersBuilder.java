@@ -19,14 +19,8 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
@@ -34,7 +28,6 @@ import soot.CharType;
 import soot.DoubleType;
 import soot.FastHierarchy;
 import soot.FloatType;
-import soot.G;
 import soot.IntType;
 import soot.Local;
 import soot.LongType;
@@ -67,330 +60,359 @@ import soot.jimple.NullConstant;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.VirtualInvokeExpr;
+import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
+ * Creates methods that "wraps" library method calls.
+ *
  * @author Michael Batchelder
- * 
- *         Created on 7-Feb-2006
+ * <p>
+ * Created on 7-Feb-2006
  */
 public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJbcoTransform {
 
-	public static String dependancies[] = new String[] { "wjtp.jbco_blbc" };
+    private static final Logger logger = LoggerFactory.getLogger(LibraryMethodWrappersBuilder.class);
 
-	public String[] getDependancies() {
-		return dependancies;
-	}
+    public static final String name = "wjtp.jbco_blbc";
+    public static final String dependencies[] = new String[]{"wjtp.jbco_blbc"};
 
-	public static String name = "wjtp.jbco_blbc";
+    private static final Map<SootClass, Map<SootMethod, SootMethodRef>> libClassesToMethods = new HashMap<>();
+    public static List<SootMethod> builtByMe = new ArrayList<>();
 
-	public String getName() {
-		return name;
-	}
+    private int newmethods = 0;
+    private int methodcalls = 0;
 
-	private static int newmethods = 0;
-	private static int methodcalls = 0;
+    @Override
+    public String[] getDependencies() {
+        return Arrays.copyOf(dependencies, dependencies.length);
+    }
 
-	public void outputSummary() {
-		out.println("New Methods Created: " + newmethods);
-		out.println("Method Calls Replaced: " + methodcalls);
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	private static final Map<SootClass, Map<SootMethod, SootMethodRef>> libClassesToMethods = new HashMap<SootClass, Map<SootMethod, SootMethodRef>>();
+    @Override
+    public void outputSummary() {
+        logger.info("Created {} new methods. Replaced {} method calls.", newmethods, methodcalls);
+    }
 
-	private static final Scene scene = G.v().soot_Scene();
+    protected void internalTransform(String phaseName, Map<String, String> options) {
+        if (isVerbose()) {
+            logger.info("Building Library Wrapper Methods...");
+        }
 
-	public static ArrayList<SootMethod> builtByMe = new ArrayList<SootMethod>();
+        BodyBuilder.retrieveAllBodies();
+        // iterate through application classes to find library calls
+        final Iterator<SootClass> applicationClassesIterator = Scene.v().getApplicationClasses().snapshotIterator();
+        while (applicationClassesIterator.hasNext()) {
+            final SootClass applicationClass = applicationClassesIterator.next();
 
-	protected void internalTransform(String phaseName, Map<String, String> options) {
-		if (output)
-			out.println("Building Library Wrapper Methods...");
-		soot.jbco.util.BodyBuilder.retrieveAllBodies();
-		// iterate through application classes to find library calls
-		Iterator<SootClass> it = scene.getApplicationClasses().snapshotIterator();
-		while (it.hasNext()) {
-			SootClass c = it.next();
+            if (isVerbose()) {
+                logger.info("\tProcessing class {}", applicationClass.getName());
+            }
 
-			if (output)
-				out.println("\r\tProcessing " + c.getName() + "\r");
+            // create local copy to prevent java.util.ConcurrentModificationException
+            final List<SootMethod> methods = new ArrayList<>(applicationClass.getMethods());
+            for (SootMethod method : methods) {
+                if (!method.isConcrete() || builtByMe.contains(method)) {
+                    continue;
+                }
 
-			List<SootMethod> mList = c.getMethods();
-			for (int midx = 0; midx < mList.size(); midx++) {
-				SootMethod m = mList.get(midx);
-				if (!m.isConcrete() || builtByMe.contains(m))
-					continue;
+                final Body body = getBodySafely(method);
+                if (body == null) {
+                    continue;
+                }
 
-				Body body = null;
-				try {
-					body = m.getActiveBody();
-				} catch (Exception exc) {
-					body = m.retrieveActiveBody();
-				}
-				if (body == null)
-					continue;
+                int localName = 0;
 
-				int localName = 0;
-				Collection<Local> locals = body.getLocals();
-				PatchingChain<Unit> units = body.getUnits();
+                final Unit first = getFirstNotIdentityStmt(body);
 
-				Unit first = null;
-				Iterator<Unit> uIt = units.snapshotIterator();
-				while (uIt.hasNext()) {
-					Unit unit = uIt.next();
-					if (unit instanceof IdentityStmt)
-						continue;
-					first = unit;
-					break;
-				}
+                final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
+                while (unitIterator.hasNext()) {
+                    final Unit unit = unitIterator.next();
 
-				uIt = units.snapshotIterator();
-				while (uIt.hasNext()) {
-					Unit unit = uIt.next();
-					List<ValueBox> uses = unit.getUseBoxes();
-					for (int i = 0; i < uses.size(); i++) {
-						ValueBox vb = uses.get(i);
-						Value v = vb.getValue();
-						if (!(v instanceof InvokeExpr))
-							continue;
+                    for (ValueBox valueBox : unit.getUseBoxes()) {
+                        final Value value = valueBox.getValue();
+                        // skip calls to 'super' as they cannot be called from static method and/or on object from the
+                        // outside (this is prohibited on language level as that would violate encapsulation)
+                        if (!(value instanceof InvokeExpr) || value instanceof SpecialInvokeExpr) {
+                            continue;
+                        }
 
-						InvokeExpr ie = (InvokeExpr) v;
-						SootMethod sm = null;
-						try {
-							sm = ie.getMethod();
-						} catch (RuntimeException exc) {
-						}
-						SootClass dc = sm.getDeclaringClass();
-						if (sm.getName().endsWith("init>") || !dc.isLibraryClass())
-							continue;
+                        final InvokeExpr invokeExpr = (InvokeExpr) value;
+                        final SootMethod invokedMethod = getMethodSafely(invokeExpr);
+                        if (invokedMethod == null) {
+                            continue;
+                        }
 
-						if (output)
-							out.print("\t\t\tChanging " + sm.getSignature());
+                        SootMethodRef invokedMethodRef = getNewMethodRef(invokedMethod);
+                        if (invokedMethodRef == null) {
+                            invokedMethodRef = buildNewMethod(applicationClass, invokedMethod, invokeExpr);
+                            setNewMethodRef(invokedMethod, invokedMethodRef);
+                            newmethods++;
+                        }
 
-						SootMethodRef smr = getNewMethodRef(dc, sm);
-						if (smr == null) {
-							try {
-								smr = buildNewMethod(c, dc, sm, ie);
-								setNewMethodRef(dc, sm, smr);
-								newmethods++;
-							} catch (Exception exc) {
-								smr = null;
-							}
-						}
-						if (smr == null)
-							continue;
+                        if (isVerbose()) {
+                            logger.info("\t\t\tChanging {} to {}\tUnit: ",
+                                    invokedMethod.getSignature(), invokedMethodRef.getSignature(), unit);
+                        }
 
-						if (output)
-							out.println(" to " + smr.getSignature() + "\tUnit: " + unit);
+                        List<Value> args = invokeExpr.getArgs();
+                        List<Type> parameterTypes = invokedMethodRef.parameterTypes();
+                        int argsCount = args.size();
+                        int paramCount = parameterTypes.size();
 
-						List<Value> args = ie.getArgs();
-						List<Type> parms = smr.parameterTypes();
-						int argsCount = args.size();
-						int paramCount = parms.size();
+                        if (invokeExpr instanceof InstanceInvokeExpr || invokeExpr instanceof StaticInvokeExpr) {
+                            if (invokeExpr instanceof InstanceInvokeExpr) {
+                                argsCount++;
+                                args.add(((InstanceInvokeExpr) invokeExpr).getBase());
+                            }
 
-						if (ie instanceof StaticInvokeExpr) {
-							while (argsCount < paramCount) {
-								Type pType = (Type) parms.get(argsCount);
-								Local newLocal = Jimple.v().newLocal("newLocal" + localName++, pType);
-								locals.add(newLocal);
-								units.insertBeforeNoRedirect(Jimple.v().newAssignStmt(newLocal, getConstantType(pType)),
-										first);
-								args.add(newLocal);
-								argsCount++;
-							}
-							vb.setValue(Jimple.v().newStaticInvokeExpr(smr, args));
-						} else if (ie instanceof InstanceInvokeExpr) {
-							argsCount++;
-							args.add(((InstanceInvokeExpr) ie).getBase());
+                            while (argsCount < paramCount) {
+                                Type pType = parameterTypes.get(argsCount);
+                                Local newLocal = Jimple.v().newLocal("newLocal" + localName++, pType);
+                                body.getLocals().add(newLocal);
+                                body.getUnits().insertBeforeNoRedirect(
+                                        Jimple.v().newAssignStmt(newLocal, getConstantType(pType)), first);
+                                args.add(newLocal);
+                                argsCount++;
+                            }
+                            valueBox.setValue(Jimple.v().newStaticInvokeExpr(invokedMethodRef, args));
+                        }
+                        methodcalls++;
+                    }
+                }
+            }
+        }
 
-							while (argsCount < paramCount) {
-								Type pType = (Type) parms.get(argsCount);
-								Local newLocal = Jimple.v().newLocal("newLocal" + localName++, pType);
-								locals.add(newLocal);
-								units.insertBeforeNoRedirect(Jimple.v().newAssignStmt(newLocal, getConstantType(pType)),
-										first);
-								args.add(newLocal);
-								argsCount++;
-							}
-							vb.setValue(Jimple.v().newStaticInvokeExpr(smr, args));
-						}
-						methodcalls++;
-					}
-				}
-			}
-		}
+        Scene.v().releaseActiveHierarchy();
+        Scene.v().setFastHierarchy(new FastHierarchy());
+    }
 
-		scene.releaseActiveHierarchy();
-		scene.getActiveHierarchy();
-		scene.setFastHierarchy(new FastHierarchy());
-	}
+    private SootMethodRef getNewMethodRef(SootMethod method) {
+        Map<SootMethod, SootMethodRef> methods = libClassesToMethods.computeIfAbsent(
+                method.getDeclaringClass(), key -> new HashMap<>());
+        return methods.get(method);
+    }
 
-	private SootMethodRef getNewMethodRef(SootClass libClass, SootMethod sm) {
-		Map<SootMethod, SootMethodRef> methods = libClassesToMethods.get(libClass);
-		if (methods == null) {
-			libClassesToMethods.put(libClass, new HashMap<SootMethod, SootMethodRef>());
-			return null;
-		}
+    private void setNewMethodRef(SootMethod sm, SootMethodRef smr) {
+        Map<SootMethod, SootMethodRef> methods = libClassesToMethods.computeIfAbsent(
+                sm.getDeclaringClass(), key -> new HashMap<>());
+        methods.put(sm, smr);
+    }
 
-		return methods.get(sm);
-	}
+    private SootMethodRef buildNewMethod(SootClass fromC, SootMethod sm, InvokeExpr origIE) {
+        final List<SootClass> availableClasses = getVisibleApplicationClasses(sm);
 
-	private void setNewMethodRef(SootClass libClass, SootMethod sm, SootMethodRef smr) {
-		Map<SootMethod, SootMethodRef> methods = libClassesToMethods.get(libClass);
-		if (methods == null) {
-			libClassesToMethods.put(libClass, methods = new HashMap<SootMethod, SootMethodRef>());
-		}
-		methods.put(sm, smr);
-	}
+        final int classCount = availableClasses.size();
+        if (classCount == 0) {
+            throw new RuntimeException("There appears to be no public non-interface Application classes!");
+        }
 
-	private SootMethodRef buildNewMethod(SootClass fromC, SootClass libClass, SootMethod sm, InvokeExpr origIE) {
-		SootClass randClass;
-		List<SootMethod> methods;
-		SootMethod randMethod;
-		String newName;
+        SootClass randomClass;
+        String methodNewName;
+        do {
+            int index = Rand.getInt(classCount);
+            if ((randomClass = availableClasses.get(index)) == fromC && classCount > 1) {
+                index = Rand.getInt(classCount);
+                randomClass = availableClasses.get(index);
+            }
 
-		Vector<SootClass> availClasses = new Vector<SootClass>();
-		Iterator<SootClass> aIt = scene.getApplicationClasses().iterator();
-		while (aIt.hasNext()) {
-			SootClass c = aIt.next();
-			if (c.isConcrete() && !c.isInterface() && c.isPublic())
-				availClasses.add(c);
-		}
+            final List<SootMethod> methods = randomClass.getMethods();
+            index = Rand.getInt(methods.size());
+            final SootMethod randMethod = methods.get(index);
+            methodNewName = randMethod.getName();
+        } while (methodNewName.equals(SootMethod.constructorName)
+                || methodNewName.equals(SootMethod.staticInitializerName));
 
-		int classCount = availClasses.size();
-		if (classCount == 0)
-			throw new RuntimeException("There appears to be no public non-interface Application classes!");
+        final List<Type> smParamTypes = new ArrayList<>(sm.getParameterTypes());
+        if (!sm.isStatic()) {
+            smParamTypes.add(sm.getDeclaringClass().getType());
+        }
 
-		do {
-			int index = Rand.getInt(classCount);
-			if ((randClass = availClasses.get(index)) == fromC && classCount > 1) {
-				index = Rand.getInt(classCount);
-				randClass = availClasses.get(index);
-			}
+        // add random class params until we don't match any other method
+        int extraParams = 0;
+        if (randomClass.declaresMethod(methodNewName, smParamTypes)) {
+            int rtmp = Rand.getInt(classCount + 7);
+            if (rtmp >= classCount) {
+                rtmp -= classCount;
+                smParamTypes.add(getPrimType(rtmp));
+            } else {
+                smParamTypes.add(availableClasses.get(rtmp).getType());
+            }
+            extraParams++;
+        }
 
-			methods = randClass.getMethods();
-			index = Rand.getInt(methods.size());
-			randMethod = methods.get(index);
-			newName = randMethod.getName();
-		} while (newName.endsWith("init>"));
+        final int mods = ((((sm.getModifiers() | Modifier.STATIC | Modifier.PUBLIC) & (Modifier.ABSTRACT ^ 0xFFFF))
+                & (Modifier.NATIVE ^ 0xFFFF)) & (Modifier.SYNCHRONIZED ^ 0xFFFF));
+        SootMethod newMethod = Scene.v().makeSootMethod(methodNewName, smParamTypes, sm.getReturnType(), mods);
+        randomClass.addMethod(newMethod);
 
-		List<Type> smParamTypes = sm.getParameterTypes();
-		List<Type> tmp = new ArrayList<Type>();
-		if (!sm.isStatic()) {
-			for (int i = 0; i < smParamTypes.size(); i++)
-				tmp.add(smParamTypes.get(i));
-			tmp.add(libClass.getType());
-			smParamTypes = tmp;
-		} else {
-			tmp.addAll(smParamTypes);
-			smParamTypes = tmp;
-		}
+        JimpleBody body = Jimple.v().newBody(newMethod);
+        newMethod.setActiveBody(body);
+        Chain<Local> locals = body.getLocals();
+        PatchingChain<Unit> units = body.getUnits();
 
-		// add random class params until we don't match any other method
-		int extraParams = 0;
-		SootMethod similarM;
-		do {
-			similarM = null;
-			try {
-				similarM = randClass.getMethod(newName, smParamTypes);
-			} catch (RuntimeException rexc) {
-			}
+        List<Local> args = BodyBuilder.buildParameterLocals(units, locals, smParamTypes);
+        while (extraParams-- > 0) {
+            args.remove(args.size() - 1);
+        }
 
-			if (similarM != null) {
-				int rtmp = Rand.getInt(classCount + 7);
-				if (rtmp >= classCount) {
-					rtmp -= classCount;
-					smParamTypes.add(getPrimType(rtmp));
-				} else {
-					smParamTypes.add(availClasses.get(rtmp).getType());
-				}
-				extraParams++;
-			}
-		} while (similarM != null);
+        InvokeExpr ie = null;
+        if (sm.isStatic()) {
+            ie = Jimple.v().newStaticInvokeExpr(sm.makeRef(), args);
+        } else {
+            Local libObj = args.remove(args.size() - 1);
+            if (origIE instanceof InterfaceInvokeExpr) {
+                ie = Jimple.v().newInterfaceInvokeExpr(libObj, sm.makeRef(), args);
+            } else if (origIE instanceof VirtualInvokeExpr) {
+                ie = Jimple.v().newVirtualInvokeExpr(libObj, sm.makeRef(), args);
+            }
+        }
+        if (sm.getReturnType() instanceof VoidType) {
+            units.add(Jimple.v().newInvokeStmt(ie));
+            units.add(Jimple.v().newReturnVoidStmt());
+        } else {
+            Local assign = Jimple.v().newLocal("returnValue", sm.getReturnType());
+            locals.add(assign);
+            units.add(Jimple.v().newAssignStmt(assign, ie));
+            units.add(Jimple.v().newReturnStmt(assign));
+        }
 
-		int mods = ((((sm.getModifiers() | Modifier.STATIC | Modifier.PUBLIC) & (Modifier.ABSTRACT ^ 0xFFFF))
-				& (Modifier.NATIVE ^ 0xFFFF)) & (Modifier.SYNCHRONIZED ^ 0xFFFF));
-		SootMethod newMethod = Scene.v().makeSootMethod(newName, smParamTypes, sm.getReturnType(), mods);
-		randClass.addMethod(newMethod);
+        if (isVerbose()) {
+            logger.info("{} was replaced by {} which calls {}", sm.getName(), newMethod.getName(), ie);
+        }
 
-		JimpleBody body = Jimple.v().newBody(newMethod);
-		newMethod.setActiveBody(body);
-		PatchingChain<Unit> units = body.getUnits();
-		Collection<Local> locals = body.getLocals();
+        if (units.size() < 2) {
+            logger.warn("THERE AREN'T MANY UNITS IN THIS METHOD {}", units);
+        }
 
-		InvokeExpr ie = null;
-		List<Local> args = BodyBuilder.buildParameterLocals(units, locals, smParamTypes);
-		while (extraParams-- > 0)
-			args.remove(args.size() - 1);
+        builtByMe.add(newMethod);
 
-		if (sm.isStatic()) {
-			ie = Jimple.v().newStaticInvokeExpr(sm.makeRef(), args);
-		} else {
-			Local libObj = (Local) args.remove(args.size() - 1);
-			if (origIE instanceof InterfaceInvokeExpr)
-				ie = Jimple.v().newInterfaceInvokeExpr(libObj, sm.makeRef(), args);
-			else if (origIE instanceof SpecialInvokeExpr)
-				ie = Jimple.v().newSpecialInvokeExpr(libObj, sm.makeRef(), args);
-			else if (origIE instanceof VirtualInvokeExpr)
-				ie = Jimple.v().newVirtualInvokeExpr(libObj, sm.makeRef(), args);
-		}
-		if (sm.getReturnType() instanceof VoidType) {
-			units.add(Jimple.v().newInvokeStmt(ie));
-			units.add(Jimple.v().newReturnVoidStmt());
-		} else {
-			Local assign = Jimple.v().newLocal("returnValue", sm.getReturnType());
-			locals.add(assign);
-			units.add(Jimple.v().newAssignStmt(assign, ie));
-			units.add(Jimple.v().newReturnStmt(assign));
-		}
+        return newMethod.makeRef();
+    }
 
-		if (output)
-			out.println(
-					"\r" + sm.getName() + " was replaced by \r\t" + newMethod.getName() + " which calls \r\t\t" + ie);
+    private static Type getPrimType(int idx) {
+        switch (idx) {
+            case 0:
+                return IntType.v();
+            case 1:
+                return CharType.v();
+            case 2:
+                return ByteType.v();
+            case 3:
+                return LongType.v();
+            case 4:
+                return BooleanType.v();
+            case 5:
+                return DoubleType.v();
+            case 6:
+                return FloatType.v();
+            default:
+                return IntType.v();
+        }
+    }
 
-		if (units.size() < 2)
-			out.println("\r\rTHERE AREN'T MANY UNITS IN THIS METHOD " + units);
+    private static Value getConstantType(Type t) {
+        if (t instanceof BooleanType)
+            return IntConstant.v(Rand.getInt(1));
+        if (t instanceof IntType)
+            return IntConstant.v(Rand.getInt());
+        if (t instanceof CharType)
+            return Jimple.v().newCastExpr(IntConstant.v(Rand.getInt()), CharType.v());
+        if (t instanceof ByteType)
+            return Jimple.v().newCastExpr(IntConstant.v(Rand.getInt()), ByteType.v());
+        if (t instanceof LongType)
+            return LongConstant.v(Rand.getLong());
+        if (t instanceof FloatType)
+            return FloatConstant.v(Rand.getFloat());
+        if (t instanceof DoubleType)
+            return DoubleConstant.v(Rand.getDouble());
 
-		builtByMe.add(newMethod);
+        return Jimple.v().newCastExpr(NullConstant.v(), t);
+    }
 
-		return newMethod.makeRef();
-	}
+    private static Body getBodySafely(SootMethod method) {
+        try {
+            return method.getActiveBody();
+        } catch (Exception exception) {
+            logger.warn("Getting Body from SootMethod {} caused exception that was suppressed.", exception);
 
-	private static Type getPrimType(int idx) {
-		switch (idx) {
-		case 0:
-			return IntType.v();
-		case 1:
-			return CharType.v();
-		case 2:
-			return ByteType.v();
-		case 3:
-			return LongType.v();
-		case 4:
-			return BooleanType.v();
-		case 5:
-			return DoubleType.v();
-		case 6:
-			return FloatType.v();
-		default:
-			return IntType.v();
-		}
-	}
+            return method.retrieveActiveBody();
+        }
+    }
 
-	private static Value getConstantType(Type t) {
-		if (t instanceof BooleanType)
-			return IntConstant.v(Rand.getInt(1));
-		if (t instanceof IntType)
-			return IntConstant.v(Rand.getInt());
-		if (t instanceof CharType)
-			return Jimple.v().newCastExpr(IntConstant.v(Rand.getInt()), CharType.v());
-		if (t instanceof ByteType)
-			return Jimple.v().newCastExpr(IntConstant.v(Rand.getInt()), ByteType.v());
-		if (t instanceof LongType)
-			return LongConstant.v(Rand.getLong());
-		if (t instanceof FloatType)
-			return FloatConstant.v(Rand.getFloat());
-		if (t instanceof DoubleType)
-			return DoubleConstant.v(Rand.getDouble());
+    private static Unit getFirstNotIdentityStmt(Body body) {
+        final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
+        while (unitIterator.hasNext()) {
+            final Unit unit = unitIterator.next();
+            if (unit instanceof IdentityStmt) {
+                continue;
+            }
+            return unit;
+        }
 
-		return Jimple.v().newCastExpr(NullConstant.v(), t);
-	}
+        logger.debug("There are no non-identity units in the method body.");
+        return null;
+    }
+
+    private static SootMethod getMethodSafely(InvokeExpr invokeExpr) {
+        try {
+            final SootMethod invokedMethod = invokeExpr.getMethod();
+            if (invokedMethod == null) {
+                return null;
+            }
+
+            if (SootMethod.constructorName.equals(invokedMethod.getName())
+                    || SootMethod.staticInitializerName.equals(invokedMethod.getName())) {
+                logger.debug("Skipping wrapping method {} as it is constructor/initializer.", invokedMethod);
+                return null;
+            }
+
+            final SootClass invokedMethodClass = invokedMethod.getDeclaringClass();
+
+            if (!invokedMethodClass.isLibraryClass()) {
+                logger.debug("Skipping wrapping method {} as it is not library one.", invokedMethod);
+                return null;
+            }
+
+            if (invokeExpr.getMethodRef().declaringClass().isInterface()
+                    && !invokedMethodClass.isInterface()) {
+                logger.debug("Skipping wrapping method {} as original code suppose to execute it on interface {}"
+                                + " but resolved code trying to execute it on class {}", invokedMethod,
+                        invokeExpr.getMethodRef().declaringClass(), invokedMethodClass);
+                return null;
+            }
+
+            return invokedMethod;
+        } catch (RuntimeException exception) {
+            logger.debug("Cannot resolve method of InvokeExpr: " + invokeExpr.toString(), exception);
+            return null;
+        }
+    }
+
+    private static List<SootClass> getVisibleApplicationClasses(SootMethod visibleBy) {
+        final List<SootClass> result = new ArrayList<>();
+
+        final Iterator<SootClass> applicationClassesIterator = Scene.v().getApplicationClasses().snapshotIterator();
+        while (applicationClassesIterator.hasNext()) {
+            final SootClass applicationClass = applicationClassesIterator.next();
+
+            if (applicationClass.isConcrete() && !applicationClass.isInterface() && applicationClass.isPublic()
+                    && Scene.v().getActiveHierarchy().isVisible(applicationClass, visibleBy)) {
+                result.add(applicationClass);
+            }
+        }
+
+        return result;
+    }
+
 }

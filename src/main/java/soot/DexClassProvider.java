@@ -1,4 +1,6 @@
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  *
@@ -32,6 +34,7 @@ import java.util.*;
  * Looks for a dex file which includes the definition of a class.
  */
 public class DexClassProvider implements ClassProvider {
+    private static final Logger logger = LoggerFactory.getLogger(DexClassProvider.class);
 
     public static Set<String> classesOfDex(DexBackedDexFile dexFile) {
         Set<String> classes = new HashSet<String>();
@@ -93,16 +96,16 @@ public class DexClassProvider implements ClassProvider {
                         if (!index.containsKey(className))
                             index.put(className, container.getFilePath());
                         else if(Options.v().verbose())
-                            G.v().out.println(String.format("Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.",
+                            logger.debug(""+String.format("Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.",
                                     className, container.getDexName(), container.getFilePath().getCanonicalPath()));
                     }
                 }
             } catch (IOException e) {
-                G.v().out.println("Warning: IO error while processing dex file '" + path + "'");
-                G.v().out.println("Exception: " + e);
+                logger.warn("IO error while processing dex file '" + path + "'");
+                logger.debug("Exception: " + e);
             } catch (Exception e) {
-                G.v().out.println("Warning: exception while processing dex file '" + path + "'");
-                G.v().out.println("Exception: " + e);
+                logger.warn("exception while processing dex file '" + path + "'");
+                logger.debug("Exception: " + e);
             }
         }
 

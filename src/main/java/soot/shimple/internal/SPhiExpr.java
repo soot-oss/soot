@@ -18,6 +18,8 @@
  */
 
 package soot.shimple.internal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.shimple.*;
@@ -36,6 +38,7 @@ import soot.toolkits.graph.*;
  **/
 public class SPhiExpr implements PhiExpr
 {
+    private static final Logger logger = LoggerFactory.getLogger(SPhiExpr.class);
     protected List<ValueUnitPair> argPairs = new ArrayList<ValueUnitPair>();
     protected Map<Unit, ValueUnitPair> predToPair = new HashMap<Unit, ValueUnitPair>();  // cache
     protected Type type;
@@ -246,8 +249,8 @@ public class SPhiExpr implements PhiExpr
 
         int other = getArgIndex(predTailUnit);
         if(other != -1){
-            G.v().out.println("WARNING: An argument with control flow predecessor " +  predTailUnit + " already exists in " + this + "!");
-            G.v().out.println("WARNING: setPred resulted in deletion of " + argPair + " from " + this + ".");
+            logger.warn("An argument with control flow predecessor " +  predTailUnit + " already exists in " + this + "!");
+            logger.warn("setPred resulted in deletion of " + argPair + " from " + this + ".");
             removeArg(argPair);
             return false;
         }

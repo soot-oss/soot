@@ -18,6 +18,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,6 +28,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 public class XMLAttributesPrinter {
+    private static final Logger logger = LoggerFactory.getLogger(XMLAttributesPrinter.class);
 
 	
 	private String useFilename;
@@ -54,7 +57,7 @@ public class XMLAttributesPrinter {
 		  writerOut.println("<attributes>");
 		}
 		catch(IOException e1) {
-		  G.v().out.println(e1.getMessage());
+		  logger.debug(""+e1.getMessage());
 		}
 									
 	}
@@ -104,7 +107,7 @@ public class XMLAttributesPrinter {
 				dir.mkdirs();
 			} 
 			catch (SecurityException se) {
-			        G.v().out.println("Unable to create " + attrDir);
+			        logger.debug("Unable to create " + attrDir);
 		                //System.exit(0);
 		        }
 		}
@@ -113,7 +116,7 @@ public class XMLAttributesPrinter {
 
 	private void createUseFilename() {
 		String tmp = getInFilename();
-		//G.v().out.println("attribute file name: "+tmp);
+		//logger.debug("attribute file name: "+tmp);
 		tmp = tmp.substring(0, tmp.lastIndexOf('.'));
 		int slash = tmp.lastIndexOf(System.getProperty("file.separator"));
 		if (slash != -1) {

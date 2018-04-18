@@ -1,4 +1,6 @@
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -16,6 +18,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class FoundFile {
+    private static final Logger logger = LoggerFactory.getLogger(FoundFile.class);
 	protected File file;
     private Path path;
     protected String entryName;
@@ -158,7 +161,7 @@ public class FoundFile {
                     ps.print("Exception ");
                     ps.print(i++);
                     ps.print(": ");
-                    t.printStackTrace(ps);
+                    logger.error(t.getMessage(), t);
                 }
                 msg = new String(baos.toByteArray(), StandardCharsets.UTF_8);
             } catch (Exception e) {

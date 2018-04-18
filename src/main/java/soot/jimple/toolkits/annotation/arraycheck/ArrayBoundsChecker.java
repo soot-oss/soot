@@ -24,6 +24,8 @@
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -36,6 +38,7 @@ import soot.options.ABCOptions;
 
 public class ArrayBoundsChecker extends BodyTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(ArrayBoundsChecker.class);
     public ArrayBoundsChecker( Singletons.Global g ) {}
     public static ArrayBoundsChecker v() { return G.v().soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker(); }
 
@@ -75,8 +78,8 @@ public class ArrayBoundsChecker extends BodyTransformer
 
             if (Options.v().verbose())
             {
-                G.v().out.println("[abc] Analyzing array bounds information for "+m.getName());
-                G.v().out.println("[abc] Started on "+start);
+                logger.debug("[abc] Analyzing array bounds information for "+m.getName());
+                logger.debug("[abc] Started on "+start);
             }
 
             ArrayBoundsCheckerAnalysis analysis = null;
@@ -182,8 +185,8 @@ public class ArrayBoundsChecker extends BodyTransformer
                             {
                                 if (!vgraph.makeShortestPathGraph())
                                 {
-                                    G.v().out.println(stmt+" :");
-                                    G.v().out.println(vgraph);
+                                    logger.debug(""+stmt+" :");
+                                    logger.debug(""+vgraph);
                                 }
                             }
                             
@@ -288,7 +291,7 @@ public class ArrayBoundsChecker extends BodyTransformer
             if (Options.v().verbose()) 
             {
                 long runtime = finish.getTime() - start.getTime();
-                G.v().out.println("[abc] ended on "+finish
+                logger.debug("[abc] ended on "+finish
                                   +". It took "+(runtime/60000)+" min. "
                                   +((runtime%60000)/1000)+" sec.");
             }
@@ -319,8 +322,8 @@ public class ArrayBoundsChecker extends BodyTransformer
             {
                 if (!vgraph.makeShortestPathGraph())
                 {
-                    G.v().out.println(stmt+" :");
-                    G.v().out.println(vgraph);
+                    logger.debug(""+stmt+" :");
+                    logger.debug(""+vgraph);
                 }
             }
                             

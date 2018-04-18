@@ -191,12 +191,13 @@ class SootClassBuilder extends ClassVisitor {
     public void visitInnerClass(String name, String outerName, String innerName, int access) {
         klass.addTag(new InnerClassTag(name, outerName, innerName, access));
 
+        //soot does not resolve all inner classes, e.g., java.util.stream.FindOps$FindSink$... is not resolved
 
-        //FIXME; hack o resovle inner Classes (e.g. java.util.stream.FindOps$FindSink$... is not resolved
         if (!(this.klass instanceof SootModuleInfo)) {
             String innerClassname = AsmUtil.toQualifiedName(name);
             deps.add(makeRefType(innerClassname));
         }
+
     }
 
     @Override

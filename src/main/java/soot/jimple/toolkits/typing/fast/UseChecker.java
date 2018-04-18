@@ -296,11 +296,13 @@ public class UseChecker extends AbstractStmtSwitch
 				// If we have a type of java.lang.Object and access it like an object,
 				// this could lead to any kind of object, so we have to look at the uses.
 				// For some fixed type T, we assume that we can fix the array to T[].
-				if (bt instanceof RefType) {
-					RefType rt = (RefType) bt;
-					if (rt.getSootClass().getName().equals("java.lang.Object")
+				if (bt instanceof RefType || bt instanceof NullType) {
+					RefType rt = bt instanceof NullType ? null : (RefType) bt;
+					if (rt == null 
+							|| rt.getSootClass().getName().equals("java.lang.Object")
 							|| rt.getSootClass().getName().equals("java.io.Serializable")
-							|| rt.getSootClass().getName().equals("java.lang.Cloneable")) {
+							|| rt.getSootClass().getName().equals("java.lang.Cloneable")
+							) {
 						if (defs == null) {
 					        defs = LocalDefs.Factory.newLocalDefs(jb);
 							uses = LocalUses.Factory.newLocalUses(jb, defs);
@@ -353,6 +355,9 @@ public class UseChecker extends AbstractStmtSwitch
 									if (newEt != null)
 										et = newEt;
 								}
+							}
+							else if (useStmt instanceof ReturnStmt) {
+								et = jb.getMethod().getReturnType();
 							}
 						}
 					}

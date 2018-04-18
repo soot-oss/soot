@@ -25,6 +25,8 @@
 
 
 package soot.util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -57,6 +59,7 @@ import soot.util.dot.DotGraph;
  */
 
 public class PhaseDumper {
+    private static final Logger logger = LoggerFactory.getLogger(PhaseDumper.class);
     // As a minor optimization, we leave these lists null in the
     // case were no phases at all are to be dumped, which is the 
     // most likely case.
@@ -218,8 +221,8 @@ public class PhaseDumper {
 	} catch (java.io.IOException e) {
 	    // Don't abort execution because of an I/O error, but report
 	    // the error.
-	    G.v().out.println("PhaseDumper.dumpBody() caught: " + e.toString());
-	    e.printStackTrace(G.v().out);
+	    logger.debug("PhaseDumper.dumpBody() caught: " + e.toString());
+	    logger.error(e.getMessage(), e);
 	}
     }
 
@@ -245,8 +248,8 @@ public class PhaseDumper {
 	} catch (java.io.IOException e) {
 	    // Don't abort execution because of an I/O error, but let
 	    // the user know.
-	    G.v().out.println("PhaseDumper.dumpBody() caught: " + e.toString());
-	    e.printStackTrace(G.v().out);
+	    logger.debug("PhaseDumper.dumpBody() caught: " + e.toString());
+	    logger.error(e.getMessage(), e);
 	} finally {
 	    alreadyDumping = false;
 	}
@@ -379,9 +382,9 @@ public class PhaseDumper {
 		} catch (java.io.IOException e) {
 		    // Don't abort execution because of an I/O error, but 
 		    // report the error.
-		    G.v().out.println("PhaseDumper.dumpBody() caught: " + 
+		    logger.debug("PhaseDumper.dumpBody() caught: " + 
 				      e.toString());
-		    e.printStackTrace(G.v().out);
+		    logger.error(e.getMessage(), e);
 		}
 	    }
 	} finally {
@@ -416,9 +419,9 @@ public class PhaseDumper {
 		} catch (java.io.IOException e) {
 		    // Don't abort execution because of an I/O error, but 
 		    // report the error.
-		    G.v().out.println("PhaseDumper.dumpBody() caught: " + 
+		    logger.debug("PhaseDumper.dumpBody() caught: " + 
 				      e.toString());
-		    e.printStackTrace(G.v().out);
+		    logger.error(e.getMessage(), e);
 		}
 	    }
 	} finally {
@@ -450,7 +453,7 @@ public class PhaseDumper {
 	try {
 	    throw new java.io.IOException("FAKE");
 	} catch (java.io.IOException e) {
-	    e.printStackTrace(G.v().out);
+	    logger.error(e.getMessage(), e);
 	}
     }
 }

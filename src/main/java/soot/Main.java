@@ -24,6 +24,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.net.URLEncoder.encode;
 
@@ -56,32 +58,27 @@ public class Main {
 	public static final String versionString = Main.class.getPackage().getImplementationVersion() == null ? "trunk" : Main.class.getPackage().getImplementationVersion();
 
 	private Date start;
-	private Date finish;
+	private long startNano;
+	private long finishNano;
 
 	private void printVersion() {
-		G.v().out.println("Soot version " + versionString);
-
-		G.v().out.println(
-				"Copyright (C) 1997-2010 Raja Vallee-Rai and others.");
-		G.v().out.println("All rights reserved.");
-		G.v().out.println("");
-		G.v().out.println(
-				"Contributions are copyright (C) 1997-2010 by their respective contributors.");
-		G.v().out.println("See the file 'credits' for a list of contributors.");
-		G.v().out.println("See individual source files for details.");
-		G.v().out.println("");
-		G.v().out.println(
-				"Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,");
-		G.v().out.println(
-				"and you are welcome to redistribute it under certain conditions.");
-		G.v().out.println(
-				"See the accompanying file 'COPYING-LESSER.txt' for details.");
-		G.v().out.println();
-		G.v().out.println("Visit the Soot website:");
-		G.v().out.println("  http://www.sable.mcgill.ca/soot/");
-		G.v().out.println();
-		G.v().out.println("For a list of command line options, enter:");
-		G.v().out.println("  java soot.Main --help");
+		System.out.println("Soot version " + versionString);
+		System.out.println("Copyright (C) 1997-2010 Raja Vallee-Rai and others.");
+		System.out.println("All rights reserved.");
+		System.out.println();
+		System.out.println("Contributions are copyright (C) 1997-2010 by their respective contributors.");
+		System.out.println("See the file 'credits' for a list of contributors.");
+		System.out.println("See individual source files for details.");
+		System.out.println();
+		System.out.println("Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,");
+		System.out.println("and you are welcome to redistribute it under certain conditions.");
+		System.out.println("See the accompanying file 'COPYING-LESSER.txt' for details.");
+		
+		System.out.println("Visit the Soot website:");
+		System.out.println("  http://www.sable.mcgill.ca/soot/");
+		
+		System.out.println("For a list of command line options, enter:");
+		System.out.println("  java soot.Main --help");
 	}
 
 	private void processCmdLine(String[] args) {
@@ -100,18 +97,18 @@ public class Main {
 		Options.v().warnNonexistentPhase();
 
 		if (Options.v().help()) {
-			G.v().out.println(Options.v().getUsage());
+			System.out.println(Options.v().getUsage());
 			throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
 		}
 
 		if (Options.v().phase_list()) {
-			G.v().out.println(Options.v().getPhaseList());
+			System.out.println(Options.v().getPhaseList());
 			throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
 		}
 
 		if (!Options.v().phase_help().isEmpty()) {
 			for (String phase : Options.v().phase_help()) {
-				G.v().out.println(Options.v().getPhaseHelp(phase));
+				System.out.println(Options.v().getPhaseHelp(phase));
 			}
 			throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
 		}
@@ -148,14 +145,14 @@ public class Main {
 		} catch (OptionsParseException e) {
         		// error message has already been printed
 		} catch (StackOverflowError e ) {
-			G.v().out.println( "Soot has run out of stack memory." );
-			G.v().out.println( "To allocate more stack memory to Soot, use the -Xss switch to Java." );
-			G.v().out.println( "For example (for 2MB): java -Xss2m soot.Main ..." );
+			System.err.println(""+ "Soot has run out of stack memory." );
+			System.err.println(""+ "To allocate more stack memory to Soot, use the -Xss switch to Java." );
+			System.err.println(""+ "For example (for 2MB): java -Xss2m soot.Main ..." );
 			throw e;
 		} catch (OutOfMemoryError e) {
-			G.v().out.println( "Soot has run out of the memory allocated to it by the Java VM." );
-			G.v().out.println( "To allocate more memory to Soot, use the -Xmx switch to Java." );
-			G.v().out.println( "For example (for 2GB): java -Xmx2g soot.Main ..." );
+			System.err.println(""+ "Soot has run out of the memory allocated to it by the Java VM." );
+			System.err.println(""+ "To allocate more memory to Soot, use the -Xmx switch to Java." );
+			System.err.println(""+ "For example (for 2GB): java -Xmx2g soot.Main ..." );
 			throw e;
 		} catch (RuntimeException e) {
 			e.printStackTrace();
@@ -236,6 +233,7 @@ public class Main {
 		cmdLineArgs = args;
 
 		start = new Date();
+		startNano = System.nanoTime();
 
 
 		try {
@@ -245,7 +243,7 @@ public class Main {
 
 			autoSetOptions();
 
-			G.v().out.println("Soot started on " + start);
+			System.out.println("Soot started on " + start);
 
 			Scene.v().loadNecessaryClasses();
 
@@ -293,11 +291,11 @@ public class Main {
 				return;
 		}
 
-		finish = new Date();
+		finishNano = System.nanoTime(); 
 
-		G.v().out.println("Soot finished on " + finish);
-		long runtime = finish.getTime() - start.getTime();
-		G.v().out.println(
+		System.out.println("Soot finished on " + new Date());
+		long runtime = (finishNano - startNano) / 1000000l; 
+		System.out.println(""+
 				"Soot has run for "
 						+ (runtime / 60000)
 						+ " min. "

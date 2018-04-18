@@ -50,6 +50,7 @@ public class IfTestInstruction extends ConditionalJumpInstruction {
         IfStmt jif = Jimple.v().newIfStmt(condition, targetInstruction.getUnit());
         // setUnit() is called in ConditionalJumpInstruction
 
+        addTags(jif);
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 		    //Debug.printDbg(IDalvikTyper.DEBUG, "constraint if: "+ jif +" condition: "+ condition);
 		    DalvikTyper.v().addConstraint(condition.getOp1Box(), condition.getOp2Box());

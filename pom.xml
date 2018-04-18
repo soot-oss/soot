@@ -110,6 +110,13 @@
 						</transformationSet>
 					</transformationSets>
 				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>net.sf.saxon</groupId>
+						<artifactId>Saxon-HE</artifactId>
+						<version>9.8.0-8</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<!-- copy the soot_options.css -->
 			<plugin>

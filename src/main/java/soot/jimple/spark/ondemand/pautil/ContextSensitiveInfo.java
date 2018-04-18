@@ -17,6 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.ondemand.pautil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -45,6 +47,7 @@ import soot.util.HashMultiMap;
  * @author manu
  */
 public class ContextSensitiveInfo {
+    private static final Logger logger = LoggerFactory.getLogger(ContextSensitiveInfo.class);
 
     private static final boolean SKIP_STRING_NODES = false;
 
@@ -177,7 +180,7 @@ public class ContextSensitiveInfo {
                 callSiteWriter = new PrintWriter(
                         new FileWriter("callSiteInfo"), true);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
         for (Iterator iter = callAssigns.keySet().iterator(); iter.hasNext();) {
@@ -269,7 +272,7 @@ public class ContextSensitiveInfo {
             for (AssignEdge edge : assigns) {
                 if (edge.isCallEdge()) {
                     if (edge.getCallSite() == null) {
-                    	G.v().out.println(edge + " is weird!!");
+                    	logger.debug(""+edge + " is weird!!");
                         return false;
                     }
                 }

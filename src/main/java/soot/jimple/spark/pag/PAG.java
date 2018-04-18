@@ -27,12 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
 import soot.Context;
 import soot.FastHierarchy;
-import soot.G;
 import soot.Kind;
 import soot.Local;
 import soot.PhaseOptions;
@@ -82,6 +84,7 @@ import soot.toolkits.scalar.Pair;
 import soot.util.ArrayNumberer;
 import soot.util.HashMultiMap;
 import soot.util.LargeNumberedMap;
+import soot.util.MultiMap;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
@@ -91,6 +94,8 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 public class PAG implements PointsToAnalysis {
+	private static final Logger logger = LoggerFactory.getLogger(PAG.class);
+
 	public PAG(final SparkOptions opts) {
 		this.opts = opts;
 		this.cgOpts = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
@@ -209,8 +214,8 @@ public class PAG implements PointsToAnalysis {
 	}
 
 	/**
-	 * Returns the set of objects pointed to by instance field f of the objects
-	 * in the PointsToSet s.
+	 * Returns the set of objects pointed to by instance field f of the objects in
+	 * the PointsToSet s.
 	 */
 	public PointsToSet reachingObjects(PointsToSet s, final SootField f) {
 		if (f.isStatic())
@@ -264,7 +269,7 @@ public class PAG implements PointsToAnalysis {
 
 	public void cleanUpMerges() {
 		if (opts.verbose()) {
-			G.v().out.println("Cleaning up graph for merged nodes");
+			logger.debug("Cleaning up graph for merged nodes");
 		}
 		lookupInMap(simple);
 		lookupInMap(alloc);
@@ -277,7 +282,7 @@ public class PAG implements PointsToAnalysis {
 
 		somethingMerged = false;
 		if (opts.verbose()) {
-			G.v().out.println("Done cleaning up graph for merged nodes");
+			logger.debug("Done cleaning up graph for merged nodes");
 		}
 	}
 
@@ -389,7 +394,7 @@ public class PAG implements PointsToAnalysis {
 				m.put(key, valueList = ((Set) valueList).toArray(EMPTY_NODE_ARRAY));
 			} catch (Exception e) {
 				for (Iterator it = ((Set) valueList).iterator(); it.hasNext();) {
-					G.v().out.println("" + it.next());
+					logger.debug("" + it.next());
 				}
 				throw new RuntimeException("" + valueList + e);
 			}
@@ -748,8 +753,8 @@ public class PAG implements PointsToAnalysis {
 	}
 
 	/**
-	 * Finds or creates the ContextVarNode for base variable baseValue and
-	 * context context, of type type.
+	 * Finds or creates the ContextVarNode for base variable baseValue and context
+	 * context, of type type.
 	 */
 	public ContextVarNode makeContextVarNode(Object baseValue, Type baseType, Context context, SootMethod method) {
 		LocalVarNode base = makeLocalVarNode(baseValue, baseType, method);
@@ -770,8 +775,8 @@ public class PAG implements PointsToAnalysis {
 	}
 
 	/**
-	 * Finds the FieldRefNode for base variable value and field field, or
-	 * returns null.
+	 * Finds the FieldRefNode for base variable value and field field, or returns
+	 * null.
 	 */
 	public FieldRefNode findLocalFieldRefNode(Object baseValue, SparkField field) {
 		VarNode base = findLocalVarNode(baseValue);
@@ -781,8 +786,8 @@ public class PAG implements PointsToAnalysis {
 	}
 
 	/**
-	 * Finds the FieldRefNode for base variable value and field field, or
-	 * returns null.
+	 * Finds the FieldRefNode for base variable value and field field, or returns
+	 * null.
 	 */
 	public FieldRefNode findGlobalFieldRefNode(Object baseValue, SparkField field) {
 		VarNode base = findGlobalVarNode(baseValue);
@@ -824,8 +829,8 @@ public class PAG implements PointsToAnalysis {
 	}
 
 	/**
-	 * Finds or creates the FieldRefNode for base variable base and field field,
-	 * of type type.
+	 * Finds or creates the FieldRefNode for base variable base and field field, of
+	 * type type.
 	 */
 	public FieldRefNode makeFieldRefNode(VarNode base, SparkField field) {
 		FieldRefNode ret = base.dot(field);
@@ -1036,16 +1041,9 @@ public class PAG implements PointsToAnalysis {
 	// Must be simple edges
 	public Pair<Node, Node> addInterproceduralAssignment(Node from, Node to, Edge e) {
 		Pair<Node, Node> val = new Pair<Node, Node>(from, to);
-
 		if (runGeomPTA) {
-			Set<Edge> sets = assign2edges.get(val);
-			if (sets == null) {
-				sets = new HashSet<Edge>();
-				assign2edges.put(val, sets);
-			}
-			sets.add(e);
+			assign2edges.put(val, e);
 		}
-
 		return val;
 	}
 
@@ -1326,8 +1324,8 @@ public class PAG implements PointsToAnalysis {
 
 	/**
 	 * Adds method target as a possible target of the invoke expression in s. If
-	 * target is null, only creates the nodes for the call site, without
-	 * actually connecting them to any target method.
+	 * target is null, only creates the nodes for the call site, without actually
+	 * connecting them to any target method.
 	 **/
 	final public void addCallTarget(MethodPAG srcmpag, MethodPAG tgtmpag, Stmt s, Context srcContext,
 			Context tgtContext, Edge e) {
@@ -1445,17 +1443,17 @@ public class PAG implements PointsToAnalysis {
 	}
 
 	private boolean runGeomPTA = false;
-	protected Map<Pair<Node, Node>, Set<Edge>> assign2edges = new HashMap<Pair<Node, Node>, Set<Edge>>();
-	private final Map<Object, LocalVarNode> valToLocalVarNode = new HashMap<Object, LocalVarNode>(1000);
-	private final Map<Object, GlobalVarNode> valToGlobalVarNode = new HashMap<Object, GlobalVarNode>(1000);
-	private final Map<Object, AllocNode> valToAllocNode = new HashMap<Object, AllocNode>(1000);
+	protected MultiMap<Pair<Node, Node>, Edge> assign2edges = new HashMultiMap<>();
+	private final Map<Object, LocalVarNode> valToLocalVarNode = new HashMap<>(1000);
+	private final Map<Object, GlobalVarNode> valToGlobalVarNode = new HashMap<>(1000);
+	private final Map<Object, AllocNode> valToAllocNode = new HashMap<>(1000);
 	private final Table<Object, Type, AllocNode> valToReflAllocNode = HashBasedTable.create();
 	private OnFlyCallGraph ofcg;
 	private final ArrayList<VarNode> dereferences = new ArrayList<VarNode>();
 	protected TypeManager typeManager;
-	private final LargeNumberedMap<Local, LocalVarNode> localToNodeMap = new LargeNumberedMap<Local, LocalVarNode>(
+	private final LargeNumberedMap<Local, LocalVarNode> localToNodeMap = new LargeNumberedMap<>(
 			Scene.v().getLocalNumberer());
-	private final Map<Value, NewInstanceNode> newInstToNodeMap = new HashMap<Value, NewInstanceNode>();
+	private final Map<Value, NewInstanceNode> newInstToNodeMap = new HashMap<>();
 	public int maxFinishNumber = 0;
 	private Map<Node, Tag> nodeToTag;
 	private final GlobalNodeFactory nodeFactory = new GlobalNodeFactory(this);

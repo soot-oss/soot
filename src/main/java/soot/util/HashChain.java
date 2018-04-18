@@ -325,12 +325,10 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 					insertAfter(toInsert, point_src);
 
 					E goto_unit = (E) new JGotoStmt((Unit) point_tgt);
-					if (toInsert instanceof List)
-					{
-						List l = ((List)toInsert);
+					if (toInsert instanceof List) {
+						List l = ((List) toInsert);
 						insertAfter(goto_unit, (E) l.get(l.size() - 1));
-					}
-					else
+					} else
 						insertAfter(goto_unit, (E) toInsert.toArray()[toInsert.size() - 1]);
 					return;
 				}
@@ -429,9 +427,8 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		 * 4th April 2005 Nomair A Naeem map.get(obj) can return null only
 		 * return true if this is non null else return false
 		 */
-		if (map.get(item) != null) {
-			Link<E> link = map.get(item);
-
+		Link<E> link = map.get(item);
+		if (link != null) {
 			link.unlinkSelf();
 			map.remove(item);
 			return true;

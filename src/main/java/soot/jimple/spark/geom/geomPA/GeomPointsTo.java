@@ -17,6 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.geom.geomPA;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -90,6 +92,7 @@ import soot.util.queue.QueueReader;
  */
 public class GeomPointsTo extends PAG 
 {
+    private static final Logger logger = LoggerFactory.getLogger(GeomPointsTo.class);
 	// Worklist, the core data structure for fixed point computation
 	// Other choice, FIFO_Worklist
 	protected IWorklist worklist = null;
@@ -276,10 +279,10 @@ public class GeomPointsTo extends PAG
 										"_log.txt" );
 			try {
 				ps = new PrintStream(log_file);
-				G.v().out.println( "[Geom] Analysis log can be found in: " + log_file.toString() );
+				logger.debug(""+ "[Geom] Analysis log can be found in: " + log_file.toString() );
 			} catch (FileNotFoundException e) {
 				String msg = "[Geom] The dump file: " + log_file.toString() + " cannot be created. Abort.";
-				G.v().out.println( msg );
+				logger.debug(""+ msg );
 				throw new RuntimeException(msg, e);
 			}
 		}
@@ -301,7 +304,7 @@ public class GeomPointsTo extends PAG
 				
 				fin.close();
 				fr.close();
-				G.v().out.println( "[Geom] Read in verification file successfully.\n" );
+				logger.debug(""+ "[Geom] Read in verification file successfully.\n" );
 			} catch (FileNotFoundException e) {
 				validMethods = null;
 			} catch (IOException e) {

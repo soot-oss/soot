@@ -19,11 +19,30 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.*;
-import soot.*;
-import soot.baf.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.PatchingChain;
+import soot.RefType;
+import soot.Trap;
+import soot.Unit;
+import soot.baf.Baf;
+import soot.baf.GotoInst;
+import soot.baf.JSRInst;
+import soot.baf.LookupSwitchInst;
+import soot.baf.PopInst;
+import soot.baf.TableSwitchInst;
+import soot.baf.TargetArgInst;
 import soot.jbco.IJbcoTransform;
-import soot.jbco.util.*;
+import soot.jbco.util.BodyBuilder;
+import soot.jbco.util.Rand;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael Batchelder
@@ -34,11 +53,13 @@ import soot.jbco.util.*;
  */
 public class AddJSRs extends BodyTransformer implements IJbcoTransform {
 
+  private static final Logger logger = LoggerFactory.getLogger(AddJSRs.class);
+
   int jsrcount = 0;
 
   public static String dependancies[] = new String[] { "jtp.jbco_jl", "bb.jbco_cb2ji", "bb.jbco_ful", "bb.lp" };
   
-  public String[] getDependancies() {
+  public String[] getDependencies() {
     return dependancies;
   }
   
@@ -49,7 +70,7 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
   }
 
   public void outputSummary() {
-    out.println("If/Gotos replaced with JSRs: " + jsrcount);
+    logger.info("{} If/Gotos replaced with JSRs.", jsrcount);
   }
 
   protected void internalTransform(Body b, String phaseName, Map<String,String> options) {

@@ -25,17 +25,30 @@
 
 
 package soot.jimple.toolkits.typing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import soot.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import soot.ArrayType;
+import soot.G;
+import soot.NullType;
+import soot.PrimType;
+import soot.RefType;
+import soot.SootClass;
+import soot.Type;
 import soot.options.Options;
-import soot.util.*;
-import java.util.*;
+import soot.util.BitVector;
 
 /**
  * Each instance of this class represents one type in the class hierarchy (or basic types).
  **/
 class TypeNode
 {
+    private static final Logger logger = LoggerFactory.getLogger(TypeNode.class);
   private static final boolean DEBUG = false;
 
   private final int id;
@@ -60,7 +73,7 @@ class TypeNode
     if(!((type instanceof PrimType) || (type instanceof RefType) || 
 	 (type instanceof ArrayType) || (type instanceof NullType)))
       {
-	G.v().out.println("Unhandled type: " + type);
+	logger.debug("Unhandled type: " + type);
 	throw new InternalTypingException();
       }
 
@@ -70,7 +83,7 @@ class TypeNode
 
     if(DEBUG)
       {
-	G.v().out.println("creating node " + this);
+	logger.debug("creating node " + this);
       }
   }
   
@@ -84,7 +97,8 @@ class TypeNode
       if(sClass.isPhantomClass()) throw new RuntimeException("Jimplification requires "+sClass+", but it is a phantom ref.");
       List<TypeNode> plist = new LinkedList<TypeNode>();
       
-      if(sClass.hasSuperclass() && 
+      SootClass superclass = sClass.getSuperclassUnsafe();
+      if(superclass != null &&  
 	 !sClass.getName().equals("java.lang.Object"))
 	{
 	  TypeNode parent = hierarchy.typeNode(RefType.v(sClass.getSuperclass().getName()));
@@ -147,7 +161,8 @@ class TypeNode
 	{
 	  RefType baseType = (RefType) type.baseType;
 	  SootClass sClass = baseType.getSootClass();
-	  if(sClass.hasSuperclass() && !sClass.getName().equals("java.lang.Object"))
+	  SootClass superClass = sClass.getSuperclassUnsafe();
+	  if(superClass != null && !superClass.getName().equals("java.lang.Object"))
 	    {
 	      TypeNode parent = hierarchy.typeNode(ArrayType.v(RefType.v(sClass.getSuperclass().getName()), type.numDimensions));
 	      plist.add(parent);
@@ -288,7 +303,8 @@ class TypeNode
     return parentClass;
   }
 
-  public String toString()
+  @Override
+public String toString()
   {
     return type.toString()+ "(" + id + ")";
   }
@@ -327,7 +343,7 @@ class TypeNode
 	      }
 	    catch(TypeException e)
 	      {
-                if(DEBUG) e.printStackTrace();
+                if(DEBUG) logger.error(e.getMessage(), e);
 		throw e;
 	      }
 	  }
@@ -365,16 +381,16 @@ class TypeNode
       {
 	if(type.parents.size() == 1)
 	  {
-	    type = (TypeNode) type.parents.get(0);
+	    type = type.parents.get(0);
 	  }
 	else
 	  {
 	    if(DEBUG)
 	      {
-		G.v().out.println("lca " + initial + " (" + type + ") & " + this + " =");
+		logger.debug("lca " + initial + " (" + type + ") & " + this + " =");
 		for(Iterator<TypeNode> i = type.parents.iterator(); i.hasNext(); )
 		  {
-		    G.v().out.println("  " + i.next());
+		    logger.debug("  " + i.next());
 		  }
 	      }
 	    return null;

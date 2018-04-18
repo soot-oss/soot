@@ -23,6 +23,8 @@
  */
 
 package soot.dexpler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
@@ -121,6 +123,7 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  * @author Frank Hartmann
  */
 public class DexBody {
+    private static final Logger logger = LoggerFactory.getLogger(DexBody.class);
 	private List<DexlibAbstractInstruction> instructions;
 	// keeps track about the jimple locals that are associated with the dex
 	// registers
@@ -210,7 +213,8 @@ public class DexBody {
 				ImmutableLineNumber ln = (ImmutableLineNumber) di;
 				DexlibAbstractInstruction ins = instructionAtAddress(ln.getCodeAddress());
 				if (ins == null) {
-					//Debug.printDbg("Line number tag pointing to invalid offset: " + ln.getCodeAddress());
+					// Debug.printDbg("Line number tag pointing to invalid
+					// offset: " + ln.getCodeAddress());
 					continue;
 				}
 				ins.setLineNumber(ln.getLineNumber());
@@ -361,12 +365,13 @@ public class DexBody {
 		final UnknownType unknownType = UnknownType.v();
 		final NullConstant nullConstant = NullConstant.v();
 		final Options options = Options.v();
-		
-		/*Timer t_whole_jimplification = new Timer();
-		Timer t_num = new Timer();
-		Timer t_null = new Timer();
 
-		t_whole_jimplification.start();*/
+		/*
+		 * Timer t_whole_jimplification = new Timer(); Timer t_num = new
+		 * Timer(); Timer t_null = new Timer();
+		 * 
+		 * t_whole_jimplification.start();
+		 */
 
 		jBody = (JimpleBody) b;
 		deferredInstructions = new ArrayList<DeferableInstruction>();
@@ -375,7 +380,6 @@ public class DexBody {
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			DalvikTyper.v().clear();
 		}
-
 
 		// process method parameters and generate Jimple locals from Dalvik
 		// registers
@@ -405,28 +409,27 @@ public class DexBody {
 			for (Type t : parameterTypes) {
 
 				Local gen = jimple.newLocal("$u" + parameterRegister, unknownType); // may
-																							// only
-																							// use
-																							// UnknownType
-																							// here
-																							// because
-																							// the
-																							// local
-																							// may
-																							// be
-																							// reused
-																							// with
-																							// a
-																							// different
-																							// type
-																							// later
-																							// (before
-																							// splitting)
+																					// only
+																					// use
+																					// UnknownType
+																					// here
+																					// because
+																					// the
+																					// local
+																					// may
+																					// be
+																					// reused
+																					// with
+																					// a
+																					// different
+																					// type
+																					// later
+																					// (before
+																					// splitting)
 				jBody.getLocals().add(gen);
 
 				registerLocals[parameterRegister] = gen;
-				JIdentityStmt idStmt = (JIdentityStmt) jimple.newIdentityStmt(gen,
-						jimple.newParameterRef(t, i++));
+				JIdentityStmt idStmt = (JIdentityStmt) jimple.newIdentityStmt(gen, jimple.newParameterRef(t, i++));
 				add(idStmt);
 				paramLocals.add(gen);
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
@@ -442,23 +445,23 @@ public class DexBody {
 				if (t instanceof LongType || t instanceof DoubleType) {
 					parameterRegister++;
 					Local g = jimple.newLocal("$u" + parameterRegister, unknownType); // may
-																								// only
-																								// use
-																								// UnknownType
-																								// here
-																								// because
-																								// the
-																								// local
-																								// may
-																								// be
-																								// reused
-																								// with
-																								// a
-																								// different
-																								// type
-																								// later
-																								// (before
-																								// splitting)
+																						// only
+																						// use
+																						// UnknownType
+																						// here
+																						// because
+																						// the
+																						// local
+																						// may
+																						// be
+																						// reused
+																						// with
+																						// a
+																						// different
+																						// type
+																						// later
+																						// (before
+																						// splitting)
 					jBody.getLocals().add(g);
 					registerLocals[parameterRegister] = g;
 				}
@@ -512,7 +515,7 @@ public class DexBody {
 		for (DeferableInstruction instruction : deferredInstructions) {
 			instruction.deferredJimplify(this);
 		}
-		
+
 		if (tries != null)
 			addTraps();
 
@@ -522,8 +525,7 @@ public class DexBody {
 			Unit unit = instruction.getUnit();
 			int lineNumber = unit.getJavaSourceStartLineNumber();
 			if (keepLineNumber && lineNumber < 0) {
-				if(prevLn>=0)
-				{
+				if (prevLn >= 0) {
 					unit.addTag(new LineNumberTag(prevLn));
 					unit.addTag(new SourceLineNumberTag(prevLn));
 				}
@@ -531,7 +533,7 @@ public class DexBody {
 				prevLn = lineNumber;
 			}
 		}
-		
+
 		// At this point Jimple code is generated
 		// Cleaning...
 
@@ -579,7 +581,6 @@ public class DexBody {
 		DeadAssignmentEliminator.v().transform(jBody);
 		UnusedLocalEliminator.v().transform(jBody);
 
-
 		for (RetypeableInstruction i : instructionsToRetype)
 			i.retype(jBody);
 
@@ -616,18 +617,18 @@ public class DexBody {
 			// jBody.checkLocals();
 
 		} else {
-			//t_num.start();
+			// t_num.start();
 			DexNumTransformer.v().transform(jBody);
-			//t_num.end();
+			// t_num.end();
 
 			DexReturnValuePropagator.v().transform(jBody);
 			getCopyPopagator().transform(jBody);
 
 			DexNullThrowTransformer.v().transform(jBody);
 
-			//t_null.start();
+			// t_null.start();
 			DexNullTransformer.v().transform(jBody);
-			//t_null.end();
+			// t_null.end();
 
 			DexIfTransformer.v().transform(jBody);
 
@@ -820,7 +821,6 @@ public class DexBody {
 			}
 		}
 
-
 		// Replace local type null_type by java.lang.Object.
 		//
 		// The typing engine cannot find correct type for such code:
@@ -837,7 +837,7 @@ public class DexBody {
 			}
 		}
 
-		//t_whole_jimplification.end();
+		// t_whole_jimplification.end();
 
 		return jBody;
 	}
@@ -951,8 +951,9 @@ public class DexBody {
 					SootClass exception = ((RefType) t).getSootClass();
 					DexlibAbstractInstruction instruction = instructionAtAddress(handler.getHandlerCodeAddress());
 					if (!(instruction instanceof MoveExceptionInstruction))
-						G.v().out.println(String.format("First instruction of trap handler unit not MoveException but %s",
-								instruction.getClass().getName()));
+						logger.debug(""+
+								String.format("First instruction of trap handler unit not MoveException but %s",
+										instruction.getClass().getName()));
 					else
 						((MoveExceptionInstruction) instruction).setRealType(this, exception.getType());
 

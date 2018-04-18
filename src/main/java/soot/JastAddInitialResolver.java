@@ -18,6 +18,8 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,6 +42,7 @@ import soot.JastAddJ.TypeDecl;
  * @author Eric Bodden
  */
 public class JastAddInitialResolver implements IInitialResolver {
+    private static final Logger logger = LoggerFactory.getLogger(JastAddInitialResolver.class);
 
     public JastAddInitialResolver(soot.Singletons.Global g){}
 
@@ -58,7 +61,7 @@ public class JastAddInitialResolver implements IInitialResolver {
 	          u.errorCheck(errors);
 	          if(!errors.isEmpty()) {
 	        	  for(soot.JastAddJ.Problem p : errors)
-	        		  G.v().out.println(p);
+	        		  logger.debug(""+p);
 	        	  //die
 	        	  throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED,
 	        			  "there were errors during parsing and/or type checking (JastAdd frontend)");

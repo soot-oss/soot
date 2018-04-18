@@ -35,6 +35,9 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.JastAddJ.BytecodeParser;
 import soot.JastAddJ.CompilationUnit;
 import soot.JastAddJ.JastAddJavaParser;
@@ -49,8 +52,8 @@ import soot.util.MultiMap;
  * Loads symbols for SootClasses from either class files or jimple files.
  */
 public class SootResolver {
-    /**
-     * Maps each resolved class to a list of all references in it.
+	private static final Logger logger = LoggerFactory.getLogger(SootResolver.class);
+     /* Maps each resolved class to a list of all references in it.
      */
     protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<SootClass, Type>();
 
@@ -117,8 +120,8 @@ public class SootResolver {
     }
 
     /**
-     * Returns a (possibly not yet resolved) SootClass to be used in references
-     * to a class. If/when the class is resolved, it will be resolved into this
+	 * Returns a (possibly not yet resolved) SootClass to be used in references to a
+	 * class. If/when the class is resolved, it will be resolved into this
      * SootClass.
      */
     public SootClass makeClassRef(String className) {
@@ -139,9 +142,9 @@ public class SootResolver {
     }
 
     /**
-     * Resolves the given class. Depending on the resolver settings, may decide
-     * to resolve other classes as well. If the class has already been resolved,
-     * just returns the class that was already resolved.
+	 * Resolves the given class. Depending on the resolver settings, may decide to
+	 * resolve other classes as well. If the class has already been resolved, just
+	 * returns the class that was already resolved.
      */
     public SootClass resolveClass(String className, int desiredLevel) {
         SootClass resolvedClass = null;
@@ -222,7 +225,7 @@ public class SootResolver {
         if (sc.resolvingLevel() >= SootClass.HIERARCHY)
             return;
         if (Options.v().debug_resolver())
-            G.v().out.println("bringing to HIERARCHY: " + sc);
+			logger.debug("bringing to HIERARCHY: " + sc);
         sc.setResolvingLevel(SootClass.HIERARCHY);
 
         bringToHierarchyUnchecked(sc);
@@ -253,7 +256,7 @@ public class SootResolver {
                     throw new SootClassNotFoundException(
                             "couldn't find class: " + className + " (is your soot-class-path set properly?)" + suffix);
                 } else {
-                    // G.v().out.println("Warning: " + className + " is a
+					// logger.warn("" + className + " is a
                     // phantom class!");
                     sc.setPhantomClass();
                 }
@@ -273,10 +276,12 @@ public class SootResolver {
 
     public void reResolveHierarchy(SootClass sc) {
         // Bring superclasses to hierarchy
-        if (sc.hasSuperclass())
-            addToResolveWorklist(sc.getSuperclass(), SootClass.HIERARCHY);
-        if (sc.hasOuterClass())
-            addToResolveWorklist(sc.getOuterClass(), SootClass.HIERARCHY);
+		SootClass superClass = sc.getSuperclassUnsafe();
+		if (superClass != null)
+			addToResolveWorklist(superClass, SootClass.HIERARCHY);
+		SootClass outerClass = sc.getOuterClassUnsafe();
+		if (outerClass != null)
+			addToResolveWorklist(outerClass, SootClass.HIERARCHY);
         for (SootClass iface : sc.getInterfaces()) {
             addToResolveWorklist(iface, SootClass.HIERARCHY);
         }
@@ -291,7 +296,7 @@ public class SootResolver {
             return;
         bringToHierarchy(sc);
         if (Options.v().debug_resolver())
-            G.v().out.println("bringing to SIGNATURES: " + sc);
+			logger.debug("bringing to SIGNATURES: " + sc);
         sc.setResolvingLevel(SootClass.SIGNATURES);
 
         bringToSignaturesUnchecked(sc);
@@ -315,28 +320,23 @@ public class SootResolver {
         }
 
         // Bring superclasses to signatures
-        if (sc.hasSuperclass())
-            addToResolveWorklist(sc.getSuperclass(), SootClass.SIGNATURES);
-        for (SootClass iface : sc.getInterfaces()) {
-            addToResolveWorklist(iface, SootClass.SIGNATURES);
-        }
+		reResolveHierarchy(sc);
     }
 
     /**
-     * Bodies - we can now start loading the bodies of methods for all referred
-     * to methods and fields in the bodies, requires signatures for the method
-     * receiver and field container, and hierarchy for all other classes
-     * referenced in method references. Current implementation does not
-     * distinguish between the receiver and other references. Therefore, it is
-     * conservative and brings all of them to signatures. But this could/should
-     * be improved.
+	 * Bodies - we can now start loading the bodies of methods for all referred to
+	 * methods and fields in the bodies, requires signatures for the method receiver
+	 * and field container, and hierarchy for all other classes referenced in method
+	 * references. Current implementation does not distinguish between the receiver
+	 * and other references. Therefore, it is conservative and brings all of them to
+	 * signatures. But this could/should be improved.
      */
     protected void bringToBodies(SootClass sc) {
         if (sc.resolvingLevel() >= SootClass.BODIES)
             return;
         bringToSignatures(sc);
         if (Options.v().debug_resolver())
-            G.v().out.println("bringing to BODIES: " + sc);
+			logger.debug("bringing to BODIES: " + sc);
         sc.setResolvingLevel(SootClass.BODIES);
 
         bringToBodiesUnchecked(sc);
@@ -390,7 +390,7 @@ public class SootResolver {
         return program;
     }
 
-    protected class SootClassNotFoundException extends RuntimeException {
+	public class SootClassNotFoundException extends RuntimeException {
         /**
          *
          */

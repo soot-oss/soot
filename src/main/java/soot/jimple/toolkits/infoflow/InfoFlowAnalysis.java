@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.infoflow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -21,6 +23,7 @@ import soot.jimple.*;
 
 public class InfoFlowAnalysis
 {
+    private static final Logger logger = LoggerFactory.getLogger(InfoFlowAnalysis.class);
 	boolean includePrimitiveInfoFlow;
 	boolean includeInnerFields;
 	boolean printDebug;
@@ -241,13 +244,13 @@ public class InfoFlowAnalysis
 	public static void printInfoFlowSummary(DirectedGraph<EquivalentValue> g)
 	{
 		if(g.size() > 0)
-			G.v().out.println("    " + " --> ");
+			logger.debug("    " + " --> ");
 		for (EquivalentValue node : g)
 		{
 			List<EquivalentValue> sources = g.getPredsOf(node);
 			if(sources.isEmpty())
 				continue;
-			G.v().out.print("    [ ");
+			logger.debug("    [ ");
 			int sourcesnamelength = 0;
 			int lastnamelength = 0;
 			int idx = 0;
@@ -261,7 +264,7 @@ public class InfoFlowAnalysis
 					lastnamelength = name.length();
 					if(lastnamelength > sourcesnamelength)
 						sourcesnamelength = lastnamelength;
-					G.v().out.print(name);
+					logger.debug(""+name);
 				}
 				else if(v instanceof ParameterRef)
 				{
@@ -269,7 +272,7 @@ public class InfoFlowAnalysis
 					lastnamelength = 11;
 					if(lastnamelength > sourcesnamelength)
 						sourcesnamelength = lastnamelength;
-					G.v().out.print("@parameter" + pr.getIndex());
+					logger.debug("@parameter" + pr.getIndex());
 				}
 				else
 				{
@@ -277,14 +280,14 @@ public class InfoFlowAnalysis
 					lastnamelength = name.length();
 					if(lastnamelength > sourcesnamelength)
 						sourcesnamelength = lastnamelength;
-					G.v().out.print(name);
+					logger.debug(""+name);
 				}
 				if((idx++) < sources.size())
-					G.v().out.print("\n      ");
+					logger.debug("\n      ");
 			}
 			for(int i = 0; i < sourcesnamelength - lastnamelength; i++)
-				G.v().out.print(" ");
-			G.v().out.println(" ] --> " + node.toString());
+				logger.debug(" ");
+			logger.debug(" ] --> " + node.toString());
 		}
 	}
 		

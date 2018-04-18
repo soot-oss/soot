@@ -7524,7 +7524,7 @@ public class Parser
         {
             DataInputStream s = new DataInputStream(
                 new BufferedInputStream(
-                Parser.class.getResourceAsStream("parser.dat")));
+                Parser.class.getResourceAsStream("/parser.dat")));
 
             // read actionTable
             int length = s.readInt();

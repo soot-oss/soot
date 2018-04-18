@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.toolkits.reflection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +41,7 @@ import soot.rtlib.tamiflex.UnexpectedReflectiveCall;
 
 
 public class ReflInliner {
+    private static final Logger logger = LoggerFactory.getLogger(ReflInliner.class);
 	
 	public static void main(String[] args) {
 		PackManager.v().getPack("wjpp").add(new Transform("wjpp.inlineReflCalls", new ReflectiveCallsInliner()));		
@@ -58,25 +61,25 @@ public class ReflInliner {
 		
 		Options.v().set_keep_line_number(true);
 		
-		G.v().out.println("TamiFlex Booster Version "+ReflInliner.class.getPackage().getImplementationVersion());
+		logger.debug("TamiFlex Booster Version "+ReflInliner.class.getPackage().getImplementationVersion());
 		try {
 			soot.Main.main(argList.toArray(new String[0]));
 		} catch(CompilationDeathException e) {
-			G.v().out.println("\nERROR: "+e.getMessage()+"\n");
-			G.v().out.println("The command-line options are described at:\n" +
+			logger.debug("\nERROR: "+e.getMessage()+"\n");
+			logger.debug("The command-line options are described at:\n" +
 					"http://www.sable.mcgill.ca/soot/tutorial/usage/index.html");
 			if(Options.v().verbose()) {
 				throw e;
 			} else {
-				G.v().out.println("Use -verbose to see stack trace.");
+				logger.debug("Use -verbose to see stack trace.");
 			}
-			G.v().out.println();
+			
 			usage();
 		}
 	}
 
 	private static void usage() {
-		G.v().out.println(Options.v().getUsage());
+		logger.debug(""+Options.v().getUsage());
 	}
 
 }

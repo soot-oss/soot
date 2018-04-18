@@ -18,6 +18,8 @@
  */
 
 package soot.util.cfgcmd;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -44,6 +46,7 @@ import soot.util.dot.DotGraph;
  * CFGs.
  */
 public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
+    private static final Logger logger = LoggerFactory.getLogger(CFGGraphType.class);
 
   private static final boolean DEBUG = true;  
 
@@ -243,7 +246,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
     // don't need to declare them:  perhaps a shoddy tactic.
     catch (ClassNotFoundException e) {
       if (DEBUG) {
-	e.printStackTrace(G.v().out);
+	logger.error(e.getMessage(), e);
       }
       throw new IllegalArgumentException("Unable to find " + className + 
 				 " in alternate classpath: " +
@@ -251,7 +254,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
     }
     catch (NoSuchMethodException e) {
       if (DEBUG) {
-	e.printStackTrace(G.v().out);
+	logger.error(e.getMessage(), e);
       }
       throw new IllegalArgumentException("There is no " + className + 
 					 "(Body) constructor: " + 
@@ -259,7 +262,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
     }
     catch (InstantiationException e) {
       if (DEBUG) {
-	e.printStackTrace(G.v().out);
+	logger.error(e.getMessage(), e);
       }
       throw new IllegalArgumentException("Unable to instantiate " + className +
 					 " in alternate classpath: " +
@@ -267,7 +270,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
     }
     catch (IllegalAccessException e) {
       if (DEBUG) {
-	e.printStackTrace(G.v().out);
+	logger.error(e.getMessage(), e);
       }
       throw new IllegalArgumentException("Unable to access " + className +
 					 "(Body) in alternate classpath: " +
@@ -275,7 +278,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
     }
     catch (InvocationTargetException e) {
       if (DEBUG) {
-	e.printStackTrace(G.v().out);
+	logger.error(e.getMessage(), e);
       }
       throw new IllegalArgumentException("Unable to invoke " + className +
 					 "(Body) in alternate classpath: " +

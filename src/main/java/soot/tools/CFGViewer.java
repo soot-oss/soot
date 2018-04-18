@@ -24,6 +24,8 @@
  */
 
 package soot.tools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +55,7 @@ import soot.util.dot.DotGraph;
  * @author Feng Qian
  */
 public class CFGViewer extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(CFGViewer.class);
 
 	private static final String packToJoin = "jtp";
 	private static final String phaseSubname = "printcfg";
@@ -103,7 +106,7 @@ public class CFGViewer extends BodyTransformer {
 	}
 
 	private static void usage() {
-		G.v().out.println("Usage:\n"
+		logger.debug("Usage:\n"
 				+ "   java soot.util.CFGViewer [soot options] [CFGViewer options] [class[:method]]...\n\n"
 				+ "   CFGViewer options:\n" + "      (When specifying the value for an '=' option, you only\n"
 				+ "       need to type enough characters to specify the choice\n"
@@ -242,7 +245,7 @@ public class CFGViewer extends BodyTransformer {
 		}
 		filename = filename + classname + " " + methodname.replace(java.io.File.separatorChar, '.') + DotGraph.DOT_EXTENSION;
 
-		G.v().out.println("Generate dot file in " + filename);
+		logger.debug("Generate dot file in " + filename);
 		canvas.plot(filename);
 	}
 }

@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.solver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.FastHierarchy;
 import soot.G;
@@ -40,6 +42,7 @@ import soot.util.MultiMap;
  */
 
 public class MergeChecker {
+    private static final Logger logger = LoggerFactory.getLogger(MergeChecker.class);
 	public MergeChecker(PAG pag) {
 		this.pag = pag;
 	}
@@ -73,7 +76,7 @@ public class MergeChecker {
 						continue;
 					FieldRefNode fr2 = dst.dot(fr.getField());
 					if (fr2.getReplacement() != fr.getReplacement()) {
-						G.v().out.println("Check failure: " + fr + " should be merged with " + fr2);
+						logger.debug("Check failure: " + fr + " should be merged with " + fr2);
 					}
 				}
 			}
@@ -101,7 +104,7 @@ public class MergeChecker {
 		FastHierarchy fh = pag.getTypeManager().getFastHierarchy();
 		if (!p2set.contains(n)
 				&& (fh == null || container.getType() == null || fh.canStoreType(n.getType(), container.getType()))) {
-			G.v().out.println("Check failure: " + container + " does not have " + n + "; upstream is " + upstream);
+			logger.debug("Check failure: " + container + " does not have " + n + "; upstream is " + upstream);
 		}
 	}
 

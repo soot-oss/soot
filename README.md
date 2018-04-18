@@ -82,6 +82,10 @@ Development happens in the develop branch. To catch the bleeding edge of Soot, c
 In case of any questions, please consult the Soot
 mailing list at: http://www.sable.mcgill.ca/mailman/listinfo/soot-list/
 
+# How do I contribute to Soot?
+
+We are happy to accept arbitrary improvements to Soot in form of GitHub pull requests. Please read our [contribution guidelines](https://github.com/Sable/soot/wiki/Contributing-to-Soot) before setting up a pull request.
+
 # What extensions exist to Soot?
 
 We maintain a [list of extensions that can be used in combination with Soot](https://github.com/Sable/soot/wiki/Extensions-to-Soot). Feel free to add your own!

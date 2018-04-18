@@ -298,14 +298,26 @@ public class FastColorer {
 						//		catch -> print(a)
 						// If an exception is thrown, at the second assignment, the
 						// assignment will not actually happen and "a" will be unchanged.
+						
+						// SA, 2018-02-02: The above is only correct if there is
+						// nothing else in the trap. Take this example:
+						// 			a = 42
+						// 			b = foo()
+						//			throw new VeryBadException()
+						//		catch -> print(a)
+						// In that case, the value of "b" **will** be changed before
+						// we reach the handler (assuming that foo() does not already
+						// throw the exception). We may want to have a more complex
+						// reasoning here some day, but I'll leave it as is for now.
+						
 						Set<Local> liveLocalsAtUnit = new HashSet<Local>();
-						for (Unit succ : unitGraph.getUnexceptionalSuccsOf(unit)) {
+						for (Unit succ : unitGraph.getSuccsOf(unit)) {
 							List<Local> beforeSucc = liveLocals.getLiveLocalsBefore(succ);
 							liveLocalsAtUnit.addAll(beforeSucc);
 						}
 						
 
-						Value defValue = ((ValueBox) defBoxes.get(0)).getValue();
+						Value defValue = defBoxes.get(0).getValue();
 						if (defValue instanceof Local) {
 							Local defLocal = (Local) defValue;
 							for (Local otherLocal : liveLocalsAtUnit) {
@@ -362,6 +374,7 @@ class StringGroupPair {
 		group = g;
 	}
 
+	@Override
 	public boolean equals(Object p) {
 		if (p instanceof StringGroupPair) {
 			return ((StringGroupPair) p).string.equals(this.string)
@@ -371,6 +384,7 @@ class StringGroupPair {
 		return false;
 	}
 
+	@Override
 	public int hashCode() {
 		return string.hashCode() * 101 + group.hashCode() + 17;
 	}

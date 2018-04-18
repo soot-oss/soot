@@ -18,115 +18,130 @@
  */
 
 package soot.jimple.toolkits.pointer;
-import java.util.*;
-import soot.*;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import soot.G;
+import soot.PointsToSet;
+import soot.SootField;
 
 /** Represents the read or write set of a statement. */
 public class SiteRWSet extends RWSet {
-    public HashSet<RWSet> sets = new HashSet<RWSet>();
-    protected boolean callsNative = false;
+	public HashSet<RWSet> sets = new HashSet<RWSet>();
+	protected boolean callsNative = false;
 
-   	public int size()
-	{
+	public int size() {
 		Set globals = getGlobals();
 		Set fields = getFields();
-		if(globals == null)
-		{
-			if(fields == null)
+		if (globals == null) {
+			if (fields == null)
 				return 0;
 			else
 				return fields.size();
-		}
-		else
-		{
-			if(fields == null)
+		} else {
+			if (fields == null)
 				return globals.size();
 			else
 				return globals.size() + fields.size();
 		}
 	}
 
-public String toString() {
-        boolean empty = true;
-        final StringBuffer ret = new StringBuffer();
-        ret.append("SiteRWSet: ");
-        for( Iterator<RWSet> keyIt = sets.iterator(); keyIt.hasNext(); ) {
-            final Object key = keyIt.next();
-            ret.append( key.toString() );
-            empty = false;
-        }
-        if(empty) ret.append("empty");
-        return ret.toString();
-    }
-
-    public boolean getCallsNative() {
-	return callsNative;
-    }
-
-    public boolean setCallsNative() {
-	boolean ret = !callsNative;
-	callsNative = true;
-	return ret;
-    }
-
-    /** Returns an iterator over any globals read/written. */
-    public Set getGlobals() {
-	HashSet ret = new HashSet();
-	for (RWSet s : sets) {
-	    ret.addAll( s.getGlobals() );
+	public String toString() {
+		boolean empty = true;
+		final StringBuffer ret = new StringBuffer();
+		ret.append("SiteRWSet: ");
+		for (Iterator<RWSet> keyIt = sets.iterator(); keyIt.hasNext();) {
+			final Object key = keyIt.next();
+			ret.append(key.toString());
+			empty = false;
+		}
+		if (empty)
+			ret.append("empty");
+		return ret.toString();
 	}
-	return ret;
-    }
 
-    /** Returns an iterator over any fields read/written. */
-    public Set getFields() {
-	HashSet ret = new HashSet();
-	for (RWSet s : sets) {
-	    ret.addAll( s.getFields() );
+	public boolean getCallsNative() {
+		return callsNative;
 	}
-	return ret;
-    }
 
-    /** Returns a set of base objects whose field f is read/written. */
-    public PointsToSet getBaseForField( Object f ) {
-	Union ret = null;
-	for (RWSet s : sets) {
-	    PointsToSet os = s.getBaseForField( f );
-	    if( os == null ) continue;
-	    if( os.isEmpty() ) continue;
-	    if( ret == null ) ret = G.v().Union_factory.newUnion();
-	    ret.addAll( os );
+	public boolean setCallsNative() {
+		boolean ret = !callsNative;
+		callsNative = true;
+		return ret;
 	}
-	return ret;
-    }
 
-    public boolean hasNonEmptyIntersection( RWSet oth ) {
-	if( sets.contains( oth ) ) return true;
-	for (RWSet s : sets) {
-	    if( oth.hasNonEmptyIntersection( s ) ) return true;
+	/** Returns an iterator over any globals read/written. */
+	public Set getGlobals() {
+		HashSet ret = new HashSet();
+		for (RWSet s : sets) {
+			ret.addAll(s.getGlobals());
+		}
+		return ret;
 	}
-	return false;
-    }
 
-    /** Adds the RWSet other into this set. */
-    public boolean union( RWSet other ) {
-	if( other == null ) return false;
-	boolean ret = false;
-	if( other.getCallsNative() ) ret = setCallsNative();
-	if( other.getFields().isEmpty() && other.getGlobals().isEmpty() ) return ret;
-	return sets.add( other ) | ret;
-    }
+	/** Returns an iterator over any fields read/written. */
+	public Set getFields() {
+		HashSet ret = new HashSet();
+		for (RWSet s : sets) {
+			ret.addAll(s.getFields());
+		}
+		return ret;
+	}
 
-    public boolean addGlobal( SootField global ) {
-	throw new RuntimeException( "Not implemented; try MethodRWSet" );
-    }
-    public boolean addFieldRef( PointsToSet otherBase, Object field ) {
-	throw new RuntimeException( "Not implemented; try MethodRWSet" );
-    }
-    public boolean isEquivTo( RWSet other ) {
-	if( !( other instanceof SiteRWSet ) ) return false;
-	SiteRWSet o = (SiteRWSet) other;
-	if( o.callsNative != callsNative ) return false;
-	return o.sets.equals( sets );
-    }
+	/** Returns a set of base objects whose field f is read/written. */
+	public PointsToSet getBaseForField(Object f) {
+		Union ret = null;
+		for (RWSet s : sets) {
+			PointsToSet os = s.getBaseForField(f);
+			if (os == null)
+				continue;
+			if (os.isEmpty())
+				continue;
+			if (ret == null)
+				ret = G.v().Union_factory.newUnion();
+			ret.addAll(os);
+		}
+		return ret;
+	}
+
+	public boolean hasNonEmptyIntersection(RWSet oth) {
+		if (sets.contains(oth))
+			return true;
+		for (RWSet s : sets) {
+			if (oth.hasNonEmptyIntersection(s))
+				return true;
+		}
+		return false;
+	}
+
+	/** Adds the RWSet other into this set. */
+	public boolean union(RWSet other) {
+		if (other == null)
+			return false;
+		boolean ret = false;
+		if (other.getCallsNative())
+			ret = setCallsNative();
+		if (other.getFields().isEmpty() && other.getGlobals().isEmpty())
+			return ret;
+		return sets.add(other) | ret;
+	}
+
+	public boolean addGlobal(SootField global) {
+		throw new RuntimeException("Not implemented; try MethodRWSet");
+	}
+
+	public boolean addFieldRef(PointsToSet otherBase, Object field) {
+		throw new RuntimeException("Not implemented; try MethodRWSet");
+	}
+
+	public boolean isEquivTo(RWSet other) {
+		if (!(other instanceof SiteRWSet))
+			return false;
+		SiteRWSet o = (SiteRWSet) other;
+		if (o.callsNative != callsNative)
+			return false;
+		return o.sets.equals(sets);
+	}
 }

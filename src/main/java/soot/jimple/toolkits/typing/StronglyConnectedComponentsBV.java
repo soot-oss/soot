@@ -25,6 +25,8 @@
 
 
 package soot.jimple.toolkits.typing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.util.*;
@@ -36,6 +38,7 @@ import java.util.*;
 @Deprecated
 class StronglyConnectedComponentsBV
 {
+    private static final Logger logger = LoggerFactory.getLogger(StronglyConnectedComponentsBV.class);
   BitVector variables;
   Set<TypeVariableBV> black;
   LinkedList<TypeVariableBV> finished;
@@ -111,7 +114,7 @@ class StronglyConnectedComponentsBV
 		  {
 		    if(DEBUG)
 		      {
-			G.v().out.println(s);
+			logger.debug(""+s);
 		      }
 		    throw e;
 		  }

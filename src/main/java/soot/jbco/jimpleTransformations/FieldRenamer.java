@@ -18,12 +18,8 @@
  */
 
 package soot.jbco.jimpleTransformations;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Vector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Body;
 import soot.BooleanType;
@@ -51,356 +47,386 @@ import soot.jimple.FieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Collections.emptyList;
+
 /**
  * @author Michael Batchelder
- *
- *         Created on 26-Jan-2006
+ * <p>
+ * Created on 26-Jan-2006
  */
 public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
+    private static final Logger logger = LoggerFactory.getLogger(FieldRenamer.class);
 
-	public void outputSummary() {
-	}
+    public void outputSummary() {
+    }
 
-	public static String dependancies[] = new String[] { "wjtp.jbco_fr" };
+    public static String dependancies[] = new String[]{"wjtp.jbco_fr"};
 
-	public String[] getDependancies() {
-		return dependancies;
-	}
+    public String[] getDependencies() {
+        return dependancies;
+    }
 
-	public static String name = "wjtp.jbco_fr";
+    public static String name = "wjtp.jbco_fr";
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	private static final char stringChars[][] = { { 'S', '5', '$' }, { 'l', '1', 'I' }, { '_' } };
+    private static final char stringChars[][] = {{'S', '5', '$'}, {'l', '1', 'I'}, {'_'}};
 
-	public static Vector<String> namesToNotRename = new Vector<String>();
-	public static Hashtable<String, String> oldToNewFieldNames = new Hashtable<String, String>();
-	public static Hashtable<SootClass, SootField> opaquePreds1ByClass = new Hashtable<SootClass, SootField>();
-	public static Hashtable<SootClass, SootField> opaquePreds2ByClass = new Hashtable<SootClass, SootField>();
-	public static ArrayList<SootField> sootFieldsRenamed = new ArrayList<SootField>();
-	public static SootField opaquePairs[][] = null;
-	public static int handedOutPairs[] = null;
-	public static int handedOutRunPairs[] = null;
-	public static boolean rename_fields = false;
+    private static final String booleanClassName = Boolean.class.getName();
 
-	RefType boolRef;
+    public static List<String> namesToNotRename = new ArrayList<>();
+    public static Map<String, String> oldToNewFieldNames = new HashMap<>();
+    public static Map<SootClass, SootField> opaquePreds1ByClass = new HashMap<>();
+    public static Map<SootClass, SootField> opaquePreds2ByClass = new HashMap<>();
+    public static List<SootField> sootFieldsRenamed = new ArrayList<>();
+    public static SootField opaquePairs[][] = null;
+    public static int handedOutPairs[] = null;
+    public static int handedOutRunPairs[] = null;
+    public static boolean rename_fields = false;
 
-	protected void internalTransform(String phaseName, Map<String, String> options) {
-		Scene scene = G.v().soot_Scene();
-		// Hierarchy hierarchy = scene.getActiveHierarchy();
-		boolRef = scene.getRefType("java.lang.Boolean");
+    protected void internalTransform(String phaseName, Map<String, String> options) {
+        if (output) {
+            if (rename_fields) {
+                out.println("Transforming Field Names and Adding Opaque Predicates...");
+            } else {
+                out.println("Adding Opaques...");
+            }
+        }
 
-		if (output) {
-			if (rename_fields)
-				out.println("Transforming Field Names and Adding Opaque Predicates...");
-			else
-				out.println("Adding Opaques...");
-		}
+        RefType boolRef = Scene.v().getRefType(booleanClassName);
 
-		soot.jbco.util.BodyBuilder.retrieveAllBodies();
-		soot.jbco.util.BodyBuilder.retrieveAllNames();
+        BodyBuilder.retrieveAllBodies();
+        BodyBuilder.retrieveAllNames();
 
-		for (SootClass c : scene.getApplicationClasses()) {
-			String cName = c.getName();
-			if (cName.indexOf(".") >= 0)
-				cName = cName.substring(cName.lastIndexOf(".") + 1, cName.length());
-			oldToNewFieldNames.put(cName, cName);
+        for (SootClass sc : Scene.v().getApplicationClasses()) {
+            String className = sc.getName();
+            if (className.contains(".")) {
+                className = className.substring(className.lastIndexOf(".") + 1, className.length());
+            }
+            oldToNewFieldNames.put(className, className);
 
-			if (rename_fields) {
-				if (output)
-					out.println("\tClassName: " + cName);
-				// rename all the fields in the class
-				for (SootField f : c.getFields()) {
-					int weight = soot.jbco.Main.getWeight(phaseName, f.getName());
-					if (weight > 0)
-						renameField(cName, f);
-				}
-			}
+            if (rename_fields) {
+                if (output) {
+                    out.println("\tClassName: " + className);
+                }
+                // rename all the fields in the class
+                for (SootField f : sc.getFields()) {
+                    int weight = soot.jbco.Main.getWeight(phaseName, f.getName());
+                    if (weight > 0) {
+                        renameField(className, f);
+                    }
+                }
+            }
 
-			// skip interfaces - they can only hold final fields
-			if (c.isInterface())
-				continue;
+            // skip interfaces - they can only hold final fields
+            if (sc.isInterface()) {
+                continue;
+            }
 
-			// add one opaq predicate for true and one for false to each class
-			String bool = "opPred1";
-			Type t = Rand.getInt() % 2 == 0 ? (Type) BooleanType.v() : (Type) boolRef;
-			while (oldToNewFieldNames.containsKey(bool))
-				bool += "_";
-			SootField f = Scene.v().makeSootField(bool, t, Modifier.PUBLIC | Modifier.STATIC);
-			renameField(cName, f);
-			opaquePreds1ByClass.put(c, f);
-			c.addField(f);
+            // add one opaq predicate for true and one for false to each class
+            String bool = "opPred1";
+            Type t = Rand.getInt() % 2 == 0 ? BooleanType.v() : boolRef;
+            while (oldToNewFieldNames.containsKey(bool)) {
+                bool += "_";
+            }
+            SootField f = Scene.v().makeSootField(bool, t, Modifier.PUBLIC | Modifier.STATIC);
+            renameField(className, f);
+            opaquePreds1ByClass.put(sc, f);
+            sc.addField(f);
 
-			setBooleanTo(c, f, true);
+            setBooleanTo(sc, f, true);
 
-			bool = "opPred2";
-			t = t == BooleanType.v() ? (Type) boolRef : (Type) BooleanType.v();
-			while (oldToNewFieldNames.containsKey(bool))
-				bool += "_";
-			f = Scene.v().makeSootField(bool, t, Modifier.PUBLIC | Modifier.STATIC);
-			renameField(cName, f);
-			opaquePreds2ByClass.put(c, f);
-			c.addField(f);
+            bool = "opPred2";
+            t = t == BooleanType.v() ? boolRef : BooleanType.v();
+            while (oldToNewFieldNames.containsKey(bool)) {
+                bool += "_";
+            }
+            f = Scene.v().makeSootField(bool, t, Modifier.PUBLIC | Modifier.STATIC);
+            renameField(className, f);
+            opaquePreds2ByClass.put(sc, f);
+            sc.addField(f);
 
-			if (t == boolRef)
-				setBooleanTo(c, f, false);
-		}
+            if (t == boolRef) {
+                setBooleanTo(sc, f, false);
+            }
+        }
 
-		buildOpaquePairings();
+        buildOpaquePairings();
 
-		if (!rename_fields)
-			return;
+        if (!rename_fields) {
+            return;
+        }
 
-		if (output)
-			out.println("\r\tUpdating field references in bytecode");
+        if (output) {
+            out.println("\r\tUpdating field references in bytecode");
+        }
 
-		for (SootClass c : scene.getApplicationClasses()) {
-			for (SootMethod m : c.getMethods()) {
-				if (!m.isConcrete())
-					continue;
+        for (SootClass sc : Scene.v().getApplicationClasses()) {
+            for (SootMethod m : sc.getMethods()) {
+                if (!m.isConcrete()) {
+                    continue;
+                }
 
-				if (!m.hasActiveBody())
-					m.retrieveActiveBody();
+                if (!m.hasActiveBody()) {
+                    m.retrieveActiveBody();
+                }
 
-				for (Unit u : m.getActiveBody().getUnits()) {
-					for (ValueBox vb : u.getUseAndDefBoxes()) {
-						Value v = vb.getValue();
-						if (v instanceof FieldRef) {
-							FieldRef fr = (FieldRef) v;
-							SootFieldRef sfr = fr.getFieldRef();
-							if (sfr.declaringClass().isLibraryClass())
-								continue;
+                for (Unit unit : m.getActiveBody().getUnits()) {
+                    for (ValueBox box : unit.getUseAndDefBoxes()) {
+                        Value value = box.getValue();
+                        if (value instanceof FieldRef) {
+                            FieldRef fieldRef = (FieldRef) value;
+                            SootFieldRef sootFieldRef = fieldRef.getFieldRef();
+                            if (sootFieldRef.declaringClass().isLibraryClass()) {
+                                continue;
+                            }
 
-							String oldName = sfr.name();
-							String fullName = sfr.declaringClass().getName() + '.' + oldName;
-							String newName = oldToNewFieldNames.get(oldName);
-							if (newName == null || namesToNotRename.contains(fullName))
-								continue;
+                            String oldName = sootFieldRef.name();
+                            String fullName = sootFieldRef.declaringClass().getName() + '.' + oldName;
+                            String newName = oldToNewFieldNames.get(oldName);
+                            if (newName == null || namesToNotRename.contains(fullName)) {
+                                continue;
+                            }
 
-							if (newName.equals(oldName)) {
-								System.out.println("Strange.. Should not find a field with the same old and new name.");
-							}
-							sfr = scene.makeFieldRef(sfr.declaringClass(), newName, sfr.type(), sfr.isStatic());
-							fr.setFieldRef(sfr);
-							try {
-								sfr.resolve();
-							} catch (Exception exc) {
-								System.out.println("********ERROR Updating " + sfr.name() + " to " + newName);
-								System.out.println("Fields of " + sfr.declaringClass().getName() + ": "
-										+ sfr.declaringClass().getFields());
-								// System.out.println("Fields of "+_c.getName()
-								// + ": "+_c.getFields());
-								System.out.println(exc);
-								throw new RuntimeException(exc);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+                            if (newName.equals(oldName)) {
+                                System.out.println("Strange.. Should not find a field with the same old and new name.");
+                            }
+                            sootFieldRef = Scene.v().makeFieldRef(sootFieldRef.declaringClass(), newName,
+                                    sootFieldRef.type(), sootFieldRef.isStatic());
+                            fieldRef.setFieldRef(sootFieldRef);
+                            try {
+                                sootFieldRef.resolve();
+                            } catch (Exception e) {
+                                System.err.println("********ERROR Updating " + sootFieldRef.name() + " to " + newName);
+                                System.err.println("Fields of " + sootFieldRef.declaringClass().getName() + ": "
+                                        + sootFieldRef.declaringClass().getFields());
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	protected void setBooleanTo(SootClass c, SootField f, boolean value) {
+    protected void setBooleanTo(SootClass sc, SootField f, boolean value) {
+        if (!value && f.getType() instanceof IntegerType && Rand.getInt() % 2 > 0) {
+            return;
+        }
 
-		if (!value && f.getType() instanceof IntegerType && Rand.getInt() % 2 > 0)
-			return;
+        RefType boolRef = Scene.v().getRefType(booleanClassName);
 
-		Body b;
-		boolean newInit = false;
-		if (!c.declaresMethodByName(SootMethod.staticInitializerName)) {
-			SootMethod m = Scene.v().makeSootMethod(SootMethod.staticInitializerName,
-                    Collections.<Type>emptyList(), VoidType.v(), Modifier.STATIC);
-			c.addMethod(m);
-			b = Jimple.v().newBody(m);
-			m.setActiveBody(b);
-			newInit = true;
-		} else {
-			SootMethod m = c.getMethodByName(SootMethod.staticInitializerName);
-			b = m.getActiveBody();
-		}
+        Body body;
+        boolean newInit = false;
+        if (!sc.declaresMethodByName(SootMethod.staticInitializerName)) {
+            SootMethod m = Scene.v().makeSootMethod(SootMethod.staticInitializerName,
+                    emptyList(), VoidType.v(), Modifier.STATIC);
+            sc.addMethod(m);
+            body = Jimple.v().newBody(m);
+            m.setActiveBody(body);
+            newInit = true;
+        } else {
+            SootMethod m = sc.getMethodByName(SootMethod.staticInitializerName);
+            body = m.getActiveBody();
+        }
 
-		PatchingChain<Unit> units = b.getUnits();
-		if (f.getType() instanceof IntegerType) {
-			units.addFirst(
-					Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(f.makeRef()), IntConstant.v(value ? 1 : 0)));
-		} else {
-			Local bool = Jimple.v().newLocal("boolLcl", boolRef);
-			b.getLocals().add(bool);
+        PatchingChain<Unit> units = body.getUnits();
+        if (f.getType() instanceof IntegerType) {
+            units.addFirst(
+                    Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(f.makeRef()), IntConstant.v(value ? 1 : 0)));
+        } else {
+            Local bool = Jimple.v().newLocal("boolLcl", boolRef);
+            body.getLocals().add(bool);
 
-			SootMethod boolInit = boolRef.getSootClass().getMethod("void <init>(boolean)");
+            SootMethod boolInit = boolRef.getSootClass().getMethod("void <init>(boolean)");
+            units.addFirst(Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(f.makeRef()), bool));
+            units.addFirst(Jimple.v().newInvokeStmt(
+                    Jimple.v().newSpecialInvokeExpr(bool, boolInit.makeRef(), IntConstant.v(value ? 1 : 0))));
+            units.addFirst(Jimple.v().newAssignStmt(bool, Jimple.v().newNewExpr(boolRef)));
+        }
+        if (newInit) {
+            units.addLast(Jimple.v().newReturnVoidStmt());
+        }
+    }
 
-			units.addFirst(Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(f.makeRef()), bool));
+    protected void renameField(String className, SootField f) {
+        if (sootFieldsRenamed.contains(f)) {
+            return;
+        }
 
-			units.addFirst(Jimple.v().newInvokeStmt(
-					Jimple.v().newSpecialInvokeExpr(bool, boolInit.makeRef(), IntConstant.v(value ? 1 : 0))));
+        String newName = oldToNewFieldNames.get(f.getName());
+        if (newName == null) {
+            newName = getNewName();
+            oldToNewFieldNames.put(f.getName(), newName);
+        }
+        if (output) {
+            logger.debug("\t\tChanged " + f.getName() + " to " + newName);
+        }
+        f.setName(newName);
+        sootFieldsRenamed.add(f);
+    }
 
-			units.addFirst(Jimple.v().newAssignStmt(bool, Jimple.v().newNewExpr(boolRef)));
-		}
-		if (newInit)
-			units.addLast(Jimple.v().newReturnVoidStmt());
-	}
+    /*
+     * @return String newly generated junk name that DOES NOT exist yet
+     */
+    public static String getNewName() {
+        int size = 3;
+        int tries = 0;
+        int index = Rand.getInt(stringChars.length);
+        int length = stringChars[index].length;
 
-	protected void renameField(String cName, SootField f) {
-		if (sootFieldsRenamed.contains(f))
-			return;
+        String result;
+        char cNewName[] = new char[size];
+        do {
+            if (tries == 10) {
+                cNewName = new char[++size];
+                index = Rand.getInt(stringChars.length);
+                length = stringChars[index].length;
+                tries = 0;
+            }
 
-		String newName = oldToNewFieldNames.get(f.getName());
-		if (newName == null) {
-			newName = getNewName();
-			oldToNewFieldNames.put(f.getName(), newName);
-		}
-		if (output)
-			G.v().out.println("\t\tChanged " + f.getName() + " to " + newName);
-		f.setName(newName);
-		sootFieldsRenamed.add(f);
-	}
+            if (size < 12) {
+                do {
+                    int rand = Rand.getInt(length);
+                    cNewName[0] = stringChars[index][rand];
+                } while (!Character.isJavaIdentifierStart(cNewName[0]));
 
-	/*
-	 * @return String newly generated junk name that DOES NOT exist yet
-	 */
-	public static String getNewName() {
-		int size = 3;
-		int tries = 0;
-		int index = Rand.getInt(stringChars.length);
-		int length = stringChars[index].length;
+                // generate random string
+                for (int i = 1; i < cNewName.length; i++) {
+                    int rand = Rand.getInt(length);
+                    cNewName[i] = stringChars[index][rand];
+                }
+                result = String.copyValueOf(cNewName);
+            } else {
+                cNewName = new char[size - 6]; // size will always be at least 8
+                // here
 
-		String result = null;
-		char cNewName[] = new char[size];
-		do {
-			if (tries == 10) {
-				cNewName = new char[++size];
-				index = Rand.getInt(stringChars.length);
-				length = stringChars[index].length;
-				tries = 0;
-			}
+                // generate more random string
+                while (true) {
+                    for (int i = 0; i < cNewName.length; i++) {
+                        cNewName[i] = (char) Rand.getInt();
+                    }
+                    result = String.copyValueOf(cNewName);
+                    if (isJavaIdentifier(result)) {
+                        break;
+                    }
+                }
+            }
+            tries++;
+        } while (oldToNewFieldNames.containsValue(result) || BodyBuilder.nameList.contains(result));
 
-			if (size < 12) {
-				do {
-					int rand = Rand.getInt(length);
-					cNewName[0] = stringChars[index][rand];
-				} while (!Character.isJavaIdentifierStart(cNewName[0]));
+        BodyBuilder.nameList.add(result);
 
-				// generate random string
-				for (int i = 1; i < cNewName.length; i++) {
-					int rand = Rand.getInt(length);
-					cNewName[i] = stringChars[index][rand];
-				}
-				result = String.copyValueOf(cNewName);
-			} else {
-				cNewName = new char[size - 6]; // size will always be at least 8
-												// here
+        return result;
+    }
 
-				// generate more random string
-				while (true) {
-					for (int i = 0; i < cNewName.length; i++)
-						cNewName[i] = (char) Rand.getInt();
-					result = String.copyValueOf(cNewName);
-					if (isJavaIdentifier(result))
-						break;
-				}
-			}
-			tries++;
-		} while (oldToNewFieldNames.containsValue(result) || BodyBuilder.nameList.contains(result));
+    public static void addOldAndNewName(String oldn, String newn) {
+        oldToNewFieldNames.put(oldn, newn);
+    }
 
-		BodyBuilder.nameList.add(result);
+    public static boolean isJavaIdentifier(String s) {
+        if (s == null || s.length() == 0 || !Character.isJavaIdentifierStart(s.charAt(0))) {
+            return false;
+        }
+        for (int i = 1; i < s.length(); i++) {
+            if (!Character.isJavaIdentifierPart(s.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-		return result;
-	}
+    public static SootField[] getRandomOpaques() {
+        if (handedOutPairs == null) {
+            handedOutPairs = new int[opaquePairs.length];
+        }
 
-	public static void addOldAndNewName(String oldn, String newn) {
-		oldToNewFieldNames.put(oldn, newn);
-	}
+        int lowValue = 99999;
+        List<Integer> available = new ArrayList<>();
+        for (int element : handedOutPairs) {
+            if (lowValue > element) {
+                lowValue = element;
+            }
+        }
+        for (int i = 0; i < handedOutPairs.length; i++) {
+            if (handedOutPairs[i] == lowValue) {
+                available.add(i);
+            }
+        }
 
-	public static boolean isJavaIdentifier(String s) {
-		if (s == null || s.length() == 0 || !Character.isJavaIdentifierStart(s.charAt(0))) {
-			return false;
-		}
-		for (int i = 1; i < s.length(); i++) {
-			if (!Character.isJavaIdentifierPart(s.charAt(i))) {
-				return false;
-			}
-		}
-		return true;
-	}
+        int index = available.get(Rand.getInt(available.size()));
+        handedOutPairs[index]++;
+        return opaquePairs[index];
+    }
 
-	public static SootField[] getRandomOpaques() {
-		if (handedOutPairs == null) {
-			handedOutPairs = new int[opaquePairs.length];
-		}
+    public static int getRandomOpaquesForRunnable() {
+        if (handedOutRunPairs == null) {
+            handedOutRunPairs = new int[opaquePairs.length];
+        }
 
-		int lowValue = 99999;
-		ArrayList<Integer> available = new ArrayList<Integer>();
-		for (int element : handedOutPairs)
-			if (lowValue > element)
-				lowValue = element;
-		for (int i = 0; i < handedOutPairs.length; i++)
-			if (handedOutPairs[i] == lowValue)
-				available.add(new Integer(i));
+        int lowValue = 99999;
+        List<Integer> available = new ArrayList<>();
+        for (int element : handedOutRunPairs) {
+            if (lowValue > element) {
+                lowValue = element;
+            }
+        }
+        if (lowValue > 2) {
+            return -1;
+        }
+        for (int i = 0; i < handedOutRunPairs.length; i++) {
+            if (handedOutRunPairs[i] == lowValue) {
+                available.add(i);
+            }
+        }
 
-		Integer index = available.get(Rand.getInt(available.size()));
-		handedOutPairs[index.intValue()]++;
+        return available.get(Rand.getInt(available.size()));
+    }
 
-		return opaquePairs[index.intValue()];
-	}
+    public static void updateOpaqueRunnableCount(int i) {
+        handedOutRunPairs[i]++;
+    }
 
-	public static int getRandomOpaquesForRunnable() {
-		if (handedOutRunPairs == null) {
-			handedOutRunPairs = new int[opaquePairs.length];
-		}
+    private void buildOpaquePairings() {
+        Object fields1[] = opaquePreds1ByClass.values().toArray();
+        Object fields2[] = opaquePreds2ByClass.values().toArray();
 
-		int lowValue = 99999;
-		ArrayList<Integer> available = new ArrayList<Integer>();
-		for (int element : handedOutRunPairs)
-			if (lowValue > element)
-				lowValue = element;
-		if (lowValue > 2)
-			return -1;
-		for (int i = 0; i < handedOutRunPairs.length; i++)
-			if (handedOutRunPairs[i] == lowValue)
-				available.add(new Integer(i));
+        int length = fields1.length;
 
-		Integer index = available.get(Rand.getInt(available.size()));
+        if (length > 1) {
+            int i = length * 2;
+            while (i > 1) {
+                int rand1 = Rand.getInt(length);
+                int rand2 = Rand.getInt(length);
+                int rand3 = Rand.getInt(length);
+                int rand4 = Rand.getInt(length);
+                while (rand1 == rand2) {
+                    rand2 = Rand.getInt(length);
+                }
 
-		return index.intValue();
-	}
+                while (rand3 == rand4) {
+                    rand4 = Rand.getInt(length);
+                }
 
-	public static void updateOpaqueRunnableCount(int i) {
-		handedOutRunPairs[i]++;
-	}
-
-	private void buildOpaquePairings() {
-		Object fields1[] = opaquePreds1ByClass.values().toArray();
-		Object fields2[] = opaquePreds2ByClass.values().toArray();
-
-		int leng = fields1.length;
-
-		if (leng > 1) {
-			int i = leng * 2;
-			while (i > 1) {
-				int rand1 = Rand.getInt(leng);
-				int rand2 = Rand.getInt(leng);
-				int rand3 = Rand.getInt(leng);
-				int rand4 = Rand.getInt(leng);
-				while (rand1 == rand2)
-					rand2 = Rand.getInt(leng);
-
-				while (rand3 == rand4)
-					rand4 = Rand.getInt(leng);
-
-				Object value = fields1[rand1];
-				fields1[rand1] = fields1[rand2];
-				fields1[rand2] = value;
-				value = fields2[rand3];
-				fields2[rand3] = fields2[rand4];
-				fields2[rand4] = value;
-				i--;
-			}
-		}
-		opaquePairs = new SootField[leng][2];
-		for (int i = 0; i < leng; i++) {
-			opaquePairs[i] = new SootField[] { (SootField) fields1[i], (SootField) fields2[i] };
-		}
-	}
+                Object value = fields1[rand1];
+                fields1[rand1] = fields1[rand2];
+                fields1[rand2] = value;
+                value = fields2[rand3];
+                fields2[rand3] = fields2[rand4];
+                fields2[rand4] = value;
+                i--;
+            }
+        }
+        opaquePairs = new SootField[length][2];
+        for (int i = 0; i < length; i++) {
+            opaquePairs[i] = new SootField[]{(SootField) fields1[i], (SootField) fields2[i]};
+        }
+    }
 }

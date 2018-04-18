@@ -19,249 +19,526 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.ArrayType;
 import soot.Body;
 import soot.FastHierarchy;
 import soot.G;
-import soot.Hierarchy;
+import soot.RefType;
 import soot.Scene;
 import soot.SceneTransformer;
+import soot.Singletons;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.SootMethodRef;
+import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
+import soot.VoidType;
 import soot.jbco.IJbcoTransform;
+import soot.jbco.name.JunkNameGenerator;
+import soot.jbco.name.NameGenerator;
 import soot.jbco.util.BodyBuilder;
+import soot.jbco.util.HierarchyUtils;
 import soot.jbco.util.Rand;
 import soot.jimple.InvokeExpr;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
- * @author Michael Batchelder
- * 
- *         Created on 24-Jan-2006
+ * Creates new method names using names of fields or generates randomly. New names are <strong>unique</strong>
+ * through the whole application.
+ * <p>
+ * Some methods cannot be renamed:
+ * <ul>
+ * <li>{@code main} methods</li>
+ * <li>constructors</li>
+ * <li>static initializers</li>
+ * </ul>
+ * (these methods are filtered by names)
+ * <ul>
+ * <li>ones that override/implement library methods</li>
+ * </ul>
+ * <p>
+ * To find methods from last group the next approach is used. All superclasses and interfaces that processing class
+ * extends / implements are collected. The children of that items are taken and united together along with processing
+ * class. The same action is performed for every item of the obtained result until the full "tree" is not created.
+ * Then from this tree, the classes that do not have methods with <similar>similar</similar> to searching signature,
+ * are removed. The left items that have {@link SootClass#isLibraryClass()} {@code true} are searching ones.
+ * <p>
+ * This complex approach is used to detect <i>indirect</i> inheritance. Consider next example:
+ * <pre>
+ *                            ,--------.
+ *                            |A       |
+ *                            |--------|
+ *                            |--------|
+ *                            |method()|
+ *                            `--------'
+ *                              /    \
+ *                             /      \
+ * ,-----------------------------.  ,--------.       ,--------. ,--------------------------------.
+ * |D                            |  |B       |       |E       | | Note: E is a library interface |
+ * |-----------------------------|  |--------|       |--------| `--------------------------------'
+ * |-----------------------------|  |--------|       |--------|
+ * |method()                     |  |method()|       |method()|
+ * |method(java.lang.String, int)|  `--------'       `--------'
+ * `-----------------------------'           \      /
+ *                                  ,------------------------.
+ *                                  |C                       |
+ *                                  |------------------------|
+ *                                  |------------------------|
+ *                                  |method()                |
+ *                                  |method(java.lang.String)|
+ *                                  |method(long, int)       |
+ *                                  `------------------------'
+ * </pre>
+ * Thus when {@code D#method()} is processed, it must not be renamed as there is class {@code C} that implements
+ * library one ({@code E#method()}).
+ * <p>
+ * After applying this transformer the next result is expected:
+ * <ul>
+ * <li>{@code #method()} is not renamed in any application classes as it overrides one from library</li>
+ * <li>{@code #method(java.lang.String)}, {@code #method(long, int)} and {@code #method(java.lang.String, int)} are
+ * renamed and have the <strong>same</strong> name. Such renaming behaviour allows having <i>renaming map</i> for
+ * every class with old method name as a key and new method name as a value</li>
+ * </ul>
+ *
+ * @author Michael Batchelder, Pavel Nesterovich
+ * @since 24-Jan-2006
  */
 public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 
-	public static String name = "wjtp.jbco_mr";
-	public static String dependancies[] = new String[]{"wjtp.jbco_mr"};
+    private static final Logger logger = LoggerFactory.getLogger(MethodRenamer.class);
 
-	public static HashMap<String, String> oldToNewMethodNames = new HashMap<>();
+    public static final String name = "wjtp.jbco_mr";
+    public static final String dependencies[] = new String[]{MethodRenamer.name};
 
-	private static final char stringChars[][] = {{'S', '5', '$'}, {'l', '1', 'I'}, {'_'}};
-	private static Hierarchy hierarchy;
+    private static final String MAIN_METHOD_SUB_SIGNATURE = SootMethod.getSubSignature(
+            "main", singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v());
 
-	public String getName() {
+    private static final Function<SootClass, Map<String, String>> RENAMING_MAP_CREATOR = key -> new HashMap<>();
+
+    private final Map<SootClass, Map<String, String>> classToRenamingMap = new HashMap<>();
+
+    private final NameGenerator nameGenerator;
+
+    /**
+     * Singleton constructor.
+     *
+     * @param global the singletons container. Must not be {@code null}
+     * @throws NullPointerException when {@code global} argument is {@code null}
+     */
+    public MethodRenamer(Singletons.Global global) {
+        if (global == null) {
+            throw new NullPointerException("Cannot instantiate MethodRenamer with null Singletons.Global");
+        }
+
+        nameGenerator = new JunkNameGenerator();
+    }
+
+    /**
+     * Singleton getter.
+     *
+     * @return returns instance of {@link MethodRenamer}
+     */
+    public static MethodRenamer v() {
+        return G.v().soot_jbco_jimpleTransformations_MethodRenamer();
+    }
+
+    @Override
+    public String getName() {
         return name;
     }
 
-	public String[] getDependancies() {
-        return dependancies;
+    @Override
+    public String[] getDependencies() {
+        return Arrays.copyOf(dependencies, dependencies.length);
     }
 
-	public void outputSummary() {
-	}
+    @Override
+    public void outputSummary() {
+        final Integer newNames = classToRenamingMap.values().stream().map(Map::values)
+                .flatMap(Collection::stream).collect(collectingAndThen(toSet(), Set::size));
+        logger.info("{} methods were renamed.", newNames);
+    }
 
-	protected void internalTransform(String phaseName, Map<String, String> options) {
-		if (output) {
-		    out.println("Transforming Method Names...");
-		}
+    /**
+     * Gets renaming map for specific class.
+     *
+     * @param className the name of class to get renaming map for
+     * @return the map where the key is old method name, the value - new method name. Never {@code null}
+     */
+    public Map<String, String> getRenamingMap(String className) {
+        return classToRenamingMap.entrySet().stream()
+                .filter(entry -> entry.getKey().getName().equals(className))
+                .flatMap(entry -> entry.getValue().entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
 
-		BodyBuilder.retrieveAllBodies();
-		BodyBuilder.retrieveAllNames();
+    @Override
+    protected void internalTransform(String phaseName, Map<String, String> options) {
+        if (isVerbose()) {
+            logger.info("Transforming method names...");
+        }
 
-		Scene scene = G.v().soot_Scene();
-		scene.releaseActiveHierarchy();
-		hierarchy = scene.getActiveHierarchy();
+        BodyBuilder.retrieveAllBodies();
+        BodyBuilder.retrieveAllNames();
 
-		// iterate through application classes, rename methods with junk
-		for (SootClass sc : scene.getApplicationClasses()) {
-			List<String> fieldNames = sc.getFields().stream().map(SootField::getName).collect(toList());
-			List<SootMethod> methods = new ArrayList<>(sc.getMethods());
+        Scene.v().releaseActiveHierarchy();
 
-			for (SootMethod method : methods) {
-				String subSig = method.getSubSignature();
+        // iterate through application classes and create new junk names
+        // but DO NOT RENAME METHODS YET as it might break searching of declaring classes
+        for (SootClass applicationClass : Scene.v().getApplicationClasses()) {
+            final List<String> fieldNames = applicationClass.getFields().stream().map(SootField::getName)
+                    .collect(collectingAndThen(toList(), Collections::unmodifiableList));
+            final List<String> leftFieldNames = new ArrayList<>(fieldNames);
 
-				if (!allowsRename(sc, method)) {
-					continue;
-				}
+            // create local copy to avoid ConcurrentModificationException -- methods are being updated
+            final List<SootMethod> methods = new ArrayList<>(applicationClass.getMethods());
+            for (SootMethod method : methods) {
 
-				boolean rename = true;
-				//use getSuperclassesOfIncluding instead of getSuperclassesOf to avoid problems when sc is an interface
-				for (SootClass c : hierarchy.getSuperclassesOfIncluding(sc.getSuperclass())) {
-					if (c.declaresMethod(subSig)
-							&& hierarchy.isVisible(sc, c.getMethod(subSig))
-							&& c.isLibraryClass()) {
-						if (output) {
-							out.println("\t" + c.getName() + "'s method "
-									+ subSig + " is overridden in "
-									+ sc.getName());
-						}
-						rename = false;
-						break;
-					}
-				}
+                if (!isRenamingAllowed(method)) {
+                    continue;
+                }
 
-				if (rename) {
-					// TODO: This is flawed since it all methods of a similar
-					// name will get same name
-					String newName = oldToNewMethodNames.get(method.getName());
-					if (newName == null) {
-						if (!fieldNames.isEmpty()) {
-							int rand = Rand.getInt(fieldNames.size());
-							newName = fieldNames.remove(rand);
-							//check both key and value, if class already contains method and field with same name
-                            //then we likely will fall in trouble when renaming this method before previous
-							if (oldToNewMethodNames.containsKey(newName) || oldToNewMethodNames.containsValue(newName)) {
-								newName = getNewName();
-							}
-						} else {
-							newName = getNewName();
-						}
-					}
-					oldToNewMethodNames.put(method.getName(), newName);
-					if (output) {
-						out.println("\tChanged " + method.getSignature() + " to " + newName);
-					}
-					method.setName(newName);
-				}
-			}
-		}
+                final Set<SootClass> declaringClasses = getDeclaringClasses(applicationClass, method);
+                if (declaringClasses.isEmpty()) {
+                    throw new IllegalStateException("Cannot find classes that declare " + method.getSignature() + ".");
+                }
 
-		// iterate through application classes, update references of renamed methods
-		for (SootClass c : scene.getApplicationClasses()) {
-            final List<SootMethod> methods = new ArrayList<>(c.getMethods());
-            for (SootMethod m : methods) {
-				if (!m.isConcrete() || m.getDeclaringClass().isLibraryClass()) {
-					continue;
-				}
-				Body body;
-				try {
-					body = m.getActiveBody();
-				} catch (Exception exc) {
-					// no active body present
-					continue;
-				}
-				for (Unit unit : body.getUnits()) {
-					for (ValueBox valueBox : unit.getUseBoxes()) {
-						Value v = valueBox.getValue();
-						if (!(v instanceof InvokeExpr)) {
-							continue;
-						}
+                final Optional<SootClass> libraryClass = declaringClasses.stream()
+                        .filter(SootClass::isLibraryClass).findAny();
+                if (libraryClass.isPresent()) {
+                    if (isVerbose()) {
+                        logger.info("Skipping renaming {} method as it overrides library one from {}.",
+                                method.getSignature(), libraryClass.get().getName());
+                    }
 
-						InvokeExpr invokeExpr = (InvokeExpr) v;
-						SootMethodRef methodRef = invokeExpr.getMethodRef();
+                    continue;
+                }
 
-                        // if the method won't be resolved in declaring class by subsignature of method ref,
-                        // then we know it was renamed and update that method ref with new name
-                        if (methodRef.declaringClass().getMethodUnsafe(methodRef.getSubSignature()) != null) {
+                // we unite declaringClasses with parents of application class (excluding library ones)
+                // to be sure that every class in this hierarchy has the only new name
+                // for all methods (in this hierarchy) with the same old name and different parameters
+                final Set<SootClass> union = uniteWithApplicationParents(applicationClass, declaringClasses);
+
+                String newName = getNewName(union, method.getName());
+                if (newName == null) {
+                    if (leftFieldNames.isEmpty()) {
+                        newName = getNewName();
+                    } else {
+                        final int randomIndex = Rand.getInt(leftFieldNames.size());
+                        final String randomFieldName = leftFieldNames.remove(randomIndex);
+
+                        // check both value and existing methods, if class already contains method and field with
+                        // same name then we likely will fall in trouble when renaming this method before previous
+                        if (isNotUnique(randomFieldName) || fieldNames.contains(randomFieldName)) {
+                            newName = getNewName();
+                        } else {
+                            newName = randomFieldName;
+                        }
+                    }
+                }
+
+                // It is important to share renaming between different class trees as they might be intersecting.
+                // For example, pretend we have class tree (A,B) with renaming ["aa"=>"bb", "cc"=>"dd"].
+                // When we receive tree (B,C) with method "aa" and realize that (B,C) ∩ (A,B),
+                // we not just skip generating new name but share mapping ["aa"=>"bb"] of tree (A,B)
+                // with tree (B,C). As a result we will have (B,C) with mapping ["aa"=>"bb"].
+                // We share this to handle case when the methods are renamed and it is impossible to get
+                // this indirect connection between classes (with A and C in example above), we will still be able
+                // to rename methods (and their calls) correctly
+                for (SootClass declaringClass : union) {
+                    classToRenamingMap
+                            .computeIfAbsent(declaringClass, RENAMING_MAP_CREATOR)
+                            .put(method.getName(), newName);
+                }
+            }
+        }
+
+        // rename methods AFTER creating mapping
+        for (SootClass applicationClass : Scene.v().getApplicationClasses()) {
+            final List<SootMethod> methods = new ArrayList<>(applicationClass.getMethods());
+            for (SootMethod method : methods) {
+                final String newName = getNewName(Collections.singleton(applicationClass), method.getName());
+                if (newName != null) {
+                    if (isVerbose()) {
+                        logger.info("Method \"{}\" is being renamed to \"{}\".", method.getSignature(), newName);
+                    }
+
+                    method.setName(newName);
+                }
+            }
+        }
+
+        // iterate through application classes, update references of renamed methods
+        for (SootClass applicationClass : Scene.v().getApplicationClasses()) {
+            final List<SootMethod> methods = new ArrayList<>(applicationClass.getMethods());
+            for (SootMethod method : methods) {
+
+                if (!method.isConcrete() || method.getDeclaringClass().isLibraryClass()) {
+                    continue;
+                }
+
+                final Body body = getActiveBodySafely(method);
+                if (body == null) {
+                    continue;
+                }
+
+                for (Unit unit : body.getUnits()) {
+                    for (ValueBox valueBox : unit.getUseBoxes()) {
+                        Value v = valueBox.getValue();
+                        if (!(v instanceof InvokeExpr)) {
                             continue;
                         }
 
-						String newName = oldToNewMethodNames.get(methodRef.name());
-						if (newName == null) {
-							continue;
-						}
+                        final InvokeExpr invokeExpr = (InvokeExpr) v;
+                        final SootMethodRef methodRef = invokeExpr.getMethodRef();
 
-						methodRef = scene.makeMethodRef(methodRef.declaringClass(), newName,
-								methodRef.parameterTypes(), methodRef.returnType(),
-								methodRef.isStatic());
-                        invokeExpr.setMethodRef(methodRef);
-					}
-				}
-			}
-		}
+                        final Set<SootClass> parents = getParents(methodRef.declaringClass());
 
-		scene.releaseActiveHierarchy();
-		scene.getActiveHierarchy();
-		scene.setFastHierarchy(new FastHierarchy());
-	}
+                        // 1. we check if method overrides one from library directly
+                        // Note: we cannot use getDeclaringClasses(applicationClass, method) as method can be renamed
+                        final Optional<SootClass> declaringLibraryClass = findDeclaringLibraryClass(parents, methodRef);
+                        if (declaringLibraryClass.isPresent()) {
+                            if (isVerbose()) {
+                                logger.info("Skipping replacing method call \"{}\" in \"{}\" as it is overrides one "
+                                                + " from library {}.", methodRef.getSignature(), method.getSignature(),
+                                        declaringLibraryClass.get().getName());
+                            }
+                            continue;
+                        }
 
-	/*
-	 * @return String newly generated junk name that DOES NOT exist yet
-	 */
-	public static String getNewName() {
-		int size = 5;
-		int tries = 0;
-		int index = Rand.getInt(stringChars.length);
-		int length = stringChars[index].length;
+                        final String newName = getNewName(parents, methodRef.name());
+                        // 2. we indirectly check that method is not overrides one from library indirectly:
+                        // we will get new name only if no one from class tree do not overrides library method
+                        if (newName == null) {
+                            continue;
+                        }
 
-		String result;
-		char cNewName[] = new char[size];
-		do {
-			if (tries == size) {
-				cNewName = new char[++size];
-				tries = 0;
-			}
+                        final SootMethodRef newMethodRef = Scene.v().makeMethodRef(methodRef.declaringClass(), newName,
+                                methodRef.parameterTypes(), methodRef.returnType(), methodRef.isStatic());
+                        invokeExpr.setMethodRef(newMethodRef);
 
-			do {
-				cNewName[0] = stringChars[index][Rand.getInt(length)];
-			} while (!Character.isJavaIdentifierStart(cNewName[0]));
+                        if (isVerbose()) {
+                            logger.info("Method call \"{}\" is being replaced with \"{}\" in {}.",
+                                    methodRef.getSignature(), newMethodRef.getSignature(), method.getSignature());
+                        }
+                    }
+                }
+            }
+        }
 
-			// generate random string
-			for (int i = 1; i < cNewName.length; i++) {
-				int rand = Rand.getInt(length);
-				cNewName[i] = stringChars[index][rand];
-			}
+        Scene.v().releaseActiveHierarchy();
+        Scene.v().setFastHierarchy(new FastHierarchy());
 
-			result = String.copyValueOf(cNewName);
-			tries++;
-		} while (oldToNewMethodNames.containsValue(result) || BodyBuilder.nameList.contains(result));
-
-		BodyBuilder.nameList.add(result);
-
-		return result;
-	}
-
-	private static boolean allowsRename(SootClass sc, SootMethod method) {
-		if (soot.jbco.Main.getWeight(MethodRenamer.name, method.getName()) == 0) {
-			return false;
-		}
-
-		String subSig = method.getSubSignature();
-		if ("void main(java.lang.String[])".equals(subSig) && method.isPublic() && method.isStatic()) {
-			return false; // skip the main method - it needs to be named 'main'
-		} else if (subSig.contains(SootMethod.constructorName) || subSig.equals(SootMethod.staticInitializerName)) {
-			return false; // skip constructors for now
-		} else {
-			return !(isOverriddenLibraryInterfaceMethod(sc, method) || isOverriddenLibrarySuperclassMethod(sc, method));
-		}
-	}
-
-    private static boolean isOverriddenLibrarySuperclassMethod(SootClass sc, SootMethod method) {
-        String subSignature = method.getSubSignature();
-        //use getSuperclassesOfIncluding instead of getSuperclassesOf to avoid problems when 'sc' parameter is interface
-        return hierarchy.getSuperclassesOfIncluding(sc.getSuperclass()).stream()
-                .filter(SootClass::isLibraryClass)
-                .filter(c -> c.declaresMethod(subSignature))
-                .anyMatch(c -> hierarchy.isVisible(sc, c.getMethod(subSignature)));
+        if (isVerbose()) {
+            logger.info("Transforming method names is completed.");
+        }
     }
 
-    private static boolean isOverriddenLibraryInterfaceMethod(SootClass sc, SootMethod method) {
-        return getAllInterfacesOf(sc).stream()
-                .filter(SootClass::isLibraryClass)
-                .anyMatch(c -> c.declaresMethod(method.getName(), method.getParameterTypes(), method.getReturnType()));
+    /**
+     * Creates new <strong>unique</strong> method name.
+     *
+     * @return newly generated junk name that DOES NOT exist yet
+     */
+    public String getNewName() {
+        int size = 5;
+        int tries = 0;
+
+        String newName = nameGenerator.generateName(size);
+
+        while (isNotUnique(newName) || BodyBuilder.nameList.contains(newName)) {
+            if (tries++ > size) {
+                size++;
+                tries = 0;
+            }
+
+            newName = nameGenerator.generateName(size);
+        }
+
+        BodyBuilder.nameList.add(newName);
+
+        return newName;
     }
 
-    private static List<SootClass> getAllInterfacesOf(SootClass sc) {
-        Stream<SootClass> superClassInterfaces = sc.isInterface() ? Stream.empty() : hierarchy.getSuperclassesOf(sc)
-                .stream()
-                .map(MethodRenamer::getAllInterfacesOf)
-                .flatMap(Collection::stream);
-        Stream<SootClass> directInterfaces = Stream.concat(sc.getInterfaces().stream(), sc.getInterfaces().stream()
-                .map(MethodRenamer::getAllInterfacesOf)
-                .flatMap(Collection::stream));
-        return Stream.concat(superClassInterfaces, directInterfaces).collect(toList());
+    private boolean isRenamingAllowed(SootMethod method) {
+        if (soot.jbco.Main.getWeight(MethodRenamer.name, method.getName()) == 0) {
+            return false;
+        }
+
+        final String subSignature = method.getSubSignature();
+        if (MAIN_METHOD_SUB_SIGNATURE.equals(subSignature) && method.isPublic() && method.isStatic()) {
+            if (isVerbose()) {
+                logger.info("Skipping renaming \"{}\" method as it is main one.", subSignature);
+            }
+            return false; // skip the main method
+        }
+
+        if (method.getName().equals(SootMethod.constructorName)
+                || method.getName().equals(SootMethod.staticInitializerName)) {
+            if (isVerbose()) {
+                logger.info("Skipping renaming \"{}\" method as it is constructor or static initializer.",
+                        subSignature);
+            }
+            return false; // skip constructors/initializers
+        }
+
+        return true;
+    }
+
+    private boolean isNotUnique(String methodName) {
+        return classToRenamingMap.values()
+                .stream().map(Map::values).flatMap(Collection::stream).anyMatch(methodName::equals);
+    }
+
+    private Set<SootClass> uniteWithApplicationParents(SootClass applicationClass, Collection<SootClass> classes) {
+        final Set<SootClass> parents = getApplicationParents(applicationClass);
+
+        final Set<SootClass> result = new HashSet<>(parents.size() + classes.size());
+        result.addAll(parents);
+        result.addAll(classes);
+
+        return result;
+    }
+
+    private Optional<SootClass> findDeclaringLibraryClass(Collection<SootClass> classes, SootMethodRef methodRef) {
+        return classes.stream()
+                .filter(SootClass::isLibraryClass)
+                .filter(sootClass -> isDeclared(sootClass, methodRef.name(), methodRef.parameterTypes()))
+                .findAny();
+    }
+
+    private Set<SootClass> getDeclaringClasses(SootClass applicationClass, SootMethod method) {
+        return getTree(applicationClass).stream()
+                .filter(sootClass -> isDeclared(sootClass, method.getName(), method.getParameterTypes()))
+                .collect(toSet());
+    }
+
+    private Set<SootClass> getTree(SootClass applicationClass) {
+        final Set<SootClass> children = getChildrenOfIncluding(getParentsOfIncluding(applicationClass));
+
+        int count = 0;
+        do {
+            count = children.size();
+            children.addAll(getChildrenOfIncluding(getParentsOfIncluding(children)));
+        } while (count < children.size());
+
+        return children;
+    }
+
+    private Set<SootClass> getParents(SootClass applicationClass) {
+        final Set<SootClass> parents = new HashSet<>(getParentsOfIncluding(applicationClass));
+
+        int count = 0;
+        do {
+            count = parents.size();
+            parents.addAll(getParentsOfIncluding(parents));
+        } while (count < parents.size());
+
+        return parents;
+    }
+
+    private Set<SootClass> getApplicationParents(SootClass applicationClass) {
+        return getParents(applicationClass).stream().filter(parent -> !parent.isLibraryClass()).collect(toSet());
+    }
+
+    private List<SootClass> getParentsOfIncluding(SootClass applicationClass) {
+        // result contains of interfaces that implements passed applicationClass
+        final List<SootClass> result = HierarchyUtils.getAllInterfacesOf(applicationClass);
+
+        // and superclasses (superinterfaces) of passed applicationClass
+        result.addAll(applicationClass.isInterface()
+                ? Scene.v().getActiveHierarchy().getSuperinterfacesOfIncluding(applicationClass)
+                : Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(applicationClass)
+        );
+
+        return result;
+    }
+
+    private Set<SootClass> getChildrenOfIncluding(Collection<SootClass> classes) {
+        return Stream.concat(
+                classes.stream()
+                        .filter(c -> !c.getName().equals("java.lang.Object"))
+                        .map(c -> c.isInterface()
+                                ? Scene.v().getActiveHierarchy().getImplementersOf(c)
+                                : Scene.v().getActiveHierarchy().getSubclassesOf(c)
+                        ).flatMap(Collection::stream),
+                classes.stream()
+        ).collect(toSet());
+    }
+
+    private Set<SootClass> getParentsOfIncluding(Collection<SootClass> classes) {
+        return classes.stream().map(sootClass -> sootClass.isInterface()
+                ? Scene.v().getActiveHierarchy().getSuperinterfacesOfIncluding(sootClass)
+                : Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(sootClass))
+                .flatMap(Collection::stream).collect(toSet());
+    }
+
+    private String getNewName(Collection<SootClass> classes, String name) {
+        final Set<String> names = classToRenamingMap.entrySet().stream()
+                .filter(entry -> classes.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .map(Map::entrySet)
+                .flatMap(Collection::stream)
+                .filter(entry -> entry.getKey().equals(name))
+                .map(Map.Entry::getValue)
+                .collect(toSet());
+
+        if (names.size() > 1) {
+            logger.warn("Found {} names for method \"{}\": {}.", names.size(), name, String.join(", ", names));
+        }
+
+        return names.isEmpty() ? null : names.iterator().next();
+    }
+
+    /**
+     * Checks that method is declared in class. We assume that method is declared in class if class
+     * contains method with the same name and the same number of arguments. The exact types are not compared.
+     *
+     * @param sootClass      the class to search in
+     * @param methodName     the searching method name
+     * @param parameterTypes the searching method parameters
+     * @return {@code true} if passed class contains similar method; {@code false} otherwise
+     */
+    private boolean isDeclared(SootClass sootClass, String methodName, List<Type> parameterTypes) {
+        for (SootMethod declared : sootClass.getMethods()) {
+            if (declared.getName().equals(methodName) && declared.getParameterCount() == parameterTypes.size()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static Body getActiveBodySafely(SootMethod method) {
+        try {
+            return method.getActiveBody();
+        } catch (Exception exception) {
+            logger.warn("Getting Body from SootMethod {} caused exception that was suppressed.", exception);
+        }
+
+        return null;
     }
 
 }

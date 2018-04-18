@@ -18,6 +18,8 @@
  */
 
 package soot.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -51,6 +53,7 @@ import soot.util.LocalBitSetPacker;
  * normally {@see SimpleLocalDefs} is much faster.
  */
 public class SmartLocalDefs implements LocalDefs {
+    private static final Logger logger = LoggerFactory.getLogger(SmartLocalDefs.class);
 	private final Map<Cons<Unit, Local>, List<Unit>> answer;
 
 	private final Map<Local, Set<Unit>> localToDefs; // for each local, set of units where it's defined
@@ -92,7 +95,7 @@ public class SmartLocalDefs implements LocalDefs {
 			Timers.v().defsTimer.start();
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + g.getBody().getMethod().getName() + "]     Constructing SmartLocalDefs...");
+			logger.debug("[" + g.getBody().getMethod().getName() + "]     Constructing SmartLocalDefs...");
 
 		final LocalBitSetPacker localPacker = new LocalBitSetPacker(g.getBody());
 		localPacker.pack();
@@ -115,10 +118,10 @@ public class SmartLocalDefs implements LocalDefs {
 		}
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + g.getBody().getMethod().getName() + "]        done localToDefs map...");
+			logger.debug("[" + g.getBody().getMethod().getName() + "]        done localToDefs map...");
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + g.getBody().getMethod().getName() + "]        done unitToMask map...");
+			logger.debug("[" + g.getBody().getMethod().getName() + "]        done unitToMask map...");
 
 		analysis = new LocalDefsAnalysis(graph);
 
@@ -155,7 +158,7 @@ public class SmartLocalDefs implements LocalDefs {
 			Timers.v().defsTimer.end();
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + g.getBody().getMethod().getName() + "]     SmartLocalDefs finished.");
+			logger.debug("[" + g.getBody().getMethod().getName() + "]     SmartLocalDefs finished.");
 	}
 
 	private Local localDef(Unit u) {

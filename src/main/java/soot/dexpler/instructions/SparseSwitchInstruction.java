@@ -66,6 +66,7 @@ public class SparseSwitchInstruction extends SwitchInstruction {
         }
         LookupSwitchStmt switchStmt = Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
         setUnit(switchStmt);
+        addTags(switchStmt);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
             DalvikTyper.v().setType(switchStmt.getKeyBox(), IntType.v(), true);

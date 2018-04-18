@@ -28,7 +28,6 @@ package soot;
 import com.google.common.base.Optional;
 
 import java.util.ArrayDeque;
-import java.util.LinkedList;
 
 import soot.util.Switch;
 
@@ -157,11 +156,14 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
         return className;
     }
 
-    /** Returns a textual representation, quoted as needed, of this type for serialization, e.g. to .jimple format */
+	/**
+	 * Returns a textual representation, quoted as needed, of this type for
+	 * serialization, e.g. to .jimple format
+	 */
 	@Override
-    public String toQuotedString() {
-    	return Scene.v().quotedNameOf(className);
-    }
+	public String toQuotedString() {
+		return Scene.v().quotedNameOf(className);
+	}
 
 
     public void apply(Switch sw) {
@@ -185,40 +187,40 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
             SootClass otherClass = cm.getSootClass(((RefType) other).className);
             SootClass javalangObject = cm.getObjectType().getSootClass();
 
-			ArrayDeque<SootClass> thisHierarchy = new ArrayDeque<SootClass>();
-			ArrayDeque<SootClass> otherHierarchy = new ArrayDeque<SootClass>();
+			ArrayDeque<SootClass> thisHierarchy = new ArrayDeque<>();
+			ArrayDeque<SootClass> otherHierarchy = new ArrayDeque<>();
 
             // Build thisHierarchy
             {
-                SootClass SootClass = thisClass;
+				SootClass sootClass = thisClass;
 
-                for (; ; ) {
-                    thisHierarchy.addFirst(SootClass);
-
-                    if (SootClass == javalangObject)
+				// This should never be null, so we could also use "while
+				// (true)"; but better be safe than sorry.
+				while (sootClass != null) {
+					thisHierarchy.addFirst(sootClass);
+					if (sootClass == javalangObject)
                         break;
 
-                    if (SootClass.hasSuperclass())
-                        SootClass = SootClass.getSuperclass();
-                    else
-                        SootClass = javalangObject;
+					sootClass = sootClass.getSuperclassUnsafe();
+					if (sootClass == null)
+						sootClass = javalangObject;
                 }
             }
 
             // Build otherHierarchy
             {
-                SootClass SootClass = otherClass;
+				SootClass sootClass = otherClass;
 
-                for (; ; ) {
-                    otherHierarchy.addFirst(SootClass);
-
-                    if (SootClass == javalangObject)
+				// This should never be null, so we could also use "while
+				// (true)"; but better be safe than sorry.
+				while (sootClass != null) {
+					otherHierarchy.addFirst(sootClass);
+					if (sootClass == javalangObject)
                         break;
 
-                    if (SootClass.hasSuperclass())
-                        SootClass = SootClass.getSuperclass();
-                    else
-                        SootClass = javalangObject;
+					sootClass = sootClass.getSuperclassUnsafe();
+					if (sootClass == null)
+						sootClass = javalangObject;
                 }
             }
 
@@ -260,4 +262,5 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     public boolean isAllowedInFinalCode() {
         return true;
     }
+
 }
