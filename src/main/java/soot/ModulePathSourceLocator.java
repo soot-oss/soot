@@ -486,6 +486,8 @@ public class ModulePathSourceLocator extends SourceLocator {
     }
 
 
+
+
     public FoundFile lookUpInModulePath(String fileName) {
         String[] moduleAndClassName = fileName.split(":");
         String className = moduleAndClassName[moduleAndClassName.length - 1];
@@ -586,7 +588,7 @@ public class ModulePathSourceLocator extends SourceLocator {
      * @param fileName    the file to search
      * @return the FoundFile
      */
-    private FoundFile lookUpInVirtualFileSystem(String archivePath, String fileName) {
+    public FoundFile lookUpInVirtualFileSystem(String archivePath, String fileName) {
         //  FileSystem fs = FileSystems.getFileSystem(URI.create(archivePath));
         Path foundFile = Paths.get(URI.create(archivePath)).resolve(fileName);
         if (foundFile != null && Files.isRegularFile(foundFile)) {
