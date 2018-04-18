@@ -23,65 +23,64 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-import soot.baf.*;
-import java.util.*;
+import java.util.List;
 
-public class JThrowStmt extends AbstractOpStmt implements ThrowStmt
-{
+import soot.Unit;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.baf.Baf;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleToBafContext;
+import soot.jimple.StmtSwitch;
+import soot.jimple.ThrowStmt;
+import soot.util.Switch;
 
-    public JThrowStmt(Value op)
-    {
-        this(Jimple.v().newImmediateBox(op));
-    }
+public class JThrowStmt extends AbstractOpStmt implements ThrowStmt {
 
-    protected JThrowStmt(ValueBox opBox)
-    {
-        super(opBox);
-    }
+  public JThrowStmt(Value op) {
+    this(Jimple.v().newImmediateBox(op));
+  }
 
-    public Object clone() 
-    {
-        return new JThrowStmt(Jimple.cloneIfNecessary(getOp()));
-    }
+  protected JThrowStmt(ValueBox opBox) {
+    super(opBox);
+  }
 
-    public String toString()
-    {
-        return "throw " + opBox.getValue().toString();
-    }
-    
-    public void toString(UnitPrinter up) {
-        up.literal(Jimple.THROW);
-        up.literal(" ");
-        opBox.toString(up);
-    }
+  public Object clone() {
+    return new JThrowStmt(Jimple.cloneIfNecessary(getOp()));
+  }
 
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseThrowStmt(this);
-    }
+  public String toString() {
+    return "throw " + opBox.getValue().toString();
+  }
 
-    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
-    {
-        ((ConvertToBaf)getOp()).convertToBaf(context, out);
+  public void toString(UnitPrinter up) {
+    up.literal(Jimple.THROW);
+    up.literal(" ");
+    opBox.toString(up);
+  }
 
-        Unit u = Baf.v().newThrowInst();
-        u.addAllTagsOf(this);
-        out.add(u);	
-    }
-    
-    public boolean fallsThrough(){return false;}
-    public boolean branches(){return false;}
+  public void apply(Switch sw) {
+    ((StmtSwitch) sw).caseThrowStmt(this);
+  }
 
+  public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
+    ((ConvertToBaf) getOp()).convertToBaf(context, out);
 
+    Unit u = Baf.v().newThrowInst();
+    u.addAllTagsOf(this);
+    out.add(u);
+  }
+
+  public boolean fallsThrough() {
+    return false;
+  }
+
+  public boolean branches() {
+    return false;
+  }
 
 }

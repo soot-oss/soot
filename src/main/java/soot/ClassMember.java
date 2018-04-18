@@ -25,43 +25,38 @@
 
 package soot;
 
-/** Provides methods common to Soot objects belonging to classes,
- * namely SootField and SootMethod. */
-public interface ClassMember
-{
-    /** Returns the SootClass declaring this one. */
-    public SootClass getDeclaringClass();
+/**
+ * Provides methods common to Soot objects belonging to classes, namely SootField and SootMethod.
+ */
+public interface ClassMember {
+  /** Returns the SootClass declaring this one. */
+  public SootClass getDeclaringClass();
 
-    /** Returns true when some SootClass object declares this object. */
-    public boolean isDeclared();
+  /** Returns true when some SootClass object declares this object. */
+  public boolean isDeclared();
 
-    /** Returns true when this object is from a phantom class. */
-    public boolean isPhantom();
+  /** Returns true when this object is from a phantom class. */
+  public boolean isPhantom();
 
-    /** Sets the phantom flag */
-    public void setPhantom(boolean value);
+  /** Sets the phantom flag */
+  public void setPhantom(boolean value);
 
-    /** Convenience method returning true if this class member is protected. */
-    public boolean isProtected();
+  /** Convenience method returning true if this class member is protected. */
+  public boolean isProtected();
 
-    /** Convenience method returning true if this class member is private. */
-    public boolean isPrivate();
+  /** Convenience method returning true if this class member is private. */
+  public boolean isPrivate();
 
-    /** Convenience method returning true if this class member is public. */
-    public boolean isPublic();
+  /** Convenience method returning true if this class member is public. */
+  public boolean isPublic();
 
-    /** Convenience method returning true if this class member is static. */
-    public boolean isStatic();
+  /** Convenience method returning true if this class member is static. */
+  public boolean isStatic();
 
-    /** Sets modifiers of this class member. */
-    public void setModifiers(int modifiers);
+  /** Sets modifiers of this class member. */
+  public void setModifiers(int modifiers);
 
-    /** Returns modifiers of this class member. */
-    public int getModifiers();
-
+  /** Returns modifiers of this class member. */
+  public int getModifiers();
 
 }
-
-
-
-

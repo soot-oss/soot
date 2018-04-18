@@ -24,70 +24,54 @@
   * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.grimp.internal;
 
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.grimp.Precedence;
+import soot.grimp.PrecedenceTest;
+import soot.jimple.internal.JArrayRef;
 
-public class GArrayRef extends JArrayRef implements Precedence
-{
-  public GArrayRef(Value base, Value index)
-    {
-      super(Grimp.v().newObjExprBox(base),
-            Grimp.v().newExprBox(index));
-    }
-  
-  public int getPrecedence() { return 950; }
-
-  private String toString(Value op1, 
-                          String leftOp, String rightOp)
-    {
-      if (op1 instanceof Precedence && 
-          ((Precedence)op1).getPrecedence() < getPrecedence()) 
-        leftOp = "(" + leftOp + ")";
-      
-      return leftOp + "[" + rightOp + "]";
-    }
-
-    public void toString( UnitPrinter up ) {
-        if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal("(");
-        baseBox.toString(up);
-        if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal(")");
-        up.literal("[");
-        indexBox.toString(up);
-        up.literal("]");
-    }
-
-  public String toString()
-    {
-      Value op1 = getBase(), op2 = getIndex();
-      String leftOp = op1.toString(), rightOp = op2.toString();
-      
-      return toString(op1, leftOp, rightOp);
-    }
-
-    public Object clone() 
-    {
-        return new GArrayRef(Grimp.cloneIfNecessary(getBase()), Grimp.cloneIfNecessary(getIndex()));
-    }
-
+public class GArrayRef extends JArrayRef implements Precedence {
+  public GArrayRef(Value base, Value index) {
+    super(Grimp.v().newObjExprBox(base), Grimp.v().newExprBox(index));
   }
 
+  public int getPrecedence() {
+    return 950;
+  }
 
+  private String toString(Value op1, String leftOp, String rightOp) {
+    if (op1 instanceof Precedence && ((Precedence) op1).getPrecedence() < getPrecedence()) {
+      leftOp = "(" + leftOp + ")";
+    }
 
+    return leftOp + "[" + rightOp + "]";
+  }
 
+  public void toString(UnitPrinter up) {
+    if (PrecedenceTest.needsBrackets(baseBox, this)) {
+      up.literal("(");
+    }
+    baseBox.toString(up);
+    if (PrecedenceTest.needsBrackets(baseBox, this)) {
+      up.literal(")");
+    }
+    up.literal("[");
+    indexBox.toString(up);
+    up.literal("]");
+  }
 
+  public String toString() {
+    Value op1 = getBase(), op2 = getIndex();
+    String leftOp = op1.toString(), rightOp = op2.toString();
 
+    return toString(op1, leftOp, rightOp);
+  }
 
+  public Object clone() {
+    return new GArrayRef(Grimp.cloneIfNecessary(getBase()), Grimp.cloneIfNecessary(getIndex()));
+  }
 
-
-
-
-
-
+}

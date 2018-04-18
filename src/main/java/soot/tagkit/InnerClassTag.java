@@ -23,78 +23,65 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.tagkit;
 
 import java.io.UnsupportedEncodingException;
 
-public class InnerClassTag implements Tag
-{
-    String innerClass;
-    String outerClass;
-    String name;
-    int accessFlags;
+public class InnerClassTag implements Tag {
+  String innerClass;
+  String outerClass;
+  String name;
+  int accessFlags;
 
-    public InnerClassTag(String innerClass, String outerClass, String name, int accessFlags)
-    {
-	this.innerClass = innerClass;
-	this.outerClass = outerClass;
-	this.name = name;
-	this.accessFlags = accessFlags;
-	if (innerClass != null && (innerClass.startsWith("L") && innerClass.endsWith(";")))
-        throw new RuntimeException("InnerClass annotation type string must " +
-        		"be of the form a/b/ClassName not '"+ innerClass +"'");
-	if (outerClass != null && (outerClass.startsWith("L") && outerClass.endsWith(";")))
-        throw new RuntimeException("OuterType annotation type string must " +
-        		"be of the form a/b/ClassName not '"+ innerClass +"'");
-		if (name != null && name.endsWith(";")) {
-			throw new RuntimeException("InnerClass name cannot end with ';', got '" + name + "'");
-		}
+  public InnerClassTag(String innerClass, String outerClass, String name, int accessFlags) {
+    this.innerClass = innerClass;
+    this.outerClass = outerClass;
+    this.name = name;
+    this.accessFlags = accessFlags;
+    if (innerClass != null && (innerClass.startsWith("L") && innerClass.endsWith(";"))) {
+      throw new RuntimeException("InnerClass annotation type string must " + "be of the form a/b/ClassName not '" + innerClass + "'");
     }
+    if (outerClass != null && (outerClass.startsWith("L") && outerClass.endsWith(";"))) {
+      throw new RuntimeException("OuterType annotation type string must " + "be of the form a/b/ClassName not '" + innerClass + "'");
+    }
+    if (name != null && name.endsWith(";")) {
+      throw new RuntimeException("InnerClass name cannot end with ';', got '" + name + "'");
+    }
+  }
 
-    public String getName()
-    {
-	return "InnerClassTag";
-    }
+  public String getName() {
+    return "InnerClassTag";
+  }
 
-    /**
-     * Returns the inner class name (only) encoded in UTF8.
-     * There is no obvious standalone byte[] encoding for this
-     * attribute because it contains embedded constant pool indicies.
-     */
-    public byte[] getValue()
-    {
-	try {
-		return innerClass.getBytes("UTF8");
-	} catch (UnsupportedEncodingException e) {
-		return new byte[0];
-	}
+  /**
+   * Returns the inner class name (only) encoded in UTF8. There is no obvious standalone byte[] encoding for this attribute because it contains
+   * embedded constant pool indicies.
+   */
+  public byte[] getValue() {
+    try {
+      return innerClass.getBytes("UTF8");
+    } catch (UnsupportedEncodingException e) {
+      return new byte[0];
     }
+  }
 
-    public String getInnerClass()
-    {
-	return innerClass;
-    }
+  public String getInnerClass() {
+    return innerClass;
+  }
 
-    public String getOuterClass()
-    {
-	return outerClass;
-    }
+  public String getOuterClass() {
+    return outerClass;
+  }
 
-    public String getShortName()
-    {
-	return name;
-    }
+  public String getShortName() {
+    return name;
+  }
 
-    public int getAccessFlags()
-    {
-	return accessFlags;
-    }
+  public int getAccessFlags() {
+    return accessFlags;
+  }
 
-    public String toString()
-    {
-	return "[inner="+innerClass+", outer="+outerClass
-	    +", name="+name+",flags="+accessFlags+"]";
-    }
+  public String toString() {
+    return "[inner=" + innerClass + ", outer=" + outerClass + ", name=" + name + ",flags=" + accessFlags + "]";
+  }
 }
-

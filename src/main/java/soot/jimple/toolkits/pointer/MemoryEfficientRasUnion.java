@@ -19,111 +19,124 @@
 
 package soot.jimple.toolkits.pointer;
 
-import soot.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.util.*;
+import soot.PointsToSet;
 
 public class MemoryEfficientRasUnion extends Union {
-	HashSet<PointsToSet> subsets;
+  HashSet<PointsToSet> subsets;
 
-	public boolean isEmpty() {
-		if (subsets == null)
-			return true;
-		for (PointsToSet subset : subsets) {
-			if (!subset.isEmpty())
-				return false;
-		}
-		return true;
-	}
+  public boolean isEmpty() {
+    if (subsets == null) {
+      return true;
+    }
+    for (PointsToSet subset : subsets) {
+      if (!subset.isEmpty()) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-	public boolean hasNonEmptyIntersection(PointsToSet other) {
-		if (subsets == null)
-			return true;
-		for (PointsToSet subset : subsets) {
-			if (other instanceof Union) {
-				if (other.hasNonEmptyIntersection(subset))
-					return true;
-			} else {
-				if (subset.hasNonEmptyIntersection(other))
-					return true;
-			}
-		}
-		return false;
-	}
+  public boolean hasNonEmptyIntersection(PointsToSet other) {
+    if (subsets == null) {
+      return true;
+    }
+    for (PointsToSet subset : subsets) {
+      if (other instanceof Union) {
+        if (other.hasNonEmptyIntersection(subset)) {
+          return true;
+        }
+      } else {
+        if (subset.hasNonEmptyIntersection(other)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
-	public boolean addAll(PointsToSet s) {
-		boolean result;
-		
-		if (subsets == null)
-			subsets = new HashSet<PointsToSet>();
-		if (s instanceof MemoryEfficientRasUnion) {
-			MemoryEfficientRasUnion meru = (MemoryEfficientRasUnion) s;
-			if (meru.subsets == null || subsets.containsAll(meru.subsets)) {
-				return false;
-			}
-			result = subsets.addAll(meru.subsets);
-		} else {
-			result = subsets.add(s);
-		}
-		
-		return result;
-	}
+  public boolean addAll(PointsToSet s) {
+    boolean result;
 
-	public Object clone() {
-		MemoryEfficientRasUnion ret = new MemoryEfficientRasUnion();
-		ret.addAll(this);
-		return ret;
-	}
+    if (subsets == null) {
+      subsets = new HashSet<PointsToSet>();
+    }
+    if (s instanceof MemoryEfficientRasUnion) {
+      MemoryEfficientRasUnion meru = (MemoryEfficientRasUnion) s;
+      if (meru.subsets == null || subsets.containsAll(meru.subsets)) {
+        return false;
+      }
+      result = subsets.addAll(meru.subsets);
+    } else {
+      result = subsets.add(s);
+    }
 
-	public Set possibleTypes() {
-		if (subsets == null) {
-			return Collections.EMPTY_SET;
-		}
-		HashSet ret = new HashSet();
-		for (PointsToSet subset : subsets) {
-			ret.addAll(subset.possibleTypes());
-		}
-		return ret;
-	}
+    return result;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + ((subsets == null) ? 0 : subsets.hashCode());
-		return result;
-	}
+  public Object clone() {
+    MemoryEfficientRasUnion ret = new MemoryEfficientRasUnion();
+    ret.addAll(this);
+    return ret;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final MemoryEfficientRasUnion other = (MemoryEfficientRasUnion) obj;
-		if (subsets == null) {
-			if (other.subsets != null)
-				return false;
-		} else if (!subsets.equals(other.subsets))
-			return false;
-		return true;
-	}
+  public Set possibleTypes() {
+    if (subsets == null) {
+      return Collections.EMPTY_SET;
+    }
+    HashSet ret = new HashSet();
+    for (PointsToSet subset : subsets) {
+      ret.addAll(subset.possibleTypes());
+    }
+    return ret;
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String toString() {
-	  if(subsets == null){
-	    return "[]";
-	  }else{
-		  return subsets.toString();
-		}
-	}
+  /**
+   * {@inheritDoc}
+   */
+  public int hashCode() {
+    final int PRIME = 31;
+    int result = 1;
+    result = PRIME * result + ((subsets == null) ? 0 : subsets.hashCode());
+    return result;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final MemoryEfficientRasUnion other = (MemoryEfficientRasUnion) obj;
+    if (subsets == null) {
+      if (other.subsets != null) {
+        return false;
+      }
+    } else if (!subsets.equals(other.subsets)) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public String toString() {
+    if (subsets == null) {
+      return "[]";
+    } else {
+      return subsets.toString();
+    }
+  }
 
 }

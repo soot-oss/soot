@@ -19,8 +19,8 @@
 
 package soot;
 
-/** A local or constant.
- *  */
-public interface Immediate extends Value
-{
+/**
+ * A local or constant.
+ */
+public interface Immediate extends Value {
 }

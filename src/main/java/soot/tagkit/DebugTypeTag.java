@@ -25,35 +25,31 @@
 
 package soot.tagkit;
 
-
-/** Represents the signature attribute used by fields, methods and classes 
- * for dealing with generics in Java 1.5.
+/**
+ * Represents the signature attribute used by fields, methods and classes for dealing with generics in Java 1.5.
  */
 
-public class DebugTypeTag extends SignatureTag
-{
+public class DebugTypeTag extends SignatureTag {
 
-    public DebugTypeTag(String signature){
-        super(signature);
-    }
-    
-    public String toString() {
-        return "DebugType: "+getSignature();
-    }
+  public DebugTypeTag(String signature) {
+    super(signature);
+  }
 
-    /** Returns the tag name. */
-    public String getName() {
-        return "DebugTypeTag";
-    }
+  public String toString() {
+    return "DebugType: " + getSignature();
+  }
 
-    public String getInfo(){
-        return "DebugType";
-    }
-    
-    
-    /** Returns the tag raw data. */
-    public byte[] getValue() {
-        throw new RuntimeException( "DebugTypeTag has no value for bytecode" );
-    }
+  /** Returns the tag name. */
+  public String getName() {
+    return "DebugTypeTag";
+  }
+
+  public String getInfo() {
+    return "DebugType";
+  }
+
+  /** Returns the tag raw data. */
+  public byte[] getValue() {
+    throw new RuntimeException("DebugTypeTag has no value for bytecode");
+  }
 }
-

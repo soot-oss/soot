@@ -23,23 +23,26 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
+import soot.Unit;
+import soot.UnitBox;
+import soot.Value;
+import soot.ValueBox;
 
-public interface IfStmt extends Stmt
-{
-    public Value getCondition();
-    /**
-	 * condition must be soot.jimple.ConditionExpr
-	 */
-	public void setCondition(Value condition);
-    public ValueBox getConditionBox();
-    public Stmt getTarget();
-    public void setTarget(Unit target);
-    public UnitBox getTargetBox();
+public interface IfStmt extends Stmt {
+  public Value getCondition();
+
+  /**
+   * condition must be soot.jimple.ConditionExpr
+   */
+  public void setCondition(Value condition);
+
+  public ValueBox getConditionBox();
+
+  public Stmt getTarget();
+
+  public void setTarget(Unit target);
+
+  public UnitBox getTargetBox();
 }

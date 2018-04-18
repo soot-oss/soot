@@ -23,66 +23,47 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.toolkits.scalar;
-
-import soot.*;
-import soot.toolkits.graph.UnitGraph;
-
-import java.util.*;
 
 import static soot.toolkits.scalar.LocalDefs.Factory.newLocalDefs;
 
+import java.util.List;
+
+import soot.Body;
+import soot.Unit;
+import soot.toolkits.graph.UnitGraph;
+
 /**
- *   Provides an interface to find the Units that use
- *   a Local defined at a given Unit.
+ * Provides an interface to find the Units that use a Local defined at a given Unit.
  */
-public interface LocalUses
-{
-	static final public class Factory {
-		private Factory() {}
+public interface LocalUses {
+  static final public class Factory {
+    private Factory() {
+    }
 
-		public static LocalUses newLocalUses(Body body) {
-			return newLocalUses(body, newLocalDefs(body));
-		}
-		
-		public static LocalUses newLocalUses(Body body, LocalDefs localDefs) {
-			return new SimpleLocalUses(body, localDefs);
-		}
-		
-		public static LocalUses newLocalUses(UnitGraph graph) {
-			return newLocalUses(graph.getBody(), newLocalDefs(graph));
-		}
-		
-		public static LocalUses newLocalUses(UnitGraph graph, LocalDefs localDefs) {
-			return newLocalUses(graph.getBody(), localDefs);
-		}
-	}
-	
-    /**
-     *   Returns a list of the Units that use the Local that is 
-     *   defined by a given Unit. 
-     *   
-     *   @param s  the unit we wish to query for the use of the Local
-     *             it defines.
-     *   @return  a list of the Local's uses.
-     */    
-    public List<UnitValueBoxPair> getUsesOf(Unit s);
+    public static LocalUses newLocalUses(Body body) {
+      return newLocalUses(body, newLocalDefs(body));
+    }
+
+    public static LocalUses newLocalUses(Body body, LocalDefs localDefs) {
+      return new SimpleLocalUses(body, localDefs);
+    }
+
+    public static LocalUses newLocalUses(UnitGraph graph) {
+      return newLocalUses(graph.getBody(), newLocalDefs(graph));
+    }
+
+    public static LocalUses newLocalUses(UnitGraph graph, LocalDefs localDefs) {
+      return newLocalUses(graph.getBody(), localDefs);
+    }
+  }
+
+  /**
+   * Returns a list of the Units that use the Local that is defined by a given Unit.
+   * 
+   * @param s
+   *          the unit we wish to query for the use of the Local it defines.
+   * @return a list of the Local's uses.
+   */
+  public List<UnitValueBoxPair> getUsesOf(Unit s);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -25,52 +25,40 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import soot.*;
+import soot.Local;
+import soot.SootMethod;
 
-class ArrayReferenceNode
-{
-    private final SootMethod m;
-    private final Local l;
+class ArrayReferenceNode {
+  private final SootMethod m;
+  private final Local l;
 
-    public ArrayReferenceNode(SootMethod method, Local local)
-    {
-	m = method;
-	l = local;
+  public ArrayReferenceNode(SootMethod method, Local local) {
+    m = method;
+    l = local;
+  }
+
+  public SootMethod getMethod() {
+    return m;
+  }
+
+  public Local getLocal() {
+    return l;
+  }
+
+  public int hashCode() {
+    return m.hashCode() + l.hashCode() + 1;
+  }
+
+  public boolean equals(Object other) {
+    if (other instanceof ArrayReferenceNode) {
+      ArrayReferenceNode another = (ArrayReferenceNode) other;
+      return m.equals(another.getMethod()) && l.equals(another.getLocal());
     }
 
-    public SootMethod getMethod()
-    {
-	return m;
-    }
+    return false;
+  }
 
-    public Local getLocal()
-    {
-	return l;
-    }
-
-    public int hashCode()
-    {
-	return m.hashCode()+l.hashCode()+1;
-    }
-
-    public boolean equals(Object other)
-    {
-	if (other instanceof ArrayReferenceNode)
-	{
-	    ArrayReferenceNode another = (ArrayReferenceNode)other;
-	    return m.equals(another.getMethod()) && l.equals(another.getLocal()) ;
-	}
-	
-	return false;
-    }
-
-    public String toString()
-    {
-	return "["+m.getSignature()+" : "+l.toString()+"[ ]";
-    }
+  public String toString() {
+    return "[" + m.getSignature() + " : " + l.toString() + "[ ]";
+  }
 }
-
-
-
-
-

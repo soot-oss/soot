@@ -21,56 +21,56 @@ package soot.tagkit;
 
 public class SourceLnPosTag implements Tag {
 
-    private final int startLn;
-    private final int endLn;
-    private final int startPos;
-    private final int endPos;
-    
-    public SourceLnPosTag(int sline, int eline, int spos, int epos){
-        startLn = sline;
-        endLn = eline;
-        startPos = spos;
-        endPos = epos;
-    }
+  private final int startLn;
+  private final int endLn;
+  private final int startPos;
+  private final int endPos;
 
-    public int startLn(){
-        return startLn;
-    }
+  public SourceLnPosTag(int sline, int eline, int spos, int epos) {
+    startLn = sline;
+    endLn = eline;
+    startPos = spos;
+    endPos = epos;
+  }
 
-    public int endLn(){
-        return endLn;
-    }
+  public int startLn() {
+    return startLn;
+  }
 
-    public int startPos(){
-        return startPos;
-    }
+  public int endLn() {
+    return endLn;
+  }
 
-    public int endPos(){
-        return endPos;
-    }
+  public int startPos() {
+    return startPos;
+  }
 
-    public String getName(){
-        return "SourceLnPosTag";
-    }
+  public int endPos() {
+    return endPos;
+  }
 
-    public byte[] getValue() {
-	    byte[] v = new byte[2];
-	    v[0] = (byte)(startLn/256);
-	    v[1] = (byte)(startLn%256);
-	    return v;
-    }
+  public String getName() {
+    return "SourceLnPosTag";
+  }
 
-    public String toString(){
-        StringBuffer sb = new StringBuffer();
-        sb.append("Source Line Pos Tag: ");
-        sb.append("sline: ");
-        sb.append(startLn);
-        sb.append(" eline: ");
-        sb.append(endLn);
-        sb.append(" spos: ");
-        sb.append(startPos);
-        sb.append(" epos: ");
-        sb.append(endPos);
-        return sb.toString();
-    }
-}   
+  public byte[] getValue() {
+    byte[] v = new byte[2];
+    v[0] = (byte) (startLn / 256);
+    v[1] = (byte) (startLn % 256);
+    return v;
+  }
+
+  public String toString() {
+    StringBuffer sb = new StringBuffer();
+    sb.append("Source Line Pos Tag: ");
+    sb.append("sline: ");
+    sb.append(startLn);
+    sb.append(" eline: ");
+    sb.append(endLn);
+    sb.append(" spos: ");
+    sb.append(startPos);
+    sb.append(" epos: ");
+    sb.append(endPos);
+    return sb.toString();
+  }
+}

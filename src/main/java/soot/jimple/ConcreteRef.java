@@ -23,13 +23,7 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-public interface ConcreteRef extends Ref
-{
+public interface ConcreteRef extends Ref {
 }
-

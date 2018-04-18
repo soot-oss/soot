@@ -77,75 +77,73 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext> implemen
   }
 
   public Set<ClassConstant> possibleClassConstants() {
-	  Set<ClassConstant> res = new HashSet<ClassConstant>();
-	  for (AllocAndContext allocAndContext : this) {
-          AllocNode n = allocAndContext.alloc;
-          if( n instanceof ClassConstantNode ) {
-			res.add( ((ClassConstantNode)n).getClassConstant() );
-          } else {
-        	  return null;
-          }
+    Set<ClassConstant> res = new HashSet<ClassConstant>();
+    for (AllocAndContext allocAndContext : this) {
+      AllocNode n = allocAndContext.alloc;
+      if (n instanceof ClassConstantNode) {
+        res.add(((ClassConstantNode) n).getClassConstant());
+      } else {
+        return null;
       }
-	  return res;
+    }
+    return res;
   }
 
   public Set<String> possibleStringConstants() {
-	  Set<String> res = new HashSet<String>();
-	  for (AllocAndContext allocAndContext : this) {
-          AllocNode n = allocAndContext.alloc;
-          if( n instanceof StringConstantNode ) {
-			res.add( ((StringConstantNode)n).getString() );
-          } else {
-        	  return null;
-          }
+    Set<String> res = new HashSet<String>();
+    for (AllocAndContext allocAndContext : this) {
+      AllocNode n = allocAndContext.alloc;
+      if (n instanceof StringConstantNode) {
+        res.add(((StringConstantNode) n).getString());
+      } else {
+        return null;
       }
-	  return res;
+    }
+    return res;
   }
 
   public Set<Type> possibleTypes() {
-	  Set res = new HashSet<Type>();
-      for (AllocAndContext allocAndContext : this) {
-    	  res.add(allocAndContext.alloc.getType());
-      }
-      return res;
+    Set res = new HashSet<Type>();
+    for (AllocAndContext allocAndContext : this) {
+      res.add(allocAndContext.alloc.getType());
+    }
+    return res;
   }
-  
+
   /**
-   * Computes a hash code based on the contents of the points-to set.
-   * Note that hashCode() is not overwritten on purpose.
-   * This is because Spark relies on comparison by object identity.
+   * Computes a hash code based on the contents of the points-to set. Note that hashCode() is not overwritten on purpose. This is because Spark relies
+   * on comparison by object identity.
    */
   public int pointsToSetHashCode() {
-      final int PRIME = 31;
-      int result = 1;
-      for (AllocAndContext elem : this) {
-          result = PRIME * result + elem.hashCode();
-      }
-      return result;
+    final int PRIME = 31;
+    int result = 1;
+    for (AllocAndContext elem : this) {
+      result = PRIME * result + elem.hashCode();
+    }
+    return result;
   }
-  
+
   /**
-   * Returns <code>true</code> if and only if other holds the same alloc nodes as this.
-   * Note that equals() is not overwritten on purpose.
-   * This is because Spark relies on comparison by object identity.
+   * Returns <code>true</code> if and only if other holds the same alloc nodes as this. Note that equals() is not overwritten on purpose. This is
+   * because Spark relies on comparison by object identity.
    */
   public boolean pointsToSetEquals(Object other) {
-      if(this==other) {
-          return true;
-      }
-      if(!(other instanceof AllocAndContextSet)) {
-          return false;
-      }
-      AllocAndContextSet otherPts = (AllocAndContextSet) other;
-      
-      //both sets are equal if they are supersets of each other 
-      return superSetOf(otherPts, this) && superSetOf(this, otherPts);        
+    if (this == other) {
+      return true;
+    }
+    if (!(other instanceof AllocAndContextSet)) {
+      return false;
+    }
+    AllocAndContextSet otherPts = (AllocAndContextSet) other;
+
+    // both sets are equal if they are supersets of each other
+    return superSetOf(otherPts, this) && superSetOf(this, otherPts);
   }
-  
+
   /**
    * Returns <code>true</code> if <code>onePts</code> is a (non-strict) superset of <code>otherPts</code>.
    */
   private boolean superSetOf(AllocAndContextSet onePts, final AllocAndContextSet otherPts) {
-      return onePts.containsAll(otherPts);
+    return onePts.containsAll(otherPts);
   }
 }

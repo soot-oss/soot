@@ -47,41 +47,41 @@ import soot.jimple.NewExpr;
 
 public class NewInstanceInstruction extends DexlibAbstractInstruction {
 
-    public NewInstanceInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
+  public NewInstanceInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
+
+  @Override
+  public void jimplify(DexBody body) {
+    Instruction21c i = (Instruction21c) instruction;
+    int dest = i.getRegisterA();
+    String className = dottedClassName(((TypeReference) (i.getReference())).toString());
+    RefType type = RefType.v(className);
+    NewExpr n = Jimple.v().newNewExpr(type);
+    AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), n);
+    setUnit(assign);
+    addTags(assign);
+    body.add(assign);
+
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+      // DalvikTyper.v().captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
+      DalvikTyper.v().setType(assign.getLeftOpBox(), type, false);
     }
+  }
 
-    @Override
-	public void jimplify (DexBody body) {
-        Instruction21c i = (Instruction21c)instruction;
-        int dest = i.getRegisterA();
-        String className = dottedClassName(((TypeReference)(i.getReference())).toString());
-        RefType type = RefType.v(className);
-        NewExpr n = Jimple.v().newNewExpr(type);
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), n);
-        setUnit(assign);
-        addTags(assign);
-        body.add(assign);
+  @Override
+  boolean overridesRegister(int register) {
+    OneRegisterInstruction i = (OneRegisterInstruction) instruction;
+    int dest = i.getRegisterA();
+    return register == dest;
+  }
 
-		if (IDalvikTyper.ENABLE_DVKTYPER) {
-          //DalvikTyper.v().captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
-          DalvikTyper.v().setType(assign.getLeftOpBox(), type, false);
-        }
-    }
+  @Override
+  public Set<Type> introducedTypes() {
+    ReferenceInstruction i = (ReferenceInstruction) instruction;
 
-    @Override
-    boolean overridesRegister(int register) {
-        OneRegisterInstruction i = (OneRegisterInstruction) instruction;
-        int dest = i.getRegisterA();
-        return register == dest;
-    }
-
-    @Override
-    public Set<Type> introducedTypes() {
-        ReferenceInstruction i = (ReferenceInstruction) instruction;
-
-        Set<Type> types = new HashSet<Type>();
-        types.add(DexType.toSoot((TypeReference) i.getReference()));
-        return types;
-    }
+    Set<Type> types = new HashSet<Type>();
+    types.add(DexType.toSoot((TypeReference) i.getReference()));
+    return types;
+  }
 }

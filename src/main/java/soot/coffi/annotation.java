@@ -23,25 +23,21 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-/** There can be many annotations in each Visibility attribute 
+/**
+ * There can be many annotations in each Visibility attribute
+ * 
  * @see attribute_info
  * @author Jennifer Lhotak
  */
 public class annotation extends attribute_info {
-   /** type_index - CONSTANT_Utf8_info structure constant pool entry. */
-   public int type_index;
-   /** num_element_value_pairs */
-   public int num_element_value_pairs;
-   /** 
-    * Each entry represents a single runtime visible annotation.
-    */
-   public element_value element_value_pairs[];
+  /** type_index - CONSTANT_Utf8_info structure constant pool entry. */
+  public int type_index;
+  /** num_element_value_pairs */
+  public int num_element_value_pairs;
+  /**
+   * Each entry represents a single runtime visible annotation.
+   */
+  public element_value element_value_pairs[];
 }

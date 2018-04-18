@@ -23,32 +23,26 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-/** Attribute that connects inner classes with their containing classes.
+/**
+ * Attribute that connects inner classes with their containing classes.
+ * 
  * @see attribute_info
  * @author Archie L. Cobbs
  */
 class InnerClasses_attribute extends attribute_info {
-   /** Length of the inner classes table. */
-   public int inner_classes_length;
-   /** Actual table of local variables. */
-   public inner_class_entry inner_classes[];
+  /** Length of the inner classes table. */
+  public int inner_classes_length;
+  /** Actual table of local variables. */
+  public inner_class_entry inner_classes[];
 
-   public String toString()
-   {
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < inner_classes_length; i++) {
-            buffer.append(inner_classes[i]);
-            buffer.append('\n');
-	}
-        return buffer.toString();
-   }
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
+    for (int i = 0; i < inner_classes_length; i++) {
+      buffer.append(inner_classes[i]);
+      buffer.append('\n');
+    }
+    return buffer.toString();
+  }
 }
-

@@ -17,8 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.ondemand.genericutil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -35,11 +33,14 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Miscellaneous utility functions.
  */
 public class Util {
-    private static final Logger logger = LoggerFactory.getLogger(Util.class);
+  private static final Logger logger = LoggerFactory.getLogger(Util.class);
 
   /** The empty {@link BitSet}. */
   public static final BitSet EMPTY_BITSET = new BitSet();
@@ -47,16 +48,18 @@ public class Util {
   /** Factorial */
   public static long fact(long n_) {
     long result = 1;
-    for (long i = 1; i <= n_; i++)
+    for (long i = 1; i <= n_; i++) {
       result *= i;
+    }
     return result;
   }
 
   /** Factorial */
   public static BigInteger fact(BigInteger n_) {
     BigInteger result = BigInteger.ONE;
-    for (BigInteger i = BigInteger.ONE; i.compareTo(n_) <= 0; i = i.add(BigInteger.ONE))
+    for (BigInteger i = BigInteger.ONE; i.compareTo(n_) <= 0; i = i.add(BigInteger.ONE)) {
       result = result.multiply(i);
+    }
     return result;
   }
 
@@ -65,38 +68,41 @@ public class Util {
    * 
    * @param n_
    *          arg on which to compute factorial
-   * @return (<code>double</code> approximation to) factorial of largest
-   *         positive integer <= (n_ + epsilon)
+   * @return (<code>double</code> approximation to) factorial of largest positive integer <= (n_ + epsilon)
    */
   public static double fact(double n_) {
     n_ += 1e-6;
     double result = 1.0;
-    for (double i = 1; i <= n_; i += 1.0)
+    for (double i = 1; i <= n_; i += 1.0) {
       result *= i;
+    }
     return result;
   }
 
   /** Factorial */
   public static int fact(int n_) {
     int result = 1;
-    for (int i = 1; i <= n_; i++)
+    for (int i = 1; i <= n_; i++) {
       result *= i;
+    }
     return result;
   }
 
   /** Binary log: finds the smallest power k such that 2^k>=n */
   public static int binaryLogUp(int n_) {
     int k = 0;
-    while ((1 << k) < n_)
+    while ((1 << k) < n_) {
       k++;
+    }
     return k;
   }
 
   /** Binary log: finds the smallest power k such that 2^k>=n */
   public static int binaryLogUp(long n_) {
     int k = 0;
-    while ((1L << k) < n_)
+    while ((1L << k) < n_) {
       k++;
+    }
     return k;
   }
 
@@ -105,8 +111,9 @@ public class Util {
     StringBuffer s = new StringBuffer();
     s.append("[");
     for (int i = 0; i < ints_.length; i++) {
-      if (i > 0)
+      if (i > 0) {
         s.append(", ");
+      }
       s.append(ints_[i]);
     }
     s.append("]");
@@ -122,8 +129,9 @@ public class Util {
     s.append(start);
     for (int i = 0; i < o.length; i++) {
       if (o[i] != null) {
-        if (i > 0)
+        if (i > 0) {
           s.append(sep);
+        }
         s.append(o[i].toString());
       }
     }
@@ -142,8 +150,7 @@ public class Util {
   }
 
   /**
-   * Test whether <em>some</em> element of the given {@link Collection}
-   * satisfies the given {@link Predicate}.
+   * Test whether <em>some</em> element of the given {@link Collection} satisfies the given {@link Predicate}.
    */
   public static <T> boolean forSome(Collection<T> c_, Predicate<T> p_) {
     for (T t : c_) {
@@ -155,24 +162,23 @@ public class Util {
   }
 
   /**
-   * Test whether <em>some</em> element of the given {@link Collection}
-   * satisfies the given {@link Predicate}.
+   * Test whether <em>some</em> element of the given {@link Collection} satisfies the given {@link Predicate}.
    * 
    * @return The first element satisfying the predicate; otherwise null.
    */
   public static <T> T find(Collection<T> c_, Predicate<T> p_) {
     for (Iterator<T> iter = c_.iterator(); iter.hasNext();) {
       T obj = iter.next();
-      if (p_.test(obj))
+      if (p_.test(obj)) {
         return obj;
+      }
     }
 
     return null;
   }
 
   /**
-   * Test whether <em>some</em> element of the given {@link Collection}
-   * satisfies the given {@link Predicate}.
+   * Test whether <em>some</em> element of the given {@link Collection} satisfies the given {@link Predicate}.
    * 
    * @return All the elements satisfying the predicate
    */
@@ -181,21 +187,22 @@ public class Util {
 
     for (Iterator<T> iter = c_.iterator(); iter.hasNext();) {
       T obj = iter.next();
-      if (p_.test(obj))
+      if (p_.test(obj)) {
         result.add(obj);
+      }
     }
 
     return result;
   }
 
   /**
-   * Test whether <em>all</em> elements of the given {@link Collection}
-   * satisfy the given {@link Predicate}.
+   * Test whether <em>all</em> elements of the given {@link Collection} satisfy the given {@link Predicate}.
    */
   public static <T> boolean forAll(Collection<T> c_, Predicate<T> p_) {
     for (T t : c_) {
-      if (!p_.test(t))
+      if (!p_.test(t)) {
         return false;
+      }
     }
     return true;
   }
@@ -209,45 +216,42 @@ public class Util {
    *          the visitor defining the action
    */
   public static <T> void doForAll(Collection<T> c_, ObjectVisitor<T> v_) {
-    for (Iterator<T> iter = c_.iterator(); iter.hasNext();)
+    for (Iterator<T> iter = c_.iterator(); iter.hasNext();) {
       v_.visit(iter.next());
+    }
   }
 
   /**
-   * Map a list: generate a new list with each element mapped. The new list is
-   * always an {@link ArrayList}; it would have been more precise to use
-   * {@link java.lang.reflect reflection} to create a list of the same type as
-   * 'srcList', but reflection works really slowly in some implementations, so
-   * it's best to avoid it.
+   * Map a list: generate a new list with each element mapped. The new list is always an {@link ArrayList}; it would have been more precise to use
+   * {@link java.lang.reflect reflection} to create a list of the same type as 'srcList', but reflection works really slowly in some implementations,
+   * so it's best to avoid it.
    */
   public static <T, U> List<U> map(List<T> srcList, Mapper<T, U> mapper_) {
     ArrayList<U> result = new ArrayList<U>();
-    for (Iterator<T> srcIter = srcList.iterator(); srcIter.hasNext();)
+    for (Iterator<T> srcIter = srcList.iterator(); srcIter.hasNext();) {
       result.add(mapper_.map(srcIter.next()));
-    return result;
-  }
-
-  /**
-   * Filter a collection: generate a new list from an existing collection,
-   * consisting of the elements satisfying some predicate. The new list is
-   * always an {@link ArrayList}; it would have been more precise to use
-   * {@link java.lang.reflect reflection} to create a list of the same type as
-   * 'srcList', but reflection works really slowly in some implementations, so
-   * it's best to avoid it.
-   */
-  public static <T> List<T> filter(Collection<T> src_, Predicate<T> pred_) {
-    ArrayList<T> result = new ArrayList<T>();
-    for (Iterator<T> srcIter = src_.iterator(); srcIter.hasNext();) {
-      T curElem = srcIter.next();
-      if (pred_.test(curElem))
-        result.add(curElem);
     }
     return result;
   }
 
   /**
-   * Filter a collection according to some predicate, placing the result in a
-   * List
+   * Filter a collection: generate a new list from an existing collection, consisting of the elements satisfying some predicate. The new list is
+   * always an {@link ArrayList}; it would have been more precise to use {@link java.lang.reflect reflection} to create a list of the same type as
+   * 'srcList', but reflection works really slowly in some implementations, so it's best to avoid it.
+   */
+  public static <T> List<T> filter(Collection<T> src_, Predicate<T> pred_) {
+    ArrayList<T> result = new ArrayList<T>();
+    for (Iterator<T> srcIter = src_.iterator(); srcIter.hasNext();) {
+      T curElem = srcIter.next();
+      if (pred_.test(curElem)) {
+        result.add(curElem);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Filter a collection according to some predicate, placing the result in a List
    * 
    * @param src_
    *          collection to be filtered
@@ -265,30 +269,29 @@ public class Util {
   }
 
   /**
-   * Map a set: generate a new set with each element mapped. The new set is
-   * always a {@link HashSet}; it would have been more precise to use
-   * {@link java.lang.reflect reflection} to create a set of the same type as
-   * 'srcSet', but reflection works really slowly in some implementations, so
+   * Map a set: generate a new set with each element mapped. The new set is always a {@link HashSet}; it would have been more precise to use
+   * {@link java.lang.reflect reflection} to create a set of the same type as 'srcSet', but reflection works really slowly in some implementations, so
    * it's best to avoid it.
    */
   public static <T, U> Set<U> mapToSet(Collection<T> srcSet, Mapper<T, U> mapper_) {
     HashSet<U> result = new HashSet<U>();
-    for (Iterator<T> srcIter = srcSet.iterator(); srcIter.hasNext();)
+    for (Iterator<T> srcIter = srcSet.iterator(); srcIter.hasNext();) {
       result.add(mapper_.map(srcIter.next()));
+    }
     return result;
   }
 
   /*
-   * Grow an int[] -- i.e. allocate a new array of the given size, with the
-   * initial segment equal to this int[].
+   * Grow an int[] -- i.e. allocate a new array of the given size, with the initial segment equal to this int[].
    */
   public static int[] realloc(int[] data_, int newSize_) {
     if (data_.length < newSize_) {
       int[] newData = new int[newSize_];
       System.arraycopy(data_, 0, newData, 0, data_.length);
       return newData;
-    } else
+    } else {
       return data_;
+    }
   }
 
   /** Clear a {@link BitSet}. */
@@ -298,13 +301,15 @@ public class Util {
 
   /** Replace all occurrences of a given substring in a given {@link String}. */
   public static String replaceAll(String str_, String sub_, String newSub_) {
-    if (str_.indexOf(sub_) == -1)
+    if (str_.indexOf(sub_) == -1) {
       return str_;
+    }
     int subLen = sub_.length();
     int idx;
     StringBuffer result = new StringBuffer(str_);
-    while ((idx = result.toString().indexOf(sub_)) >= 0)
+    while ((idx = result.toString().indexOf(sub_)) >= 0) {
       result.replace(idx, idx + subLen, newSub_);
+    }
     return result.toString();
   }
 
@@ -330,8 +335,9 @@ public class Util {
     while (c != Object.class) {
       Field[] fields = c.getDeclaredFields();
 
-      if (fields.length > 0)
+      if (fields.length > 0) {
         buf = buf.append(" (");
+      }
 
       for (int i = 0; i < fields.length; i++) {
         // Make this field accessible
@@ -364,8 +370,9 @@ public class Util {
 
   /** Remove the package name from a fully qualified class name */
   public static String removePackageName(String fully_qualified_name_) {
-    if (fully_qualified_name_ == null)
+    if (fully_qualified_name_ == null) {
       return null;
+    }
 
     int lastdot = fully_qualified_name_.lastIndexOf('.');
 
@@ -392,8 +399,9 @@ public class Util {
   public static boolean arrayContains(Object[] arr, Object obj, int size) {
     assert obj != null;
     for (int i = 0; i < size; i++) {
-      if (arr[i] != null && arr[i].equals(obj))
+      if (arr[i] != null && arr[i].equals(obj)) {
         return true;
+      }
     }
     return false;
   }
@@ -407,8 +415,7 @@ public class Util {
    * 
    * @param s1
    * @param s2
-   * @return <code>true</code> if the sets intersect; <code>false</code>
-   *         otherwise
+   * @return <code>true</code> if the sets intersect; <code>false</code> otherwise
    */
   public static <T> boolean intersecting(final Set<T> s1, final Set<T> s2) {
     return forSome(s1, new Predicate<T>() {
@@ -427,8 +434,7 @@ public class Util {
   }
 
   /**
-   * given the name of a class C, returns the name of the top-most enclosing
-   * class of class C. For example, given A$B$C, the method returns A
+   * given the name of a class C, returns the name of the top-most enclosing class of class C. For example, given A$B$C, the method returns A
    * 
    * @param typeStr
    * @return
@@ -444,7 +450,7 @@ public class Util {
       vals.add(val);
     }
   }
-  
+
   public static <T> List<T> pickNAtRandom(List<T> vals, int n, long seed) {
     if (vals.size() <= n) {
       return vals;
@@ -454,11 +460,11 @@ public class Util {
     for (int i = 0; i < n; i++) {
       boolean added = true;
       do {
-      int randIndex = rand.nextInt(n);
-      added = elems.add(vals.get(randIndex));
+        int randIndex = rand.nextInt(n);
+        added = elems.add(vals.get(randIndex));
       } while (!added);
-      
+
     }
-    return new ArrayList<T>(elems);    
+    return new ArrayList<T>(elems);
   }
 } // class Util

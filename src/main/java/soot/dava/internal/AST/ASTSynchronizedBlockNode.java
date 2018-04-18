@@ -20,110 +20,101 @@
 
 package soot.dava.internal.AST;
 
-import soot.*;
-import soot.jimple.*;
-import java.util.*;
-import soot.dava.internal.SET.*;
-import soot.dava.toolkits.base.AST.analysis.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ASTSynchronizedBlockNode extends ASTLabeledNode
-{
-    private List<Object> body;
-    private ValueBox localBox;
+import soot.Local;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.dava.internal.SET.SETNodeLabel;
+import soot.dava.toolkits.base.AST.analysis.Analysis;
+import soot.jimple.Jimple;
 
-    public ASTSynchronizedBlockNode( SETNodeLabel label, List<Object> body, Value local)
-    {
-	super( label);
-	this.body = body;
-	this.localBox = Jimple.v().newLocalBox( local );
+public class ASTSynchronizedBlockNode extends ASTLabeledNode {
+  private List<Object> body;
+  private ValueBox localBox;
 
-	subBodies.add( body);
-    }
+  public ASTSynchronizedBlockNode(SETNodeLabel label, List<Object> body, Value local) {
+    super(label);
+    this.body = body;
+    this.localBox = Jimple.v().newLocalBox(local);
 
-    /*
-      Nomair A Naeem 21-FEB-2005
-      Used by UselessLabeledBlockRemove to update a body
-    */
-    public void replaceBody(List<Object> body){
-	this.body=body;
-	subBodies=new ArrayList<Object>();
-	subBodies.add(body);
-    }
+    subBodies.add(body);
+  }
 
-    public int size()
-    {
-	return body.size();
-    }
-    
-    public Local getLocal() {
-        return (Local) localBox.getValue();
-    }
+  /*
+   * Nomair A Naeem 21-FEB-2005 Used by UselessLabeledBlockRemove to update a body
+   */
+  public void replaceBody(List<Object> body) {
+    this.body = body;
+    subBodies = new ArrayList<Object>();
+    subBodies.add(body);
+  }
 
+  public int size() {
+    return body.size();
+  }
 
-    public void setLocal(Local local){
-	this.localBox = Jimple.v().newLocalBox( local );
-    }
+  public Local getLocal() {
+    return (Local) localBox.getValue();
+  }
 
-    public Object clone()
-    {
-	return new ASTSynchronizedBlockNode( get_Label(), body, getLocal());
-    }
+  public void setLocal(Local local) {
+    this.localBox = Jimple.v().newLocalBox(local);
+  }
 
-    public void toString( UnitPrinter up)
-    {
-	label_toString(up);
+  public Object clone() {
+    return new ASTSynchronizedBlockNode(get_Label(), body, getLocal());
+  }
 
-	/*        up.literal( "synchronized" );
-		  up.literal( " " );
-		  up.literal( "(" );
-	*/
-	up.literal( "synchronized (");
-	localBox.toString(up);
-	up.literal( ")");
-        up.newline();
-
-        up.literal( "{" );
-        up.newline();
- 
-        up.incIndent();
-        body_toString( up, body );
-        up.decIndent();
-
-        up.literal( "}" );
-        up.newline();
-    }
-
-    public String toString()
-    {
-	StringBuffer b = new StringBuffer();
-
-	b.append( label_toString(  ));
-
-	b.append( "synchronized (");
-	b.append( getLocal());
-	b.append( ")");
-	b.append( NEWLINE);
-
-	b.append( "{");
-	b.append( NEWLINE);
- 
-	b.append( body_toString( body));
-
-	b.append( "}");
-	b.append( NEWLINE);
-
-	return b.toString();
-    }
-
-
-
+  public void toString(UnitPrinter up) {
+    label_toString(up);
 
     /*
-      Nomair A. Naeem, 7-FEB-05
-      Part of Visitor Design Implementation for AST
-      See: soot.dava.toolkits.base.AST.analysis For details
-    */
-    public void apply(Analysis a){
-	a.caseASTSynchronizedBlockNode(this);
-    }
+     * up.literal( "synchronized" ); up.literal( " " ); up.literal( "(" );
+     */
+    up.literal("synchronized (");
+    localBox.toString(up);
+    up.literal(")");
+    up.newline();
+
+    up.literal("{");
+    up.newline();
+
+    up.incIndent();
+    body_toString(up, body);
+    up.decIndent();
+
+    up.literal("}");
+    up.newline();
+  }
+
+  public String toString() {
+    StringBuffer b = new StringBuffer();
+
+    b.append(label_toString());
+
+    b.append("synchronized (");
+    b.append(getLocal());
+    b.append(")");
+    b.append(NEWLINE);
+
+    b.append("{");
+    b.append(NEWLINE);
+
+    b.append(body_toString(body));
+
+    b.append("}");
+    b.append(NEWLINE);
+
+    return b.toString();
+  }
+
+  /*
+   * Nomair A. Naeem, 7-FEB-05 Part of Visitor Design Implementation for AST See: soot.dava.toolkits.base.AST.analysis For details
+   */
+  public void apply(Analysis a) {
+    a.caseASTSynchronizedBlockNode(this);
+  }
 }

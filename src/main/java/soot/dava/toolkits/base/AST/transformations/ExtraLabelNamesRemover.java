@@ -19,40 +19,25 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import soot.dava.toolkits.base.AST.analysis.*;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 
-public class ExtraLabelNamesRemover extends DepthFirstAdapter{
+public class ExtraLabelNamesRemover extends DepthFirstAdapter {
 
-    /*
-      label_0:
-      while(cond){
-         if(cond1)                   NO NEED for break label_0
-	    break label_0             Use just break;
-      }
+  /*
+   * label_0: while(cond){ if(cond1) NO NEED for break label_0 break label_0 Use just break; }
+   * 
+   * label_0: switch(cond){ case 0: Body break label_0; NO NEED for break label_0 case 1: Use just break Body break label_0;
+   * 
+   * IDEA: In gerneral store the current label name Go through the tree rooted at this label name and find all breaks if any break targets the current
+   * label name and not some previous one the label name can be removed from the break statement since it is the most recent break....TEST IT ON CASES
+   * AND SEE IF THIS IS TRUE THE JAVA LANGUAGE SAYS IT SHOULD BE TRUE
+   * 
+   */
+  public ExtraLabelNamesRemover() {
+  }
 
-      label_0:
-      switch(cond){
-          case 0:  
-	        Body
-		break label_0;     NO NEED for break label_0
-	  case 1:                  Use just break
-	        Body
-		break label_0;
-
-       IDEA: In gerneral store the current label name
-       Go through the tree rooted at this label name and find all breaks
-       if any break targets the current label name and not some previous
-       one the label name can be removed from the break statement since it
-       is the most recent break....TEST IT ON CASES AND SEE IF THIS IS TRUE
-       THE JAVA LANGUAGE SAYS IT SHOULD BE TRUE
-
-    */
-    public ExtraLabelNamesRemover(){
-    }
-
-    public ExtraLabelNamesRemover(boolean verbose){
-	super(verbose);
-    }
-
+  public ExtraLabelNamesRemover(boolean verbose) {
+    super(verbose);
+  }
 
 }

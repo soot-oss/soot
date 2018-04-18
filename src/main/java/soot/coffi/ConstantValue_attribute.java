@@ -23,20 +23,16 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-/** An attribute for a constant value; used for field initializers.
+/**
+ * An attribute for a constant value; used for field initializers.
+ * 
  * @see attribute_info
  * @see field_info#attributes
  * @author Clark Verbrugge
  */
 class ConstantValue_attribute extends attribute_info {
-   /** The constant pool index of the actual constant. */
-   public int constantvalue_index;
+  /** The constant pool index of the actual constant. */
+  public int constantvalue_index;
 }

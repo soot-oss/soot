@@ -19,20 +19,16 @@
 
 package soot.toolkits.graph;
 
-
 /**
- * Post-dominators finder for multi-headed graph.
- * The dominators returned by this finder are postdominators,
- * so e.g. {@link #getDominators(Object)} returns all post-dominators.
+ * Post-dominators finder for multi-headed graph. The dominators returned by this finder are postdominators, so e.g. {@link #getDominators(Object)}
+ * returns all post-dominators.
  *
  * @author Eric Bodden
  **/
-public class MHGPostDominatorsFinder<N> extends MHGDominatorsFinder<N>
-{
+public class MHGPostDominatorsFinder<N> extends MHGDominatorsFinder<N> {
 
-	public MHGPostDominatorsFinder(DirectedGraph<N> graph) {
-		super(new InverseGraph<N>(graph));
-	}
-	
-	
+  public MHGPostDominatorsFinder(DirectedGraph<N> graph) {
+    super(new InverseGraph<N>(graph));
+  }
+
 }

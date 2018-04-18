@@ -15,44 +15,41 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
- 
+
 package soot.toolkits.exceptions;
- 
+
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.options.Options;
- 
- /**
- * Factory that returns an appropriate ThrowAnalysis instances for a given 
- * task.
+
+/**
+ * Factory that returns an appropriate ThrowAnalysis instances for a given task.
  *
  */
 public class ThrowAnalysisFactory {
 
-	/**
-     * Resolve the ThrowAnalysis to be used for initialization checking
-     * (e.g. soot.Body.checkInit())
-     *
-     */
-    public static ThrowAnalysis checkInitThrowAnalysis() {
-        switch (Options.v().check_init_throw_analysis()) {
-	        case soot.options.Options.check_init_throw_analysis_auto:
-	        	if(!Options.v().android_jars().equals("") || 
-	        	   !Options.v().force_android_jar().equals("")) {
-	        	   // If Android related options are set, use 'dalvik' throw 
-	        	   // analysis.
-	        		return DalvikThrowAnalysis.v();
-	        	} else {
-	        		return PedanticThrowAnalysis.v();
-	        	}
-	        case soot.options.Options.check_init_throw_analysis_pedantic:
-	            return PedanticThrowAnalysis.v();
-	        case soot.options.Options.check_init_throw_analysis_unit:
-	            return UnitThrowAnalysis.v();
-	        case soot.options.Options.check_init_throw_analysis_dalvik:
-	            return DalvikThrowAnalysis.v();
-	        default:
-	            assert false; // The above cases should cover all posible options
-	            return PedanticThrowAnalysis.v();
-	    }
+  /**
+   * Resolve the ThrowAnalysis to be used for initialization checking (e.g. soot.Body.checkInit())
+   *
+   */
+  public static ThrowAnalysis checkInitThrowAnalysis() {
+    switch (Options.v().check_init_throw_analysis()) {
+      case soot.options.Options.check_init_throw_analysis_auto:
+        if (!Options.v().android_jars().equals("") || !Options.v().force_android_jar().equals("")) {
+          // If Android related options are set, use 'dalvik' throw
+          // analysis.
+          return DalvikThrowAnalysis.v();
+        } else {
+          return PedanticThrowAnalysis.v();
+        }
+      case soot.options.Options.check_init_throw_analysis_pedantic:
+        return PedanticThrowAnalysis.v();
+      case soot.options.Options.check_init_throw_analysis_unit:
+        return UnitThrowAnalysis.v();
+      case soot.options.Options.check_init_throw_analysis_dalvik:
+        return DalvikThrowAnalysis.v();
+      default:
+        assert false; // The above cases should cover all posible options
+        return PedanticThrowAnalysis.v();
     }
+  }
 }

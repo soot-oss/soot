@@ -38,29 +38,29 @@ import soot.jimple.StaticFieldRef;
 
 public class SgetInstruction extends FieldInstruction {
 
-    public SgetInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
-    }
+  public SgetInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
 
-    @Override
-	public void jimplify (DexBody body) {
-        int dest = ((OneRegisterInstruction)instruction).getRegisterA();
-        FieldReference f = (FieldReference)((ReferenceInstruction)instruction).getReference();
-        StaticFieldRef r = Jimple.v().newStaticFieldRef(getStaticSootFieldRef(f));
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), r);
-        setUnit(assign);
-        addTags(assign);
-        body.add(assign);
-        
-		if (IDalvikTyper.ENABLE_DVKTYPER) {
-          DalvikTyper.v().setType(assign.getLeftOpBox(), r.getType(), false);
-        }
-    }
+  @Override
+  public void jimplify(DexBody body) {
+    int dest = ((OneRegisterInstruction) instruction).getRegisterA();
+    FieldReference f = (FieldReference) ((ReferenceInstruction) instruction).getReference();
+    StaticFieldRef r = Jimple.v().newStaticFieldRef(getStaticSootFieldRef(f));
+    AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), r);
+    setUnit(assign);
+    addTags(assign);
+    body.add(assign);
 
-    @Override
-    boolean overridesRegister(int register) {
-        OneRegisterInstruction i = (OneRegisterInstruction) instruction;
-        int dest = i.getRegisterA();
-        return register == dest;
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+      DalvikTyper.v().setType(assign.getLeftOpBox(), r.getType(), false);
     }
+  }
+
+  @Override
+  boolean overridesRegister(int register) {
+    OneRegisterInstruction i = (OneRegisterInstruction) instruction;
+    int dest = i.getRegisterA();
+    return register == dest;
+  }
 }

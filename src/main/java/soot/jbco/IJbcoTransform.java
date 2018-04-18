@@ -19,61 +19,59 @@
 
 package soot.jbco;
 
-import soot.G;
-
 import java.io.PrintStream;
+
+import soot.G;
 
 /**
  * @author Michael Batchelder
- * <p>
- * Created on 19-Jun-2006
+ *         <p>
+ *         Created on 19-Jun-2006
  */
 public interface IJbcoTransform {
 
-    @Deprecated
-    PrintStream out = soot.G.v().out;
-    @Deprecated
-    boolean output = G.v().soot_options_Options().verbose() || soot.jbco.Main.jbcoVerbose;
-    @Deprecated
-    boolean debug = soot.jbco.Main.jbcoDebug;
+  @Deprecated
+  PrintStream out = soot.G.v().out;
+  @Deprecated
+  boolean output = G.v().soot_options_Options().verbose() || soot.jbco.Main.jbcoVerbose;
+  @Deprecated
+  boolean debug = soot.jbco.Main.jbcoDebug;
 
-    /**
-     * Gets the code name of {@link IJbcoTransform jbco transformer} implementation.
-     *
-     * @return the code name of {@link IJbcoTransform jbco transformer}
-     */
-    String getName();
+  /**
+   * Gets the code name of {@link IJbcoTransform jbco transformer} implementation.
+   *
+   * @return the code name of {@link IJbcoTransform jbco transformer}
+   */
+  String getName();
 
-    /**
-     * Gets array of {@link IJbcoTransform jbco transformer} code names on which current transformer depends on.
-     *
-     * @return array of code names
-     */
-    String[] getDependencies();
+  /**
+   * Gets array of {@link IJbcoTransform jbco transformer} code names on which current transformer depends on.
+   *
+   * @return array of code names
+   */
+  String[] getDependencies();
 
-    /**
-     * Prints summary of the produced changes.
-     */
-    void outputSummary();
+  /**
+   * Prints summary of the produced changes.
+   */
+  void outputSummary();
 
-    /**
-     * Checks if {@link IJbcoTransform jbco transformer} can log extra information.
-     *
-     * @return {@code true} when {@link IJbcoTransform jbco transformer} can log extra information;
-     * {@code false} otherwise
-     */
-    default boolean isVerbose() {
-        return G.v().soot_options_Options().verbose() || soot.jbco.Main.jbcoVerbose;
-    }
+  /**
+   * Checks if {@link IJbcoTransform jbco transformer} can log extra information.
+   *
+   * @return {@code true} when {@link IJbcoTransform jbco transformer} can log extra information; {@code false} otherwise
+   */
+  default boolean isVerbose() {
+    return G.v().soot_options_Options().verbose() || soot.jbco.Main.jbcoVerbose;
+  }
 
-    /**
-     * Checks if {@link IJbcoTransform jbco transformer} can log debug information.
-     *
-     * @return {@code true} when {@link IJbcoTransform jbco transformer} can log debug information;
-     * {@code false} otherwise
-     */
-    default boolean isDebugEnabled() {
-        return soot.jbco.Main.jbcoDebug;
-    }
+  /**
+   * Checks if {@link IJbcoTransform jbco transformer} can log debug information.
+   *
+   * @return {@code true} when {@link IJbcoTransform jbco transformer} can log debug information; {@code false} otherwise
+   */
+  default boolean isDebugEnabled() {
+    return soot.jbco.Main.jbcoDebug;
+  }
 
 }

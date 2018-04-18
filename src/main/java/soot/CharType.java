@@ -23,45 +23,40 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot;
-import soot.util.*;
+
+import soot.util.Switch;
 
 /**
- *   Soot representation of the Java built-in type 'char'. Implemented as
- *   a singleton.
+ * Soot representation of the Java built-in type 'char'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class CharType extends PrimType implements IntegerType
-{
-    public CharType( Singletons.Global g ) {}
-    public static CharType v() { return G.v().soot_CharType(); }
+public class CharType extends PrimType implements IntegerType {
+  public CharType(Singletons.Global g) {
+  }
 
-    public boolean equals(Object t)
-    {
-        return this == t;
-    }
+  public static CharType v() {
+    return G.v().soot_CharType();
+  }
 
-    public String toString()
-    {
-        return "char";
-    }
+  public boolean equals(Object t) {
+    return this == t;
+  }
 
-    public int hashCode()
-    {
-        return 0x739EA474;
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((TypeSwitch) sw).caseCharType(this);	
-    }
+  public String toString() {
+    return "char";
+  }
 
-    @Override
-    public RefType boxedType() {
-    	return RefType.v("java.lang.Character");
-    }
+  public int hashCode() {
+    return 0x739EA474;
+  }
+
+  public void apply(Switch sw) {
+    ((TypeSwitch) sw).caseCharType(this);
+  }
+
+  @Override
+  public RefType boxedType() {
+    return RefType.v("java.lang.Character");
+  }
 }

@@ -19,99 +19,89 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A reversible version of HashMutableDirectedGraph
  *
  * @author Navindra Umanee
  **/
-public class HashReversibleGraph<N> extends HashMutableDirectedGraph<N>
-    implements ReversibleGraph<N>
-{
-    protected boolean reversed;
+public class HashReversibleGraph<N> extends HashMutableDirectedGraph<N> implements ReversibleGraph<N> {
+  protected boolean reversed;
 
-    public HashReversibleGraph(DirectedGraph<N> dg)
-    {
-        this();
+  public HashReversibleGraph(DirectedGraph<N> dg) {
+    this();
 
-        for(Iterator<N> i = dg.iterator(); i.hasNext();){
-            N s = i.next();
-            addNode(s);
-        }
-
-        for(Iterator<N> i = dg.iterator(); i.hasNext();){
-            N s = i.next();
-            List<N> succs = dg.getSuccsOf(s);
-            for(Iterator<N> succsIt = succs.iterator(); succsIt.hasNext();){
-                N t = succsIt.next();
-                addEdge(s, t);
-            }
-        }
-
-        /* use the same heads and tails as the original graph */
-        
-        heads.clear();
-        heads.addAll(dg.getHeads());
-        tails.clear();
-        tails.addAll(dg.getTails());
-    }
-            
-    public HashReversibleGraph()
-    {
-        super();
-        reversed = false;
-    }
-    
-    public boolean isReversed()
-    {
-        return reversed;
+    for (Iterator<N> i = dg.iterator(); i.hasNext();) {
+      N s = i.next();
+      addNode(s);
     }
 
-    public ReversibleGraph<N> reverse()
-    {   
-        reversed = !reversed;
-        return this;
+    for (Iterator<N> i = dg.iterator(); i.hasNext();) {
+      N s = i.next();
+      List<N> succs = dg.getSuccsOf(s);
+      for (Iterator<N> succsIt = succs.iterator(); succsIt.hasNext();) {
+        N t = succsIt.next();
+        addEdge(s, t);
+      }
     }
 
-    public void addEdge(N from, N to)
-    {
-        if(reversed)
-            super.addEdge(to, from);
-        else
-            super.addEdge(from, to);
-    }
+    /* use the same heads and tails as the original graph */
 
-    public void removeEdge(N from, N to)
-    {
-        if(reversed)
-            super.removeEdge(to, from);
-        else
-            super.removeEdge(from, to);
-    }
+    heads.clear();
+    heads.addAll(dg.getHeads());
+    tails.clear();
+    tails.addAll(dg.getTails());
+  }
 
-    public boolean containsEdge(N from, N to)
-    {
-        return reversed ? super.containsEdge(to, from) : super.containsEdge(from, to);
-    }
+  public HashReversibleGraph() {
+    super();
+    reversed = false;
+  }
 
-    public List<N> getHeads()
-    {
-        return reversed ? super.getTails() : super.getHeads();
-    }
+  public boolean isReversed() {
+    return reversed;
+  }
 
-    public List<N> getTails()
-    {
-        return reversed ? super.getHeads() : super.getTails();
-    }   
+  public ReversibleGraph<N> reverse() {
+    reversed = !reversed;
+    return this;
+  }
 
-    public List<N> getPredsOf(N s)
-    {
-        return reversed ? super.getSuccsOf(s) : super.getPredsOf(s);
+  public void addEdge(N from, N to) {
+    if (reversed) {
+      super.addEdge(to, from);
+    } else {
+      super.addEdge(from, to);
     }
-    
-    public List<N> getSuccsOf(N s)
-    {
-        return reversed ? super.getPredsOf(s) : super.getSuccsOf(s);
+  }
+
+  public void removeEdge(N from, N to) {
+    if (reversed) {
+      super.removeEdge(to, from);
+    } else {
+      super.removeEdge(from, to);
     }
+  }
+
+  public boolean containsEdge(N from, N to) {
+    return reversed ? super.containsEdge(to, from) : super.containsEdge(from, to);
+  }
+
+  public List<N> getHeads() {
+    return reversed ? super.getTails() : super.getHeads();
+  }
+
+  public List<N> getTails() {
+    return reversed ? super.getHeads() : super.getTails();
+  }
+
+  public List<N> getPredsOf(N s) {
+    return reversed ? super.getSuccsOf(s) : super.getPredsOf(s);
+  }
+
+  public List<N> getSuccsOf(N s) {
+    return reversed ? super.getPredsOf(s) : super.getSuccsOf(s);
+  }
 }

@@ -23,12 +23,12 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.toolkits.scalar;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
 
-/** 
+/**
  * Provides an implementation of a flow universe, wrapping arrays.
  */
 public class ArrayFlowUniverse<E> implements FlowUniverse<E> {

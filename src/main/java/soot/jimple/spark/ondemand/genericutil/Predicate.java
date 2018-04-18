@@ -22,63 +22,60 @@ package soot.jimple.spark.ondemand.genericutil;
  * Interface for defining an arbitrary predicate on {@link Object}s.
  */
 public abstract class Predicate<T> {
-    public static final Predicate FALSE = new Predicate() {
+  public static final Predicate FALSE = new Predicate() {
 
-        @Override
-        public boolean test(Object obj_) {
-            return false;
-        }
+    @Override
+    public boolean test(Object obj_) {
+      return false;
+    }
+  };
+
+  public static final Predicate TRUE = FALSE.not();
+
+  @SuppressWarnings("unchecked")
+  public static <T> Predicate<T> truePred() {
+    return (Predicate<T>) TRUE;
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <T> Predicate<T> falsePred() {
+    return (Predicate<T>) FALSE;
+  }
+
+  /** Test whether an {@link Object} satisfies this {@link Predicate} */
+  public abstract boolean test(T obj_);
+
+  /** Return a predicate that is a negation of this predicate */
+  public Predicate<T> not() {
+    final Predicate<T> originalPredicate = this;
+    return new Predicate<T>() {
+      public boolean test(T obj_) {
+        return !originalPredicate.test(obj_);
+      }
     };
-    
-    public static final Predicate TRUE = FALSE.not();
-    
-    @SuppressWarnings("unchecked")
-    public static <T> Predicate<T> truePred() {
-        return (Predicate<T>)TRUE;
-    }
+  }
 
-    @SuppressWarnings("unchecked")
-    public static <T> Predicate<T> falsePred() {
-        return (Predicate<T>)FALSE;
-    }
-    
-    /** Test whether an {@link Object} satisfies this {@link Predicate} */
-    public abstract boolean test(T obj_);
+  /**
+   * Return a predicate that is a conjunction of this predicate and another predicate
+   */
+  public Predicate<T> and(final Predicate<T> conjunct_) {
+    final Predicate<T> originalPredicate = this;
+    return new Predicate<T>() {
+      public boolean test(T obj_) {
+        return originalPredicate.test(obj_) && conjunct_.test(obj_);
+      }
+    };
+  }
 
-    /** Return a predicate that is a negation of this predicate */
-    public Predicate<T> not() {
-        final Predicate<T> originalPredicate = this;
-        return new Predicate<T>() {
-            public boolean test(T obj_) {
-                return !originalPredicate.test(obj_);
-            }
-        };
-    }
-
-    /**
-     * Return a predicate that is a conjunction of this predicate and another
-     * predicate
-     */
-    public Predicate<T> and(final Predicate<T> conjunct_) {
-        final Predicate<T> originalPredicate = this;
-        return new Predicate<T>() {
-            public boolean test(T obj_) {
-                return originalPredicate.test(obj_) && conjunct_.test(obj_);
-            }
-        };
-    }
-
-    /**
-     * Return a predicate that is a conjunction of this predicate and another
-     * predicate
-     */
-    public Predicate<T> or(final Predicate<T> disjunct_) {
-        final Predicate<T> originalPredicate = this;
-        return new Predicate<T>() {
-            public boolean test(T obj_) {
-                return originalPredicate.test(obj_) || disjunct_.test(obj_);
-            }
-        };
-    }
+  /**
+   * Return a predicate that is a conjunction of this predicate and another predicate
+   */
+  public Predicate<T> or(final Predicate<T> disjunct_) {
+    final Predicate<T> originalPredicate = this;
+    return new Predicate<T>() {
+      public boolean test(T obj_) {
+        return originalPredicate.test(obj_) || disjunct_.test(obj_);
+      }
+    };
+  }
 } // class Predicate
-

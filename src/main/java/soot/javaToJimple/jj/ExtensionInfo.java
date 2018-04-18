@@ -28,6 +28,7 @@ import polyglot.frontend.Job;
 import polyglot.frontend.Source;
 import polyglot.main.Options;
 import polyglot.types.TypeSystem;
+
 import soot.javaToJimple.jj.ast.JjNodeFactory_c;
 import soot.javaToJimple.jj.types.JjTypeSystem_c;
 
@@ -35,64 +36,63 @@ import soot.javaToJimple.jj.types.JjTypeSystem_c;
  * Extension information for jj extension.
  */
 public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
-    static {
-        // force Topics to load
-        new Topics();
-    }
+  static {
+    // force Topics to load
+    new Topics();
+  }
 
-    public String defaultFileExtension() {
-        return "jj";
-    }
+  public String defaultFileExtension() {
+    return "jj";
+  }
 
-    public String compilerName() {
-        return "jjc";
-    }
+  public String compilerName() {
+    return "jjc";
+  }
 
-    /*public Parser parser(Reader reader, FileSource source, ErrorQueue eq) {
-        Lexer lexer = new Lexer_c(reader, source.name(), eq);
-        Grm grm = new Grm(lexer, ts, nf, eq);
-        return new CupParser(grm, source, eq);
-    }*/
+  /*
+   * public Parser parser(Reader reader, FileSource source, ErrorQueue eq) { Lexer lexer = new Lexer_c(reader, source.name(), eq); Grm grm = new
+   * Grm(lexer, ts, nf, eq); return new CupParser(grm, source, eq); }
+   */
 
-    protected NodeFactory createNodeFactory() {
-        return new JjNodeFactory_c();
-    }
+  protected NodeFactory createNodeFactory() {
+    return new JjNodeFactory_c();
+  }
 
-    protected TypeSystem createTypeSystem() {
-        return new JjTypeSystem_c();
-    }
+  protected TypeSystem createTypeSystem() {
+    return new JjTypeSystem_c();
+  }
 
-    public List passes(Job job) {
-        List passes = super.passes(job);
-        // TODO: add passes as needed by your compiler
-        return passes;
-    }
+  public List passes(Job job) {
+    List passes = super.passes(job);
+    // TODO: add passes as needed by your compiler
+    return passes;
+  }
 
-    private HashMap<Source, Job> sourceJobMap;
+  private HashMap<Source, Job> sourceJobMap;
 
-    public HashMap<Source, Job> sourceJobMap(){
-        return sourceJobMap;
-    }
+  public HashMap<Source, Job> sourceJobMap() {
+    return sourceJobMap;
+  }
 
-    public void sourceJobMap(HashMap<Source, Job> map){
-        sourceJobMap = map;
-    }
-    
-    /**
-     * Appends the soot classpath to the default system classpath.
-     */
-    protected Options createOptions() {
-    	return new Options(this) {
+  public void sourceJobMap(HashMap<Source, Job> map) {
+    sourceJobMap = map;
+  }
 
-			/**
-			 * Appends the soot classpath to the default system classpath.
-			 */
-			public String constructFullClasspath() {
-				String cp = super.constructFullClasspath();
-				cp += File.pathSeparator + soot.options.Options.v().soot_classpath();
-				return cp;
-			}
-    		
-    	};
-    }
+  /**
+   * Appends the soot classpath to the default system classpath.
+   */
+  protected Options createOptions() {
+    return new Options(this) {
+
+      /**
+       * Appends the soot classpath to the default system classpath.
+       */
+      public String constructFullClasspath() {
+        String cp = super.constructFullClasspath();
+        cp += File.pathSeparator + soot.options.Options.v().soot_classpath();
+        return cp;
+      }
+
+    };
+  }
 }

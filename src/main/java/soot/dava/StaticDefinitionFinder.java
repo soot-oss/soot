@@ -35,38 +35,38 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.FieldRef;
 
-public class StaticDefinitionFinder extends DepthFirstAdapter{
+public class StaticDefinitionFinder extends DepthFirstAdapter {
 
-    SootMethod method;
-    boolean finalFieldDefined;
+  SootMethod method;
+  boolean finalFieldDefined;
 
-    public StaticDefinitionFinder(SootMethod method){
-	this.method = method;
-	finalFieldDefined=false;
+  public StaticDefinitionFinder(SootMethod method) {
+    this.method = method;
+    finalFieldDefined = false;
+  }
+
+  public StaticDefinitionFinder(boolean verbose, SootMethod method) {
+    super(verbose);
+    this.method = method;
+    finalFieldDefined = false;
+  }
+
+  public void inDefinitionStmt(DefinitionStmt s) {
+    Value leftOp = s.getLeftOp();
+    if (leftOp instanceof FieldRef) {
+      // System.out.println("leftOp is a fieldRef:"+s);
+      SootField field = ((FieldRef) leftOp).getField();
+      // check if this is a final field
+      if (field.isFinal()) {
+        // System.out.println("the field is a final variable");
+        finalFieldDefined = true;
+      }
     }
 
-    public StaticDefinitionFinder(boolean verbose,SootMethod method){
-	super(verbose);
-	this.method= method;
-	finalFieldDefined=false;
-    }
+  }
 
-    public void inDefinitionStmt(DefinitionStmt s){
-	Value leftOp = s.getLeftOp();
-	if(leftOp instanceof FieldRef){
-	    //System.out.println("leftOp is a fieldRef:"+s);
-	    SootField field = ((FieldRef)leftOp).getField();
-	    //check if this is a final field
-	    if(field.isFinal()){
-		//System.out.println("the field is a final variable");
-		finalFieldDefined=true;
-	    }
-	}
-	
-    }
-		
-    public boolean anyFinalFieldDefined(){
-	return finalFieldDefined;
-    }
+  public boolean anyFinalFieldDefined() {
+    return finalFieldDefined;
+  }
 
 }

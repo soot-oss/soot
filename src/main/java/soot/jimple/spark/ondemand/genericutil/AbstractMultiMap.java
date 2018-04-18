@@ -26,112 +26,132 @@ import java.util.Set;
 
 abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
 
-	protected final Map<K, Set<V>> map = new HashMap<K, Set<V>>();
-	
-	protected final boolean create;
-	
-	protected AbstractMultiMap(boolean create) {
-		this.create = create;
-	}
-	
-	protected abstract Set<V> createSet();
-	
-	protected Set<V> emptySet() {
-		return Collections.<V>emptySet();
-	}
-    /* (non-Javadoc)
-	 * @see AAA.util.MultiMap#get(K)
-	 */
-    public Set<V> get(K key) {
-		Set<V> ret = map.get(key);
-		if (ret == null) {
-		    if (create) {
-		        ret = createSet();
-		        map.put(key, ret);
-		    } else {
-		        ret = emptySet();
-		    }
-		}
-		return ret;
-    }
-    
-    /* (non-Javadoc)
-	 * @see AAA.util.MultiMap#put(K, V)
-	 */
-    public boolean put(K key, V val) {
-		Set<V> vals = map.get(key);
-		if (vals == null) {
-			vals = createSet();
-			map.put(key, vals);
-		}		
-		return vals.add(val);        
-    }
-    
-    /* (non-Javadoc)
-	 * @see AAA.util.MultiMap#remove(K, V)
-	 */
-    public boolean remove(K key, V val) {
-	    Set<V> elems = map.get(key);
-	    if (elems == null) return false;
-	    boolean ret = elems.remove(val);
-	    if (elems.isEmpty()) {
-	        map.remove(key);
-	    }
-        return ret;
-    }
-    
-    public Set<V> removeAll(K key) {
-      return map.remove(key);
-    }
-    /* (non-Javadoc)
-	 * @see AAA.util.MultiMap#keys()
-	 */
-    public Set<K> keySet() {
-    	return map.keySet();
-    }
-    
-    /* (non-Javadoc)
-	 * @see AAA.util.MultiMap#containsKey(java.lang.Object)
-	 */
-    public boolean containsKey(K key) {
-        return map.containsKey(key);
-    }
-    
-    /* (non-Javadoc)
-	 * @see AAA.util.MultiMap#size()
-	 */
-    public int size() {
-        int ret = 0;
-        for (K key : keySet()) {
-			ret += get(key).size();
-		}
-        return ret;
-    }
-    
-    /* (non-Javadoc)
-	 * @see AAA.util.MultiMap#toString()
-	 */
-    public String toString() {
-        return map.toString();
-    }
+  protected final Map<K, Set<V>> map = new HashMap<K, Set<V>>();
 
-	/* (non-Javadoc)
-	 * @see AAA.util.MultiMap#putAll(K, java.util.Set)
-	 */
-	public boolean putAll(K key, Collection<? extends V> vals) {
-		Set<V> edges = map.get(key);
-		if (edges == null) {
-			edges = createSet();
-			map.put(key, edges);
-		}		
-		return edges.addAll(vals);        
-	}
+  protected final boolean create;
 
-	public void clear() {
-		map.clear();
-	}
-    
-    public boolean isEmpty() {
-      return map.isEmpty();
+  protected AbstractMultiMap(boolean create) {
+    this.create = create;
+  }
+
+  protected abstract Set<V> createSet();
+
+  protected Set<V> emptySet() {
+    return Collections.<V>emptySet();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see AAA.util.MultiMap#get(K)
+   */
+  public Set<V> get(K key) {
+    Set<V> ret = map.get(key);
+    if (ret == null) {
+      if (create) {
+        ret = createSet();
+        map.put(key, ret);
+      } else {
+        ret = emptySet();
+      }
     }
+    return ret;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see AAA.util.MultiMap#put(K, V)
+   */
+  public boolean put(K key, V val) {
+    Set<V> vals = map.get(key);
+    if (vals == null) {
+      vals = createSet();
+      map.put(key, vals);
+    }
+    return vals.add(val);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see AAA.util.MultiMap#remove(K, V)
+   */
+  public boolean remove(K key, V val) {
+    Set<V> elems = map.get(key);
+    if (elems == null) {
+      return false;
+    }
+    boolean ret = elems.remove(val);
+    if (elems.isEmpty()) {
+      map.remove(key);
+    }
+    return ret;
+  }
+
+  public Set<V> removeAll(K key) {
+    return map.remove(key);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see AAA.util.MultiMap#keys()
+   */
+  public Set<K> keySet() {
+    return map.keySet();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see AAA.util.MultiMap#containsKey(java.lang.Object)
+   */
+  public boolean containsKey(K key) {
+    return map.containsKey(key);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see AAA.util.MultiMap#size()
+   */
+  public int size() {
+    int ret = 0;
+    for (K key : keySet()) {
+      ret += get(key).size();
+    }
+    return ret;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see AAA.util.MultiMap#toString()
+   */
+  public String toString() {
+    return map.toString();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see AAA.util.MultiMap#putAll(K, java.util.Set)
+   */
+  public boolean putAll(K key, Collection<? extends V> vals) {
+    Set<V> edges = map.get(key);
+    if (edges == null) {
+      edges = createSet();
+      map.put(key, edges);
+    }
+    return edges.addAll(vals);
+  }
+
+  public void clear() {
+    map.clear();
+  }
+
+  public boolean isEmpty() {
+    return map.isEmpty();
+  }
 }

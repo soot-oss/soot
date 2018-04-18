@@ -19,34 +19,31 @@
 
 package soot.dava.internal.javaRep;
 
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.jimple.internal.AbstractNegExpr;
 
-public class DNegExpr extends AbstractNegExpr
-{
-    public DNegExpr(Value op)
-    {
-        super(Grimp.v().newExprBox(op));
-    }
-      
-    public Object clone() 
-    {
-        return new DNegExpr(Grimp.cloneIfNecessary(getOp()));
-    }
+public class DNegExpr extends AbstractNegExpr {
+  public DNegExpr(Value op) {
+    super(Grimp.v().newExprBox(op));
+  }
 
-    public void toString( UnitPrinter up ) {
-        up.literal( "(" );
-        up.literal( "-" );
-        up.literal( " " );
-        up.literal( "(" );
-        getOpBox().toString(up);
-        up.literal( ")" );
-        up.literal( ")" );
-    }
+  public Object clone() {
+    return new DNegExpr(Grimp.cloneIfNecessary(getOp()));
+  }
 
-    public String toString()
-    {
-	return "(- (" + ( getOpBox().getValue()).toString() + "))"; 
-    }
+  public void toString(UnitPrinter up) {
+    up.literal("(");
+    up.literal("-");
+    up.literal(" ");
+    up.literal("(");
+    getOpBox().toString(up);
+    up.literal(")");
+    up.literal(")");
+  }
+
+  public String toString() {
+    return "(- (" + (getOpBox().getValue()).toString() + "))";
+  }
 }

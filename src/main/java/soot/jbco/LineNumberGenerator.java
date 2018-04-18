@@ -24,46 +24,45 @@ import java.util.Map;
 
 import soot.Body;
 import soot.BodyTransformer;
-import soot.Transform;
 import soot.PackManager;
 import soot.PatchingChain;
+import soot.Transform;
 import soot.Unit;
 import soot.tagkit.LineNumberTag;
 
 public class LineNumberGenerator {
-  
+
   BafLineNumberer bln = new BafLineNumberer();
-  
-  public static void main(String[] argv)
-  {
+
+  public static void main(String[] argv) {
     // if you do not want soot to output new class files, run with comman line option "-f n"
-    
+
     // if you want the source code line numbers for jimple statements, use this:
-    PackManager.v().getPack("jtp").add(new Transform("jtp.lnprinter",new LineNumberGenerator().bln));
-    
+    PackManager.v().getPack("jtp").add(new Transform("jtp.lnprinter", new LineNumberGenerator().bln));
+
     // if you want the source code line numbers for baf instructions, use this:
-    PackManager.v().getPack("bb").add(new Transform("bb.lnprinter",new LineNumberGenerator().bln));
-    
+    PackManager.v().getPack("bb").add(new Transform("bb.lnprinter", new LineNumberGenerator().bln));
+
     soot.Main.main(argv);
   }
-  
+
   class BafLineNumberer extends BodyTransformer {
-    protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
-      
+    protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+
       System.out.println("Printing Line Numbers for: " + b.getMethod().getSignature());
-      
+
       PatchingChain<Unit> units = b.getUnits(); // get the method code
       Iterator<Unit> it = units.iterator();
       while (it.hasNext()) { // for each jimple statement or baf instruction
-        Unit u = (Unit)it.next();
+        Unit u = (Unit) it.next();
         if (u.hasTag("LineNumberTag")) { // see if a LineNumberTag exists (it will if you use -keep-line-number)
-          LineNumberTag tag = (LineNumberTag)u.getTag(("LineNumberTag"));
+          LineNumberTag tag = (LineNumberTag) u.getTag(("LineNumberTag"));
           System.out.println(u + " has Line Number: " + tag.getLineNumber()); // print out the unit and line number
         } else {
           System.out.println(u + " has no Line Number");
         }
       }
-      
+
       System.out.println("\n");
     }
   }

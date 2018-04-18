@@ -19,21 +19,32 @@
 
 package soot.util;
 
-/** A list containing exactly one object, immutable.
+/**
+ * A list containing exactly one object, immutable.
  *
  * @author Ondrej Lhotak
  */
 
 @Deprecated
 public class SingletonList<E> extends java.util.AbstractList<E> {
-    private E o;
-    public SingletonList( E o ) { this.o = o; }
-    public int size() { return 1; }
-    public boolean contains( Object other ) { return other.equals(o); }
-    public E get( int index ) {
-        if( index != 0 ) {
-            throw new IndexOutOfBoundsException( "Singleton list; index = "+index );
-        }
-        return o;
+  private E o;
+
+  public SingletonList(E o) {
+    this.o = o;
+  }
+
+  public int size() {
+    return 1;
+  }
+
+  public boolean contains(Object other) {
+    return other.equals(o);
+  }
+
+  public E get(int index) {
+    if (index != 0) {
+      throw new IndexOutOfBoundsException("Singleton list; index = " + index);
     }
+    return o;
+  }
 }

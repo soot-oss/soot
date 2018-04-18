@@ -23,21 +23,18 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.DoubleType;
-import soot.G;
 import soot.Local;
 import soot.LongType;
 import soot.PackManager;
@@ -54,104 +51,97 @@ import soot.jimple.JimpleToBafContext;
 import soot.jimple.Stmt;
 import soot.options.Options;
 
-public class BafBody extends Body
-{
-    private static final Logger logger = LoggerFactory.getLogger(BafBody.class);
-    private JimpleToBafContext jimpleToBafContext;
+public class BafBody extends Body {
+  private static final Logger logger = LoggerFactory.getLogger(BafBody.class);
+  private JimpleToBafContext jimpleToBafContext;
 
-    public JimpleToBafContext getContext() {
-    	return jimpleToBafContext;
+  public JimpleToBafContext getContext() {
+    return jimpleToBafContext;
+  }
+
+  @Override
+  public Object clone() {
+    Body b = new BafBody(getMethod());
+    b.importBodyContentsFrom(this);
+    return b;
+  }
+
+  BafBody(SootMethod m) {
+    super(m);
+  }
+
+  public BafBody(Body body, Map<String, String> options) {
+    super(body.getMethod());
+
+    if (Options.v().verbose()) {
+      logger.debug("[" + getMethod().getName() + "] Constructing BafBody...");
     }
-    
-	@Override
-	public Object clone()
+
+    if (!(body instanceof JimpleBody)) {
+      throw new RuntimeException("Can only construct BafBody's directly" + " from JimpleBody's.");
+    }
+
+    JimpleBody jimpleBody = (JimpleBody) body;
+    jimpleBody.validate();
+
+    JimpleToBafContext context = new JimpleToBafContext(jimpleBody.getLocalCount());
+    this.jimpleToBafContext = context;
+    // Convert all locals
     {
-        Body b = new BafBody(getMethod());
-        b.importBodyContentsFrom(this);
-        return b;
+      for (Local l : jimpleBody.getLocals()) {
+        Type t = l.getType();
+        Local newLocal = Baf.v().newLocal(l.getName(), UnknownType.v());
+
+        if (t.equals(DoubleType.v()) || t.equals(LongType.v())) {
+          newLocal.setType(DoubleWordType.v());
+        } else {
+          newLocal.setType(WordType.v());
+        }
+
+        context.setBafLocalOfJimpleLocal(l, newLocal);
+
+        // We cannot use the context for the purpose of saving the old Jimple locals, because
+        // some transformers in the bb-pack, which is called at the end of the method
+        // copy the locals, thus invalidating the information in a map.
+        ((BafLocal) newLocal).setOriginalLocal(l);
+        getLocals().add(newLocal);
+      }
     }
 
-    BafBody(SootMethod m)
+    Map<Stmt, Unit> stmtToFirstInstruction = new HashMap<Stmt, Unit>();
+
+    // Convert all jimple instructions
     {
-        super(m);
+      for (Unit u : jimpleBody.getUnits()) {
+        Stmt s = (Stmt) u;
+        List<Unit> conversionList = new ArrayList<Unit>();
+
+        context.setCurrentUnit(s);
+        ((ConvertToBaf) s).convertToBaf(context, conversionList);
+
+        stmtToFirstInstruction.put(s, conversionList.get(0));
+        getUnits().addAll(conversionList);
+      }
     }
 
-    public BafBody(Body body, Map<String,String> options)
+    // Change all place holders
     {
-        super(body.getMethod());
-
-        if(Options.v().verbose())
-            logger.debug("[" + getMethod().getName() + "] Constructing BafBody...");
-
-        if (!(body instanceof JimpleBody))
-            throw new RuntimeException("Can only construct BafBody's directly"
-              + " from JimpleBody's.");
-
-        JimpleBody jimpleBody = (JimpleBody) body;
-        jimpleBody.validate();
-               
-        JimpleToBafContext context = new JimpleToBafContext(jimpleBody.getLocalCount());
-        this.jimpleToBafContext = context;
-        // Convert all locals
-        {
-            for (Local l : jimpleBody.getLocals()) {
-                Type t = l.getType();
-                Local newLocal = Baf.v().newLocal(l.getName(), UnknownType.v());
-                
-                if(t.equals(DoubleType.v()) || t.equals(LongType.v()))
-                    newLocal.setType(DoubleWordType.v());
-                else
-                    newLocal.setType(WordType.v());
-        
-                context.setBafLocalOfJimpleLocal(l, newLocal);
-                
-                //We cannot use the context for the purpose of saving the old Jimple locals, because
-                //some transformers in the bb-pack, which is called at the end of the method
-                //copy the locals, thus invalidating the information in a map.
-                ((BafLocal) newLocal).setOriginalLocal(l); 
-                getLocals().add(newLocal);
-            }
+      for (UnitBox box : getAllUnitBoxes()) {
+        if (box.getUnit() instanceof PlaceholderInst) {
+          Unit source = ((PlaceholderInst) box.getUnit()).getSource();
+          box.setUnit(stmtToFirstInstruction.get(source));
         }
-    
-        Map<Stmt, Unit> stmtToFirstInstruction = new HashMap<Stmt, Unit>();
-            
-        // Convert all jimple instructions
-        {
-            for (Unit u : jimpleBody.getUnits()) {
-            	Stmt s = (Stmt) u;
-                List<Unit> conversionList = new ArrayList<Unit>();
-
-                context.setCurrentUnit(s);
-                ((ConvertToBaf) s).convertToBaf(context, conversionList);
-               
-                stmtToFirstInstruction.put(s, conversionList.get(0));
-                getUnits().addAll(conversionList);
-            }
-        }
-        
-        // Change all place holders
-        {            
-            for (UnitBox box : getAllUnitBoxes())
-            {                
-                if(box.getUnit() instanceof PlaceholderInst)
-                {
-                    Unit source = ((PlaceholderInst) box.getUnit()).getSource();
-                    box.setUnit(stmtToFirstInstruction.get(source));
-                }
-            }
-        }
-
-        // Convert all traps
-        {
-            for (Trap trap : jimpleBody.getTraps())
-            {
-                getTraps().add(Baf.v().newTrap(trap.getException(),
-                     stmtToFirstInstruction.get(trap.getBeginUnit()),
-                     stmtToFirstInstruction.get(trap.getEndUnit()),
-                     stmtToFirstInstruction.get(trap.getHandlerUnit())));
-            }
-        }
-        
-        PackManager.v().getPack( "bb" ).apply( this );
+      }
     }
+
+    // Convert all traps
+    {
+      for (Trap trap : jimpleBody.getTraps()) {
+        getTraps().add(Baf.v().newTrap(trap.getException(), stmtToFirstInstruction.get(trap.getBeginUnit()),
+            stmtToFirstInstruction.get(trap.getEndUnit()), stmtToFirstInstruction.get(trap.getHandlerUnit())));
+      }
+    }
+
+    PackManager.v().getPack("bb").apply(this);
+  }
 }

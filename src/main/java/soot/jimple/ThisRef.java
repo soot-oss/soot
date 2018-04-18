@@ -23,64 +23,58 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.jimple;
 
-import soot.*;
-import soot.util.*;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
-public class ThisRef implements IdentityRef
-{
-    RefType thisType;
+import soot.RefType;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.ValueBox;
+import soot.util.Switch;
 
-    public ThisRef(RefType thisType)
-    {
-        this.thisType = thisType;
-    }
+public class ThisRef implements IdentityRef {
+  RefType thisType;
 
-    public boolean equivTo(Object o)
-    {
-        if (o instanceof ThisRef)
-        {
-            return thisType.equals(((ThisRef)o).thisType);
-        }
-        return false;
-    }
+  public ThisRef(RefType thisType) {
+    this.thisType = thisType;
+  }
 
-    public int equivHashCode()
-    {
-        return thisType.hashCode();
+  public boolean equivTo(Object o) {
+    if (o instanceof ThisRef) {
+      return thisType.equals(((ThisRef) o).thisType);
     }
-    
-    public String toString()
-    {
-        return "@this: "+thisType;
-    }
-    
-    public void toString( UnitPrinter up ) {
-        up.identityRef(this);
-    }
+    return false;
+  }
 
-    @Override
-    public final List<ValueBox> getUseBoxes()
-    {
-        return Collections.emptyList();
-    }
-    
-    public Type getType()
-    {
-        return thisType;
-    }
+  public int equivHashCode() {
+    return thisType.hashCode();
+  }
 
-    public void apply(Switch sw)
-    {
-        ((RefSwitch) sw).caseThisRef(this);
-    }
-    
-    public Object clone()
-    {
-        return new ThisRef(thisType);
-    }
+  public String toString() {
+    return "@this: " + thisType;
+  }
+
+  public void toString(UnitPrinter up) {
+    up.identityRef(this);
+  }
+
+  @Override
+  public final List<ValueBox> getUseBoxes() {
+    return Collections.emptyList();
+  }
+
+  public Type getType() {
+    return thisType;
+  }
+
+  public void apply(Switch sw) {
+    ((RefSwitch) sw).caseThisRef(this);
+  }
+
+  public Object clone() {
+    return new ThisRef(thisType);
+  }
 
 }

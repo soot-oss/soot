@@ -25,17 +25,15 @@
 
 package soot.tagkit;
 
-
-/** Represents the synthetic attribute.
+/**
+ * Represents the synthetic attribute.
  */
 
-public class QualifyingTag extends SyntheticParamTag 
-{
+public class QualifyingTag extends SyntheticParamTag {
 
-    /** Returns the tag name. */
-    public String getName() {
-        return "QualifyingTag";
-    }
+  /** Returns the tag name. */
+  public String getName() {
+    return "QualifyingTag";
+  }
 
 }
-

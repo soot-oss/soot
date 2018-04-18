@@ -22,29 +22,27 @@ package soot.shimple.internal;
 import soot.UnitBox;
 
 /**
- * Extension of UnitBox to provide some extra information needed by
- * SPatchingChain.
+ * Extension of UnitBox to provide some extra information needed by SPatchingChain.
  *
  * @author Navindra Umanee
  **/
-public interface SUnitBox extends UnitBox
-{
-    /**
-     * Indicates whether the contents of the UnitBox may have been
-     * changed.  Returns true if setUnit(Unit) has been called
-     * recently and was not followed by setUnitChanged(false).
-     *
-     * <p> Needed for Shimple internal Unit chain patching.
-     **/
-    public boolean isUnitChanged();
-    
-    /**
-     * Updates the value of the flag used to indicate whether the
-     * contents of the UnitBox may have changed.
-     *
-     * <p> Needed for Shimple internal Unit chain patching.
-     *
-     * @see #isUnitChanged()
-     **/
-    public void setUnitChanged(boolean unitChanged);
+public interface SUnitBox extends UnitBox {
+  /**
+   * Indicates whether the contents of the UnitBox may have been changed. Returns true if setUnit(Unit) has been called recently and was not followed
+   * by setUnitChanged(false).
+   *
+   * <p>
+   * Needed for Shimple internal Unit chain patching.
+   **/
+  public boolean isUnitChanged();
+
+  /**
+   * Updates the value of the flag used to indicate whether the contents of the UnitBox may have changed.
+   *
+   * <p>
+   * Needed for Shimple internal Unit chain patching.
+   *
+   * @see #isUnitChanged()
+   **/
+  public void setUnitChanged(boolean unitChanged);
 }

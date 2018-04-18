@@ -23,17 +23,15 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
+import soot.Value;
+import soot.ValueBox;
 
-public interface ExitMonitorStmt extends MonitorStmt
-{
-    public Value getOp();
-    public void setOp(Value op);
-    public ValueBox getOpBox();
+public interface ExitMonitorStmt extends MonitorStmt {
+  public Value getOp();
+
+  public void setOp(Value op);
+
+  public ValueBox getOpBox();
 }

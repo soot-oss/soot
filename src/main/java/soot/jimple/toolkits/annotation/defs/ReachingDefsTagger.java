@@ -19,39 +19,46 @@
 
 package soot.jimple.toolkits.annotation.defs;
 
-import soot.*;
-import soot.toolkits.scalar.*;
-import soot.tagkit.*;
+import java.util.Map;
 
-import java.util.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.Singletons;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.tagkit.LinkTag;
+import soot.toolkits.scalar.LocalDefs;
 
 public class ReachingDefsTagger extends BodyTransformer {
 
-	public ReachingDefsTagger(Singletons.Global g) {
-	}
+  public ReachingDefsTagger(Singletons.Global g) {
+  }
 
-	public static ReachingDefsTagger v() {
-		return G.v().soot_jimple_toolkits_annotation_defs_ReachingDefsTagger();
-	}
+  public static ReachingDefsTagger v() {
+    return G.v().soot_jimple_toolkits_annotation_defs_ReachingDefsTagger();
+  }
 
-	protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
-		LocalDefs ld = LocalDefs.Factory.newLocalDefs(b);
+    LocalDefs ld = LocalDefs.Factory.newLocalDefs(b);
 
-		for (Unit s : b.getUnits()) {
-			// System.out.println("stmt: "+s);
-			for (ValueBox vbox : s.getUseBoxes()) {
-				Value v = vbox.getValue();
-				if (v instanceof Local) {
-					Local l = (Local) v;
-					// System.out.println("local: "+l);
-					for (Unit next : ld.getDefsOfAt(l, s)) {
-						String info = l + " has reaching def: " + next;
-						String className =  b.getMethod().getDeclaringClass().getName();
-						s.addTag(new LinkTag(info, next, className, "Reaching Defs"));
-					}
-				}
-			}
-		}
-	}
+    for (Unit s : b.getUnits()) {
+      // System.out.println("stmt: "+s);
+      for (ValueBox vbox : s.getUseBoxes()) {
+        Value v = vbox.getValue();
+        if (v instanceof Local) {
+          Local l = (Local) v;
+          // System.out.println("local: "+l);
+          for (Unit next : ld.getDefsOfAt(l, s)) {
+            String info = l + " has reaching def: " + next;
+            String className = b.getMethod().getDeclaringClass().getName();
+            s.addTag(new LinkTag(info, next, className, "Reaching Defs"));
+          }
+        }
+      }
+    }
+  }
 }

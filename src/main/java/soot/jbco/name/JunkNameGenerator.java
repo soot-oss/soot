@@ -8,15 +8,11 @@ package soot.jbco.name;
  */
 public class JunkNameGenerator extends AbstractNameGenerator implements NameGenerator {
 
-    private static final char stringChars[][] = {
-            {'S', '5', '$'},
-            {'l', '1', 'I'},
-            {'_'}
-    };
+  private static final char stringChars[][] = { { 'S', '5', '$' }, { 'l', '1', 'I' }, { '_' } };
 
-    @Override
-    protected char[][] getChars() {
-        return stringChars;
-    }
+  @Override
+  protected char[][] getChars() {
+    return stringChars;
+  }
 
 }

@@ -23,42 +23,36 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
+import java.util.List;
 
-import java.util.*;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleToBafContext;
 
 @SuppressWarnings("serial")
-abstract public class AbstractJimpleFloatBinopExpr
-    extends AbstractFloatBinopExpr implements ConvertToBaf
-{
-    AbstractJimpleFloatBinopExpr(Value op1, Value op2)
-    {
-        this(Jimple.v().newArgBox(op1),
-             Jimple.v().newArgBox(op2));
-    }
+abstract public class AbstractJimpleFloatBinopExpr extends AbstractFloatBinopExpr implements ConvertToBaf {
+  AbstractJimpleFloatBinopExpr(Value op1, Value op2) {
+    this(Jimple.v().newArgBox(op1), Jimple.v().newArgBox(op2));
+  }
 
-    protected AbstractJimpleFloatBinopExpr(ValueBox op1Box, ValueBox op2Box)
-    {
-        this.op1Box = op1Box;
-        this.op2Box = op2Box;
-    }
+  protected AbstractJimpleFloatBinopExpr(ValueBox op1Box, ValueBox op2Box) {
+    this.op1Box = op1Box;
+    this.op2Box = op2Box;
+  }
 
-    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
-    {
-        ((ConvertToBaf) this.getOp1()).convertToBaf(context, out);
-        ((ConvertToBaf) this.getOp2()).convertToBaf(context, out);
-        Unit u = (Unit)makeBafInst(this.getOp1().getType());
-        out.add(u);
-        u.addAllTagsOf(context.getCurrentUnit());
-    }
+  public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
+    ((ConvertToBaf) this.getOp1()).convertToBaf(context, out);
+    ((ConvertToBaf) this.getOp2()).convertToBaf(context, out);
+    Unit u = (Unit) makeBafInst(this.getOp1().getType());
+    out.add(u);
+    u.addAllTagsOf(context.getCurrentUnit());
+  }
 
-    abstract Object makeBafInst(Type opType);
+  abstract Object makeBafInst(Type opType);
 }

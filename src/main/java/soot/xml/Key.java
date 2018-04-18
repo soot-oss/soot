@@ -19,48 +19,49 @@
 
 package soot.xml;
 
-import java.io.*;
+import java.io.PrintWriter;
 
 public class Key {
 
-    private final int red;
-    private final int green;
-    private final int blue;
-    private final String key;
-    private String aType;
-    
-    public Key(int r, int g, int b, String k){
-        red = r;
-        green = g;
-        blue = b;
-        key = k;
-    }
+  private final int red;
+  private final int green;
+  private final int blue;
+  private final String key;
+  private String aType;
 
-    public int red(){
-        return red;
-    }
+  public Key(int r, int g, int b, String k) {
+    red = r;
+    green = g;
+    blue = b;
+    key = k;
+  }
 
-    public int green(){
-        return green;
-    }
+  public int red() {
+    return red;
+  }
 
-    public int blue() {
-        return blue;
-    }
+  public int green() {
+    return green;
+  }
 
-    public String key(){
-        return key;
-    }
+  public int blue() {
+    return blue;
+  }
 
-    public void print(PrintWriter writerOut){
-        writerOut.println("<key red=\""+red()+"\" green=\""+green()+"\" blue=\""+blue()+"\" key=\""+key()+"\" aType=\""+aType()+"\"/>");
-    }
-    
-    public String aType(){
-        return aType;
-    }
+  public String key() {
+    return key;
+  }
 
-    public void aType(String s){
-        aType = s;
-    }
+  public void print(PrintWriter writerOut) {
+    writerOut
+        .println("<key red=\"" + red() + "\" green=\"" + green() + "\" blue=\"" + blue() + "\" key=\"" + key() + "\" aType=\"" + aType() + "\"/>");
+  }
+
+  public String aType() {
+    return aType;
+  }
+
+  public void aType(String s) {
+    aType = s;
+  }
 }

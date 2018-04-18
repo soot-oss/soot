@@ -1,8 +1,7 @@
 
 package soot.jimple.toolkits.thread.mhp.stmt;
 
-
-import soot.*;
+import soot.SootMethod;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -15,20 +14,13 @@ import soot.*;
 //
 // -Richard L. Halpert, 2006-11-30
 
+public class WaitingStmt extends JPegStmt {
 
-public class WaitingStmt extends JPegStmt
-{
-	
-	public WaitingStmt(String obj, String ca, SootMethod sm)
-	{
-		this.object = obj;
-		this.name = "waiting";
-		this.caller = ca;
-		this.sootMethod = sm;
-	}
-	
-	
-	
-	
-	
+  public WaitingStmt(String obj, String ca, SootMethod sm) {
+    this.object = obj;
+    this.name = "waiting";
+    this.caller = ca;
+    this.sootMethod = sm;
+  }
+
 }

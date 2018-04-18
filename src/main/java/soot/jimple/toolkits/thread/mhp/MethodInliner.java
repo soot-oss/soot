@@ -1,9 +1,10 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
-import soot.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-import java.util.*;
+import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
+import soot.util.Chain;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -16,52 +17,49 @@ import java.util.*;
 //
 // -Richard L. Halpert, 2006-11-30
 
-public class MethodInliner
-{
-	
-	// private ArrayList inlineSite;
-	MethodInliner(){
-		//	inlineSite = new ArrayList();
-	}
-	public static void inline(ArrayList sites){
-		Iterator it = sites.iterator();
-		while (it.hasNext()){
-			ArrayList element = (ArrayList)it.next();
-			JPegStmt stmt = (JPegStmt)element.get(0);
-			Chain chain = (Chain)element.get(1);
-			PegGraph p1 = (PegGraph)element.get(2);
-			PegGraph p2 = (PegGraph)element.get(3);
-			// testHeads(p2);
-			// System.out.println("before inlining: stmt:"+stmt);
-			//  System.out.println(p1);
-			
-			
-			inline(stmt, chain, p1, p2);
-			// System.out.println("after inlining: stmt:"+stmt);
-			
-			
-			//System.out.println(p1);
-		}
-		
-	}
-	private static void inline(JPegStmt invokeStmt,Chain chain, PegGraph container, PegGraph inlinee){
-		//System.out.println("==inside inline===");	
-//		PegToDotFile printer = new PegToDotFile(inlinee, false, "before_addPeg_inlinee"+invokeStmt.getName());
-		if (!container.addPeg(inlinee, chain)) {
-			throw new RuntimeException("heads >1 stm: "+invokeStmt);
-		}
-		
-//		printer = new PegToDotFile(container, false, "after_addPeg_"+invokeStmt);
-		container.buildSuccsForInlining(invokeStmt, chain, inlinee);
-		//printer = new PegToDotFile(container, false, "after_bu_succ_"+invokeStmt.getName());
-		
-		//	System.out.println(container);
-		container.buildMaps(inlinee);
-		container.buildPreds();
-		//	container.testStartToThread();
-		
-	}
-	
-	
-	
+public class MethodInliner {
+
+  // private ArrayList inlineSite;
+  MethodInliner() {
+    // inlineSite = new ArrayList();
+  }
+
+  public static void inline(ArrayList sites) {
+    Iterator it = sites.iterator();
+    while (it.hasNext()) {
+      ArrayList element = (ArrayList) it.next();
+      JPegStmt stmt = (JPegStmt) element.get(0);
+      Chain chain = (Chain) element.get(1);
+      PegGraph p1 = (PegGraph) element.get(2);
+      PegGraph p2 = (PegGraph) element.get(3);
+      // testHeads(p2);
+      // System.out.println("before inlining: stmt:"+stmt);
+      // System.out.println(p1);
+
+      inline(stmt, chain, p1, p2);
+      // System.out.println("after inlining: stmt:"+stmt);
+
+      // System.out.println(p1);
+    }
+
+  }
+
+  private static void inline(JPegStmt invokeStmt, Chain chain, PegGraph container, PegGraph inlinee) {
+    // System.out.println("==inside inline===");
+    // PegToDotFile printer = new PegToDotFile(inlinee, false, "before_addPeg_inlinee"+invokeStmt.getName());
+    if (!container.addPeg(inlinee, chain)) {
+      throw new RuntimeException("heads >1 stm: " + invokeStmt);
+    }
+
+    // printer = new PegToDotFile(container, false, "after_addPeg_"+invokeStmt);
+    container.buildSuccsForInlining(invokeStmt, chain, inlinee);
+    // printer = new PegToDotFile(container, false, "after_bu_succ_"+invokeStmt.getName());
+
+    // System.out.println(container);
+    container.buildMaps(inlinee);
+    container.buildPreds();
+    // container.testStartToThread();
+
+  }
+
 }

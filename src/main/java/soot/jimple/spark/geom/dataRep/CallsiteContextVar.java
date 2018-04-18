@@ -19,7 +19,6 @@
 package soot.jimple.spark.geom.dataRep;
 
 import soot.jimple.spark.pag.Node;
-import soot.util.Numberable;
 
 /**
  * A general interface for generating the traditional context sensitive variable representation.
@@ -27,72 +26,68 @@ import soot.util.Numberable;
  * @author xiao
  *
  */
-public class CallsiteContextVar extends ContextVar
-{
-	/*
-	 * If var is a local pointer or object, context is the callsite for the creation of the pointer or object.
-	 * If var is a instance field, context is the callsite for the creation of its base object.
-	 */
-	public CgEdge context = null;
-	
-	
-	public CallsiteContextVar() {}
-	
-	public CallsiteContextVar( CgEdge c, Node v )
-	{
-		context = c;
-		var = v;
-	}
-	
-	public CallsiteContextVar( CallsiteContextVar o )
-	{
-		context = o.context;
-		var = o.var;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "<" + context.toString() + ", " + var.toString() + ">";
-	}
-	
-	@Override
-	public boolean equals( Object o )
-	{
-		CallsiteContextVar other = (CallsiteContextVar)o;
-		return (other.context == context) && (other.var == var); 
-	}
+public class CallsiteContextVar extends ContextVar {
+  /*
+   * If var is a local pointer or object, context is the callsite for the creation of the pointer or object. If var is a instance field, context is
+   * the callsite for the creation of its base object.
+   */
+  public CgEdge context = null;
 
-	@Override
-	public int hashCode()
-	{
-		int ch = 0;
-		if ( context != null ) ch = context.hashCode();
-		
-		int ans = var.hashCode() + ch;
-		if ( ans < 0 ) ans = -ans;
-		return ans;
-	}
+  public CallsiteContextVar() {
+  }
 
-	@Override
-	public boolean contains(ContextVar cv) 
-	{
-		CallsiteContextVar ccv = (CallsiteContextVar)cv;
-		if ( context == ccv.context ) return true;
-		return false;
-	}
+  public CallsiteContextVar(CgEdge c, Node v) {
+    context = c;
+    var = v;
+  }
 
-	@Override
-	public boolean merge(ContextVar cv) 
-	{
-		// The behavior of merging callsite context sensitive variables is undefined.
-		return false;
-	}
+  public CallsiteContextVar(CallsiteContextVar o) {
+    context = o.context;
+    var = o.var;
+  }
 
-	@Override
-	public boolean intersect(ContextVar cv) 
-	{
-		return contains(cv);
-	}
+  @Override
+  public String toString() {
+    return "<" + context.toString() + ", " + var.toString() + ">";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    CallsiteContextVar other = (CallsiteContextVar) o;
+    return (other.context == context) && (other.var == var);
+  }
+
+  @Override
+  public int hashCode() {
+    int ch = 0;
+    if (context != null) {
+      ch = context.hashCode();
+    }
+
+    int ans = var.hashCode() + ch;
+    if (ans < 0) {
+      ans = -ans;
+    }
+    return ans;
+  }
+
+  @Override
+  public boolean contains(ContextVar cv) {
+    CallsiteContextVar ccv = (CallsiteContextVar) cv;
+    if (context == ccv.context) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean merge(ContextVar cv) {
+    // The behavior of merging callsite context sensitive variables is undefined.
+    return false;
+  }
+
+  @Override
+  public boolean intersect(ContextVar cv) {
+    return contains(cv);
+  }
 }
-

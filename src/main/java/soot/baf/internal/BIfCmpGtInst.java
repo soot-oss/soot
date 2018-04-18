@@ -23,54 +23,46 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.AbstractJasminClass;
+import soot.Type;
+import soot.Unit;
+import soot.baf.Baf;
+import soot.baf.IfCmpGtInst;
+import soot.baf.InstSwitch;
+import soot.util.Switch;
 
-public class BIfCmpGtInst extends AbstractOpTypeBranchInst 
-                          implements IfCmpGtInst
-{
-    public BIfCmpGtInst(Type opType, Unit target)
-    {
-        super(opType, Baf.v().newInstBox(target));
-    }
-    
-    public int getInCount()
-    {
-        return 2;
-    }
+public class BIfCmpGtInst extends AbstractOpTypeBranchInst implements IfCmpGtInst {
+  public BIfCmpGtInst(Type opType, Unit target) {
+    super(opType, Baf.v().newInstBox(target));
+  }
 
-    public Object clone() 
-    {
-        return new   BIfCmpGtInst(getOpType(), getTarget());
-    }
+  public int getInCount() {
+    return 2;
+  }
 
-    public int getInMachineCount()
-    {
-        return 2*AbstractJasminClass.sizeOfType(getOpType());
-    }
-    
-    public int getOutCount()
-    {
-        return 0;
-    }
+  public Object clone() {
+    return new BIfCmpGtInst(getOpType(), getTarget());
+  }
 
-    public int getOutMachineCount()
-    {
-        return 0;
-    }
+  public int getInMachineCount() {
+    return 2 * AbstractJasminClass.sizeOfType(getOpType());
+  }
 
-    public String getName() { return "ifcmpgt"; }
+  public int getOutCount() {
+    return 0;
+  }
 
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseIfCmpGtInst(this);
-    }    
+  public int getOutMachineCount() {
+    return 0;
+  }
+
+  public String getName() {
+    return "ifcmpgt";
+  }
+
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseIfCmpGtInst(this);
+  }
 }
-

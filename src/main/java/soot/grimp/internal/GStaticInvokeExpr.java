@@ -24,38 +24,34 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.grimp.internal;
 
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class GStaticInvokeExpr extends AbstractStaticInvokeExpr 
-{
-    public GStaticInvokeExpr(SootMethodRef methodRef, List args)
-    {
-        super(methodRef, new ValueBox[args.size()]);
+import soot.SootMethodRef;
+import soot.Value;
+import soot.ValueBox;
+import soot.grimp.Grimp;
+import soot.jimple.internal.AbstractStaticInvokeExpr;
 
-        for(int i = 0; i < args.size(); i++)
-            this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
+public class GStaticInvokeExpr extends AbstractStaticInvokeExpr {
+  public GStaticInvokeExpr(SootMethodRef methodRef, List args) {
+    super(methodRef, new ValueBox[args.size()]);
+
+    for (int i = 0; i < args.size(); i++) {
+      this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
     }
-    
-    
-    public Object clone() 
-    {
-        ArrayList clonedArgs = new ArrayList(getArgCount());
+  }
 
-        for(int i = 0; i < getArgCount(); i++) {
-            clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
-        }
-        
-        return new  GStaticInvokeExpr(methodRef, clonedArgs);
+  public Object clone() {
+    ArrayList clonedArgs = new ArrayList(getArgCount());
+
+    for (int i = 0; i < getArgCount(); i++) {
+      clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
     }
-    
+
+    return new GStaticInvokeExpr(methodRef, clonedArgs);
+  }
+
 }

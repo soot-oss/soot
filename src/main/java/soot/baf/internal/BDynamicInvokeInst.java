@@ -28,105 +28,105 @@ package soot.baf.internal;
 
 import java.util.List;
 
-import org.objectweb.asm.Opcodes;
-
-import soot.*;
-import soot.baf.*;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.VoidType;
+import soot.baf.DynamicInvokeInst;
+import soot.baf.InstSwitch;
 import soot.jimple.Jimple;
-import soot.util.*;
+import soot.util.Switch;
 
 @SuppressWarnings({ "serial", "unchecked" })
-public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInvokeInst
-{	
-    protected final SootMethodRef bsmRef;
-	private final List<Value> bsmArgs;
-	protected int tag;
+public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInvokeInst {
+  protected final SootMethodRef bsmRef;
+  private final List<Value> bsmArgs;
+  protected int tag;
 
-	public BDynamicInvokeInst(SootMethodRef bsmMethodRef, List<Value> bsmArgs, SootMethodRef methodRef, int tag) { 
-        this.bsmRef = bsmMethodRef;
-		this.bsmArgs = bsmArgs;
-		this.methodRef = methodRef;
-		this.tag = tag;
+  public BDynamicInvokeInst(SootMethodRef bsmMethodRef, List<Value> bsmArgs, SootMethodRef methodRef, int tag) {
+    this.bsmRef = bsmMethodRef;
+    this.bsmArgs = bsmArgs;
+    this.methodRef = methodRef;
+    this.tag = tag;
+  }
+
+  public int getInCount() {
+    return methodRef.parameterTypes().size();
+
+  }
+
+  public Object clone() {
+    return new BDynamicInvokeInst(bsmRef, bsmArgs, methodRef, tag);
+  }
+
+  public int getOutCount() {
+    if (methodRef.returnType() instanceof VoidType) {
+      return 0;
+    } else {
+      return 1;
     }
-	
-    public int getInCount()
-    {
-        return methodRef.parameterTypes().size();
-        
+  }
+
+  public SootMethodRef getBootstrapMethodRef() {
+    return bsmRef;
+  }
+
+  public List<Value> getBootstrapArgs() {
+    return bsmArgs;
+  }
+
+  public String getName() {
+    return "dynamicinvoke";
+  }
+
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseDynamicInvokeInst(this);
+  }
+
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
+
+    buffer.append(Jimple.DYNAMICINVOKE);
+    buffer.append(" \"");
+    buffer.append(methodRef.name()); // quoted method name (can be any UTF8 string)
+    buffer.append("\" <");
+    buffer.append(SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()));
+    buffer.append(">");
+    buffer.append(bsmRef.getSignature());
+    buffer.append("(");
+    for (int i = 0; i < bsmArgs.size(); i++) {
+      if (i != 0) {
+        buffer.append(", ");
+      }
+
+      buffer.append(bsmArgs.get(i).toString());
     }
+    buffer.append(")");
 
-    public Object clone() 
-    {
-        return new  BDynamicInvokeInst(bsmRef, bsmArgs, methodRef, tag);
-    }
-   
-    public int getOutCount()
-    {
-        if(methodRef.returnType() instanceof VoidType)
-            return 0;
-        else
-            return 1;
-    }
+    return buffer.toString();
+  }
 
-    public SootMethodRef getBootstrapMethodRef() {
-		return bsmRef;
-	}   
-    
-    public List<Value> getBootstrapArgs() {
-    	return bsmArgs;
-    }
+  public void toString(UnitPrinter up) {
+    up.literal(Jimple.DYNAMICINVOKE);
+    up.literal(" \"" + methodRef.name() + "\" <"
+        + SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()) + "> ");
+    up.methodRef(bsmRef);
+    up.literal("(");
 
-    public String getName() { return "dynamicinvoke"; }
+    for (int i = 0; i < bsmArgs.size(); i++) {
+      if (i != 0) {
+        up.literal(", ");
+      }
 
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseDynamicInvokeInst(this);
-    }   
-    
-    public String toString()
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append(Jimple.DYNAMICINVOKE);
-        buffer.append(" \"");
-        buffer.append(methodRef.name()); //quoted method name (can be any UTF8 string)
-        buffer.append("\" <");
-        buffer.append(SootMethod.getSubSignature(""/* no method name here*/, methodRef.parameterTypes(), methodRef.returnType()));
-        buffer.append(">");
-        buffer.append(bsmRef.getSignature());
-        buffer.append("(");
-        for(int i = 0; i < bsmArgs.size(); i++)
-        {
-            if(i != 0)
-                buffer.append(", ");
-
-            buffer.append(bsmArgs.get(i).toString());
-        }
-        buffer.append(")");
-
-        return buffer.toString();
-    }
-    
-    public void toString(UnitPrinter up)
-    {
-        up.literal(Jimple.DYNAMICINVOKE);        
-        up.literal(" \"" + methodRef.name() + "\" <" + SootMethod.getSubSignature(""/* no method name here*/, methodRef.parameterTypes(), methodRef.returnType()) +"> ");        
-        up.methodRef(bsmRef);
-        up.literal("(");
-        
-        for(int i = 0; i < bsmArgs.size(); i++)
-        {
-            if(i != 0)
-                up.literal(", ");
-                
-            bsmArgs.get(i).toString(up);
-        }
-
-        up.literal(")");
+      bsmArgs.get(i).toString(up);
     }
 
-	@Override
-	public int getHandleTag() {
-		return tag;
-	}
+    up.literal(")");
+  }
+
+  @Override
+  public int getHandleTag() {
+    return tag;
+  }
 }

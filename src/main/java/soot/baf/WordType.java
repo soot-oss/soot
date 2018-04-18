@@ -23,38 +23,34 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf;
 
-import soot.*;
-import soot.util.*;
+import soot.G;
+import soot.Singletons;
+import soot.Type;
+import soot.util.Switch;
 
-public class WordType extends Type
-{
-    public WordType( Singletons.Global g ) {}
-    public static WordType v() { return G.v().soot_baf_WordType(); }
+public class WordType extends Type {
+  public WordType(Singletons.Global g) {
+  }
 
-    public boolean equals(Object t)
-    {
-        return this == t;
-    }
-    
-    public int hashCode()
-    {
-        return 0xB747239F;
-    }
-    
-    public String toString()
-    {
-        return "word";
-    }
+  public static WordType v() {
+    return G.v().soot_baf_WordType();
+  }
 
-    public void apply(Switch sw)
-    {   
-        throw new RuntimeException("invalid switch case");
-    }
+  public boolean equals(Object t) {
+    return this == t;
+  }
+
+  public int hashCode() {
+    return 0xB747239F;
+  }
+
+  public String toString() {
+    return "word";
+  }
+
+  public void apply(Switch sw) {
+    throw new RuntimeException("invalid switch case");
+  }
 }
-

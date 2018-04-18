@@ -23,53 +23,44 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.Unit;
+import soot.baf.Baf;
+import soot.baf.IfEqInst;
+import soot.baf.InstSwitch;
+import soot.util.Switch;
 
-public class BIfEqInst extends AbstractBranchInst implements IfEqInst
-{
-    public BIfEqInst(Unit target)
-    {
-        super(Baf.v().newInstBox(target));
-    }
+public class BIfEqInst extends AbstractBranchInst implements IfEqInst {
+  public BIfEqInst(Unit target) {
+    super(Baf.v().newInstBox(target));
+  }
 
-    public int getInCount()
-    {
-        return 1;
-    }
+  public int getInCount() {
+    return 1;
+  }
 
-    public Object clone() 
-    {
-        return new  BIfEqInst(getTarget());
-    }
+  public Object clone() {
+    return new BIfEqInst(getTarget());
+  }
 
-    public int getInMachineCount()
-    {
-        return 1;
-    }
-    
-    public int getOutCount()
-    {
-        return 0;
-    }
+  public int getInMachineCount() {
+    return 1;
+  }
 
-    public int getOutMachineCount()
-    {
-        return 0;
-    }
+  public int getOutCount() {
+    return 0;
+  }
 
-    public String getName() { return "ifeq"; }
+  public int getOutMachineCount() {
+    return 0;
+  }
 
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseIfEqInst(this);
-    }    
+  public String getName() {
+    return "ifeq";
+  }
+
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseIfEqInst(this);
+  }
 }
-

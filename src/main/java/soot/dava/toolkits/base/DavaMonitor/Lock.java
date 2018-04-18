@@ -21,35 +21,31 @@ package soot.dava.toolkits.base.DavaMonitor;
 
 import java.util.LinkedList;
 
-class Lock
-{
-    public Thread owner;
-    public int level;
+class Lock {
+  public Thread owner;
+  public int level;
 
-    private final LinkedList<Thread> q;
+  private final LinkedList<Thread> q;
 
-    Lock()
-    {
-	level = 0;
-	owner = null;
-	q = new LinkedList<Thread>();
+  Lock() {
+    level = 0;
+    owner = null;
+    q = new LinkedList<Thread>();
+  }
+
+  public Thread nextThread() {
+    return q.getFirst();
+  }
+
+  public Thread deQ(Thread t) throws IllegalMonitorStateException {
+    if (t != q.getFirst()) {
+      throw new IllegalMonitorStateException();
     }
 
-    public Thread nextThread()
-    {
-	return q.getFirst();
-    }
+    return q.removeFirst();
+  }
 
-    public Thread deQ( Thread t) throws IllegalMonitorStateException
-    {
-	if (t != q.getFirst())
-	    throw new IllegalMonitorStateException();
-
-	return q.removeFirst();
-    }
-
-    public void enQ( Thread t)
-    {
-	q.add( t);
-    }
+  public void enQ(Thread t) {
+    q.add(t);
+  }
 }

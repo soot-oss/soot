@@ -25,6 +25,5 @@
 
 package soot.baf;
 
-public interface ThrowInst extends NoArgInst
-{
+public interface ThrowInst extends NoArgInst {
 }

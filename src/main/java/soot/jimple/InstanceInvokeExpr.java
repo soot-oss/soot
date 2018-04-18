@@ -23,20 +23,18 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
+import soot.Value;
+import soot.ValueBox;
 
-public interface InstanceInvokeExpr extends InvokeExpr
-{
-    /**
-     * @return the target (qualifier) of this method invocation expression.
-     */
-    public Value getBase();
-    public ValueBox getBaseBox();
-    public void setBase(Value base);
+public interface InstanceInvokeExpr extends InvokeExpr {
+  /**
+   * @return the target (qualifier) of this method invocation expression.
+   */
+  public Value getBase();
+
+  public ValueBox getBaseBox();
+
+  public void setBase(Value base);
 }

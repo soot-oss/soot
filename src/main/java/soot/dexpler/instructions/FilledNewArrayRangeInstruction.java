@@ -45,61 +45,61 @@ import soot.jimple.NewArrayExpr;
 
 public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
 
-    public FilledNewArrayRangeInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
+  public FilledNewArrayRangeInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
+
+  @Override
+  public void jimplify(DexBody body) {
+    if (!(instruction instanceof Instruction3rc)) {
+      throw new IllegalArgumentException("Expected Instruction3rc but got: " + instruction.getClass());
     }
 
-    @Override
-	public void jimplify (DexBody body) {
-        if(!(instruction instanceof Instruction3rc))
-            throw new IllegalArgumentException("Expected Instruction3rc but got: "+instruction.getClass());
+    Instruction3rc filledNewArrayInstr = (Instruction3rc) instruction;
 
-        Instruction3rc filledNewArrayInstr = (Instruction3rc)instruction;
+    // NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
+    // body.add(nopStmtBeginning);
 
-//        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
-//        body.add(nopStmtBeginning);
+    int usedRegister = filledNewArrayInstr.getRegisterCount();
+    Type t = DexType.toSoot((TypeReference) filledNewArrayInstr.getReference());
+    // NewArrayExpr needs the ElementType as it increases the array dimension by 1
+    Type arrayType = ((ArrayType) t).getElementType();
+    NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(usedRegister));
+    Local arrayLocal = body.getStoreResultLocal();
+    AssignStmt assignStmt = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
+    body.add(assignStmt);
 
-        int usedRegister = filledNewArrayInstr.getRegisterCount();
-        Type t = DexType.toSoot((TypeReference) filledNewArrayInstr.getReference());
-        // NewArrayExpr needs the ElementType as it increases the array dimension by 1
-        Type arrayType = ((ArrayType) t).getElementType();
-        NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(usedRegister));
-        Local arrayLocal = body.getStoreResultLocal();
-        AssignStmt assignStmt = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
-        body.add (assignStmt);
+    for (int i = 0; i < usedRegister; i++) {
+      ArrayRef arrayRef = Jimple.v().newArrayRef(arrayLocal, IntConstant.v(i));
 
-        for (int i = 0; i < usedRegister; i++) {
-            ArrayRef arrayRef = Jimple.v().newArrayRef(arrayLocal, IntConstant.v(i));
+      AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, body.getRegisterLocal(i + filledNewArrayInstr.getStartRegister()));
+      addTags(assign);
+      body.add(assign);
+    }
+    // NopStmt nopStmtEnd = Jimple.v().newNopStmt();
+    // body.add(nopStmtEnd);
 
-            AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, body.getRegisterLocal(i + filledNewArrayInstr.getStartRegister()));
-            addTags(assign);
-            body.add(assign);
-        }
-//        NopStmt nopStmtEnd = Jimple.v().newNopStmt();
-//        body.add(nopStmtEnd);
+    // defineBlock(nopStmtBeginning,nopStmtEnd);
+    setUnit(assignStmt);
 
-//        defineBlock(nopStmtBeginning,nopStmtEnd);
-        setUnit (assignStmt);
+    // body.setDanglingInstruction(this);
 
-//        body.setDanglingInstruction(this);
-        
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-            //Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assignStmt);
-          DalvikTyper.v().setType(assignStmt.getLeftOpBox(), arrayExpr.getType(), false);
-          //DalvikTyper.v().addConstraint(assignStmt.getLeftOpBox(), assignStmt.getRightOpBox());
-        }
-
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+      // Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assignStmt);
+      DalvikTyper.v().setType(assignStmt.getLeftOpBox(), arrayExpr.getType(), false);
+      // DalvikTyper.v().addConstraint(assignStmt.getLeftOpBox(), assignStmt.getRightOpBox());
     }
 
-    @Override
-    boolean isUsedAsFloatingPoint(DexBody body, int register) {
-        Instruction3rc i = (Instruction3rc) instruction;
-        Type arrayType = DexType.toSoot((TypeReference) i.getReference());
-        int startRegister = i.getStartRegister();
-        int endRegister = startRegister + i.getRegisterCount();
+  }
 
-        return register >= startRegister && register <= endRegister && isFloatLike(arrayType);
-    }
+  @Override
+  boolean isUsedAsFloatingPoint(DexBody body, int register) {
+    Instruction3rc i = (Instruction3rc) instruction;
+    Type arrayType = DexType.toSoot((TypeReference) i.getReference());
+    int startRegister = i.getStartRegister();
+    int endRegister = startRegister + i.getRegisterCount();
 
+    return register >= startRegister && register <= endRegister && isFloatLike(arrayType);
+  }
 
 }

@@ -20,92 +20,104 @@
 
 package soot.dava.internal.javaRep;
 
-import soot.*;
-import java.util.*;
-import soot.grimp.*;
-import soot.grimp.internal.*;
+import java.util.ArrayList;
+
+import soot.NullType;
+import soot.SootMethodRef;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.grimp.Precedence;
+import soot.grimp.PrecedenceTest;
+import soot.grimp.internal.GInterfaceInvokeExpr;
 
 public class DInterfaceInvokeExpr extends GInterfaceInvokeExpr {
-	public DInterfaceInvokeExpr(Value base, SootMethodRef methodRef, java.util.List args) {
-		super(base, methodRef, args);
-	}
+  public DInterfaceInvokeExpr(Value base, SootMethodRef methodRef, java.util.List args) {
+    super(base, methodRef, args);
+  }
 
-	public void toString(UnitPrinter up) {
-		if (getBase().getType() instanceof NullType) {
-			// OL: I don't know what this is for; I'm just refactoring the
-			// original code. An explanation here would be welcome.
-			up.literal("((");
-			up.type(getMethodRef().declaringClass().getType());
-			up.literal(") ");
+  public void toString(UnitPrinter up) {
+    if (getBase().getType() instanceof NullType) {
+      // OL: I don't know what this is for; I'm just refactoring the
+      // original code. An explanation here would be welcome.
+      up.literal("((");
+      up.type(getMethodRef().declaringClass().getType());
+      up.literal(") ");
 
-			if (PrecedenceTest.needsBrackets(baseBox, this))
-				up.literal("(");
-			baseBox.toString(up);
-			if (PrecedenceTest.needsBrackets(baseBox, this))
-				up.literal(")");
+      if (PrecedenceTest.needsBrackets(baseBox, this)) {
+        up.literal("(");
+      }
+      baseBox.toString(up);
+      if (PrecedenceTest.needsBrackets(baseBox, this)) {
+        up.literal(")");
+      }
 
-			up.literal(")");
-			up.literal(".");
+      up.literal(")");
+      up.literal(".");
 
-			up.methodRef(methodRef);
-			up.literal("(");
+      up.methodRef(methodRef);
+      up.literal("(");
 
-			if (argBoxes != null) {
-				for (int i = 0; i < argBoxes.length; i++) {
-					if (i != 0)
-						up.literal(", ");
-	
-					argBoxes[i].toString(up);
-				}
-			}
+      if (argBoxes != null) {
+        for (int i = 0; i < argBoxes.length; i++) {
+          if (i != 0) {
+            up.literal(", ");
+          }
 
-			up.literal(")");
-		} else {
-			super.toString(up);
-		}
-	}
+          argBoxes[i].toString(up);
+        }
+      }
 
-	public String toString() {
-		if (getBase().getType() instanceof NullType) {
-			StringBuffer b = new StringBuffer();
+      up.literal(")");
+    } else {
+      super.toString(up);
+    }
+  }
 
-			b.append("((");
-			b.append(getMethodRef().declaringClass().getJavaStyleName());
-			b.append(") ");
+  public String toString() {
+    if (getBase().getType() instanceof NullType) {
+      StringBuffer b = new StringBuffer();
 
-			String baseStr = (getBase()).toString();
-			if ((getBase() instanceof Precedence) && (((Precedence) getBase()).getPrecedence() < getPrecedence()))
-				baseStr = "(" + baseStr + ")";
+      b.append("((");
+      b.append(getMethodRef().declaringClass().getJavaStyleName());
+      b.append(") ");
 
-			b.append(baseStr);
-			b.append(").");
+      String baseStr = (getBase()).toString();
+      if ((getBase() instanceof Precedence) && (((Precedence) getBase()).getPrecedence() < getPrecedence())) {
+        baseStr = "(" + baseStr + ")";
+      }
 
-			b.append(getMethodRef().name());
-			b.append("(");
+      b.append(baseStr);
+      b.append(").");
 
-			if (argBoxes != null) {
-				for (int i = 0; i < argBoxes.length; i++) {
-					if (i != 0)
-						b.append(", ");
+      b.append(getMethodRef().name());
+      b.append("(");
 
-					b.append((argBoxes[i].getValue()).toString());
-				}
-			}
+      if (argBoxes != null) {
+        for (int i = 0; i < argBoxes.length; i++) {
+          if (i != 0) {
+            b.append(", ");
+          }
 
-			b.append(")");
+          b.append((argBoxes[i].getValue()).toString());
+        }
+      }
 
-			return b.toString();
-		}
+      b.append(")");
 
-		return super.toString();
-	}
+      return b.toString();
+    }
 
-	public Object clone() {
-		ArrayList clonedArgs = new ArrayList(getArgCount());
+    return super.toString();
+  }
 
-		for (int i = 0; i < getArgCount(); i++)
-			clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+  public Object clone() {
+    ArrayList clonedArgs = new ArrayList(getArgCount());
 
-		return new DInterfaceInvokeExpr(getBase(), methodRef, clonedArgs);
-	}
+    for (int i = 0; i < getArgCount(); i++) {
+      clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+    }
+
+    return new DInterfaceInvokeExpr(getBase(), methodRef, clonedArgs);
+  }
 }

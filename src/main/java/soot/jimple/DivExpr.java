@@ -23,12 +23,7 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-public interface DivExpr extends BinopExpr
-{
+public interface DivExpr extends BinopExpr {
 }

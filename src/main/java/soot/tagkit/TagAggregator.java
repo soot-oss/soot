@@ -37,44 +37,40 @@ import soot.baf.BafBody;
 /** Interface to aggregate tags of units. */
 
 public abstract class TagAggregator extends BodyTransformer {
-	/** Decide whether this tag should be aggregated by this aggregator. */
-	public abstract boolean wantTag(Tag t);
+  /** Decide whether this tag should be aggregated by this aggregator. */
+  public abstract boolean wantTag(Tag t);
 
-	/** Aggregate the given tag assigned to the given unit */
-	public abstract void considerTag(Tag t, Unit u, LinkedList<Tag> tags,
-			LinkedList<Unit> units);
+  /** Aggregate the given tag assigned to the given unit */
+  public abstract void considerTag(Tag t, Unit u, LinkedList<Tag> tags, LinkedList<Unit> units);
 
-	/** Return name of the resulting aggregated tag. */
-	public abstract String aggregatedName();
+  /** Return name of the resulting aggregated tag. */
+  public abstract String aggregatedName();
 
-	protected void internalTransform(Body b, String phaseName,
-			Map<String, String> options) {
-		BafBody body = (BafBody) b;
-		
-		LinkedList<Tag> tags = new LinkedList<Tag>();
-		LinkedList<Unit> units = new LinkedList<Unit>();
-		
-		/* aggregate all tags */
-		for (Iterator<Unit> unitIt = body.getUnits().iterator(); unitIt
-				.hasNext();) {
-			final Unit unit = unitIt.next();
-			for (Iterator<Tag> tagIt = unit.getTags().iterator(); tagIt
-					.hasNext();) {
-				final Tag tag = tagIt.next();
-				if (wantTag(tag))
-					considerTag(tag, unit, tags, units);
-			}
-		}
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+    BafBody body = (BafBody) b;
 
-		if (units.size() > 0) {
-			b.addTag(new CodeAttribute(aggregatedName(), new LinkedList<Unit>(
-					units), new LinkedList<Tag>(tags)));
-		}
-		fini();
-	}
+    LinkedList<Tag> tags = new LinkedList<Tag>();
+    LinkedList<Unit> units = new LinkedList<Unit>();
 
-	/** Called after all tags for a method have been aggregated. */
-	public void fini() {
-	}
+    /* aggregate all tags */
+    for (Iterator<Unit> unitIt = body.getUnits().iterator(); unitIt.hasNext();) {
+      final Unit unit = unitIt.next();
+      for (Iterator<Tag> tagIt = unit.getTags().iterator(); tagIt.hasNext();) {
+        final Tag tag = tagIt.next();
+        if (wantTag(tag)) {
+          considerTag(tag, unit, tags, units);
+        }
+      }
+    }
+
+    if (units.size() > 0) {
+      b.addTag(new CodeAttribute(aggregatedName(), new LinkedList<Unit>(units), new LinkedList<Tag>(tags)));
+    }
+    fini();
+  }
+
+  /** Called after all tags for a method have been aggregated. */
+  public void fini() {
+  }
 
 }

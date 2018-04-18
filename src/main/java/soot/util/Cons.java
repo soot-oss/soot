@@ -21,51 +21,63 @@ package soot.util;
 
 /** A Lisp-style cons cell. */
 public final class Cons<U, V> {
-    final private U car;
-    final private V cdr;
-    
-    public Cons( U car, V cdr ) {
-        this.car = car;
-        this.cdr = cdr;
+  final private U car;
+  final private V cdr;
+
+  public Cons(U car, V cdr) {
+    this.car = car;
+    this.cdr = cdr;
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((car == null) ? 0 : car.hashCode());
+    result = prime * result + ((cdr == null) ? 0 : cdr.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
-    
-    @Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((car == null) ? 0 : car.hashCode());
-		result = prime * result + ((cdr == null) ? 0 : cdr.hashCode());
-		return result;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		@SuppressWarnings("unchecked")
-		Cons<U, V> other = (Cons<U, V>) obj;
-		if (car == null) {
-			if (other.car != null)
-				return false;
-		} else if (!car.equals(other.car))
-			return false;
-		if (cdr == null) {
-			if (other.cdr != null)
-				return false;
-		} else if (!cdr.equals(other.cdr))
-			return false;
-		return true;
-	}
-	
-    public U car() { return car; }
-    public V cdr() { return cdr; }
-    
-    @Override
-    public String toString(){
-		return car.toString()+","+cdr.toString();
+    if (obj == null) {
+      return false;
     }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    @SuppressWarnings("unchecked")
+    Cons<U, V> other = (Cons<U, V>) obj;
+    if (car == null) {
+      if (other.car != null) {
+        return false;
+      }
+    } else if (!car.equals(other.car)) {
+      return false;
+    }
+    if (cdr == null) {
+      if (other.cdr != null) {
+        return false;
+      }
+    } else if (!cdr.equals(other.cdr)) {
+      return false;
+    }
+    return true;
+  }
+
+  public U car() {
+    return car;
+  }
+
+  public V cdr() {
+    return cdr;
+  }
+
+  @Override
+  public String toString() {
+    return car.toString() + "," + cdr.toString();
+  }
 }

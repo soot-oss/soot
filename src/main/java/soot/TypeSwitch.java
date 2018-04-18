@@ -23,113 +23,93 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot;
 
 /** Implements Switchable on base Java types. */
-public class TypeSwitch implements ITypeSwitch 
-{
-    Object result;
+public class TypeSwitch implements ITypeSwitch {
+  Object result;
 
-    public void caseArrayType(ArrayType t)
-    {
-        defaultCase(t);
-    }
+  public void caseArrayType(ArrayType t) {
+    defaultCase(t);
+  }
 
-    public void caseBooleanType(BooleanType t)
-    {
-        defaultCase(t);
-    }
+  public void caseBooleanType(BooleanType t) {
+    defaultCase(t);
+  }
 
-    public void caseByteType(ByteType t)
-    {
-        defaultCase(t);
-    }
+  public void caseByteType(ByteType t) {
+    defaultCase(t);
+  }
 
-    public void caseCharType(CharType t)
-    {
-        defaultCase(t);
-    }
+  public void caseCharType(CharType t) {
+    defaultCase(t);
+  }
 
-    public void caseDoubleType(DoubleType t)
-    {
-        defaultCase(t);
-    }
+  public void caseDoubleType(DoubleType t) {
+    defaultCase(t);
+  }
 
-    public void caseFloatType(FloatType t)
-    {
-        defaultCase(t);
-    }
+  public void caseFloatType(FloatType t) {
+    defaultCase(t);
+  }
 
-    public void caseIntType(IntType t)
-    {
-        defaultCase(t);
-    }
+  public void caseIntType(IntType t) {
+    defaultCase(t);
+  }
 
-    public void caseLongType(LongType t)
-    {
-        defaultCase(t);
-    }
+  public void caseLongType(LongType t) {
+    defaultCase(t);
+  }
 
-    public void caseRefType(RefType t)
-    {
-        defaultCase(t);
-    }
+  public void caseRefType(RefType t) {
+    defaultCase(t);
+  }
 
-    public void caseShortType(ShortType t)
-    {
-        defaultCase(t);
-    }
+  public void caseShortType(ShortType t) {
+    defaultCase(t);
+  }
 
-    public void caseStmtAddressType(StmtAddressType t)
-    {
-        defaultCase(t);
-    }
+  public void caseStmtAddressType(StmtAddressType t) {
+    defaultCase(t);
+  }
 
-    public void caseUnknownType(UnknownType t)
-    {
-        defaultCase(t);
-    }
+  public void caseUnknownType(UnknownType t) {
+    defaultCase(t);
+  }
 
-    public void caseVoidType(VoidType t)
-    {
-        defaultCase(t);
-    }
+  public void caseVoidType(VoidType t) {
+    defaultCase(t);
+  }
 
-    public void caseAnySubType(AnySubType t)
-    {
-        defaultCase(t);
-    }
+  public void caseAnySubType(AnySubType t) {
+    defaultCase(t);
+  }
 
-    public void caseNullType(NullType t)
-    {
-        defaultCase(t);
-    }
+  public void caseNullType(NullType t) {
+    defaultCase(t);
+  }
 
-    public void caseErroneousType(ErroneousType t)
-    {
-        defaultCase(t);
-    }
+  public void caseErroneousType(ErroneousType t) {
+    defaultCase(t);
+  }
 
-    public void defaultCase(Type t)
-    {
+  public void defaultCase(Type t) {
 
-    }
+  }
 
-    /** @deprecated Replaced by defaultCase(Type)
-        @see #defaultCase(Type) **/
-	@Deprecated
-    public void caseDefault(Type t)
-    {
-    }
+  /**
+   * @deprecated Replaced by defaultCase(Type)
+   * @see #defaultCase(Type)
+   **/
+  @Deprecated
+  public void caseDefault(Type t) {
+  }
 
-    public void setResult(Object result)
-    {
-        this.result = result;
-    }
+  public void setResult(Object result) {
+    this.result = result;
+  }
 
-    public Object getResult()
-    {
-        return this.result;
-    }
+  public Object getResult() {
+    return this.result;
+  }
 }

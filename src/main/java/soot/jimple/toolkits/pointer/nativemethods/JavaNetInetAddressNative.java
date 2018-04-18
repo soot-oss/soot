@@ -26,22 +26,19 @@
 
 package soot.jimple.toolkits.pointer.nativemethods;
 
-import soot.*;
-import soot.jimple.toolkits.pointer.representations.*;
-import soot.jimple.toolkits.pointer.util.*;
+import soot.SootMethod;
+import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
+import soot.jimple.toolkits.pointer.util.NativeHelper;
 
 public class JavaNetInetAddressNative extends NativeMethodClass {
-    public JavaNetInetAddressNative( NativeHelper helper ) { super(helper); }
+  public JavaNetInetAddressNative(NativeHelper helper) {
+    super(helper);
+  }
 
   /**
-   * Implements the abstract method simulateMethod.
-   * It distributes the request to the corresponding methods 
-   * by signatures.
+   * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
    */
-  public void simulateMethod(SootMethod method,
-			     ReferenceVariable thisVar,
-			     ReferenceVariable returnVar,
-			     ReferenceVariable params[]){
+  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 
@@ -51,6 +48,5 @@ public class JavaNetInetAddressNative extends NativeMethodClass {
 
     }
   }
-
 
 }

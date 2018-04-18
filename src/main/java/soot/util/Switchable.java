@@ -23,12 +23,10 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.util;
 
 /** Basic interface used for visited objects in the Visitor design pattern. */
-public interface Switchable
-{
-    /** Called when this object is visited. */
-    void apply(Switch sw);
+public interface Switchable {
+  /** Called when this object is visited. */
+  void apply(Switch sw);
 }

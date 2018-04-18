@@ -19,46 +19,54 @@
 
 package soot.javaToJimple;
 
-import java.util.*;
+import java.util.HashMap;
 
 public class BiMap {
 
-    HashMap<Object, Object> keyVal;
-    HashMap<Object, Object> valKey;
-    
-    public BiMap(){
+  HashMap<Object, Object> keyVal;
+  HashMap<Object, Object> valKey;
+
+  public BiMap() {
+  }
+
+  public void put(Object key, Object val) {
+    if (keyVal == null) {
+      keyVal = new HashMap<Object, Object>();
+    }
+    if (valKey == null) {
+      valKey = new HashMap<Object, Object>();
     }
 
-    public void put(Object key, Object val){
-        if (keyVal == null){
-            keyVal = new HashMap<Object, Object>();
-        }
-        if (valKey == null){
-            valKey = new HashMap<Object, Object>();
-        }
+    keyVal.put(key, val);
+    valKey.put(val, key);
 
-        keyVal.put(key, val);
-        valKey.put(val, key);
-        
-    }
+  }
 
-    public Object getKey(Object val){
-        if (valKey == null) return null;
-        return valKey.get(val);
+  public Object getKey(Object val) {
+    if (valKey == null) {
+      return null;
     }
+    return valKey.get(val);
+  }
 
-    public Object getVal(Object key){
-        if (keyVal == null) return null;
-        return keyVal.get(key);
+  public Object getVal(Object key) {
+    if (keyVal == null) {
+      return null;
     }
+    return keyVal.get(key);
+  }
 
-    public boolean containsKey(Object key){
-        if (keyVal == null) return false;
-        return keyVal.containsKey(key);
+  public boolean containsKey(Object key) {
+    if (keyVal == null) {
+      return false;
     }
-    
-    public boolean containsVal(Object val){
-        if (valKey == null) return false;
-        return valKey.containsKey(val);
+    return keyVal.containsKey(key);
+  }
+
+  public boolean containsVal(Object val) {
+    if (valKey == null) {
+      return false;
     }
+    return valKey.containsKey(val);
+  }
 }

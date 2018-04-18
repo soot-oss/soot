@@ -30,20 +30,20 @@ import soot.dexpler.DexBody;
 
 public class InvokeVirtualInstruction extends MethodInvocationInstruction {
 
-    public InvokeVirtualInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
-    }
+  public InvokeVirtualInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
 
-    public void jimplify (DexBody body) {
-        // use Nop as begin marker
-//        NopStmt nop = Jimple.v().newNopStmt();
-//        defineBlock(nop);
-//        tagWithLineNumber(nop);
-//        body.add(nop);
-//        beginUnit = nop;
+  public void jimplify(DexBody body) {
+    // use Nop as begin marker
+    // NopStmt nop = Jimple.v().newNopStmt();
+    // defineBlock(nop);
+    // tagWithLineNumber(nop);
+    // body.add(nop);
+    // beginUnit = nop;
 
-   		jimplifyVirtual(body);
-    	
-        // setUnit() is called in MethodInvocationInstruction
-    }
+    jimplifyVirtual(body);
+
+    // setUnit() is called in MethodInvocationInstruction
+  }
 }

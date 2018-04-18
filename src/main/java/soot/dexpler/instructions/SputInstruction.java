@@ -41,29 +41,29 @@ import soot.jimple.StaticFieldRef;
 
 public class SputInstruction extends FieldInstruction {
 
-    public SputInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
-    }
+  public SputInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
 
-    @Override
-	public void jimplify (DexBody body) {
-        int source = ((OneRegisterInstruction)instruction).getRegisterA();
-        FieldReference f = (FieldReference)((ReferenceInstruction)instruction).getReference();
-        StaticFieldRef instanceField = Jimple.v().newStaticFieldRef(getStaticSootFieldRef(f));
-        Local sourceValue = body.getRegisterLocal(source);
-        AssignStmt assign = getAssignStmt(body, sourceValue, instanceField);
-        setUnit(assign);
-        addTags(assign);
-        body.add(assign);
+  @Override
+  public void jimplify(DexBody body) {
+    int source = ((OneRegisterInstruction) instruction).getRegisterA();
+    FieldReference f = (FieldReference) ((ReferenceInstruction) instruction).getReference();
+    StaticFieldRef instanceField = Jimple.v().newStaticFieldRef(getStaticSootFieldRef(f));
+    Local sourceValue = body.getRegisterLocal(source);
+    AssignStmt assign = getAssignStmt(body, sourceValue, instanceField);
+    setUnit(assign);
+    addTags(assign);
+    body.add(assign);
 
-		if (IDalvikTyper.ENABLE_DVKTYPER) {
-          DalvikTyper.v().setType(assign.getRightOpBox(), instanceField.getType(), true);
-        }
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+      DalvikTyper.v().setType(assign.getRightOpBox(), instanceField.getType(), true);
     }
+  }
 
-    @Override
-    protected Type getTargetType(DexBody body) {
-        FieldReference f = (FieldReference)((ReferenceInstruction) instruction).getReference();
-        return DexType.toSoot(f.getType());
-    }
+  @Override
+  protected Type getTargetType(DexBody body) {
+    FieldReference f = (FieldReference) ((ReferenceInstruction) instruction).getReference();
+    return DexType.toSoot(f.getType());
+  }
 }

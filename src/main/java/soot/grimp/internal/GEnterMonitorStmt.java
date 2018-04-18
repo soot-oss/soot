@@ -23,27 +23,18 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.grimp.internal;
 
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.jimple.internal.JEnterMonitorStmt;
 
-public class GEnterMonitorStmt extends JEnterMonitorStmt 
-{
-    public GEnterMonitorStmt(Value op)
-    {
-        super(Grimp.v().newExprBox(op));
-    }
+public class GEnterMonitorStmt extends JEnterMonitorStmt {
+  public GEnterMonitorStmt(Value op) {
+    super(Grimp.v().newExprBox(op));
+  }
 
-    public Object clone() 
-    {
-        return new GEnterMonitorStmt(Grimp.cloneIfNecessary(getOp()));
-    }
+  public Object clone() {
+    return new GEnterMonitorStmt(Grimp.cloneIfNecessary(getOp()));
+  }
 }
-

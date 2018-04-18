@@ -23,46 +23,43 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-import soot.util.*;
-import soot.*;
+import soot.UnitPrinter;
+import soot.util.Switch;
 
-class FutureStmt extends soot.jimple.internal.AbstractStmt
-{
-    public Object object;
+class FutureStmt extends soot.jimple.internal.AbstractStmt {
+  public Object object;
 
-    public FutureStmt(Object object)
-    {
-        this.object = object;
-    }
+  public FutureStmt(Object object) {
+    this.object = object;
+  }
 
-    public FutureStmt()
-    {
-    }
+  public FutureStmt() {
+  }
 
-    public String toString()
-    {
-        return "<futurestmt>";
-    }
-    
-    public void toString(UnitPrinter up) {
-        up.literal("<futurestmt>");
-    }
+  public String toString() {
+    return "<futurestmt>";
+  }
 
-    public void apply(Switch sw)
-    {
-        ((soot.jimple.StmtSwitch) sw).defaultCase(this);
-    }
-    
-    public boolean fallsThrough() {throw  new RuntimeException(); }
-    public boolean branches() {throw new RuntimeException(); }
-    public Object clone() {throw new RuntimeException();}
-    
+  public void toString(UnitPrinter up) {
+    up.literal("<futurestmt>");
+  }
+
+  public void apply(Switch sw) {
+    ((soot.jimple.StmtSwitch) sw).defaultCase(this);
+  }
+
+  public boolean fallsThrough() {
+    throw new RuntimeException();
+  }
+
+  public boolean branches() {
+    throw new RuntimeException();
+  }
+
+  public Object clone() {
+    throw new RuntimeException();
+  }
+
 }

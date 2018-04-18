@@ -23,81 +23,77 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class JRetStmt extends AbstractStmt implements RetStmt
-{
-    final ValueBox stmtAddressBox;
-    //List useBoxes;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.Jimple;
+import soot.jimple.RetStmt;
+import soot.jimple.StmtSwitch;
+import soot.util.Switch;
 
-    public JRetStmt(Value stmtAddress)
-    {
-        this(Jimple.v().newLocalBox(stmtAddress));
-    }
+public class JRetStmt extends AbstractStmt implements RetStmt {
+  final ValueBox stmtAddressBox;
+  // List useBoxes;
 
-    protected JRetStmt(ValueBox stmtAddressBox)
-    {
-            this.stmtAddressBox = stmtAddressBox;
+  public JRetStmt(Value stmtAddress) {
+    this(Jimple.v().newLocalBox(stmtAddress));
+  }
 
-    }
+  protected JRetStmt(ValueBox stmtAddressBox) {
+    this.stmtAddressBox = stmtAddressBox;
 
-    public Object clone() 
-    {
-        return new JRetStmt(Jimple.cloneIfNecessary(getStmtAddress()));
-    }
+  }
 
-    public String toString()
-    {
-        return Jimple.RET + " "  + stmtAddressBox.getValue().toString();
-    }
-    
-    public void toString(UnitPrinter up) {
-        up.literal(Jimple.RET);
-        up.literal(" ");
-        stmtAddressBox.toString(up);
-    }
+  public Object clone() {
+    return new JRetStmt(Jimple.cloneIfNecessary(getStmtAddress()));
+  }
 
-    public Value getStmtAddress()
-    {
-        return stmtAddressBox.getValue();
-    }
+  public String toString() {
+    return Jimple.RET + " " + stmtAddressBox.getValue().toString();
+  }
 
-    public ValueBox getStmtAddressBox()
-    {
-        return stmtAddressBox;
-    }
+  public void toString(UnitPrinter up) {
+    up.literal(Jimple.RET);
+    up.literal(" ");
+    stmtAddressBox.toString(up);
+  }
 
-    public void setStmtAddress(Value stmtAddress)
-    {
-        stmtAddressBox.setValue(stmtAddress);
-    }
+  public Value getStmtAddress() {
+    return stmtAddressBox.getValue();
+  }
 
-    public List<ValueBox> getUseBoxes()
-    {
-        List<ValueBox> useBoxes = new ArrayList<ValueBox>();
+  public ValueBox getStmtAddressBox() {
+    return stmtAddressBox;
+  }
 
-        useBoxes.addAll(stmtAddressBox.getValue().getUseBoxes());
-        useBoxes.add(stmtAddressBox);
+  public void setStmtAddress(Value stmtAddress) {
+    stmtAddressBox.setValue(stmtAddress);
+  }
 
-        return useBoxes;
-    }
+  public List<ValueBox> getUseBoxes() {
+    List<ValueBox> useBoxes = new ArrayList<ValueBox>();
 
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseRetStmt(this);
-    }    
+    useBoxes.addAll(stmtAddressBox.getValue().getUseBoxes());
+    useBoxes.add(stmtAddressBox);
 
-    public boolean fallsThrough(){return true;}        
-    public boolean branches(){return false;}
+    return useBoxes;
+  }
+
+  public void apply(Switch sw) {
+    ((StmtSwitch) sw).caseRetStmt(this);
+  }
+
+  public boolean fallsThrough() {
+    return true;
+  }
+
+  public boolean branches() {
+    return false;
+  }
 
 }

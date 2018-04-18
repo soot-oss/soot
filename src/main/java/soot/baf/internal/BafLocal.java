@@ -23,7 +23,6 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.baf.internal;
 
 import java.util.Collections;
@@ -35,101 +34,95 @@ import soot.UnitPrinter;
 import soot.ValueBox;
 import soot.util.Switch;
 
-public class BafLocal implements Local
-{
-    String name;
-    Type type;
+public class BafLocal implements Local {
+  String name;
+  Type type;
 
-    int fixedHashCode;
-    boolean isHashCodeChosen;
-	private Local originalLocal;
-        
-    public BafLocal(String name, Type t)
-    {
-        this.name = name;
-        this.type = t;
-    }
+  int fixedHashCode;
+  boolean isHashCodeChosen;
+  private Local originalLocal;
 
-    /* JimpleLocals are *NOT* equivalent to Baf Locals! */
-    @Override
-	public boolean equivTo(Object o)
-    {
-        return this.equals( o );
-    }
+  public BafLocal(String name, Type t) {
+    this.name = name;
+    this.type = t;
+  }
 
-    /** Returns a hash code for this object, consistent with structural equality. */
-    @Override
-	public int equivHashCode() 
-    {
-        return name.hashCode() * 101 + type.hashCode() * 17;
-    }
+  /* JimpleLocals are *NOT* equivalent to Baf Locals! */
+  @Override
+  public boolean equivTo(Object o) {
+    return this.equals(o);
+  }
 
-    @Override
-	public Object clone()
-    {
-        BafLocal baf = new BafLocal(name, type);
-        baf.originalLocal = originalLocal;
-        return baf;
-    }
-    
-    public Local getOriginalLocal() {
-    	return originalLocal;
-    }
-    
-    public void setOriginalLocal(Local l) {
-    	originalLocal = l;
-    }
+  /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
+  public int equivHashCode() {
+    return name.hashCode() * 101 + type.hashCode() * 17;
+  }
 
-    @Override
-    public String getName()
-    {
-        return name;
-    }
+  @Override
+  public Object clone() {
+    BafLocal baf = new BafLocal(name, type);
+    baf.originalLocal = originalLocal;
+    return baf;
+  }
 
-    @Override
-    public void setName(String name)
-    {
-        this.name = name;
-    }
+  public Local getOriginalLocal() {
+    return originalLocal;
+  }
 
-    @Override
-    public Type getType()
-    {
-        return type;
-    }
+  public void setOriginalLocal(Local l) {
+    originalLocal = l;
+  }
 
-    @Override
-    public void setType(Type t)
-    {
-        this.type = t;
-    }
+  @Override
+  public String getName() {
+    return name;
+  }
 
-    @Override
-	public String toString()
-    {
-        return getName();
-    }
+  @Override
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    @Override
-	public void toString( UnitPrinter up ) {
-        up.local( this );
-    }
-    
-    @Override
-    public List<ValueBox> getUseBoxes()
-    {
-        return Collections.emptyList();
-    }
+  @Override
+  public Type getType() {
+    return type;
+  }
 
-    @Override
-	public void apply(Switch s)
-    {
-        throw new RuntimeException("invalid case switch");
-    }
-    @Override
-	public final int getNumber() { return number; }
-    @Override
-	public final void setNumber( int number ) { this.number = number; }
+  @Override
+  public void setType(Type t) {
+    this.type = t;
+  }
 
-    private int number = 0;
+  @Override
+  public String toString() {
+    return getName();
+  }
+
+  @Override
+  public void toString(UnitPrinter up) {
+    up.local(this);
+  }
+
+  @Override
+  public List<ValueBox> getUseBoxes() {
+    return Collections.emptyList();
+  }
+
+  @Override
+  public void apply(Switch s) {
+    throw new RuntimeException("invalid case switch");
+  }
+
+  @Override
+  public final int getNumber() {
+    return number;
+  }
+
+  @Override
+  public final void setNumber(int number) {
+    this.number = number;
+  }
+
+  private int number = 0;
 }

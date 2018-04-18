@@ -23,56 +23,44 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.AbstractJasminClass;
+import soot.Type;
+import soot.baf.CmpgInst;
+import soot.baf.InstSwitch;
+import soot.util.Switch;
 
-public class BCmpgInst extends AbstractOpTypeInst implements CmpgInst
-{
-    public BCmpgInst(Type opType)
-    {
-        super(opType);
-    }
+public class BCmpgInst extends AbstractOpTypeInst implements CmpgInst {
+  public BCmpgInst(Type opType) {
+    super(opType);
+  }
 
+  public int getInCount() {
+    return 2;
+  }
 
-    public int getInCount()
-    {
-        return 2;
-    }
+  public Object clone() {
+    return new BCmpgInst(getOpType());
+  }
 
+  public int getInMachineCount() {
+    return 2 * AbstractJasminClass.sizeOfType(getOpType());
+  }
 
+  public int getOutCount() {
+    return 1;
+  }
 
-  public Object clone() 
-    {
-        return new BCmpgInst(getOpType());
-    }
+  public int getOutMachineCount() {
+    return 1;
+  }
 
-    public int getInMachineCount()
-    {
-        return 2*AbstractJasminClass.sizeOfType(getOpType());
-    }
-    
-    public int getOutCount()
-    {
-        return 1;
-    }
+  public final String getName() {
+    return "cmpg";
+  }
 
-    public int getOutMachineCount()
-    {
-        return 1;
-    }
-    
-    public final String getName() { return "cmpg"; }
-
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseCmpgInst(this);
-    }
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseCmpgInst(this);
+  }
 }
-

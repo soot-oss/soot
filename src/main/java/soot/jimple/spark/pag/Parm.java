@@ -18,6 +18,7 @@
  */
 
 package soot.jimple.spark.pag;
+
 import soot.G;
 import soot.PointsToAnalysis;
 import soot.Scene;
@@ -25,49 +26,57 @@ import soot.SootMethod;
 import soot.Type;
 import soot.toolkits.scalar.Pair;
 
-/** Represents a method parameter.
+/**
+ * Represents a method parameter.
+ * 
  * @author Ondrej Lhotak
  */
 public class Parm implements SparkField {
-    private final int index;
-    private final SootMethod method;
-    private Parm( SootMethod m, int i ) {
-        index = i;
-        method = m;
-        Scene.v().getFieldNumberer().add(this);
+  private final int index;
+  private final SootMethod method;
+
+  private Parm(SootMethod m, int i) {
+    index = i;
+    method = m;
+    Scene.v().getFieldNumberer().add(this);
+  }
+
+  public static Parm v(SootMethod m, int index) {
+    Pair<SootMethod, Integer> p = new Pair<SootMethod, Integer>(m, new Integer(index));
+    Parm ret = (Parm) G.v().Parm_pairToElement.get(p);
+    if (ret == null) {
+      G.v().Parm_pairToElement.put(p, ret = new Parm(m, index));
     }
-    public static Parm v( SootMethod m, int index ) {
-        Pair<SootMethod, Integer> p = new Pair<SootMethod, Integer>( m, new Integer(index) );
-        Parm ret = (Parm) G.v().Parm_pairToElement.get( p );
-        if( ret == null ) {
-            G.v().Parm_pairToElement.put( p, ret = new Parm( m, index ) );
-        }
-        return ret;
-    }
-    public static final void delete() {
-        G.v().Parm_pairToElement = null;
-    }
-    public String toString() {
-        return "Parm "+index+" to "+method;
+    return ret;
+  }
+
+  public static final void delete() {
+    G.v().Parm_pairToElement = null;
+  }
+
+  public String toString() {
+    return "Parm " + index + " to " + method;
+  }
+
+  public final int getNumber() {
+    return number;
+  }
+
+  public final void setNumber(int number) {
+    this.number = number;
+  }
+
+  public int getIndex() {
+    return index;
+  }
+
+  public Type getType() {
+    if (index == PointsToAnalysis.RETURN_NODE) {
+      return method.getReturnType();
     }
 
-    public final int getNumber() {
-        return number;
-    }
-    public final void setNumber(int number) {
-        this.number = number;
-    }
-    
-    public int getIndex() {
-      return index;
-    }
-    
-	public Type getType() {
-    	if ( index == PointsToAnalysis.RETURN_NODE )
-    		return method.getReturnType();
-    	
-    	return method.getParameterType( index );
-	}
+    return method.getParameterType(index);
+  }
 
-    private int number = 0;
+  private int number = 0;
 }

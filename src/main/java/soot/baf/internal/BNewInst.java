@@ -23,57 +23,47 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.RefType;
+import soot.baf.InstSwitch;
+import soot.baf.NewInst;
+import soot.util.Switch;
 
-public class BNewInst extends AbstractRefTypeInst implements NewInst
-{
-    public BNewInst(RefType opType)
-    {
-        super(opType);
-    }
-    public int getInCount()
-    {
-        return 0;
-    }
+public class BNewInst extends AbstractRefTypeInst implements NewInst {
+  public BNewInst(RefType opType) {
+    super(opType);
+  }
 
+  public int getInCount() {
+    return 0;
+  }
 
-    public Object clone() 
-    {
-        return new  BNewInst(getBaseType());
-    }
+  public Object clone() {
+    return new BNewInst(getBaseType());
+  }
 
-    public int getInMachineCount()
-    {
-        return 0;
-    }
-    
-    public int getOutCount()
-    {
-        return 1;
-    }
+  public int getInMachineCount() {
+    return 0;
+  }
 
-    public int getOutMachineCount()
-    {
-        return 1;
-    }
-    
-    final public String getName() { return "new"; }
+  public int getOutCount() {
+    return 1;
+  }
 
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseNewInst(this);
-    }
+  public int getOutMachineCount() {
+    return 1;
+  }
 
-    public boolean containsNewExpr() {
-        return true;
-    }
+  final public String getName() {
+    return "new";
+  }
+
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseNewInst(this);
+  }
+
+  public boolean containsNewExpr() {
+    return true;
+  }
 }
-

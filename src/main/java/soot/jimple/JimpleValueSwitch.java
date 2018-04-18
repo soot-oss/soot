@@ -23,18 +23,11 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
+import soot.Local;
 
-public interface JimpleValueSwitch extends ConstantSwitch,
-    ExprSwitch, RefSwitch
-{
-    public abstract void caseLocal(Local l);
+public interface JimpleValueSwitch extends ConstantSwitch, ExprSwitch, RefSwitch {
+  public abstract void caseLocal(Local l);
 
 }
-

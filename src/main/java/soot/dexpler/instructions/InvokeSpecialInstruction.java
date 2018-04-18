@@ -30,11 +30,11 @@ import soot.dexpler.DexBody;
 
 public class InvokeSpecialInstruction extends MethodInvocationInstruction {
 
-    public InvokeSpecialInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
-    }
+  public InvokeSpecialInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
 
-    public void jimplify (DexBody body) {
-    	jimplifySpecial(body);
-    }
+  public void jimplify(DexBody body) {
+    jimplifySpecial(body);
+  }
 }

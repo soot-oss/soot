@@ -23,37 +23,37 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.jimple;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.options.*;
-import soot.*;
-import soot.jimple.parser.*;
 
-public class JimpleMethodSource implements MethodSource
-{
-    private static final Logger logger = LoggerFactory.getLogger(JimpleMethodSource.class);
-    JimpleAST mJimpleAST;
+import soot.Body;
+import soot.MethodSource;
+import soot.PackManager;
+import soot.SootMethod;
+import soot.jimple.parser.JimpleAST;
+import soot.options.Options;
 
-    public JimpleMethodSource(JimpleAST aJimpleAST)
-    {
-        mJimpleAST = aJimpleAST;
+public class JimpleMethodSource implements MethodSource {
+  private static final Logger logger = LoggerFactory.getLogger(JimpleMethodSource.class);
+  JimpleAST mJimpleAST;
+
+  public JimpleMethodSource(JimpleAST aJimpleAST) {
+    mJimpleAST = aJimpleAST;
+  }
+
+  public Body getBody(SootMethod m, String phaseName) {
+    JimpleBody jb = (JimpleBody) mJimpleAST.getBody(m);
+    if (jb == null) {
+      throw new RuntimeException("Could not load body for method " + m.getSignature());
     }
 
-    public Body getBody(SootMethod m, String phaseName)
-    {  
-        JimpleBody jb = (JimpleBody)mJimpleAST.getBody(m);
-        if (jb == null)
-        	throw new RuntimeException("Could not load body for method " + m.getSignature());
-
-        if(Options.v().verbose())
-            logger.debug("[" + m.getName() + "] Retrieving JimpleBody from AST...");
-    
-
-        PackManager.v().getPack("jb").apply(jb);
-        return jb;
+    if (Options.v().verbose()) {
+      logger.debug("[" + m.getName() + "] Retrieving JimpleBody from AST...");
     }
+
+    PackManager.v().getPack("jb").apply(jb);
+    return jb;
+  }
 }
-
-

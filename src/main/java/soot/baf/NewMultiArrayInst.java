@@ -25,13 +25,14 @@
 
 package soot.baf;
 
-import soot.*;
+import soot.ArrayType;
 
-public interface NewMultiArrayInst extends Inst
-{
-    public ArrayType getBaseType();
-    public void setBaseType(ArrayType type);
-    
-    public int getDimensionCount();
-    public void setDimensionCount(int count);
+public interface NewMultiArrayInst extends Inst {
+  public ArrayType getBaseType();
+
+  public void setBaseType(ArrayType type);
+
+  public int getDimensionCount();
+
+  public void setDimensionCount(int count);
 }

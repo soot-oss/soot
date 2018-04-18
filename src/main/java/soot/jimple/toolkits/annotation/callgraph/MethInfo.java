@@ -19,37 +19,41 @@
 
 package soot.jimple.toolkits.annotation.callgraph;
 
-import soot.*;
+import soot.Kind;
+import soot.SootMethod;
 
 public class MethInfo {
-    private SootMethod method;
-    private boolean canExpandCollapse;
-    private Kind edgeKind;
-    
-    public MethInfo(SootMethod meth, boolean b, Kind kind){
-        method(meth);
-        canExpandCollapse(b);
-        edgeKind(kind);
-    }
-        
-    public Kind edgeKind(){
-        return edgeKind;
-    }
+  private SootMethod method;
+  private boolean canExpandCollapse;
+  private Kind edgeKind;
 
-    public void edgeKind(Kind kind){
-        edgeKind = kind;
-    }
-    
-    public boolean canExpandCollapse(){
-        return canExpandCollapse;
-    }
-    public void canExpandCollapse(boolean b){
-        canExpandCollapse = b;
-    }
-    public SootMethod method(){
-        return method;
-    }
-    public void method(SootMethod m){
-        method = m;
-    }
+  public MethInfo(SootMethod meth, boolean b, Kind kind) {
+    method(meth);
+    canExpandCollapse(b);
+    edgeKind(kind);
+  }
+
+  public Kind edgeKind() {
+    return edgeKind;
+  }
+
+  public void edgeKind(Kind kind) {
+    edgeKind = kind;
+  }
+
+  public boolean canExpandCollapse() {
+    return canExpandCollapse;
+  }
+
+  public void canExpandCollapse(boolean b) {
+    canExpandCollapse = b;
+  }
+
+  public SootMethod method() {
+    return method;
+  }
+
+  public void method(SootMethod m) {
+    method = m;
+  }
 }

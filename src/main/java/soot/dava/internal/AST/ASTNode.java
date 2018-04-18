@@ -20,96 +20,91 @@
 
 package soot.dava.internal.AST;
 
-import soot.*;
-import java.util.*;
-import soot.dava.toolkits.base.AST.*;
-import soot.dava.toolkits.base.AST.analysis.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-public abstract class ASTNode extends AbstractUnit
-{
-    public static final String 
-	TAB     = "    ",
-	NEWLINE = "\n";
+import soot.AbstractUnit;
+import soot.UnitPrinter;
+import soot.dava.toolkits.base.AST.ASTAnalysis;
+import soot.dava.toolkits.base.AST.analysis.Analysis;
 
-    protected List<Object> subBodies;
+public abstract class ASTNode extends AbstractUnit {
+  public static final String TAB = "    ", NEWLINE = "\n";
 
-    public ASTNode()
-    {
-	subBodies = new ArrayList<Object>();
+  protected List<Object> subBodies;
+
+  public ASTNode() {
+    subBodies = new ArrayList<Object>();
+  }
+
+  public abstract void toString(UnitPrinter up);
+
+  protected void body_toString(UnitPrinter up, List<Object> body) {
+    Iterator<Object> it = body.iterator();
+    while (it.hasNext()) {
+      ((ASTNode) it.next()).toString(up);
+
+      if (it.hasNext()) {
+        up.newline();
+      }
+    }
+  }
+
+  protected String body_toString(List<Object> body) {
+    StringBuffer b = new StringBuffer();
+
+    Iterator<Object> it = body.iterator();
+    while (it.hasNext()) {
+      b.append(((ASTNode) it.next()).toString());
+
+      if (it.hasNext()) {
+        b.append(NEWLINE);
+      }
     }
 
-    public abstract void toString( UnitPrinter up );
- 
-    protected void body_toString( UnitPrinter up, List<Object> body )
-    {
-	Iterator<Object> it = body.iterator();
-	while (it.hasNext()) {
-	    ((ASTNode) it.next()).toString( up );
+    return b.toString();
+  }
 
-	    if (it.hasNext())
-		up.newline();
-	}
+  public List<Object> get_SubBodies() {
+    return subBodies;
+  }
+
+  public abstract void perform_Analysis(ASTAnalysis a);
+
+  protected void perform_AnalysisOnSubBodies(ASTAnalysis a) {
+    Iterator<Object> sbit = subBodies.iterator();
+    while (sbit.hasNext()) {
+      Object subBody = sbit.next();
+      Iterator it = null;
+
+      if (this instanceof ASTTryNode) {
+        it = ((List) ((ASTTryNode.container) subBody).o).iterator();
+      } else {
+        it = ((List) subBody).iterator();
+      }
+
+      while (it.hasNext()) {
+        ((ASTNode) it.next()).perform_Analysis(a);
+      }
     }
 
-    protected String body_toString(List<Object> body)
-    {
-	StringBuffer b = new StringBuffer();
+    a.analyseASTNode(this);
+  }
 
-	Iterator<Object> it = body.iterator();
-	while (it.hasNext()) {
-	    b.append( ((ASTNode) it.next()).toString());
+  public boolean fallsThrough() {
+    return false;
+  }
 
-	    if (it.hasNext())
-		b.append( NEWLINE);
-	}
+  public boolean branches() {
+    return false;
+  }
 
-	return b.toString();	
-    }
+  /*
+   * Nomair A. Naeem, 7-FEB-05 Part of Visitor Design Implementation for AST See: soot.dava.toolkits.base.AST.analysis For details
+   */
+  public void apply(Analysis a) {
+    throw new RuntimeException("Analysis invoked apply method on ASTNode");
+  }
 
-    public List<Object> get_SubBodies()
-    {
-	return subBodies;
-    }
-
-
-    public abstract void perform_Analysis( ASTAnalysis a);
-
-    protected void perform_AnalysisOnSubBodies( ASTAnalysis a)
-    {
-	Iterator<Object> sbit = subBodies.iterator();
-	while (sbit.hasNext()) {
-	    Object subBody = sbit.next();
-	    Iterator it = null;
-
-	    if (this instanceof ASTTryNode)
-		it = ((List) ((ASTTryNode.container) subBody).o).iterator();
-	    else 
-		it = ((List) subBody).iterator();
-	    
-	    while (it.hasNext())
-		((ASTNode) it.next()).perform_Analysis( a);
-	}
-	
-	a.analyseASTNode( this);
-    }
-
-    public boolean fallsThrough()
-    {
-        return false;
-    }
-
-    public boolean branches()
-    {
-        return false;
-    }
-
-    /*
-      Nomair A. Naeem, 7-FEB-05
-      Part of Visitor Design Implementation for AST
-      See: soot.dava.toolkits.base.AST.analysis For details
-    */
-    public void apply(Analysis a){
-    	throw new RuntimeException("Analysis invoked apply method on ASTNode");
-    }
-    
 }

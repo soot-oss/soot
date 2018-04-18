@@ -23,52 +23,42 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
-import soot.baf.*;
-import soot.util.*;
+import soot.baf.ArrayLengthInst;
+import soot.baf.InstSwitch;
+import soot.util.Switch;
 
-public class BArrayLengthInst extends AbstractInst implements ArrayLengthInst
-{
-    public BArrayLengthInst()
-    {
-    }
+public class BArrayLengthInst extends AbstractInst implements ArrayLengthInst {
+  public BArrayLengthInst() {
+  }
 
-    public int getInCount()
-    {
-        return 1;
-    }
+  public int getInCount() {
+    return 1;
+  }
 
-    public int getInMachineCount()
-    {
-        return 1;
-    }
-    
-    public int getOutCount()
-    {
-        return 1;
-    }
+  public int getInMachineCount() {
+    return 1;
+  }
 
-    public int getOutMachineCount()
-    {
-        return 1;
-    }
-    
-    public final String getName() { return "arraylength"; }
+  public int getOutCount() {
+    return 1;
+  }
 
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseArrayLengthInst(this);
-    }   
+  public int getOutMachineCount() {
+    return 1;
+  }
 
-    public Object clone() 
-    {
-       return new BArrayLengthInst();
-    }
+  public final String getName() {
+    return "arraylength";
+  }
+
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseArrayLengthInst(this);
+  }
+
+  public Object clone() {
+    return new BArrayLengthInst();
+  }
 
 }
-

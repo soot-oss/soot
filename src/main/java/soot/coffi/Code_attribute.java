@@ -23,17 +23,11 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-/** There should be exactly one code attribute in every method; there
- * may also be a code attribute associated with a field (as an
- * initializer).
+/**
+ * There should be exactly one code attribute in every method; there may also be a code attribute associated with a field (as an initializer).
+ * 
  * @see attribute_info
  * @see method_info#attributes
  * @see field_info#attributes
@@ -41,54 +35,63 @@ package soot.coffi;
  * @author Clark Verbrugge
  */
 class Code_attribute extends attribute_info {
-   /** Maximum size of the operand stack. */
-   public int max_stack;
-   /** Maximum number of locals required. */
+  /** Maximum size of the operand stack. */
+  public int max_stack;
+  /** Maximum number of locals required. */
 
-   public int max_locals;
-   /** Length of code array. */
-   public long code_length;
-   /** Actual array of bytecode. */
-   public byte code[];
-   /** Length of exception table array. */
-   public int exception_table_length;
-   /** Exception table array.
-    * @see exception_table_entry
-    */
-   public exception_table_entry exception_table[];
-   /** Length of attributes array. */
-   int attributes_count;
-   /** Array of attributes.
-    * @see attribute_info
-    */
-   attribute_info attributes[];
+  public int max_locals;
+  /** Length of code array. */
+  public long code_length;
+  /** Actual array of bytecode. */
+  public byte code[];
+  /** Length of exception table array. */
+  public int exception_table_length;
+  /**
+   * Exception table array.
+   * 
+   * @see exception_table_entry
+   */
+  public exception_table_entry exception_table[];
+  /** Length of attributes array. */
+  int attributes_count;
+  /**
+   * Array of attributes.
+   * 
+   * @see attribute_info
+   */
+  attribute_info attributes[];
 
-   /** Locates the LocalVariableTable attribute, if one is present.
-    * @return the local variable table attribute, or <i>null</i> if not found.
-    * @see LocalVariableTable_attribute
-    * @see method_info#makeLocals
-    */
-   public LocalVariableTable_attribute findLocalVariableTable() {
-      int i;
-      for (i=0;i<attributes_count;i++) {
-         if (attributes[i] instanceof LocalVariableTable_attribute)
-            return (LocalVariableTable_attribute)(attributes[i]);
+  /**
+   * Locates the LocalVariableTable attribute, if one is present.
+   * 
+   * @return the local variable table attribute, or <i>null</i> if not found.
+   * @see LocalVariableTable_attribute
+   * @see method_info#makeLocals
+   */
+  public LocalVariableTable_attribute findLocalVariableTable() {
+    int i;
+    for (i = 0; i < attributes_count; i++) {
+      if (attributes[i] instanceof LocalVariableTable_attribute) {
+        return (LocalVariableTable_attribute) (attributes[i]);
       }
-      return null;
-   }
-   
-   /** Locates the LocalVariableTypeTable attribute, if one is present.
-    * @return the local variable type table attribute, or <i>null</i> 
-    * if not found.
-    * @see LocalVariableTypeTable_attribute
-    * @see method_info#makeLocals
-    */
-   public LocalVariableTypeTable_attribute findLocalVariableTypeTable() {
-      int i;
-      for (i=0;i<attributes_count;i++) {
-         if (attributes[i] instanceof LocalVariableTypeTable_attribute)
-            return (LocalVariableTypeTable_attribute)(attributes[i]);
+    }
+    return null;
+  }
+
+  /**
+   * Locates the LocalVariableTypeTable attribute, if one is present.
+   * 
+   * @return the local variable type table attribute, or <i>null</i> if not found.
+   * @see LocalVariableTypeTable_attribute
+   * @see method_info#makeLocals
+   */
+  public LocalVariableTypeTable_attribute findLocalVariableTypeTable() {
+    int i;
+    for (i = 0; i < attributes_count; i++) {
+      if (attributes[i] instanceof LocalVariableTypeTable_attribute) {
+        return (LocalVariableTypeTable_attribute) (attributes[i]);
       }
-      return null;
-   }
+    }
+    return null;
+  }
 }

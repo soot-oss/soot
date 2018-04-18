@@ -22,14 +22,15 @@ import soot.jimple.spark.pag.SparkField;
 
 public interface FieldCheckHeuristic {
 
-	/**
-	 * Update the heuristic for another pass of the algorithm.
-	 * @return true if the heuristic will act differently on the next pass
-	 */
-	public boolean runNewPass();
+  /**
+   * Update the heuristic for another pass of the algorithm.
+   * 
+   * @return true if the heuristic will act differently on the next pass
+   */
+  public boolean runNewPass();
 
-	public boolean validateMatchesForField(SparkField field);
-	
-	public boolean validFromBothEnds(SparkField field);
-	
+  public boolean validateMatchesForField(SparkField field);
+
+  public boolean validFromBothEnds(SparkField field);
+
 }

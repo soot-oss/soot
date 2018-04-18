@@ -23,38 +23,34 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.grimp.internal;
 
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class GNewMultiArrayExpr extends AbstractNewMultiArrayExpr 
-{
-    public GNewMultiArrayExpr(ArrayType type, List sizes)
-    {
-        super(type, new ValueBox[sizes.size()]);
+import soot.ArrayType;
+import soot.Value;
+import soot.ValueBox;
+import soot.grimp.Grimp;
+import soot.jimple.internal.AbstractNewMultiArrayExpr;
 
-        for(int i = 0; i < sizes.size(); i++)
-            sizeBoxes[i] = Grimp.v().newExprBox((Value) sizes.get(i));
+public class GNewMultiArrayExpr extends AbstractNewMultiArrayExpr {
+  public GNewMultiArrayExpr(ArrayType type, List sizes) {
+    super(type, new ValueBox[sizes.size()]);
+
+    for (int i = 0; i < sizes.size(); i++) {
+      sizeBoxes[i] = Grimp.v().newExprBox((Value) sizes.get(i));
     }
-    
-    public Object clone() 
-    {
-        List clonedSizes =  new ArrayList(getSizeCount());
+  }
 
-        for(int i = 0; i <  getSizeCount(); i++) {
-            clonedSizes.add(i,  Grimp.cloneIfNecessary(getSize(i)));
-        }
-                                                         
-        
-        return new GNewMultiArrayExpr(getBaseType(), clonedSizes);
+  public Object clone() {
+    List clonedSizes = new ArrayList(getSizeCount());
+
+    for (int i = 0; i < getSizeCount(); i++) {
+      clonedSizes.add(i, Grimp.cloneIfNecessary(getSize(i)));
     }
+
+    return new GNewMultiArrayExpr(getBaseType(), clonedSizes);
+  }
 
 }

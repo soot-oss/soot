@@ -26,30 +26,24 @@
 
 package soot.jimple.toolkits.pointer.nativemethods;
 
-import soot.*;
-import soot.jimple.toolkits.pointer.representations.*;
-import soot.jimple.toolkits.pointer.util.*;
+import soot.SootMethod;
+import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
+import soot.jimple.toolkits.pointer.util.NativeHelper;
 
 public class JavaUtilResourceBundleNative extends NativeMethodClass {
-    public JavaUtilResourceBundleNative( NativeHelper helper ) { super(helper); }
+  public JavaUtilResourceBundleNative(NativeHelper helper) {
+    super(helper);
+  }
 
   /**
-   * Implements the abstract method simulateMethod.
-   * It distributes the request to the corresponding methods 
-   * by signatures.
+   * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
    */
-  public void simulateMethod(SootMethod method,
-			     ReferenceVariable thisVar,
-			     ReferenceVariable returnVar,
-			     ReferenceVariable params[]){
+  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 
     if (subSignature.equals("java.lang.Class[] getClassContext()")) {
-      java_util_ResourceBundle_getClassContext(method, 
-					       thisVar, 
-					       returnVar, 
-					       params);
+      java_util_ResourceBundle_getClassContext(method, thisVar, returnVar, params);
       return;
 
     } else {
@@ -61,17 +55,12 @@ public class JavaUtilResourceBundleNative extends NativeMethodClass {
 
   /********** java.util.ResourceBundle ******************/
   /**
-   * Undocumented, returns an array of all possible classes.
-   * NOTE: @return = new Class[];
-   *       @return[] = { all classes }
+   * Undocumented, returns an array of all possible classes. NOTE: @return = new Class[]; @return[] = { all classes }
    *
-   *     private static native java.lang.Class getClassContext()[];
+   * private static native java.lang.Class getClassContext()[];
    */
-  public 
-    void java_util_ResourceBundle_getClassContext(SootMethod method,
-						  ReferenceVariable thisVar,
-						  ReferenceVariable returnVar,
-						  ReferenceVariable params[]){
+  public void java_util_ResourceBundle_getClassContext(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
     throw new NativeMethodNotSupportedException(method);
   }
 }
