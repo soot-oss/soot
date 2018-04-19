@@ -205,10 +205,9 @@ class ExprVisitor implements ExprSwitch {
 	@Override
 	public void caseVirtualInvokeExpr(VirtualInvokeExpr vie) {
 		/*
-		 * for final methods we build an invoke-virtual opcode, too, although
-		 * the dex spec says that a virtual method is not final. An alternative
-		 * would be the invoke-direct opcode, but this is inconsistent with dx's
-		 * output...
+		 * for final methods we build an invoke-virtual opcode, too, although the dex
+		 * spec says that a virtual method is not final. An alternative would be the
+		 * invoke-direct opcode, but this is inconsistent with dx's output...
 		 */
 		MethodReference method = DexPrinter.toMethodReference(vie.getMethodRef());
 		List<Register> argumentRegs = getInstanceInvokeArgumentRegs(vie);
@@ -245,8 +244,8 @@ class ExprVisitor implements ExprSwitch {
 		for (Register realReg : realRegs) {
 			paddedArray[nextReg] = realReg;
 			/*
-			 * we include the second half of a wide with an empty reg for the
-			 * "gap". this will be made explicit for dexlib later on.
+			 * we include the second half of a wide with an empty reg for the "gap". this
+			 * will be made explicit for dexlib later on.
 			 */
 			if (realReg.isWide()) {
 				nextReg++;
@@ -492,8 +491,8 @@ class ExprVisitor implements ExprSwitch {
 	private Value fixNullConstant(Value potentialNullConstant) {
 		/*
 		 * The bytecode spec says:
-		 * "In terms of bitwise representation, (Object) null == (int) 0." So
-		 * use an IntConstant(0) for null comparison in if-*z opcodes.
+		 * "In terms of bitwise representation, (Object) null == (int) 0." So use an
+		 * IntConstant(0) for null comparison in if-*z opcodes.
 		 */
 		if (potentialNullConstant instanceof NullConstant) {
 			return IntConstant.v(0);
@@ -625,20 +624,20 @@ class ExprVisitor implements ExprSwitch {
 
 	private void castObject(Register sourceReg, Type castType) {
 		/*
-		 * No real "cast" is done: move the object to a tmp reg, check the cast
-		 * with check-cast and finally move to the "cast" object location. This
-		 * way a) the old reg is not touched by check-cast, and b) the new reg
-		 * does change its type only after a successful check-cast.
+		 * No real "cast" is done: move the object to a tmp reg, check the cast with
+		 * check-cast and finally move to the "cast" object location. This way a) the
+		 * old reg is not touched by check-cast, and b) the new reg does change its type
+		 * only after a successful check-cast.
 		 * 
-		 * a) is relevant e.g. for "r1 = (String) r0" if r0 contains null, since
-		 * the internal type of r0 would change from Null to String after the
-		 * check-cast opcode, which alerts the verifier in future uses of r0
-		 * although nothing should change during execution.
+		 * a) is relevant e.g. for "r1 = (String) r0" if r0 contains null, since the
+		 * internal type of r0 would change from Null to String after the check-cast
+		 * opcode, which alerts the verifier in future uses of r0 although nothing
+		 * should change during execution.
 		 * 
-		 * b) is relevant for exceptional control flow: if we move to the new
-		 * reg and do the check-cast there, an exception between the end of the
-		 * move's execution and the end of the check-cast execution leaves the
-		 * new reg with the type of the old reg.
+		 * b) is relevant for exceptional control flow: if we move to the new reg and do
+		 * the check-cast there, an exception between the end of the move's execution
+		 * and the end of the check-cast execution leaves the new reg with the type of
+		 * the old reg.
 		 */
 		TypeReference castTypeItem = DexPrinter.toTypeReference(castType);
 		if (sourceReg.getNumber() == destinationReg.getNumber()) {
@@ -692,9 +691,8 @@ class ExprVisitor implements ExprSwitch {
 				stmtV.addInsn(new Insn10x(Opcode.NOP), origStmt);
 		} else if (needsCastThroughInt(sourceType, castType)) {
 			/*
-			 * an unsupported "dest = (cast) src" is broken down to
-			 * "tmp = (int) src" and "dest = (cast) tmp", using a tmp reg to not
-			 * mess with the original reg types
+			 * an unsupported "dest = (cast) src" is broken down to "tmp = (int) src" and
+			 * "dest = (cast) tmp", using a tmp reg to not mess with the original reg types
 			 */
 			Opcode castToIntOpc = getCastOpc(sourceType, PrimitiveType.INT);
 			Opcode castFromIntOpc = getCastOpc(PrimitiveType.INT, castType);
@@ -764,7 +762,17 @@ class ExprVisitor implements ExprSwitch {
 		Value size = nae.getSize();
 		constantV.setOrigStmt(origStmt);
 		Register sizeReg = regAlloc.asImmediate(size, constantV);
-		ArrayType arrayType = nae.getBaseType().getArrayType();
+
+		// Create the array type
+		Type baseType = nae.getBaseType();
+		int numDimensions = 1;
+		while (baseType instanceof ArrayType) {
+			ArrayType at = (ArrayType) baseType;
+			baseType = at.getElementType();
+			numDimensions++;
+		}
+		ArrayType arrayType = ArrayType.v(baseType, numDimensions);
+
 		TypeReference arrayTypeItem = DexPrinter.toTypeReference(arrayType);
 		stmtV.addInsn(new Insn22c(Opcode.NEW_ARRAY, destinationReg, sizeReg, arrayTypeItem), origStmt);
 	}
