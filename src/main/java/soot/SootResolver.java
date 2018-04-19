@@ -247,19 +247,19 @@ public class SootResolver {
 			if (is != null)
 				is.close();
 		}
-		reResolveHierarchy(sc);
+		reResolveHierarchy(sc, SootClass.HIERARCHY);
 	}
 
-	public void reResolveHierarchy(SootClass sc) {
+	public void reResolveHierarchy(SootClass sc, int level) {
 		// Bring superclasses to hierarchy
 		SootClass superClass = sc.getSuperclassUnsafe();
 		if (superClass != null)
-			addToResolveWorklist(superClass, SootClass.HIERARCHY);
+			addToResolveWorklist(superClass, level);
 		SootClass outerClass = sc.getOuterClassUnsafe();
 		if (outerClass != null)
-			addToResolveWorklist(outerClass, SootClass.HIERARCHY);
+			addToResolveWorklist(outerClass, level);
 		for (SootClass iface : sc.getInterfaces()) {
-			addToResolveWorklist(iface, SootClass.HIERARCHY);
+			addToResolveWorklist(iface, level);
 		}
 	}
 
@@ -296,7 +296,7 @@ public class SootResolver {
 		}
 
 		// Bring superclasses to signatures
-		reResolveHierarchy(sc);
+		reResolveHierarchy(sc, SootClass.SIGNATURES);
 	}
 
 	/**
@@ -350,7 +350,7 @@ public class SootResolver {
 		int resolvingLevel = cl.resolvingLevel();
 		if (resolvingLevel >= newResolvingLevel)
 			return;
-		reResolveHierarchy(cl);
+		reResolveHierarchy(cl, SootClass.HIERARCHY);
 		cl.setResolvingLevel(newResolvingLevel);
 		addToResolveWorklist(cl, resolvingLevel);
 		processResolveWorklist();
