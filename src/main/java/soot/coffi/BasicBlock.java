@@ -23,123 +23,129 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 
+import soot.G;
 import soot.jimple.Stmt;
-import soot.util.*;
-import soot.*;
+import soot.util.ArraySet;
 
-/** Represents one basic block in a control flow graph.
+/**
+ * Represents one basic block in a control flow graph.
+ * 
  * @see CFG
  * @see ClassFile#parse
  * @author Clark Verbrugge
  */
 class BasicBlock {
-   /** Number of instructions in this block. */
-   public int size;
-   /** Head of the list of instructions. */
-   public Instruction head;
-   /** Tail of the list of instructions.
-    * <p>
-    * Normally, the last instruction will have a next pointer with value
-    * <i>null</i>.  After a Instruction sequences are reconstructed though,
-    * the instruction lists
-    * are rejoined in order, and so the tail instruction will not
-    * have a <i>null</i> next pointer.
-    * @see CFG#reconstructInstructions
-    */
-   public Instruction tail;
-   /** Vector of predecessor BasicBlocks.
-    * @see java.util.Vector
-    */
-   public Vector<BasicBlock> succ;
-   /** Vector of successor BasicBlocks.
-    * @see java.util.Vector
-    */
-   public Vector<BasicBlock> pred;
+  /** Number of instructions in this block. */
+  public int size;
+  /** Head of the list of instructions. */
+  public Instruction head;
+  /**
+   * Tail of the list of instructions.
+   * <p>
+   * Normally, the last instruction will have a next pointer with value <i>null</i>. After a Instruction sequences are reconstructed though, the
+   * instruction lists are rejoined in order, and so the tail instruction will not have a <i>null</i> next pointer.
+   * 
+   * @see CFG#reconstructInstructions
+   */
+  public Instruction tail;
+  /**
+   * Vector of predecessor BasicBlocks.
+   * 
+   * @see java.util.Vector
+   */
+  public Vector<BasicBlock> succ;
+  /**
+   * Vector of successor BasicBlocks.
+   * 
+   * @see java.util.Vector
+   */
+  public Vector<BasicBlock> pred;
 
-   public boolean inq;
-   /** Flag for whether starting an exception or not. */
-   public boolean beginException;
-   /** Flag for whether starting main code block or not. */
-   public boolean beginCode;
-   /** Flag for semantic stack analysis fixup pass.
-    * @see CFG#jimplify
-    */
+  public boolean inq;
+  /** Flag for whether starting an exception or not. */
+  public boolean beginException;
+  /** Flag for whether starting main code block or not. */
+  public boolean beginCode;
+  /**
+   * Flag for semantic stack analysis fixup pass.
+   * 
+   * @see CFG#jimplify
+   */
 
-   boolean done;
+  boolean done;
 
-   /** Next BasicBlock in the CFG, in the parse order. */
-   public BasicBlock next;
-   /** Unique (among basic blocks) id. */
-   public long id;                   // unique id
+  /** Next BasicBlock in the CFG, in the parse order. */
+  public BasicBlock next;
+  /** Unique (among basic blocks) id. */
+  public long id; // unique id
 
-   List<Stmt> statements;
-   Set addressesToFixup = new ArraySet();
+  List<Stmt> statements;
+  Set addressesToFixup = new ArraySet();
 
-   soot.jimple.Stmt getHeadJStmt()
-   {
-      return statements.get(0);
-   }
+  soot.jimple.Stmt getHeadJStmt() {
+    return statements.get(0);
+  }
 
-   soot.jimple.Stmt getTailJStmt()
-   {
-      return statements.get(statements.size() - 1);
-   }
+  soot.jimple.Stmt getTailJStmt() {
+    return statements.get(statements.size() - 1);
+  }
 
-   public BasicBlock(Instruction insts) {
-      id = G.v().coffi_BasicBlock_ids++;
-      head = insts;
-      tail = head;
-      size = 0;
-      if (head!=null) {
-         size++;
-         while (tail.next!=null) {
-            size++;
-            tail = tail.next;
-         }
+  public BasicBlock(Instruction insts) {
+    id = G.v().coffi_BasicBlock_ids++;
+    head = insts;
+    tail = head;
+    size = 0;
+    if (head != null) {
+      size++;
+      while (tail.next != null) {
+        size++;
+        tail = tail.next;
       }
-      succ = new Vector<BasicBlock>(2,10);
-      pred = new Vector<BasicBlock>(2,3);
-   }
-
-    public BasicBlock(Instruction headinsn, Instruction tailinsn)
-    {
-	id = G.v().coffi_BasicBlock_ids++;
-	head = headinsn;
-	tail = tailinsn;
-	succ = new Vector<BasicBlock>(2,10);
-	pred = new Vector<BasicBlock>(2,3);
     }
+    succ = new Vector<BasicBlock>(2, 10);
+    pred = new Vector<BasicBlock>(2, 3);
+  }
 
-   /** Computes a hash code for this block from the label of the
-    * first instruction in its contents.
-    * @return the hash code.
-    * @see Instruction#label
-    */
-   public int hashCode() {
-      return (new Integer(head.label)).hashCode();
-   }
+  public BasicBlock(Instruction headinsn, Instruction tailinsn) {
+    id = G.v().coffi_BasicBlock_ids++;
+    head = headinsn;
+    tail = tailinsn;
+    succ = new Vector<BasicBlock>(2, 10);
+    pred = new Vector<BasicBlock>(2, 3);
+  }
 
-   /** True if this block represents the same piece of code.  Basically
-    * compares labels of the head instructions.
-    * @param b block to compare against.
-    * @return <i>true</i> if they do, <i>false</i> if they don't.
-    */
-   public boolean equals(BasicBlock b) {
-      return (this == b);
-   }
+  /**
+   * Computes a hash code for this block from the label of the first instruction in its contents.
+   * 
+   * @return the hash code.
+   * @see Instruction#label
+   */
+  public int hashCode() {
+    return (new Integer(head.label)).hashCode();
+  }
 
-   /** For printing the string "BB: " + id.
-    */
-   public String toString() { return "BB: " + id; }
+  /**
+   * True if this block represents the same piece of code. Basically compares labels of the head instructions.
+   * 
+   * @param b
+   *          block to compare against.
+   * @return <i>true</i> if they do, <i>false</i> if they don't.
+   */
+  public boolean equals(BasicBlock b) {
+    return (this == b);
+  }
+
+  /**
+   * For printing the string "BB: " + id.
+   */
+  public String toString() {
+    return "BB: " + id;
+  }
 
 }

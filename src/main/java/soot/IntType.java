@@ -23,47 +23,43 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot;
-import soot.util.*;
+
+import soot.util.Switch;
 
 /**
- *   Soot representation of the Java built-in type 'int'. Implemented as
- *   a singleton.
+ * Soot representation of the Java built-in type 'int'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class IntType extends PrimType implements IntegerType
-{
-    public IntType( Singletons.Global g ) {}
-    public static IntType v() { return G.v().soot_IntType(); }
+public class IntType extends PrimType implements IntegerType {
+  public IntType(Singletons.Global g) {
+  }
 
-    /** Returns true if the given object is equal to this one.
-     * Since IntType is a singleton, object equality is fine. */
-    public boolean equals(Object t)
-    {
-        return this == t;
-    }
-    
-    public int hashCode()
-    {
-        return 0xB747239F;
-    }
-    
-    public String toString()
-    {
-        return "int";
-    }
+  public static IntType v() {
+    return G.v().soot_IntType();
+  }
 
-    public void apply(Switch sw)
-    {
-        ((TypeSwitch) sw).caseIntType(this);
-    }
+  /**
+   * Returns true if the given object is equal to this one. Since IntType is a singleton, object equality is fine.
+   */
+  public boolean equals(Object t) {
+    return this == t;
+  }
 
-    @Override
-    public RefType boxedType() {
-    	return RefType.v("java.lang.Integer");
-    }
+  public int hashCode() {
+    return 0xB747239F;
+  }
+
+  public String toString() {
+    return "int";
+  }
+
+  public void apply(Switch sw) {
+    ((TypeSwitch) sw).caseIntType(this);
+  }
+
+  @Override
+  public RefType boxedType() {
+    return RefType.v("java.lang.Integer");
+  }
 }

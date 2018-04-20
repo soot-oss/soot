@@ -18,13 +18,17 @@
  */
 
 package soot.jimple.paddle;
-import soot.*;
 
-/** Soot interface to the PaddleTransformer.
+import soot.SceneTransformer;
+
+/**
+ * Soot interface to the PaddleTransformer.
+ * 
  * @author Ondrej Lhotak
  */
 public abstract class IPaddleTransformer extends SceneTransformer {
-    /** This is called when Soot finishes executing all interprocedural phases.
-     * Paddle uses it to stop profiling if profiling is enabled. */
-    public abstract void finishPhases();
+  /**
+   * This is called when Soot finishes executing all interprocedural phases. Paddle uses it to stop profiling if profiling is enabled.
+   */
+  public abstract void finishPhases();
 }

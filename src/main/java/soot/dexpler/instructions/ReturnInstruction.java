@@ -36,23 +36,23 @@ import soot.jimple.ReturnStmt;
 
 public class ReturnInstruction extends DexlibAbstractInstruction {
 
-    public ReturnInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
-    }
+  public ReturnInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
 
-    @Override
-	public void jimplify (DexBody body) {
-        Instruction11x returnInstruction = (Instruction11x) this.instruction;
-        Local l = body.getRegisterLocal(returnInstruction.getRegisterA());
-        ReturnStmt returnStmt = Jimple.v().newReturnStmt(l);
-        setUnit(returnStmt);
-        addTags(returnStmt);
-        body.add(returnStmt);
-		
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+  @Override
+  public void jimplify(DexBody body) {
+    Instruction11x returnInstruction = (Instruction11x) this.instruction;
+    Local l = body.getRegisterLocal(returnInstruction.getRegisterA());
+    ReturnStmt returnStmt = Jimple.v().newReturnStmt(l);
+    setUnit(returnStmt);
+    addTags(returnStmt);
+    body.add(returnStmt);
 
-			//DalvikTyper.v().addConstraint(returnStmt.getOpBox(), new ImmediateBox(Jimple.body.getBody().getMethod().getReturnType()));
-			DalvikTyper.v().setType(returnStmt.getOpBox(), body.getBody().getMethod().getReturnType(), true);
-        }
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+
+      // DalvikTyper.v().addConstraint(returnStmt.getOpBox(), new ImmediateBox(Jimple.body.getBody().getMethod().getReturnType()));
+      DalvikTyper.v().setType(returnStmt.getOpBox(), body.getBody().getMethod().getReturnType(), true);
     }
+  }
 }

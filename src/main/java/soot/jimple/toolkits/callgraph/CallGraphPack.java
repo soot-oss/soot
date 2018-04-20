@@ -19,44 +19,49 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import soot.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.*;
+import soot.EntryPoints;
+import soot.PhaseOptions;
+import soot.RadioScenePack;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
 import soot.options.CGOptions;
 
-/** A radio pack implementation for the call graph pack that calls the
- * intra-procedural clinit eliminator after the call graph has been built. */
-public class CallGraphPack extends RadioScenePack
-{
-    public CallGraphPack(String name) {
-        super(name);
-    }
+/**
+ * A radio pack implementation for the call graph pack that calls the intra-procedural clinit eliminator after the call graph has been built.
+ */
+public class CallGraphPack extends RadioScenePack {
+  public CallGraphPack(String name) {
+    super(name);
+  }
 
-    protected void internalApply()
-    {
-        CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions(this) );
-        if(!Scene.v().hasCustomEntryPoints()) {
-	        if(!options.implicit_entry()) {
-	            Scene.v().setEntryPoints(EntryPoints.v().application());
-	        }
-	        if( options.all_reachable() ) {
-	            List<SootMethod> entryPoints = new ArrayList<SootMethod>();
-	            entryPoints.addAll( EntryPoints.v().all() );
-	            entryPoints.addAll( EntryPoints.v().methodsOfApplicationClasses() );
-	            Scene.v().setEntryPoints( entryPoints );
-	        }
-        }
-        super.internalApply();
-        ClinitElimTransformer trimmer = new ClinitElimTransformer();
-
-        if( options.trim_clinit() ) {
-            for (SootClass cl : Scene.v().getClasses(SootClass.BODIES)) {
-            	for (SootMethod m : cl.getMethods()) {
-                    if( m.isConcrete() && m.hasActiveBody() ) {
-                        trimmer.transform( m.getActiveBody() );
-                    }
-                }
-            }
-        }
+  protected void internalApply() {
+    CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions(this));
+    if (!Scene.v().hasCustomEntryPoints()) {
+      if (!options.implicit_entry()) {
+        Scene.v().setEntryPoints(EntryPoints.v().application());
+      }
+      if (options.all_reachable()) {
+        List<SootMethod> entryPoints = new ArrayList<SootMethod>();
+        entryPoints.addAll(EntryPoints.v().all());
+        entryPoints.addAll(EntryPoints.v().methodsOfApplicationClasses());
+        Scene.v().setEntryPoints(entryPoints);
+      }
     }
+    super.internalApply();
+    ClinitElimTransformer trimmer = new ClinitElimTransformer();
+
+    if (options.trim_clinit()) {
+      for (SootClass cl : Scene.v().getClasses(SootClass.BODIES)) {
+        for (SootMethod m : cl.getMethods()) {
+          if (m.isConcrete() && m.hasActiveBody()) {
+            trimmer.transform(m.getActiveBody());
+          }
+        }
+      }
+    }
+  }
 }

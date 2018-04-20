@@ -23,53 +23,44 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.AbstractJasminClass;
+import soot.Type;
+import soot.baf.DivInst;
+import soot.baf.InstSwitch;
+import soot.util.Switch;
 
-public class BDivInst extends AbstractOpTypeInst implements DivInst
-{
-    public BDivInst(Type opType)
-    {
-        super(opType);
-    }
+public class BDivInst extends AbstractOpTypeInst implements DivInst {
+  public BDivInst(Type opType) {
+    super(opType);
+  }
 
-    public int getInCount()
-    {
-        return 2;
-    }
+  public int getInCount() {
+    return 2;
+  }
 
-    public Object clone() 
-    {
-      return new BDivInst(getOpType());
-    }
+  public Object clone() {
+    return new BDivInst(getOpType());
+  }
 
-    public int getInMachineCount()
-    {
-        return 2 * AbstractJasminClass.sizeOfType(getOpType());
-    }
-    
-    public int getOutCount()
-    {
-        return 1;
-    }
+  public int getInMachineCount() {
+    return 2 * AbstractJasminClass.sizeOfType(getOpType());
+  }
 
-    public int getOutMachineCount()
-    {
-        return 1 * AbstractJasminClass.sizeOfType(getOpType());
-    }
-    
-    public final String getName() { return "div"; }
+  public int getOutCount() {
+    return 1;
+  }
 
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseDivInst(this);
-    }
+  public int getOutMachineCount() {
+    return 1 * AbstractJasminClass.sizeOfType(getOpType());
+  }
+
+  public final String getName() {
+    return "div";
+  }
+
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseDivInst(this);
+  }
 }
-

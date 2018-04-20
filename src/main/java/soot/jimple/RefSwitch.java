@@ -23,22 +23,20 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-public interface RefSwitch extends soot.util.Switch
-{
-    public abstract void caseArrayRef(ArrayRef v);
-    public abstract void caseStaticFieldRef(StaticFieldRef v);
-    public abstract void caseInstanceFieldRef(InstanceFieldRef v);
-    public abstract void caseParameterRef(ParameterRef v);
-    public abstract void caseCaughtExceptionRef(CaughtExceptionRef v);
-    public abstract void caseThisRef(ThisRef v);
-    public abstract void defaultCase(Object obj);
+public interface RefSwitch extends soot.util.Switch {
+  public abstract void caseArrayRef(ArrayRef v);
+
+  public abstract void caseStaticFieldRef(StaticFieldRef v);
+
+  public abstract void caseInstanceFieldRef(InstanceFieldRef v);
+
+  public abstract void caseParameterRef(ParameterRef v);
+
+  public abstract void caseCaughtExceptionRef(CaughtExceptionRef v);
+
+  public abstract void caseThisRef(ThisRef v);
+
+  public abstract void defaultCase(Object obj);
 }
-
-
-

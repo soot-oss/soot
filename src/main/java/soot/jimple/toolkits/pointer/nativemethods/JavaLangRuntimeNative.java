@@ -26,22 +26,20 @@
 
 package soot.jimple.toolkits.pointer.nativemethods;
 
-import soot.*;
-import soot.jimple.toolkits.pointer.representations.*;
-import soot.jimple.toolkits.pointer.util.*;
+import soot.SootMethod;
+import soot.jimple.toolkits.pointer.representations.Environment;
+import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
+import soot.jimple.toolkits.pointer.util.NativeHelper;
 
 public class JavaLangRuntimeNative extends NativeMethodClass {
-    public JavaLangRuntimeNative( NativeHelper helper ) { super(helper); }
+  public JavaLangRuntimeNative(NativeHelper helper) {
+    super(helper);
+  }
 
   /**
-   * Implements the abstract method simulateMethod.
-   * It distributes the request to the corresponding methods 
-   * by signatures.
+   * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
    */
-  public void simulateMethod(SootMethod method,
-			     ReferenceVariable thisVar,
-			     ReferenceVariable returnVar,
-			     ReferenceVariable params[]){
+  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 
@@ -57,33 +55,20 @@ public class JavaLangRuntimeNative extends NativeMethodClass {
 
   /************************ java.lang.Runtime *********************/
   /**
-   * execInternal is called by all exec method.
-   * It return a Process object.
+   * execInternal is called by all exec method. It return a Process object.
    *
    * NOTE: creates a Process object.
    *
-   * private native 
-   *   java.lang.Process execInternal(java.lang.String[], 
-   *                                  java.lang.String[], 
-   *                                  java.lang.String) 
-   *                          throws java.io.IOException;
+   * private native java.lang.Process execInternal(java.lang.String[], java.lang.String[], java.lang.String) throws java.io.IOException;
    */
-  public 
-    void java_lang_Runtime_execInternal(SootMethod method,
-					ReferenceVariable thisVar,
-					ReferenceVariable returnVar,
-					ReferenceVariable params[]){
+  public void java_lang_Runtime_execInternal(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
     helper.assignObjectTo(returnVar, Environment.v().getProcessObject());
   }
 
   /**
    * Following methods have NO side effects.
    *
-   *    public native long freeMemory();
-   *    public native long totalMemory();
-   *    public native void gc();
-   *    private static native void runFinalization0();
-   *    public native void traceInstructions(boolean);
-   *    public native void traceMethodCalls(boolean);
+   * public native long freeMemory(); public native long totalMemory(); public native void gc(); private static native void runFinalization0(); public
+   * native void traceInstructions(boolean); public native void traceMethodCalls(boolean);
    */
 }

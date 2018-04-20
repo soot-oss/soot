@@ -25,9 +25,8 @@
 
 package soot.baf;
 
-public interface PopInst extends Inst
-{
-    public int getWordCount();
-    public void setWordCount(int count);    
-}
+public interface PopInst extends Inst {
+  public int getWordCount();
 
+  public void setWordCount(int count);
+}

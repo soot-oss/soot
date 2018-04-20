@@ -27,30 +27,36 @@
 
 package soot.jimple.toolkits.annotation.purity;
 
-/** 
+/**
  * The GBL node.
  */
-public class PurityGlobalNode implements PurityNode
-{
-    private PurityGlobalNode() {}
+public class PurityGlobalNode implements PurityNode {
+  private PurityGlobalNode() {
+  }
 
-    public static PurityGlobalNode node = new PurityGlobalNode();
+  public static PurityGlobalNode node = new PurityGlobalNode();
 
-    public String toString()   
-    { return "GBL"; }
+  public String toString() {
+    return "GBL";
+  }
 
-    public int hashCode()  
-    { return 0; }
-    
-    public boolean equals(Object o)
-    { return o instanceof PurityGlobalNode; }
-    
-    public boolean isInside() 
-    { return false; }
+  public int hashCode() {
+    return 0;
+  }
 
-    public boolean isLoad()
-    { return false; }
+  public boolean equals(Object o) {
+    return o instanceof PurityGlobalNode;
+  }
 
-    public boolean isParam() 
-    { return false; }
+  public boolean isInside() {
+    return false;
+  }
+
+  public boolean isLoad() {
+    return false;
+  }
+
+  public boolean isParam() {
+    return false;
+  }
 }

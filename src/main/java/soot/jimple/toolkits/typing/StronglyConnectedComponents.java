@@ -35,94 +35,94 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class StronglyConnectedComponents {
-	private static final Logger logger = LoggerFactory.getLogger(StronglyConnectedComponents.class);
-	List<TypeVariable> variables;
-	Set<TypeVariable> black;
-	List<TypeVariable> finished;
+  private static final Logger logger = LoggerFactory.getLogger(StronglyConnectedComponents.class);
+  List<TypeVariable> variables;
+  Set<TypeVariable> black;
+  List<TypeVariable> finished;
 
-	List<List<TypeVariable>> forest = new LinkedList<List<TypeVariable>>();
-	List<TypeVariable> current_tree;
+  List<List<TypeVariable>> forest = new LinkedList<List<TypeVariable>>();
+  List<TypeVariable> current_tree;
 
-	private static final boolean DEBUG = false;
+  private static final boolean DEBUG = false;
 
-	public static void merge(List<TypeVariable> typeVariableList) throws TypeException {
-		new StronglyConnectedComponents(typeVariableList);
-	}
+  public static void merge(List<TypeVariable> typeVariableList) throws TypeException {
+    new StronglyConnectedComponents(typeVariableList);
+  }
 
-	private StronglyConnectedComponents(List<TypeVariable> typeVariableList) throws TypeException {
-		variables = typeVariableList;
+  private StronglyConnectedComponents(List<TypeVariable> typeVariableList) throws TypeException {
+    variables = typeVariableList;
 
-		black = new TreeSet<TypeVariable>();
-		finished = new LinkedList<TypeVariable>();
+    black = new TreeSet<TypeVariable>();
+    finished = new LinkedList<TypeVariable>();
 
-		for (TypeVariable var : variables) {
-			if (!black.add(var)) {
-				dfsg_visit(var);
-			}
-		}
+    for (TypeVariable var : variables) {
+      if (!black.add(var)) {
+        dfsg_visit(var);
+      }
+    }
 
-		black = new TreeSet<TypeVariable>();
+    black = new TreeSet<TypeVariable>();
 
-		for (TypeVariable var : finished) {
-			if (!black.add(var)) {
-				current_tree = new LinkedList<TypeVariable>();
-				forest.add(current_tree);
-				dfsgt_visit(var);
-			}
-		}
+    for (TypeVariable var : finished) {
+      if (!black.add(var)) {
+        current_tree = new LinkedList<TypeVariable>();
+        forest.add(current_tree);
+        dfsgt_visit(var);
+      }
+    }
 
-		for (Iterator<List<TypeVariable>> i = forest.iterator(); i.hasNext();) {
-			List<TypeVariable> list = i.next();
-			TypeVariable previous = null;
-			StringBuffer s = null;
-			if (DEBUG) {
-				s = new StringBuffer("scc:\n");
-			}
+    for (Iterator<List<TypeVariable>> i = forest.iterator(); i.hasNext();) {
+      List<TypeVariable> list = i.next();
+      TypeVariable previous = null;
+      StringBuffer s = null;
+      if (DEBUG) {
+        s = new StringBuffer("scc:\n");
+      }
 
-			for (Iterator<TypeVariable> j = list.iterator(); j.hasNext();) {
-				TypeVariable current = j.next();
+      for (Iterator<TypeVariable> j = list.iterator(); j.hasNext();) {
+        TypeVariable current = j.next();
 
-				if (DEBUG) {
-					s.append(" " + current + "\n");
-				}
+        if (DEBUG) {
+          s.append(" " + current + "\n");
+        }
 
-				if (previous == null) {
-					previous = current;
-				} else {
-					try {
-						previous = previous.union(current);
-					} catch (TypeException e) {
-						if (DEBUG) {
-							logger.debug("" + s);
-						}
-						throw e;
-					}
-				}
-			}
-		}
-	}
+        if (previous == null) {
+          previous = current;
+        } else {
+          try {
+            previous = previous.union(current);
+          } catch (TypeException e) {
+            if (DEBUG) {
+              logger.debug("" + s);
+            }
+            throw e;
+          }
+        }
+      }
+    }
+  }
 
-	private void dfsg_visit(TypeVariable var) {
-		List<TypeVariable> parents = var.parents();
+  private void dfsg_visit(TypeVariable var) {
+    List<TypeVariable> parents = var.parents();
 
-		for (TypeVariable parent : parents) {
-			if (!black.add(parent)) {
-				dfsg_visit(parent);
-			}
-		}
+    for (TypeVariable parent : parents) {
+      if (!black.add(parent)) {
+        dfsg_visit(parent);
+      }
+    }
 
-		finished.add(0, var);
-	}
+    finished.add(0, var);
+  }
 
-	private void dfsgt_visit(TypeVariable var) {
-		current_tree.add(var);
+  private void dfsgt_visit(TypeVariable var) {
+    current_tree.add(var);
 
-		List<TypeVariable> children = var.children();
+    List<TypeVariable> children = var.children();
 
-		for (TypeVariable child : children) {
-			if (!black.add(child)) {
-				dfsgt_visit(child);
-			}
-		}
-	}
+    for (TypeVariable child : children) {
+      if (!black.add(child)) {
+        dfsgt_visit(child);
+      }
+    }
+  }
 }

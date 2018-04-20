@@ -18,6 +18,7 @@
  */
 
 package soot.util;
+
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -28,19 +29,19 @@ import java.util.Set;
  * @author Steven Arzt
  */
 
-public class IdentityHashMultiMap<K,V> extends HashMultiMap<K, V> {
-	
-	private static final long serialVersionUID = 4960774381646981495L;
+public class IdentityHashMultiMap<K, V> extends HashMultiMap<K, V> {
 
-	@Override
-    protected Map<K, Set<V>> createMap(int initialSize) {
-    	return new IdentityHashMap<K, Set<V>>(initialSize);
-    }
-	
-	@SuppressWarnings("deprecation")
-	@Override
-    protected Set<V> newSet() {
-        return new IdentityHashSet<V>();
-    }
-	
+  private static final long serialVersionUID = 4960774381646981495L;
+
+  @Override
+  protected Map<K, Set<V>> createMap(int initialSize) {
+    return new IdentityHashMap<K, Set<V>>(initialSize);
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  protected Set<V> newSet() {
+    return new IdentityHashSet<V>();
+  }
+
 }

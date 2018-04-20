@@ -23,26 +23,18 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.*;
+import soot.AbstractValueBox;
+import soot.Immediate;
+import soot.Value;
 
-public class ImmediateBox extends AbstractValueBox
-{
-    public ImmediateBox(Value value)
-    {
-        setValue(value);
-    }
+public class ImmediateBox extends AbstractValueBox {
+  public ImmediateBox(Value value) {
+    setValue(value);
+  }
 
-    public boolean canContainValue(Value value)
-    {
-        return value instanceof Immediate;
-    }
+  public boolean canContainValue(Value value) {
+    return value instanceof Immediate;
+  }
 }
-
-

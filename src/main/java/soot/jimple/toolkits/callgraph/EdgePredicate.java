@@ -19,14 +19,12 @@
 
 package soot.jimple.toolkits.callgraph;
 
-/** An interface for predicates on edges, used to specify which edges
- * should or shouldn't be included as part of a particular subgraph.
+/**
+ * An interface for predicates on edges, used to specify which edges should or shouldn't be included as part of a particular subgraph.
+ * 
  * @author Ondrej Lhotak
  */
-public interface EdgePredicate
-{ 
-    /** Returns true iff the edge e is wanted. */
-    public boolean want( Edge e );
+public interface EdgePredicate {
+  /** Returns true iff the edge e is wanted. */
+  public boolean want(Edge e);
 }
-
-

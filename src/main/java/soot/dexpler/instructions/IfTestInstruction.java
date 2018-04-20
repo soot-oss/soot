@@ -37,27 +37,26 @@ import soot.jimple.Jimple;
 
 public class IfTestInstruction extends ConditionalJumpInstruction {
 
-    public IfTestInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
+  public IfTestInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
+
+  @Override
+  protected IfStmt ifStatement(DexBody body) {
+    Instruction22t i = (Instruction22t) instruction;
+    Local one = body.getRegisterLocal(i.getRegisterA());
+    Local other = body.getRegisterLocal(i.getRegisterB());
+    BinopExpr condition = getComparisonExpr(one, other);
+    IfStmt jif = Jimple.v().newIfStmt(condition, targetInstruction.getUnit());
+    // setUnit() is called in ConditionalJumpInstruction
+
+    addTags(jif);
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+      // Debug.printDbg(IDalvikTyper.DEBUG, "constraint if: "+ jif +" condition: "+ condition);
+      DalvikTyper.v().addConstraint(condition.getOp1Box(), condition.getOp2Box());
     }
 
-    @Override
-	protected IfStmt ifStatement(DexBody body) {
-        Instruction22t i = (Instruction22t) instruction;
-        Local one = body.getRegisterLocal(i.getRegisterA());
-        Local other = body.getRegisterLocal(i.getRegisterB());
-        BinopExpr condition = getComparisonExpr(one, other);
-        IfStmt jif = Jimple.v().newIfStmt(condition, targetInstruction.getUnit());
-        // setUnit() is called in ConditionalJumpInstruction
+    return jif;
 
-        addTags(jif);
-		if (IDalvikTyper.ENABLE_DVKTYPER) {
-		    //Debug.printDbg(IDalvikTyper.DEBUG, "constraint if: "+ jif +" condition: "+ condition);
-		    DalvikTyper.v().addConstraint(condition.getOp1Box(), condition.getOp2Box());
-        }
-        
-        
-        return jif;
-        
-    }
+  }
 }

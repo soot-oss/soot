@@ -31,34 +31,33 @@ import soot.jimple.GotoStmt;
 import soot.jimple.Jimple;
 
 public class GotoInstruction extends JumpInstruction implements DeferableInstruction {
-    public GotoInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
-    }
+  public GotoInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
 
-    public void jimplify (DexBody body) {
-        // check if target instruction has been jimplified
-        if (getTargetInstruction(body).getUnit() != null) {
-            body.add(gotoStatement());
-            return;
-        }
-        // set marker unit to swap real gotostmt with otherwise
-        body.addDeferredJimplification(this);
-        markerUnit = Jimple.v().newNopStmt();
-        addTags(markerUnit);
-        unit = markerUnit;
-        body.add(markerUnit);
+  public void jimplify(DexBody body) {
+    // check if target instruction has been jimplified
+    if (getTargetInstruction(body).getUnit() != null) {
+      body.add(gotoStatement());
+      return;
     }
+    // set marker unit to swap real gotostmt with otherwise
+    body.addDeferredJimplification(this);
+    markerUnit = Jimple.v().newNopStmt();
+    addTags(markerUnit);
+    unit = markerUnit;
+    body.add(markerUnit);
+  }
 
-    public void deferredJimplify(DexBody body) {
-        body.getBody().getUnits().insertAfter(gotoStatement(), markerUnit);
-    }
+  public void deferredJimplify(DexBody body) {
+    body.getBody().getUnits().insertAfter(gotoStatement(), markerUnit);
+  }
 
-    private GotoStmt gotoStatement() {
-        GotoStmt go = Jimple.v().newGotoStmt(targetInstruction.getUnit());
-        setUnit(go);
-        addTags(go);
-        return go;
-    }
-
+  private GotoStmt gotoStatement() {
+    GotoStmt go = Jimple.v().newGotoStmt(targetInstruction.getUnit());
+    setUnit(go);
+    addTags(go);
+    return go;
+  }
 
 }

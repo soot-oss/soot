@@ -23,18 +23,13 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-/** Attribute that connects synthetic attribute.
+/**
+ * Attribute that connects synthetic attribute.
+ * 
  * @see attribute_info
  * @author Jennifer Lhotak
  */
 class Synthetic_attribute extends attribute_info {
 }
-

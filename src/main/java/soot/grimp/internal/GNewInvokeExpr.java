@@ -24,11 +24,6 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.grimp.internal;
 
 import java.util.ArrayList;
@@ -47,128 +42,121 @@ import soot.grimp.Precedence;
 import soot.jimple.internal.AbstractInvokeExpr;
 import soot.util.Switch;
 
-public class GNewInvokeExpr extends AbstractInvokeExpr
-    implements NewInvokeExpr, Precedence
-{
-    RefType type;
+public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr, Precedence {
+  RefType type;
 
-    public GNewInvokeExpr(RefType type, SootMethodRef methodRef, List args)
-    {
-    	super(methodRef, new ExprBox[args.size()]);
-    	
-        if( methodRef != null && methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
+  public GNewInvokeExpr(RefType type, SootMethodRef methodRef, List args) {
+    super(methodRef, new ExprBox[args.size()]);
 
-        this.methodRef = methodRef;
-        this.type = type;
-        
-        for(int i = 0; i < args.size(); i++)
-            this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
+    if (methodRef != null && methodRef.isStatic()) {
+      throw new RuntimeException("wrong static-ness");
     }
 
-    /*
-    protected GNewInvokeExpr(RefType type, ExprBox[] argBoxes)
-    {
-        this.type = type;
-        this.argBoxes = argBoxes;
+    this.methodRef = methodRef;
+    this.type = type;
+
+    for (int i = 0; i < args.size(); i++) {
+      this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
     }
-    */
-    
-    public RefType getBaseType()
-    {
-        return type;
-    }
-    
-    public void setBaseType(RefType type)
-    {
-        this.type = type;
-    }
+  }
 
-    public Type getType()
-    {
-        return type;
-    }    
-    
-    public int getPrecedence() { return 850; }
+  /*
+   * protected GNewInvokeExpr(RefType type, ExprBox[] argBoxes) { this.type = type; this.argBoxes = argBoxes; }
+   */
 
-    public String toString()
-    {
-        StringBuffer buffer = new StringBuffer();
+  public RefType getBaseType() {
+    return type;
+  }
 
-        buffer.append("new " + type.toString() + "(");
+  public void setBaseType(RefType type) {
+    this.type = type;
+  }
 
-        if (argBoxes != null) {
-	        for(int i = 0; i < argBoxes.length; i++)
-	        {
-	            if(i != 0)
-	                buffer.append(", ");
-	
-	            buffer.append(argBoxes[i].getValue().toString());
-	        }
+  public Type getType() {
+    return type;
+  }
+
+  public int getPrecedence() {
+    return 850;
+  }
+
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
+
+    buffer.append("new " + type.toString() + "(");
+
+    if (argBoxes != null) {
+      for (int i = 0; i < argBoxes.length; i++) {
+        if (i != 0) {
+          buffer.append(", ");
         }
 
-        buffer.append(")");
-
-        return buffer.toString();
+        buffer.append(argBoxes[i].getValue().toString());
+      }
     }
 
-    public void toString(UnitPrinter up)
-    {
-        up.literal("new");
-        up.literal(" ");
-        up.type(type);
-        up.literal("(");
+    buffer.append(")");
 
-        if (argBoxes != null) {
-	        for(int i = 0; i < argBoxes.length; i++)
-	        {
-	            if(i != 0)
-	                up.literal(", ");
-	
-	            argBoxes[i].toString(up);
-	        }
+    return buffer.toString();
+  }
+
+  public void toString(UnitPrinter up) {
+    up.literal("new");
+    up.literal(" ");
+    up.type(type);
+    up.literal("(");
+
+    if (argBoxes != null) {
+      for (int i = 0; i < argBoxes.length; i++) {
+        if (i != 0) {
+          up.literal(", ");
         }
 
-        up.literal(")");
+        argBoxes[i].toString(up);
+      }
     }
 
-    public void apply(Switch sw)
-    {
-        ((GrimpValueSwitch) sw).caseNewInvokeExpr(this);
-    }
-    
-    public Object clone() 
-    {
-        ArrayList clonedArgs = new ArrayList(getArgCount());
+    up.literal(")");
+  }
 
-        for(int i = 0; i < getArgCount(); i++) {
-            clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
-            
-        }
-        
-        return new  GNewInvokeExpr(getBaseType(), methodRef, clonedArgs);
+  public void apply(Switch sw) {
+    ((GrimpValueSwitch) sw).caseNewInvokeExpr(this);
+  }
+
+  public Object clone() {
+    ArrayList clonedArgs = new ArrayList(getArgCount());
+
+    for (int i = 0; i < getArgCount(); i++) {
+      clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+
     }
-    public boolean equivTo(Object o)
-    {
-        if (o instanceof GNewInvokeExpr)
-        {
-            GNewInvokeExpr ie = (GNewInvokeExpr)o;
-            if (!(getMethod().equals(ie.getMethod()) && 
-                  (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length)))
-                return false;
-            if (argBoxes != null) {
-	            for (ValueBox element : argBoxes)
-					if (!(element.getValue().equivTo(element.getValue())))
-	                    return false;
-            }
-            if( !type.equals(ie.type) ) return false;
-            return true;
-        }
+
+    return new GNewInvokeExpr(getBaseType(), methodRef, clonedArgs);
+  }
+
+  public boolean equivTo(Object o) {
+    if (o instanceof GNewInvokeExpr) {
+      GNewInvokeExpr ie = (GNewInvokeExpr) o;
+      if (!(getMethod().equals(ie.getMethod()) && (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
         return false;
+      }
+      if (argBoxes != null) {
+        for (ValueBox element : argBoxes) {
+          if (!(element.getValue().equivTo(element.getValue()))) {
+            return false;
+          }
+        }
+      }
+      if (!type.equals(ie.type)) {
+        return false;
+      }
+      return true;
     }
- 
-    /** Returns a hash code for this object, consistent with structural equality. */
-    public int equivHashCode()
-    {
-        return getMethod().equivHashCode();
-    }
+    return false;
+  }
+
+  /** Returns a hash code for this object, consistent with structural equality. */
+  public int equivHashCode() {
+    return getMethod().equivHashCode();
+  }
 }

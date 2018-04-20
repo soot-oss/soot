@@ -21,65 +21,66 @@ package soot.javaToJimple;
 
 public class StrictFPPropagator extends polyglot.visit.NodeVisitor {
 
-    boolean strict = false;
-    public StrictFPPropagator(boolean val){
-        strict = val;
-    }
+  boolean strict = false;
 
-    public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n){
-        if (n instanceof polyglot.ast.ClassDecl){
-            if (((polyglot.ast.ClassDecl)n).flags().isStrictFP()){
-                return new StrictFPPropagator(true);
-            }
-        }
-        if (n instanceof polyglot.ast.LocalClassDecl){
-            if (((polyglot.ast.LocalClassDecl)n).decl().flags().isStrictFP()){
-                return new StrictFPPropagator(true);
-            }
-        }
-        if (n instanceof polyglot.ast.MethodDecl){
-            if (((polyglot.ast.MethodDecl)n).flags().isStrictFP()){
-                return new StrictFPPropagator(true);
-            }
-        }
-        if (n instanceof polyglot.ast.ConstructorDecl){
-            if (((polyglot.ast.ConstructorDecl)n).flags().isStrictFP()){
-                return new StrictFPPropagator(true);
-            }
-        }
-        return this;
+  public StrictFPPropagator(boolean val) {
+    strict = val;
+  }
+
+  public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
+    if (n instanceof polyglot.ast.ClassDecl) {
+      if (((polyglot.ast.ClassDecl) n).flags().isStrictFP()) {
+        return new StrictFPPropagator(true);
+      }
     }
-    
-    public polyglot.ast.Node leave(polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor nodeVisitor){
-    
-        if (n instanceof polyglot.ast.MethodDecl) {
-            polyglot.ast.MethodDecl decl = (polyglot.ast.MethodDecl)n;
-            if (strict && !decl.flags().isAbstract() && !decl.flags().isStrictFP()){
-                //  System.out.println("changing method decl "+decl);
-                decl = decl.flags(decl.flags().StrictFP());
-                //System.out.println("changed decl: "+decl);
-                return decl;
-            }
-        }
-        if (n instanceof polyglot.ast.ConstructorDecl) {
-            polyglot.ast.ConstructorDecl decl = (polyglot.ast.ConstructorDecl)n;
-            if (strict && !decl.flags().isAbstract() && !decl.flags().isStrictFP()){
-                return decl.flags(decl.flags().StrictFP());
-            }
-        }
-        if (n instanceof polyglot.ast.LocalClassDecl){
-            polyglot.ast.LocalClassDecl decl = (polyglot.ast.LocalClassDecl)n;
-            if (decl.decl().flags().isStrictFP()){
-                return decl.decl().flags(decl.decl().flags().clearStrictFP());
-            }
-        }
-        if (n instanceof polyglot.ast.ClassDecl){
-            polyglot.ast.ClassDecl decl = (polyglot.ast.ClassDecl)n;
-            if (decl.flags().isStrictFP()){
-                return decl.flags(decl.flags().clearStrictFP());
-            }
-        }
-        return n;
+    if (n instanceof polyglot.ast.LocalClassDecl) {
+      if (((polyglot.ast.LocalClassDecl) n).decl().flags().isStrictFP()) {
+        return new StrictFPPropagator(true);
+      }
     }
+    if (n instanceof polyglot.ast.MethodDecl) {
+      if (((polyglot.ast.MethodDecl) n).flags().isStrictFP()) {
+        return new StrictFPPropagator(true);
+      }
+    }
+    if (n instanceof polyglot.ast.ConstructorDecl) {
+      if (((polyglot.ast.ConstructorDecl) n).flags().isStrictFP()) {
+        return new StrictFPPropagator(true);
+      }
+    }
+    return this;
+  }
+
+  public polyglot.ast.Node leave(polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor nodeVisitor) {
+
+    if (n instanceof polyglot.ast.MethodDecl) {
+      polyglot.ast.MethodDecl decl = (polyglot.ast.MethodDecl) n;
+      if (strict && !decl.flags().isAbstract() && !decl.flags().isStrictFP()) {
+        // System.out.println("changing method decl "+decl);
+        decl = decl.flags(decl.flags().StrictFP());
+        // System.out.println("changed decl: "+decl);
+        return decl;
+      }
+    }
+    if (n instanceof polyglot.ast.ConstructorDecl) {
+      polyglot.ast.ConstructorDecl decl = (polyglot.ast.ConstructorDecl) n;
+      if (strict && !decl.flags().isAbstract() && !decl.flags().isStrictFP()) {
+        return decl.flags(decl.flags().StrictFP());
+      }
+    }
+    if (n instanceof polyglot.ast.LocalClassDecl) {
+      polyglot.ast.LocalClassDecl decl = (polyglot.ast.LocalClassDecl) n;
+      if (decl.decl().flags().isStrictFP()) {
+        return decl.decl().flags(decl.decl().flags().clearStrictFP());
+      }
+    }
+    if (n instanceof polyglot.ast.ClassDecl) {
+      polyglot.ast.ClassDecl decl = (polyglot.ast.ClassDecl) n;
+      if (decl.flags().isStrictFP()) {
+        return decl.flags(decl.flags().clearStrictFP());
+      }
+    }
+    return n;
+  }
 
 }

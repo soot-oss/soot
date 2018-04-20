@@ -19,35 +19,30 @@
 
 package soot.javaToJimple;
 
-public class CommaJBB extends AbstractJimpleBodyBuilder{
+public class CommaJBB extends AbstractJimpleBodyBuilder {
 
-    public CommaJBB(){
-        //ext(null);
-        //base(this);
-    }
+  public CommaJBB() {
+    // ext(null);
+    // base(this);
+  }
 
-    /*protected soot.Value createExpr(polyglot.ast.Expr expr){
-        if (expr instanceof soot.javaToJimple.jj.ast.JjComma_c){
-            return getCommaLocal((soot.javaToJimple.jj.ast.JjComma_c)expr);
-        }
-        else {
-            return ext().createExpr(expr);
-        }
-    }*/
-    
-    protected soot.Value createAggressiveExpr(polyglot.ast.Expr expr, boolean redAggr, boolean revIfNec){
-        if (expr instanceof soot.javaToJimple.jj.ast.JjComma_c){
-            return getCommaLocal((soot.javaToJimple.jj.ast.JjComma_c)expr);
-        }
-        else {
-            return ext().createAggressiveExpr(expr, redAggr, revIfNec);
-        }
+  /*
+   * protected soot.Value createExpr(polyglot.ast.Expr expr){ if (expr instanceof soot.javaToJimple.jj.ast.JjComma_c){ return
+   * getCommaLocal((soot.javaToJimple.jj.ast.JjComma_c)expr); } else { return ext().createExpr(expr); } }
+   */
+
+  protected soot.Value createAggressiveExpr(polyglot.ast.Expr expr, boolean redAggr, boolean revIfNec) {
+    if (expr instanceof soot.javaToJimple.jj.ast.JjComma_c) {
+      return getCommaLocal((soot.javaToJimple.jj.ast.JjComma_c) expr);
+    } else {
+      return ext().createAggressiveExpr(expr, redAggr, revIfNec);
     }
-    
-    private soot.Value getCommaLocal(soot.javaToJimple.jj.ast.JjComma_c comma){
-        base().createAggressiveExpr(comma.first(), false, false);
-        soot.Value val = base().createAggressiveExpr(comma.second(), false, false);
-        return val;
-    }
+  }
+
+  private soot.Value getCommaLocal(soot.javaToJimple.jj.ast.JjComma_c comma) {
+    base().createAggressiveExpr(comma.first(), false, false);
+    soot.Value val = base().createAggressiveExpr(comma.second(), false, false);
+    return val;
+  }
 
 }

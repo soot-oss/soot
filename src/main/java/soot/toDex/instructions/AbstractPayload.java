@@ -10,8 +10,8 @@ import org.jf.dexlib2.Opcode;
  */
 public abstract class AbstractPayload extends InsnWithOffset {
 
-	public AbstractPayload() {
-		super(Opcode.NOP);
-	}
+  public AbstractPayload() {
+    super(Opcode.NOP);
+  }
 
 }

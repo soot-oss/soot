@@ -19,45 +19,44 @@
 
 package soot.xml;
 
-public class ColorAttribute{
-            
-    private int red;
-    private int green;
-    private int blue;
-    private int fg;
-    private final String analysisType;
-    
-    public ColorAttribute(int red, int green, int blue, boolean fg, String type){
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-        if (fg){
-            this.fg = 1;
-        }
-        else {
-            this.fg = 0;
-        }
-        analysisType = type;
-    }
+public class ColorAttribute {
 
-    public int red(){
-        return red;
-    }
+  private int red;
+  private int green;
+  private int blue;
+  private int fg;
+  private final String analysisType;
 
-    public int green(){
-        return green;
+  public ColorAttribute(int red, int green, int blue, boolean fg, String type) {
+    this.red = red;
+    this.green = green;
+    this.blue = blue;
+    if (fg) {
+      this.fg = 1;
+    } else {
+      this.fg = 0;
     }
+    analysisType = type;
+  }
 
-    public int blue(){
-        return blue;
-    }
+  public int red() {
+    return red;
+  }
 
-    public int fg(){
-        return fg;
-    }
+  public int green() {
+    return green;
+  }
 
-    public String analysisType(){
-        return analysisType;
-    }
+  public int blue() {
+    return blue;
+  }
+
+  public int fg() {
+    return fg;
+  }
+
+  public String analysisType() {
+    return analysisType;
+  }
 
 }

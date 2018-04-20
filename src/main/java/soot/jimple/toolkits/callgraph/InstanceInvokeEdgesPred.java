@@ -19,16 +19,14 @@
 
 package soot.jimple.toolkits.callgraph;
 
-/** A predicate that accepts edges that are the result of an explicit instance 
- * invoke.
+/**
+ * A predicate that accepts edges that are the result of an explicit instance invoke.
+ * 
  * @author Ondrej Lhotak
  */
-public class InstanceInvokeEdgesPred implements EdgePredicate
-{ 
-    /** Returns true iff the edge e is wanted. */
-    public boolean want( Edge e ) {
-        return e.isInstance();
-    }
+public class InstanceInvokeEdgesPred implements EdgePredicate {
+  /** Returns true iff the edge e is wanted. */
+  public boolean want(Edge e) {
+    return e.isInstance();
+  }
 }
-
-

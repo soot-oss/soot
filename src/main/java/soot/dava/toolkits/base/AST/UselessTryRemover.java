@@ -18,61 +18,67 @@
  */
 
 package soot.dava.toolkits.base.AST;
-import soot.*;
 
-import java.util.*;
-import soot.dava.internal.AST.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-public class UselessTryRemover extends ASTAnalysis
-{
-    public UselessTryRemover( Singletons.Global g ) {}
-    public static UselessTryRemover v() { return G.v().soot_dava_toolkits_base_AST_UselessTryRemover(); }
+import soot.G;
+import soot.Singletons;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.AST.ASTTryNode;
 
-    public int getAnalysisDepth()
-    {
-	return ANALYSE_AST;
+public class UselessTryRemover extends ASTAnalysis {
+  public UselessTryRemover(Singletons.Global g) {
+  }
+
+  public static UselessTryRemover v() {
+    return G.v().soot_dava_toolkits_base_AST_UselessTryRemover();
+  }
+
+  public int getAnalysisDepth() {
+    return ANALYSE_AST;
+  }
+
+  public void analyseASTNode(ASTNode n) {
+    Iterator<Object> sbit = n.get_SubBodies().iterator();
+
+    while (sbit.hasNext()) {
+
+      List<Object> subBody = null, toRemove = new ArrayList<Object>();
+
+      if (n instanceof ASTTryNode) {
+        subBody = (List<Object>) ((ASTTryNode.container) sbit.next()).o;
+      } else {
+        subBody = (List<Object>) sbit.next();
+      }
+
+      Iterator<Object> cit = subBody.iterator();
+      while (cit.hasNext()) {
+        Object child = cit.next();
+
+        if (child instanceof ASTTryNode) {
+          ASTTryNode tryNode = (ASTTryNode) child;
+
+          tryNode.perform_Analysis(TryContentsFinder.v());
+
+          if ((tryNode.get_CatchList().isEmpty()) || (tryNode.isEmpty())) {
+            toRemove.add(tryNode);
+          }
+        }
+      }
+
+      Iterator<Object> trit = toRemove.iterator();
+      while (trit.hasNext()) {
+        ASTTryNode tryNode = (ASTTryNode) trit.next();
+
+        subBody.addAll(subBody.indexOf(tryNode), tryNode.get_TryBody());
+        subBody.remove(tryNode);
+      }
+
+      if (toRemove.isEmpty() == false) {
+        G.v().ASTAnalysis_modified = true;
+      }
     }
-
-    public void analyseASTNode( ASTNode n)
-    {
-	Iterator<Object> sbit = n.get_SubBodies().iterator();
-
-	while (sbit.hasNext()) {
-	    
-	    List<Object> 
-		subBody = null,
-		toRemove = new ArrayList<Object>();
-
-	    if (n instanceof ASTTryNode)
-		subBody = (List<Object>) ((ASTTryNode.container) sbit.next()).o;
-	    else
-		subBody = (List<Object>) sbit.next();
-
-
-	    Iterator<Object> cit = subBody.iterator();
-	    while (cit.hasNext()) {
-		Object child = cit.next();
-		
-		if (child instanceof ASTTryNode) {
-		    ASTTryNode tryNode = (ASTTryNode) child;
-
-		    tryNode.perform_Analysis( TryContentsFinder.v());
-
-		    if ((tryNode.get_CatchList().isEmpty()) || (tryNode.isEmpty()))
-			toRemove.add( tryNode);
-		}
-	    }
-
-	    Iterator<Object> trit = toRemove.iterator();
-	    while (trit.hasNext()) {
-		ASTTryNode tryNode = (ASTTryNode) trit.next();
-
-		subBody.addAll( subBody.indexOf( tryNode), tryNode.get_TryBody());
-		subBody.remove( tryNode);
-	    }
-
-	    if (toRemove.isEmpty() == false)
-		G.v().ASTAnalysis_modified = true;
-	}
-    }
+  }
 }

@@ -25,29 +25,28 @@ import soot.SootField;
 import soot.SootMethod;
 
 /**
- * Using this oracle one assumes, that a client of the target library can call
- * every method and access every field.
+ * Using this oracle one assumes, that a client of the target library can call every method and access every field.
  * 
  * @author Florian Kuebler
  *
  */
 public class CompleteAccessibility implements ClientAccessibilityOracle {
 
-	public CompleteAccessibility(Singletons.Global g) {
-	}
+  public CompleteAccessibility(Singletons.Global g) {
+  }
 
-	public static CompleteAccessibility v() {
-		return G.v().soot_jimple_spark_internal_CompleteAccessibility();
-	}
+  public static CompleteAccessibility v() {
+    return G.v().soot_jimple_spark_internal_CompleteAccessibility();
+  }
 
-	@Override
-	public boolean isAccessible(SootMethod method) {
-		return true;
-	}
+  @Override
+  public boolean isAccessible(SootMethod method) {
+    return true;
+  }
 
-	@Override
-	public boolean isAccessible(SootField field) {
-		return true;
-	}
+  @Override
+  public boolean isAccessible(SootField field) {
+    return true;
+  }
 
 }

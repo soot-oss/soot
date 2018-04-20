@@ -24,12 +24,13 @@
  */
 
 package soot.jimple.toolkits.scalar.pre;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Body;
 import soot.BodyTransformer;
@@ -56,129 +57,131 @@ import soot.util.Chain;
 import soot.util.UnitMap;
 
 /**
- * Performs a partial redundancy elimination (= code motion). This is done, by
- * moving <b>every</b>computation as high as possible (it is easy to show, that
- * they are computationally optimal), and then replacing the original
- * computation by a reference to this new high computation. This implies, that
- * we introduce <b>many</b> new helper-variables (that can easily be eliminated
- * afterwards).<br>
- * In order to catch every redundant expression, this transformation must be
- * done on a graph without critical edges. Therefore the first thing we do, is
- * removing them. A subsequent pass can then easily remove the synthetic nodes
- * we have introduced.<br>
- * The term "busy" refers to the fact, that we <b>always</b> move computations
- * as high as possible. Even, if this is not necessary.
+ * Performs a partial redundancy elimination (= code motion). This is done, by moving <b>every</b>computation as high as possible (it is easy to show,
+ * that they are computationally optimal), and then replacing the original computation by a reference to this new high computation. This implies, that
+ * we introduce <b>many</b> new helper-variables (that can easily be eliminated afterwards).<br>
+ * In order to catch every redundant expression, this transformation must be done on a graph without critical edges. Therefore the first thing we do,
+ * is removing them. A subsequent pass can then easily remove the synthetic nodes we have introduced.<br>
+ * The term "busy" refers to the fact, that we <b>always</b> move computations as high as possible. Even, if this is not necessary.
  *
  * @see soot.jimple.toolkits.graph.CriticalEdgeRemover
  */
 public class BusyCodeMotion extends BodyTransformer {
-    private static final Logger logger = LoggerFactory.getLogger(BusyCodeMotion.class);
-	public BusyCodeMotion(Singletons.Global g) {
-	}
+  private static final Logger logger = LoggerFactory.getLogger(BusyCodeMotion.class);
 
-	public static BusyCodeMotion v() {
-		return G.v().soot_jimple_toolkits_scalar_pre_BusyCodeMotion();
-	}
+  public BusyCodeMotion(Singletons.Global g) {
+  }
 
-	private static final String PREFIX = "$bcm";
+  public static BusyCodeMotion v() {
+    return G.v().soot_jimple_toolkits_scalar_pre_BusyCodeMotion();
+  }
 
-	/**
-	 * performs the busy code motion.
-	 */
-	protected void internalTransform(Body b, String phaseName, Map<String, String> opts) {
-		BCMOptions options = new BCMOptions(opts);
-		HashMap<EquivalentValue, Local> expToHelper = new HashMap<EquivalentValue, Local>();
-		Chain<Unit> unitChain = b.getUnits();
+  private static final String PREFIX = "$bcm";
 
-		if (Options.v().verbose())
-			logger.debug("[" + b.getMethod().getName() + "]     performing Busy Code Motion...");
+  /**
+   * performs the busy code motion.
+   */
+  protected void internalTransform(Body b, String phaseName, Map<String, String> opts) {
+    BCMOptions options = new BCMOptions(opts);
+    HashMap<EquivalentValue, Local> expToHelper = new HashMap<EquivalentValue, Local>();
+    Chain<Unit> unitChain = b.getUnits();
 
-		CriticalEdgeRemover.v().transform(b, phaseName + ".cer");
+    if (Options.v().verbose()) {
+      logger.debug("[" + b.getMethod().getName() + "]     performing Busy Code Motion...");
+    }
 
-		UnitGraph graph = new BriefUnitGraph(b);
+    CriticalEdgeRemover.v().transform(b, phaseName + ".cer");
 
-		/* map each unit to its RHS. only take binary expressions */
-		Map<Unit, EquivalentValue> unitToEquivRhs = new UnitMap<EquivalentValue>(b, graph.size() + 1, 0.7f) {
-			protected EquivalentValue mapTo(Unit unit) {
-				Value tmp = SootFilter.noInvokeRhs(unit);
-				Value tmp2 = SootFilter.binop(tmp);
-				if (tmp2 == null)
-					tmp2 = SootFilter.concreteRef(tmp);
-				return SootFilter.equiVal(tmp2);
-			}
-		};
+    UnitGraph graph = new BriefUnitGraph(b);
 
-		/* same as before, but without exception-throwing expressions */
-		Map<Unit, EquivalentValue> unitToNoExceptionEquivRhs = new UnitMap<EquivalentValue>(b, graph.size() + 1, 0.7f) {
-			protected EquivalentValue mapTo(Unit unit) {
-				Value tmp = SootFilter.binopRhs(unit);
-				tmp = SootFilter.noExceptionThrowing(tmp);
-				return SootFilter.equiVal(tmp);
-			}
-		};
+    /* map each unit to its RHS. only take binary expressions */
+    Map<Unit, EquivalentValue> unitToEquivRhs = new UnitMap<EquivalentValue>(b, graph.size() + 1, 0.7f) {
+      protected EquivalentValue mapTo(Unit unit) {
+        Value tmp = SootFilter.noInvokeRhs(unit);
+        Value tmp2 = SootFilter.binop(tmp);
+        if (tmp2 == null) {
+          tmp2 = SootFilter.concreteRef(tmp);
+        }
+        return SootFilter.equiVal(tmp2);
+      }
+    };
 
-		/* if a more precise sideeffect-tester comes out, please change it here! */
-		SideEffectTester sideEffect;
-		if (Scene.v().hasCallGraph() && !options.naive_side_effect()) {
-			sideEffect = new PASideEffectTester();
-		} else {
-			sideEffect = new NaiveSideEffectTester();
-		}
-		sideEffect.newMethod(b.getMethod());
-		UpSafetyAnalysis upSafe = new UpSafetyAnalysis(graph, unitToEquivRhs, sideEffect);
-		DownSafetyAnalysis downSafe = new DownSafetyAnalysis(graph, unitToNoExceptionEquivRhs, sideEffect);
-		EarliestnessComputation earliest = new EarliestnessComputation(graph, upSafe, downSafe, sideEffect);
+    /* same as before, but without exception-throwing expressions */
+    Map<Unit, EquivalentValue> unitToNoExceptionEquivRhs = new UnitMap<EquivalentValue>(b, graph.size() + 1, 0.7f) {
+      protected EquivalentValue mapTo(Unit unit) {
+        Value tmp = SootFilter.binopRhs(unit);
+        tmp = SootFilter.noExceptionThrowing(tmp);
+        return SootFilter.equiVal(tmp);
+      }
+    };
 
-		LocalCreation localCreation = new LocalCreation(b.getLocals(), PREFIX);
+    /* if a more precise sideeffect-tester comes out, please change it here! */
+    SideEffectTester sideEffect;
+    if (Scene.v().hasCallGraph() && !options.naive_side_effect()) {
+      sideEffect = new PASideEffectTester();
+    } else {
+      sideEffect = new NaiveSideEffectTester();
+    }
+    sideEffect.newMethod(b.getMethod());
+    UpSafetyAnalysis upSafe = new UpSafetyAnalysis(graph, unitToEquivRhs, sideEffect);
+    DownSafetyAnalysis downSafe = new DownSafetyAnalysis(graph, unitToNoExceptionEquivRhs, sideEffect);
+    EarliestnessComputation earliest = new EarliestnessComputation(graph, upSafe, downSafe, sideEffect);
 
-		Iterator<Unit> unitIt = unitChain.snapshotIterator();
+    LocalCreation localCreation = new LocalCreation(b.getLocals(), PREFIX);
 
-		{ /* insert the computations at the earliest positions */
-			while (unitIt.hasNext()) {
-				Unit currentUnit = unitIt.next();				
-				for (EquivalentValue equiVal : earliest.getFlowBefore(currentUnit)) {
-					// Value exp = equiVal.getValue();
-					/* get the unic helper-name for this expression */
-					Local helper = expToHelper.get(equiVal);
-					
-					// Make sure not to place any stuff inside the identity block at
-					// the beginning of the method
-					if (currentUnit instanceof IdentityStmt)
-						currentUnit = getFirstNonIdentityStmt(b);
-					
-					if (helper == null) {
-						helper = localCreation.newLocal(equiVal.getType());
-						expToHelper.put(equiVal, helper);
-					}
+    Iterator<Unit> unitIt = unitChain.snapshotIterator();
 
-					/* insert a new Assignment-stmt before the currentUnit */
-					Value insertValue = Jimple.cloneIfNecessary(equiVal.getValue());
-					Unit firstComp = Jimple.v().newAssignStmt(helper, insertValue);
-					unitChain.insertBefore(firstComp, currentUnit);
-				}
-			}
-		}
+    { /* insert the computations at the earliest positions */
+      while (unitIt.hasNext()) {
+        Unit currentUnit = unitIt.next();
+        for (EquivalentValue equiVal : earliest.getFlowBefore(currentUnit)) {
+          // Value exp = equiVal.getValue();
+          /* get the unic helper-name for this expression */
+          Local helper = expToHelper.get(equiVal);
 
-		{ /* replace old computations by the helper-vars */
-			unitIt = unitChain.iterator();
-			while (unitIt.hasNext()) {
-				Unit currentUnit = unitIt.next();
-				EquivalentValue rhs = unitToEquivRhs.get(currentUnit);
-				if (rhs != null) {
-					Local helper = expToHelper.get(rhs);
-					if (helper != null)
-						((AssignStmt) currentUnit).setRightOp(helper);
-				}
-			}
-		}
-		if (Options.v().verbose())
-			logger.debug("[" + b.getMethod().getName() + "]     Busy Code Motion done!");
-	}
+          // Make sure not to place any stuff inside the identity block at
+          // the beginning of the method
+          if (currentUnit instanceof IdentityStmt) {
+            currentUnit = getFirstNonIdentityStmt(b);
+          }
 
-	private Unit getFirstNonIdentityStmt(Body b) {
-		for (Unit u : b.getUnits())
-			if (!(u instanceof IdentityStmt))
-				return u;
-		return null;
-	}
+          if (helper == null) {
+            helper = localCreation.newLocal(equiVal.getType());
+            expToHelper.put(equiVal, helper);
+          }
+
+          /* insert a new Assignment-stmt before the currentUnit */
+          Value insertValue = Jimple.cloneIfNecessary(equiVal.getValue());
+          Unit firstComp = Jimple.v().newAssignStmt(helper, insertValue);
+          unitChain.insertBefore(firstComp, currentUnit);
+        }
+      }
+    }
+
+    { /* replace old computations by the helper-vars */
+      unitIt = unitChain.iterator();
+      while (unitIt.hasNext()) {
+        Unit currentUnit = unitIt.next();
+        EquivalentValue rhs = unitToEquivRhs.get(currentUnit);
+        if (rhs != null) {
+          Local helper = expToHelper.get(rhs);
+          if (helper != null) {
+            ((AssignStmt) currentUnit).setRightOp(helper);
+          }
+        }
+      }
+    }
+    if (Options.v().verbose()) {
+      logger.debug("[" + b.getMethod().getName() + "]     Busy Code Motion done!");
+    }
+  }
+
+  private Unit getFirstNonIdentityStmt(Body b) {
+    for (Unit u : b.getUnits()) {
+      if (!(u instanceof IdentityStmt)) {
+        return u;
+      }
+    }
+    return null;
+  }
 }

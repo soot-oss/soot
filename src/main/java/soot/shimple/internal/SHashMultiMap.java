@@ -18,31 +18,31 @@
  */
 
 package soot.shimple.internal;
-import java.util.*;
-import soot.util.*;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
 
 /**
  * A map with ordered sets as values, HashMap implementation.
  *
  * @author Navindra Umanee
  **/
-public class SHashMultiMap<K,V> extends HashMultiMap<K,V>
-{
+public class SHashMultiMap<K, V> extends HashMultiMap<K, V> {
 
-	private static final long serialVersionUID = -860669798578291979L;
+  private static final long serialVersionUID = -860669798578291979L;
 
-	public SHashMultiMap()
-    {
-        super();
-    }
+  public SHashMultiMap() {
+    super();
+  }
 
-    public SHashMultiMap(MultiMap<K,V> m)
-    {
-	super( m );
-    }
+  public SHashMultiMap(MultiMap<K, V> m) {
+    super(m);
+  }
 
-    protected Set<V> newSet()
-    {
-	return new LinkedHashSet<V>(4);
-    }
+  protected Set<V> newSet() {
+    return new LinkedHashSet<V>(4);
+  }
 }

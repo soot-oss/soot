@@ -25,6 +25,5 @@
 
 package soot.baf;
 
-public interface NegInst extends OpTypeArgInst
-{
+public interface NegInst extends OpTypeArgInst {
 }

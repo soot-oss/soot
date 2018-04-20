@@ -19,29 +19,41 @@
 
 package soot.dava.internal.javaRep;
 
-import soot.*;
-import soot.util.*;
-import soot.grimp.*;
-import soot.jimple.*;
-import soot.grimp.internal.*;
+import soot.IntType;
+import soot.Type;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.grimp.internal.AbstractGrimpIntBinopExpr;
+import soot.jimple.CmpgExpr;
+import soot.jimple.ExprSwitch;
+import soot.util.Switch;
 
-public class DCmpgExpr extends AbstractGrimpIntBinopExpr implements CmpgExpr
-{
-    public DCmpgExpr(Value op1, Value op2) { super(op1, op2); }
-    public final String getSymbol() { return " - "; }
-    public final int getPrecedence() { return 700; }
-    public void apply(Switch sw) { ((ExprSwitch) sw).caseCmpgExpr(this); }
+public class DCmpgExpr extends AbstractGrimpIntBinopExpr implements CmpgExpr {
+  public DCmpgExpr(Value op1, Value op2) {
+    super(op1, op2);
+  }
 
-    public Object clone() 
-    {
-        return new DCmpgExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
+  public final String getSymbol() {
+    return " - ";
+  }
+
+  public final int getPrecedence() {
+    return 700;
+  }
+
+  public void apply(Switch sw) {
+    ((ExprSwitch) sw).caseCmpgExpr(this);
+  }
+
+  public Object clone() {
+    return new DCmpgExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
+  }
+
+  public Type getType() {
+    if (getOp1().getType().equals(getOp2().getType())) {
+      return getOp1().getType();
     }
-    
-    public Type getType(){
-    	if (getOp1().getType().equals(getOp2().getType())){
-    		return getOp1().getType();
-    	}
-    		
-        return IntType.v();
-    }
+
+    return IntType.v();
+  }
 }

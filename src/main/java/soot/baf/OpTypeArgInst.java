@@ -25,10 +25,10 @@
 
 package soot.baf;
 
-import soot.*;
+import soot.Type;
 
-public interface OpTypeArgInst extends Inst
-{
-    public Type getOpType();
-    public void setOpType(Type t);
+public interface OpTypeArgInst extends Inst {
+  public Type getOpType();
+
+  public void setOpType(Type t);
 }

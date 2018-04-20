@@ -30,13 +30,13 @@ import java.util.List;
 import soot.SootMethodRef;
 import soot.Value;
 
-public interface DynamicInvokeInst extends MethodArgInst
-{
-	public SootMethodRef getBootstrapMethodRef();
-	public List<Value> getBootstrapArgs();
-	
-	 /*
-     * Tag of the method handle, see JVM-spec. 5.4.3.5.
-     */
-    public int getHandleTag();
+public interface DynamicInvokeInst extends MethodArgInst {
+  public SootMethodRef getBootstrapMethodRef();
+
+  public List<Value> getBootstrapArgs();
+
+  /*
+   * Tag of the method handle, see JVM-spec. 5.4.3.5.
+   */
+  public int getHandleTag();
 }

@@ -26,26 +26,26 @@ import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 
 /**
- * It implements missing features in Soot components.
- * All functions should be static.
+ * It implements missing features in Soot components. All functions should be static.
+ * 
  * @author xiao
  *
  */
 public class SootInfo {
-	
-	public static int countCallEdgesForCallsite(Stmt callsite, boolean stopForMutiple)
-	{
-		CallGraph cg = Scene.v().getCallGraph();
-		int count = 0;
-		
-		for ( Iterator<Edge> it = cg.edgesOutOf(callsite); 
-				it.hasNext(); ) {
-			it.next();
-			++count;
-			if ( stopForMutiple && count > 1) break;
-		}
-		
-		return count;
-	}
+
+  public static int countCallEdgesForCallsite(Stmt callsite, boolean stopForMutiple) {
+    CallGraph cg = Scene.v().getCallGraph();
+    int count = 0;
+
+    for (Iterator<Edge> it = cg.edgesOutOf(callsite); it.hasNext();) {
+      it.next();
+      ++count;
+      if (stopForMutiple && count > 1) {
+        break;
+      }
+    }
+
+    return count;
+  }
 
 }

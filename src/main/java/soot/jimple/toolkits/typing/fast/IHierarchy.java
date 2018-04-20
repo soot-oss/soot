@@ -20,14 +20,15 @@
  */
 package soot.jimple.toolkits.typing.fast;
 
-import java.util.*;
-import soot.*;
+import java.util.Collection;
+
+import soot.Type;
 
 /**
  * @author Ben Bellamy
  */
-public interface IHierarchy
-{
-	Collection<Type> lcas(Type a, Type b);
-	boolean ancestor(Type ancestor, Type child);
+public interface IHierarchy {
+  Collection<Type> lcas(Type a, Type b);
+
+  boolean ancestor(Type ancestor, Type child);
 }

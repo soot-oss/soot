@@ -23,17 +23,15 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
+import soot.Value;
+import soot.ValueBox;
 
-public interface InvokeStmt extends Stmt
-{
-    public void setInvokeExpr(Value invokeExpr);
-    public InvokeExpr getInvokeExpr();
-    public ValueBox getInvokeExprBox();
+public interface InvokeStmt extends Stmt {
+  public void setInvokeExpr(Value invokeExpr);
+
+  public InvokeExpr getInvokeExpr();
+
+  public ValueBox getInvokeExprBox();
 }

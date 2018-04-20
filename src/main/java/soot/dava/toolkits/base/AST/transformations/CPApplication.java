@@ -3,6 +3,7 @@ package soot.dava.toolkits.base.AST.transformations;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import soot.Local;
 import soot.SootField;
 import soot.Value;
@@ -49,357 +50,355 @@ import soot.jimple.Stmt;
  */
 
 public class CPApplication extends DepthFirstAdapter {
-	CP cp = null;
-	String className = null;
+  CP cp = null;
+  String className = null;
 
-	public CPApplication(ASTMethodNode AST,
-			HashMap<String, Object> constantValueFields,
-			HashMap<String, SootField> classNameFieldNameToSootFieldMapping) {
-		className = AST.getDavaBody().getMethod().getDeclaringClass().getName();
-		cp = new CP(AST, constantValueFields,
-				classNameFieldNameToSootFieldMapping);
-	}
+  public CPApplication(ASTMethodNode AST, HashMap<String, Object> constantValueFields,
+      HashMap<String, SootField> classNameFieldNameToSootFieldMapping) {
+    className = AST.getDavaBody().getMethod().getDeclaringClass().getName();
+    cp = new CP(AST, constantValueFields, classNameFieldNameToSootFieldMapping);
+  }
 
-	public CPApplication(boolean verbose, ASTMethodNode AST,
-			HashMap<String, Object> constantValueFields,
-			HashMap<String, SootField> classNameFieldNameToSootFieldMapping) {
-		super(verbose);
-		className = AST.getDavaBody().getMethod().getDeclaringClass().getName();
-		cp = new CP(AST, constantValueFields,
-				classNameFieldNameToSootFieldMapping);
-	}
+  public CPApplication(boolean verbose, ASTMethodNode AST, HashMap<String, Object> constantValueFields,
+      HashMap<String, SootField> classNameFieldNameToSootFieldMapping) {
+    super(verbose);
+    className = AST.getDavaBody().getMethod().getDeclaringClass().getName();
+    cp = new CP(AST, constantValueFields, classNameFieldNameToSootFieldMapping);
+  }
 
-	public void inASTSwitchNode(ASTSwitchNode node) {
-		Object obj = cp.getBeforeSet(node);
-		if (obj == null)
-			return;
-		if (!(obj instanceof CPFlowSet))
-			return;
+  public void inASTSwitchNode(ASTSwitchNode node) {
+    Object obj = cp.getBeforeSet(node);
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
+      return;
+    }
 
-		// before set is a non null CPFlowSet
-		CPFlowSet beforeSet = (CPFlowSet) obj;
+    // before set is a non null CPFlowSet
+    CPFlowSet beforeSet = (CPFlowSet) obj;
 
-		Value key = node.get_Key();
-		if (key instanceof Local) {
-			Local useLocal = (Local) key;
-			// System.out.println("switch key is a local: "+useLocal);
-			Object value = beforeSet.contains(className, useLocal.toString());
-			if (value != null) {
-				// System.out.println("switch key Local "+useLocal+"is present in before set with value"+value);
-				// create constant value for the value and replace this local
-				// use with the constant value use
-				Value newValue = CPHelper.createConstant(value);
-				if (newValue != null) {
-					// System.out.println("Substituted the switch key local use with the constant value"+newValue);
-					node.set_Key(newValue);
-				} else {
-					// System.out.println("FAILED TO Substitute the local use with the constant value");
-				}
-			}
-		} else if (key instanceof FieldRef) {
-			FieldRef useField = (FieldRef) key;
-			// System.out.println("switch key is a FieldRef which is: "+useField);
-			SootField usedSootField = useField.getField();
-			Object value = beforeSet.contains(usedSootField.getDeclaringClass()
-					.getName(), usedSootField.getName().toString());
-			if (value != null) {
-				// System.out.println("FieldRef "+usedSootField+"is present in before set with value"+value);
-				// create constant value for the value and replace this local
-				// use with the constant value use
-				Value newValue = CPHelper.createConstant(value);
-				if (newValue != null) {
-					// System.out.println("Substituted the constant field ref use with the constant value"+newValue);
-					node.set_Key(newValue);
-				} else {
-					// System.out.println("FAILED TO Substitute the constant field ref use with the constant value");
-				}
-			}
+    Value key = node.get_Key();
+    if (key instanceof Local) {
+      Local useLocal = (Local) key;
+      // System.out.println("switch key is a local: "+useLocal);
+      Object value = beforeSet.contains(className, useLocal.toString());
+      if (value != null) {
+        // System.out.println("switch key Local "+useLocal+"is present in before set with value"+value);
+        // create constant value for the value and replace this local
+        // use with the constant value use
+        Value newValue = CPHelper.createConstant(value);
+        if (newValue != null) {
+          // System.out.println("Substituted the switch key local use with the constant value"+newValue);
+          node.set_Key(newValue);
+        } else {
+          // System.out.println("FAILED TO Substitute the local use with the constant value");
+        }
+      }
+    } else if (key instanceof FieldRef) {
+      FieldRef useField = (FieldRef) key;
+      // System.out.println("switch key is a FieldRef which is: "+useField);
+      SootField usedSootField = useField.getField();
+      Object value = beforeSet.contains(usedSootField.getDeclaringClass().getName(), usedSootField.getName().toString());
+      if (value != null) {
+        // System.out.println("FieldRef "+usedSootField+"is present in before set with value"+value);
+        // create constant value for the value and replace this local
+        // use with the constant value use
+        Value newValue = CPHelper.createConstant(value);
+        if (newValue != null) {
+          // System.out.println("Substituted the constant field ref use with the constant value"+newValue);
+          node.set_Key(newValue);
+        } else {
+          // System.out.println("FAILED TO Substitute the constant field ref use with the constant value");
+        }
+      }
 
-		}
-	}
+    }
+  }
 
-	public void inASTForLoopNode(ASTForLoopNode node) {
-		/*
-		 * For the init part we should actually use the before set for each init
-		 * stmt
-		 */
-		for (AugmentedStmt as : node.getInit()) {
-			Stmt s = as.get_Stmt();
-			List useBoxes = s.getUseBoxes();
+  public void inASTForLoopNode(ASTForLoopNode node) {
+    /*
+     * For the init part we should actually use the before set for each init stmt
+     */
+    for (AugmentedStmt as : node.getInit()) {
+      Stmt s = as.get_Stmt();
+      List useBoxes = s.getUseBoxes();
 
-			Object obj = cp.getBeforeSet(s);
-			if (obj == null)
-				continue;
-			if (!(obj instanceof CPFlowSet))
-				continue;
+      Object obj = cp.getBeforeSet(s);
+      if (obj == null) {
+        continue;
+      }
+      if (!(obj instanceof CPFlowSet)) {
+        continue;
+      }
 
-			// before set is a non null CPFlowSet
-			CPFlowSet beforeSet = (CPFlowSet) obj;
+      // before set is a non null CPFlowSet
+      CPFlowSet beforeSet = (CPFlowSet) obj;
 
-			// System.out.println("Init Statement: "+s);
-			// System.out.println("Before set is: "+beforeSet.toString());
+      // System.out.println("Init Statement: "+s);
+      // System.out.println("Before set is: "+beforeSet.toString());
 
-			/*
-			 * get all use boxes see if their value is determined from the
-			 * before set if yes replace them
-			 */
-			substituteUses(useBoxes, beforeSet);
-		}
+      /*
+       * get all use boxes see if their value is determined from the before set if yes replace them
+       */
+      substituteUses(useBoxes, beforeSet);
+    }
 
-		// get after set for the condition and update
-		Object obj = cp.getAfterSet(node);
+    // get after set for the condition and update
+    Object obj = cp.getAfterSet(node);
 
-		if (obj == null)
-			return;
-		if (!(obj instanceof CPFlowSet))
-			return;
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
+      return;
+    }
 
-		// after set is a non null CPFlowSet
-		CPFlowSet afterSet = (CPFlowSet) obj;
+    // after set is a non null CPFlowSet
+    CPFlowSet afterSet = (CPFlowSet) obj;
 
-		// conditon
-		ASTCondition cond = node.get_Condition();
+    // conditon
+    ASTCondition cond = node.get_Condition();
 
-		// System.out.println("For Loop with condition: "+cond);
-		// System.out.println("After set is: "+afterSet.toString());
+    // System.out.println("For Loop with condition: "+cond);
+    // System.out.println("After set is: "+afterSet.toString());
 
-		changedCondition(cond, afterSet);
+    changedCondition(cond, afterSet);
 
-		// update
-		for (AugmentedStmt as: node.getUpdate()) {
-			Stmt s = as.get_Stmt();
+    // update
+    for (AugmentedStmt as : node.getUpdate()) {
+      Stmt s = as.get_Stmt();
 
-			List useBoxes = s.getUseBoxes();
+      List useBoxes = s.getUseBoxes();
 
-			// System.out.println("For update Statement: "+s);
-			// System.out.println("After set is: "+afterSet.toString());
+      // System.out.println("For update Statement: "+s);
+      // System.out.println("After set is: "+afterSet.toString());
 
-			/*
-			 * get all use boxes see if their value is determined from the
-			 * before set if yes replace them
-			 */
-			substituteUses(useBoxes, afterSet);
-		}
+      /*
+       * get all use boxes see if their value is determined from the before set if yes replace them
+       */
+      substituteUses(useBoxes, afterSet);
+    }
 
-	}
+  }
 
-	public void inASTWhileNode(ASTWhileNode node) {
-		Object obj = cp.getAfterSet(node);
+  public void inASTWhileNode(ASTWhileNode node) {
+    Object obj = cp.getAfterSet(node);
 
-		if (obj == null)
-			return;
-		if (!(obj instanceof CPFlowSet))
-			return;
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
+      return;
+    }
 
-		// after set is a non null CPFlowSet
-		CPFlowSet afterSet = (CPFlowSet) obj;
+    // after set is a non null CPFlowSet
+    CPFlowSet afterSet = (CPFlowSet) obj;
 
-		ASTCondition cond = node.get_Condition();
+    ASTCondition cond = node.get_Condition();
 
-		// System.out.println("While Statement with condition: "+cond);
-		// System.out.println("After set is: "+afterSet.toString());
+    // System.out.println("While Statement with condition: "+cond);
+    // System.out.println("After set is: "+afterSet.toString());
 
-		changedCondition(cond, afterSet);
-	}
+    changedCondition(cond, afterSet);
+  }
 
-	public void inASTDoWhileNode(ASTDoWhileNode node) {
-		Object obj = cp.getAfterSet(node);
+  public void inASTDoWhileNode(ASTDoWhileNode node) {
+    Object obj = cp.getAfterSet(node);
 
-		if (obj == null)
-			return;
-		if (!(obj instanceof CPFlowSet))
-			return;
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
+      return;
+    }
 
-		// after set is a non null CPFlowSet
-		CPFlowSet afterSet = (CPFlowSet) obj;
+    // after set is a non null CPFlowSet
+    CPFlowSet afterSet = (CPFlowSet) obj;
 
-		ASTCondition cond = node.get_Condition();
+    ASTCondition cond = node.get_Condition();
 
-		// System.out.println("Do While Statement with condition: "+cond);
-		// System.out.println("After set is: "+afterSet.toString());
+    // System.out.println("Do While Statement with condition: "+cond);
+    // System.out.println("After set is: "+afterSet.toString());
 
-		changedCondition(cond, afterSet);
-	}
+    changedCondition(cond, afterSet);
+  }
 
-	public void inASTIfNode(ASTIfNode node) {
-		// System.out.println(node);
-		Object obj = cp.getBeforeSet(node);
+  public void inASTIfNode(ASTIfNode node) {
+    // System.out.println(node);
+    Object obj = cp.getBeforeSet(node);
 
-		if (obj == null)
-			return;
-		if (!(obj instanceof CPFlowSet))
-			return;
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
+      return;
+    }
 
-		// before set is a non null CPFlowSet
-		CPFlowSet beforeSet = (CPFlowSet) obj;
+    // before set is a non null CPFlowSet
+    CPFlowSet beforeSet = (CPFlowSet) obj;
 
-		// System.out.println("Printing before Set for IF"+beforeSet.toString());
+    // System.out.println("Printing before Set for IF"+beforeSet.toString());
 
-		ASTCondition cond = node.get_Condition();
+    ASTCondition cond = node.get_Condition();
 
-		// System.out.println("If Statement with condition: "+cond);
-		// System.out.println("Before set is: "+beforeSet.toString());
+    // System.out.println("If Statement with condition: "+cond);
+    // System.out.println("Before set is: "+beforeSet.toString());
 
-		changedCondition(cond, beforeSet);
-	}
+    changedCondition(cond, beforeSet);
+  }
 
-	public void inASTIfElseNode(ASTIfElseNode node) {
-		Object obj = cp.getBeforeSet(node);
+  public void inASTIfElseNode(ASTIfElseNode node) {
+    Object obj = cp.getBeforeSet(node);
 
-		if (obj == null)
-			return;
-		if (!(obj instanceof CPFlowSet))
-			return;
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
+      return;
+    }
 
-		// before set is a non null CPFlowSet
-		CPFlowSet beforeSet = (CPFlowSet) obj;
+    // before set is a non null CPFlowSet
+    CPFlowSet beforeSet = (CPFlowSet) obj;
 
-		ASTCondition cond = node.get_Condition();
+    ASTCondition cond = node.get_Condition();
 
-		// System.out.println("IfElse Statement with condition: "+cond);
-		// System.out.println("Before set is: "+beforeSet.toString());
+    // System.out.println("IfElse Statement with condition: "+cond);
+    // System.out.println("Before set is: "+beforeSet.toString());
 
-		changedCondition(cond, beforeSet);
-	}
+    changedCondition(cond, beforeSet);
+  }
 
-	/*
-	 * Given a unary/binary or aggregated condition this method is used to find
-	 * all the useBoxes or locals or fieldref in the case of unary conditions
-	 * and then the set is checked for appropriate substitutions
-	 */
-	public ASTCondition changedCondition(ASTCondition cond, CPFlowSet set) {
-		if (cond instanceof ASTAggregatedCondition) {
-			ASTCondition left = changedCondition(
-					((ASTAggregatedCondition) cond).getLeftOp(), set);
-			ASTCondition right = changedCondition(
-					((ASTAggregatedCondition) cond).getRightOp(), set);
-			((ASTAggregatedCondition) cond).setLeftOp(left);
-			((ASTAggregatedCondition) cond).setRightOp(right);
-			// System.out.println("New condition is: "+cond);
-			return cond;
-		} else if (cond instanceof ASTUnaryCondition) {
-			Value val = ((ASTUnaryCondition) cond).getValue();
-			if (val instanceof Local) {
-				Object value = set
-						.contains(className, ((Local) val).toString());
-				if (value != null) {
-					// System.out.println("if Condition Local "+((Local)val)+"is present in before set with value"+value);
-					// create constant value for the value and replace this
-					// local use with the constant value use
-					Value newValue = CPHelper.createConstant(value);
-					if (newValue != null) {
-						// System.out.println("Substituted the local use with the constant value"+newValue);
-						((ASTUnaryCondition) cond).setValue(newValue);
-					} else {
-						// System.out.println("FAILED TO Substitute the local use with the constant value");
-					}
-				}
-			} else if (val instanceof FieldRef) {
-				FieldRef useField = (FieldRef) val;
-				SootField usedSootField = useField.getField();
-				Object value = set.contains(usedSootField.getDeclaringClass()
-						.getName(), usedSootField.getName().toString());
-				if (value != null) {
-					// System.out.println("if condition FieldRef "+usedSootField+"is present in before set with value"+value);
-					// create constant value for the value and replace this
-					// field use with the constant value use
-					Value newValue = CPHelper.createConstant(value);
-					if (newValue != null) {
-						// System.out.println("Substituted the constant field ref use with the constant value"+newValue);
-						((ASTUnaryCondition) cond).setValue(newValue);
-					} else {
-						// System.out.println("FAILED TO Substitute the constant field ref use with the constant value");
-					}
-				}
-			} else {
-				substituteUses(val.getUseBoxes(), set);
-			}
-			// System.out.println("New condition is: "+cond);
-			return cond;
-		} else if (cond instanceof ASTBinaryCondition) {
-			// get uses from binaryCondition
-			Value val = ((ASTBinaryCondition) cond).getConditionExpr();
-			substituteUses(val.getUseBoxes(), set);
+  /*
+   * Given a unary/binary or aggregated condition this method is used to find all the useBoxes or locals or fieldref in the case of unary conditions
+   * and then the set is checked for appropriate substitutions
+   */
+  public ASTCondition changedCondition(ASTCondition cond, CPFlowSet set) {
+    if (cond instanceof ASTAggregatedCondition) {
+      ASTCondition left = changedCondition(((ASTAggregatedCondition) cond).getLeftOp(), set);
+      ASTCondition right = changedCondition(((ASTAggregatedCondition) cond).getRightOp(), set);
+      ((ASTAggregatedCondition) cond).setLeftOp(left);
+      ((ASTAggregatedCondition) cond).setRightOp(right);
+      // System.out.println("New condition is: "+cond);
+      return cond;
+    } else if (cond instanceof ASTUnaryCondition) {
+      Value val = ((ASTUnaryCondition) cond).getValue();
+      if (val instanceof Local) {
+        Object value = set.contains(className, ((Local) val).toString());
+        if (value != null) {
+          // System.out.println("if Condition Local "+((Local)val)+"is present in before set with value"+value);
+          // create constant value for the value and replace this
+          // local use with the constant value use
+          Value newValue = CPHelper.createConstant(value);
+          if (newValue != null) {
+            // System.out.println("Substituted the local use with the constant value"+newValue);
+            ((ASTUnaryCondition) cond).setValue(newValue);
+          } else {
+            // System.out.println("FAILED TO Substitute the local use with the constant value");
+          }
+        }
+      } else if (val instanceof FieldRef) {
+        FieldRef useField = (FieldRef) val;
+        SootField usedSootField = useField.getField();
+        Object value = set.contains(usedSootField.getDeclaringClass().getName(), usedSootField.getName().toString());
+        if (value != null) {
+          // System.out.println("if condition FieldRef "+usedSootField+"is present in before set with value"+value);
+          // create constant value for the value and replace this
+          // field use with the constant value use
+          Value newValue = CPHelper.createConstant(value);
+          if (newValue != null) {
+            // System.out.println("Substituted the constant field ref use with the constant value"+newValue);
+            ((ASTUnaryCondition) cond).setValue(newValue);
+          } else {
+            // System.out.println("FAILED TO Substitute the constant field ref use with the constant value");
+          }
+        }
+      } else {
+        substituteUses(val.getUseBoxes(), set);
+      }
+      // System.out.println("New condition is: "+cond);
+      return cond;
+    } else if (cond instanceof ASTBinaryCondition) {
+      // get uses from binaryCondition
+      Value val = ((ASTBinaryCondition) cond).getConditionExpr();
+      substituteUses(val.getUseBoxes(), set);
 
-			// System.out.println("New condition is: "+cond);
-			return cond;
-		} else {
-			throw new RuntimeException(
-					"Method getUseList in ASTUsesAndDefs encountered unknown condition type");
-		}
-	}
+      // System.out.println("New condition is: "+cond);
+      return cond;
+    } else {
+      throw new RuntimeException("Method getUseList in ASTUsesAndDefs encountered unknown condition type");
+    }
+  }
 
-	public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
-		for (AugmentedStmt as : node.getStatements()) {
-			Stmt s = as.get_Stmt();
+  public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
+    for (AugmentedStmt as : node.getStatements()) {
+      Stmt s = as.get_Stmt();
 
-			List useBoxes = s.getUseBoxes();
+      List useBoxes = s.getUseBoxes();
 
-			Object obj = cp.getBeforeSet(s);
+      Object obj = cp.getBeforeSet(s);
 
-			if (obj == null)
-				continue;
-			if (!(obj instanceof CPFlowSet))
-				continue;
+      if (obj == null) {
+        continue;
+      }
+      if (!(obj instanceof CPFlowSet)) {
+        continue;
+      }
 
-			// before set is a non null CPFlowSet
-			CPFlowSet beforeSet = (CPFlowSet) obj;
+      // before set is a non null CPFlowSet
+      CPFlowSet beforeSet = (CPFlowSet) obj;
 
-			// System.out.println("Statement: "+s);
-			// System.out.println("Before set is: "+beforeSet.toString());
+      // System.out.println("Statement: "+s);
+      // System.out.println("Before set is: "+beforeSet.toString());
 
-			/*
-			 * get all use boxes see if their value is determined from the
-			 * before set if yes replace them
-			 */
-			substituteUses(useBoxes, beforeSet);
+      /*
+       * get all use boxes see if their value is determined from the before set if yes replace them
+       */
+      substituteUses(useBoxes, beforeSet);
 
-		}
-	}
+    }
+  }
 
-	public void substituteUses(List useBoxes, CPFlowSet beforeSet) {
-		Iterator useIt = useBoxes.iterator();
-		while (useIt.hasNext()) {
-			Object useObj = useIt.next();
-			Value use = ((ValueBox) useObj).getValue();
-			if (use instanceof Local) {
-				Local useLocal = (Local) use;
-				// System.out.println("local is: "+useLocal);
-				Object value = beforeSet.contains(className,
-						useLocal.toString());
-				if (value != null) {
-					// System.out.println("Local "+useLocal+"is present in before set with value"+value);
-					// create constant value for the value and replace this
-					// local use with the constant value use
-					Value newValue = CPHelper.createConstant(value);
-					if (newValue != null) {
-						// System.out.println("Substituted the local use with the constant value"+newValue);
-						((ValueBox) useObj).setValue(newValue);
-					} else {
-						// System.out.println("FAILED TO Substitute the local use with the constant value");
-					}
-				}
-			} else if (use instanceof FieldRef) {
-				FieldRef useField = (FieldRef) use;
-				// System.out.println("FieldRef is: "+useField);
-				SootField usedSootField = useField.getField();
-				Object value = beforeSet.contains(usedSootField
-						.getDeclaringClass().getName(), usedSootField.getName()
-						.toString());
-				if (value != null) {
-					// System.out.println("FieldRef "+usedSootField+"is present in before set with value"+value);
-					// create constant value for the value and replace this
-					// local use with the constant value use
-					Value newValue = CPHelper.createConstant(value);
-					if (newValue != null) {
-						// System.out.println("Substituted the constant field ref use with the constant value"+newValue);
-						((ValueBox) useObj).setValue(newValue);
-					} else {
-						// System.out.println("FAILED TO Substitute the constant field ref use with the constant value");
-					}
-				}
+  public void substituteUses(List useBoxes, CPFlowSet beforeSet) {
+    Iterator useIt = useBoxes.iterator();
+    while (useIt.hasNext()) {
+      Object useObj = useIt.next();
+      Value use = ((ValueBox) useObj).getValue();
+      if (use instanceof Local) {
+        Local useLocal = (Local) use;
+        // System.out.println("local is: "+useLocal);
+        Object value = beforeSet.contains(className, useLocal.toString());
+        if (value != null) {
+          // System.out.println("Local "+useLocal+"is present in before set with value"+value);
+          // create constant value for the value and replace this
+          // local use with the constant value use
+          Value newValue = CPHelper.createConstant(value);
+          if (newValue != null) {
+            // System.out.println("Substituted the local use with the constant value"+newValue);
+            ((ValueBox) useObj).setValue(newValue);
+          } else {
+            // System.out.println("FAILED TO Substitute the local use with the constant value");
+          }
+        }
+      } else if (use instanceof FieldRef) {
+        FieldRef useField = (FieldRef) use;
+        // System.out.println("FieldRef is: "+useField);
+        SootField usedSootField = useField.getField();
+        Object value = beforeSet.contains(usedSootField.getDeclaringClass().getName(), usedSootField.getName().toString());
+        if (value != null) {
+          // System.out.println("FieldRef "+usedSootField+"is present in before set with value"+value);
+          // create constant value for the value and replace this
+          // local use with the constant value use
+          Value newValue = CPHelper.createConstant(value);
+          if (newValue != null) {
+            // System.out.println("Substituted the constant field ref use with the constant value"+newValue);
+            ((ValueBox) useObj).setValue(newValue);
+          } else {
+            // System.out.println("FAILED TO Substitute the constant field ref use with the constant value");
+          }
+        }
 
-			}
-		}
-	}
+      }
+    }
+  }
 }

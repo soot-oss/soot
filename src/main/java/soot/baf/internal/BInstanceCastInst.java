@@ -23,72 +23,62 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.ArrayType;
+import soot.RefType;
+import soot.Type;
+import soot.baf.InstSwitch;
+import soot.baf.InstanceCastInst;
+import soot.util.Switch;
 
-public class BInstanceCastInst extends AbstractInst 
-                            implements InstanceCastInst
-{
+public class BInstanceCastInst extends AbstractInst implements InstanceCastInst {
 
-    protected Type castType;
+  protected Type castType;
 
-    public BInstanceCastInst(Type opType) 
-    { 
-        
-        if (!(opType instanceof RefType) && !(opType instanceof ArrayType))
-            throw new RuntimeException("invalid InstanceCastInst: "+ opType);
-        castType = opType;
+  public BInstanceCastInst(Type opType) {
+
+    if (!(opType instanceof RefType) && !(opType instanceof ArrayType)) {
+      throw new RuntimeException("invalid InstanceCastInst: " + opType);
     }
+    castType = opType;
+  }
 
-    
-    public int getInCount()
-    {
-        return 1;
-    }
+  public int getInCount() {
+    return 1;
+  }
 
+  public Object clone() {
 
+    return new BInstanceCastInst(castType);
 
+  }
 
+  public int getInMachineCount() {
+    return 1;
+  }
 
-    public Object clone() 
-    {
+  public int getOutCount() {
+    return 1;
+  }
 
-        return new  BInstanceCastInst(castType);
+  public int getOutMachineCount() {
+    return 1;
+  }
 
-    }
+  final public String getName() {
+    return "checkcast";
+  }
 
-    
-    public int getInMachineCount()
-    {
-        return 1;
-    }
-    
-    public int getOutCount()
-    {
-        return 1;
-    }
+  public Type getCastType() {
+    return castType;
+  }
 
-    public int getOutMachineCount()
-    {
-        return 1;
-    }
-    
+  public void setCastType(Type t) {
+    castType = t;
+  }
 
-    final public String getName() { return "checkcast"; }
-
-    public Type getCastType() { return castType; }
-    public void setCastType(Type t) { castType = t; }
-
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseInstanceCastInst(this);
-    }   
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseInstanceCastInst(this);
+  }
 }
-

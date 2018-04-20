@@ -19,11 +19,13 @@
 
 package soot;
 
-/** A common interface for either just a method, or a method with context.
+/**
+ * A common interface for either just a method, or a method with context.
+ * 
  * @author Ondrej Lhotak
  */
-public interface MethodOrMethodContext
-{ 
-    public SootMethod method();
-    public Context context();
+public interface MethodOrMethodContext {
+  public SootMethod method();
+
+  public Context context();
 }

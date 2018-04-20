@@ -23,24 +23,17 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
+import soot.Value;
+import soot.ValueBox;
 
-public interface DefinitionStmt extends Stmt
-{
-    public Value getLeftOp();
-    public Value getRightOp();
-    public ValueBox getLeftOpBox();
-    public ValueBox getRightOpBox();
+public interface DefinitionStmt extends Stmt {
+  public Value getLeftOp();
+
+  public Value getRightOp();
+
+  public ValueBox getLeftOpBox();
+
+  public ValueBox getRightOpBox();
 }
-
-
-
-
-
-

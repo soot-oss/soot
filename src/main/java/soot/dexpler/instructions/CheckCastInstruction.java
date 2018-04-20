@@ -42,46 +42,45 @@ import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
 
-
 public class CheckCastInstruction extends DexlibAbstractInstruction {
 
-    public CheckCastInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
+  public CheckCastInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
+
+  @Override
+  public void jimplify(DexBody body) {
+    if (!(instruction instanceof Instruction21c)) {
+      throw new IllegalArgumentException("Expected Instruction21c but got: " + instruction.getClass());
     }
 
-    @Override
-	public void jimplify (DexBody body) {
-        if(!(instruction instanceof Instruction21c))
-            throw new IllegalArgumentException("Expected Instruction21c but got: "+instruction.getClass());
+    Instruction21c checkCastInstr = (Instruction21c) instruction;
 
-        Instruction21c checkCastInstr = (Instruction21c)instruction;
+    Local castValue = body.getRegisterLocal(checkCastInstr.getRegisterA());
+    Type checkCastType = DexType.toSoot((TypeReference) checkCastInstr.getReference());
 
-        Local castValue = body.getRegisterLocal(checkCastInstr.getRegisterA());
-        Type checkCastType = DexType.toSoot((TypeReference) checkCastInstr.getReference());
+    CastExpr castExpr = Jimple.v().newCastExpr(castValue, checkCastType);
 
-        CastExpr castExpr =  Jimple.v().newCastExpr(castValue, checkCastType);
+    // generate "x = (Type) x"
+    // splitter will take care of the rest
+    AssignStmt assign = Jimple.v().newAssignStmt(castValue, castExpr);
 
-        //generate "x = (Type) x"
-        //splitter will take care of the rest
-        AssignStmt assign = Jimple.v().newAssignStmt(castValue, castExpr);
+    setUnit(assign);
+    addTags(assign);
+    body.add(assign);
 
-        setUnit(assign);
-        addTags(assign);
-        body.add(assign);
-        
-
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-            DalvikTyper.v().setType(assign.getLeftOpBox(), checkCastType, false);
-		}
-
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+      DalvikTyper.v().setType(assign.getLeftOpBox(), checkCastType, false);
     }
 
-    @Override
-    public Set<Type> introducedTypes() {
-        ReferenceInstruction i = (ReferenceInstruction) instruction;
+  }
 
-        Set<Type> types = new HashSet<Type>();
-        types.add(DexType.toSoot((TypeReference) i.getReference()));
-        return types;
-    }
+  @Override
+  public Set<Type> introducedTypes() {
+    ReferenceInstruction i = (ReferenceInstruction) instruction;
+
+    Set<Type> types = new HashSet<Type>();
+    types.add(DexType.toSoot((TypeReference) i.getReference()));
+    return types;
+  }
 }

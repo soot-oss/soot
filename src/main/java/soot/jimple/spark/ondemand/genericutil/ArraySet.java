@@ -74,8 +74,9 @@ public class ArraySet<T> extends AbstractSet<T> {
   @SuppressWarnings("all")
   public boolean add(T obj_) {
     assert obj_ != null;
-    if (checkDupes && this.contains(obj_))
+    if (checkDupes && this.contains(obj_)) {
       return false;
+    }
     if (_curIndex == _elems.length) {
       // lengthen array
       Object[] tmp = _elems;
@@ -103,16 +104,18 @@ public class ArraySet<T> extends AbstractSet<T> {
    */
   public boolean contains(Object obj_) {
     for (int i = 0; i < _curIndex; i++) {
-      if (_elems[i].equals(obj_))
+      if (_elems[i].equals(obj_)) {
         return true;
+      }
     }
     return false;
   }
 
   public boolean intersects(ArraySet<T> other) {
     for (int i = 0; i < other.size(); i++) {
-      if (contains(other.get(i)))
+      if (contains(other.get(i))) {
         return true;
+      }
     }
     return false;
   }
@@ -141,8 +144,9 @@ public class ArraySet<T> extends AbstractSet<T> {
     for (ind = 0; ind < _curIndex && !_elems[ind].equals(obj_); ind++) {
     }
     // check if object was never there
-    if (ind == _curIndex)
+    if (ind == _curIndex) {
       return false;
+    }
     return remove(ind);
   }
 

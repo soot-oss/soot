@@ -25,6 +25,5 @@
 
 package soot.baf;
 
-public interface ArrayLengthInst extends NoArgInst
-{
+public interface ArrayLengthInst extends NoArgInst {
 }

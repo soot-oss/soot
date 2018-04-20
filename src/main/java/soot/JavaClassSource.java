@@ -18,67 +18,69 @@
  */
 
 package soot;
+
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.io.File;
 
 import polyglot.ast.Node;
 
 import soot.javaToJimple.IInitialResolver;
-import soot.javaToJimple.InitialResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.javaToJimple.InitialResolver;
 import soot.options.Options;
 import soot.toolkits.astmetrics.ComputeASTMetrics;
 
-/** A class source for resolving from .java files using javaToJimple.
+/**
+ * A class source for resolving from .java files using javaToJimple.
  */
-public class JavaClassSource extends ClassSource
-{
-    private static final Logger logger = LoggerFactory.getLogger(JavaClassSource.class);
-    public JavaClassSource( String className, File fullPath ) {
-        super( className );
-        this.fullPath = fullPath;
-    }
-    public JavaClassSource( String className ) {
-        super( className );
-    }
-    
-    public Dependencies resolve( SootClass sc ) {
-        if (Options.v().verbose())
-            logger.debug("resolving [from .java]: " + className);
-                    
-        IInitialResolver resolver;
-        if(Options.v().polyglot())
-        	resolver = InitialResolver.v();
-        else
-        	resolver = JastAddInitialResolver.v();
+public class JavaClassSource extends ClassSource {
+  private static final Logger logger = LoggerFactory.getLogger(JavaClassSource.class);
 
-        if (fullPath != null){
-            resolver.formAst(fullPath.getPath(), SourceLocator.v().sourcePath(), className);
-        }
-        //System.out.println("about to call initial resolver in j2j: "+sc.getName());
-        Dependencies references = resolver.resolveFromJavaFile(sc);
-        
-        /*
-         * 1st March 2006
-         * Nomair
-         * This seems to be a good place to calculate all the
-         * AST Metrics needed from Java's AST
-         */
-		if(Options.v().ast_metrics()){
-			//System.out.println("CALLING COMPUTEASTMETRICS!!!!!!!");
-			Node ast = InitialResolver.v().getAst();
-			if(ast==null) {
-				logger.debug("No compatible AST available for AST metrics. Skipping. Try -polyglot option.");
-			} else {
-				ComputeASTMetrics metrics = new ComputeASTMetrics(ast);
-				metrics.apply();
-			}
-		}
-        
-        return references;
+  public JavaClassSource(String className, File fullPath) {
+    super(className);
+    this.fullPath = fullPath;
+  }
+
+  public JavaClassSource(String className) {
+    super(className);
+  }
+
+  public Dependencies resolve(SootClass sc) {
+    if (Options.v().verbose()) {
+      logger.debug("resolving [from .java]: " + className);
     }
 
-    private File fullPath;
+    IInitialResolver resolver;
+    if (Options.v().polyglot()) {
+      resolver = InitialResolver.v();
+    } else {
+      resolver = JastAddInitialResolver.v();
+    }
+
+    if (fullPath != null) {
+      resolver.formAst(fullPath.getPath(), SourceLocator.v().sourcePath(), className);
+    }
+    // System.out.println("about to call initial resolver in j2j: "+sc.getName());
+    Dependencies references = resolver.resolveFromJavaFile(sc);
+
+    /*
+     * 1st March 2006 Nomair This seems to be a good place to calculate all the AST Metrics needed from Java's AST
+     */
+    if (Options.v().ast_metrics()) {
+      // System.out.println("CALLING COMPUTEASTMETRICS!!!!!!!");
+      Node ast = InitialResolver.v().getAst();
+      if (ast == null) {
+        logger.debug("No compatible AST available for AST metrics. Skipping. Try -polyglot option.");
+      } else {
+        ComputeASTMetrics metrics = new ComputeASTMetrics(ast);
+        metrics.apply();
+      }
+    }
+
+    return references;
+  }
+
+  private File fullPath;
 }
-

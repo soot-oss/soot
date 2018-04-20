@@ -24,16 +24,15 @@ package soot.jimple.spark.geom.geomPA;
  * @author xiao
  *
  */
-public class Parameters 
-{
-	// The parameters that are used to tune the precision and performance tradeoff
-	public static int max_cons_budget = 40;
-	public static int max_pts_budget = 80;
-	public static int cg_refine_times = 1;
-	
-	// Parameters for offline processing
-	public static int seedPts = Constants.seedPts_allUser;
-	
-	// Querying parameters: budget size for collecting contexts intervals
-	public static int qryBudgetSize = max_pts_budget/2;
+public class Parameters {
+  // The parameters that are used to tune the precision and performance tradeoff
+  public static int max_cons_budget = 40;
+  public static int max_pts_budget = 80;
+  public static int cg_refine_times = 1;
+
+  // Parameters for offline processing
+  public static int seedPts = Constants.seedPts_allUser;
+
+  // Querying parameters: budget size for collecting contexts intervals
+  public static int qryBudgetSize = max_pts_budget / 2;
 }

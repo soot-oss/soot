@@ -19,113 +19,111 @@
 
 package soot.dava.internal.AST;
 
-import soot.*;
-import soot.dava.*;
-import soot.dava.toolkits.base.AST.analysis.*;
+import soot.UnitPrinter;
+import soot.dava.DavaUnitPrinter;
+import soot.dava.toolkits.base.AST.analysis.Analysis;
 
-public class ASTAndCondition extends ASTAggregatedCondition{
+public class ASTAndCondition extends ASTAggregatedCondition {
 
-    public ASTAndCondition(ASTCondition left, ASTCondition right){
-    	super(left,right);
-    }
+  public ASTAndCondition(ASTCondition left, ASTCondition right) {
+    super(left, right);
+  }
 
-    public void apply(Analysis a){
-    	a.caseASTAndCondition(this);
-    }
+  public void apply(Analysis a) {
+    a.caseASTAndCondition(this);
+  }
 
-    public String toString(){
-	if(left instanceof ASTUnaryBinaryCondition){
-	   if(right instanceof ASTUnaryBinaryCondition){
-	       if(not)
-		   return "!("+ left.toString() + " && "+ right.toString()+")";
-	       else
-		   return left.toString() + " && "+ right.toString();
-	   }
-	   else{ //right is ASTAggregatedCondition
-	       if(not)
-		   return "!("+left.toString() + " && ("+right.toString() +" ))";
-	       else
-		   return left.toString() + " && ("+right.toString() +" )";
-           }
+  public String toString() {
+    if (left instanceof ASTUnaryBinaryCondition) {
+      if (right instanceof ASTUnaryBinaryCondition) {
+        if (not) {
+          return "!(" + left.toString() + " && " + right.toString() + ")";
+        } else {
+          return left.toString() + " && " + right.toString();
         }
-	else{ //left is ASTAggregatedCondition
-	   if(right instanceof ASTUnaryBinaryCondition){
-	       if(not)
-		   return "!(( "+left.toString() + ") && "+ right.toString()+")";
-	       else
-		   return "( "+left.toString() + ") && "+ right.toString();
-	   }
-	   else{ //right is ASTAggregatedCondition also
-	       if(not)
-		   return "!(( "+left.toString() + ") && ("+right.toString() +" ))";
-	       else
-		   return "( "+left.toString() + ") && ("+right.toString() +" )";
-           }
-	}
+      } else { // right is ASTAggregatedCondition
+        if (not) {
+          return "!(" + left.toString() + " && (" + right.toString() + " ))";
+        } else {
+          return left.toString() + " && (" + right.toString() + " )";
+        }
+      }
+    } else { // left is ASTAggregatedCondition
+      if (right instanceof ASTUnaryBinaryCondition) {
+        if (not) {
+          return "!(( " + left.toString() + ") && " + right.toString() + ")";
+        } else {
+          return "( " + left.toString() + ") && " + right.toString();
+        }
+      } else { // right is ASTAggregatedCondition also
+        if (not) {
+          return "!(( " + left.toString() + ") && (" + right.toString() + " ))";
+        } else {
+          return "( " + left.toString() + ") && (" + right.toString() + " )";
+        }
+      }
     }
+  }
 
-    public void toString(UnitPrinter up){
-	if(up instanceof DavaUnitPrinter){
-	    
-	    if(not){
-		//print !
-		((DavaUnitPrinter)up).addNot();
-		//print left paren
-		((DavaUnitPrinter)up).addLeftParen();
-	    }
+  public void toString(UnitPrinter up) {
+    if (up instanceof DavaUnitPrinter) {
 
-	    if(left instanceof ASTUnaryBinaryCondition){
-		if(right instanceof ASTUnaryBinaryCondition){
-		    
-		    left.toString(up);
-		    
-		    ((DavaUnitPrinter)up).addAggregatedAnd();
-		    
-		    right.toString(up);
-		}
-		else{ //right is ASTAggregatedCondition
-		    
-		    left.toString(up); 
-		    
-		    ((DavaUnitPrinter)up).addAggregatedAnd(); 
-		    
-		    ((DavaUnitPrinter)up).addLeftParen();
-		    right.toString(up); 
-		    ((DavaUnitPrinter)up).addRightParen();
-		}
-	    }
-	    else{ //left is ASTAggregatedCondition
-		if(right instanceof ASTUnaryBinaryCondition){
-		    
-		    ((DavaUnitPrinter)up).addLeftParen();
-		    left.toString(up); 
-		    ((DavaUnitPrinter)up).addRightParen();
-		    
-		    ((DavaUnitPrinter)up).addAggregatedAnd(); 
-		    
-		    right.toString(up); 
-		}
-		else{ //right is ASTAggregatedCondition also
-		    
-		    ((DavaUnitPrinter)up).addLeftParen();
-		    left.toString(up); 
-		    ((DavaUnitPrinter)up).addRightParen();
-		    
-		    ((DavaUnitPrinter)up).addAggregatedAnd(); 
-		    
-		    ((DavaUnitPrinter)up).addLeftParen();
-		    right.toString(up); 
-		    ((DavaUnitPrinter)up).addRightParen();
-		}
-	    }
+      if (not) {
+        // print !
+        ((DavaUnitPrinter) up).addNot();
+        // print left paren
+        ((DavaUnitPrinter) up).addLeftParen();
+      }
 
-	    if(not){
-		//print right paren
-		((DavaUnitPrinter)up).addRightParen();
-	    }
-	}
-	else
-	    throw new RuntimeException();
+      if (left instanceof ASTUnaryBinaryCondition) {
+        if (right instanceof ASTUnaryBinaryCondition) {
+
+          left.toString(up);
+
+          ((DavaUnitPrinter) up).addAggregatedAnd();
+
+          right.toString(up);
+        } else { // right is ASTAggregatedCondition
+
+          left.toString(up);
+
+          ((DavaUnitPrinter) up).addAggregatedAnd();
+
+          ((DavaUnitPrinter) up).addLeftParen();
+          right.toString(up);
+          ((DavaUnitPrinter) up).addRightParen();
+        }
+      } else { // left is ASTAggregatedCondition
+        if (right instanceof ASTUnaryBinaryCondition) {
+
+          ((DavaUnitPrinter) up).addLeftParen();
+          left.toString(up);
+          ((DavaUnitPrinter) up).addRightParen();
+
+          ((DavaUnitPrinter) up).addAggregatedAnd();
+
+          right.toString(up);
+        } else { // right is ASTAggregatedCondition also
+
+          ((DavaUnitPrinter) up).addLeftParen();
+          left.toString(up);
+          ((DavaUnitPrinter) up).addRightParen();
+
+          ((DavaUnitPrinter) up).addAggregatedAnd();
+
+          ((DavaUnitPrinter) up).addLeftParen();
+          right.toString(up);
+          ((DavaUnitPrinter) up).addRightParen();
+        }
+      }
+
+      if (not) {
+        // print right paren
+        ((DavaUnitPrinter) up).addRightParen();
+      }
+    } else {
+      throw new RuntimeException();
     }
-    
+  }
+
 }

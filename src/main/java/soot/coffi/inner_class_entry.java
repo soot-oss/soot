@@ -23,25 +23,21 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-/** An entry in the inner classes table.
+/**
+ * An entry in the inner classes table.
+ * 
  * @see InnerClasses_attribute
  * @author Archie L. Cobbs
  */
 class inner_class_entry {
-    /** Constant pool index for the inner class name */
-    public int inner_class_index;
-    /** Constant pool index for the outer class name */
-    public int outer_class_index;
-    /** Short name for the inner class if any, otherwise zero */
-    public int name_index;
-    /** Access flags for inner class */
-    public int access_flags;
+  /** Constant pool index for the inner class name */
+  public int inner_class_index;
+  /** Constant pool index for the outer class name */
+  public int outer_class_index;
+  /** Short name for the inner class if any, otherwise zero */
+  public int name_index;
+  /** Access flags for inner class */
+  public int access_flags;
 }

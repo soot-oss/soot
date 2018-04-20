@@ -22,60 +22,55 @@ package soot.toolkits.astmetrics;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-
 /*
  * Should store general information about the class
  * Size? number of nodes?
  * Plus a list of MetricData objects
  */
 public class ClassData {
-	String className;   //the name of the class whose data is being stored
-	ArrayList<MetricData> metricData;  //each element should be a MetricData
-	
-	public ClassData(String name){
-		className=name;
-		metricData = new ArrayList<MetricData>();
-	}
+  String className; // the name of the class whose data is being stored
+  ArrayList<MetricData> metricData; // each element should be a MetricData
 
-	public String getClassName(){
-		return className;
-	}
-	
-	/*
-	 * returns true if this className has the same name
-	 * as the string sent as argument
-	 */
-	public boolean classNameEquals(String className){
-		return (this.className.equals(className));
-	}
-	
-	
-	/*
-	 * Only add new metric if this is not already present
-	 * Else dont add
-	 */
-	public void addMetric(MetricData data){
-		Iterator<MetricData> it = metricData.iterator();
-		while(it.hasNext()){
-			MetricData temp = it.next();
-			if(temp.metricName.equals(data.metricName)){
-				//System.out.println("Not adding same metric again......"+temp.metricName);
-				return;
-			}
-		}
-		metricData.add(data);
-	}
-	
-	
-	public String toString(){
-		StringBuffer b = new StringBuffer();
-		b.append("<Class>\n");
-		b.append("<ClassName>" + className + "</ClassName>\n");
-		Iterator<MetricData> it = metricData.iterator();
-		while(it.hasNext()){
-			b.append(it.next().toString());
-		}
-		b.append("</Class>");
-		return b.toString();
-	}
+  public ClassData(String name) {
+    className = name;
+    metricData = new ArrayList<MetricData>();
+  }
+
+  public String getClassName() {
+    return className;
+  }
+
+  /*
+   * returns true if this className has the same name as the string sent as argument
+   */
+  public boolean classNameEquals(String className) {
+    return (this.className.equals(className));
+  }
+
+  /*
+   * Only add new metric if this is not already present Else dont add
+   */
+  public void addMetric(MetricData data) {
+    Iterator<MetricData> it = metricData.iterator();
+    while (it.hasNext()) {
+      MetricData temp = it.next();
+      if (temp.metricName.equals(data.metricName)) {
+        // System.out.println("Not adding same metric again......"+temp.metricName);
+        return;
+      }
+    }
+    metricData.add(data);
+  }
+
+  public String toString() {
+    StringBuffer b = new StringBuffer();
+    b.append("<Class>\n");
+    b.append("<ClassName>" + className + "</ClassName>\n");
+    Iterator<MetricData> it = metricData.iterator();
+    while (it.hasNext()) {
+      b.append(it.next().toString());
+    }
+    b.append("</Class>");
+    return b.toString();
+  }
 }

@@ -44,38 +44,38 @@ import soot.jimple.Stmt;
 
 public class PackedSwitchInstruction extends SwitchInstruction {
 
-    public PackedSwitchInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
+  public PackedSwitchInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
+
+  @Override
+  protected Stmt switchStatement(DexBody body, Instruction targetData, Local key) {
+    PackedSwitchPayload i = (PackedSwitchPayload) targetData;
+    List<? extends SwitchElement> seList = i.getSwitchElements();
+
+    // the default target always follows the switch statement
+    int defaultTargetAddress = codeAddress + instruction.getCodeUnits();
+    Unit defaultTarget = body.instructionAtAddress(defaultTargetAddress).getUnit();
+
+    List<IntConstant> lookupValues = new ArrayList<IntConstant>();
+    List<Unit> targets = new ArrayList<Unit>();
+    for (SwitchElement se : seList) {
+      lookupValues.add(IntConstant.v(se.getKey()));
+      int offset = se.getOffset();
+      targets.add(body.instructionAtAddress(codeAddress + offset).getUnit());
+    }
+    LookupSwitchStmt switchStmt = Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
+    setUnit(switchStmt);
+
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+      DalvikTyper.v().setType(switchStmt.getKeyBox(), IntType.v(), true);
     }
 
-    @Override
-	protected Stmt switchStatement(DexBody body, Instruction targetData, Local key) {
-        PackedSwitchPayload i = (PackedSwitchPayload) targetData;
-        List<? extends SwitchElement> seList = i.getSwitchElements();
+    return switchStmt;
+  }
 
-        // the default target always follows the switch statement
-        int defaultTargetAddress = codeAddress + instruction.getCodeUnits();
-        Unit defaultTarget = body.instructionAtAddress(defaultTargetAddress).getUnit();
-
-        List<IntConstant> lookupValues = new ArrayList<IntConstant>();
-        List<Unit> targets = new ArrayList<Unit>();
-        for(SwitchElement se: seList) {
-          lookupValues.add(IntConstant.v(se.getKey()));
-          int offset = se.getOffset();
-          targets.add(body.instructionAtAddress(codeAddress + offset).getUnit());
-        }
-        LookupSwitchStmt switchStmt = Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
-        setUnit(switchStmt);
-        
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-            DalvikTyper.v().setType(switchStmt.getKeyBox(), IntType.v(), true);
-        }
-        
-        return switchStmt;
-    }
-
-    @Override
-    public void computeDataOffsets(DexBody body) {
-    }
+  @Override
+  public void computeDataOffsets(DexBody body) {
+  }
 
 }

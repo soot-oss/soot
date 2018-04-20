@@ -37,22 +37,22 @@ import soot.jimple.Jimple;
 
 public class MonitorEnterInstruction extends DexlibAbstractInstruction {
 
-    public MonitorEnterInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
-    }
+  public MonitorEnterInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
 
-    @Override
-	public void jimplify (DexBody body) {
-        int reg = ((OneRegisterInstruction) instruction).getRegisterA();
-        Local object = body.getRegisterLocal(reg);
-        EnterMonitorStmt enterMonitorStmt = Jimple.v().newEnterMonitorStmt(object);
-        setUnit(enterMonitorStmt);
-        addTags(enterMonitorStmt);
-        body.add(enterMonitorStmt);
-        
-		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			//Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ enterMonitorStmt);
-			DalvikTyper.v().setType(enterMonitorStmt.getOpBox(), RefType.v("java.lang.Object"), true);
-        }
+  @Override
+  public void jimplify(DexBody body) {
+    int reg = ((OneRegisterInstruction) instruction).getRegisterA();
+    Local object = body.getRegisterLocal(reg);
+    EnterMonitorStmt enterMonitorStmt = Jimple.v().newEnterMonitorStmt(object);
+    setUnit(enterMonitorStmt);
+    addTags(enterMonitorStmt);
+    body.add(enterMonitorStmt);
+
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+      // Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ enterMonitorStmt);
+      DalvikTyper.v().setType(enterMonitorStmt.getOpBox(), RefType.v("java.lang.Object"), true);
     }
+  }
 }

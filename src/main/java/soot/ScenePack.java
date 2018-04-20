@@ -23,21 +23,19 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot;
 
-/** A wrapper object for a pack of optimizations.
- * Provides chain-like operations, except that the key is the phase name. */
-public class ScenePack extends Pack
-{
-    public ScenePack(String name) {
-        super(name);
-    }
+/**
+ * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key is the phase name.
+ */
+public class ScenePack extends Pack {
+  public ScenePack(String name) {
+    super(name);
+  }
 
-    protected void internalApply()
-    {
-    	for ( Transform t : this ) {
-    		t.apply();
-    	}
+  protected void internalApply() {
+    for (Transform t : this) {
+      t.apply();
     }
+  }
 }

@@ -24,56 +24,55 @@ import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
 
 /**
- * @author Michael Batchelder 
+ * @author Michael Batchelder
  * 
- * Created on 7-Mar-2006 
+ *         Created on 7-Mar-2006
  */
 public class ExpressionComplexityMetric extends ASTMetric {
 
-  	int currentExprDepth;
-	int exprDepthSum;
-	int exprCount;
-	int inExpr;
+  int currentExprDepth;
+  int exprDepthSum;
+  int exprCount;
+  int inExpr;
 
-	public ExpressionComplexityMetric(polyglot.ast.Node node) {
-	  super(node);
-	}
-	
-	public void reset() {
-	  currentExprDepth = 0;
-	  exprDepthSum = 0;
-	  exprCount = 0;
-	  inExpr = 0;
-	}
+  public ExpressionComplexityMetric(polyglot.ast.Node node) {
+    super(node);
+  }
 
-	public void addMetrics(ClassData data) {
-	  double a = exprDepthSum;
-	  double b = exprCount;
-	  
-	  data.addMetric(new MetricData("Expr-Complexity",new Double(a)));
-	  data.addMetric(new MetricData("Expr-Count",new Double(b)));
-	}
+  public void reset() {
+    currentExprDepth = 0;
+    exprDepthSum = 0;
+    exprCount = 0;
+    inExpr = 0;
+  }
 
-	public NodeVisitor enter(Node parent, Node n){
-	  if(n instanceof Expr){
-	    inExpr++;
-	    currentExprDepth++;
-	  }
-	  
-	  return enter(n);
-	}
-	
-	public Node leave(Node old, Node n, NodeVisitor v){
-	  if(n instanceof Expr){
-	    if (currentExprDepth==1) {
-	      exprCount++;
-	      exprDepthSum+=inExpr;
-	      inExpr = 0;
-	    }
-	    currentExprDepth--;
-	  }
-	  
-	  return super.leave(old,n,v);
-	}
+  public void addMetrics(ClassData data) {
+    double a = exprDepthSum;
+    double b = exprCount;
+
+    data.addMetric(new MetricData("Expr-Complexity", new Double(a)));
+    data.addMetric(new MetricData("Expr-Count", new Double(b)));
+  }
+
+  public NodeVisitor enter(Node parent, Node n) {
+    if (n instanceof Expr) {
+      inExpr++;
+      currentExprDepth++;
+    }
+
+    return enter(n);
+  }
+
+  public Node leave(Node old, Node n, NodeVisitor v) {
+    if (n instanceof Expr) {
+      if (currentExprDepth == 1) {
+        exprCount++;
+        exprDepthSum += inExpr;
+        inExpr = 0;
+      }
+      currentExprDepth--;
+    }
+
+    return super.leave(old, n, v);
+  }
 }
-

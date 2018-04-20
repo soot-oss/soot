@@ -18,27 +18,35 @@
  */
 
 package soot.jimple.toolkits.callgraph;
-import soot.*;
 
-/** A context manager which creates a 1-CFA call graph.
+import soot.Context;
+import soot.Kind;
+import soot.MethodContext;
+import soot.MethodOrMethodContext;
+import soot.SootMethod;
+import soot.Unit;
+
+/**
+ * A context manager which creates a 1-CFA call graph.
+ * 
  * @author Ondrej Lhotak
  */
-public class OneCFAContextManager implements ContextManager 
-{ 
-    private CallGraph cg;
+public class OneCFAContextManager implements ContextManager {
+  private CallGraph cg;
 
-    public OneCFAContextManager( CallGraph cg ) {
-        this.cg = cg;
-    }
+  public OneCFAContextManager(CallGraph cg) {
+    this.cg = cg;
+  }
 
-    public void addStaticEdge( MethodOrMethodContext src, Unit srcUnit, SootMethod target, Kind kind ) {
-        cg.addEdge( new Edge( src, srcUnit, MethodContext.v( target, srcUnit ), kind ) );
-    }
+  public void addStaticEdge(MethodOrMethodContext src, Unit srcUnit, SootMethod target, Kind kind) {
+    cg.addEdge(new Edge(src, srcUnit, MethodContext.v(target, srcUnit), kind));
+  }
 
-    public void addVirtualEdge( MethodOrMethodContext src, Unit srcUnit, SootMethod target, Kind kind, Context typeContext ) {
-        cg.addEdge( new Edge( src, srcUnit, MethodContext.v( target, srcUnit ), kind ) );
-    }
+  public void addVirtualEdge(MethodOrMethodContext src, Unit srcUnit, SootMethod target, Kind kind, Context typeContext) {
+    cg.addEdge(new Edge(src, srcUnit, MethodContext.v(target, srcUnit), kind));
+  }
 
-    public CallGraph callGraph() { return cg; }
+  public CallGraph callGraph() {
+    return cg;
+  }
 }
-

@@ -30,68 +30,63 @@ import soot.jimple.spark.pag.SparkField;
  */
 public class ManualFieldCheckHeuristic implements FieldCheckHeuristic {
 
-    private boolean allNotBothEnds = false;
+  private boolean allNotBothEnds = false;
 
-    public boolean runNewPass() {
-        if (!allNotBothEnds) {
-            allNotBothEnds = true;
-            return true;
-        }
-        return false;
+  public boolean runNewPass() {
+    if (!allNotBothEnds) {
+      allNotBothEnds = true;
+      return true;
     }
+    return false;
+  }
 
-    private static final String[] importantTypes = new String[] {
-//            "ca.mcgill.sable.util.ArrayList",
-//            "ca.mcgill.sable.util.ArrayList$ArrayIterator",
-//            "ca.mcgill.sable.util.AbstractList$AbstractListIterator",
-            /*"ca.mcgill.sable.util.VectorList",*/ "java.util.Vector",
-            "java.util.Hashtable", "java.util.Hashtable$Entry",
-            "java.util.Hashtable$Enumerator", "java.util.LinkedList",
-            "java.util.LinkedList$Entry", "java.util.AbstractList$Itr",
-//            "ca.mcgill.sable.util.HashMap", "ca.mcgill.sable.util.LinkedList",
-//            "ca.mcgill.sable.util.LinkedList$LinkedListIterator",
-//            "ca.mcgill.sable.util.LinkedList$Node",
-            /*"ca.mcgill.sable.soot.TrustingMonotonicArraySet",*/ "java.util.Vector$1",
-            "java.util.ArrayList", };
+  private static final String[] importantTypes = new String[] {
+      // "ca.mcgill.sable.util.ArrayList",
+      // "ca.mcgill.sable.util.ArrayList$ArrayIterator",
+      // "ca.mcgill.sable.util.AbstractList$AbstractListIterator",
+      /* "ca.mcgill.sable.util.VectorList", */ "java.util.Vector", "java.util.Hashtable", "java.util.Hashtable$Entry",
+      "java.util.Hashtable$Enumerator", "java.util.LinkedList", "java.util.LinkedList$Entry", "java.util.AbstractList$Itr",
+      // "ca.mcgill.sable.util.HashMap", "ca.mcgill.sable.util.LinkedList",
+      // "ca.mcgill.sable.util.LinkedList$LinkedListIterator",
+      // "ca.mcgill.sable.util.LinkedList$Node",
+      /* "ca.mcgill.sable.soot.TrustingMonotonicArraySet", */ "java.util.Vector$1", "java.util.ArrayList", };
 
-    private static final String[] notBothEndsTypes = new String[] {
-            "java.util.Hashtable$Entry", "java.util.LinkedList$Entry", /*"ca.mcgill.sable.util.LinkedList$Node"*/ };
+  private static final String[] notBothEndsTypes = new String[] { "java.util.Hashtable$Entry",
+      "java.util.LinkedList$Entry", /* "ca.mcgill.sable.util.LinkedList$Node" */ };
 
-    public boolean validateMatchesForField(SparkField field) {
-        if (field instanceof ArrayElement) {
-            return true;
-        }
-        SootField sootField = (SootField) field;
-        String fieldTypeStr = sootField.getDeclaringClass().getType()
-                .toString();
-        for (String typeName : importantTypes) {
-            if (fieldTypeStr.equals(typeName)) {
-                return true;
-            }
-        }
-        return false;
+  public boolean validateMatchesForField(SparkField field) {
+    if (field instanceof ArrayElement) {
+      return true;
     }
-
-    public boolean validFromBothEnds(SparkField field) {
-        if (allNotBothEnds) {
-            return false;
-        }
-        if (field instanceof SootField) {
-            SootField sootField = (SootField) field;
-            String fieldTypeStr = sootField.getDeclaringClass().getType()
-                    .toString();
-            for (String typeName : notBothEndsTypes) {
-                if (fieldTypeStr.equals(typeName)) {
-                    return false;
-                }
-            }
-        }
+    SootField sootField = (SootField) field;
+    String fieldTypeStr = sootField.getDeclaringClass().getType().toString();
+    for (String typeName : importantTypes) {
+      if (fieldTypeStr.equals(typeName)) {
         return true;
+      }
     }
+    return false;
+  }
 
-    @Override
-    public String toString() {
-        return "Manual annotations";
+  public boolean validFromBothEnds(SparkField field) {
+    if (allNotBothEnds) {
+      return false;
     }
+    if (field instanceof SootField) {
+      SootField sootField = (SootField) field;
+      String fieldTypeStr = sootField.getDeclaringClass().getType().toString();
+      for (String typeName : notBothEndsTypes) {
+        if (fieldTypeStr.equals(typeName)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return "Manual annotations";
+  }
 
 }

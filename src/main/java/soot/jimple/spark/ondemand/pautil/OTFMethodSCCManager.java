@@ -20,36 +20,34 @@ package soot.jimple.spark.ondemand.pautil;
 
 import java.util.Set;
 
-
-
 import soot.Scene;
 import soot.SootMethod;
 import soot.jimple.spark.ondemand.genericutil.DisjointSets;
 
 public final class OTFMethodSCCManager {
-	
-	private DisjointSets disj;
-	
-	public OTFMethodSCCManager() {
-		int size = Scene.v().getMethodNumberer().size();
-		disj = new DisjointSets(size + 1);
-	}
 
-	public boolean inSameSCC(SootMethod m1, SootMethod m2) {
-		return disj.find(m1.getNumber()) == disj.find(m2.getNumber());
-	}
-	
-	public void makeSameSCC(Set<SootMethod> methods) {
-		SootMethod prevMethod = null;
-		for (SootMethod method : methods) {
-			if (prevMethod != null) {
-				int prevMethodRep = disj.find(prevMethod.getNumber());
-				int methodRep = disj.find(method.getNumber());
-				if (prevMethodRep != methodRep) {
-					disj.union(prevMethodRep, methodRep);
-				}
-			}
-			prevMethod = method;
-		}
-	}
+  private DisjointSets disj;
+
+  public OTFMethodSCCManager() {
+    int size = Scene.v().getMethodNumberer().size();
+    disj = new DisjointSets(size + 1);
+  }
+
+  public boolean inSameSCC(SootMethod m1, SootMethod m2) {
+    return disj.find(m1.getNumber()) == disj.find(m2.getNumber());
+  }
+
+  public void makeSameSCC(Set<SootMethod> methods) {
+    SootMethod prevMethod = null;
+    for (SootMethod method : methods) {
+      if (prevMethod != null) {
+        int prevMethodRep = disj.find(prevMethod.getNumber());
+        int methodRep = disj.find(method.getNumber());
+        if (prevMethodRep != methodRep) {
+          disj.union(prevMethodRep, methodRep);
+        }
+      }
+      prevMethod = method;
+    }
+  }
 }

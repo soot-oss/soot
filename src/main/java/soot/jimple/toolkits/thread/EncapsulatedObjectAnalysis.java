@@ -1,10 +1,16 @@
 package soot.jimple.toolkits.thread;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.*;
-import java.util.*;
-import soot.toolkits.graph.*;
+import soot.Body;
+import soot.SootMethod;
+import soot.toolkits.graph.ExceptionalUnitGraph;
 
 // EncapsulatedObjectAnalysis written by Richard L. Halpert, 2006-12-26
 // Checks if all methods of a class are "object-pure", meaning that
@@ -12,69 +18,63 @@ import soot.toolkits.graph.*;
 
 public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
 {
-    private static final Logger logger = LoggerFactory.getLogger(EncapsulatedObjectAnalysis.class);
-	List cachedClasses;
-	List<SootMethod> objectPureMethods;
-	List<SootMethod> objectPureInitMethods;
-	
-	public EncapsulatedObjectAnalysis()
-	{
-		cachedClasses = new ArrayList();
-		objectPureMethods = new ArrayList<SootMethod>();
-		objectPureInitMethods = new ArrayList<SootMethod>();
-	}
-	
-	public boolean isMethodPureOnObject(SootMethod sm)
-	{
-		if( !cachedClasses.contains(sm.getDeclaringClass()) && sm.isConcrete() ) // NOT A COMPLETE SOLUTION (ignores subclassing)
-		{
-			SootMethod initMethod = null;
-			Collection methods = sm.getDeclaringClass().getMethods();
-			Iterator methodsIt = methods.iterator();
-			List<SootMethod> mayBePureMethods = new ArrayList<SootMethod>(methods.size());
-			while(methodsIt.hasNext())
-			{
-				SootMethod method = (SootMethod) methodsIt.next();
-				if(method.isConcrete())
-				{
-					if(method.getSubSignature().startsWith("void <init>"))
-						initMethod = method;
-					Body b = method.retrieveActiveBody();
-					EncapsulatedMethodAnalysis ema = new EncapsulatedMethodAnalysis(new ExceptionalUnitGraph(b));
-					if(ema.isPure())
-					{
-						mayBePureMethods.add(method);
-					}
-				}
-			}
-			
-			if(mayBePureMethods.size() == methods.size())
-				objectPureMethods.addAll(mayBePureMethods);
-			else if(initMethod != null)
-				objectPureMethods.add(initMethod);
-			if(initMethod != null)
-				objectPureInitMethods.add(initMethod);
-		}
-		
-		return objectPureMethods.contains(sm);
-	}
-	
-	public boolean isInitMethodPureOnObject(SootMethod sm)
-	{
-//		logger.debug("Testing Init Method Encapsulation: " + sm + " Encapsulated: ");
-		if(isMethodPureOnObject(sm))
-		{
-			boolean ret = objectPureInitMethods.contains(sm);
-//			logger.debug(""+ret);
-			return ret;
-		}
-//		logger.debug("false");
-		return false;
-	}
-	
-	public List<SootMethod> getObjectPureMethodsSoFar()
-	{
-		return objectPureMethods;
-	}
-}
+  private static final Logger logger = LoggerFactory.getLogger(EncapsulatedObjectAnalysis.class);
+  List cachedClasses;
+  List<SootMethod> objectPureMethods;
+  List<SootMethod> objectPureInitMethods;
 
+  public EncapsulatedObjectAnalysis() {
+    cachedClasses = new ArrayList();
+    objectPureMethods = new ArrayList<SootMethod>();
+    objectPureInitMethods = new ArrayList<SootMethod>();
+  }
+
+  public boolean isMethodPureOnObject(SootMethod sm) {
+    if (!cachedClasses.contains(sm.getDeclaringClass()) && sm.isConcrete()) // NOT A COMPLETE SOLUTION (ignores subclassing)
+    {
+      SootMethod initMethod = null;
+      Collection methods = sm.getDeclaringClass().getMethods();
+      Iterator methodsIt = methods.iterator();
+      List<SootMethod> mayBePureMethods = new ArrayList<SootMethod>(methods.size());
+      while (methodsIt.hasNext()) {
+        SootMethod method = (SootMethod) methodsIt.next();
+        if (method.isConcrete()) {
+          if (method.getSubSignature().startsWith("void <init>")) {
+            initMethod = method;
+          }
+          Body b = method.retrieveActiveBody();
+          EncapsulatedMethodAnalysis ema = new EncapsulatedMethodAnalysis(new ExceptionalUnitGraph(b));
+          if (ema.isPure()) {
+            mayBePureMethods.add(method);
+          }
+        }
+      }
+
+      if (mayBePureMethods.size() == methods.size()) {
+        objectPureMethods.addAll(mayBePureMethods);
+      } else if (initMethod != null) {
+        objectPureMethods.add(initMethod);
+      }
+      if (initMethod != null) {
+        objectPureInitMethods.add(initMethod);
+      }
+    }
+
+    return objectPureMethods.contains(sm);
+  }
+
+  public boolean isInitMethodPureOnObject(SootMethod sm) {
+    // logger.debug("Testing Init Method Encapsulation: " + sm + " Encapsulated: ");
+    if (isMethodPureOnObject(sm)) {
+      boolean ret = objectPureInitMethods.contains(sm);
+      // logger.debug(""+ret);
+      return ret;
+    }
+    // logger.debug("false");
+    return false;
+  }
+
+  public List<SootMethod> getObjectPureMethodsSoFar() {
+    return objectPureMethods;
+  }
+}

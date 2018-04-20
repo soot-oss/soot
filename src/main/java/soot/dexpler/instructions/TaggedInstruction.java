@@ -26,23 +26,21 @@ import soot.tagkit.Tag;
 
 public abstract class TaggedInstruction extends DexlibAbstractInstruction {
 
-	private Tag instructionTag = null;
+  private Tag instructionTag = null;
 
-	public TaggedInstruction(Instruction instruction, int codeAddress) {
-		super(instruction, codeAddress);
-	}
+  public TaggedInstruction(Instruction instruction, int codeAddress) {
+    super(instruction, codeAddress);
+  }
 
-	public void setTag(Tag t) {
-		instructionTag = t;
-	}
+  public void setTag(Tag t) {
+    instructionTag = t;
+  }
 
-	public Tag getTag() {
-		if (instructionTag == null) {
-			throw new RuntimeException("Must tag instruction first! (0x"
-					+ Integer.toHexString(codeAddress) + ": " + instruction
-					+ ")");
-		}
-		return instructionTag;
-	}
+  public Tag getTag() {
+    if (instructionTag == null) {
+      throw new RuntimeException("Must tag instruction first! (0x" + Integer.toHexString(codeAddress) + ": " + instruction + ")");
+    }
+    return instructionTag;
+  }
 
 }

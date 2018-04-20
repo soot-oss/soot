@@ -19,16 +19,13 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
+import java.util.List;
 
 /**
- * Interface to compute and/or store the dominance frontiers of nodes
- * in a dominator tree.
+ * Interface to compute and/or store the dominance frontiers of nodes in a dominator tree.
  *
  * @author Navindra Umanee
  **/
-public interface DominanceFrontier<N>
-{
-    public List<DominatorNode<N>> getDominanceFrontierOf(DominatorNode<N> node);
+public interface DominanceFrontier<N> {
+  public List<DominatorNode<N>> getDominanceFrontierOf(DominatorNode<N> node);
 }
-

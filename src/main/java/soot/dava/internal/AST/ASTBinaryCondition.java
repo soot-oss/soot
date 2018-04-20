@@ -19,44 +19,44 @@
 
 package soot.dava.internal.AST;
 
-import soot.*;
-import soot.jimple.*;
-import soot.dava.toolkits.base.misc.*;
-import soot.dava.toolkits.base.AST.analysis.*;
+import soot.UnitPrinter;
+import soot.dava.toolkits.base.AST.analysis.Analysis;
+import soot.dava.toolkits.base.misc.ConditionFlipper;
+import soot.jimple.ConditionExpr;
+import soot.jimple.Jimple;
 
-public class ASTBinaryCondition extends ASTUnaryBinaryCondition{
-    ConditionExpr condition;
-    
-    public ASTBinaryCondition(ConditionExpr condition){
-	this.condition=condition;
-    }
+public class ASTBinaryCondition extends ASTUnaryBinaryCondition {
+  ConditionExpr condition;
 
-    public ConditionExpr getConditionExpr(){
-	return condition;
-    }
+  public ASTBinaryCondition(ConditionExpr condition) {
+    this.condition = condition;
+  }
 
-    public void apply(Analysis a){
-	a.caseASTBinaryCondition(this);
-    }
+  public ConditionExpr getConditionExpr() {
+    return condition;
+  }
 
-    public String toString(){
-	return condition.toString();
-    }
+  public void apply(Analysis a) {
+    a.caseASTBinaryCondition(this);
+  }
 
-    public void toString(UnitPrinter up){
-	(Jimple.v().newConditionExprBox(condition)).toString(up);
-    }
+  public String toString() {
+    return condition.toString();
+  }
 
+  public void toString(UnitPrinter up) {
+    (Jimple.v().newConditionExprBox(condition)).toString(up);
+  }
 
-    public void flip(){
-	this.condition=ConditionFlipper.flip(condition);
-    }
-    
-    /*
-     * Since a conditionExpr can always be flipped we always return true
-     * 
-     */
-    public boolean isNotted(){
-    	return true;
-    }
+  public void flip() {
+    this.condition = ConditionFlipper.flip(condition);
+  }
+
+  /*
+   * Since a conditionExpr can always be flipped we always return true
+   * 
+   */
+  public boolean isNotted() {
+    return true;
+  }
 }

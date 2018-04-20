@@ -25,27 +25,22 @@
 
 package soot.tagkit;
 
-
-/** Represents a tag that just has a string to be printed with the code.
+/**
+ * Represents a tag that just has a string to be printed with the code.
  */
 
-public class ThrowCreatedByCompilerTag implements  Tag
-{
+public class ThrowCreatedByCompilerTag implements Tag {
 
-    public ThrowCreatedByCompilerTag(){
-    }
+  public ThrowCreatedByCompilerTag() {
+  }
 
+  /** Returns the tag name. */
+  public String getName() {
+    return "ThrowCreatedByCompilerTag";
+  }
 
-
-    /** Returns the tag name. */
-    public String getName() {
-        return "ThrowCreatedByCompilerTag";
-    }
-
-    
-    /** Returns the tag raw data. */
-    public byte[] getValue() {
-        throw new RuntimeException( "ThrowCreatedByCompilerTag has no value for bytecode" );
-    }
+  /** Returns the tag raw data. */
+  public byte[] getValue() {
+    throw new RuntimeException("ThrowCreatedByCompilerTag has no value for bytecode");
+  }
 }
-

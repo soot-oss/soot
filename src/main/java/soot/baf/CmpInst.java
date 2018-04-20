@@ -25,6 +25,5 @@
 
 package soot.baf;
 
-public interface CmpInst extends OpTypeArgInst
-{
+public interface CmpInst extends OpTypeArgInst {
 }

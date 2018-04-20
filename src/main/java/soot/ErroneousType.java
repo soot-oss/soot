@@ -23,40 +23,35 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot;
-import soot.util.*;
+
+import soot.util.Switch;
 
 /**
- *   Soot representation used for untypable objects. Implemented as
- *   a singleton.
+ * Soot representation used for untypable objects. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class ErroneousType extends Type
-{
-    public ErroneousType( Singletons.Global g ) {}
-    public static ErroneousType v() { return G.v().soot_ErroneousType(); }
+public class ErroneousType extends Type {
+  public ErroneousType(Singletons.Global g) {
+  }
 
-    public int hashCode()
-    {
-        return 0x92473FFF;
-    }
-    
-    public boolean equals(Object t)
-    {
-        return this == t;
-    }
+  public static ErroneousType v() {
+    return G.v().soot_ErroneousType();
+  }
 
-    public String toString()
-    {
-        return "<error>";
-    }
+  public int hashCode() {
+    return 0x92473FFF;
+  }
 
-    public void apply(Switch sw)
-    {
-        ((TypeSwitch) sw).caseErroneousType(this);
-    }
+  public boolean equals(Object t) {
+    return this == t;
+  }
+
+  public String toString() {
+    return "<error>";
+  }
+
+  public void apply(Switch sw) {
+    ((TypeSwitch) sw).caseErroneousType(this);
+  }
 }

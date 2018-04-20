@@ -26,12 +26,12 @@
 
 package soot.jimple;
 
+import java.util.List;
+
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Value;
 import soot.ValueBox;
-
-import java.util.List;
 
 /**
  * Represents method invocation expression.
@@ -44,29 +44,28 @@ import java.util.List;
  */
 public interface InvokeExpr extends Expr {
 
-    void setMethodRef(SootMethodRef smr);
+  void setMethodRef(SootMethodRef smr);
 
-    SootMethodRef getMethodRef();
+  SootMethodRef getMethodRef();
 
-    /**
-     * Resolves {@link SootMethodRef} to {@link SootMethod}.
-     *
-     * @return {@link SootMethod} instance, or {@code null} when reference cannot be resolved and
-     * {@link soot.options.Options#ignore_resolution_errors} is {@code true}
-     * @throws soot.SootMethodRefImpl.ClassResolutionFailedException when reference cannot be resolved and  {@link
-     *                                                               soot.options.Options#ignore_resolution_errors}
-     *                                                               is {@code false}
-     */
-    SootMethod getMethod();
+  /**
+   * Resolves {@link SootMethodRef} to {@link SootMethod}.
+   *
+   * @return {@link SootMethod} instance, or {@code null} when reference cannot be resolved and {@link soot.options.Options#ignore_resolution_errors}
+   *         is {@code true}
+   * @throws soot.SootMethodRefImpl.ClassResolutionFailedException
+   *           when reference cannot be resolved and {@link soot.options.Options#ignore_resolution_errors} is {@code false}
+   */
+  SootMethod getMethod();
 
-    List<Value> getArgs();
+  List<Value> getArgs();
 
-    Value getArg(int index);
+  Value getArg(int index);
 
-    int getArgCount();
+  int getArgCount();
 
-    void setArg(int index, Value arg);
+  void setArg(int index, Value arg);
 
-    ValueBox getArgBox(int index);
+  ValueBox getArgBox(int index);
 
 }

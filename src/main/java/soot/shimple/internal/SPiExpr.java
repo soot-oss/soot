@@ -19,120 +19,108 @@
 
 package soot.shimple.internal;
 
-import soot.*;
-import soot.util.*;
-import soot.shimple.*;
-import soot.toolkits.scalar.*;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+
+import soot.Type;
+import soot.Unit;
+import soot.UnitBox;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.shimple.PiExpr;
+import soot.shimple.Shimple;
+import soot.toolkits.scalar.ValueUnitPair;
+import soot.util.Switch;
 
 /**
  * @author Navindra Umanee
  **/
-public class SPiExpr implements PiExpr
-{
-    protected ValueUnitPair argBox;
-    protected Object targetKey;
+public class SPiExpr implements PiExpr {
+  protected ValueUnitPair argBox;
+  protected Object targetKey;
 
-    public SPiExpr(Value v, Unit u, Object o)
-    {
-        argBox = new SValueUnitPair(v, u);
-        this.targetKey = o;
-    }
-    
-    public ValueUnitPair getArgBox()
-    {
-        return argBox;
-    }
-        
-    public Value getValue()
-    {
-        return argBox.getValue();
-    }
-    
-    public Unit getCondStmt()
-    {
-        return argBox.getUnit();
-    }
+  public SPiExpr(Value v, Unit u, Object o) {
+    argBox = new SValueUnitPair(v, u);
+    this.targetKey = o;
+  }
 
-    public Object getTargetKey()
-    {
-        return targetKey;
-    }
-    
-    public void setValue(Value value)
-    {
-        argBox.setValue(value);
-    }
-    
-    public void setCondStmt(Unit pred)
-    {
-        argBox.setUnit(pred);
-    }
+  public ValueUnitPair getArgBox() {
+    return argBox;
+  }
 
-    public void setTargetKey(Object targetKey)
-    {
-        this.targetKey = targetKey;
-    }
-    
-    public List<UnitBox> getUnitBoxes()
-    {
-        return Collections.<UnitBox>singletonList(argBox);
-    }
+  public Value getValue() {
+    return argBox.getValue();
+  }
 
-    public void clearUnitBoxes()
-    {
-        System.out.println("clear unit boxes");
-        argBox.setUnit(null);
-    }
-    
-    public boolean equivTo(Object o)
-    {
-        if(!(o instanceof SPiExpr))
-            return false;
+  public Unit getCondStmt() {
+    return argBox.getUnit();
+  }
 
-        return getArgBox().equivTo(((SPiExpr)o).getArgBox());
+  public Object getTargetKey() {
+    return targetKey;
+  }
+
+  public void setValue(Value value) {
+    argBox.setValue(value);
+  }
+
+  public void setCondStmt(Unit pred) {
+    argBox.setUnit(pred);
+  }
+
+  public void setTargetKey(Object targetKey) {
+    this.targetKey = targetKey;
+  }
+
+  public List<UnitBox> getUnitBoxes() {
+    return Collections.<UnitBox>singletonList(argBox);
+  }
+
+  public void clearUnitBoxes() {
+    System.out.println("clear unit boxes");
+    argBox.setUnit(null);
+  }
+
+  public boolean equivTo(Object o) {
+    if (!(o instanceof SPiExpr)) {
+      return false;
     }
 
-    public int equivHashCode()
-    {
-        return getArgBox().equivHashCode() * 17;
-    }
-    
-    public void apply(Switch sw)
-    {
-        // *** FIXME:
-        throw new RuntimeException("Not Yet Implemented.");
-    }
+    return getArgBox().equivTo(((SPiExpr) o).getArgBox());
+  }
 
-    public Object clone()
-    {
-        return new SPiExpr(getValue(), getCondStmt(), getTargetKey());
-    }
+  public int equivHashCode() {
+    return getArgBox().equivHashCode() * 17;
+  }
 
-    public String toString()
-    {
-        String s = Shimple.PI + "(" + getValue() + ")";
-        return s;
-    }
-    
-    public void toString(UnitPrinter up)
-    {
-        up.literal(Shimple.PI);
-        up.literal("(");
-        argBox.toString(up);
-        up.literal(" [");
-        up.literal(targetKey.toString());
-        up.literal("])");
-    }
+  public void apply(Switch sw) {
+    // *** FIXME:
+    throw new RuntimeException("Not Yet Implemented.");
+  }
 
-    public Type getType()
-    {
-        return getValue().getType();
-    }
-    
-    public List getUseBoxes()
-    {
-        return Collections.singletonList(argBox);
-    }
+  public Object clone() {
+    return new SPiExpr(getValue(), getCondStmt(), getTargetKey());
+  }
+
+  public String toString() {
+    String s = Shimple.PI + "(" + getValue() + ")";
+    return s;
+  }
+
+  public void toString(UnitPrinter up) {
+    up.literal(Shimple.PI);
+    up.literal("(");
+    argBox.toString(up);
+    up.literal(" [");
+    up.literal(targetKey.toString());
+    up.literal("])");
+  }
+
+  public Type getType() {
+    return getValue().getType();
+  }
+
+  public List getUseBoxes() {
+    return Collections.singletonList(argBox);
+  }
 }
-

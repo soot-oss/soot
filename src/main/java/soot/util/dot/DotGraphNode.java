@@ -23,41 +23,42 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 /* @author Feng Qian */
 
 package soot.util.dot;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A Dot graph node with various attributes.
- */  
-public class DotGraphNode implements Renderable{
+ */
+public class DotGraphNode implements Renderable {
   private String name;
   private List<DotGraphAttribute> attributes;
 
   public DotGraphNode(String name) {
-    this.name = "\""+DotGraphUtility.replaceQuotes(name)+"\"";
+    this.name = "\"" + DotGraphUtility.replaceQuotes(name) + "\"";
   }
 
   // make any illegal name to be legal
-  public String getName(){
+  public String getName() {
     return this.name;
   }
 
   public void setLabel(String label) {
     label = DotGraphUtility.replaceQuotes(label);
     label = DotGraphUtility.replaceReturns(label);
-    this.setAttribute("label", "\""+label+"\"");
+    this.setAttribute("label", "\"" + label + "\"");
   }
 
-  public void setHTMLLabel(String label){
+  public void setHTMLLabel(String label) {
     label = DotGraphUtility.replaceReturns(label);
     this.setAttribute("label", label);
   }
-  
+
   public void setShape(String shape) {
     this.setAttribute("shape", shape);
   }
@@ -70,16 +71,16 @@ public class DotGraphNode implements Renderable{
     if (this.attributes == null) {
       this.attributes = new LinkedList<DotGraphAttribute>();
     }
-    
-    this.setAttribute(new DotGraphAttribute(id, value));    
+
+    this.setAttribute(new DotGraphAttribute(id, value));
   }
 
   public void setAttribute(DotGraphAttribute attr) {
     if (this.attributes == null) {
       this.attributes = new LinkedList<DotGraphAttribute>();
     }
-    
-    this.attributes.add(attr);    
+
+    this.attributes.add(attr);
   }
 
   public void render(OutputStream out, int indent) throws IOException {
@@ -87,8 +88,8 @@ public class DotGraphNode implements Renderable{
     if (this.attributes != null) {
       line.append(" [");
       for (DotGraphAttribute attr : this.attributes) {
-	line.append(attr.toString());
-	line.append(",");
+        line.append(attr.toString());
+        line.append(",");
       }
       line.append("];");
     }

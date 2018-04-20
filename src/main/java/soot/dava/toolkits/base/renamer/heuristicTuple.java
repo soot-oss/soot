@@ -19,97 +19,101 @@
 
 package soot.dava.toolkits.base.renamer;
 
-import java.util.*;
+import java.util.BitSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
-public class heuristicTuple{
-    BitSet heuristics;
-    int bitSetSize;
-    Vector<String> methodName;  //local is assigned the result of this method call
-    Vector<String> objectClassName; //local is initialized with a new invocation of this class
-    Vector<String> fieldName; //local is initialized with a field
-    Vector<String> castStrings; //local is casted to a type
+public class heuristicTuple {
+  BitSet heuristics;
+  int bitSetSize;
+  Vector<String> methodName; // local is assigned the result of this method call
+  Vector<String> objectClassName; // local is initialized with a new invocation of this class
+  Vector<String> fieldName; // local is initialized with a field
+  Vector<String> castStrings; // local is casted to a type
 
-    public heuristicTuple(int bits){
-    	heuristics =new BitSet(bits);
-    	this.methodName= new Vector<String>();
-    	this.objectClassName = new Vector<String>();
-    	this.fieldName = new Vector<String>();
-    	this.castStrings = new Vector<String>();
-    	bitSetSize=bits;
+  public heuristicTuple(int bits) {
+    heuristics = new BitSet(bits);
+    this.methodName = new Vector<String>();
+    this.objectClassName = new Vector<String>();
+    this.fieldName = new Vector<String>();
+    this.castStrings = new Vector<String>();
+    bitSetSize = bits;
+  }
+
+  public void addCastString(String castString) {
+    this.castStrings.add(castString);
+    setHeuristic(infoGatheringAnalysis.CAST);
+  }
+
+  public List<String> getCastStrings() {
+    return castStrings;
+  }
+
+  public void setFieldName(String fieldName) {
+    this.fieldName.add(fieldName);
+    setHeuristic(infoGatheringAnalysis.FIELDASSIGN);
+  }
+
+  public List<String> getFieldName() {
+    return fieldName;
+  }
+
+  public void setObjectClassName(String objectClassName) {
+    this.objectClassName.add(objectClassName);
+    setHeuristic(infoGatheringAnalysis.CLASSNAME);
+  }
+
+  public List<String> getObjectClassName() {
+    return objectClassName;
+  }
+
+  public void setMethodName(String methodName) {
+    this.methodName.add(methodName);
+    setHeuristic(infoGatheringAnalysis.METHODNAME);
+    if (methodName.startsWith("get") || methodName.startsWith("set")) {
+      setHeuristic(infoGatheringAnalysis.GETSET);
+    }
+  }
+
+  public List<String> getMethodName() {
+    return methodName;
+  }
+
+  public void setHeuristic(int bitIndex) {
+    heuristics.set(bitIndex);
+  }
+
+  public boolean getHeuristic(int bitIndex) {
+    return heuristics.get(bitIndex);
+  }
+
+  public boolean isAnyHeuristicSet() {
+    return !heuristics.isEmpty();
+  }
+
+  public String getPrint() {
+    String temp = "BitSet: ";
+    for (int i = 0; i < bitSetSize; i++) {
+      if (getHeuristic(i)) {
+        temp = temp.concat("1");
+      } else {
+        temp = temp.concat("0");
+      }
     }
 
-    public void addCastString(String castString){
-    	this.castStrings.add(castString);
-    	setHeuristic(infoGatheringAnalysis.CAST);
-    }
-    
-    public List<String> getCastStrings(){
-    	return castStrings;
-    }
-    
-    public void setFieldName(String fieldName){
-	this.fieldName.add(fieldName);
-	setHeuristic(infoGatheringAnalysis.FIELDASSIGN);
-    }
-    
-    public List<String> getFieldName(){
-	return fieldName;
+    temp = temp.concat("  Field: " + fieldName.toString());
+
+    temp = temp.concat("  Method: ");
+    Iterator<String> it = getMethodName().iterator();
+    while (it.hasNext()) {
+      temp = temp.concat(it.next() + " , ");
     }
 
-    public void setObjectClassName(String objectClassName){
-	this.objectClassName.add(objectClassName);
-	setHeuristic(infoGatheringAnalysis.CLASSNAME);
-    }
-    
-    public List<String> getObjectClassName(){
-	return objectClassName;
-    }
+    temp = temp.concat("  Class: " + objectClassName.toString());
 
-    public void setMethodName(String methodName){
-    	this.methodName.add(methodName);
-    	setHeuristic(infoGatheringAnalysis.METHODNAME);
-    	if(methodName.startsWith("get") || methodName.startsWith("set"))
-    		setHeuristic(infoGatheringAnalysis.GETSET);
-    }
-    
-    public List<String> getMethodName(){
-	return methodName;
-    }
-
-    public void setHeuristic(int bitIndex){
-	heuristics.set(bitIndex);
-    }
-
-    public boolean getHeuristic(int bitIndex){
-	return heuristics.get(bitIndex);
-    }
-
-    public boolean isAnyHeuristicSet(){
-	return !heuristics.isEmpty();
-    }
-
-
-    public String getPrint(){
-	String temp ="BitSet: ";
-	for(int i=0;i<bitSetSize;i++){
-	    if(getHeuristic(i))//i bit is set
-		temp=temp.concat("1");
-	    else
-		temp=temp.concat("0");
-	}
-
-	temp=temp.concat("  Field: "+fieldName.toString());
-
-	temp=temp.concat("  Method: ");
-	Iterator<String> it = getMethodName().iterator();
-	while(it.hasNext()){
-	    temp = temp.concat(it.next()+" , ");
-	}
-
-	temp=temp.concat("  Class: "+objectClassName.toString());
-
-	//System.out.println("TUPLE:"+temp);
-	return temp;
-    }
+    // System.out.println("TUPLE:"+temp);
+    return temp;
+  }
 
 }

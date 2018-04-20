@@ -23,18 +23,13 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-/** Attribute that connects deprecated attribute.
+/**
+ * Attribute that connects deprecated attribute.
+ * 
  * @see attribute_info
  * @author Jennifer Lhotak
  */
 class Deprecated_attribute extends attribute_info {
 }
-

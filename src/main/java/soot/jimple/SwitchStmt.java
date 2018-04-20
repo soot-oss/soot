@@ -23,27 +23,33 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
-import java.util.*;
+import java.util.List;
 
-public interface SwitchStmt extends Stmt
-{
-    public Unit getDefaultTarget();
-    public void setDefaultTarget(Unit defaultTarget);
-    public UnitBox getDefaultTargetBox();
-    public Value getKey();
-    public void setKey(Value key);
-    public ValueBox getKeyBox();
-    public List<Unit> getTargets();
-    public Unit getTarget(int index);
-    public void setTarget(int index, Unit target);
-    public UnitBox getTargetBox(int index);
+import soot.Unit;
+import soot.UnitBox;
+import soot.Value;
+import soot.ValueBox;
+
+public interface SwitchStmt extends Stmt {
+  public Unit getDefaultTarget();
+
+  public void setDefaultTarget(Unit defaultTarget);
+
+  public UnitBox getDefaultTargetBox();
+
+  public Value getKey();
+
+  public void setKey(Value key);
+
+  public ValueBox getKeyBox();
+
+  public List<Unit> getTargets();
+
+  public Unit getTarget(int index);
+
+  public void setTarget(int index, Unit target);
+
+  public UnitBox getTargetBox(int index);
 }
-
-

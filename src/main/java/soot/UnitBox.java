@@ -23,38 +23,33 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
 package soot;
 
-import java.io.*;
+import java.io.Serializable;
 
-/** A box which can contain units. 
+/**
+ * A box which can contain units.
  *
  * @see Unit
  */
-public interface UnitBox extends Serializable
-{
-    /** Sets this box to contain the given unit.  Subject to canContainValue() checks. */
-    public void setUnit(Unit u);
+public interface UnitBox extends Serializable {
+  /** Sets this box to contain the given unit. Subject to canContainValue() checks. */
+  public void setUnit(Unit u);
 
-    /** Returns the unit contained within this box. */
-    public Unit getUnit();
+  /** Returns the unit contained within this box. */
+  public Unit getUnit();
 
-    /** Returns true if this box can contain the given Unit. */
-    public boolean canContainUnit(Unit u);   
-    
-    /**
-     * Returns true if the UnitBox is holding a Unit that is the
-     * target of a branch (ie a Unit at the beginning of a CFG block).
-     * This is the default case.
-     *
-     * <p> Returns false if the UnitBox is holding a Unit that
-     * indicates the end of a CFG block and may require specialised
-     * processing for SSA.
-     **/
-    public boolean isBranchTarget();
+  /** Returns true if this box can contain the given Unit. */
+  public boolean canContainUnit(Unit u);
 
-    public void toString(UnitPrinter up); 
+  /**
+   * Returns true if the UnitBox is holding a Unit that is the target of a branch (ie a Unit at the beginning of a CFG block). This is the default
+   * case.
+   *
+   * <p>
+   * Returns false if the UnitBox is holding a Unit that indicates the end of a CFG block and may require specialised processing for SSA.
+   **/
+  public boolean isBranchTarget();
+
+  public void toString(UnitPrinter up);
 }

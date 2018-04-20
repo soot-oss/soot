@@ -23,25 +23,32 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
-import soot.util.*;
-import java.util.*;
+import java.util.List;
 
-public interface NewMultiArrayExpr extends Expr, AnyNewExpr
-{
-    public ArrayType getBaseType();
-    public void setBaseType(ArrayType baseType);
-    public ValueBox getSizeBox(int index);
-    public int getSizeCount();
-    public Value getSize(int index);
-    public List<Value> getSizes();
-    public void setSize(int index, Value size);
-    public Type getType();
-    public void apply(Switch sw);
+import soot.ArrayType;
+import soot.Type;
+import soot.Value;
+import soot.ValueBox;
+import soot.util.Switch;
+
+public interface NewMultiArrayExpr extends Expr, AnyNewExpr {
+  public ArrayType getBaseType();
+
+  public void setBaseType(ArrayType baseType);
+
+  public ValueBox getSizeBox(int index);
+
+  public int getSizeCount();
+
+  public Value getSize(int index);
+
+  public List<Value> getSizes();
+
+  public void setSize(int index, Value size);
+
+  public Type getType();
+
+  public void apply(Switch sw);
 }

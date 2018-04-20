@@ -17,20 +17,20 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package soot.dava.internal.AST;
 
-import soot.*;
-import soot.dava.toolkits.base.AST.analysis.*;
+import soot.UnitPrinter;
+import soot.dava.toolkits.base.AST.analysis.Analysis;
 
-public abstract class ASTCondition{
-    public abstract void apply(Analysis a);
-    public abstract void toString(UnitPrinter up);
-    public abstract void flip();
-    
-    /*
-     * should return true if there is a not symbol infront of it
-     * for ASTBinaryCondition it should always return true since u can always flip it
-     */
-    public abstract boolean isNotted();
+public abstract class ASTCondition {
+  public abstract void apply(Analysis a);
+
+  public abstract void toString(UnitPrinter up);
+
+  public abstract void flip();
+
+  /*
+   * should return true if there is a not symbol infront of it for ASTBinaryCondition it should always return true since u can always flip it
+   */
+  public abstract boolean isNotted();
 }

@@ -34,53 +34,54 @@ import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 
 public class MoveInstruction extends DexlibAbstractInstruction {
-  
-    public MoveInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
-    }
 
-    @Override
-	public void jimplify (DexBody body) {
-       
-        TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
-        
-        
-        int dest = i.getRegisterA();
-        int source = i.getRegisterB();
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), body.getRegisterLocal(source));
-        setUnit(assign);
-        addTags(assign);
-        body.add(assign);
-        
-		if (IDalvikTyper.ENABLE_DVKTYPER) {
-          DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
-        }
-    }
+  public MoveInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
 
-    @Override
-    int movesRegister(int register) {
-        TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
-        int dest = i.getRegisterA();
-        int source = i.getRegisterB();
-        if (register == source)
-            return dest;
-        return -1;
-    }
+  @Override
+  public void jimplify(DexBody body) {
 
-    @Override
-    int movesToRegister(int register) {
-        TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
-        int dest = i.getRegisterA();
-        int source = i.getRegisterB();
-        if (register == dest)
-            return source;
-        return -1;
-    }
+    TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
 
-    @Override
-    boolean overridesRegister(int register) {
-        TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
-        int dest = i.getRegisterA();
-        return register == dest;
+    int dest = i.getRegisterA();
+    int source = i.getRegisterB();
+    AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), body.getRegisterLocal(source));
+    setUnit(assign);
+    addTags(assign);
+    body.add(assign);
+
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+      DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
     }
+  }
+
+  @Override
+  int movesRegister(int register) {
+    TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
+    int dest = i.getRegisterA();
+    int source = i.getRegisterB();
+    if (register == source) {
+      return dest;
+    }
+    return -1;
+  }
+
+  @Override
+  int movesToRegister(int register) {
+    TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
+    int dest = i.getRegisterA();
+    int source = i.getRegisterB();
+    if (register == dest) {
+      return source;
+    }
+    return -1;
+  }
+
+  @Override
+  boolean overridesRegister(int register) {
+    TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
+    int dest = i.getRegisterA();
+    return register == dest;
+  }
 }

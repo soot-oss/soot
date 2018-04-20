@@ -23,49 +23,43 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot;
-import soot.util.*;
+
+import soot.util.Switch;
 
 /**
- *   Soot representation used for not-yet-typed objects. Implemented as
- *   a singleton.
+ * Soot representation used for not-yet-typed objects. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class UnknownType extends Type
-{
-    public UnknownType( Singletons.Global g ) {}
-    public static UnknownType v() { return G.v().soot_UnknownType(); }
+public class UnknownType extends Type {
+  public UnknownType(Singletons.Global g) {
+  }
 
-    public int hashCode()
-    {
-        return 0x5CAE5357;
-    }
-    
-    public boolean equals(Object t)
-    {
-        return this == t;
-    }
+  public static UnknownType v() {
+    return G.v().soot_UnknownType();
+  }
 
-    public String toString()
-    {
-        return "unknown";
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((TypeSwitch) sw).caseUnknownType(this);
-    }
+  public int hashCode() {
+    return 0x5CAE5357;
+  }
 
-    /** Returns the least common superclass of this type and other. */
-    public Type merge(Type other, Scene cm)
-    {
-        if (other instanceof RefType)
-            return other;
-        throw new RuntimeException("illegal type merge: "
-                                   + this + " and " + other);
+  public boolean equals(Object t) {
+    return this == t;
+  }
+
+  public String toString() {
+    return "unknown";
+  }
+
+  public void apply(Switch sw) {
+    ((TypeSwitch) sw).caseUnknownType(this);
+  }
+
+  /** Returns the least common superclass of this type and other. */
+  public Type merge(Type other, Scene cm) {
+    if (other instanceof RefType) {
+      return other;
     }
+    throw new RuntimeException("illegal type merge: " + this + " and " + other);
+  }
 }

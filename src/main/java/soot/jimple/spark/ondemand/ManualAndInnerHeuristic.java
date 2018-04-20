@@ -23,22 +23,23 @@ import soot.jimple.spark.pag.SparkField;
 
 public class ManualAndInnerHeuristic implements FieldCheckHeuristic {
 
-    final ManualFieldCheckHeuristic manual = new ManualFieldCheckHeuristic();
-    final InnerTypesIncrementalHeuristic inner;
-    
-    public ManualAndInnerHeuristic(TypeManager tm, int maxPasses) {
-        inner = new InnerTypesIncrementalHeuristic(tm, maxPasses); 
-    }
-    public boolean runNewPass() {
-        return inner.runNewPass();
-    }
+  final ManualFieldCheckHeuristic manual = new ManualFieldCheckHeuristic();
+  final InnerTypesIncrementalHeuristic inner;
 
-    public boolean validateMatchesForField(SparkField field) {        
-        return manual.validateMatchesForField(field) || inner.validateMatchesForField(field);
-    }
+  public ManualAndInnerHeuristic(TypeManager tm, int maxPasses) {
+    inner = new InnerTypesIncrementalHeuristic(tm, maxPasses);
+  }
 
-    public boolean validFromBothEnds(SparkField field) {
-        return inner.validFromBothEnds(field);
-    }
+  public boolean runNewPass() {
+    return inner.runNewPass();
+  }
+
+  public boolean validateMatchesForField(SparkField field) {
+    return manual.validateMatchesForField(field) || inner.validateMatchesForField(field);
+  }
+
+  public boolean validFromBothEnds(SparkField field) {
+    return inner.validFromBothEnds(field);
+  }
 
 }

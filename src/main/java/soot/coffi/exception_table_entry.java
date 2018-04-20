@@ -23,58 +23,65 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-
-/** An entry in some code's exception table; describes an exception
- * handler and the code it protects.
+/**
+ * An entry in some code's exception table; describes an exception handler and the code it protects.
+ * 
  * @see Code_attribute
  * @author Clark Verbrugge
  */
 class exception_table_entry {
-   /** Code offset of start of code protected by this handler (inclusive).
-    * @see exception_table_entry#start_inst
-    */
-   public int start_pc;
-   /** Code offset of end of code protected by this handler (exclusive).
-    * @see exception_table_entry#end_inst
-    */
-   public int end_pc;
-   /** Code offset of actual exception handler for the specified code block.
-    * @see exception_table_entry#handler_inst
-    * @see exception_table_entry#b
-    */
-   public int handler_pc;
-   /** Constant pool index of a CONSTANT_Class entry describing the exception
-    * this handler handles; if 0, this handler catches all exceptions.
-    * @see CONSTANT_Class
-    */
-   public int catch_type;
-   /** First Instruction object (after parsing) of code protected by this handler.
-    * @see exception_table_entry#start_pc
-    * @see Instruction
-    */
-   public Instruction start_inst;
-   /** First Instruction object (after parsing) of code not protected by this handler
-    * (or <i>null</i> for the end of code).
-    * @see exception_table_entry#end_pc
-    * @see Instruction
-    */
-   public Instruction end_inst;
-   /** Instruction object (after parsing) of start of handler code.
-    * @see exception_table_entry#handler_pc
-    * @see Instruction
-    */
-   public Instruction handler_inst;
-   /** Once basic blocks are constructed, the handler can be found by
-    * referencing its basic block.
-    * @see BasicBlock
-    */
-   public BasicBlock b;
+  /**
+   * Code offset of start of code protected by this handler (inclusive).
+   * 
+   * @see exception_table_entry#start_inst
+   */
+  public int start_pc;
+  /**
+   * Code offset of end of code protected by this handler (exclusive).
+   * 
+   * @see exception_table_entry#end_inst
+   */
+  public int end_pc;
+  /**
+   * Code offset of actual exception handler for the specified code block.
+   * 
+   * @see exception_table_entry#handler_inst
+   * @see exception_table_entry#b
+   */
+  public int handler_pc;
+  /**
+   * Constant pool index of a CONSTANT_Class entry describing the exception this handler handles; if 0, this handler catches all exceptions.
+   * 
+   * @see CONSTANT_Class
+   */
+  public int catch_type;
+  /**
+   * First Instruction object (after parsing) of code protected by this handler.
+   * 
+   * @see exception_table_entry#start_pc
+   * @see Instruction
+   */
+  public Instruction start_inst;
+  /**
+   * First Instruction object (after parsing) of code not protected by this handler (or <i>null</i> for the end of code).
+   * 
+   * @see exception_table_entry#end_pc
+   * @see Instruction
+   */
+  public Instruction end_inst;
+  /**
+   * Instruction object (after parsing) of start of handler code.
+   * 
+   * @see exception_table_entry#handler_pc
+   * @see Instruction
+   */
+  public Instruction handler_inst;
+  /**
+   * Once basic blocks are constructed, the handler can be found by referencing its basic block.
+   * 
+   * @see BasicBlock
+   */
+  public BasicBlock b;
 }

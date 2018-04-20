@@ -18,12 +18,12 @@
  */
 
 package soot.jimple.spark.solver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.TreeSet;
 
-import soot.G;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
@@ -48,167 +48,174 @@ import soot.util.queue.QueueReader;
  */
 
 public final class PropIter extends Propagator {
-    private static final Logger logger = LoggerFactory.getLogger(PropIter.class);
-	public PropIter(PAG pag) {
-		this.pag = pag;
-	}
+  private static final Logger logger = LoggerFactory.getLogger(PropIter.class);
 
-	/** Actually does the propagation. */
-	public final void propagate() {
-		final OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
-		new TopoSorter(pag, false).sort();
-		for (Object object : pag.allocSources()) {
-			handleAllocNode((AllocNode) object);
-		}
-		int iteration = 1;
-		boolean change;
-		do {
-			change = false;
-			TreeSet<VarNode> simpleSources = new TreeSet<VarNode>(pag.simpleSources());
-			if (pag.getOpts().verbose()) {
-				logger.debug("Iteration " + (iteration++));
-			}
-			for (VarNode object : simpleSources) {
-				change = handleSimples(object) | change;
-			}
-			if (ofcg != null) {
-				QueueReader<Node> addedEdges = pag.edgeReader();
-				for (VarNode src : pag.getVarNodeNumberer()) {
-					ofcg.updatedNode(src);
-				}
-				ofcg.build();
+  public PropIter(PAG pag) {
+    this.pag = pag;
+  }
 
-				while (addedEdges.hasNext()) {
-					Node addedSrc = (Node) addedEdges.next();
-					Node addedTgt = (Node) addedEdges.next();
-					change = true;
-					if (addedSrc instanceof VarNode) {
-						PointsToSetInternal p2set = ((VarNode) addedSrc).getP2Set();
-						if (p2set != null)
-							p2set.unFlushNew();
-					} else if (addedSrc instanceof AllocNode) {
-						((VarNode) addedTgt).makeP2Set().add(addedSrc);
-					}
-				}
-				if (change) {
-					new TopoSorter(pag, false).sort();
-				}
-			}
-			for (FieldRefNode object : pag.loadSources()) {
-				change = handleLoads(object) | change;
-			}
-			for (VarNode object : pag.storeSources()) {
-				change = handleStores(object) | change;
-			}
-			for (NewInstanceNode object : pag.assignInstanceSources()) {
-				change = handleNewInstances(object) | change;
-			}
-		} while (change);
-	}
+  /** Actually does the propagation. */
+  public final void propagate() {
+    final OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
+    new TopoSorter(pag, false).sort();
+    for (Object object : pag.allocSources()) {
+      handleAllocNode((AllocNode) object);
+    }
+    int iteration = 1;
+    boolean change;
+    do {
+      change = false;
+      TreeSet<VarNode> simpleSources = new TreeSet<VarNode>(pag.simpleSources());
+      if (pag.getOpts().verbose()) {
+        logger.debug("Iteration " + (iteration++));
+      }
+      for (VarNode object : simpleSources) {
+        change = handleSimples(object) | change;
+      }
+      if (ofcg != null) {
+        QueueReader<Node> addedEdges = pag.edgeReader();
+        for (VarNode src : pag.getVarNodeNumberer()) {
+          ofcg.updatedNode(src);
+        }
+        ofcg.build();
 
-	/* End of public methods. */
-	/* End of package methods. */
+        while (addedEdges.hasNext()) {
+          Node addedSrc = (Node) addedEdges.next();
+          Node addedTgt = (Node) addedEdges.next();
+          change = true;
+          if (addedSrc instanceof VarNode) {
+            PointsToSetInternal p2set = ((VarNode) addedSrc).getP2Set();
+            if (p2set != null) {
+              p2set.unFlushNew();
+            }
+          } else if (addedSrc instanceof AllocNode) {
+            ((VarNode) addedTgt).makeP2Set().add(addedSrc);
+          }
+        }
+        if (change) {
+          new TopoSorter(pag, false).sort();
+        }
+      }
+      for (FieldRefNode object : pag.loadSources()) {
+        change = handleLoads(object) | change;
+      }
+      for (VarNode object : pag.storeSources()) {
+        change = handleStores(object) | change;
+      }
+      for (NewInstanceNode object : pag.assignInstanceSources()) {
+        change = handleNewInstances(object) | change;
+      }
+    } while (change);
+  }
 
-	/**
-	 * Propagates new points-to information of node src to all its successors.
-	 */
-	protected final boolean handleAllocNode(AllocNode src) {
-		boolean ret = false;
-		Node[] targets = pag.allocLookup(src);
-		for (Node element : targets) {
-			ret = element.makeP2Set().add(src) | ret;
-		}
-		return ret;
-	}
+  /* End of public methods. */
+  /* End of package methods. */
 
-	protected final boolean handleSimples(VarNode src) {
-		boolean ret = false;
-		PointsToSetInternal srcSet = src.getP2Set();
-		if (srcSet.isEmpty())
-			return false;
-		Node[] simpleTargets = pag.simpleLookup(src);
-		for (Node element : simpleTargets) {
-			ret = element.makeP2Set().addAll(srcSet, null) | ret;
-		}
+  /**
+   * Propagates new points-to information of node src to all its successors.
+   */
+  protected final boolean handleAllocNode(AllocNode src) {
+    boolean ret = false;
+    Node[] targets = pag.allocLookup(src);
+    for (Node element : targets) {
+      ret = element.makeP2Set().add(src) | ret;
+    }
+    return ret;
+  }
 
-		Node[] newInstances = pag.newInstanceLookup(src);
-		for (Node element : newInstances) {
-			ret = element.makeP2Set().addAll(srcSet, null) | ret;
-		}
+  protected final boolean handleSimples(VarNode src) {
+    boolean ret = false;
+    PointsToSetInternal srcSet = src.getP2Set();
+    if (srcSet.isEmpty()) {
+      return false;
+    }
+    Node[] simpleTargets = pag.simpleLookup(src);
+    for (Node element : simpleTargets) {
+      ret = element.makeP2Set().addAll(srcSet, null) | ret;
+    }
 
-		return ret;
-	}
+    Node[] newInstances = pag.newInstanceLookup(src);
+    for (Node element : newInstances) {
+      ret = element.makeP2Set().addAll(srcSet, null) | ret;
+    }
 
-	protected final boolean handleStores(VarNode src) {
-		boolean ret = false;
-		final PointsToSetInternal srcSet = src.getP2Set();
-		if (srcSet.isEmpty())
-			return false;
-		Node[] storeTargets = pag.storeLookup(src);
-		for (Node element : storeTargets) {
-			final FieldRefNode fr = (FieldRefNode) element;
-			final SparkField f = fr.getField();
-			ret = fr.getBase().getP2Set().forall(new P2SetVisitor() {
-				public final void visit(Node n) {
-					AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, f);
-					if (nDotF.makeP2Set().addAll(srcSet, null)) {
-						returnValue = true;
-					}
-				}
-			}) | ret;
-		}
-		return ret;
-	}
+    return ret;
+  }
 
-	protected final boolean handleLoads(FieldRefNode src) {
-		boolean ret = false;
-		final Node[] loadTargets = pag.loadLookup(src);
-		final SparkField f = src.getField();
-		ret = src.getBase().getP2Set().forall(new P2SetVisitor() {
-			public final void visit(Node n) {
-				AllocDotField nDotF = ((AllocNode) n).dot(f);
-				if (nDotF == null)
-					return;
-				PointsToSetInternal set = nDotF.getP2Set();
-				if (set.isEmpty())
-					return;
-				for (Node element : loadTargets) {
-					VarNode target = (VarNode) element;
-					if (target.makeP2Set().addAll(set, null)) {
-						returnValue = true;
-					}
-				}
-			}
-		}) | ret;
-		return ret;
-	}
+  protected final boolean handleStores(VarNode src) {
+    boolean ret = false;
+    final PointsToSetInternal srcSet = src.getP2Set();
+    if (srcSet.isEmpty()) {
+      return false;
+    }
+    Node[] storeTargets = pag.storeLookup(src);
+    for (Node element : storeTargets) {
+      final FieldRefNode fr = (FieldRefNode) element;
+      final SparkField f = fr.getField();
+      ret = fr.getBase().getP2Set().forall(new P2SetVisitor() {
+        public final void visit(Node n) {
+          AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, f);
+          if (nDotF.makeP2Set().addAll(srcSet, null)) {
+            returnValue = true;
+          }
+        }
+      }) | ret;
+    }
+    return ret;
+  }
 
-	protected final boolean handleNewInstances(final NewInstanceNode src) {
-		boolean ret = false;
-		final Node[] newInstances = pag.assignInstanceLookup(src);
-		for (final Node instance : newInstances) {
-			ret = src.getP2Set().forall(new P2SetVisitor() {
+  protected final boolean handleLoads(FieldRefNode src) {
+    boolean ret = false;
+    final Node[] loadTargets = pag.loadLookup(src);
+    final SparkField f = src.getField();
+    ret = src.getBase().getP2Set().forall(new P2SetVisitor() {
+      public final void visit(Node n) {
+        AllocDotField nDotF = ((AllocNode) n).dot(f);
+        if (nDotF == null) {
+          return;
+        }
+        PointsToSetInternal set = nDotF.getP2Set();
+        if (set.isEmpty()) {
+          return;
+        }
+        for (Node element : loadTargets) {
+          VarNode target = (VarNode) element;
+          if (target.makeP2Set().addAll(set, null)) {
+            returnValue = true;
+          }
+        }
+      }
+    }) | ret;
+    return ret;
+  }
 
-				@Override
-				public void visit(Node n) {
-					if (n instanceof ClassConstantNode) {
-						ClassConstantNode ccn = (ClassConstantNode) n;
-						Type ccnType = ccn.getClassConstant().toSootType();
+  protected final boolean handleNewInstances(final NewInstanceNode src) {
+    boolean ret = false;
+    final Node[] newInstances = pag.assignInstanceLookup(src);
+    for (final Node instance : newInstances) {
+      ret = src.getP2Set().forall(new P2SetVisitor() {
 
-						// If the referenced class has not been loaded, we do
-						// this now
-						SootClass targetClass = ((RefType) ccnType).getSootClass();
-						if (targetClass.resolvingLevel() == SootClass.DANGLING)
-							Scene.v().forceResolve(targetClass.getName(), SootClass.SIGNATURES);
+        @Override
+        public void visit(Node n) {
+          if (n instanceof ClassConstantNode) {
+            ClassConstantNode ccn = (ClassConstantNode) n;
+            Type ccnType = ccn.getClassConstant().toSootType();
 
-						instance.makeP2Set().add(pag.makeAllocNode(src.getValue(), ccnType, ccn.getMethod()));
-					}
-				}
+            // If the referenced class has not been loaded, we do
+            // this now
+            SootClass targetClass = ((RefType) ccnType).getSootClass();
+            if (targetClass.resolvingLevel() == SootClass.DANGLING) {
+              Scene.v().forceResolve(targetClass.getName(), SootClass.SIGNATURES);
+            }
 
-			});
-		}
-		return ret;
-	}
+            instance.makeP2Set().add(pag.makeAllocNode(src.getValue(), ccnType, ccn.getMethod()));
+          }
+        }
 
-	protected PAG pag;
+      });
+    }
+    return ret;
+  }
+
+  protected PAG pag;
 }

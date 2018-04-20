@@ -23,20 +23,15 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-/** Attribute that connects signature attribute.
+/**
+ * Attribute that connects signature attribute.
+ * 
  * @see attribute_info
  * @author Jennifer Lhotak
  */
 class Signature_attribute extends attribute_info {
 
-    public int signature_index;
+  public int signature_index;
 }
-

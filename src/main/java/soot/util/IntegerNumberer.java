@@ -19,25 +19,34 @@
 
 package soot.util;
 
-/** A numberer that associates each number with the corresponding Long object.
-*/
+/**
+ * A numberer that associates each number with the corresponding Long object.
+ */
 public class IntegerNumberer implements Numberer<Long> {
-    /** Tells the numberer that a new object needs to be assigned a number. */
-    public void add( Long o ) {}
-    /** Should return the number that was assigned to object o that was
-     * previously passed as an argument to add().
-     */
-    public long get( Long o ) {
-        if( o == null ) return 0;
-        return o.longValue();
+  /** Tells the numberer that a new object needs to be assigned a number. */
+  public void add(Long o) {
+  }
+
+  /**
+   * Should return the number that was assigned to object o that was previously passed as an argument to add().
+   */
+  public long get(Long o) {
+    if (o == null) {
+      return 0;
     }
-    /** Should return the object that was assigned the number number. */
-    public Long get( long number ) {
-        if( number == 0 ) return null; 
-        return new Long(number);
+    return o.longValue();
+  }
+
+  /** Should return the object that was assigned the number number. */
+  public Long get(long number) {
+    if (number == 0) {
+      return null;
     }
-    /** Should return the number of objects that have been assigned numbers. */
-    public int size() {
-        throw new RuntimeException( "IntegerNumberer does not implement the size() method." );
-    }
+    return new Long(number);
+  }
+
+  /** Should return the number of objects that have been assigned numbers. */
+  public int size() {
+    throw new RuntimeException("IntegerNumberer does not implement the size() method.");
+  }
 }

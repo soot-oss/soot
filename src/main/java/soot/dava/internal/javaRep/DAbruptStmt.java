@@ -20,83 +20,73 @@
 
 package soot.dava.internal.javaRep;
 
-import soot.jimple.internal.*;
-import soot.dava.internal.SET.*;
-import soot.*;
+import soot.UnitPrinter;
+import soot.dava.internal.SET.SETNodeLabel;
+import soot.jimple.internal.AbstractStmt;
 
-public class DAbruptStmt extends AbstractStmt
-{
-    private String command;
-    private SETNodeLabel label;
+public class DAbruptStmt extends AbstractStmt {
+  private String command;
+  private SETNodeLabel label;
 
+  public boolean surpressDestinationLabel;
 
-    public  boolean surpressDestinationLabel;
+  public DAbruptStmt(String command, SETNodeLabel label) {
+    this.command = command;
+    this.label = label;
 
-    public DAbruptStmt( String command, SETNodeLabel label)
-    {
-	this.command = command;
-	this.label = label;
+    label.set_Name();
+    surpressDestinationLabel = false;
+  }
 
-	label.set_Name();
-	surpressDestinationLabel = false;
+  public boolean fallsThrough() {
+    return false;
+  }
+
+  public boolean branches() {
+    return false;
+  }
+
+  public Object clone() {
+    return new DAbruptStmt(command, label);
+  }
+
+  public String toString() {
+    StringBuffer b = new StringBuffer();
+
+    b.append(command);
+
+    if ((surpressDestinationLabel == false) && (label.toString() != null)) {
+      b.append(" ");
+      b.append(label.toString());
     }
 
-    public boolean fallsThrough()
-    {
-	return false;
+    return b.toString();
+  }
+
+  public void toString(UnitPrinter up) {
+    up.literal(command);
+    if ((surpressDestinationLabel == false) && (label.toString() != null)) {
+      up.literal(" ");
+      up.literal(label.toString());
     }
+  }
 
-    public boolean branches()
-    {
-	return false;
-    }
+  public boolean is_Continue() {
+    return command.equals("continue");
+  }
 
-    public Object clone()
-    {
-	return new DAbruptStmt( command, label);
-    }
+  public boolean is_Break() {
+    return command.equals("break");
+  }
 
-    public String toString()
-    {
-	StringBuffer b = new StringBuffer();
+  /*
+   * Nomair A. Naeem 20-FEB-2005 getter and setter methods for the label are needed for the aggregators of the AST conditionals
+   */
+  public void setLabel(SETNodeLabel label) {
+    this.label = label;
+  }
 
-	b.append( command);
-
-	if ((surpressDestinationLabel == false) && (label.toString() != null)) {
-	    b.append( " ");
-	    b.append( label.toString());
-	}
-
-	return b.toString();
-    }
-    
-    public void toString(UnitPrinter up) {
-        up.literal(command);
-        if ((surpressDestinationLabel == false) && (label.toString() != null)) {
-            up.literal( " ");
-            up.literal( label.toString());
-        }
-    }
-
-    public boolean is_Continue()
-    {
-	return command.equals( "continue");
-    }
-
-
-    public boolean is_Break(){
-	return command.equals("break");
-    }
-
-    /*
-      Nomair A. Naeem 20-FEB-2005
-      getter and setter methods for the label are needed for the aggregators of the AST conditionals
-    */
-    public void setLabel(SETNodeLabel label){
-	this.label=label;
-    }
-
-    public SETNodeLabel getLabel(){
-	return label;
-    }
+  public SETNodeLabel getLabel() {
+    return label;
+  }
 }

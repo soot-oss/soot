@@ -23,16 +23,16 @@ package soot.jimple.spark.ondemand.genericutil;
  */
 public class ObjWrapper {
 
-    public final Object wrapped;
-    
-    /**
-     * @param wrapped
-     */
-    public ObjWrapper(final Object wrapped) {
-        this.wrapped = wrapped;
-    }
-    
-    public String toString() {
-        return "wrapped " + wrapped;
-    }
+  public final Object wrapped;
+
+  /**
+   * @param wrapped
+   */
+  public ObjWrapper(final Object wrapped) {
+    this.wrapped = wrapped;
+  }
+
+  public String toString() {
+    return "wrapped " + wrapped;
+  }
 }

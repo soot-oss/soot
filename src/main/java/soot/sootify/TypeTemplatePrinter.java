@@ -39,103 +39,102 @@ import soot.VoidType;
 
 public class TypeTemplatePrinter extends TypeSwitch {
 
-	private String varName;
-	private final TemplatePrinter p;
-	
-	public void printAssign(String v, Type t) {
-		String oldName = varName;
-		varName = v;
-		t.apply(this);
-		varName = oldName;
-	}
-	
-	public TypeTemplatePrinter(TemplatePrinter p) {
-		this.p = p;
-	}
+  private String varName;
+  private final TemplatePrinter p;
 
-	public void setVariableName(String name) {
-		this.varName = name;		
-	}
-	
-	private void emit(String rhs) {
-		p.println("Type "+ varName+" = "+rhs+";");
-	}
+  public void printAssign(String v, Type t) {
+    String oldName = varName;
+    varName = v;
+    t.apply(this);
+    varName = oldName;
+  }
 
-	private void emitSpecial(String type, String rhs) {
-		p.println(type+" "+ varName+" = "+rhs+";");
-	}
+  public TypeTemplatePrinter(TemplatePrinter p) {
+    this.p = p;
+  }
 
-	public void caseAnySubType(AnySubType t) {
-		throw new IllegalArgumentException("cannot print this type");
-	}
+  public void setVariableName(String name) {
+    this.varName = name;
+  }
 
-	public void caseArrayType(ArrayType t) {
-		printAssign("baseType", t.getElementType());
+  private void emit(String rhs) {
+    p.println("Type " + varName + " = " + rhs + ";");
+  }
 
-		p.println("int numDimensions=" + t.numDimensions+ ";");
-		
-		emit("ArrayType.v(baseType, numDimensions)");
-	}
+  private void emitSpecial(String type, String rhs) {
+    p.println(type + " " + varName + " = " + rhs + ";");
+  }
 
+  public void caseAnySubType(AnySubType t) {
+    throw new IllegalArgumentException("cannot print this type");
+  }
 
-	public void caseBooleanType(BooleanType t) {
-		emit("BooleanType.v()");
-	}
+  public void caseArrayType(ArrayType t) {
+    printAssign("baseType", t.getElementType());
 
-	public void caseByteType(ByteType t) {
-		emit("ByteType.v()");
-	}
+    p.println("int numDimensions=" + t.numDimensions + ";");
 
-	public void caseCharType(CharType t) {
-		emit("CharType.v()");
-	}
+    emit("ArrayType.v(baseType, numDimensions)");
+  }
 
-	public void defaultCase(Type t) {
-		throw new IllegalArgumentException("cannot print this type");		
-	}
+  public void caseBooleanType(BooleanType t) {
+    emit("BooleanType.v()");
+  }
 
-	public void caseDoubleType(DoubleType t) {
-		emit("DoubleType.v()");
-	}
+  public void caseByteType(ByteType t) {
+    emit("ByteType.v()");
+  }
 
-	public void caseErroneousType(ErroneousType t) {
-		throw new IllegalArgumentException("cannot print this type");		
-	}
+  public void caseCharType(CharType t) {
+    emit("CharType.v()");
+  }
 
-	public void caseFloatType(FloatType t) {
-		emit("FloatType.v()");
-	}
+  public void defaultCase(Type t) {
+    throw new IllegalArgumentException("cannot print this type");
+  }
 
-	public void caseIntType(IntType t) {
-		emit("IntType.v()");
-	}
+  public void caseDoubleType(DoubleType t) {
+    emit("DoubleType.v()");
+  }
 
-	public void caseLongType(LongType t) {
-		emit("LongType.v()");
-	}
+  public void caseErroneousType(ErroneousType t) {
+    throw new IllegalArgumentException("cannot print this type");
+  }
 
-	public void caseNullType(NullType t) {
-		emit("NullType.v()");
-	}
+  public void caseFloatType(FloatType t) {
+    emit("FloatType.v()");
+  }
 
-	public void caseRefType(RefType t) {
-		emitSpecial("RefType","RefType.v(\""+t.getClassName()+"\")");
-	}
+  public void caseIntType(IntType t) {
+    emit("IntType.v()");
+  }
 
-	public void caseShortType(ShortType t) {
-		emit("ShortType.v()");
-	}
+  public void caseLongType(LongType t) {
+    emit("LongType.v()");
+  }
 
-	public void caseStmtAddressType(StmtAddressType t) {
-		throw new IllegalArgumentException("cannot print this type");		
-	}
+  public void caseNullType(NullType t) {
+    emit("NullType.v()");
+  }
 
-	public void caseUnknownType(UnknownType t) {
-		throw new IllegalArgumentException("cannot print this type");		
-	}
+  public void caseRefType(RefType t) {
+    emitSpecial("RefType", "RefType.v(\"" + t.getClassName() + "\")");
+  }
 
-	public void caseVoidType(VoidType t) {
-		emit("VoidType.v()");
-	}
+  public void caseShortType(ShortType t) {
+    emit("ShortType.v()");
+  }
+
+  public void caseStmtAddressType(StmtAddressType t) {
+    throw new IllegalArgumentException("cannot print this type");
+  }
+
+  public void caseUnknownType(UnknownType t) {
+    throw new IllegalArgumentException("cannot print this type");
+  }
+
+  public void caseVoidType(VoidType t) {
+    emit("VoidType.v()");
+  }
 
 }

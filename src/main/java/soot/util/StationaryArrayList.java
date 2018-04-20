@@ -23,17 +23,20 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.util;
 
-/** This class implements an ArrayList where the
- * equality and hashCode use object equality, not list
- * equality.  This is important for putting Lists into HashMaps. 
+/**
+ * This class implements an ArrayList where the equality and hashCode use object equality, not list equality. This is important for putting Lists into
+ * HashMaps.
  *
- * The notation "Stationary" refers to the fact that the List
- * stays "fixed" under list changes. */
-public class StationaryArrayList<T> extends java.util.ArrayList<T>
-{
-    public int hashCode() { return System.identityHashCode(this); }
-    public boolean equals(Object other) { return this == other; }
+ * The notation "Stationary" refers to the fact that the List stays "fixed" under list changes.
+ */
+public class StationaryArrayList<T> extends java.util.ArrayList<T> {
+  public int hashCode() {
+    return System.identityHashCode(this);
+  }
+
+  public boolean equals(Object other) {
+    return this == other;
+  }
 }

@@ -23,28 +23,30 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
+import soot.Unit;
+import soot.UnitPrinter;
+import soot.ValueBox;
 
-public interface Stmt extends Unit
-{
-    public void toString(UnitPrinter up);
+public interface Stmt extends Unit {
+  public void toString(UnitPrinter up);
 
-    public boolean containsInvokeExpr();
-    public InvokeExpr getInvokeExpr();
-    public ValueBox getInvokeExprBox();
+  public boolean containsInvokeExpr();
 
-    public boolean containsArrayRef();
-    public ArrayRef getArrayRef();
-    public ValueBox getArrayRefBox();
+  public InvokeExpr getInvokeExpr();
 
-    public boolean containsFieldRef();
-    public FieldRef getFieldRef();
-    public ValueBox getFieldRefBox();
+  public ValueBox getInvokeExprBox();
+
+  public boolean containsArrayRef();
+
+  public ArrayRef getArrayRef();
+
+  public ValueBox getArrayRefBox();
+
+  public boolean containsFieldRef();
+
+  public FieldRef getFieldRef();
+
+  public ValueBox getFieldRefBox();
 }
-

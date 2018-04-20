@@ -25,6 +25,5 @@
 
 package soot.baf;
 
-public interface ExitMonitorInst extends NoArgInst
-{
+public interface ExitMonitorInst extends NoArgInst {
 }

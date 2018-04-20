@@ -1,10 +1,13 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
-import soot.toolkits.scalar.*;
-import soot.tagkit.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
+import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
+import soot.tagkit.Tag;
+import soot.toolkits.scalar.ArraySparseSet;
+import soot.toolkits.scalar.FlowSet;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -18,201 +21,186 @@ import java.util.*;
 // -Richard L. Halpert, 2006-11-30
 
 public class CheckMSet {
-	CheckMSet(Map m1, Map m2) {
-		checkKeySet(m1, m2);
-		check(m1, m2);
+  CheckMSet(Map m1, Map m2) {
+    checkKeySet(m1, m2);
+    check(m1, m2);
 
-	}
+  }
 
-	private void checkKeySet(Map m1, Map m2) {
-		Iterator keySetIt2 = m2.keySet().iterator();
-		FlowSet temp = new ArraySparseSet();
-		while (keySetIt2.hasNext()) {
-			Object key2 = keySetIt2.next();
-			if (key2 instanceof List) {
-				Iterator it = ((List) key2).iterator();
-				while (it.hasNext()) {
-					Object obj = it.next();
-					if (obj instanceof List) {
-						Iterator itit = ((List) obj).iterator();
-						while (itit.hasNext()) {
-							Object o = itit.next();
-							temp.add(o);
-							if (!m1.containsKey(o)) {
-								throw new RuntimeException(
-										"1--before compacting map does not contains key "
-												+ o);
-							}
-						}
-					} else {
-						temp.add(obj);
-						if (!m1.containsKey(obj)) {
-							throw new RuntimeException(
-									"2--before compacting map does not contains key "
-											+ obj);
-						}
-					}
-				}
-			} else {
-				if (!(key2 instanceof JPegStmt)) {
-					throw new RuntimeException("key error: " + key2);
-				}
-				temp.add(key2);
-				if (!m1.containsKey(key2)) {
-					throw new RuntimeException(
-							"3--before compacting map does not contains key "
-									+ key2);
-				}
-			}
-		}
+  private void checkKeySet(Map m1, Map m2) {
+    Iterator keySetIt2 = m2.keySet().iterator();
+    FlowSet temp = new ArraySparseSet();
+    while (keySetIt2.hasNext()) {
+      Object key2 = keySetIt2.next();
+      if (key2 instanceof List) {
+        Iterator it = ((List) key2).iterator();
+        while (it.hasNext()) {
+          Object obj = it.next();
+          if (obj instanceof List) {
+            Iterator itit = ((List) obj).iterator();
+            while (itit.hasNext()) {
+              Object o = itit.next();
+              temp.add(o);
+              if (!m1.containsKey(o)) {
+                throw new RuntimeException("1--before compacting map does not contains key " + o);
+              }
+            }
+          } else {
+            temp.add(obj);
+            if (!m1.containsKey(obj)) {
+              throw new RuntimeException("2--before compacting map does not contains key " + obj);
+            }
+          }
+        }
+      } else {
+        if (!(key2 instanceof JPegStmt)) {
+          throw new RuntimeException("key error: " + key2);
+        }
+        temp.add(key2);
+        if (!m1.containsKey(key2)) {
+          throw new RuntimeException("3--before compacting map does not contains key " + key2);
+        }
+      }
+    }
 
-		Iterator keySetIt1 = m1.keySet().iterator();
-		while (keySetIt1.hasNext()) {
-			Object key1 = keySetIt1.next();
-			if (!temp.contains(key1)) {
-				throw new RuntimeException(
-						"after compacting map does not contains key " + key1);
-			}
-		}
+    Iterator keySetIt1 = m1.keySet().iterator();
+    while (keySetIt1.hasNext()) {
+      Object key1 = keySetIt1.next();
+      if (!temp.contains(key1)) {
+        throw new RuntimeException("after compacting map does not contains key " + key1);
+      }
+    }
 
-	}
+  }
 
-	private void check(Map m1, Map m2) {
-		Iterator keySetIt = m2.keySet().iterator();
-		while (keySetIt.hasNext()) {
-			Object key = keySetIt.next();
-			if (key instanceof JPegStmt) {
-				Tag tag1 = (Tag) ((JPegStmt) key).getTags().get(0);
-				// System.out.println("check key: "+tag1+" "+key);
+  private void check(Map m1, Map m2) {
+    Iterator keySetIt = m2.keySet().iterator();
+    while (keySetIt.hasNext()) {
+      Object key = keySetIt.next();
+      if (key instanceof JPegStmt) {
+        Tag tag1 = (Tag) ((JPegStmt) key).getTags().get(0);
+        // System.out.println("check key: "+tag1+" "+key);
 
-			}
-			// System.out.println("check key: "+key);
-			FlowSet mSet2 = (FlowSet) m2.get(key);
-			if (key instanceof List) {
-				Iterator it = ((List) key).iterator();
-				while (it.hasNext()) {
-					Object obj = it.next();
-					if (obj instanceof List) {
-						Iterator itit = ((List) obj).iterator();
-						while (itit.hasNext()) {
-							Object oo = itit.next();
-							FlowSet mSet11 = (FlowSet) m1.get(oo);
-							if (mSet11 == null) {
-								throw new RuntimeException("1--mSet of " + obj
-										+ " is null!");
-							}
-							if (!compare(mSet11, mSet2)) {
-								throw new RuntimeException(
-										"1--mSet before and after are NOT the same!");
-							}
-						}
-					} else {
-						FlowSet mSet1 = (FlowSet) m1.get(obj);
-						if (mSet1 == null) {
-							throw new RuntimeException("2--mSet of " + obj
-									+ " is null!");
-						}
-						if (!compare(mSet1, mSet2)) {
-							throw new RuntimeException(
-									"2--mSet before and after are NOT the same!");
-						}
-					}
-				}
-			} else {
-				FlowSet mSet1 = (FlowSet) m1.get(key);
+      }
+      // System.out.println("check key: "+key);
+      FlowSet mSet2 = (FlowSet) m2.get(key);
+      if (key instanceof List) {
+        Iterator it = ((List) key).iterator();
+        while (it.hasNext()) {
+          Object obj = it.next();
+          if (obj instanceof List) {
+            Iterator itit = ((List) obj).iterator();
+            while (itit.hasNext()) {
+              Object oo = itit.next();
+              FlowSet mSet11 = (FlowSet) m1.get(oo);
+              if (mSet11 == null) {
+                throw new RuntimeException("1--mSet of " + obj + " is null!");
+              }
+              if (!compare(mSet11, mSet2)) {
+                throw new RuntimeException("1--mSet before and after are NOT the same!");
+              }
+            }
+          } else {
+            FlowSet mSet1 = (FlowSet) m1.get(obj);
+            if (mSet1 == null) {
+              throw new RuntimeException("2--mSet of " + obj + " is null!");
+            }
+            if (!compare(mSet1, mSet2)) {
+              throw new RuntimeException("2--mSet before and after are NOT the same!");
+            }
+          }
+        }
+      } else {
+        FlowSet mSet1 = (FlowSet) m1.get(key);
 
-				if (!compare(mSet1, mSet2)) {
-					throw new RuntimeException(
-							"3--mSet before and after are NOT the same!");
-				}
-			}
-		}
-		// System.err.println("---mSet before and after are the same!---");
-	}
+        if (!compare(mSet1, mSet2)) {
+          throw new RuntimeException("3--mSet before and after are NOT the same!");
+        }
+      }
+    }
+    // System.err.println("---mSet before and after are the same!---");
+  }
 
-	private boolean compare(FlowSet mSet1, FlowSet mSet2) {
-		{
+  private boolean compare(FlowSet mSet1, FlowSet mSet2) {
+    {
 
-			Iterator it = mSet2.iterator();
-			FlowSet temp = new ArraySparseSet();
-			while (it.hasNext()) {
-				Object obj = it.next();
-				if (obj instanceof List) {
-					Iterator listIt = ((List) obj).iterator();
-					while (listIt.hasNext()) {
-						Object o = listIt.next();
-						if (o instanceof List) {
-							Iterator itit = ((List) o).iterator();
-							while (itit.hasNext()) {
-								temp.add(itit.next());
-							}
-						} else
-							temp.add(o);
-					}
-				} else {
+      Iterator it = mSet2.iterator();
+      FlowSet temp = new ArraySparseSet();
+      while (it.hasNext()) {
+        Object obj = it.next();
+        if (obj instanceof List) {
+          Iterator listIt = ((List) obj).iterator();
+          while (listIt.hasNext()) {
+            Object o = listIt.next();
+            if (o instanceof List) {
+              Iterator itit = ((List) o).iterator();
+              while (itit.hasNext()) {
+                temp.add(itit.next());
+              }
+            } else {
+              temp.add(o);
+            }
+          }
+        } else {
 
-					temp.add(obj);
-				}
+          temp.add(obj);
+        }
 
-			}
+      }
 
-			Iterator it1 = mSet1.iterator();
-			while (it1.hasNext()) {
-				Object o = it1.next();
-				if (!temp.contains(o)) {
-					System.out.println("mSet2: \n" + mSet2);
-					System.err.println("mSet2 does not contains " + o);
+      Iterator it1 = mSet1.iterator();
+      while (it1.hasNext()) {
+        Object o = it1.next();
+        if (!temp.contains(o)) {
+          System.out.println("mSet2: \n" + mSet2);
+          System.err.println("mSet2 does not contains " + o);
 
-					return false;
-				}
+          return false;
+        }
 
-			}
+      }
 
-		}
+    }
 
-		{
-			Iterator it = mSet2.iterator();
+    {
+      Iterator it = mSet2.iterator();
 
-			while (it.hasNext()) {
-				Object obj = it.next();
-				if (obj instanceof List) {
-					Iterator listIt = ((List) obj).iterator();
-					while (listIt.hasNext()) {
-						Object o = listIt.next();
-						if (o instanceof List) {
-							Iterator itit = ((List) o).iterator();
-							while (itit.hasNext()) {
-								Object oo = itit.next();
+      while (it.hasNext()) {
+        Object obj = it.next();
+        if (obj instanceof List) {
+          Iterator listIt = ((List) obj).iterator();
+          while (listIt.hasNext()) {
+            Object o = listIt.next();
+            if (o instanceof List) {
+              Iterator itit = ((List) o).iterator();
+              while (itit.hasNext()) {
+                Object oo = itit.next();
 
-								if (!mSet1.contains(oo)) {
-									System.err
-											.println("1--mSet1 does not contains "
-													+ oo);
-									return false;
-								}
-							}
-						} else {
-							if (!mSet1.contains(o)) {
-								System.err
-										.println("2--mSet1 does not contains "
-												+ o);
-								return false;
-							}
-						}
-					}
-				}
+                if (!mSet1.contains(oo)) {
+                  System.err.println("1--mSet1 does not contains " + oo);
+                  return false;
+                }
+              }
+            } else {
+              if (!mSet1.contains(o)) {
+                System.err.println("2--mSet1 does not contains " + o);
+                return false;
+              }
+            }
+          }
+        }
 
-				else {
+        else {
 
-					if (!mSet1.contains(obj)) {
-						System.err.println("3--mSet1 does not contains " + obj);
-						return false;
-					}
-				}
-			}
-		}
+          if (!mSet1.contains(obj)) {
+            System.err.println("3--mSet1 does not contains " + obj);
+            return false;
+          }
+        }
+      }
+    }
 
-		return true;
+    return true;
 
-	}
+  }
 }

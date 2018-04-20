@@ -40,122 +40,118 @@ import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 
 public class BinopLitInstruction extends TaggedInstruction {
-  
-    public BinopLitInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
+
+  public BinopLitInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
+
+  @Override
+  public void jimplify(DexBody body) {
+    if (!(instruction instanceof Instruction22s) && !(instruction instanceof Instruction22b)) {
+      throw new IllegalArgumentException("Expected Instruction22s or Instruction22b but got: " + instruction.getClass());
     }
 
-    @Override
-	public void jimplify (DexBody body) {
-        if(!(instruction instanceof Instruction22s) && !(instruction instanceof Instruction22b))
-            throw new IllegalArgumentException("Expected Instruction22s or Instruction22b but got: "+instruction.getClass());
+    NarrowLiteralInstruction binOpLitInstr = (NarrowLiteralInstruction) this.instruction;
+    int dest = ((TwoRegisterInstruction) instruction).getRegisterA();
+    int source = ((TwoRegisterInstruction) instruction).getRegisterB();
 
-        NarrowLiteralInstruction binOpLitInstr = (NarrowLiteralInstruction) this.instruction;
-        int dest = ((TwoRegisterInstruction) instruction).getRegisterA();
-        int source = ((TwoRegisterInstruction) instruction).getRegisterB();
+    Local source1 = body.getRegisterLocal(source);
 
-        Local source1 = body.getRegisterLocal(source);
+    IntConstant constant = IntConstant.v(binOpLitInstr.getNarrowLiteral());
 
-        IntConstant constant = IntConstant.v(binOpLitInstr.getNarrowLiteral());
+    Value expr = getExpression(source1, constant);
 
-        Value expr = getExpression(source1, constant);
+    AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
+    assign.addTag(getTag());
 
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
-        assign.addTag(getTag());
+    setUnit(assign);
+    addTags(assign);
+    body.add(assign);
 
-        setUnit(assign);
-        addTags(assign);
-        body.add(assign);
-        
-        /*if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
-			
-            int op = (int)instruction.getOpcode().value;
-          if (op >= 0xd8) {
-            op -= 0xd8;
-          } else {
-            op -= 0xd0;
-          }
-          BinopExpr bexpr = (BinopExpr)expr;
-          //body.dvkTyper.setType((op == 1) ? bexpr.getOp2Box() : bexpr.getOp1Box(), op1BinType[op]);
-          DalvikTyper.v().setType(((JAssignStmt)assign).leftBox, op1BinType[op], false);
-          
-        }*/
+    /*
+     * if (IDalvikTyper.ENABLE_DVKTYPER) { Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+     * 
+     * int op = (int)instruction.getOpcode().value; if (op >= 0xd8) { op -= 0xd8; } else { op -= 0xd0; } BinopExpr bexpr = (BinopExpr)expr;
+     * //body.dvkTyper.setType((op == 1) ? bexpr.getOp2Box() : bexpr.getOp1Box(), op1BinType[op]);
+     * DalvikTyper.v().setType(((JAssignStmt)assign).leftBox, op1BinType[op], false);
+     * 
+     * }
+     */
+  }
+
+  @SuppressWarnings("fallthrough")
+  private Value getExpression(Local source1, Value source2) {
+    Opcode opcode = instruction.getOpcode();
+    switch (opcode) {
+      case ADD_INT_LIT16:
+        setTag(new IntOpTag());
+      case ADD_INT_LIT8:
+        setTag(new IntOpTag());
+        return Jimple.v().newAddExpr(source1, source2);
+
+      case RSUB_INT:
+        setTag(new IntOpTag());
+      case RSUB_INT_LIT8:
+        setTag(new IntOpTag());
+        return Jimple.v().newSubExpr(source2, source1);
+
+      case MUL_INT_LIT16:
+        setTag(new IntOpTag());
+      case MUL_INT_LIT8:
+        setTag(new IntOpTag());
+        return Jimple.v().newMulExpr(source1, source2);
+
+      case DIV_INT_LIT16:
+        setTag(new IntOpTag());
+      case DIV_INT_LIT8:
+        setTag(new IntOpTag());
+        return Jimple.v().newDivExpr(source1, source2);
+
+      case REM_INT_LIT16:
+        setTag(new IntOpTag());
+      case REM_INT_LIT8:
+        setTag(new IntOpTag());
+        return Jimple.v().newRemExpr(source1, source2);
+
+      case AND_INT_LIT8:
+        setTag(new IntOpTag());
+      case AND_INT_LIT16:
+        setTag(new IntOpTag());
+        return Jimple.v().newAndExpr(source1, source2);
+
+      case OR_INT_LIT16:
+        setTag(new IntOpTag());
+      case OR_INT_LIT8:
+        setTag(new IntOpTag());
+        return Jimple.v().newOrExpr(source1, source2);
+
+      case XOR_INT_LIT16:
+        setTag(new IntOpTag());
+      case XOR_INT_LIT8:
+        setTag(new IntOpTag());
+        return Jimple.v().newXorExpr(source1, source2);
+
+      case SHL_INT_LIT8:
+        setTag(new IntOpTag());
+        return Jimple.v().newShlExpr(source1, source2);
+
+      case SHR_INT_LIT8:
+        setTag(new IntOpTag());
+        return Jimple.v().newShrExpr(source1, source2);
+
+      case USHR_INT_LIT8:
+        setTag(new IntOpTag());
+        return Jimple.v().newUshrExpr(source1, source2);
+
+      default:
+        throw new RuntimeException("Invalid Opcode: " + opcode);
     }
+  }
 
-    @SuppressWarnings("fallthrough")
-    private Value getExpression(Local source1, Value source2) {
-      Opcode opcode = instruction.getOpcode();
-        switch(opcode) {
-        case ADD_INT_LIT16:
-          setTag (new IntOpTag());
-        case ADD_INT_LIT8:
-          setTag (new IntOpTag());
-            return Jimple.v().newAddExpr(source1, source2);
-
-        case RSUB_INT:
-          setTag (new IntOpTag());
-        case RSUB_INT_LIT8:
-          setTag (new IntOpTag());
-            return Jimple.v().newSubExpr(source2, source1);
-
-        case MUL_INT_LIT16:
-          setTag (new IntOpTag());
-        case MUL_INT_LIT8:
-          setTag (new IntOpTag());
-            return Jimple.v().newMulExpr(source1, source2);
-
-        case DIV_INT_LIT16:
-          setTag (new IntOpTag());
-        case DIV_INT_LIT8:
-          setTag (new IntOpTag());
-            return Jimple.v().newDivExpr(source1, source2);
-
-        case REM_INT_LIT16:
-          setTag (new IntOpTag());
-        case REM_INT_LIT8:
-          setTag (new IntOpTag());
-            return Jimple.v().newRemExpr(source1, source2);
-
-        case AND_INT_LIT8:
-          setTag (new IntOpTag());
-        case AND_INT_LIT16:
-          setTag (new IntOpTag());
-            return Jimple.v().newAndExpr(source1, source2);
-
-        case OR_INT_LIT16:
-          setTag (new IntOpTag());
-        case OR_INT_LIT8:
-          setTag (new IntOpTag());
-            return Jimple.v().newOrExpr(source1, source2);
-
-        case XOR_INT_LIT16:
-          setTag (new IntOpTag());
-        case XOR_INT_LIT8:
-          setTag (new IntOpTag());
-            return Jimple.v().newXorExpr(source1, source2);
-
-        case SHL_INT_LIT8:
-          setTag (new IntOpTag());
-            return Jimple.v().newShlExpr(source1, source2);
-
-        case SHR_INT_LIT8:
-          setTag (new IntOpTag());
-            return Jimple.v().newShrExpr(source1, source2);
-
-        case USHR_INT_LIT8:
-          setTag (new IntOpTag());
-            return Jimple.v().newUshrExpr(source1, source2);
-
-        default :
-            throw new RuntimeException("Invalid Opcode: " + opcode);
-        }
-    }
-
-    @Override
-    boolean overridesRegister(int register) {
-        TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
-        int dest = i.getRegisterA();
-        return register == dest;
-    }
+  @Override
+  boolean overridesRegister(int register) {
+    TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
+    int dest = i.getRegisterA();
+    return register == dest;
+  }
 }

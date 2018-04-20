@@ -23,15 +23,12 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.jimple.toolkits.typing;
 
-class InternalTypingException extends RuntimeException
-{
+class InternalTypingException extends RuntimeException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8336012847501378889L;
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 8336012847501378889L;
 }
-

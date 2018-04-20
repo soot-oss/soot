@@ -19,55 +19,51 @@
 
 package soot.dava.internal.AST;
 
-import soot.*;
-import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.AST.analysis.*;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.dava.internal.javaRep.DNotExpr;
+import soot.dava.toolkits.base.AST.analysis.Analysis;
 
-public class ASTUnaryCondition extends ASTUnaryBinaryCondition{
-      Value value;
-	
-      public ASTUnaryCondition(Value value){
-    	  this.value=value;
-      }
-    
-      public void apply(Analysis a){
-    	  a.caseASTUnaryCondition(this);
-      }
+public class ASTUnaryCondition extends ASTUnaryBinaryCondition {
+  Value value;
 
-      public Value getValue(){
-    	  return value;
-      }
+  public ASTUnaryCondition(Value value) {
+    this.value = value;
+  }
 
-      
-      public void setValue(Value value){
-    	  this.value=value;
-      }
+  public void apply(Analysis a) {
+    a.caseASTUnaryCondition(this);
+  }
 
+  public Value getValue() {
+    return value;
+  }
 
-      public String toString(){
-    	  return value.toString();
-      }
+  public void setValue(Value value) {
+    this.value = value;
+  }
 
-      public void toString(UnitPrinter up){
-    	  value.toString(up);
-      }
+  public String toString() {
+    return value.toString();
+  }
 
-    
-      public void flip(){
-    	  /*
-    	   Since its a unarycondition we know this is a flag
-    	   See if its a DNotExpr if yes set this.value to the op inside DNotExpr
-    	   If it is NOT a DNotExpr make one
-    	   */
-    	  if(value instanceof DNotExpr){
-    		  this.value=((DNotExpr)value).getOp();
-    	  }
-    	  else{
-    		  this.value=new DNotExpr(value);
-    	  }
-      }
-      
-      public boolean isNotted(){
-    	  return (value instanceof DNotExpr);   		  
-      }
+  public void toString(UnitPrinter up) {
+    value.toString(up);
+  }
+
+  public void flip() {
+    /*
+     * Since its a unarycondition we know this is a flag See if its a DNotExpr if yes set this.value to the op inside DNotExpr If it is NOT a DNotExpr
+     * make one
+     */
+    if (value instanceof DNotExpr) {
+      this.value = ((DNotExpr) value).getOp();
+    } else {
+      this.value = new DNotExpr(value);
+    }
+  }
+
+  public boolean isNotted() {
+    return (value instanceof DNotExpr);
+  }
 }

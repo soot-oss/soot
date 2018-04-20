@@ -18,247 +18,264 @@
  */
 
 package soot;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.options.Options;
 
 /**
- * Representation of a reference to a field as it appears in a class file. Note
- * that the field directly referred to may not actually exist; the actual target
- * of the reference is determined according to the resolution procedure in the
- * Java Virtual Machine Specification, 2nd ed, section 5.4.3.2.
+ * Representation of a reference to a field as it appears in a class file. Note that the field directly referred to may not actually exist; the actual
+ * target of the reference is determined according to the resolution procedure in the Java Virtual Machine Specification, 2nd ed, section 5.4.3.2.
  */
 
 public class AbstractSootFieldRef implements SootFieldRef {
-    private static final Logger logger = LoggerFactory.getLogger(AbstractSootFieldRef.class);
-	public AbstractSootFieldRef(SootClass declaringClass, String name, Type type, boolean isStatic) {
-		this.declaringClass = declaringClass;
-		this.name = name;
-		this.type = type;
-		this.isStatic = isStatic;
-		if (declaringClass == null)
-			throw new RuntimeException("Attempt to create SootFieldRef with null class");
-		if (name == null)
-			throw new RuntimeException("Attempt to create SootFieldRef with null name");
-		if (type == null)
-			throw new RuntimeException("Attempt to create SootFieldRef with null type");
-	}
+  private static final Logger logger = LoggerFactory.getLogger(AbstractSootFieldRef.class);
 
-	private final SootClass declaringClass;
-	private final String name;
-	private final Type type;
-	private final boolean isStatic;
+  public AbstractSootFieldRef(SootClass declaringClass, String name, Type type, boolean isStatic) {
+    this.declaringClass = declaringClass;
+    this.name = name;
+    this.type = type;
+    this.isStatic = isStatic;
+    if (declaringClass == null) {
+      throw new RuntimeException("Attempt to create SootFieldRef with null class");
+    }
+    if (name == null) {
+      throw new RuntimeException("Attempt to create SootFieldRef with null name");
+    }
+    if (type == null) {
+      throw new RuntimeException("Attempt to create SootFieldRef with null type");
+    }
+  }
 
-	@Override
-	public SootClass declaringClass() {
-		return declaringClass;
-	}
+  private final SootClass declaringClass;
+  private final String name;
+  private final Type type;
+  private final boolean isStatic;
 
-	@Override
-	public String name() {
-		return name;
-	}
+  @Override
+  public SootClass declaringClass() {
+    return declaringClass;
+  }
 
-	@Override
-	public Type type() {
-		return type;
-	}
+  @Override
+  public String name() {
+    return name;
+  }
 
-	@Override
-	public boolean isStatic() {
-		return isStatic;
-	}
+  @Override
+  public Type type() {
+    return type;
+  }
 
-	@Override
-	public String getSignature() {
-		return SootField.getSignature(declaringClass, name, type);
-	}
+  @Override
+  public boolean isStatic() {
+    return isStatic;
+  }
 
-	public class FieldResolutionFailedException extends ResolutionFailedException {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -4657113720516199499L;
+  @Override
+  public String getSignature() {
+    return SootField.getSignature(declaringClass, name, type);
+  }
 
-		public FieldResolutionFailedException() {
-			super("Class " + declaringClass + " doesn't have field " + name + " : " + type
-					+ "; failed to resolve in superclasses and interfaces");
-		}
+  public class FieldResolutionFailedException extends ResolutionFailedException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4657113720516199499L;
 
-		@Override
-		public String toString() {
-			StringBuffer ret = new StringBuffer();
-			ret.append(super.toString());
-			resolve(ret);
-			return ret.toString();
-		}
-	}
+    public FieldResolutionFailedException() {
+      super("Class " + declaringClass + " doesn't have field " + name + " : " + type + "; failed to resolve in superclasses and interfaces");
+    }
 
-	@Override
-	public SootField resolve() {
-		return resolve(null);
-	}
+    @Override
+    public String toString() {
+      StringBuffer ret = new StringBuffer();
+      ret.append(super.toString());
+      resolve(ret);
+      return ret.toString();
+    }
+  }
 
-	private SootField checkStatic(SootField ret) {
-		if (Options.v().wrong_staticness() == Options.wrong_staticness_fail
-				|| Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) {
-			if (ret.isStatic() != isStatic() && !ret.isPhantom()) {
-				throw new ResolutionFailedException("Resolved " + this + " to " + ret + " which has wrong static-ness");
-			}
-		}
-		return ret;
-	}
+  @Override
+  public SootField resolve() {
+    return resolve(null);
+  }
 
-	private SootField resolve(StringBuffer trace) {
-		SootClass cl = declaringClass;
-		while (true) {
-			if (trace != null)
-				trace.append("Looking in " + cl + " which has fields " + cl.getFields() + "\n");
+  private SootField checkStatic(SootField ret) {
+    if (Options.v().wrong_staticness() == Options.wrong_staticness_fail || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) {
+      if (ret.isStatic() != isStatic() && !ret.isPhantom()) {
+        throw new ResolutionFailedException("Resolved " + this + " to " + ret + " which has wrong static-ness");
+      }
+    }
+    return ret;
+  }
 
-			// Check whether we have the field in the current class
-			SootField clField = cl.getFieldUnsafe(name, type);
-			if (clField != null) {
-				return checkStatic(clField);
-			}
-			// If we have a phantom class, we directly construct a phantom field
-			// in it and don't care about superclasses.
-			else if (Scene.v().allowsPhantomRefs() && cl.isPhantom()) {
-				synchronized (cl) {
-					// Check that no other thread has created the field in the
-					// meantime
-					clField = cl.getFieldUnsafe(name, type);
-					if (clField != null) {
-						return checkStatic(clField);
-					}
+  private SootField resolve(StringBuffer trace) {
+    SootClass cl = declaringClass;
+    while (true) {
+      if (trace != null) {
+        trace.append("Looking in " + cl + " which has fields " + cl.getFields() + "\n");
+      }
 
-					// Make sure that we don't have a conflicting field
-					SootField existingField = cl.getFieldByNameUnsafe(name);
-					if (existingField != null)
-						return handleFieldTypeMismatch(clField);
+      // Check whether we have the field in the current class
+      SootField clField = cl.getFieldUnsafe(name, type);
+      if (clField != null) {
+        return checkStatic(clField);
+      }
+      // If we have a phantom class, we directly construct a phantom field
+      // in it and don't care about superclasses.
+      else if (Scene.v().allowsPhantomRefs() && cl.isPhantom()) {
+        synchronized (cl) {
+          // Check that no other thread has created the field in the
+          // meantime
+          clField = cl.getFieldUnsafe(name, type);
+          if (clField != null) {
+            return checkStatic(clField);
+          }
 
-					// Create the phantom field
-					SootField f = Scene.v().makeSootField(name, type, isStatic() ? Modifier.STATIC : 0);
-					f.setPhantom(true);
-					cl.addField(f);
-					return f;
-				}
-			} else {
-				// Since this class is not phantom, we look at its interfaces
-				ArrayDeque<SootClass> queue = new ArrayDeque<SootClass>();
-				queue.addAll(cl.getInterfaces());
-				while (true) {
-					SootClass iface = queue.poll();
-					if (iface == null)
-						break;
-					
-					if (trace != null)
-						trace.append("Looking in " + iface + " which has fields " + iface.getFields() + "\n");
-					SootField ifaceField = iface.getFieldUnsafe(name, type);
-					if (ifaceField != null) {
-						return checkStatic(ifaceField);
-					}
-					queue.addAll(iface.getInterfaces());
-				}
+          // Make sure that we don't have a conflicting field
+          SootField existingField = cl.getFieldByNameUnsafe(name);
+          if (existingField != null) {
+            return handleFieldTypeMismatch(clField);
+          }
 
-				// If we have not found a suitable field in the current class,
-				// try the superclass
-				if (cl.hasSuperclass())
-					cl = cl.getSuperclass();
-				else
-					break;
-			}
-		}
+          // Create the phantom field
+          SootField f = Scene.v().makeSootField(name, type, isStatic() ? Modifier.STATIC : 0);
+          f.setPhantom(true);
+          cl.addField(f);
+          return f;
+        }
+      } else {
+        // Since this class is not phantom, we look at its interfaces
+        ArrayDeque<SootClass> queue = new ArrayDeque<SootClass>();
+        queue.addAll(cl.getInterfaces());
+        while (true) {
+          SootClass iface = queue.poll();
+          if (iface == null) {
+            break;
+          }
 
-		// If we allow phantom refs, we construct phantom fields
-		if (Options.v().allow_phantom_refs()) {
-			SootField sf = Scene.v().makeSootField(name, type, isStatic ? Modifier.STATIC : 0);
-			sf.setPhantom(true);
-			synchronized (declaringClass) {
-				// Be careful: Another thread may have already created this
-				// field in the meantime, so better check twice.
-				SootField clField = declaringClass.getFieldByNameUnsafe(name);
-				if (clField != null) {
-					if (clField.getType().equals(type))
-						return checkStatic(clField);
-					else
-						return handleFieldTypeMismatch(clField);
-				} else {
-					// Add the new phantom field
-					declaringClass.addField(sf);
-					return sf;
-				}
-			}
-		}
+          if (trace != null) {
+            trace.append("Looking in " + iface + " which has fields " + iface.getFields() + "\n");
+          }
+          SootField ifaceField = iface.getFieldUnsafe(name, type);
+          if (ifaceField != null) {
+            return checkStatic(ifaceField);
+          }
+          queue.addAll(iface.getInterfaces());
+        }
 
-		if (trace == null) {
-			FieldResolutionFailedException e = new FieldResolutionFailedException();
-			if (Options.v().ignore_resolution_errors())
-				logger.debug(""+e.getMessage());
-			else
-				throw e;
-		}
-		return null;
-	}
+        // If we have not found a suitable field in the current class,
+        // try the superclass
+        if (cl.hasSuperclass()) {
+          cl = cl.getSuperclass();
+        } else {
+          break;
+        }
+      }
+    }
 
-	protected SootField handleFieldTypeMismatch(SootField clField) {
-		switch (Options.v().field_type_mismatches()) {
-		case Options.field_type_mismatches_fail:
-			throw new ConflictingFieldRefException(clField, type);
-		case Options.field_type_mismatches_ignore:
-			return checkStatic(clField);
-		case Options.field_type_mismatches_null:
-			return null;
-		}
-		throw new RuntimeException(String.format("Unsupported option for handling field type mismatches: %d",
-				Options.v().field_type_mismatches()));
-	}
+    // If we allow phantom refs, we construct phantom fields
+    if (Options.v().allow_phantom_refs()) {
+      SootField sf = Scene.v().makeSootField(name, type, isStatic ? Modifier.STATIC : 0);
+      sf.setPhantom(true);
+      synchronized (declaringClass) {
+        // Be careful: Another thread may have already created this
+        // field in the meantime, so better check twice.
+        SootField clField = declaringClass.getFieldByNameUnsafe(name);
+        if (clField != null) {
+          if (clField.getType().equals(type)) {
+            return checkStatic(clField);
+          } else {
+            return handleFieldTypeMismatch(clField);
+          }
+        } else {
+          // Add the new phantom field
+          declaringClass.addField(sf);
+          return sf;
+        }
+      }
+    }
 
-	@Override
-	public String toString() {
-		return getSignature();
-	}
+    if (trace == null) {
+      FieldResolutionFailedException e = new FieldResolutionFailedException();
+      if (Options.v().ignore_resolution_errors()) {
+        logger.debug("" + e.getMessage());
+      } else {
+        throw e;
+      }
+    }
+    return null;
+  }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((declaringClass == null) ? 0 : declaringClass.hashCode());
-		result = prime * result + (isStatic ? 1231 : 1237);
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		return result;
-	}
+  protected SootField handleFieldTypeMismatch(SootField clField) {
+    switch (Options.v().field_type_mismatches()) {
+      case Options.field_type_mismatches_fail:
+        throw new ConflictingFieldRefException(clField, type);
+      case Options.field_type_mismatches_ignore:
+        return checkStatic(clField);
+      case Options.field_type_mismatches_null:
+        return null;
+    }
+    throw new RuntimeException(String.format("Unsupported option for handling field type mismatches: %d", Options.v().field_type_mismatches()));
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		AbstractSootFieldRef other = (AbstractSootFieldRef) obj;
-		if (declaringClass == null) {
-			if (other.declaringClass != null)
-				return false;
-		} else if (!declaringClass.equals(other.declaringClass))
-			return false;
-		if (isStatic != other.isStatic)
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
-			return false;
-		return true;
-	}
+  @Override
+  public String toString() {
+    return getSignature();
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((declaringClass == null) ? 0 : declaringClass.hashCode());
+    result = prime * result + (isStatic ? 1231 : 1237);
+    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    result = prime * result + ((type == null) ? 0 : type.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    AbstractSootFieldRef other = (AbstractSootFieldRef) obj;
+    if (declaringClass == null) {
+      if (other.declaringClass != null) {
+        return false;
+      }
+    } else if (!declaringClass.equals(other.declaringClass)) {
+      return false;
+    }
+    if (isStatic != other.isStatic) {
+      return false;
+    }
+    if (name == null) {
+      if (other.name != null) {
+        return false;
+      }
+    } else if (!name.equals(other.name)) {
+      return false;
+    }
+    if (type == null) {
+      if (other.type != null) {
+        return false;
+      }
+    } else if (!type.equals(other.type)) {
+      return false;
+    }
+    return true;
+  }
 
 }

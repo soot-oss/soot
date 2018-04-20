@@ -23,99 +23,106 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.coffi;
+
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.options.*;
 
-import soot.*;
-import java.util.*;
-import soot.jimple.*;
+import soot.Body;
+import soot.MethodSource;
+import soot.PackManager;
+import soot.PhaseOptions;
+import soot.Scene;
+import soot.SootMethod;
+import soot.Timers;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
+import soot.options.Options;
 
-public class CoffiMethodSource implements MethodSource
-{
-    private static final Logger logger = LoggerFactory.getLogger(CoffiMethodSource.class);
-    public ClassFile coffiClass;
-    public method_info coffiMethod;
+public class CoffiMethodSource implements MethodSource {
+  private static final Logger logger = LoggerFactory.getLogger(CoffiMethodSource.class);
+  public ClassFile coffiClass;
+  public method_info coffiMethod;
 
-    CoffiMethodSource(soot.coffi.ClassFile coffiClass, soot.coffi.method_info coffiMethod)
-    {
-        this.coffiClass = coffiClass;
-        this.coffiMethod = coffiMethod;
+  CoffiMethodSource(soot.coffi.ClassFile coffiClass, soot.coffi.method_info coffiMethod) {
+    this.coffiClass = coffiClass;
+    this.coffiMethod = coffiMethod;
+  }
+
+  public Body getBody(SootMethod m, String phaseName) {
+    JimpleBody jb = Jimple.v().newBody(m);
+
+    Map options = PhaseOptions.v().getPhaseOptions(phaseName);
+    boolean useOriginalNames = PhaseOptions.getBoolean(options, "use-original-names");
+
+    if (useOriginalNames) {
+      soot.coffi.Util.v().setFaithfulNaming(true);
     }
 
-    public Body getBody(SootMethod m, String phaseName)
-    {
-        JimpleBody jb = Jimple.v().newBody(m);
-        
-        Map options = PhaseOptions.v().getPhaseOptions(phaseName);
-        boolean useOriginalNames = PhaseOptions.getBoolean(options, "use-original-names");
-
-        if(useOriginalNames)
-            soot.coffi.Util.v().setFaithfulNaming(true);
-
-        /*
-            I need to set these to null to free Coffi structures.
-        fileBody.coffiClass = null;
-        bafBody.coffiMethod = null;
-
-        */
-        if(Options.v().verbose())
-            logger.debug("[" + m.getName() + "] Constructing JimpleBody from coffi...");
-
-        if(m.isAbstract() || m.isNative() || m.isPhantom())
-            return jb;
-            
-        if(Options.v().time())
-            Timers.v().conversionTimer.start();
-        
-        if(coffiMethod.instructions == null)
-        {
-            if(Options.v().verbose())
-                logger.debug("[" + m.getName() +
-                    "]     Parsing Coffi instructions...");
-
-             coffiClass.parseMethod(coffiMethod);
-        }
-                
-        if(coffiMethod.cfg == null)
-        {
-            if(Options.v().verbose())
-                logger.debug("[" + m.getName() +
-                    "]     Building Coffi CFG...");
-
-             new soot.coffi.CFG(coffiMethod);
-             
-             // if just computing metrics, we don't need to actually return body
-             if (soot.jbco.Main.metrics) return null;
-         }
-
-         if(Options.v().verbose())
-             logger.debug("[" + m.getName() +
-                    "]     Producing naive Jimple...");
-
-         boolean oldPhantomValue = Scene.v().getPhantomRefs();
-
-         Scene.v().setPhantomRefs(true);
-         coffiMethod.cfg.jimplify(coffiClass.constant_pool,
-             coffiClass.this_class, coffiClass.bootstrap_methods_attribute, jb);
-         Scene.v().setPhantomRefs(oldPhantomValue);
-
-        if(Options.v().time())
-            Timers.v().conversionTimer.end();
-
-         coffiMethod.instructions = null;
-         coffiMethod.cfg = null;
-         coffiMethod.attributes = null;
-         coffiMethod.code_attr = null;
-         coffiMethod.jmethod = null;
-         coffiMethod.instructionList = null;
-
-         coffiMethod = null;
-         coffiClass = null;
-         
-         PackManager.v().getPack("jb").apply(jb);
-         return jb;
+    /*
+     * I need to set these to null to free Coffi structures. fileBody.coffiClass = null; bafBody.coffiMethod = null;
+     * 
+     */
+    if (Options.v().verbose()) {
+      logger.debug("[" + m.getName() + "] Constructing JimpleBody from coffi...");
     }
+
+    if (m.isAbstract() || m.isNative() || m.isPhantom()) {
+      return jb;
+    }
+
+    if (Options.v().time()) {
+      Timers.v().conversionTimer.start();
+    }
+
+    if (coffiMethod.instructions == null) {
+      if (Options.v().verbose()) {
+        logger.debug("[" + m.getName() + "]     Parsing Coffi instructions...");
+      }
+
+      coffiClass.parseMethod(coffiMethod);
+    }
+
+    if (coffiMethod.cfg == null) {
+      if (Options.v().verbose()) {
+        logger.debug("[" + m.getName() + "]     Building Coffi CFG...");
+      }
+
+      new soot.coffi.CFG(coffiMethod);
+
+      // if just computing metrics, we don't need to actually return body
+      if (soot.jbco.Main.metrics) {
+        return null;
+      }
+    }
+
+    if (Options.v().verbose()) {
+      logger.debug("[" + m.getName() + "]     Producing naive Jimple...");
+    }
+
+    boolean oldPhantomValue = Scene.v().getPhantomRefs();
+
+    Scene.v().setPhantomRefs(true);
+    coffiMethod.cfg.jimplify(coffiClass.constant_pool, coffiClass.this_class, coffiClass.bootstrap_methods_attribute, jb);
+    Scene.v().setPhantomRefs(oldPhantomValue);
+
+    if (Options.v().time()) {
+      Timers.v().conversionTimer.end();
+    }
+
+    coffiMethod.instructions = null;
+    coffiMethod.cfg = null;
+    coffiMethod.attributes = null;
+    coffiMethod.code_attr = null;
+    coffiMethod.jmethod = null;
+    coffiMethod.instructionList = null;
+
+    coffiMethod = null;
+    coffiClass = null;
+
+    PackManager.v().getPack("jb").apply(jb);
+    return jb;
+  }
 }

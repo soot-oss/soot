@@ -25,21 +25,26 @@
 
 package soot.baf;
 
-import soot.*;
+import soot.Unit;
 
-public interface Inst extends Unit
-{    
-    public int getInCount();
-    public int getOutCount();
-    public int getNetCount();
-    
-    public int getInMachineCount();
-    public int getOutMachineCount();
-    public int getNetMachineCount();
-    
-    public boolean containsInvokeExpr();
-    public boolean containsFieldRef();
-    public boolean containsArrayRef();
-    public boolean containsNewExpr();
+public interface Inst extends Unit {
+  public int getInCount();
+
+  public int getOutCount();
+
+  public int getNetCount();
+
+  public int getInMachineCount();
+
+  public int getOutMachineCount();
+
+  public int getNetMachineCount();
+
+  public boolean containsInvokeExpr();
+
+  public boolean containsFieldRef();
+
+  public boolean containsArrayRef();
+
+  public boolean containsNewExpr();
 }
-

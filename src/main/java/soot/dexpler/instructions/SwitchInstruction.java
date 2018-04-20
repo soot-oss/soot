@@ -35,33 +35,33 @@ import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 
 public abstract class SwitchInstruction extends PseudoInstruction implements DeferableInstruction {
-    protected Unit markerUnit;
+  protected Unit markerUnit;
 
-    public SwitchInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
-    }
+  public SwitchInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
 
-    /**
-     * Return a switch statement based on given target data on the given key.
-     *
-     */
-    protected abstract Stmt switchStatement(DexBody body, Instruction targetData, Local key);
+  /**
+   * Return a switch statement based on given target data on the given key.
+   *
+   */
+  protected abstract Stmt switchStatement(DexBody body, Instruction targetData, Local key);
 
-    public void jimplify(DexBody body) {
-        markerUnit = Jimple.v().newNopStmt();
-        unit = markerUnit;
-        body.add(markerUnit);
-        body.addDeferredJimplification(this);
-    }
-    
-    public void deferredJimplify(DexBody body) {
-        int keyRegister = ((OneRegisterInstruction) instruction).getRegisterA();
-        int offset = ((OffsetInstruction) instruction).getCodeOffset();
-        Local key = body.getRegisterLocal(keyRegister);
-        int targetAddress = codeAddress + offset;
-        Instruction targetData = body.instructionAtAddress(targetAddress).instruction;
-        Stmt stmt = switchStatement(body, targetData, key);
-        body.getBody().getUnits().insertAfter(stmt, markerUnit);
-    }
-    
+  public void jimplify(DexBody body) {
+    markerUnit = Jimple.v().newNopStmt();
+    unit = markerUnit;
+    body.add(markerUnit);
+    body.addDeferredJimplification(this);
+  }
+
+  public void deferredJimplify(DexBody body) {
+    int keyRegister = ((OneRegisterInstruction) instruction).getRegisterA();
+    int offset = ((OffsetInstruction) instruction).getCodeOffset();
+    Local key = body.getRegisterLocal(keyRegister);
+    int targetAddress = codeAddress + offset;
+    Instruction targetData = body.instructionAtAddress(targetAddress).instruction;
+    Stmt stmt = switchStatement(body, targetData, key);
+    body.getBody().getUnits().insertAfter(stmt, markerUnit);
+  }
+
 }

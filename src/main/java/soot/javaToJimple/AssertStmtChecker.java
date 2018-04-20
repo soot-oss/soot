@@ -21,30 +21,30 @@ package soot.javaToJimple;
 
 public class AssertStmtChecker extends polyglot.visit.NodeVisitor {
 
-    private boolean hasAssert = false;
+  private boolean hasAssert = false;
 
-    public boolean isHasAssert() {
-        return hasAssert;
-    }
+  public boolean isHasAssert() {
+    return hasAssert;
+  }
 
-    public AssertStmtChecker(){
-    }
+  public AssertStmtChecker() {
+  }
 
-    public polyglot.ast.Node override(polyglot.ast.Node parent, polyglot.ast.Node n){
-        if (n instanceof polyglot.ast.ClassDecl){
-            return n;
-        }
-        if ((n instanceof polyglot.ast.New) && (((polyglot.ast.New)n).anonType() != null)){
-            return n;
-        }
-        return null;
+  public polyglot.ast.Node override(polyglot.ast.Node parent, polyglot.ast.Node n) {
+    if (n instanceof polyglot.ast.ClassDecl) {
+      return n;
     }
-    
-    public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n){
-    
-        if (n instanceof polyglot.ast.Assert) {
-            hasAssert = true;
-        }
-        return enter(n);
+    if ((n instanceof polyglot.ast.New) && (((polyglot.ast.New) n).anonType() != null)) {
+      return n;
     }
+    return null;
+  }
+
+  public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
+
+    if (n instanceof polyglot.ast.Assert) {
+      hasAssert = true;
+    }
+    return enter(n);
+  }
 }

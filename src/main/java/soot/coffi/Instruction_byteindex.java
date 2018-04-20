@@ -23,18 +23,14 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
-/** Instruction subclasses are used to represent parsed bytecode; each
- * bytecode operation has a corresponding subclass of Instruction.
+
+/**
+ * Instruction subclasses are used to represent parsed bytecode; each bytecode operation has a corresponding subclass of Instruction.
  * <p>
  * Each subclass is derived from one of
- * <ul><li>Instruction</li>
+ * <ul>
+ * <li>Instruction</li>
  * <li>Instruction_noargs (an Instruction with no embedded arguments)</li>
  * <li>Instruction_byte (an Instruction with a single byte data argument)</li>
  * <li>Instruction_bytevar (a byte argument specifying a local variable)</li>
@@ -45,6 +41,7 @@ package soot.coffi;
  * <li>Instruction_intbranch (a short argument specifying a code offset)</li>
  * <li>Instruction_longbranch (an int argument specifying a code offset)</li>
  * </ul>
+ * 
  * @author Clark Verbrugge
  * @see Instruction
  * @see Instruction_noargs
@@ -59,25 +56,43 @@ package soot.coffi;
  * @see Instruction_Unknown
  */
 class Instruction_byteindex extends Instruction {
-    /**
-    * arg_b needs to be short in order to contain all the possible values for an unsigned byte
-    */
-   public short arg_b;
-   public Instruction_byteindex(byte c) { super(c); }
-   public String toString(cp_info constant_pool[]) {
-      int i = (arg_b)&0xff;
-      return super.toString(constant_pool) + argsep + "[" +
-         constant_pool[i].toString(constant_pool) + "]";
-   }
-   public int nextOffset(int curr) { return curr+2; }
-   public void markCPRefs(boolean[] refs) { refs[(arg_b)&0xff] = true; }
-   public void redirectCPRefs(short redirect[]) { arg_b = (byte)(redirect[(arg_b)&0xff]); }
-   public int parse(byte bc[],int index) {
-      arg_b = bc[index];
+  /**
+   * arg_b needs to be short in order to contain all the possible values for an unsigned byte
+   */
+  public short arg_b;
 
-      arg_b = (arg_b >= 0) ? arg_b : (short) (256 + arg_b);
+  public Instruction_byteindex(byte c) {
+    super(c);
+  }
 
-      return index+1;
-   }
-   public int compile(byte bc[],int index) { bc[index++] = code; bc[index++] = (byte) arg_b; return index; }
+  public String toString(cp_info constant_pool[]) {
+    int i = (arg_b) & 0xff;
+    return super.toString(constant_pool) + argsep + "[" + constant_pool[i].toString(constant_pool) + "]";
+  }
+
+  public int nextOffset(int curr) {
+    return curr + 2;
+  }
+
+  public void markCPRefs(boolean[] refs) {
+    refs[(arg_b) & 0xff] = true;
+  }
+
+  public void redirectCPRefs(short redirect[]) {
+    arg_b = (byte) (redirect[(arg_b) & 0xff]);
+  }
+
+  public int parse(byte bc[], int index) {
+    arg_b = bc[index];
+
+    arg_b = (arg_b >= 0) ? arg_b : (short) (256 + arg_b);
+
+    return index + 1;
+  }
+
+  public int compile(byte bc[], int index) {
+    bc[index++] = code;
+    bc[index++] = (byte) arg_b;
+    return index;
+  }
 }

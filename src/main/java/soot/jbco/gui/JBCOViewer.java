@@ -1,29 +1,50 @@
 package soot.jbco.gui;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.awt.*;
+
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
+import java.io.File;
+import java.io.RandomAccessFile;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.ListModel;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.util.*;
-import java.io.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
+ * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is being used
+ * commercially (ie, by a corporation, company or business for any purpose whatever) then you should purchase a license for each developer using
+ * Jigloo. Please visit www.cloudgarden.com for details. Use of Jigloo implies acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
+ * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+ */
 public class JBCOViewer extends javax.swing.JFrame {
-    private static final Logger logger = LoggerFactory.getLogger(JBCOViewer.class);
+  private static final Logger logger = LoggerFactory.getLogger(JBCOViewer.class);
 
   private JMenuItem speedMenuItem;
   private JMenuItem sizeMenuItem;
@@ -74,30 +95,37 @@ public class JBCOViewer extends javax.swing.JFrame {
   private JButton ButtonRemove;
   private JFrame thisRef;
   private RunnerThread runner;
-  
+
   static int previousSelected = -1;
   static ListModel models[] = new ListModel[20];
-  static String[][] optionStrings = new String[][] { {"Rename Classes","Rename Methods","Rename Fields","Build API Buffer Methods","Build Library Buffer Classes","Goto Instruction Augmentation","Add Dead Switch Statements","Convert Arith. Expr. To Bit Ops","Convert Branches to JSR Instructions","Disobey Constructor Conventions","Reuse Duplicate Sequences","Replace If(Non)Nulls with Try-Catch","Indirect If Instructions","Pack Locals into Bitfields","Reorder Loads Above Ifs","Combine Try and Catch Blocks","Embed Constants in Fields","Partially Trap Switches"}, 
-                                                     {"wjtp.jbco_cr",  "wjtp.jbco_mr",  "wjtp.jbco_fr", "wjtp.jbco_bapibm",        "wjtp.jbco_blbc",              "jtp.jbco_gia",                 "jtp.jbco_adss",             "jtp.jbco_cae2bo",                        "bb.jbco_cb2ji",                       "bb.jbco_dcc",                    "bb.jbco_rds",              "bb.jbco_riitcb",                     "bb.jbco_iii",             "bb.jbco_plvb",              "bb.jbco_rlaii",          "bb.jbco_ctbcb",               "bb.jbco_ecvf",             "bb.jbco_ptss"           }};
-  
-  static int[][] defaultWeights     = new int[][]  { {9,               9,               9,              9,                         9,                             9,                              6,                           9,                                        0,                                     0,                                3,                          9,                                    6,                         3,                           9,                        9,                             0,                          0,                       },
-                                                     {0,               0,               0,              0,                         9,                             6,                              0,                           9,                                        9,                                     9,                                0,                          9,                                    0,                         0,                           9,                        9,                             0,                          9,                       },
-                                                     {5,               5,               5,              6,                         9,                             9,                              5,                           9,                                        9,                                     5,                                7,                          9,                                    9,                         2,                           9,                        9,                             0,                          9,                       }};
+  static String[][] optionStrings = new String[][] {
+      { "Rename Classes", "Rename Methods", "Rename Fields", "Build API Buffer Methods", "Build Library Buffer Classes",
+          "Goto Instruction Augmentation", "Add Dead Switch Statements", "Convert Arith. Expr. To Bit Ops", "Convert Branches to JSR Instructions",
+          "Disobey Constructor Conventions", "Reuse Duplicate Sequences", "Replace If(Non)Nulls with Try-Catch", "Indirect If Instructions",
+          "Pack Locals into Bitfields", "Reorder Loads Above Ifs", "Combine Try and Catch Blocks", "Embed Constants in Fields",
+          "Partially Trap Switches" },
+      { "wjtp.jbco_cr", "wjtp.jbco_mr", "wjtp.jbco_fr", "wjtp.jbco_bapibm", "wjtp.jbco_blbc", "jtp.jbco_gia", "jtp.jbco_adss", "jtp.jbco_cae2bo",
+          "bb.jbco_cb2ji", "bb.jbco_dcc", "bb.jbco_rds", "bb.jbco_riitcb", "bb.jbco_iii", "bb.jbco_plvb", "bb.jbco_rlaii", "bb.jbco_ctbcb",
+          "bb.jbco_ecvf", "bb.jbco_ptss" } };
+
+  static int[][] defaultWeights = new int[][] { { 9, 9, 9, 9, 9, 9, 6, 9, 0, 0, 3, 9, 6, 3, 9, 9, 0, 0, },
+      { 0, 0, 0, 0, 9, 6, 0, 9, 9, 9, 0, 9, 0, 0, 9, 9, 0, 9, }, { 5, 5, 5, 6, 9, 9, 5, 9, 9, 5, 7, 9, 9, 2, 9, 9, 0, 9, } };
   static String[] arguments = null;
+
   /**
-  * Auto-generated main method to display this JFrame
-  */
+   * Auto-generated main method to display this JFrame
+   */
   public static void main(String[] args) {
     arguments = args;
     JBCOViewer inst = new JBCOViewer();
     inst.setVisible(true);
   }
-  
+
   public JBCOViewer() {
     super();
     initGUI();
   }
-  
+
   private void initGUI() {
     thisRef = this;
     try {
@@ -121,8 +149,9 @@ public class JBCOViewer extends javax.swing.JFrame {
             RadioVerbose.setBounds(7, 9, 130, 26);
             RadioVerbose.addActionListener(new ActionListener() {
               public void actionPerformed(ActionEvent evt) {
-                if (RadioVerbose.isSelected())
+                if (RadioVerbose.isSelected()) {
                   RadioSummary.setSelected(false);
+                }
               }
             });
           }
@@ -133,8 +162,9 @@ public class JBCOViewer extends javax.swing.JFrame {
             RadioSummary.setBounds(147, 7, 140, 28);
             RadioSummary.addActionListener(new ActionListener() {
               public void actionPerformed(ActionEvent evt) {
-                if (RadioSummary.isSelected())
+                if (RadioSummary.isSelected()) {
                   RadioVerbose.setSelected(false);
+                }
               }
             });
           }
@@ -211,25 +241,25 @@ public class JBCOViewer extends javax.swing.JFrame {
             jPanel2 = new JPanel();
             PanelBasicOptions.add(jPanel2);
             jPanel2.setBounds(14, 84, 595, 7);
-            jPanel2.setBorder(new LineBorder(new java.awt.Color(0,0,0), 1, false));
+            jPanel2.setBorder(new LineBorder(new java.awt.Color(0, 0, 0), 1, false));
             jPanel2.setPreferredSize(new java.awt.Dimension(2, 2));
             jPanel2.setSize(595, 2);
           }
           {
             DefaultClassPathPane = new JTextPane();
-            DefaultClassPathPane.setText("./:/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/charsets.jar\n" +
-                ":/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/jce.jar\n" +
-                ":/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/jsse.jar\n" +
-                ":/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/rt.jar");
-            
-            if (arguments!=null) {
+            DefaultClassPathPane
+                .setText("./:/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/charsets.jar\n" + ":/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/jce.jar\n"
+                    + ":/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/jsse.jar\n" + ":/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/rt.jar");
+
+            if (arguments != null) {
               for (int i = 0; i < arguments.length; i++) {
-                if (arguments[i].equals("-cp") || arguments[i].equals("-classpath") && arguments.length>(i+1)) {
-                  StringTokenizer cptokenizer = new StringTokenizer(arguments[i+1],":");
+                if (arguments[i].equals("-cp") || arguments[i].equals("-classpath") && arguments.length > (i + 1)) {
+                  StringTokenizer cptokenizer = new StringTokenizer(arguments[i + 1], ":");
                   String cp = cptokenizer.nextToken();
-                  while (cptokenizer.hasMoreTokens())
+                  while (cptokenizer.hasMoreTokens()) {
                     cp += "\n:" + cptokenizer.nextToken();
-                  DefaultClassPathPane.setText(arguments[i+1]);
+                  }
+                  DefaultClassPathPane.setText(arguments[i + 1]);
                 }
               }
             }
@@ -270,7 +300,7 @@ public class JBCOViewer extends javax.swing.JFrame {
             jPanel1 = new JPanel();
             PanelTransforms.add(jPanel1);
             jPanel1.setBounds(245, 49, 378, 329);
-            jPanel1.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(0,0,0)));
+            jPanel1.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(0, 0, 0)));
             jPanel1.setLayout(null);
             {
               ListModel AvoidListModel = new DefaultComboBoxModel(new String[] {});
@@ -278,14 +308,15 @@ public class JBCOViewer extends javax.swing.JFrame {
               jPanel1.add(AvoidList);
               AvoidList.setModel(AvoidListModel);
               AvoidList.setBounds(7, 112, 364, 210);
-              AvoidList.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(0,0,0)));
+              AvoidList.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(0, 0, 0)));
               AvoidList.addListSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent evt) {
                   int length = AvoidList.getSelectedIndices().length;
-                  if (length < 1) 
+                  if (length < 1) {
                     ButtonRemove.setEnabled(false);
-                  else
+                  } else {
                     ButtonRemove.setEnabled(true);
+                  }
                 }
               });
             }
@@ -302,25 +333,26 @@ public class JBCOViewer extends javax.swing.JFrame {
               ButtonRemove.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                   int index[] = AvoidList.getSelectedIndices();
-                  if (index.length < 1) { 
+                  if (index.length < 1) {
                     java.awt.Toolkit.getDefaultToolkit().beep();
                     return;
                   }
-                  
+
                   Object o[] = new Object[index.length];
-                  DefaultComboBoxModel lm = (DefaultComboBoxModel)AvoidList.getModel();
-                  for (int i = 0; i < index.length; i++)
+                  DefaultComboBoxModel lm = (DefaultComboBoxModel) AvoidList.getModel();
+                  for (int i = 0; i < index.length; i++) {
                     o[i] = lm.getElementAt(index[i]);
-                  for (int i = 0; i < index.length; i++)
+                  }
+                  for (int i = 0; i < index.length; i++) {
                     lm.removeElement(o[i]);
-                  
+                  }
+
                   models[previousSelected] = lm;
                 }
               });
             }
             {
-              ComboBoxModel ComboWeightModel = new DefaultComboBoxModel(
-                new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" });
+              ComboBoxModel ComboWeightModel = new DefaultComboBoxModel(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" });
               ComboWeight = new JComboBox();
               jPanel1.add(ComboWeight);
               ComboWeight.setModel(ComboWeightModel);
@@ -339,8 +371,7 @@ public class JBCOViewer extends javax.swing.JFrame {
               LabelDefWeight.setBounds(203, 7, 98, 28);
             }
             {
-              ComboBoxModel ComboBoxDefWeightModel = new DefaultComboBoxModel(
-                new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" });
+              ComboBoxModel ComboBoxDefWeightModel = new DefaultComboBoxModel(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" });
               ComboBoxDefWeight = new JComboBox();
               jPanel1.add(ComboBoxDefWeight);
               ComboBoxDefWeight.setModel(ComboBoxDefWeightModel);
@@ -348,11 +379,13 @@ public class JBCOViewer extends javax.swing.JFrame {
               ComboBoxDefWeight.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                   int index = ListTransforms.getSelectedIndex();
-                  if (index < 0) return;
-                  
-                  DefaultComboBoxModel lm = (DefaultComboBoxModel)ListTransforms.getModel();
+                  if (index < 0) {
+                    return;
+                  }
+
+                  DefaultComboBoxModel lm = (DefaultComboBoxModel) ListTransforms.getModel();
                   lm.removeElementAt(index);
-                  lm.insertElementAt(optionStrings[0][index] + " - "+ComboBoxDefWeight.getSelectedItem(), index);
+                  lm.insertElementAt(optionStrings[0][index] + " - " + ComboBoxDefWeight.getSelectedItem(), index);
                 }
               });
             }
@@ -368,7 +401,7 @@ public class JBCOViewer extends javax.swing.JFrame {
                     java.awt.Toolkit.getDefaultToolkit().beep();
                     return;
                   }
-                  
+
                   boolean regex = text.startsWith("*");
                   if (regex) {
                     try {
@@ -378,46 +411,46 @@ public class JBCOViewer extends javax.swing.JFrame {
                       return;
                     }
                   }
-                  
-                  DefaultComboBoxModel lm = (DefaultComboBoxModel)AvoidList.getModel();
+
+                  DefaultComboBoxModel lm = (DefaultComboBoxModel) AvoidList.getModel();
                   int size = lm.getSize();
                   for (int i = 0; i < size; i++) {
-                    String item = (String)lm.getElementAt(i);
+                    String item = (String) lm.getElementAt(i);
                     if (item != null && item.equals(text)) {
                       TextFieldConstraint.setText("");
                       return;
                     }
                   }
-                  
+
                   lm.addElement(text + " - " + ComboWeight.getSelectedItem());
-                  
+
                   models[previousSelected] = lm;
-                  
+
                   TextFieldConstraint.setText("");
                   ComboWeight.setSelectedIndex(0);
-              }});
+                }
+              });
             }
           }
           {
             PaneExplain = new JTextPane();
             PanelTransforms.add(PaneExplain);
-            PaneExplain
-              .setText("Adjust transform weights and add restrictions for specific Classes, Methods, and Fields.");
+            PaneExplain.setText("Adjust transform weights and add restrictions for specific Classes, Methods, and Fields.");
             PaneExplain.setBounds(7, 7, 616, 35);
             PaneExplain.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             PaneExplain.setEditable(false);
           }
           {
             DefaultComboBoxModel ListTransformsModel = new DefaultComboBoxModel();
-            for (int i = 0; i < optionStrings[0].length; i++)
+            for (int i = 0; i < optionStrings[0].length; i++) {
               ListTransformsModel.addElement(optionStrings[0][i] + " - 9");
-            
+            }
+
             ListTransforms = new JList();
             PanelTransforms.add(ListTransforms);
             ListTransforms.setModel(ListTransformsModel);
             ListTransforms.setBounds(7, 49, 238, 329);
-            ListTransforms
-              .addListSelectionListener(new ListSelectionListener() {
+            ListTransforms.addListSelectionListener(new ListSelectionListener() {
               public void valueChanged(ListSelectionEvent evt) {
                 int selected[] = ListTransforms.getSelectedIndices();
                 if (selected.length > 1) {
@@ -425,34 +458,37 @@ public class JBCOViewer extends javax.swing.JFrame {
                 } else if (selected.length == 0) {
                   return;
                 }
-              
-                String val = (String)ListTransforms.getSelectedValue();
-                if (ListTransforms.getSelectedIndex() == previousSelected)
+
+                String val = (String) ListTransforms.getSelectedValue();
+                if (ListTransforms.getSelectedIndex() == previousSelected) {
                   return;
+                }
                 previousSelected = ListTransforms.getSelectedIndex();
-                
+
                 if (val.indexOf("-") > 0) {
                   String weight = val.substring(val.indexOf("-") + 1, val.length()).trim();
-                  val = val.substring(0,val.indexOf("-"));
-                  
+                  val = val.substring(0, val.indexOf("-"));
+
                   try {
                     int w = Integer.parseInt(weight);
-                    if (w < 0 || w > 10) 
+                    if (w < 0 || w > 10) {
                       weight = "0";
+                    }
                   } catch (NumberFormatException nfe) {
                     weight = "0";
                   }
-                  
+
                   ComboBoxDefWeight.setSelectedItem(weight);
                 }
                 LabelTransformHeading.setText(val);
-                
-                DefaultComboBoxModel lm = (DefaultComboBoxModel)models[previousSelected];
-                if (lm == null)
+
+                DefaultComboBoxModel lm = (DefaultComboBoxModel) models[previousSelected];
+                if (lm == null) {
                   lm = new DefaultComboBoxModel(new String[0]);
+                }
                 AvoidList.setModel(lm);
               }
-              });
+            });
           }
         }
         {
@@ -468,17 +504,21 @@ public class JBCOViewer extends javax.swing.JFrame {
             ButtonSaveOutput.addActionListener(new ActionListener() {
               public void actionPerformed(ActionEvent evt) {
                 String file = TextFieldOutputFolder.getText();
-                if (file.startsWith("~"))
+                if (file.startsWith("~")) {
                   file = System.getProperty("user.home") + file.substring(1);
-                
+                }
+
                 try {
                   File f = new File(file);
-                  if (!f.getParentFile().exists() || !f.getParentFile().isDirectory())
+                  if (!f.getParentFile().exists() || !f.getParentFile().isDirectory()) {
                     throw new Exception("Directory does not appear to exist");
-                  if (f.exists() && f.isDirectory())
+                  }
+                  if (f.exists() && f.isDirectory()) {
                     throw new Exception("File points to a directory");
-                  if (f.exists())  
+                  }
+                  if (f.exists()) {
                     f.delete();
+                  }
                   f.createNewFile();
                   RandomAccessFile rf = new RandomAccessFile(f, "rw");
                   try {
@@ -489,7 +529,7 @@ public class JBCOViewer extends javax.swing.JFrame {
                     rf.close();
                   }
                 } catch (Exception exc) {
-                  new PopupDialog(thisRef, true, "Exception: "+exc.toString());
+                  new PopupDialog(thisRef, true, "Exception: " + exc.toString());
                 }
               }
             });
@@ -501,7 +541,7 @@ public class JBCOViewer extends javax.swing.JFrame {
           }
           {
             TextAreaOutput = new JTextArea();
-            TextAreaOutput.setFont(new java.awt.Font("Courier 10 Pitch",0,10));
+            TextAreaOutput.setFont(new java.awt.Font("Courier 10 Pitch", 0, 10));
             jScrollPane1 = new JScrollPane(TextAreaOutput);
             PanelExecute.add(jScrollPane1);
             jScrollPane1.setBounds(7, 0, 616, 378);
@@ -521,61 +561,65 @@ public class JBCOViewer extends javax.swing.JFrame {
             speedMenuItem = new JMenuItem();
             jMenu3.add(speedMenuItem);
             speedMenuItem.setText("Use Speed-Tuned Combo");
-            speedMenuItem.addActionListener(new  ActionListener() {
+            speedMenuItem.addActionListener(new ActionListener() {
               public void actionPerformed(ActionEvent evt) {
                 DefaultComboBoxModel ListTransformsModel = new DefaultComboBoxModel();
-                for (int i = 0; i < optionStrings[0].length; i++)
+                for (int i = 0; i < optionStrings[0].length; i++) {
                   ListTransformsModel.addElement(optionStrings[0][i] + " - " + defaultWeights[0][i]);
-                
+                }
+
                 ListTransforms.setModel(ListTransformsModel);
               }
             });
-            
+
             sizeMenuItem = new JMenuItem();
             jMenu3.add(sizeMenuItem);
             sizeMenuItem.setText("Use Size-Tuned Combo");
-            sizeMenuItem.addActionListener(new  ActionListener() {
+            sizeMenuItem.addActionListener(new ActionListener() {
               public void actionPerformed(ActionEvent evt) {
                 DefaultComboBoxModel ListTransformsModel = new DefaultComboBoxModel();
-                for (int i = 0; i < optionStrings[0].length; i++)
+                for (int i = 0; i < optionStrings[0].length; i++) {
                   ListTransformsModel.addElement(optionStrings[0][i] + " - " + defaultWeights[1][i]);
-                
+                }
+
                 ListTransforms.setModel(ListTransformsModel);
               }
             });
-            
+
             protMenuItem = new JMenuItem();
             jMenu3.add(protMenuItem);
             protMenuItem.setText("Use Protection-Tuned Combo");
-            protMenuItem.addActionListener(new  ActionListener() {
+            protMenuItem.addActionListener(new ActionListener() {
               public void actionPerformed(ActionEvent evt) {
                 DefaultComboBoxModel ListTransformsModel = new DefaultComboBoxModel();
-                for (int i = 0; i < optionStrings[0].length; i++)
+                for (int i = 0; i < optionStrings[0].length; i++) {
                   ListTransformsModel.addElement(optionStrings[0][i] + " - " + defaultWeights[2][i]);
-                
+                }
+
                 ListTransforms.setModel(ListTransformsModel);
               }
             });
-            
+
             newFileMenuItem = new JMenuItem();
             jMenu3.add(newFileMenuItem);
             newFileMenuItem.setText("Execute");
             newFileMenuItem.addActionListener(new ActionListener() {
               public void actionPerformed(ActionEvent evt) {
                 String main = TextFieldMain.getText().trim();
-                if (main.length() == 0) { 
+                if (main.length() == 0) {
                   new PopupDialog(thisRef, true, "No Main Class Specified");
                   return;
                 }
-                
+
                 String cp = ClasspathTextField.getText().trim();
-                if (cp.length() == 0) { 
+                if (cp.length() == 0) {
                   StringTokenizer cptokenizer = new StringTokenizer(DefaultClassPathPane.getText());
                   cp = cptokenizer.nextToken();
-                  while (cptokenizer.hasMoreTokens())
+                  while (cptokenizer.hasMoreTokens()) {
                     cp += cptokenizer.nextToken();
+                  }
                 }
-                
+
                 Integer min = null, max = null;
                 try {
                   min = new Integer(TextFieldMinMem.getText());
@@ -587,69 +631,69 @@ public class JBCOViewer extends javax.swing.JFrame {
                 } catch (NumberFormatException nfe) {
                   max = null;
                 }
-                
+
                 Vector<String> tmp = new Vector<String>();
                 String args = TextFieldJVMArgs.getText();
-                StringTokenizer st = new StringTokenizer(args,",");
-                while (st.hasMoreTokens())
+                StringTokenizer st = new StringTokenizer(args, ",");
+                while (st.hasMoreTokens()) {
                   tmp.add(st.nextToken());
-                
+                }
+
                 boolean customclasspath = false;
-                String vmargs[] = new String[tmp.size() + (min == null ? 0 : 1) + + (max == null ? 0 : 1)];
+                String vmargs[] = new String[tmp.size() + (min == null ? 0 : 1) + +(max == null ? 0 : 1)];
                 for (int i = 0; i < tmp.size(); i++) {
                   vmargs[i] = tmp.get(i);
-                  if (vmargs[i].startsWith("-cp") || vmargs[i].startsWith("-classpath"))
+                  if (vmargs[i].startsWith("-cp") || vmargs[i].startsWith("-classpath")) {
                     customclasspath = true;
+                  }
                 }
                 if (min != null) {
-                  vmargs[tmp.size()] = "-Xms"+min.intValue()+"m";
-                  if (max != null)
-                    vmargs[tmp.size()+1] = "-Xmx"+max.intValue()+"m";
-                } else if (max != null){
-                  vmargs[tmp.size()] = "-Xmx"+max.intValue()+"m";
+                  vmargs[tmp.size()] = "-Xms" + min.intValue() + "m";
+                  if (max != null) {
+                    vmargs[tmp.size() + 1] = "-Xmx" + max.intValue() + "m";
+                  }
+                } else if (max != null) {
+                  vmargs[tmp.size()] = "-Xmx" + max.intValue() + "m";
                 }
-                
+
                 Vector trans = new Vector();
-                ListModel lmy = (ListModel)ListTransforms.getModel();
+                ListModel lmy = (ListModel) ListTransforms.getModel();
                 for (int i = 0; i < lmy.getSize(); i++) {
-                  String text = (String)lmy.getElementAt(i);
-                  for (int j = 0; j < optionStrings[0].length; j++)
+                  String text = (String) lmy.getElementAt(i);
+                  for (int j = 0; j < optionStrings[0].length; j++) {
                     if (text.startsWith(optionStrings[0][j])) {
                       String weight = "9";
                       if (text.lastIndexOf("-") > 0) {
-                        weight = text.substring(text.lastIndexOf("-")+1).trim();
+                        weight = text.substring(text.lastIndexOf("-") + 1).trim();
                         try {
                           Integer.parseInt(weight);
                         } catch (Exception exc) {
                           weight = "9";
                         }
                       }
-                      trans.add("-t:"+weight+":"+optionStrings[1][j]);
-                      
-                      ListModel lmx = (ListModel)models[j];
+                      trans.add("-t:" + weight + ":" + optionStrings[1][j]);
+
+                      ListModel lmx = (ListModel) models[j];
                       if (lmx != null) {
                         for (int k = 0; k < lmx.getSize(); k++) {
-                          String val = (String)lmx.getElementAt(k);
-                          weight = val.substring(val.lastIndexOf("-")+1).trim();
-                          val = val.substring(0,val.lastIndexOf("-")-1);
-                          trans.add("-it:"+weight+":"+optionStrings[1][j]+":\""+val+"\"");
+                          String val = (String) lmx.getElementAt(k);
+                          weight = val.substring(val.lastIndexOf("-") + 1).trim();
+                          val = val.substring(0, val.lastIndexOf("-") - 1);
+                          trans.add("-it:" + weight + ":" + optionStrings[1][j] + ":\"" + val + "\"");
                         }
                       }
                       break;
                     }
+                  }
                 }
-                String[] transforms = new String[trans.size()]; 
+                String[] transforms = new String[trans.size()];
                 trans.copyInto(transforms);
                 trans = null;
-                
+
                 int index = 0;
                 String outdir = TextField.getText();
-                String[] cmdarray = new String[6 + (customclasspath ? 0 : 2) 
-                                               + vmargs.length + transforms.length 
-                                               + (RadioSummary.isSelected() ? 1 : 0)
-                                               + (RadioVerbose.isSelected() ? 1 : 0)
-                                               + (DebugRadio.isSelected() ? 1 : 0)
-                                               + (outdir.length() > 0 ? 2 : 0)];
+                String[] cmdarray = new String[6 + (customclasspath ? 0 : 2) + vmargs.length + transforms.length + (RadioSummary.isSelected() ? 1 : 0)
+                    + (RadioVerbose.isSelected() ? 1 : 0) + (DebugRadio.isSelected() ? 1 : 0) + (outdir.length() > 0 ? 2 : 0)];
                 cmdarray[index++] = "java";
                 if (!customclasspath) {
                   cmdarray[index++] = "-cp";
@@ -665,23 +709,27 @@ public class JBCOViewer extends javax.swing.JFrame {
                 }
                 cmdarray[vmargs.length + index++] = "-app";
                 cmdarray[vmargs.length + index++] = main;
-                if (RadioSummary.isSelected()) 
+                if (RadioSummary.isSelected()) {
                   cmdarray[vmargs.length + index++] = "-jbco:silent";
-                if (RadioVerbose.isSelected()) 
+                }
+                if (RadioVerbose.isSelected()) {
                   cmdarray[vmargs.length + index++] = "-jbco:verbose";
-                if (DebugRadio.isSelected()) 
+                }
+                if (DebugRadio.isSelected()) {
                   cmdarray[vmargs.length + index++] = "-jbco:debug";
-                System.arraycopy(transforms, 0, cmdarray, vmargs.length + index, transforms.length); 
+                }
+                System.arraycopy(transforms, 0, cmdarray, vmargs.length + index, transforms.length);
 
                 String output = "";
-                for (String element : cmdarray)
-					output += element + " ";
+                for (String element : cmdarray) {
+                  output += element + " ";
+                }
                 output += "\n";
 
                 TextAreaOutput.setText(output);
                 TabbedPane.setSelectedComponent(PanelExecute);
                 try {
-                  runner = new RunnerThread(cmdarray, (JBCOViewer)thisRef, WorkingDirTextField.getText());
+                  runner = new RunnerThread(cmdarray, (JBCOViewer) thisRef, WorkingDirTextField.getText());
                   Thread t = new Thread(runner);
                   t.start();
                 } catch (Exception exc) {
@@ -711,35 +759,13 @@ public class JBCOViewer extends javax.swing.JFrame {
               }
             });
           }
-          /*{
-            newFileMenuItem = new JMenuItem();
-            jMenu3.add(newFileMenuItem);
-            newFileMenuItem.setText("Stop");
-          }
-          {
-            openFileMenuItem = new JMenuItem();
-            jMenu3.add(openFileMenuItem);
-            openFileMenuItem.setText("Open");
-          }
-          {
-            saveMenuItem = new JMenuItem();
-            jMenu3.add(saveMenuItem);
-            saveMenuItem.setText("Save");
-          }
-          {
-            saveAsMenuItem = new JMenuItem();
-            jMenu3.add(saveAsMenuItem);
-            saveAsMenuItem.setText("Save As ...");
-          }
-          {
-            closeFileMenuItem = new JMenuItem();
-            jMenu3.add(closeFileMenuItem);
-            closeFileMenuItem.setText("Close");
-          }
-          {
-            jSeparator2 = new JSeparator();
-            jMenu3.add(jSeparator2);
-          }*/
+          /*
+           * { newFileMenuItem = new JMenuItem(); jMenu3.add(newFileMenuItem); newFileMenuItem.setText("Stop"); } { openFileMenuItem = new
+           * JMenuItem(); jMenu3.add(openFileMenuItem); openFileMenuItem.setText("Open"); } { saveMenuItem = new JMenuItem();
+           * jMenu3.add(saveMenuItem); saveMenuItem.setText("Save"); } { saveAsMenuItem = new JMenuItem(); jMenu3.add(saveAsMenuItem);
+           * saveAsMenuItem.setText("Save As ..."); } { closeFileMenuItem = new JMenuItem(); jMenu3.add(closeFileMenuItem);
+           * closeFileMenuItem.setText("Close"); } { jSeparator2 = new JSeparator(); jMenu3.add(jSeparator2); }
+           */
           {
             exitMenuItem = new JMenuItem();
             jMenu3.add(exitMenuItem);
@@ -751,45 +777,14 @@ public class JBCOViewer extends javax.swing.JFrame {
             });
           }
         }
-        /*{
-          jMenu4 = new JMenu();
-          jMenuBar1.add(jMenu4);
-          jMenu4.setText("Edit");
-          {
-            cutMenuItem = new JMenuItem();
-            jMenu4.add(cutMenuItem);
-            cutMenuItem.setText("Cut");
-          }
-          {
-            copyMenuItem = new JMenuItem();
-            jMenu4.add(copyMenuItem);
-            copyMenuItem.setText("Copy");
-          }
-          {
-            pasteMenuItem = new JMenuItem();
-            jMenu4.add(pasteMenuItem);
-            pasteMenuItem.setText("Paste");
-          }
-          {
-            jSeparator1 = new JSeparator();
-            jMenu4.add(jSeparator1);
-          }
-          {
-            deleteMenuItem = new JMenuItem();
-            jMenu4.add(deleteMenuItem);
-            deleteMenuItem.setText("Delete");
-          }
-        }
-        {
-          jMenu5 = new JMenu();
-          jMenuBar1.add(jMenu5);
-          jMenu5.setText("Help");
-          {
-            helpMenuItem = new JMenuItem();
-            jMenu5.add(helpMenuItem);
-            helpMenuItem.setText("Help");
-          }
-        }*/
+        /*
+         * { jMenu4 = new JMenu(); jMenuBar1.add(jMenu4); jMenu4.setText("Edit"); { cutMenuItem = new JMenuItem(); jMenu4.add(cutMenuItem);
+         * cutMenuItem.setText("Cut"); } { copyMenuItem = new JMenuItem(); jMenu4.add(copyMenuItem); copyMenuItem.setText("Copy"); } { pasteMenuItem =
+         * new JMenuItem(); jMenu4.add(pasteMenuItem); pasteMenuItem.setText("Paste"); } { jSeparator1 = new JSeparator(); jMenu4.add(jSeparator1); }
+         * { deleteMenuItem = new JMenuItem(); jMenu4.add(deleteMenuItem); deleteMenuItem.setText("Delete"); } } { jMenu5 = new JMenu();
+         * jMenuBar1.add(jMenu5); jMenu5.setText("Help"); { helpMenuItem = new JMenuItem(); jMenu5.add(helpMenuItem); helpMenuItem.setText("Help"); }
+         * }
+         */
       }
     } catch (Exception e) {
       logger.error(e.getMessage(), e);

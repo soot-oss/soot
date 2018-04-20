@@ -23,16 +23,16 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.baf;
 
-import soot.*;
+import soot.Type;
 
-public interface SwapInst extends Inst
-{
-    Type getFromType();
-    void setFromType(Type fromType);
-    
-    Type getToType();
-    void setToType(Type toType);
+public interface SwapInst extends Inst {
+  Type getFromType();
+
+  void setFromType(Type fromType);
+
+  Type getToType();
+
+  void setToType(Type toType);
 }
