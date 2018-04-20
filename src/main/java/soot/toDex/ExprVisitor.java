@@ -749,7 +749,17 @@ class ExprVisitor implements ExprSwitch {
     Value size = nae.getSize();
     constantV.setOrigStmt(origStmt);
     Register sizeReg = regAlloc.asImmediate(size, constantV);
-    ArrayType arrayType = nae.getBaseType().getArrayType();
+
+    // Create the array type
+    Type baseType = nae.getBaseType();
+    int numDimensions = 1;
+    while (baseType instanceof ArrayType) {
+      ArrayType at = (ArrayType) baseType;
+      baseType = at.getElementType();
+      numDimensions++;
+    }
+    ArrayType arrayType = ArrayType.v(baseType, numDimensions);
+
     TypeReference arrayTypeItem = DexPrinter.toTypeReference(arrayType);
     stmtV.addInsn(new Insn22c(Opcode.NEW_ARRAY, destinationReg, sizeReg, arrayTypeItem), origStmt);
   }
