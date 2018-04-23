@@ -172,7 +172,7 @@ public class Main {
         Object o = null;
         arg = arg.substring(4);
 
-        int tweight = 0;
+        int tweight = 9;
         char cweight = arg.charAt(0);
         if (cweight >= '0' && cweight <= '9') {
           try {
@@ -209,6 +209,7 @@ public class Main {
           o = arg;
         }
 
+        transformsToAdd.add(trans);
         Map<Object, Integer> htmp = transformsToMethodsToWeights.get(trans);
         if (htmp == null) {
           htmp = new HashMap<Object, Integer>();
@@ -470,6 +471,8 @@ public class Main {
         if (o instanceof java.util.regex.Pattern) {
           if (((java.util.regex.Pattern) o).matcher(method).matches()) {
             intg = (Integer) htmp.get(o);
+          } else {
+            intg = 0;
           }
         } else if (o instanceof String && method.equals(o)) {
           intg = (Integer) htmp.get(o);
