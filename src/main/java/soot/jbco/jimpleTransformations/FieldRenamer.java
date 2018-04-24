@@ -118,7 +118,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
         }
         // rename all the fields in the class
         for (SootField f : sc.getFields()) {
-          int weight = soot.jbco.Main.getWeight(phaseName, f.getName());
+          int weight = soot.jbco.Main.getWeight(phaseName, f.getSignature());
           if (weight > 0) {
             renameField(className, f);
           }

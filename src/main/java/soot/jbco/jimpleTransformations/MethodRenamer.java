@@ -379,7 +379,7 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
   }
 
   private boolean isRenamingAllowed(SootMethod method) {
-    if (soot.jbco.Main.getWeight(MethodRenamer.name, method.getName()) == 0) {
+    if (soot.jbco.Main.getWeight(MethodRenamer.name, method.getSignature()) == 0) {
       return false;
     }
 
