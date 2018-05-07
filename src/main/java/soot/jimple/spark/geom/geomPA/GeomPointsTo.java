@@ -609,12 +609,14 @@ public class GeomPointsTo extends PAG {
 
     while (p != null) {
       t = p.t;
-      if (vis_cg[t] == 0) {
+      
+      if (vis_cg[t] == 0){
         callGraphDFS(t);
+        low_cg[s] = Math.min(low_cg[s], low_cg[t]);
+      }else{
+        low_cg[s] = Math.min(low_cg[s], vis_cg[t]);
       }
-      if (low_cg[t] < low_cg[s]) {
-        low_cg[s] = low_cg[t];
-      }
+      
       p = p.next;
     }
 
