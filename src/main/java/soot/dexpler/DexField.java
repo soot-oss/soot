@@ -98,7 +98,9 @@ public class DexField {
     String name = f.getName();
     Type type = DexType.toSoot(f.getType());
     int flags = f.getAccessFlags();
-    SootField sf = Scene.v().makeSootField(name, type, flags);
+    EncodedValue e = f.getInitialValue();
+    String initialValue = ((e == null) ? null : e.toString());
+    SootField sf = Scene.v().makeSootField(name, type, flags, initialValue);
     if (Modifier.isFinal(flags)) {
       DexField.addConstantTag(sf, f);
     }
