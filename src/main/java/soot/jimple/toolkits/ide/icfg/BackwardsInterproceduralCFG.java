@@ -28,7 +28,8 @@ import soot.Value;
 import soot.toolkits.graph.DirectedGraph;
 
 /**
- * Same as {@link JimpleBasedInterproceduralCFG} but based on inverted unit graphs. This should be used for backward analyses.
+ * Same as {@link JimpleBasedInterproceduralCFG} but based on inverted unit graphs. This should be used for backward
+ * analyses.
  */
 public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit, SootMethod> {
 

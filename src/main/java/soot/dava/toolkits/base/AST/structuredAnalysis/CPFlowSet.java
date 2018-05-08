@@ -19,10 +19,11 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
 
   /*
    * invoked by the clone method
-   * 
+   *
    * This is not as simple as one would think cloning is
-   * 
-   * We have to make sure that certain important things.....like the bloody constant value inside the the variablevaluetuple is being cloned!!!
+   *
+   * We have to make sure that certain important things.....like the bloody constant value inside the the variablevaluetuple
+   * is being cloned!!!
    */
   public CPFlowSet(CPFlowSet other) {
 
@@ -40,8 +41,8 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
     // elements = (Object[]) other.elements.clone();
 
     /*
-     * Reason about the fact whether we need deep cloning of these shits or not anything which is in these lists is not being cloned so care should be
-     * taken to not modify any value... c
+     * Reason about the fact whether we need deep cloning of these shits or not anything which is in these lists is not being
+     * cloned so care should be taken to not modify any value... c
      */
     breakList = (HashMap<Serializable, List<DavaFlowSet<CPTuple>>>) other.breakList.clone();
     continueList = (HashMap<Serializable, List<DavaFlowSet<CPTuple>>>) other.continueList.clone();
@@ -52,9 +53,9 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
 
   /*
    * helper method to be invoked by CPApplication when trying to do transformation
-   * 
-   * returns a non null if the local or field is contained and has a constant value returns a null if the local or field is eithe rnot present or is
-   * trop
+   *
+   * returns a non null if the local or field is contained and has a constant value returns a null if the local or field is
+   * eithe rnot present or is trop
    */
   public Object contains(String className, String localOrField) {
     for (int i = 0; i < this.numElements; i++) {
@@ -82,9 +83,9 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
 
   /*
    * This is more of an update method than an add method.
-   * 
-   * Go through all the elements in the flowSet See if we can find an element (CPTuple with the same className and same CPVariable) if we dont find
-   * one: add this to the flowset if we find one: update the Value with the value of the newTuple
+   *
+   * Go through all the elements in the flowSet See if we can find an element (CPTuple with the same className and same
+   * CPVariable) if we dont find one: add this to the flowset if we find one: update the Value with the value of the newTuple
    */
   public void addIfNotPresent(CPTuple newTuple) {
     // System.out.println("addIfnotPresent invoked");
@@ -122,9 +123,10 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
 
   /*
    * Specialized method for handling conditionals this is used to add a belief derived from the condition of an if or ifelse
-   * 
-   * The belief is only added if the current belief about the variable is top since later on when leaving the conditional our new belief intersected
-   * with top will give top and we would not have added anything incorrect or presumptuous into our flow set (LAURIE)
+   *
+   * The belief is only added if the current belief about the variable is top since later on when leaving the conditional our
+   * new belief intersected with top will give top and we would not have added anything incorrect or presumptuous into our
+   * flow set (LAURIE)
    */
 
   public void addIfNotPresentButDontUpdate(CPTuple newTuple) {
@@ -160,28 +162,29 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
     // if we get to this part we know that we need to add
     /*
      * DO NOT ADD IF NOT FOUND SINCE THAT MEANS IT IS BOTTOM and we dont want the following to occur
-     * 
+     *
      * if( bla ){
-     * 
-     * if a var is bottom before the loop and we add something because of bla } then the merge rules will cause the after set of if to have the
-     * something Body A since bottom merged with something is that something THIS WOULD BE INCORRECT
+     *
+     * if a var is bottom before the loop and we add something because of bla } then the merge rules will cause the after set
+     * of if to have the something Body A since bottom merged with something is that something THIS WOULD BE INCORRECT
      */
     // this.add(newTuple);
   }
 
   /*
-   * The intersection method is called by the object whose set is to be intersected with otherFlow and the result to be stored in destFlow
-   * 
+   * The intersection method is called by the object whose set is to be intersected with otherFlow and the result to be
+   * stored in destFlow
+   *
    * So we will be intersecting elements of "this" and otherFlow
-   * 
-   * Definition of Intersection: If an element e belongs to Set A then Set A ^ B contains e if B contains an element such that the
-   * constantpropagationFlowSet equals method returns true (this will happen if they have the same variable and the same value which better not be
-   * TOP)
-   * 
-   * If the element e is not added to set A ^ B then element e should be changed to hold TOP as the value is unknown and that value should be added to
-   * the set A ^ B
-   * 
-   * 
+   *
+   * Definition of Intersection: If an element e belongs to Set A then Set A ^ B contains e if B contains an element such
+   * that the constantpropagationFlowSet equals method returns true (this will happen if they have the same variable and the
+   * same value which better not be TOP)
+   *
+   * If the element e is not added to set A ^ B then element e should be changed to hold TOP as the value is unknown and that
+   * value should be added to the set A ^ B
+   *
+   *
    */
   public void intersection(FlowSet otherFlow, FlowSet destFlow) {
     // System.out.println("In specialized intersection for CopyPropagation");
@@ -203,12 +206,12 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
 
     /*
      * HERE IS THE MERGE TABLE
-     * 
-     * 
+     *
+     *
      * THIS OTHER RESULT
-     * 
-     * 1 BOTTOM BOTTOM WHO CARES 2 BOTTOM C C (Laurie Convinced me) 3 BOTTOM TOP TOP 4 C BOTTOM C (Laurie Convinced me) 5 C1 C2 C if C1 == C2 else TOP
-     * 6 C TOP TOP 7 TOP BOTTOM TOP 8 TOP C TOP 9 TOP TOP TOP
+     *
+     * 1 BOTTOM BOTTOM WHO CARES 2 BOTTOM C C (Laurie Convinced me) 3 BOTTOM TOP TOP 4 C BOTTOM C (Laurie Convinced me) 5 C1
+     * C2 C if C1 == C2 else TOP 6 C TOP TOP 7 TOP BOTTOM TOP 8 TOP C TOP 9 TOP TOP TOP
      */
 
     for (int i = 0; i < this.numElements; i++) {
@@ -225,7 +228,8 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
         otherTuple = other.getElementAt(j);
 
         /*
-         * wont use the CPTuple equal method since that ignores tops we want to implement the intersection rules given in the merge table
+         * wont use the CPTuple equal method since that ignores tops we want to implement the intersection rules given in the
+         * merge table
          */
 
         // check that the two tuples have the same class
@@ -276,15 +280,16 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
 
         // add CLONE OF element[i] to working set unchanged
         /*
-         * TODO: why should a field be turned to TOP... a field is only a constant value field and hence should never be changed!!!!!
-         * 
+         * TODO: why should a field be turned to TOP... a field is only a constant value field and hence should never be
+         * changed!!!!!
+         *
          * BUG FOUND DUE TO CHROMOSOME benchmark if(Debug.flag) was not being detected as it was being set to top
-         * 
+         *
          * April 3rd 2006
          */
         /*
-         * if(thisTuple.containsField()){ //add top workingSet.add(new CPTuple(thisTuple.getSootClassName(),thisTuple.getVariable(),true)); } else
-         * if(thisTuple.containsLocal()){
+         * if(thisTuple.containsField()){ //add top workingSet.add(new
+         * CPTuple(thisTuple.getSootClassName(),thisTuple.getVariable(),true)); } else if(thisTuple.containsLocal()){
          */
 
         workingSet.add(thisTuple.clone());
@@ -298,7 +303,8 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
     } // end going through all elements of this flowset
 
     /*
-     * havent covered cases 2 and 3 in which case this has bottom (a.k.a variable is not present) and the other has the elements
+     * havent covered cases 2 and 3 in which case this has bottom (a.k.a variable is not present) and the other has the
+     * elements
      */
 
     for (int i = 0; i < other.numElements; i++) {
@@ -331,15 +337,15 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
         // not in both so this is case 2 or 3
         /*
          * clone and add if its local
-         * 
+         *
          * if field then add top
          */
 
         /*
          * TODO why should a field be converted to TOP when all the fiels are only constant value fields
          *//*
-            * if(otherTuple.containsField()){ //add top workingSet.add(new CPTuple(otherTuple.getSootClassName(),otherTuple.getVariable(),true)); }
-            * else if(otherTuple.containsLocal()){
+            * if(otherTuple.containsField()){ //add top workingSet.add(new
+            * CPTuple(otherTuple.getSootClassName(),otherTuple.getVariable(),true)); } else if(otherTuple.containsLocal()){
             */
 
         workingSet.add(otherTuple.clone());

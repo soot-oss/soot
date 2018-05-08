@@ -23,14 +23,14 @@ import soot.jimple.toolkits.scalar.LocalCreation;
 
 /**
  * Some Android applications throw null references, e.g.,
- * 
+ *
  * a = null; throw a;
- * 
- * This will make unit graph construction fail as no targets of the throw statement can be found. We therefore replace such statements with direct
- * NullPointerExceptions which would happen at runtime anyway.
- * 
+ *
+ * This will make unit graph construction fail as no targets of the throw statement can be found. We therefore replace such
+ * statements with direct NullPointerExceptions which would happen at runtime anyway.
+ *
  * @author Steven Arzt
- * 
+ *
  */
 public class DexNullThrowTransformer extends BodyTransformer {
 
@@ -48,7 +48,8 @@ public class DexNullThrowTransformer extends BodyTransformer {
       // Check for a null exception
       if (u instanceof ThrowStmt) {
         ThrowStmt throwStmt = (ThrowStmt) u;
-        if (throwStmt.getOp() == NullConstant.v() || throwStmt.getOp().equals(IntConstant.v(0)) || throwStmt.getOp().equals(LongConstant.v(0))) {
+        if (throwStmt.getOp() == NullConstant.v() || throwStmt.getOp().equals(IntConstant.v(0))
+            || throwStmt.getOp().equals(LongConstant.v(0))) {
           createThrowStmt(b, throwStmt, lc);
         }
       }
@@ -57,7 +58,7 @@ public class DexNullThrowTransformer extends BodyTransformer {
 
   /**
    * Creates a new statement that throws a NullPointerException
-   * 
+   *
    * @param body
    *          The body in which to create the statement
    * @param oldStmt
@@ -69,13 +70,14 @@ public class DexNullThrowTransformer extends BodyTransformer {
     RefType tp = RefType.v("java.lang.NullPointerException");
     Local lcEx = lc.newLocal(tp);
 
-    SootMethodRef constructorRef = Scene.v().makeConstructorRef(tp.getSootClass(), Collections.singletonList((Type) RefType.v("java.lang.String")));
+    SootMethodRef constructorRef
+        = Scene.v().makeConstructorRef(tp.getSootClass(), Collections.singletonList((Type) RefType.v("java.lang.String")));
 
     // Create the exception instance
     Stmt newExStmt = Jimple.v().newAssignStmt(lcEx, Jimple.v().newNewExpr(tp));
     body.getUnits().insertBefore(newExStmt, oldStmt);
-    Stmt invConsStmt = Jimple.v().newInvokeStmt(
-        Jimple.v().newSpecialInvokeExpr(lcEx, constructorRef, Collections.singletonList(StringConstant.v("Null throw statement replaced by Soot"))));
+    Stmt invConsStmt = Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(lcEx, constructorRef,
+        Collections.singletonList(StringConstant.v("Null throw statement replaced by Soot"))));
     body.getUnits().insertBefore(invConsStmt, oldStmt);
 
     // Throw the exception

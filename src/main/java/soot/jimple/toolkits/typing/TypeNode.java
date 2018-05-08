@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -66,7 +66,8 @@ class TypeNode {
       throw new InternalTypingException();
     }
 
-    if (!((type instanceof PrimType) || (type instanceof RefType) || (type instanceof ArrayType) || (type instanceof NullType))) {
+    if (!((type instanceof PrimType) || (type instanceof RefType) || (type instanceof ArrayType)
+        || (type instanceof NullType))) {
       logger.debug("Unhandled type: " + type);
       throw new InternalTypingException();
     }
@@ -386,7 +387,8 @@ class TypeNode {
   }
 
   public boolean isClass() {
-    if (type instanceof ArrayType || type instanceof NullType || (type instanceof RefType && !((RefType) type).getSootClass().isInterface())) {
+    if (type instanceof ArrayType || type instanceof NullType
+        || (type instanceof RefType && !((RefType) type).getSootClass().isInterface())) {
       return true;
     }
 

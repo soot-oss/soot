@@ -19,21 +19,22 @@ public class SootASMClassWriter extends ClassWriter {
 
   /**
    * Constructs a new {@link ClassWriter} object.
-   * 
+   *
    * @param flags
-   *          option flags that can be used to modify the default behavior of this class. See {@link #COMPUTE_MAXS}, {@link #COMPUTE_FRAMES}.
+   *          option flags that can be used to modify the default behavior of this class. See {@link #COMPUTE_MAXS},
+   *          {@link #COMPUTE_FRAMES}.
    */
   public SootASMClassWriter(int flags) {
     super(flags);
   }
 
   /*
-   * We need to overwrite this method here, as we are generating multiple classes that might reference each other. See asm4-guide, top of page 45 for
-   * more information.
+   * We need to overwrite this method here, as we are generating multiple classes that might reference each other. See
+   * asm4-guide, top of page 45 for more information.
    */
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.objectweb.asm.ClassWriter#getCommonSuperClass(java.lang.String, java.lang.String)
    */
   @Override
@@ -47,7 +48,8 @@ public class SootASMClassWriter extends ClassWriter {
     // If these two classes haven't been loaded yet or are phantom, we take
     // java.lang.Object as the common superclass
     final Type mergedType;
-    if (s1.isPhantom() || s2.isPhantom() || s1.resolvingLevel() == SootClass.DANGLING || s2.resolvingLevel() == SootClass.DANGLING) {
+    if (s1.isPhantom() || s2.isPhantom() || s1.resolvingLevel() == SootClass.DANGLING
+        || s2.resolvingLevel() == SootClass.DANGLING) {
       mergedType = Scene.v().getObjectType();
     } else {
       Type t1 = s1.getType();

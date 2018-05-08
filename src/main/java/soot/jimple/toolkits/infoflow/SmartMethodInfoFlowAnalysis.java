@@ -61,7 +61,8 @@ public class SmartMethodInfoFlowAnalysis {
   Value thisLocal;
   InfoFlowAnalysis dfa;
   boolean refOnly; // determines if primitive type data flow is included
-  boolean includeInnerFields; // determines if flow to a field of an object (other than this) is treated like flow to that object
+  boolean includeInnerFields; // determines if flow to a field of an object (other than this) is treated like flow to that
+                              // object
 
   HashMutableDirectedGraph<EquivalentValue> abbreviatedInfoFlowGraph;
   HashMutableDirectedGraph<EquivalentValue> infoFlowSummary;
@@ -175,8 +176,8 @@ public class SmartMethodInfoFlowAnalysis {
     if (printMessages) {
       long longTime = ((new Date()).getTime() - start.getTime());
       float time = (longTime) / 1000.0f;
-      logger.debug(
-          "ENDING   SMART ANALYSIS FOR " + g.getBody().getMethod() + " ----- " + (counter - counterSoFar + 1) + " analyses took: " + time + "s");
+      logger.debug("ENDING   SMART ANALYSIS FOR " + g.getBody().getMethod() + " ----- " + (counter - counterSoFar + 1)
+          + " analyses took: " + time + "s");
       logger.debug("  AbbreviatedDataFlowGraph:");
       InfoFlowAnalysis.printInfoFlowSummary(abbreviatedInfoFlowGraph);
       logger.debug("  DataFlowSummary:");
@@ -211,7 +212,8 @@ public class SmartMethodInfoFlowAnalysis {
     return sourcesOf(node, new HashSet<EquivalentValue>(), new HashSet<EquivalentValue>());
   }
 
-  private List<EquivalentValue> sourcesOf(EquivalentValue node, Set<EquivalentValue> visitedSources, Set<EquivalentValue> visitedSinks) {
+  private List<EquivalentValue> sourcesOf(EquivalentValue node, Set<EquivalentValue> visitedSources,
+      Set<EquivalentValue> visitedSinks) {
     visitedSources.add(node);
 
     List<EquivalentValue> ret = new LinkedList<EquivalentValue>();
@@ -250,7 +252,8 @@ public class SmartMethodInfoFlowAnalysis {
     return sinksOf(node, new HashSet<EquivalentValue>(), new HashSet<EquivalentValue>());
   }
 
-  private List<EquivalentValue> sinksOf(EquivalentValue node, Set<EquivalentValue> visitedSources, Set<EquivalentValue> visitedSinks) {
+  private List<EquivalentValue> sinksOf(EquivalentValue node, Set<EquivalentValue> visitedSources,
+      Set<EquivalentValue> visitedSinks) {
     List<EquivalentValue> ret = new LinkedList<EquivalentValue>();
 
     // if(visitedSinks.contains(node))
@@ -320,7 +323,8 @@ public class SmartMethodInfoFlowAnalysis {
 
     if (source instanceof InstanceFieldRef) {
       InstanceFieldRef ifr = (InstanceFieldRef) source;
-      sourceEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, ifr.getField(), (Local) ifr.getBase()); // deals with inner fields
+      sourceEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, ifr.getField(), (Local) ifr.getBase()); // deals with inner
+                                                                                                    // fields
     } else {
       sourceEqVal = new CachedEquivalentValue(source);
     }
@@ -350,7 +354,8 @@ public class SmartMethodInfoFlowAnalysis {
     EquivalentValue sourceEqVal;
     if (source instanceof InstanceFieldRef) {
       InstanceFieldRef ifr = (InstanceFieldRef) source;
-      sourceEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, ifr.getField(), (Local) ifr.getBase()); // deals with inner fields
+      sourceEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, ifr.getField(), (Local) ifr.getBase()); // deals with inner
+                                                                                                    // fields
     } else {
       sourceEqVal = new CachedEquivalentValue(source);
     }
@@ -378,13 +383,13 @@ public class SmartMethodInfoFlowAnalysis {
   protected void handleInnerField(Value innerFieldRef) {
     /*
      * InstanceFieldRef ifr = (InstanceFieldRef) innerFieldRef;
-     * 
-     * EquivalentValue baseEqVal = new CachedEquivalentValue(ifr.getBase()); EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm,
-     * ifr.getField()); // deals with inner fields
-     * 
+     *
+     * EquivalentValue baseEqVal = new CachedEquivalentValue(ifr.getBase()); EquivalentValue fieldRefEqVal =
+     * dfa.getEquivalentValueFieldRef(sm, ifr.getField()); // deals with inner fields
+     *
      * if(!abbreviatedInfoFlowGraph.containsNode(baseEqVal)) abbreviatedInfoFlowGraph.addNode(baseEqVal);
      * if(!abbreviatedInfoFlowGraph.containsNode(fieldRefEqVal)) abbreviatedInfoFlowGraph.addNode(fieldRefEqVal);
-     * 
+     *
      * abbreviatedInfoFlowGraph.addEdge(baseEqVal, fieldRefEqVal);
      */
   }
@@ -412,7 +417,9 @@ public class SmartMethodInfoFlowAnalysis {
 
   protected List<Value> handleInvokeExpr(InvokeExpr ie, Stmt is) {
     // get the data flow graph
-    HashMutableDirectedGraph<EquivalentValue> dataFlowSummary = dfa.getInvokeInfoFlowSummary(ie, is, sm); // must return a graph whose nodes are
+    HashMutableDirectedGraph<EquivalentValue> dataFlowSummary = dfa.getInvokeInfoFlowSummary(ie, is, sm); // must return a
+                                                                                                          // graph whose
+                                                                                                          // nodes are
                                                                                                           // Refs!!!
     if (false) // DEBUG!!!
     {
@@ -421,8 +428,8 @@ public class SmartMethodInfoFlowAnalysis {
         logger.debug("Attempting to print graph (will succeed only if ./dfg/ is a valid path)");
         MutableDirectedGraph<EquivalentValue> abbreviatedDataFlowGraph = dfa.getInvokeAbbreviatedInfoFlowGraph(ie, sm);
         InfoFlowAnalysis.printGraphToDotFile(
-            "dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName() + (refOnly ? "" : "_primitive"), abbreviatedDataFlowGraph,
-            method.getName() + (refOnly ? "" : "_primitive"), false);
+            "dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName() + (refOnly ? "" : "_primitive"),
+            abbreviatedDataFlowGraph, method.getName() + (refOnly ? "" : "_primitive"), false);
       }
     }
     // if( ie.getMethodRef().resolve().getSubSignature().equals(new String("boolean remove(java.lang.Object)")) )
@@ -438,7 +445,8 @@ public class SmartMethodInfoFlowAnalysis {
       EquivalentValue nodeEqVal = nodeIt.next();
 
       if (!(nodeEqVal.getValue() instanceof Ref)) {
-        throw new RuntimeException("Illegal node type in data flow summary:" + nodeEqVal.getValue() + " should be an object of type Ref.");
+        throw new RuntimeException(
+            "Illegal node type in data flow summary:" + nodeEqVal.getValue() + " should be an object of type Ref.");
       }
 
       Ref node = (Ref) nodeEqVal.getValue();

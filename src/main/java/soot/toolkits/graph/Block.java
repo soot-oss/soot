@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -38,9 +38,10 @@ import soot.baf.BafBody;
 import soot.util.Chain;
 
 /**
- * Represents BasicBlocks that partition a method body. It is implemented as view on an underlying Body instance; as a consequence, changes made on a
- * Block will be automatically reflected in its enclosing method body. Blocks also exist in the context of a BlockGraph, a CFG for a method where
- * Block instances are the nodes of the graph. Hence, a Block can be queried for its successors and predecessors Blocks, as found in this graph.
+ * Represents BasicBlocks that partition a method body. It is implemented as view on an underlying Body instance; as a
+ * consequence, changes made on a Block will be automatically reflected in its enclosing method body. Blocks also exist in
+ * the context of a BlockGraph, a CFG for a method where Block instances are the nodes of the graph. Hence, a Block can be
+ * queried for its successors and predecessors Blocks, as found in this graph.
  */
 public class Block implements Iterable<Unit> {
   private static final Logger logger = LoggerFactory.getLogger(Block.class);
@@ -51,7 +52,7 @@ public class Block implements Iterable<Unit> {
 
   /**
    * Constructs a Block in the context of a BlockGraph, and enclosing Body instances.
-   * 
+   *
    *
    * @param aHead
    *          The first unit ir this Block.
@@ -211,7 +212,7 @@ public class Block implements Iterable<Unit> {
 
   /**
    * Returns the index of this Block in the list of Blocks that partition it's enclosing Body instance.
-   * 
+   *
    * @return The index of the block in it's enclosing Body instance.
    */
   public int getIndexInMethod() {
@@ -220,7 +221,7 @@ public class Block implements Iterable<Unit> {
 
   /**
    * Returns the first unit in this block.
-   * 
+   *
    * @return The first unit in this block.
    */
   public Unit getHead() {
@@ -229,7 +230,7 @@ public class Block implements Iterable<Unit> {
 
   /**
    * Returns the last unit in this block.
-   * 
+   *
    * @return The last unit in this block.
    */
   public Unit getTail() {
@@ -238,7 +239,7 @@ public class Block implements Iterable<Unit> {
 
   /**
    * Sets the list of Blocks that are predecessors of this block in it's enclosing BlockGraph instance.
-   * 
+   *
    * @param preds
    *          The a List of Blocks that precede this block.
    *
@@ -251,7 +252,7 @@ public class Block implements Iterable<Unit> {
 
   /**
    * Returns the List of Block that are predecessors to this block,
-   * 
+   *
    * @return A list of predecessor blocks.
    * @see BlockGraph
    */
@@ -261,7 +262,7 @@ public class Block implements Iterable<Unit> {
 
   /**
    * Sets the list of Blocks that are successors of this block in it's enclosing BlockGraph instance.
-   * 
+   *
    * @param succs
    *          The a List of Blocks that succede this block.
    *
@@ -273,7 +274,7 @@ public class Block implements Iterable<Unit> {
 
   /**
    * Returns the List of Blocks that are successors to this block,
-   * 
+   *
    * @return A list of successorblocks.
    * @see BlockGraph
    */

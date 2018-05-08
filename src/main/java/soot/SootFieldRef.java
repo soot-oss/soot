@@ -20,8 +20,9 @@
 package soot;
 
 /**
- * Representation of a reference to a field as it appears in a class file. Note that the field directly referred to may not actually exist; the actual
- * target of the reference is determined according to the resolution procedure in the Java Virtual Machine Specification, 2nd ed, section 5.4.3.2.
+ * Representation of a reference to a field as it appears in a class file. Note that the field directly referred to may not
+ * actually exist; the actual target of the reference is determined according to the resolution procedure in the Java Virtual
+ * Machine Specification, 2nd ed, section 5.4.3.2.
  */
 
 public interface SootFieldRef {

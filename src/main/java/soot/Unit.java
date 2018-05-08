@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -33,8 +33,8 @@ import soot.util.Chain;
 import soot.util.Switchable;
 
 /**
- * A code fragment (eg Stmt or Inst), used within Body classes. Intermediate representations must use an implementation of Unit for their code. In
- * general, a unit denotes some sort of unit for execution.
+ * A code fragment (eg Stmt or Inst), used within Body classes. Intermediate representations must use an implementation of
+ * Unit for their code. In general, a unit denotes some sort of unit for execution.
  */
 public interface Unit extends Switchable, Host, Serializable, Context {
   /** Returns a list of Boxes containing Values used in this Unit. */
@@ -68,13 +68,14 @@ public interface Unit extends Switchable, Host, Serializable, Context {
   public Object clone();
 
   /**
-   * Returns true if execution after this statement may continue at the following statement. GotoStmt will return false but IfStmt will return true.
+   * Returns true if execution after this statement may continue at the following statement. GotoStmt will return false but
+   * IfStmt will return true.
    */
   public boolean fallsThrough();
 
   /**
-   * Returns true if execution after this statement does not necessarily continue at the following statement. GotoStmt and IfStmt will both return
-   * true.
+   * Returns true if execution after this statement does not necessarily continue at the following statement. GotoStmt and
+   * IfStmt will both return true.
    */
   public boolean branches();
 
@@ -82,7 +83,7 @@ public interface Unit extends Switchable, Host, Serializable, Context {
 
   /**
    * Redirects jumps to this Unit to newLocation. In general, you shouldn't have to use this directly.
-   * 
+   *
    * @see PatchingChain#getNonPatchingChain()
    * @see soot.shimple.Shimple#redirectToPreds(Chain, Unit)
    * @see soot.shimple.Shimple#redirectPointers(Unit, Unit)

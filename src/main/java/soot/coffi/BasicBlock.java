@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -35,7 +35,7 @@ import soot.util.ArraySet;
 
 /**
  * Represents one basic block in a control flow graph.
- * 
+ *
  * @see CFG
  * @see ClassFile#parse
  * @author Clark Verbrugge
@@ -48,21 +48,22 @@ class BasicBlock {
   /**
    * Tail of the list of instructions.
    * <p>
-   * Normally, the last instruction will have a next pointer with value <i>null</i>. After a Instruction sequences are reconstructed though, the
-   * instruction lists are rejoined in order, and so the tail instruction will not have a <i>null</i> next pointer.
-   * 
+   * Normally, the last instruction will have a next pointer with value <i>null</i>. After a Instruction sequences are
+   * reconstructed though, the instruction lists are rejoined in order, and so the tail instruction will not have a
+   * <i>null</i> next pointer.
+   *
    * @see CFG#reconstructInstructions
    */
   public Instruction tail;
   /**
    * Vector of predecessor BasicBlocks.
-   * 
+   *
    * @see java.util.Vector
    */
   public Vector<BasicBlock> succ;
   /**
    * Vector of successor BasicBlocks.
-   * 
+   *
    * @see java.util.Vector
    */
   public Vector<BasicBlock> pred;
@@ -74,7 +75,7 @@ class BasicBlock {
   public boolean beginCode;
   /**
    * Flag for semantic stack analysis fixup pass.
-   * 
+   *
    * @see CFG#jimplify
    */
 
@@ -122,7 +123,7 @@ class BasicBlock {
 
   /**
    * Computes a hash code for this block from the label of the first instruction in its contents.
-   * 
+   *
    * @return the hash code.
    * @see Instruction#label
    */
@@ -132,7 +133,7 @@ class BasicBlock {
 
   /**
    * True if this block represents the same piece of code. Basically compares labels of the head instructions.
-   * 
+   *
    * @param b
    *          block to compare against.
    * @return <i>true</i> if they do, <i>false</i> if they don't.

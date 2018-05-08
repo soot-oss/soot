@@ -58,7 +58,8 @@ public class SPhiExpr implements PhiExpr {
   protected Type type;
 
   /**
-   * Create a trivial Phi expression for leftLocal. preds is an ordered list of the control flow predecessor Blocks of the PhiExpr.
+   * Create a trivial Phi expression for leftLocal. preds is an ordered list of the control flow predecessor Blocks of the
+   * PhiExpr.
    **/
   public SPhiExpr(Local leftLocal, List<Block> preds) {
     type = leftLocal.getType();
@@ -340,7 +341,8 @@ public class SPhiExpr implements PhiExpr {
    **/
   protected void updateCache() {
     int needed = argPairs.size();
-    predToPair = new HashMap<Unit, ValueUnitPair>(needed << 1, 1.0F); // Always attempt to allocate the next power of 2 sized map
+    predToPair = new HashMap<Unit, ValueUnitPair>(needed << 1, 1.0F); // Always attempt to allocate the next power of 2 sized
+                                                                      // map
     for (ValueUnitPair vup : argPairs) {
       predToPair.put(vup.getUnit(), vup);
     }

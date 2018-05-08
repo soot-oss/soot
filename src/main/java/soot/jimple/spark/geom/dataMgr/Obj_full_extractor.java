@@ -26,7 +26,7 @@ import soot.jimple.spark.pag.Node;
 
 /**
  * Extracts the full context sensitive points-to result.
- * 
+ *
  * @author xiao
  *
  */
@@ -54,8 +54,8 @@ public class Obj_full_extractor extends PtSensVisitor<IntervalContextVar> {
       for (IntervalContextVar old_cv : resList) {
         if (old_cv.contains(tmp_icv)) {
           /*
-           * Becase we keep the intervals disjoint. It's impossible the passed in interval is contained in an interval or intersects with other
-           * intervals. In such case, we can directly return.
+           * Becase we keep the intervals disjoint. It's impossible the passed in interval is contained in an interval or
+           * intersects with other intervals. In such case, we can directly return.
            */
           return false;
         }

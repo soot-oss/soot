@@ -47,7 +47,8 @@ public class SequenceFinder implements FactFinder {
     SET.find_StatementSequences(this, body);
   }
 
-  public void find_StatementSequences(SETNode SETParent, IterableSet body, HashSet<AugmentedStmt> childUnion, DavaBody davaBody) {
+  public void find_StatementSequences(SETNode SETParent, IterableSet body, HashSet<AugmentedStmt> childUnion,
+      DavaBody davaBody) {
     Iterator bit = body.iterator();
     while (bit.hasNext()) {
       AugmentedStmt as = (AugmentedStmt) bit.next();

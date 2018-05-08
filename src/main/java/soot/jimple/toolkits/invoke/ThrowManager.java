@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -151,8 +151,8 @@ public class ThrowManager {
 
     Stmt newStmt = Jimple.v().newAssignStmt(l, Jimple.v().newNewExpr(RefType.v("java.lang.NullPointerException")));
 
-    Stmt invStmt = Jimple.v()
-        .newInvokeStmt(Jimple.v().newSpecialInvokeExpr(l, Scene.v().getMethod("<java.lang.NullPointerException: void <init>()>").makeRef()));
+    Stmt invStmt = Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(l,
+        Scene.v().getMethod("<java.lang.NullPointerException: void <init>()>").makeRef()));
 
     Stmt throwStmt = Jimple.v().newThrowStmt(l);
 
@@ -167,7 +167,8 @@ public class ThrowManager {
    */
   static boolean isExceptionCaughtAt(SootClass e, Stmt stmt, Body b) {
     /*
-     * Look through the traps t of b, checking to see if: - caught exception is e; - and, stmt lies between t.beginUnit and t.endUnit
+     * Look through the traps t of b, checking to see if: - caught exception is e; - and, stmt lies between t.beginUnit and
+     * t.endUnit
      */
 
     Hierarchy h = new Hierarchy();

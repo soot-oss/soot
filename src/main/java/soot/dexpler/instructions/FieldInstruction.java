@@ -91,9 +91,9 @@ public abstract class FieldInstruction extends DexlibAbstractInstruction {
   }
 
   /**
-   * Check if the field type equals the type of the value that will be stored in the field. A cast expression has to be introduced for the unequal
-   * case.
-   * 
+   * Check if the field type equals the type of the value that will be stored in the field. A cast expression has to be
+   * introduced for the unequal case.
+   *
    * @return assignment statement which hold a cast or not depending on the types of the operation
    */
   protected AssignStmt getAssignStmt(DexBody body, Local sourceValue, ConcreteRef instanceField) {

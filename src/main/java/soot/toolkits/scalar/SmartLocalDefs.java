@@ -45,10 +45,10 @@ import soot.util.LocalBitSetPacker;
 
 /**
  * Analysis that provides an implementation of the LocalDefs interface.
- * 
- * This Analysis calculates only the definitions of the locals used by a unit. If you need all definitions of local you should use
- * {@see SimpleLocalDefs}.
- * 
+ *
+ * This Analysis calculates only the definitions of the locals used by a unit. If you need all definitions of local you
+ * should use {@see SimpleLocalDefs}.
+ *
  * Be warned: This implementation requires a lot of memory and CPU time, normally {@see SimpleLocalDefs} is much faster.
  */
 public class SmartLocalDefs implements LocalDefs {
@@ -66,7 +66,7 @@ public class SmartLocalDefs implements LocalDefs {
 
   /**
    * Intersects 2 sets and returns the result as a list
-   * 
+   *
    * @param a
    * @param b
    * @return

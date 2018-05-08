@@ -43,8 +43,8 @@ import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 /**
- * Performs an UpSafe-analysis on the given graph. An expression is upsafe, if the computation already has been performed on every path from START to
- * the given program-point.
+ * Performs an UpSafe-analysis on the given graph. An expression is upsafe, if the computation already has been performed on
+ * every path from START to the given program-point.
  */
 public class UpSafetyAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<EquivalentValue>> {
   private SideEffectTester sideEffect;
@@ -74,7 +74,8 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equivale
    *          the SideEffectTester that will be used to perform kills.
    */
   public UpSafetyAnalysis(DirectedGraph<Unit> dg, Map<Unit, EquivalentValue> unitToGen, SideEffectTester sideEffect) {
-    this(dg, unitToGen, sideEffect, new ArrayPackedSet<EquivalentValue>(new CollectionFlowUniverse<EquivalentValue>(unitToGen.values())));
+    this(dg, unitToGen, sideEffect,
+        new ArrayPackedSet<EquivalentValue>(new CollectionFlowUniverse<EquivalentValue>(unitToGen.values())));
   }
 
   /**

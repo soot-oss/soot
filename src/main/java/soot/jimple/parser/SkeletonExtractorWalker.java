@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -42,9 +42,9 @@ import soot.jimple.parser.node.AMethodMember;
 import soot.jimple.parser.node.AThrowsClause;
 import soot.jimple.parser.node.PModifier;
 
-/* 
-   Walks a jimple AST and extracts the fields, and method signatures and produces 
-   a new squeleton SootClass instance.   
+/*
+   Walks a jimple AST and extracts the fields, and method signatures and produces
+   a new squeleton SootClass instance.
 */
 public class SkeletonExtractorWalker extends Walker {
 
@@ -133,7 +133,8 @@ public class SkeletonExtractorWalker extends Walker {
   }
 
   /*
-   * member = {field} modifier* type name semicolon | {method} modifier* type name l_paren parameter_list? r_paren throws_clause? method_body;
+   * member = {field} modifier* type name semicolon | {method} modifier* type name l_paren parameter_list? r_paren
+   * throws_clause? method_body;
    */
 
   public void caseAMethodMember(AMethodMember node) {

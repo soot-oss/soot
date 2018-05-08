@@ -59,17 +59,17 @@ import soot.toolkits.scalar.FlowSet;
 /*
  * Sort of the mark phase of a mark and sweep dead code eliminator.
  * Carry NOPATH information through the flowsets
- * 
+ *
  * Will need to over ride the processAbruptStatement method of parent
  * class since we plan to do something special with abrupt stmts
- * 
+ *
  * ONLY PROCESS A CONSTRUCT IF ITS INSET HOLDS TRUE i.e. it is REACHABLE otherwise
  * simply pass on the inset
- * 
+ *
  * TODO:
  *   1, The child after any loop is always reachable (even for a while(true) which returns)
  *      Will probably have to override loop process methods, invoke the super process method and then change the outset
- *   2, handleBreak would need to see if there is any break stmt then set the out to contain true   
+ *   2, handleBreak would need to see if there is any break stmt then set the out to contain true
  */
 
 public class UnreachableCodeFinder extends StructuredAnalysis {
@@ -147,7 +147,8 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
   }
 
   /*
-   * Merge is intersection but our SPECIALIZED intersection hence creating our own specialize flow set with overriding the intersection method
+   * Merge is intersection but our SPECIALIZED intersection hence creating our own specialize flow set with overriding the
+   * intersection method
    */
   public void setMergeType() {
     MERGETYPE = INTERSECTION;
@@ -155,9 +156,9 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
 
   /*
    * For catch bodies.
-   * 
-   * If you are processing the catch body that means you can reach to the try Since you can always come to a catchbody the inset to the catch body to
-   * should be that there is a path
+   *
+   * If you are processing the catch body that means you can reach to the try Since you can always come to a catchbody the
+   * inset to the catch body to should be that there is a path
    */
   public DavaFlowSet newInitialFlow() {
     DavaFlowSet newSet = emptyFlowSet();
@@ -249,8 +250,9 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
   }
 
   /*
-   * If a particular node is targeted by a break statement then that means there is always a path to it Hence if there is even a single entry in the
-   * implicit or explicit break set return a flow set which contains true since there is a path to this point
+   * If a particular node is targeted by a break statement then that means there is always a path to it Hence if there is
+   * even a single entry in the implicit or explicit break set return a flow set which contains true since there is a path to
+   * this point
    */
   @Override
   public DavaFlowSet handleBreak(String label, DavaFlowSet output, ASTNode node) {

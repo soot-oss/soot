@@ -32,7 +32,7 @@ import soot.toolkits.scalar.FlowSet;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 10-Jul-2006
  */
 public class New2InitFlowAnalysis extends BackwardFlowAnalysis<Unit, FlowSet> {
@@ -66,8 +66,9 @@ public class New2InitFlowAnalysis extends BackwardFlowAnalysis<Unit, FlowSet> {
       }
     }
     /*
-     * else if (d instanceof InvokeStmt) { InvokeExpr ie = ((InvokeStmt)d).getInvokeExpr(); if (ie instanceof SpecialInvokeExpr) { Value v =
-     * ((SpecialInvokeExpr)ie).getBase(); if (v instanceof Local && !inf.contains(v)) outf.add(v); } }
+     * else if (d instanceof InvokeStmt) { InvokeExpr ie = ((InvokeStmt)d).getInvokeExpr(); if (ie instanceof
+     * SpecialInvokeExpr) { Value v = ((SpecialInvokeExpr)ie).getBase(); if (v instanceof Local && !inf.contains(v))
+     * outf.add(v); } }
      */
   }
 

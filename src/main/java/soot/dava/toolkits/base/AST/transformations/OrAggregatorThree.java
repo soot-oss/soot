@@ -45,12 +45,12 @@ import soot.jimple.Stmt;
 /*
   Nomair A. Naeem 21-FEB-2005
   The class is responsible to do the following transformation on the AST
-  if(cond1){              if(cond1 || cond2)       
-     A                            A                
-  }                       }                        
-  if(cond2){         
-     A              
-  }                 
+  if(cond1){              if(cond1 || cond2)
+     A                            A
+  }                       }
+  if(cond2){
+     A
+  }
 
   Notice that this kind of conversion is only possible if A is an
   abrupt edge like:
@@ -139,7 +139,8 @@ public class OrAggregatorThree {
       List<Object> toModifySubBody = (List<Object>) subBodies.get(subBodyNumber);
 
       /*
-       * The toModifySubBody contains the two consective if nodes in question at location given by the nodeNumber and nodeNumer+1
+       * The toModifySubBody contains the two consective if nodes in question at location given by the nodeNumber and
+       * nodeNumer+1
        */
       List<Object> newBody = createNewNodeBody(toModifySubBody, nodeNumber, ifOne, ifTwo);
       if (newBody == null) {
@@ -162,9 +163,9 @@ public class OrAggregatorThree {
   }
 
   /*
-   * This method does the following: 1, check that the OrAggregatorThree pattern matches for node ifOne and ifTwo 2, if pattern does not match return
-   * null 3, if pattern matches create and return a newSubBody which has: a, ifOne with its condition ORED with that of ifTwo b, ifTwo has been
-   * removed from the subBody
+   * This method does the following: 1, check that the OrAggregatorThree pattern matches for node ifOne and ifTwo 2, if
+   * pattern does not match return null 3, if pattern matches create and return a newSubBody which has: a, ifOne with its
+   * condition ORED with that of ifTwo b, ifTwo has been removed from the subBody
    */
 
   public static List<Object> createNewNodeBody(List<Object> oldSubBody, int nodeNumber, ASTIfNode ifOne, ASTIfNode ifTwo) {
@@ -239,8 +240,9 @@ public class OrAggregatorThree {
   }
 
   /*
-   * Given two IfNodes as input the pattern checks the following: a, each if node has a single ASTSTatementSequenceNode in the body b, Each
-   * StatementSequenceNode is a single statement c, The statement is the same in both nodes d, The statement is an abrupt control flow statement
+   * Given two IfNodes as input the pattern checks the following: a, each if node has a single ASTSTatementSequenceNode in
+   * the body b, Each StatementSequenceNode is a single statement c, The statement is the same in both nodes d, The statement
+   * is an abrupt control flow statement
    */
   private static boolean matchPattern(ASTIfNode one, ASTIfNode two) {
     List<Object> subBodiesOne = one.get_SubBodies();

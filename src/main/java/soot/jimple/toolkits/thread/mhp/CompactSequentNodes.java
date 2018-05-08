@@ -91,7 +91,8 @@ public class CompactSequentNodes {
 
   private void visitNode(PegGraph pg, Object node, List<Object> list, Set canNotBeCompacted, Set<Object> gray) {
     // System.out.println("node is: "+node);
-    if (pg.getPredsOf(node).size() == 1 && pg.getSuccsOf(node).size() == 1 && !canNotBeCompacted.contains(node) && !gray.contains(node)) {
+    if (pg.getPredsOf(node).size() == 1 && pg.getSuccsOf(node).size() == 1 && !canNotBeCompacted.contains(node)
+        && !gray.contains(node)) {
       list.add(node);
       Iterator it = pg.getSuccsOf(node).iterator();
       while (it.hasNext()) {

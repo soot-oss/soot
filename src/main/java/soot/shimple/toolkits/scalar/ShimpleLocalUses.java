@@ -38,12 +38,13 @@ import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
- * This class implements the LocalUses interface for Shimple. ShimpleLocalUses can be used in conjunction with SimpleLocalDefs to provide
- * Definition/Use and Use/Definition chains in SSA.
+ * This class implements the LocalUses interface for Shimple. ShimpleLocalUses can be used in conjunction with
+ * SimpleLocalDefs to provide Definition/Use and Use/Definition chains in SSA.
  *
  * <p>
- * In addition to the interface required by LocalUses, ShimpleLocalUses also provides a method for obtaining the list of uses given only the Local.
- * Furthermore, unlike SimpleLocalUses, a LocalDefs object is not required when constructing ShimpleLocalUses.
+ * In addition to the interface required by LocalUses, ShimpleLocalUses also provides a method for obtaining the list of uses
+ * given only the Local. Furthermore, unlike SimpleLocalUses, a LocalDefs object is not required when constructing
+ * ShimpleLocalUses.
  *
  * @author Navindra Umanee
  * @see ShimpleLocalDefs
@@ -55,14 +56,15 @@ public class ShimpleLocalUses implements LocalUses {
   protected Map<Local, ArrayList> localToUses;
 
   /**
-   * Build a LocalUses interface from a ShimpleBody. Proper SSA form is required, otherwise correct behaviour is not guaranteed.
+   * Build a LocalUses interface from a ShimpleBody. Proper SSA form is required, otherwise correct behaviour is not
+   * guaranteed.
    **/
   public ShimpleLocalUses(ShimpleBody sb) {
     // Instead of rebuilding the ShimpleBody without the
     // programmer's knowledge, throw a RuntimeException
     if (!sb.isSSA()) {
-      throw new RuntimeException(
-          "ShimpleBody is not in proper SSA form as required by ShimpleLocalUses.  You may need to rebuild it or use SimpleLocalUses instead.");
+      throw new RuntimeException("ShimpleBody is not in proper SSA form as required by ShimpleLocalUses."
+          + "You may need to rebuild it or use SimpleLocalUses instead.");
     }
 
     // initialise the map
@@ -96,8 +98,8 @@ public class ShimpleLocalUses implements LocalUses {
   }
 
   /**
-   * Returns all the uses of the given Local as a list of UnitValueBoxPairs, each containing a Unit that uses the local and the corresponding ValueBox
-   * containing the Local.
+   * Returns all the uses of the given Local as a list of UnitValueBoxPairs, each containing a Unit that uses the local and
+   * the corresponding ValueBox containing the Local.
    *
    * <p>
    * This method is currently not required by the LocalUses interface.
@@ -111,8 +113,8 @@ public class ShimpleLocalUses implements LocalUses {
   }
 
   /**
-   * If a Local is defined in the Unit, returns all the uses of that Local as a list of UnitValueBoxPairs, each containing a Unit that uses the local
-   * and the corresponding ValueBox containing the Local.
+   * If a Local is defined in the Unit, returns all the uses of that Local as a list of UnitValueBoxPairs, each containing a
+   * Unit that uses the local and the corresponding ValueBox containing the Local.
    **/
   public List getUsesOf(Unit unit) {
     List defBoxes = unit.getDefBoxes();

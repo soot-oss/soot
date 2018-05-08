@@ -23,7 +23,7 @@ import soot.util.Numberable;
 
 /**
  * Enumeration type representing the kind of a call graph edge.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public final class Kind implements Numberable {
@@ -93,8 +93,9 @@ public final class Kind implements Numberable {
   }
 
   public boolean passesParameters() {
-    return isExplicit() || this == THREAD || this == EXECUTOR || this == ASYNCTASK || this == FINALIZE || this == PRIVILEGED || this == NEWINSTANCE
-        || this == INVOKE_FINALIZE || this == REFL_INVOKE || this == REFL_CONSTR_NEWINSTANCE || this == REFL_CLASS_NEWINSTANCE;
+    return isExplicit() || this == THREAD || this == EXECUTOR || this == ASYNCTASK || this == FINALIZE || this == PRIVILEGED
+        || this == NEWINSTANCE || this == INVOKE_FINALIZE || this == REFL_INVOKE || this == REFL_CONSTR_NEWINSTANCE
+        || this == REFL_CLASS_NEWINSTANCE;
   }
 
   public boolean isFake() {

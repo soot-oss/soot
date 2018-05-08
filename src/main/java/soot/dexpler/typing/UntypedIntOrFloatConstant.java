@@ -16,7 +16,7 @@ import soot.jimple.NullConstant;
 public class UntypedIntOrFloatConstant extends UntypedConstant {
 
   /**
-  * 
+  *
   */
   private static final long serialVersionUID = 4413439694269487822L;
   public final int value;
@@ -50,13 +50,15 @@ public class UntypedIntOrFloatConstant extends UntypedConstant {
   public Value defineType(Type t) {
     if (t instanceof FloatType) {
       return this.toFloatConstant();
-    } else if (t instanceof IntType || t instanceof CharType || t instanceof BooleanType || t instanceof ByteType || t instanceof ShortType) {
+    } else if (t instanceof IntType || t instanceof CharType || t instanceof BooleanType || t instanceof ByteType
+        || t instanceof ShortType) {
       return this.toIntConstant();
     } else {
       if (value == 0 && t instanceof RefLikeType) {
         return NullConstant.v();
       }
-      if (t == null) { // if the value is only used in a if to compare against another integer, then use default type of integer
+      if (t == null) { // if the value is only used in a if to compare against another integer, then use default type of
+                       // integer
         return this.toIntConstant();
       }
       throw new RuntimeException("error: expected Float type or Int-like type. Got " + t);

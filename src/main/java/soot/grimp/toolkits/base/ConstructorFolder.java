@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -99,9 +99,9 @@ public class ConstructorFolder extends BodyTransformer {
       }
 
       /*
-       * TO BE IMPLEMENTED LATER: move any copy of the object reference for lhs down beyond the NewInvokeExpr, with the rationale being that you can't
-       * modify the object before the constructor call in any case.
-       * 
+       * TO BE IMPLEMENTED LATER: move any copy of the object reference for lhs down beyond the NewInvokeExpr, with the
+       * rationale being that you can't modify the object before the constructor call in any case.
+       *
        * Also, do note that any new's (object creation) without corresponding constructors must be dead.
        */
 
@@ -115,7 +115,8 @@ public class ConstructorFolder extends BodyTransformer {
           continue;
         }
         InvokeStmt is = (InvokeStmt) use;
-        if (!(is.getInvokeExpr() instanceof SpecialInvokeExpr) || lhs != ((SpecialInvokeExpr) is.getInvokeExpr()).getBase()) {
+        if (!(is.getInvokeExpr() instanceof SpecialInvokeExpr)
+            || lhs != ((SpecialInvokeExpr) is.getInvokeExpr()).getBase()) {
           continue;
         }
 
@@ -126,7 +127,8 @@ public class ConstructorFolder extends BodyTransformer {
         }
 
         AssignStmt constructStmt = Grimp.v().newAssignStmt((AssignStmt) s);
-        constructStmt.setRightOp(Grimp.v().newNewInvokeExpr(((NewExpr) rhs).getBaseType(), oldInvoke.getMethodRef(), invokeArgs));
+        constructStmt
+            .setRightOp(Grimp.v().newNewInvokeExpr(((NewExpr) rhs).getBaseType(), oldInvoke.getMethodRef(), invokeArgs));
         MadeNewInvokeExpr = true;
 
         use.redirectJumpsToThisTo(constructStmt);

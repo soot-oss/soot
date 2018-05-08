@@ -36,8 +36,9 @@ import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 
 /**
- * Propagates points-to sets along pointer assignment graph using a merging of field reference (Red) nodes to improve scalability.
- * 
+ * Propagates points-to sets along pointer assignment graph using a merging of field reference (Red) nodes to improve
+ * scalability.
+ *
  * @author Ondrej Lhotak
  */
 

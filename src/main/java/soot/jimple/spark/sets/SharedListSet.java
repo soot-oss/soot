@@ -5,7 +5,7 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.util.BitVector;
 
-/* 
+/*
  * Reference counting was amazingly difficult to get right, for the number of lines of
  * code it makes up.
  * Reference counting keeps track of how many things are pointing to a ListNode.  When
@@ -19,7 +19,7 @@ import soot.util.BitVector;
  * has one extra thing pointing at it, so increase its reference count.
  * -Reference count decreases when a chain is detached.  Detachment is bit of a complicated
  * process; it should be described in my thesis.
- * 
+ *
  */
 
 //Can't use java.lang.ref.WeakReferences instead because:
@@ -245,7 +245,8 @@ public class SharedListSet extends PointsToSetInternal {
         return false;
       }
       Pair o = (Pair) other;
-      return ((first == null && o.first == null) || first == o.first) && ((second == null && o.second == null) || second == o.second);
+      return ((first == null && o.first == null) || first == o.first)
+          && ((second == null && o.second == null) || second == o.second);
     }
   }
 

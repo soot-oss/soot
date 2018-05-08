@@ -38,7 +38,8 @@ public class JavaIoObjectOutputStreamNative extends NativeMethodClass {
   /**
    * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
    */
-  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
+  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 
@@ -59,17 +60,18 @@ public class JavaIoObjectOutputStreamNative extends NativeMethodClass {
    *
    * private static native java.lang.Object getObjectFieldValue(java.lang.Object, long);
    */
-  public void java_io_ObjectOutputStream_getObjectFieldValue(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
-      ReferenceVariable params[]) {
+  public void java_io_ObjectOutputStream_getObjectFieldValue(SootMethod method, ReferenceVariable thisVar,
+      ReferenceVariable returnVar, ReferenceVariable params[]) {
     throw new NativeMethodNotSupportedException(method);
   }
 
   /**
    * Following three native methods have no side effects.
    *
-   * private static native void floatsToBytes(float[], int, byte[], int, int); private static native void doublesToBytes(double[], int, byte[], int,
-   * int); private static native void getPrimitiveFieldValues(java.lang.Object, long[], char[], byte[]);
-   * 
+   * private static native void floatsToBytes(float[], int, byte[], int, int); private static native void
+   * doublesToBytes(double[], int, byte[], int, int); private static native void getPrimitiveFieldValues(java.lang.Object,
+   * long[], char[], byte[]);
+   *
    * @see default(...)
    */
 }

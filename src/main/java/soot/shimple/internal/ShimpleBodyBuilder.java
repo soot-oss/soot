@@ -67,13 +67,13 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  * This class can also translate out of Shimple by producing an equivalent Jimple body with all Phi nodes removed.
  *
  * <p>
- * Note that this is an internal class, understanding it should not be necessary from a user point-of-view and relying on it directly is not
- * recommended.
+ * Note that this is an internal class, understanding it should not be necessary from a user point-of-view and relying on it
+ * directly is not recommended.
  *
  * @author Navindra Umanee
  * @see soot.shimple.ShimpleBody
- * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and the Control Dependence
- *      Graph</a>
+ * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
+ *      the Control Dependence Graph</a>
  **/
 public class ShimpleBodyBuilder {
   protected ShimpleBody body;
@@ -162,7 +162,8 @@ public class ShimpleBodyBuilder {
    * Remove Phi nodes from current body, high probablity this destroys SSA form.
    *
    * <p>
-   * Dead code elimination + register aggregation are performed as recommended by Cytron. The Aggregator looks like it could use some improvements.
+   * Dead code elimination + register aggregation are performed as recommended by Cytron. The Aggregator looks like it could
+   * use some improvements.
    *
    * @see soot.options.ShimpleOptions
    **/
@@ -192,8 +193,8 @@ public class ShimpleBodyBuilder {
   protected Stack<Integer>[] namingStacks;
 
   /**
-   * Variable Renaming Algorithm from Cytron et al 91, P26-8, implemented in various bits and pieces by the next functions. Must be called after
-   * trivial nodes have been added.
+   * Variable Renaming Algorithm from Cytron et al 91, P26-8, implemented in various bits and pieces by the next functions.
+   * Must be called after trivial nodes have been added.
    **/
   public void renameLocals() {
     update();
@@ -409,7 +410,8 @@ public class ShimpleBodyBuilder {
   }
 
   /**
-   * Convenient function that maps new Locals to the originating Local, and finds the appropriate array index into the naming structures.
+   * Convenient function that maps new Locals to the originating Local, and finds the appropriate array index into the naming
+   * structures.
    **/
   protected int indexOfLocal(Value local) {
     int localIndex = origLocals.indexOf(local);

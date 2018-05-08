@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -54,8 +54,8 @@ import soot.util.HashChain;
 // future work: fieldrefs.
 
 /**
- * Implements an available expressions analysis on local variables. The current implementation is slow but correct. A better implementation would use
- * an implicit universe and the kill rule would be computed on-the-fly for each statement.
+ * Implements an available expressions analysis on local variables. The current implementation is slow but correct. A better
+ * implementation would use an implicit universe and the kill rule would be computed on-the-fly for each statement.
  */
 public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Value>> {
   Map<Unit, BoundedFlowSet<Value>> unitToGenerateSet;
@@ -74,7 +74,8 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
     ArrayList<Value> exprs = new ArrayList<Value>();
 
     // Consider "a + b". containingExprs maps a and b (object equality) both to "a + b" (equivalence).
-    HashMap<EquivalentValue, Chain<EquivalentValue>> containingExprs = new HashMap<EquivalentValue, Chain<EquivalentValue>>();
+    HashMap<EquivalentValue, Chain<EquivalentValue>> containingExprs
+        = new HashMap<EquivalentValue, Chain<EquivalentValue>>();
 
     // maps a Value to its EquivalentValue.
     valueToEquivValue = new HashMap<Value, EquivalentValue>();

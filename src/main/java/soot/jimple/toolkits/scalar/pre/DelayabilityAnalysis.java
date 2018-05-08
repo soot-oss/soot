@@ -38,9 +38,10 @@ import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 /**
- * Performs a Delayability-analysis on the given graph. This analysis is the third analysis in the PRE (lazy code motion) and has little (no?) sense
- * if used alone. Basically it tries to push the computations we would insert in the Busy Code Motion as far down as possible, to decrease life-time
- * ranges (clearly this is not true, if the computation "uses" two variables and produces only one temporary).
+ * Performs a Delayability-analysis on the given graph. This analysis is the third analysis in the PRE (lazy code motion) and
+ * has little (no?) sense if used alone. Basically it tries to push the computations we would insert in the Busy Code Motion
+ * as far down as possible, to decrease life-time ranges (clearly this is not true, if the computation "uses" two variables
+ * and produces only one temporary).
  */
 public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<EquivalentValue>> {
   private EarliestnessComputation earliest;
@@ -57,7 +58,8 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
   }
 
   /**
-   * Automatically performs the Delayability-analysis on the graph <code>dg</code> and the Earliest-computation <code>earliest</code>.<br>
+   * Automatically performs the Delayability-analysis on the graph <code>dg</code> and the Earliest-computation
+   * <code>earliest</code>.<br>
    * the <code>equivRhsMap</code> is only here to avoid doing these things again...
    *
    * @param dg
@@ -67,15 +69,18 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
    * @param equivRhsMap
    *          the rhs of each unit (if assignment-stmt).
    */
-  public DelayabilityAnalysis(DirectedGraph<Unit> dg, EarliestnessComputation earliest, Map<Unit, EquivalentValue> equivRhsMap) {
-    this(dg, earliest, equivRhsMap, new ArrayPackedSet<EquivalentValue>(new CollectionFlowUniverse<EquivalentValue>(equivRhsMap.values())));
+  public DelayabilityAnalysis(DirectedGraph<Unit> dg, EarliestnessComputation earliest,
+      Map<Unit, EquivalentValue> equivRhsMap) {
+    this(dg, earliest, equivRhsMap,
+        new ArrayPackedSet<EquivalentValue>(new CollectionFlowUniverse<EquivalentValue>(equivRhsMap.values())));
   }
 
   /**
-   * Automatically performs the Delayability-analysis on the graph <code>dg</code> and the Earliest-computation <code>earliest</code>.<br>
+   * Automatically performs the Delayability-analysis on the graph <code>dg</code> and the Earliest-computation
+   * <code>earliest</code>.<br>
    * the <code>equivRhsMap</code> is only here to avoid doing these things again...<br>
-   * as set-operations are usually more efficient, if the sets come from one source, sets should be shared around analyses, if the analyses are to be
-   * combined.
+   * as set-operations are usually more efficient, if the sets come from one source, sets should be shared around analyses,
+   * if the analyses are to be combined.
    *
    * @param dg
    *          a ExceptionalUnitGraph
@@ -86,8 +91,8 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
    * @param set
    *          the shared set.
    */
-  public DelayabilityAnalysis(DirectedGraph<Unit> dg, EarliestnessComputation earliest, Map<Unit, EquivalentValue> equivRhsMap,
-      BoundedFlowSet<EquivalentValue> set) {
+  public DelayabilityAnalysis(DirectedGraph<Unit> dg, EarliestnessComputation earliest,
+      Map<Unit, EquivalentValue> equivRhsMap, BoundedFlowSet<EquivalentValue> set) {
     super(dg);
     UnitGraph g = (UnitGraph) dg;
     this.set = set;

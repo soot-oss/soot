@@ -22,8 +22,8 @@
  */
 
 /*
- * CHANGE LOG:  * 30th January 2006, Class created since FinalFieldDefinition wants 
- *                info about uses of a particular field in a method. Writing a general 
+ * CHANGE LOG:  * 30th January 2006, Class created since FinalFieldDefinition wants
+ *                info about uses of a particular field in a method. Writing a general
  *                analysis which finds all uses of Locals and SootFields
  *
  */
@@ -116,7 +116,7 @@ public class AllVariableUses extends DepthFirstAdapter {
 
   /*
    * The key in a switch stmt can be a local or a SootField or a value which can contain Locals or SootFields
-   * 
+   *
    * Hence the some what indirect approach
    */
   public void inASTSwitchNode(ASTSwitchNode node) {
@@ -179,8 +179,8 @@ public class AllVariableUses extends DepthFirstAdapter {
   }
 
   /*
-   * The init of a for loop can use a local/Sootfield The condition of a for node can use a local/SootField The update in a for loop can use a
-   * local/SootField
+   * The init of a for loop can use a local/Sootfield The condition of a for node can use a local/SootField The update in a
+   * for loop can use a local/SootField
    */
   public void inASTForLoopNode(ASTForLoopNode node) {
 
@@ -276,9 +276,9 @@ public class AllVariableUses extends DepthFirstAdapter {
 
   /*
    * Given a unary/binary or aggregated condition this method is used to find the locals/SootFields used in the condition
-   * 
+   *
    * @param The condition to be checked for Local or FieldRef uses
-   * 
+   *
    * @return a list containing all Locals and FieldRefs used in this condition
    */
   public List<Value> getUseList(ASTCondition cond) {

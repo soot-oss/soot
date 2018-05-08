@@ -37,8 +37,9 @@ import soot.SootMethod;
 import soot.Type;
 
 /**
- * Dumps the reaching types of each local variable to a file in a format that can be easily compared with results of other analyses, such as VTA.
- * 
+ * Dumps the reaching types of each local variable to a file in a format that can be easily compared with results of other
+ * analyses, such as VTA.
+ *
  * @author Ondrej Lhotak
  */
 public class ReachingTypeDumper {

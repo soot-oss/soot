@@ -52,7 +52,8 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
         return false;
       }
       ArrayTypesInternal otherTypes = (ArrayTypesInternal) obj;
-      return otherTypes.sizeState.equals(sizeState) && Arrays.equals(typeState, otherTypes.typeState) && mustAssign.equals(otherTypes.mustAssign);
+      return otherTypes.sizeState.equals(sizeState) && Arrays.equals(typeState, otherTypes.typeState)
+          && mustAssign.equals(otherTypes.mustAssign);
     }
   }
 
@@ -156,7 +157,8 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
         int varRef = localToInt.get(lhs);
         out.active.clear(varRef);
         out.state[varRef] = null;
-      } else if (lhs instanceof Local && rhs instanceof Local && in.state[localToInt.get(rhs)] != null && in.active.get(localToInt.get(rhs))) {
+      } else if (lhs instanceof Local && rhs instanceof Local && in.state[localToInt.get(rhs)] != null
+          && in.active.get(localToInt.get(rhs))) {
         int lhsRef = localToInt.get(lhs);
         int rhsRef = localToInt.get(rhs);
         out.active.set(lhsRef);

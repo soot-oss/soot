@@ -69,8 +69,8 @@ public abstract class DexlibAbstractInstruction {
   public abstract void jimplify(DexBody body);
 
   /**
-   * Return the target register that is a copy of the given register. For instruction such as v0 = v3 (v0 gets the content of v3), movesRegister(3)
-   * returns 0 movesRegister(0) returns -1
+   * Return the target register that is a copy of the given register. For instruction such as v0 = v3 (v0 gets the content of
+   * v3), movesRegister(3) returns 0 movesRegister(0) returns -1
    *
    * Instructions should override this if they copy register content.
    *
@@ -83,8 +83,8 @@ public abstract class DexlibAbstractInstruction {
   }
 
   /**
-   * Return the source register that is moved to the given register. For instruction such as v0 = v3 (v0 gets the content of v3), movesToRegister(3)
-   * returns -1 movesToRegister(0) returns 3
+   * Return the source register that is moved to the given register. For instruction such as v0 = v3 (v0 gets the content of
+   * v3), movesToRegister(3) returns -1 movesToRegister(0) returns 3
    *
    * Instructions should override this if they copy register content.
    *
@@ -152,7 +152,7 @@ public abstract class DexlibAbstractInstruction {
 
   /**
    * Tag the passed host with: - this instructions line number (if one is set) - the original bytecode offset
-   * 
+   *
    * @param host
    *          the host to tag
    */
@@ -212,29 +212,32 @@ public abstract class DexlibAbstractInstruction {
   // All uses for the array have been commented out.
   // Calling all v()s for all types make no sense if we do not use them
   /*
-   * protected Type [] opUnType = { IntType.v(), // 0x7B neg-int vx, vy IntType.v(), // 0x7C LongType.v(), // 0x7D LongType.v(), // 0x7E
-   * FloatType.v(), // 0x7F DoubleType.v(), // 0x80 IntType.v(), IntType.v(), IntType.v(), LongType.v(), LongType.v(), LongType.v(), FloatType.v(),
-   * FloatType.v(), FloatType.v(), DoubleType.v(), DoubleType.v(), DoubleType.v(), IntType.v(), IntType.v(), IntType.v() // 0x8F int-to-short vx, vy
-   * };
-   * 
-   * protected Type [] resUnType = { IntType.v(), // 0x7B IntType.v(), LongType.v(), LongType.v(), FloatType.v(), DoubleType.v(), LongType.v(),
-   * FloatType.v(), DoubleType.v(), IntType.v(), FloatType.v(), DoubleType.v(), IntType.v(), LongType.v(), DoubleType.v(), IntType.v(), LongType.v(),
-   * FloatType.v(), IntType.v(), IntType.v(), IntType.v() // 0x8F };
-   * 
-   * protected Type [] resBinType = { IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(),
-   * IntType.v(), IntType.v(), IntType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(),
-   * LongType.v(), LongType.v(), LongType.v(), LongType.v(), FloatType.v(), FloatType.v(), FloatType.v(), FloatType.v(), FloatType.v(),
-   * DoubleType.v(), DoubleType.v(), DoubleType.v(), DoubleType.v(), DoubleType.v() };
-   * 
-   * protected Type [] op1BinType = { IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(),
-   * IntType.v(), IntType.v(), IntType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(),
-   * LongType.v(), LongType.v(), LongType.v(), LongType.v(), FloatType.v(), FloatType.v(), FloatType.v(), FloatType.v(), FloatType.v(),
-   * DoubleType.v(), DoubleType.v(), DoubleType.v(), DoubleType.v(), DoubleType.v() };
-   * 
-   * protected Type [] op2BinType = { IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(),
-   * IntType.v(), IntType.v(), IntType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(),
-   * LongType.v(), IntType.v(), IntType.v(), IntType.v(), FloatType.v(), FloatType.v(), FloatType.v(), FloatType.v(), FloatType.v(), DoubleType.v(),
-   * DoubleType.v(), DoubleType.v(), DoubleType.v(), DoubleType.v() };
+   * protected Type [] opUnType = { IntType.v(), // 0x7B neg-int vx, vy IntType.v(), // 0x7C LongType.v(), // 0x7D
+   * LongType.v(), // 0x7E FloatType.v(), // 0x7F DoubleType.v(), // 0x80 IntType.v(), IntType.v(), IntType.v(),
+   * LongType.v(), LongType.v(), LongType.v(), FloatType.v(), FloatType.v(), FloatType.v(), DoubleType.v(), DoubleType.v(),
+   * DoubleType.v(), IntType.v(), IntType.v(), IntType.v() // 0x8F int-to-short vx, vy };
+   *
+   * protected Type [] resUnType = { IntType.v(), // 0x7B IntType.v(), LongType.v(), LongType.v(), FloatType.v(),
+   * DoubleType.v(), LongType.v(), FloatType.v(), DoubleType.v(), IntType.v(), FloatType.v(), DoubleType.v(), IntType.v(),
+   * LongType.v(), DoubleType.v(), IntType.v(), LongType.v(), FloatType.v(), IntType.v(), IntType.v(), IntType.v() // 0x8F };
+   *
+   * protected Type [] resBinType = { IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(),
+   * IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(),
+   * LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), FloatType.v(),
+   * FloatType.v(), FloatType.v(), FloatType.v(), FloatType.v(), DoubleType.v(), DoubleType.v(), DoubleType.v(),
+   * DoubleType.v(), DoubleType.v() };
+   *
+   * protected Type [] op1BinType = { IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(),
+   * IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(),
+   * LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(), FloatType.v(),
+   * FloatType.v(), FloatType.v(), FloatType.v(), FloatType.v(), DoubleType.v(), DoubleType.v(), DoubleType.v(),
+   * DoubleType.v(), DoubleType.v() };
+   *
+   * protected Type [] op2BinType = { IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(),
+   * IntType.v(), IntType.v(), IntType.v(), IntType.v(), IntType.v(), LongType.v(), LongType.v(), LongType.v(), LongType.v(),
+   * LongType.v(), LongType.v(), LongType.v(), LongType.v(), IntType.v(), IntType.v(), IntType.v(), FloatType.v(),
+   * FloatType.v(), FloatType.v(), FloatType.v(), FloatType.v(), DoubleType.v(), DoubleType.v(), DoubleType.v(),
+   * DoubleType.v(), DoubleType.v() };
    */
 
   // public abstract void getConstraint(IDalvikTyper DalvikTyper.v());
@@ -264,8 +267,8 @@ public abstract class DexlibAbstractInstruction {
    * @return a list of register indices
    */
   protected List<Integer> getUsedRegistersNums(FiveRegisterInstruction instruction) {
-    int[] regs = { instruction.getRegisterC(), instruction.getRegisterD(), instruction.getRegisterE(), instruction.getRegisterF(),
-        instruction.getRegisterG(), };
+    int[] regs = { instruction.getRegisterC(), instruction.getRegisterD(), instruction.getRegisterE(),
+        instruction.getRegisterF(), instruction.getRegisterG(), };
     List<Integer> l = new ArrayList<Integer>();
     for (int i = 0; i < instruction.getRegisterCount(); i++) {
       l.add(regs[i]);

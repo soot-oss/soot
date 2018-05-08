@@ -38,7 +38,7 @@ import soot.javaToJimple.IInitialResolver;
 
 /**
  * An {@link IInitialResolver} for the JastAdd frontend.
- * 
+ *
  * @author Torbjorn Ekman
  * @author Eric Bodden
  */
@@ -154,7 +154,8 @@ public class JastAddInitialResolver implements IInitialResolver {
 
               }
             }
-            throw new RuntimeException("Could not find body for " + m.getSignature() + " in " + m.getDeclaringClass().getName());
+            throw new RuntimeException(
+                "Could not find body for " + m.getSignature() + " in " + m.getDeclaringClass().getName());
           }
         });
       }

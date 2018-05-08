@@ -44,7 +44,7 @@ import soot.dava.toolkits.base.AST.analysis.Analysis;
 
  * B can be any ASTCondition
 
- * C can be   
+ * C can be
  --> assignment expressions
  --> increment/decrement expressions both pre and post e.g. ++bla,--bla,bla++,bla--
  --> all sorts of method invocations
@@ -62,7 +62,8 @@ public class ASTForLoopNode extends ASTControlFlowNode {
 
   private List<Object> body;
 
-  public ASTForLoopNode(SETNodeLabel label, List<AugmentedStmt> init, ASTCondition condition, List<AugmentedStmt> update, List<Object> body) {
+  public ASTForLoopNode(SETNodeLabel label, List<AugmentedStmt> init, ASTCondition condition, List<AugmentedStmt> update,
+      List<Object> body) {
     super(label, condition);
     this.body = body;
     this.init = init;

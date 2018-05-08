@@ -54,8 +54,8 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
   }
 
   /*
-   * The method checks whether a particular ASTBinaryCondition is a comparison of a local with a boolean If so the ASTBinaryCondition is replaced by a
-   * ASTUnaryCondition
+   * The method checks whether a particular ASTBinaryCondition is a comparison of a local with a boolean If so the
+   * ASTBinaryCondition is replaced by a ASTUnaryCondition
    */
   public void outASTIfNode(ASTIfNode node) {
     ASTCondition condition = node.get_Condition();
@@ -124,8 +124,8 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
   }
 
   /*
-   * Used to decide what the condition should be if we are converting from ConditionExpr to Value A != false/0 --> A A != true/1 --> !A A == false/0
-   * --> !A A == true/1 --> A
+   * Used to decide what the condition should be if we are converting from ConditionExpr to Value A != false/0 --> A A !=
+   * true/1 --> !A A == false/0 --> !A A == true/1 --> A
    */
   private Value decideCondition(Value A, String truthString, ConditionExpr condition) {
     int truthValue = 0;

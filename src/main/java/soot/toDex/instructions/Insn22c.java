@@ -11,8 +11,8 @@ import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
- * The "22c" instruction format: It needs two 16-bit code units, has two registers and is used for class/type items (hence the "c" for "constant
- * pool").<br>
+ * The "22c" instruction format: It needs two 16-bit code units, has two registers and is used for class/type items (hence
+ * the "c" for "constant pool").<br>
  * <br>
  * It is used e.g. by the opcodes "instance-of", "new-array" and "iget".
  */

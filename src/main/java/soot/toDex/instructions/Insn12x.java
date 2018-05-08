@@ -10,7 +10,8 @@ import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
- * The "12x" instruction format: It needs one 16-bit code unit, has two registers and is used for general purposes (hence the "x").<br>
+ * The "12x" instruction format: It needs one 16-bit code unit, has two registers and is used for general purposes (hence the
+ * "x").<br>
  * <br>
  * It is used e.g. by the opcodes "move-object", "array-length", the unary operations and the "/2addr" binary operations.
  */

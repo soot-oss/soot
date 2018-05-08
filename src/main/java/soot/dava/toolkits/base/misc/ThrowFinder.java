@@ -50,33 +50,34 @@ import soot.util.IterableSet;
 /*
  * Nomair A. Naeem 7th April 2006
  * This class detects and propagates whether the signature of a method should have some throws Exception constructs.
- * 
+ *
  * The reason we need to do this is since the JVM does not force all compilers to store throws information
  * as attributes (javac does it ) but other compilers are not forced to do it
- * 
+ *
  * Hence if we are coming from javac we dont need to perform this analysis since we already have the information
- * if we are not coming from javac then we need to perform this analysis to say what the checked exceptions are for this method.
- * 
+ * if we are not coming from javac then we need to perform this analysis to say
+ * what the checked exceptions are for this method.
+ *
  * Alls good until u try to decompile code like this
  *   try{
  *    synchronized(bla){
  *      bla
  *      bla
- *    } 
+ *    }
  *   }catch(InterruptedException e){
  *       bla
  *   }
- *   
+ *
  *   If you create bytecode for this you will notice that because exitmointer has to be invoked if an exception occurs
  *   this is done by catching a Throwable(all possible exceptions) exiting the monitor and rethrowing the exception.
- *   
- *   Now that is alright the problem occurs because InterruptedExceptions will be caught but since we are throwing the 
+ *
+ *   Now that is alright the problem occurs because InterruptedExceptions will be caught but since we are throwing the
  *   general Throwable exception this algorithm says that the method should state in its signature that it throws
  *   java.lang,Throwable.
  *   CHANGE LOG: current fix is to hack into the algo find the place where we are about to add the java.lang.Throwable
  *   and if it is near an exit monitor we know dava is going to convert this to a synch and hence not add this exception!!
- * 
- * 
+ *
+ *
  */
 public class ThrowFinder {
   private static final Logger logger = LoggerFactory.getLogger(ThrowFinder.class);
@@ -125,7 +126,8 @@ public class ThrowFinder {
     }
 
     // Build the subClass and superClass mappings.
-    HashMap<SootClass, IterableSet> subClassSet = new HashMap<SootClass, IterableSet>(), superClassSet = new HashMap<SootClass, IterableSet>();
+    HashMap<SootClass, IterableSet> subClassSet = new HashMap<SootClass, IterableSet>(),
+        superClassSet = new HashMap<SootClass, IterableSet>();
 
     HashSet<SootClass> applicationClasses = new HashSet<SootClass>();
     applicationClasses.addAll(Scene.v().getApplicationClasses());
@@ -199,12 +201,13 @@ public class ThrowFinder {
 
               if ((handled_Exception(handled, c) == false) && (exceptionSet.contains(c) == false)) {
                 /*
-                 * Nomair A Naeem 7th April HACK TRYING TO MATCH PATTERN label0: r3 = r0; entermonitor r0; label1: r1.up(); r0.wait(); exitmonitor r3;
-                 * label2: goto label6; label3: $r5 := @caughtexception; label4: r4 = $r5; exitmonitor r3; label5: throw r4; HERE IS THE THROW WE JUST
-                 * DETECTED LOOK and see if the previous unit is an exitmonitor label6: goto label8; label7: $r6 := @caughtexception; r7 = $r6;
-                 * label8: r1.down(); return; catch java.lang.Throwable from label1 to label2 with label3; catch java.lang.Throwable from label4 to
+                 * Nomair A Naeem 7th April HACK TRYING TO MATCH PATTERN label0: r3 = r0; entermonitor r0; label1: r1.up();
+                 * r0.wait(); exitmonitor r3; label2: goto label6; label3: $r5 := @caughtexception; label4: r4 = $r5;
+                 * exitmonitor r3; label5: throw r4; HERE IS THE THROW WE JUST DETECTED LOOK and see if the previous unit is
+                 * an exitmonitor label6: goto label8; label7: $r6 := @caughtexception; r7 = $r6; label8: r1.down(); return;
+                 * catch java.lang.Throwable from label1 to label2 with label3; catch java.lang.Throwable from label4 to
                  * label5 with label3; catch java.lang.InterruptedException from label0 to label6 with label7;
-                 * 
+                 *
                  */
                 PatchingChain list = m.retrieveActiveBody().getUnits();
                 Unit pred = (Unit) list.getPredOf(u);

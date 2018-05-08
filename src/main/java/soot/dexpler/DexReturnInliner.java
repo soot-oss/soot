@@ -41,7 +41,7 @@ import soot.jimple.Stmt;
 
 /**
  * BodyTransformer to inline jumps to return statements. Take the following code: a = b goto label1
- * 
+ *
  * label1: return a We inline this to produce a = b return b
  *
  * @author Steven Arzt
@@ -128,9 +128,9 @@ public class DexReturnInliner extends DexTransformer {
   }
 
   /**
-   * Gets the set of return statements that can be reached via fall-throughs, i.e. normal sequential code execution. Dually, these are the statements
-   * that can be reached without jumping there.
-   * 
+   * Gets the set of return statements that can be reached via fall-throughs, i.e. normal sequential code execution. Dually,
+   * these are the statements that can be reached without jumping there.
+   *
    * @param body
    *          The method body
    * @return The set of fall-through return statements

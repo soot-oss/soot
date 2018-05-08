@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -26,7 +26,8 @@
 package soot;
 
 /**
- * An abstract class which acts on some Soot object. Transformers are generally expected to supply some sort of transform() method.
+ * An abstract class which acts on some Soot object. Transformers are generally expected to supply some sort of transform()
+ * method.
  */
 public abstract class Transformer {
 }

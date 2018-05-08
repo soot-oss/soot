@@ -198,13 +198,15 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
               if (newName.equals(oldName)) {
                 System.out.println("Strange.. Should not find a field with the same old and new name.");
               }
-              sootFieldRef = Scene.v().makeFieldRef(sootFieldRef.declaringClass(), newName, sootFieldRef.type(), sootFieldRef.isStatic());
+              sootFieldRef = Scene.v().makeFieldRef(sootFieldRef.declaringClass(), newName, sootFieldRef.type(),
+                  sootFieldRef.isStatic());
               fieldRef.setFieldRef(sootFieldRef);
               try {
                 sootFieldRef.resolve();
               } catch (Exception e) {
                 System.err.println("********ERROR Updating " + sootFieldRef.name() + " to " + newName);
-                System.err.println("Fields of " + sootFieldRef.declaringClass().getName() + ": " + sootFieldRef.declaringClass().getFields());
+                System.err.println("Fields of " + sootFieldRef.declaringClass().getName() + ": "
+                    + sootFieldRef.declaringClass().getFields());
                 throw new RuntimeException(e);
               }
             }
@@ -243,7 +245,8 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
 
       SootMethod boolInit = boolRef.getSootClass().getMethod("void <init>(boolean)");
       units.addFirst(Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(f.makeRef()), bool));
-      units.addFirst(Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(bool, boolInit.makeRef(), IntConstant.v(value ? 1 : 0))));
+      units.addFirst(
+          Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(bool, boolInit.makeRef(), IntConstant.v(value ? 1 : 0))));
       units.addFirst(Jimple.v().newAssignStmt(bool, Jimple.v().newNewExpr(boolRef)));
     }
     if (newInit) {

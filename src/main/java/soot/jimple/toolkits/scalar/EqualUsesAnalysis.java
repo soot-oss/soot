@@ -27,7 +27,7 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 // Determines if a set of uses of locals all use the same value
 // whenever they occur together.  Can accept a set of boundary
 // statements which define a region which, if exited, counts
-// 
+//
 // The locals being used need not be the same
 
 /**
@@ -81,8 +81,10 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
     return areEqualUses(stmtToLocal, new ArrayList());
   }
 
-  public boolean areEqualUses(Map<Stmt, Local> stmtToLocal, List boundaryStmts) { // You may optionally specify start and end statements... for if
-                                                                                  // you're interested only in a certain part of the method
+  public boolean areEqualUses(Map<Stmt, Local> stmtToLocal, List boundaryStmts) { // You may optionally specify start and end
+                                                                                  // statements... for if
+                                                                                  // you're interested only in a certain part
+                                                                                  // of the method
     this.stmtToLocal = stmtToLocal;
     this.useStmts = stmtToLocal.keySet();
     this.useLocals = stmtToLocal.values();
@@ -195,8 +197,8 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
     if (boundaryStmts.contains(stmt)) {
       // find the alias entry in the flow set
       /*
-       * List aliases = null; Iterator outIt = out.iterator(); while(outIt.hasNext()) { Object o = outIt.next(); if( o instanceof List ) aliases =
-       * (List) o; }
+       * List aliases = null; Iterator outIt = out.iterator(); while(outIt.hasNext()) { Object o = outIt.next(); if( o
+       * instanceof List ) aliases = (List) o; }
        */
       // clear the flow set, and add aliases back in
       out.clear();

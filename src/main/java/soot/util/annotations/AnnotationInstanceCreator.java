@@ -16,11 +16,11 @@ import soot.tagkit.AnnotationTag;
 import soot.util.annotations.AnnotationElemSwitch.AnnotationElemResult;
 
 /**
- * 
- * A simple helper class with the ability to create an instance of {@link Proxy} implementing the annotation interface represented by the given
- * {@link AnnotationTag}.
- * 
- * 
+ *
+ * A simple helper class with the ability to create an instance of {@link Proxy} implementing the annotation interface
+ * represented by the given {@link AnnotationTag}.
+ *
+ *
  * @author Florian Kuebler
  *
  */
@@ -28,7 +28,7 @@ public class AnnotationInstanceCreator {
 
   /**
    * Creates an instance of the Annotation represented by <code>tag</code>.
-   * 
+   *
    * @param tag
    *          the soot internal representation of the annotation to be created.
    * @return an Object extending {@link Proxy} and implementing the type of <code>tag</code>
@@ -36,11 +36,11 @@ public class AnnotationInstanceCreator {
    *           if
    *           <ul>
    *           <li>the class defined in {@link AnnotationTag#getType()} of <code>tag</code> could not be loaded.</li>
-   * 
+   *
    *           <li><code>tag</code> does not define all required methods of the annotation loaded.</li>
-   * 
+   *
    *           <li>a class defined within a {@link AnnotationElem} could not be loaded.</li>
-   * 
+   *
    *           <li>the enum defined in {@link AnnotationEnumElem} is no instance of {@link Enum}.</li>
    *           </ul>
    */

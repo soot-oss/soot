@@ -53,15 +53,15 @@ public class UnreachableMethodTransformer extends BodyTransformer {
 
     Local tmpRef = Jimple.v().newLocal("tmpRef", RefType.v("java.io.PrintStream"));
     body.getLocals().add(tmpRef);
-    list.add(
-        Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef())));
+    list.add(Jimple.v().newAssignStmt(tmpRef,
+        Jimple.v().newStaticFieldRef(Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef())));
 
     SootMethod toCall = Scene.v().getMethod("<java.lang.Thread: void dumpStack()>");
     list.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(toCall.makeRef())));
 
     toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
-    list.add(Jimple.v()
-        .newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(), StringConstant.v("Executing supposedly unreachable method:"))));
+    list.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(),
+        StringConstant.v("Executing supposedly unreachable method:"))));
     list.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(),
         StringConstant.v("\t" + method.getDeclaringClass().getName() + "." + method.getName()))));
 
@@ -69,29 +69,32 @@ public class UnreachableMethodTransformer extends BodyTransformer {
     list.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(toCall.makeRef(), IntConstant.v(1))));
 
     /*
-     * Stmt r; if( method.getReturnType() instanceof VoidType ) { list.add( r=Jimple.v().newReturnVoidStmt() ); } else if( method.getReturnType()
-     * instanceof RefLikeType ) { list.add( r=Jimple.v().newReturnStmt( NullConstant.v() ) ); } else if( method.getReturnType() instanceof PrimType )
-     * { if( method.getReturnType() instanceof DoubleType ) { list.add( r=Jimple.v().newReturnStmt( DoubleConstant.v( 0 ) ) ); } else if(
-     * method.getReturnType() instanceof LongType ) { list.add( r=Jimple.v().newReturnStmt( LongConstant.v( 0 ) ) ); } else if( method.getReturnType()
-     * instanceof FloatType ) { list.add( r=Jimple.v().newReturnStmt( FloatConstant.v( 0 ) ) ); } else { list.add( r=Jimple.v().newReturnStmt(
-     * IntConstant.v( 0 ) ) ); } } else { throw new RuntimeException( "Wrong return method type: " + method.getReturnType() ); }
+     * Stmt r; if( method.getReturnType() instanceof VoidType ) { list.add( r=Jimple.v().newReturnVoidStmt() ); } else if(
+     * method.getReturnType() instanceof RefLikeType ) { list.add( r=Jimple.v().newReturnStmt( NullConstant.v() ) ); } else
+     * if( method.getReturnType() instanceof PrimType ) { if( method.getReturnType() instanceof DoubleType ) { list.add(
+     * r=Jimple.v().newReturnStmt( DoubleConstant.v( 0 ) ) ); } else if( method.getReturnType() instanceof LongType ) {
+     * list.add( r=Jimple.v().newReturnStmt( LongConstant.v( 0 ) ) ); } else if( method.getReturnType() instanceof FloatType
+     * ) { list.add( r=Jimple.v().newReturnStmt( FloatConstant.v( 0 ) ) ); } else { list.add( r=Jimple.v().newReturnStmt(
+     * IntConstant.v( 0 ) ) ); } } else { throw new RuntimeException( "Wrong return method type: " + method.getReturnType()
+     * ); }
      */
 
     /*
      * if( method.getName().equals( "<init>" ) || method.getName().equals( "<clinit>" ) ) {
-     * 
-     * Object o = units.getFirst(); boolean insertFirst = false; while( true ) { //System.out.println( "Unit: " + o ); //System.out.println(
-     * "\tClass: " + o.getClass() ); if( o == null ) { insertFirst = true; break; } if( o instanceof JInvokeStmt ) { JInvokeStmt stmt = (JInvokeStmt)
-     * o; if( (stmt.getInvokeExpr() instanceof SpecialInvokeExpr) ) { SootMethodRef break; } } o = units.getSuccOf( o ); } if( insertFirst ) {
-     * units.insertBefore( list, units.getFirst() ); } else { units.insertAfter( list, o ) ; } } else {
+     *
+     * Object o = units.getFirst(); boolean insertFirst = false; while( true ) { //System.out.println( "Unit: " + o );
+     * //System.out.println( "\tClass: " + o.getClass() ); if( o == null ) { insertFirst = true; break; } if( o instanceof
+     * JInvokeStmt ) { JInvokeStmt stmt = (JInvokeStmt) o; if( (stmt.getInvokeExpr() instanceof SpecialInvokeExpr) ) {
+     * SootMethodRef break; } } o = units.getSuccOf( o ); } if( insertFirst ) { units.insertBefore( list, units.getFirst() );
+     * } else { units.insertAfter( list, o ) ; } } else {
      */
     {
       units.insertBefore(list, units.getFirst());
     }
     /*
-     * ArrayList toRemove = new ArrayList(); for( Iterator sIt = units.iterator(r); sIt.hasNext(); ) { final Stmt s = (Stmt) sIt.next(); if(s == r)
-     * continue; toRemove.add(s); } for( Iterator sIt = toRemove.iterator(); sIt.hasNext(); ) { final Stmt s = (Stmt) sIt.next();
-     * units.getNonPatchingChain().remove(s); } body.getTraps().clear();
+     * ArrayList toRemove = new ArrayList(); for( Iterator sIt = units.iterator(r); sIt.hasNext(); ) { final Stmt s = (Stmt)
+     * sIt.next(); if(s == r) continue; toRemove.add(s); } for( Iterator sIt = toRemove.iterator(); sIt.hasNext(); ) { final
+     * Stmt s = (Stmt) sIt.next(); units.getNonPatchingChain().remove(s); } body.getTraps().clear();
      */
   }
 }

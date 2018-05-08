@@ -39,8 +39,8 @@ public class ASTWhileNode extends ASTControlFlowNode {
   }
 
   /*
-   * Nomair A. Naeem 17-FEB-05 Needed because of change of grammar of condition being stored as a ASTCondition rather than the ConditionExpr which was
-   * the case before
+   * Nomair A. Naeem 17-FEB-05 Needed because of change of grammar of condition being stored as a ASTCondition rather than
+   * the ConditionExpr which was the case before
    */
   public ASTWhileNode(SETNodeLabel label, ASTCondition ce, List<Object> body) {
     super(label, ce);
@@ -105,7 +105,8 @@ public class ASTWhileNode extends ASTControlFlowNode {
   }
 
   /*
-   * Nomair A. Naeem, 7-FEB-05 Part of Visitor Design Implementation for AST See: soot.dava.toolkits.base.AST.analysis For details
+   * Nomair A. Naeem, 7-FEB-05 Part of Visitor Design Implementation for AST See: soot.dava.toolkits.base.AST.analysis For
+   * details
    */
   public void apply(Analysis a) {
     a.caseASTWhileNode(this);

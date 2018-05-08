@@ -10,7 +10,8 @@ import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
- * The "21t" instruction format: It needs two 16-bit code units, has one register and is used for jump targets (hence the "t").<br>
+ * The "21t" instruction format: It needs two 16-bit code units, has one register and is used for jump targets (hence the
+ * "t").<br>
  * <br>
  * It is used e.g. by the opcode "if-eqz" for conditional jumps to a 16-bit wide offset.
  */

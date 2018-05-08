@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -36,7 +36,8 @@ class WeightedDirectedSparseGraph {
   private boolean isUnknown;
 
   /* The graph is in linked list structure. */
-  private Hashtable<Object, Hashtable<Object, IntContainer>> sources = new Hashtable<Object, Hashtable<Object, IntContainer>>();
+  private Hashtable<Object, Hashtable<Object, IntContainer>> sources
+      = new Hashtable<Object, Hashtable<Object, IntContainer>>();
 
   /* vertex set, may contain superious nodes. */
   private HashSet vertexes = new HashSet();
@@ -93,8 +94,8 @@ class WeightedDirectedSparseGraph {
   }
 
   /**
-   * addMutualEdge adds bi-direct edges between two nodes. for example, i = j + 1; generates two directed edges. one from j to i with weight 1,
-   * another from i to j with weight -1
+   * addMutualEdge adds bi-direct edges between two nodes. for example, i = j + 1; generates two directed edges. one from j
+   * to i with weight 1, another from i to j with weight -1
    */
   public void addMutualEdges(Object from, Object to, int weight) {
     addEdge(from, to, weight);
@@ -144,7 +145,8 @@ class WeightedDirectedSparseGraph {
   }
 
   /*
-   * If other graph is unknown, keep current one. If current graph is unknown, copy the other. And if both are not unknown, union each edge.
+   * If other graph is unknown, keep current one. If current graph is unknown, copy the other. And if both are not unknown,
+   * union each edge.
    */
   public void unionSelf(WeightedDirectedSparseGraph other) {
     if (other == null) {
@@ -362,7 +364,8 @@ class WeightedDirectedSparseGraph {
   }
 
   /*
-   * add another graph's edge and weight to this graph, it simply replace the edge weight. When used with clear, it can copy a graph to a new graph
+   * add another graph's edge and weight to this graph, it simply replace the edge weight. When used with clear, it can copy
+   * a graph to a new graph
    */
   public void addAll(WeightedDirectedSparseGraph othergraph) {
     WeightedDirectedSparseGraph another = othergraph;

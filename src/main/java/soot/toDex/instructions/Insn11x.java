@@ -10,7 +10,8 @@ import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
- * The "11x" instruction format: It needs one 16-bit code unit, has one register and is used for general purposes (hence the "x").<br>
+ * The "11x" instruction format: It needs one 16-bit code unit, has one register and is used for general purposes (hence the
+ * "x").<br>
  * <br>
  * It is used e.g. by the opcodes "monitor-enter", "monitor-exit", "move-result" and "return".
  */

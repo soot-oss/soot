@@ -209,7 +209,8 @@ public class Validate {
 
   }
 
-  public static SootMethodRef makeMethodRef(String cName, String mName, String rType, List<String> pTypes, boolean isStatic) {
+  public static SootMethodRef makeMethodRef(String cName, String mName, String rType, List<String> pTypes,
+      boolean isStatic) {
     SootClass sc = SootResolver.v().makeClassRef(cName);
     Type returnType = null;
     if (rType == "") {

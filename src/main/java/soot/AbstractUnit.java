@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -40,8 +40,8 @@ public abstract class AbstractUnit extends AbstractHost implements Unit {
   public abstract Object clone();
 
   /**
-   * Returns a list of Boxes containing Values used in this Unit. The list of boxes is dynamically updated as the structure changes. Note that they
-   * are returned in usual evaluation order. (this is important for aggregation)
+   * Returns a list of Boxes containing Values used in this Unit. The list of boxes is dynamically updated as the structure
+   * changes. Note that they are returned in usual evaluation order. (this is important for aggregation)
    */
   @Override
   public List<ValueBox> getUseBoxes() {
@@ -49,7 +49,8 @@ public abstract class AbstractUnit extends AbstractHost implements Unit {
   }
 
   /**
-   * Returns a list of Boxes containing Values defined in this Unit. The list of boxes is dynamically updated as the structure changes.
+   * Returns a list of Boxes containing Values defined in this Unit. The list of boxes is dynamically updated as the
+   * structure changes.
    */
   @Override
   public List<ValueBox> getDefBoxes() {
@@ -57,8 +58,8 @@ public abstract class AbstractUnit extends AbstractHost implements Unit {
   }
 
   /**
-   * Returns a list of Boxes containing Units defined in this Unit; typically branch targets. The list of boxes is dynamically updated as the
-   * structure changes.
+   * Returns a list of Boxes containing Units defined in this Unit; typically branch targets. The list of boxes is
+   * dynamically updated as the structure changes.
    */
   @Override
   public List<UnitBox> getUnitBoxes() {

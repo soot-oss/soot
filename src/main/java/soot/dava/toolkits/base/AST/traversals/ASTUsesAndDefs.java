@@ -73,7 +73,7 @@ import soot.jimple.Stmt;
  a, a conditional in if, ifelse, while , do while, for condition
  b, in the for init or update
  c, in a switch choice
- d, in a syncrhnoized block 
+ d, in a syncrhnoized block
  d, in a statement
 
  */
@@ -127,8 +127,9 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
 
     /*
      * see if this is a def stmt in which case add an empty entry into the dU chain
-     * 
-     * The wisdowm behind this is that later on when this definition is used we will use this arraylist to store the uses of this definition
+     *
+     * The wisdowm behind this is that later on when this definition is used we will use this arraylist to store the uses of
+     * this definition
      */
     if (s instanceof DefinitionStmt) {
       // check if dU doesnt already have something for this
@@ -139,8 +140,8 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
   }
 
   /*
-   * The method gets the reaching defs of local used Then all the possible defs are added into the uD chain of the node The use is added to all the
-   * defs reaching this node
+   * The method gets the reaching defs of local used Then all the possible defs are added into the uD chain of the node The
+   * use is added to all the defs reaching this node
    */
   public void createUDDUChain(Local local, Object useNodeOrStatement) {
     // System.out.println("Local is:"+local);
@@ -237,7 +238,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
 
   /*
    * The key in a switch stmt can be a local or a value which can contain Locals
-   * 
+   *
    * Hence the some what indirect approach
    */
   public void inASTSwitchNode(ASTSwitchNode node) {
@@ -298,7 +299,8 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
   }
 
   /*
-   * The init of a for loop can use a local The condition of a for node can use a local The update in a for loop can use a local
+   * The init of a for loop can use a local The condition of a for node can use a local The update in a for loop can use a
+   * local
    */
   public void inASTForLoopNode(ASTForLoopNode node) {
 
@@ -332,8 +334,9 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
   }
 
   /*
-   * Input is a construct (ASTNode or statement) that has some locals used and output are all defs reached for all the uses in that construct...
-   * 
+   * Input is a construct (ASTNode or statement) that has some locals used and output are all defs reached for all the uses
+   * in that construct...
+   *
    * dont know whether it actually makes sense for the nodes but it definetly makes sense for the statements
    */
   public List getUDChain(Object node) {
@@ -341,7 +344,8 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
   }
 
   /*
-   * Give it a def stmt and it will return all places where it is used a use is either a statement or a node(condition, synch, switch , for etc)
+   * Give it a def stmt and it will return all places where it is used a use is either a statement or a node(condition,
+   * synch, switch , for etc)
    */
   public List getDUChain(Object node) {
     return dU.get(node);

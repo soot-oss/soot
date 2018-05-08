@@ -76,12 +76,12 @@ public class TypeCastingError extends DepthFirstAdapter {
         }
         // ByteType, DoubleType, FloatType, IntType, LongType, ShortType
         /*
-         * byte Byte-length integer 8-bit two's complement short Short integer 16-bit two's complement int Integer 32-bit two's complement long Long
-         * integer 64-bit two's complement float Single-precision floating point 32-bit IEEE 754 double Double-precision floating point 64-bit IEEE
-         * 754
+         * byte Byte-length integer 8-bit two's complement short Short integer 16-bit two's complement int Integer 32-bit
+         * two's complement long Long integer 64-bit two's complement float Single-precision floating point 32-bit IEEE 754
+         * double Double-precision floating point 64-bit IEEE 754
          */
-        if (leftType instanceof ByteType && (rightType instanceof DoubleType || rightType instanceof FloatType || rightType instanceof IntType
-            || rightType instanceof LongType || rightType instanceof ShortType)) {
+        if (leftType instanceof ByteType && (rightType instanceof DoubleType || rightType instanceof FloatType
+            || rightType instanceof IntType || rightType instanceof LongType || rightType instanceof ShortType)) {
           // loss of precision do explicit casting
 
           if (DEBUG) {
@@ -94,8 +94,8 @@ public class TypeCastingError extends DepthFirstAdapter {
           continue;
         }
 
-        if (leftType instanceof ShortType
-            && (rightType instanceof DoubleType || rightType instanceof FloatType || rightType instanceof IntType || rightType instanceof LongType)) {
+        if (leftType instanceof ShortType && (rightType instanceof DoubleType || rightType instanceof FloatType
+            || rightType instanceof IntType || rightType instanceof LongType)) {
           // loss of precision do explicit casting
 
           if (DEBUG) {
@@ -108,7 +108,8 @@ public class TypeCastingError extends DepthFirstAdapter {
           continue;
         }
 
-        if (leftType instanceof IntType && (rightType instanceof DoubleType || rightType instanceof FloatType || rightType instanceof LongType)) {
+        if (leftType instanceof IntType
+            && (rightType instanceof DoubleType || rightType instanceof FloatType || rightType instanceof LongType)) {
           // loss of precision do explicit casting
 
           if (myDebug) {

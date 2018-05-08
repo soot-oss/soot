@@ -19,9 +19,9 @@
 package soot.jimple.spark.ondemand.genericutil;
 
 /**
- * A FIFO queue of objects, implemented as a circular buffer. NOTE: elements stored in the buffer should be non-null; this is not checked for
- * performance reasons.
- * 
+ * A FIFO queue of objects, implemented as a circular buffer. NOTE: elements stored in the buffer should be non-null; this is
+ * not checked for performance reasons.
+ *
  * @author Manu Sridharan
  */
 public final class FIFOQueue {
@@ -37,8 +37,8 @@ public final class FIFOQueue {
   private int _top;
 
   /**
-   * point to current bottom of buffer, where things will be added invariant: after call to add / remove, should always point to an empty slot in the
-   * buffer
+   * point to current bottom of buffer, where things will be added invariant: after call to add / remove, should always point
+   * to an empty slot in the buffer
    */
   private int _bottom;
 

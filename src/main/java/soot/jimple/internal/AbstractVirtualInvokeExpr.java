@@ -19,7 +19,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -41,7 +41,8 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.util.Switch;
 
 @SuppressWarnings("serial")
-public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeExpr implements VirtualInvokeExpr, ConvertToBaf {
+public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeExpr
+    implements VirtualInvokeExpr, ConvertToBaf {
   protected AbstractVirtualInvokeExpr(ValueBox baseBox, SootMethodRef methodRef, ValueBox[] argBoxes) {
     super(methodRef, baseBox, argBoxes);
     if (methodRef.isStatic()) {

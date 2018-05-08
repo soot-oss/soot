@@ -24,13 +24,13 @@ import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.IFigureManager;
 
 /**
- * An abstraction for the management of all the heap insensitive encoding figures. We employ the naive management strategy, which is a linked list
- * based manager.
- * 
- * For HeapIns analysis, we have four types of figures: Type | Index all-to-many | 0 many-to-all | 1 one-to-one | 2 all-to-all all-to-all is special
- * because whenever it was presented, all others can be deleted (its semantics is context insensitive). The corresponding index means header[0] stores
- * all the all-to-one figures, and so on.
- * 
+ * An abstraction for the management of all the heap insensitive encoding figures. We employ the naive management strategy,
+ * which is a linked list based manager.
+ *
+ * For HeapIns analysis, we have four types of figures: Type | Index all-to-many | 0 many-to-all | 1 one-to-one | 2
+ * all-to-all all-to-all is special because whenever it was presented, all others can be deleted (its semantics is context
+ * insensitive). The corresponding index means header[0] stores all the all-to-one figures, and so on.
+ *
  * @author xiao
  *
  */
@@ -86,8 +86,8 @@ public class HeapInsIntervalManager extends IFigureManager {
   }
 
   /*
-   * pnew.L < 0 is a special case we used to indicate a square: L = L_prime This case is specially handled because it is very common in the program.
-   * And, treating it as a MANY-TO-ALL is loss of precision.
+   * pnew.L < 0 is a special case we used to indicate a square: L = L_prime This case is specially handled because it is very
+   * common in the program. And, treating it as a MANY-TO-ALL is loss of precision.
    */
   public SegmentNode addNewFigure(int code, RectangleNode pnew) {
     SegmentNode p;
@@ -425,7 +425,8 @@ public class HeapInsIntervalManager extends IFigureManager {
 
     while (list != null) {
       long L = list.L;
-      if ((predator.I2 - predator.I1 == list.I2 - list.I1) && predator.I1 <= list.I1 && (predator.I1 + predator.L >= list.I2 + L)) {
+      if ((predator.I2 - predator.I1 == list.I2 - list.I1) && predator.I1 <= list.I1
+          && (predator.I1 + predator.L >= list.I2 + L)) {
         // The checked figure is completely contained in the predator
         // So we ignore it
         ;

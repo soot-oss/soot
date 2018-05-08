@@ -25,7 +25,7 @@ import soot.jimple.ClassConstant;
 
 /**
  * A generic interface to some set of runtime objects computed by a pointer analysis.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public interface PointsToSet {
@@ -39,14 +39,14 @@ public interface PointsToSet {
   public Set<Type> possibleTypes();
 
   /**
-   * If this points-to set consists entirely of string constants, returns a set of these constant strings. If this point-to set may contain something
-   * other than constant strings, returns null.
+   * If this points-to set consists entirely of string constants, returns a set of these constant strings. If this point-to
+   * set may contain something other than constant strings, returns null.
    */
   public Set<String> possibleStringConstants();
 
   /**
-   * If this points-to set consists entirely of objects of type java.lang.Class of a known class, returns a set of ClassConstant's that are these
-   * classes. If this point-to set may contain something else, returns null.
+   * If this points-to set consists entirely of objects of type java.lang.Class of a known class, returns a set of
+   * ClassConstant's that are these classes. If this point-to set may contain something else, returns null.
    */
   public Set<ClassConstant> possibleClassConstants();
 }

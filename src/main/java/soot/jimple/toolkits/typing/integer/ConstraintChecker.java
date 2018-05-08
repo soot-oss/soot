@@ -147,7 +147,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
       if (ie.getArg(i) instanceof Local) {
         Local local = (Local) ie.getArg(i);
         if (local.getType() instanceof IntegerType) {
-          if (!ClassHierarchy.v().typeNode(local.getType()).hasAncestor_1(ClassHierarchy.v().typeNode(method.parameterType(i)))) {
+          if (!ClassHierarchy.v().typeNode(local.getType())
+              .hasAncestor_1(ClassHierarchy.v().typeNode(method.parameterType(i)))) {
             if (fix) {
               ie.setArg(i, insertCast(local, method.parameterType(i), invokestmt));
             } else {
@@ -165,7 +166,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
         if (die.getBootstrapArg(i) instanceof Local) {
           Local local = (Local) die.getBootstrapArg(i);
           if (local.getType() instanceof IntegerType) {
-            if (!ClassHierarchy.v().typeNode(local.getType()).hasAncestor_1(ClassHierarchy.v().typeNode(bootstrapMethod.parameterType(i)))) {
+            if (!ClassHierarchy.v().typeNode(local.getType())
+                .hasAncestor_1(ClassHierarchy.v().typeNode(bootstrapMethod.parameterType(i)))) {
               if (fix) {
                 die.setArg(i, insertCast(local, bootstrapMethod.parameterType(i), invokestmt));
               } else {
@@ -366,7 +368,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
         throw new RuntimeException("Unhandled binary expression right operand type: " + rv.getClass());
       }
 
-      if ((be instanceof AddExpr) || (be instanceof SubExpr) || (be instanceof MulExpr) || (be instanceof DivExpr) || (be instanceof RemExpr)) {
+      if ((be instanceof AddExpr) || (be instanceof SubExpr) || (be instanceof MulExpr) || (be instanceof DivExpr)
+          || (be instanceof RemExpr)) {
         if (lop != null && rop != null) {
           if (!lop.hasAncestor_1(ClassHierarchy.v().INT)) {
             if (fix) {
@@ -451,8 +454,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
         right = lop;
       } else if ((be instanceof CmpExpr) || (be instanceof CmpgExpr) || (be instanceof CmplExpr)) {
         right = ClassHierarchy.v().BYTE;
-      } else if ((be instanceof EqExpr) || (be instanceof GeExpr) || (be instanceof GtExpr) || (be instanceof LeExpr) || (be instanceof LtExpr)
-          || (be instanceof NeExpr)) {
+      } else if ((be instanceof EqExpr) || (be instanceof GeExpr) || (be instanceof GtExpr) || (be instanceof LeExpr)
+          || (be instanceof LtExpr) || (be instanceof NeExpr)) {
         if (rop != null) {
           TypeNode lca = lop.lca_1(rop);
 
@@ -617,7 +620,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
 
         if (!right.hasAncestor_1(left)) {
           if (fix) {
-            ((soot.jimple.internal.JIdentityStmt) stmt).setLeftOp(insertCastAfter((Local) l, getTypeForCast(left), getTypeForCast(right), stmt));
+            ((soot.jimple.internal.JIdentityStmt) stmt)
+                .setLeftOp(insertCastAfter((Local) l, getTypeForCast(left), getTypeForCast(right), stmt));
           } else {
             error("Type Error(16)");
           }

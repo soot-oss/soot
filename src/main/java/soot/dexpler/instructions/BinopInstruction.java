@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -67,9 +67,10 @@ public class BinopInstruction extends TaggedInstruction {
     body.add(assign);
 
     /*
-     * if (IDalvikTyper.ENABLE_DVKTYPER) { int op = (int)instruction.getOpcode().value; BinopExpr bexpr = (BinopExpr)expr; JAssignStmt jassign =
-     * (JAssignStmt)assign; DalvikTyper.v().setType(bexpr.getOp1Box(), op1BinType[op-0x90], true); DalvikTyper.v().setType(bexpr.getOp2Box(),
-     * op2BinType[op-0x90], true); DalvikTyper.v().setType(jassign.leftBox, resBinType[op-0x90], false); }
+     * if (IDalvikTyper.ENABLE_DVKTYPER) { int op = (int)instruction.getOpcode().value; BinopExpr bexpr = (BinopExpr)expr;
+     * JAssignStmt jassign = (JAssignStmt)assign; DalvikTyper.v().setType(bexpr.getOp1Box(), op1BinType[op-0x90], true);
+     * DalvikTyper.v().setType(bexpr.getOp2Box(), op2BinType[op-0x90], true); DalvikTyper.v().setType(jassign.leftBox,
+     * resBinType[op-0x90], false); }
      */
   }
 

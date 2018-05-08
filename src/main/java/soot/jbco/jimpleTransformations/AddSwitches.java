@@ -50,7 +50,7 @@ import soot.toolkits.graph.BriefUnitGraph;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 10-Jul-2006
  */
 public class AddSwitches extends BodyTransformer implements IJbcoTransform {
@@ -164,7 +164,8 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
       Local B = Jimple.v().newLocal("addswitchesBOOL1", rt);
       locals.add(B);
       units.insertBefore(Jimple.v().newAssignStmt(B, Jimple.v().newStaticFieldRef(ops[0].makeRef())), u);
-      units.insertBefore(Jimple.v().newAssignStmt(b1, Jimple.v().newVirtualInvokeExpr(B, m.makeRef(), Collections.<Value>emptyList())), u);
+      units.insertBefore(
+          Jimple.v().newAssignStmt(b1, Jimple.v().newVirtualInvokeExpr(B, m.makeRef(), Collections.<Value>emptyList())), u);
     }
     if (ops[1].getType() instanceof PrimType) {
       units.insertBefore(Jimple.v().newAssignStmt(b2, Jimple.v().newStaticFieldRef(ops[1].makeRef())), u);
@@ -174,7 +175,8 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
       Local B = Jimple.v().newLocal("addswitchesBOOL2", rt);
       locals.add(B);
       units.insertBefore(Jimple.v().newAssignStmt(B, Jimple.v().newStaticFieldRef(ops[1].makeRef())), u);
-      units.insertBefore(Jimple.v().newAssignStmt(b2, Jimple.v().newVirtualInvokeExpr(B, m.makeRef(), Collections.<Value>emptyList())), u);
+      units.insertBefore(
+          Jimple.v().newAssignStmt(b2, Jimple.v().newVirtualInvokeExpr(B, m.makeRef(), Collections.<Value>emptyList())), u);
     }
 
     IfStmt ifstmt = Jimple.v().newIfStmt(Jimple.v().newNeExpr(b1, b2), u);

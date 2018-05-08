@@ -72,8 +72,8 @@ public class ASTCleanerTwo extends DepthFirstAdapter {
   }
 
   /*
-   * Note the ASTNode in this case can be any of the following: ASTMethodNode ASTSwitchNode ASTIfNode ASTIfElseNode ASTUnconditionalWhileNode
-   * ASTWhileNode ASTDoWhileNode ASTForLoopNode ASTLabeledBlockNode ASTSynchronizedBlockNode
+   * Note the ASTNode in this case can be any of the following: ASTMethodNode ASTSwitchNode ASTIfNode ASTIfElseNode
+   * ASTUnconditionalWhileNode ASTWhileNode ASTDoWhileNode ASTForLoopNode ASTLabeledBlockNode ASTSynchronizedBlockNode
    */
   public void normalRetrieving(ASTNode node) {
     if (node instanceof ASTSwitchNode) {

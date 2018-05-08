@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a dominator node in DominatorTree. Usually you should use DominatorTree or DominanceFrontier to obtain information on how a node relates
- * to other nodes instead of directly using any methods provided here.
+ * Represents a dominator node in DominatorTree. Usually you should use DominatorTree or DominanceFrontier to obtain
+ * information on how a node relates to other nodes instead of directly using any methods provided here.
  *
  * @author Navindra Umanee
  **/

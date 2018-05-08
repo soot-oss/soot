@@ -50,7 +50,7 @@ public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
 
   /*
    * When we leave a classDecl all the metrics for this classDecl must be stored and the metrics reset
-   * 
+   *
    * This is done by invoking the addMetrics abstract method
    */
 
@@ -92,7 +92,8 @@ public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
   }
 
   /*
-   * Returns the classData object if one if present in the globals Metrics List otherwise creates new adds to globals metric list and returns that
+   * Returns the classData object if one if present in the globals Metrics List otherwise creates new adds to globals metric
+   * list and returns that
    */
   public final ClassData getClassData() {
     if (className == null) {

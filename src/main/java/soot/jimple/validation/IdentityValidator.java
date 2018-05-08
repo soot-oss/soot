@@ -31,7 +31,7 @@ import soot.validation.ValidationException;
 
 /**
  * This validator checks whether each ParameterRef and ThisRef is used exactly once.
- * 
+ *
  * @author Marc Miltenberger
  */
 public enum IdentityValidator implements BodyValidator {
@@ -60,15 +60,17 @@ public enum IdentityValidator implements BodyValidator {
           ParameterRef ref = (ParameterRef) id.getRightOp();
           if (ref.getIndex() < 0 || ref.getIndex() >= paramCount) {
             if (paramCount == 0) {
-              exceptions.add(new ValidationException(id, "This method has no parameters, so no parameter reference is allowed"));
-            } else {
               exceptions
-                  .add(new ValidationException(id, String.format("Parameter reference index must be between 0 and %d (inclusive)", paramCount - 1)));
+                  .add(new ValidationException(id, "This method has no parameters, so no parameter reference is allowed"));
+            } else {
+              exceptions.add(new ValidationException(id,
+                  String.format("Parameter reference index must be between 0 and %d (inclusive)", paramCount - 1)));
             }
             return;
           }
           if (parameterRefs[ref.getIndex()]) {
-            exceptions.add(new ValidationException(id, String.format("Only one local for parameter %d is allowed", ref.getIndex())));
+            exceptions.add(
+                new ValidationException(id, String.format("Only one local for parameter %d is allowed", ref.getIndex())));
           }
           parameterRefs[ref.getIndex()] = true;
         }
@@ -82,7 +84,8 @@ public enum IdentityValidator implements BodyValidator {
 
     for (int i = 0; i < paramCount; i++) {
       if (!parameterRefs[i]) {
-        exceptions.add(new ValidationException(body, String.format("There is no parameter local for parameter number %d", i)));
+        exceptions
+            .add(new ValidationException(body, String.format("There is no parameter local for parameter number %d", i)));
       }
     }
   }

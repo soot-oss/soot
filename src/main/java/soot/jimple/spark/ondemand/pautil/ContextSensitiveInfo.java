@@ -43,7 +43,7 @@ import soot.util.HashMultiMap;
 
 /**
  * Information for a context-sensitive analysis, eg. for call sites
- * 
+ *
  * @author manu
  */
 public class ContextSensitiveInfo {
@@ -60,9 +60,11 @@ public class ContextSensitiveInfo {
   /**
    * assignment edges, but properly handling multiple calls to a method VarNode -> ArraySet[AssignEdge]
    */
-  private final ArraySetMultiMap<VarNode, AssignEdge> contextSensitiveAssignEdges = new ArraySetMultiMap<VarNode, AssignEdge>();
+  private final ArraySetMultiMap<VarNode, AssignEdge> contextSensitiveAssignEdges
+      = new ArraySetMultiMap<VarNode, AssignEdge>();
 
-  private final ArraySetMultiMap<VarNode, AssignEdge> contextSensitiveAssignBarEdges = new ArraySetMultiMap<VarNode, AssignEdge>();
+  private final ArraySetMultiMap<VarNode, AssignEdge> contextSensitiveAssignBarEdges
+      = new ArraySetMultiMap<VarNode, AssignEdge>();
 
   /**
    * nodes in each method
@@ -87,10 +89,11 @@ public class ContextSensitiveInfo {
 
   private final Map<Integer, SootMethod> callSiteToInvokingMethod = new HashMap<Integer, SootMethod>();
 
-  private final ArraySetMultiMap<LocalVarNode, Integer> receiverToVirtCallSites = new ArraySetMultiMap<LocalVarNode, Integer>();
+  private final ArraySetMultiMap<LocalVarNode, Integer> receiverToVirtCallSites
+      = new ArraySetMultiMap<LocalVarNode, Integer>();
 
   /**
-   * 
+   *
    */
   public ContextSensitiveInfo(PAG pag) {
     // set up method to node map
@@ -314,7 +317,7 @@ public class ContextSensitiveInfo {
   }
 
   /**
-   * 
+   *
    * @param node
    * @return edges capturing assign flow <em>into</em> node
    */

@@ -10,7 +10,8 @@ import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
- * The "22b" instruction format: It needs two 16-bit code units, has two registers and is used for a 8-bit literal (hence the "b" for "byte").<br>
+ * The "22b" instruction format: It needs two 16-bit code units, has two registers and is used for a 8-bit literal (hence the
+ * "b" for "byte").<br>
  * <br>
  * It is used by the "/lit8" opcodes for binary operations.
  */

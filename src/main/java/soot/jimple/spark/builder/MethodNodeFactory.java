@@ -72,7 +72,7 @@ import soot.toolkits.scalar.Pair;
 
 /**
  * Class implementing builder parameters (this decides what kinds of nodes should be built for each kind of Soot value).
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class MethodNodeFactory extends AbstractShimpleValueSwitch {
@@ -134,7 +134,8 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
         if (!(l.getType() instanceof RefLikeType)) {
           return;
         }
-        assert r.getType() instanceof RefLikeType : "Type mismatch in assignment " + as + " in method " + method.getSignature();
+        assert r.getType() instanceof RefLikeType : "Type mismatch in assignment " + as + " in method "
+            + method.getSignature();
         l.apply(MethodNodeFactory.this);
         Node dest = getNode();
         r.apply(MethodNodeFactory.this);
@@ -160,9 +161,11 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
               }
             } else if (s.declaringClass().getName().equals("java.util.Hashtable")) {
               if (s.name().equals("emptyIterator")) {
-                src = pag.makeAllocNode(RefType.v("java.util.Hashtable$EmptyIterator"), RefType.v("java.util.Hashtable$EmptyIterator"), method);
+                src = pag.makeAllocNode(RefType.v("java.util.Hashtable$EmptyIterator"),
+                    RefType.v("java.util.Hashtable$EmptyIterator"), method);
               } else if (s.name().equals("emptyEnumerator")) {
-                src = pag.makeAllocNode(RefType.v("java.util.Hashtable$EmptyEnumerator"), RefType.v("java.util.Hashtable$EmptyEnumerator"), method);
+                src = pag.makeAllocNode(RefType.v("java.util.Hashtable$EmptyEnumerator"),
+                    RefType.v("java.util.Hashtable$EmptyEnumerator"), method);
               }
             }
           }
@@ -216,7 +219,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 
   /**
    * Checks whether the given invocation is for Class.newInstance()
-   * 
+   *
    * @param iexpr
    *          The invocation to check
    * @return True if the given invocation is for Class.newInstance(), otherwise false
@@ -241,14 +244,15 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
   }
 
   final public Node caseThis() {
-    VarNode ret = pag.makeLocalVarNode(new Pair<SootMethod, String>(method, PointsToAnalysis.THIS_NODE), method.getDeclaringClass().getType(),
-        method);
+    VarNode ret = pag.makeLocalVarNode(new Pair<SootMethod, String>(method, PointsToAnalysis.THIS_NODE),
+        method.getDeclaringClass().getType(), method);
     ret.setInterProcTarget();
     return ret;
   }
 
   final public Node caseParm(int index) {
-    VarNode ret = pag.makeLocalVarNode(new Pair<SootMethod, Integer>(method, new Integer(index)), method.getParameterType(index), method);
+    VarNode ret = pag.makeLocalVarNode(new Pair<SootMethod, Integer>(method, new Integer(index)),
+        method.getParameterType(index), method);
     ret.setInterProcTarget();
     return ret;
   }
@@ -379,7 +383,8 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
   @Override
   final public void caseStringConstant(StringConstant sc) {
     AllocNode stringConstant;
-    if (pag.getOpts().string_constants() || Scene.v().containsClass(sc.value) || (sc.value.length() > 0 && sc.value.charAt(0) == '[')) {
+    if (pag.getOpts().string_constants() || Scene.v().containsClass(sc.value)
+        || (sc.value.length() > 0 && sc.value.charAt(0) == '[')) {
       stringConstant = pag.makeStringConstantNode(sc.value);
     } else {
       stringConstant = pag.makeAllocNode(PointsToAnalysis.STRING_NODE, RefType.v("java.lang.String"), null);

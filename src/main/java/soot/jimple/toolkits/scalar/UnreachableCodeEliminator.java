@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-2003.  
+ * Modified by the Sable Research Group and others 1997-2003.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -77,8 +77,9 @@ public class UnreachableCodeEliminator extends BodyTransformer {
     // trapped units remain, but the default ThrowAnalysis
     // says that none of them can throw the caught exception.
     if (this.throwAnalysis == null) {
-      this.throwAnalysis = PhaseOptions.getBoolean(options, "remove-unreachable-traps", true) ? Scene.v().getDefaultThrowAnalysis()
-          : PedanticThrowAnalysis.v();
+      this.throwAnalysis
+          = PhaseOptions.getBoolean(options, "remove-unreachable-traps", true) ? Scene.v().getDefaultThrowAnalysis()
+              : PedanticThrowAnalysis.v();
     }
     ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis, false);
 

@@ -39,7 +39,8 @@ public class JavaIoFileSystemNative extends NativeMethodClass {
   /**
    * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
    */
-  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
+  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 

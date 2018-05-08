@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -26,7 +26,8 @@
 package soot.coffi;
 
 /**
- * Instruction subclasses are used to represent parsed bytecode; each bytecode operation has a corresponding subclass of Instruction.
+ * Instruction subclasses are used to represent parsed bytecode; each bytecode operation has a corresponding subclass of
+ * Instruction.
  * <p>
  * Each subclass is derived from one of
  * <ul>
@@ -41,7 +42,7 @@ package soot.coffi;
  * <li>Instruction_intbranch (a short argument specifying a code offset)</li>
  * <li>Instruction_longbranch (an int argument specifying a code offset)</li>
  * </ul>
- * 
+ *
  * @author Clark Verbrugge
  * @see Instruction
  * @see Instruction_noargs
@@ -67,13 +68,13 @@ abstract class Instruction implements Cloneable {
   public byte code;
   /**
    * Offset of this instruction from the start of code.
-   * 
+   *
    * @see ClassFile#relabel
    */
   public int label;
   /**
    * Name of this instruction.
-   * 
+   *
    * @see Instruction#toString
    */
   public String name;
@@ -98,7 +99,7 @@ abstract class Instruction implements Cloneable {
 
   /**
    * Constructs a new Instruction for this bytecode.
-   * 
+   *
    * @param c
    *          bytecode of the instruction.
    */
@@ -121,9 +122,9 @@ abstract class Instruction implements Cloneable {
   }
 
   /**
-   * Assuming the actual bytecode for this instruction has been extracted already, and index is the offset of the next byte, this method parses
-   * whatever arguments the instruction requires and return the offset of the next available byte.
-   * 
+   * Assuming the actual bytecode for this instruction has been extracted already, and index is the offset of the next byte,
+   * this method parses whatever arguments the instruction requires and return the offset of the next available byte.
+   *
    * @param bc
    *          complete array of bytecode.
    * @param index
@@ -136,7 +137,7 @@ abstract class Instruction implements Cloneable {
 
   /**
    * Writes out the sequence of bytecodes represented by this instruction, including any arguments.
-   * 
+   *
    * @param bc
    *          complete array of bytecode.
    * @param index
@@ -149,7 +150,7 @@ abstract class Instruction implements Cloneable {
 
   /**
    * Changes offset values in this instruction to Instruction references; default behaviour is to do nothing.
-   * 
+   *
    * @param bc
    *          complete array of bytecode.
    * @see ByteCode#build
@@ -158,8 +159,9 @@ abstract class Instruction implements Cloneable {
   }
 
   /**
-   * Returns the next available offset assuming this instruction begins on the indicated offset; default assumes no arguments.
-   * 
+   * Returns the next available offset assuming this instruction begins on the indicated offset; default assumes no
+   * arguments.
+   *
    * @param curr
    *          offset this instruction would be on.
    * @return next available offset.
@@ -170,9 +172,9 @@ abstract class Instruction implements Cloneable {
   }
 
   /**
-   * Returns an array of the instructions to which this instruction might branch (only valid if branches==<i>true</i>; default action is to return
-   * <i>null</i>).
-   * 
+   * Returns an array of the instructions to which this instruction might branch (only valid if branches==<i>true</i>;
+   * default action is to return <i>null</i>).
+   *
    * @param next
    *          the instruction following this one, in case of default flow through.
    * @return array of instructions which may be targets of this instruction.
@@ -186,9 +188,9 @@ abstract class Instruction implements Cloneable {
   }
 
   /**
-   * Marks the appropriate spot if that constant_pool entry is used by this instr. For every constant pool entry used (referenced) by this
-   * instruction, the corresponding boolean in the given array is set to <i>true</i>.
-   * 
+   * Marks the appropriate spot if that constant_pool entry is used by this instr. For every constant pool entry used
+   * (referenced) by this instruction, the corresponding boolean in the given array is set to <i>true</i>.
+   *
    * @param refs
    *          array of booleans the same size as the constant pool array.
    * @see ClassFile#constant_pool
@@ -198,7 +200,7 @@ abstract class Instruction implements Cloneable {
 
   /**
    * Updates all constant pool references within this instruction to use new indices, based on the given redirection array.
-   * 
+   *
    * @param redirect
    *          array of new indices of constant pool entries.
    * @see ClassFile#constant_pool
@@ -208,7 +210,7 @@ abstract class Instruction implements Cloneable {
 
   /**
    * For storing in a Hashtable.
-   * 
+   *
    * @return unique hash code for this instruction, assuming labels are unique.
    */
   public int hashCode() {
@@ -217,7 +219,7 @@ abstract class Instruction implements Cloneable {
 
   /**
    * For storing in a Hashtable.
-   * 
+   *
    * @param i
    *          the Instruction to which this is compared.
    * @return <i>true</i> if <i>i</i> is the same, <i>false</i> otherwise.
@@ -230,8 +232,9 @@ abstract class Instruction implements Cloneable {
   }
 
   /**
-   * Utility routines, used mostly by the parse routines of various Instruction subclasses; this method converts two bytes into a short.
-   * 
+   * Utility routines, used mostly by the parse routines of various Instruction subclasses; this method converts two bytes
+   * into a short.
+   *
    * @param bc
    *          complete array of bytecode.
    * @param index
@@ -250,8 +253,9 @@ abstract class Instruction implements Cloneable {
   }
 
   /**
-   * Utility routines, used mostly by the parse routines of various Instruction subclasses; this method converts four bytes into an int.
-   * 
+   * Utility routines, used mostly by the parse routines of various Instruction subclasses; this method converts four bytes
+   * into an int.
+   *
    * @param bc
    *          complete array of bytecode.
    * @param index
@@ -271,8 +275,9 @@ abstract class Instruction implements Cloneable {
   }
 
   /**
-   * Utility routines, used mostly by the compile routines of various Instruction subclasses; this method converts a short into two bytes.
-   * 
+   * Utility routines, used mostly by the compile routines of various Instruction subclasses; this method converts a short
+   * into two bytes.
+   *
    * @param bc
    *          complete array of bytecode in which to store the short.
    * @param index
@@ -288,8 +293,9 @@ abstract class Instruction implements Cloneable {
   }
 
   /**
-   * Utility routines, used mostly by the compile routines of various Instruction subclasses; this method converts an int into four bytes.
-   * 
+   * Utility routines, used mostly by the compile routines of various Instruction subclasses; this method converts an int
+   * into four bytes.
+   *
    * @param bc
    *          complete array of bytecode in which to store the int.
    * @param index
@@ -308,7 +314,7 @@ abstract class Instruction implements Cloneable {
 
   /**
    * For displaying instructions.
-   * 
+   *
    * @param constant_pool
    *          constant pool of associated ClassFile
    * @return String representation of this instruction.

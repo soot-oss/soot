@@ -333,7 +333,8 @@ class ConstraintCollector extends AbstractStmtSwitch {
         throw new RuntimeException("Unhandled binary expression right operand type: " + rv.getClass());
       }
 
-      if ((be instanceof AddExpr) || (be instanceof SubExpr) || (be instanceof DivExpr) || (be instanceof RemExpr) || (be instanceof MulExpr)) {
+      if ((be instanceof AddExpr) || (be instanceof SubExpr) || (be instanceof DivExpr) || (be instanceof RemExpr)
+          || (be instanceof MulExpr)) {
         if (lop != null && rop != null) {
           if (uses) {
             if (lop.type() == null) {
@@ -385,8 +386,8 @@ class ConstraintCollector extends AbstractStmtSwitch {
         right = lop;
       } else if ((be instanceof CmpExpr) || (be instanceof CmpgExpr) || (be instanceof CmplExpr)) {
         right = resolver.BYTE;
-      } else if ((be instanceof EqExpr) || (be instanceof GeExpr) || (be instanceof GtExpr) || (be instanceof LeExpr) || (be instanceof LtExpr)
-          || (be instanceof NeExpr)) {
+      } else if ((be instanceof EqExpr) || (be instanceof GeExpr) || (be instanceof GtExpr) || (be instanceof LeExpr)
+          || (be instanceof LtExpr) || (be instanceof NeExpr)) {
         if (uses) {
           TypeVariable common = resolver.typeVariable();
           if (rop != null) {

@@ -9,8 +9,8 @@ import soot.jimple.Stmt;
 
 /**
  * AbstractRuntimeThread written by Richard L. Halpert 2007-03-04 Acts as a container for the thread information collected by
- * UnsynchronizedMhpAnalysis. A set of threads started from the same location will be represented by one AbstractRuntimeThread, with runsMany set to
- * true.
+ * UnsynchronizedMhpAnalysis. A set of threads started from the same location will be represented by one
+ * AbstractRuntimeThread, with runsMany set to true.
  */
 
 public class AbstractRuntimeThread {

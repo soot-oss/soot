@@ -17,11 +17,12 @@ import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 
 /**
- * Transformer that checks whether an instance method is used like a static method, and can easily be made static, i.e., does not reference any field
- * or method in the "this" object. In this case, we make the method static, so that it complies with the invocations.
- * 
+ * Transformer that checks whether an instance method is used like a static method, and can easily be made static, i.e., does
+ * not reference any field or method in the "this" object. In this case, we make the method static, so that it complies with
+ * the invocations.
+ *
  * Attention: This is not really a body transformer. It checks the current body, but modifies the invocation target.
- * 
+ *
  * @author Steven Arzt
  *
  */
@@ -59,7 +60,7 @@ public class MethodStaticnessCorrector extends AbstractStaticnessCorrector {
 
   /**
    * Checks whether the given method can be made static, i.e., does not reference the "this" object
-   * 
+   *
    * @param target
    *          The method to check
    * @return True if the given method can be made static, otherwise false

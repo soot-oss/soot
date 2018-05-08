@@ -19,7 +19,7 @@ import soot.toolkits.scalar.LocalDefs;
 
 /**
  * Simplistic caching, flow-insensitive def/use analysis
- * 
+ *
  * @author Steven Arzt
  *
  */
@@ -100,10 +100,11 @@ public class DexDefUseAnalysis implements LocalDefs {
   }
 
   /**
-   * Collect definitions of l in body including the definitions of aliases of l. This analysis exploits that the problem is flow-insensitive anyway.
-   * 
+   * Collect definitions of l in body including the definitions of aliases of l. This analysis exploits that the problem is
+   * flow-insensitive anyway.
+   *
    * In this context an alias is a local that propagates its value to l.
-   * 
+   *
    * @param l
    *          the local whose definitions are to collect
    */
@@ -140,7 +141,8 @@ public class DexDefUseAnalysis implements LocalDefs {
             Unit use = unitList.get(i);
             if (use instanceof AssignStmt) {
               AssignStmt assignUse = (AssignStmt) use;
-              if (assignUse.getRightOp() == curLocal && assignUse.getLeftOp() instanceof Local && seenLocals.add((Local) assignUse.getLeftOp())) {
+              if (assignUse.getRightOp() == curLocal && assignUse.getLeftOp() instanceof Local
+                  && seenLocals.add((Local) assignUse.getLeftOp())) {
                 newLocals.add((Local) assignUse.getLeftOp());
               }
             }

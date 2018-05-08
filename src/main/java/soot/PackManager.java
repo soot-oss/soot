@@ -354,8 +354,8 @@ public class PackManager {
 
     // Dummy Dava Phase
     /*
-     * Nomair A. Naeem 13th Feb 2006 Added so that Dava Options can be added as phase options rather than main soot options since they only make sense
-     * when decompiling The db phase options are added in soot_options.xml
+     * Nomair A. Naeem 13th Feb 2006 Added so that Dava Options can be added as phase options rather than main soot options
+     * since they only make sense when decompiling The db phase options are added in soot_options.xml
      */
     addPack(p = new BodyPack("db"));
     {
@@ -558,7 +558,8 @@ public class PackManager {
     }
     if (Options.v().output_format() == Options.output_format_dava) {
       postProcessDAVA();
-    } else if (Options.v().output_format() == Options.output_format_dex || Options.v().output_format() == Options.output_format_force_dex) {
+    } else if (Options.v().output_format() == Options.output_format_dex
+        || Options.v().output_format() == Options.output_format_force_dex) {
       writeDexOutput();
     } else {
       writeOutput(reachableClasses());
@@ -619,11 +620,11 @@ public class PackManager {
       boolean isSourceJavac = PhaseOptions.getBoolean(options, "source-is-javac");
       if (!isSourceJavac) {
         /*
-         * It turns out that the exception attributes of a method i.e. those exceptions that a method can throw are only checked by the Java compiler
-         * and not the JVM
+         * It turns out that the exception attributes of a method i.e. those exceptions that a method can throw are only
+         * checked by the Java compiler and not the JVM
          *
-         * Javac does place this information into the attributes but other compilers dont hence if the source is not javac then we have to do this
-         * fancy analysis to find all the potential exceptions that might get thrown
+         * Javac does place this information into the attributes but other compilers dont hence if the source is not javac
+         * then we have to do this fancy analysis to find all the potential exceptions that might get thrown
          *
          * BY DEFAULT the option javac of db is set to true so we assume that the source is javac
          *
@@ -647,8 +648,8 @@ public class PackManager {
 
   private void runBodyPacks(final Iterator<SootClass> classes) {
     int threadNum = Runtime.getRuntime().availableProcessors();
-    CountingThreadPoolExecutor executor = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS,
-        new LinkedBlockingQueue<Runnable>());
+    CountingThreadPoolExecutor executor
+        = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     while (classes.hasNext()) {
       final SootClass c = classes.next();
@@ -690,9 +691,11 @@ public class PackManager {
     // If we're writing individual class files, we can write them
     // concurrently. Otherwise, we need to synchronize for not destroying
     // the shared output stream.
-    int threadNum = Options.v().output_format() == Options.output_format_class && jarFile == null ? Runtime.getRuntime().availableProcessors() : 1;
-    CountingThreadPoolExecutor executor = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS,
-        new LinkedBlockingQueue<Runnable>());
+    int threadNum = Options.v().output_format() == Options.output_format_class && jarFile == null
+        ? Runtime.getRuntime().availableProcessors()
+        : 1;
+    CountingThreadPoolExecutor executor
+        = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     while (classes.hasNext()) {
       final SootClass c = classes.next();
@@ -770,8 +773,8 @@ public class PackManager {
       RemoveEmptyBodyDefaultConstructor.checkAndRemoveDefault(s);
 
       /*
-       * Nomair A. Naeem 1st March 2006 Check if we want to apply transformations one reason we might not want to do this is when gathering old
-       * metrics data!!
+       * Nomair A. Naeem 1st March 2006 Check if we want to apply transformations one reason we might not want to do this is
+       * when gathering old metrics data!!
        */
 
       // debug("analyzeAST","Advanced Analyses ALL DISABLED");
@@ -779,7 +782,8 @@ public class PackManager {
       logger.debug("Analyzing " + fileName + "... ");
 
       /*
-       * Nomair A. Naeem 29th Jan 2006 Added hook into going through each decompiled method again Need it for all the implemented AST analyses
+       * Nomair A. Naeem 29th Jan 2006 Added hook into going through each decompiled method again Need it for all the
+       * implemented AST analyses
        */
       for (SootMethod m : s.getMethods()) {
         /*
@@ -967,7 +971,8 @@ public class PackManager {
     for (SootMethod m : methodsCopy) {
       if (DEBUG) {
         if (m.getExceptions().size() != 0) {
-          System.out.println("PackManager printing out jimple body exceptions for method " + m.toString() + " " + m.getExceptions().toString());
+          System.out.println("PackManager printing out jimple body exceptions for method " + m.toString() + " "
+              + m.getExceptions().toString());
         }
       }
 
@@ -1244,8 +1249,8 @@ public class PackManager {
   private void retrieveAllBodies() {
     // The old coffi front-end is not thread-safe
     int threadNum = Options.v().coffi() ? 1 : Runtime.getRuntime().availableProcessors();
-    CountingThreadPoolExecutor executor = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS,
-        new LinkedBlockingQueue<Runnable>());
+    CountingThreadPoolExecutor executor
+        = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     Iterator<SootClass> clIt = reachableClasses();
     while (clIt.hasNext()) {

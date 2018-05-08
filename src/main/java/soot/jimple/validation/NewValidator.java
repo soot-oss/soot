@@ -43,8 +43,8 @@ import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
 /**
- * A relatively simple validator. It tries to check whether after each new-expression-statement there is a corresponding call to the &lt;init&gt;
- * method before a use or the end of the method.
+ * A relatively simple validator. It tries to check whether after each new-expression-statement there is a corresponding call
+ * to the &lt;init&gt; method before a use or the end of the method.
  *
  * @author Marc Miltenberger
  * @author Steven Arzt
@@ -52,7 +52,8 @@ import soot.validation.ValidationException;
 public enum NewValidator implements BodyValidator {
   INSTANCE;
 
-  private static final String errorMsg = "There is a path from '%s' to the usage '%s' where <init> does not get called in between.";
+  private static final String errorMsg
+      = "There is a path from '%s' to the usage '%s' where <init> does not get called in between.";
 
   public static boolean MUST_CALL_CONSTRUCTOR_BEFORE_RETURN = false;
 
@@ -73,8 +74,9 @@ public enum NewValidator implements BodyValidator {
         // First seek for a JNewExpr.
         if (assign.getRightOp() instanceof NewExpr) {
           if (!(assign.getLeftOp().getType() instanceof RefType)) {
-            exceptions.add(new ValidationException(u, "A new-expression must be used on reference type locals", String
-                .format("Body of method %s contains a new-expression, which is assigned to a non-reference local", body.getMethod().getSignature())));
+            exceptions.add(new ValidationException(u, "A new-expression must be used on reference type locals",
+                String.format("Body of method %s contains a new-expression, which is assigned to a non-reference local",
+                    body.getMethod().getSignature())));
             return;
           }
 
@@ -99,8 +101,8 @@ public enum NewValidator implements BodyValidator {
    * </code>
    * <p>
    * Regarding <i>aliasingLocals</i>:<br>
-   * The first local in the set is always the local on the LHS of the new-expression-assignment (called: original local; in the example
-   * <code>$r0</code>).
+   * The first local in the set is always the local on the LHS of the new-expression-assignment (called: original local; in
+   * the example <code>$r0</code>).
    * </p>
    *
    * @param g

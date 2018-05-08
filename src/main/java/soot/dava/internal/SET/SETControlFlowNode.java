@@ -60,8 +60,8 @@ public abstract class SETControlFlowNode extends SETNode {
             } else if ((child instanceof SETControlFlowNode) && ((child instanceof SETUnconditionalWhileNode) == false)) {
               SETControlFlowNode scfn = (SETControlFlowNode) child;
 
-              if ((scfn.get_CharacterizingStmt() == as)
-                  || ((as.cpreds.size() == 1) && (as.get_Stmt() instanceof GotoStmt) && (scfn.get_CharacterizingStmt() == as.cpreds.get(0)))) {
+              if ((scfn.get_CharacterizingStmt() == as) || ((as.cpreds.size() == 1) && (as.get_Stmt() instanceof GotoStmt)
+                  && (scfn.get_CharacterizingStmt() == as.cpreds.get(0)))) {
                 remove_AugmentedStmt(as);
               }
             }

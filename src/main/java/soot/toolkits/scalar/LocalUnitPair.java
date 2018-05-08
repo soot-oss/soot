@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -37,7 +37,7 @@ public class LocalUnitPair {
 
   /**
    * Constructs a LocalUnitPair from a Unit object and a Local object.
-   * 
+   *
    * @param local
    *          some Local
    * @param unit
@@ -50,13 +50,14 @@ public class LocalUnitPair {
 
   /**
    * Two LocalUnitPairs are equal iff they hold the same Unit objects and the same Local objects within them.
-   * 
+   *
    * @param other
    *          another LocalUnitPair
    * @return true if other contains the same objects as this.
    */
   public boolean equals(Object other) {
-    if (other instanceof LocalUnitPair && ((LocalUnitPair) other).local == this.local && ((LocalUnitPair) other).unit == this.unit) {
+    if (other instanceof LocalUnitPair && ((LocalUnitPair) other).local == this.local
+        && ((LocalUnitPair) other).unit == this.unit) {
       return true;
     } else {
       return false;

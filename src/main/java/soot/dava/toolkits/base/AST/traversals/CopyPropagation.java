@@ -32,7 +32,7 @@
  */
 
 /*
- * TODO: November 23rd, 2005. What if removeStmt removes a copyStmt and that was the only 
+ * TODO: November 23rd, 2005. What if removeStmt removes a copyStmt and that was the only
  *       stmt in the stmtSequenceBlock. Shouldnt that block be removed??
  */
 
@@ -69,8 +69,8 @@ import soot.jimple.Stmt;
 /*
  * TODO: shouldnt this be a transformation and hence under the transformation package???
  This analysis uses the results from
- 1 ReachingCopies 
- 2 uD and dU chains 
+ 1 ReachingCopies
+ 2 uD and dU chains
  to eliminate extra copies
 
 
@@ -191,7 +191,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 
   /*
    * Given a copy stmt (a=b) find all uses of local a (using dU chain)
-   * 
+   *
    * if For ALL uses the ReachingCopies set contains copy stmt (a=b) Remove Copy Stmt Replace use of a with use of b
    */
   public void handleCopyStmt(DefinitionStmt copyStmt) {
@@ -305,7 +305,8 @@ public class CopyPropagation extends DepthFirstAdapter {
   }
 
   /*
-   * Method goes depth first into the condition tree and finds any use of local "from" If it finds the use it replaces it with the use of local "to"
+   * Method goes depth first into the condition tree and finds any use of local "from" If it finds the use it replaces it
+   * with the use of local "to"
    */
   public void modifyUses(Local from, Local to, ASTCondition cond) {
     if (cond instanceof ASTAggregatedCondition) {
@@ -379,7 +380,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 
   /*
    * Invoked by handleCopyStmt to replace the use of local <from> to the use of local <to> in <use>
-   * 
+   *
    * Notice <use> can be a stmt or an ASTNode
    */
 

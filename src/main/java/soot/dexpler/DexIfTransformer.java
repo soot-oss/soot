@@ -66,11 +66,11 @@ import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
 
 /**
- * BodyTransformer to find and change definition of locals used within an if which contains a condition involving two locals ( and not only one local
- * as in DexNullTransformer).
+ * BodyTransformer to find and change definition of locals used within an if which contains a condition involving two locals
+ * ( and not only one local as in DexNullTransformer).
  *
- * It this case, if any of the two locals leads to an object being def or used, all the appropriate defs of the two locals are updated to reflect the
- * use of objects (i.e: 0s are replaced by nulls).
+ * It this case, if any of the two locals leads to an object being def or used, all the appropriate defs of the two locals
+ * are updated to reflect the use of objects (i.e: 0s are replaced by nulls).
  */
 public class DexIfTransformer extends AbstractNullTransformer {
   // Note: we need an instance variable for inner class access, treat this as
@@ -105,8 +105,8 @@ public class DexIfTransformer extends AbstractNullTransformer {
           if (u instanceof DefinitionStmt) {
             l = (Local) ((DefinitionStmt) u).getLeftOp();
           } else {
-            throw new RuntimeException(
-                "ERROR: def can not be something else than Assign or Identity statement! (def: " + u + " class: " + u.getClass() + "");
+            throw new RuntimeException("ERROR: def can not be something else than Assign or Identity statement! (def: " + u
+                + " class: " + u.getClass() + "");
           }
 
           // check defs
@@ -411,7 +411,8 @@ public class DexIfTransformer extends AbstractNullTransformer {
         for (Unit u : defsOp1) {
           Stmt s = (Stmt) u;
           // If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
-          if (!s.containsArrayRef() || (!defsOp1.contains(s.getArrayRef().getBase()) && !defsOp2.contains(s.getArrayRef().getBase()))) {
+          if (!s.containsArrayRef()
+              || (!defsOp1.contains(s.getArrayRef().getBase()) && !defsOp2.contains(s.getArrayRef().getBase()))) {
             replaceWithNull(u);
           }
 
@@ -419,7 +420,8 @@ public class DexIfTransformer extends AbstractNullTransformer {
           for (Unit uuse : localDefs.getUsesOf(l)) {
             Stmt use = (Stmt) uuse;
             // If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
-            if (!use.containsArrayRef() || (twoIfLocals[0] != use.getArrayRef().getBase()) && twoIfLocals[1] != use.getArrayRef().getBase()) {
+            if (!use.containsArrayRef()
+                || (twoIfLocals[0] != use.getArrayRef().getBase()) && twoIfLocals[1] != use.getArrayRef().getBase()) {
               replaceWithNull(use);
             }
           }

@@ -38,7 +38,7 @@ public class ASMBackendUtils {
 
   /**
    * Convert class identifiers and signatures by replacing dots by slashes.
-   * 
+   *
    * @param s
    *          String to convert
    * @return Converted identifier
@@ -52,7 +52,7 @@ public class ASMBackendUtils {
 
   /**
    * Compute type description for methods, comprising parameter types and return type.
-   * 
+   *
    * @param m
    *          Method to determine type description
    * @return Method type description
@@ -70,7 +70,7 @@ public class ASMBackendUtils {
 
   /**
    * Convert type to JVM style type description
-   * 
+   *
    * @param type
    *          Type to convert
    * @return JVM style type description
@@ -135,7 +135,7 @@ public class ASMBackendUtils {
 
   /**
    * Get default value of a field for constant pool
-   * 
+   *
    * @param field
    *          Field to get default value for
    * @return Default value or <code>null</code> if there is no default value.
@@ -161,8 +161,9 @@ public class ASMBackendUtils {
   }
 
   /**
-   * Determine if the field accepts a string default value, this is only true for fields of type String or a sub-type of String
-   * 
+   * Determine if the field accepts a string default value, this is only true for fields of type String or a sub-type of
+   * String
+   *
    * @param field
    *          Field
    * @return <code>true</code> if the field is of type String or sub-type, <code>false</code> otherwise.
@@ -177,7 +178,7 @@ public class ASMBackendUtils {
 
   /**
    * Get the size in words for a type.
-   * 
+   *
    * @param t
    *          Type
    * @return Size in words
@@ -194,7 +195,7 @@ public class ASMBackendUtils {
 
   /**
    * Create an ASM attribute from an Soot attribute
-   * 
+   *
    * @param attr
    *          Soot attribute
    * @return ASM attribute
@@ -203,7 +204,8 @@ public class ASMBackendUtils {
     final Attribute a = attr;
     return new org.objectweb.asm.Attribute(attr.getName()) {
       @Override
-      protected ByteVector write(final ClassWriter cw, final byte[] code, final int len, final int maxStack, final int maxLocals) {
+      protected ByteVector write(final ClassWriter cw, final byte[] code, final int len, final int maxStack,
+          final int maxLocals) {
         ByteVector result = new ByteVector();
         result.putByteArray(a.getValue(), 0, a.getValue().length);
         return result;
@@ -213,7 +215,7 @@ public class ASMBackendUtils {
 
   /**
    * Translate internal numbering of java versions to real version for debug messages.
-   * 
+   *
    * @param javaVersion
    *          Internal java version number
    * @return Java version in the format "1.7"

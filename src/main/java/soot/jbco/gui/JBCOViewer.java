@@ -38,10 +38,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is being used
- * commercially (ie, by a corporation, company or business for any purpose whatever) then you should purchase a license for each developer using
- * Jigloo. Please visit www.cloudgarden.com for details. Use of Jigloo implies acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
- * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+ * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use.
+ * If Jigloo is being used commercially (ie, by a corporation, company or business for any purpose whatever) then you should
+ * purchase a license for each developer using Jigloo. Please visit www.cloudgarden.com for details. Use of Jigloo implies
+ * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE
+ * CANNOT BE USED LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
 public class JBCOViewer extends javax.swing.JFrame {
   private static final Logger logger = LoggerFactory.getLogger(JBCOViewer.class);
@@ -100,13 +101,14 @@ public class JBCOViewer extends javax.swing.JFrame {
   static ListModel models[] = new ListModel[20];
   static String[][] optionStrings = new String[][] {
       { "Rename Classes", "Rename Methods", "Rename Fields", "Build API Buffer Methods", "Build Library Buffer Classes",
-          "Goto Instruction Augmentation", "Add Dead Switch Statements", "Convert Arith. Expr. To Bit Ops", "Convert Branches to JSR Instructions",
-          "Disobey Constructor Conventions", "Reuse Duplicate Sequences", "Replace If(Non)Nulls with Try-Catch", "Indirect If Instructions",
-          "Pack Locals into Bitfields", "Reorder Loads Above Ifs", "Combine Try and Catch Blocks", "Embed Constants in Fields",
+          "Goto Instruction Augmentation", "Add Dead Switch Statements", "Convert Arith. Expr. To Bit Ops",
+          "Convert Branches to JSR Instructions", "Disobey Constructor Conventions", "Reuse Duplicate Sequences",
+          "Replace If(Non)Nulls with Try-Catch", "Indirect If Instructions", "Pack Locals into Bitfields",
+          "Reorder Loads Above Ifs", "Combine Try and Catch Blocks", "Embed Constants in Fields",
           "Partially Trap Switches" },
-      { "wjtp.jbco_cr", "wjtp.jbco_mr", "wjtp.jbco_fr", "wjtp.jbco_bapibm", "wjtp.jbco_blbc", "jtp.jbco_gia", "jtp.jbco_adss", "jtp.jbco_cae2bo",
-          "bb.jbco_cb2ji", "bb.jbco_dcc", "bb.jbco_rds", "bb.jbco_riitcb", "bb.jbco_iii", "bb.jbco_plvb", "bb.jbco_rlaii", "bb.jbco_ctbcb",
-          "bb.jbco_ecvf", "bb.jbco_ptss" } };
+      { "wjtp.jbco_cr", "wjtp.jbco_mr", "wjtp.jbco_fr", "wjtp.jbco_bapibm", "wjtp.jbco_blbc", "jtp.jbco_gia",
+          "jtp.jbco_adss", "jtp.jbco_cae2bo", "bb.jbco_cb2ji", "bb.jbco_dcc", "bb.jbco_rds", "bb.jbco_riitcb", "bb.jbco_iii",
+          "bb.jbco_plvb", "bb.jbco_rlaii", "bb.jbco_ctbcb", "bb.jbco_ecvf", "bb.jbco_ptss" } };
 
   static int[][] defaultWeights = new int[][] { { 9, 9, 9, 9, 9, 9, 6, 9, 0, 0, 3, 9, 6, 3, 9, 9, 0, 0, },
       { 0, 0, 0, 0, 9, 6, 0, 9, 9, 9, 0, 9, 0, 0, 9, 9, 0, 9, }, { 5, 5, 5, 6, 9, 9, 5, 9, 9, 5, 7, 9, 9, 2, 9, 9, 0, 9, } };
@@ -247,9 +249,10 @@ public class JBCOViewer extends javax.swing.JFrame {
           }
           {
             DefaultClassPathPane = new JTextPane();
-            DefaultClassPathPane
-                .setText("./:/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/charsets.jar\n" + ":/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/jce.jar\n"
-                    + ":/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/jsse.jar\n" + ":/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/rt.jar");
+            DefaultClassPathPane.setText("./:/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/charsets.jar\n"
+                + ":/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/jce.jar\n"
+                + ":/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/jsse.jar\n"
+                + ":/usr/lib/jvm/java-1.5.0-sun-1.5.0.06/jre/lib/rt.jar");
 
             if (arguments != null) {
               for (int i = 0; i < arguments.length; i++) {
@@ -352,7 +355,8 @@ public class JBCOViewer extends javax.swing.JFrame {
               });
             }
             {
-              ComboBoxModel ComboWeightModel = new DefaultComboBoxModel(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" });
+              ComboBoxModel ComboWeightModel
+                  = new DefaultComboBoxModel(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" });
               ComboWeight = new JComboBox();
               jPanel1.add(ComboWeight);
               ComboWeight.setModel(ComboWeightModel);
@@ -371,7 +375,8 @@ public class JBCOViewer extends javax.swing.JFrame {
               LabelDefWeight.setBounds(203, 7, 98, 28);
             }
             {
-              ComboBoxModel ComboBoxDefWeightModel = new DefaultComboBoxModel(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" });
+              ComboBoxModel ComboBoxDefWeightModel
+                  = new DefaultComboBoxModel(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" });
               ComboBoxDefWeight = new JComboBox();
               jPanel1.add(ComboBoxDefWeight);
               ComboBoxDefWeight.setModel(ComboBoxDefWeightModel);
@@ -692,8 +697,9 @@ public class JBCOViewer extends javax.swing.JFrame {
 
                 int index = 0;
                 String outdir = TextField.getText();
-                String[] cmdarray = new String[6 + (customclasspath ? 0 : 2) + vmargs.length + transforms.length + (RadioSummary.isSelected() ? 1 : 0)
-                    + (RadioVerbose.isSelected() ? 1 : 0) + (DebugRadio.isSelected() ? 1 : 0) + (outdir.length() > 0 ? 2 : 0)];
+                String[] cmdarray = new String[6 + (customclasspath ? 0 : 2) + vmargs.length + transforms.length
+                    + (RadioSummary.isSelected() ? 1 : 0) + (RadioVerbose.isSelected() ? 1 : 0)
+                    + (DebugRadio.isSelected() ? 1 : 0) + (outdir.length() > 0 ? 2 : 0)];
                 cmdarray[index++] = "java";
                 if (!customclasspath) {
                   cmdarray[index++] = "-cp";
@@ -760,11 +766,12 @@ public class JBCOViewer extends javax.swing.JFrame {
             });
           }
           /*
-           * { newFileMenuItem = new JMenuItem(); jMenu3.add(newFileMenuItem); newFileMenuItem.setText("Stop"); } { openFileMenuItem = new
-           * JMenuItem(); jMenu3.add(openFileMenuItem); openFileMenuItem.setText("Open"); } { saveMenuItem = new JMenuItem();
-           * jMenu3.add(saveMenuItem); saveMenuItem.setText("Save"); } { saveAsMenuItem = new JMenuItem(); jMenu3.add(saveAsMenuItem);
-           * saveAsMenuItem.setText("Save As ..."); } { closeFileMenuItem = new JMenuItem(); jMenu3.add(closeFileMenuItem);
-           * closeFileMenuItem.setText("Close"); } { jSeparator2 = new JSeparator(); jMenu3.add(jSeparator2); }
+           * { newFileMenuItem = new JMenuItem(); jMenu3.add(newFileMenuItem); newFileMenuItem.setText("Stop"); } {
+           * openFileMenuItem = new JMenuItem(); jMenu3.add(openFileMenuItem); openFileMenuItem.setText("Open"); } {
+           * saveMenuItem = new JMenuItem(); jMenu3.add(saveMenuItem); saveMenuItem.setText("Save"); } { saveAsMenuItem = new
+           * JMenuItem(); jMenu3.add(saveAsMenuItem); saveAsMenuItem.setText("Save As ..."); } { closeFileMenuItem = new
+           * JMenuItem(); jMenu3.add(closeFileMenuItem); closeFileMenuItem.setText("Close"); } { jSeparator2 = new
+           * JSeparator(); jMenu3.add(jSeparator2); }
            */
           {
             exitMenuItem = new JMenuItem();
@@ -778,12 +785,13 @@ public class JBCOViewer extends javax.swing.JFrame {
           }
         }
         /*
-         * { jMenu4 = new JMenu(); jMenuBar1.add(jMenu4); jMenu4.setText("Edit"); { cutMenuItem = new JMenuItem(); jMenu4.add(cutMenuItem);
-         * cutMenuItem.setText("Cut"); } { copyMenuItem = new JMenuItem(); jMenu4.add(copyMenuItem); copyMenuItem.setText("Copy"); } { pasteMenuItem =
-         * new JMenuItem(); jMenu4.add(pasteMenuItem); pasteMenuItem.setText("Paste"); } { jSeparator1 = new JSeparator(); jMenu4.add(jSeparator1); }
-         * { deleteMenuItem = new JMenuItem(); jMenu4.add(deleteMenuItem); deleteMenuItem.setText("Delete"); } } { jMenu5 = new JMenu();
-         * jMenuBar1.add(jMenu5); jMenu5.setText("Help"); { helpMenuItem = new JMenuItem(); jMenu5.add(helpMenuItem); helpMenuItem.setText("Help"); }
-         * }
+         * { jMenu4 = new JMenu(); jMenuBar1.add(jMenu4); jMenu4.setText("Edit"); { cutMenuItem = new JMenuItem();
+         * jMenu4.add(cutMenuItem); cutMenuItem.setText("Cut"); } { copyMenuItem = new JMenuItem(); jMenu4.add(copyMenuItem);
+         * copyMenuItem.setText("Copy"); } { pasteMenuItem = new JMenuItem(); jMenu4.add(pasteMenuItem);
+         * pasteMenuItem.setText("Paste"); } { jSeparator1 = new JSeparator(); jMenu4.add(jSeparator1); } { deleteMenuItem =
+         * new JMenuItem(); jMenu4.add(deleteMenuItem); deleteMenuItem.setText("Delete"); } } { jMenu5 = new JMenu();
+         * jMenuBar1.add(jMenu5); jMenu5.setText("Help"); { helpMenuItem = new JMenuItem(); jMenu5.add(helpMenuItem);
+         * helpMenuItem.setText("Help"); } }
          */
       }
     } catch (Exception e) {

@@ -36,13 +36,13 @@ import soot.jimple.toolkits.callgraph.Edge;
 
 /**
  * Build the initial encoded pointer assignment graph with the PtIns encoding.
- * 
+ *
  * @author xiao
  *
  */
 public class PtInsNodeGenerator extends IEncodingBroker {
-  private static final int full_convertor[] = { GeometricManager.ONE_TO_ONE, GeometricManager.MANY_TO_MANY, GeometricManager.MANY_TO_MANY,
-      GeometricManager.MANY_TO_MANY };
+  private static final int full_convertor[] = { GeometricManager.ONE_TO_ONE, GeometricManager.MANY_TO_MANY,
+      GeometricManager.MANY_TO_MANY, GeometricManager.MANY_TO_MANY };
 
   @Override
   public void initFlowGraph(GeomPointsTo ptAnalyzer) {
@@ -72,7 +72,8 @@ public class PtInsNodeGenerator extends IEncodingBroker {
       switch (cons.type) {
         case Constants.NEW_CONS:
           // We directly add the objects to the points-to set
-          my_rhs.add_points_to_3((AllocNode) my_lhs.getWrappedNode(), nf2 == Constants.SUPER_MAIN ? 0 : 1, nf1 == Constants.SUPER_MAIN ? 0 : 1,
+          my_rhs.add_points_to_3((AllocNode) my_lhs.getWrappedNode(), nf2 == Constants.SUPER_MAIN ? 0 : 1,
+              nf1 == Constants.SUPER_MAIN ? 0 : 1,
               nf2 == Constants.SUPER_MAIN ? ptAnalyzer.context_size[nf1] : ptAnalyzer.context_size[nf2]);
 
           // Enqueue to the worklist

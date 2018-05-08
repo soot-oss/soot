@@ -18,14 +18,15 @@
  */
 
 /*
-* Modified by the Sable Research Group and others 1997-1999.  
+* Modified by the Sable Research Group and others 1997-1999.
 * See the 'credits' file distributed with Soot for the complete list of
 * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
 */
 package soot.toolkits.graph;
 
 /**
- * Defines a DirectedGraph which is modifiable and associates a label object with every edge. Provides an interface to add/delete nodes and edges.
+ * Defines a DirectedGraph which is modifiable and associates a label object with every edge. Provides an interface to
+ * add/delete nodes and edges.
  *
  * @param <N>
  * @param <L>
@@ -75,8 +76,8 @@ public interface MutableEdgeLabelledDirectedGraph<N, L> extends EdgeLabelledDire
   public void removeAllEdges(L label);
 
   /**
-   * Adds a node to the graph. Initially the added node has no successors or predecessors. ; as a consequence it is considered both a head and tail
-   * for the graph.
+   * Adds a node to the graph. Initially the added node has no successors or predecessors. ; as a consequence it is
+   * considered both a head and tail for the graph.
    *
    * @param node
    *          a node to add to the graph.

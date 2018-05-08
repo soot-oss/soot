@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -31,10 +31,11 @@ import java.util.List;
 
 /**
  * A "taggable" object. Implementing classes can have arbitrary labelled data attached to them.
- * 
+ *
  * Currently, only classes, fields, methods and the Scene are Hosts.
  *
- * One example of a tag would be to store Boolean values, associated with array accesses, indicating whether bounds checks can be omitted.
+ * One example of a tag would be to store Boolean values, associated with array accesses, indicating whether bounds checks
+ * can be omitted.
  *
  * @see Tag
  */

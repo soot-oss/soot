@@ -25,7 +25,7 @@
  * CHANGE LOG:   23rd November, 2005: Added explicit check for DVariableDeclarationStmt in checking stmts
  *                       This is essential because to get complete code coverage the traversal routine needs
  *                       to go into the DVariableDeclarationStmt and invoke applies on the defs or local
- *                       being declared in there. 
+ *                       being declared in there.
  */
 package soot.dava.toolkits.base.AST.analysis;
 
@@ -135,7 +135,8 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     inASTSynchronizedBlockNode(node);
 
     /*
-     * apply on the local on which synchronization is done MArch 18th, 2006: since getLocal returns a local always dont need a valuebox for this
+     * apply on the local on which synchronization is done MArch 18th, 2006: since getLocal returns a local always dont need
+     * a valuebox for this
      */
     Value local = node.getLocal();
 
@@ -204,7 +205,8 @@ public class DepthFirstAdapter extends AnalysisAdapter {
      * apply on key of switchStatement
      */
     /*
-     * March 18th 2006, added level of indirection to have access to value box Value key = node.get_Key(); decideCaseExprOrRef(key);
+     * March 18th 2006, added level of indirection to have access to value box Value key = node.get_Key();
+     * decideCaseExprOrRef(key);
      */
     caseExprOrRefValueBox(node.getKeyBox());
 
@@ -587,8 +589,9 @@ public class DepthFirstAdapter extends AnalysisAdapter {
       Stmt s = as.get_Stmt();
       /*
        * Do a case by case check of possible statements and invoke the case methods from within this method.
-       * 
-       * cant use apply since the Statements are defined in some other package and dont want to change code all over the place
+       *
+       * cant use apply since the Statements are defined in some other package and dont want to change code all over the
+       * place
        */
 
       if (s instanceof DefinitionStmt) {
@@ -625,7 +628,8 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     inDefinitionStmt(s);
 
     /*
-     * March 18th, 2006 introducing level of indirection decideCaseExprOrRef(s.getRightOp()); decideCaseExprOrRef(s.getLeftOp());
+     * March 18th, 2006 introducing level of indirection decideCaseExprOrRef(s.getRightOp());
+     * decideCaseExprOrRef(s.getLeftOp());
      */
     caseExprOrRefValueBox(s.getRightOpBox());
     caseExprOrRefValueBox(s.getLeftOpBox());
@@ -733,7 +737,8 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
 
     /*
-     * if(s instanceof DAbruptStmt) System.out.println("DAbruptStmt: "+s); if(s instanceof ReturnVoidStmt) System.out.println("ReturnVoidStmt: "+s);
+     * if(s instanceof DAbruptStmt) System.out.println("DAbruptStmt: "+s); if(s instanceof ReturnVoidStmt)
+     * System.out.println("ReturnVoidStmt: "+s);
      */
   }
 

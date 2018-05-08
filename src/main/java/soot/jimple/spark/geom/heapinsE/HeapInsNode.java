@@ -36,9 +36,10 @@ import soot.jimple.spark.pag.StringConstantNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 
 /**
- * This class defines a pointer variable for use in the HeapIns encoding based points-to solver. HeapIns is a simpler form of geometric encoding.
- * HeapIns is faster and uses less memory, but also, it is less precise than geometric encoding. NOT recommended to use.
- * 
+ * This class defines a pointer variable for use in the HeapIns encoding based points-to solver. HeapIns is a simpler form of
+ * geometric encoding. HeapIns is faster and uses less memory, but also, it is less precise than geometric encoding. NOT
+ * recommended to use.
+ *
  * @author xiao
  *
  */
@@ -270,14 +271,16 @@ public class HeapInsNode extends IVarAbstraction {
                 case Constants.STORE_CONS:
                   // Store, qv -> pv.field
                   // pts.I2 may be zero, pts.L may be less than zero
-                  if (qn.add_simple_constraint_3(objn, pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0, pts.I2, pts.L < 0 ? -pts.L : pts.L)) {
+                  if (qn.add_simple_constraint_3(objn, pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0, pts.I2,
+                      pts.L < 0 ? -pts.L : pts.L)) {
                     worklist.push(qn);
                   }
                   break;
 
                 case Constants.LOAD_CONS:
                   // Load, pv.field -> qv
-                  if (objn.add_simple_constraint_3(qn, pts.I2, pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0, pts.L < 0 ? -pts.L : pts.L)) {
+                  if (objn.add_simple_constraint_3(qn, pts.I2, pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0,
+                      pts.L < 0 ? -pts.L : pts.L)) {
                     worklist.push(objn);
                   }
                   break;

@@ -24,8 +24,9 @@ import soot.SootField;
 import soot.Type;
 
 /**
- * Represents a simple variable node (Green) in the pointer assignment graph that is not associated with any particular method invocation.
- * 
+ * Represents a simple variable node (Green) in the pointer assignment graph that is not associated with any particular
+ * method invocation.
+ *
  * @author Ondrej Lhotak
  */
 public class GlobalVarNode extends VarNode {

@@ -37,7 +37,8 @@ public class RemoveFullyQualifiedName {
   }
 
   /*
-   * Method finds the last . and returns the className after that if no dot is found (shouldnt happen) then the name is simply returned back
+   * Method finds the last . and returns the className after that if no dot is found (shouldnt happen) then the name is
+   * simply returned back
    */
   public static String getClassName(String qualifiedName) {
     if (qualifiedName.lastIndexOf('.') > -1) {

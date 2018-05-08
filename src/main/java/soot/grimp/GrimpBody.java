@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -248,8 +248,8 @@ public class GrimpBody extends StmtBody {
     Iterator<Trap> trapIt = jBody.getTraps().iterator();
     while (trapIt.hasNext()) {
       Trap oldTrap = trapIt.next();
-      getTraps().add(Grimp.v().newTrap(oldTrap.getException(), (oldToNew.get(oldTrap.getBeginUnit())), (oldToNew.get(oldTrap.getEndUnit())),
-          (oldToNew.get(oldTrap.getHandlerUnit()))));
+      getTraps().add(Grimp.v().newTrap(oldTrap.getException(), (oldToNew.get(oldTrap.getBeginUnit())),
+          (oldToNew.get(oldTrap.getEndUnit())), (oldToNew.get(oldTrap.getHandlerUnit()))));
     }
 
     PackManager.v().getPack("gb").apply(this);

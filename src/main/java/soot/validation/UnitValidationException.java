@@ -10,7 +10,7 @@ public class UnitValidationException extends ValidationException {
 
   /**
    * Creates a new ValidationException.
-   * 
+   *
    * @param concerned
    *          the unit which is concerned and could be highlighted in an IDE
    * @param body
@@ -26,11 +26,12 @@ public class UnitValidationException extends ValidationException {
 
   /**
    * Creates a new ValidationException, treated as an error.
-   * 
+   *
    * @param body
    *          the body which contains the concerned unit
    * @param concerned
-   *          the object which is concerned and could be highlighted in an IDE; for example an unit, a SootMethod, a SootClass or a local.
+   *          the object which is concerned and could be highlighted in an IDE; for example an unit, a SootMethod, a
+   *          SootClass or a local.
    * @param strMessage
    *          the message to display in an IDE supporting the concerned feature
    */

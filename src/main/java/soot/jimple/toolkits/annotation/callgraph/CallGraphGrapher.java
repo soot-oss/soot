@@ -124,7 +124,8 @@ public class CallGraphGrapher extends SceneTransformer {
         if (methodCaller.getDeclaringClass().isLibraryClass()) {
           if (isShowLibMeths()) {
             if (recurse) {
-              list.add(new MethInfo(methodCaller, hasTgtMethods(methodCaller) | hasSrcMethods(methodCaller), callEdge.kind()));
+              list.add(
+                  new MethInfo(methodCaller, hasTgtMethods(methodCaller) | hasSrcMethods(methodCaller), callEdge.kind()));
             } else {
               list.add(new MethInfo(methodCaller, true, callEdge.kind()));
             }

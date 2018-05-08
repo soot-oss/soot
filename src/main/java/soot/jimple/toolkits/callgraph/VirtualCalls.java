@@ -51,7 +51,7 @@ import soot.util.queue.ChunkedQueue;
 
 /**
  * Resolves virtual calls.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class VirtualCalls {
@@ -64,8 +64,8 @@ public class VirtualCalls {
     return G.v().soot_jimple_toolkits_callgraph_VirtualCalls();
   }
 
-  private final LargeNumberedMap<Type, SmallNumberedMap<SootMethod>> typeToVtbl = new LargeNumberedMap<Type, SmallNumberedMap<SootMethod>>(
-      Scene.v().getTypeNumberer());
+  private final LargeNumberedMap<Type, SmallNumberedMap<SootMethod>> typeToVtbl
+      = new LargeNumberedMap<Type, SmallNumberedMap<SootMethod>>(Scene.v().getTypeNumberer());
 
   public SootMethod resolveSpecial(SpecialInvokeExpr iie, NumberedString subSig, SootMethod container) {
     return resolveSpecial(iie, subSig, container, false);
@@ -74,9 +74,10 @@ public class VirtualCalls {
   public SootMethod resolveSpecial(SpecialInvokeExpr iie, NumberedString subSig, SootMethod container, boolean appOnly) {
     SootMethod target = iie.getMethod();
     /* cf. JVM spec, invokespecial instruction */
-    if (Scene.v().getOrMakeFastHierarchy().canStoreType(container.getDeclaringClass().getType(), target.getDeclaringClass().getType())
-        && container.getDeclaringClass().getType() != target.getDeclaringClass().getType() && !target.getName().equals("<init>")
-        && subSig != sigClinit) {
+    if (Scene.v().getOrMakeFastHierarchy().canStoreType(container.getDeclaringClass().getType(),
+        target.getDeclaringClass().getType())
+        && container.getDeclaringClass().getType() != target.getDeclaringClass().getType()
+        && !target.getName().equals("<init>") && subSig != sigClinit) {
 
       return resolveNonSpecial(container.getDeclaringClass().getSuperclass().getType(), subSig, appOnly);
     } else {
@@ -118,22 +119,26 @@ public class VirtualCalls {
   }
 
   protected MultiMap<Type, Type> baseToSubTypes = new HashMultiMap<Type, Type>();
-  protected MultiMap<Pair<Type, NumberedString>, Pair<Type, NumberedString>> baseToPossibleSubTypes = new HashMultiMap<Pair<Type, NumberedString>, Pair<Type, NumberedString>>();
+  protected MultiMap<Pair<Type, NumberedString>, Pair<Type, NumberedString>> baseToPossibleSubTypes
+      = new HashMultiMap<Pair<Type, NumberedString>, Pair<Type, NumberedString>>();
 
-  public void resolve(Type t, Type declaredType, NumberedString subSig, SootMethod container, ChunkedQueue<SootMethod> targets) {
+  public void resolve(Type t, Type declaredType, NumberedString subSig, SootMethod container,
+      ChunkedQueue<SootMethod> targets) {
     resolve(t, declaredType, null, subSig, container, targets);
   }
 
-  public void resolve(Type t, Type declaredType, NumberedString subSig, SootMethod container, ChunkedQueue<SootMethod> targets, boolean appOnly) {
+  public void resolve(Type t, Type declaredType, NumberedString subSig, SootMethod container,
+      ChunkedQueue<SootMethod> targets, boolean appOnly) {
     resolve(t, declaredType, null, subSig, container, targets, appOnly);
   }
 
-  public void resolve(Type t, Type declaredType, Type sigType, NumberedString subSig, SootMethod container, ChunkedQueue<SootMethod> targets) {
+  public void resolve(Type t, Type declaredType, Type sigType, NumberedString subSig, SootMethod container,
+      ChunkedQueue<SootMethod> targets) {
     resolve(t, declaredType, sigType, subSig, container, targets, false);
   }
 
-  public void resolve(Type t, Type declaredType, Type sigType, NumberedString subSig, SootMethod container, ChunkedQueue<SootMethod> targets,
-      boolean appOnly) {
+  public void resolve(Type t, Type declaredType, Type sigType, NumberedString subSig, SootMethod container,
+      ChunkedQueue<SootMethod> targets, boolean appOnly) {
     if (declaredType instanceof ArrayType) {
       declaredType = RefType.v("java.lang.Object");
     }
@@ -159,13 +164,14 @@ public class VirtualCalls {
       RefType base = ((AnySubType) t).getBase();
 
       /*
-       * Whenever any sub type of a specific type is considered as receiver for a method to call and the base type is an interface, calls to existing
-       * methods with matching signature (possible implementation of method to call) are also added. As Javas' subtyping allows contra-variance for
-       * return types and co-variance for parameters when overriding a method, these cases are also considered here.
-       * 
-       * Example: Classes A, B (B sub type of A), interface I with method public A foo(B b); and a class C with method public B foo(A a) { ... }. The
-       * extended class hierarchy will contain C as possible implementation of I.
-       * 
+       * Whenever any sub type of a specific type is considered as receiver for a method to call and the base type is an
+       * interface, calls to existing methods with matching signature (possible implementation of method to call) are also
+       * added. As Javas' subtyping allows contra-variance for return types and co-variance for parameters when overriding a
+       * method, these cases are also considered here.
+       *
+       * Example: Classes A, B (B sub type of A), interface I with method public A foo(B b); and a class C with method public
+       * B foo(A a) { ... }. The extended class hierarchy will contain C as possible implementation of I.
+       *
        * Since Java has no multiple inheritance call by signature resolution is only activated if the base is an interface.
        */
       if (options.library() == CGOptions.library_signature_resolution && base.getSootClass().isInterface()) {
@@ -179,8 +185,8 @@ public class VirtualCalls {
     }
   }
 
-  protected void resolveAnySubType(Type declaredType, Type sigType, NumberedString subSig, SootMethod container, ChunkedQueue<SootMethod> targets,
-      boolean appOnly, RefType base) {
+  protected void resolveAnySubType(Type declaredType, Type sigType, NumberedString subSig, SootMethod container,
+      ChunkedQueue<SootMethod> targets, boolean appOnly, RefType base) {
     FastHierarchy fastHierachy = Scene.v().getOrMakeFastHierarchy();
 
     {

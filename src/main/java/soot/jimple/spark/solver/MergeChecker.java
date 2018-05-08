@@ -36,7 +36,7 @@ import soot.util.MultiMap;
 
 /**
  * Checks points-to sets with pointer assignment graph to make sure everything has been correctly propagated.
- * 
+ *
  * @author Ondrej Lhotak
  */
 
@@ -105,7 +105,8 @@ public class MergeChecker {
     }
     PointsToSetInternal p2set = container.getP2Set();
     FastHierarchy fh = pag.getTypeManager().getFastHierarchy();
-    if (!p2set.contains(n) && (fh == null || container.getType() == null || fh.canStoreType(n.getType(), container.getType()))) {
+    if (!p2set.contains(n)
+        && (fh == null || container.getType() == null || fh.canStoreType(n.getType(), container.getType()))) {
       logger.debug("Check failure: " + container + " does not have " + n + "; upstream is " + upstream);
     }
   }

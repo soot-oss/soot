@@ -18,12 +18,12 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-/* Added by Feng, to annotate the object references in the bytecode. 
+/* Added by Feng, to annotate the object references in the bytecode.
  */
 
 package soot.jimple.toolkits.annotation.nullcheck;
@@ -72,7 +72,7 @@ InvokeInterface
 ArrayLength
 -	AThrow
 -	MonitorEnter
--	MonitorExit	
+-	MonitorExit
 */
 
 public class NullPointerChecker extends BodyTransformer {
@@ -188,7 +188,9 @@ public class NullPointerChecker extends BodyTransformer {
               whichCounter = 6;
             }
 
-            units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(increase.makeRef(), IntConstant.v(whichCounter))), s);
+            units.insertBefore(
+                Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(increase.makeRef(), IntConstant.v(whichCounter))),
+                s);
           }
 
           {

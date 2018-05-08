@@ -46,7 +46,7 @@ import soot.util.queue.QueueReader;
 
 /**
  * Models the call graph.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public final class CallGraphBuilder {
@@ -81,8 +81,9 @@ public final class CallGraphBuilder {
   }
 
   /**
-   * This constructor builds the incomplete hack call graph for the Dava ThrowFinder. It uses all application class methods as entry points, and it
-   * ignores any calls by non-application class methods. Don't use this constructor if you need a real call graph.
+   * This constructor builds the incomplete hack call graph for the Dava ThrowFinder. It uses all application class methods
+   * as entry points, and it ignores any calls by non-application class methods. Don't use this constructor if you need a
+   * real call graph.
    */
   public CallGraphBuilder() {
     logger.warn("using incomplete callgraph containing " + "only application classes.");

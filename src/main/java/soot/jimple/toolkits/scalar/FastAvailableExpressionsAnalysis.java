@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -49,8 +49,8 @@ import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 /**
- * Implements an available expressions analysis on local variables. The current implementation is slow but correct. A better implementation would use
- * an implicit universe and the kill rule would be computed on-the-fly for each statement.
+ * Implements an available expressions analysis on local variables. The current implementation is slow but correct. A better
+ * implementation would use an implicit universe and the kill rule would be computed on-the-fly for each statement.
  */
 public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Value>> {
   SideEffectTester st;

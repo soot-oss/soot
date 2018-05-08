@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -73,9 +73,9 @@ public class Aggregator extends BodyTransformer {
   }
 
   /**
-   * Traverse the statements in the given body, looking for aggregation possibilities; that is, given a def d and a use u, d has no other uses, u has
-   * no other defs, collapse d and u.
-   * 
+   * Traverse the statements in the given body, looking for aggregation possibilities; that is, given a def d and a use u, d
+   * has no other uses, u has no other defs, collapse d and u.
+   *
    * option: only-stack-locals; if this is true, only aggregate variables starting with $
    */
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
@@ -175,8 +175,8 @@ public class Aggregator extends BodyTransformer {
       /* to see if there are any intervening re-defs of RHS */
       /* in fact, we should check that this path is unique. */
       /*
-       * if the RHS uses only locals, then we know what to do; if RHS has a method invocation f(a, b, c) or field access, we must ban field writes,
-       * other method calls and (as usual) writes to a, b, c.
+       * if the RHS uses only locals, then we know what to do; if RHS has a method invocation f(a, b, c) or field access, we
+       * must ban field writes, other method calls and (as usual) writes to a, b, c.
        */
 
       boolean cantAggr = false;
@@ -319,9 +319,9 @@ public class Aggregator extends BodyTransformer {
         }
       } else {
         /*
-         * if(Options.v().verbose()) { logger.debug("[debug] failed aggregation"); logger.debug("[debug] tried to put "+aggregatee+
-         * " into "+usepair.stmt + ": in particular, "+usepair.valueBox); logger.debug("[debug] aggregatee instanceof Expr: " +(aggregatee instanceof
-         * Expr)); }
+         * if(Options.v().verbose()) { logger.debug("[debug] failed aggregation");
+         * logger.debug("[debug] tried to put "+aggregatee+ " into "+usepair.stmt + ": in particular, "+usepair.valueBox);
+         * logger.debug("[debug] aggregatee instanceof Expr: " +(aggregatee instanceof Expr)); }
          */
       }
     }
@@ -330,7 +330,7 @@ public class Aggregator extends BodyTransformer {
 
   /**
    * Checks whether two field references point to the same field
-   * 
+   *
    * @param ref1
    *          The first field reference
    * @param ref2

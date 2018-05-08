@@ -167,7 +167,8 @@ class SootClassBuilder extends ClassVisitor {
     for (soot.Type type : sigTypes) {
       addDep(type);
     }
-    SootMethod method = Scene.v().makeSootMethod(name, sigTypes, sigTypes.remove(sigTypes.size() - 1), access, thrownExceptions);
+    SootMethod method
+        = Scene.v().makeSootMethod(name, sigTypes, sigTypes.remove(sigTypes.size() - 1), access, thrownExceptions);
     if (signature != null) {
       method.addTag(new SignatureTag(signature));
     }

@@ -37,10 +37,10 @@ import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.Tag;
 
 /**
- * This is the reverse operation of the {@link ConstantValueToInitializerTransformer}. We scan for <clinit> methods that initialize a final field with
- * a constant value and create a {@link ConstantValueTag} from this value. Afterwards, the assignment in the <clinit> method is removed. If <clinit>
- * runs empty, it is deleted as well.
- * 
+ * This is the reverse operation of the {@link ConstantValueToInitializerTransformer}. We scan for <clinit> methods that
+ * initialize a final field with a constant value and create a {@link ConstantValueTag} from this value. Afterwards, the
+ * assignment in the <clinit> method is removed. If <clinit> runs empty, it is deleted as well.
+ *
  * @author Steven Arzt
  */
 public class ConstantInitializerToTagTransformer extends SceneTransformer {
@@ -59,9 +59,9 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
   }
 
   /**
-   * Transforms the given class, i.e. scans for a <clinit> method and generates new constant value tags for all constant assignments to static final
-   * fields.
-   * 
+   * Transforms the given class, i.e. scans for a <clinit> method and generates new constant value tags for all constant
+   * assignments to static final fields.
+   *
    * @param sc
    *          The class to transform
    * @param removeAssignments
@@ -115,8 +115,8 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
                     itU.remove();
                   }
                 } else {
-                  logger.debug("" + "WARNING: Constant value for field '" + field + "' mismatch between code (" + assign.getRightOp()
-                      + ") and constant table (" + t + ")");
+                  logger.debug("" + "WARNING: Constant value for field '" + field + "' mismatch between code ("
+                      + assign.getRightOp() + ") and constant table (" + t + ")");
                   removeTagList.add(field);
                 }
                 found = true;

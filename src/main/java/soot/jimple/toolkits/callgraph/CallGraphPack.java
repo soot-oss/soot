@@ -31,7 +31,8 @@ import soot.SootMethod;
 import soot.options.CGOptions;
 
 /**
- * A radio pack implementation for the call graph pack that calls the intra-procedural clinit eliminator after the call graph has been built.
+ * A radio pack implementation for the call graph pack that calls the intra-procedural clinit eliminator after the call graph
+ * has been built.
  */
 public class CallGraphPack extends RadioScenePack {
   public CallGraphPack(String name) {

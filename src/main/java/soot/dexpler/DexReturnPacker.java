@@ -10,8 +10,9 @@ import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 
 /**
- * This transformer is the inverse of the DexReturnInliner. It looks for unnecessary duplicates of return statements and removes them.
- * 
+ * This transformer is the inverse of the DexReturnInliner. It looks for unnecessary duplicates of return statements and
+ * removes them.
+ *
  * @author Steven Arzt
  *
  */
@@ -45,7 +46,7 @@ public class DexReturnPacker extends BodyTransformer {
 
   /**
    * Checks whether the two given units are semantically equal
-   * 
+   *
    * @param unit1
    *          The first unit
    * @param unit2

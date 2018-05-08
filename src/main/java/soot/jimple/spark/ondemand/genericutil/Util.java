@@ -65,7 +65,7 @@ public class Util {
 
   /**
    * Factorial on doubles; avoids overflow problems present when using integers.
-   * 
+   *
    * @param n_
    *          arg on which to compute factorial
    * @return (<code>double</code> approximation to) factorial of largest positive integer <= (n_ + epsilon)
@@ -163,7 +163,7 @@ public class Util {
 
   /**
    * Test whether <em>some</em> element of the given {@link Collection} satisfies the given {@link Predicate}.
-   * 
+   *
    * @return The first element satisfying the predicate; otherwise null.
    */
   public static <T> T find(Collection<T> c_, Predicate<T> p_) {
@@ -179,7 +179,7 @@ public class Util {
 
   /**
    * Test whether <em>some</em> element of the given {@link Collection} satisfies the given {@link Predicate}.
-   * 
+   *
    * @return All the elements satisfying the predicate
    */
   public static <T> Collection<T> findAll(Collection<T> c_, Predicate<T> p_) {
@@ -209,7 +209,7 @@ public class Util {
 
   /**
    * Perform an action for all elements in a collection.
-   * 
+   *
    * @param c_
    *          the collection
    * @param v_
@@ -222,9 +222,9 @@ public class Util {
   }
 
   /**
-   * Map a list: generate a new list with each element mapped. The new list is always an {@link ArrayList}; it would have been more precise to use
-   * {@link java.lang.reflect reflection} to create a list of the same type as 'srcList', but reflection works really slowly in some implementations,
-   * so it's best to avoid it.
+   * Map a list: generate a new list with each element mapped. The new list is always an {@link ArrayList}; it would have
+   * been more precise to use {@link java.lang.reflect reflection} to create a list of the same type as 'srcList', but
+   * reflection works really slowly in some implementations, so it's best to avoid it.
    */
   public static <T, U> List<U> map(List<T> srcList, Mapper<T, U> mapper_) {
     ArrayList<U> result = new ArrayList<U>();
@@ -235,9 +235,10 @@ public class Util {
   }
 
   /**
-   * Filter a collection: generate a new list from an existing collection, consisting of the elements satisfying some predicate. The new list is
-   * always an {@link ArrayList}; it would have been more precise to use {@link java.lang.reflect reflection} to create a list of the same type as
-   * 'srcList', but reflection works really slowly in some implementations, so it's best to avoid it.
+   * Filter a collection: generate a new list from an existing collection, consisting of the elements satisfying some
+   * predicate. The new list is always an {@link ArrayList}; it would have been more precise to use {@link java.lang.reflect
+   * reflection} to create a list of the same type as 'srcList', but reflection works really slowly in some implementations,
+   * so it's best to avoid it.
    */
   public static <T> List<T> filter(Collection<T> src_, Predicate<T> pred_) {
     ArrayList<T> result = new ArrayList<T>();
@@ -252,7 +253,7 @@ public class Util {
 
   /**
    * Filter a collection according to some predicate, placing the result in a List
-   * 
+   *
    * @param src_
    *          collection to be filtered
    * @param pred_
@@ -269,9 +270,9 @@ public class Util {
   }
 
   /**
-   * Map a set: generate a new set with each element mapped. The new set is always a {@link HashSet}; it would have been more precise to use
-   * {@link java.lang.reflect reflection} to create a set of the same type as 'srcSet', but reflection works really slowly in some implementations, so
-   * it's best to avoid it.
+   * Map a set: generate a new set with each element mapped. The new set is always a {@link HashSet}; it would have been more
+   * precise to use {@link java.lang.reflect reflection} to create a set of the same type as 'srcSet', but reflection works
+   * really slowly in some implementations, so it's best to avoid it.
    */
   public static <T, U> Set<U> mapToSet(Collection<T> srcSet, Mapper<T, U> mapper_) {
     HashSet<U> result = new HashSet<U>();
@@ -412,7 +413,7 @@ public class Util {
 
   /**
    * checks if two sets have a non-empty intersection
-   * 
+   *
    * @param s1
    * @param s2
    * @return <code>true</code> if the sets intersect; <code>false</code> otherwise
@@ -434,8 +435,9 @@ public class Util {
   }
 
   /**
-   * given the name of a class C, returns the name of the top-most enclosing class of class C. For example, given A$B$C, the method returns A
-   * 
+   * given the name of a class C, returns the name of the top-most enclosing class of class C. For example, given A$B$C, the
+   * method returns A
+   *
    * @param typeStr
    * @return
    */

@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -39,10 +39,12 @@ public class InnerClassTag implements Tag {
     this.name = name;
     this.accessFlags = accessFlags;
     if (innerClass != null && (innerClass.startsWith("L") && innerClass.endsWith(";"))) {
-      throw new RuntimeException("InnerClass annotation type string must " + "be of the form a/b/ClassName not '" + innerClass + "'");
+      throw new RuntimeException(
+          "InnerClass annotation type string must " + "be of the form a/b/ClassName not '" + innerClass + "'");
     }
     if (outerClass != null && (outerClass.startsWith("L") && outerClass.endsWith(";"))) {
-      throw new RuntimeException("OuterType annotation type string must " + "be of the form a/b/ClassName not '" + innerClass + "'");
+      throw new RuntimeException(
+          "OuterType annotation type string must " + "be of the form a/b/ClassName not '" + innerClass + "'");
     }
     if (name != null && name.endsWith(";")) {
       throw new RuntimeException("InnerClass name cannot end with ';', got '" + name + "'");
@@ -54,8 +56,8 @@ public class InnerClassTag implements Tag {
   }
 
   /**
-   * Returns the inner class name (only) encoded in UTF8. There is no obvious standalone byte[] encoding for this attribute because it contains
-   * embedded constant pool indicies.
+   * Returns the inner class name (only) encoded in UTF8. There is no obvious standalone byte[] encoding for this attribute
+   * because it contains embedded constant pool indicies.
    */
   public byte[] getValue() {
     try {

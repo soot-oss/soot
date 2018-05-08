@@ -24,7 +24,8 @@ import soot.Value;
 import soot.toolkits.scalar.ValueUnitPair;
 
 /**
- * Extension of ValueUnitPair that implements SUnitBox. Needed by SPatchingChain. Equality is no longer dependent on the value.
+ * Extension of ValueUnitPair that implements SUnitBox. Needed by SPatchingChain. Equality is no longer dependent on the
+ * value.
  *
  * @author Navindra Umanee
  **/

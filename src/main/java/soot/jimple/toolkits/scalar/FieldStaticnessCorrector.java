@@ -16,9 +16,9 @@ import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 
 /**
- * Transformer that checks whether a static field is used like an instance field. If this is the case, all instance references are replaced by static
- * field references.
- * 
+ * Transformer that checks whether a static field is used like an instance field. If this is the case, all instance
+ * references are replaced by static field references.
+ *
  * @author Steven Arzt
  *
  */

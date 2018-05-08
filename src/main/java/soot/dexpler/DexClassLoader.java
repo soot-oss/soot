@@ -26,7 +26,7 @@ public class DexClassLoader {
 
   /**
    * Loads a single method from a dex file
-   * 
+   *
    * @param method
    *          The method to load
    * @param declaringClass
@@ -159,7 +159,8 @@ public class DexClassLoader {
           }
 
           // Transfer the tag from the inner class to the outer class
-          InnerClassTag newt = new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(), ict.getShortName(), ict.getAccessFlags());
+          InnerClassTag newt
+              = new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(), ict.getShortName(), ict.getAccessFlags());
           icat.add(newt);
 
           // Remove the tag from the inner class as inner classes do
@@ -188,7 +189,7 @@ public class DexClassLoader {
 
   /**
    * Allow custom implementations to use different dex method factories
-   * 
+   *
    * @param dexFile
    * @param sc
    * @return
@@ -199,7 +200,7 @@ public class DexClassLoader {
 
   /**
    * Loads a single field from a dex file
-   * 
+   *
    * @param declaringClass
    *          The class that declares the method to load
    * @param annotations

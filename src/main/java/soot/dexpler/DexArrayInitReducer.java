@@ -21,16 +21,17 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
 
 /**
  * Transformer that simplifies array initializations. It converts
- * 
+ *
  * a = 0 b = 42 c[a] = b
- * 
+ *
  * to
- * 
+ *
  * c[0] 42
- * 
- * This transformer performs copy propagation, dead assignment elimination, and unused local elimination at once for this special case. The idea is to
- * reduce the code as much as possible for this special case before applying the more expensive other transformers.
- * 
+ *
+ * This transformer performs copy propagation, dead assignment elimination, and unused local elimination at once for this
+ * special case. The idea is to reduce the code as much as possible for this special case before applying the more expensive
+ * other transformers.
+ *
  * @author Steven Arzt
  *
  */
@@ -64,7 +65,8 @@ public class DexArrayInitReducer extends BodyTransformer {
       // preceding constant assignments
       AssignStmt assignStmt = (AssignStmt) u;
       if (assignStmt.getLeftOp() instanceof ArrayRef) {
-        if (u1 != null && u2 != null && u2.getBoxesPointingToThis().isEmpty() && assignStmt.getBoxesPointingToThis().isEmpty()) {
+        if (u1 != null && u2 != null && u2.getBoxesPointingToThis().isEmpty()
+            && assignStmt.getBoxesPointingToThis().isEmpty()) {
           ArrayRef arrayRef = (ArrayRef) assignStmt.getLeftOp();
 
           Value u1val = u1.getDefBoxes().get(0).getValue();

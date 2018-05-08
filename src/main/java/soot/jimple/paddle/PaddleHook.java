@@ -27,7 +27,7 @@ import soot.Singletons;
 
 /**
  * Loads the Paddle plugin.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class PaddleHook extends SceneTransformer {
@@ -75,7 +75,8 @@ public class PaddleHook extends SceneTransformer {
   }
 
   /**
-   * This is called when Soot finishes executing all interprocedural phases. Paddle uses it to stop profiling if profiling is enabled.
+   * This is called when Soot finishes executing all interprocedural phases. Paddle uses it to stop profiling if profiling is
+   * enabled.
    */
   public void finishPhases() {
     if (paddleTransformer != null) {

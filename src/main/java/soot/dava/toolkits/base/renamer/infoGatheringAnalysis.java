@@ -167,9 +167,11 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   }
 
   /*
-   * This can be either an assignment or an identity statement. We are however only concerned with stmts which assign values to locals
-   * 
-   * The method sets the inDefinitionStmt flag to true and if this is a local assignment The ref to the local is stored in definedLocal
+   * This can be either an assignment or an identity statement. We are however only concerned with stmts which assign values
+   * to locals
+   *
+   * The method sets the inDefinitionStmt flag to true and if this is a local assignment The ref to the local is stored in
+   * definedLocal
    */
   public void inDefinitionStmt(DefinitionStmt s) {
     inDefinitionStmt = true;
@@ -178,9 +180,9 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
     if (v instanceof Local) {
       // System.out.println("This is a local:"+v);
       /*
-       * We want definedLocal to be set only if we are interested in naming it Variables that are created by Dava itself e.g. handler (refer to
-       * SuperFirstStmtHandler) Need not be renamed. So we check whether definedLocal is present in the info set if it is we set this other wise we
-       * dont
+       * We want definedLocal to be set only if we are interested in naming it Variables that are created by Dava itself e.g.
+       * handler (refer to SuperFirstStmtHandler) Need not be renamed. So we check whether definedLocal is present in the
+       * info set if it is we set this other wise we dont
        */
       if (info.contains((Local) v)) {
         definedLocal = (Local) v;
@@ -230,9 +232,9 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 
   /*
    * (non-Javadoc)
-   * 
-   * @see soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter#outInvokeExpr(soot.jimple.InvokeExpr) If it is a newInvoke expr we know that the name
-   * of the class can come in handy while renaming because this could be a subtype
+   *
+   * @see soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter#outInvokeExpr(soot.jimple.InvokeExpr) If it is a newInvoke
+   * expr we know that the name of the class can come in handy while renaming because this could be a subtype
    */
   public void outInvokeExpr(InvokeExpr ie) {
     // If this is within a definitionStmt of a local
@@ -384,7 +386,8 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   }
 
   /*
-   * If there are any locals at this point who do not have any className set it might be a good idea to store that information
+   * If there are any locals at this point who do not have any className set it might be a good idea to store that
+   * information
    */
   public void outASTMethodNode(ASTMethodNode node) {
     if (DEBUG) {
@@ -395,7 +398,8 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   }
 
   /*
-   * The method checks whether a particular ConditionExpr is a comparison of a local with a boolean If so the local is returned
+   * The method checks whether a particular ConditionExpr is a comparison of a local with a boolean If so the local is
+   * returned
    */
   private Local checkBooleanUse(ConditionExpr condition) {
     boolean booleanUse = false;

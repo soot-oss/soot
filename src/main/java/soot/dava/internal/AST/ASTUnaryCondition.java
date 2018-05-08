@@ -53,8 +53,8 @@ public class ASTUnaryCondition extends ASTUnaryBinaryCondition {
 
   public void flip() {
     /*
-     * Since its a unarycondition we know this is a flag See if its a DNotExpr if yes set this.value to the op inside DNotExpr If it is NOT a DNotExpr
-     * make one
+     * Since its a unarycondition we know this is a flag See if its a DNotExpr if yes set this.value to the op inside
+     * DNotExpr If it is NOT a DNotExpr make one
      */
     if (value instanceof DNotExpr) {
       this.value = ((DNotExpr) value).getOp();

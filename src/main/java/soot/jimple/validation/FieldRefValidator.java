@@ -49,7 +49,8 @@ public enum FieldRefValidator implements BodyValidator {
           if (field == null) {
             exceptions.add(new UnitValidationException(unit, body, "Resolved field is null: " + fr.toString()));
           } else if (!field.isStatic() && !field.isPhantom()) {
-            exceptions.add(new UnitValidationException(unit, body, "Trying to get a static field which is non-static: " + v));
+            exceptions
+                .add(new UnitValidationException(unit, body, "Trying to get a static field which is non-static: " + v));
           }
         } catch (ResolutionFailedException e) {
           exceptions.add(new UnitValidationException(unit, body, "Trying to get a static field which is non-static: " + v));

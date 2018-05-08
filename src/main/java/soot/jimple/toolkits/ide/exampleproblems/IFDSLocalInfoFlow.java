@@ -157,6 +157,7 @@ public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local,
 
   @Override
   public Map<Unit, Set<Local>> initialSeeds() {
-    return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()), zeroValue());
+    return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()),
+        zeroValue());
   }
 }

@@ -23,16 +23,17 @@ import soot.util.Chain;
 
 /**
  * A scene transformer that renames the duplicated class names.
- * 
- * The definition of duplicated class names. if (className1.equalsIgnoreCase(className2) { //className1 and className2 are duplicated class names. }
- * 
- * Because some file systems are case-insensitive (e.g., Mac OS). When file a.b.c.class exists, a.b.C.class will over-write the content of a.b.c.class
- * and case inconsistent that a.b.c.class file contains the content of a.b.C.class.
- * 
+ *
+ * The definition of duplicated class names. if (className1.equalsIgnoreCase(className2) { //className1 and className2 are
+ * duplicated class names. }
+ *
+ * Because some file systems are case-insensitive (e.g., Mac OS). When file a.b.c.class exists, a.b.C.class will over-write
+ * the content of a.b.c.class and case inconsistent that a.b.c.class file contains the content of a.b.C.class.
+ *
  * However, in some case, at lest in Android applications, the duplicated class names exist. For example, an app (Sha256:
- * 0015AE7C27688D45F79170DCEA16131CE557912A1A0C5F3B6B0465EE0774A452) in the Genome project contains duplicated class names. When transforming the app
- * to classes, some classes are missing and consequently case problems for other analysis tools that relay on Soot (e.g., Error: class
- * com.adwo.adsdk.s read in from a classfile in which com.adwo.adsdk.S was expected).
+ * 0015AE7C27688D45F79170DCEA16131CE557912A1A0C5F3B6B0465EE0774A452) in the Genome project contains duplicated class names.
+ * When transforming the app to classes, some classes are missing and consequently case problems for other analysis tools
+ * that relay on Soot (e.g., Error: class com.adwo.adsdk.s read in from a classfile in which com.adwo.adsdk.S was expected).
  *
  *
  */
@@ -105,7 +106,7 @@ public class RenameDuplicatedClasses extends SceneTransformer {
 
   /**
    * An naive approach to check whether the file system is case sensitive or not
-   * 
+   *
    * @return
    */
   public boolean isFileSystemCaseSensitive() {

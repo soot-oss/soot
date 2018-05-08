@@ -33,7 +33,7 @@ import java.util.Map;
  * Calculate dominators for basic blocks.
  * <p>
  * Uses the algorithm contained in Dragon book, pg. 670-1.
- * 
+ *
  * <pre>
  *       D(n0) := { n0 }
  *       for n in N - { n0 } do D(n) := N;
@@ -41,9 +41,9 @@ import java.util.Map;
  *         for n in N - {n0} do
  *             D(n) := {n} U (intersect of D(p) over all predecessors p of n)
  * </pre>
- * 
- * 2007/07/03 - updated to use {@link BitSet}s instead of {@link HashSet}s, as the most expensive operation in this algorithm used to be cloning of
- * the fullSet, which is very cheap for {@link BitSet}s.
+ *
+ * 2007/07/03 - updated to use {@link BitSet}s instead of {@link HashSet}s, as the most expensive operation in this algorithm
+ * used to be cloning of the fullSet, which is very cheap for {@link BitSet}s.
  *
  * @author Navindra Umanee
  * @author Eric Bodden

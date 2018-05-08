@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -33,7 +33,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Represents an inner class attribute which can be attached to implementations of Host. It can be directly used to add attributes to class files
+ * Represents an inner class attribute which can be attached to implementations of Host. It can be directly used to add
+ * attributes to class files
  *
  */
 public class InnerClassAttribute implements Tag {
@@ -86,8 +87,8 @@ public class InnerClassAttribute implements Tag {
         String inner = ict.getInnerClass();
         if (new_inner.equals(inner)) {
           if (ict.accessFlags != 0 && newt.accessFlags > 0 && ict.accessFlags != newt.accessFlags) {
-            throw new RuntimeException(
-                "Error: trying to add an InnerClassTag twice with different access flags! (" + ict.accessFlags + " and " + newt.accessFlags + ")");
+            throw new RuntimeException("Error: trying to add an InnerClassTag twice with different access flags! ("
+                + ict.accessFlags + " and " + newt.accessFlags + ")");
           }
           if (ict.accessFlags == 0 && newt.accessFlags != 0) {
             // The Dalvik parser may find an InnerClass annotation without accessFlags in the outer class

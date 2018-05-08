@@ -16,7 +16,7 @@ import soot.jimple.NullConstant;
 
 /**
  * Abstract base class for {@link DexNullTransformer} and {@link DexIfTransformer}.
- * 
+ *
  * @author Steven Arzt
  */
 public abstract class AbstractNullTransformer extends DexTransformer {
@@ -54,11 +54,13 @@ public abstract class AbstractNullTransformer extends DexTransformer {
     } else if (u instanceof AssignStmt) {
       AssignStmt s = (AssignStmt) u;
       Value v = s.getRightOp();
-      if ((v instanceof IntConstant && ((IntConstant) v).value == 0) || (v instanceof LongConstant && ((LongConstant) v).value == 0)) {
+      if ((v instanceof IntConstant && ((IntConstant) v).value == 0)
+          || (v instanceof LongConstant && ((LongConstant) v).value == 0)) {
         // If this is a field assignment, double-check the type. We
         // might have a.f = 2 with a being a null candidate, but a.f
         // being an int.
-        if (!(s.getLeftOp() instanceof InstanceFieldRef) || ((InstanceFieldRef) s.getLeftOp()).getFieldRef().type() instanceof RefLikeType) {
+        if (!(s.getLeftOp() instanceof InstanceFieldRef)
+            || ((InstanceFieldRef) s.getLeftOp()).getFieldRef().type() instanceof RefLikeType) {
           s.setRightOp(NullConstant.v());
         }
       }

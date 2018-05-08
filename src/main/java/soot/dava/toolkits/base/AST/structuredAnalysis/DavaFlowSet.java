@@ -24,7 +24,7 @@
 
 /*
  * CHANGE LOG:
- * 16 nov, 2005:  Adding <implicitTargets> feature to be able to store mappings of breaks 
+ * 16 nov, 2005:  Adding <implicitTargets> feature to be able to store mappings of breaks
  *                and continues implicitly targetting nodes
  * 21 Nov, 2005   * Reasoning that this implmentation is correct. Adding comments
  *                * Refactored addIfNotDuplicate method since the same chunk of code was being used in
@@ -57,15 +57,16 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   protected T[] elements;
 
   /**
-   * Whenever in a structured flow analysis a break or continue stmt is encountered the current DavaFlowSet is stored in the break/continue list with
-   * the appropriate label for the target code. This is how explicit breaks and continues are handled by the analysis framework
+   * Whenever in a structured flow analysis a break or continue stmt is encountered the current DavaFlowSet is stored in the
+   * break/continue list with the appropriate label for the target code. This is how explicit breaks and continues are
+   * handled by the analysis framework
    */
   HashMap<Serializable, List<DavaFlowSet<T>>> breakList;
   HashMap<Serializable, List<DavaFlowSet<T>>> continueList;
 
   /**
-   * To handle implicit breaks and continues the following HashMaps store the DavaFlowSets as value with the key being the targeted piece of code (an
-   * ASTNode)
+   * To handle implicit breaks and continues the following HashMaps store the DavaFlowSets as value with the key being the
+   * targeted piece of code (an ASTNode)
    */
   HashMap<Serializable, List<DavaFlowSet<T>>> implicitBreaks; // map a node
   // and all the
@@ -180,8 +181,8 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   }
 
   /**
-   * Notice that the union method only merges the elements of the flow set DavaFlowSet also contains information regarding abrupt control flow This
-   * should also be merged using the copyInternalDataFrom method
+   * Notice that the union method only merges the elements of the flow set DavaFlowSet also contains information regarding
+   * abrupt control flow This should also be merged using the copyInternalDataFrom method
    */
   public void union(FlowSet<T> otherFlow, FlowSet<T> destFlow) {
     if (sameType(otherFlow) && sameType(destFlow)) {
@@ -211,8 +212,8 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   }
 
   /**
-   * Notice that the intersection method only merges the elements of the flow set DavaFlowSet also contains information regarding abrupt control flow
-   * This should also be merged using the copyInternalDataFrom method
+   * Notice that the intersection method only merges the elements of the flow set DavaFlowSet also contains information
+   * regarding abrupt control flow This should also be merged using the copyInternalDataFrom method
    */
   public void intersection(FlowSet<T> otherFlow, FlowSet<T> destFlow) {
     // System.out.println("DAVA FLOWSET INTERSECTION INVOKED!!!");
@@ -280,8 +281,8 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   }
 
   /**
-   * Notice that the equals method only checks the equality of the elements of the flow set DavaFlowSet also contains information regarding abrupt
-   * control flow This should also be checked by invoking the internalDataMatchesTo method
+   * Notice that the equals method only checks the equality of the elements of the flow set DavaFlowSet also contains
+   * information regarding abrupt control flow This should also be checked by invoking the internalDataMatchesTo method
    */
   public boolean equals(Object otherFlow) {
     if (sameType(otherFlow)) {
@@ -302,9 +303,9 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
       }
 
       /*
-       * both arrays have the same size, no element appears twice in one array, all elements of ThisFlow are in otherFlow -> they are equal! we don't
-       * need to test again! // Make sure that otherFlow is contained in ThisFlow for(int i = 0; i < size; i++) if(!this.contains(other.elements[i]))
-       * return false;
+       * both arrays have the same size, no element appears twice in one array, all elements of ThisFlow are in otherFlow ->
+       * they are equal! we don't need to test again! // Make sure that otherFlow is contained in ThisFlow for(int i = 0; i <
+       * size; i++) if(!this.contains(other.elements[i])) return false;
        */
 
       return true;
@@ -384,8 +385,8 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   }
 
   /**
-   * Checks whether the input stmt is an implicit break/continue A abrupt stmt is implicit if the SETLabelNode is null or the label.toString results
-   * in null
+   * Checks whether the input stmt is an implicit break/continue A abrupt stmt is implicit if the SETLabelNode is null or the
+   * label.toString results in null
    */
   private boolean checkImplicit(DAbruptStmt ab) {
     SETNodeLabel label = ab.getLabel();
@@ -399,10 +400,11 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   }
 
   /**
-   * The next two methods take an abruptStmt as input along with a flowSet. It should be only invoked for abrupt stmts which do not have explicit
-   * labels
-   * 
-   * The node being targeted by this implicit stmt should be found Then the flow set should be added to the list within the appropriate hashmap
+   * The next two methods take an abruptStmt as input along with a flowSet. It should be only invoked for abrupt stmts which
+   * do not have explicit labels
+   *
+   * The node being targeted by this implicit stmt should be found Then the flow set should be added to the list within the
+   * appropriate hashmap
    */
   public void addToImplicitBreaks(DAbruptStmt ab, DavaFlowSet<T> set) {
     if (!checkImplicit(ab)) {
@@ -680,7 +682,8 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
     return true;
   }
 
-  private boolean compareHashMaps(HashMap<Serializable, List<DavaFlowSet<T>>> thisMap, HashMap<Serializable, List<DavaFlowSet<T>>> otherMap) {
+  private boolean compareHashMaps(HashMap<Serializable, List<DavaFlowSet<T>>> thisMap,
+      HashMap<Serializable, List<DavaFlowSet<T>>> otherMap) {
     List<String> otherKeyList = new ArrayList<String>();
 
     Iterator<Serializable> keys = otherMap.keySet().iterator();
@@ -771,12 +774,13 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
   }
 
   /*
-   * public String toString(){ StringBuffer b = new StringBuffer(); b.append("\nSETTTTT\n"); for(int i = 0; i < this.numElements; i++){
-   * b.append("\t"+this.elements[i]+"\n"); } b.append("BREAK LIST\n"); b.append("\t"+breakList.toString()+"\n");
-   * 
-   * 
+   * public String toString(){ StringBuffer b = new StringBuffer(); b.append("\nSETTTTT\n"); for(int i = 0; i <
+   * this.numElements; i++){ b.append("\t"+this.elements[i]+"\n"); } b.append("BREAK LIST\n");
+   * b.append("\t"+breakList.toString()+"\n");
+   *
+   *
    * b.append("CONTINUE LIST\n"); b.append("\t"+continueList.toString()+"\n");
-   * 
+   *
    * b.append("EXCEPTION LIST\n"); b.append("\t"+exceptionList.toString()+"\n"); return b.toString(); }
    */
 

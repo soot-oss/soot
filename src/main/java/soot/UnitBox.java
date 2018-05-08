@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -43,11 +43,12 @@ public interface UnitBox extends Serializable {
   public boolean canContainUnit(Unit u);
 
   /**
-   * Returns true if the UnitBox is holding a Unit that is the target of a branch (ie a Unit at the beginning of a CFG block). This is the default
-   * case.
+   * Returns true if the UnitBox is holding a Unit that is the target of a branch (ie a Unit at the beginning of a CFG
+   * block). This is the default case.
    *
    * <p>
-   * Returns false if the UnitBox is holding a Unit that indicates the end of a CFG block and may require specialised processing for SSA.
+   * Returns false if the UnitBox is holding a Unit that indicates the end of a CFG block and may require specialised
+   * processing for SSA.
    **/
   public boolean isBranchTarget();
 

@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 2002-2003.  
+ * Modified by the Sable Research Group and others 2002-2003.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -91,10 +91,11 @@ public class CFGViewer extends BodyTransformer {
   public static void main(String[] args) {
     CFGViewer viewer = new CFGViewer();
     Transform printTransform = new Transform(phaseFullname, viewer);
-    printTransform.setDeclaredOptions("enabled " + altClassPathOptionName + ' ' + graphTypeOptionName + ' ' + irOptionName + ' ' + multipageOptionName
-        + ' ' + briefLabelOptionName + ' ');
-    printTransform.setDefaultOptions("enabled " + altClassPathOptionName + ": " + graphTypeOptionName + ':' + defaultGraph + ' ' + irOptionName + ':'
-        + defaultIR + ' ' + multipageOptionName + ":false " + ' ' + briefLabelOptionName + ":false ");
+    printTransform.setDeclaredOptions("enabled " + altClassPathOptionName + ' ' + graphTypeOptionName + ' ' + irOptionName
+        + ' ' + multipageOptionName + ' ' + briefLabelOptionName + ' ');
+    printTransform.setDefaultOptions(
+        "enabled " + altClassPathOptionName + ": " + graphTypeOptionName + ':' + defaultGraph + ' ' + irOptionName + ':'
+            + defaultIR + ' ' + multipageOptionName + ":false " + ' ' + briefLabelOptionName + ":false ");
     PackManager.v().getPack("jtp").add(printTransform);
     args = viewer.parse_options(args);
     if (args.length == 0) {
@@ -105,21 +106,23 @@ public class CFGViewer extends BodyTransformer {
   }
 
   private static void usage() {
-    logger.debug("Usage:\n" + "   java soot.util.CFGViewer [soot options] [CFGViewer options] [class[:method]]...\n\n" + "   CFGViewer options:\n"
-        + "      (When specifying the value for an '=' option, you only\n" + "       need to type enough characters to specify the choice\n"
-        + "       unambiguously, and case is ignored.)\n" + "\n" + "       --alt-classpath PATH :\n"
-        + "                specifies the classpath from which to load classes\n"
+    logger.debug("Usage:\n" + "   java soot.util.CFGViewer [soot options] [CFGViewer options] [class[:method]]...\n\n"
+        + "   CFGViewer options:\n" + "      (When specifying the value for an '=' option, you only\n"
+        + "       need to type enough characters to specify the choice\n" + "       unambiguously, and case is ignored.)\n"
+        + "\n" + "       --alt-classpath PATH :\n" + "                specifies the classpath from which to load classes\n"
         + "                that implement graph types whose names begin with 'Alt'.\n" + "       --graph={"
-        + CFGGraphType.help(0, 70, "                ".length()) + "} :\n" + "                show the specified type of graph.\n"
-        + "                Defaults to " + defaultGraph + ".\n" + "       --ir={" + CFGIntermediateRep.help(0, 70, "                ".length())
-        + "} :\n" + "                create the CFG from the specified intermediate\n" + "                representation. Defaults to " + defaultIR
-        + ".\n" + "       --brief :\n" + "                label nodes with the unit or block index,\n"
+        + CFGGraphType.help(0, 70, "                ".length()) + "} :\n"
+        + "                show the specified type of graph.\n" + "                Defaults to " + defaultGraph + ".\n"
+        + "       --ir={" + CFGIntermediateRep.help(0, 70, "                ".length()) + "} :\n"
+        + "                create the CFG from the specified intermediate\n" + "                representation. Defaults to "
+        + defaultIR + ".\n" + "       --brief :\n" + "                label nodes with the unit or block index,\n"
         + "                instead of the text of their statements.\n" + "       --multipages :\n"
-        + "                produce dot file output for multiple 8.5x11\" pages.\n" + "                By default, a single page is produced.\n"
-        + "       --help :\n" + "                print this message.\n" + "\n"
+        + "                produce dot file output for multiple 8.5x11\" pages.\n"
+        + "                By default, a single page is produced.\n" + "       --help :\n"
+        + "                print this message.\n" + "\n"
         + "   Particularly relevant soot options (see \"soot --help\" for details):\n" + "       --soot-class-path PATH\n"
-        + "       --show-exception-dests\n" + "       --throw-analysis {pedantic|unit}\n" + "       --omit-excepting-unit-edges\n"
-        + "       --trim-cfgs\n");
+        + "       --show-exception-dests\n" + "       --throw-analysis {pedantic|unit}\n"
+        + "       --omit-excepting-unit-edges\n" + "       --trim-cfgs\n");
   }
 
   /**
@@ -155,10 +158,10 @@ public class CFGViewer extends BodyTransformer {
         return new String[0]; // This is a cheesy method to inveigle
         // our caller into printing the help
         // and exiting.
-      } else if (args[i].equals("--soot-class-path") || args[i].equals("-soot-class-path") || args[i].equals("--soot-classpath")
-          || args[i].equals("-soot-classpath") || args[i].equals("--process-dir") || args[i].equals("-process-dir")
-          || args[i].equals("--android-jars") || args[i].equals("-android-jars") || args[i].equals("--force-android-jar")
-          || args[i].equals("-force-android-jar")) {
+      } else if (args[i].equals("--soot-class-path") || args[i].equals("-soot-class-path")
+          || args[i].equals("--soot-classpath") || args[i].equals("-soot-classpath") || args[i].equals("--process-dir")
+          || args[i].equals("-process-dir") || args[i].equals("--android-jars") || args[i].equals("-android-jars")
+          || args[i].equals("--force-android-jar") || args[i].equals("-force-android-jar")) {
         // Pass classpaths without treating ":" as a method specifier.
         sootArgs.add(args[i]);
         sootArgs.add(args[++i]);
@@ -201,10 +204,11 @@ public class CFGViewer extends BodyTransformer {
 
       AltClassLoader.v().setAltClassPath(PhaseOptions.getString(options, altClassPathOptionName));
       AltClassLoader.v()
-          .setAltClasses(new String[] { "soot.toolkits.graph.ArrayRefBlockGraph", "soot.toolkits.graph.Block", "soot.toolkits.graph.Block$AllMapTo",
-              "soot.toolkits.graph.BlockGraph", "soot.toolkits.graph.BriefBlockGraph", "soot.toolkits.graph.BriefUnitGraph",
-              "soot.toolkits.graph.CompleteBlockGraph", "soot.toolkits.graph.CompleteUnitGraph", "soot.toolkits.graph.TrapUnitGraph",
-              "soot.toolkits.graph.UnitGraph", "soot.toolkits.graph.ZonedBlockGraph", });
+          .setAltClasses(new String[] { "soot.toolkits.graph.ArrayRefBlockGraph", "soot.toolkits.graph.Block",
+              "soot.toolkits.graph.Block$AllMapTo", "soot.toolkits.graph.BlockGraph", "soot.toolkits.graph.BriefBlockGraph",
+              "soot.toolkits.graph.BriefUnitGraph", "soot.toolkits.graph.CompleteBlockGraph",
+              "soot.toolkits.graph.CompleteUnitGraph", "soot.toolkits.graph.TrapUnitGraph", "soot.toolkits.graph.UnitGraph",
+              "soot.toolkits.graph.ZonedBlockGraph", });
     }
   }
 

@@ -67,7 +67,8 @@ import soot.jbco.util.Rand;
 import soot.jimple.InvokeExpr;
 
 /**
- * Creates new method names using names of fields or generates randomly. New names are <strong>unique</strong> through the whole application.
+ * Creates new method names using names of fields or generates randomly. New names are <strong>unique</strong> through the
+ * whole application.
  * <p>
  * Some methods cannot be renamed:
  * <ul>
@@ -80,13 +81,14 @@ import soot.jimple.InvokeExpr;
  * <li>ones that override/implement library methods</li>
  * </ul>
  * <p>
- * To find methods from last group the next approach is used. All superclasses and interfaces that processing class extends / implements are
- * collected. The children of that items are taken and united together along with processing class. The same action is performed for every item of the
- * obtained result until the full "tree" is not created. Then from this tree, the classes that do not have methods with <similar>similar</similar> to
- * searching signature, are removed. The left items that have {@link SootClass#isLibraryClass()} {@code true} are searching ones.
+ * To find methods from last group the next approach is used. All superclasses and interfaces that processing class extends /
+ * implements are collected. The children of that items are taken and united together along with processing class. The same
+ * action is performed for every item of the obtained result until the full "tree" is not created. Then from this tree, the
+ * classes that do not have methods with <similar>similar</similar> to searching signature, are removed. The left items that
+ * have {@link SootClass#isLibraryClass()} {@code true} are searching ones.
  * <p>
  * This complex approach is used to detect <i>indirect</i> inheritance. Consider next example:
- * 
+ *
  * <pre>
  *                            ,--------.
  *                            |A       |
@@ -112,15 +114,16 @@ import soot.jimple.InvokeExpr;
  *                                  |method(long, int)       |
  *                                  `------------------------'
  * </pre>
- * 
- * Thus when {@code D#method()} is processed, it must not be renamed as there is class {@code C} that implements library one ({@code E#method()}).
+ *
+ * Thus when {@code D#method()} is processed, it must not be renamed as there is class {@code C} that implements library one
+ * ({@code E#method()}).
  * <p>
  * After applying this transformer the next result is expected:
  * <ul>
  * <li>{@code #method()} is not renamed in any application classes as it overrides one from library</li>
- * <li>{@code #method(java.lang.String)}, {@code #method(long, int)} and {@code #method(java.lang.String, int)} are renamed and have the
- * <strong>same</strong> name. Such renaming behaviour allows having <i>renaming map</i> for every class with old method name as a key and new method
- * name as a value</li>
+ * <li>{@code #method(java.lang.String)}, {@code #method(long, int)} and {@code #method(java.lang.String, int)} are renamed
+ * and have the <strong>same</strong> name. Such renaming behaviour allows having <i>renaming map</i> for every class with
+ * old method name as a key and new method name as a value</li>
  * </ul>
  *
  * @author Michael Batchelder, Pavel Nesterovich
@@ -133,8 +136,8 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
   public static final String name = "wjtp.jbco_mr";
   public static final String dependencies[] = new String[] { MethodRenamer.name };
 
-  private static final String MAIN_METHOD_SUB_SIGNATURE = SootMethod.getSubSignature("main",
-      singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v());
+  private static final String MAIN_METHOD_SUB_SIGNATURE
+      = SootMethod.getSubSignature("main", singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v());
 
   private static final Function<SootClass, Map<String, String>> RENAMING_MAP_CREATOR = key -> new HashMap<>();
 
@@ -193,7 +196,8 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
    */
   public Map<String, String> getRenamingMap(String className) {
     return classToRenamingMap.entrySet().stream().filter(entry -> entry.getKey().getName().equals(className))
-        .flatMap(entry -> entry.getValue().entrySet().stream()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .flatMap(entry -> entry.getValue().entrySet().stream())
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   @Override
@@ -230,7 +234,8 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
         final Optional<SootClass> libraryClass = declaringClasses.stream().filter(SootClass::isLibraryClass).findAny();
         if (libraryClass.isPresent()) {
           if (isVerbose()) {
-            logger.info("Skipping renaming {} method as it overrides library one from {}.", method.getSignature(), libraryClass.get().getName());
+            logger.info("Skipping renaming {} method as it overrides library one from {}.", method.getSignature(),
+                libraryClass.get().getName());
           }
 
           continue;
@@ -319,8 +324,8 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
             final Optional<SootClass> declaringLibraryClass = findDeclaringLibraryClass(parents, methodRef);
             if (declaringLibraryClass.isPresent()) {
               if (isVerbose()) {
-                logger.info("Skipping replacing method call \"{}\" in \"{}\" as it is overrides one " + " from library {}.", methodRef.getSignature(),
-                    method.getSignature(), declaringLibraryClass.get().getName());
+                logger.info("Skipping replacing method call \"{}\" in \"{}\" as it is overrides one " + " from library {}.",
+                    methodRef.getSignature(), method.getSignature(), declaringLibraryClass.get().getName());
               }
               continue;
             }
@@ -332,13 +337,13 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
               continue;
             }
 
-            final SootMethodRef newMethodRef = Scene.v().makeMethodRef(methodRef.declaringClass(), newName, methodRef.parameterTypes(),
-                methodRef.returnType(), methodRef.isStatic());
+            final SootMethodRef newMethodRef = Scene.v().makeMethodRef(methodRef.declaringClass(), newName,
+                methodRef.parameterTypes(), methodRef.returnType(), methodRef.isStatic());
             invokeExpr.setMethodRef(newMethodRef);
 
             if (isVerbose()) {
-              logger.info("Method call \"{}\" is being replaced with \"{}\" in {}.", methodRef.getSignature(), newMethodRef.getSignature(),
-                  method.getSignature());
+              logger.info("Method call \"{}\" is being replaced with \"{}\" in {}.", methodRef.getSignature(),
+                  newMethodRef.getSignature(), method.getSignature());
             }
           }
         }
@@ -416,13 +421,13 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
   }
 
   private Optional<SootClass> findDeclaringLibraryClass(Collection<SootClass> classes, SootMethodRef methodRef) {
-    return classes.stream().filter(SootClass::isLibraryClass).filter(sootClass -> isDeclared(sootClass, methodRef.name(), methodRef.parameterTypes()))
-        .findAny();
+    return classes.stream().filter(SootClass::isLibraryClass)
+        .filter(sootClass -> isDeclared(sootClass, methodRef.name(), methodRef.parameterTypes())).findAny();
   }
 
   private Set<SootClass> getDeclaringClasses(SootClass applicationClass, SootMethod method) {
-    return getTree(applicationClass).stream().filter(sootClass -> isDeclared(sootClass, method.getName(), method.getParameterTypes()))
-        .collect(toSet());
+    return getTree(applicationClass).stream()
+        .filter(sootClass -> isDeclared(sootClass, method.getName(), method.getParameterTypes())).collect(toSet());
   }
 
   private Set<SootClass> getTree(SootClass applicationClass) {
@@ -458,26 +463,33 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
     final List<SootClass> result = HierarchyUtils.getAllInterfacesOf(applicationClass);
 
     // and superclasses (superinterfaces) of passed applicationClass
-    result.addAll(applicationClass.isInterface() ? Scene.v().getActiveHierarchy().getSuperinterfacesOfIncluding(applicationClass)
-        : Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(applicationClass));
+    result.addAll(
+        applicationClass.isInterface() ? Scene.v().getActiveHierarchy().getSuperinterfacesOfIncluding(applicationClass)
+            : Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(applicationClass));
 
     return result;
   }
 
   private Set<SootClass> getChildrenOfIncluding(Collection<SootClass> classes) {
-    return Stream.concat(classes.stream().filter(c -> !c.getName().equals("java.lang.Object"))
-        .map(c -> c.isInterface() ? Scene.v().getActiveHierarchy().getImplementersOf(c) : Scene.v().getActiveHierarchy().getSubclassesOf(c))
-        .flatMap(Collection::stream), classes.stream()).collect(toSet());
+    return Stream
+        .concat(classes.stream().filter(c -> !c.getName().equals("java.lang.Object"))
+            .map(c -> c.isInterface() ? Scene.v().getActiveHierarchy().getImplementersOf(c)
+                : Scene.v().getActiveHierarchy().getSubclassesOf(c))
+            .flatMap(Collection::stream), classes.stream())
+        .collect(toSet());
   }
 
   private Set<SootClass> getParentsOfIncluding(Collection<SootClass> classes) {
-    return classes.stream().map(sootClass -> sootClass.isInterface() ? Scene.v().getActiveHierarchy().getSuperinterfacesOfIncluding(sootClass)
-        : Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(sootClass)).flatMap(Collection::stream).collect(toSet());
+    return classes.stream()
+        .map(sootClass -> sootClass.isInterface() ? Scene.v().getActiveHierarchy().getSuperinterfacesOfIncluding(sootClass)
+            : Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(sootClass))
+        .flatMap(Collection::stream).collect(toSet());
   }
 
   private String getNewName(Collection<SootClass> classes, String name) {
-    final Set<String> names = classToRenamingMap.entrySet().stream().filter(entry -> classes.contains(entry.getKey())).map(Map.Entry::getValue)
-        .map(Map::entrySet).flatMap(Collection::stream).filter(entry -> entry.getKey().equals(name)).map(Map.Entry::getValue).collect(toSet());
+    final Set<String> names = classToRenamingMap.entrySet().stream().filter(entry -> classes.contains(entry.getKey()))
+        .map(Map.Entry::getValue).map(Map::entrySet).flatMap(Collection::stream).filter(entry -> entry.getKey().equals(name))
+        .map(Map.Entry::getValue).collect(toSet());
 
     if (names.size() > 1) {
       logger.warn("Found {} names for method \"{}\": {}.", names.size(), name, String.join(", ", names));
@@ -487,8 +499,8 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
   }
 
   /**
-   * Checks that method is declared in class. We assume that method is declared in class if class contains method with the same name and the same
-   * number of arguments. The exact types are not compared.
+   * Checks that method is declared in class. We assume that method is declared in class if class contains method with the
+   * same name and the same number of arguments. The exact types are not compared.
    *
    * @param sootClass
    *          the class to search in

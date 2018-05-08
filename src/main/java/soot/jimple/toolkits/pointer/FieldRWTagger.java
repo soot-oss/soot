@@ -144,25 +144,29 @@ public class FieldRWTagger extends BodyTransformer {
       }
     }
     /*
-     * DependenceGraph graph = new DependenceGraph(); for( Iterator outerIt = sets.iterator(); outerIt.hasNext(); ) { final RWSet outer = (RWSet)
-     * outerIt.next();
-     * 
+     * DependenceGraph graph = new DependenceGraph(); for( Iterator outerIt = sets.iterator(); outerIt.hasNext(); ) { final
+     * RWSet outer = (RWSet) outerIt.next();
+     *
      * for( Iterator innerIt = sets.iterator(); innerIt.hasNext(); ) {
-     * 
-     * final RWSet inner = (RWSet) innerIt.next(); if( inner == outer ) break; if( outer.hasNonEmptyIntersection( inner ) ) { graph.addEdge(
-     * sets.indexOf( outer ), sets.indexOf( inner ) ); } } } if( !optionDontTag ) { body.getMethod().addTag( graph ); } for( Iterator stmtIt =
-     * body.getUnits().iterator(); stmtIt.hasNext(); ) { final Stmt stmt = (Stmt) stmtIt.next(); Object key; if( optionNaive &&
-     * stmt.containsInvokeExpr() ) { key = stmt; } else { key = keyFor( stmt ); } RWSet read = (RWSet) stmtToReadSet.get( key ); RWSet write = (RWSet)
-     * stmtToWriteSet.get( key ); if( read != null || write != null ) { DependenceTag tag = new DependenceTag(); if( read != null &&
-     * read.getCallsNative() ) { tag.setCallsNative(); numNatives++; } else if( write != null && write.getCallsNative() ) { tag.setCallsNative();
-     * numNatives++; } tag.setRead( sets.indexOf( read ) ); tag.setWrite( sets.indexOf( write ) ); if( !optionDontTag ) stmt.addTag( tag );
-     * 
-     * // The loop below is just fro calculating stats. if( !justDoTotallyConservativeThing ) { for( Iterator innerIt = body.getUnits().iterator();
-     * innerIt.hasNext(); ) { final Stmt inner = (Stmt) innerIt.next(); Object ikey; if( optionNaive && inner.containsInvokeExpr() ) { ikey = inner; }
-     * else { ikey = keyFor( inner ); } RWSet innerRead = (RWSet) stmtToReadSet.get( ikey ); RWSet innerWrite = (RWSet) stmtToWriteSet.get( ikey );
-     * if( graph.areAdjacent( sets.indexOf( read ), sets.indexOf( innerWrite ) ) ) numRWs++; if( graph.areAdjacent( sets.indexOf( write ),
-     * sets.indexOf( innerRead ) ) ) numWRs++; if( inner == stmt ) continue; if( graph.areAdjacent( sets.indexOf( write ), sets.indexOf( innerWrite )
-     * ) ) numWWs++; if( graph.areAdjacent( sets.indexOf( read ), sets.indexOf( innerRead ) ) ) numRRs++; } } } }
+     *
+     * final RWSet inner = (RWSet) innerIt.next(); if( inner == outer ) break; if( outer.hasNonEmptyIntersection( inner ) ) {
+     * graph.addEdge( sets.indexOf( outer ), sets.indexOf( inner ) ); } } } if( !optionDontTag ) { body.getMethod().addTag(
+     * graph ); } for( Iterator stmtIt = body.getUnits().iterator(); stmtIt.hasNext(); ) { final Stmt stmt = (Stmt)
+     * stmtIt.next(); Object key; if( optionNaive && stmt.containsInvokeExpr() ) { key = stmt; } else { key = keyFor( stmt );
+     * } RWSet read = (RWSet) stmtToReadSet.get( key ); RWSet write = (RWSet) stmtToWriteSet.get( key ); if( read != null ||
+     * write != null ) { DependenceTag tag = new DependenceTag(); if( read != null && read.getCallsNative() ) {
+     * tag.setCallsNative(); numNatives++; } else if( write != null && write.getCallsNative() ) { tag.setCallsNative();
+     * numNatives++; } tag.setRead( sets.indexOf( read ) ); tag.setWrite( sets.indexOf( write ) ); if( !optionDontTag )
+     * stmt.addTag( tag );
+     *
+     * // The loop below is just fro calculating stats. if( !justDoTotallyConservativeThing ) { for( Iterator innerIt =
+     * body.getUnits().iterator(); innerIt.hasNext(); ) { final Stmt inner = (Stmt) innerIt.next(); Object ikey; if(
+     * optionNaive && inner.containsInvokeExpr() ) { ikey = inner; } else { ikey = keyFor( inner ); } RWSet innerRead =
+     * (RWSet) stmtToReadSet.get( ikey ); RWSet innerWrite = (RWSet) stmtToWriteSet.get( ikey ); if( graph.areAdjacent(
+     * sets.indexOf( read ), sets.indexOf( innerWrite ) ) ) numRWs++; if( graph.areAdjacent( sets.indexOf( write ),
+     * sets.indexOf( innerRead ) ) ) numWRs++; if( inner == stmt ) continue; if( graph.areAdjacent( sets.indexOf( write ),
+     * sets.indexOf( innerWrite ) ) ) numWWs++; if( graph.areAdjacent( sets.indexOf( read ), sets.indexOf( innerRead ) ) )
+     * numRRs++; } } } }
      */
   }
 }

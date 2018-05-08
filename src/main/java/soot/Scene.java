@@ -19,7 +19,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -96,8 +96,9 @@ public class Scene // extends AbstractHost
       setSootClassPath(scp);
     }
 
-    kindNumberer = new ArrayNumberer<Kind>(new Kind[] { Kind.INVALID, Kind.STATIC, Kind.VIRTUAL, Kind.INTERFACE, Kind.SPECIAL, Kind.CLINIT,
-        Kind.THREAD, Kind.EXECUTOR, Kind.ASYNCTASK, Kind.FINALIZE, Kind.INVOKE_FINALIZE, Kind.PRIVILEGED, Kind.NEWINSTANCE });
+    kindNumberer = new ArrayNumberer<Kind>(
+        new Kind[] { Kind.INVALID, Kind.STATIC, Kind.VIRTUAL, Kind.INTERFACE, Kind.SPECIAL, Kind.CLINIT, Kind.THREAD,
+            Kind.EXECUTOR, Kind.ASYNCTASK, Kind.FINALIZE, Kind.INVOKE_FINALIZE, Kind.PRIVILEGED, Kind.NEWINSTANCE });
 
     addSootBasicClasses();
 
@@ -184,8 +185,8 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * If this name is in the set of reserved names, then return a quoted version of it. Else pass it through. If the name consists of multiple parts
-   * separated by dots, the individual names are checked as well.
+   * If this name is in the set of reserved names, then return a quoted version of it. Else pass it through. If the name
+   * consists of multiple parts separated by dots, the individual names are checked as well.
    */
   public String quotedNameOf(String s) {
     // Pre-check: Is there a chance that we need to escape something?
@@ -218,8 +219,9 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * This method is the inverse of quotedNameOf(). It takes a possible escaped class and reconstructs the original version of it.
-   * 
+   * This method is the inverse of quotedNameOf(). It takes a possible escaped class and reconstructs the original version of
+   * it.
+   *
    * @param s
    *          The possibly escaped name
    * @return The original, non-escaped name
@@ -264,8 +266,8 @@ public class Scene // extends AbstractHost
       throw new RuntimeException("There is no main class set!");
     }
 
-    SootMethod mainMethod = mainClass.getMethodUnsafe("main", Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
-        VoidType.v());
+    SootMethod mainMethod = mainClass.getMethodUnsafe("main",
+        Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v());
     if (mainMethod == null) {
       throw new RuntimeException("Main class declares no main method!");
     }
@@ -318,7 +320,7 @@ public class Scene // extends AbstractHost
 
   /**
    * Returns the max Android API version number available in directory 'dir'
-   * 
+   *
    * @param dir
    * @return
    */
@@ -330,7 +332,8 @@ public class Scene // extends AbstractHost
 
     File d = new File(dir);
     if (!d.exists()) {
-      throw new AndroidPlatformException(String.format("The Android platform directory you have specified (%s) does not exist. Please check.", dir));
+      throw new AndroidPlatformException(
+          String.format("The Android platform directory you have specified (%s) does not exist. Please check.", dir));
     }
 
     File[] files = d.listFiles();
@@ -387,7 +390,8 @@ public class Scene // extends AbstractHost
     File apkF = apk == null ? null : new File(apk);
 
     if (!jarsF.exists()) {
-      throw new AndroidPlatformException(String.format("Android platform directory '%s' does not exist!", jarsF.getAbsolutePath()));
+      throw new AndroidPlatformException(
+          String.format("Android platform directory '%s' does not exist!", jarsF.getAbsolutePath()));
     }
 
     if (apkF != null && !apkF.exists()) {
@@ -500,17 +504,19 @@ public class Scene // extends AbstractHost
 
       int APIVersion = -1;
       if (versionInfo.sdkTargetVersion != -1) {
-        if (versionInfo.sdkTargetVersion > maxAPI && versionInfo.minSdkVersion != -1 && versionInfo.minSdkVersion <= maxAPI) {
-          logger.warn("Android API version '" + versionInfo.sdkTargetVersion + "' not available, using minApkVersion '" + versionInfo.minSdkVersion
-              + "' instead");
+        if (versionInfo.sdkTargetVersion > maxAPI && versionInfo.minSdkVersion != -1
+            && versionInfo.minSdkVersion <= maxAPI) {
+          logger.warn("Android API version '" + versionInfo.sdkTargetVersion + "' not available, using minApkVersion '"
+              + versionInfo.minSdkVersion + "' instead");
           APIVersion = versionInfo.minSdkVersion;
         } else {
           APIVersion = versionInfo.sdkTargetVersion;
         }
       } else if (versionInfo.platformBuildVersionCode != -1) {
-        if (versionInfo.platformBuildVersionCode > maxAPI && versionInfo.minSdkVersion != -1 && versionInfo.minSdkVersion <= maxAPI) {
-          logger.warn("Android API version '" + versionInfo.platformBuildVersionCode + "' not available, using minApkVersion '"
-              + versionInfo.minSdkVersion + "' instead");
+        if (versionInfo.platformBuildVersionCode > maxAPI && versionInfo.minSdkVersion != -1
+            && versionInfo.minSdkVersion <= maxAPI) {
+          logger.warn("Android API version '" + versionInfo.platformBuildVersionCode
+              + "' not available, using minApkVersion '" + versionInfo.minSdkVersion + "' instead");
           APIVersion = versionInfo.minSdkVersion;
         } else {
           APIVersion = versionInfo.platformBuildVersionCode;
@@ -585,7 +591,8 @@ public class Scene // extends AbstractHost
         androidAPIVersion = defaultSdkVersion;
       }
     } else if (androidJars != null && !androidJars.isEmpty()) {
-      List<String> classPathEntries = new LinkedList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
+      List<String> classPathEntries
+          = new LinkedList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
       classPathEntries.addAll(Options.v().process_dir());
 
       String targetApk = "";
@@ -660,7 +667,8 @@ public class Scene // extends AbstractHost
       sb.append(rtJar.getAbsolutePath());
     } else {
       // in case we're not in JRE environment, try JDK
-      rtJar = new File(System.getProperty("java.home") + File.separator + "jre" + File.separator + "lib" + File.separator + "rt.jar");
+      rtJar = new File(
+          System.getProperty("java.home") + File.separator + "jre" + File.separator + "lib" + File.separator + "rt.jar");
       if (rtJar.exists() && rtJar.isFile()) {
         // logger.debug("Using JDK runtime: " +
         // rtJar.getAbsolutePath());
@@ -696,8 +704,9 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Adds the given class to the Scene. This method marks the given class as a library class and invalidates the class hierarchy.
-   * 
+   * Adds the given class to the Scene. This method marks the given class as a library class and invalidates the class
+   * hierarchy.
+   *
    * @param c
    *          The class to add
    */
@@ -708,9 +717,9 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Adds the given class to the Scene. This method does not handle any dependencies such as invalidating the hierarchy. The class is neither marked
-   * as application class, nor library class.
-   * 
+   * Adds the given class to the Scene. This method does not handle any dependencies such as invalidating the hierarchy. The
+   * class is neither marked as application class, nor library class.
+   *
    * @param c
    *          The class to add
    */
@@ -845,7 +854,8 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Attempts to load the given class and all of the required support classes. Returns the original class if it was loaded, or null otherwise.
+   * Attempts to load the given class and all of the required support classes. Returns the original class if it was loaded,
+   * or null otherwise.
    */
 
   public SootClass tryLoadClass(String className, int desiredLevel) {
@@ -908,9 +918,10 @@ public class Scene // extends AbstractHost
 
   /**
    * Returns the RefType with the given class name or primitive type.
-   * 
+   *
    * @throws RuntimeException
-   *           if the Type for this name cannot be found. Use {@link #getRefTypeUnsafe(String)} to check if type is an registered RefType.
+   *           if the Type for this name cannot be found. Use {@link #getRefTypeUnsafe(String)} to check if type is an
+   *           registered RefType.
    */
   public Type getType(String arg) {
     String type = arg.replaceAll("([^\\[\\]]*)(.*)", "$1");
@@ -950,15 +961,17 @@ public class Scene // extends AbstractHost
 
   /**
    * Returns the RefType with the given className.
-   * 
+   *
    * @throws IllegalStateException
-   *           if the RefType for this class cannot be found. Use {@link #containsType(String)} to check if type is registered
+   *           if the RefType for this class cannot be found. Use {@link #containsType(String)} to check if type is
+   *           registered
    */
   public RefType getRefType(String className) {
     RefType refType = getRefTypeUnsafe(className);
     if (refType == null) {
       throw new IllegalStateException("RefType " + className + " not loaded. "
-          + "If you tried to get the RefType of a library class, did you call loadNecessaryClasses()? " + "Otherwise please check Soot's classpath.");
+          + "If you tried to get the RefType of a library class, did you call loadNecessaryClasses()? "
+          + "Otherwise please check Soot's classpath.");
     }
     return refType;
   }
@@ -987,7 +1000,7 @@ public class Scene // extends AbstractHost
 
   /**
    * Returns the SootClass with the given className. If no class with the given name exists, null is returned
-   * 
+   *
    * @param className
    *          The name of the class to get
    * @return The class if it exists, otherwise null
@@ -1035,7 +1048,8 @@ public class Scene // extends AbstractHost
   /* The four following chains are mutually disjoint. */
 
   /**
-   * Returns a chain of the application classes in this scene. These classes are the ones which can be freely analysed & modified.
+   * Returns a chain of the application classes in this scene. These classes are the ones which can be freely analysed &
+   * modified.
    */
   public Chain<SootClass> getApplicationClasses() {
     return applicationClasses;
@@ -1049,7 +1063,8 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Returns a chain of the phantom classes in this scene. These classes are referred to by other classes, but cannot be loaded.
+   * Returns a chain of the phantom classes in this scene. These classes are referred to by other classes, but cannot be
+   * loaded.
    */
   public Chain<SootClass> getPhantomClasses() {
     return phantomClasses;
@@ -1523,8 +1538,8 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Load just the set of basic classes soot needs, ignoring those specified on the command-line. You don't need to use both this and
-   * loadNecessaryClasses, though it will only waste time.
+   * Load just the set of basic classes soot needs, ignoring those specified on the command-line. You don't need to use both
+   * this and loadNecessaryClasses, though it will only waste time.
    */
   public void loadBasicClasses() {
     addReflectionTraceClasses();
@@ -1613,8 +1628,8 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Load the set of classes that soot needs, including those specified on the command-line. This is the standard way of initialising the list of
-   * classes soot should use.
+   * Load the set of classes that soot needs, including those specified on the command-line. This is the standard way of
+   * initialising the list of classes soot should use.
    */
   public void loadNecessaryClasses() {
     loadBasicClasses();
@@ -1719,7 +1734,8 @@ public class Scene // extends AbstractHost
   public boolean isExcluded(SootClass sc) {
     String name = sc.getName();
     for (String pkg : excludedPackages) {
-      if (name.equals(pkg) || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && name.startsWith(pkg.substring(0, pkg.length() - 1)))) {
+      if (name.equals(pkg)
+          || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && name.startsWith(pkg.substring(0, pkg.length() - 1)))) {
         return !isIncluded(sc);
       }
     }
@@ -1729,7 +1745,8 @@ public class Scene // extends AbstractHost
   public boolean isIncluded(SootClass sc) {
     String name = sc.getName();
     for (String inc : Options.v().include()) {
-      if (name.equals(inc) || ((inc.endsWith(".*") || inc.endsWith("$*")) && name.startsWith(inc.substring(0, inc.length() - 1)))) {
+      if (name.equals(inc)
+          || ((inc.endsWith(".*") || inc.endsWith("$*")) && name.startsWith(inc.substring(0, inc.length() - 1)))) {
         return true;
       }
     }
@@ -1747,7 +1764,8 @@ public class Scene // extends AbstractHost
   }
 
   /** Create an unresolved reference to a method. */
-  public SootMethodRef makeMethodRef(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType, boolean isStatic) {
+  public SootMethodRef makeMethodRef(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType,
+      boolean isStatic) {
     return new SootMethodRefImpl(declaringClass, name, parameterTypes, returnType, isStatic);
   }
 
@@ -1797,7 +1815,8 @@ public class Scene // extends AbstractHost
       // try to infer a main class from the command line if none is given
       for (Iterator<String> classIter = Options.v().classes().iterator(); classIter.hasNext();) {
         SootClass c = getSootClass(classIter.next());
-        if (c.declaresMethod("main", Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v())) {
+        if (c.declaresMethod("main", Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
+            VoidType.v())) {
           logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
           setMainClass(c);
           return;
@@ -1808,7 +1827,8 @@ public class Scene // extends AbstractHost
       // given
       for (Iterator<SootClass> classIter = getApplicationClasses().iterator(); classIter.hasNext();) {
         SootClass c = classIter.next();
-        if (c.declaresMethod("main", Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v())) {
+        if (c.declaresMethod("main", Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
+            VoidType.v())) {
           logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
           setMainClass(c);
           return;
@@ -1818,8 +1838,8 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * This method returns true when in incremental build mode. Other classes can query this flag and change the way in which they use the Scene,
-   * depending on the flag's value.
+   * This method returns true when in incremental build mode. Other classes can query this flag and change the way in which
+   * they use the Scene, depending on the flag's value.
    */
   public boolean isIncrementalBuild() {
     return incrementalBuild;
@@ -1834,7 +1854,8 @@ public class Scene // extends AbstractHost
   }
 
   /*
-   * Forces Soot to resolve the class with the given name to the given level, even if resolving has actually already finished.
+   * Forces Soot to resolve the class with the given name to the given level, even if resolving has actually already
+   * finished.
    */
   public SootClass forceResolve(String className, int level) {
     boolean tmp = doneResolving;
@@ -1864,7 +1885,8 @@ public class Scene // extends AbstractHost
     return new SootMethod(name, parameterTypes, returnType, modifiers);
   }
 
-  public SootMethod makeSootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers, List<SootClass> thrownExceptions) {
+  public SootMethod makeSootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers,
+      List<SootClass> thrownExceptions) {
     return new SootMethod(name, parameterTypes, returnType, modifiers, thrownExceptions);
   }
 
@@ -1889,12 +1911,12 @@ public class Scene // extends AbstractHost
    * <p>
    * <b>SOOT USERS: DO NOT CALL THIS METHOD!</b>
    * </p>
-   * 
+   *
    * <p>
-   * This method is a Soot-internal factory method for generating callgraph objects. It creates non-initialized object that must then be initialized
-   * by a callgraph algorithm
+   * This method is a Soot-internal factory method for generating callgraph objects. It creates non-initialized object that
+   * must then be initialized by a callgraph algorithm
    * </p>
-   * 
+   *
    * @return A new callgraph empty object
    */
   public CallGraph internalMakeCallGraph() {

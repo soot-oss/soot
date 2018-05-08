@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -34,9 +34,9 @@ import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.interaction.InteractionHandler;
 
 /**
- * An abstract class providing a metaframework for carrying out dataflow analysis. This class provides common methods and fields required by the
- * BranchedFlowAnalysis and FlowAnalysis abstract classes.
- * 
+ * An abstract class providing a metaframework for carrying out dataflow analysis. This class provides common methods and
+ * fields required by the BranchedFlowAnalysis and FlowAnalysis abstract classes.
+ *
  * @param <N>
  *          node type of the directed graph
  * @param <A>
@@ -68,7 +68,7 @@ public abstract class AbstractFlowAnalysis<N, A> {
 
   /**
    * Returns the initial flow value for entry/exit graph nodes.
-   * 
+   *
    * This is equal to {@link #newInitialFlow()}
    */
   protected A entryInitialFlow() {
@@ -86,14 +86,15 @@ public abstract class AbstractFlowAnalysis<N, A> {
   protected abstract boolean isForward();
 
   /**
-   * Compute the merge of the <code>in1</code> and <code>in2</code> sets, putting the result into <code>out</code>. The behavior of this function
-   * depends on the implementation ( it may be necessary to check whether <code>in1</code> and <code>in2</code> are equal or aliased ). Used by the
-   * doAnalysis method.
+   * Compute the merge of the <code>in1</code> and <code>in2</code> sets, putting the result into <code>out</code>. The
+   * behavior of this function depends on the implementation ( it may be necessary to check whether <code>in1</code> and
+   * <code>in2</code> are equal or aliased ). Used by the doAnalysis method.
    */
   protected abstract void merge(A in1, A in2, A out);
 
   /**
-   * Merges in1 and in2 into out, just before node succNode. By default, this method just calls merge(A,A,A), ignoring the node.
+   * Merges in1 and in2 into out, just before node succNode. By default, this method just calls merge(A,A,A), ignoring the
+   * node.
    */
   protected void merge(N succNode, A in1, A in2, A out) {
     merge(in1, in2, out);

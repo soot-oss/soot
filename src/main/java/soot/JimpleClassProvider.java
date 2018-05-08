@@ -22,7 +22,8 @@ package soot;
 import soot.options.Options;
 
 /**
- * A class provider looks for a file of a specific format for a specified class, and returns a ClassSource for it if it finds it.
+ * A class provider looks for a file of a specific format for a specified class, and returns a ClassSource for it if it finds
+ * it.
  */
 public class JimpleClassProvider implements ClassProvider {
   /**

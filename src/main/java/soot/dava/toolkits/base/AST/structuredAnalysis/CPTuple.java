@@ -4,10 +4,11 @@ import soot.dava.DavaFlowAnalysisException;
 
 /********** START LOCAL CLASS DECLARATION *******************/
 public class CPTuple {
-  private String sootClass; // hold the name of the class to which the val belongs .... needed for interprocedural constant Fields info
+  private String sootClass; // hold the name of the class to which the val belongs .... needed for interprocedural constant
+                            // Fields info
 
   /*
-   * 
+   *
    */
   private CPVariable variable;
 
@@ -20,8 +21,8 @@ public class CPTuple {
   private Boolean TOP = new Boolean(false);
 
   /*
-   * Dont care about className and variable but the CONSTANT VALUE HAS TO BE A NEW ONE otherwise the clone of the flowset keeps pointing to the same
-   * bloody constant value
+   * Dont care about className and variable but the CONSTANT VALUE HAS TO BE A NEW ONE otherwise the clone of the flowset
+   * keeps pointing to the same bloody constant value
    */
   public CPTuple clone() {
     if (isTop()) {
@@ -45,7 +46,8 @@ public class CPTuple {
 
     if (!(constant instanceof Float || constant instanceof Double || constant instanceof Long || constant instanceof Boolean
         || constant instanceof Integer)) {
-      throw new DavaFlowAnalysisException("Third argument of VariableValuePair not an acceptable constant value...report to developer");
+      throw new DavaFlowAnalysisException(
+          "Third argument of VariableValuePair not an acceptable constant value...report to developer");
     }
 
     this.sootClass = sootClass;
@@ -139,7 +141,8 @@ public class CPTuple {
         return false;
       }
 
-      if (sootClass.equals(var.getSootClassName()) && variable.equals(var.getVariable()) && constant.equals(var.getValue())) {
+      if (sootClass.equals(var.getSootClassName()) && variable.equals(var.getVariable())
+          && constant.equals(var.getValue())) {
         // System.out.println("constant value "+constant.toString() + " is equal to "+ var.toString());
         return true;
       }

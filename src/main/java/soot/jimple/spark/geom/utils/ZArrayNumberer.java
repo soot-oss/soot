@@ -26,10 +26,10 @@ import soot.util.IterableNumberer;
 import soot.util.Numberable;
 
 /**
- * Similar to the ArrayNumberer class in soot. But, this class counts the objects from zero. And, we permit the deletion of objects from the array
- * container. And most importantly, we permits the search for a particular object efficiently. Therefore, this class supports efficiently insert,
- * lookup, deletion and traversal queries.
- * 
+ * Similar to the ArrayNumberer class in soot. But, this class counts the objects from zero. And, we permit the deletion of
+ * objects from the array container. And most importantly, we permits the search for a particular object efficiently.
+ * Therefore, this class supports efficiently insert, lookup, deletion and traversal queries.
+ *
  * @author xiao
  */
 public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>, Iterable<E> {
@@ -100,7 +100,7 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
 
   /**
    * Input object o is not required to be an object added previously.
-   * 
+   *
    * @param o
    * @return
    */
@@ -131,8 +131,8 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
   }
 
   /**
-   * The removed objects cause some empty slots. We shift the objects to the empty slots in order to ensure ids of the objects are less than the
-   * filledCells.
+   * The removed objects cause some empty slots. We shift the objects to the empty slots in order to ensure ids of the
+   * objects are less than the filledCells.
    */
   public void reassign() {
     int i, j;

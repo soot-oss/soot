@@ -24,7 +24,8 @@ import soot.jimple.StringConstant;
 /**
  * An allocator for registers. It keeps track of locals to re-use their registers.<br>
  * <br>
- * Note that a register number can increase beyond 65535 / 16 bit, since the instruction formats should check for their register limits themselves.
+ * Note that a register number can increase beyond 65535 / 16 bit, since the instruction formats should check for their
+ * register limits themselves.
  */
 public class RegisterAllocator {
 
@@ -257,7 +258,7 @@ public class RegisterAllocator {
 
   /**
    * Locks the given register. This prevents the register from being re-used for storing constants.
-   * 
+   *
    * @param reg
    *          The register to lock
    */

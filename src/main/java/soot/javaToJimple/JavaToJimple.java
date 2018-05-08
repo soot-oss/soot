@@ -51,10 +51,12 @@ public class JavaToJimple {
     ExtensionInfo extInfo = new soot.javaToJimple.jj.ExtensionInfo() {
       public List passes(Job job) {
         List passes = super.passes(job);
-        // beforePass(passes, Pass.EXIT_CHECK, new VisitorPass(polyglot.frontend.Pass.FOLD, job, new polyglot.visit.ConstantFolder(ts, nf)));
+        // beforePass(passes, Pass.EXIT_CHECK, new VisitorPass(polyglot.frontend.Pass.FOLD, job, new
+        // polyglot.visit.ConstantFolder(ts, nf)));
         beforePass(passes, Pass.EXIT_CHECK, new VisitorPass(CAST_INSERTION, job, new CastInsertionVisitor(job, ts, nf)));
         beforePass(passes, Pass.EXIT_CHECK, new VisitorPass(STRICTFP_PROP, job, new StrictFPPropagator(false)));
-        beforePass(passes, Pass.EXIT_CHECK, new VisitorPass(ANON_CONSTR_FINDER, job, new AnonConstructorFinder(job, ts, nf)));
+        beforePass(passes, Pass.EXIT_CHECK,
+            new VisitorPass(ANON_CONSTR_FINDER, job, new AnonConstructorFinder(job, ts, nf)));
         afterPass(passes, Pass.PRE_OUTPUT_ALL, new SaveASTVisitor(SAVE_AST, job, this));
         removePass(passes, Pass.OUTPUT);
         return passes;
@@ -87,7 +89,8 @@ public class JavaToJimple {
   /**
    * uses polyglot to compile source and build AST
    */
-  public polyglot.ast.Node compile(polyglot.frontend.Compiler compiler, String fileName, polyglot.frontend.ExtensionInfo extInfo) {
+  public polyglot.ast.Node compile(polyglot.frontend.Compiler compiler, String fileName,
+      polyglot.frontend.ExtensionInfo extInfo) {
     SourceLoader source_loader = compiler.sourceExtension().sourceLoader();
 
     try {

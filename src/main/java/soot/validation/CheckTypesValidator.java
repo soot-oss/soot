@@ -52,15 +52,18 @@ public enum CheckTypesValidator implements BodyValidator {
 
           if (iexpr instanceof InstanceInvokeExpr) {
             InstanceInvokeExpr iiexpr = (InstanceInvokeExpr) iexpr;
-            checkCopy(stmt, body, exception, called.declaringClass().getType(), iiexpr.getBase().getType(), " in receiver of call" + errorSuffix);
+            checkCopy(stmt, body, exception, called.declaringClass().getType(), iiexpr.getBase().getType(),
+                " in receiver of call" + errorSuffix);
           }
 
           if (called.parameterTypes().size() != iexpr.getArgCount()) {
             exception.add(new ValidationException(stmt, "Argument count does not match the signature of the called function",
-                "Warning: Argument count doesn't match up with signature in call" + errorSuffix + " in " + body.getMethod()));
+                "Warning: Argument count doesn't match up with signature in call" + errorSuffix + " in "
+                    + body.getMethod()));
           } else {
             for (int i = 0; i < iexpr.getArgCount(); i++) {
-              checkCopy(stmt, body, exception, Type.toMachineType(called.parameterType(i)), Type.toMachineType(iexpr.getArg(i).getType()),
+              checkCopy(stmt, body, exception, Type.toMachineType(called.parameterType(i)),
+                  Type.toMachineType(iexpr.getArg(i).getType()),
                   " in argument " + i + " of call" + errorSuffix + " (Note: Parameters are zero-indexed)");
             }
           }
@@ -69,7 +72,8 @@ public enum CheckTypesValidator implements BodyValidator {
     }
   }
 
-  private void checkCopy(Unit stmt, Body body, List<ValidationException> exception, Type leftType, Type rightType, String errorSuffix) {
+  private void checkCopy(Unit stmt, Body body, List<ValidationException> exception, Type leftType, Type rightType,
+      String errorSuffix) {
     if (leftType instanceof PrimType || rightType instanceof PrimType) {
       if (leftType instanceof IntType && rightType instanceof IntType) {
         return;
@@ -83,7 +87,8 @@ public enum CheckTypesValidator implements BodyValidator {
       if (leftType instanceof DoubleType && rightType instanceof DoubleType) {
         return;
       }
-      exception.add(new ValidationException(stmt, "", "Warning: Bad use of primitive type" + errorSuffix + " in " + body.getMethod()));
+      exception.add(
+          new ValidationException(stmt, "", "Warning: Bad use of primitive type" + errorSuffix + " in " + body.getMethod()));
     }
 
     if (rightType instanceof NullType) {
@@ -106,7 +111,8 @@ public enum CheckTypesValidator implements BodyValidator {
         }
       }
 
-      exception.add(new ValidationException(stmt, "Warning: Bad use of array type" + errorSuffix + " in " + body.getMethod()));
+      exception
+          .add(new ValidationException(stmt, "Warning: Bad use of array type" + errorSuffix + " in " + body.getMethod()));
     }
 
     if (leftType instanceof RefType && rightType instanceof RefType) {
@@ -120,18 +126,20 @@ public enum CheckTypesValidator implements BodyValidator {
         if (rightClass.isInterface()) {
           if (!(leftClass.getName().equals(rightClass.getName())
               || Scene.v().getActiveHierarchy().isInterfaceSubinterfaceOf(rightClass, leftClass))) {
-            exception.add(new ValidationException(stmt, "Warning: Bad use of interface type" + errorSuffix + " in " + body.getMethod()));
+            exception.add(new ValidationException(stmt,
+                "Warning: Bad use of interface type" + errorSuffix + " in " + body.getMethod()));
           }
         } else {
           // No quick way to check this for now.
         }
       } else {
         if (rightClass.isInterface()) {
-          exception.add(new ValidationException(stmt,
-              "Warning: trying to use interface type where non-Object class expected" + errorSuffix + " in " + body.getMethod()));
+          exception.add(new ValidationException(stmt, "Warning: trying to use interface type where non-Object class expected"
+              + errorSuffix + " in " + body.getMethod()));
         } else {
           if (!Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(rightClass, leftClass)) {
-            exception.add(new ValidationException(stmt, "Warning: Bad use of class type" + errorSuffix + " in " + body.getMethod()));
+            exception.add(
+                new ValidationException(stmt, "Warning: Bad use of class type" + errorSuffix + " in " + body.getMethod()));
           }
         }
       }

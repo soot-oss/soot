@@ -60,7 +60,7 @@ import soot.jimple.ThrowStmt;
  * The class produces a HashMap between the node/statement given as
  * key and the parent of this construct (value)
  *
- * November 23rd, 2005. (Nomair) It is used for instance in the CopyPropagation algorithm 
+ * November 23rd, 2005. (Nomair) It is used for instance in the CopyPropagation algorithm
  * to be able to remove a particular copy
  * stmt for instance from its parent.
  */
@@ -214,8 +214,9 @@ public class ASTParentNodeFinder extends DepthFirstAdapter {
   }
 
   /*
-   * This is the method which should be invoked by classes needing parent information. When the method is invoked with a statement or node as input it
-   * returns the parent of that object. The parent can safely be casted to ASTNode as long as the parent returned is non null
+   * This is the method which should be invoked by classes needing parent information. When the method is invoked with a
+   * statement or node as input it returns the parent of that object. The parent can safely be casted to ASTNode as long as
+   * the parent returned is non null
    */
   public Object getParentOf(Object statementOrNode) {
     return parentOf.get(statementOrNode);

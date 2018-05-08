@@ -52,18 +52,18 @@ import soot.util.Chain;
 
 /**
  * "unrolls" the condition of while/for loops.<br>
- * before the first test of a while-loop, we can't be sure, if the body will be taken or not, and several optimizations (especially LCM) can't be
- * done. In this class we try to solve this problem by unrolling the condition of the while-block: we make a copy of the condition-block, and redirect
- * the back-edge of the while-loop to the new block.<br>
- * After this transformation the edge between the original condition-block and the loop-body is only executed once (and hence suitable for LCM) and we
- * can be sure, that the loop-body will get executed.<br>
+ * before the first test of a while-loop, we can't be sure, if the body will be taken or not, and several optimizations
+ * (especially LCM) can't be done. In this class we try to solve this problem by unrolling the condition of the while-block:
+ * we make a copy of the condition-block, and redirect the back-edge of the while-loop to the new block.<br>
+ * After this transformation the edge between the original condition-block and the loop-body is only executed once (and hence
+ * suitable for LCM) and we can be sure, that the loop-body will get executed.<br>
  * Exceptions are ignored (the transformation is done on a <code>BriefBlockGraph</code>.
  */
 public class LoopConditionUnroller extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(LoopConditionUnroller.class);
   /**
-   * contained blocks are currently visiting successors. We need this to find back-edges. The "visitedBlocks" is not enough, as Java Bytecodes might
-   * not be in tree-form.
+   * contained blocks are currently visiting successors. We need this to find back-edges. The "visitedBlocks" is not enough,
+   * as Java Bytecodes might not be in tree-form.
    */
   private Set<Block> visitingSuccs;
 
@@ -148,8 +148,9 @@ public class LoopConditionUnroller extends BodyTransformer {
   }
 
   /**
-   * returns a mapping of units to trap-changes. whenever the scope of a trap changes (ie. a trap opens or closes), an entry is added in the map, and
-   * the unit is mapped to the trap. The values associated to the keys are lists, as more than one exception can change at a unit.<br>
+   * returns a mapping of units to trap-changes. whenever the scope of a trap changes (ie. a trap opens or closes), an entry
+   * is added in the map, and the unit is mapped to the trap. The values associated to the keys are lists, as more than one
+   * exception can change at a unit.<br>
    * Even if a trap opens and closes at a unit, this trap is only reported once (ie. is only once in the list).
    *
    * @return the map of units to changing traps.
@@ -182,10 +183,11 @@ public class LoopConditionUnroller extends BodyTransformer {
   }
 
   /**
-   * puts a copy (clone) of the given block in the unitChain. The block is ensured to have the same exceptions as the original block. (So we will
-   * modify the exception-chain). Furthermore the inserted block will not change the behaviour of the program.<br>
-   * Without any further modifications the returned block is unreachable. To make it reachable one must <code>goto</code> to the returned head of the
-   * new block.
+   * puts a copy (clone) of the given block in the unitChain. The block is ensured to have the same exceptions as the
+   * original block. (So we will modify the exception-chain). Furthermore the inserted block will not change the behaviour of
+   * the program.<br>
+   * Without any further modifications the returned block is unreachable. To make it reachable one must <code>goto</code> to
+   * the returned head of the new block.
    *
    * @param block
    *          the Block to clone.
@@ -210,9 +212,9 @@ public class LoopConditionUnroller extends BodyTransformer {
         copiedHead = last;
       }
       /*
-       * the traps...: if a trap is closed (in the original block) that hasn't been opened before, we have to open it at the beginning of the copied
-       * block. If a trap gets opened, but not closed, we only have to close it at the end of the (original) block (as it will be open at the end of
-       * the copied block.)
+       * the traps...: if a trap is closed (in the original block) that hasn't been opened before, we have to open it at the
+       * beginning of the copied block. If a trap gets opened, but not closed, we only have to close it at the end of the
+       * (original) block (as it will be open at the end of the copied block.)
        */
       List<Trap> currentTraps = traps.get(currentUnit);
       if (currentTraps != null) {
@@ -269,8 +271,8 @@ public class LoopConditionUnroller extends BodyTransformer {
       if (visitedBlocks.contains(succ)) {
         if (succ != block && visitingSuccs.contains(succ)) {
           /*
-           * we only want blocks with at least 2 predecessors, to avoid that a copied while-condition gets copied again in a future pass of
-           * unrollConditions
+           * we only want blocks with at least 2 predecessors, to avoid that a copied while-condition gets copied again in a
+           * future pass of unrollConditions
            */
           if (succ.getPreds().size() >= 2 && succ.getSuccs().size() == 2) {
             Block condition = succ; // just renaming for clearer

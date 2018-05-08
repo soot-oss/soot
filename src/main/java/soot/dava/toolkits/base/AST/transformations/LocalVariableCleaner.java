@@ -54,9 +54,9 @@ import soot.jimple.Stmt;
 /**
  * The class is aimed to target cleaning up of unused local variables. Should be invoked after executing CopyPropagation
  *
- * Another thing that this class does which perhaps should have been implemented separately is to check whether there is an assignment which never
- * gets used later on. If there exists such an assignment this assignment is removed first and then all the useless locals checks should be reapplied
- * (until a fixed point)
+ * Another thing that this class does which perhaps should have been implemented separately is to check whether there is an
+ * assignment which never gets used later on. If there exists such an assignment this assignment is removed first and then
+ * all the useless locals checks should be reapplied (until a fixed point)
  */
 
 public class LocalVariableCleaner extends DepthFirstAdapter {
@@ -83,8 +83,9 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
   }
 
   /*
-   * Get all locals declared in the method If the local is never defined (and hence never used) remove it If the local is defined BUT never used then
-   * you may remove it IF AND ONLY IF The definition is either a copy stmt or an assignment of a constant (i.e. no side effects)
+   * Get all locals declared in the method If the local is never defined (and hence never used) remove it If the local is
+   * defined BUT never used then you may remove it IF AND ONLY IF The definition is either a copy stmt or an assignment of a
+   * constant (i.e. no side effects)
    */
   public void outASTMethodNode(ASTMethodNode node) {
     boolean redo = false;
@@ -169,8 +170,8 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
   }
 
   /*
-   * A def can be removed if and only if: 1, there are no uses of this definition 2, the right hand size is either a local or a constant i.e. no need
-   * to worry about side effects
+   * A def can be removed if and only if: 1, there are no uses of this definition 2, the right hand size is either a local or
+   * a constant i.e. no need to worry about side effects
    */
   public boolean canRemoveDef(DefinitionStmt ds) {
     List uses = useDefs.getDUChain(ds);

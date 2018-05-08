@@ -56,7 +56,8 @@ import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
 import soot.toolkits.scalar.Pair;
 
 @SuppressWarnings("serial")
-public class IFDSPossibleTypes extends DefaultJimpleIFDSTabulationProblem<Pair<Value, Type>, InterproceduralCFG<Unit, SootMethod>> {
+public class IFDSPossibleTypes
+    extends DefaultJimpleIFDSTabulationProblem<Pair<Value, Type>, InterproceduralCFG<Unit, SootMethod>> {
 
   public IFDSPossibleTypes(InterproceduralCFG<Unit, SootMethod> icfg) {
     super(icfg);
@@ -114,7 +115,8 @@ public class IFDSPossibleTypes extends DefaultJimpleIFDSTabulationProblem<Pair<V
               }
 
               private boolean maybeSameLocation(Value v1, Value v2) {
-                if (!(v1 instanceof InstanceFieldRef && v2 instanceof InstanceFieldRef) && !(v1 instanceof ArrayRef && v2 instanceof ArrayRef)) {
+                if (!(v1 instanceof InstanceFieldRef && v2 instanceof InstanceFieldRef)
+                    && !(v1 instanceof ArrayRef && v2 instanceof ArrayRef)) {
                   return v1.equivTo(v2);
                 }
                 if (v1 instanceof InstanceFieldRef && v2 instanceof InstanceFieldRef) {
@@ -170,7 +172,8 @@ public class IFDSPossibleTypes extends DefaultJimpleIFDSTabulationProblem<Pair<V
         };
       }
 
-      public FlowFunction<Pair<Value, Type>> getReturnFlowFunction(Unit callSite, SootMethod callee, Unit exitStmt, Unit retSite) {
+      public FlowFunction<Pair<Value, Type>> getReturnFlowFunction(Unit callSite, SootMethod callee, Unit exitStmt,
+          Unit retSite) {
         if (exitStmt instanceof ReturnStmt) {
           ReturnStmt returnStmt = (ReturnStmt) exitStmt;
           Value op = returnStmt.getOp();
@@ -205,7 +208,8 @@ public class IFDSPossibleTypes extends DefaultJimpleIFDSTabulationProblem<Pair<V
   }
 
   public Map<Unit, Set<Pair<Value, Type>>> initialSeeds() {
-    return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()), zeroValue());
+    return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()),
+        zeroValue());
   }
 
   public Pair<Value, Type> createZeroValue() {

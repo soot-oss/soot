@@ -20,8 +20,8 @@
 package soot.toolkits.graph;
 
 /**
- * Post-dominators finder for multi-headed graph. The dominators returned by this finder are postdominators, so e.g. {@link #getDominators(Object)}
- * returns all post-dominators.
+ * Post-dominators finder for multi-headed graph. The dominators returned by this finder are postdominators, so e.g.
+ * {@link #getDominators(Object)} returns all post-dominators.
  *
  * @author Eric Bodden
  **/

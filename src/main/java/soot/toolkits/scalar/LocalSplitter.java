@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -51,9 +51,9 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.LocalBitSetPacker;
 
 /**
- * A BodyTransformer that attemps to indentify and separate uses of a local variable that are independent of each other. Conceptually the inverse
- * transform with respect to the LocalPacker transform.
- * 
+ * A BodyTransformer that attemps to indentify and separate uses of a local variable that are independent of each other.
+ * Conceptually the inverse transform with respect to the LocalPacker transform.
+ *
  *
  * For example the code:
  *

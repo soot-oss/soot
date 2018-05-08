@@ -7,8 +7,8 @@ import soot.Unit;
 import soot.jimple.toolkits.thread.AbstractRuntimeThread;
 
 /**
- * MhpTester written by Richard L. Halpert 2007-03-15 An interface for any object that can provide May-Happen-in-Parallel info and a list of the
- * program's threads (List of AbstractRuntimeThreads)
+ * MhpTester written by Richard L. Halpert 2007-03-15 An interface for any object that can provide May-Happen-in-Parallel
+ * info and a list of the program's threads (List of AbstractRuntimeThreads)
  */
 
 public interface MhpTester {

@@ -139,7 +139,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
    * Determine if register is used as floating point.
    *
    * Abstraction for static and non-static methods. Non-static methods need to ignore the first parameter (this)
-   * 
+   *
    * @param isStatic
    *          if this method is static
    */
@@ -171,7 +171,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
    * Determine if register is used as object.
    *
    * Abstraction for static and non-static methods. Non-static methods need to ignore the first parameter (this)
-   * 
+   *
    * @param isStatic
    *          if this method is static
    */
@@ -264,7 +264,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 
   /**
    * Gets a reference to the target method that is invoked
-   * 
+   *
    * @return A reference to the target method to be invoked
    */
   protected MethodReference getTargetMethodReference() {
@@ -369,7 +369,8 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
    */
   protected void jimplifySpecial(DexBody body) {
     List<Local> parameters = buildParameters(body, false);
-    invocation = Jimple.v().newSpecialInvokeExpr(parameters.get(0), getSootMethodRef(), parameters.subList(1, parameters.size()));
+    invocation
+        = Jimple.v().newSpecialInvokeExpr(parameters.get(0), getSootMethodRef(), parameters.subList(1, parameters.size()));
     body.setDanglingInstruction(this);
   }
 

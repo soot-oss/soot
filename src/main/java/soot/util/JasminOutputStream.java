@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * An output stream that wraps an existing output stream, and converts Jasmin code written into a class file that gets written to the original output
- * stream. (Write Jasmin into this stream, and .class will come out.)
+ * An output stream that wraps an existing output stream, and converts Jasmin code written into a class file that gets
+ * written to the original output stream. (Write Jasmin into this stream, and .class will come out.)
  */
 public class JasminOutputStream extends ByteArrayOutputStream {
   final private OutputStream out;

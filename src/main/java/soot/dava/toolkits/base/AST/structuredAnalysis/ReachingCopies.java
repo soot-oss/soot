@@ -24,7 +24,7 @@
 /*
  * CHANGE LOG: * November 22nd: Removed check of DAbruptStmt from analysis since
  *               this is now handled by the structredAnalysis framework
- *             
+ *
  *             * November 22nd: Inlined the LocalPair class
  *               Tested Extensively: found bug in implementation of process_doWhile in structuredAnalysis :)
  */
@@ -55,7 +55,7 @@ import soot.jimple.Stmt;
  kill = { all pairs containing x in left or right position}
 
  if expr is a local , y
- gen = (x,y) 
+ gen = (x,y)
  Step 6:
  out(start) = {}
  newInitialFlow: No copies are available. an empty flow set
@@ -98,8 +98,8 @@ public class ReachingCopies extends StructuredAnalysis {
     }
 
     /**
-     * Method checks whether local occurs in the left or right side of the localpair different semantics than the usual contains method which checks
-     * something in a list
+     * Method checks whether local occurs in the left or right side of the localpair different semantics than the usual
+     * contains method which checks something in a list
      */
     public boolean contains(Local local) {
       if (leftLocal.toString().equals(local.toString()) || rightLocal.toString().equals(local.toString())) {
@@ -152,8 +152,8 @@ public class ReachingCopies extends StructuredAnalysis {
   }
 
   /*
-   * By construction the synchronized Local is a Value and can definetly not have an assignment stmt Processing a synch local has no effect on this
-   * analysis
+   * By construction the synchronized Local is a Value and can definetly not have an assignment stmt Processing a synch local
+   * has no effect on this analysis
    */
   @Override
   public DavaFlowSet processSynchronizedLocal(Local local, DavaFlowSet input) {
@@ -161,7 +161,8 @@ public class ReachingCopies extends StructuredAnalysis {
   }
 
   /*
-   * The switch key is stored as a value and hence can never have an assignment stmt Processing the switch key has no effect on the analysis
+   * The switch key is stored as a value and hence can never have an assignment stmt Processing the switch key has no effect
+   * on the analysis
    */
   @Override
   public DavaFlowSet processSwitchKey(Value key, DavaFlowSet input) {
@@ -238,7 +239,8 @@ public class ReachingCopies extends StructuredAnalysis {
     // Get all reachingCopies
 
     /*
-     * the list that toList of this object contains elements of type LocalPair (a,b) which means this is a copy stmt of the form a=b
+     * the list that toList of this object contains elements of type LocalPair (a,b) which means this is a copy stmt of the
+     * form a=b
      */
 
     return beforeSet;

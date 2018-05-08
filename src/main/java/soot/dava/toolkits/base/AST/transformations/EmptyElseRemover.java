@@ -52,7 +52,8 @@ public class EmptyElseRemover {
       List<Object> onlySubBody = (List<Object>) subBodies.get(0);
 
       /*
-       * The onlySubBody contains the ASTIfElseNode whose elsebody has to be removed at location given by the nodeNumber variable
+       * The onlySubBody contains the ASTIfElseNode whose elsebody has to be removed at location given by the nodeNumber
+       * variable
        */
       List<Object> newBody = createNewNodeBody(onlySubBody, nodeNumber, ifElseNode);
       if (newBody == null) {

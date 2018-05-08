@@ -34,8 +34,8 @@ import soot.toolkits.graph.UnitGraph;
 public interface ShimpleFactory {
 
   /**
-   * Constructors should memoize their return value. Call clearCache() to force recomputations if body has changed and setBody() hasn't been called
-   * again.
+   * Constructors should memoize their return value. Call clearCache() to force recomputations if body has changed and
+   * setBody() hasn't been called again.
    **/
   public void clearCache();
 

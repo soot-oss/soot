@@ -1,6 +1,6 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2008 Ben Bellamy 
- * 
+ * Copyright (C) 2008 Ben Bellamy
+ *
  * All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -151,13 +151,14 @@ public class BytecodeHierarchy implements IHierarchy {
       }
 
       /*
-       * If the reference type implements Serializable or Cloneable then these are the least common supertypes, otherwise the only one is Object.
+       * If the reference type implements Serializable or Cloneable then these are the least common supertypes, otherwise the
+       * only one is Object.
        */
 
       LinkedList<Type> r = new LinkedList<Type>();
       /*
-       * Do not consider Object to be a subtype of Serializable or Cloneable (it can appear this way if phantom-refs is enabled and rt.jar is not
-       * available) otherwise an infinite loop can result.
+       * Do not consider Object to be a subtype of Serializable or Cloneable (it can appear this way if phantom-refs is
+       * enabled and rt.jar is not available) otherwise an infinite loop can result.
        */
       if (!TypeResolver.typesEqual(RefType.v("java.lang.Object"), rt)) {
         if (ancestor_(RefType.v("java.io.Serializable"), rt)) {

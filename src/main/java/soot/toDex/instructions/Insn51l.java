@@ -10,7 +10,8 @@ import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
- * The "51l" instruction format: It needs five 16-bit code units, has one register and is used for a 64-bit literal (hence the "l" for "long").<br>
+ * The "51l" instruction format: It needs five 16-bit code units, has one register and is used for a 64-bit literal (hence
+ * the "l" for "long").<br>
  * <br>
  * It is used by the opcode "const-wide".
  */

@@ -6,9 +6,9 @@ import soot.util.BitVector;
 /**
  * An extension of a bit vector which is convenient to use to represent points-to sets. Used by SharedHybridSet.
  *
- * We have to extend soot.util.BitVector rather than java.util.BitSet because PointsToSetInternal.getBitMask() returns a soot.util.BitVector. which
- * must be combined with other bit vectors.
- * 
+ * We have to extend soot.util.BitVector rather than java.util.BitSet because PointsToSetInternal.getBitMask() returns a
+ * soot.util.BitVector. which must be combined with other bit vectors.
+ *
  * @author Adam Richard
  *
  */
@@ -19,7 +19,7 @@ public class PointsToBitVector extends BitVector {
 
   /**
    * Adds n to this
-   * 
+   *
    * @return Whether this actually changed
    */
   public boolean add(Node n) {
@@ -43,12 +43,12 @@ public class PointsToBitVector extends BitVector {
 
   /**
    * Adds the Nodes in arr to this bitvector, adding at most size Nodes.
-   * 
+   *
    * @return The number of new nodes actually added.
    */
   /*
-   * public int add(Node[] arr, int size) { //assert size <= arr.length; int retVal = 0; for (int i = 0; i < size; ++i) { int num =
-   * arr[i].getNumber(); if (!get(num)) { set(num); ++retVal; } } return retVal; }
+   * public int add(Node[] arr, int size) { //assert size <= arr.length; int retVal = 0; for (int i = 0; i < size; ++i) { int
+   * num = arr[i].getNumber(); if (!get(num)) { set(num); ++retVal; } } return retVal; }
    */
 
   /** Returns true iff other is a subset of this bitvector */
@@ -63,8 +63,8 @@ public class PointsToBitVector extends BitVector {
    */
 
   /*
-   * Old algorithm: public int cardinality() { int retVal = 0; BitSetIterator it = iterator(); while (it.hasNext()) { it.next(); ++retVal; } return
-   * retVal; }
+   * Old algorithm: public int cardinality() { int retVal = 0; BitSetIterator it = iterator(); while (it.hasNext()) {
+   * it.next(); ++retVal; } return retVal; }
    */
 
   public PointsToBitVector(PointsToBitVector other) {

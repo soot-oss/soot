@@ -56,8 +56,8 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
     }
 
     Instruction35c filledNewArrayInstr = (Instruction35c) instruction;
-    int[] regs = { filledNewArrayInstr.getRegisterC(), filledNewArrayInstr.getRegisterD(), filledNewArrayInstr.getRegisterE(),
-        filledNewArrayInstr.getRegisterF(), filledNewArrayInstr.getRegisterG(), };
+    int[] regs = { filledNewArrayInstr.getRegisterC(), filledNewArrayInstr.getRegisterD(),
+        filledNewArrayInstr.getRegisterE(), filledNewArrayInstr.getRegisterF(), filledNewArrayInstr.getRegisterG(), };
     // NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
     // body.add(nopStmtBeginning);
 
@@ -107,8 +107,8 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
    */
   private boolean isRegisterUsed(int register) {
     Instruction35c i = (Instruction35c) instruction;
-    return register == i.getRegisterD() || register == i.getRegisterE() || register == i.getRegisterF() || register == i.getRegisterG()
-        || register == i.getRegisterC();
+    return register == i.getRegisterD() || register == i.getRegisterE() || register == i.getRegisterF()
+        || register == i.getRegisterG() || register == i.getRegisterC();
   }
 
 }

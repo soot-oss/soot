@@ -43,8 +43,8 @@ import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
 
 /**
- * Performs an DownSafe-analysis on the given graph. An expression is downsafe, if the computation will occur on every path from the current point
- * down to the END.
+ * Performs an DownSafe-analysis on the given graph. An expression is downsafe, if the computation will occur on every path
+ * from the current point down to the END.
  */
 public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<EquivalentValue>> {
   private SideEffectTester sideEffect = null;
@@ -74,13 +74,15 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equiv
    *          the SideEffectTester that performs kills.
    */
   public DownSafetyAnalysis(DirectedGraph<Unit> dg, Map<Unit, EquivalentValue> unitToGen, SideEffectTester sideEffect) {
-    this(dg, unitToGen, sideEffect, new ArrayPackedSet<EquivalentValue>(new CollectionFlowUniverse<EquivalentValue>(unitToGen.values())));
+    this(dg, unitToGen, sideEffect,
+        new ArrayPackedSet<EquivalentValue>(new CollectionFlowUniverse<EquivalentValue>(unitToGen.values())));
   }
 
   /**
    * This constructor automatically performs the DownSafety-analysis.<br>
    * the result of the analysis is as usual in FlowBefore (getFlowBefore()) and FlowAfter (getFlowAfter()).<br>
-   * as sets-operations are usually more efficient, if the original set comes from the same source, this allows to share sets.
+   * as sets-operations are usually more efficient, if the original set comes from the same source, this allows to share
+   * sets.
    *
    * @param dg
    *          a ExceptionalUnitGraph.

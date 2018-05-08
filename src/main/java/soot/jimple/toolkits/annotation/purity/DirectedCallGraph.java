@@ -48,8 +48,8 @@ import soot.util.MultiMap;
 /**
  * Builds a DirectedGraph from a CallGraph and SootMethodFilter.
  *
- * This is used in AbstractInterproceduralAnalysis to construct a reverse pseudo topological order on which to iterate. You can specify a
- * SootMethodFilter to trim the graph by cutting call edges.
+ * This is used in AbstractInterproceduralAnalysis to construct a reverse pseudo topological order on which to iterate. You
+ * can specify a SootMethodFilter to trim the graph by cutting call edges.
  *
  * Methods filtered-out by the SootMethodFilter will not appear in the DirectedGraph!
  */
@@ -64,11 +64,11 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
   protected int size;
 
   /**
-   * The constructor does all the work here. After constructed, you can safely use all interface methods. Moreover, these methods should perform very
-   * fast...
+   * The constructor does all the work here. After constructed, you can safely use all interface methods. Moreover, these
+   * methods should perform very fast...
    *
-   * The DirectedGraph will only contain methods in call paths from a method in head and comprising only methods wanted by filter. Moreover, only
-   * concrete methods are put in the graph...
+   * The DirectedGraph will only contain methods in call paths from a method in head and comprising only methods wanted by
+   * filter. Moreover, only concrete methods are put in the graph...
    *
    * @param cg
    * @param filter

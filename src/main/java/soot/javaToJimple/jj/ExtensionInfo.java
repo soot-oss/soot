@@ -50,8 +50,8 @@ public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
   }
 
   /*
-   * public Parser parser(Reader reader, FileSource source, ErrorQueue eq) { Lexer lexer = new Lexer_c(reader, source.name(), eq); Grm grm = new
-   * Grm(lexer, ts, nf, eq); return new CupParser(grm, source, eq); }
+   * public Parser parser(Reader reader, FileSource source, ErrorQueue eq) { Lexer lexer = new Lexer_c(reader, source.name(),
+   * eq); Grm grm = new Grm(lexer, ts, nf, eq); return new CupParser(grm, source, eq); }
    */
 
   protected NodeFactory createNodeFactory() {

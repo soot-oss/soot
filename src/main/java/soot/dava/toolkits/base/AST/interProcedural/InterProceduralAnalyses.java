@@ -47,7 +47,7 @@ public class InterProceduralAnalyses {
 
   /*
    * Method is invoked by postProcessDava in PackManager if the transformations flag is true
-   * 
+   *
    * All interproceduralAnalyses should be applied in here
    */
   public static void applyInterProceduralAnalyses() {
@@ -95,7 +95,8 @@ public class InterProceduralAnalyses {
           if (DEBUG) {
             System.out.println("\nSTART CP Class:" + s.getName() + " Method: " + m.getName());
           }
-          CPApplication CPApp = new CPApplication((ASTMethodNode) AST, constantValueFields, finder.getClassNameFieldNameToSootFieldMapping());
+          CPApplication CPApp = new CPApplication((ASTMethodNode) AST, constantValueFields,
+              finder.getClassNameFieldNameToSootFieldMapping());
           AST.apply(CPApp);
 
           if (DEBUG) {
@@ -146,8 +147,9 @@ public class InterProceduralAnalyses {
   }
 
   /*
-   * If there is any interprocedural information required it should be passed as argument to this method and then the renamer can make use of it.
-   * 
+   * If there is any interprocedural information required it should be passed as argument to this method and then the renamer
+   * can make use of it.
+   *
    *
    */
   private static void applyRenamerAnalyses(ASTNode AST, DavaBody body) {

@@ -142,7 +142,8 @@ public class ExceptionNode {
     return exitList;
   }
 
-  public void splitOff_ExceptionNode(IterableSet<AugmentedStmt> newTryBody, AugmentedStmtGraph asg, IterableSet<ExceptionNode> enlist) {
+  public void splitOff_ExceptionNode(IterableSet<AugmentedStmt> newTryBody, AugmentedStmtGraph asg,
+      IterableSet<ExceptionNode> enlist) {
     IterableSet<AugmentedStmt> oldTryBody = new IterableSet<AugmentedStmt>();
     oldTryBody.addAll(tryBody);
 
@@ -168,7 +169,8 @@ public class ExceptionNode {
         }
         b.append("\n-");
 
-        throw new RuntimeException("Tried to split off a new try body that isn't in the old one.\n" + as + "\n - " + b.toString());
+        throw new RuntimeException(
+            "Tried to split off a new try body that isn't in the old one.\n" + as + "\n - " + b.toString());
       }
     }
 

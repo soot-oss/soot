@@ -19,7 +19,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -137,7 +137,8 @@ public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr,
   public boolean equivTo(Object o) {
     if (o instanceof GNewInvokeExpr) {
       GNewInvokeExpr ie = (GNewInvokeExpr) o;
-      if (!(getMethod().equals(ie.getMethod()) && (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+      if (!(getMethod().equals(ie.getMethod())
+          && (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
         return false;
       }
       if (argBoxes != null) {

@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -40,7 +40,7 @@ import soot.jimple.StringConstant;
 
 /**
  * A constant pool entry of type CONSTANT_Utf8; note this is <b>not</b> multithread safe. It is, however, immutable.
- * 
+ *
  * @see cp_info
  * @author Clark Verbrugge
  */
@@ -83,7 +83,7 @@ public class CONSTANT_Utf8_info extends cp_info {
 
   /**
    * Returns the size of this cp_info object.
-   * 
+   *
    * @return number of bytes occupied by this object.
    * @see cp_info#size
    */
@@ -93,7 +93,7 @@ public class CONSTANT_Utf8_info extends cp_info {
 
   /**
    * Converts internal representation into an actual String.
-   * 
+   *
    * @return String version of this utf8 object.
    */
   public String convert() {
@@ -112,8 +112,8 @@ public class CONSTANT_Utf8_info extends cp_info {
   }
 
   /**
-   * Fixes the actual String used to represent the internal representation. We must have rep == convert(); we verify hashCodes() to spot-check this.
-   * No user-visible effects.
+   * Fixes the actual String used to represent the internal representation. We must have rep == convert(); we verify
+   * hashCodes() to spot-check this. No user-visible effects.
    */
   public void fixConversion(String rep) {
     if (sHashCode != rep.hashCode()) {
@@ -127,7 +127,7 @@ public class CONSTANT_Utf8_info extends cp_info {
 
   /**
    * Answers whether this utf8 string is the same as a given one.
-   * 
+   *
    * @param cu
    *          utf8 object with which to compare.
    * @return <i>true</i> if they are equal, <i>false</i> if they are not.
@@ -148,7 +148,7 @@ public class CONSTANT_Utf8_info extends cp_info {
 
   /**
    * Compares this entry with another cp_info object (which may reside in a different constant pool).
-   * 
+   *
    * @param constant_pool
    *          constant pool of ClassFile for this.
    * @param cp
@@ -164,9 +164,9 @@ public class CONSTANT_Utf8_info extends cp_info {
   }
 
   /**
-   * Compares this entry with another cp_info object; note that for Utf8 object it really doesn't matter whether they're in the same or a different
-   * constant pool, since they really do carry all their data.
-   * 
+   * Compares this entry with another cp_info object; note that for Utf8 object it really doesn't matter whether they're in
+   * the same or a different constant pool, since they really do carry all their data.
+   *
    * @param cp
    *          constant pool entry to compare against.
    * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
@@ -201,7 +201,7 @@ public class CONSTANT_Utf8_info extends cp_info {
 
   /**
    * Utility method; converts the given String into a utf8 encoded array of bytes.
-   * 
+   *
    * @param s
    *          String to encode.
    * @return array of bytes, utf8 encoded version of s.
@@ -220,7 +220,7 @@ public class CONSTANT_Utf8_info extends cp_info {
 
   /**
    * Returns a String representation of this entry.
-   * 
+   *
    * @param constant_pool
    *          constant pool of ClassFile.
    * @return String representation of this entry.
@@ -232,7 +232,7 @@ public class CONSTANT_Utf8_info extends cp_info {
 
   /**
    * Returns a String description of what kind of entry this is.
-   * 
+   *
    * @return the String "utf8".
    * @see cp_info#typeName
    */

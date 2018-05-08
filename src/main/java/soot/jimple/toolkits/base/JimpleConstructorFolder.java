@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -291,8 +291,8 @@ public class JimpleConstructorFolder extends BodyTransformer {
         }
         Local local = (Local) value;
         if (before.get(local) != null) {
-          throw new RuntimeException(
-              "Use of an unitialized value " + "before constructor call; are you sure this " + "bytecode is verifiable?\n" + s);
+          throw new RuntimeException("Use of an unitialized value " + "before constructor call; are you sure this "
+              + "bytecode is verifiable?\n" + s);
         }
       }
     }

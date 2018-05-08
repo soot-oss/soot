@@ -38,8 +38,8 @@ public abstract class RealConstant extends NumericConstant {
    *
    * @param constant
    *          the value to compare with
-   * @return {@code 0} if values are equal, {@code 1} if passed value less, or {@code -1} if passed value greater. When any of the values is
-   *         {@code NaN} method returns {@code -1}.
+   * @return {@code 0} if values are equal, {@code 1} if passed value less, or {@code -1} if passed value greater. When any
+   *         of the values is {@code NaN} method returns {@code -1}.
    */
   public abstract IntConstant cmpl(RealConstant constant);
 
@@ -48,8 +48,8 @@ public abstract class RealConstant extends NumericConstant {
    *
    * @param constant
    *          the value to compare with
-   * @return {@code 0} if values are equal, {@code 1} if passed value less, or {@code -1} if passed value greater. When any of the values is
-   *         {@code NaN} method returns {@code 1}.
+   * @return {@code 0} if values are equal, {@code 1} if passed value less, or {@code -1} if passed value greater. When any
+   *         of the values is {@code NaN} method returns {@code 1}.
    */
   public abstract IntConstant cmpg(RealConstant constant);
 

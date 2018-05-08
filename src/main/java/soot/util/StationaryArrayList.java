@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -26,8 +26,8 @@
 package soot.util;
 
 /**
- * This class implements an ArrayList where the equality and hashCode use object equality, not list equality. This is important for putting Lists into
- * HashMaps.
+ * This class implements an ArrayList where the equality and hashCode use object equality, not list equality. This is
+ * important for putting Lists into HashMaps.
  *
  * The notation "Stationary" refers to the fact that the List stays "fixed" under list changes.
  */

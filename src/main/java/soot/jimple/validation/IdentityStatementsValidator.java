@@ -24,7 +24,8 @@ public enum IdentityStatementsValidator implements BodyValidator {
    * <ol>
    * <li>this-references may only occur in instance methods
    * <li>this-references may only occur as the first statement in a method, if they occur at all
-   * <li>param-references must precede all statements that are not themselves param-references or this-references, if they occur at all
+   * <li>param-references must precede all statements that are not themselves param-references or this-references, if they
+   * occur at all
    * </ol>
    */
   @Override
@@ -47,8 +48,8 @@ public enum IdentityStatementsValidator implements BodyValidator {
             exceptions.add(new ValidationException(identityStmt, "@this-assignment in a static method!"));
           }
           if (!firstStatement) {
-            exceptions.add(
-                new ValidationException(identityStmt, "@this-assignment statement should precede all other statements" + "\n method: " + method));
+            exceptions.add(new ValidationException(identityStmt,
+                "@this-assignment statement should precede all other statements" + "\n method: " + method));
           }
         } else if (identityStmt.getRightOp() instanceof ParameterRef) {
           if (foundNonThisOrParamIdentityStatement) {

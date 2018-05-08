@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -51,13 +51,15 @@ import soot.util.ArraySet;
  */
 public class FastColorer {
   /**
-   * Provides a coloring for the locals of <code>unitBody</code>, attempting to not split locals assigned the same name in the original Jimple.
+   * Provides a coloring for the locals of <code>unitBody</code>, attempting to not split locals assigned the same name in
+   * the original Jimple.
    */
-  public static void unsplitAssignColorsToLocals(Body unitBody, Map<Local, Object> localToGroup, Map<Local, Integer> localToColor,
-      Map<Object, Integer> groupToColorCount) {
+  public static void unsplitAssignColorsToLocals(Body unitBody, Map<Local, Object> localToGroup,
+      Map<Local, Integer> localToColor, Map<Object, Integer> groupToColorCount) {
     // To understand why a pedantic throw analysis is required, see comment
     // in assignColorsToLocals method
-    ExceptionalUnitGraph unitGraph = new ExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
+    ExceptionalUnitGraph unitGraph
+        = new ExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
 
     LiveLocals liveLocals;
     liveLocals = new SimpleLiveLocals(unitGraph);
@@ -170,7 +172,8 @@ public class FastColorer {
       Map<Object, Integer> groupToColorCount) {
     // Build a CFG using a pedantic throw analysis to prevent JVM
     // "java.lang.VerifyError: Incompatible argument to function" errors.
-    ExceptionalUnitGraph unitGraph = new ExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
+    ExceptionalUnitGraph unitGraph
+        = new ExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
     LiveLocals liveLocals;
 
     liveLocals = new SimpleLiveLocals(unitGraph);
@@ -253,7 +256,8 @@ public class FastColorer {
       return locals;
     }
 
-    public UnitInterferenceGraph(Body body, Map<Local, Object> localToGroup, LiveLocals liveLocals, ExceptionalUnitGraph unitGraph) {
+    public UnitInterferenceGraph(Body body, Map<Local, Object> localToGroup, LiveLocals liveLocals,
+        ExceptionalUnitGraph unitGraph) {
       locals = new ArrayList<Local>();
       locals.addAll(body.getLocals());
 

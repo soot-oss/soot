@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -42,7 +42,8 @@ import soot.baf.Baf;
 import soot.options.Options;
 
 /**
- * A CodeAttribute object holds PC -> Tag pairs. It represents abstracted attributes of Code_attribute such as LineNumberTable, ArrayBoundsCheck.
+ * A CodeAttribute object holds PC -> Tag pairs. It represents abstracted attributes of Code_attribute such as
+ * LineNumberTable, ArrayBoundsCheck.
  */
 public class CodeAttribute extends JasminAttribute {
   private static final Logger logger = LoggerFactory.getLogger(CodeAttribute.class);

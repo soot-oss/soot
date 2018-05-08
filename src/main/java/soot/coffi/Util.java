@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -102,13 +102,15 @@ public class Util {
 
   private cp_info[] activeConstantPool = null;
   private LocalVariableTable_attribute activeVariableTable;
-  /* maps from variable names to local variable slot indexes to soot Locals */
+  /*
+   * maps from variable names to local variable slot indexes to soot Locals
+   */
   private Map<String, Map<Integer, Local>> nameToIndexToLocal;
   private boolean useFaithfulNaming = false;
 
   /**
-   * Set the informations relative to the current method body. This method must be called before using getLocalForIndex(...) and
-   * getLocalForStackOp(...) each time a different current method body is considered.
+   * Set the informations relative to the current method body. This method must be called before using getLocalForIndex(...)
+   * and getLocalForStackOp(...) each time a different current method body is considered.
    */
   public void bodySetup(LocalVariableTable_attribute la, LocalVariableTypeTable_attribute lt, cp_info[] ca) {
     activeVariableTable = la;
@@ -129,7 +131,8 @@ public class Util {
     String className = bclass.getName();
     ClassFile coffiClass = new ClassFile(className);
 
-    // Load up class file, and retrieve bclass from class manager.
+    // Load up class file, and retrieve
+    // bclass from class manager.
     {
       boolean success = coffiClass.loadClassFile(is);
 
@@ -150,19 +153,22 @@ public class Util {
       name = name.replace('/', '.');
 
       if (!name.equals(bclass.getName())) {
-        throw new RuntimeException("Error: class " + name + " read in from a classfile in which " + bclass.getName() + " was expected.");
+        throw new RuntimeException(
+            "Error: class " + name + " read in from a classfile in which " + bclass.getName() + " was expected.");
       }
     }
 
     // Set modifier
     bclass.setModifiers(coffiClass.access_flags & (~0x0020));
-    // don't want the ACC_SUPER flag, it is always supposed to be set
+    // don't want the ACC_SUPER flag, it is
+    // always supposed to be set
     // anyways
 
     // Set superclass
     {
       if (coffiClass.super_class != 0) {
-        // This object is not java.lang.Object, so must have a super
+        // This object is not java.lang.Object,
+        // so must have a super
         // class
 
         CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.super_class];
@@ -232,7 +238,9 @@ public class Util {
             }
             case cp_info.CONSTANT_Double: {
               CONSTANT_Double_info dcval = (CONSTANT_Double_info) cval;
-              // tag = new DoubleConstantValueTag((dcval.high << 32) +
+              // tag = new
+              // DoubleConstantValueTag((dcval.high <<
+              // 32) +
               // dcval.low);
               tag = new DoubleConstantValueTag(dcval.convert());
               break;
@@ -258,8 +266,8 @@ public class Util {
         }
         // add signature tag
         else if (fieldInfo.attributes[j] instanceof Signature_attribute) {
-          String generic_sig = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[((Signature_attribute) fieldInfo.attributes[j]).signature_index]))
-              .convert();
+          int signature_index = ((Signature_attribute) fieldInfo.attributes[j]).signature_index;
+          String generic_sig = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[signature_index])).convert();
           field.addTag(new SignatureTag(generic_sig));
         } else if (fieldInfo.attributes[j] instanceof RuntimeVisibleAnnotations_attribute
             || fieldInfo.attributes[j] instanceof RuntimeInvisibleAnnotations_attribute) {
@@ -332,8 +340,8 @@ public class Util {
           } else if (methodInfo.attributes[j] instanceof Deprecated_attribute) {
             method.addTag(new DeprecatedTag());
           } else if (methodInfo.attributes[j] instanceof Signature_attribute) {
-            String generic_sig = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[((Signature_attribute) methodInfo.attributes[j]).signature_index]))
-                .convert();
+            int signature_index = ((Signature_attribute) methodInfo.attributes[j]).signature_index;
+            String generic_sig = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[signature_index])).convert();
             method.addTag(new SignatureTag(generic_sig));
           } else if (methodInfo.attributes[j] instanceof RuntimeVisibleAnnotations_attribute
               || methodInfo.attributes[j] instanceof RuntimeInvisibleAnnotations_attribute) {
@@ -355,7 +363,8 @@ public class Util {
         }
       }
 
-      // Go through the constant pool, forcing all mentioned classes to be
+      // Go through the constant pool, forcing
+      // all mentioned classes to be
       // resolved.
       {
         for (int k = 0; k < coffiClass.constant_pool_count; k++) {
@@ -371,7 +380,8 @@ public class Util {
               references.add(RefType.v(name));
             }
           }
-          if (coffiClass.constant_pool[k] instanceof CONSTANT_Fieldref_info || coffiClass.constant_pool[k] instanceof CONSTANT_Methodref_info
+          if (coffiClass.constant_pool[k] instanceof CONSTANT_Fieldref_info
+              || coffiClass.constant_pool[k] instanceof CONSTANT_Methodref_info
               || coffiClass.constant_pool[k] instanceof CONSTANT_InterfaceMethodref_info) {
             Type[] types = jimpleTypesOfFieldOrMethodDescriptor(cp_info.getTypeDescr(coffiClass.constant_pool, k));
             for (Type element : types) {
@@ -386,7 +396,8 @@ public class Util {
     // Set coffi source of method
     for (int i = 0; i < coffiClass.methods_count; i++) {
       method_info methodInfo = coffiClass.methods[i];
-      // methodInfo.jmethod.setSource(coffiClass, methodInfo);
+      // methodInfo.jmethod.setSource(coffiClass,
+      // methodInfo);
       methodInfo.jmethod.setSource(new CoffiMethodSource(coffiClass, methodInfo));
     }
 
@@ -414,12 +425,12 @@ public class Util {
           String outer = null;
           String name = null;
           if (e.inner_class_index != 0) {
-            inner = ((CONSTANT_Utf8_info) coffiClass.constant_pool[((CONSTANT_Class_info) coffiClass.constant_pool[e.inner_class_index]).name_index])
-                .convert();
+            int name_index = ((CONSTANT_Class_info) coffiClass.constant_pool[e.inner_class_index]).name_index;
+            inner = ((CONSTANT_Utf8_info) coffiClass.constant_pool[name_index]).convert();
           }
           if (e.outer_class_index != 0) {
-            outer = ((CONSTANT_Utf8_info) coffiClass.constant_pool[((CONSTANT_Class_info) coffiClass.constant_pool[e.outer_class_index]).name_index])
-                .convert();
+            int name_index = ((CONSTANT_Class_info) coffiClass.constant_pool[e.outer_class_index]).name_index;
+            outer = ((CONSTANT_Utf8_info) coffiClass.constant_pool[name_index]).convert();
           }
           if (e.name_index != 0) {
             name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[e.name_index])).convert();
@@ -436,13 +447,13 @@ public class Util {
       else if (coffiClass.attributes[i] instanceof Deprecated_attribute) {
         bclass.addTag(new DeprecatedTag());
       } else if (coffiClass.attributes[i] instanceof Signature_attribute) {
-        String generic_sig = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[((Signature_attribute) coffiClass.attributes[i]).signature_index]))
-            .convert();
+        int signature_index = ((Signature_attribute) coffiClass.attributes[i]).signature_index;
+        String generic_sig = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[signature_index])).convert();
         bclass.addTag(new SignatureTag(generic_sig));
       } else if (coffiClass.attributes[i] instanceof EnclosingMethod_attribute) {
         EnclosingMethod_attribute attr = (EnclosingMethod_attribute) coffiClass.attributes[i];
-        String class_name = ((CONSTANT_Utf8_info) coffiClass.constant_pool[((CONSTANT_Class_info) coffiClass.constant_pool[attr.class_index]).name_index])
-            .convert();
+        int name_index = ((CONSTANT_Class_info) coffiClass.constant_pool[attr.class_index]).name_index;
+        String class_name = ((CONSTANT_Utf8_info) coffiClass.constant_pool[name_index]).convert();
         CONSTANT_NameAndType_info info = (CONSTANT_NameAndType_info) coffiClass.constant_pool[attr.method_index];
 
         String method_name = "";
@@ -474,39 +485,42 @@ public class Util {
   private final ArrayList<Type> conversionTypes = new ArrayList<Type>();
 
   /*
-   * private Map cache = new HashMap(); public Type[] jimpleTypesOfFieldOrMethodDescriptor(String descriptor) { Type[] ret = (Type[])
-   * cache.get(descriptor); if( ret != null ) return ret; conversionTypes.clear();
-   * 
+   * private Map cache = new HashMap(); public Type[] jimpleTypesOfFieldOrMethodDescriptor( String descriptor) { Type[] ret =
+   * (Type[]) cache.get(descriptor); if( ret != null ) return ret; conversionTypes.clear();
+   *
    * while(descriptor.length() != 0) { boolean isArray = false; int numDimensions = 0; Type baseType;
-   * 
-   * // Skip parenthesis if(descriptor.startsWith("(") || descriptor.startsWith(")")) { descriptor = descriptor.substring(1); continue; }
-   * 
-   * // Handle array case while(descriptor.startsWith("[")) { isArray = true; numDimensions++; descriptor = descriptor.substring(1); }
-   * 
-   * // Determine base type if(descriptor.startsWith("B")) { baseType = ByteType.v(); descriptor = descriptor.substring(1); } else
-   * if(descriptor.startsWith("C")) { baseType = CharType.v(); descriptor = descriptor.substring(1); } else if(descriptor.startsWith("D")) { baseType
-   * = DoubleType.v(); descriptor = descriptor.substring(1); } else if(descriptor.startsWith("F")) { baseType = FloatType.v(); descriptor =
-   * descriptor.substring(1); } else if(descriptor.startsWith("I")) { baseType = IntType.v(); descriptor = descriptor.substring(1); } else
-   * if(descriptor.startsWith("J")) { baseType = LongType.v(); descriptor = descriptor.substring(1); } else if(descriptor.startsWith("L")) { int index
-   * = descriptor.indexOf(';');
-   * 
-   * if(index == -1) throw new RuntimeException("Class reference has no ending ;");
-   * 
+   *
+   * // Skip parenthesis if(descriptor.startsWith("(") || descriptor.startsWith(")")) { descriptor = descriptor.substring(1);
+   * continue; }
+   *
+   * // Handle array case while(descriptor.startsWith("[")) { isArray = true; numDimensions++; descriptor =
+   * descriptor.substring(1); }
+   *
+   * // Determine base type if(descriptor.startsWith("B")) { baseType = ByteType.v(); descriptor = descriptor.substring(1); }
+   * else if(descriptor.startsWith("C")) { baseType = CharType.v(); descriptor = descriptor.substring(1); } else
+   * if(descriptor.startsWith("D")) { baseType = DoubleType.v(); descriptor = descriptor.substring(1); } else
+   * if(descriptor.startsWith("F")) { baseType = FloatType.v(); descriptor = descriptor.substring(1); } else
+   * if(descriptor.startsWith("I")) { baseType = IntType.v(); descriptor = descriptor.substring(1); } else
+   * if(descriptor.startsWith("J")) { baseType = LongType.v(); descriptor = descriptor.substring(1); } else
+   * if(descriptor.startsWith("L")) { int index = descriptor.indexOf(';');
+   *
+   * if(index == -1) throw new RuntimeException("Class reference has no ending ;" );
+   *
    * String className = descriptor.substring(1, index);
-   * 
+   *
    * baseType = RefType.v(className.replace('/', '.'));
-   * 
-   * descriptor = descriptor.substring(index + 1); } else if(descriptor.startsWith("S")) { baseType = ShortType.v(); descriptor =
-   * descriptor.substring(1); } else if(descriptor.startsWith("Z")) { baseType = BooleanType.v(); descriptor = descriptor.substring(1); } else
-   * if(descriptor.startsWith("V")) { baseType = VoidType.v(); descriptor = descriptor.substring(1); } else throw new
-   * RuntimeException("Unknown field type!");
-   * 
+   *
+   * descriptor = descriptor.substring(index + 1); } else if(descriptor.startsWith("S")) { baseType = ShortType.v();
+   * descriptor = descriptor.substring(1); } else if(descriptor.startsWith("Z")) { baseType = BooleanType.v(); descriptor =
+   * descriptor.substring(1); } else if(descriptor.startsWith("V")) { baseType = VoidType.v(); descriptor =
+   * descriptor.substring(1); } else throw new RuntimeException("Unknown field type!" );
+   *
    * Type t;
-   * 
+   *
    * // Determine type if(isArray) t = ArrayType.v(baseType, numDimensions); else t = baseType;
-   * 
+   *
    * conversionTypes.add(t); }
-   * 
+   *
    * ret = (Type[]) conversionTypes.toArray(new Type[0]); cache.put(descriptor, ret); return ret; }
    */
 
@@ -677,8 +691,8 @@ public class Util {
   }
 
   String getNextEasyName() {
-    final String[] easyNames = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w",
-        "x", "y", "z" };
+    final String[] easyNames = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",
+        "s", "t", "u", "v", "w", "x", "y", "z" };
 
     int justifiedIndex = nextEasyNameIndex++;
 
@@ -767,7 +781,7 @@ public class Util {
 
   /**
    * Get a Local for the parameter at the given local variable index.
-   * 
+   *
    * @listBody the method body.
    * @index the parameter's local variable index.
    * @return the Local for the given local variable index.
@@ -778,14 +792,15 @@ public class Util {
 
   /**
    * Get a Local for the local variable at the given index in the context of the given instruction.
-   * 
+   *
    * @listBody the method body.
    * @index the local variable index.
    * @context the instruction context.
    * @return the Local for the given local variable index.
    */
   Local getLocalForIndex(JimpleBody listBody, int index, Instruction context) {
-    return getLocalForIndex(listBody, index, context.originalIndex, context.nextOffset(context.originalIndex), ByteCode.isLocalStore(context.code));
+    return getLocalForIndex(listBody, index, context.originalIndex, context.nextOffset(context.originalIndex),
+        ByteCode.isLocalStore(context.code));
   }
 
   private Local getLocalForIndex(JimpleBody listBody, int index, int bcIndex, int nextBcIndex, boolean isLocalStore) {
@@ -795,46 +810,49 @@ public class Util {
     if (useFaithfulNaming && activeVariableTable != null) {
       /*
        * [use-original-names]
-       * 
-       * Use original variables names. Generally speeking, the current way of handling original variables names is sound if the local variable table
-       * is consistant with the source code.
-       * 
+       *
+       * Use original variables names. Generally speeking, the current way of handling original variables names is sound if
+       * the local variable table is consistant with the source code.
+       *
        * consistant(table) ==> sound(local for index)
-       * 
-       * In the table, variables are tuples ((s,l),i,N) where (s,l) encodes the half-open bytecode index interval [s,s+l[, i is the local variable
-       * index and N is the original variable name. ((s,l),i,N) means "from bytecode index s included to bytecode index s+l excluded, the variable at
-       * index i is named N is the source code".
-       * 
-       * However the content of the table is for informational and debugging purpose only, the compiler can insert whatever inconsistancies it may
-       * want, meaning we cannot trust the table.
-       * 
-       * The most common inconsistancy we found so far is where variables with different indexes and overlapping bytecode ranges are given the same
-       * name in the table. Although it won't happen with user-defined variables since Java doesn't allow the same variable name to be declared in
-       * nested scopes. But this situation can arise for compiler-generated local variables if they are assigned the same name (`i$` is common in
-       * OpenJDK). Notable example are local variables generated to implement the Java for-each statement (for(Foo foo : bar){}). If the source code
-       * contains nested for-each statements, then it becomes ugly because all the generated iterators or counters (for-each on arrays) are assigned
-       * the same name in the table.
-       * 
-       * This inconsistancy is now handled correctly by the following code. The idea is based on the observation that the Local allocation works well
-       * if we simply allocate a different Local object for each local variable index (it is the default allocation policy, when the original names
-       * are not kept). Therefore, local variables with the same name and same index should have the same Local object. And local variables with the
-       * same name but different index should have a different Local object. We maintain the map nameToIndexToLocal :: Name -> (Index -> Local Object)
-       * from variable names to maps from variable indexes to Local objects. So we allocate a new Local object for each pair of a variable name and a
-       * variable index.
-       * 
-       * Unfortunately, this is still unsound if the table gives several names for the same variable of the source code. Or if it reports wrong
-       * bytecode ranges, or if it doesn't report the name of a variable everywhere it is used in the bytecode...
-       * 
-       * In order to obtain sound Local allocation when taking original names into account... we should not allocate Local according to these names.
-       * Instead we must keep the default allocation policy (one Local object for each local variable index), and then annotate each statement with
-       * "most probable name(s)" for each use or def Local.
-       * 
+       *
+       * In the table, variables are tuples ((s,l),i,N) where (s,l) encodes the half-open bytecode index interval [s,s+l[, i
+       * is the local variable index and N is the original variable name. ((s,l),i,N) means "from bytecode index s included
+       * to bytecode index s+l excluded, the variable at index i is named N is the source code".
+       *
+       * However the content of the table is for informational and debugging purpose only, the compiler can insert whatever
+       * inconsistancies it may want, meaning we cannot trust the table.
+       *
+       * The most common inconsistancy we found so far is where variables with different indexes and overlapping bytecode
+       * ranges are given the same name in the table. Although it won't happen with user-defined variables since Java doesn't
+       * allow the same variable name to be declared in nested scopes. But this situation can arise for compiler-generated
+       * local variables if they are assigned the same name (`i$` is common in OpenJDK). Notable example are local variables
+       * generated to implement the Java for-each statement (for(Foo foo : bar){}). If the source code contains nested
+       * for-each statements, then it becomes ugly because all the generated iterators or counters (for-each on arrays) are
+       * assigned the same name in the table.
+       *
+       * This inconsistancy is now handled correctly by the following code. The idea is based on the observation that the
+       * Local allocation works well if we simply allocate a different Local object for each local variable index (it is the
+       * default allocation policy, when the original names are not kept). Therefore, local variables with the same name and
+       * same index should have the same Local object. And local variables with the same name but different index should have
+       * a different Local object. We maintain the map nameToIndexToLocal :: Name -> (Index -> Local Object) from variable
+       * names to maps from variable indexes to Local objects. So we allocate a new Local object for each pair of a variable
+       * name and a variable index.
+       *
+       * Unfortunately, this is still unsound if the table gives several names for the same variable of the source code. Or
+       * if it reports wrong bytecode ranges, or if it doesn't report the name of a variable everywhere it is used in the
+       * bytecode...
+       *
+       * In order to obtain sound Local allocation when taking original names into account... we should not allocate Local
+       * according to these names. Instead we must keep the default allocation policy (one Local object for each local
+       * variable index), and then annotate each statement with "most probable name(s)" for each use or def Local.
+       *
        */
       if (bcIndex != -1) {
         int lookupBcIndex = bcIndex;
         /*
-         * For local store bytecode, the local actually takes its new value after the bytecode is executed, so we must look at the next bytecode
-         * index. This is the behavior observed at least with OpenJDK javac.
+         * For local store bytecode, the local actually takes its new value after the bytecode is executed, so we must look
+         * at the next bytecode index. This is the behavior observed at least with OpenJDK javac.
          */
         if (isLocalStore) {
           lookupBcIndex = nextBcIndex;
@@ -843,9 +861,9 @@ public class Util {
         name = activeVariableTable.getLocalVariableName(activeConstantPool, index, lookupBcIndex);
 
         /*
-         * // for debug purpose String desc = activeVariableTable.getLocalVariableDescriptor( activeConstantPool, index, activeOriginalIndex); if
-         * (activeVariableTypeTable != null){ String debug_type = activeVariableTypeTable.getLocalVariableType( activeConstantPool, index,
-         * activeOriginalIndex); }
+         * // for debug purpose String desc = activeVariableTable. getLocalVariableDescriptor( activeConstantPool, index,
+         * activeOriginalIndex); if (activeVariableTypeTable != null){ String debug_type = activeVariableTypeTable.
+         * getLocalVariableType( activeConstantPool, index, activeOriginalIndex); }
          */
       }
     }
@@ -879,29 +897,31 @@ public class Util {
   }
 
   /*
-   * void setLocalType(Local local, List locals, int localIndex, Type type) { if(local.getType().equals(UnknownType.v()) ||
+   * void setLocalType(Local local, List locals, int localIndex, Type type) { if(local.getType().equals(UnknownType .v()) ||
    * local.getType().equals(type)) { local.setType(type);
-   * 
-   * if(local.getType().equals(DoubleType.v()) || local.getType().equals(LongType.v())) { // This means the next local becomes voided, since these
-   * types occupy two // words.
-   * 
+   *
+   * if(local.getType().equals(DoubleType. v()) || local.getType().equals(LongType.v())) { // This means the next local
+   * becomes voided, since these types occupy two // words.
+   *
    * Local secondHalf = (Local) locals.get(localIndex + 1);
-   * 
+   *
    * secondHalf.setType(VoidType.v()); }
-   * 
+   *
    * return; }
-   * 
-   * if(type.equals(IntType.v())) { if(local.getType().equals(BooleanType.v()) || local.getType().equals(CharType.v()) ||
-   * local.getType().equals(ShortType.v()) || local.getType().equals(ByteType.v())) { // Even though it's not the same, it's ok, because booleans,
-   * chars, shorts, and // bytes are all sort of treated like integers by the JVM. return; }
-   * 
+   *
+   * if(type.equals(IntType.v())) { if(local.getType().equals(BooleanType .v()) || local.getType().equals(CharType.v()) ||
+   * local.getType().equals(ShortType.v()) || local.getType().equals(ByteType.v())) { // Even though it's not the same, it's
+   * ok, because booleans, chars, shorts, and // bytes are all sort of treated like integers by the JVM. return; }
+   *
    * }
-   * 
-   * throw new RuntimeException("required and actual types do not match: " + type.toString() + " with " + local.getType().toString()); }
+   *
+   * throw new RuntimeException("required and actual types do not match: " + type.toString() + " with " +
+   * local.getType().toString()); }
    */
 
   /**
-   * Verifies the prospective name for validity as a Jimple name. In particular, first-char is alpha | _ | $, subsequent-chars are alphanum | _ | $.
+   * Verifies the prospective name for validity as a Jimple name. In particular, first-char is alpha | _ | $,
+   * subsequent-chars are alphanum | _ | $.
    *
    * We could use isJavaIdentifier, except that Jimple's grammar doesn't support all of those, just ASCII.
    *
@@ -926,7 +946,8 @@ public class Util {
     return true;
   }
 
-  private void addAnnotationVisibilityAttribute(Host host, attribute_info attribute, ClassFile coffiClass, Collection<Type> references) {
+  private void addAnnotationVisibilityAttribute(Host host, attribute_info attribute, ClassFile coffiClass,
+      Collection<Type> references) {
     VisibilityAnnotationTag tag;
     if (attribute instanceof RuntimeVisibleAnnotations_attribute) {
       tag = new VisibilityAnnotationTag(AnnotationConstants.RUNTIME_VISIBLE);
@@ -940,7 +961,8 @@ public class Util {
     host.addTag(tag);
   }
 
-  private void addAnnotationVisibilityParameterAttribute(Host host, attribute_info attribute, ClassFile coffiClass, Collection<Type> references) {
+  private void addAnnotationVisibilityParameterAttribute(Host host, attribute_info attribute, ClassFile coffiClass,
+      Collection<Type> references) {
     VisibilityParameterAnnotationTag tag;
     if (attribute instanceof RuntimeVisibleParameterAnnotations_attribute) {
       RuntimeVisibleParameterAnnotations_attribute attr = (RuntimeVisibleParameterAnnotations_attribute) attribute;
@@ -972,7 +994,8 @@ public class Util {
       String ref = annotType.substring(1, annotType.length() - 1);
       ref = ref.replace('/', '.');
       references.add(RefType.v(ref));
-      AnnotationTag annotTag = new AnnotationTag(annotType, createElementTags(annot.num_element_value_pairs, coffiClass, annot.element_value_pairs));
+      AnnotationTag annotTag = new AnnotationTag(annotType,
+          createElementTags(annot.num_element_value_pairs, coffiClass, annot.element_value_pairs));
       tag.addAnnotation(annotTag);
     }
   }
@@ -986,7 +1009,8 @@ public class Util {
       if (ev.name_index != 0) {
         elemName = ((CONSTANT_Utf8_info) coffiClass.constant_pool[ev.name_index]).convert();
       }
-      if (kind == 'B' || kind == 'C' || kind == 'I' || kind == 'S' || kind == 'Z' || kind == 'D' || kind == 'F' || kind == 'J' || kind == 's') {
+      if (kind == 'B' || kind == 'C' || kind == 'I' || kind == 'S' || kind == 'Z' || kind == 'D' || kind == 'F'
+          || kind == 'J' || kind == 's') {
         constant_element_value cev = (constant_element_value) ev;
         if (kind == 'B' || kind == 'C' || kind == 'I' || kind == 'S' || kind == 'Z') {
           cp_info cval = coffiClass.constant_pool[cev.constant_value_index];

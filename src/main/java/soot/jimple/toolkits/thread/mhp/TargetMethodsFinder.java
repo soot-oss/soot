@@ -11,8 +11,8 @@ import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 
 /**
- * Assembles a list of target methods for a given unit and call graph, filtering out static initializers and optionally native methods. Can optionally
- * throw a runtime exception if the list is null.
+ * Assembles a list of target methods for a given unit and call graph, filtering out static initializers and optionally
+ * native methods. Can optionally throw a runtime exception if the list is null.
  */
 public class TargetMethodsFinder {
 
