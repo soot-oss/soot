@@ -19,11 +19,11 @@
 
 package soot.dava.toolkits.base.finders;
 
-import soot.dava.*;
-import soot.dava.internal.asg.*;
-import soot.dava.internal.SET.*;
+import soot.dava.DavaBody;
+import soot.dava.RetriggerAnalysisException;
+import soot.dava.internal.SET.SETNode;
+import soot.dava.internal.asg.AugmentedStmtGraph;
 
-public interface FactFinder
-{
-    public abstract void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException;
+public interface FactFinder {
+  public abstract void find(DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException;
 }

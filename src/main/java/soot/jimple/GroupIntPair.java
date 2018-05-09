@@ -23,40 +23,32 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-public class GroupIntPair
-{
-    public Object group;
-    public int x;
-    
-   public  GroupIntPair(Object group, int x)
-    {
-        this.group = group;
-        this.x = x;
-    }
-    
-    public boolean equals(Object other)
-    {
-        if(other instanceof GroupIntPair)
-            return ((GroupIntPair) other).group.equals(this.group) &&
-                    ((GroupIntPair) other).x == this.x;
-        else
-            return false;
-    }
-    
-    public int hashCode()
-    {
-        return group.hashCode() + 1013 * x;
-    }
+public class GroupIntPair {
+  public Object group;
+  public int x;
 
-    @Override
-    public String toString() {
-    	return this.group + ": " + this.x;
+  public GroupIntPair(Object group, int x) {
+    this.group = group;
+    this.x = x;
+  }
+
+  public boolean equals(Object other) {
+    if (other instanceof GroupIntPair) {
+      return ((GroupIntPair) other).group.equals(this.group) && ((GroupIntPair) other).x == this.x;
+    } else {
+      return false;
     }
-    
+  }
+
+  public int hashCode() {
+    return group.hashCode() + 1013 * x;
+  }
+
+  @Override
+  public String toString() {
+    return this.group + ": " + this.x;
+  }
+
 }

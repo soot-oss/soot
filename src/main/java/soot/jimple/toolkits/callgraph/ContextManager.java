@@ -18,16 +18,22 @@
  */
 
 package soot.jimple.toolkits.callgraph;
-import soot.*;
 
-/** Interface for context managers, which decide how edges should be added to
- * a context-sensitive call graph.
+import soot.Context;
+import soot.Kind;
+import soot.MethodOrMethodContext;
+import soot.SootMethod;
+import soot.Unit;
+
+/**
+ * Interface for context managers, which decide how edges should be added to a context-sensitive call graph.
+ * 
  * @author Ondrej Lhotak
  */
-public interface ContextManager 
-{ 
-    public void addStaticEdge( MethodOrMethodContext src, Unit srcUnit, SootMethod target, Kind kind );
-    public void addVirtualEdge( MethodOrMethodContext src, Unit srcUnit, SootMethod target, Kind kind, Context typeContext );
-    public CallGraph callGraph();
-}
+public interface ContextManager {
+  public void addStaticEdge(MethodOrMethodContext src, Unit srcUnit, SootMethod target, Kind kind);
 
+  public void addVirtualEdge(MethodOrMethodContext src, Unit srcUnit, SootMethod target, Kind kind, Context typeContext);
+
+  public CallGraph callGraph();
+}

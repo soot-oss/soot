@@ -23,23 +23,17 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.G;
-
-/** Instruction subclasses are used to represent parsed bytecode; each
- * bytecode operation has a corresponding subclass of Instruction.
+/**
+ * Instruction subclasses are used to represent parsed bytecode; each bytecode operation has a corresponding subclass of Instruction.
  * <p>
  * Each subclass is derived from one of
- * <ul><li>Instruction</li>
+ * <ul>
+ * <li>Instruction</li>
  * <li>Instruction_noargs (an Instruction with no embedded arguments)</li>
  * <li>Instruction_byte (an Instruction with a single byte data argument)</li>
  * <li>Instruction_bytevar (a byte argument specifying a local variable)</li>
@@ -50,6 +44,7 @@ import soot.G;
  * <li>Instruction_intbranch (a short argument specifying a code offset)</li>
  * <li>Instruction_longbranch (an int argument specifying a code offset)</li>
  * </ul>
+ * 
  * @author Clark Verbrugge
  * @see Instruction
  * @see Instruction_noargs
@@ -63,45 +58,43 @@ import soot.G;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-//INSERTED Instruction_Invokedynamic
+// INSERTED Instruction_Invokedynamic
 
 class Instruction_Invokedynamic extends Instruction_intindex {
-    private static final Logger logger = LoggerFactory.getLogger(Instruction_Invokedynamic.class);
-   public Instruction_Invokedynamic() {
-      super((byte)ByteCode.INVOKEDYNAMIC);
-      name = "invokedynamic";
-      //branches = true;
-      calls = true;
-   }
-   /*Instruction[] branchpoints(Instruction next) {
-     public Instruction i[] = new Instruction[1];
-     i[0] = null;
-     return i;
-     }*/
-   
-   public short invoke_dynamic_index;
-   
-   public short reserved;
-   
-   public int parse(byte bc[],int index) {
-	      invoke_dynamic_index = getShort(bc, index);
-	      index += 2;
-	      reserved = getShort(bc, index);
-	      if(reserved>0) {
-	    	  logger.debug("reserved value in invokedynamic is "+reserved);
-	      }
-	      index += 2;
-	      return index;
-   }
-   
-   public int compile(byte bc[],int index) {
-	      bc[index++] = code;
-	      shortToBytes(invoke_dynamic_index,bc,index);
-	      index += 2;
-	      shortToBytes(reserved,bc,index);
-	      index += 2;
-	      return index;
-   }
+  private static final Logger logger = LoggerFactory.getLogger(Instruction_Invokedynamic.class);
 
+  public Instruction_Invokedynamic() {
+    super((byte) ByteCode.INVOKEDYNAMIC);
+    name = "invokedynamic";
+    // branches = true;
+    calls = true;
+  }
+  /*
+   * Instruction[] branchpoints(Instruction next) { public Instruction i[] = new Instruction[1]; i[0] = null; return i; }
+   */
+
+  public short invoke_dynamic_index;
+
+  public short reserved;
+
+  public int parse(byte bc[], int index) {
+    invoke_dynamic_index = getShort(bc, index);
+    index += 2;
+    reserved = getShort(bc, index);
+    if (reserved > 0) {
+      logger.debug("reserved value in invokedynamic is " + reserved);
+    }
+    index += 2;
+    return index;
+  }
+
+  public int compile(byte bc[], int index) {
+    bc[index++] = code;
+    shortToBytes(invoke_dynamic_index, bc, index);
+    index += 2;
+    shortToBytes(reserved, bc, index);
+    index += 2;
+    return index;
+  }
 
 }

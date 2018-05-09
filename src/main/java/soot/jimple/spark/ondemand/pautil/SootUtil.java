@@ -17,8 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.ondemand.pautil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,9 +30,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.ArrayType;
 import soot.CompilationDeathException;
-import soot.G;
 import soot.PointsToAnalysis;
 import soot.RefType;
 import soot.Scene;
@@ -73,7 +73,7 @@ import soot.util.queue.ChunkedQueue;
  * 
  */
 public class SootUtil {
-    private static final Logger logger = LoggerFactory.getLogger(SootUtil.class);
+  private static final Logger logger = LoggerFactory.getLogger(SootUtil.class);
 
   public final static class CallSiteAndContext extends Pair<Integer, ImmutableStack<Integer>> {
 
@@ -94,8 +94,9 @@ public class SootUtil {
       Node[] targets = pag.storeInvLookup(frNode);
       for (int i = 0; i < targets.length; i++) {
         VarNode target = (VarNode) targets[i];
-        if (target instanceof GlobalVarNode)
+        if (target instanceof GlobalVarNode) {
           continue;
+        }
         ret.put(field, new Pair<FieldRefNode, LocalVarNode>(frNode, (LocalVarNode) target));
       }
     }
@@ -105,8 +106,7 @@ public class SootUtil {
   /**
    * 
    * @param node
-   * @return <code>true</code> if <code>node</code> represents the return
-   *         value of a method; <code>false</code> otherwise
+   * @return <code>true</code> if <code>node</code> represents the return value of a method; <code>false</code> otherwise
    */
   public static boolean isRetNode(VarNode node) {
     if (node.getVariable() instanceof Parm) {
@@ -127,8 +127,7 @@ public class SootUtil {
   /**
    * 
    * @param node
-   * @return <code>true</code> if <code>node</code> represents the this
-   *         parameter of a method; <code>false</code> otherwise
+   * @return <code>true</code> if <code>node</code> represents the this parameter of a method; <code>false</code> otherwise
    */
   public static boolean isThisNode(VarNode node) {
     if (node.getVariable() instanceof soot.toolkits.scalar.Pair) {
@@ -138,41 +137,36 @@ public class SootUtil {
     return false;
   }
 
-  private static final String[] lib13Packages = { "java.applet", "java.awt", "java.awt.color", "java.awt.datatransfer",
-      "java.awt.dnd", "java.awt.dnd.peer", "java.awt.event", "java.awt.font", "java.awt.geom", "java.awt.im", "java.awt.im.spi",
-      "java.awt.image", "java.awt.image.renderable", "java.awt.peer", "java.awt.print", "java.beans", "java.beans.beancontext",
-      "java.io", "java.lang", "java.lang.ref", "java.lang.reflect", "java.math", "java.net", "java.rmi", "java.rmi.activation",
-      "java.rmi.dgc", "java.rmi.registry", "java.rmi.server", "java.security", "java.security.acl", "java.security.cert",
-      "java.security.interfaces", "java.security.spec", "java.sql", "java.text", "java.text.resources", "java.util",
-      "java.util.jar", "java.util.zip", "javax.accessibility", "javax.naming", "javax.naming.directory", "javax.naming.event",
-      "javax.naming.ldap", "javax.naming.spi", "javax.rmi", "javax.rmi.CORBA", "javax.sound.midi", "javax.sound.midi.spi",
-      "javax.sound.sampled", "javax.sound.sampled.spi", "javax.swing", "javax.swing.border", "javax.swing.colorchooser",
-      "javax.swing.event", "javax.swing.filechooser", "javax.swing.plaf", "javax.swing.plaf.basic", "javax.swing.plaf.metal",
-      "javax.swing.plaf.multi", "javax.swing.table", "javax.swing.text", "javax.swing.text.html", "javax.swing.text.html.parser",
-      "javax.swing.text.rtf", "javax.swing.tree", "javax.swing.undo", "javax.transaction", "org.omg.CORBA",
-      "org.omg.CORBA.DynAnyPackage", "org.omg.CORBA.ORBPackage", "org.omg.CORBA.TypeCodePackage", "org.omg.CORBA.portable",
-      "org.omg.CORBA_2_3", "org.omg.CORBA_2_3.portable", "org.omg.CosNaming", "org.omg.CosNaming.NamingContextPackage",
-      "org.omg.SendingContext", "org.omg.stub.java.rmi", "sun.applet", "sun.applet.resources", "sun.audio", "sun.awt",
-      "sun.awt.color", "sun.awt.dnd", "sun.awt.font", "sun.awt.geom", "sun.awt.im", "sun.awt.image", "sun.awt.image.codec",
+  private static final String[] lib13Packages = { "java.applet", "java.awt", "java.awt.color", "java.awt.datatransfer", "java.awt.dnd",
+      "java.awt.dnd.peer", "java.awt.event", "java.awt.font", "java.awt.geom", "java.awt.im", "java.awt.im.spi", "java.awt.image",
+      "java.awt.image.renderable", "java.awt.peer", "java.awt.print", "java.beans", "java.beans.beancontext", "java.io", "java.lang", "java.lang.ref",
+      "java.lang.reflect", "java.math", "java.net", "java.rmi", "java.rmi.activation", "java.rmi.dgc", "java.rmi.registry", "java.rmi.server",
+      "java.security", "java.security.acl", "java.security.cert", "java.security.interfaces", "java.security.spec", "java.sql", "java.text",
+      "java.text.resources", "java.util", "java.util.jar", "java.util.zip", "javax.accessibility", "javax.naming", "javax.naming.directory",
+      "javax.naming.event", "javax.naming.ldap", "javax.naming.spi", "javax.rmi", "javax.rmi.CORBA", "javax.sound.midi", "javax.sound.midi.spi",
+      "javax.sound.sampled", "javax.sound.sampled.spi", "javax.swing", "javax.swing.border", "javax.swing.colorchooser", "javax.swing.event",
+      "javax.swing.filechooser", "javax.swing.plaf", "javax.swing.plaf.basic", "javax.swing.plaf.metal", "javax.swing.plaf.multi",
+      "javax.swing.table", "javax.swing.text", "javax.swing.text.html", "javax.swing.text.html.parser", "javax.swing.text.rtf", "javax.swing.tree",
+      "javax.swing.undo", "javax.transaction", "org.omg.CORBA", "org.omg.CORBA.DynAnyPackage", "org.omg.CORBA.ORBPackage",
+      "org.omg.CORBA.TypeCodePackage", "org.omg.CORBA.portable", "org.omg.CORBA_2_3", "org.omg.CORBA_2_3.portable", "org.omg.CosNaming",
+      "org.omg.CosNaming.NamingContextPackage", "org.omg.SendingContext", "org.omg.stub.java.rmi", "sun.applet", "sun.applet.resources", "sun.audio",
+      "sun.awt", "sun.awt.color", "sun.awt.dnd", "sun.awt.font", "sun.awt.geom", "sun.awt.im", "sun.awt.image", "sun.awt.image.codec",
       "sun.awt.motif", "sun.awt.print", "sun.beans.editors", "sun.beans.infos", "sun.dc.path", "sun.dc.pr", "sun.io", "sun.java2d",
-      "sun.java2d.loops", "sun.java2d.pipe", "sun.jdbc.odbc", "sun.misc", "sun.net", "sun.net.ftp", "sun.net.nntp", "sun.net.smtp",
-      "sun.net.www", "sun.net.www.content.audio", "sun.net.www.content.image", "sun.net.www.content.text", "sun.net.www.http",
-      "sun.net.www.protocol.doc", "sun.net.www.protocol.file", "sun.net.www.protocol.ftp", "sun.net.www.protocol.gopher",
-      "sun.net.www.protocol.http", "sun.net.www.protocol.jar", "sun.net.www.protocol.mailto", "sun.net.www.protocol.netdoc",
-      "sun.net.www.protocol.systemresource", "sun.net.www.protocol.verbatim", "sun.rmi.log", "sun.rmi.registry", "sun.rmi.server",
-      "sun.rmi.transport", "sun.rmi.transport.proxy", "sun.rmi.transport.tcp", "sun.security.acl", "sun.security.action",
-      "sun.security.pkcs", "sun.security.provider", "sun.security.tools", "sun.security.util", "sun.security.x509",
-      "sun.tools.jar", "sun.tools.util", "sunw.io", "sunw.util", "com.sun.corba.se.internal.CosNaming",
-      "com.sun.corba.se.internal.corba", "com.sun.corba.se.internal.core", "com.sun.corba.se.internal.iiop",
-      "com.sun.corba.se.internal.io", "com.sun.corba.se.internal.io.lang", "com.sun.corba.se.internal.io.util",
-      "com.sun.corba.se.internal.javax.rmi", "com.sun.corba.se.internal.javax.rmi.CORBA", "com.sun.corba.se.internal.orbutil",
-      "com.sun.corba.se.internal.util", "com.sun.image.codec.jpeg", "com.sun.java.swing.plaf.motif",
-      "com.sun.java.swing.plaf.windows", "com.sun.jndi.cosnaming", "com.sun.jndi.ldap", "com.sun.jndi.rmi.registry",
-      "com.sun.jndi.toolkit.corba", "com.sun.jndi.toolkit.ctx", "com.sun.jndi.toolkit.dir", "com.sun.jndi.toolkit.url",
-      "com.sun.jndi.url.iiop", "com.sun.jndi.url.iiopname", "com.sun.jndi.url.ldap", "com.sun.jndi.url.rmi", "com.sun.media.sound",
-      "com.sun.naming.internal", "com.sun.org.omg.CORBA", "com.sun.org.omg.CORBA.ValueDefPackage",
-      "com.sun.org.omg.CORBA.portable", "com.sun.org.omg.SendingContext", "com.sun.org.omg.SendingContext.CodeBasePackage",
-      "com.sun.rmi.rmid", "com.sun.rsajca", "com.sun.rsasign" };
+      "sun.java2d.loops", "sun.java2d.pipe", "sun.jdbc.odbc", "sun.misc", "sun.net", "sun.net.ftp", "sun.net.nntp", "sun.net.smtp", "sun.net.www",
+      "sun.net.www.content.audio", "sun.net.www.content.image", "sun.net.www.content.text", "sun.net.www.http", "sun.net.www.protocol.doc",
+      "sun.net.www.protocol.file", "sun.net.www.protocol.ftp", "sun.net.www.protocol.gopher", "sun.net.www.protocol.http", "sun.net.www.protocol.jar",
+      "sun.net.www.protocol.mailto", "sun.net.www.protocol.netdoc", "sun.net.www.protocol.systemresource", "sun.net.www.protocol.verbatim",
+      "sun.rmi.log", "sun.rmi.registry", "sun.rmi.server", "sun.rmi.transport", "sun.rmi.transport.proxy", "sun.rmi.transport.tcp",
+      "sun.security.acl", "sun.security.action", "sun.security.pkcs", "sun.security.provider", "sun.security.tools", "sun.security.util",
+      "sun.security.x509", "sun.tools.jar", "sun.tools.util", "sunw.io", "sunw.util", "com.sun.corba.se.internal.CosNaming",
+      "com.sun.corba.se.internal.corba", "com.sun.corba.se.internal.core", "com.sun.corba.se.internal.iiop", "com.sun.corba.se.internal.io",
+      "com.sun.corba.se.internal.io.lang", "com.sun.corba.se.internal.io.util", "com.sun.corba.se.internal.javax.rmi",
+      "com.sun.corba.se.internal.javax.rmi.CORBA", "com.sun.corba.se.internal.orbutil", "com.sun.corba.se.internal.util", "com.sun.image.codec.jpeg",
+      "com.sun.java.swing.plaf.motif", "com.sun.java.swing.plaf.windows", "com.sun.jndi.cosnaming", "com.sun.jndi.ldap", "com.sun.jndi.rmi.registry",
+      "com.sun.jndi.toolkit.corba", "com.sun.jndi.toolkit.ctx", "com.sun.jndi.toolkit.dir", "com.sun.jndi.toolkit.url", "com.sun.jndi.url.iiop",
+      "com.sun.jndi.url.iiopname", "com.sun.jndi.url.ldap", "com.sun.jndi.url.rmi", "com.sun.media.sound", "com.sun.naming.internal",
+      "com.sun.org.omg.CORBA", "com.sun.org.omg.CORBA.ValueDefPackage", "com.sun.org.omg.CORBA.portable", "com.sun.org.omg.SendingContext",
+      "com.sun.org.omg.SendingContext.CodeBasePackage", "com.sun.rmi.rmid", "com.sun.rsajca", "com.sun.rsasign" };
 
   /**
    * @param outerType
@@ -181,8 +175,9 @@ public class SootUtil {
   public static boolean inLibrary(String className) {
     for (int i = 0; i < lib13Packages.length; i++) {
       String libPackage = lib13Packages[i];
-      if (className.startsWith(libPackage))
+      if (className.startsWith(libPackage)) {
         return true;
+      }
 
     }
     return false;
@@ -261,15 +256,15 @@ public class SootUtil {
   }
 
   @SuppressWarnings("unused")
-  private static void checkSetsEqual(final HybridPointsToSet intersection, final PointsToSetInternal set1,
-      final PointsToSetInternal set2, PAG pag) {
+  private static void checkSetsEqual(final HybridPointsToSet intersection, final PointsToSetInternal set1, final PointsToSetInternal set2, PAG pag) {
     final PointsToSetInternal ret = new HybridPointsToSet(Scene.v().getObjectType(), pag);
     set1.forall(new P2SetVisitor() {
 
       @Override
       public void visit(Node n) {
-        if (set2.contains(n))
+        if (set2.contains(n)) {
           ret.add(n);
+        }
       }
 
     });
@@ -279,11 +274,11 @@ public class SootUtil {
       public void visit(Node n) {
         // TODO Auto-generated method stub
         if (!intersection.contains(n)) {
-          logger.debug(""+n + " missing from intersection");
-          logger.debug(""+set1);
-          logger.debug(""+set2);
-          logger.debug(""+intersection);
-          logger.debug(""+ret);
+          logger.debug("" + n + " missing from intersection");
+          logger.debug("" + set1);
+          logger.debug("" + set2);
+          logger.debug("" + intersection);
+          logger.debug("" + ret);
           throw new RuntimeException("intersection too small");
         }
       }
@@ -295,11 +290,11 @@ public class SootUtil {
       public void visit(Node n) {
         // TODO Auto-generated method stub
         if (!ret.contains(n)) {
-          logger.debug(""+n + " missing from ret");
-          logger.debug(""+set1);
-          logger.debug(""+set2);
-          logger.debug(""+intersection);
-          logger.debug(""+ret);
+          logger.debug("" + n + " missing from ret");
+          logger.debug("" + set1);
+          logger.debug("" + set2);
+          logger.debug("" + intersection);
+          logger.debug("" + ret);
           throw new RuntimeException("old way too small???");
         }
       }
@@ -370,8 +365,9 @@ public class SootUtil {
 
   @SuppressWarnings("unchecked")
   public static boolean noRefTypeParameters(SootMethod method) {
-    if (!method.isStatic())
+    if (!method.isStatic()) {
       return false;
+    }
     Predicate<Type> notRefTypePred = new Predicate<Type>() {
 
       @Override
@@ -380,7 +376,8 @@ public class SootUtil {
       }
 
     };
-    return notRefTypePred.test(method.getReturnType()) && soot.jimple.spark.ondemand.genericutil.Util.forAll(method.getParameterTypes(), notRefTypePred);
+    return notRefTypePred.test(method.getReturnType())
+        && soot.jimple.spark.ondemand.genericutil.Util.forAll(method.getParameterTypes(), notRefTypePred);
   }
 
   public static SootMethod getMainMethod() {
@@ -389,10 +386,12 @@ public class SootUtil {
 
   public static boolean isResolvableCall(SootMethod invokedMethod) {
     // TODO make calls through invokespecial resolvable
-    if (invokedMethod.isStatic())
+    if (invokedMethod.isStatic()) {
       return true;
-    if (isConstructor(invokedMethod))
+    }
+    if (isConstructor(invokedMethod)) {
       return true;
+    }
     return false;
   }
 

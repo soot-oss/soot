@@ -20,18 +20,17 @@
 
 package soot.dexpler.tags;
 
-
 import soot.tagkit.Tag;
 
 public class DoubleOpTag implements Tag {
-	public String getName() {
-		return "DoubleOpTag";
-	}
+  public String getName() {
+    return "DoubleOpTag";
+  }
 
-	public byte[] getValue () {
-		byte[] b = new byte[1];
-		b[0] = 0;
-		return b;
-	}
+  public byte[] getValue() {
+    byte[] b = new byte[1];
+    b[0] = 0;
+    return b;
+  }
 
 }

@@ -23,19 +23,15 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-/** There can be many element_value pairs in each annotation 
+/**
+ * There can be many element_value pairs in each annotation
+ * 
  * @see attribute_info
  * @author Jennifer Lhotak
  */
 public class element_value extends attribute_info {
-    int name_index;
-    char tag;
+  int name_index;
+  char tag;
 }

@@ -23,27 +23,19 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.grimp.internal;
 
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
+import soot.Type;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.jimple.internal.AbstractInstanceOfExpr;
 
-public class GInstanceOfExpr extends AbstractInstanceOfExpr
-{
-    public GInstanceOfExpr(Value op, Type checkType)
-    {
-        super(Grimp.v().newObjExprBox(op), checkType);
-    }
-    
-    public Object clone() 
-    {
-        return new GInstanceOfExpr(Grimp.cloneIfNecessary(getOp()), getCheckType());
-    }
+public class GInstanceOfExpr extends AbstractInstanceOfExpr {
+  public GInstanceOfExpr(Value op, Type checkType) {
+    super(Grimp.v().newObjExprBox(op), checkType);
+  }
+
+  public Object clone() {
+    return new GInstanceOfExpr(Grimp.cloneIfNecessary(getOp()), getCheckType());
+  }
 }
-

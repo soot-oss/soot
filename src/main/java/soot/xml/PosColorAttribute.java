@@ -19,95 +19,98 @@
 
 package soot.xml;
 
-public class PosColorAttribute{
-        
-    private ColorAttribute color;
-    private int jimpleStartPos;
-    private int jimpleEndPos;
-    private int javaStartPos;
-    private int javaEndPos;
-    private int javaStartLn;
-    private int javaEndLn;
-    private int jimpleStartLn;
-    private int jimpleEndLn;
+public class PosColorAttribute {
 
-    public PosColorAttribute(){
-    }
+  private ColorAttribute color;
+  private int jimpleStartPos;
+  private int jimpleEndPos;
+  private int javaStartPos;
+  private int javaEndPos;
+  private int javaStartLn;
+  private int javaEndLn;
+  private int jimpleStartLn;
+  private int jimpleEndLn;
 
-    public ColorAttribute color(){
-        return color;
-    }
+  public PosColorAttribute() {
+  }
 
-    public void color(ColorAttribute c){
-        color = c;
-    }
+  public ColorAttribute color() {
+    return color;
+  }
 
-    public int jimpleStartPos(){
-        return jimpleStartPos;
-    }
+  public void color(ColorAttribute c) {
+    color = c;
+  }
 
-    public void jimpleStartPos(int x){
-        jimpleStartPos = x;
-    }
+  public int jimpleStartPos() {
+    return jimpleStartPos;
+  }
 
-    public int jimpleEndPos(){
-        return jimpleEndPos;
-    }
+  public void jimpleStartPos(int x) {
+    jimpleStartPos = x;
+  }
 
-    public void jimpleEndPos(int x){
-        jimpleEndPos = x;
-    }
-    
-    public int javaStartPos(){
-        return javaStartPos;
-    }
+  public int jimpleEndPos() {
+    return jimpleEndPos;
+  }
 
-    public void javaStartPos(int x){
-        javaStartPos = x;
-    }
+  public void jimpleEndPos(int x) {
+    jimpleEndPos = x;
+  }
 
-    public int javaEndPos(){
-        return javaEndPos;
-    }
+  public int javaStartPos() {
+    return javaStartPos;
+  }
 
-    public void javaEndPos(int x){
-        javaEndPos = x;
-    }
-    
-    public int jimpleStartLn(){
-        return jimpleStartLn;
-    }
+  public void javaStartPos(int x) {
+    javaStartPos = x;
+  }
 
-    public void jimpleStartLn(int x){
-        jimpleStartLn = x;
-    }
+  public int javaEndPos() {
+    return javaEndPos;
+  }
 
-    public int jimpleEndLn(){
-        return jimpleEndLn;
-    }
+  public void javaEndPos(int x) {
+    javaEndPos = x;
+  }
 
-    public void jimpleEndLn(int x){
-        jimpleEndLn = x;
-    }
-    
-    public int javaStartLn(){
-        return javaStartLn;
-    }
+  public int jimpleStartLn() {
+    return jimpleStartLn;
+  }
 
-    public void javaStartLn(int x){
-        javaStartLn = x;
-    }
+  public void jimpleStartLn(int x) {
+    jimpleStartLn = x;
+  }
 
-    public int javaEndLn(){
-        return javaEndLn;
-    }
+  public int jimpleEndLn() {
+    return jimpleEndLn;
+  }
 
-    public void javaEndLn(int x){
-        javaEndLn = x;
-    }
+  public void jimpleEndLn(int x) {
+    jimpleEndLn = x;
+  }
 
-    public boolean hasColor(){
-        if (color() != null) return true;
-        else return false;
+  public int javaStartLn() {
+    return javaStartLn;
+  }
+
+  public void javaStartLn(int x) {
+    javaStartLn = x;
+  }
+
+  public int javaEndLn() {
+    return javaEndLn;
+  }
+
+  public void javaEndLn(int x) {
+    javaEndLn = x;
+  }
+
+  public boolean hasColor() {
+    if (color() != null) {
+      return true;
+    } else {
+      return false;
     }
+  }
 }

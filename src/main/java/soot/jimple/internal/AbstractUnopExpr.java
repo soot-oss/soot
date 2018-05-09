@@ -23,56 +23,48 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.*;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.UnopExpr;
 
 @SuppressWarnings("serial")
-abstract public class AbstractUnopExpr implements UnopExpr
-{
-    final ValueBox opBox;
+abstract public class AbstractUnopExpr implements UnopExpr {
+  final ValueBox opBox;
 
-    protected AbstractUnopExpr(ValueBox opBox) { 
-    	this.opBox = opBox; 
-    }
+  protected AbstractUnopExpr(ValueBox opBox) {
+    this.opBox = opBox;
+  }
 
-    public abstract Object clone();
-    
-    @Override
-    public Value getOp()
-    {
-        return opBox.getValue();
-    }
+  public abstract Object clone();
 
-    @Override
-    public void setOp(Value op)
-    {
-        opBox.setValue(op);
-    }
-    
-    @Override
-    public ValueBox getOpBox()
-    {
-        return opBox;
-    }
+  @Override
+  public Value getOp() {
+    return opBox.getValue();
+  }
 
-    @Override
-    public final List<ValueBox> getUseBoxes()
-    {
-        List<ValueBox> list = new ArrayList<ValueBox>();
+  @Override
+  public void setOp(Value op) {
+    opBox.setValue(op);
+  }
 
-        list.addAll(opBox.getValue().getUseBoxes());
-        list.add(opBox);
-    
-        return list;
-    }
+  @Override
+  public ValueBox getOpBox() {
+    return opBox;
+  }
+
+  @Override
+  public final List<ValueBox> getUseBoxes() {
+    List<ValueBox> list = new ArrayList<ValueBox>();
+
+    list.addAll(opBox.getValue().getUseBoxes());
+    list.add(opBox);
+
+    return list;
+  }
 
 }

@@ -23,20 +23,20 @@ package soot.toolkits.astmetrics;
  * Information about a particular metric
  */
 public class MetricData {
-	String metricName;
-	Object value;
-	
-	public MetricData(String name, Object val){
-		metricName=name;
-		value=val;
-	}
-	
-	public String toString(){
-		StringBuffer b = new StringBuffer();
-		b.append("<Metric>\n");
-		b.append("  <MetricName>" + metricName + "</MetricName>\n");
-		b.append("  <Value>" + value.toString() + "</Value>\n");
-		b.append("</Metric>\n");
-		return b.toString();
-	}
+  String metricName;
+  Object value;
+
+  public MetricData(String name, Object val) {
+    metricName = name;
+    value = val;
+  }
+
+  public String toString() {
+    StringBuffer b = new StringBuffer();
+    b.append("<Metric>\n");
+    b.append("  <MetricName>" + metricName + "</MetricName>\n");
+    b.append("  <Value>" + value.toString() + "</Value>\n");
+    b.append("</Metric>\n");
+    return b.toString();
+  }
 }

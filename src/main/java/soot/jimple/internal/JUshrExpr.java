@@ -23,46 +23,56 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.IntType;
+import soot.LongType;
+import soot.Type;
+import soot.UnknownType;
+import soot.Value;
+import soot.baf.Baf;
+import soot.jimple.ExprSwitch;
+import soot.jimple.Jimple;
+import soot.jimple.UshrExpr;
+import soot.util.Switch;
 
-public class JUshrExpr extends AbstractJimpleIntLongBinopExpr implements UshrExpr
-{
-    public JUshrExpr(Value op1, Value op2) { super(op1, op2); }
-    public final String getSymbol() { return " >>> "; }
-    public void apply(Switch sw) { ((ExprSwitch) sw).caseUshrExpr(this); }
+public class JUshrExpr extends AbstractJimpleIntLongBinopExpr implements UshrExpr {
+  public JUshrExpr(Value op1, Value op2) {
+    super(op1, op2);
+  }
 
-    Object makeBafInst(Type opType) { return Baf.v().newUshrInst(this.getOp1().getType()); }
+  public final String getSymbol() {
+    return " >>> ";
+  }
 
-    public Type getType()
-    {
-        Value op1 = op1Box.getValue();
-        Value op2 = op2Box.getValue();
-        
-        if (!isIntLikeType(op2.getType()))
-        	return UnknownType.v();
-        
-        if (isIntLikeType(op1.getType()))
-        	return IntType.v();
-        if (op1.getType().equals(LongType.v()))
-        	return LongType.v();
-        
-    	return UnknownType.v();
+  public void apply(Switch sw) {
+    ((ExprSwitch) sw).caseUshrExpr(this);
+  }
+
+  Object makeBafInst(Type opType) {
+    return Baf.v().newUshrInst(this.getOp1().getType());
+  }
+
+  public Type getType() {
+    Value op1 = op1Box.getValue();
+    Value op2 = op2Box.getValue();
+
+    if (!isIntLikeType(op2.getType())) {
+      return UnknownType.v();
     }
-    
-    public Object clone() 
-    {
-        return new JUshrExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+
+    if (isIntLikeType(op1.getType())) {
+      return IntType.v();
+    }
+    if (op1.getType().equals(LongType.v())) {
+      return LongType.v();
     }
 
+    return UnknownType.v();
+  }
+
+  public Object clone() {
+    return new JUshrExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+  }
 
 }

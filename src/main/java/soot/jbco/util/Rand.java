@@ -20,30 +20,30 @@
 package soot.jbco.util;
 
 /**
- * @author Michael Batchelder 
+ * @author Michael Batchelder
  * 
- * Created on 17-Feb-2006 
+ *         Created on 17-Feb-2006
  */
 public class Rand {
 
-  private static final java.util.Random r = new java.util.Random(1);//System.currentTimeMillis());
-  
+  private static final java.util.Random r = new java.util.Random(1);// System.currentTimeMillis());
+
   public static int getInt(int n) {
     return r.nextInt(n);
   }
-  
+
   public static int getInt() {
     return r.nextInt();
   }
-  
+
   public static float getFloat() {
     return r.nextFloat();
   }
-  
+
   public static long getLong() {
     return r.nextLong();
   }
-  
+
   public static double getDouble() {
     return r.nextDouble();
   }

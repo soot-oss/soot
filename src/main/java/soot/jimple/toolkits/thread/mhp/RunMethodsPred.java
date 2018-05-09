@@ -18,21 +18,23 @@
  */
 
 package soot.jimple.toolkits.thread.mhp;
-import soot.jimple.toolkits.callgraph.*;
 
-/** A predicate that accepts edges whose targets are runnable.run methods.
+import soot.jimple.toolkits.callgraph.Edge;
+import soot.jimple.toolkits.callgraph.EdgePredicate;
+
+/**
+ * A predicate that accepts edges whose targets are runnable.run methods.
+ * 
  * @author Richard L. Halpert
  */
-public class RunMethodsPred implements EdgePredicate
-{ 
-    /** Returns true iff the edge e is wanted. */
-    public boolean want( Edge e ) {
-		String tgtSubSignature = e.tgt().getSubSignature();
-    
-    	if(tgtSubSignature.equals("void run()"))
-    		return true;
-    	return false;
+public class RunMethodsPred implements EdgePredicate {
+  /** Returns true iff the edge e is wanted. */
+  public boolean want(Edge e) {
+    String tgtSubSignature = e.tgt().getSubSignature();
+
+    if (tgtSubSignature.equals("void run()")) {
+      return true;
     }
+    return false;
+  }
 }
-
-

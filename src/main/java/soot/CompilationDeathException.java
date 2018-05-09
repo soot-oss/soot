@@ -23,42 +23,35 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot;
 
 @SuppressWarnings("serial")
-public class CompilationDeathException extends RuntimeException
-{
-    private final int mStatus;
+public class CompilationDeathException extends RuntimeException {
+  private final int mStatus;
 
-    public static final int COMPILATION_ABORTED = 0;
-    public static final int COMPILATION_SUCCEEDED = 1;
+  public static final int COMPILATION_ABORTED = 0;
+  public static final int COMPILATION_SUCCEEDED = 1;
 
-    public CompilationDeathException(String msg, Throwable t)
-    {
-    	super(msg,t);
-        mStatus = COMPILATION_ABORTED;
-    }
-    
-    public CompilationDeathException(String msg)
-    {
-    	super(msg);
-        mStatus = COMPILATION_ABORTED;
-    }
-        
-    public CompilationDeathException(int status, String msg)
-    {
-    	super(msg);
-        mStatus = status;
-    }
-        
-    public CompilationDeathException(int status)
-    {
-        mStatus = status;
-    }
+  public CompilationDeathException(String msg, Throwable t) {
+    super(msg, t);
+    mStatus = COMPILATION_ABORTED;
+  }
 
-    public int getStatus()
-    {
-        return mStatus;
-    }
+  public CompilationDeathException(String msg) {
+    super(msg);
+    mStatus = COMPILATION_ABORTED;
+  }
+
+  public CompilationDeathException(int status, String msg) {
+    super(msg);
+    mStatus = status;
+  }
+
+  public CompilationDeathException(int status) {
+    mStatus = status;
+  }
+
+  public int getStatus() {
+    return mStatus;
+  }
 }

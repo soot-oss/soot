@@ -18,13 +18,17 @@
  */
 package soot.asm;
 
+import java.io.IOException;
+import java.io.InputStream;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ModuleVisitor;
 import org.objectweb.asm.Opcodes;
-import soot.*;
+import soot.ClassProvider;
+import soot.ClassSource;
+import soot.FoundFile;
+import soot.ModulePathSourceLocator;
 
-import java.io.IOException;
-import java.io.InputStream;
+
 
 /**
  * Objectweb ASM class provider.
@@ -33,50 +37,47 @@ import java.io.InputStream;
  */
 public class AsmModuleClassProvider implements ClassProvider {
 
-    public ClassSource find(String cls) {
-        String clsFileName = cls.substring(cls.lastIndexOf(":") + 1, cls.length()).replace('.', '/') + ".class";
-        String modules = cls.substring(0, cls.lastIndexOf(":") + 1);
-        String clsFile = modules + clsFileName;
-        FoundFile file =
-                ModulePathSourceLocator.v().lookUpInModulePath(clsFile);
-        return file == null ? null : new AsmClassSource(cls, file);
-    }
+  public ClassSource find(String cls) {
+    String clsFileName = cls.substring(cls.lastIndexOf(":") + 1, cls.length()).replace('.', '/') + ".class";
+    String modules = cls.substring(0, cls.lastIndexOf(":") + 1);
+    String clsFile = modules + clsFileName;
+    FoundFile file = ModulePathSourceLocator.v().lookUpInModulePath(clsFile);
+    return file == null ? null : new AsmClassSource(cls, file);
+  }
 
+  public String getModuleName(FoundFile file) {
+    final String[] moduleName = { null };
+    org.objectweb.asm.ClassVisitor visitor = new org.objectweb.asm.ClassVisitor(Opcodes.ASM6) {
 
-    public String getModuleName(FoundFile file) {
-        final String[] moduleName = {null};
-        org.objectweb.asm.ClassVisitor visitor = new org.objectweb.asm.ClassVisitor(Opcodes.ASM6) {
-
-
-            @Override
-            public ModuleVisitor visitModule(String name, int access, String version) {
-                moduleName[0] = name;
-                return null;
-            }
-        };
-        InputStream d = null;
-        try {
-            d = file.inputStream();
-
-            new ClassReader(d).accept(visitor, ClassReader.SKIP_FRAMES);
-            return moduleName[0];
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (d != null) {
-                    d.close();
-                    d = null;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (file != null) {
-                file.close();
-                file = null;
-            }
-
-        }
+      @Override
+      public ModuleVisitor visitModule(String name, int access, String version) {
+        moduleName[0] = name;
         return null;
+      }
+    };
+    InputStream d = null;
+    try {
+      d = file.inputStream();
+
+      new ClassReader(d).accept(visitor, ClassReader.SKIP_FRAMES);
+      return moduleName[0];
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if (d != null) {
+          d.close();
+          d = null;
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      if (file != null) {
+        file.close();
+        file = null;
+      }
+
     }
+    return null;
+  }
 }

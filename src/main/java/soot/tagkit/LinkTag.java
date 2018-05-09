@@ -25,47 +25,45 @@
 
 package soot.tagkit;
 
-
-/** Represents a tag that just has a string to be printed with the code.
+/**
+ * Represents a tag that just has a string to be printed with the code.
  */
 
-public class LinkTag extends StringTag 
-{
-    Host link;
-	String className;
-	
-    public LinkTag(String string, Host link, String className, String type){
-        super(string, type);
-		this.link = link;
-		this.className = className;
-    }
-    
-    public LinkTag( String string, Host link, String className  ) {
-        super(string);
-		this.link = link;
-		this.className = className;
-    }
+public class LinkTag extends StringTag {
+  Host link;
+  String className;
 
-    public String toString() {
-        return s;
-    }
+  public LinkTag(String string, Host link, String className, String type) {
+    super(string, type);
+    this.link = link;
+    this.className = className;
+  }
 
-	public String getClassName(){
-		return className;
-	}
-	
-	public Host getLink(){
-		return link;
-	}
+  public LinkTag(String string, Host link, String className) {
+    super(string);
+    this.link = link;
+    this.className = className;
+  }
 
-    /** Returns the tag name. */
-    public String getName() {
-        return "StringTag";
-    }
+  public String toString() {
+    return s;
+  }
 
-    /** Returns the tag raw data. */
-    public byte[] getValue() {
-        throw new RuntimeException( "StringTag has no value for bytecode" );
-    }
+  public String getClassName() {
+    return className;
+  }
+
+  public Host getLink() {
+    return link;
+  }
+
+  /** Returns the tag name. */
+  public String getName() {
+    return "StringTag";
+  }
+
+  /** Returns the tag raw data. */
+  public byte[] getValue() {
+    throw new RuntimeException("StringTag has no value for bytecode");
+  }
 }
-

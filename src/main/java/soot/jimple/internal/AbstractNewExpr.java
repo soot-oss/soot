@@ -23,73 +23,66 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import java.util.Collections;
+import java.util.List;
 
-import java.util.*;
+import soot.RefType;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.ValueBox;
+import soot.jimple.ExprSwitch;
+import soot.jimple.Jimple;
+import soot.jimple.NewExpr;
+import soot.util.Switch;
 
 @SuppressWarnings("serial")
-public abstract class AbstractNewExpr implements NewExpr
-{
-    RefType type;
+public abstract class AbstractNewExpr implements NewExpr {
+  RefType type;
 
-    public boolean equivTo(Object o)
-    {
-        if (o instanceof AbstractNewExpr)
-        {
-            AbstractNewExpr ae = (AbstractNewExpr)o;
-            return type.equals(ae.type);
-        }
-        return false;
+  public boolean equivTo(Object o) {
+    if (o instanceof AbstractNewExpr) {
+      AbstractNewExpr ae = (AbstractNewExpr) o;
+      return type.equals(ae.type);
     }
+    return false;
+  }
 
-    /** Returns a hash code for this object, consistent with structural equality. */
-    public int equivHashCode() 
-    {
-        return type.hashCode();
-    }
+  /** Returns a hash code for this object, consistent with structural equality. */
+  public int equivHashCode() {
+    return type.hashCode();
+  }
 
-    public abstract Object clone(); 
+  public abstract Object clone();
 
-    public String toString()
-    {
-        return Jimple.NEW + " " + type.toString();
-    }
-    
-    public void toString( UnitPrinter up )
-    {
-        up.literal(Jimple.NEW);
-        up.literal(" ");
-        up.type(type);
-    }
+  public String toString() {
+    return Jimple.NEW + " " + type.toString();
+  }
 
-    public RefType getBaseType()
-    {
-        return type;
-    }
+  public void toString(UnitPrinter up) {
+    up.literal(Jimple.NEW);
+    up.literal(" ");
+    up.type(type);
+  }
 
-    public void setBaseType(RefType type)
-    {
-        this.type = type;
-    }
+  public RefType getBaseType() {
+    return type;
+  }
 
-    public Type getType()
-    {
-        return type;
-    }
+  public void setBaseType(RefType type) {
+    this.type = type;
+  }
 
+  public Type getType() {
+    return type;
+  }
 
-    public List<ValueBox> getUseBoxes()
-    {
-        return Collections.emptyList();
-    }
+  public List<ValueBox> getUseBoxes() {
+    return Collections.emptyList();
+  }
 
-    public void apply(Switch sw)
-    {
-        ((ExprSwitch) sw).caseNewExpr(this);
-    }
+  public void apply(Switch sw) {
+    ((ExprSwitch) sw).caseNewExpr(this);
+  }
 }

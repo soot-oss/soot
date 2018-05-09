@@ -27,98 +27,99 @@ import soot.jimple.spark.geom.dataRep.SegmentNode;
  * @author xiao
  *
  */
-public abstract class IFigureManager 
-{
-	// We implement an internal memory manager here
-	private static SegmentNode segHeader = null;
-	private static SegmentNode rectHeader = null;
-	
-	/**
-	 * Generate a segment node from our own cache.
-	 * @return
-	 */
-	protected static SegmentNode getSegmentNode()
-	{
-		SegmentNode ret = null;
-		
-		if ( segHeader != null ) {
-			ret = segHeader;
-			segHeader = ret.next;
-			ret.next = null;
-			ret.is_new = true;
-		}
-		else
-			ret = new SegmentNode();
-		
-		
-		return ret;
-	}
-	
-	/**
-	 * Generate a rectangle node from our own cache.
-	 * @return
-	 */
-	protected static RectangleNode getRectangleNode()
-	{
-		RectangleNode ret = null;
-		
-		if ( rectHeader != null ) {
-			ret = (RectangleNode)rectHeader;
-			rectHeader = ret.next;
-			ret.next = null;
-			ret.is_new = true;
-		}
-		else
-			ret = new RectangleNode();
-		
-		return ret;
-	}
-	
-	/**
-	 * Return the segment node to cache.
-	 * @param p
-	 * @return
-	 */
-	protected static SegmentNode reclaimSegmentNode( SegmentNode p )
-	{
-		SegmentNode q = p.next;
-		p.next = segHeader;
-		segHeader = p;
-		return q;
-	}
-	
-	/**
-	 * Return the rectangle node to cache.
-	 * @param p
-	 * @return
-	 */
-	protected static SegmentNode reclaimRectangleNode( SegmentNode p )
-	{
-		SegmentNode q = p.next;
-		p.next = rectHeader;
-		rectHeader = p;
-		return q;
-	}
-	
-	/**
-	 * We return the cached memory to garbage collector.
-	 */
-	public static void cleanCache()
-	{
-		segHeader = null;
-		rectHeader = null;
-	}
-	
-	
-	// Get the information of the figures
-	public abstract SegmentNode[] getFigures();
-	public abstract int[] getSizes();
-	public abstract boolean isThereUnprocessedFigures();
-	public abstract void flush();
-	
-	// Deal with the figures
-	public abstract SegmentNode addNewFigure(int code, RectangleNode pnew);
-	public abstract void mergeFigures(int size);
-	public abstract void removeUselessSegments();
-	
+public abstract class IFigureManager {
+  // We implement an internal memory manager here
+  private static SegmentNode segHeader = null;
+  private static SegmentNode rectHeader = null;
+
+  /**
+   * Generate a segment node from our own cache.
+   * 
+   * @return
+   */
+  protected static SegmentNode getSegmentNode() {
+    SegmentNode ret = null;
+
+    if (segHeader != null) {
+      ret = segHeader;
+      segHeader = ret.next;
+      ret.next = null;
+      ret.is_new = true;
+    } else {
+      ret = new SegmentNode();
+    }
+
+    return ret;
+  }
+
+  /**
+   * Generate a rectangle node from our own cache.
+   * 
+   * @return
+   */
+  protected static RectangleNode getRectangleNode() {
+    RectangleNode ret = null;
+
+    if (rectHeader != null) {
+      ret = (RectangleNode) rectHeader;
+      rectHeader = ret.next;
+      ret.next = null;
+      ret.is_new = true;
+    } else {
+      ret = new RectangleNode();
+    }
+
+    return ret;
+  }
+
+  /**
+   * Return the segment node to cache.
+   * 
+   * @param p
+   * @return
+   */
+  protected static SegmentNode reclaimSegmentNode(SegmentNode p) {
+    SegmentNode q = p.next;
+    p.next = segHeader;
+    segHeader = p;
+    return q;
+  }
+
+  /**
+   * Return the rectangle node to cache.
+   * 
+   * @param p
+   * @return
+   */
+  protected static SegmentNode reclaimRectangleNode(SegmentNode p) {
+    SegmentNode q = p.next;
+    p.next = rectHeader;
+    rectHeader = p;
+    return q;
+  }
+
+  /**
+   * We return the cached memory to garbage collector.
+   */
+  public static void cleanCache() {
+    segHeader = null;
+    rectHeader = null;
+  }
+
+  // Get the information of the figures
+  public abstract SegmentNode[] getFigures();
+
+  public abstract int[] getSizes();
+
+  public abstract boolean isThereUnprocessedFigures();
+
+  public abstract void flush();
+
+  // Deal with the figures
+  public abstract SegmentNode addNewFigure(int code, RectangleNode pnew);
+
+  public abstract void mergeFigures(int size);
+
+  public abstract void removeUselessSegments();
+
 }

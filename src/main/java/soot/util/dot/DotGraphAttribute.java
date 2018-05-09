@@ -23,24 +23,23 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.util.dot;
 
 /**
  * A class for specifying Dot graph attributes.
  *
- * @author Feng Qian 
+ * @author Feng Qian
  */
 public class DotGraphAttribute {
   String id;
   String value;
 
-  public DotGraphAttribute(String id, String v){
+  public DotGraphAttribute(String id, String v) {
     this.id = id;
     this.value = v;
   }
-  
-  public String toString(){
+
+  public String toString() {
     StringBuffer line = new StringBuffer();
     line.append(this.id);
     line.append("=");

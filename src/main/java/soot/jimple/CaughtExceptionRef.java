@@ -23,17 +23,13 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
-import soot.util.*;
+import soot.Type;
+import soot.util.Switch;
 
-public interface CaughtExceptionRef extends IdentityRef
-{
-    public Type getType();
-    public void apply(Switch sw);
+public interface CaughtExceptionRef extends IdentityRef {
+  public Type getType();
+
+  public void apply(Switch sw);
 }

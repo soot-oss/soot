@@ -19,97 +19,81 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Represents a dominator node in DominatorTree.  Usually you should
- * use DominatorTree or DominanceFrontier to obtain information on how
- * a node relates to other nodes instead of directly using any methods
- * provided here.
+ * Represents a dominator node in DominatorTree. Usually you should use DominatorTree or DominanceFrontier to obtain information on how a node relates
+ * to other nodes instead of directly using any methods provided here.
  *
  * @author Navindra Umanee
  **/
-public class DominatorNode<N>
-{
-    protected N gode;
-    protected DominatorNode<N> parent;
-    protected List<DominatorNode<N>> children;
+public class DominatorNode<N> {
+  protected N gode;
+  protected DominatorNode<N> parent;
+  protected List<DominatorNode<N>> children;
 
-    protected DominatorNode(N gode)
-    {
-        this.gode = gode;
-        children = new ArrayList<DominatorNode<N>>();
-    }
+  protected DominatorNode(N gode) {
+    this.gode = gode;
+    children = new ArrayList<DominatorNode<N>>();
+  }
 
-    /**
-     * Sets the parent of this node in the DominatorTree.  Usually
-     * called internally.
-     **/
-    public void setParent(DominatorNode<N> parent)
-    {
-        this.parent = parent;
-    }
+  /**
+   * Sets the parent of this node in the DominatorTree. Usually called internally.
+   **/
+  public void setParent(DominatorNode<N> parent) {
+    this.parent = parent;
+  }
 
-    /**
-     * Adds a child to the internal list of children of this node in
-     * tree.  Usually called internally.
-     **/
-    public boolean addChild(DominatorNode<N> child)
-    {
-        if(children.contains(child)){
-            return false;
-        }
-        else{
-            children.add(child);
-            return true;
-        }
+  /**
+   * Adds a child to the internal list of children of this node in tree. Usually called internally.
+   **/
+  public boolean addChild(DominatorNode<N> child) {
+    if (children.contains(child)) {
+      return false;
+    } else {
+      children.add(child);
+      return true;
     }
+  }
 
-    /**
-     * Returns the node (from the original DirectedGraph) encapsulated
-     * by this DominatorNode.
-     **/
-    public N getGode()
-    {
-        return gode;
-    }
+  /**
+   * Returns the node (from the original DirectedGraph) encapsulated by this DominatorNode.
+   **/
+  public N getGode() {
+    return gode;
+  }
 
-    /**
-     * Returns the parent of the node in the DominatorTree.
-     **/
-    public DominatorNode<N> getParent()
-    {
-        return parent;
-    }
+  /**
+   * Returns the parent of the node in the DominatorTree.
+   **/
+  public DominatorNode<N> getParent() {
+    return parent;
+  }
 
-    /**
-     * Returns a backed list of the children of this node in the
-     * DominatorTree.
-     **/
-    public List<DominatorNode<N>> getChildren()
-    {
-        return children;
-    }
+  /**
+   * Returns a backed list of the children of this node in the DominatorTree.
+   **/
+  public List<DominatorNode<N>> getChildren() {
+    return children;
+  }
 
-    /**
-     * Returns true if this node is the head of its DominatorTree.
-     **/
-    public boolean isHead()
-    {
-        return parent == null;
-    }
+  /**
+   * Returns true if this node is the head of its DominatorTree.
+   **/
+  public boolean isHead() {
+    return parent == null;
+  }
 
-    /**
-     * Returns true if this node is a tail of its DominatorTree.
-     **/
-    public boolean isTail()
-    {
-        return children.isEmpty();
-    }
+  /**
+   * Returns true if this node is a tail of its DominatorTree.
+   **/
+  public boolean isTail() {
+    return children.isEmpty();
+  }
 
-    public String toString()
-    {
-        // *** FIXME: Print info about parent and children
-        return gode.toString();
-    }
+  public String toString() {
+    // *** FIXME: Print info about parent and children
+    return gode.toString();
+  }
 }

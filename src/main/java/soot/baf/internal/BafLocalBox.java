@@ -23,20 +23,17 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.baf.internal;
 
-import soot.*;
+import soot.AbstractValueBox;
+import soot.Value;
 
-public class BafLocalBox extends AbstractValueBox
-{
-    public BafLocalBox(Value value)
-    {
-        setValue(value);
-    }
+public class BafLocalBox extends AbstractValueBox {
+  public BafLocalBox(Value value) {
+    setValue(value);
+  }
 
-    public boolean canContainValue(Value value)
-    {
-        return value instanceof BafLocal;
-    }
+  public boolean canContainValue(Value value) {
+    return value instanceof BafLocal;
+  }
 }

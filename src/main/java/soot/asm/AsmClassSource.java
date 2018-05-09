@@ -35,55 +35,56 @@ import soot.javaToJimple.IInitialResolver.Dependencies;
  */
 class AsmClassSource extends ClassSource {
 
-	private FoundFile foundFile;
+  private FoundFile foundFile;
 
-	/**
-	 * Constructs a new ASM class source.
-	 * 
-	 * @param cls
-	 *            fully qualified name of the class.
-	 * @param data
-	 *            stream containing data for class.
-	 */
-	AsmClassSource(String cls, FoundFile foundFile) {
-		super(cls);
-		if (foundFile == null)
-			throw new IllegalStateException("Error: The FoundFile must not be null.");
-		this.foundFile = foundFile;
-	}
+  /**
+   * Constructs a new ASM class source.
+   * 
+   * @param cls
+   *          fully qualified name of the class.
+   * @param data
+   *          stream containing data for class.
+   */
+  AsmClassSource(String cls, FoundFile foundFile) {
+    super(cls);
+    if (foundFile == null) {
+      throw new IllegalStateException("Error: The FoundFile must not be null.");
+    }
+    this.foundFile = foundFile;
+  }
 
-	@Override
-	public Dependencies resolve(SootClass sc) {
-		InputStream d = null;
-		try {
-			d = foundFile.inputStream();
-			ClassReader clsr = new ClassReader(d);
-			SootClassBuilder scb = new SootClassBuilder(sc);
-			clsr.accept(scb, ClassReader.SKIP_FRAMES);
-			Dependencies deps = new Dependencies();
-			deps.typesToSignature.addAll(scb.deps);
-			return deps;
-		} catch (IOException e) {
-			throw new RuntimeException("Error: Failed to create class reader from class source.", e);
-		} finally {
-			try {
-				if (d != null) {
-					d.close();
-					d = null;
-				}
-			} catch (IOException e) {
-				throw new RuntimeException("Error: Failed to close source input stream.", e);
-			} finally {
-				close();
-			}
-		}
-	}
+  @Override
+  public Dependencies resolve(SootClass sc) {
+    InputStream d = null;
+    try {
+      d = foundFile.inputStream();
+      ClassReader clsr = new ClassReader(d);
+      SootClassBuilder scb = new SootClassBuilder(sc);
+      clsr.accept(scb, ClassReader.SKIP_FRAMES);
+      Dependencies deps = new Dependencies();
+      deps.typesToSignature.addAll(scb.deps);
+      return deps;
+    } catch (IOException e) {
+      throw new RuntimeException("Error: Failed to create class reader from class source.", e);
+    } finally {
+      try {
+        if (d != null) {
+          d.close();
+          d = null;
+        }
+      } catch (IOException e) {
+        throw new RuntimeException("Error: Failed to close source input stream.", e);
+      } finally {
+        close();
+      }
+    }
+  }
 
-	@Override
-	public void close() {
-		if (foundFile != null) {
-			foundFile.close();
-			foundFile = null;
-		}
-	}
+  @Override
+  public void close() {
+    if (foundFile != null) {
+      foundFile.close();
+      foundFile = null;
+    }
+  }
 }

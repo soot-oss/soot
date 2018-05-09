@@ -49,7 +49,7 @@ public class ArraySetMultiMap<K, V> extends AbstractMultiMap<K, V> {
   }
 
   protected Set<V> emptySet() {
-    return ArraySet.<V> empty();
+    return ArraySet.<V>empty();
   }
 
   public ArraySet<V> get(K key) {

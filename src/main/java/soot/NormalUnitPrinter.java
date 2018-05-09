@@ -18,46 +18,54 @@
  */
 
 package soot;
-import soot.jimple.*;
+
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.IdentityRef;
+import soot.jimple.ParameterRef;
+import soot.jimple.ThisRef;
 
 /**
-* UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf
-*/
+ * UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf
+ */
 public class NormalUnitPrinter extends LabeledUnitPrinter {
-    public NormalUnitPrinter( Body body ) {
-        super(body);
-    }
+  public NormalUnitPrinter(Body body) {
+    super(body);
+  }
 
-    public void type( Type t ) { 
-        handleIndent();
-        String s = t==null ? "<null>"  : t.toQuotedString();
-        output.append( s );
+  public void type(Type t) {
+    handleIndent();
+    String s = t == null ? "<null>" : t.toQuotedString();
+    output.append(s);
+  }
+
+  public void methodRef(SootMethodRef m) {
+    handleIndent();
+    output.append(m.getSignature());
+  }
+
+  public void fieldRef(SootFieldRef f) {
+    handleIndent();
+    output.append(f.getSignature());
+  }
+
+  public void identityRef(IdentityRef r) {
+    handleIndent();
+    if (r instanceof ThisRef) {
+      literal("@this: ");
+      type(r.getType());
+    } else if (r instanceof ParameterRef) {
+      ParameterRef pr = (ParameterRef) r;
+      literal("@parameter" + pr.getIndex() + ": ");
+      type(r.getType());
+    } else if (r instanceof CaughtExceptionRef) {
+      literal("@caughtexception");
+    } else {
+      throw new RuntimeException();
     }
-    public void methodRef( SootMethodRef m ) {
-        handleIndent();
-        output.append( m.getSignature() );
-    }
-    public void fieldRef( SootFieldRef f ) { 
-        handleIndent();
-        output.append(f.getSignature());
-    }
-    public void identityRef( IdentityRef r ) {
-        handleIndent();
-        if( r instanceof ThisRef ) {
-            literal("@this: ");
-            type(r.getType());
-        } else if( r instanceof ParameterRef ) {
-            ParameterRef pr = (ParameterRef) r;
-            literal("@parameter"+pr.getIndex()+": ");
-            type(r.getType());
-        } else if( r instanceof CaughtExceptionRef ) {
-            literal("@caughtexception");
-        } else throw new RuntimeException();
-    }
-    public void literal( String s ) {
-        handleIndent();
-        output.append( s );
-    }
+  }
+
+  public void literal(String s) {
+    handleIndent();
+    output.append(s);
+  }
 }
-
-

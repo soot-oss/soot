@@ -19,27 +19,28 @@
 
 package soot.toolkits.astmetrics;
 
-import polyglot.visit.PrettyPrinter;
 import polyglot.ast.Node;
 import polyglot.util.CodeWriter;
+import polyglot.visit.PrettyPrinter;
 
 /**
- * @author Michael Batchelder 
+ * @author Michael Batchelder
  * 
- * Created on 12-Apr-2006 
+ *         Created on 12-Apr-2006
  */
 public class metricPrettyPrinter extends PrettyPrinter {
 
   ASTMetric astMetric;
+
   /**
    * 
    */
   public metricPrettyPrinter(ASTMetric astMetric) {
     this.astMetric = astMetric;
   }
-  
+
   public void print(Node parent, Node child, CodeWriter w) {
-    astMetric.printAstMetric(child,w);
-    super.print(parent,child,w);
+    astMetric.printAstMetric(child, w);
+    super.print(parent, child, w);
   }
 }

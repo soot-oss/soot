@@ -23,103 +23,79 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-public abstract class AbstractStmtSwitch implements StmtSwitch
-{
-    Object result;
+public abstract class AbstractStmtSwitch implements StmtSwitch {
+  Object result;
 
-    public void caseBreakpointStmt(BreakpointStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseBreakpointStmt(BreakpointStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void caseInvokeStmt(InvokeStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseInvokeStmt(InvokeStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void caseAssignStmt(AssignStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseAssignStmt(AssignStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void caseIdentityStmt(IdentityStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseIdentityStmt(IdentityStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void caseEnterMonitorStmt(EnterMonitorStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void caseExitMonitorStmt(ExitMonitorStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void caseGotoStmt(GotoStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseGotoStmt(GotoStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void caseIfStmt(IfStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseIfStmt(IfStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void caseLookupSwitchStmt(LookupSwitchStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void caseNopStmt(NopStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseNopStmt(NopStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void caseRetStmt(RetStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseRetStmt(RetStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void caseReturnStmt(ReturnStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseReturnStmt(ReturnStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void caseReturnVoidStmt(ReturnVoidStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void caseTableSwitchStmt(TableSwitchStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseTableSwitchStmt(TableSwitchStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void caseThrowStmt(ThrowStmt stmt)
-    {
-        defaultCase(stmt);
-    }
+  public void caseThrowStmt(ThrowStmt stmt) {
+    defaultCase(stmt);
+  }
 
-    public void defaultCase(Object obj)
-    {
-    }
+  public void defaultCase(Object obj) {
+  }
 
-    public void setResult(Object result)
-    {
-        this.result = result;
-    }
+  public void setResult(Object result) {
+    this.result = result;
+  }
 
-    public Object getResult()
-    {
-        return result;
-    }
+  public Object getResult() {
+    return result;
+  }
 }
-

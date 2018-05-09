@@ -18,8 +18,8 @@
  */
 package soot.toolkits.graph.pdg;
 
-
 import java.util.List;
+
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
@@ -27,31 +27,41 @@ import soot.toolkits.graph.Block;
 import soot.toolkits.graph.UnitGraph;
 
 /**
- * This interface represents a region of control dependence in the control flow graph.
- * There are different kinds of region representations that may slightly differ in 
- * definition or implementation; here is an interface that is expected to be supported
- * by all these different regions.
+ * This interface represents a region of control dependence in the control flow graph. There are different kinds of region representations that may
+ * slightly differ in definition or implementation; here is an interface that is expected to be supported by all these different regions.
  * 
  * 
- * @author Hossein Sadat-Mohtasham
- * Jan 2009
+ * @author Hossein Sadat-Mohtasham Jan 2009
  */
 
 public interface IRegion {
-	
-	public SootMethod getSootMethod();
-	public SootClass getSootClass();	
-	public UnitGraph getUnitGraph();
-	public List<Unit> getUnits();
-	public List<Unit> getUnits(Unit from, Unit to);
-	public List<Block> getBlocks();
-	public Unit getLast();
-	public Unit getFirst();
-	public int getID();
-	public boolean occursBefore(Unit u1, Unit u2);
-	public void setParent(IRegion pr);
-	public IRegion getParent();
-	public void addChildRegion(IRegion chr);
-	public List<IRegion> getChildRegions();
+
+  public SootMethod getSootMethod();
+
+  public SootClass getSootClass();
+
+  public UnitGraph getUnitGraph();
+
+  public List<Unit> getUnits();
+
+  public List<Unit> getUnits(Unit from, Unit to);
+
+  public List<Block> getBlocks();
+
+  public Unit getLast();
+
+  public Unit getFirst();
+
+  public int getID();
+
+  public boolean occursBefore(Unit u1, Unit u2);
+
+  public void setParent(IRegion pr);
+
+  public IRegion getParent();
+
+  public void addChildRegion(IRegion chr);
+
+  public List<IRegion> getChildRegions();
 
 }

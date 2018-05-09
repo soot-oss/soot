@@ -23,13 +23,10 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot;
 
-
 /** A class which knows how to produce Body's for SootMethods. */
-public interface MethodSource
-{
-    /** Returns a filled-out body for the given SootMethod. */
-    public Body getBody(SootMethod m, String phaseName);
+public interface MethodSource {
+  /** Returns a filled-out body for the given SootMethod. */
+  public Body getBody(SootMethod m, String phaseName);
 }

@@ -23,23 +23,17 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-/** There should be at most one AnnotationDefault attribute in 
- * every method
- * indicating the default value of the element represented by the
- * method_info structure
+/**
+ * There should be at most one AnnotationDefault attribute in every method indicating the default value of the element represented by the method_info
+ * structure
+ * 
  * @see attribute_info
  * @see method_info#attributes
  * @author Jennifer Lhotak
  */
 public class AnnotationDefault_attribute extends attribute_info {
-   /** Default value. */
-   public element_value default_value;
+  /** Default value. */
+  public element_value default_value;
 }

@@ -28,41 +28,36 @@
  *              
  */
 
-
 package soot.dava.toolkits.base.AST.traversals;
 
-import java.util.*;
-import soot.jimple.*;
-import soot.dava.toolkits.base.AST.analysis.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+import soot.jimple.DefinitionStmt;
 
 /*
  * DefinitionStmts can occur in either ASTStatementSequenceNode or the for init and for update
  * These are needed for the newinitialFlow method of reachingDefs which needs a universal set of definitions
  */
 
+public class AllDefinitionsFinder extends DepthFirstAdapter {
+  ArrayList<DefinitionStmt> allDefs = new ArrayList<DefinitionStmt>();
 
-public class AllDefinitionsFinder extends DepthFirstAdapter{
-    ArrayList<DefinitionStmt> allDefs = new ArrayList<DefinitionStmt>();
+  public AllDefinitionsFinder() {
 
-    public AllDefinitionsFinder(){
+  }
 
-    }
+  public AllDefinitionsFinder(boolean verbose) {
+    super(verbose);
+  }
 
-    public AllDefinitionsFinder(boolean verbose){
-	super(verbose);
-    }
+  public void inDefinitionStmt(DefinitionStmt s) {
+    allDefs.add(s);
+  }
 
-    public void inDefinitionStmt(DefinitionStmt s){
-	allDefs.add(s);
-    }
-
-
-    public List<DefinitionStmt> getAllDefs(){
-	return allDefs;
-    }
+  public List<DefinitionStmt> getAllDefs() {
+    return allDefs;
+  }
 
 }
-
-
-

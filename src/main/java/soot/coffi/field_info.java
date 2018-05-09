@@ -23,74 +23,87 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-/** Represents a single field_info object.
+/**
+ * Represents a single field_info object.
+ * 
  * @see ClassFile
  * @author Clark Verbrugge
  */
 public class field_info {
-   /** Access flags for this field. */
-   public int access_flags;
-   /** Constant pool index of the name of this field.
-    * @see ClassFile#constant_pool
-    * @see CONSTANT_Utf8_info
-    */
-   public int name_index;
-   /** Constant pool index of the type descriptor of this field.
-    * @see ClassFile#constant_pool
-    * @see CONSTANT_Utf8_info
-    */
-   public int descriptor_index;
-   /** Count of attributes this field contains. */
-   public int attributes_count;
-   /** Array of attribute_info objects for this field.
-    * @see attribute_info
-    */
-   public attribute_info attributes[];
+  /** Access flags for this field. */
+  public int access_flags;
+  /**
+   * Constant pool index of the name of this field.
+   * 
+   * @see ClassFile#constant_pool
+   * @see CONSTANT_Utf8_info
+   */
+  public int name_index;
+  /**
+   * Constant pool index of the type descriptor of this field.
+   * 
+   * @see ClassFile#constant_pool
+   * @see CONSTANT_Utf8_info
+   */
+  public int descriptor_index;
+  /** Count of attributes this field contains. */
+  public int attributes_count;
+  /**
+   * Array of attribute_info objects for this field.
+   * 
+   * @see attribute_info
+   */
+  public attribute_info attributes[];
 
-   /** Returns the name of this field.
-    * @param constant_pool the constant_pool for this class.
-    * @return the name of this field.
-    */
-   public String toName(cp_info constant_pool[]) {
-      CONSTANT_Utf8_info ci;
-      ci = (CONSTANT_Utf8_info)(constant_pool[name_index]);
-      return ci.convert();
-   }
+  /**
+   * Returns the name of this field.
+   * 
+   * @param constant_pool
+   *          the constant_pool for this class.
+   * @return the name of this field.
+   */
+  public String toName(cp_info constant_pool[]) {
+    CONSTANT_Utf8_info ci;
+    ci = (CONSTANT_Utf8_info) (constant_pool[name_index]);
+    return ci.convert();
+  }
 
-   /** Returns the prototype of this field.
-    * @param constant_pool the constant_pool for this class.
-    * @return the prototype (access + type + name) of this field.
-    */
-   public String prototype(cp_info constant_pool[]) {
-      CONSTANT_Utf8_info cm,dm;
-      String s;
+  /**
+   * Returns the prototype of this field.
+   * 
+   * @param constant_pool
+   *          the constant_pool for this class.
+   * @return the prototype (access + type + name) of this field.
+   */
+  public String prototype(cp_info constant_pool[]) {
+    CONSTANT_Utf8_info cm, dm;
+    String s;
 
-      cm = (CONSTANT_Utf8_info)(constant_pool[name_index]);
-      dm = (CONSTANT_Utf8_info)(constant_pool[descriptor_index]);
-      s = ClassFile.access_string(access_flags," ");
-      if (s.compareTo("")!=0) s = s + " ";
-      return s + ClassFile.parseDesc(dm.convert(),"") + " " + cm.convert();
-   }
+    cm = (CONSTANT_Utf8_info) (constant_pool[name_index]);
+    dm = (CONSTANT_Utf8_info) (constant_pool[descriptor_index]);
+    s = ClassFile.access_string(access_flags, " ");
+    if (s.compareTo("") != 0) {
+      s = s + " ";
+    }
+    return s + ClassFile.parseDesc(dm.convert(), "") + " " + cm.convert();
+  }
 
-   /** Locates a constant value attribute if one exists.
-     * @return the constant value attribute or <i>null</i>.
-     * @see ConstantValue_attribute
-     */
-   public ConstantValue_attribute findConstantValue_attribute() {
-      int i;
-      for (i=0;i<attributes_count;i++) {
-         if ((attributes[i]) instanceof ConstantValue_attribute)
-            return (ConstantValue_attribute)(attributes[i]);
+  /**
+   * Locates a constant value attribute if one exists.
+   * 
+   * @return the constant value attribute or <i>null</i>.
+   * @see ConstantValue_attribute
+   */
+  public ConstantValue_attribute findConstantValue_attribute() {
+    int i;
+    for (i = 0; i < attributes_count; i++) {
+      if ((attributes[i]) instanceof ConstantValue_attribute) {
+        return (ConstantValue_attribute) (attributes[i]);
       }
-      return null;
-   }
+    }
+    return null;
+  }
 
 }

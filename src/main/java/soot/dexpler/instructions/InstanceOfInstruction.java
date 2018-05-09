@@ -43,42 +43,42 @@ import soot.jimple.Jimple;
 
 public class InstanceOfInstruction extends DexlibAbstractInstruction {
 
-    public InstanceOfInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
+  public InstanceOfInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
+
+  @Override
+  public void jimplify(DexBody body) {
+    Instruction22c i = (Instruction22c) instruction;
+    int dest = i.getRegisterA();
+    int source = i.getRegisterB();
+
+    Type t = DexType.toSoot((TypeReference) (i.getReference()));
+
+    InstanceOfExpr e = Jimple.v().newInstanceOfExpr(body.getRegisterLocal(source), t);
+    AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), e);
+    setUnit(assign);
+    addTags(assign);
+    body.add(assign);
+
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+      // DalvikTyper.v().?
     }
+  }
 
-    @Override
-	public void jimplify (DexBody body) {
-        Instruction22c i = (Instruction22c)instruction;
-        int dest = i.getRegisterA();
-        int source = i.getRegisterB();
+  @Override
+  boolean overridesRegister(int register) {
+    TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
+    int dest = i.getRegisterA();
+    return register == dest;
+  }
 
-        Type t = DexType.toSoot((TypeReference)(i.getReference()));
+  @Override
+  public Set<Type> introducedTypes() {
+    ReferenceInstruction i = (ReferenceInstruction) instruction;
 
-        InstanceOfExpr e = Jimple.v().newInstanceOfExpr(body.getRegisterLocal(source), t);
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), e);
-        setUnit(assign);
-        addTags(assign);
-        body.add(assign);
-
-		if (IDalvikTyper.ENABLE_DVKTYPER) {
-          //DalvikTyper.v().?
-        }
-    }
-
-    @Override
-    boolean overridesRegister(int register) {
-        TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
-        int dest = i.getRegisterA();
-        return register == dest;
-    }
-
-    @Override
-    public Set<Type> introducedTypes() {
-        ReferenceInstruction i = (ReferenceInstruction) instruction;
-
-        Set<Type> types = new HashSet<Type>();
-        types.add(DexType.toSoot((TypeReference) i.getReference()));
-        return types;
-    }
+    Set<Type> types = new HashSet<Type>();
+    types.add(DexType.toSoot((TypeReference) i.getReference()));
+    return types;
+  }
 }

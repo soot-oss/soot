@@ -23,19 +23,15 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
+import soot.Value;
+import soot.ValueBox;
 
-public interface InstanceFieldRef extends FieldRef
-{
-    public Value getBase();
-    public ValueBox getBaseBox();
-    public void setBase(Value base);
+public interface InstanceFieldRef extends FieldRef {
+  public Value getBase();
+
+  public ValueBox getBaseBox();
+
+  public void setBase(Value base);
 }
-
-

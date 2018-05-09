@@ -23,54 +23,47 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.toolkits.graph;
 
-
-import java.util.*;
-
-
-
+import java.util.HashMap;
 
 /**
- * A memory efficient version of HashMutableDirectedGraph, in the sense
- * that throw-away objects passed as arguments will not be kept in the
- * process of adding edges.
+ * A memory efficient version of HashMutableDirectedGraph, in the sense that throw-away objects passed as arguments will not be kept in the process of
+ * adding edges.
  */
 
-public class MemoryEfficientGraph<N> extends HashMutableDirectedGraph<N>
-{
+public class MemoryEfficientGraph<N> extends HashMutableDirectedGraph<N> {
 
-    HashMap<N, N> self = new HashMap<N, N>();
+  HashMap<N, N> self = new HashMap<N, N>();
 
-    public void addNode(N o) {
-        super.addNode(o);
-        self.put(o,o);
+  public void addNode(N o) {
+    super.addNode(o);
+    self.put(o, o);
+  }
+
+  public void removeNode(N o) {
+    super.removeNode(o);
+    self.remove(o);
+  }
+
+  public void addEdge(N from, N to) {
+    if (containsNode(from) && containsNode(to)) {
+      super.addEdge(self.get(from), self.get(to));
+    } else if (!containsNode(from)) {
+      throw new RuntimeException(from.toString() + " not in graph!");
+    } else {
+      throw new RuntimeException(to.toString() + " not in graph!");
     }
+  }
 
-    public void removeNode(N o) {
-        super.removeNode(o);
-        self.remove(o);
+  public void removeEdge(N from, N to) {
+    if (containsNode(from) && containsNode(to)) {
+      super.removeEdge(self.get(from), self.get(to));
+    } else if (!containsNode(from)) {
+      throw new RuntimeException(from.toString() + " not in graph!");
+    } else {
+      throw new RuntimeException(to.toString() + " not in graph!");
     }
-
-    public void addEdge(N from, N to) {
-        if (containsNode(from) && containsNode(to))
-            super.addEdge(self.get(from), self.get(to));
-        else if (!containsNode(from))
-            throw new RuntimeException(from.toString() + " not in graph!");
-        else
-            throw new RuntimeException(to.toString() + " not in graph!");
-    }
-
-    public void removeEdge(N from, N to) {
-        if (containsNode(from) && containsNode(to))
-            super.removeEdge(self.get(from), self.get(to));
-        else if (!containsNode(from))
-            throw new RuntimeException(from.toString() + " not in graph!");
-        else
-            throw new RuntimeException(to.toString() + " not in graph!");
-    }
+  }
 
 }
-
-    

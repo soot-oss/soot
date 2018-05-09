@@ -33,77 +33,71 @@ import com.google.common.base.Optional;
  */
 public class SootModuleResolver extends SootResolver {
 
+  public SootModuleResolver(Singletons.Global g) {
+    super(g);
+  }
 
-    public SootModuleResolver(Singletons.Global g) {
-        super(g);
+  public static SootModuleResolver v() {
+    return G.v().soot_SootModuleResolver();
+  }
+
+  public SootClass makeClassRef(String className, Optional<String> moduleName) {
+    // If this class name is escaped, we need to un-escape it
+    className = Scene.v().unescapeName(className);
+
+    String module = null;
+    if (moduleName.isPresent()) {
+      module = ModuleUtil.v().findModuleThatExports(className, moduleName.get());
     }
 
-
-    public static SootModuleResolver v() {
-        return G.v().soot_SootModuleResolver();
+    // if no module return first one found
+    if (ModuleScene.v().containsClass(className, Optional.fromNullable(module))) {
+      return ModuleScene.v().getSootClass(className, Optional.fromNullable(module));
     }
 
-
-    public SootClass makeClassRef(String className, Optional<String> moduleName) {
-        // If this class name is escaped, we need to un-escape it
-        className = Scene.v().unescapeName(className);
-
-
-        String module = null;
-        if (moduleName.isPresent()) {
-            module = ModuleUtil.v().findModuleThatExports(className, moduleName.get());
-        }
-
-        //if no module return first one found
-        if (ModuleScene.v().containsClass(className, Optional.fromNullable(module)))
-            return ModuleScene.v().getSootClass(className, Optional.fromNullable(module));
-
-        SootClass newClass;
-        if (className.endsWith(SootModuleInfo.MODULE_INFO)) {
-            newClass = new SootModuleInfo(className, module);
-        } else {
-            newClass = ModuleScene.v().makeSootClass(className, module);
-        }
-        newClass.setResolvingLevel(SootClass.DANGLING);
-        ModuleScene.v().addClass(newClass);
-
-        return newClass;
+    SootClass newClass;
+    if (className.endsWith(SootModuleInfo.MODULE_INFO)) {
+      newClass = new SootModuleInfo(className, module);
+    } else {
+      newClass = ModuleScene.v().makeSootClass(className, module);
     }
+    newClass.setResolvingLevel(SootClass.DANGLING);
+    ModuleScene.v().addClass(newClass);
 
-    public SootClass makeClassRef(String className) {
-        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
+    return newClass;
+  }
 
+  public SootClass makeClassRef(String className) {
+    ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
 
-        return makeClassRef(wrapper.getClassName(), wrapper.getModuleNameOptional());
+    return makeClassRef(wrapper.getClassName(), wrapper.getModuleNameOptional());
+  }
+
+  /**
+   * Resolves the given class. Depending on the resolver settings, may decide to resolve other classes as well. If the class has already been
+   * resolved, just returns the class that was already resolved.
+   */
+  public SootClass resolveClass(String className, int desiredLevel, Optional<String> moduleName) {
+    SootClass resolvedClass = null;
+    try {
+      resolvedClass = makeClassRef(className, moduleName);
+      addToResolveWorklist(resolvedClass, desiredLevel);
+      processResolveWorklist();
+      return resolvedClass;
+    } catch (SootClassNotFoundException e) {
+      // remove unresolved class and rethrow
+      if (resolvedClass != null) {
+        assert resolvedClass.resolvingLevel() == SootClass.DANGLING;
+        ModuleScene.v().removeClass(resolvedClass);
+      }
+      throw e;
     }
+  }
 
-    /**
-     * Resolves the given class. Depending on the resolver settings, may decide
-     * to resolve other classes as well. If the class has already been resolved,
-     * just returns the class that was already resolved.
-     */
-    public SootClass resolveClass(String className, int desiredLevel, Optional<String> moduleName) {
-        SootClass resolvedClass = null;
-        try {
-            resolvedClass = makeClassRef(className, moduleName);
-            addToResolveWorklist(resolvedClass, desiredLevel);
-            processResolveWorklist();
-            return resolvedClass;
-        } catch (SootClassNotFoundException e) {
-            // remove unresolved class and rethrow
-            if (resolvedClass != null) {
-                assert resolvedClass.resolvingLevel() == SootClass.DANGLING;
-                ModuleScene.v().removeClass(resolvedClass);
-            }
-            throw e;
-        }
-    }
+  public SootClass resolveClass(String className, int desiredLevel) {
+    ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
 
-    public SootClass resolveClass(String className, int desiredLevel) {
-        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
-
-        return resolveClass(wrapper.getClassName(), desiredLevel, wrapper.getModuleNameOptional());
-    }
-
+    return resolveClass(wrapper.getClassName(), desiredLevel, wrapper.getModuleNameOptional());
+  }
 
 }

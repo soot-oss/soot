@@ -25,17 +25,17 @@
 
 package soot.baf;
 
-import  soot.jimple.*;
-import soot.*;
+import soot.Local;
+import soot.jimple.Constant;
 
+public interface IncInst extends Inst {
 
-public interface IncInst extends Inst
-{
-    
-    Constant getConstant() ;
-    void setConstant(Constant aConstant); 
-    void setLocal(Local l);
-    Local getLocal();
-    
+  Constant getConstant();
+
+  void setConstant(Constant aConstant);
+
+  void setLocal(Local l);
+
+  Local getLocal();
+
 }
-

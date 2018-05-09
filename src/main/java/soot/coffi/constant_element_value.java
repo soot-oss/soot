@@ -23,18 +23,14 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-/** There can be many element_value pairs in each annotation 
+/**
+ * There can be many element_value pairs in each annotation
+ * 
  * @see attribute_info
  * @author Jennifer Lhotak
  */
 public class constant_element_value extends element_value {
-    int constant_value_index;
+  int constant_value_index;
 }

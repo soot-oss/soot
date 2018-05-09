@@ -23,24 +23,17 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.*;
+import soot.AbstractValueBox;
+import soot.Value;
 
-public class JimpleLocalBox extends AbstractValueBox
-{
-    public JimpleLocalBox(Value value)
-    {
-        setValue(value);
-    }
+public class JimpleLocalBox extends AbstractValueBox {
+  public JimpleLocalBox(Value value) {
+    setValue(value);
+  }
 
-    public boolean canContainValue(Value value)
-    {
-        return value instanceof JimpleLocal;
-    }
+  public boolean canContainValue(Value value) {
+    return value instanceof JimpleLocal;
+  }
 }

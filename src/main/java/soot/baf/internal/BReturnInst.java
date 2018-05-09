@@ -23,64 +23,49 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.AbstractJasminClass;
+import soot.Type;
+import soot.baf.InstSwitch;
+import soot.baf.ReturnInst;
+import soot.util.Switch;
 
-public class BReturnInst extends AbstractOpTypeInst implements ReturnInst
-{
-    public BReturnInst(Type opType) { super(opType); }
-    
-    public int getInCount()
-    {
-        return 1;
-    }
+public class BReturnInst extends AbstractOpTypeInst implements ReturnInst {
+  public BReturnInst(Type opType) {
+    super(opType);
+  }
 
+  public int getInCount() {
+    return 1;
+  }
 
+  public Object clone() {
+    return new BReturnInst(getOpType());
+  }
 
-    public Object clone() 
-    {
-        return new  BReturnInst(getOpType());
-    }
+  public int getInMachineCount() {
+    return AbstractJasminClass.sizeOfType((getOpType()));
+  }
 
-    public int getInMachineCount()
-    {
-        return AbstractJasminClass.sizeOfType((getOpType()));
-    }
-    
-    public int getOutCount()
-    {
-        return 0;
-    }
+  public int getOutCount() {
+    return 0;
+  }
 
-    public int getOutMachineCount()
-    {
-        return 0;
-    }
+  public int getOutMachineCount() {
+    return 0;
+  }
 
+  final public String getName() {
+    return "return";
+  }
 
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseReturnInst(this);
+  }
 
-    final public String getName() { return "return"; }
-    
+  public boolean fallsThrough() {
+    return false;
+  }
 
-
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseReturnInst(this);
-    }   
-    
-    public boolean fallsThrough()
-    {
-        return false;
-    }
-
-
-
-    
 }

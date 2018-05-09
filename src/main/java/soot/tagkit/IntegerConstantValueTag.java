@@ -28,47 +28,50 @@ package soot.tagkit;
 import soot.jimple.IntConstant;
 
 public class IntegerConstantValueTag extends ConstantValueTag {
-	private final int value;
+  private final int value;
 
-	public IntegerConstantValueTag(int value) {
-		this.value = value;
-		this.bytes = new byte[] { (byte) ((value >> 24) & 0xff), (byte) ((value >> 16) & 0xff),
-				(byte) ((value >> 8) & 0xff), (byte) ((value) & 0xff) };
-	}
+  public IntegerConstantValueTag(int value) {
+    this.value = value;
+    this.bytes = new byte[] { (byte) ((value >> 24) & 0xff), (byte) ((value >> 16) & 0xff), (byte) ((value >> 8) & 0xff), (byte) ((value) & 0xff) };
+  }
 
-	public int getIntValue() {
-		return value;
-	}
+  public int getIntValue() {
+    return value;
+  }
 
-	public String toString() {
-		return "ConstantValue: " + Integer.toString(value);
-	}
+  public String toString() {
+    return "ConstantValue: " + Integer.toString(value);
+  }
 
-	@Override
-	public IntConstant getConstant() {
-		return IntConstant.v(value);
-	}
+  @Override
+  public IntConstant getConstant() {
+    return IntConstant.v(value);
+  }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + value;
-		return result;
-	}
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + value;
+    return result;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		IntegerConstantValueTag other = (IntegerConstantValueTag) obj;
-		if (value != other.value)
-			return false;
-		return true;
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    IntegerConstantValueTag other = (IntegerConstantValueTag) obj;
+    if (value != other.value) {
+      return false;
+    }
+    return true;
+  }
 
 }

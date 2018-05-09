@@ -19,24 +19,22 @@
 
 package soot.dava.internal.javaRep;
 
-import soot.*;
-import soot.grimp.internal.*;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.grimp.internal.GIdentityStmt;
 
-public class DIdentityStmt extends GIdentityStmt
-{
-    public DIdentityStmt(Value local, Value identityValue)
-    {
-        super( local, identityValue);
-    }
+public class DIdentityStmt extends GIdentityStmt {
+  public DIdentityStmt(Value local, Value identityValue) {
+    super(local, identityValue);
+  }
 
-    public void toString( UnitPrinter up ) {
-        getLeftOpBox().toString(up);
-        up.literal(" := ");
-        getRightOpBox().toString(up);
-    }
+  public void toString(UnitPrinter up) {
+    getLeftOpBox().toString(up);
+    up.literal(" := ");
+    getRightOpBox().toString(up);
+  }
 
-    public String toString()
-    {
-        return getLeftOpBox().getValue().toString() + " = " + getRightOpBox().getValue().toString();
-    }    
+  public String toString() {
+    return getLeftOpBox().getValue().toString() + " = " + getRightOpBox().getValue().toString();
+  }
 }

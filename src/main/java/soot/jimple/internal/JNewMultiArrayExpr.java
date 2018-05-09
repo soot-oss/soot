@@ -23,39 +23,33 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.*;
+import soot.ArrayType;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.Jimple;
 
-public class JNewMultiArrayExpr extends AbstractNewMultiArrayExpr
-{
-    public JNewMultiArrayExpr(ArrayType type, List<? extends Value> sizes)
-    {
-        super(type, new ValueBox[sizes.size()]);
+public class JNewMultiArrayExpr extends AbstractNewMultiArrayExpr {
+  public JNewMultiArrayExpr(ArrayType type, List<? extends Value> sizes) {
+    super(type, new ValueBox[sizes.size()]);
 
-        for(int i = 0; i < sizes.size(); i++)
-            sizeBoxes[i] = Jimple.v().newImmediateBox(sizes.get(i));
+    for (int i = 0; i < sizes.size(); i++) {
+      sizeBoxes[i] = Jimple.v().newImmediateBox(sizes.get(i));
+    }
+  }
+
+  public Object clone() {
+    List<Value> clonedSizes = new ArrayList<Value>(getSizeCount());
+
+    for (int i = 0; i < getSizeCount(); i++) {
+      clonedSizes.add(i, Jimple.cloneIfNecessary(getSize(i)));
     }
 
-    public Object clone() 
-    {
-        List<Value> clonedSizes =  new ArrayList<Value>(getSizeCount());
-
-        for(int i = 0; i <  getSizeCount(); i++) {
-            clonedSizes.add(i,  Jimple.cloneIfNecessary(getSize(i)));
-        }
-                                                         
-        
-        return new JNewMultiArrayExpr(baseType, clonedSizes);
-    }
-    
+    return new JNewMultiArrayExpr(baseType, clonedSizes);
+  }
 
 }

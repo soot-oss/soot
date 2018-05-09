@@ -23,22 +23,25 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
-import soot.util.*;
+import soot.Type;
+import soot.Value;
+import soot.ValueBox;
+import soot.util.Switch;
 
-public interface CastExpr extends Expr
-{
-    public Value getOp();
-    public void setOp(Value op);
-    public ValueBox getOpBox();
-    public Type getCastType();
-    public void setCastType(Type castType);
-    public Type getType();
-    public void apply(Switch sw);
+public interface CastExpr extends Expr {
+  public Value getOp();
+
+  public void setOp(Value op);
+
+  public ValueBox getOpBox();
+
+  public Type getCastType();
+
+  public void setCastType(Type castType);
+
+  public Type getType();
+
+  public void apply(Switch sw);
 }

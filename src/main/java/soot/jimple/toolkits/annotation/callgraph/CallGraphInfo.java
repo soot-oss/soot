@@ -19,44 +19,44 @@
 
 package soot.jimple.toolkits.annotation.callgraph;
 
-import java.util.*;
-import soot.*;
+import java.util.ArrayList;
+
+import soot.SootMethod;
 
 public class CallGraphInfo {
 
-    private ArrayList<MethInfo> inputs = new ArrayList<MethInfo>();
-    private ArrayList<MethInfo> outputs = new ArrayList<MethInfo>();
-    private SootMethod center;
+  private ArrayList<MethInfo> inputs = new ArrayList<MethInfo>();
+  private ArrayList<MethInfo> outputs = new ArrayList<MethInfo>();
+  private SootMethod center;
 
-    public CallGraphInfo(SootMethod sm, ArrayList<MethInfo> outputs, ArrayList<MethInfo> inputs){
-        setCenter(sm);
-        setOutputs(outputs);
-        setInputs(inputs);
-    }
-    
-    public void setCenter(SootMethod sm){
-        center = sm;
-    } 
+  public CallGraphInfo(SootMethod sm, ArrayList<MethInfo> outputs, ArrayList<MethInfo> inputs) {
+    setCenter(sm);
+    setOutputs(outputs);
+    setInputs(inputs);
+  }
 
-    public SootMethod getCenter(){
-        return center;
-    }
+  public void setCenter(SootMethod sm) {
+    center = sm;
+  }
 
-    public ArrayList<MethInfo> getInputs(){
-        return inputs;
-    }
+  public SootMethod getCenter() {
+    return center;
+  }
 
-    public void setInputs(ArrayList<MethInfo> list){
-        inputs = list;
-    }
+  public ArrayList<MethInfo> getInputs() {
+    return inputs;
+  }
 
-    public ArrayList<MethInfo> getOutputs(){
-        return outputs;
-    }
+  public void setInputs(ArrayList<MethInfo> list) {
+    inputs = list;
+  }
 
-    public void setOutputs(ArrayList<MethInfo> list){
-        outputs = list;
-    }
+  public ArrayList<MethInfo> getOutputs() {
+    return outputs;
+  }
 
+  public void setOutputs(ArrayList<MethInfo> list) {
+    outputs = list;
+  }
 
 }

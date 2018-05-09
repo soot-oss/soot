@@ -23,39 +23,38 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot;
-import soot.util.*;
+
+import soot.util.Switch;
 
 /** Represents the Java void type. */
 @SuppressWarnings("serial")
-public class VoidType extends Type
-{
-    public VoidType( Singletons.Global g ) {}
-    public static VoidType v() { return G.v().soot_VoidType(); }
+public class VoidType extends Type {
+  public VoidType(Singletons.Global g) {
+  }
 
-    public int hashCode()
-    {
-        return 0x3A8C1035;
-    }
-    
-    public boolean equals(Object t)
-    {
-        return this == t;
-    }
+  public static VoidType v() {
+    return G.v().soot_VoidType();
+  }
 
-    public String toString()
-    {
-        return "void";
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((TypeSwitch) sw).caseVoidType(this);
-    }
-    
-    public boolean isAllowedInFinalCode() {
-    	return true;
-    }
+  public int hashCode() {
+    return 0x3A8C1035;
+  }
+
+  public boolean equals(Object t) {
+    return this == t;
+  }
+
+  public String toString() {
+    return "void";
+  }
+
+  public void apply(Switch sw) {
+    ((TypeSwitch) sw).caseVoidType(this);
+  }
+
+  public boolean isAllowedInFinalCode() {
+    return true;
+  }
 
 }

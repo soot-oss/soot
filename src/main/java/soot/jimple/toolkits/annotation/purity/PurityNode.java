@@ -28,20 +28,18 @@
 package soot.jimple.toolkits.annotation.purity;
 
 /**
- * Interface shared by all kinds of nodes in a PurityGraph.
- * Such nodes are immutables. They are hashable and two nodes are equal
- * only if they have the same kind and were constructed using the same
- * arguments (structural equality).
+ * Interface shared by all kinds of nodes in a PurityGraph. Such nodes are immutables. They are hashable and two nodes are equal only if they have the
+ * same kind and were constructed using the same arguments (structural equality).
  *
  */
-public interface PurityNode { 
+public interface PurityNode {
 
-    /** Is it an inside node ? */
-    public boolean isInside();
+  /** Is it an inside node ? */
+  public boolean isInside();
 
-    /** Is it a load node ? */
-    public boolean isLoad();
+  /** Is it a load node ? */
+  public boolean isLoad();
 
-    /** Is it a parameter or this node ? */
-    public boolean isParam();
-} 
+  /** Is it a parameter or this node ? */
+  public boolean isParam();
+}

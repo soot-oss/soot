@@ -23,37 +23,38 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot;
+
+import java.util.Iterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import soot.toolkits.graph.interaction.*;
-import soot.options.*;
+import soot.options.Options;
+import soot.toolkits.graph.interaction.InteractionHandler;
 
-/** A wrapper object for a pack of optimizations.
- * Provides chain-like operations, except that the key is the phase name. */
-public class BodyPack extends Pack
-{
-    private static final Logger logger = LoggerFactory.getLogger(BodyPack.class);
-    public BodyPack(String name) {
-        super(name);
-    }
+/**
+ * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key is the phase name.
+ */
+public class BodyPack extends Pack {
+  private static final Logger logger = LoggerFactory.getLogger(BodyPack.class);
 
-    protected void internalApply(Body b)
-    {
-        for( Iterator<Transform> tIt = this.iterator(); tIt.hasNext(); ) {
-            final Transform t = tIt.next();
-            if (Options.v().interactive_mode()){
-                //logger.debug("sending transform: "+t.getPhaseName()+" for body: "+b+" for body pack: "+this.getPhaseName());
-                InteractionHandler.v().handleNewAnalysis(t, b);
-            }
-            t.apply(b);
-            if (Options.v().interactive_mode()){
-                InteractionHandler.v().handleTransformDone(t, b);
-            }
-        }
+  public BodyPack(String name) {
+    super(name);
+  }
+
+  protected void internalApply(Body b) {
+    for (Iterator<Transform> tIt = this.iterator(); tIt.hasNext();) {
+      final Transform t = tIt.next();
+      if (Options.v().interactive_mode()) {
+        // logger.debug("sending transform: "+t.getPhaseName()+" for body: "+b+" for body pack: "+this.getPhaseName());
+        InteractionHandler.v().handleNewAnalysis(t, b);
+      }
+      t.apply(b);
+      if (Options.v().interactive_mode()) {
+        InteractionHandler.v().handleTransformDone(t, b);
+      }
     }
+  }
 
 }

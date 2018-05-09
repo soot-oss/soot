@@ -20,58 +20,50 @@
 
 package soot.dava.internal.AST;
 
-import soot.*;
-import soot.dava.internal.SET.*;
-import soot.dava.toolkits.base.AST.*;
+import soot.UnitPrinter;
+import soot.dava.internal.SET.SETNodeLabel;
+import soot.dava.toolkits.base.AST.ASTAnalysis;
 
-public abstract class ASTLabeledNode extends ASTNode
-{
-    private SETNodeLabel label;
-    
-    public ASTLabeledNode( SETNodeLabel label)
-    {
-	super();
+public abstract class ASTLabeledNode extends ASTNode {
+  private SETNodeLabel label;
 
-	set_Label( label);
+  public ASTLabeledNode(SETNodeLabel label) {
+    super();
+
+    set_Label(label);
+  }
+
+  public SETNodeLabel get_Label() {
+    return label;
+  }
+
+  public void set_Label(SETNodeLabel label) {
+    this.label = label;
+  }
+
+  public void perform_Analysis(ASTAnalysis a) {
+    perform_AnalysisOnSubBodies(a);
+  }
+
+  public void label_toString(UnitPrinter up) {
+    if (label.toString() != null) {
+      up.literal(label.toString());
+      up.literal(":");
+      up.newline();
     }
+  }
 
-    public SETNodeLabel get_Label()
-    {
-	return label;
+  public String label_toString() {
+    if (label.toString() == null) {
+      return new String();
+    } else {
+      StringBuffer b = new StringBuffer();
+
+      b.append(label.toString());
+      b.append(":");
+      b.append(ASTNode.NEWLINE);
+
+      return b.toString();
     }
-
-    public void set_Label( SETNodeLabel label)
-    {
-	this.label = label;
-    }
-
-    public void perform_Analysis( ASTAnalysis a)
-    {
-	perform_AnalysisOnSubBodies( a);
-    }
-
-    public void label_toString( UnitPrinter up )
-    {
-	if (label.toString() != null) {
-            up.literal( label.toString() );
-            up.literal( ":" );
-            up.newline();
-	}
-    }
-
-    public String label_toString()
-    {
-	if (label.toString() == null)
-	    return new String();
-
-	else {
-	    StringBuffer b = new StringBuffer();
-
-	    b.append( label.toString());
-	    b.append( ":");
-	    b.append( ASTNode.NEWLINE);
-
-	    return b.toString();
-	}
-    }
+  }
 }

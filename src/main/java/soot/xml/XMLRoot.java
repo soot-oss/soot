@@ -23,71 +23,61 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.xml;
 
-
 /** XML helper */
-public class XMLRoot
-{
-	public String name = "";				// <NAME attr1="val1" attr2="val2"...>val</NAME>
-	public String value = "";				// <name attr1="val1" attr2="val2"...>VAL</name>
-	public String[] attributes = { "" };	// <name ATTR1="val1" ATTR2="val2"...>val</name>
-	public String[] values = { "" };		// <name attr1="VAL1" attr2="VAL2"...>val</name>
+public class XMLRoot {
+  public String name = ""; // <NAME attr1="val1" attr2="val2"...>val</NAME>
+  public String value = ""; // <name attr1="val1" attr2="val2"...>VAL</name>
+  public String[] attributes = { "" }; // <name ATTR1="val1" ATTR2="val2"...>val</name>
+  public String[] values = { "" }; // <name attr1="VAL1" attr2="VAL2"...>val</name>
 
-	protected XMLNode child = null;			// -> to child node
+  protected XMLNode child = null; // -> to child node
 
-	XMLRoot()
-	{
-	}
+  XMLRoot() {
+  }
 
-	public String toString()
-	{
-		return XMLPrinter.xmlHeader + XMLPrinter.dtdHeader + this.child.toPostString();
-	}
+  public String toString() {
+    return XMLPrinter.xmlHeader + XMLPrinter.dtdHeader + this.child.toPostString();
+  }
 
-	// add element to end of tree
-	public XMLNode addElement( String name ) 
-	{
-		return addElement( name, "", "", "" );
-	}
-	public XMLNode addElement( String name, String value ) 
-	{
-		return addElement( name, value, "", "" );
-	}
-	public XMLNode addElement( String name, String value, String[] attributes ) 
-	{
-		return addElement( name, value, attributes, null );
-	}
-	public XMLNode addElement( String name, String[] attributes, String[] values )
-	{
-		return addElement( name, "", attributes, values );
-	}
-	public XMLNode addElement( String name, String value, String attribute, String attributeValue )
-	{
-		return addElement( name, value, new String[] { attribute}, new String[] { attributeValue} );
-	}
-	public XMLNode addElement( String name, String value, String[] attributes, String[] values )
-	{
-		XMLNode current= null;
-		XMLNode newnode = new XMLNode( name, value, attributes, values );
-		newnode.root = this;
+  // add element to end of tree
+  public XMLNode addElement(String name) {
+    return addElement(name, "", "", "");
+  }
 
-		if( this.child == null )
-		{
-			this.child = newnode;
-			newnode.parent = null; // root's children have NO PARENTS :(
-		}
-		else
-		{
-			current = this.child;
-			while( current.next != null )
-			{
-				current = current.next;
-			}           
-			current.next = newnode;     
-			newnode.prev = current;
-		}
-		return newnode;
-	}   
+  public XMLNode addElement(String name, String value) {
+    return addElement(name, value, "", "");
+  }
+
+  public XMLNode addElement(String name, String value, String[] attributes) {
+    return addElement(name, value, attributes, null);
+  }
+
+  public XMLNode addElement(String name, String[] attributes, String[] values) {
+    return addElement(name, "", attributes, values);
+  }
+
+  public XMLNode addElement(String name, String value, String attribute, String attributeValue) {
+    return addElement(name, value, new String[] { attribute }, new String[] { attributeValue });
+  }
+
+  public XMLNode addElement(String name, String value, String[] attributes, String[] values) {
+    XMLNode current = null;
+    XMLNode newnode = new XMLNode(name, value, attributes, values);
+    newnode.root = this;
+
+    if (this.child == null) {
+      this.child = newnode;
+      newnode.parent = null; // root's children have NO PARENTS :(
+    } else {
+      current = this.child;
+      while (current.next != null) {
+        current = current.next;
+      }
+      current.next = newnode;
+      newnode.prev = current;
+    }
+    return newnode;
+  }
 }

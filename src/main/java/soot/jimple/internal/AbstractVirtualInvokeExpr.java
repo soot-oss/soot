@@ -41,95 +41,98 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.util.Switch;
 
 @SuppressWarnings("serial")
-public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeExpr
-		implements VirtualInvokeExpr, ConvertToBaf {
-	protected AbstractVirtualInvokeExpr(ValueBox baseBox, SootMethodRef methodRef, ValueBox[] argBoxes) {
-		super(methodRef, baseBox, argBoxes);
-		if (methodRef.isStatic())
-			throw new RuntimeException("wrong static-ness");
-	}
+public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeExpr implements VirtualInvokeExpr, ConvertToBaf {
+  protected AbstractVirtualInvokeExpr(ValueBox baseBox, SootMethodRef methodRef, ValueBox[] argBoxes) {
+    super(methodRef, baseBox, argBoxes);
+    if (methodRef.isStatic()) {
+      throw new RuntimeException("wrong static-ness");
+    }
+  }
 
-	public boolean equivTo(Object o) {
-		if (o instanceof AbstractVirtualInvokeExpr) {
-			AbstractVirtualInvokeExpr ie = (AbstractVirtualInvokeExpr) o;
-			if (!(baseBox.getValue().equivTo(ie.baseBox.getValue()) && getMethod().equals(ie.getMethod())
-					&& (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length)))
-				return false;
-			if (argBoxes != null) {
-				for (int i = 0; i < argBoxes.length; i++) {
-					if (!(argBoxes[i]).getValue().equivTo(ie.argBoxes[i].getValue()))
-						return false;
-				}
-			}
-			return true;
-		}
-		return false;
-	}
+  public boolean equivTo(Object o) {
+    if (o instanceof AbstractVirtualInvokeExpr) {
+      AbstractVirtualInvokeExpr ie = (AbstractVirtualInvokeExpr) o;
+      if (!(baseBox.getValue().equivTo(ie.baseBox.getValue()) && getMethod().equals(ie.getMethod())
+          && (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+        return false;
+      }
+      if (argBoxes != null) {
+        for (int i = 0; i < argBoxes.length; i++) {
+          if (!(argBoxes[i]).getValue().equivTo(ie.argBoxes[i].getValue())) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+    return false;
+  }
 
-	/**
-	 * Returns a hash code for this object, consistent with structural equality.
-	 */
-	public int equivHashCode() {
-		return baseBox.getValue().equivHashCode() * 101 + getMethod().equivHashCode() * 17;
-	}
+  /**
+   * Returns a hash code for this object, consistent with structural equality.
+   */
+  public int equivHashCode() {
+    return baseBox.getValue().equivHashCode() * 101 + getMethod().equivHashCode() * 17;
+  }
 
-	public abstract Object clone();
+  public abstract Object clone();
 
-	public void apply(Switch sw) {
-		((ExprSwitch) sw).caseVirtualInvokeExpr(this);
-	}
+  public void apply(Switch sw) {
+    ((ExprSwitch) sw).caseVirtualInvokeExpr(this);
+  }
 
-	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
 
-		buffer.append(
-				Jimple.VIRTUALINVOKE + " " + baseBox.getValue().toString() + "." + methodRef.getSignature() + "(");
+    buffer.append(Jimple.VIRTUALINVOKE + " " + baseBox.getValue().toString() + "." + methodRef.getSignature() + "(");
 
-		if (argBoxes != null) {
-			for (int i = 0; i < argBoxes.length; i++) {
-				if (i != 0)
-					buffer.append(", ");
-	
-				buffer.append(argBoxes[i].getValue().toString());
-			}
-		}
+    if (argBoxes != null) {
+      for (int i = 0; i < argBoxes.length; i++) {
+        if (i != 0) {
+          buffer.append(", ");
+        }
 
-		buffer.append(")");
+        buffer.append(argBoxes[i].getValue().toString());
+      }
+    }
 
-		return buffer.toString();
-	}
+    buffer.append(")");
 
-	public void toString(UnitPrinter up) {
-		up.literal(Jimple.VIRTUALINVOKE);
-		up.literal(" ");
-		baseBox.toString(up);
-		up.literal(".");
-		up.methodRef(methodRef);
-		up.literal("(");
+    return buffer.toString();
+  }
 
-		if (argBoxes != null) {
-			for (int i = 0; i < argBoxes.length; i++) {
-				if (i != 0)
-					up.literal(", ");
-	
-				argBoxes[i].toString(up);
-			}
-		}
+  public void toString(UnitPrinter up) {
+    up.literal(Jimple.VIRTUALINVOKE);
+    up.literal(" ");
+    baseBox.toString(up);
+    up.literal(".");
+    up.methodRef(methodRef);
+    up.literal("(");
 
-		up.literal(")");
-	}
+    if (argBoxes != null) {
+      for (int i = 0; i < argBoxes.length; i++) {
+        if (i != 0) {
+          up.literal(", ");
+        }
 
-	public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
-		((ConvertToBaf) (getBase())).convertToBaf(context, out);
+        argBoxes[i].toString(up);
+      }
+    }
 
-		if (argBoxes != null) {
-			for (ValueBox element : argBoxes) {
-				((ConvertToBaf) (element.getValue())).convertToBaf(context, out);
-			}
-		}
+    up.literal(")");
+  }
 
-		Unit u = Baf.v().newVirtualInvokeInst(methodRef);
-		out.add(u);
-		u.addAllTagsOf(context.getCurrentUnit());
-	}
+  public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
+    ((ConvertToBaf) (getBase())).convertToBaf(context, out);
+
+    if (argBoxes != null) {
+      for (ValueBox element : argBoxes) {
+        ((ConvertToBaf) (element.getValue())).convertToBaf(context, out);
+      }
+    }
+
+    Unit u = Baf.v().newVirtualInvokeInst(methodRef);
+    out.add(u);
+    u.addAllTagsOf(context.getCurrentUnit());
+  }
 }

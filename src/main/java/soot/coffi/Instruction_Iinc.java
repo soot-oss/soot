@@ -23,18 +23,14 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
-/** Instruction subclasses are used to represent parsed bytecode; each
- * bytecode operation has a corresponding subclass of Instruction.
+
+/**
+ * Instruction subclasses are used to represent parsed bytecode; each bytecode operation has a corresponding subclass of Instruction.
  * <p>
  * Each subclass is derived from one of
- * <ul><li>Instruction</li>
+ * <ul>
+ * <li>Instruction</li>
  * <li>Instruction_noargs (an Instruction with no embedded arguments)</li>
  * <li>Instruction_byte (an Instruction with a single byte data argument)</li>
  * <li>Instruction_bytevar (a byte argument specifying a local variable)</li>
@@ -45,6 +41,7 @@ package soot.coffi;
  * <li>Instruction_intbranch (a short argument specifying a code offset)</li>
  * <li>Instruction_longbranch (an int argument specifying a code offset)</li>
  * </ul>
+ * 
  * @author Clark Verbrugge
  * @see Instruction
  * @see Instruction_noargs
@@ -59,35 +56,40 @@ package soot.coffi;
  * @see Instruction_Unknown
  */
 class Instruction_Iinc extends Instruction_bytevar {
-   public int arg_c;
-   public Instruction_Iinc() { super((byte)ByteCode.IINC); name = "iinc"; }
-   public String toString(cp_info constant_pool[]) {
-      return super.toString(constant_pool) + argsep + arg_c;
-   }
-   public int nextOffset(int curr) { return super.nextOffset(curr)+ ((isWide) ? 2 : 1); }
+  public int arg_c;
 
-   public int parse(byte bc[],int index)
-   {
-      index = super.parse(bc,index);
+  public Instruction_Iinc() {
+    super((byte) ByteCode.IINC);
+    name = "iinc";
+  }
 
-      if(!isWide)
-      {
-        arg_c = bc[index];
-        return index+1;
-      }
-      else {
-        int constbyte1 = (bc[index]) & 0xff;
-        int constbyte2 = (bc[index+1]) & 0xff;
+  public String toString(cp_info constant_pool[]) {
+    return super.toString(constant_pool) + argsep + arg_c;
+  }
 
-        arg_c = (short) ((constbyte1 << 8) | constbyte2);
+  public int nextOffset(int curr) {
+    return super.nextOffset(curr) + ((isWide) ? 2 : 1);
+  }
 
-        return index+2;
-      }
-   }
+  public int parse(byte bc[], int index) {
+    index = super.parse(bc, index);
 
-   public int compile(byte bc[],int index) {
-      index = super.compile(bc,index);
-      bc[index] = (byte)(arg_c&0xff);
-      return index+1;
-   }
+    if (!isWide) {
+      arg_c = bc[index];
+      return index + 1;
+    } else {
+      int constbyte1 = (bc[index]) & 0xff;
+      int constbyte2 = (bc[index + 1]) & 0xff;
+
+      arg_c = (short) ((constbyte1 << 8) | constbyte2);
+
+      return index + 2;
+    }
+  }
+
+  public int compile(byte bc[], int index) {
+    index = super.compile(bc, index);
+    bc[index] = (byte) (arg_c & 0xff);
+    return index + 1;
+  }
 }

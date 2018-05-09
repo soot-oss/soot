@@ -36,20 +36,20 @@ import soot.jimple.ThrowStmt;
 
 public class ThrowInstruction extends DexlibAbstractInstruction {
 
-    public ThrowInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
-    }
+  public ThrowInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
 
-    @Override
-	public void jimplify (DexBody body) {
-        Instruction11x throwInstruction = (Instruction11x)instruction;
-        ThrowStmt throwStmt = Jimple.v().newThrowStmt(body.getRegisterLocal(throwInstruction.getRegisterA()));
-        setUnit(throwStmt);
-        addTags(throwStmt);
-        body.add(throwStmt);
-		
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-          DalvikTyper.v().setType(throwStmt.getOpBox(), RefType.v("java.lang.Throwable"), true);
-        }
+  @Override
+  public void jimplify(DexBody body) {
+    Instruction11x throwInstruction = (Instruction11x) instruction;
+    ThrowStmt throwStmt = Jimple.v().newThrowStmt(body.getRegisterLocal(throwInstruction.getRegisterA()));
+    setUnit(throwStmt);
+    addTags(throwStmt);
+    body.add(throwStmt);
+
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+      DalvikTyper.v().setType(throwStmt.getOpBox(), RefType.v("java.lang.Throwable"), true);
     }
+  }
 }

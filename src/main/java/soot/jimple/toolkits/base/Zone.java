@@ -23,23 +23,16 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple.toolkits.base;
 
-public class Zone
-{
-    private String name;
-    
-    public Zone(String name)
-    {
-        this.name = name;
-    }
-    
-    public String toString()
-    {
-        return "<zone: " + name + ">";
-    }
+public class Zone {
+  private String name;
+
+  public Zone(String name) {
+    this.name = name;
+  }
+
+  public String toString() {
+    return "<zone: " + name + ">";
+  }
 }

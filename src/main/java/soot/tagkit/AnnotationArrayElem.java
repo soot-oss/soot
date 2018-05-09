@@ -24,46 +24,46 @@
  */
 
 package soot.tagkit;
-import java.util.*;
+
+import java.util.ArrayList;
 
 import soot.util.Switch;
 
-/** 
- * Represents the base class of annotation elements
- * each annotation can have several elements 
- * for Java 1.5.
+/**
+ * Represents the base class of annotation elements each annotation can have several elements for Java 1.5.
  */
 
-public class AnnotationArrayElem extends AnnotationElem
-{
+public class AnnotationArrayElem extends AnnotationElem {
 
-    ArrayList<AnnotationElem> values;
+  ArrayList<AnnotationElem> values;
 
-    public AnnotationArrayElem(ArrayList<AnnotationElem> t, char kind, String name){
-        super(kind, name);
-        this.values = t;
-    }
-    
-    public String toString(){
-        return super.toString()+" values: "+values.toString();
-    }
+  public AnnotationArrayElem(ArrayList<AnnotationElem> t, char kind, String name) {
+    super(kind, name);
+    this.values = t;
+  }
 
-    public ArrayList<AnnotationElem> getValues(){
-        return values;
-    }
+  public String toString() {
+    return super.toString() + " values: " + values.toString();
+  }
 
-    public int getNumValues(){
-        if (values == null) return 0;
-        else return values.size();
-    }
+  public ArrayList<AnnotationElem> getValues() {
+    return values;
+  }
 
-    public AnnotationElem getValueAt(int i){
-        return values.get(i);
+  public int getNumValues() {
+    if (values == null) {
+      return 0;
+    } else {
+      return values.size();
     }
-    
-	@Override
-	public void apply(Switch sw) {
-		((IAnnotationElemTypeSwitch) sw).caseAnnotationArrayElem(this);
-	}
+  }
+
+  public AnnotationElem getValueAt(int i) {
+    return values.get(i);
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((IAnnotationElemTypeSwitch) sw).caseAnnotationArrayElem(this);
+  }
 }
-

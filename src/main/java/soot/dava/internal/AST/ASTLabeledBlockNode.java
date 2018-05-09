@@ -20,89 +20,78 @@
 
 package soot.dava.internal.AST;
 
-import soot.*;
-import java.util.*;
-import soot.dava.internal.SET.*;
-import soot.dava.toolkits.base.AST.analysis.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ASTLabeledBlockNode extends ASTLabeledNode
-{
-    private List<Object> body;
-    public ASTLabeledBlockNode( SETNodeLabel label, List<Object> body){
-	super( label);
-	this.body = body;
-	
-	subBodies.add( body);
-    }
+import soot.UnitPrinter;
+import soot.dava.internal.SET.SETNodeLabel;
+import soot.dava.toolkits.base.AST.analysis.Analysis;
 
-    /*
-      Nomair A Naeem 20-FEB-2005
-      Added for OrAggregatorOne/UselessLabeledBlockRemover
-    */
-    public void replaceBody(List<Object> body){
-	this.body=body;
-	subBodies=new ArrayList<Object>();
-	subBodies.add(body);
-    }
+public class ASTLabeledBlockNode extends ASTLabeledNode {
+  private List<Object> body;
 
-    public int size()
-    {
-	return body.size();
-    }
+  public ASTLabeledBlockNode(SETNodeLabel label, List<Object> body) {
+    super(label);
+    this.body = body;
 
-    public Object clone()
-    {
-	return new ASTLabeledBlockNode( get_Label(), body);
-    }
+    subBodies.add(body);
+  }
 
-    public void toString( UnitPrinter up )
-    {
-        label_toString( up );
+  /*
+   * Nomair A Naeem 20-FEB-2005 Added for OrAggregatorOne/UselessLabeledBlockRemover
+   */
+  public void replaceBody(List<Object> body) {
+    this.body = body;
+    subBodies = new ArrayList<Object>();
+    subBodies.add(body);
+  }
 
-        up.literal( "{" );
-        up.newline();
- 
-        up.incIndent();
-        body_toString( up, body );
-        up.decIndent();
+  public int size() {
+    return body.size();
+  }
 
-        up.literal( "} //end " );
-        label_toString( up );
+  public Object clone() {
+    return new ASTLabeledBlockNode(get_Label(), body);
+  }
 
+  public void toString(UnitPrinter up) {
+    label_toString(up);
 
+    up.literal("{");
+    up.newline();
 
+    up.incIndent();
+    body_toString(up, body);
+    up.decIndent();
 
-        up.newline();
-    }
+    up.literal("} //end ");
+    label_toString(up);
 
-    public String toString()
-    {
-	StringBuffer b = new StringBuffer();
+    up.newline();
+  }
 
-	b.append( label_toString());
+  public String toString() {
+    StringBuffer b = new StringBuffer();
 
-	b.append( "{");
-	b.append( NEWLINE);
- 
-	b.append( body_toString(body));
+    b.append(label_toString());
 
-	b.append( "} //");
-	b.append( label_toString());
+    b.append("{");
+    b.append(NEWLINE);
 
+    b.append(body_toString(body));
 
+    b.append("} //");
+    b.append(label_toString());
 
-	b.append( NEWLINE);
+    b.append(NEWLINE);
 
-	return b.toString();
-    }
+    return b.toString();
+  }
 
-
-    /*
-      Nomair A. Naeem, 7-FEB-05
-      Part of Visitor Design Implementation for AST
-      See: soot.dava.toolkits.base.AST.analysis For details
-    */
-    public void apply(Analysis a){
-	a.caseASTLabeledBlockNode(this);
-    }
+  /*
+   * Nomair A. Naeem, 7-FEB-05 Part of Visitor Design Implementation for AST See: soot.dava.toolkits.base.AST.analysis For details
+   */
+  public void apply(Analysis a) {
+    a.caseASTLabeledBlockNode(this);
+  }
 }

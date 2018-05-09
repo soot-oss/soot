@@ -19,30 +19,26 @@
 
 package soot.jimple.toolkits.pointer;
 
+import soot.G;
+import soot.Singletons;
+import soot.tagkit.ImportantTagAggregator;
+import soot.tagkit.Tag;
 
-import soot.*;
+public class DependenceTagAggregator extends ImportantTagAggregator {
+  public DependenceTagAggregator(Singletons.Global g) {
+  }
 
-import soot.tagkit.*;
+  public static DependenceTagAggregator v() {
+    return G.v().soot_jimple_toolkits_pointer_DependenceTagAggregator();
+  }
 
-public class DependenceTagAggregator extends ImportantTagAggregator
-{    
-    public DependenceTagAggregator( Singletons.Global g ) {}
-    public static DependenceTagAggregator v() { return G.v().soot_jimple_toolkits_pointer_DependenceTagAggregator(); }
+  /** Decide whether this tag should be aggregated by this aggregator. */
+  public boolean wantTag(Tag t) {
+    return (t instanceof DependenceTag);
+  }
 
-    /** Decide whether this tag should be aggregated by this aggregator. */
-    public boolean wantTag( Tag t ) {
-        return (t instanceof DependenceTag);
-    }
-
-    /** Return name of the resulting aggregated tag. */
-    public String aggregatedName() {
-        return "SideEffectAttribute";
-    }
+  /** Return name of the resulting aggregated tag. */
+  public String aggregatedName() {
+    return "SideEffectAttribute";
+  }
 }
-
-
-
-
-
-
-

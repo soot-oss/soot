@@ -18,42 +18,40 @@
  */
 package soot.jimple.spark.ondemand.genericutil;
 
+public class UnorderedPair<U, V> {
 
-public class UnorderedPair<U,V> {
+  public U o1;
+  public V o2;
 
-	public U o1;
-	public V o2;
-	
-	public UnorderedPair(U o1, V o2) {
-		this.o1 = o1;
-		this.o2 = o2;
-	}
+  public UnorderedPair(U o1, V o2) {
+    this.o1 = o1;
+    this.o2 = o2;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	public boolean equals(Object obj) {
-		if (obj != null && obj.getClass() == UnorderedPair.class) {
-			UnorderedPair u = (UnorderedPair) obj;
-			return (u.o1.equals(o1) && u.o2.equals(o2))
-					|| (u.o1.equals(o2) && u.o2.equals(o1));
-		}
-		return false;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  public boolean equals(Object obj) {
+    if (obj != null && obj.getClass() == UnorderedPair.class) {
+      UnorderedPair u = (UnorderedPair) obj;
+      return (u.o1.equals(o1) && u.o2.equals(o2)) || (u.o1.equals(o2) && u.o2.equals(o1));
+    }
+    return false;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	public int hashCode() {
-		return o1.hashCode() + o2.hashCode();
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  public int hashCode() {
+    return o1.hashCode() + o2.hashCode();
+  }
 
-	public String toString() {
-		return "{" + o1.toString() + ", " + o2.toString() + "}";
-	}
+  public String toString() {
+    return "{" + o1.toString() + ", " + o2.toString() + "}";
+  }
 
 }

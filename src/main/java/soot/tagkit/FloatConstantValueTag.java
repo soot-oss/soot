@@ -28,45 +28,49 @@ package soot.tagkit;
 import soot.jimple.FloatConstant;
 
 public class FloatConstantValueTag extends ConstantValueTag {
-	private final float value;
+  private final float value;
 
-	public FloatConstantValueTag(float value) {
-		this.value = value;
-	}
+  public FloatConstantValueTag(float value) {
+    this.value = value;
+  }
 
-	public float getFloatValue() {
-		return value;
-	}
+  public float getFloatValue() {
+    return value;
+  }
 
-	public String toString() {
-		return "ConstantValue: " + Float.toString(value);
-	}
+  public String toString() {
+    return "ConstantValue: " + Float.toString(value);
+  }
 
-	@Override
-	public FloatConstant getConstant() {
-		return FloatConstant.v(value);
-	}
+  @Override
+  public FloatConstant getConstant() {
+    return FloatConstant.v(value);
+  }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + Float.floatToIntBits(value);
-		return result;
-	}
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + Float.floatToIntBits(value);
+    return result;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		FloatConstantValueTag other = (FloatConstantValueTag) obj;
-		if (Float.floatToIntBits(value) != Float.floatToIntBits(other.value))
-			return false;
-		return true;
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    FloatConstantValueTag other = (FloatConstantValueTag) obj;
+    if (Float.floatToIntBits(value) != Float.floatToIntBits(other.value)) {
+      return false;
+    }
+    return true;
+  }
 
 }

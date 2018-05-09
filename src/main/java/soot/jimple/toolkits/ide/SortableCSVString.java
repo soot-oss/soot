@@ -19,29 +19,31 @@
 package soot.jimple.toolkits.ide;
 
 public class SortableCSVString implements Comparable<SortableCSVString> {
-	String value;
-	int position;
+  String value;
+  int position;
 
-	public SortableCSVString(String str, int pos) {
-		value = str;
-		position = pos;
-	}
+  public SortableCSVString(String str, int pos) {
+    value = str;
+    position = pos;
+  }
 
-	public int compareTo(SortableCSVString anotherString) {
-		// "@"+i+";
-		int result;
-		String subString = value.substring(0, value.indexOf(';'));
-		String anotherSubString = anotherString.value.substring(0, anotherString.value.indexOf(';'));
+  public int compareTo(SortableCSVString anotherString) {
+    // "@"+i+";
+    int result;
+    String subString = value.substring(0, value.indexOf(';'));
+    String anotherSubString = anotherString.value.substring(0, anotherString.value.indexOf(';'));
 
-		result = subString.compareTo(anotherSubString);
-		if (result == 0) {
-			if (position < anotherString.position)
-				return -1;
-			if (position > anotherString.position)
-				return 1;
-			return 0;
-		} else {
-			return result;
-		}
-	}
+    result = subString.compareTo(anotherSubString);
+    if (result == 0) {
+      if (position < anotherString.position) {
+        return -1;
+      }
+      if (position > anotherString.position) {
+        return 1;
+      }
+      return 0;
+    } else {
+      return result;
+    }
+  }
 }

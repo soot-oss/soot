@@ -1,6 +1,23 @@
 package soot;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.jf.dexlib2.dexbacked.DexBackedDexFile;
+import org.jf.dexlib2.iface.ClassDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import soot.dexpler.DexFileProvider;
+import soot.dexpler.Util;
+import soot.options.Options;
+
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  *
@@ -20,95 +37,87 @@ import org.slf4j.LoggerFactory;
  * Boston, MA 02111-1307, USA.
  */
 
-import org.jf.dexlib2.dexbacked.DexBackedDexFile;
-import org.jf.dexlib2.iface.ClassDef;
-import soot.dexpler.DexFileProvider;
-import soot.dexpler.Util;
-import soot.options.Options;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
 /**
  * Looks for a dex file which includes the definition of a class.
  */
 public class DexClassProvider implements ClassProvider {
-    private static final Logger logger = LoggerFactory.getLogger(DexClassProvider.class);
+  private static final Logger logger = LoggerFactory.getLogger(DexClassProvider.class);
 
-    public static Set<String> classesOfDex(DexBackedDexFile dexFile) {
-        Set<String> classes = new HashSet<String>();
-        for (ClassDef c : dexFile.getClasses()) {
-            String name = Util.dottedClassName(c.getType());
-            classes.add(name);
-        }
-        return classes;
+  public static Set<String> classesOfDex(DexBackedDexFile dexFile) {
+    Set<String> classes = new HashSet<String>();
+    for (ClassDef c : dexFile.getClasses()) {
+      String name = Util.dottedClassName(c.getType());
+      classes.add(name);
+    }
+    return classes;
+  }
+
+  /**
+   * Provides the DexClassSource for the class.
+   *
+   * @param className
+   *          class to provide.
+   * @return a DexClassSource that defines the className named class.
+   */
+  public ClassSource find(String className) {
+    ensureDexIndex();
+
+    Map<String, File> index = SourceLocator.v().dexClassIndex();
+    File file = index.get(className);
+    if (file == null) {
+      return null;
     }
 
-    /**
-     * Provides the DexClassSource for the class.
-     *
-     * @param className class to provide.
-     * @return a DexClassSource that defines the className named class.
-     */
-    public ClassSource find(String className) {
-        ensureDexIndex();
+    return new DexClassSource(className, file);
+  }
 
-        Map<String, File> index = SourceLocator.v().dexClassIndex();
-        File file = index.get(className);
-        if (file == null)
-            return null;
-
-        return new DexClassSource(className, file);
+  /**
+   * Checks whether the dex class index needs to be (re)built and triggers the build if necessary
+   */
+  protected void ensureDexIndex() {
+    Map<String, File> index = SourceLocator.v().dexClassIndex();
+    if (index == null) {
+      index = new HashMap<String, File>();
+      buildDexIndex(index, SourceLocator.v().classPath());
+      SourceLocator.v().setDexClassIndex(index);
     }
 
-    /**
-     * Checks whether the dex class index needs to be (re)built and triggers the
-     * build if necessary
-     */
-    protected void ensureDexIndex() {
-        Map<String, File> index = SourceLocator.v().dexClassIndex();
-        if (index == null) {
-            index = new HashMap<String, File>();
-            buildDexIndex(index, SourceLocator.v().classPath());
-            SourceLocator.v().setDexClassIndex(index);
-        }
-
-        // Process the classpath extensions
-        if (SourceLocator.v().getDexClassPathExtensions() != null) {
-            buildDexIndex(SourceLocator.v().dexClassIndex(),
-                    new ArrayList<>(SourceLocator.v().getDexClassPathExtensions()));
-            SourceLocator.v().clearDexClassPathExtensions();
-        }
+    // Process the classpath extensions
+    if (SourceLocator.v().getDexClassPathExtensions() != null) {
+      buildDexIndex(SourceLocator.v().dexClassIndex(), new ArrayList<>(SourceLocator.v().getDexClassPathExtensions()));
+      SourceLocator.v().clearDexClassPathExtensions();
     }
+  }
 
-    /**
-     * Build index of ClassName-to-File mappings.
-     *
-     * @param index     map to insert mappings into
-     * @param classPath paths to index
-     */
-    private void buildDexIndex(Map<String, File> index, List<String> classPath) {
-        for (String path : classPath) {
-            try {
-                for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(new File(path))) {
-                    for (String className : classesOfDex(container.getBase())) {
-                        if (!index.containsKey(className))
-                            index.put(className, container.getFilePath());
-                        else if(Options.v().verbose())
-                            logger.debug(""+String.format("Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.",
-                                    className, container.getDexName(), container.getFilePath().getCanonicalPath()));
-                    }
-                }
-            } catch (IOException e) {
-                logger.warn("IO error while processing dex file '" + path + "'");
-                logger.debug("Exception: " + e);
-            } catch (Exception e) {
-                logger.warn("exception while processing dex file '" + path + "'");
-                logger.debug("Exception: " + e);
+  /**
+   * Build index of ClassName-to-File mappings.
+   *
+   * @param index
+   *          map to insert mappings into
+   * @param classPath
+   *          paths to index
+   */
+  private void buildDexIndex(Map<String, File> index, List<String> classPath) {
+    for (String path : classPath) {
+      try {
+        for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(new File(path))) {
+          for (String className : classesOfDex(container.getBase())) {
+            if (!index.containsKey(className)) {
+              index.put(className, container.getFilePath());
+            } else if (Options.v().verbose()) {
+              logger.debug("" + String.format("Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.", className,
+                  container.getDexName(), container.getFilePath().getCanonicalPath()));
             }
+          }
         }
-
+      } catch (IOException e) {
+        logger.warn("IO error while processing dex file '" + path + "'");
+        logger.debug("Exception: " + e);
+      } catch (Exception e) {
+        logger.warn("exception while processing dex file '" + path + "'");
+        logger.debug("Exception: " + e);
+      }
     }
-}
 
+  }
+}

@@ -25,9 +25,8 @@
 
 package soot.jimple.toolkits.annotation.tags;
 
-import soot.tagkit.*;
+import soot.tagkit.Tag;
 
 /** A tag which is guaranteed to contain no more than 1 byte of information. */
-public interface OneByteCodeTag extends Tag
-{
+public interface OneByteCodeTag extends Tag {
 }

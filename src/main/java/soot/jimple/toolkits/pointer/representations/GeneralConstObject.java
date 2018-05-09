@@ -28,35 +28,35 @@
 
 package soot.jimple.toolkits.pointer.representations;
 
-import soot.*;
+import soot.G;
+import soot.Type;
 
 public class GeneralConstObject extends ConstantObject {
 
-
   /* what's the soot class */
-  private Type      type;
-  private String    name;
-  private int       id;
+  private Type type;
+  private String name;
+  private int id;
 
-  public GeneralConstObject(Type t, String n){
+  public GeneralConstObject(Type t, String n) {
     this.type = t;
     this.name = n;
-    this.id   = G.v().GeneralConstObject_counter++;
+    this.id = G.v().GeneralConstObject_counter++;
   }
-  
+
   public Type getType() {
     return type;
   }
-  
+
   public String toString() {
     return name;
   }
 
-  public int hashCode(){
+  public int hashCode() {
     return this.id;
   }
 
-  public boolean equals(Object other){
+  public boolean equals(Object other) {
     return this == other;
   }
 }

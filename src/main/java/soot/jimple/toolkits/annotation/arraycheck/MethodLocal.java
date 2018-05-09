@@ -25,52 +25,40 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import soot.*;
+import soot.Local;
+import soot.SootMethod;
 
-class MethodLocal
-{
-    private final SootMethod m;
-    private final Local l;
+class MethodLocal {
+  private final SootMethod m;
+  private final Local l;
 
-    public MethodLocal(SootMethod method, Local local)
-    {
-	m = method;
-	l = local;
+  public MethodLocal(SootMethod method, Local local) {
+    m = method;
+    l = local;
+  }
+
+  public SootMethod getMethod() {
+    return m;
+  }
+
+  public Local getLocal() {
+    return l;
+  }
+
+  public int hashCode() {
+    return m.hashCode() + l.hashCode();
+  }
+
+  public boolean equals(Object other) {
+    if (other instanceof MethodLocal) {
+      MethodLocal another = (MethodLocal) other;
+      return m.equals(another.getMethod()) && l.equals(another.getLocal());
     }
 
-    public SootMethod getMethod()
-    {
-	return m;
-    }
+    return false;
+  }
 
-    public Local getLocal()
-    {
-	return l;
-    }
-
-    public int hashCode()
-    {
-	return m.hashCode()+l.hashCode();
-    }
-
-    public boolean equals(Object other)
-    {
-	if (other instanceof MethodLocal)
-	{
-	    MethodLocal another = (MethodLocal)other;
-	    return m.equals(another.getMethod()) && l.equals(another.getLocal()) ;
-	}
-	
-	return false;
-    }
-
-    public String toString()
-    {
-	return "["+m.getSignature()+" : "+l.toString()+"]";
-    }
+  public String toString() {
+    return "[" + m.getSignature() + " : " + l.toString() + "]";
+  }
 }
-
-
-
-
-

@@ -23,29 +23,35 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-import soot.baf.*;
+import soot.Type;
+import soot.Value;
+import soot.baf.Baf;
+import soot.jimple.ExprSwitch;
+import soot.jimple.Jimple;
+import soot.jimple.RemExpr;
+import soot.util.Switch;
 
-public class JRemExpr extends AbstractJimpleFloatBinopExpr implements RemExpr
-{
-    public JRemExpr(Value op1, Value op2) { super(op1, op2); }
-    public String getSymbol() { return " % "; }
-    public void apply(Switch sw) { ((ExprSwitch) sw).caseRemExpr(this); }
-    Object makeBafInst(Type opType) { return Baf.v().newRemInst(this.getOp1().getType()); }
+public class JRemExpr extends AbstractJimpleFloatBinopExpr implements RemExpr {
+  public JRemExpr(Value op1, Value op2) {
+    super(op1, op2);
+  }
 
-    public Object clone() 
-    {
-        return new JRemExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
-    }
+  public String getSymbol() {
+    return " % ";
+  }
+
+  public void apply(Switch sw) {
+    ((ExprSwitch) sw).caseRemExpr(this);
+  }
+
+  Object makeBafInst(Type opType) {
+    return Baf.v().newRemInst(this.getOp1().getType());
+  }
+
+  public Object clone() {
+    return new JRemExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
+  }
 
 }
-

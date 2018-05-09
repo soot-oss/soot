@@ -23,308 +23,305 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.util;
 
-import java.util.*;
+import java.util.AbstractCollection;
+import java.util.AbstractSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
-public class IterableMap implements Map
-{
-    private HashMap<Object, Object> content_map, back_map;
-    private HashChain key_chain, value_chain;
+public class IterableMap implements Map {
+  private HashMap<Object, Object> content_map, back_map;
+  private HashChain key_chain, value_chain;
 
-    public IterableMap()
-    {
-	this( 7, 0.7f);
+  public IterableMap() {
+    this(7, 0.7f);
+  }
+
+  public IterableMap(int initialCapacity) {
+    this(initialCapacity, 0.7f);
+  }
+
+  public IterableMap(int initialCapacity, float loadFactor) {
+    content_map = new HashMap<Object, Object>(initialCapacity, loadFactor);
+    back_map = new HashMap<Object, Object>(initialCapacity, loadFactor);
+    key_chain = new HashChain();
+    value_chain = new HashChain();
+  }
+
+  public void clear() {
+    Iterator kcit = key_chain.iterator();
+    while (kcit.hasNext()) {
+      content_map.remove(kcit.next());
     }
 
-    public IterableMap( int initialCapacity)
-    {
-	this( initialCapacity, 0.7f);
+    Iterator vcit = value_chain.iterator();
+    while (vcit.hasNext()) {
+      back_map.remove(vcit.next());
     }
 
-    public IterableMap( int initialCapacity, float loadFactor)
-    {
-	content_map = new HashMap<Object, Object>( initialCapacity, loadFactor);
-	back_map    = new HashMap<Object, Object>( initialCapacity, loadFactor);
-	key_chain   = new HashChain();
-	value_chain = new HashChain();
+    key_chain.clear();
+    value_chain.clear();
+  }
+
+  public Iterator iterator() {
+    return key_chain.iterator();
+  }
+
+  public boolean containsKey(Object key) {
+    return key_chain.contains(key);
+  }
+
+  public boolean containsValue(Object value) {
+    return value_chain.contains(value);
+  }
+
+  public Set entrySet() {
+    return content_map.entrySet();
+  }
+
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
     }
 
-    public void clear()
-    {
-	Iterator kcit = key_chain.iterator();
-	while (kcit.hasNext())
-	    content_map.remove( kcit.next());
-
-	Iterator vcit = value_chain.iterator();
-	while (vcit.hasNext())
-	    back_map.remove( vcit.next());
-	
-	key_chain.clear();
-	value_chain.clear();
-    }
-    
-    public Iterator iterator()
-    {
-	return key_chain.iterator();
-    }
-    
-    public boolean containsKey(Object key) 
-    {
-	return key_chain.contains( key);
-    }
-    
-    public boolean containsValue(Object value)
-    {
-	return value_chain.contains( value);
-    }
-    
-    public Set entrySet()
-    {
-	return content_map.entrySet();
+    if ((o instanceof IterableMap) == false) {
+      return false;
     }
 
-    public boolean equals( Object o)
-    {
-	if (o == this)
-	    return true;
+    IterableMap other = (IterableMap) o;
 
-	if ((o instanceof IterableMap) == false)
-	    return false;
-	
-	IterableMap other = (IterableMap) o;
-
-	if (key_chain.equals( other.key_chain) == false)
-	    return false;
-	
-	// check that the other has our mapping
-	Iterator kcit = key_chain.iterator();
-	while (kcit.hasNext()) {
-	    Object ko = kcit.next();
-
-	    if (other.content_map.get( ko) != content_map.get( ko))
-		return false;
-	}
-
-	return true;
+    if (key_chain.equals(other.key_chain) == false) {
+      return false;
     }
 
-    public Object get( Object key)
-    {
-	return content_map.get( key);
+    // check that the other has our mapping
+    Iterator kcit = key_chain.iterator();
+    while (kcit.hasNext()) {
+      Object ko = kcit.next();
+
+      if (other.content_map.get(ko) != content_map.get(ko)) {
+        return false;
+      }
     }
 
-    public int hashCode() 
-    {
-	return content_map.hashCode();
-    }
+    return true;
+  }
 
-    public boolean isEmpty()
-    {
-	return key_chain.isEmpty();
-    }
+  public Object get(Object key) {
+    return content_map.get(key);
+  }
 
-    private transient Set<Object> keySet = null;
-    private transient Set<Object> valueSet = null;
-    private transient Collection<Object> values = null;
-    
-    public Set<Object> keySet()
-    {
-        if (keySet == null) {
-            keySet = new AbstractSet() {
-                public Iterator iterator() {
-                    return key_chain.iterator();
-                }
-                public int size() {
-                    return key_chain.size();
-                }
-                public boolean contains(Object o) {
-                    return key_chain.contains(o);
-                }
-                public boolean remove(Object o) {
-		    if (key_chain.contains(o) == false) {
-			return false;
-		    }
+  public int hashCode() {
+    return content_map.hashCode();
+  }
 
-		    if (IterableMap.this.content_map.get( o) == null) {
-			IterableMap.this.remove(o);
-			return true;
-		    }
+  public boolean isEmpty() {
+    return key_chain.isEmpty();
+  }
 
-                    return (IterableMap.this.remove(o) != null);
-                }
-                public void clear() {
-		    IterableMap.this.clear();
-                }
-            };
-        }
-        return keySet;
-    }
+  private transient Set<Object> keySet = null;
+  private transient Set<Object> valueSet = null;
+  private transient Collection<Object> values = null;
 
-    public Set<Object> valueSet()
-    {
-        if (valueSet == null) {
-            valueSet = new AbstractSet() {
-                public Iterator iterator() {
-                    return value_chain.iterator();
-                }
-                public int size() {
-                    return value_chain.size();
-                }
-                public boolean contains(Object o) {
-                    return value_chain.contains(o);
-                }
-
-                public boolean remove(Object o) {
-		    if (value_chain.contains( o) == false) {
-			return false;
-		    }
-
-		    HashChain c = (HashChain) IterableMap.this.back_map.get( o);
-		    Iterator it = c.snapshotIterator();
-		    while (it.hasNext()) {
-			Object ko = it.next();
-
-			if (IterableMap.this.content_map.get( o) == null) {
-			    IterableMap.this.remove(ko);
-			}
-			else if (IterableMap.this.remove( ko) == null) {
-			    return false;
-			}
-		    }
-		    return true;
-                }
-                public void clear() {
-		    IterableMap.this.clear();
-                }
-            };
-        }
-        return valueSet;
-     }
-
-    public Object put( Object key, Object value)
-    {
-	if (key_chain.contains( key)) {
-
-	    Object old_value = content_map.get( key);
-
-	    if (old_value == value)
-		return value;
-
-	    HashChain kc = (HashChain) back_map.get( old_value);
-	    kc.remove( key);
-
-	    if (kc.isEmpty()) {
-		value_chain.remove( old_value);
-		back_map.remove( old_value);
-	    }
-
-	    kc = (HashChain) back_map.get( value);
-	    if (kc == null) {
-		kc = new HashChain();
-		back_map.put( value, kc);
-		value_chain.add( value);
-	    }
-	    kc.add( key);
-
-	    return old_value;
-
-	}
-	else {
-
-	    key_chain.add(key);
-	    content_map.put( key, value);
-	    
-	    HashChain kc = (HashChain) back_map.get( value);
-	    if (kc == null) {
-		kc = new HashChain();
-		back_map.put( value, kc);
-		value_chain.add( value);
-	    }
-	    kc.add( key);
-	    
-	    return null;
-	}
-    }
-
-    public void putAll( Map t)
-    {
-	Iterator kit = (t instanceof IterableMap) ? ((IterableMap) t).key_chain.iterator() : t.keySet().iterator();
-
-	while (kit.hasNext()) {
-	    Object key = kit.next();
-	    put( key, t.get( key));
-	}
-    }
-
-
-    public Object remove( Object key)
-    {
-	if (key_chain.contains( key) == false)
-	    return null;
-
-	key_chain.remove( key);
-	Object value = content_map.remove( key);
-	HashChain c = (HashChain) back_map.get( value);
-	c.remove( key);
-	if (c.size() == 0)
-	    back_map.remove( value);
-
-	return value;
-    }
-
-    public int size()
-    {
-	return key_chain.size();
-    }
-
-    public Collection<Object> values()
-    {
-        if (values==null) {
-            values = new AbstractCollection() {
-                public Iterator iterator() {
-		    return new Mapping_Iterator( IterableMap.this.key_chain, IterableMap.this.content_map);
-                }
-                public int size() {
-                    return key_chain.size();
-                }
-                public boolean contains(Object o) {
-                    return value_chain.contains(o);
-                }
-                public void clear() {
-		    IterableMap.this.clear();
-                }
-            };
-        }
-        return values;
-    }
-
-    public class Mapping_Iterator implements Iterator
-    {
-	private final Iterator it;
-	private HashMap<Object, Object> m;
-
-	public Mapping_Iterator( HashChain c, HashMap<Object, Object> m)
-	{
-	    it = c.iterator();
-	    this.m = m;
-	}
-
-        public boolean hasNext() 
-        {
-	    return it.hasNext();
-        }
-            
-        public Object next() throws NoSuchElementException
-        {
-	    return m.get( it.next());
+  public Set<Object> keySet() {
+    if (keySet == null) {
+      keySet = new AbstractSet() {
+        public Iterator iterator() {
+          return key_chain.iterator();
         }
 
-        public void remove() throws UnsupportedOperationException 
-        {
-	    throw new UnsupportedOperationException("You cannot remove from an Iterator on the values() for an IterableMap.");
+        public int size() {
+          return key_chain.size();
         }
+
+        public boolean contains(Object o) {
+          return key_chain.contains(o);
+        }
+
+        public boolean remove(Object o) {
+          if (key_chain.contains(o) == false) {
+            return false;
+          }
+
+          if (IterableMap.this.content_map.get(o) == null) {
+            IterableMap.this.remove(o);
+            return true;
+          }
+
+          return (IterableMap.this.remove(o) != null);
+        }
+
+        public void clear() {
+          IterableMap.this.clear();
+        }
+      };
     }
+    return keySet;
+  }
+
+  public Set<Object> valueSet() {
+    if (valueSet == null) {
+      valueSet = new AbstractSet() {
+        public Iterator iterator() {
+          return value_chain.iterator();
+        }
+
+        public int size() {
+          return value_chain.size();
+        }
+
+        public boolean contains(Object o) {
+          return value_chain.contains(o);
+        }
+
+        public boolean remove(Object o) {
+          if (value_chain.contains(o) == false) {
+            return false;
+          }
+
+          HashChain c = (HashChain) IterableMap.this.back_map.get(o);
+          Iterator it = c.snapshotIterator();
+          while (it.hasNext()) {
+            Object ko = it.next();
+
+            if (IterableMap.this.content_map.get(o) == null) {
+              IterableMap.this.remove(ko);
+            } else if (IterableMap.this.remove(ko) == null) {
+              return false;
+            }
+          }
+          return true;
+        }
+
+        public void clear() {
+          IterableMap.this.clear();
+        }
+      };
+    }
+    return valueSet;
+  }
+
+  public Object put(Object key, Object value) {
+    if (key_chain.contains(key)) {
+
+      Object old_value = content_map.get(key);
+
+      if (old_value == value) {
+        return value;
+      }
+
+      HashChain kc = (HashChain) back_map.get(old_value);
+      kc.remove(key);
+
+      if (kc.isEmpty()) {
+        value_chain.remove(old_value);
+        back_map.remove(old_value);
+      }
+
+      kc = (HashChain) back_map.get(value);
+      if (kc == null) {
+        kc = new HashChain();
+        back_map.put(value, kc);
+        value_chain.add(value);
+      }
+      kc.add(key);
+
+      return old_value;
+
+    } else {
+
+      key_chain.add(key);
+      content_map.put(key, value);
+
+      HashChain kc = (HashChain) back_map.get(value);
+      if (kc == null) {
+        kc = new HashChain();
+        back_map.put(value, kc);
+        value_chain.add(value);
+      }
+      kc.add(key);
+
+      return null;
+    }
+  }
+
+  public void putAll(Map t) {
+    Iterator kit = (t instanceof IterableMap) ? ((IterableMap) t).key_chain.iterator() : t.keySet().iterator();
+
+    while (kit.hasNext()) {
+      Object key = kit.next();
+      put(key, t.get(key));
+    }
+  }
+
+  public Object remove(Object key) {
+    if (key_chain.contains(key) == false) {
+      return null;
+    }
+
+    key_chain.remove(key);
+    Object value = content_map.remove(key);
+    HashChain c = (HashChain) back_map.get(value);
+    c.remove(key);
+    if (c.size() == 0) {
+      back_map.remove(value);
+    }
+
+    return value;
+  }
+
+  public int size() {
+    return key_chain.size();
+  }
+
+  public Collection<Object> values() {
+    if (values == null) {
+      values = new AbstractCollection() {
+        public Iterator iterator() {
+          return new Mapping_Iterator(IterableMap.this.key_chain, IterableMap.this.content_map);
+        }
+
+        public int size() {
+          return key_chain.size();
+        }
+
+        public boolean contains(Object o) {
+          return value_chain.contains(o);
+        }
+
+        public void clear() {
+          IterableMap.this.clear();
+        }
+      };
+    }
+    return values;
+  }
+
+  public class Mapping_Iterator implements Iterator {
+    private final Iterator it;
+    private HashMap<Object, Object> m;
+
+    public Mapping_Iterator(HashChain c, HashMap<Object, Object> m) {
+      it = c.iterator();
+      this.m = m;
+    }
+
+    public boolean hasNext() {
+      return it.hasNext();
+    }
+
+    public Object next() throws NoSuchElementException {
+      return m.get(it.next());
+    }
+
+    public void remove() throws UnsupportedOperationException {
+      throw new UnsupportedOperationException("You cannot remove from an Iterator on the values() for an IterableMap.");
+    }
+  }
 
 }

@@ -26,29 +26,23 @@
 package soot.toolkits.graph;
 
 import soot.Body;
-import soot.toolkits.graph.ExceptionalBlockGraph;
-import soot.toolkits.graph.CompleteUnitGraph;
+import soot.Trap;
 
 /**
- *  <p>Represents a CFG for a {@link Body} instance where the nodes
- *  are {@link Block} instances, and where control flow associated with
- *  exceptions is taken into account. When dividing the {@link Body} into
- *  basic blocks, 
- *  <code>CompleteBlockGraph</code> assumes that every {@link Unit} covered by a
- *  {@link Trap} has the potential to throw an
- *  exception caught by the {@link Trap}.  This generally has the effect of 
- *  separating every covered {@link Unit} into a separate block.
+ * <p>
+ * Represents a CFG for a {@link Body} instance where the nodes are {@link Block} instances, and where control flow associated with exceptions is
+ * taken into account. When dividing the {@link Body} into basic blocks, <code>CompleteBlockGraph</code> assumes that every {@link Unit} covered by a
+ * {@link Trap} has the potential to throw an exception caught by the {@link Trap}. This generally has the effect of separating every covered
+ * {@link Unit} into a separate block.
  *
- *  <p>This implementation of <code>CompleteBlockGraph</code> is included
- *  for backwards compatibility, but the graphs it produces are not
- *  necessarily identical to the graphs produced by the implementation of
- *  <code>CompleteBlockGraph</code> See the documentation for 
- *  {@link CompleteUnitGraph} for details of the incompatibilities.
- *  </p>
+ * <p>
+ * This implementation of <code>CompleteBlockGraph</code> is included for backwards compatibility, but the graphs it produces are not necessarily
+ * identical to the graphs produced by the implementation of <code>CompleteBlockGraph</code> See the documentation for {@link CompleteUnitGraph} for
+ * details of the incompatibilities.
+ * </p>
  */
-public class CompleteBlockGraph extends ExceptionalBlockGraph 
-{
-    public CompleteBlockGraph(Body b) {
-	super(new CompleteUnitGraph(b));
-    }
+public class CompleteBlockGraph extends ExceptionalBlockGraph {
+  public CompleteBlockGraph(Body b) {
+    super(new CompleteUnitGraph(b));
+  }
 }

@@ -23,53 +23,43 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
-import soot.util.*;
+import soot.RefType;
+import soot.Type;
+import soot.util.StringTools;
+import soot.util.Switch;
 
-public class StringConstant extends Constant
-{
-    public final String value;
+public class StringConstant extends Constant {
+  public final String value;
 
-    private StringConstant(String s)
-    {
-        this.value = s;
-    }
+  private StringConstant(String s) {
+    this.value = s;
+  }
 
-    public static StringConstant v(String value)
-    {
-        return new StringConstant(value);
-    }
+  public static StringConstant v(String value) {
+    return new StringConstant(value);
+  }
 
-    // In this case, equals should be structural equality.
-    public boolean equals(Object c)
-    {
-        return (c instanceof StringConstant && ((StringConstant) c).value.equals(this.value));
-    }
+  // In this case, equals should be structural equality.
+  public boolean equals(Object c) {
+    return (c instanceof StringConstant && ((StringConstant) c).value.equals(this.value));
+  }
 
-    /** Returns a hash code for this StringConstant object. */
-    public int hashCode()
-    {
-        return value.hashCode();
-    }
+  /** Returns a hash code for this StringConstant object. */
+  public int hashCode() {
+    return value.hashCode();
+  }
 
-    public String toString()
-    {
-        return StringTools.getQuotedStringOf(value);
-    }
+  public String toString() {
+    return StringTools.getQuotedStringOf(value);
+  }
 
-    public Type getType()
-    {
-        return RefType.v("java.lang.String");
-    }
+  public Type getType() {
+    return RefType.v("java.lang.String");
+  }
 
-    public void apply(Switch sw)
-    {
-        ((ConstantSwitch) sw).caseStringConstant(this);
-    }
+  public void apply(Switch sw) {
+    ((ConstantSwitch) sw).caseStringConstant(this);
+  }
 }

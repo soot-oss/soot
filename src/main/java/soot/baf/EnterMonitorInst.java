@@ -25,6 +25,5 @@
 
 package soot.baf;
 
-public interface EnterMonitorInst extends NoArgInst
-{
+public interface EnterMonitorInst extends NoArgInst {
 }

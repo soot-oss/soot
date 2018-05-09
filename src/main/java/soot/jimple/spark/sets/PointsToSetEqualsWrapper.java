@@ -31,95 +31,96 @@ import soot.jimple.ClassConstant;
  */
 public class PointsToSetEqualsWrapper implements PointsToSet {
 
-    protected EqualsSupportingPointsToSet pts;
+  protected EqualsSupportingPointsToSet pts;
 
-    public PointsToSetEqualsWrapper(EqualsSupportingPointsToSet pts) {
-        this.pts = pts;
-    }
-    
-    public EqualsSupportingPointsToSet unwarp(){
-        return  this.pts;
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {        
-        //delegate
-        return pts.pointsToSetHashCode();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if(this==obj || this.pts==obj) {
-            return true;
-        }
-        
-        //unwrap other
-        obj = unwrapIfNecessary(obj);       
-        //delegate
-        return pts.pointsToSetEquals(obj);
+  public PointsToSetEqualsWrapper(EqualsSupportingPointsToSet pts) {
+    this.pts = pts;
+  }
+
+  public EqualsSupportingPointsToSet unwarp() {
+    return this.pts;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    // delegate
+    return pts.pointsToSetHashCode();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj || this.pts == obj) {
+      return true;
     }
 
-    /**
-     * @param other
-     * @return
-     * @see soot.PointsToSet#hasNonEmptyIntersection(soot.PointsToSet)
-     */
-    public boolean hasNonEmptyIntersection(PointsToSet other) {
-        //unwrap other
-        other = (PointsToSet) unwrapIfNecessary(other);       
-        return pts.hasNonEmptyIntersection(other);
-    }
+    // unwrap other
+    obj = unwrapIfNecessary(obj);
+    // delegate
+    return pts.pointsToSetEquals(obj);
+  }
 
-    /**
-     * @return
-     * @see soot.PointsToSet#isEmpty()
-     */
-    public boolean isEmpty() {
-        return pts.isEmpty();
-    }
+  /**
+   * @param other
+   * @return
+   * @see soot.PointsToSet#hasNonEmptyIntersection(soot.PointsToSet)
+   */
+  public boolean hasNonEmptyIntersection(PointsToSet other) {
+    // unwrap other
+    other = (PointsToSet) unwrapIfNecessary(other);
+    return pts.hasNonEmptyIntersection(other);
+  }
 
-    /**
-     * @return
-     * @see soot.PointsToSet#possibleClassConstants()
-     */
-    public Set<ClassConstant> possibleClassConstants() {
-        return pts.possibleClassConstants();
-    }
+  /**
+   * @return
+   * @see soot.PointsToSet#isEmpty()
+   */
+  public boolean isEmpty() {
+    return pts.isEmpty();
+  }
 
-    /**
-     * @return
-     * @see soot.PointsToSet#possibleStringConstants()
-     */
-    public Set<String> possibleStringConstants() {
-        return pts.possibleStringConstants();
-    }
+  /**
+   * @return
+   * @see soot.PointsToSet#possibleClassConstants()
+   */
+  public Set<ClassConstant> possibleClassConstants() {
+    return pts.possibleClassConstants();
+  }
 
-    /**
-     * @return
-     * @see soot.PointsToSet#possibleTypes()
-     */
-    public Set<Type> possibleTypes() {
-        return pts.possibleTypes();
+  /**
+   * @return
+   * @see soot.PointsToSet#possibleStringConstants()
+   */
+  public Set<String> possibleStringConstants() {
+    return pts.possibleStringConstants();
+  }
+
+  /**
+   * @return
+   * @see soot.PointsToSet#possibleTypes()
+   */
+  public Set<Type> possibleTypes() {
+    return pts.possibleTypes();
+  }
+
+  protected Object unwrapIfNecessary(Object obj) {
+    if (obj instanceof PointsToSetEqualsWrapper) {
+      PointsToSetEqualsWrapper wrapper = (PointsToSetEqualsWrapper) obj;
+      obj = wrapper.pts;
     }
-    
-    protected Object unwrapIfNecessary(Object obj) {
-        if(obj instanceof PointsToSetEqualsWrapper) {
-            PointsToSetEqualsWrapper wrapper = (PointsToSetEqualsWrapper) obj;
-            obj = wrapper.pts;
-        }
-        return obj;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return pts.toString();
-    }
+    return obj;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return pts.toString();
+  }
 }

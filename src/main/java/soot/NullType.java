@@ -23,45 +23,39 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot;
-import soot.util.*;
 
+import soot.util.Switch;
 
 /**
- *   Soot representation of the Java type 'null'. Implemented as
- *   a singleton.
+ * Soot representation of the Java type 'null'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class NullType extends RefLikeType
-{
-    public NullType( Singletons.Global g ) {}
-    public static NullType v() { return G.v().soot_NullType(); }
+public class NullType extends RefLikeType {
+  public NullType(Singletons.Global g) {
+  }
 
-    public int hashCode()
-    {
-        return 0x9891DFE1;
-    }
-    
-    public boolean equals(Object t)
-    {
-        return this == t;
-    }
+  public static NullType v() {
+    return G.v().soot_NullType();
+  }
 
-    public String toString()
-    {
-        return "null_type";
-    }
+  public int hashCode() {
+    return 0x9891DFE1;
+  }
 
-    public void apply(Switch sw)
-    {
-        ((TypeSwitch) sw).caseNullType(this);
-    }
+  public boolean equals(Object t) {
+    return this == t;
+  }
 
-    public Type getArrayElementType() {
-	throw new RuntimeException( "Attempt to get array base type of a non-array" );
-    }
+  public String toString() {
+    return "null_type";
+  }
+
+  public void apply(Switch sw) {
+    ((TypeSwitch) sw).caseNullType(this);
+  }
+
+  public Type getArrayElementType() {
+    throw new RuntimeException("Attempt to get array base type of a non-array");
+  }
 }

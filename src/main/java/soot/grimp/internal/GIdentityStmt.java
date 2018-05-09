@@ -23,29 +23,19 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.grimp.internal;
 
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.jimple.internal.JIdentityStmt;
 
-public class GIdentityStmt extends JIdentityStmt
-{
-    public GIdentityStmt(Value local, Value identityValue)
-    {
-        super(Grimp.v().newLocalBox(local),
-             Grimp.v().newIdentityRefBox(identityValue));
-    }
-    
-    public Object clone() 
-    { 
-        return new GIdentityStmt(Grimp.cloneIfNecessary(getLeftOp()), 
-            Grimp.cloneIfNecessary(getRightOp()));
+public class GIdentityStmt extends JIdentityStmt {
+  public GIdentityStmt(Value local, Value identityValue) {
+    super(Grimp.v().newLocalBox(local), Grimp.v().newIdentityRefBox(identityValue));
+  }
 
-    }
+  public Object clone() {
+    return new GIdentityStmt(Grimp.cloneIfNecessary(getLeftOp()), Grimp.cloneIfNecessary(getRightOp()));
+
+  }
 }

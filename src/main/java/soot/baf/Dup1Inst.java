@@ -23,13 +23,10 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.baf;
 
-import soot.*;
+import soot.Type;
 
-
-public interface Dup1Inst extends DupInst
-{ 
-    public Type getOp1Type();
+public interface Dup1Inst extends DupInst {
+  public Type getOp1Type();
 }

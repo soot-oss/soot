@@ -17,17 +17,18 @@
  * Boston, MA 02111-1307, USA.
  */
 
- /*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
+/*
+* Modified by the Sable Research Group and others 1997-1999.  
+* See the 'credits' file distributed with Soot for the complete list of
+* contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+*/
 package soot.jimple.toolkits.scalar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Body;
 import soot.BodyTransformer;
@@ -40,46 +41,45 @@ import soot.options.Options;
 import soot.util.Chain;
 
 public class NopEliminator extends BodyTransformer {
-    private static final Logger logger = LoggerFactory.getLogger(NopEliminator.class);
+  private static final Logger logger = LoggerFactory.getLogger(NopEliminator.class);
 
-    public NopEliminator(Singletons.Global g) {
+  public NopEliminator(Singletons.Global g) {
+  }
+
+  public static NopEliminator v() {
+    return G.v().soot_jimple_toolkits_scalar_NopEliminator();
+  }
+
+  /**
+   * Removes {@link NopStmt}s from the passed body . Complexity is linear with respect to the statements.
+   */
+  @Override
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+    if (Options.v().verbose()) {
+      logger.debug("[" + b.getMethod().getName() + "] Removing nops...");
     }
 
-    public static NopEliminator v() {
-        return G.v().soot_jimple_toolkits_scalar_NopEliminator();
-    }
+    Chain<Unit> units = b.getUnits();
 
-    /**
-     * Removes {@link NopStmt}s from the passed body . Complexity is linear with
-     * respect to the statements.
-     */
-    @Override
-    protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-        if (Options.v().verbose()) {
-            logger.debug("[" + b.getMethod().getName() + "] Removing nops...");
-        }
-
-        Chain<Unit> units = b.getUnits();
-
-        // Just do one trivial pass.
-        Iterator<Unit> stmtIt = units.snapshotIterator();
-        while (stmtIt.hasNext()) {
-            Unit u = stmtIt.next();
-            if (u instanceof NopStmt) {
-                // Hack: do not remove nop, if is is used for a Trap which
-                // is at the very end of the code.
-                boolean keepNop = false;
-                if (b.getUnits().getLast() == u) {
-                    for (Trap t : b.getTraps()) {
-                        if (t.getEndUnit() == u) {
-                            keepNop = true;
-                        }
-                    }
-                }
-                if (!keepNop) {
-                    units.remove(u);
-                }
+    // Just do one trivial pass.
+    Iterator<Unit> stmtIt = units.snapshotIterator();
+    while (stmtIt.hasNext()) {
+      Unit u = stmtIt.next();
+      if (u instanceof NopStmt) {
+        // Hack: do not remove nop, if is is used for a Trap which
+        // is at the very end of the code.
+        boolean keepNop = false;
+        if (b.getUnits().getLast() == u) {
+          for (Trap t : b.getTraps()) {
+            if (t.getEndUnit() == u) {
+              keepNop = true;
             }
+          }
         }
+        if (!keepNop) {
+          units.remove(u);
+        }
+      }
     }
+  }
 }

@@ -19,43 +19,55 @@
 
 package soot.jimple.spark.pag;
 
-/** Represents a field reference node (Red) in the pointer assignment graph.
+/**
+ * Represents a field reference node (Red) in the pointer assignment graph.
+ * 
  * @author Ondrej Lhotak
  */
 public class FieldRefNode extends ValNode {
-    /** Returns the base of this field reference. */
-    public VarNode getBase() { return base; }
-    public Node getReplacement() {
-        if( replacement == this ) {
-            if( base.replacement == base ) return this;
-            Node baseRep = base.getReplacement();
-            FieldRefNode newRep = pag.makeFieldRefNode( (VarNode) baseRep, field );
-            newRep.mergeWith( this );
-            return replacement = newRep.getReplacement();
-        } else {
-            return replacement = replacement.getReplacement();
-        }
+  /** Returns the base of this field reference. */
+  public VarNode getBase() {
+    return base;
+  }
+
+  public Node getReplacement() {
+    if (replacement == this) {
+      if (base.replacement == base) {
+        return this;
+      }
+      Node baseRep = base.getReplacement();
+      FieldRefNode newRep = pag.makeFieldRefNode((VarNode) baseRep, field);
+      newRep.mergeWith(this);
+      return replacement = newRep.getReplacement();
+    } else {
+      return replacement = replacement.getReplacement();
     }
-    /** Returns the field of this field reference. */
-    public SparkField getField() { return field; }
-    public String toString() {
-	return "FieldRefNode "+getNumber()+" "+base+"."+field;
+  }
+
+  /** Returns the field of this field reference. */
+  public SparkField getField() {
+    return field;
+  }
+
+  public String toString() {
+    return "FieldRefNode " + getNumber() + " " + base + "." + field;
+  }
+
+  /* End of public methods. */
+
+  FieldRefNode(PAG pag, VarNode base, SparkField field) {
+    super(pag, null);
+    if (field == null) {
+      throw new RuntimeException("null field");
     }
+    this.base = base;
+    this.field = field;
+    base.addField(this, field);
+    pag.getFieldRefNodeNumberer().add(this);
+  }
 
-    /* End of public methods. */
+  /* End of package methods. */
 
-    FieldRefNode( PAG pag, VarNode base, SparkField field ) {
-	super( pag, null );
-	if( field == null ) throw new RuntimeException( "null field" );
-	this.base = base;
-	this.field = field;
-	base.addField( this, field );
-        pag.getFieldRefNodeNumberer().add( this );
-    }
-
-    /* End of package methods. */
-
-    protected VarNode base;
-    protected SparkField field;
+  protected VarNode base;
+  protected SparkField field;
 }
-

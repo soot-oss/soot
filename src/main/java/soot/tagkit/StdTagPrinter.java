@@ -26,15 +26,9 @@
 package soot.tagkit;
 
 /** Default tag printer. */
-public class StdTagPrinter implements TagPrinter
-{
-    /** Prints out the given tag. */
-    public String print(String aClassName, String aFieldOrMtdSignature, 
-                        Tag aTag)
-    {
-	return aTag.toString();	
-    }
+public class StdTagPrinter implements TagPrinter {
+  /** Prints out the given tag. */
+  public String print(String aClassName, String aFieldOrMtdSignature, Tag aTag) {
+    return aTag.toString();
+  }
 }
-
-
-

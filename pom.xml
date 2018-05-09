@@ -24,6 +24,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- Default value for my.variable can be defined here -->
 		<jdk9.jrtjar>/opt/jdk-9/jrt-fs.jar</jdk9.jrtjar>
+		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+		<checkstyle.version>8.7</checkstyle.version>
+		<checkstyle.dir.path>${basedir}/codingstyle</checkstyle.dir.path>
+		<checkstyle.file.path>${checkstyle.dir.path}/soot_checkstyle_checks.xml</checkstyle.file.path>
+		<checkstyle.failOnError>true</checkstyle.failOnError>
 	</properties>
 	<build>
 		<finalName>sootclasses_j9-trunk</finalName>
@@ -274,6 +279,35 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>${maven-checkstyle-plugin.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.puppycrawl.tools</groupId>
+						<artifactId>checkstyle</artifactId>
+						<version>${checkstyle.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>validate</id>
+						<phase>validate</phase>
+						<configuration>
+							<propertyExpansion>config_loc=${checkstyle.dir.path}</propertyExpansion>
+							<configLocation>${checkstyle.file.path}</configLocation>
+							<encoding>UTF-8</encoding>
+							<consoleOutput>true</consoleOutput>
+							<failsOnError>${checkstyle.failOnError}</failsOnError>
+							<violationSeverity>warning</violationSeverity>
+						</configuration>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -333,7 +367,7 @@
 		<dependency>
 			<groupId>heros</groupId>
 			<artifactId>heros</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Uploaded to http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/
@@ -341,7 +375,7 @@
 		<dependency>
 			<groupId>ca.mcgill.sable</groupId>
 			<artifactId>jasmin</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>3.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Logging dependencies -->

@@ -23,54 +23,44 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.AbstractJasminClass;
+import soot.Type;
+import soot.baf.InstSwitch;
+import soot.baf.ShlInst;
+import soot.util.Switch;
 
-public class BShlInst extends AbstractOpTypeInst implements ShlInst
-{
-    public BShlInst(Type opType)
-    {
-        super(opType);
-    }
- 
-    public int getInCount()
-    {
-        return 2;
-    }
+public class BShlInst extends AbstractOpTypeInst implements ShlInst {
+  public BShlInst(Type opType) {
+    super(opType);
+  }
 
+  public int getInCount() {
+    return 2;
+  }
 
-    public Object clone() 
-    {
-        return new  BShlInst(getOpType());
-    }
+  public Object clone() {
+    return new BShlInst(getOpType());
+  }
 
-    public int getInMachineCount()
-    {
-        return AbstractJasminClass.sizeOfType(getOpType()) + 1;
-    }
-    
-    public int getOutCount()
-    {
-        return 1;
-    }
+  public int getInMachineCount() {
+    return AbstractJasminClass.sizeOfType(getOpType()) + 1;
+  }
 
-    public int getOutMachineCount()
-    {
-        return 1 * AbstractJasminClass.sizeOfType(getOpType());
-    }
-    
-    public final String getName() { return "shl"; }
+  public int getOutCount() {
+    return 1;
+  }
 
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseShlInst(this);
-    }
+  public int getOutMachineCount() {
+    return 1 * AbstractJasminClass.sizeOfType(getOpType());
+  }
+
+  public final String getName() {
+    return "shl";
+  }
+
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseShlInst(this);
+  }
 }
-

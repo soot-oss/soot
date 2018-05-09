@@ -53,8 +53,9 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
   }
 
   public int getDataFirstByte() {
-    if (dataFirstByte == -1)
+    if (dataFirstByte == -1) {
       throw new RuntimeException("Error: dataFirstByte was not set!");
+    }
     return dataFirstByte;
   }
 
@@ -63,8 +64,9 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
   }
 
   public int getDataLastByte() {
-    if (dataLastByte == -1)
+    if (dataLastByte == -1) {
       throw new RuntimeException("Error: dataLastByte was not set!");
+    }
     return dataLastByte;
   }
 
@@ -73,8 +75,9 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
   }
 
   public int getDataSize() {
-    if (dataSize == -1)
+    if (dataSize == -1) {
       throw new RuntimeException("Error: dataFirstByte was not set!");
+    }
     return dataSize;
   }
 
@@ -84,8 +87,4 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
 
   public abstract void computeDataOffsets(DexBody body);
 
-  
-  
-  
-  
 }

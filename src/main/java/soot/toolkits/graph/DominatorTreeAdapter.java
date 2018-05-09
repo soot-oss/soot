@@ -19,54 +19,47 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This adapter provides a DirectedGraph interface to DominatorTree.
  *
  * <p>
  *
- * This might be useful if e.g. you want to apply a DirectedGraph
- * analysis such as the PseudoTopologicalOrderer to a DominatorTree.
+ * This might be useful if e.g. you want to apply a DirectedGraph analysis such as the PseudoTopologicalOrderer to a DominatorTree.
  *
  * @author Navindra Umanee
  **/
-public class DominatorTreeAdapter<N> implements DirectedGraph<DominatorNode<N>>
-{
-    DominatorTree<N> dt;
-    
-    public DominatorTreeAdapter(DominatorTree<N> dt)
-    {
-        this.dt = dt;
-    }
+public class DominatorTreeAdapter<N> implements DirectedGraph<DominatorNode<N>> {
+  DominatorTree<N> dt;
 
-    public List<DominatorNode<N>> getHeads()
-    {
-        return dt.getHeads();
-    }
+  public DominatorTreeAdapter(DominatorTree<N> dt) {
+    this.dt = dt;
+  }
 
-    public List<DominatorNode<N>> getTails()
-    {
-        return dt.getTails();
-    }
+  public List<DominatorNode<N>> getHeads() {
+    return dt.getHeads();
+  }
 
-    public List<DominatorNode<N>> getPredsOf(DominatorNode<N> node)
-    {
-        return Collections.singletonList(dt.getParentOf(node));
-    }
+  public List<DominatorNode<N>> getTails() {
+    return dt.getTails();
+  }
 
-    public List<DominatorNode<N>> getSuccsOf(DominatorNode<N> node)
-    {
-        return dt.getChildrenOf(node);
-    }
+  public List<DominatorNode<N>> getPredsOf(DominatorNode<N> node) {
+    return Collections.singletonList(dt.getParentOf(node));
+  }
 
-    public Iterator<DominatorNode<N>> iterator()
-    {
-        return dt.iterator();
-    }
+  public List<DominatorNode<N>> getSuccsOf(DominatorNode<N> node) {
+    return dt.getChildrenOf(node);
+  }
 
-    public int size()
-    {
-        return dt.size();
-    }
+  public Iterator<DominatorNode<N>> iterator() {
+    return dt.iterator();
+  }
+
+  public int size() {
+    return dt.size();
+  }
 }

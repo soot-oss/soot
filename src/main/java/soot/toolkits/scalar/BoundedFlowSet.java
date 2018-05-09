@@ -23,38 +23,34 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.toolkits.scalar;
 
-/** 
- * Represents bounded information for flow analysis.  
- * Just like FlowSet, but also provides complementation.
- * Some implementations of BoundedFlowSet may require a FlowUniverse for construction.
+/**
+ * Represents bounded information for flow analysis. Just like FlowSet, but also provides complementation. Some implementations of BoundedFlowSet may
+ * require a FlowUniverse for construction.
  *
  * @see: FlowUniverse
  */
-public interface BoundedFlowSet<T> extends FlowSet<T>
-{
-    /**
-     * Complements <code>this</code>.
-     */
-    public void complement();
+public interface BoundedFlowSet<T> extends FlowSet<T> {
+  /**
+   * Complements <code>this</code>.
+   */
+  public void complement();
 
-    /** 
-     * Complements this BoundedFlowSet, putting the result into
-     * <code>dest</code>. <code>dest</code> and <code>this</code> may be the
-     * same object.
-     */
-    public void complement(FlowSet<T> dest);
+  /**
+   * Complements this BoundedFlowSet, putting the result into <code>dest</code>. <code>dest</code> and <code>this</code> may be the same object.
+   */
+  public void complement(FlowSet<T> dest);
 
-    /**
-     * returns the topped set.
-     */
-    public FlowSet<T> topSet();
+  /**
+   * returns the topped set.
+   */
+  public FlowSet<T> topSet();
 
-    /** Returns elements [low..high] of this BoundedFlowSet. (optional
-     * operation) */
+  /**
+   * Returns elements [low..high] of this BoundedFlowSet. (optional operation)
+   */
   /*
-    public List toList(int low, int high) throws UnsupportedOperationException;
-  */
+   * public List toList(int low, int high) throws UnsupportedOperationException;
+   */
 }

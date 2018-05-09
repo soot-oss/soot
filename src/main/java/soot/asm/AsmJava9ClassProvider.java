@@ -18,11 +18,18 @@
  */
 package soot.asm;
 
-import soot.*;
-
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import soot.ClassProvider;
+import soot.ClassSource;
+import soot.FoundFile;
+import soot.ModulePathSourceLocator;
 
 /**
  * Objectweb ASM class provider.
@@ -31,26 +38,26 @@ import java.nio.file.*;
  */
 public class AsmJava9ClassProvider implements ClassProvider {
 
+  public ClassSource find(String cls) {
+    String clsFile = cls.replace('.', '/') + ".class";
+    FoundFile file = null;
+    // here we go through all modules, since we are in classpath mode
 
-    public ClassSource find(String cls) {
-        String clsFile = cls.replace('.', '/') + ".class";
-        FoundFile file = null;
-        //here we go through all modules, since we are in classpath mode
-
-        Path p = Paths.get(URI.create("jrt:/modules"));
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(p)) {
-            for (Path entry : stream) {
-                //check each module folder for the class
-                file = ModulePathSourceLocator.v().lookUpInVirtualFileSystem(entry.toUri().toString(), clsFile);
-                if (file != null)
-                    break;
-            }
-        } catch (FileSystemNotFoundException ex) {
-            System.out.println("Could not read my modules (perhaps not Java 9?).");
-        } catch (IOException e) {
-            e.printStackTrace();
+    Path p = Paths.get(URI.create("jrt:/modules"));
+    try (DirectoryStream<Path> stream = Files.newDirectoryStream(p)) {
+      for (Path entry : stream) {
+        // check each module folder for the class
+        file = ModulePathSourceLocator.v().lookUpInVirtualFileSystem(entry.toUri().toString(), clsFile);
+        if (file != null) {
+          break;
         }
-        return file == null ? null : new AsmClassSource(cls, file);
-
+      }
+    } catch (FileSystemNotFoundException ex) {
+      System.out.println("Could not read my modules (perhaps not Java 9?).");
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    return file == null ? null : new AsmClassSource(cls, file);
+
+  }
 }

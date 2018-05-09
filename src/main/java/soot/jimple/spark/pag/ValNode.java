@@ -18,16 +18,16 @@
  */
 
 package soot.jimple.spark.pag;
+
 import soot.Type;
 
-/** Represents a simple of field ref node (Green or Red) in the pointer
- * assignment graph.
+/**
+ * Represents a simple of field ref node (Green or Red) in the pointer assignment graph.
+ * 
  * @author Ondrej Lhotak
  */
-public class ValNode extends Node
-{
-    protected ValNode( PAG pag, Type t ) {
-	super( pag, t );
-    }
+public class ValNode extends Node {
+  protected ValNode(PAG pag, Type t) {
+    super(pag, t);
+  }
 }
-

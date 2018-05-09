@@ -23,21 +23,13 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-public
-class NoSuchLocalException extends RuntimeException
-{
-    public NoSuchLocalException(String s)
-    {
-        super(s);
-    }
+public class NoSuchLocalException extends RuntimeException {
+  public NoSuchLocalException(String s) {
+    super(s);
+  }
 
-    public NoSuchLocalException()
-    {
-    }
+  public NoSuchLocalException() {
+  }
 }

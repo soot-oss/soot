@@ -24,251 +24,235 @@
  */
 
 package soot;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.options.Options;
 
-public class Timers
-{
-    private static final Logger logger = LoggerFactory.getLogger(Timers.class);
-    public Timers( Singletons.Global g ) {}
-    public static Timers v() { return G.v().soot_Timers(); }
+public class Timers {
+  private static final Logger logger = LoggerFactory.getLogger(Timers.class);
 
-     public int totalFlowNodes;
+  public Timers(Singletons.Global g) {
+  }
 
-     public int totalFlowComputations;
+  public static Timers v() {
+    return G.v().soot_Timers();
+  }
 
+  public int totalFlowNodes;
 
-     public Timer copiesTimer = new Timer("copies");
+  public int totalFlowComputations;
 
-     public Timer defsTimer = new Timer("defs");
+  public Timer copiesTimer = new Timer("copies");
 
-     public Timer usesTimer = new Timer("uses");
+  public Timer defsTimer = new Timer("defs");
 
-     public Timer liveTimer = new Timer("live");
+  public Timer usesTimer = new Timer("uses");
 
-     public Timer splitTimer = new Timer("split");
+  public Timer liveTimer = new Timer("live");
 
-     public Timer packTimer = new Timer("pack");
+  public Timer splitTimer = new Timer("split");
 
-     public Timer cleanup1Timer = new Timer("cleanup1");
+  public Timer packTimer = new Timer("pack");
 
-     public Timer cleanup2Timer = new Timer("cleanup2");
+  public Timer cleanup1Timer = new Timer("cleanup1");
 
-     public Timer conversionTimer = new Timer("conversion");
+  public Timer cleanup2Timer = new Timer("cleanup2");
 
-     public Timer cleanupAlgorithmTimer = new Timer("cleanupAlgorithm");
+  public Timer conversionTimer = new Timer("conversion");
 
-     public Timer graphTimer = new Timer("graphTimer");
+  public Timer cleanupAlgorithmTimer = new Timer("cleanupAlgorithm");
 
-     public Timer assignTimer = new Timer("assignTimer");
+  public Timer graphTimer = new Timer("graphTimer");
 
-     public Timer resolveTimer = new Timer("resolveTimer");
+  public Timer assignTimer = new Timer("assignTimer");
 
-     public Timer totalTimer = new Timer("totalTimer");
+  public Timer resolveTimer = new Timer("resolveTimer");
 
-     public Timer splitPhase1Timer = new Timer("splitPhase1");
+  public Timer totalTimer = new Timer("totalTimer");
 
-     public Timer splitPhase2Timer = new Timer("splitPhase2");
+  public Timer splitPhase1Timer = new Timer("splitPhase1");
 
-     public Timer usePhase1Timer = new Timer("usePhase1");
+  public Timer splitPhase2Timer = new Timer("splitPhase2");
 
-     public Timer usePhase2Timer = new Timer("usePhase2");
+  public Timer usePhase1Timer = new Timer("usePhase1");
 
-     public Timer usePhase3Timer = new Timer("usePhase3");
+  public Timer usePhase2Timer = new Timer("usePhase2");
 
-     public Timer defsSetupTimer = new Timer("defsSetup");
+  public Timer usePhase3Timer = new Timer("usePhase3");
 
-     public Timer defsAnalysisTimer = new Timer("defsAnalysis");
+  public Timer defsSetupTimer = new Timer("defsSetup");
 
-     public Timer defsPostTimer = new Timer("defsPost");
+  public Timer defsAnalysisTimer = new Timer("defsAnalysis");
 
-     public Timer liveSetupTimer = new Timer("liveSetup");
+  public Timer defsPostTimer = new Timer("defsPost");
 
-     public Timer liveAnalysisTimer = new Timer("liveAnalysis");
+  public Timer liveSetupTimer = new Timer("liveSetup");
 
-     public Timer livePostTimer = new Timer("livePost");
+  public Timer liveAnalysisTimer = new Timer("liveAnalysis");
 
-     public Timer aggregationTimer = new Timer("aggregation");
+  public Timer livePostTimer = new Timer("livePost");
 
-     public Timer grimpAggregationTimer = new Timer("grimpAggregation");
+  public Timer aggregationTimer = new Timer("aggregation");
 
-     public Timer deadCodeTimer = new Timer("deadCode");
+  public Timer grimpAggregationTimer = new Timer("grimpAggregation");
 
-     public Timer propagatorTimer = new Timer("propagator");
+  public Timer deadCodeTimer = new Timer("deadCode");
 
-     public Timer buildJasminTimer = new Timer("buildjasmin");
+  public Timer propagatorTimer = new Timer("propagator");
 
-     public Timer assembleJasminTimer = new Timer("assembling jasmin");
+  public Timer buildJasminTimer = new Timer("buildjasmin");
 
-     public Timer resolverTimer = new Timer("resolver");
-        
+  public Timer assembleJasminTimer = new Timer("assembling jasmin");
 
-     public int conversionLocalCount;
+  public Timer resolverTimer = new Timer("resolver");
 
-     public int cleanup1LocalCount;
+  public int conversionLocalCount;
 
-     public int splitLocalCount;
+  public int cleanup1LocalCount;
 
-     public int assignLocalCount;
+  public int splitLocalCount;
 
-     public int packLocalCount;
+  public int assignLocalCount;
 
-     public int cleanup2LocalCount;
+  public int packLocalCount;
 
+  public int cleanup2LocalCount;
 
-     public int conversionStmtCount;
+  public int conversionStmtCount;
 
-     public int cleanup1StmtCount;
+  public int cleanup1StmtCount;
 
-     public int splitStmtCount;
+  public int splitStmtCount;
 
-     public int assignStmtCount;
+  public int assignStmtCount;
 
-     public int packStmtCount;
+  public int packStmtCount;
 
-     public int cleanup2StmtCount;
+  public int cleanup2StmtCount;
 
+  public long stmtCount;
 
-     public long stmtCount;
-
-	public Timer fieldTimer = new soot.Timer();
-
-	public Timer methodTimer = new soot.Timer();
-
-	public Timer attributeTimer = new soot.Timer();
-
-	public Timer locatorTimer = new soot.Timer();
-
-	public Timer readTimer = new soot.Timer();
-	
-	public Timer orderComputation = new soot.Timer("orderComputation");
-
-    public void printProfilingInformation()
-    {                                                   
-        long totalTime = totalTimer.getTime();
-                
-        logger.debug("Time measurements");
-        
-                
-        logger.debug("      Building graphs: " + toTimeString(graphTimer, totalTime));
-        logger.debug("  Computing LocalDefs: " + toTimeString(defsTimer, totalTime));
-	//                logger.debug("                setup: " + toTimeString(defsSetupTimer, totalTime));
-	//                logger.debug("             analysis: " + toTimeString(defsAnalysisTimer, totalTime));
-	//                logger.debug("                 post: " + toTimeString(defsPostTimer, totalTime));
-        logger.debug("  Computing LocalUses: " + toTimeString(usesTimer, totalTime));
-	//                logger.debug("            Use phase1: " + toTimeString(usePhase1Timer, totalTime));
-	//                logger.debug("            Use phase2: " + toTimeString(usePhase2Timer, totalTime));
-	//                logger.debug("            Use phase3: " + toTimeString(usePhase3Timer, totalTime));
-
-        logger.debug("     Cleaning up code: " + toTimeString(cleanupAlgorithmTimer, totalTime));
-        logger.debug("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
-        logger.debug(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
-	//                logger.debug("                setup: " + toTimeString(liveSetupTimer, totalTime));
-	//                logger.debug("             analysis: " + toTimeString(liveAnalysisTimer, totalTime));
-	//                logger.debug("                 post: " + toTimeString(livePostTimer, totalTime));
-                
-        logger.debug("Coading coffi structs: " + toTimeString(resolveTimer, totalTime));
-
-                
-        
-
-        // Print out time stats.
-        {
-            float timeInSecs;
-
-            logger.debug("       Resolving classfiles: " + toTimeString(resolverTimer, totalTime)); 
-            logger.debug(" Bytecode -> jimple (naive): " + toTimeString(conversionTimer, totalTime)); 
-            logger.debug("        Splitting variables: " + toTimeString(splitTimer, totalTime));
-            logger.debug("            Assigning types: " + toTimeString(assignTimer, totalTime));
-            logger.debug("  Propagating copies & csts: " + toTimeString(propagatorTimer, totalTime));
-            logger.debug("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
-            logger.debug("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
-            logger.debug("            Coloring locals: " + toTimeString(packTimer, totalTime));
-            logger.debug("     Generating jasmin code: " + toTimeString(buildJasminTimer, totalTime));
-            logger.debug("          .jasmin -> .class: " + toTimeString(assembleJasminTimer, totalTime));
-            
-                                            
-	    //                    logger.debug("           Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
-	    //                        "\t" + cleanup1LocalCount + " locals  " + cleanup1StmtCount + " stmts");
-                    
-	    //                    logger.debug("               Split phase1: " + toTimeString(splitPhase1Timer, totalTime));
-	    //                    logger.debug("               Split phase2: " + toTimeString(splitPhase2Timer, totalTime));
-                
-	    /*
-	      logger.debug("cleanup2Timer:   " + cleanup2Time +
-	      "(" + (cleanup2Time * 100 / totalTime) + "%) " +
-	      cleanup2LocalCount + " locals  " + cleanup2StmtCount + " stmts");
-	    */
-
-            timeInSecs = totalTime / 1000.0f;
-            //float memoryUsed = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
-            
-            logger.debug("totalTime:" + toTimeString(totalTimer, totalTime));
-            
-            if(Options.v().subtract_gc())
-		{
-		    logger.debug("Garbage collection was subtracted from these numbers.");
-		    logger.debug("           forcedGC:" + 
-				       toTimeString(G.v().Timer_forcedGarbageCollectionTimer, totalTime));
-		}
-
-            logger.debug("stmtCount: " + stmtCount + "(" + toFormattedString(stmtCount / timeInSecs) + " stmt/s)");
-                    
-            logger.debug("totalFlowNodes: " + totalFlowNodes + 
-                               " totalFlowComputations: " + totalFlowComputations + " avg: " + 
-                               truncatedOf((double) totalFlowComputations / totalFlowNodes, 2));
-        }
-    }
-
-
-    private  String toTimeString(Timer timer, long totalTime)
+  public Timer fieldTimer = new soot.Timer();
+
+  public Timer methodTimer = new soot.Timer();
+
+  public Timer attributeTimer = new soot.Timer();
+
+  public Timer locatorTimer = new soot.Timer();
+
+  public Timer readTimer = new soot.Timer();
+
+  public Timer orderComputation = new soot.Timer("orderComputation");
+
+  public void printProfilingInformation() {
+    long totalTime = totalTimer.getTime();
+
+    logger.debug("Time measurements");
+
+    logger.debug("      Building graphs: " + toTimeString(graphTimer, totalTime));
+    logger.debug("  Computing LocalDefs: " + toTimeString(defsTimer, totalTime));
+    // logger.debug(" setup: " + toTimeString(defsSetupTimer, totalTime));
+    // logger.debug(" analysis: " + toTimeString(defsAnalysisTimer, totalTime));
+    // logger.debug(" post: " + toTimeString(defsPostTimer, totalTime));
+    logger.debug("  Computing LocalUses: " + toTimeString(usesTimer, totalTime));
+    // logger.debug(" Use phase1: " + toTimeString(usePhase1Timer, totalTime));
+    // logger.debug(" Use phase2: " + toTimeString(usePhase2Timer, totalTime));
+    // logger.debug(" Use phase3: " + toTimeString(usePhase3Timer, totalTime));
+
+    logger.debug("     Cleaning up code: " + toTimeString(cleanupAlgorithmTimer, totalTime));
+    logger.debug("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
+    logger.debug(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
+    // logger.debug(" setup: " + toTimeString(liveSetupTimer, totalTime));
+    // logger.debug(" analysis: " + toTimeString(liveAnalysisTimer, totalTime));
+    // logger.debug(" post: " + toTimeString(livePostTimer, totalTime));
+
+    logger.debug("Coading coffi structs: " + toTimeString(resolveTimer, totalTime));
+
+    // Print out time stats.
     {
-        DecimalFormat format = new DecimalFormat("00.0");
-        DecimalFormat percFormat = new DecimalFormat("00.0");
-        
-        long time = timer.getTime();
-        
-        String timeString = format.format(time / 1000.0); // paddedLeftOf(new Double(truncatedOf(time / 1000.0, 1)).toString(), 5);
-        
-        return (timeString + "s" + " (" + percFormat.format(time * 100.0 / totalTime) + "%" + ")");   
-    }
-    
+      float timeInSecs;
 
-    private  String toFormattedString(double value)
-    {
-        return paddedLeftOf(new Double(truncatedOf(value, 2)).toString(), 5);
+      logger.debug("       Resolving classfiles: " + toTimeString(resolverTimer, totalTime));
+      logger.debug(" Bytecode -> jimple (naive): " + toTimeString(conversionTimer, totalTime));
+      logger.debug("        Splitting variables: " + toTimeString(splitTimer, totalTime));
+      logger.debug("            Assigning types: " + toTimeString(assignTimer, totalTime));
+      logger.debug("  Propagating copies & csts: " + toTimeString(propagatorTimer, totalTime));
+      logger.debug("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
+      logger.debug("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
+      logger.debug("            Coloring locals: " + toTimeString(packTimer, totalTime));
+      logger.debug("     Generating jasmin code: " + toTimeString(buildJasminTimer, totalTime));
+      logger.debug("          .jasmin -> .class: " + toTimeString(assembleJasminTimer, totalTime));
+
+      // logger.debug(" Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
+      // "\t" + cleanup1LocalCount + " locals " + cleanup1StmtCount + " stmts");
+
+      // logger.debug(" Split phase1: " + toTimeString(splitPhase1Timer, totalTime));
+      // logger.debug(" Split phase2: " + toTimeString(splitPhase2Timer, totalTime));
+
+      /*
+       * logger.debug("cleanup2Timer:   " + cleanup2Time + "(" + (cleanup2Time * 100 / totalTime) + "%) " + cleanup2LocalCount + " locals  " +
+       * cleanup2StmtCount + " stmts");
+       */
+
+      timeInSecs = totalTime / 1000.0f;
+      // float memoryUsed = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
+
+      logger.debug("totalTime:" + toTimeString(totalTimer, totalTime));
+
+      if (Options.v().subtract_gc()) {
+        logger.debug("Garbage collection was subtracted from these numbers.");
+        logger.debug("           forcedGC:" + toTimeString(G.v().Timer_forcedGarbageCollectionTimer, totalTime));
+      }
+
+      logger.debug("stmtCount: " + stmtCount + "(" + toFormattedString(stmtCount / timeInSecs) + " stmt/s)");
+
+      logger.debug("totalFlowNodes: " + totalFlowNodes + " totalFlowComputations: " + totalFlowComputations + " avg: "
+          + truncatedOf((double) totalFlowComputations / totalFlowNodes, 2));
+    }
+  }
+
+  private String toTimeString(Timer timer, long totalTime) {
+    DecimalFormat format = new DecimalFormat("00.0");
+    DecimalFormat percFormat = new DecimalFormat("00.0");
+
+    long time = timer.getTime();
+
+    String timeString = format.format(time / 1000.0); // paddedLeftOf(new Double(truncatedOf(time / 1000.0, 1)).toString(), 5);
+
+    return (timeString + "s" + " (" + percFormat.format(time * 100.0 / totalTime) + "%" + ")");
+  }
+
+  private String toFormattedString(double value) {
+    return paddedLeftOf(new Double(truncatedOf(value, 2)).toString(), 5);
+  }
+
+  public double truncatedOf(double d, int numDigits) {
+    double multiplier = 1;
+
+    for (int i = 0; i < numDigits; i++) {
+      multiplier *= 10;
     }
 
+    return ((long) (d * multiplier)) / multiplier;
+  }
 
-    public  double truncatedOf(double d, int numDigits)
-    {
-        double multiplier = 1;
-        
-        for(int i = 0; i < numDigits; i++)
-            multiplier *= 10;
-            
-        return ((long) (d * multiplier)) / multiplier;
-    }
-    
+  public String paddedLeftOf(String s, int length) {
+    if (s.length() >= length) {
+      return s;
+    } else {
+      int diff = length - s.length();
+      char[] padding = new char[diff];
 
-    public  String paddedLeftOf(String s, int length)
-    {
-        if(s.length() >= length)
-            return s;
-        else {
-            int diff = length - s.length();
-            char[] padding = new char[diff];
-            
-            for(int i = 0; i < diff; i++)
-                padding[i] = ' ';
-            
-            return new String(padding) + s;
-        }    
+      for (int i = 0; i < diff; i++) {
+        padding[i] = ' ';
+      }
+
+      return new String(padding) + s;
     }
+  }
 
 }
-

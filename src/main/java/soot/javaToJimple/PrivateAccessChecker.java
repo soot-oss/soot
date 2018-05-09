@@ -18,40 +18,41 @@
  */
 
 package soot.javaToJimple;
-import java.util.*;
+
+import java.util.ArrayList;
 
 import polyglot.types.MemberInstance;
 
 public class PrivateAccessChecker extends polyglot.visit.NodeVisitor {
 
-    private final ArrayList<MemberInstance> list;
-      
-    public ArrayList<MemberInstance> getList() {
-        return list;
+  private final ArrayList<MemberInstance> list;
+
+  public ArrayList<MemberInstance> getList() {
+    return list;
+  }
+
+  public PrivateAccessChecker() {
+    list = new ArrayList<MemberInstance>();
+  }
+
+  public polyglot.ast.Node leave(polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor visitor) {
+
+    if (n instanceof polyglot.ast.Field) {
+
+      polyglot.types.FieldInstance fi = ((polyglot.ast.Field) n).fieldInstance();
+
+      if (fi.flags().isPrivate()) {
+        list.add(fi);
+      }
     }
+    if (n instanceof polyglot.ast.Call) {
 
-    public PrivateAccessChecker(){
-        list = new ArrayList<MemberInstance>();
+      polyglot.types.MethodInstance mi = ((polyglot.ast.Call) n).methodInstance();
+
+      if (mi.flags().isPrivate()) {
+        list.add(mi);
+      }
     }
-
-    public polyglot.ast.Node leave(polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor visitor) {
-    
-        if (n instanceof polyglot.ast.Field) {
-            
-            polyglot.types.FieldInstance fi = ((polyglot.ast.Field)n).fieldInstance();
-
-            if (fi.flags().isPrivate()) {
-                list.add(fi);
-            }
-        }
-        if (n instanceof polyglot.ast.Call) {
-            
-            polyglot.types.MethodInstance mi = ((polyglot.ast.Call)n).methodInstance();
-
-            if (mi.flags().isPrivate()) {
-                list.add(mi);
-            }
-        }
-        return n;
-    }
+    return n;
+  }
 }

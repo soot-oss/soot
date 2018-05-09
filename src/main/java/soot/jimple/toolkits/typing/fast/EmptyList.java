@@ -20,21 +20,18 @@
  */
 package soot.jimple.toolkits.typing.fast;
 
-import java.util.*;
+import java.util.AbstractList;
 
 /**
  * @author Ben Bellamy
  */
 @Deprecated
-public class EmptyList<E> extends AbstractList<E>
-{
-	public E get(int index)
-	{
-		throw new IndexOutOfBoundsException();
-	}
-	
-	public int size()
-	{
-		return 0;
-	}
+public class EmptyList<E> extends AbstractList<E> {
+  public E get(int index) {
+    throw new IndexOutOfBoundsException();
+  }
+
+  public int size() {
+    return 0;
+  }
 }

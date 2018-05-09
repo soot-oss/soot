@@ -17,45 +17,44 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 package soot.dava.internal.AST;
 
-public abstract class ASTAggregatedCondition extends ASTCondition{
-    ASTCondition    left;
-    ASTCondition    right;
-    boolean not;//used to see if the condition has a not infront of it
-    
-    public ASTAggregatedCondition(ASTCondition left, ASTCondition right){
-    	not=false;//by default condition does not have a not
-    	this.left = left;
-    	this.right=right;
-      }
+public abstract class ASTAggregatedCondition extends ASTCondition {
+  ASTCondition left;
+  ASTCondition right;
+  boolean not;// used to see if the condition has a not infront of it
 
-      public ASTCondition getLeftOp(){
-    	  return left;
-      }
+  public ASTAggregatedCondition(ASTCondition left, ASTCondition right) {
+    not = false;// by default condition does not have a not
+    this.left = left;
+    this.right = right;
+  }
 
-      public ASTCondition getRightOp(){
-        return right;
-      }
+  public ASTCondition getLeftOp() {
+    return left;
+  }
 
+  public ASTCondition getRightOp() {
+    return right;
+  }
 
-      public void setLeftOp(ASTCondition left){
-          this.left=left;
-      }
+  public void setLeftOp(ASTCondition left) {
+    this.left = left;
+  }
 
-     public void setRightOp(ASTCondition right){
-         this.right=right;
-     }
+  public void setRightOp(ASTCondition right) {
+    this.right = right;
+  }
 
-    public void flip(){
-	if(not)
-	    not=false;
-	else
-	    not=true;
+  public void flip() {
+    if (not) {
+      not = false;
+    } else {
+      not = true;
     }
+  }
 
-    public boolean isNotted(){
-    	return not;
-    }
+  public boolean isNotted() {
+    return not;
+  }
 }

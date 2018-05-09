@@ -21,45 +21,45 @@ package soot.toolkits.graph.interaction;
 
 public class FlowInfo<I, U> {
 
-    private I info;
-    private U unit;
-    private boolean before;
+  private I info;
+  private U unit;
+  private boolean before;
 
-    public FlowInfo(I info, U unit, boolean b){
-        info(info);
-        unit(unit);
-        setBefore(b);
-    }
-    
-    public U unit(){
-        return unit;
-    }
+  public FlowInfo(I info, U unit, boolean b) {
+    info(info);
+    unit(unit);
+    setBefore(b);
+  }
 
-    public void unit(U u){
-        unit = u;
-    }
-    
-    public I info(){
-        return info;
-    }
+  public U unit() {
+    return unit;
+  }
 
-    public void info(I i){
-        info = i;
-    }
+  public void unit(U u) {
+    unit = u;
+  }
 
-    public boolean isBefore(){
-        return before;
-    }
+  public I info() {
+    return info;
+  }
 
-    public void setBefore(boolean b){
-        before = b;
-    }
+  public void info(I i) {
+    info = i;
+  }
 
-    public String toString(){
-        StringBuffer sb = new StringBuffer();
-        sb.append("unit: "+unit);
-        sb.append(" info: "+info);
-        sb.append(" before: "+before);
-        return sb.toString();
-    }
+  public boolean isBefore() {
+    return before;
+  }
+
+  public void setBefore(boolean b) {
+    before = b;
+  }
+
+  public String toString() {
+    StringBuffer sb = new StringBuffer();
+    sb.append("unit: " + unit);
+    sb.append(" info: " + info);
+    sb.append(" before: " + before);
+    return sb.toString();
+  }
 }

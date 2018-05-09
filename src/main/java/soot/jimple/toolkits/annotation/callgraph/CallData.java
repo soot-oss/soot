@@ -19,58 +19,59 @@
 
 package soot.jimple.toolkits.annotation.callgraph;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CallData {
 
-    private final HashMap<Object, CallData> map = new HashMap<Object, CallData>();
-    private final ArrayList<CallData> children = new ArrayList<CallData>();
-    private final ArrayList<CallData> outputs = new ArrayList<CallData>();
-    private String data;
+  private final HashMap<Object, CallData> map = new HashMap<Object, CallData>();
+  private final ArrayList<CallData> children = new ArrayList<CallData>();
+  private final ArrayList<CallData> outputs = new ArrayList<CallData>();
+  private String data;
 
-    public String toString(){
-        StringBuffer sb = new StringBuffer();
-        sb.append("Data: ");
-        sb.append(data);
-        //sb.append(" Children: ");
-        //sb.append(children);
-        //sb.append(" Outputs: ");
-        //sb.append(outputs);
-        return sb.toString();
-    }
-    
-    public void addChild(CallData cd){
-        children.add(cd);
-    }
+  public String toString() {
+    StringBuffer sb = new StringBuffer();
+    sb.append("Data: ");
+    sb.append(data);
+    // sb.append(" Children: ");
+    // sb.append(children);
+    // sb.append(" Outputs: ");
+    // sb.append(outputs);
+    return sb.toString();
+  }
 
-    public void addOutput(CallData cd){
-        if (!outputs.contains(cd)){
-            outputs.add(cd);
-        }
-    }
+  public void addChild(CallData cd) {
+    children.add(cd);
+  }
 
-    public void setData(String d){
-        data = d;
-    } 
-
-    public String getData(){
-        return data;
+  public void addOutput(CallData cd) {
+    if (!outputs.contains(cd)) {
+      outputs.add(cd);
     }
+  }
 
-    public ArrayList<CallData> getChildren(){
-        return children;
-    }
+  public void setData(String d) {
+    data = d;
+  }
 
-    public ArrayList<CallData> getOutputs(){
-        return outputs;
-    }
+  public String getData() {
+    return data;
+  }
 
-    public void addToMap(Object key, CallData val){
-        map.put(key, val);
-    }
+  public ArrayList<CallData> getChildren() {
+    return children;
+  }
 
-    public HashMap<Object, CallData> getMap(){
-        return map;
-    }
+  public ArrayList<CallData> getOutputs() {
+    return outputs;
+  }
+
+  public void addToMap(Object key, CallData val) {
+    map.put(key, val);
+  }
+
+  public HashMap<Object, CallData> getMap() {
+    return map;
+  }
 
 }

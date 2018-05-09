@@ -25,6 +25,5 @@
 
 package soot.baf;
 
-public interface GotoInst extends TargetArgInst
-{
+public interface GotoInst extends TargetArgInst {
 }

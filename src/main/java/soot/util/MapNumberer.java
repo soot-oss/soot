@@ -18,29 +18,48 @@
  */
 
 package soot.util;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MapNumberer<T> implements Numberer<T> {
-    Map<T, Integer> map = new HashMap<T, Integer>();
-    ArrayList<T> al = new ArrayList<T>();
-    int nextIndex = 1;
-    public void add( T o ) {
-        if( !map.containsKey(o) ) {
-            map.put( o, new Integer(nextIndex) );
-            al.add(o);
-            nextIndex++;
-        }
+  Map<T, Integer> map = new HashMap<T, Integer>();
+  ArrayList<T> al = new ArrayList<T>();
+  int nextIndex = 1;
+
+  public void add(T o) {
+    if (!map.containsKey(o)) {
+      map.put(o, new Integer(nextIndex));
+      al.add(o);
+      nextIndex++;
     }
-    public T get( long number ) {
-        return al.get((int) number);
+  }
+
+  public T get(long number) {
+    return al.get((int) number);
+  }
+
+  public long get(Object o) {
+    if (o == null) {
+      return 0;
     }
-    public long get( Object o ) {
-        if( o == null ) return 0;
-        Integer i = map.get(o);
-        if( i == null ) throw new RuntimeException( "couldn't find "+o );
-        return i.intValue();
+    Integer i = map.get(o);
+    if (i == null) {
+      throw new RuntimeException("couldn't find " + o);
     }
-    public int size() { return nextIndex-1; /*subtract 1 for null*/ }
-    public MapNumberer() { al.add(null); }
-    public boolean contains(Object o) { return map.containsKey(o); }
+    return i.intValue();
+  }
+
+  public int size() {
+    return nextIndex - 1;
+    /* subtract 1 for null */ }
+
+  public MapNumberer() {
+    al.add(null);
+  }
+
+  public boolean contains(Object o) {
+    return map.containsKey(o);
+  }
 }

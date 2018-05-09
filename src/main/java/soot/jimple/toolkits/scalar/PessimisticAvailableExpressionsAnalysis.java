@@ -23,8 +23,8 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.jimple.toolkits.scalar;
+
 import soot.SideEffectTester;
 import soot.SootMethod;
 import soot.Unit;
@@ -32,20 +32,18 @@ import soot.Value;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.scalar.FlowSet;
 
-/** Implements an available expressions analysis on local variables. 
- * pessimistic analysis - for teaching 621*/
-public class PessimisticAvailableExpressionsAnalysis extends SlowAvailableExpressionsAnalysis 
-{
-    public PessimisticAvailableExpressionsAnalysis(DirectedGraph<Unit> dg, SootMethod m, SideEffectTester st){
-        super(dg);
-    }
-    
-    protected FlowSet<Value> newInitialFlow()
-    {
-        FlowSet<Value> newSet = emptySet.clone();
-        //((ToppedSet)newSet).setTop(true);
-        return newSet;
-    }
+/**
+ * Implements an available expressions analysis on local variables. pessimistic analysis - for teaching 621
+ */
+public class PessimisticAvailableExpressionsAnalysis extends SlowAvailableExpressionsAnalysis {
+  public PessimisticAvailableExpressionsAnalysis(DirectedGraph<Unit> dg, SootMethod m, SideEffectTester st) {
+    super(dg);
+  }
+
+  protected FlowSet<Value> newInitialFlow() {
+    FlowSet<Value> newSet = emptySet.clone();
+    // ((ToppedSet)newSet).setTop(true);
+    return newSet;
+  }
 
 }
-

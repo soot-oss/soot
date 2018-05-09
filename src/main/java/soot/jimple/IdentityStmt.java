@@ -23,15 +23,9 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
+import soot.IdentityUnit;
 
-import soot.*;
-
-public interface IdentityStmt extends DefinitionStmt, IdentityUnit 
-{
+public interface IdentityStmt extends DefinitionStmt, IdentityUnit {
 }

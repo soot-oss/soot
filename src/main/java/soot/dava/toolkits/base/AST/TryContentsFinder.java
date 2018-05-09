@@ -19,183 +19,196 @@
 
 package soot.dava.toolkits.base.AST;
 
-import soot.*;
-import java.util.*;
-import soot.util.*;
-import soot.jimple.*;
-import soot.dava.internal.AST.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
-public class TryContentsFinder extends ASTAnalysis
-{
-    public TryContentsFinder( Singletons.Global g ) {}
-    public static TryContentsFinder v() { return G.v().soot_dava_toolkits_base_AST_TryContentsFinder(); }
+import soot.G;
+import soot.Local;
+import soot.RefType;
+import soot.Scene;
+import soot.Singletons;
+import soot.SootClass;
+import soot.Type;
+import soot.Value;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.AST.ASTTryNode;
+import soot.jimple.FieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.ThrowStmt;
+import soot.util.IterableSet;
 
-    private IterableSet curExceptionSet = new IterableSet();
-    private final HashMap<Object, IterableSet> node2ExceptionSet = new HashMap<Object, IterableSet>();
-    
-    public int getAnalysisDepth()
-    {
-	return ANALYSE_VALUES;
+public class TryContentsFinder extends ASTAnalysis {
+  public TryContentsFinder(Singletons.Global g) {
+  }
+
+  public static TryContentsFinder v() {
+    return G.v().soot_dava_toolkits_base_AST_TryContentsFinder();
+  }
+
+  private IterableSet curExceptionSet = new IterableSet();
+  private final HashMap<Object, IterableSet> node2ExceptionSet = new HashMap<Object, IterableSet>();
+
+  public int getAnalysisDepth() {
+    return ANALYSE_VALUES;
+  }
+
+  public IterableSet remove_CurExceptionSet() {
+    IterableSet s = curExceptionSet;
+
+    set_CurExceptionSet(new IterableSet());
+
+    return s;
+  }
+
+  public void set_CurExceptionSet(IterableSet curExceptionSet) {
+    this.curExceptionSet = curExceptionSet;
+  }
+
+  public void analyseThrowStmt(ThrowStmt s) {
+    Value op = (s).getOp();
+
+    if (op instanceof Local) {
+      add_ThrownType(((Local) op).getType());
+    } else if (op instanceof FieldRef) {
+      add_ThrownType(((FieldRef) op).getType());
     }
-    
-    public IterableSet remove_CurExceptionSet()
-    {
-	IterableSet s = curExceptionSet;
+  }
 
-	set_CurExceptionSet( new IterableSet());
-
-	return s;
+  private void add_ThrownType(Type t) {
+    if (t instanceof RefType) {
+      curExceptionSet.add(((RefType) t).getSootClass());
     }
+  }
 
-    public void set_CurExceptionSet( IterableSet curExceptionSet)
-    {
-	this.curExceptionSet = curExceptionSet;
-    }
-    
-    public void analyseThrowStmt( ThrowStmt s)
-    {
-	Value op = (s).getOp();
-	
-	if (op instanceof Local) 
-	    add_ThrownType( ((Local) op).getType());
-	else if (op instanceof FieldRef) 
-	    add_ThrownType( ((FieldRef) op).getType());
-    }
+  public void analyseInvokeExpr(InvokeExpr ie) {
+    curExceptionSet.addAll(ie.getMethod().getExceptions());
+  }
 
-    private void add_ThrownType( Type t)
-    {
-	if (t instanceof RefType)
-	    curExceptionSet.add( ((RefType) t).getSootClass());
-    }
+  public void analyseInstanceInvokeExpr(InstanceInvokeExpr iie) {
+    analyseInvokeExpr(iie);
+  }
 
-    public void analyseInvokeExpr( InvokeExpr ie)
-    {
-	curExceptionSet.addAll( ie.getMethod().getExceptions());
-    }
+  public void analyseASTNode(ASTNode n) {
+    if (n instanceof ASTTryNode) {
 
-    public void analyseInstanceInvokeExpr( InstanceInvokeExpr iie) 
-    {
-	analyseInvokeExpr( iie);
-    }
+      ASTTryNode tryNode = (ASTTryNode) n;
 
-    public void analyseASTNode( ASTNode n)
-    {
-	if (n instanceof ASTTryNode) {
+      ArrayList<Object> toRemove = new ArrayList<Object>();
+      IterableSet tryExceptionSet = node2ExceptionSet.get(tryNode.get_TryBodyContainer());
+      if (tryExceptionSet == null) {
+        tryExceptionSet = new IterableSet();
+        node2ExceptionSet.put(tryNode.get_TryBodyContainer(), tryExceptionSet);
+      }
 
-	    ASTTryNode tryNode = (ASTTryNode) n;
-	    
-	    ArrayList<Object> toRemove = new ArrayList<Object>();
-	    IterableSet tryExceptionSet = node2ExceptionSet.get( tryNode.get_TryBodyContainer());
-	    if (tryExceptionSet == null) {
-		tryExceptionSet = new IterableSet();
-		node2ExceptionSet.put( tryNode.get_TryBodyContainer(), tryExceptionSet);
-	    }
-	    
-	    List<Object> catchBodies = tryNode.get_CatchList();
-	    List<Object> subBodies = tryNode.get_SubBodies();
-	    
-	    Iterator<Object> cit = catchBodies.iterator();
-	    while (cit.hasNext()) {
-		Object catchBody = cit.next();
-		SootClass exception = (SootClass) tryNode.get_ExceptionMap().get( catchBody);
-		
-		if ((catches_Exception( tryExceptionSet, exception) == false) && (catches_RuntimeException( exception) == false))
-		    toRemove.add( catchBody);
-	    }
-	    
-	    Iterator<Object> trit = toRemove.iterator();
-	    while (trit.hasNext()) {
-		Object catchBody = trit.next();
-		
-		subBodies.remove( catchBody);
-		catchBodies.remove( catchBody);
-	    }
+      List<Object> catchBodies = tryNode.get_CatchList();
+      List<Object> subBodies = tryNode.get_SubBodies();
 
-	    IterableSet passingSet = (IterableSet) tryExceptionSet.clone();
-	    cit = catchBodies.iterator();
-	    while (cit.hasNext())
-		passingSet.remove( tryNode.get_ExceptionMap().get( cit.next()));
+      Iterator<Object> cit = catchBodies.iterator();
+      while (cit.hasNext()) {
+        Object catchBody = cit.next();
+        SootClass exception = (SootClass) tryNode.get_ExceptionMap().get(catchBody);
 
-	    cit = catchBodies.iterator();
-	    while (cit.hasNext())
-		passingSet.addAll( get_ExceptionSet( cit.next()));
+        if ((catches_Exception(tryExceptionSet, exception) == false) && (catches_RuntimeException(exception) == false)) {
+          toRemove.add(catchBody);
+        }
+      }
 
-	    node2ExceptionSet.put( n, passingSet);
-	}
+      Iterator<Object> trit = toRemove.iterator();
+      while (trit.hasNext()) {
+        Object catchBody = trit.next();
 
-	else {
-	    Iterator<Object> sbit = n.get_SubBodies().iterator();
-	    while (sbit.hasNext()) {
-		Iterator it = ((List) sbit.next()).iterator();
-		while (it.hasNext())
-		    add_ExceptionSet( n, get_ExceptionSet( it.next()));
-	    }
-	}
+        subBodies.remove(catchBody);
+        catchBodies.remove(catchBody);
+      }
 
+      IterableSet passingSet = (IterableSet) tryExceptionSet.clone();
+      cit = catchBodies.iterator();
+      while (cit.hasNext()) {
+        passingSet.remove(tryNode.get_ExceptionMap().get(cit.next()));
+      }
 
-	remove_CurExceptionSet();
-    }
+      cit = catchBodies.iterator();
+      while (cit.hasNext()) {
+        passingSet.addAll(get_ExceptionSet(cit.next()));
+      }
 
-    public IterableSet get_ExceptionSet( Object node)
-    {
-	IterableSet fullSet = node2ExceptionSet.get( node);
-	if (fullSet == null) {
-	    fullSet = new IterableSet();
-	    node2ExceptionSet.put( node, fullSet);
-	}
-
-	return fullSet;
+      node2ExceptionSet.put(n, passingSet);
     }
 
-    public void add_ExceptionSet( Object node, IterableSet s)
-    {
-	IterableSet fullSet = node2ExceptionSet.get( node);
-	if (fullSet == null) {
-	    fullSet = new IterableSet();
-	    node2ExceptionSet.put( node, fullSet);
-	}
-	
-	fullSet.addAll( s);
+    else {
+      Iterator<Object> sbit = n.get_SubBodies().iterator();
+      while (sbit.hasNext()) {
+        Iterator it = ((List) sbit.next()).iterator();
+        while (it.hasNext()) {
+          add_ExceptionSet(n, get_ExceptionSet(it.next()));
+        }
+      }
     }
 
-    private boolean catches_Exception( IterableSet tryExceptionSet, SootClass c)
-    {
-	Iterator it = tryExceptionSet.iterator();
-	while (it.hasNext()) {
-	    SootClass thrownException = (SootClass) it.next();
+    remove_CurExceptionSet();
+  }
 
-	    while (true) {
-		if (thrownException == c)
-		    return true;
-
-		if (thrownException.hasSuperclass() == false)
-		    break;
-
-		thrownException = thrownException.getSuperclass();
-	    }
-	}
-
-	return false;
+  public IterableSet get_ExceptionSet(Object node) {
+    IterableSet fullSet = node2ExceptionSet.get(node);
+    if (fullSet == null) {
+      fullSet = new IterableSet();
+      node2ExceptionSet.put(node, fullSet);
     }
 
-    private boolean catches_RuntimeException( SootClass c)
-    {
-	if ((c == Scene.v().getSootClass( "java.lang.Throwable")) ||
-	    (c == Scene.v().getSootClass( "java.lang.Exception")))
-	    return true;
+    return fullSet;
+  }
 
-	SootClass 
-	    caughtException = c,
-	    runtimeException = Scene.v().getSootClass( "java.lang.RuntimeException");
-	
-	while (true) {
-	    if (caughtException == runtimeException)
-		return true;
-	    
-	    if (caughtException.hasSuperclass() == false)
-		return false;
-
-	    caughtException = caughtException.getSuperclass();
-	}
+  public void add_ExceptionSet(Object node, IterableSet s) {
+    IterableSet fullSet = node2ExceptionSet.get(node);
+    if (fullSet == null) {
+      fullSet = new IterableSet();
+      node2ExceptionSet.put(node, fullSet);
     }
+
+    fullSet.addAll(s);
+  }
+
+  private boolean catches_Exception(IterableSet tryExceptionSet, SootClass c) {
+    Iterator it = tryExceptionSet.iterator();
+    while (it.hasNext()) {
+      SootClass thrownException = (SootClass) it.next();
+
+      while (true) {
+        if (thrownException == c) {
+          return true;
+        }
+
+        if (thrownException.hasSuperclass() == false) {
+          break;
+        }
+
+        thrownException = thrownException.getSuperclass();
+      }
+    }
+
+    return false;
+  }
+
+  private boolean catches_RuntimeException(SootClass c) {
+    if ((c == Scene.v().getSootClass("java.lang.Throwable")) || (c == Scene.v().getSootClass("java.lang.Exception"))) {
+      return true;
+    }
+
+    SootClass caughtException = c, runtimeException = Scene.v().getSootClass("java.lang.RuntimeException");
+
+    while (true) {
+      if (caughtException == runtimeException) {
+        return true;
+      }
+
+      if (caughtException.hasSuperclass() == false) {
+        return false;
+      }
+
+      caughtException = caughtException.getSuperclass();
+    }
+  }
 }

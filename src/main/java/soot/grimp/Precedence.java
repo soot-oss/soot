@@ -23,14 +23,8 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.grimp;
 
-public interface Precedence
-{
-    public abstract int getPrecedence();
+public interface Precedence {
+  public abstract int getPrecedence();
 }
