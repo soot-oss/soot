@@ -1,4 +1,4 @@
-/* Soot - a J*va Optimization Framework
+/* Soot - a Java Optimization Framework
  * Copyright (C) 2011 Richard Xiao
  *
  * This library is free software; you can redistribute it and/or
@@ -96,7 +96,8 @@ public class GeomPointsTo extends PAG {
   // Other choice, FIFO_Worklist
   protected IWorklist worklist = null;
 
-  // The generator that is used to generate the internal representations for the pointers and objects
+  // The generator that is used to generate the internal representations for the
+  // pointers and objects
   protected IEncodingBroker nodeGenerator = null;
 
   // The same type manager used by SPARK
@@ -160,14 +161,16 @@ public class GeomPointsTo extends PAG {
   protected int vis_cg[], low_cg[], rep_cg[], indeg_cg[], scc_size[];
   protected int pre_cnt; // preorder time-stamp for constructing the SCC condensed call graph
 
-  // The mappings between Soot functions and call edges to our internal representations
+  // The mappings between Soot functions and call edges to our internal
+  // representations
   protected Map<SootMethod, Integer> func2int = null;
   protected Map<Integer, SootMethod> int2func = null;
   protected Map<Edge, CgEdge> edgeMapping = null;
 
   // Others
   private boolean hasTransformed = false;
-  // Because we override the points-to query interface for SPARK, we need this flag to know how to answer queries
+  // Because we override the points-to query interface for SPARK, we need this
+  // flag to know how to answer queries
   private boolean hasExecuted = false;
   // Prepare necessary structures when first time ddSolve is called
   private boolean ddPrepared = false;
@@ -373,7 +376,8 @@ public class GeomPointsTo extends PAG {
       id++;
     }
 
-    // Next, we scan all the call edges and rebuild the call graph in our own vocabulary
+    // Next, we scan all the call edges and rebuild the call graph in our own
+    // vocabulary
     QueueReader<Edge> edgeList = Scene.v().getCallGraph().listener();
     while (edgeList.hasNext()) {
       Edge edge = edgeList.next();
@@ -398,7 +402,8 @@ public class GeomPointsTo extends PAG {
         // We don't modify the treatment to the thread run() calls
         thread_run_callsites.add(callsite);
       } else if (edge.isInstance() && !edge.isSpecial()) {
-        // We try to refine the virtual callsites (virtual + interface) with multiple call targets
+        // We try to refine the virtual callsites (virtual + interface) with multiple
+        // call targets
         InstanceInvokeExpr expr = (InstanceInvokeExpr) callsite.getInvokeExpr();
         if (expr.getMethodRef().getSignature().contains("<java.lang.Thread: void start()>")) {
           // It is a thread start function
@@ -551,7 +556,8 @@ public class GeomPointsTo extends PAG {
       }
     }
 
-    // Second time scan, we delete those constraints that only duplicate points-to information
+    // Second time scan, we delete those constraints that only duplicate points-to
+    // information
     for (Iterator<PlainConstraint> cons_it = constraints.iterator(); cons_it.hasNext();) {
       PlainConstraint cons = cons_it.next();
 
@@ -567,7 +573,8 @@ public class GeomPointsTo extends PAG {
 
           if (sm1 == sm2 && count[my_rhs.id] == 1 && lhs.getType() == rhs.getType()) {
 
-            // They are local to the same function and the receiver pointer has unique incoming edge
+            // They are local to the same function and the receiver pointer has unique
+            // incoming edge
             // More importantly, they have the same type.
             my_rhs.merge(my_lhs);
             cons_it.remove();
@@ -609,12 +616,14 @@ public class GeomPointsTo extends PAG {
 
     while (p != null) {
       t = p.t;
+
       if (vis_cg[t] == 0) {
         callGraphDFS(t);
+        low_cg[s] = Math.min(low_cg[s], low_cg[t]);
+      } else {
+        low_cg[s] = Math.min(low_cg[s], vis_cg[t]);
       }
-      if (low_cg[t] < low_cg[s]) {
-        low_cg[s] = low_cg[t];
-      }
+
       p = p.next;
     }
 
@@ -671,7 +680,8 @@ public class GeomPointsTo extends PAG {
       }
     }
 
-    // Then, we topologically number the contexts starting from the SUPER_MAIN function
+    // Then, we topologically number the contexts starting from the SUPER_MAIN
+    // function
     // We count the in-degree of each function.
     // And, we classify the call edges into SCC/non-SCC edges
     for (i = 0; i < n_func; ++i) {
@@ -700,7 +710,8 @@ public class GeomPointsTo extends PAG {
     }
 
     if (connectMissedEntries) {
-      // The functions other than SUPER_MAIN that have zero in-degrees are missed entry methods
+      // The functions other than SUPER_MAIN that have zero in-degrees are missed
+      // entry methods
       for (i = Constants.SUPER_MAIN + 1; i < n_func; ++i) {
         int rep_node = rep_cg[i];
         if (indeg_cg[rep_node] == 0) {
@@ -816,7 +827,8 @@ public class GeomPointsTo extends PAG {
     }
 
     // Now we apply the blocking scheme if necessary
-    // The implementation is slightly different from our paper (the non-SCC edges are not moved, they still use their current context mappings)
+    // The implementation is slightly different from our paper (the non-SCC edges
+    // are not moved, they still use their current context mappings)
     if (getOpts().geom_blocking()) {
       // We scan all the edges again, and tune the SCC related call edges
       // We don't manipulate the non-SCC edges, because they don't induce problems
@@ -828,7 +840,8 @@ public class GeomPointsTo extends PAG {
         CgEdge p = call_graph[i];
         while (p != null) {
           j = p.t;
-          if (j != i // This is not a self-loop, and a self-loop is treated specially in the initial encoding phase
+          if (j != i // This is not a self-loop, and a self-loop is treated specially in the initial
+              // encoding phase
               && p.scc_edge == true) {
             // max_context_size_block[i] == max_context_size_block[j]
             // So, we don't distinguish them
@@ -837,7 +850,8 @@ public class GeomPointsTo extends PAG {
               context_size[j] += max_context_size_block[i];
               ++block_num[j];
             } else {
-              // We randomly pick a block for reuse (try best to avoid reusing the first block)
+              // We randomly pick a block for reuse (try best to avoid reusing the first
+              // block)
               int iBlock = 0;
               if (block_num[j] > 1) {
                 iBlock = rGen.nextInt(block_num[j] - 1) + 1;
@@ -1208,7 +1222,8 @@ public class GeomPointsTo extends PAG {
     Scene.v().getReachableMethods();
 
     if (!opts.geom_trans()) {
-      // We remove the SPARK points-to information for pointers that have geomPTA results (willUpdate = true)
+      // We remove the SPARK points-to information for pointers that have geomPTA
+      // results (willUpdate = true)
       // At querying time, the SPARK points-to container acts as a query cache
       for (IVarAbstraction pn : pointers) {
         // Keep only the points-to results for representatives
@@ -1291,7 +1306,8 @@ public class GeomPointsTo extends PAG {
       encodeContexts(rounds == 0);
 
       // Offline processing:
-      // substantially use the points-to result for redundancy elimination prior to the analysis
+      // substantially use the points-to result for redundancy elimination prior to
+      // the analysis
       Date prepare_begin = new Date();
       offlineProcessor.init();
       offlineProcessor.defaultFeedPtsRoutines();
@@ -1314,7 +1330,8 @@ public class GeomPointsTo extends PAG {
       // Solve the constraints
       solveConstraints();
 
-      // We update the call graph and other internal data when the new points-to information is ready
+      // We update the call graph and other internal data when the new points-to
+      // information is ready
       n_obs = updateCallGraph();
       finalizeInternalData();
     }
@@ -1332,7 +1349,8 @@ public class GeomPointsTo extends PAG {
     ps.printf("[Geom] Total time: %.2f s\n", (double) solve_time / 1000);
     ps.printf("[Geom] Memory: %.1f MB\n", (double) (mem) / 1024 / 1024);
 
-    // We perform a set of tests to assess the quality of the points-to results for user pointers
+    // We perform a set of tests to assess the quality of the points-to results for
+    // user pointers
     if (evalLevel != Constants.eval_nothing) {
       ge.profileGeomBasicMetrics(evalLevel > Constants.eval_basicInfo);
       if (evalLevel > Constants.eval_basicInfo) {
@@ -1715,7 +1733,8 @@ public class GeomPointsTo extends PAG {
   }
 
   // --------------------------------------------------------------------------------------------------------
-  // -------------------------------Soot Standard Points-to Query Interface----------------------------------
+  // -------------------------------Soot Standard Points-to Query
+  // Interface----------------------------------
   // --------------------------------------------------------------------------------------------------------
 
   private PointsToSetInternal field_p2set(PointsToSet s, final SparkField f) {

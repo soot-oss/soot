@@ -24,11 +24,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- Default value for my.variable can be defined here -->
 		<jdk9.jrtjar>/opt/jdk-9/jrt-fs.jar</jdk9.jrtjar>
-		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
-		<checkstyle.version>8.7</checkstyle.version>
+		<maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+		<checkstyle.version>8.9</checkstyle.version>
 		<checkstyle.dir.path>${basedir}/codingstyle</checkstyle.dir.path>
 		<checkstyle.file.path>${checkstyle.dir.path}/soot_checkstyle_checks.xml</checkstyle.file.path>
-		<checkstyle.failOnError>true</checkstyle.failOnError>
+		<checkstyle.failOnViolation>false</checkstyle.failOnViolation>
 	</properties>
 	<build>
 		<finalName>sootclasses_j9-trunk</finalName>
@@ -298,8 +298,8 @@
 							<propertyExpansion>config_loc=${checkstyle.dir.path}</propertyExpansion>
 							<configLocation>${checkstyle.file.path}</configLocation>
 							<encoding>UTF-8</encoding>
-							<consoleOutput>true</consoleOutput>
-							<failsOnError>${checkstyle.failOnError}</failsOnError>
+							<logViolationsToConsole>true</logViolationsToConsole>
+							<failOnViolation>${checkstyle.failOnViolation}</failOnViolation>
 							<violationSeverity>warning</violationSeverity>
 						</configuration>
 						<goals>

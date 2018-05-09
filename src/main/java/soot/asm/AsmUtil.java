@@ -49,7 +49,7 @@ import soot.VoidType;
 /**
  * @author eric
  */
-class AsmUtil {
+public class AsmUtil {
 
   private static RefType makeRefType(String className, Optional<String> moduleName) {
     if (ModuleUtil.module_mode()) {
