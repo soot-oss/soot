@@ -45,7 +45,7 @@ import soot.VoidType;
  * @author eric
  *
  */
-class AsmUtil {
+public class AsmUtil {
 
   /**
    * Determines if a type is a dword type.
