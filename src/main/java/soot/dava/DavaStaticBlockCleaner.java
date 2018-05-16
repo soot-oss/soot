@@ -39,11 +39,11 @@ import soot.util.Chain;
  *        public static final ClassName myField;
  *        static{
                CLASSNAME.postClinit();
-            
+
           }
 
  *        postClinit(){ myField = new ClassName(); }
- * 
+ *
  *  Now this causes a problem since final fields can not be defined using a method call
  * So the solution was to inline just this method. to get something like
  *        static{
@@ -97,7 +97,8 @@ public class DavaStaticBlockCleaner {
   }
 
   /*
-   * Method called with a sootMethod to decide whether this method should be inlined or not returns null if it shouldnt be inlined
+   * Method called with a sootMethod to decide whether this method should be inlined or not returns null if it shouldnt be
+   * inlined
    *
    * A method can be inlined if it belongs to the same class and also if its static....(why???)
    */

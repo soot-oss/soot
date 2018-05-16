@@ -33,12 +33,13 @@ import soot.jimple.VirtualInvokeExpr;
 
 /**
  * Represents a single edge in a call graph.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public final class Edge {
   /**
-   * The method in which the call occurs; may be null for calls not occurring in a specific method (eg. implicit calls by the VM)
+   * The method in which the call occurs; may be null for calls not occurring in a specific method (eg. implicit calls by the
+   * VM)
    */
   private MethodOrMethodContext src;
 
@@ -63,7 +64,8 @@ public final class Edge {
   }
 
   /**
-   * The unit at which the call occurs; may be null for calls not occurring at a specific statement (eg. calls in native code)
+   * The unit at which the call occurs; may be null for calls not occurring at a specific statement (eg. calls in native
+   * code)
    */
   private Unit srcUnit;
 
@@ -91,7 +93,8 @@ public final class Edge {
   }
 
   /**
-   * The kind of edge. Note: kind should not be tested by other classes; instead, accessors such as isExplicit() should be added.
+   * The kind of edge. Note: kind should not be tested by other classes; instead, accessors such as isExplicit() should be
+   * added.
    **/
   private Kind kind;
 

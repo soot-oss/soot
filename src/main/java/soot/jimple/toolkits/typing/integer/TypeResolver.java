@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -424,8 +424,8 @@ public class TypeResolver {
         }
 
         if (DEBUG) {
-          if ((var != null) && (var.approx() != null) && (var.approx().type() != null) && (local != null) && (local.getType() != null)
-              && !local.getType().equals(var.approx().type())) {
+          if ((var != null) && (var.approx() != null) && (var.approx().type() != null) && (local != null)
+              && (local.getType() != null) && !local.getType().equals(var.approx().type())) {
             logger.debug("local: " + local + ", type: " + local.getType() + ", approx: " + var.approx().type());
           }
         }

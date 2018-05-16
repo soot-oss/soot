@@ -10,7 +10,8 @@ import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
- * The "31t" instruction format: It needs three 16-bit code units, has one register and is used for jump targets (hence the "t").<br>
+ * The "31t" instruction format: It needs three 16-bit code units, has one register and is used for jump targets (hence the
+ * "t").<br>
  * <br>
  * It is used e.g. by the opcodes "packed-switch" and "sparse-switch".
  */

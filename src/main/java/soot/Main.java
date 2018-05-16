@@ -163,10 +163,10 @@ public class Main {
       try {
         final String TRACKER_URL = "https://github.com/Sable/soot/issues/new?";
         String commandLineArgs = Joiner.on(" ").join(args);
-        String body = "Steps to reproduce:\n1.) ...\n\n" + "Files used to reproduce: \n...\n\n" + "Soot version: " + "<pre>" + escape(versionString)
-            + "</pre>" + "\n\n" + "Command line:\n" + "<pre>" + escape(commandLineArgs) + "</pre>\n\n" + "Max Memory:\n" + "<pre>"
-            + escape((Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB") + "</pre>" + "\n\n" + "Stack trace:\n" + "<pre>"
-            + escape(stackStraceString) + "</pre>";
+        String body = "Steps to reproduce:\n1.) ...\n\n" + "Files used to reproduce: \n...\n\n" + "Soot version: " + "<pre>"
+            + escape(versionString) + "</pre>" + "\n\n" + "Command line:\n" + "<pre>" + escape(commandLineArgs)
+            + "</pre>\n\n" + "Max Memory:\n" + "<pre>" + escape((Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB")
+            + "</pre>" + "\n\n" + "Stack trace:\n" + "<pre>" + escape(stackStraceString) + "</pre>";
 
         String title = e.getClass().getName() + " when ...";
 

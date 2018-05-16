@@ -50,13 +50,14 @@ import soot.util.queue.QueueReader;
 
 /**
  * A map of bit-vectors representing subtype relationships.
- * 
+ *
  * @author Ondrej Lhotak
- * 
- * @author Hamid A. Toussi (hamid2c@gmail.com): Making TypeManager faster by making type masks during a depth-first-traversal on the class hierarchy.
- *         First, type-masks of the leaves of Class Hierarchy are created and then the type mask of each type T is obtained by ORing type maks of
- *         Types sub-types and setting the bit-numbers associated with Allocation Nodes of type T. The type-mask of each interface is achieved by
- *         ORing the type-masks of its top-level concrete implementers. In fact, Reference types are visited in reversed-topological-order.
+ *
+ * @author Hamid A. Toussi (hamid2c@gmail.com): Making TypeManager faster by making type masks during a depth-first-traversal
+ *         on the class hierarchy. First, type-masks of the leaves of Class Hierarchy are created and then the type mask of
+ *         each type T is obtained by ORing type maks of Types sub-types and setting the bit-numbers associated with
+ *         Allocation Nodes of type T. The type-mask of each interface is achieved by ORing the type-masks of its top-level
+ *         concrete implementers. In fact, Reference types are visited in reversed-topological-order.
  */
 public final class TypeManager {
   private static final Logger logger = LoggerFactory.getLogger(TypeManager.class);

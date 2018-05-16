@@ -85,8 +85,10 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
       while (startIt.hasNext()) {
         Stmt start = startIt.next();
 
-        List<SootMethod> runMethodsList = new ArrayList<SootMethod>(); // will be a list of possible run methods called by this start stmt
-        List<AllocNode> allocNodesList = new ArrayList<AllocNode>(); // will be a list of possible allocation nodes for the thread object that's
+        List<SootMethod> runMethodsList = new ArrayList<SootMethod>(); // will be a list of possible run methods called by
+                                                                       // this start stmt
+        List<AllocNode> allocNodesList = new ArrayList<AllocNode>(); // will be a list of possible allocation nodes for the
+                                                                     // thread object that's
                                                                      // getting started
 
         // Get possible thread objects (may alias)
@@ -109,7 +111,8 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
         // If haven't found any run methods, then use the type of the startObject,
         // and add run from it and all subclasses
         if (runMethodsList.isEmpty() && ((RefType) startObject.getType()).getSootClass().isApplicationClass()) {
-          List<SootClass> threadClasses = hierarchy.getSubclassesOfIncluding(((RefType) startObject.getType()).getSootClass());
+          List<SootClass> threadClasses
+              = hierarchy.getSubclassesOfIncluding(((RefType) startObject.getType()).getSootClass());
           Iterator<SootClass> threadClassesIt = threadClasses.iterator();
           while (threadClassesIt.hasNext()) {
             SootClass currentClass = threadClassesIt.next();
@@ -129,9 +132,9 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
             throw new RuntimeException("Can't find run method for: " + startObject);
             /*
              * if( allocNode.getType() instanceof RefType ) { List threadClasses = hierarchy.getSubclassesOf(((RefType)
-             * allocNode.getType()).getSootClass()); Iterator threadClassesIt = threadClasses.iterator(); while(threadClassesIt.hasNext()) { SootClass
-             * currentClass = (SootClass) threadClassesIt.next(); if( currentClass.declaresMethod("void run()") ) {
-             * runMethodsList.add(currentClass.getMethod("void run()")); } } }
+             * allocNode.getType()).getSootClass()); Iterator threadClassesIt = threadClasses.iterator();
+             * while(threadClassesIt.hasNext()) { SootClass currentClass = (SootClass) threadClassesIt.next(); if(
+             * currentClass.declaresMethod("void run()") ) { runMethodsList.add(currentClass.getMethod("void run()")); } } }
              */
           }
         }
@@ -220,12 +223,13 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
 
     /*
      * in.copy(out);
-     * 
-     * // get list of definitions at this unit List newDefs = new ArrayList(); if(stmt instanceof DefinitionStmt) { Value leftOp =
-     * ((DefinitionStmt)stmt).getLeftOp(); if(leftOp instanceof Local) newDefs.add((Local) leftOp); }
-     * 
-     * // kill any start stmt whose base has been redefined Iterator outIt = out.iterator(); while(outIt.hasNext()) { Stmt outStmt = (Stmt)
-     * outIt.next(); if(newDefs.contains((Local) ((InstanceInvokeExpr) (outStmt).getInvokeExpr()).getBase())) out.remove(outStmt); }
+     *
+     * // get list of definitions at this unit List newDefs = new ArrayList(); if(stmt instanceof DefinitionStmt) { Value
+     * leftOp = ((DefinitionStmt)stmt).getLeftOp(); if(leftOp instanceof Local) newDefs.add((Local) leftOp); }
+     *
+     * // kill any start stmt whose base has been redefined Iterator outIt = out.iterator(); while(outIt.hasNext()) { Stmt
+     * outStmt = (Stmt) outIt.next(); if(newDefs.contains((Local) ((InstanceInvokeExpr)
+     * (outStmt).getInvokeExpr()).getBase())) out.remove(outStmt); }
      */
     // Search for start/join invoke expressions
     if (stmt.containsInvokeExpr()) {

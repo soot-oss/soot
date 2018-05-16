@@ -6,8 +6,9 @@ import soot.SootClass;
 import soot.Type;
 
 /**
- * Abstract base class for all transformers that fix wrong code that declares something as static, but uses it like an instance or vice versa.
- * 
+ * Abstract base class for all transformers that fix wrong code that declares something as static, but uses it like an
+ * instance or vice versa.
+ *
  * @author Steven Arzt
  *
  */

@@ -36,7 +36,8 @@ import soot.SootMethod;
 import soot.options.Options;
 
 /**
- * Traverses all methods, in all classes from the Scene, and transforms them to Shimple. Typically used for whole-program analysis on Shimple.
+ * Traverses all methods, in all classes from the Scene, and transforms them to Shimple. Typically used for whole-program
+ * analysis on Shimple.
  *
  * @author Navindra Umanee
  **/

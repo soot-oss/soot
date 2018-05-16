@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -68,8 +68,8 @@ public class Binop2addrInstruction extends TaggedInstruction {
 
     /*
      * if (IDalvikTyper.ENABLE_DVKTYPER) { BinopExpr bexpr = (BinopExpr)expr; short op = instruction.getOpcode().value;
-     * DalvikTyper.v().setType(bexpr.getOp1Box(), op1BinType[op-0xb0], true); DalvikTyper.v().setType(bexpr.getOp2Box(), op2BinType[op-0xb0], true);
-     * DalvikTyper.v().setType(assign.getLeftOpBox(), resBinType[op-0xb0], false); }
+     * DalvikTyper.v().setType(bexpr.getOp1Box(), op1BinType[op-0xb0], true); DalvikTyper.v().setType(bexpr.getOp2Box(),
+     * op2BinType[op-0xb0], true); DalvikTyper.v().setType(assign.getLeftOpBox(), resBinType[op-0xb0], false); }
      */
   }
 

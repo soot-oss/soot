@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-2003.  
+ * Modified by the Sable Research Group and others 1997-2003.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -33,10 +33,11 @@ import soot.Trap;
 import soot.Unit;
 
 /**
- * A CFG where the nodes are {@link Block} instances, and where exception boundaries are taken into account when finding the <tt>Block</tt>s for the
- * provided Body. Any {@link Unit} which is the first <tt>Unit</tt> to be convered by some exception handler will start a new Block, and any
- * <ttUnit</tt> which is the last <tt>Unit</tt> to be covered a some exception handler, will end the block it is part of. These ``zones'', however,
- * are not split up to indicate the possibility that an exception will lead to control exiting the zone before it is completed.
+ * A CFG where the nodes are {@link Block} instances, and where exception boundaries are taken into account when finding the
+ * <tt>Block</tt>s for the provided Body. Any {@link Unit} which is the first <tt>Unit</tt> to be convered by some exception
+ * handler will start a new Block, and any <ttUnit</tt> which is the last <tt>Unit</tt> to be covered a some exception
+ * handler, will end the block it is part of. These ``zones'', however, are not split up to indicate the possibility that an
+ * exception will lead to control exiting the zone before it is completed.
  *
  */
 
@@ -47,9 +48,9 @@ public class ZonedBlockGraph extends BlockGraph {
    * </p>
    *
    * <p>
-   * Note that this constructor builds a {@link BriefUnitGraph} internally when splitting <tt>body</tt>'s {@link Unit}s into {@link Block}s. Callers
-   * who need both a {@link BriefUnitGraph} and a {@link ZonedBlockGraph} can use the constructor taking the <tt>BriefUnitGraph</tt> as a parameter,
-   * as a minor optimization.
+   * Note that this constructor builds a {@link BriefUnitGraph} internally when splitting <tt>body</tt>'s {@link Unit}s into
+   * {@link Block}s. Callers who need both a {@link BriefUnitGraph} and a {@link ZonedBlockGraph} can use the constructor
+   * taking the <tt>BriefUnitGraph</tt> as a parameter, as a minor optimization.
    * </p>
    *
    * @param body
@@ -60,7 +61,8 @@ public class ZonedBlockGraph extends BlockGraph {
   }
 
   /**
-   * Constructs a <tt>ZonedBlockGraph</tt> corresponding to the <tt>Unit</tt>-level control flow represented by the passed {@link BriefUnitGraph}.
+   * Constructs a <tt>ZonedBlockGraph</tt> corresponding to the <tt>Unit</tt>-level control flow represented by the passed
+   * {@link BriefUnitGraph}.
    *
    * @param unitGraph
    *          The <tt>BriefUnitGraph</tt> for which to produce a <tt>ZonedBlockGraph</tt>.
@@ -73,8 +75,8 @@ public class ZonedBlockGraph extends BlockGraph {
 
   /**
    * <p>
-   * Utility method for computing the basic block leaders for a {@link Body}, given its {@link UnitGraph} (i.e., the instructions which begin new
-   * basic blocks).
+   * Utility method for computing the basic block leaders for a {@link Body}, given its {@link UnitGraph} (i.e., the
+   * instructions which begin new basic blocks).
    * </p>
    *
    * <p>
@@ -82,9 +84,11 @@ public class ZonedBlockGraph extends BlockGraph {
    *
    * <ul>
    *
-   * <li>The first <tt>Unit</tt> covered by each {@link Trap} (i.e., the <tt>Unit</tt> returned by {@link Trap.getBeginUnit()}.</li>
+   * <li>The first <tt>Unit</tt> covered by each {@link Trap} (i.e., the <tt>Unit</tt> returned by
+   * {@link Trap.getBeginUnit()}.</li>
    *
-   * <li>The first <tt>Unit</tt> not covered by each {@link Trap} (i.e., the <tt>Unit</tt> returned by {@link Trap.getEndUnit()}.</li>
+   * <li>The first <tt>Unit</tt> not covered by each {@link Trap} (i.e., the <tt>Unit</tt> returned by
+   * {@link Trap.getEndUnit()}.</li>
    *
    * </ul>
    * </p>

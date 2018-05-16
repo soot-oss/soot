@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -60,7 +60,8 @@ public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchS
   }
 
   public JTableSwitchStmt(Value key, int lowIndex, int highIndex, List<? extends Unit> targets, Unit defaultTarget) {
-    this(Jimple.v().newImmediateBox(key), lowIndex, highIndex, getTargetBoxesArray(targets), Jimple.v().newStmtBox(defaultTarget));
+    this(Jimple.v().newImmediateBox(key), lowIndex, highIndex, getTargetBoxesArray(targets),
+        Jimple.v().newStmtBox(defaultTarget));
   }
 
   public JTableSwitchStmt(Value key, int lowIndex, int highIndex, List<? extends UnitBox> targets, UnitBox defaultTarget) {
@@ -71,7 +72,8 @@ public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchS
     super(keyBox, defaultTargetBox, targetBoxes);
 
     if (lowIndex > highIndex) {
-      throw new RuntimeException("Error creating tableswitch: lowIndex(" + lowIndex + ") can't be greater than highIndex(" + highIndex + ").");
+      throw new RuntimeException(
+          "Error creating tableswitch: lowIndex(" + lowIndex + ") can't be greater than highIndex(" + highIndex + ").");
     }
 
     this.lowIndex = lowIndex;
@@ -90,10 +92,12 @@ public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchS
     // The case for "i == highIndex" is handled separately after the loop.
     for (int i = lowIndex; i < highIndex; i++) {
       Unit target = getTarget(i - lowIndex);
-      buffer.append("    " + Jimple.CASE + " " + i + ": " + Jimple.GOTO + " " + (target == this ? "self" : target) + ";" + endOfLine);
+      buffer.append(
+          "    " + Jimple.CASE + " " + i + ": " + Jimple.GOTO + " " + (target == this ? "self" : target) + ";" + endOfLine);
     }
     Unit target = getTarget(highIndex - lowIndex);
-    buffer.append("    " + Jimple.CASE + " " + highIndex + ": " + Jimple.GOTO + " " + (target == this ? "self" : target) + ";" + endOfLine);
+    buffer.append("    " + Jimple.CASE + " " + highIndex + ": " + Jimple.GOTO + " " + (target == this ? "self" : target)
+        + ";" + endOfLine);
 
     target = getDefaultTarget();
     buffer.append("    " + Jimple.DEFAULT + ": " + Jimple.GOTO + " " + (target == this ? "self" : target) + ";" + endOfLine);
@@ -171,7 +175,8 @@ public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchS
       targetPlaceholders.add(Baf.v().newPlaceholderInst(target));
     }
 
-    Unit u = Baf.v().newTableSwitchInst(Baf.v().newPlaceholderInst(getDefaultTarget()), lowIndex, highIndex, targetPlaceholders);
+    Unit u = Baf.v().newTableSwitchInst(Baf.v().newPlaceholderInst(getDefaultTarget()), lowIndex, highIndex,
+        targetPlaceholders);
     u.addAllTagsOf(this);
     out.add(u);
   }

@@ -59,7 +59,7 @@ import soot.toolkits.scalar.GuaranteedDefs;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 16-Jun-2006
  */
 public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransform {
@@ -157,8 +157,8 @@ public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransfor
         Unit pinit = getPushInitializer(l, t);
         units.insertBefore(pinit, store);
         /*
-         * if (t instanceof RefType) { SootClass sc = ((RefType)t).getSootClass(); if (sc != null) units.insertAfter(Baf.v().newInstanceCastInst(t),
-         * pinit); }
+         * if (t instanceof RefType) { SootClass sc = ((RefType)t).getSootClass(); if (sc != null)
+         * units.insertAfter(Baf.v().newInstanceCastInst(t), pinit); }
          */
 
         initialized.add(l);
@@ -188,21 +188,21 @@ public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransfor
   }
 
   /*
-   * 
-   * private Unit findInitializerSpotFor(Value v, Unit u, UnitGraph ug, GuaranteedDefs gd) { List preds = ug.getPredsOf(u); while (preds.size() == 1)
-   * { Unit p = (Unit) preds.get(0); //if (p instanceof IdentityInst) // break;
-   * 
+   *
+   * private Unit findInitializerSpotFor(Value v, Unit u, UnitGraph ug, GuaranteedDefs gd) { List preds = ug.getPredsOf(u);
+   * while (preds.size() == 1) { Unit p = (Unit) preds.get(0); //if (p instanceof IdentityInst) // break;
+   *
    * u = p; preds = ug.getPredsOf(u); }
-   * 
+   *
    * if (preds.size() <= 1) return u;
-   * 
-   * ArrayList nodef = new ArrayList(); Iterator pIt = preds.iterator(); while (pIt.hasNext()) { Unit u1 = (Unit) pIt.next(); if
-   * (!gd.getGuaranteedDefs(u1).contains(v)) { nodef.add(u1); } }
-   * 
+   *
+   * ArrayList nodef = new ArrayList(); Iterator pIt = preds.iterator(); while (pIt.hasNext()) { Unit u1 = (Unit) pIt.next();
+   * if (!gd.getGuaranteedDefs(u1).contains(v)) { nodef.add(u1); } }
+   *
    * if (nodef.size() == preds.size()) return u;
-   * 
+   *
    * if (nodef.size() == 1) return findInitializerSpotFor(v, (Unit) nodef.get(0), ug, gd);
-   * 
+   *
    * throw new RuntimeException("Shouldn't Ever Get Here!"); }
    */
 }

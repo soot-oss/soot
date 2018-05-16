@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * A java.util.Map-like map with Numberable objects as the keys. This one is designed for maps close to the size of the universe. For smaller maps,
- * use SmallNumberedMap.
+ * A java.util.Map-like map with Numberable objects as the keys. This one is designed for maps close to the size of the
+ * universe. For smaller maps, use SmallNumberedMap.
  *
  * @author Ondrej Lhotak
  */

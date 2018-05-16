@@ -77,7 +77,7 @@ import soot.util.Chain;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 12-May-2006
  */
 public class FindDuplicateSequences extends BodyTransformer implements IJbcoTransform {
@@ -138,7 +138,8 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
           // horrible approximatin about which init call belongs to which new
           if (v instanceof SpecialInvokeInst) {
             SpecialInvokeInst si = (SpecialInvokeInst) v;
-            if (si.getMethodRef().getSignature().indexOf("void <init>") < 0 || si.getMethodRef().declaringClass() != t.getSootClass()) {
+            if (si.getMethodRef().getSignature().indexOf("void <init>") < 0
+                || si.getMethodRef().declaringClass() != t.getSootClass()) {
               tmpWorkList.addAll(bug.getSuccsOf(v));
             }
           } else {
@@ -440,8 +441,8 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
     }
 
     /*
-     * if (o1 instanceof IncInst) { IncInst ii = (IncInst)o1; if (ii.getLocal() != ((IncInst)o2).getLocal() || ii.getConstant() !=
-     * ((IncInst)o2).getConstant()) return false; return true; }
+     * if (o1 instanceof IncInst) { IncInst ii = (IncInst)o1; if (ii.getLocal() != ((IncInst)o2).getLocal() ||
+     * ii.getConstant() != ((IncInst)o2).getConstant()) return false; return true; }
      */
 
     if (o1 instanceof TargetArgInst) {
@@ -520,7 +521,8 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
     }
 
     if (o1 instanceof SwapInst) {
-      return ((SwapInst) o1).getFromType() == ((SwapInst) o2).getFromType() && ((SwapInst) o1).getToType() == ((SwapInst) o2).getToType();
+      return ((SwapInst) o1).getFromType() == ((SwapInst) o2).getFromType()
+          && ((SwapInst) o1).getToType() == ((SwapInst) o2).getToType();
     }
 
     return false;

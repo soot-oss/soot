@@ -39,7 +39,8 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
   /**
    * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
    */
-  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
+  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 
@@ -51,11 +52,13 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
       java_security_AccessController_doPrivileged(method, thisVar, returnVar, params);
       return;
 
-    } else if (subSignature.equals("java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)")) {
+    } else if (subSignature
+        .equals("java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)")) {
       java_security_AccessController_doPrivileged(method, thisVar, returnVar, params);
       return;
 
-    } else if (subSignature.equals("java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)")) {
+    } else if (subSignature.equals(
+        "java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)")) {
       java_security_AccessController_doPrivileged(method, thisVar, returnVar, params);
       return;
 
@@ -77,18 +80,19 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
   /************************ java.security.AccessController ************/
   /*
    * The return value of doPrivileged depends on the implementation.
-   * 
+   *
    * public static native java.lang.Object doPrivileged(java.security.PrivilegedAction);
    *
-   * public static native java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction) throws java.security.PrivilegedActionException;
+   * public static native java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction) throws
+   * java.security.PrivilegedActionException;
    *
    * public static native java.lang.Object doPrivileged(java.security.PrivilegedAction, java.security.AccessControlContext);
    *
-   * public static native java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction, java.security.AccessControlContext) throws
-   * java.security.PrivilegedActionException;
+   * public static native java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,
+   * java.security.AccessControlContext) throws java.security.PrivilegedActionException;
    */
-  public void java_security_AccessController_doPrivileged(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
-      ReferenceVariable params[]) {
+  public void java_security_AccessController_doPrivileged(SootMethod method, ReferenceVariable thisVar,
+      ReferenceVariable returnVar, ReferenceVariable params[]) {
     // No longer necessary since Spark handles it itself in a more precise
     // way.
     // helper.assignObjectTo(returnVar, Environment.v().getLeastObject());
@@ -100,8 +104,8 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
    *
    * private static native java.security.AccessControlContext getStackAccessControlContext();
    */
-  public void java_security_AccessController_getStackAccessControlContext(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
-      ReferenceVariable params[]) {
+  public void java_security_AccessController_getStackAccessControlContext(SootMethod method, ReferenceVariable thisVar,
+      ReferenceVariable returnVar, ReferenceVariable params[]) {
     helper.assignObjectTo(returnVar, Environment.v().getLeastObject());
   }
 

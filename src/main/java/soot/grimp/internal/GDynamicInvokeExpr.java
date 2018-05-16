@@ -19,7 +19,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -48,7 +48,8 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
 
   protected int tag;
 
-  public GDynamicInvokeExpr(SootMethodRef bootStrapMethodRef, List<Value> bootstrapArgs, SootMethodRef methodRef, int tag, List args) {
+  public GDynamicInvokeExpr(SootMethodRef bootStrapMethodRef, List<Value> bootstrapArgs, SootMethodRef methodRef, int tag,
+      List args) {
     super(methodRef, new ValueBox[args.size()]);
     this.bsmRef = bootStrapMethodRef;
     this.tag = tag;
@@ -90,7 +91,8 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
   public boolean equivTo(Object o) {
     if (o instanceof GDynamicInvokeExpr) {
       GDynamicInvokeExpr ie = (GDynamicInvokeExpr) o;
-      if (!(getMethod().equals(ie.getMethod()) && (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+      if (!(getMethod().equals(ie.getMethod())
+          && (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
         return false;
       }
       if (argBoxes != null) {
@@ -135,7 +137,8 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
     buffer.append(" \"");
     buffer.append(methodRef.name()); // quoted method name (can be any UTF8 string)
     buffer.append("\" <");
-    buffer.append(SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()));
+    buffer
+        .append(SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()));
     buffer.append(">(");
 
     if (argBoxes != null) {
@@ -167,7 +170,8 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
   public void toString(UnitPrinter up) {
     up.literal(Jimple.DYNAMICINVOKE);
     up.literal(" \"" + methodRef.name() + "\" <"
-        + SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()) + ">(");
+        + SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType())
+        + ">(");
 
     if (argBoxes != null) {
       for (int i = 0; i < argBoxes.length; i++) {

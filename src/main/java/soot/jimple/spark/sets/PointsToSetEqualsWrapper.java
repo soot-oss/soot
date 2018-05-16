@@ -25,7 +25,8 @@ import soot.Type;
 import soot.jimple.ClassConstant;
 
 /**
- * A decorator that implements equals/hashCode for {@link PointsToSet} supporting the {@link EqualsSupportingPointsToSet} interface.
+ * A decorator that implements equals/hashCode for {@link PointsToSet} supporting the {@link EqualsSupportingPointsToSet}
+ * interface.
  *
  * @author Eric Bodden
  */

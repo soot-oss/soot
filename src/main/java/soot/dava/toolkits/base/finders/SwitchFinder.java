@@ -111,7 +111,8 @@ public class SwitchFinder implements FactFinder {
         AugmentedStmt tSucc = (AugmentedStmt) tsit.next();
         AugmentedStmt target = (AugmentedStmt) tSucc2target.get(tSucc);
 
-        snTargetList.addLast(new SwitchNode(target, (TreeSet<Object>) tSucc2indexSet.get(tSucc), (IterableSet) tSucc2Body.get(tSucc)));
+        snTargetList.addLast(
+            new SwitchNode(target, (TreeSet<Object>) tSucc2indexSet.get(tSucc), (IterableSet) tSucc2Body.get(tSucc)));
       }
 
       TreeSet targetHeads = new TreeSet(), killBodies = new TreeSet();

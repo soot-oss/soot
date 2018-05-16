@@ -132,7 +132,8 @@ public class PolyglotMethodSource implements MethodSource {
     }
 
     // field ref
-    soot.SootFieldRef field = soot.Scene.v().makeFieldRef(assertStatusClass, fieldName, soot.RefType.v("java.lang.Class"), true);
+    soot.SootFieldRef field
+        = soot.Scene.v().makeFieldRef(assertStatusClass, fieldName, soot.RefType.v("java.lang.Class"), true);
 
     soot.Local fieldLocal = soot.jimple.Jimple.v().newLocal("$r0", soot.RefType.v("java.lang.Class"));
 
@@ -160,8 +161,8 @@ public class PolyglotMethodSource implements MethodSource {
     ArrayList paramTypes = new ArrayList();
     paramTypes.add(soot.RefType.v("java.lang.String"));
 
-    soot.SootMethodRef methodToInvoke = soot.Scene.v().makeMethodRef(assertStatusClass, "class$", paramTypes, soot.RefType.v("java.lang.Class"),
-        true);
+    soot.SootMethodRef methodToInvoke
+        = soot.Scene.v().makeMethodRef(assertStatusClass, "class$", paramTypes, soot.RefType.v("java.lang.Class"), true);
 
     ArrayList params = new ArrayList();
     params.add(soot.jimple.StringConstant.v(paramName));
@@ -196,9 +197,10 @@ public class PolyglotMethodSource implements MethodSource {
     body.getLocals().add(boolLocal2);
 
     // virtual invoke
-    soot.SootMethodRef vMethodToInvoke = Scene.v().makeMethodRef(soot.Scene.v().getSootClass("java.lang.Class"), "desiredAssertionStatus",
-        new ArrayList(), soot.BooleanType.v(), false);
-    soot.jimple.VirtualInvokeExpr vInvoke = soot.jimple.Jimple.v().newVirtualInvokeExpr(invokeLocal, vMethodToInvoke, new ArrayList());
+    soot.SootMethodRef vMethodToInvoke = Scene.v().makeMethodRef(soot.Scene.v().getSootClass("java.lang.Class"),
+        "desiredAssertionStatus", new ArrayList(), soot.BooleanType.v(), false);
+    soot.jimple.VirtualInvokeExpr vInvoke
+        = soot.jimple.Jimple.v().newVirtualInvokeExpr(invokeLocal, vMethodToInvoke, new ArrayList());
 
     soot.jimple.AssignStmt testAssign = soot.jimple.Jimple.v().newAssignStmt(boolLocal1, vInvoke);
 
@@ -232,7 +234,8 @@ public class PolyglotMethodSource implements MethodSource {
     body.getUnits().add(nop4);
 
     // field assign
-    soot.SootFieldRef fieldD = Scene.v().makeFieldRef(body.getMethod().getDeclaringClass(), "$assertionsDisabled", soot.BooleanType.v(), true);
+    soot.SootFieldRef fieldD
+        = Scene.v().makeFieldRef(body.getMethod().getDeclaringClass(), "$assertionsDisabled", soot.BooleanType.v(), true);
 
     soot.jimple.FieldRef fieldRefD = soot.jimple.Jimple.v().newStaticFieldRef(fieldD);
     soot.jimple.AssignStmt fAssign = soot.jimple.Jimple.v().newAssignStmt(fieldRefD, boolLocal2);

@@ -9,7 +9,8 @@ import soot.SootMethod;
 import soot.jimple.toolkits.callgraph.Edge;
 
 /**
- * CallChain written by Richard L. Halpert 2007-03-07 Stores a list of edges, and has a "next pointer" to a continuation of the list
+ * CallChain written by Richard L. Halpert 2007-03-07 Stores a list of edges, and has a "next pointer" to a continuation of
+ * the list
  */
 
 public class CallChain {
@@ -77,7 +78,8 @@ public class CallChain {
   public boolean equals(Object o) {
     if (o instanceof CallChain) {
       CallChain other = (CallChain) o;
-      if (edge == other.edge && ((next == null && other.next == null) || (next != null && other.next != null && next.equals(other.next)))) {
+      if (edge == other.edge
+          && ((next == null && other.next == null) || (next != null && other.next != null && next.equals(other.next)))) {
         return true;
       }
     }

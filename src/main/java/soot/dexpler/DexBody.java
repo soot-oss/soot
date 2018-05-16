@@ -207,7 +207,8 @@ public class DexBody {
 
     // Check taken from Android's dalvik/libdex/DexSwapVerify.cpp
     if (numParameterRegisters > numRegisters) {
-      throw new RuntimeException("Malformed dex file: insSize (" + numParameterRegisters + ") > registersSize (" + numRegisters + ")");
+      throw new RuntimeException(
+          "Malformed dex file: insSize (" + numParameterRegisters + ") > registersSize (" + numRegisters + ")");
     }
 
     for (DebugItem di : code.getDebugItems()) {
@@ -316,7 +317,8 @@ public class DexBody {
   public Local getRegisterLocal(int num) throws InvalidDalvikBytecodeException {
     int totalRegisters = registerLocals.length;
     if (num > totalRegisters) {
-      throw new InvalidDalvikBytecodeException("Trying to access register " + num + " but only " + totalRegisters + " is/are available.");
+      throw new InvalidDalvikBytecodeException(
+          "Trying to access register " + num + " but only " + totalRegisters + " is/are available.");
     }
     return registerLocals[num];
   }
@@ -372,7 +374,7 @@ public class DexBody {
 
     /*
      * Timer t_whole_jimplification = new Timer(); Timer t_num = new Timer(); Timer t_null = new Timer();
-     * 
+     *
      * t_whole_jimplification.start();
      */
 
@@ -554,11 +556,12 @@ public class DexBody {
     /*
      * We eliminate dead code. Dead code has been shown to occur under the following circumstances.
      *
-     * 0006ec: 0d00 |00a2: move-exception v0 ... 0006f2: 0d00 |00a5: move-exception v0 ... 0x0041 - 0x008a Ljava/lang/Throwable; -> 0x00a5 <any> ->
-     * 0x00a2
-     * 
-     * Here there are two traps both over the same region. But the same always fires, hence rendering the code at a2 unreachable. Dead code yields
-     * problems during local splitting because locals within dead code will not be split. Hence we remove all dead code here.
+     * 0006ec: 0d00 |00a2: move-exception v0 ... 0006f2: 0d00 |00a5: move-exception v0 ... 0x0041 - 0x008a
+     * Ljava/lang/Throwable; -> 0x00a5 <any> -> 0x00a2
+     *
+     * Here there are two traps both over the same region. But the same always fires, hence rendering the code at a2
+     * unreachable. Dead code yields problems during local splitting because locals within dead code will not be split. Hence
+     * we remove all dead code here.
      */
 
     // Fix traps that do not catch exceptions
@@ -823,7 +826,8 @@ public class DexBody {
           Type t = def.getLeftOp().getType();
           if (t instanceof RefType) {
             RefType rt = (RefType) t;
-            if (rt.getSootClass().isPhantom() && !rt.getSootClass().hasSuperclass() && !rt.getSootClass().getName().equals("java.lang.Throwable")) {
+            if (rt.getSootClass().isPhantom() && !rt.getSootClass().hasSuperclass()
+                && !rt.getSootClass().getName().equals("java.lang.Throwable")) {
               rt.getSootClass().setSuperclass(Scene.v().getSootClass("java.lang.Throwable"));
             }
           }
@@ -964,7 +968,8 @@ public class DexBody {
           SootClass exception = ((RefType) t).getSootClass();
           DexlibAbstractInstruction instruction = instructionAtAddress(handler.getHandlerCodeAddress());
           if (!(instruction instanceof MoveExceptionInstruction)) {
-            logger.debug("" + String.format("First instruction of trap handler unit not MoveException but %s", instruction.getClass().getName()));
+            logger.debug("" + String.format("First instruction of trap handler unit not MoveException but %s",
+                instruction.getClass().getName()));
           } else {
             ((MoveExceptionInstruction) instruction).setRealType(this, exception.getType());
           }

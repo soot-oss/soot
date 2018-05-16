@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -56,8 +56,8 @@ abstract public class AbstractGrimpIntBinopExpr extends AbstractIntBinopExpr imp
     if (op2 instanceof Precedence) {
       int opPrec = ((Precedence) op2).getPrecedence(), myPrec = getPrecedence();
 
-      if ((opPrec < myPrec) || ((opPrec == myPrec) && ((this instanceof SubExpr) || (this instanceof DivExpr) || (this instanceof DCmpExpr)
-          || (this instanceof DCmpgExpr) || (this instanceof DCmplExpr)))) {
+      if ((opPrec < myPrec) || ((opPrec == myPrec) && ((this instanceof SubExpr) || (this instanceof DivExpr)
+          || (this instanceof DCmpExpr) || (this instanceof DCmpgExpr) || (this instanceof DCmplExpr)))) {
         rightOp = "(" + rightOp + ")";
       }
     }

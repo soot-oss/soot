@@ -63,12 +63,13 @@ import soot.jimple.toolkits.callgraph.Edge;
 
 /**
  * We provide a set of methods to evaluate the quality of geometric points-to analysis. The evaluation methods are:
- * 
- * 1. Count the basic points-to information, such as average points-to set size, constraints evaluation graph size, etc; 2. Virtual function
- * resolution comparison; 3. Static casts checking; 4. All pairs alias analysis; 5. Building heap graph (not used yet).
- * 
+ *
+ * 1. Count the basic points-to information, such as average points-to set size, constraints evaluation graph size, etc; 2.
+ * Virtual function resolution comparison; 3. Static casts checking; 4. All pairs alias analysis; 5. Building heap graph (not
+ * used yet).
+ *
  * @author xiao
- * 
+ *
  */
 public class GeomEvaluator {
   private static final Logger logger = LoggerFactory.getLogger(GeomEvaluator.class);
@@ -188,15 +189,18 @@ public class GeomEvaluator {
     outputer.println("----------Statistical Result of geomPTA <Data Format: geomPTA (SPARK)>----------");
     outputer.printf("Lines of code (jimple): %.1fK\n", (double) evalRes.loc / 1000);
     outputer.printf("Reachable Methods: %d (%d)\n", ptsProvider.getNumberOfMethods(), ptsProvider.getNumberOfSparkMethods());
-    outputer.printf("Reachable User Methods: %d (%d)\n", ptsProvider.n_reach_user_methods, ptsProvider.n_reach_spark_user_methods);
+    outputer.printf("Reachable User Methods: %d (%d)\n", ptsProvider.n_reach_user_methods,
+        ptsProvider.n_reach_spark_user_methods);
     outputer.println("#All Pointers: " + ptsProvider.getNumberOfPointers());
     outputer.println("#Core Pointers: " + n_legal_var + ", in which #AllocDot Fields: " + n_alloc_dot_fields);
-    outputer.printf("Total/Average Projected Points-to Tuples [core pointers]: %d (%d) / %.3f (%.3f) \n", evalRes.total_geom_ins_pts,
-        evalRes.total_spark_pts, evalRes.avg_geom_ins_pts, evalRes.avg_spark_pts);
-    outputer.println("The largest points-to set size [core pointers]: " + evalRes.max_pts_geom + " (" + evalRes.max_pts_spark + ")");
+    outputer.printf("Total/Average Projected Points-to Tuples [core pointers]: %d (%d) / %.3f (%.3f) \n",
+        evalRes.total_geom_ins_pts, evalRes.total_spark_pts, evalRes.avg_geom_ins_pts, evalRes.avg_spark_pts);
+    outputer.println(
+        "The largest points-to set size [core pointers]: " + evalRes.max_pts_geom + " (" + evalRes.max_pts_spark + ")");
 
     outputer.println();
-    evalRes.pts_size_bar_geom.printResult(outputer, "Points-to Set Sizes Distribution [core pointers]:", evalRes.pts_size_bar_spark);
+    evalRes.pts_size_bar_geom.printResult(outputer, "Points-to Set Sizes Distribution [core pointers]:",
+        evalRes.pts_size_bar_spark);
   }
 
   /**
@@ -319,9 +323,10 @@ public class GeomEvaluator {
     ptsProvider.ps.println();
     ptsProvider.ps.println("--------> Virtual Callsites Evaluation <---------");
     ptsProvider.ps.printf("Total virtual callsites (app code): %d (%d)\n", evalRes.n_callsites, evalRes.n_user_callsites);
-    ptsProvider.ps.printf("Total virtual call edges (app code): %d (%d)\n", evalRes.n_geom_call_edges, evalRes.n_geom_user_edges);
-    ptsProvider.ps.printf("Virtual callsites additionally solved by geomPTA compared to SPARK (app code) = %d (%d)\n", evalRes.n_geom_solved_all,
-        evalRes.n_geom_solved_app);
+    ptsProvider.ps.printf("Total virtual call edges (app code): %d (%d)\n", evalRes.n_geom_call_edges,
+        evalRes.n_geom_user_edges);
+    ptsProvider.ps.printf("Virtual callsites additionally solved by geomPTA compared to SPARK (app code) = %d (%d)\n",
+        evalRes.n_geom_solved_all, evalRes.n_geom_solved_app);
     evalRes.total_call_edges.printResult(ptsProvider.ps, "Testing of unsolved callsites on 1-CFA call graph: ");
 
     if (ptsProvider.getOpts().verbose()) {
@@ -608,8 +613,8 @@ public class GeomEvaluator {
           Set<AllocNode> objsSet = pn.get_all_points_to_objects();
           for (AllocNode obj : objsSet) {
             /*
-             * We will create a lot of instance fields. Because in points-to analysis, we concern only the reference type fields. But here, we concern
-             * all the fields read write including the primitive type fields.
+             * We will create a lot of instance fields. Because in points-to analysis, we concern only the reference type
+             * fields. But here, we concern all the fields read write including the primitive type fields.
              */
             IVarAbstraction padf = ptsProvider.findAndInsertInstanceField(obj, field);
             int[] defUseUnit = defUseCounterForGeom.get(padf);

@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -113,7 +113,7 @@ import soot.jimple.internal.VariableBox;
 /**
  * The Jimple class contains all the constructors for the components of the Jimple grammar for the Jimple body. <br>
  * <br>
- * 
+ *
  * Immediate -> Local | Constant <br>
  * RValue -> Local | Constant | ConcreteRef | Expr<br>
  * Variable -> Local | ArrayRef | InstanceFieldRef | StaticFieldRef <br>
@@ -195,11 +195,12 @@ public class Jimple {
 
   public static List<String> jimpleKeywordList() {
     List<String> l = new LinkedList<String>();
-    Collections.addAll(l, NEWARRAY, NEWMULTIARRAY, NOP, RET, SPECIALINVOKE, STATICINVOKE, TABLESWITCH, VIRTUALINVOKE, NULL_TYPE, UNKNOWN, CMP, CMPG,
-        CMPL, ENTERMONITOR, EXITMONITOR, INTERFACEINVOKE, LENGTHOF, LOOKUPSWITCH, NEG, IF, ABSTRACT, BOOLEAN, BREAK, BYTE, CASE, CATCH, CHAR, CLASS,
-        FINAL, NATIVE, PUBLIC, PROTECTED, PRIVATE, STATIC, SYNCHRONIZED, TRANSIENT, VOLATILE, STRICTFP, ENUM, ANNOTATION, INTERFACE, VOID, SHORT, INT,
-        LONG, FLOAT, DOUBLE, EXTENDS, IMPLEMENTS, BREAKPOINT, DEFAULT, GOTO, INSTANCEOF, NEW, RETURN, THROW, THROWS, NULL, FROM, TO, WITH, CLS, TRUE,
-        FALSE);
+    Collections.addAll(l, NEWARRAY, NEWMULTIARRAY, NOP, RET, SPECIALINVOKE, STATICINVOKE, TABLESWITCH, VIRTUALINVOKE,
+        NULL_TYPE, UNKNOWN, CMP, CMPG, CMPL, ENTERMONITOR, EXITMONITOR, INTERFACEINVOKE, LENGTHOF, LOOKUPSWITCH, NEG, IF,
+        ABSTRACT, BOOLEAN, BREAK, BYTE, CASE, CATCH, CHAR, CLASS, FINAL, NATIVE, PUBLIC, PROTECTED, PRIVATE, STATIC,
+        SYNCHRONIZED, TRANSIENT, VOLATILE, STRICTFP, ENUM, ANNOTATION, INTERFACE, VOID, SHORT, INT, LONG, FLOAT, DOUBLE,
+        EXTENDS, IMPLEMENTS, BREAKPOINT, DEFAULT, GOTO, INSTANCEOF, NEW, RETURN, THROW, THROWS, NULL, FROM, TO, WITH, CLS,
+        TRUE, FALSE);
     return l;
   }
 
@@ -447,18 +448,20 @@ public class Jimple {
   }
 
   /**
-   * Constructs a NewDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List bootstrapArgs, SootMethodRef methodRef, List args) grammar chunk.
+   * Constructs a NewDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List bootstrapArgs, SootMethodRef methodRef, List
+   * args) grammar chunk.
    */
-  public DynamicInvokeExpr newDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<? extends Value> bootstrapArgs, SootMethodRef methodRef,
-      List<? extends Value> args) {
+  public DynamicInvokeExpr newDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<? extends Value> bootstrapArgs,
+      SootMethodRef methodRef, List<? extends Value> args) {
     return new JDynamicInvokeExpr(bootstrapMethodRef, bootstrapArgs, methodRef, args);
   }
 
   /**
-   * Constructs a NewDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List bootstrapArgs, SootMethodRef methodRef, List args) grammar chunk.
+   * Constructs a NewDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List bootstrapArgs, SootMethodRef methodRef, List
+   * args) grammar chunk.
    */
-  public DynamicInvokeExpr newDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<? extends Value> bootstrapArgs, SootMethodRef methodRef,
-      int tag, List<? extends Value> args) {
+  public DynamicInvokeExpr newDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<? extends Value> bootstrapArgs,
+      SootMethodRef methodRef, int tag, List<? extends Value> args) {
     return new JDynamicInvokeExpr(bootstrapMethodRef, bootstrapArgs, methodRef, tag, args);
   }
 
@@ -611,22 +614,26 @@ public class Jimple {
   /**
    * Constructs a TableSwitchStmt(Immediate, int, int, List of Unit, Stmt) grammar chunk.
    */
-  public TableSwitchStmt newTableSwitchStmt(Value key, int lowIndex, int highIndex, List<? extends Unit> targets, Unit defaultTarget) {
+  public TableSwitchStmt newTableSwitchStmt(Value key, int lowIndex, int highIndex, List<? extends Unit> targets,
+      Unit defaultTarget) {
     return new JTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
   }
 
-  public TableSwitchStmt newTableSwitchStmt(Value key, int lowIndex, int highIndex, List<? extends UnitBox> targets, UnitBox defaultTarget) {
+  public TableSwitchStmt newTableSwitchStmt(Value key, int lowIndex, int highIndex, List<? extends UnitBox> targets,
+      UnitBox defaultTarget) {
     return new JTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
   }
 
   /**
    * Constructs a LookupSwitchStmt(Immediate, List of Immediate, List of Unit, Stmt) grammar chunk.
    */
-  public LookupSwitchStmt newLookupSwitchStmt(Value key, List<IntConstant> lookupValues, List<? extends Unit> targets, Unit defaultTarget) {
+  public LookupSwitchStmt newLookupSwitchStmt(Value key, List<IntConstant> lookupValues, List<? extends Unit> targets,
+      Unit defaultTarget) {
     return new JLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
   }
 
-  public LookupSwitchStmt newLookupSwitchStmt(Value key, List<IntConstant> lookupValues, List<? extends UnitBox> targets, UnitBox defaultTarget) {
+  public LookupSwitchStmt newLookupSwitchStmt(Value key, List<IntConstant> lookupValues, List<? extends UnitBox> targets,
+      UnitBox defaultTarget) {
     return new JLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
   }
 
@@ -743,49 +750,54 @@ public class Jimple {
    */
   /*
    * public StaticFieldRef newStaticFieldRef(SootField f) { return newStaticFieldRef(f.makeRef()); }
-   * 
+   *
    * public InstanceFieldRef newInstanceFieldRef(Value base, SootField f) { return newInstanceFieldRef(base, f.makeRef()); }
-   * 
-   * public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, List args) { return newStaticInvokeExpr(method.makeRef(), args); }
-   * 
-   * public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, List args) { return newSpecialInvokeExpr(base, method.makeRef(),
+   *
+   * public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, List args) { return newStaticInvokeExpr(method.makeRef(),
    * args); }
-   * 
-   * public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, List args) { return newVirtualInvokeExpr(base, method.makeRef(),
-   * args); }
-   * 
-   * public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, List args) { return newInterfaceInvokeExpr(base,
-   * method.makeRef(), args); }
-   * 
+   *
+   * public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, List args) { return
+   * newSpecialInvokeExpr(base, method.makeRef(), args); }
+   *
+   * public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, List args) { return
+   * newVirtualInvokeExpr(base, method.makeRef(), args); }
+   *
+   * public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, List args) { return
+   * newInterfaceInvokeExpr(base, method.makeRef(), args); }
+   *
    * public StaticInvokeExpr newStaticInvokeExpr(SootMethod method) { return newStaticInvokeExpr(method.makeRef()); }
-   * 
-   * public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method) { return newSpecialInvokeExpr(base, method.makeRef()); }
-   * 
-   * public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method) { return newVirtualInvokeExpr(base, method.makeRef()); }
-   * 
-   * public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method) { return newInterfaceInvokeExpr(base, method.makeRef()); }
-   * 
-   * public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, Value arg) { return newStaticInvokeExpr(method.makeRef(), arg); }
-   * 
-   * public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, Value arg) { return newSpecialInvokeExpr(base, method.makeRef(),
+   *
+   * public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method) { return newSpecialInvokeExpr(base,
+   * method.makeRef()); }
+   *
+   * public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method) { return newVirtualInvokeExpr(base,
+   * method.makeRef()); }
+   *
+   * public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method) { return newInterfaceInvokeExpr(base,
+   * method.makeRef()); }
+   *
+   * public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, Value arg) { return newStaticInvokeExpr(method.makeRef(),
    * arg); }
-   * 
-   * public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, Value arg) { return newVirtualInvokeExpr(base, method.makeRef(),
-   * arg); }
-   * 
-   * public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, Value arg) { return newInterfaceInvokeExpr(base,
-   * method.makeRef(), arg); }
-   * 
-   * public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, Value arg1, Value arg2) { return newStaticInvokeExpr(method.makeRef(), arg1,
-   * arg2); }
-   * 
-   * public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2) { return newSpecialInvokeExpr(base,
-   * method.makeRef(), arg1, arg2); }
-   * 
-   * public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2) { return newVirtualInvokeExpr(base,
-   * method.makeRef(), arg1, arg2); }
-   * 
-   * public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2) { return newInterfaceInvokeExpr(base,
-   * method.makeRef(), arg1, arg2); }
+   *
+   * public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, Value arg) { return
+   * newSpecialInvokeExpr(base, method.makeRef(), arg); }
+   *
+   * public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, Value arg) { return
+   * newVirtualInvokeExpr(base, method.makeRef(), arg); }
+   *
+   * public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, Value arg) { return
+   * newInterfaceInvokeExpr(base, method.makeRef(), arg); }
+   *
+   * public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, Value arg1, Value arg2) { return
+   * newStaticInvokeExpr(method.makeRef(), arg1, arg2); }
+   *
+   * public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2) { return
+   * newSpecialInvokeExpr(base, method.makeRef(), arg1, arg2); }
+   *
+   * public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2) { return
+   * newVirtualInvokeExpr(base, method.makeRef(), arg1, arg2); }
+   *
+   * public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2) { return
+   * newInterfaceInvokeExpr(base, method.makeRef(), arg1, arg2); }
    */
 }

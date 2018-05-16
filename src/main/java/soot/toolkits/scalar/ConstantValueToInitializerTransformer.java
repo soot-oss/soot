@@ -33,9 +33,9 @@ import soot.tagkit.Tag;
 import soot.util.Chain;
 
 /**
- * Transformer that creates a static initializer which sets constant values into final static fields to emulate the initializations that are done
- * through the constant table in CLASS and DEX code, but that are not supported by Jimple.
- * 
+ * Transformer that creates a static initializer which sets constant values into final static fields to emulate the
+ * initializations that are done through the constant table in CLASS and DEX code, but that are not supported by Jimple.
+ *
  * @author Steven Arzt
  */
 public class ConstantValueToInitializerTransformer extends SceneTransformer {

@@ -32,9 +32,9 @@ import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
 /**
- * Represents the edges in a call graph. This class is meant to act as only a container of edges; code for various call graph builders should be kept
- * out of it, as well as most code for accessing the edges.
- * 
+ * Represents the edges in a call graph. This class is meant to act as only a container of edges; code for various call graph
+ * builders should be kept out of it, as well as most code for accessing the edges.
+ *
  * @author Ondrej Lhotak
  */
 public class SlowCallGraph extends CallGraph {
@@ -99,7 +99,8 @@ public class SlowCallGraph extends CallGraph {
   }
 
   /**
-   * Returns a QueueReader object containing all edges added so far, and which will be informed of any new edges that are later added to the graph.
+   * Returns a QueueReader object containing all edges added so far, and which will be informed of any new edges that are
+   * later added to the graph.
    */
   public QueueReader listener() {
     return (QueueReader) reader.clone();

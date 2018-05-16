@@ -27,10 +27,11 @@ import soot.toolkits.graph.Block;
 import soot.toolkits.graph.UnitGraph;
 
 /**
- * This interface represents a region of control dependence in the control flow graph. There are different kinds of region representations that may
- * slightly differ in definition or implementation; here is an interface that is expected to be supported by all these different regions.
- * 
- * 
+ * This interface represents a region of control dependence in the control flow graph. There are different kinds of region
+ * representations that may slightly differ in definition or implementation; here is an interface that is expected to be
+ * supported by all these different regions.
+ *
+ *
  * @author Hossein Sadat-Mohtasham Jan 2009
  */
 

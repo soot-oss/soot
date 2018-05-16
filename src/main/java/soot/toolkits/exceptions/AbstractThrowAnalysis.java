@@ -31,10 +31,10 @@ import soot.grimp.NewInvokeExpr;
 import soot.jimple.ThrowStmt;
 
 /**
- * Abstract class implementing parts of the {@link ThrowAnalysis} interface which may be common to multiple concrete <code>ThrowAnalysis</code>
- * classes. <code>AbstractThrowAnalysis</code> provides straightforward implementations of {@link mightThrowExplicitly(ThrowInst)} and
- * {@link mightThrowExplicitly(ThrowStmt)}, since concrete implementations of <code>ThrowAnalysis</code> seem likely to differ mainly in their
- * treatment of implicit exceptions.
+ * Abstract class implementing parts of the {@link ThrowAnalysis} interface which may be common to multiple concrete
+ * <code>ThrowAnalysis</code> classes. <code>AbstractThrowAnalysis</code> provides straightforward implementations of
+ * {@link mightThrowExplicitly(ThrowInst)} and {@link mightThrowExplicitly(ThrowStmt)}, since concrete implementations of
+ * <code>ThrowAnalysis</code> seem likely to differ mainly in their treatment of implicit exceptions.
  */
 public abstract class AbstractThrowAnalysis implements ThrowAnalysis {
 

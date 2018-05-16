@@ -50,8 +50,8 @@ import soot.VoidType;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 
 /**
- * DexlibWrapper provides an entry point to the dexlib library from the smali project. Given a dex file, it will use dexlib to retrieve all classes
- * for further processing A call to getClass retrieves the specific class to analyze further.
+ * DexlibWrapper provides an entry point to the dexlib library from the smali project. Given a dex file, it will use dexlib
+ * to retrieve all classes for further processing A call to getClass retrieves the specific class to analyze further.
  */
 public class DexlibWrapper {
 
@@ -86,7 +86,8 @@ public class DexlibWrapper {
   private final Collection<DexBackedDexFile> dexFiles;
 
   /**
-   * Construct a DexlibWrapper from a dex file and stores its classes referenced by their name. No further process is done here.
+   * Construct a DexlibWrapper from a dex file and stores its classes referenced by their name. No further process is done
+   * here.
    */
 
   public DexlibWrapper(File dexSource) {
@@ -103,7 +104,7 @@ public class DexlibWrapper {
 
   /**
    * Allow custom implementations to use different class loading strategies. Do not remove this method.
-   * 
+   *
    * @return
    */
   protected DexClassLoader createDexClassLoader() {
@@ -136,8 +137,8 @@ public class DexlibWrapper {
             // primitive types - we obviously do not want them
             // to be resolved
             /*
-             * dex files contain references to the Type IDs of the system annotations. They are only visible to the Dalvik VM (for reflection, see
-             * vm/reflect/Annotations.cpp), and not to the user - so we do not want them to be resolved.
+             * dex files contain references to the Type IDs of the system annotations. They are only visible to the Dalvik VM
+             * (for reflection, see vm/reflect/Annotations.cpp), and not to the user - so we do not want them to be resolved.
              */
             continue;
           }

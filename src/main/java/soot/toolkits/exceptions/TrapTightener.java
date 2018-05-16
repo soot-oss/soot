@@ -39,14 +39,14 @@ import soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest;
 import soot.util.Chain;
 
 /**
- * A {@link BodyTransformer} that shrinks the protected area covered by each {@link Trap} in the {@link Body} so that it begins at the first of the
- * {@link Body}'s {@link Unit}s which might throw an exception caught by the {@link Trap} and ends just after the last {@link Unit} which might throw
- * an exception caught by the {@link Trap}. In the case where none of the {@link Unit}s protected by a {@link Trap} can throw the exception it
- * catches, the {@link Trap}'s protected area is left completely empty, which will likely cause the {@link UnreachableCodeEliminator} to remove the
- * {@link Trap} completely.
+ * A {@link BodyTransformer} that shrinks the protected area covered by each {@link Trap} in the {@link Body} so that it
+ * begins at the first of the {@link Body}'s {@link Unit}s which might throw an exception caught by the {@link Trap} and ends
+ * just after the last {@link Unit} which might throw an exception caught by the {@link Trap}. In the case where none of the
+ * {@link Unit}s protected by a {@link Trap} can throw the exception it catches, the {@link Trap}'s protected area is left
+ * completely empty, which will likely cause the {@link UnreachableCodeEliminator} to remove the {@link Trap} completely.
  *
- * The {@link TrapTightener} is used to reduce the risk of unverifiable code which can result from the use of {@link ExceptionalUnitGraph}s from which
- * unrealizable exceptional control flow edges have been removed.
+ * The {@link TrapTightener} is used to reduce the risk of unverifiable code which can result from the use of
+ * {@link ExceptionalUnitGraph}s from which unrealizable exceptional control flow edges have been removed.
  */
 
 public final class TrapTightener extends TrapTransformer {
@@ -139,8 +139,8 @@ public final class TrapTightener extends TrapTransformer {
   }
 
   /**
-   * A utility routine which determines if a particular {@link Unit} might throw an exception to a particular {@link Trap}, according to the
-   * information supplied by a particular control flow graph.
+   * A utility routine which determines if a particular {@link Unit} might throw an exception to a particular {@link Trap},
+   * according to the information supplied by a particular control flow graph.
    *
    * @param g
    *          The control flow graph providing information about exceptions.

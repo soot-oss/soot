@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -26,8 +26,9 @@
 package soot.coffi;
 
 /**
- * There should be exactly one code attribute in every method; there may also be a code attribute associated with a field (as an initializer).
- * 
+ * There should be exactly one code attribute in every method; there may also be a code attribute associated with a field (as
+ * an initializer).
+ *
  * @see attribute_info
  * @see method_info#attributes
  * @see field_info#attributes
@@ -48,7 +49,7 @@ class Code_attribute extends attribute_info {
   public int exception_table_length;
   /**
    * Exception table array.
-   * 
+   *
    * @see exception_table_entry
    */
   public exception_table_entry exception_table[];
@@ -56,14 +57,14 @@ class Code_attribute extends attribute_info {
   int attributes_count;
   /**
    * Array of attributes.
-   * 
+   *
    * @see attribute_info
    */
   attribute_info attributes[];
 
   /**
    * Locates the LocalVariableTable attribute, if one is present.
-   * 
+   *
    * @return the local variable table attribute, or <i>null</i> if not found.
    * @see LocalVariableTable_attribute
    * @see method_info#makeLocals
@@ -80,7 +81,7 @@ class Code_attribute extends attribute_info {
 
   /**
    * Locates the LocalVariableTypeTable attribute, if one is present.
-   * 
+   *
    * @return the local variable type table attribute, or <i>null</i> if not found.
    * @see LocalVariableTypeTable_attribute
    * @see method_info#makeLocals

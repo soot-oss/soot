@@ -39,7 +39,8 @@ public class JavaLangThreadNative extends NativeMethodClass {
   /**
    * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
    */
-  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
+  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 
@@ -57,21 +58,23 @@ public class JavaLangThreadNative extends NativeMethodClass {
   /*************************** java.lang.Thread **********************/
   /**
    * Returns the single variable pointing to all thread objects.
-   * 
+   *
    * This makes our analysis conservative on thread objects.
    *
    * public static native java.lang.Thread currentThread();
    */
-  public void java_lang_Thread_currentThread(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
+  public void java_lang_Thread_currentThread(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
     helper.assignObjectTo(returnVar, Environment.v().getThreadObject());
   }
 
   /**
    * Following native methods have no side effects.
    *
-   * private static native void registerNatives(); public static native void yield(); public static native void sleep(long) throws
-   * java.lang.InterruptedException; public native synchronized void start(); private native boolean isInterrupted(boolean); public final native
-   * boolean isAlive(); public native int countStackFrames(); private native void setPriority0(int); private native void stop0(java.lang.Object);
-   * private native void suspend0(); private native void resume0(); private native void interrupt0();
+   * private static native void registerNatives(); public static native void yield(); public static native void sleep(long)
+   * throws java.lang.InterruptedException; public native synchronized void start(); private native boolean
+   * isInterrupted(boolean); public final native boolean isAlive(); public native int countStackFrames(); private native void
+   * setPriority0(int); private native void stop0(java.lang.Object); private native void suspend0(); private native void
+   * resume0(); private native void interrupt0();
    */
 }

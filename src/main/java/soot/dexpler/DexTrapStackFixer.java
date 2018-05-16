@@ -14,13 +14,14 @@ import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 
 /**
- * Transformer to ensure that all exception handlers pull the exception object. In other words, if an exception handler must always have a unit like
- * 
+ * Transformer to ensure that all exception handlers pull the exception object. In other words, if an exception handler must
+ * always have a unit like
+ *
  * $r10 = @caughtexception
- * 
- * This is especially important if the dex code is later to be translated into Java bytecode. If no one ever accesses the exception object, it will
- * reside on the stack forever, potentially leading to mismatching stack heights.
- * 
+ *
+ * This is especially important if the dex code is later to be translated into Java bytecode. If no one ever accesses the
+ * exception object, it will reside on the stack forever, potentially leading to mismatching stack heights.
+ *
  * @author Steven Arzt
  *
  */
@@ -49,7 +50,7 @@ public class DexTrapStackFixer extends BodyTransformer {
 
   /**
    * Checks whether the given statement stores an exception reference
-   * 
+   *
    * @param handlerUnit
    *          The statement to check
    * @return True if the given statement stores an exception reference, otherwise false

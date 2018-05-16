@@ -57,11 +57,11 @@ public class CondTransformer extends BodyTransformer {
     // logger.debug("running cond and/or transformer");
     boolean change = true;
     /*
-     * the idea is to look for groups of statements of the form if cond goto L0 if cond goto L0 z0 = 1 goto L1 L0: z0 = 0 L1: if z0 == 0 goto L2
-     * conseq L2: altern
-     * 
+     * the idea is to look for groups of statements of the form if cond goto L0 if cond goto L0 z0 = 1 goto L1 L0: z0 = 0 L1:
+     * if z0 == 0 goto L2 conseq L2: altern
+     *
      * and transform to if cond goto L0 if cond goto L0 conseq L0: altern
-     * 
+     *
      */
 
     while (change) {
@@ -131,7 +131,8 @@ public class CondTransformer extends BodyTransformer {
       case 2: {
         if (s instanceof AssignStmt) {
           stmtSeq[pos] = s;
-          if ((((AssignStmt) s).getRightOp() instanceof IntConstant) && (((IntConstant) ((AssignStmt) s).getRightOp())).value == 0) {
+          if ((((AssignStmt) s).getRightOp() instanceof IntConstant)
+              && (((IntConstant) ((AssignStmt) s).getRightOp())).value == 0) {
             sameGoto = false;
           }
           return true;

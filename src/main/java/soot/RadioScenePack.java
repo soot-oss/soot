@@ -49,11 +49,13 @@ public class RadioScenePack extends ScenePack {
       enableds.add(t);
     }
     if (enableds.size() == 0) {
-      logger.debug("" + "Exactly one phase in the pack " + getPhaseName() + " must be enabled. Currently, none of them are.");
+      logger
+          .debug("" + "Exactly one phase in the pack " + getPhaseName() + " must be enabled. Currently, none of them are.");
       throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
     }
     if (enableds.size() > 1) {
-      logger.debug("" + "Only one phase in the pack " + getPhaseName() + " may be enabled. The following are enabled currently: ");
+      logger.debug(
+          "" + "Only one phase in the pack " + getPhaseName() + " may be enabled. The following are enabled currently: ");
       for (Transform t : enableds) {
         logger.debug("" + "  " + t.getPhaseName());
       }

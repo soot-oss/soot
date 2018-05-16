@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -47,12 +47,12 @@ public class SimpleLiveLocals implements LiveLocals {
   final FlowAnalysis<Unit, FlowSet<Local>> analysis;
 
   /**
-   * Computes the analysis given a UnitGraph computed from a method body. It is recommended that a ExceptionalUnitGraph (or similar) be provided for
-   * correct results in the case of exceptional control flow.
+   * Computes the analysis given a UnitGraph computed from a method body. It is recommended that a ExceptionalUnitGraph (or
+   * similar) be provided for correct results in the case of exceptional control flow.
    *
    * @param graph
    *          a graph on which to compute the analysis.
-   * 
+   *
    * @see ExceptionalUnitGraph
    */
   public SimpleLiveLocals(UnitGraph graph) {

@@ -36,7 +36,8 @@ public class SETSwitchNode extends SETDagNode {
   private List<SwitchNode> switchNodeList;
   private Value key;
 
-  public SETSwitchNode(AugmentedStmt characterizingStmt, Value key, IterableSet body, List<SwitchNode> switchNodeList, IterableSet junkBody) {
+  public SETSwitchNode(AugmentedStmt characterizingStmt, Value key, IterableSet body, List<SwitchNode> switchNodeList,
+      IterableSet junkBody) {
     super(characterizingStmt, body);
 
     this.key = key;

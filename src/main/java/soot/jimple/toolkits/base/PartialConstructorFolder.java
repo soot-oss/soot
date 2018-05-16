@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -68,7 +68,8 @@ public class PartialConstructorFolder extends BodyTransformer {
   }
 
   /**
-   * This method pushes all newExpr down to be the stmt directly before every invoke of the init only if they are in the types list
+   * This method pushes all newExpr down to be the stmt directly before every invoke of the init only if they are in the
+   * types list
    */
 
   public void internalTransform(Body b, String phaseName, Map<String, String> options) {
@@ -141,12 +142,14 @@ public class PartialConstructorFolder extends BodyTransformer {
           continue;
         }
         InvokeStmt is = (InvokeStmt) use;
-        if (!(is.getInvokeExpr() instanceof SpecialInvokeExpr) || lhs != ((SpecialInvokeExpr) is.getInvokeExpr()).getBase()) {
+        if (!(is.getInvokeExpr() instanceof SpecialInvokeExpr)
+            || lhs != ((SpecialInvokeExpr) is.getInvokeExpr()).getBase()) {
           continue;
         }
 
         // make a new one here
-        AssignStmt constructStmt = Jimple.v().newAssignStmt(((DefinitionStmt) s).getLeftOp(), ((DefinitionStmt) s).getRightOp());
+        AssignStmt constructStmt
+            = Jimple.v().newAssignStmt(((DefinitionStmt) s).getLeftOp(), ((DefinitionStmt) s).getRightOp());
         constructStmt.setRightOp(Jimple.v().newNewExpr(((NewExpr) rhs).getBaseType()));
         MadeNewInvokeExpr = true;
 

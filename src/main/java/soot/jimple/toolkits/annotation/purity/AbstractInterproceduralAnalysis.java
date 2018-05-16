@@ -52,19 +52,21 @@ import soot.util.dot.DotGraphNode;
 /**
  * Inter-procedural iterator skeleton for summary-based analysis
  *
- * A "summary" is an abstract element associated to each method that fully models the effect of calling the method. In a summary-based analysis, the
- * summary of a method can be computed using solely the summary of all methods it calls: the summary does not depend upon the context in which a
- * method is called. The inter-procedural analysis interacts with a intra-procedural analysis that is able to compute the summary of one method, given
- * the summary of all the method it calls. The inter-procedural analysis calls the intra-procedural analysis in a reverse topological order of method
- * dependencies to resolve unknown summaries. It iterates over recursively dependant methods.
+ * A "summary" is an abstract element associated to each method that fully models the effect of calling the method. In a
+ * summary-based analysis, the summary of a method can be computed using solely the summary of all methods it calls: the
+ * summary does not depend upon the context in which a method is called. The inter-procedural analysis interacts with a
+ * intra-procedural analysis that is able to compute the summary of one method, given the summary of all the method it calls.
+ * The inter-procedural analysis calls the intra-procedural analysis in a reverse topological order of method dependencies to
+ * resolve unknown summaries. It iterates over recursively dependant methods.
  *
- * Generally, the intra-procedural works by maintaining an abstract value that represent the effect of the method from its entry point and up to the
- * current point. At the entry point, this value is empty. The summary of the method is then the merge of the abstract values at all its return
- * points.
+ * Generally, the intra-procedural works by maintaining an abstract value that represent the effect of the method from its
+ * entry point and up to the current point. At the entry point, this value is empty. The summary of the method is then the
+ * merge of the abstract values at all its return points.
  *
- * You can provide off-the-shelf summaries for methods you do not which to analyse. Any method using these "filtered-out" methods will use the
- * off-the-shelf summary instead of performing an intra-procedural analysis. This is useful for native methods, incremental analysis, or when you
- * hand-made summary. Methods that are called solely by filtered-out ones will never be analysed, effectively trimming the call-graph dependencies.
+ * You can provide off-the-shelf summaries for methods you do not which to analyse. Any method using these "filtered-out"
+ * methods will use the off-the-shelf summary instead of performing an intra-procedural analysis. This is useful for native
+ * methods, incremental analysis, or when you hand-made summary. Methods that are called solely by filtered-out ones will
+ * never be analysed, effectively trimming the call-graph dependencies.
  *
  * This class tries to use the same abstract methods and data management policy as regular FlowAnalysis classes.
  *
@@ -89,7 +91,8 @@ public abstract class AbstractInterproceduralAnalysis<S> {
    * @param verbose
    * @param heads
    */
-  public AbstractInterproceduralAnalysis(CallGraph cg, SootMethodFilter filter, Iterator<SootMethod> heads, boolean verbose) {
+  public AbstractInterproceduralAnalysis(CallGraph cg, SootMethodFilter filter, Iterator<SootMethod> heads,
+      boolean verbose) {
     this.cg = cg;
 
     System.out.println("this.cg = " + System.identityHashCode(this.cg));
@@ -115,7 +118,8 @@ public abstract class AbstractInterproceduralAnalysis<S> {
   protected abstract S newInitialSummary();
 
   /**
-   * Whenever the analyse requires the summary of a method you filtered-out, this function is called instead of analyseMethod.
+   * Whenever the analyse requires the summary of a method you filtered-out, this function is called instead of
+   * analyseMethod.
    *
    * <p>
    * Note: This function is called at most once per filtered-out method. It is the equivalent of entryInitialFlow!
@@ -139,8 +143,9 @@ public abstract class AbstractInterproceduralAnalysis<S> {
   protected abstract void analyseMethod(SootMethod method, S dst);
 
   /**
-   * Interprocedural analysis will call applySummary repeatedly as a consequence to {@link #analyseCall(Object, Stmt, Object)}, once for each possible
-   * target method of the {@code callStmt}, provided with its summary.
+   * Interprocedural analysis will call applySummary repeatedly as a consequence to
+   * {@link #analyseCall(Object, Stmt, Object)}, once for each possible target method of the {@code callStmt}, provided with
+   * its summary.
    *
    * @param src
    *          summary valid before the call statement
@@ -187,9 +192,10 @@ public abstract class AbstractInterproceduralAnalysis<S> {
   }
 
   /**
-   * Analyse the call {@code callStmt} in the context {@code src}, and put the result into {@code dst}. For each possible target of the call, this
-   * will get the summary for the target method (possibly {@link #summaryOfUnanalysedMethod(SootMethod)}) and
-   * {@link #applySummary(Object, Stmt, Object, Object)}, then merge the results into {@code dst} using {@link #merge(Object, Object, Object)}.
+   * Analyse the call {@code callStmt} in the context {@code src}, and put the result into {@code dst}. For each possible
+   * target of the call, this will get the summary for the target method (possibly
+   * {@link #summaryOfUnanalysedMethod(SootMethod)}) and {@link #applySummary(Object, Stmt, Object, Object)}, then merge the
+   * results into {@code dst} using {@link #merge(Object, Object, Object)}.
    *
    * @param src
    * @param dst
@@ -223,10 +229,11 @@ public abstract class AbstractInterproceduralAnalysis<S> {
   }
 
   /**
-   * Dump the interprocedural analysis result as a graph. One node / subgraph for each analysed method that contains the method summary, and call-to
-   * edges.
+   * Dump the interprocedural analysis result as a graph. One node / subgraph for each analysed method that contains the
+   * method summary, and call-to edges.
    *
-   * Note: this graph does not show filtered-out methods for which a conservative summary was asked via summaryOfUnanalysedMethod.
+   * Note: this graph does not show filtered-out methods for which a conservative summary was asked via
+   * summaryOfUnanalysedMethod.
    *
    * @param name
    *          output filename
@@ -318,7 +325,8 @@ public abstract class AbstractInterproceduralAnalysis<S> {
   }
 
   /**
-   * Get an iterator over the list of SootMethod with an associated summary. (Does not contain filtered-out or native methods.)
+   * Get an iterator over the list of SootMethod with an associated summary. (Does not contain filtered-out or native
+   * methods.)
    *
    * @return
    */
@@ -329,7 +337,8 @@ public abstract class AbstractInterproceduralAnalysis<S> {
   /**
    * Carry out the analysis.
    *
-   * Call this from your InterproceduralAnalysis constructor, just after super(cg). Then , you will be able to call drawAsDot, for instance.
+   * Call this from your InterproceduralAnalysis constructor, just after super(cg). Then , you will be able to call
+   * drawAsDot, for instance.
    *
    * @param verbose
    */

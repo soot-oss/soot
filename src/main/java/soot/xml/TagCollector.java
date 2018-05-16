@@ -56,9 +56,9 @@ public class TagCollector {
   }
 
   /**
-   * Collect tags from all fields and methods of <code>sc</code>. If <code>includeBodies</code> is true, then tags are also collected from method
-   * bodies.
-   * 
+   * Collect tags from all fields and methods of <code>sc</code>. If <code>includeBodies</code> is true, then tags are also
+   * collected from method bodies.
+   *
    * @param sc
    *          The class from which to collect the tags.
    */

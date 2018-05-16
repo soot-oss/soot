@@ -68,13 +68,13 @@ import soot.util.MultiMap;
  * This class can also translate out of Shimple by producing an equivalent Jimple body with all Phi nodes removed.
  *
  * <p>
- * Note that this is an internal class, understanding it should not be necessary from a user point-of-view and relying on it directly is not
- * recommended.
+ * Note that this is an internal class, understanding it should not be necessary from a user point-of-view and relying on it
+ * directly is not recommended.
  *
  * @author Navindra Umanee
  * @see soot.shimple.ShimpleBody
- * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and the Control Dependence
- *      Graph</a>
+ * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
+ *      the Control Dependence Graph</a>
  **/
 public class PiNodeManager {
   protected ShimpleBody body;

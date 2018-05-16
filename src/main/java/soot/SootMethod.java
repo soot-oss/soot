@@ -19,7 +19,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -43,8 +43,8 @@ import soot.util.Numberable;
 import soot.util.NumberedString;
 
 /**
- * Soot representation of a Java method. Can be declared to belong to a SootClass. Does not contain the actual code, which belongs to a Body. The
- * getActiveBody() method points to the currently-active body.
+ * Soot representation of a Java method. Can be declared to belong to a SootClass. Does not contain the actual code, which
+ * belongs to a Body. The getActiveBody() method points to the currently-active body.
  */
 public class SootMethod extends AbstractHost implements ClassMember, Numberable, MethodOrMethodContext {
   public static final String constructorName = "<init>";
@@ -161,7 +161,8 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   /**
    * Constructs a SootMethod with the given name, parameter types, return type, and list of thrown exceptions.
    */
-  public SootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers, List<SootClass> thrownExceptions) {
+  public SootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers,
+      List<SootClass> thrownExceptions) {
     this.name = name;
 
     if (parameterTypes != null && !parameterTypes.isEmpty()) {
@@ -189,10 +190,11 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   }
 
   /**
-   * Nomair A. Naeem , January 14th 2006 Need it for the decompiler to create a new SootMethod The SootMethod can be created fine but when one tries
-   * to create a SootMethodRef there is an error because there is no declaring class set. Dava cannot add the method to the class until after it has
-   * ended decompiling the remaining method (new method added is added in the PackManager) It would make sense to setDeclared to true within this
-   * method too. However later when the sootMethod is added it checks that the method is not set to declared (isDeclared).
+   * Nomair A. Naeem , January 14th 2006 Need it for the decompiler to create a new SootMethod The SootMethod can be created
+   * fine but when one tries to create a SootMethodRef there is an error because there is no declaring class set. Dava cannot
+   * add the method to the class until after it has ended decompiling the remaining method (new method added is added in the
+   * PackManager) It would make sense to setDeclared to true within this method too. However later when the sootMethod is
+   * added it checks that the method is not set to declared (isDeclared).
    */
   public void setDeclaringClass(SootClass declClass) {
     if (declClass != null) {
@@ -268,7 +270,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 
   /**
    * Gets the modifiers of this method.
-   * 
+   *
    * @see soot.Modifier
    */
   @Override
@@ -278,7 +280,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 
   /**
    * Sets the modifiers of this method.
-   * 
+   *
    * @see soot.Modifier
    */
   @Override
@@ -364,8 +366,8 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   /**
    * Returns the active body if present, else constructs an active body and returns that.
    *
-   * If you called Scene.v().loadClassAndSupport() for a class yourself, it will not be an application class, so you cannot get retrieve its active
-   * body. Please call setApplicationClass() on the relevant class.
+   * If you called Scene.v().loadClassAndSupport() for a class yourself, it will not be an application class, so you cannot
+   * get retrieve its active body. Please call setApplicationClass() on the relevant class.
    */
 
   public Body retrieveActiveBody() {
@@ -378,8 +380,8 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 
     declaringClass.checkLevel(SootClass.BODIES);
     if (declaringClass.isPhantomClass()) {
-      throw new RuntimeException(
-          "cannot get resident body for phantom class : " + getSignature() + "; maybe you want to call c.setApplicationClass() on this class!");
+      throw new RuntimeException("cannot get resident body for phantom class : " + getSignature()
+          + "; maybe you want to call c.setApplicationClass() on this class!");
     }
 
     Body b = this.getBodyFromMethodSource("jb");
@@ -561,7 +563,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   }
 
   /**
-   * 
+   *
    * @return yes if this is the main method
    */
   public boolean isMain() {
@@ -576,15 +578,16 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   }
 
   /**
-   * 
-   * @return yes, if this function is a constructor. Please not that <clinit> methods are not treated as constructors in this method.
+   *
+   * @return yes, if this function is a constructor. Please not that <clinit> methods are not treated as constructors in this
+   *         method.
    */
   public boolean isConstructor() {
     return name.equals(constructorName);
   }
 
   /**
-   * 
+   *
    * @return yes, if this function is a static initializer.
    */
   public boolean isStaticInitializer() {
@@ -623,7 +626,8 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   }
 
   /**
-   * Returns the signature of this method in the format in which it appears in bytecode (eg. [Ljava/lang/Object instead of java.lang.Object[]).
+   * Returns the signature of this method in the format in which it appears in bytecode (eg. [Ljava/lang/Object instead of
+   * java.lang.Object[]).
    */
   public String getBytecodeSignature() {
     String name = getName();
@@ -707,8 +711,8 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   }
 
   /*
-   * TODO: Nomair A. Naeem .... 8th Feb 2006 This is really messy coding So much for modularization!! Should some day look into creating the
-   * DavaDeclaration from within DavaBody
+   * TODO: Nomair A. Naeem .... 8th Feb 2006 This is really messy coding So much for modularization!! Should some day look
+   * into creating the DavaDeclaration from within DavaBody
    */
   public String getDavaDeclaration() {
     if (getName().equals(staticInitializerName)) {
@@ -768,8 +772,9 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
       String tempString = t.toString();
 
       /*
-       * Nomair A. Naeem 7th Feb 2006 It is nice to remove the fully qualified type names of parameters if the package they belong to have been
-       * imported javax.swing.ImageIcon should be just ImageIcon if javax.swing is imported If not imported WHY NOT..import it!!
+       * Nomair A. Naeem 7th Feb 2006 It is nice to remove the fully qualified type names of parameters if the package they
+       * belong to have been imported javax.swing.ImageIcon should be just ImageIcon if javax.swing is imported If not
+       * imported WHY NOT..import it!!
        */
       if (hasActiveBody()) {
         DavaBody body = (DavaBody) getActiveBody();
@@ -839,8 +844,8 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   }
 
   /**
-   * Returns the declaration of this method, as used at the top of textual body representations (before the {}'s containing the code for
-   * representation.)
+   * Returns the declaration of this method, as used at the top of textual body representations (before the {}'s containing
+   * the code for representation.)
    */
   public String getDeclaration() {
     StringBuffer buffer = new StringBuffer();
@@ -921,7 +926,8 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   }
 
   public SootMethodRef makeRef() {
-    return Scene.v().makeMethodRef(declaringClass, name, parameterTypes == null ? null : Arrays.asList(parameterTypes), returnType, isStatic());
+    return Scene.v().makeMethodRef(declaringClass, name, parameterTypes == null ? null : Arrays.asList(parameterTypes),
+        returnType, isStatic());
   }
 
   @Override

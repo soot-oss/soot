@@ -9,13 +9,15 @@ import soot.jimple.ClassConstant;
 import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
 
 /**
- * This is a <i>lazy</i> points-to set that is potentially context sensitive. It is created by the {@link DemandCSPointsTo} analysis. The idea is that
- * the points-to set is usually context-insensitive. However, when compared with another points-to set and the intersection of these points-to sets is
- * non-empty, <i>then</i> context information is computed for this points-to set and also for the other one, if applicable. Then the test is repeated.
- * Once context information is computed it is stored in this wrapper object so that it does not have to be computed again. Objects of this type should
- * only be compared to other {@link LazyContextSensitivePointsToSet} objects using the equals method. Checking for non-empty intersection with
- * points-to sets of other types should be possible but it is recommended to consistently use {@link LazyContextSensitivePointsToSet} nevertheless.
- * 
+ * This is a <i>lazy</i> points-to set that is potentially context sensitive. It is created by the {@link DemandCSPointsTo}
+ * analysis. The idea is that the points-to set is usually context-insensitive. However, when compared with another points-to
+ * set and the intersection of these points-to sets is non-empty, <i>then</i> context information is computed for this
+ * points-to set and also for the other one, if applicable. Then the test is repeated. Once context information is computed
+ * it is stored in this wrapper object so that it does not have to be computed again. Objects of this type should only be
+ * compared to other {@link LazyContextSensitivePointsToSet} objects using the equals method. Checking for non-empty
+ * intersection with points-to sets of other types should be possible but it is recommended to consistently use
+ * {@link LazyContextSensitivePointsToSet} nevertheless.
+ *
  * @author Eric Bodden
  */
 public class LazyContextSensitivePointsToSet implements EqualsSupportingPointsToSet {
@@ -29,7 +31,8 @@ public class LazyContextSensitivePointsToSet implements EqualsSupportingPointsTo
     return isContextSensitive;
   }
 
-  public LazyContextSensitivePointsToSet(Local l, EqualsSupportingPointsToSet contextInsensitiveSet, DemandCSPointsTo demandCSPointsTo) {
+  public LazyContextSensitivePointsToSet(Local l, EqualsSupportingPointsToSet contextInsensitiveSet,
+      DemandCSPointsTo demandCSPointsTo) {
     this.local = l;
     this.delegate = contextInsensitiveSet;
     this.demandCSPointsTo = demandCSPointsTo;

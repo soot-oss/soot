@@ -68,8 +68,8 @@ public class ASTCleaner extends DepthFirstAdapter {
   }
 
   /*
-   * Note the ASTNode in this case can be any of the following: ASTMethodNode ASTSwitchNode ASTIfNode ASTIfElseNode ASTUnconditionalWhileNode
-   * ASTWhileNode ASTDoWhileNode ASTForLoopNode ASTLabeledBlockNode ASTSynchronizedBlockNode
+   * Note the ASTNode in this case can be any of the following: ASTMethodNode ASTSwitchNode ASTIfNode ASTIfElseNode
+   * ASTUnconditionalWhileNode ASTWhileNode ASTDoWhileNode ASTForLoopNode ASTLabeledBlockNode ASTSynchronizedBlockNode
    */
   public void normalRetrieving(ASTNode node) {
     if (node instanceof ASTSwitchNode) {
@@ -178,7 +178,8 @@ public class ASTCleaner extends DepthFirstAdapter {
           ASTNode nextNode = (ASTNode) tryBody.get(nodeNumber + 1);
           if (nextNode instanceof ASTIfNode) {
             // found an If followed by another if might match Patter 3.
-            List<Object> newBody = OrAggregatorThree.createNewNodeBody(tryBody, nodeNumber, (ASTIfNode) temp, (ASTIfNode) nextNode);
+            List<Object> newBody
+                = OrAggregatorThree.createNewNodeBody(tryBody, nodeNumber, (ASTIfNode) temp, (ASTIfNode) nextNode);
             if (newBody != null) {
               // something did not go wrong and pattern was matched
               node.replaceTryBody(newBody);
@@ -262,7 +263,8 @@ public class ASTCleaner extends DepthFirstAdapter {
             ASTNode nextNode = (ASTNode) body.get(nodeNumber + 1);
             if (nextNode instanceof ASTIfNode) {
               // found an If followed by another if might match Patter 3.
-              List<Object> newBody = OrAggregatorThree.createNewNodeBody(body, nodeNumber, (ASTIfNode) temp, (ASTIfNode) nextNode);
+              List<Object> newBody
+                  = OrAggregatorThree.createNewNodeBody(body, nodeNumber, (ASTIfNode) temp, (ASTIfNode) nextNode);
               if (newBody != null) {
                 // something did not go wrong and pattern was matched
                 catchBody.replaceBody(newBody);
@@ -345,7 +347,8 @@ public class ASTCleaner extends DepthFirstAdapter {
               ASTNode nextNode = (ASTNode) body.get(nodeNumber + 1);
               if (nextNode instanceof ASTIfNode) {
                 // found an If followed by another if might match Patter 3.
-                List<Object> newBody = OrAggregatorThree.createNewNodeBody(body, nodeNumber, (ASTIfNode) temp, (ASTIfNode) nextNode);
+                List<Object> newBody
+                    = OrAggregatorThree.createNewNodeBody(body, nodeNumber, (ASTIfNode) temp, (ASTIfNode) nextNode);
                 if (newBody != null) {
                   // something did not go wrong and pattern was matched
 

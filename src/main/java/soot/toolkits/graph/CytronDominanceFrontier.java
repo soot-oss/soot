@@ -29,8 +29,8 @@ import java.util.Map;
  * Class to compute the DominanceFrontier using Cytron's celebrated efficient algorithm.
  *
  * @author Navindra Umanee
- * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and the Control Dependence
- *      Graph</a>
+ * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
+ *      the Control Dependence Graph</a>
  **/
 public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
   protected DominatorTree<N> dt;

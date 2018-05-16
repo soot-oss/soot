@@ -47,8 +47,8 @@ import soot.toolkits.scalar.ValueUnitPair;
 import soot.util.Chain;
 
 /**
- * Contains the constructors for the components of the SSA Shimple grammar. Methods are available to construct Shimple from Jimple/Shimple, create Phi
- * nodes, and converting back from Shimple to Jimple.
+ * Contains the constructors for the components of the SSA Shimple grammar. Methods are available to construct Shimple from
+ * Jimple/Shimple, create Phi nodes, and converting back from Shimple to Jimple.
  *
  * <p>
  * This should normally be used in conjunction with the constructor methods from soot.jimple.Jimple.
@@ -58,8 +58,8 @@ import soot.util.Chain;
  *
  * @author Navindra Umanee
  * @see soot.jimple.Jimple
- * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and the Control Dependence
- *      Graph</a>
+ * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
+ *      the Control Dependence Graph</a>
  **/
 public class Shimple {
   private static final Logger logger = LoggerFactory.getLogger(Shimple.class);
@@ -107,8 +107,8 @@ public class Shimple {
   }
 
   /**
-   * Create a trivial PhiExpr, where preds are an ordered list of the control predecessor Blocks of the Phi expression. Instead of a list of blocks,
-   * you may provide a list of the tail Units from the corresponding blocks.
+   * Create a trivial PhiExpr, where preds are an ordered list of the control predecessor Blocks of the Phi expression.
+   * Instead of a list of blocks, you may provide a list of the tail Units from the corresponding blocks.
    **/
   public PhiExpr newPhiExpr(Local leftLocal, List<Block> preds) {
     return new SPhiExpr(leftLocal, preds);
@@ -119,8 +119,8 @@ public class Shimple {
   }
 
   /**
-   * Create a PhiExpr with the provided list of Values (Locals or Constants) and the corresponding control flow predecessor Blocks. Instead of a list
-   * of predecessor blocks, you may provide a list of the tail Units from the corresponding blocks.
+   * Create a PhiExpr with the provided list of Values (Locals or Constants) and the corresponding control flow predecessor
+   * Blocks. Instead of a list of predecessor blocks, you may provide a list of the tail Units from the corresponding blocks.
    **/
   public PhiExpr newPhiExpr(List<Value> args, List<Unit> preds) {
     return new SPhiExpr(args, preds);
@@ -207,11 +207,13 @@ public class Shimple {
   }
 
   /**
-   * If you are removing a Unit from a Unit chain which contains PhiExpr's, you might want to call this utility function in order to update any
-   * PhiExpr pointers to the Unit to point to the Unit's predecessor(s). This function will not modify "branch target" UnitBoxes.
+   * If you are removing a Unit from a Unit chain which contains PhiExpr's, you might want to call this utility function in
+   * order to update any PhiExpr pointers to the Unit to point to the Unit's predecessor(s). This function will not modify
+   * "branch target" UnitBoxes.
    *
    * <p>
-   * Normally you should not have to call this function directly, since patching is taken care of Shimple's internal implementation of PatchingChain.
+   * Normally you should not have to call this function directly, since patching is taken care of Shimple's internal
+   * implementation of PatchingChain.
    **/
   public static void redirectToPreds(Body body, Unit remove) {
     boolean debug = Options.v().debug();
@@ -276,7 +278,8 @@ public class Shimple {
 
     if (preds.size() == 0) {
       if (debug) {
-        logger.warn("Shimple.redirectToPreds couldn't find any predecessors for " + remove + " in " + body.getMethod() + ".");
+        logger
+            .warn("Shimple.redirectToPreds couldn't find any predecessors for " + remove + " in " + body.getMethod() + ".");
       }
 
       if (!remove.equals(units.getFirst())) {
@@ -325,7 +328,8 @@ public class Shimple {
    * Redirects PhiExpr pointers to the given Unit to the new Unit.
    *
    * <p>
-   * Normally you should not have to call this function directly, since patching is taken care of Shimple's internal implementation of PatchingChain.
+   * Normally you should not have to call this function directly, since patching is taken care of Shimple's internal
+   * implementation of PatchingChain.
    **/
   public static void redirectPointers(Unit oldLocation, Unit newLocation) {
     List<UnitBox> boxesPointing = oldLocation.getBoxesPointingToThis();

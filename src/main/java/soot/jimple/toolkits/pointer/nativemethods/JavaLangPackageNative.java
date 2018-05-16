@@ -39,7 +39,8 @@ public class JavaLangPackageNative extends NativeMethodClass {
   /**
    * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
    */
-  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
+  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 
@@ -62,7 +63,8 @@ public class JavaLangPackageNative extends NativeMethodClass {
   /**
    * This is an undocumented private native method, it returns the first (without caller) method's package.
    *
-   * It should be formulated as a string constants. private static native java.lang.String getSystemPackage0(java.lang.String);
+   * It should be formulated as a string constants. private static native java.lang.String
+   * getSystemPackage0(java.lang.String);
    */
   public void java_lang_Package_getSystemPackage0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
       ReferenceVariable params[]) {

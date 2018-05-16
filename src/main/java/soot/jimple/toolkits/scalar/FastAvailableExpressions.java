@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -48,8 +48,8 @@ import soot.util.Chain;
 import soot.util.HashChain;
 
 /**
- * Provides an user-interface for the AvailableExpressionsAnalysis class. Returns, for each statement, the list of expressions available before and
- * after it.
+ * Provides an user-interface for the AvailableExpressionsAnalysis class. Returns, for each statement, the list of
+ * expressions available before and after it.
  */
 public class FastAvailableExpressions implements AvailableExpressions {
   private static final Logger logger = LoggerFactory.getLogger(FastAvailableExpressions.class);
@@ -64,7 +64,8 @@ public class FastAvailableExpressions implements AvailableExpressions {
       logger.debug("[" + b.getMethod().getName() + "] Finding available expressions...");
     }
 
-    FastAvailableExpressionsAnalysis analysis = new FastAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b), b.getMethod(), st);
+    FastAvailableExpressionsAnalysis analysis
+        = new FastAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b), b.getMethod(), st);
 
     // Build unitToExprs map
     {

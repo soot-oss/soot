@@ -66,9 +66,9 @@ public class ASTMethodNode extends ASTNode {
   private ASTStatementSequenceNode declarations;
 
   /*
-   * Variables that are used in shortcu statements are kept in the declarations since other analyses need quick access to all the declared locals in
-   * the method
-   * 
+   * Variables that are used in shortcu statements are kept in the declarations since other analyses need quick access to all
+   * the declared locals in the method
+   *
    * Any local in the dontPrintLocals list is not printed in the top declarations
    */
   private List<Local> dontPrintLocals = new ArrayList<Local>();
@@ -163,8 +163,8 @@ public class ASTMethodNode extends ASTNode {
   }
 
   /*
-   * Nomair A. Naeem 23rd November 2005 Need to efficiently get all locals being declared in the declarations node Dont really care what type they
-   * are.. Interesting thing is that they are all different names :)
+   * Nomair A. Naeem 23rd November 2005 Need to efficiently get all locals being declared in the declarations node Dont
+   * really care what type they are.. Interesting thing is that they are all different names :)
    */
   public List getDeclaredLocals() {
     List toReturn = new ArrayList();
@@ -192,9 +192,10 @@ public class ASTMethodNode extends ASTNode {
   }
 
   /*
-   * Given a local first searches the declarations for the local Once it is found the local is removed from its declaring stmt If the declaring stmt
-   * does not declare any more locals the stmt itself is removed IT WOULD BE NICE TO ALSO CHECK IF THIS WAS THE LAST STMT IN THE NODE IN WHICH CASE
-   * THE NODE SHOULD BE REMOVED just afraid of its after effects on other analyses!!!!
+   * Given a local first searches the declarations for the local Once it is found the local is removed from its declaring
+   * stmt If the declaring stmt does not declare any more locals the stmt itself is removed IT WOULD BE NICE TO ALSO CHECK IF
+   * THIS WAS THE LAST STMT IN THE NODE IN WHICH CASE THE NODE SHOULD BE REMOVED just afraid of its after effects on other
+   * analyses!!!!
    */
   public void removeDeclaredLocal(Local local) {
     Stmt s = null;
@@ -291,7 +292,8 @@ public class ASTMethodNode extends ASTNode {
 
       if (constructorExpr != null) {
         boolean printCloseBrace = true;
-        if (davaBody.getMethod().getDeclaringClass().getName().equals(constructorExpr.getMethodRef().declaringClass().toString())) {
+        if (davaBody.getMethod().getDeclaringClass().getName()
+            .equals(constructorExpr.getMethodRef().declaringClass().toString())) {
           dup.printString("        this(");
         } else {
           // only invoke super if its not the default call since the default is
@@ -306,8 +308,8 @@ public class ASTMethodNode extends ASTNode {
         Iterator ait = constructorExpr.getArgs().iterator();
         while (ait.hasNext()) {
           /*
-           * January 12th, 2006 found a problem here. If a super has a method call as one of the args then the toString prints the jimple
-           * representation and does not convert it into java syntax
+           * January 12th, 2006 found a problem here. If a super has a method call as one of the args then the toString
+           * prints the jimple representation and does not convert it into java syntax
            */
           Object arg = ait.next();
           if (arg instanceof Value) {
@@ -343,11 +345,11 @@ public class ASTMethodNode extends ASTNode {
 
   /*
    * This method has been written to bring into the printing of the method body the printing of the declared locals
-   * 
-   * This is required because the dontPrintLocals list contains a list of locals which are declared from within the body and hence we dont want to
-   * print them here at the top of the method. However at the same time we dont want to remove the local entry in the declarations node since this is
-   * used by analyses throughout as a quick and easy way to find out which locals are used by this method...... bad code design but hey what can i say
-   * :(
+   *
+   * This is required because the dontPrintLocals list contains a list of locals which are declared from within the body and
+   * hence we dont want to print them here at the top of the method. However at the same time we dont want to remove the
+   * local entry in the declarations node since this is used by analyses throughout as a quick and easy way to find out which
+   * locals are used by this method...... bad code design but hey what can i say :(
    */
   public void printDeclarationsFollowedByBody(UnitPrinter up, List<Object> body) {
     // System.out.println("printing body from within MEthodNode\n\n"+body.toString());
@@ -458,7 +460,8 @@ public class ASTMethodNode extends ASTNode {
       InstanceInvokeExpr constructorExpr = davaBody.get_ConstructorExpr();
       if (constructorExpr != null) {
 
-        if (davaBody.getMethod().getDeclaringClass().getName().equals(constructorExpr.getMethodRef().declaringClass().toString())) {
+        if (davaBody.getMethod().getDeclaringClass().getName()
+            .equals(constructorExpr.getMethodRef().declaringClass().toString())) {
           b.append("        this(");
         } else {
           b.append("        super(");
@@ -483,7 +486,8 @@ public class ASTMethodNode extends ASTNode {
   }
 
   /*
-   * Nomair A. Naeem, 7-FEB-05 Part of Visitor Design Implementation for AST See: soot.dava.toolkits.base.AST.analysis For details
+   * Nomair A. Naeem, 7-FEB-05 Part of Visitor Design Implementation for AST See: soot.dava.toolkits.base.AST.analysis For
+   * details
    */
   public void apply(Analysis a) {
     a.caseASTMethodNode(this);

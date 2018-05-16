@@ -28,8 +28,8 @@
 package soot.jimple.toolkits.annotation.purity;
 
 /**
- * Interface shared by all kinds of nodes in a PurityGraph. Such nodes are immutables. They are hashable and two nodes are equal only if they have the
- * same kind and were constructed using the same arguments (structural equality).
+ * Interface shared by all kinds of nodes in a PurityGraph. Such nodes are immutables. They are hashable and two nodes are
+ * equal only if they have the same kind and were constructed using the same arguments (structural equality).
  *
  */
 public interface PurityNode {

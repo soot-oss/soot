@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -40,9 +40,9 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 
 /**
- * The Dalvik VM requires synchronized methods to explicitly enter a monitor and leave it in a finally block again after execution. See
- * http://milk.com/kodebase/dalvik-docs-mirror/docs/debugger.html for more details
- * 
+ * The Dalvik VM requires synchronized methods to explicitly enter a monitor and leave it in a finally block again after
+ * execution. See http://milk.com/kodebase/dalvik-docs-mirror/docs/debugger.html for more details
+ *
  * @author Steven Arzt
  *
  */

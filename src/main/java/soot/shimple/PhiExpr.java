@@ -30,21 +30,23 @@ import soot.toolkits.scalar.ValueUnitPair;
 import soot.util.Switch;
 
 /**
- * A fully defined PhiExpr usually consists of a list of Values for the arguments alongst with the corresponding control flow predecessor for each
- * argument. This may be provided either as a Soot CFG Block or more directly as the Unit at the end of the corresponding CFG block.
+ * A fully defined PhiExpr usually consists of a list of Values for the arguments alongst with the corresponding control flow
+ * predecessor for each argument. This may be provided either as a Soot CFG Block or more directly as the Unit at the end of
+ * the corresponding CFG block.
  *
  * <p>
- * As much as possible we try to conform to the semantics as described by Cytron et al., TOPLAS Oct. 91. A Phi node such as "x_1 = Phi(x_2, x_3)" is
- * eliminated by respectively adding the statements "x_1 = x_2" and "x_1 = x_3" at the end of the corresponding control flow predecessor.
+ * As much as possible we try to conform to the semantics as described by Cytron et al., TOPLAS Oct. 91. A Phi node such as
+ * "x_1 = Phi(x_2, x_3)" is eliminated by respectively adding the statements "x_1 = x_2" and "x_1 = x_3" at the end of the
+ * corresponding control flow predecessor.
  *
  * <p>
- * However, due to the fact that each argument is explicitly associated with the control flow predecessor, there may be some subtle differences. We
- * tried to make the behaviour as robust and transparent as possible by handling the common cases of Unit chain manipulations in the Shimple internal
- * implementation of PatchingChain.
+ * However, due to the fact that each argument is explicitly associated with the control flow predecessor, there may be some
+ * subtle differences. We tried to make the behaviour as robust and transparent as possible by handling the common cases of
+ * Unit chain manipulations in the Shimple internal implementation of PatchingChain.
  *
  * @author Navindra Umanee
- * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and the Control Dependence
- *      Graph</a>
+ * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
+ *      the Control Dependence Graph</a>
  * @see Shimple#newPhiExpr(List, List)
  * @see Shimple#newPhiExpr(Local, List)
  **/

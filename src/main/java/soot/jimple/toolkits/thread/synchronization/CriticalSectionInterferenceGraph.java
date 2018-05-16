@@ -114,7 +114,8 @@ public class CriticalSectionInterferenceGraph {
               } else if (!(tn1.origLock instanceof Local) || !(tn2.origLock instanceof Local)) {
                 emptyEdge = !tn1.origLock.equals(tn2.origLock);
               } else {
-                emptyEdge = !pta.reachingObjects((Local) tn1.origLock).hasNonEmptyIntersection(pta.reachingObjects((Local) tn2.origLock));
+                emptyEdge = !pta.reachingObjects((Local) tn1.origLock)
+                    .hasNonEmptyIntersection(pta.reachingObjects((Local) tn2.origLock));
               }
 
               // Check if types are compatible
@@ -135,14 +136,16 @@ public class CriticalSectionInterferenceGraph {
                   if (classTwo.isInterface()) {
                     typeCompatible = h.getImplementersOf(classTwo).contains(classOne);
                   } else {
-                    typeCompatible = (classOne != null && Scene.v().getActiveHierarchy().getSubclassesOfIncluding(classOne).contains(classTwo)
-                        || classTwo != null && Scene.v().getActiveHierarchy().getSubclassesOfIncluding(classTwo).contains(classOne));
+                    typeCompatible = (classOne != null
+                        && Scene.v().getActiveHierarchy().getSubclassesOfIncluding(classOne).contains(classTwo)
+                        || classTwo != null
+                            && Scene.v().getActiveHierarchy().getSubclassesOfIncluding(classTwo).contains(classOne));
                   }
                 }
               }
             }
-            if ((!optionLeaveOriginalLocks && (tn1.write.hasNonEmptyIntersection(tn2.write) || tn1.write.hasNonEmptyIntersection(tn2.read)
-                || tn1.read.hasNonEmptyIntersection(tn2.write)))
+            if ((!optionLeaveOriginalLocks && (tn1.write.hasNonEmptyIntersection(tn2.write)
+                || tn1.write.hasNonEmptyIntersection(tn2.read) || tn1.read.hasNonEmptyIntersection(tn2.write)))
                 || (optionLeaveOriginalLocks && typeCompatible && (optionIncludeEmptyPossibleEdges || !emptyEdge))) {
               // Determine the size of the intersection for GraphViz output
               CodeBlockRWSet rw = null;

@@ -229,7 +229,8 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
     }
   }
 
-  public void calculate_Reachability(Collection<AugmentedStmt> sources, Set<AugmentedStmt> blockers, AugmentedStmt dominator) {
+  public void calculate_Reachability(Collection<AugmentedStmt> sources, Set<AugmentedStmt> blockers,
+      AugmentedStmt dominator) {
     Iterator<AugmentedStmt> srcIt = sources.iterator();
     while (srcIt.hasNext()) {
       calculate_Reachability(srcIt.next(), blockers, dominator);

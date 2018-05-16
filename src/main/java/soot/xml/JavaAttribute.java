@@ -109,8 +109,8 @@ public class JavaAttribute {
       printJimpleLnAttr(jlnTag.getStartLineNumber(), jlnTag.getEndLineNumber());
     }
     /*
-     * else if (t instanceof SourceLineNumberTag) { SourceLineNumberTag jlnTag = (SourceLineNumberTag)t; printJavaLnAttr(jlnTag.getStartLineNumber(),
-     * jlnTag.getEndLineNumber()); }
+     * else if (t instanceof SourceLineNumberTag) { SourceLineNumberTag jlnTag = (SourceLineNumberTag)t;
+     * printJavaLnAttr(jlnTag.getStartLineNumber(), jlnTag.getEndLineNumber()); }
      */
     else if (t instanceof LinkTag) {
       LinkTag lt = (LinkTag) t;

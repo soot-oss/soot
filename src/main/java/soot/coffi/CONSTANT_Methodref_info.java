@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -35,27 +35,27 @@ import soot.jimple.Jimple;
 
 /**
  * A constant pool entry of type CONSTANT_Methodref
- * 
+ *
  * @see cp_info
  * @author Clark Verbrugge
  */
 class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_info {
   /**
    * Constant pool index of a CONSTANT_Class object.
-   * 
+   *
    * @see CONSTANT_Class_info
    */
   public int class_index;
   /**
    * Constant pool index of a CONSTANT_NameAndType object.
-   * 
+   *
    * @see CONSTANT_NameAndType_info
    */
   public int name_and_type_index;
 
   /**
    * Returns the size of this cp_info object.
-   * 
+   *
    * @return number of bytes occupied by this object.
    * @see cp_info#size
    */
@@ -65,7 +65,7 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
 
   /**
    * Returns a String representation of this entry.
-   * 
+   *
    * @param constant_pool
    *          constant pool of ClassFile.
    * @return String representation of this entry.
@@ -79,7 +79,7 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
 
   /**
    * Returns a String description of what kind of entry this is.
-   * 
+   *
    * @return the String "methodref".
    * @see cp_info#typeName
    */
@@ -89,7 +89,7 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
 
   /**
    * Compares this entry with another cp_info object (which may reside in a different constant pool).
-   * 
+   *
    * @param constant_pool
    *          constant pool of ClassFile for this.
    * @param cp
@@ -109,7 +109,8 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
     if (i != 0) {
       return i;
     }
-    return constant_pool[name_and_type_index].compareTo(constant_pool, cp_constant_pool[cu.name_and_type_index], cp_constant_pool);
+    return constant_pool[name_and_type_index].compareTo(constant_pool, cp_constant_pool[cu.name_and_type_index],
+        cp_constant_pool);
   }
 
   public Value createJimpleConstantValue(cp_info[] constant_pool) {
@@ -133,7 +134,8 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
       returnType = types[types.length - 1];
     }
 
-    return Jimple.v().newStaticInvokeExpr(Scene.v().makeMethodRef(Scene.v().getSootClass(className), name, parameterTypes, returnType, true));
+    return Jimple.v().newStaticInvokeExpr(
+        Scene.v().makeMethodRef(Scene.v().getSootClass(className), name, parameterTypes, returnType, true));
   }
 
   public int getClassIndex() {

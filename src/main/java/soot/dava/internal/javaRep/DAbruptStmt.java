@@ -80,7 +80,8 @@ public class DAbruptStmt extends AbstractStmt {
   }
 
   /*
-   * Nomair A. Naeem 20-FEB-2005 getter and setter methods for the label are needed for the aggregators of the AST conditionals
+   * Nomair A. Naeem 20-FEB-2005 getter and setter methods for the label are needed for the aggregators of the AST
+   * conditionals
    */
   public void setLabel(SETNodeLabel label) {
     this.label = label;

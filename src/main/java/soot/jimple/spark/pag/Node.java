@@ -28,7 +28,7 @@ import soot.util.Numberable;
 
 /**
  * Represents every node in the pointer assignment graph.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class Node implements ReferenceVariable, Numberable {
@@ -54,8 +54,8 @@ public class Node implements ReferenceVariable, Numberable {
   }
 
   /**
-   * If this node has been merged with another, returns the new node to be used as the representative of this node; returns this if the node has not
-   * been merged.
+   * If this node has been merged with another, returns the new node to be used as the representative of this node; returns
+   * this if the node has not been merged.
    */
   public Node getReplacement() {
     if (replacement != replacement.replacement) {

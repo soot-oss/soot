@@ -40,28 +40,30 @@ import soot.toolkits.graph.UnitGraph;
 /**
  *
  * This class implements a Program Dependence Graph as defined in
- * 
- * Ferrante, J., Ottenstein, K. J., and Warren, J. D. 1987. The program dependence graph and its use in optimization. ACM Trans. Program. Lang. Syst.
- * 9, 3 (Jul. 1987), 319-349. DOI= http://doi.acm.org/10.1145/24039.24041
- * 
- * Note: the implementation is not exactly as in the above paper. It first finds the regions of control dependence then uses part of the algorithm
- * given in the above paper to build the graph.
- * 
- * The constructor accepts a UnitGraph, which can be a BriefUnitGraph, an ExceptionalUnitGraph, or an EnhancedUnitGraph. At the absence of exception
- * handling constructs in a method, all of these work the same. However, at the presence of exception handling constructs, BriefUnitGraph is
- * multi-headed and potentially multi-tailed which makes the results of RegionAnalysis and PDG construction unreliable (It's not clear if it would be
- * useful anyway); Also, ExceptionalGraph's usefulness when exception handling is present is not so clear since almost every unit can throw exception
- * hence the dependency is affected. Currently, the PDG is based on a UnitGraph (BlockGraph) and does not care whether flow is exceptional or not.
- * 
- * The nodes in a PDG are of type PDGNode and the edges can have three labels: "dependency", "dependency-back", and "controlflow"; however, the
- * "controlflow" edges are auxiliary and the dependencies are represented by the labels beginning with "dependency". Other labels can be added later
- * for application or domain-specific cases.
- * 
- * 
- * To support methods that contain exception-handling and multiple-heads or tails, use EnhancedUnitGraph. It does not represent exceptional flow in
- * the way ExceptionalUnitGraph does, but it integrates them in a concise way. Also, it adds START/STOP nodes to graph if necessary to make the graph
- * single entry single exit.
- * 
+ *
+ * Ferrante, J., Ottenstein, K. J., and Warren, J. D. 1987. The program dependence graph and its use in optimization. ACM
+ * Trans. Program. Lang. Syst. 9, 3 (Jul. 1987), 319-349. DOI= http://doi.acm.org/10.1145/24039.24041
+ *
+ * Note: the implementation is not exactly as in the above paper. It first finds the regions of control dependence then uses
+ * part of the algorithm given in the above paper to build the graph.
+ *
+ * The constructor accepts a UnitGraph, which can be a BriefUnitGraph, an ExceptionalUnitGraph, or an EnhancedUnitGraph. At
+ * the absence of exception handling constructs in a method, all of these work the same. However, at the presence of
+ * exception handling constructs, BriefUnitGraph is multi-headed and potentially multi-tailed which makes the results of
+ * RegionAnalysis and PDG construction unreliable (It's not clear if it would be useful anyway); Also, ExceptionalGraph's
+ * usefulness when exception handling is present is not so clear since almost every unit can throw exception hence the
+ * dependency is affected. Currently, the PDG is based on a UnitGraph (BlockGraph) and does not care whether flow is
+ * exceptional or not.
+ *
+ * The nodes in a PDG are of type PDGNode and the edges can have three labels: "dependency", "dependency-back", and
+ * "controlflow"; however, the "controlflow" edges are auxiliary and the dependencies are represented by the labels beginning
+ * with "dependency". Other labels can be added later for application or domain-specific cases.
+ *
+ *
+ * To support methods that contain exception-handling and multiple-heads or tails, use EnhancedUnitGraph. It does not
+ * represent exceptional flow in the way ExceptionalUnitGraph does, but it integrates them in a concise way. Also, it adds
+ * START/STOP nodes to graph if necessary to make the graph single entry single exit.
+ *
  *
  * @author Hossein Sadat-Mohtasham Sep 2009
  */
@@ -88,7 +90,8 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
     this.m_regionAnalysis = new RegionAnalysis(this.m_cfg, this.m_body.getMethod(), this.m_class);
 
     /*
-     * Get the weak regions and save a copy. Note that the strong regions list is initially cloned from the weak region to be later modified.
+     * Get the weak regions and save a copy. Note that the strong regions list is initially cloned from the weak region to be
+     * later modified.
      */
     this.m_strongRegions = this.m_regionAnalysis.getRegions();
     this.m_weakRegions = this.cloneRegions(this.m_strongRegions);
@@ -99,8 +102,8 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
     this.m_pdgRegions = HashMutablePDG.computePDGRegions(this.m_startNode);
 
     /*
-     * This is needed to convert the initially Region-typed inner node of the PDG's head to a PDGRegion-typed one after the whole graph is computed.
-     * The root PDGRegion is the one with no parent.
+     * This is needed to convert the initially Region-typed inner node of the PDG's head to a PDGRegion-typed one after the
+     * whole graph is computed. The root PDGRegion is the one with no parent.
      */
 
     IRegion r = this.m_pdgRegions.get(0);
@@ -117,9 +120,9 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
   }
 
   /**
-   * This is the heart of the PDG contruction. It is huge and definitely needs some refactorings, but since it's been evlovong to cover some boundary
-   * cases it has become hard to rafactor.
-   * 
+   * This is the heart of the PDG contruction. It is huge and definitely needs some refactorings, but since it's been
+   * evlovong to cover some boundary cases it has become hard to rafactor.
+   *
    * It uses the list of weak regions, along with the dominator and post-dominator trees to construct the PDG nodes.
    */
   protected void constructPDG() {
@@ -150,8 +153,8 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
       pdgnode = this.m_obj2pdgNode.get(r);
 
       /*
-       * For all the CFG nodes in the region, create the corresponding PDG node and edges, and process them if they are in the dependence set of other
-       * regions, i.e. other regions depend on them.
+       * For all the CFG nodes in the region, create the corresponding PDG node and edges, and process them if they are in
+       * the dependence set of other regions, i.e. other regions depend on them.
        */
       List<Block> blocks = r.getBlocks();
       Hashtable<Region, List<Block>> toBeRemoved = new Hashtable<Region, List<Block>>();
@@ -178,8 +181,9 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
         curNodeInRegion = pdgNodeOfA;
 
         /*
-         * For each successor B of A, if B does not post-dominate A, add all the nodes on the path from B to the L in the post-dominator tree, where L
-         * is the least common ancestor of A and B in the post-dominator tree (L will be either A itself or the parent of A.).
+         * For each successor B of A, if B does not post-dominate A, add all the nodes on the path from B to the L in the
+         * post-dominator tree, where L is the least common ancestor of A and B in the post-dominator tree (L will be either
+         * A itself or the parent of A.).
          */
 
         List<Block> bs = this.m_blockCFG.getSuccsOf(a);
@@ -216,8 +220,8 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
           }
 
           /*
-           * If node A is in the dependent list of A, then A is the header of a loop. Otherwise, A could still be the header of a loop or just a
-           * simple predicate.
+           * If node A is in the dependent list of A, then A is the header of a loop. Otherwise, A could still be the header
+           * of a loop or just a simple predicate.
            */
 
           // first make A's pdg node be a conditional (predicate) pdgnode, if it's not already.
@@ -263,12 +267,14 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
           copyOfDependents.removeAll(regionOfB.getBlocks());
 
           /*
-           * What remains here in the dependence set needs to be processed separately. For each node X remained in the dependency set, find the
-           * corresponding PDG region node and add a dependency edge from the region of B to the region of X. If X's weak region contains other nodes
-           * not in the dependency set of A, create a new region for X and add the proper dependency edges (this actually happens if X is the header
-           * of a loop and B is a predicate guarding a break/continue.)
-           * 
-           * Note: it seems the only case that there is a node remained in the dependents is when there is a path from b to the header of a loop.
+           * What remains here in the dependence set needs to be processed separately. For each node X remained in the
+           * dependency set, find the corresponding PDG region node and add a dependency edge from the region of B to the
+           * region of X. If X's weak region contains other nodes not in the dependency set of A, create a new region for X
+           * and add the proper dependency edges (this actually happens if X is the header of a loop and B is a predicate
+           * guarding a break/continue.)
+           *
+           * Note: it seems the only case that there is a node remained in the dependents is when there is a path from b to
+           * the header of a loop.
            */
 
           while (!copyOfDependents.isEmpty()) {
@@ -276,8 +282,9 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
             Region rdepB = block2region.get(depB);
 
             /*
-             * Actually, there are cases when depB is not the header of a loop and therefore would not dominate the current node (A) and therefore
-             * might not have been created yet. This has happened when an inner loop breaks out of the outer loop but could have other cases too.
+             * Actually, there are cases when depB is not the header of a loop and therefore would not dominate the current
+             * node (A) and therefore might not have been created yet. This has happened when an inner loop breaks out of the
+             * outer loop but could have other cases too.
              */
             PDGNode depBPDGNode = this.m_obj2pdgNode.get(depB);
             if (depBPDGNode == null) {
@@ -313,14 +320,15 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
             }
 
             /**
-             * If all the nodes in the weak region of depB are dependent on A, then add an edge from the region of B to the region of depB.
-             * 
+             * If all the nodes in the weak region of depB are dependent on A, then add an edge from the region of B to the
+             * region of depB.
+             *
              * else, a new region has to be created to contain the dependences of depB, if not already created.
              */
             if (dependents.containsAll(rdepB.getBlocks())) {
               /*
                * Just add an edge to the pdg node of the existing depB region.
-               * 
+               *
                */
               // add the dependency edges
               // First, add the dependency for depB and its corresponding region.
@@ -359,13 +367,13 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
               // If the loop header has not been separated from its weak region yet
               if (predPDGofdepB == pdgnodeOfdepBRegion) {
                 /*
-                 * Create a new region to represent the whole loop. In fact, this is a strong region as opposed to the weak regions that were created
-                 * in the RegionAnalysis. This strong region only contains the header of the loop, A, and is dependent on it. Also, A is dependent on
-                 * this strong region as well.
+                 * Create a new region to represent the whole loop. In fact, this is a strong region as opposed to the weak
+                 * regions that were created in the RegionAnalysis. This strong region only contains the header of the loop,
+                 * A, and is dependent on it. Also, A is dependent on this strong region as well.
                  */
 
-                Region newRegion = new Region(this.m_strongRegionStartID++, topLevelRegion.getSootMethod(), topLevelRegion.getSootClass(),
-                    this.m_cfg);
+                Region newRegion = new Region(this.m_strongRegionStartID++, topLevelRegion.getSootMethod(),
+                    topLevelRegion.getSootClass(), this.m_cfg);
                 newRegion.add(depB);
 
                 this.m_strongRegions.add(newRegion);
@@ -457,7 +465,8 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
 
               } else {
                 /*
-                 * The strong region for the header has already been created and its corresponding PDGNode exist. Just add the dependency edge.
+                 * The strong region for the header has already been created and its corresponding PDGNode exist. Just add
+                 * the dependency edge.
                  */
                 this.addEdge(pdgnodeOfBRegion, predPDGofdepB, "dependency-back");
                 // this is a back-dependency
@@ -472,7 +481,8 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
         }
 
         /*
-         * If there is a previous node in this region, add a control flow edge to indicate the the correct direction of control flow in the region.
+         * If there is a previous node in this region, add a control flow edge to indicate the the correct direction of
+         * control flow in the region.
          */
         if (prevPDGNodeInRegion != null) {
           this.addEdge(prevPDGNodeInRegion, curNodeInRegion, "controlflow");
@@ -514,7 +524,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
   }
 
   /**
-   * 
+   *
    * @return The Corresponding UnitGraph
    */
   public UnitGraph getCFG() {
@@ -595,10 +605,11 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
   }
 
   /**
-   * This method returns a list of regions obtained by post-order traversal of the region hierarchy. This takes advantage of the hierarchical
-   * (parent/child) information encoded within the PDGNodes at construction time; it should be noted that, we have not counted the strong regions that
-   * represent the loop header as a separate region; instead, a PDGRegion that represents both the loop header and its body are counted.
-   * 
+   * This method returns a list of regions obtained by post-order traversal of the region hierarchy. This takes advantage of
+   * the hierarchical (parent/child) information encoded within the PDGNodes at construction time; it should be noted that,
+   * we have not counted the strong regions that represent the loop header as a separate region; instead, a PDGRegion that
+   * represents both the loop header and its body are counted.
+   *
    * @param The
    *          root from which the traversal should begin.
    * @return The list of regions obtained thru post-order traversal of the region hierarchy.
@@ -742,9 +753,9 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
   }
 
   /**
-   * The existing removeAllEdges in the parent class seems to be throwing concurrentmodification exception most of the time. Here is a version that
-   * doesn't throw that exception.
-   * 
+   * The existing removeAllEdges in the parent class seems to be throwing concurrentmodification exception most of the time.
+   * Here is a version that doesn't throw that exception.
+   *
    */
   public void removeAllEdges(PDGNode from, PDGNode to) {
     if (!containsAnyEdge(from, to)) {

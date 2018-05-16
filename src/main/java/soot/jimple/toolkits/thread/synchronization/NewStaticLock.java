@@ -42,7 +42,8 @@ public class NewStaticLock implements Value {
   }
 
   /**
-   * Returns true if this object is structurally equivalent to c. AbstractDataSources are equal and equivalent if their sourcename is the same
+   * Returns true if this object is structurally equivalent to c. AbstractDataSources are equal and equivalent if their
+   * sourcename is the same
    */
   public boolean equivTo(Object c) {
     return equals(c);

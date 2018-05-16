@@ -66,7 +66,7 @@ import soot.jbco.jimpleTransformations.MethodRenamer;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 24-Jan-2006
  */
 public class Main {
@@ -90,11 +90,12 @@ public class Main {
       { "Rename Classes", "Rename Methods", "Rename Fields", "Build API Buffer Methods", "Build Library Buffer Classes",
           "Goto Instruction Augmentation", "Add Dead Switche Statements", "Convert Arith. Expr. To Bitshifting Ops",
           "Convert Branches to JSR Instructions", "Disobey Constructor Conventions", "Reuse Duplicate Sequences",
-          "Replace If(Non)Nulls with Try-Catch", "Indirect If Instructions", "Pack Locals into Bitfields", "Reorder Loads Above Ifs",
-          "Combine Try and Catch Blocks", "Embed Constants in Fields", "Partially Trap Switches" },
-      { "wjtp.jbco_cr", "wjtp.jbco_mr", "wjtp.jbco_fr", "wjtp.jbco_blbc", "wjtp.jbco_bapibm", "jtp.jbco_gia", "jtp.jbco_adss", "jtp.jbco_cae2bo",
-          "bb.jbco_cb2ji", "bb.jbco_dcc", "bb.jbco_rds", "bb.jbco_riitcb", "bb.jbco_iii", "bb.jbco_plvb", "bb.jbco_rlaii", "bb.jbco_ctbcb",
-          "bb.jbco_ecvf", "bb.jbco_ptss" } };
+          "Replace If(Non)Nulls with Try-Catch", "Indirect If Instructions", "Pack Locals into Bitfields",
+          "Reorder Loads Above Ifs", "Combine Try and Catch Blocks", "Embed Constants in Fields",
+          "Partially Trap Switches" },
+      { "wjtp.jbco_cr", "wjtp.jbco_mr", "wjtp.jbco_fr", "wjtp.jbco_blbc", "wjtp.jbco_bapibm", "jtp.jbco_gia",
+          "jtp.jbco_adss", "jtp.jbco_cae2bo", "bb.jbco_cb2ji", "bb.jbco_dcc", "bb.jbco_rds", "bb.jbco_riitcb", "bb.jbco_iii",
+          "bb.jbco_plvb", "bb.jbco_rlaii", "bb.jbco_ctbcb", "bb.jbco_ecvf", "bb.jbco_ptss" } };
 
   public static void main(String[] argv) {
     int rcount = 0;
@@ -107,12 +108,14 @@ public class Main {
         System.out.println("\t-jbco:help     -  print this help message.");
         System.out.println("\t-jbco:verbose  -  print extra information during obfuscation.");
         System.out.println("\t-jbco:silent   -  turn off all output, including summary information.");
-        System.out
-            .println("\t-jbco:metrics  -  calculate total vertices and edges;\n" + "\t                  calculate avg. and highest graph degrees.");
+        System.out.println("\t-jbco:metrics  -  calculate total vertices and edges;\n"
+            + "\t                  calculate avg. and highest graph degrees.");
         System.out.println("\t-jbco:debug    -  turn on extra debugging like\n"
             + "\t                  stack height and type verifier.\n\nTransformations ( -t:[W:]<name>[:pattern] )\n"
-            + "\tW              -  specify obfuscation weight (0-9)\n" + "\t<name>         -  name of obfuscation (from list below)\n"
-            + "\tpattern        -  limit to method names matched by pattern\n" + "\t                  prepend * to pattern if a regex\n");
+            + "\tW              -  specify obfuscation weight (0-9)\n"
+            + "\t<name>         -  name of obfuscation (from list below)\n"
+            + "\tpattern        -  limit to method names matched by pattern\n"
+            + "\t                  prepend * to pattern if a regex\n");
 
         for (int j = 0; j < optionStrings[0].length; j++) {
           String line = "\t" + optionStrings[1][j];
@@ -296,8 +299,8 @@ public class Main {
       if (jbcoSummary) {
         for (int i = 0; i < 3; i++) {
           Iterator<Transform> phases = i == 0 ? wjtp.iterator() : i == 1 ? jtp.iterator() : bb.iterator();
-          logger.debug(
-              i == 0 ? "Whole Program Jimple Transformations:" : i == 1 ? "Jimple Method Body Transformations:" : "Baf Method Body Transformations:");
+          logger.debug(i == 0 ? "Whole Program Jimple Transformations:"
+              : i == 1 ? "Jimple Method Body Transformations:" : "Baf Method Body Transformations:");
           while (phases.hasNext()) {
             Transform o = (Transform) phases.next();
             Transformer t = o.getTransformer();
@@ -496,71 +499,76 @@ public class Main {
 
 /*
  * //bb.insertBefore(new Transform("bb.printout2", newTransform(new BAFPrintout(true))),"bb.lp");
- * 
+ *
  * for (int i = 0; i < transformsToAdd.size(); i++) { String t = (String)transformsToAdd.get(i);
- * 
- * if (t.equals("bb.jbco_j2bl")) bb.insertBefore(new Transform("bb.jbco_j2bl", newTransform(new Jimple2BafLocalBuilder())),"bb.lp"); else {
- * 
- * } } //bb.insertBefore(new Transform("bb.jbco_j2bl", newTransform(new Jimple2BafLocalBuilder())),"bb.lp"); // requires CollecJimpleLocals in jtp
- * pack to run
- * 
- * //jtp.add(new Transform("jtp.jbco_gia", newTransform(new GotoInstrumenter()))); // seems like this might cause issues - too obvious? not worth it?
- * 
- * { // works fine - no problems whatsoever //jtp.add(new Transform("jtp.jbco_cae2bo", newTransform(new ArithmeticTransformer()))); }
- * 
- * // these two must come together - THESE ARE _not_ CAUSING PROBLEMS IN TRIPHASE?!?!?! { //wjtp.add(new Transform("wjtp.jbco_cc", newTransform(new
- * CollectConstants()))); //bb.add(new Transform("bb.jbco_ecvf", newTransform(new UpdateConstantsToFields()))); }
- * 
+ *
+ * if (t.equals("bb.jbco_j2bl")) bb.insertBefore(new Transform("bb.jbco_j2bl", newTransform(new
+ * Jimple2BafLocalBuilder())),"bb.lp"); else {
+ *
+ * } } //bb.insertBefore(new Transform("bb.jbco_j2bl", newTransform(new Jimple2BafLocalBuilder())),"bb.lp"); // requires
+ * CollecJimpleLocals in jtp pack to run
+ *
+ * //jtp.add(new Transform("jtp.jbco_gia", newTransform(new GotoInstrumenter()))); // seems like this might cause issues -
+ * too obvious? not worth it?
+ *
+ * { // works fine - no problems whatsoever //jtp.add(new Transform("jtp.jbco_cae2bo", newTransform(new
+ * ArithmeticTransformer()))); }
+ *
+ * // these two must come together - THESE ARE _not_ CAUSING PROBLEMS IN TRIPHASE?!?!?! { //wjtp.add(new
+ * Transform("wjtp.jbco_cc", newTransform(new CollectConstants()))); //bb.add(new Transform("bb.jbco_ecvf", newTransform(new
+ * UpdateConstantsToFields()))); }
+ *
  * // these two must come together { // works fine //bb.insertBefore(new Transform("bb.jbco_rds", newTransform(new
  * FindDuplicateSequences())),"bb.lp");
- * 
- * // THIS HAS BEEN TESTED AND RESULTS REPORTED // this SLOWS performance - not worth it //bb.insertBefore(new Transform("bb.jbco_plvb",
- * newTransform(new LocalsToBitField())),"bb.lp"); }
- * 
+ *
+ * // THIS HAS BEEN TESTED AND RESULTS REPORTED // this SLOWS performance - not worth it //bb.insertBefore(new
+ * Transform("bb.jbco_plvb", newTransform(new LocalsToBitField())),"bb.lp"); }
+ *
  * // works fine - having problems with this in TRIPHASE?? bb.insertBefore(new Transform("bb.jbco_rlaii", newTransform(new
  * MoveLoadsAboveIfs())),"bb.lp");
- * 
+ *
  * // works fine //bb.insertBefore(new Transform("bb.jbco_ptss", newTransform(new WrapSwitchesInTrys())),"bb.lp");
- * 
+ *
  * // works fine //bb.insertBefore(new Transform("bb.jbco_iii", newTransform(new IndirectIfJumpsToCaughtGotos())),"bb.lp");
- * 
- * // should be LAST CALLED in bb // works fine //bb.insertBefore(new Transform("bb.jbco_ctbcb", newTransform(new TryCatchCombiner())),"bb.lp");
- * 
+ *
+ * // should be LAST CALLED in bb // works fine //bb.insertBefore(new Transform("bb.jbco_ctbcb", newTransform(new
+ * TryCatchCombiner())),"bb.lp");
+ *
  * // works fine //bb.insertBefore(new Transform("bb.jbco_cb2ji", newTransform(new AddJSRs())),"bb.lp");
- * 
- * //bb.insertBefore(new Transform("bb.jbco_riitcb", newTransform(new IfNullToTryCatch())),"bb.lp"); /////bb.add(new Transform("bb.jbco_v2s",
- * newTransform(new Virtual2Special()))); // working on it //wjtp.add(new Transform("wjtp.jbco_c2lco", newTransform(new
- * _ConvertToLeastCommonObject())));
- * 
- * // works fine //wjtp.add(new Transform("wjtp.jbco_blbc", newTransform(new LibraryMethodWrappersBuilder()))); //wjtp.add(new
- * Transform("wjtp.jbco_TEST", new jimpleTester()));
- * 
+ *
+ * //bb.insertBefore(new Transform("bb.jbco_riitcb", newTransform(new IfNullToTryCatch())),"bb.lp"); /////bb.add(new
+ * Transform("bb.jbco_v2s", newTransform(new Virtual2Special()))); // working on it //wjtp.add(new
+ * Transform("wjtp.jbco_c2lco", newTransform(new _ConvertToLeastCommonObject())));
+ *
+ * // works fine //wjtp.add(new Transform("wjtp.jbco_blbc", newTransform(new LibraryMethodWrappersBuilder())));
+ * //wjtp.add(new Transform("wjtp.jbco_TEST", new jimpleTester()));
+ *
  * // works fine //wjtp.add(new Transform("wjtp.jbco_bapibm", newTransform(new BuildIntermediateAppClasses())));
- * 
+ *
  * // works fine //wjtp.add(new Transform("wjtp.jbco_cr", newTransform(new ClassRenamer())));
- * 
- * 
+ *
+ *
  * //bb.insertBefore(new Transform("bb.jbco_ful", newTransform(new FixUndefinedLocals())),"bb.lp");
- * 
- * 
+ *
+ *
  * // works fine wjtp.add(new Transform("wjtp.jbco_fr", newTransform(new FieldRenamer())));
- * 
+ *
  * FieldRenamer.rename_fields = true;
- * 
+ *
  * // works fine wjtp.add(new Transform("wjtp.jbco_mr", newTransform(new MethodRenamer())));
- * 
+ *
  * // jtp.add(new Transform("jtp.jbco_v2s", newTransform(new Virtual2SpecialConverter())));
- * 
- * 
- * 
- * bb.insertBefore(new Transform("bb.printout1", newTransform(new BAFPrintout(true))),"bb.lp"); // always call BEFORE localpacker, else you're in
- * trouble
- * 
+ *
+ *
+ *
+ * bb.insertBefore(new Transform("bb.printout1", newTransform(new BAFPrintout(true))),"bb.lp"); // always call BEFORE
+ * localpacker, else you're in trouble
+ *
  * jtp.add(new Transform("jtp.jbco_adss", newTransform(new AddSwitches())));
- * 
+ *
  * //bb.insertBefore(new Transform("bb.printout1", new BAFPrintout(true)),"bb.lp");
- * 
+ *
  * //bb.add(new Transform("bb.printout", new BAFPrintout(true)));
- * 
+ *
  * //jtp.add(new Transform("jtp.jbco_jl", newTransform(new CollectJimpleLocals()))); // helper transform for B2J Local
  */

@@ -62,8 +62,9 @@ import soot.util.Chain;
  *         <p>
  *         Created on 1-Feb-2006
  *         <p>
- *         This class builds buffer classes between Application classes and their corresponding library superclasses. This allows for the hiding of
- *         all library method overrides to be hidden in a different class, thereby cloaking somewhat the mechanisms.
+ *         This class builds buffer classes between Application classes and their corresponding library superclasses. This
+ *         allows for the hiding of all library method overrides to be hidden in a different class, thereby cloaking somewhat
+ *         the mechanisms.
  */
 public class BuildIntermediateAppClasses extends SceneTransformer implements IJbcoTransform {
 
@@ -185,7 +186,8 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
           } // end build new junk method to call original method
 
           { // build copy of old method
-            newMethod = Scene.v().makeSootMethod(originalSuperclassMethod.getName(), paramTypes, returnType, modifiers, exceptions);
+            newMethod = Scene.v().makeSootMethod(originalSuperclassMethod.getName(), paramTypes, returnType, modifiers,
+                exceptions);
             mediatingClass.addMethod(newMethod);
 
             Body body = Jimple.v().newBody(newMethod);

@@ -22,7 +22,7 @@ import soot.Value;
 
 /**
  * A constant pool entry of type CONSTANT_InvokeDynamic
- * 
+ *
  * @see cp_info
  * @author Eric Bodden
  */
@@ -38,7 +38,7 @@ class CONSTANT_InvokeDynamic_info extends cp_info {
 
   /**
    * Returns a String representation of this entry.
-   * 
+   *
    * @param constant_pool
    *          constant pool of ClassFile.
    * @return String representation of this entry.
@@ -53,7 +53,7 @@ class CONSTANT_InvokeDynamic_info extends cp_info {
 
   /**
    * Returns a String description of what kind of entry this is.
-   * 
+   *
    * @return the String "methodhandle".
    * @see cp_info#typeName
    */
@@ -63,7 +63,7 @@ class CONSTANT_InvokeDynamic_info extends cp_info {
 
   /**
    * Compares this entry with another cp_info object (which may reside in a different constant pool).
-   * 
+   *
    * @param constant_pool
    *          constant pool of ClassFile for this.
    * @param cp
@@ -79,11 +79,13 @@ class CONSTANT_InvokeDynamic_info extends cp_info {
       return tag - cp.tag;
     }
     CONSTANT_InvokeDynamic_info cu = (CONSTANT_InvokeDynamic_info) cp;
-    i = constant_pool[bootstrap_method_index].compareTo(constant_pool, cp_constant_pool[cu.bootstrap_method_index], cp_constant_pool);
+    i = constant_pool[bootstrap_method_index].compareTo(constant_pool, cp_constant_pool[cu.bootstrap_method_index],
+        cp_constant_pool);
     if (i != 0) {
       return i;
     }
-    i = constant_pool[name_and_type_index].compareTo(constant_pool, cp_constant_pool[cu.name_and_type_index], cp_constant_pool);
+    i = constant_pool[name_and_type_index].compareTo(constant_pool, cp_constant_pool[cu.name_and_type_index],
+        cp_constant_pool);
     return i;
   }
 

@@ -20,7 +20,7 @@ package soot.jimple.spark.geom.dataRep;
 
 /**
  * The rectangle figure for encoding the many-to-many relation.
- * 
+ *
  * @author xiao
  *
  */
@@ -75,8 +75,10 @@ public class RectangleNode extends SegmentNode {
       }
 
       // Otherwise, the diagonal line must intersect with one of the boundary lines
-      if (diagonal_line_intersect_horizontal(q, p.I1, p.I2, p.L) || diagonal_line_intersect_horizontal(q, p.I1, p.I2 + p.L_prime - 1, p.L)
-          || diagonal_line_intersect_vertical(q, p.I1, p.I2, p.L_prime) || diagonal_line_intersect_vertical(q, p.I1 + p.L - 1, p.I2, p.L_prime)) {
+      if (diagonal_line_intersect_horizontal(q, p.I1, p.I2, p.L)
+          || diagonal_line_intersect_horizontal(q, p.I1, p.I2 + p.L_prime - 1, p.L)
+          || diagonal_line_intersect_vertical(q, p.I1, p.I2, p.L_prime)
+          || diagonal_line_intersect_vertical(q, p.I1 + p.L - 1, p.I2, p.L_prime)) {
         return true;
       }
     } else {

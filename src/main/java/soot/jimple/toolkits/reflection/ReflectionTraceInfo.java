@@ -149,7 +149,8 @@ public class ReflectionTraceInfo {
           lines++;
         }
         if (!ignoredKinds.isEmpty()) {
-          logger.debug("Encountered reflective calls entries of the following kinds that\n" + "cannot currently be handled:");
+          logger
+              .debug("Encountered reflective calls entries of the following kinds that\n" + "cannot currently be handled:");
           for (String kind : ignoredKinds) {
             logger.debug("" + kind);
           }

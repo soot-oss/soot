@@ -46,7 +46,8 @@ public class SmartMethodLocalObjectsAnalysis {
   }
 
   //
-  public boolean isObjectLocal(Value local, CallLocalityContext context) // to this analysis of this method (which depends on context)
+  public boolean isObjectLocal(Value local, CallLocalityContext context) // to this analysis of this method (which depends on
+                                                                         // context)
   {
     EquivalentValue localEqVal;
     if (local instanceof InstanceFieldRef) {

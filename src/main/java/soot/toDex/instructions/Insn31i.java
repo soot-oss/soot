@@ -10,8 +10,8 @@ import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
- * The "31i" instruction format: It needs three 16-bit code units, has one register and is used for a 32-bit literal (hence the "i" for
- * "integer").<br>
+ * The "31i" instruction format: It needs three 16-bit code units, has one register and is used for a 32-bit literal (hence
+ * the "i" for "integer").<br>
  * <br>
  * It is used by the opcodes "const" and "const-wide/32".
  */

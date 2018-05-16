@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -26,8 +26,9 @@
 package soot.coffi;
 
 /**
- * There should be at most one RuntimeInvisibleAnnotations attribute in every method, field and class indicating the list of annotations.
- * 
+ * There should be at most one RuntimeInvisibleAnnotations attribute in every method, field and class indicating the list of
+ * annotations.
+ *
  * @see attribute_info
  * @see method_info#attributes, @see field_info#attributes,
  * @see coffi_class#attributes

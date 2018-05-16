@@ -1,6 +1,6 @@
 
-/*0815 use complete graph, success 
- *0801 add the special treatment for waitng->notified-entry,--- and localSucc(n)  
+/*0815 use complete graph, success
+ *0801 add the special treatment for waitng->notified-entry,--- and localSucc(n)
  *0730 add MSym set for each node to store the nodes added to the m set during symmetry step.
  */
 package soot.jimple.toolkits.thread.mhp;
@@ -39,8 +39,8 @@ import soot.util.Chain;
 // -Richard L. Halpert, 2006-11-30
 
 /**
- * @author Lin Li This is a synchronization-aware May Happen in Parallel (MHP) analysis. It works by analyzing a PegGraph (simplified whole-program
- *         control flow graph that includes thread executions and synchronization).
+ * @author Lin Li This is a synchronization-aware May Happen in Parallel (MHP) analysis. It works by analyzing a PegGraph
+ *         (simplified whole-program control flow graph that includes thread executions and synchronization).
  */
 class MhpAnalysis {
 
@@ -101,7 +101,8 @@ class MhpAnalysis {
     // System.err.println("finish initializing kill,gen,m,out to empty set");
 
     /*
-     * Initialize the worklist to include all start nodes in the main thread that are reachable from the begin node of the main thread
+     * Initialize the worklist to include all start nodes in the main thread that are reachable from the begin node of the
+     * main thread
      */
     Set keys = startToThread.keySet();
     Iterator keysIt = keys.iterator();
@@ -210,9 +211,9 @@ class MhpAnalysis {
           }
           /*
            * Iterator localSuccIt =((List)g.getSuccsOf(s)).iterator();
-           * 
+           *
            * while (localSuccIt.hasNext()){
-           * 
+           *
            * Object localSucc = localSuccIt.next(); genSet.add(localSucc); }
            */
           unitToGen.put(s, genSet);
@@ -246,11 +247,12 @@ class MhpAnalysis {
       // System.out.println("curObj: "+currentObj);
       /*
        * if (currentObj instanceof JPegStmt){ Tag tag = (Tag)((JPegStmt)currentObj).getTags().get(0);
-       * System.out.println("=====current node is:==="+tag+" "+currentObj); } else{ System.out.println("===current node is: list==="); Iterator listIt
-       * = ((List)currentObj).iterator();
-       * 
-       * while (listIt.hasNext()){ Object oo = listIt.next(); if (oo instanceof JPegStmt){ JPegStmt unit = (JPegStmt)oo; Tag tag =
-       * (Tag)unit.getTags().get(0); System.out.println(tag+" "+unit); } else System.out.println(oo); } System.out.println("===list==end=="); }
+       * System.out.println("=====current node is:==="+tag+" "+currentObj); } else{
+       * System.out.println("===current node is: list==="); Iterator listIt = ((List)currentObj).iterator();
+       *
+       * while (listIt.hasNext()){ Object oo = listIt.next(); if (oo instanceof JPegStmt){ JPegStmt unit = (JPegStmt)oo; Tag
+       * tag = (Tag)unit.getTags().get(0); System.out.println(tag+" "+unit); } else System.out.println(oo); }
+       * System.out.println("===list==end=="); }
        */
       // get kill, gen, m and out set.
 
@@ -262,10 +264,11 @@ class MhpAnalysis {
       FlowSet outSet = unitToOut.get(currentObj);
       FlowSet notifySuccSet = notifySucc.get(currentObj);
       /*
-       * if (unitToMSym.containsKey(currentObj)){ FlowSet mSetSym = (FlowSet)unitToMSym.get(currentObj); //test("mSetSym",mSetSym);
-       * 
+       * if (unitToMSym.containsKey(currentObj)){ FlowSet mSetSym = (FlowSet)unitToMSym.get(currentObj);
+       * //test("mSetSym",mSetSym);
+       *
        * mSet.union(mSetSym);
-       * 
+       *
        * }
        */
       FlowSet mOld = unitToM.get(currentObj);
@@ -295,9 +298,9 @@ class MhpAnalysis {
 
         }
         /*
-         * if (unitToMSym.containsKey(currentObj)){ FlowSet mSetSym = (FlowSet)unitToMSym.get(currentObj); mSet.union(mSetSym);
-         * //testSet(mSetSym,"mSetSyn");
-         * 
+         * if (unitToMSym.containsKey(currentObj)){ FlowSet mSetSym = (FlowSet)unitToMSym.get(currentObj);
+         * mSet.union(mSetSym); //testSet(mSetSym,"mSetSyn");
+         *
          * }
          */
         mSet.union(mOld);
@@ -354,14 +357,16 @@ class MhpAnalysis {
                 }
 
                 /*
-                 * ADD ======== FlowSet mSetMSym=null; if (unitToMSym.containsKey(tempM)){ mSetMSym = (FlowSet)unitToMSym.get(tempM);
-                 * 
+                 * ADD ======== FlowSet mSetMSym=null; if (unitToMSym.containsKey(tempM)){ mSetMSym =
+                 * (FlowSet)unitToMSym.get(tempM);
+                 *
                  * } else{ mSetMSym = new ArraySparseSet(); } if (!mSetMSym.contains(currentObj)){
-                 * 
+                 *
                  * mSetMSym.add(currentObj);
-                 * 
-                 * //Tag tag1 = (Tag)tempM.getTags().get(0); //System.out.println("add "+currentObj +"to the mset of "+tempM); } else{
-                 * //System.out.println("the mset of "+tempM+" contains "+currentNode); } unitToMSym.put(tempM, mSetMSym);
+                 *
+                 * //Tag tag1 = (Tag)tempM.getTags().get(0); //System.out.println("add "+currentObj
+                 * +"to the mset of "+tempM); } else{ //System.out.println("the mset of "+tempM+" contains "+currentNode); }
+                 * unitToMSym.put(tempM, mSetMSym);
                  */
               }
 
@@ -415,8 +420,9 @@ class MhpAnalysis {
 
                 // System.out.println("add to worklist---local succ");
                 /*
-                 * Iterator it = ((List)localSucc).iterator(); while (it.hasNext()){ JPegStmt ss = (JPegStmt)it.next(); Tag tag1 =
-                 * (Tag)ss.getTags().get(0); System.out.println(tag1+" "+ss); } System.out.println("--------------------");
+                 * Iterator it = ((List)localSucc).iterator(); while (it.hasNext()){ JPegStmt ss = (JPegStmt)it.next(); Tag
+                 * tag1 = (Tag)ss.getTags().get(0); System.out.println(tag1+" "+ss); }
+                 * System.out.println("--------------------");
                  */ }
             }
           }
@@ -528,8 +534,8 @@ class MhpAnalysis {
           } // end while
 
           /*
-           * compute the notified-entry set for "obj" in (obj, notified-entry, *) because notified-entry nodes always follow the corresponding waiting
-           * nodes, we can find waitingNodes for obj, then find the notified-entry nodes.
+           * compute the notified-entry set for "obj" in (obj, notified-entry, *) because notified-entry nodes always follow
+           * the corresponding waiting nodes, we can find waitingNodes for obj, then find the notified-entry nodes.
            */
 
           Map<String, FlowSet> waitingNodes = g.getWaitingNodes();
@@ -711,12 +717,13 @@ class MhpAnalysis {
         // System.out.println("before add msetNew");
         // testSet(mSet, "mSet");
         /*
-         * if (mSetNew != null){ Iterator mSetNewIt = mSetNew.iterator(); while(mSetNewIt.hasNext()){ JPegStmt mNew = (JPegStmt)mSetNewIt.next();
-         * if(!mSet.contains(mNew)){ mSet.add(mNew); } } }
+         * if (mSetNew != null){ Iterator mSetNewIt = mSetNew.iterator(); while(mSetNewIt.hasNext()){ JPegStmt mNew =
+         * (JPegStmt)mSetNewIt.next(); if(!mSet.contains(mNew)){ mSet.add(mNew); } } }
          */
         // else System.out.println("null mSetNew for :"+currentNode);
         /*
-         * modify July 6 2004 if (unitToMSym.containsKey(currentNode)){ FlowSet mSetSym = (FlowSet)unitToMSym.get(currentNode); mSet.union(mSetSym); }
+         * modify July 6 2004 if (unitToMSym.containsKey(currentNode)){ FlowSet mSetSym =
+         * (FlowSet)unitToMSym.get(currentNode); mSet.union(mSetSym); }
          */
 
         mSet.union(mOld);
@@ -793,12 +800,13 @@ class MhpAnalysis {
 
                 /*
                  * FlowSet mSetMSym=null; if (unitToMSym.containsKey(tempM)){ mSetMSym = (FlowSet)unitToMSym.get(tempM);
-                 * 
+                 *
                  * } else{ mSetMSym = new ArraySparseSet(); } if (!mSetMSym.contains(currentNode)){
-                 * 
+                 *
                  * mSetMSym.add(currentNode);
-                 * 
-                 * //Tag tag1 = (Tag)tempM.getTags().get(0); //System.out.println("add "+currentNode +"to the mset of "+tag1+" "+tempM); } else{
+                 *
+                 * //Tag tag1 = (Tag)tempM.getTags().get(0); //System.out.println("add "+currentNode
+                 * +"to the mset of "+tag1+" "+tempM); } else{
                  * //System.out.println("the mset of "+tempM+" contains "+currentNode); } unitToMSym.put(tempM, mSetMSym);
                  */
               }
@@ -845,9 +853,10 @@ class MhpAnalysis {
 
               workList.addLast(localSucc);
               /*
-               * System.out.println("add to worklist---local succ"); Iterator it = ((List)localSucc).iterator(); while (it.hasNext()){ Object obj =
-               * it.next(); if (obj instanceof JPegStmt){ JPegStmt ss = (JPegStmt)obj; Tag tag1 = (Tag)ss.getTags().get(0);
-               * System.out.println(tag1+" "+ss); } else System.out.println(obj); } System.out.println("--------------------");
+               * System.out.println("add to worklist---local succ"); Iterator it = ((List)localSucc).iterator(); while
+               * (it.hasNext()){ Object obj = it.next(); if (obj instanceof JPegStmt){ JPegStmt ss = (JPegStmt)obj; Tag tag1
+               * = (Tag)ss.getTags().get(0); System.out.println(tag1+" "+ss); } else System.out.println(obj); }
+               * System.out.println("--------------------");
                */
             }
           }
@@ -922,8 +931,9 @@ class MhpAnalysis {
 
       while (it.hasNext()) {
         /*
-         * for test Object a = it.next(); Set s1 = new HashSet(); s1.add(a); s1.add(obj); mSetPairs.add(s1); Set s2 = new HashSet(); s2.add(obj);
-         * s2.add(a); System.out.println("equals: "+s1.equals(s2)); System.out.println("contains: "+mSetPairs.contains(s2)); System.exit(1);
+         * for test Object a = it.next(); Set s1 = new HashSet(); s1.add(a); s1.add(obj); mSetPairs.add(s1); Set s2 = new
+         * HashSet(); s2.add(obj); s2.add(a); System.out.println("equals: "+s1.equals(s2));
+         * System.out.println("contains: "+mSetPairs.contains(s2)); System.exit(1);
          */
 
         Object m = it.next();

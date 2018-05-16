@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -453,8 +453,8 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
         throw new RuntimeException("Unhandled binary expression right operand type: " + rv.getClass());
       }
 
-      if ((be instanceof AddExpr) || (be instanceof SubExpr) || (be instanceof MulExpr) || (be instanceof DivExpr) || (be instanceof RemExpr)
-          || (be instanceof AndExpr) || (be instanceof OrExpr) || (be instanceof XorExpr)) {
+      if ((be instanceof AddExpr) || (be instanceof SubExpr) || (be instanceof MulExpr) || (be instanceof DivExpr)
+          || (be instanceof RemExpr) || (be instanceof AndExpr) || (be instanceof OrExpr) || (be instanceof XorExpr)) {
         if (!(left.hasDescendantOrSelf(lop) && left.hasDescendantOrSelf(rop))) {
           error("Type Error(27)");
         }
@@ -462,8 +462,9 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
         if (!(left.hasDescendantOrSelf(lop) && hierarchy.typeNode(IntType.v()).hasAncestorOrSelf(rop))) {
           error("Type Error(28)");
         }
-      } else if ((be instanceof CmpExpr) || (be instanceof CmpgExpr) || (be instanceof CmplExpr) || (be instanceof EqExpr) || (be instanceof GeExpr)
-          || (be instanceof GtExpr) || (be instanceof LeExpr) || (be instanceof LtExpr) || (be instanceof NeExpr)) {
+      } else if ((be instanceof CmpExpr) || (be instanceof CmpgExpr) || (be instanceof CmplExpr) || (be instanceof EqExpr)
+          || (be instanceof GeExpr) || (be instanceof GtExpr) || (be instanceof LeExpr) || (be instanceof LtExpr)
+          || (be instanceof NeExpr)) {
         try {
           lop.lca(rop);
         } catch (TypeException e) {
@@ -758,7 +759,8 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
 
   public void caseReturnStmt(ReturnStmt stmt) {
     if (stmt.getOp() instanceof Local) {
-      if (!hierarchy.typeNode(((Local) stmt.getOp()).getType()).hasAncestorOrSelf(hierarchy.typeNode(stmtBody.getMethod().getReturnType()))) {
+      if (!hierarchy.typeNode(((Local) stmt.getOp()).getType())
+          .hasAncestorOrSelf(hierarchy.typeNode(stmtBody.getMethod().getReturnType()))) {
         if (fix) {
           stmt.setOp(insertCast((Local) stmt.getOp(), stmtBody.getMethod().getReturnType(), stmt));
         } else {

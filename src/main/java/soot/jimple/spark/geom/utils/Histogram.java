@@ -22,7 +22,7 @@ import java.io.PrintStream;
 
 /**
  * A helper class for plotting the evaluation results in histogram form.
- * 
+ *
  * @author xiao
  *
  */
@@ -71,8 +71,9 @@ public class Histogram {
   }
 
   /**
-   * This function prints two histograms together for comparative reading. It requires the two histograms having the same data separators.
-   * 
+   * This function prints two histograms together for comparative reading. It requires the two histograms having the same
+   * data separators.
+   *
    * @param output
    * @param title
    * @param other
@@ -96,7 +97,8 @@ public class Histogram {
         output.printf("%d < x <= %d: %d (%d)", limits[i - 1], limits[i], results[i], other.results[i]);
       }
 
-      output.printf(", percentage = %.2f%% (%.2f%%) \n", (double) results[i] * 100 / count, (double) other.results[i] * 100 / other.count);
+      output.printf(", percentage = %.2f%% (%.2f%%) \n", (double) results[i] * 100 / count,
+          (double) other.results[i] * 100 / other.count);
     }
 
     output.println();
@@ -119,7 +121,7 @@ public class Histogram {
 
   /**
    * Merge two histograms.
-   * 
+   *
    * @param other
    */
   public void merge(Histogram other) {
@@ -138,7 +140,7 @@ public class Histogram {
 
   /**
    * Use the current distribution but scale the samples close to the user specified one
-   * 
+   *
    * @param usrSamples
    */
   public void scaleToSamples(int usrSamples) {

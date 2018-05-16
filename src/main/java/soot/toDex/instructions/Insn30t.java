@@ -7,7 +7,8 @@ import org.jf.dexlib2.builder.instruction.BuilderInstruction30t;
 import soot.toDex.LabelAssigner;
 
 /**
- * The "30t" instruction format: It needs three 16-bit code units, does not have any registers and is used for jump targets (hence the "t").<br>
+ * The "30t" instruction format: It needs three 16-bit code units, does not have any registers and is used for jump targets
+ * (hence the "t").<br>
  * <br>
  * It is used by the "goto/32" opcode for jumps to a 32-bit wide offset.
  */

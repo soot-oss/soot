@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -27,7 +27,7 @@ package soot.coffi;
 
 /**
  * An entry in a local variable table.
- * 
+ *
  * @see LocalVariableTable_attribute
  * @author Clark Verbrugge
  */
@@ -38,13 +38,13 @@ class local_variable_table_entry {
   public int length;
   /**
    * Constant pool index of string giving this local variable's name.
-   * 
+   *
    * @see CONSTANT_Utf8_info
    */
   public int name_index;
   /**
    * Constant pool index of string giving this local variable's type descriptor.
-   * 
+   *
    * @see CONSTANT_Utf8_info
    */
   public int descriptor_index;
@@ -52,7 +52,8 @@ class local_variable_table_entry {
   public int index;
 
   public String toString() {
-    return "start: " + start_pc + "length: " + length + "name_index: " + name_index + "descriptor_index: " + descriptor_index + "index: " + index;
+    return "start: " + start_pc + "length: " + length + "name_index: " + name_index + "descriptor_index: " + descriptor_index
+        + "index: " + index;
 
   }
 }

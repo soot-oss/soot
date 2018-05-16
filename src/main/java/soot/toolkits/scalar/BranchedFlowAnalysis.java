@@ -43,8 +43,8 @@ import soot.toolkits.graph.DirectedGraph;
 /**
  * Abstract class providing functionality for branched flow analysis.
  *
- * A branched flow analysis is one which can propagate different information to the successors of a node. This is useful for propagating information
- * past a statement like <code>if(x &gt;
+ * A branched flow analysis is one which can propagate different information to the successors of a node. This is useful for
+ * propagating information past a statement like <code>if(x &gt;
  * 0)</code>: one successor has <code>x &gt; 0</code> while the other successor has <code>x &le; 0</code>.
  */
 public abstract class BranchedFlowAnalysis<N extends Unit, A> extends AbstractFlowAnalysis<N, A> {
@@ -60,7 +60,8 @@ public abstract class BranchedFlowAnalysis<N extends Unit, A> extends AbstractFl
   }
 
   /**
-   * Given the merge of the <code>in</code> sets, compute the <code>fallOut</code> and <code>branchOuts</code> set for <code>s</code>.
+   * Given the merge of the <code>in</code> sets, compute the <code>fallOut</code> and <code>branchOuts</code> set for
+   * <code>s</code>.
    */
   protected abstract void flowThrough(A in, Unit s, List<A> fallOut, List<A> branchOuts);
 

@@ -26,8 +26,9 @@ import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.EdgePredicate;
 
 /**
- * A predicate that accepts edges that are not part of the class library and do not have a source statement that falls inside a transaction.
- * 
+ * A predicate that accepts edges that are not part of the class library and do not have a source statement that falls inside
+ * a transaction.
+ *
  * @author Richard L. Halpert
  */
 public class CriticalSectionVisibleEdgesPred implements EdgePredicate {
@@ -63,7 +64,8 @@ public class CriticalSectionVisibleEdgesPred implements EdgePredicate {
     }
 
     // Remove calls to equals in the library
-    if ((tgtClass.startsWith("java.") || tgtClass.startsWith("javax.")) && e.tgt().toString().endsWith("boolean equals(java.lang.Object)>")) {
+    if ((tgtClass.startsWith("java.") || tgtClass.startsWith("javax."))
+        && e.tgt().toString().endsWith("boolean equals(java.lang.Object)>")) {
       return false;
     }
 

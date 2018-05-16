@@ -86,12 +86,12 @@ public class SEvaluator {
   }
 
   /**
-   * If a normal expression contains Bottom, always return Bottom. Otherwise, if a normal expression contains Top, returns Top. Else determine the
-   * constant value of the expression if possible, if not return Bottom.
+   * If a normal expression contains Bottom, always return Bottom. Otherwise, if a normal expression contains Top, returns
+   * Top. Else determine the constant value of the expression if possible, if not return Bottom.
    *
    * <p>
-   * If a Phi expression contains Bottom, always return Bottom. Otherwise, if all the constant arguments are the same (ignoring Top and locals) return
-   * that constant or Top if no concrete constant is present, else return Bottom.
+   * If a Phi expression contains Bottom, always return Bottom. Otherwise, if all the constant arguments are the same
+   * (ignoring Top and locals) return that constant or Top if no concrete constant is present, else return Bottom.
    *
    * @see SEvaluator.TopConstant
    * @see SEvaluator.BottomConstant
@@ -166,8 +166,8 @@ public class SEvaluator {
   }
 
   /**
-   * Get the constant value of the expression given the assumptions in the localToConstant map (may contain Top and Bottom). Does not change
-   * expression.
+   * Get the constant value of the expression given the assumptions in the localToConstant map (may contain Top and Bottom).
+   * Does not change expression.
    *
    * @see SEvaluator.TopConstant
    * @see SEvaluator.BottomConstant

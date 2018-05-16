@@ -16,18 +16,19 @@ import soot.tagkit.AnnotationLongElem;
 import soot.tagkit.AnnotationStringElem;
 
 /**
- * 
- * An {@link AbstractAnnotationElemTypeSwitch} that converts an {@link AnnotationElem} to a mapping of element name and the actual result.
- * 
+ *
+ * An {@link AbstractAnnotationElemTypeSwitch} that converts an {@link AnnotationElem} to a mapping of element name and the
+ * actual result.
+ *
  * @author Florian Kuebler
  *
  */
 public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
 
   /**
-   * 
+   *
    * A helper class to map method name and result.
-   * 
+   *
    * @author Florian Kuebler
    *
    * @param <V>
@@ -65,8 +66,8 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
   public void caseAnnotationArrayElem(AnnotationArrayElem v) {
 
     /*
-     * for arrays, apply a new AnnotationElemSwitch to every array element and collect the results. Note that the component type of the result is
-     * unknown here, s.t. object has to be used.
+     * for arrays, apply a new AnnotationElemSwitch to every array element and collect the results. Note that the component
+     * type of the result is unknown here, s.t. object has to be used.
      */
     Object[] result = new Object[v.getNumValues()];
 

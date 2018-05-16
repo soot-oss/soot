@@ -22,14 +22,14 @@ import soot.jimple.spark.pag.Node;
 
 /**
  * A general interface for generating the traditional context sensitive variable representation.
- * 
+ *
  * @author xiao
  *
  */
 public class CallsiteContextVar extends ContextVar {
   /*
-   * If var is a local pointer or object, context is the callsite for the creation of the pointer or object. If var is a instance field, context is
-   * the callsite for the creation of its base object.
+   * If var is a local pointer or object, context is the callsite for the creation of the pointer or object. If var is a
+   * instance field, context is the callsite for the creation of its base object.
    */
   public CgEdge context = null;
 

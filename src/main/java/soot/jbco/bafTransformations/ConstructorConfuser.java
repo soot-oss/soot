@@ -156,7 +156,8 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
           break;
         }
       case 2:
-        if (sii.getMethodRef().parameterTypes().size() == 0 && !BodyBuilder.isExceptionCaughtAt(units, sii, b.getTraps().iterator())) {
+        if (sii.getMethodRef().parameterTypes().size() == 0
+            && !BodyBuilder.isExceptionCaughtAt(units, sii, b.getTraps().iterator())) {
           while (c != null) {
             if (c.getName().equals("java.lang.Throwable")) {
               Unit throwThis = Baf.v().newThrowInst();

@@ -145,7 +145,7 @@ public class ProcessData {
 
   /*
    * Check if there is a 3rd argument if not complain
-   * 
+   *
    * @param startIndex is the first args element where we expect to have an xml file or a *
    */
   private static void readXMLFileNames(int startIndex, String args[]) {
@@ -198,7 +198,8 @@ public class ProcessData {
     System.out.println("\n\n The -metricList mode");
     System.out.println("The argument at location 1 should be name of a file where the list of metrics will be stored");
     System.out.println("All arguments following argument 1 have to be xml files to be processed");
-    System.out.println("If argument at location 2 is * then the current directory is searched and all xml files will be processed");
+    System.out.println(
+        "If argument at location 2 is * then the current directory is searched and all xml files will be processed");
 
     System.out.println("\n\n The -tables mode");
     System.out.println("The argument at location 1 should be name of a file where the list of metrics are stored");
@@ -209,7 +210,8 @@ public class ProcessData {
     System.out.println("Each xml file is considered to be a benchmark with a bunch of classes in it");
 
     System.out.println("All arguments following argument 2 have to be xml files to be processed");
-    System.out.println("If argument at location 3 is * then the current directory is searched and all xml files will be processed");
+    System.out.println(
+        "If argument at location 3 is * then the current directory is searched and all xml files will be processed");
   }
 
   public static void printIntro() {
@@ -358,15 +360,16 @@ public class ProcessData {
       bench = openWriteFile(newClassName);
 
       /*
-       * For benchmarks we want to print xml files dealing with same benchmark in one table hence fft-enabled.xml fft-disabled.xml should be in one
-       * table where as matrix-enabled.xml matrix-disabled.xml should be in another table
+       * For benchmarks we want to print xml files dealing with same benchmark in one table hence fft-enabled.xml
+       * fft-disabled.xml should be in one table where as matrix-enabled.xml matrix-disabled.xml should be in another table
        */
       Map<String, List<String>> benchMarkToFiles = new HashMap<String, List<String>>();
       Iterator<String> it = xmlFileList.iterator();
       while (it.hasNext()) {
         String fileName = it.next();
         if (fileName.indexOf('-') < 0) {
-          System.out.println("XML files should have following syntax:\n <BENCHMARKNAME>-<PROPERTY>.xml\n PROPERTY should be enabled disabled etc");
+          System.out.println("XML files should have following syntax:\n "
+              + "<BENCHMARKNAME>-<PROPERTY>.xml\n PROPERTY should be enabled disabled etc");
           return;
         }
         String benchmark = fileName.substring(0, fileName.indexOf('-'));
@@ -385,13 +388,15 @@ public class ProcessData {
          */
         if (CSV) {
           if (fileName.indexOf('-') < 0 || fileName.lastIndexOf(".xml") < 0) {
-            System.out.println("XML files should have following syntax:\n <BENCHMARKNAME>-<PROPERTY>.xml\n PROPERTY should be enabled disabled etc");
+            System.out.println("XML files should have following syntax:\n <BENCHMARKNAME>-<PROPERTY>.xml\n "
+                + "PROPERTY should be enabled disabled etc");
             return;
           }
           String xmlfileColumnType = fileName.substring(fileName.lastIndexOf('-') + 1, fileName.lastIndexOf(".xml"));
           System.out.println("XML FILE COLUMN TYPE" + xmlfileColumnType);
-          if (xmlfileColumnType.equals("Jad") || xmlfileColumnType.equals("original") || xmlfileColumnType.equals("SourceAgain")
-              || xmlfileColumnType.equals("disabled") || xmlfileColumnType.equals("enabled")) {
+          if (xmlfileColumnType.equals("Jad") || xmlfileColumnType.equals("original")
+              || xmlfileColumnType.equals("SourceAgain") || xmlfileColumnType.equals("disabled")
+              || xmlfileColumnType.equals("enabled")) {
 
             // TODO will have to change this when dealin with obfuscator xml file names
           } else {
@@ -458,7 +463,8 @@ public class ProcessData {
           files.add(newFileOrder[4]);
           System.out.println("new order" + files.toString());
         } else {
-          // coming from obfuscator ordering is: original, jbco enabled, jbco disabled, klassmaster enabled,klassmaster disabled,
+          // coming from obfuscator ordering is: original, jbco enabled, jbco disabled, klassmaster enabled,klassmaster
+          // disabled,
 
           if (files.size() != 5) {
             throw new RuntimeException("not all xml files available for this benchmark!!");
@@ -821,7 +827,7 @@ public class ProcessData {
 
   /*
    * This method is called for each xml class sent as input.
-   * 
+   *
    * Should read all of its metrics and add them to the aggregated values
    */
   private static int aggregateXMLFileMetrics(Document doc, HashMap<String, Number> aggregated) {

@@ -47,24 +47,24 @@ import soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder;
 
 /*
  * if (true)   ---> remove conditional copy ifbody to parent
- * 
+ *
  * if(false) eliminate in all entirety
- * 
+ *
  * if(true)
  *    bla1
- * else 
+ * else
  *    bla2        remove conditional copy bla1 to parent
- *    
+ *
  * if(false)
  *    bla1
  *  else
  *    bla2      remoce conditional copy bla2 to parent
- *    
- *       
+ *
+ *
  * while(false)  eliminate in entirety... notice this is not an Uncondition loop but a ASTWhileNode
- * 
+ *
  * do{ .... } while(false)  eliminate loop copy body to parent
- * 
+ *
  * for(int i =0;false;i++)   remove for .  copy init stmts to parent
  */
 public class EliminateConditions extends DepthFirstAdapter {
@@ -195,8 +195,8 @@ public class EliminateConditions extends DepthFirstAdapter {
   }
 
   /*
-   * Method returns null if the Value is not a constant or not a boolean constant return true if the constant is true return false if the constant is
-   * false
+   * Method returns null if the Value is not a constant or not a boolean constant return true if the constant is true return
+   * false if the constant is false
    */
   public Boolean isBooleanConstant(Value internal) {
 
@@ -392,8 +392,8 @@ public class EliminateConditions extends DepthFirstAdapter {
           // transformations might remove it
           String label = ((ASTLabeledNode) temp).get_Label().toString();
           if (label != null) {
-            ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode(((ASTLabeledNode) temp).get_Label(),
-                (List<Object>) temp.get_SubBodies().get(0));
+            ASTLabeledBlockNode labeledNode
+                = new ASTLabeledBlockNode(((ASTLabeledNode) temp).get_Label(), (List<Object>) temp.get_SubBodies().get(0));
             bodyContainingNode.add(index, labeledNode);
           } else {
             bodyContainingNode.addAll(index, (List) temp.get_SubBodies().get(0));
@@ -412,8 +412,8 @@ public class EliminateConditions extends DepthFirstAdapter {
           // transformations might remove it
           String label = ((ASTLabeledNode) temp).get_Label().toString();
           if (label != null) {
-            ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode(((ASTLabeledNode) temp).get_Label(),
-                (List<Object>) temp.get_SubBodies().get(0));
+            ASTLabeledBlockNode labeledNode
+                = new ASTLabeledBlockNode(((ASTLabeledNode) temp).get_Label(), (List<Object>) temp.get_SubBodies().get(0));
             bodyContainingNode.add(index, labeledNode);
           } else {
             bodyContainingNode.addAll(index, (List) temp.get_SubBodies().get(0));
@@ -424,8 +424,8 @@ public class EliminateConditions extends DepthFirstAdapter {
           // transformations might remove it
           String label = ((ASTLabeledNode) temp).get_Label().toString();
           if (label != null) {
-            ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode(((ASTLabeledNode) temp).get_Label(),
-                (List<Object>) temp.get_SubBodies().get(1));
+            ASTLabeledBlockNode labeledNode
+                = new ASTLabeledBlockNode(((ASTLabeledNode) temp).get_Label(), (List<Object>) temp.get_SubBodies().get(1));
             bodyContainingNode.add(index, labeledNode);
           } else {
             bodyContainingNode.addAll(index, (List) temp.get_SubBodies().get(1));

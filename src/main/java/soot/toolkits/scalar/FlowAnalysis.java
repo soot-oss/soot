@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -49,8 +49,9 @@ import soot.util.Numberable;
 import soot.util.PriorityQueue;
 
 /**
- * An abstract class providing a framework for carrying out dataflow analysis. Subclassing either BackwardFlowAnalysis or ForwardFlowAnalysis and
- * providing implementations for the abstract methods will allow Soot to compute the corresponding flow analysis.
+ * An abstract class providing a framework for carrying out dataflow analysis. Subclassing either BackwardFlowAnalysis or
+ * ForwardFlowAnalysis and providing implementations for the abstract methods will allow Soot to compute the corresponding
+ * flow analysis.
  */
 public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
   public enum Flow {
@@ -112,9 +113,10 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
     INSTANCE;
 
     /**
-     * Creates a new {@code Entry} graph based on a {@code DirectedGraph}. This includes pseudo topological order, local access for predecessors and
-     * successors, a graph entry-point, a {@code Numberable} interface and a real strongly connected component marker.
-     * 
+     * Creates a new {@code Entry} graph based on a {@code DirectedGraph}. This includes pseudo topological order, local
+     * access for predecessors and successors, a graph entry-point, a {@code Numberable} interface and a real strongly
+     * connected component marker.
+     *
      * @param g
      * @param gv
      * @param entryFlow
@@ -415,11 +417,13 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
   }
 
   /**
-   * Given the merge of the <code>out</code> sets, compute the <code>in</code> set for <code>s</code> (or in to out, depending on direction).
+   * Given the merge of the <code>out</code> sets, compute the <code>in</code> set for <code>s</code> (or in to out,
+   * depending on direction).
    *
-   * This function often causes confusion, because the same interface is used for both forward and backward flow analyses. The first parameter is
-   * always the argument to the flow function (i.e. it is the "in" set in a forward analysis and the "out" set in a backward analysis), and the third
-   * parameter is always the result of the flow function (i.e. it is the "out" set in a forward analysis and the "in" set in a backward analysis).
+   * This function often causes confusion, because the same interface is used for both forward and backward flow analyses.
+   * The first parameter is always the argument to the flow function (i.e. it is the "in" set in a forward analysis and the
+   * "out" set in a backward analysis), and the third parameter is always the result of the flow function (i.e. it is the
+   * "out" set in a forward analysis and the "in" set in a backward analysis).
    *
    * @param in
    *          the input flow
@@ -485,11 +489,11 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
   }
 
   /**
-   * If a flow node can be omitted return <code>true</code>, otherwise <code>false</code>. There is no guarantee a node will be omitted. A omissible
-   * node does not influence the result of an analysis.
-   * 
+   * If a flow node can be omitted return <code>true</code>, otherwise <code>false</code>. There is no guarantee a node will
+   * be omitted. A omissible node does not influence the result of an analysis.
+   *
    * If you are unsure, don't overwrite this method
-   * 
+   *
    * @param n
    *          the node to check
    * @return <code>false</code>
@@ -500,7 +504,7 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 
   /**
    * You can specify which flow set you would like to use of node {@code from}
-   * 
+   *
    * @param from
    * @param mergeNode
    * @return Flow.OUT

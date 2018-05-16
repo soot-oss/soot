@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -76,11 +76,13 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
   }
 
   /** Constructs a new JLookupSwitchStmt. lookupValues should be a list of IntConst s. */
-  public JLookupSwitchStmt(Value key, List<IntConstant> lookupValues, List<? extends UnitBox> targets, UnitBox defaultTarget) {
+  public JLookupSwitchStmt(Value key, List<IntConstant> lookupValues, List<? extends UnitBox> targets,
+      UnitBox defaultTarget) {
     this(Jimple.v().newImmediateBox(key), lookupValues, targets.toArray(new UnitBox[targets.size()]), defaultTarget);
   }
 
-  protected JLookupSwitchStmt(ValueBox keyBox, List<IntConstant> lookupValues, UnitBox[] targetBoxes, UnitBox defaultTargetBox) {
+  protected JLookupSwitchStmt(ValueBox keyBox, List<IntConstant> lookupValues, UnitBox[] targetBoxes,
+      UnitBox defaultTargetBox) {
     super(keyBox, defaultTargetBox, targetBoxes);
     setLookupValues(lookupValues);
   }
@@ -95,8 +97,8 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
 
     for (int i = 0; i < lookupValues.size(); i++) {
       Unit target = getTarget(i);
-      buffer
-          .append("    " + Jimple.CASE + " " + lookupValues.get(i) + ": " + Jimple.GOTO + " " + (target == this ? "self" : target) + ";" + endOfLine);
+      buffer.append("    " + Jimple.CASE + " " + lookupValues.get(i) + ": " + Jimple.GOTO + " "
+          + (target == this ? "self" : target) + ";" + endOfLine);
     }
 
     Unit target = getDefaultTarget();
@@ -168,7 +170,8 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
       targetPlaceholders.add(Baf.v().newPlaceholderInst(target));
     }
 
-    Unit u = Baf.v().newLookupSwitchInst(Baf.v().newPlaceholderInst(getDefaultTarget()), getLookupValues(), targetPlaceholders);
+    Unit u
+        = Baf.v().newLookupSwitchInst(Baf.v().newPlaceholderInst(getDefaultTarget()), getLookupValues(), targetPlaceholders);
     u.addAllTagsOf(this);
     out.add(u);
   }

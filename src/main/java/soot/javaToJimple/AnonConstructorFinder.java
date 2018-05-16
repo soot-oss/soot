@@ -23,8 +23,9 @@ public class AnonConstructorFinder extends polyglot.visit.ContextVisitor {
         for (Iterator it = ((polyglot.ast.New) n).arguments().iterator(); it.hasNext();) {
           argTypes.add(((polyglot.ast.Expr) it.next()).type());
         }
-        polyglot.types.ConstructorInstance ci = typeSystem().findConstructor(((polyglot.ast.New) n).anonType().superType().toClass(), argTypes,
-            ((polyglot.ast.New) n).anonType().superType().toClass());
+        polyglot.types.ConstructorInstance ci
+            = typeSystem().findConstructor(((polyglot.ast.New) n).anonType().superType().toClass(), argTypes,
+                ((polyglot.ast.New) n).anonType().superType().toClass());
         InitialResolver.v().addToAnonConstructorMap((polyglot.ast.New) n, ci);
       } catch (polyglot.types.SemanticException e) {
         System.out.println(e.getMessage());

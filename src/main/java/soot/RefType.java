@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -30,8 +30,8 @@ import java.util.ArrayDeque;
 import soot.util.Switch;
 
 /**
- * A class that models Java's reference types. RefTypes are parametrized by a class name. Two RefType are equal iff they are parametrized by the same
- * class name as a String.
+ * A class that models Java's reference types. RefTypes are parametrized by a class name. Two RefType are equal iff they are
+ * parametrized by the same class name as a String.
  */
 
 @SuppressWarnings("serial")
@@ -69,7 +69,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
   /**
    * Create a RefType for a class.
-   * 
+   *
    * @param className
    *          The name of the class used to parametrize the created RefType.
    * @return a RefType for the given class name.
@@ -89,7 +89,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
   /**
    * Create a RefType for a class.
-   * 
+   *
    * @param c
    *          A SootClass for which to create a RefType.
    * @return a RefType for the given SootClass..
@@ -100,7 +100,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
   /**
    * Get the SootClass object corresponding to this RefType.
-   * 
+   *
    * @return the corresponding SootClass
    */
   public SootClass getSootClass() {
@@ -121,7 +121,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
   /**
    * Set the SootClass object corresponding to this RefType.
-   * 
+   *
    * @param sootClass
    *          The SootClass corresponding to this RefType.
    */
@@ -131,7 +131,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
   /**
    * 2 RefTypes are considered equal if they are parametrized by the same class name String.
-   * 
+   *
    * @param t
    *          an object to test for equality. @ return true if t is a RefType parametrized by the same name as this.
    */
@@ -221,7 +221,8 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
       {
         SootClass commonClass = null;
 
-        while (!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty() && otherHierarchy.getFirst() == thisHierarchy.getFirst()) {
+        while (!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty()
+            && otherHierarchy.getFirst() == thisHierarchy.getFirst()) {
           commonClass = otherHierarchy.removeFirst();
           thisHierarchy.removeFirst();
         }
@@ -237,7 +238,8 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
   }
 
   public Type getArrayElementType() {
-    if (className.equals("java.lang.Object") || className.equals("java.io.Serializable") || className.equals("java.lang.Cloneable")) {
+    if (className.equals("java.lang.Object") || className.equals("java.io.Serializable")
+        || className.equals("java.lang.Cloneable")) {
       return RefType.v("java.lang.Object");
     }
     throw new RuntimeException("Attempt to get array base type of a non-array");

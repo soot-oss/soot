@@ -33,8 +33,9 @@ import java.util.Map;
 import soot.jimple.Stmt;
 
 /**
- * A node created dynamically and attached to a statement Stmt. Can be either an inside or a load node. Two such nodes are equal if and only if they
- * have the same inside / load flag and are attached to the same statement (we use Stmt.equal here).
+ * A node created dynamically and attached to a statement Stmt. Can be either an inside or a load node. Two such nodes are
+ * equal if and only if they have the same inside / load flag and are attached to the same statement (we use Stmt.equal
+ * here).
  *
  */
 public class PurityStmtNode implements PurityNode {

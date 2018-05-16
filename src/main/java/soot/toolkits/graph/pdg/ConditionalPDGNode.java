@@ -19,9 +19,9 @@
 package soot.toolkits.graph.pdg;
 
 /**
- * 
- * This represents a PDGNode that has more than 1 dependent but is not a loop header. This includes a conditional node, or a potentially exceptional
- * node.
+ *
+ * This represents a PDGNode that has more than 1 dependent but is not a loop header. This includes a conditional node, or a
+ * potentially exceptional node.
  *
  */
 public class ConditionalPDGNode extends PDGNode {

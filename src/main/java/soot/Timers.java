@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -194,8 +194,8 @@ public class Timers {
       // logger.debug(" Split phase2: " + toTimeString(splitPhase2Timer, totalTime));
 
       /*
-       * logger.debug("cleanup2Timer:   " + cleanup2Time + "(" + (cleanup2Time * 100 / totalTime) + "%) " + cleanup2LocalCount + " locals  " +
-       * cleanup2StmtCount + " stmts");
+       * logger.debug("cleanup2Timer:   " + cleanup2Time + "(" + (cleanup2Time * 100 / totalTime) + "%) " +
+       * cleanup2LocalCount + " locals  " + cleanup2StmtCount + " stmts");
        */
 
       timeInSecs = totalTime / 1000.0f;
@@ -221,7 +221,8 @@ public class Timers {
 
     long time = timer.getTime();
 
-    String timeString = format.format(time / 1000.0); // paddedLeftOf(new Double(truncatedOf(time / 1000.0, 1)).toString(), 5);
+    String timeString = format.format(time / 1000.0); // paddedLeftOf(new Double(truncatedOf(time / 1000.0, 1)).toString(),
+                                                      // 5);
 
     return (timeString + "s" + " (" + percFormat.format(time * 100.0 / totalTime) + "%" + ")");
   }

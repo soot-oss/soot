@@ -5,8 +5,8 @@ import soot.toDex.Register;
 /**
  * Interface for instructions that need five registers.<br>
  * <br>
- * Note that the interface does not inherit from {@link ThreeRegInsn} due to the unusual register naming - the register indices cannot be overwritten
- * here.
+ * Note that the interface does not inherit from {@link ThreeRegInsn} due to the unusual register naming - the register
+ * indices cannot be overwritten here.
  */
 public interface FiveRegInsn extends Insn {
 

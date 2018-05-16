@@ -24,7 +24,7 @@
      Simple wrapper for BranchedRefVarsAnalysis, to be used by
      the statement printer.
 
-     1) Compute lists of (ref, value) that have been analyzed: 
+     1) Compute lists of (ref, value) that have been analyzed:
      * before a statement
      * after a statement fall through
      * after a statement branches
@@ -32,18 +32,18 @@
      Note: (ref, kTop) are discareded to improve readability.
      (This behavior can be turned off at compile time.)
 
-     
+
      2) Compute lists of references that need to be checked by
         a null pointer check at a given statement.
 
-        Compute lists of references that DO NOT need to be 
+        Compute lists of references that DO NOT need to be
         checked by a null pointer check at a given statement.
-     
-	Notes: 
+
+	Notes:
 	a) that computation can be turned off at compile time
 	b) lists all references that (do not) need to be checked
 	   not just the ones that have been analyzed.
-     
+
 */
 
 package soot.jimple.toolkits.annotation.nullcheck;
@@ -63,7 +63,8 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.FlowSet;
 
 /**
- * @deprecated uses deprecated type {@link BranchedRefVarsAnalysis} and seems of no use for Soot so marked for future deletion, unless clients object
+ * @deprecated uses deprecated type {@link BranchedRefVarsAnalysis} and seems of no use for Soot so marked for future
+ *             deletion, unless clients object
  */
 @Deprecated
 public class LocalRefVarsAnalysisWrapper {
@@ -173,11 +174,11 @@ public class LocalRefVarsAnalysisWrapper {
   } // end constructor & computations
 
   /*
-   * 
+   *
    * Accesor methods.
-   * 
+   *
    * Public accessor methods to the various class fields containing the results of the computations.
-   * 
+   *
    */
 
   public List getVarsBefore(Unit s) {

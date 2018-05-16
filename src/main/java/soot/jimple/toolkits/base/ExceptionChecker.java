@@ -92,7 +92,8 @@ public class ExceptionChecker extends BodyTransformer {
     }
 
     // handles case when exception is RuntimeException or Error
-    if (throwClass.equals(Scene.v().getSootClass("java.lang.RuntimeException")) || throwClass.equals(Scene.v().getSootClass("java.lang.Error"))) {
+    if (throwClass.equals(Scene.v().getSootClass("java.lang.RuntimeException"))
+        || throwClass.equals(Scene.v().getSootClass("java.lang.Error"))) {
       return true;
     }
     // handles case when exception is a subclass of RuntimeException or Error
@@ -224,8 +225,8 @@ public class ExceptionChecker extends BodyTransformer {
         if (s instanceof InvokeStmt) {
           reporter.reportError(new ExceptionCheckerError(b.getMethod(), sc, s, (SourceLnPosTag) s.getTag("SourceLnPosTag")));
         } else if (s instanceof AssignStmt) {
-          reporter.reportError(
-              new ExceptionCheckerError(b.getMethod(), sc, s, (SourceLnPosTag) ((AssignStmt) s).getRightOpBox().getTag("SourceLnPosTag")));
+          reporter.reportError(new ExceptionCheckerError(b.getMethod(), sc, s,
+              (SourceLnPosTag) ((AssignStmt) s).getRightOpBox().getTag("SourceLnPosTag")));
         }
       }
     }

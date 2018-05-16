@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -54,7 +54,8 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 
 /**
- * Does constant propagation and folding. Constant folding is the compile-time evaluation of constant expressions (i.e. 2 * 3).
+ * Does constant propagation and folding. Constant folding is the compile-time evaluation of constant expressions (i.e. 2 *
+ * 3).
  */
 public class ConstantPropagatorAndFolder extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(ConstantPropagatorAndFolder.class);

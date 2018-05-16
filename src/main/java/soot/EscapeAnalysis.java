@@ -23,7 +23,7 @@ import soot.jimple.AnyNewExpr;
 
 /**
  * A generic interface to an escape analysis.
- * 
+ *
  * @author Ondrej Lhotak
  */
 
@@ -34,7 +34,8 @@ public interface EscapeAnalysis {
   public boolean mayEscapeMethod(AnyNewExpr n);
 
   /**
-   * Returns true if objects allocated at n in context c may continue to be live after the method in which they are allocated returns.
+   * Returns true if objects allocated at n in context c may continue to be live after the method in which they are allocated
+   * returns.
    */
   public boolean mayEscapeMethod(Context c, AnyNewExpr n);
 
@@ -44,7 +45,8 @@ public interface EscapeAnalysis {
   public boolean mayEscapeThread(AnyNewExpr n);
 
   /**
-   * Returns true if objects allocated at n in context c may be accessed in a thread other than the thread in which they were allocated.
+   * Returns true if objects allocated at n in context c may be accessed in a thread other than the thread in which they were
+   * allocated.
    */
   public boolean mayEscapeThread(Context c, AnyNewExpr n);
 }

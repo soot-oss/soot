@@ -26,9 +26,10 @@ public final class DisjointSets {
 
   /**
    * Construct a disjoint sets object.
-   * 
+   *
    * @param numElements
-   *          the initial number of elements--also the initial number of disjoint sets, since every element is initially in its own set.
+   *          the initial number of elements--also the initial number of disjoint sets, since every element is initially in
+   *          its own set.
    */
   public DisjointSets(int numElements) {
     array = new int[numElements];
@@ -36,9 +37,10 @@ public final class DisjointSets {
   }
 
   /**
-   * union() unites two disjoint sets into a single set. A union-by-size heuristic is used to choose the new root. This method will corrupt the data
-   * structure if root1 and root2 are not roots of their respective sets, or if they're identical.
-   * 
+   * union() unites two disjoint sets into a single set. A union-by-size heuristic is used to choose the new root. This
+   * method will corrupt the data structure if root1 and root2 are not roots of their respective sets, or if they're
+   * identical.
+   *
    * @param root1
    *          the root of the first set.
    * @param root2
@@ -59,7 +61,7 @@ public final class DisjointSets {
 
   /**
    * find() finds the (int) name of the set containing a given element. Performs path compression along the way.
-   * 
+   *
    * @param x
    *          the element sought.
    * @return the set containing x.

@@ -13,8 +13,8 @@ import soot.toDex.Register;
 import soot.toDex.SootToDexUtils;
 
 /**
- * The "3rc" instruction format: It needs three 16-bit code units, has a whole range of registers (hence the "r" for "ranged") and is used for
- * method/type items (hence the "c" for "constant pool").<br>
+ * The "3rc" instruction format: It needs three 16-bit code units, has a whole range of registers (hence the "r" for
+ * "ranged") and is used for method/type items (hence the "c" for "constant pool").<br>
  * <br>
  * It is used by the "filled-new-array/range" opcode and the various ranged "invoke-" opcodes.
  */

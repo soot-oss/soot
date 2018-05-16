@@ -1,6 +1,6 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2008 Ben Bellamy 
- * 
+ * Copyright (C) 2008 Ben Bellamy
+ *
  * All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -60,11 +60,12 @@ import soot.toolkits.scalar.LocalDefs;
 /**
  * New Type Resolver by Ben Bellamy (see 'Efficient Local Type Inference' at OOPSLA 08).
  *
- * Ben has tested this code, and verified that it provides a typing that is at least as tight as the original algorithm (tighter in 2914 methods out
- * of 295598) on a number of benchmarks. These are: abc-complete.jar, BlueJ, CSO (Scala code), Gant, Groovy, havoc.jar, Java 3D, jEdit, Java Grande
- * Forum, Jigsaw, Jython, Kawa, rt.jar, Kawa, Scala and tools.jar. The mean execution time improvement is around 10 times, but for the longest methods
- * (abc parser methods and havoc with >9000 statements) the improvement is between 200 and 500 times.
- * 
+ * Ben has tested this code, and verified that it provides a typing that is at least as tight as the original algorithm
+ * (tighter in 2914 methods out of 295598) on a number of benchmarks. These are: abc-complete.jar, BlueJ, CSO (Scala code),
+ * Gant, Groovy, havoc.jar, Java 3D, jEdit, Java Grande Forum, Jigsaw, Jython, Kawa, rt.jar, Kawa, Scala and tools.jar. The
+ * mean execution time improvement is around 10 times, but for the longest methods (abc parser methods and havoc with >9000
+ * statements) the improvement is between 200 and 500 times.
+ *
  * @author Ben Bellamy
  */
 public class TypeResolver {
@@ -213,7 +214,8 @@ public class TypeResolver {
           if (baseType instanceof RefType && defStmt.getLeftOp() instanceof Local) {
             RefType rt = (RefType) baseType;
             final String name = rt.getSootClass().getName();
-            if (name.equals("java.lang.Object") || name.equals("java.io.Serializable") || name.equals("java.lang.Cloneable")) {
+            if (name.equals("java.lang.Object") || name.equals("java.io.Serializable")
+                || name.equals("java.lang.Cloneable")) {
               tg.set((Local) ((DefinitionStmt) stmt).getLeftOp(), ((ArrayType) useType).getElementType());
             }
           }
@@ -222,7 +224,8 @@ public class TypeResolver {
         Local vold;
         if (!(op instanceof Local)) {
           /*
-           * By the time we have countOnly == false, all variables must by typed with concrete Jimple types, and never [0..1], [0..127] or [0..32767].
+           * By the time we have countOnly == false, all variables must by typed with concrete Jimple types, and never
+           * [0..1], [0..127] or [0..32767].
            */
           vold = jimple.newLocal("tmp", t);
           vold.setName("tmp$" + System.identityHashCode(vold));
@@ -279,8 +282,8 @@ public class TypeResolver {
           return Integer127Type.v();
         } else if (thigh instanceof ShortType) {
           return byteType;
-        } else if (thigh instanceof BooleanType || thigh instanceof ByteType || thigh instanceof CharType || thigh instanceof Integer127Type
-            || thigh instanceof Integer32767Type) {
+        } else if (thigh instanceof BooleanType || thigh instanceof ByteType || thigh instanceof CharType
+            || thigh instanceof Integer127Type || thigh instanceof Integer32767Type) {
           return thigh;
         } else {
           throw new RuntimeException();
@@ -318,7 +321,8 @@ public class TypeResolver {
 
       if (!AugHierarchy.ancestor_(useType, t)) {
         this.fail = true;
-      } else if (op instanceof Local && (t instanceof Integer1Type || t instanceof Integer127Type || t instanceof Integer32767Type)) {
+      } else if (op instanceof Local
+          && (t instanceof Integer1Type || t instanceof Integer127Type || t instanceof Integer32767Type)) {
         Local v = (Local) op;
         if (!typesEqual(t, useType)) {
           Type t_ = this.promote(t, useType);
@@ -451,8 +455,8 @@ public class TypeResolver {
         for (Type t_ : eval) {
           if (lhs instanceof ArrayRef) {
             /*
-             * We only need to consider array references on the LHS of assignments where there is supertyping between array types, which is only for
-             * arrays of reference types and multidimensional arrays.
+             * We only need to consider array references on the LHS of assignments where there is supertyping between array
+             * types, which is only for arrays of reference types and multidimensional arrays.
              */
             if (!(t_ instanceof RefType || t_ instanceof ArrayType)) {
               continue;

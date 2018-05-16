@@ -21,9 +21,9 @@ package soot.jimple.spark.geom.dataRep;
 import java.io.PrintStream;
 
 /**
- * It is the the abstract super type of geometric figures and the manager of all the generated sub-type figures. It is not used currently and we leave
- * it here as an extensible point in future.
- * 
+ * It is the the abstract super type of geometric figures and the manager of all the generated sub-type figures. It is not
+ * used currently and we leave it here as an extensible point in future.
+ *
  * @author xiao
  *
  */
@@ -45,14 +45,14 @@ public abstract class ShapeNode {
 
   /**
    * Clone itself and make a new instance.
-   * 
+   *
    * @return
    */
   public abstract ShapeNode makeDuplicate();
 
   /**
    * Test if the invoked figure contains the passed in figure
-   * 
+   *
    * @param other
    * @return
    */
@@ -60,7 +60,7 @@ public abstract class ShapeNode {
 
   /**
    * Test if the input x parameter falls in the range of the X coordinates of this figure
-   * 
+   *
    * @param x
    * @return
    */

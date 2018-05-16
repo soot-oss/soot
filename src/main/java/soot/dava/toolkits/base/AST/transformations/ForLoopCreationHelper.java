@@ -53,11 +53,11 @@ public class ForLoopCreationHelper {
 
   /*
    * Bug Reported by Steffen Pingel on the soot mailing list (january 2006) Fixed by Nomair February 6th, 2006
-   * 
-   * There was a bug in the getUpdate method since it removed the update statement whenver it found one Later on if the ForLoop Creation terminated
-   * the update stmt had been removed We delay the removal of the update stmt until we are sure that the for loop is being created This is done by
-   * storing the list of stmts from which to remove the update statement in the following field. The boolean (although redundant) indicates when such
-   * an update stmt should be removed
+   *
+   * There was a bug in the getUpdate method since it removed the update statement whenver it found one Later on if the
+   * ForLoop Creation terminated the update stmt had been removed We delay the removal of the update stmt until we are sure
+   * that the for loop is being created This is done by storing the list of stmts from which to remove the update statement
+   * in the following field. The boolean (although redundant) indicates when such an update stmt should be removed
    */
   List<AugmentedStmt> myStmts;// stores the statementseq list of statements whose
   // last stmt has to be removed
@@ -71,9 +71,9 @@ public class ForLoopCreationHelper {
   }
 
   /*
-   * The purpose of this method is to replace the statement sequence node given by the var nodeNumber with the new statement sequence node and to
-   * replace the next node (which sould be a while node with the for loop node
-   * 
+   * The purpose of this method is to replace the statement sequence node given by the var nodeNumber with the new statement
+   * sequence node and to replace the next node (which sould be a while node with the for loop node
+   *
    * The new body is then returned;
    */
   public List<Object> createNewBody(List<Object> oldSubBody, int nodeNumber) {
@@ -123,9 +123,9 @@ public class ForLoopCreationHelper {
 
   /*
    * Go through the stmtseq node and collect all defs
-   * 
+   *
    * Important: if a def is followed by a non def stmt clear def list and continue
-   * 
+   *
    * i.e. we are conservatively checking when a def can be moved into a for loop body
    */
   private List<String> getDefs() {
@@ -154,8 +154,8 @@ public class ForLoopCreationHelper {
   }
 
   /*
-   * Go through the ASTCondition of the whileNode Make a list of all vars being uses in the conditions Since any of them could be being used to drive
-   * the loop
+   * Go through the ASTCondition of the whileNode Make a list of all vars being uses in the conditions Since any of them
+   * could be being used to drive the loop
    */
   private List<String> getCondUses() {
     if (whileNode == null) {
@@ -207,9 +207,9 @@ public class ForLoopCreationHelper {
 
   /*
    * Given the StmtSequenceNode and the while Node Check if the while can be converted to a for
-   * 
+   *
    * If this can be done. create the replacement stmt sequence node and the new for loop and return TRUE;
-   * 
+   *
    * else return FALSE;
    */
   public boolean checkPattern() {
@@ -235,7 +235,8 @@ public class ForLoopCreationHelper {
     List<String> commonVars = getCommonVars(defs, condUses);
 
     /*
-     * Find the update list Also at the same time see if the update list has some update stmt whose var should be added to commonVars
+     * Find the update list Also at the same time see if the update list has some update stmt whose var should be added to
+     * commonVars
      */
 
     List<AugmentedStmt> update = getUpdate(defs, condUses, commonVars);
@@ -266,8 +267,8 @@ public class ForLoopCreationHelper {
     SETNodeLabel label = ((ASTLabeledNode) whileNode).get_Label();
 
     /*
-     * Check that anything in init is not a first time initialization if it is and it is not used outside the for loop then we need to declare it as
-     * int i = bla bla instead of i = bla bla
+     * Check that anything in init is not a first time initialization if it is and it is not used outside the for loop then
+     * we need to declare it as int i = bla bla instead of i = bla bla
      */
     // init=analyzeInit(init);
 
@@ -421,10 +422,10 @@ public class ForLoopCreationHelper {
   }
 
   /*
-   * private List analyzeInit(List init){ Iterator it = init.iterator(); while(it.hasNext()){ AugmentedStmt as = (AugmentedStmt)it.next(); Stmt s =
-   * as.get_Stmt(); if(!(s instanceof DefinitionStmt)){ //there is something wrong so dont do anything fancy return init; } else{ //get the local
-   * being initialized Value left = ((DefinitionStmt)s).getLeftOp();
-   * 
+   * private List analyzeInit(List init){ Iterator it = init.iterator(); while(it.hasNext()){ AugmentedStmt as =
+   * (AugmentedStmt)it.next(); Stmt s = as.get_Stmt(); if(!(s instanceof DefinitionStmt)){ //there is something wrong so dont
+   * do anything fancy return init; } else{ //get the local being initialized Value left = ((DefinitionStmt)s).getLeftOp();
+   *
    * } } return init; }
    */
 }

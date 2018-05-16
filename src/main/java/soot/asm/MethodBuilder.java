@@ -37,7 +37,7 @@ import soot.tagkit.VisibilityParameterAnnotationTag;
 
 /**
  * Soot method builder.
- * 
+ *
  * @author Aaloan Miftah
  */
 class MethodBuilder extends JSRInlinerAdapter {
@@ -182,16 +182,16 @@ class MethodBuilder extends JSRInlinerAdapter {
   public void visitEnd() {
     super.visitEnd();
     if (visibleParamAnnotations != null) {
-      VisibilityParameterAnnotationTag tag = new VisibilityParameterAnnotationTag(visibleParamAnnotations.length,
-          AnnotationConstants.RUNTIME_VISIBLE);
+      VisibilityParameterAnnotationTag tag
+          = new VisibilityParameterAnnotationTag(visibleParamAnnotations.length, AnnotationConstants.RUNTIME_VISIBLE);
       for (VisibilityAnnotationTag vat : visibleParamAnnotations) {
         tag.addVisibilityAnnotation(vat);
       }
       method.addTag(tag);
     }
     if (invisibleParamAnnotations != null) {
-      VisibilityParameterAnnotationTag tag = new VisibilityParameterAnnotationTag(invisibleParamAnnotations.length,
-          AnnotationConstants.RUNTIME_INVISIBLE);
+      VisibilityParameterAnnotationTag tag
+          = new VisibilityParameterAnnotationTag(invisibleParamAnnotations.length, AnnotationConstants.RUNTIME_INVISIBLE);
       for (VisibilityAnnotationTag vat : invisibleParamAnnotations) {
         tag.addVisibilityAnnotation(vat);
       }

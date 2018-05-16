@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -58,13 +58,15 @@ public class Parse {
   private static final String USAGE = "usage: java Parse [options] " + "jimple_file [jimple_file ...]";
 
   /*
-   * Parses a jimple input stream. If you just want to get the method bodies for a SootClass, pass as the second argument the SootClass you want fill
-   * it's method bodies. If you want to create a SootClass for the inputStream set the 2nd arg to null.
+   * Parses a jimple input stream. If you just want to get the method bodies for a SootClass, pass as the second argument the
+   * SootClass you want fill it's method bodies. If you want to create a SootClass for the inputStream set the 2nd arg to
+   * null.
    */
   static public SootClass parse(InputStream istream, SootClass sc) {
     Start tree = null;
 
-    Parser p = new Parser(new Lexer(new PushbackReader(new EscapedReader(new BufferedReader(new InputStreamReader(istream))), 1024)));
+    Parser p = new Parser(
+        new Lexer(new PushbackReader(new EscapedReader(new BufferedReader(new InputStreamReader(istream))), 1024)));
 
     try {
       tree = p.parse();

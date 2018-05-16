@@ -49,8 +49,8 @@ import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
 
 /**
- * DexMethod is a container for all methods that are declared in a class. It holds information about its name, the class it belongs to, its access
- * flags, thrown exceptions, the return type and parameter types as well as the encoded method itself.
+ * DexMethod is a container for all methods that are declared in a class. It holds information about its name, the class it
+ * belongs to, its access flags, thrown exceptions, the return type and parameter types as well as the encoded method itself.
  *
  */
 public class DexMethod {
@@ -66,7 +66,7 @@ public class DexMethod {
 
   /**
    * Retrieve the SootMethod equivalent of this method
-   * 
+   *
    * @return the SootMethod of this method
    */
   public SootMethod makeSootMethod(final Method method) {
@@ -118,7 +118,8 @@ public class DexMethod {
           logger.debug("" + msg);
           Util.emptyBody(b);
           Util.addExceptionAfterUnit(b, "java.lang.RuntimeException", b.getUnits().getLast(),
-              "Soot has detected that this method contains invalid Dalvik bytecode which would have throw an exception at runtime. [" + msg + "]");
+              "Soot has detected that this method contains invalid Dalvik bytecode,"
+                  + " which would have throw an exception at runtime. [" + msg + "]");
           TypeAssigner.v().transform(b);
         }
         m.setActiveBody(b);

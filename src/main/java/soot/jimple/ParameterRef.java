@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -34,7 +34,8 @@ import soot.ValueBox;
 import soot.util.Switch;
 
 /**
- * <code>ParameterRef</code> objects are used by <code>Body</code> objects to refer to the parameter slots on method entry. <br>
+ * <code>ParameterRef</code> objects are used by <code>Body</code> objects to refer to the parameter slots on method entry.
+ * <br>
  *
  * For instance, in an instance method, the first statement will often be <code> this := @parameter0; </code>
  */

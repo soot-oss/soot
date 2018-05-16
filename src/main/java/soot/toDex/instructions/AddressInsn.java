@@ -6,8 +6,8 @@ import org.jf.dexlib2.builder.BuilderInstruction;
 import soot.toDex.LabelAssigner;
 
 /**
- * Inspired by com.android.dx.dex.code.CodeAddress: pseudo instruction for use as jump target or start/end of an exception handler range. It has size
- * zero, so that its offset is the same as the following real instruction.
+ * Inspired by com.android.dx.dex.code.CodeAddress: pseudo instruction for use as jump target or start/end of an exception
+ * handler range. It has size zero, so that its offset is the same as the following real instruction.
  */
 public class AddressInsn extends AbstractInsn {
 

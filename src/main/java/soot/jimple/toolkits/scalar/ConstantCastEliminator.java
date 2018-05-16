@@ -42,8 +42,9 @@ import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
 
 /**
- * Transformer for removing unnecessary casts on primitive values. An assignment a = (float) 42 will for instance be transformed to a = 42f;
- * 
+ * Transformer for removing unnecessary casts on primitive values. An assignment a = (float) 42 will for instance be
+ * transformed to a = 42f;
+ *
  * @author Steven Arzt
  *
  */

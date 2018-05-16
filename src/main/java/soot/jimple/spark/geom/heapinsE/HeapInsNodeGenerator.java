@@ -35,13 +35,13 @@ import soot.jimple.toolkits.callgraph.Edge;
 
 /**
  * Build the initial pointer assignment graph with the HeapIns encoding.
- * 
+ *
  * @author xiao
  *
  */
 public class HeapInsNodeGenerator extends IEncodingBroker {
-  private static final int full_convertor[] = { GeometricManager.ONE_TO_ONE, GeometricManager.MANY_TO_MANY, GeometricManager.MANY_TO_MANY,
-      GeometricManager.MANY_TO_MANY };
+  private static final int full_convertor[] = { GeometricManager.ONE_TO_ONE, GeometricManager.MANY_TO_MANY,
+      GeometricManager.MANY_TO_MANY, GeometricManager.MANY_TO_MANY };
 
   @Override
   public void initFlowGraph(GeomPointsTo ptAnalyzer) {
@@ -71,7 +71,8 @@ public class HeapInsNodeGenerator extends IEncodingBroker {
         case Constants.NEW_CONS:
           // We directly add the objects to the points-to set
 
-          my_rhs.add_points_to_3((AllocNode) my_lhs.getWrappedNode(), (code & 1) == 1 ? 0 : 1, // to decide if the receiver is a global or not
+          my_rhs.add_points_to_3((AllocNode) my_lhs.getWrappedNode(), (code & 1) == 1 ? 0 : 1, // to decide if the receiver
+                                                                                               // is a global or not
               (code >> 1) == 1 ? 0 : 1, // if the object is a global or not
               (code & 1) == 1 ? ptAnalyzer.context_size[nf1] : ptAnalyzer.context_size[nf2]);
 
@@ -93,7 +94,8 @@ public class HeapInsNodeGenerator extends IEncodingBroker {
               // Parameter passing
               if (nf2 == q.t) {
                 /*
-                 * The receiver must be a local, while the sender is perhaps not (e.g. for handling reflection, see class PAG) In that case, nf1 is 0.
+                 * The receiver must be a local, while the sender is perhaps not (e.g. for handling reflection, see class
+                 * PAG) In that case, nf1 is 0.
                  */
 
                 if (nf1 == Constants.SUPER_MAIN) {

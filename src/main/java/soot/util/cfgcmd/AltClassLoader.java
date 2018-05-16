@@ -35,13 +35,13 @@ import soot.Singletons;
 
 /**
  * <p>
- * A {@link ClassLoader} that loads specified classes from a different class path than that given by the value of <code>java.class.path</code> in
- * {@link System#getProperties()}.
+ * A {@link ClassLoader} that loads specified classes from a different class path than that given by the value of
+ * <code>java.class.path</code> in {@link System#getProperties()}.
  * </p>
  *
  * <p>
- * This class is part of Soot's test infrastructure. It allows loading multiple implementations of a class with a given name, and was written to
- * compare different implementations of Soot's CFG representations.
+ * This class is part of Soot's test infrastructure. It allows loading multiple implementations of a class with a given name,
+ * and was written to compare different implementations of Soot's CFG representations.
  * </p>
  */
 public class AltClassLoader extends ClassLoader {
@@ -75,8 +75,8 @@ public class AltClassLoader extends ClassLoader {
   }
 
   /**
-   * Returns the single instance of <code>AltClassLoader</code>, which loads classes from the classpath set by the most recent call to its
-   * {@link #setAltClassPath}.
+   * Returns the single instance of <code>AltClassLoader</code>, which loads classes from the classpath set by the most
+   * recent call to its {@link #setAltClassPath}.
    *
    * @return Soot's <code>AltClassLoader</code>.
    */
@@ -101,7 +101,8 @@ public class AltClassLoader extends ClassLoader {
   }
 
   /**
-   * Specifies the set of class names that the <code>AltClassLoader</code> should load from the alternate classpath instead of the regular classpath.
+   * Specifies the set of class names that the <code>AltClassLoader</code> should load from the alternate classpath instead
+   * of the regular classpath.
    *
    * @param classNames[]
    *          an array containing the names of classes to be loaded from the AltClassLoader.
@@ -116,10 +117,11 @@ public class AltClassLoader extends ClassLoader {
   }
 
   /**
-   * Mangles a classname so that it will not be found on the system classpath by our parent class loader, even if there is a class with the original
-   * name there. We use a crude heuristic to do this that happens to work with the names we have needed to mangle to date. The heuristic requires that
-   * <code>origName</code> include at least two dots (i.e., the class must be in a package, where the package name has at least two components). More
-   * sophisticated possibilities certainly exist, but they would require more thorough parsing of the class file.
+   * Mangles a classname so that it will not be found on the system classpath by our parent class loader, even if there is a
+   * class with the original name there. We use a crude heuristic to do this that happens to work with the names we have
+   * needed to mangle to date. The heuristic requires that <code>origName</code> include at least two dots (i.e., the class
+   * must be in a package, where the package name has at least two components). More sophisticated possibilities certainly
+   * exist, but they would require more thorough parsing of the class file.
    *
    * @param origName
    *          the name to be mangled.
@@ -138,25 +140,28 @@ public class AltClassLoader extends ClassLoader {
       replacements++;
     }
     if (replacements <= 0) {
-      throw new IllegalArgumentException("AltClassLoader.mangleName()'s crude classname mangling cannot deal with " + origName);
+      throw new IllegalArgumentException(
+          "AltClassLoader.mangleName()'s crude classname mangling cannot deal with " + origName);
     }
     return mangledName.toString();
   }
 
   /**
    * <p>
-   * Loads a class from either the regular classpath, or the alternate classpath, depending on whether it looks like we have already mangled its name.
+   * Loads a class from either the regular classpath, or the alternate classpath, depending on whether it looks like we have
+   * already mangled its name.
    * </p>
    *
    * <p>
-   * This method follows the steps provided by <a href="http://www.javaworld.com/javaworld/jw-03-2000/jw-03-classload.html#resources">Ken McCrary's
-   * ClasssLoader tutorial</a>.
+   * This method follows the steps provided by
+   * <a href="http://www.javaworld.com/javaworld/jw-03-2000/jw-03-classload.html#resources">Ken McCrary's ClasssLoader
+   * tutorial</a>.
    * </p>
    *
    * @param maybeMangledName
-   *          A string from which the desired class's name can be determined. It may have been mangled by {@link AltClassLoader#loadClass(String)
-   *          AltClassLoader.loadClass()} so that the regular <code>ClassLoader</code> to which we are delegating won't load the class from the
-   *          regular classpath.
+   *          A string from which the desired class's name can be determined. It may have been mangled by
+   *          {@link AltClassLoader#loadClass(String) AltClassLoader.loadClass()} so that the regular
+   *          <code>ClassLoader</code> to which we are delegating won't load the class from the regular classpath.
    * @return the loaded class.
    * @throws ClassNotFoundException
    *           if the class cannot be loaded.
@@ -204,9 +209,9 @@ public class AltClassLoader extends ClassLoader {
   /**
    * <p>
    * Loads a class, from the alternate classpath if the class's name has been included in the list of alternate classes with
-   * {@link #setAltClasses(String[]) setAltClasses()}, from the regular system classpath otherwise. When a alternate class is loaded, its references
-   * to other alternate classes are also resolved to the alternate classpath.
-   * 
+   * {@link #setAltClasses(String[]) setAltClasses()}, from the regular system classpath otherwise. When a alternate class is
+   * loaded, its references to other alternate classes are also resolved to the alternate classpath.
+   *
    * @param name
    *          the name of the class to load.
    * @return the loaded class.
@@ -231,9 +236,10 @@ public class AltClassLoader extends ClassLoader {
   }
 
   /**
-   * Replaces any occurrences in <code>classBytes</code> of classnames to be loaded from the alternate class path with the corresponding mangled
-   * names. Of course we should really parse the class pool properly, since the simple-minded, brute force replacment done here could produce problems
-   * with some combinations of classnames and class contents. But we've got away with this so far!
+   * Replaces any occurrences in <code>classBytes</code> of classnames to be loaded from the alternate class path with the
+   * corresponding mangled names. Of course we should really parse the class pool properly, since the simple-minded, brute
+   * force replacment done here could produce problems with some combinations of classnames and class contents. But we've got
+   * away with this so far!
    */
   private void replaceAltClassNames(byte[] classBytes) {
     for (Map.Entry<String, String> entry : nameToMangledName.entrySet()) {
@@ -280,7 +286,7 @@ public class AltClassLoader extends ClassLoader {
 
   /**
    * Replaces all occurrences of the <code>pattern</code> in <code>text</code> with <code>replacement</code>.
-   * 
+   *
    * @throws IllegalArgumentException
    *           if the lengths of <code>text</code> and <code>replacement</code> differ.
    */
@@ -305,8 +311,9 @@ public class AltClassLoader extends ClassLoader {
    *          the string of bytes to search for.
    * @param start
    *          the first position in text to search (0-based).
-   * @return the index in text where the first occurrence of <code>pattern</code> in <code>text</code> after <code>start</code> begins. Returns -1 if
-   *         <code>pattern</code> does not occur in <code>text</code> after <code>start</code>.
+   * @return the index in text where the first occurrence of <code>pattern</code> in <code>text</code> after
+   *         <code>start</code> begins. Returns -1 if <code>pattern</code> does not occur in <code>text</code> after
+   *         <code>start</code>.
    */
   private static int findMatch(byte[] text, byte[] pattern, int start) {
     int textLength = text.length;
@@ -323,8 +330,9 @@ public class AltClassLoader extends ClassLoader {
   }
 
   /**
-   * Replace the <code>replacement.length</code> bytes in <code>text</code> starting at <code>start</code> with the bytes in <code>replacement</code>.
-   * 
+   * Replace the <code>replacement.length</code> bytes in <code>text</code> starting at <code>start</code> with the bytes in
+   * <code>replacement</code>.
+   *
    * @throws ArrayIndexOutOfBounds
    *           if there are not <code>replacement.length</code> remaining after <code>text[start]</code>.
    */

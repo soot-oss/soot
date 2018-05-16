@@ -1,6 +1,6 @@
 /* Soot - a J*va Optimization Framework
- * 
- * 
+ *
+ *
  * Copyright (C) 1999 Patrick Lam, Patrick Pominville and Raja Vallee-Rai
  * Copyright (C) 2004 Jennifer Lhotak, Ondrej Lhotak
  *
@@ -21,7 +21,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -97,8 +97,10 @@ public abstract class AbstractJasminClass {
   protected Map<Object, Integer> groupToColorCount;
   protected Map<Local, Integer> localToColor;
 
-  protected Map<Block, Integer> blockToStackHeight = new HashMap<Block, Integer>(); // maps a block to the stack height upon entering it
-  protected Map<Block, Integer> blockToLogicalStackHeight = new HashMap<Block, Integer>(); // maps a block to the logical stack height upon entering
+  protected Map<Block, Integer> blockToStackHeight = new HashMap<Block, Integer>(); // maps a block to the stack height upon
+                                                                                    // entering it
+  protected Map<Block, Integer> blockToLogicalStackHeight = new HashMap<Block, Integer>(); // maps a block to the logical
+                                                                                           // stack height upon entering
                                                                                            // it
 
   public static String slashify(String s) {
@@ -550,7 +552,8 @@ public abstract class AbstractJasminClass {
 
         if (field.hasTag("StringConstantValueTag")) {
           fieldString += " = ";
-          fieldString += soot.util.StringTools.getQuotedStringOf(((StringConstantValueTag) field.getTag("StringConstantValueTag")).getStringValue());
+          fieldString += soot.util.StringTools
+              .getQuotedStringOf(((StringConstantValueTag) field.getTag("StringConstantValueTag")).getStringValue());
         } else if (field.hasTag("IntegerConstantValueTag")) {
           fieldString += " = ";
           fieldString += ((IntegerConstantValueTag) field.getTag("IntegerConstantValueTag")).getIntValue();
@@ -593,7 +596,8 @@ public abstract class AbstractJasminClass {
         while (attributeIt.hasNext()) {
           Tag tag = (Tag) attributeIt.next();
           if (tag instanceof Attribute) {
-            emit(".field_attribute " + tag.getName() + " \"" + new String(Base64.encode(((Attribute) tag).getValue())) + "\"");
+            emit(".field_attribute " + tag.getName() + " \"" + new String(Base64.encode(((Attribute) tag).getValue()))
+                + "\"");
           }
         }
 
@@ -684,7 +688,8 @@ public abstract class AbstractJasminClass {
     }
 
     // Emit prologue
-    emit(".method " + Modifier.toString(method.getModifiers()) + " " + method.getName() + jasminDescriptorOf(method.makeRef()));
+    emit(".method " + Modifier.toString(method.getModifiers()) + " " + method.getName()
+        + jasminDescriptorOf(method.makeRef()));
 
     Iterator<SootClass> throwsIt = method.getExceptions().iterator();
     while (throwsIt.hasNext()) {

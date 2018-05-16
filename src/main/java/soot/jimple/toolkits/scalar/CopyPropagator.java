@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -86,13 +86,14 @@ public class CopyPropagator extends BodyTransformer {
 
   /**
    * Cascaded copy propagator.
-   * 
-   * If it encounters situations of the form: A: a = ...; B: ... x = a; C:... use (x); where a has only one definition, and x has only one definition
-   * (B), then it can propagate immediately without checking between B and C for redefinitions of a (namely) A because they cannot occur. In this case
-   * the propagator is global.
-   * 
-   * Otherwise, if a has multiple definitions then it only checks for redefinitions of Propagates constants and copies in extended basic blocks.
-   * 
+   *
+   * If it encounters situations of the form: A: a = ...; B: ... x = a; C:... use (x); where a has only one definition, and x
+   * has only one definition (B), then it can propagate immediately without checking between B and C for redefinitions of a
+   * (namely) A because they cannot occur. In this case the propagator is global.
+   *
+   * Otherwise, if a has multiple definitions then it only checks for redefinitions of Propagates constants and copies in
+   * extended basic blocks.
+   *
    * Does not propagate stack locals when the "only-regular-locals" option is true.
    */
   protected void internalTransform(Body b, String phaseName, Map<String, String> opts) {

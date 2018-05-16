@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -50,8 +50,8 @@ import soot.options.Options;
 import soot.util.DeterministicHashMap;
 
 /**
- * A BodyTransformer that attemps to minimize the number of local variables used in Body by 'reusing' them when possible. Implemented as a singleton.
- * For example the code:
+ * A BodyTransformer that attemps to minimize the number of local variables used in Body by 'reusing' them when possible.
+ * Implemented as a singleton. For example the code:
  *
  * for(int i; i < k; i++); for(int j; j < k; j++);
  *
@@ -60,7 +60,7 @@ import soot.util.DeterministicHashMap;
  * assuming to further conflicting uses of i and j.
  *
  * Note: LocalSplitter is corresponds to the inverse transformation.
- * 
+ *
  * @see BodyTransformer
  * @see Body
  * @see LocalSplitter

@@ -13,8 +13,8 @@ import soot.jimple.StaticFieldRef;
 import soot.jimple.ThisRef;
 
 /**
- * CallLocalityContext written by Richard L. Halpert 2007-03-05 Acts as a container for the locality information collected about a call site by one of
- * the Local Objects Analyses.
+ * CallLocalityContext written by Richard L. Halpert 2007-03-05 Acts as a container for the locality information collected
+ * about a call site by one of the Local Objects Analyses.
  */
 
 public class CallLocalityContext {
@@ -237,7 +237,8 @@ public class CallLocalityContext {
     for (int i = 0; i < nodes.size(); i++) {
       if ((!refsOnly) && isNodeLocal.get(i).booleanValue()) {
         return false;
-      } else if (((EquivalentValue) nodes.get(i)).getValue().getType() instanceof RefLikeType && isNodeLocal.get(i).booleanValue()) {
+      } else if (((EquivalentValue) nodes.get(i)).getValue().getType() instanceof RefLikeType
+          && isNodeLocal.get(i).booleanValue()) {
         return false;
       }
     }

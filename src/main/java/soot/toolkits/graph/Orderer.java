@@ -29,9 +29,9 @@ import java.util.List;
 public interface Orderer<N> {
 
   /**
-   * Builds an order for a directed graph. The order is represented by the returned list, i.e. is a node was assigned number <i>i</i> in the order, it
-   * will be in the <i>i</i>th position of the returned list.
-   * 
+   * Builds an order for a directed graph. The order is represented by the returned list, i.e. is a node was assigned number
+   * <i>i</i> in the order, it will be in the <i>i</i>th position of the returned list.
+   *
    * @param g
    *          a DirectedGraph instance whose nodes we wish to order
    * @param reverse

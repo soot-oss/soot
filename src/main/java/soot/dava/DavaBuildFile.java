@@ -46,7 +46,8 @@ public class DavaBuildFile {
     /*
      * out.print("<target name=\"init\" description=\"Create necessary directories\">\n"); out.print("<tstamp/>\n");
      * out.print("		<!-- set the timestamps -->\n"); out.print("		<mkdir dir=\"${classesDir}\"/>\n");
-     * out.print("		<mkdir dir=\"${docDir}\"/>\n"); // out.print("		<mkdir dir=\"${libDir}\"/>\n"); out.print("</target>\n");
+     * out.print("		<mkdir dir=\"${docDir}\"/>\n"); // out.print("		<mkdir dir=\"${libDir}\"/>\n");
+     * out.print("</target>\n");
      */
     out.print("	<!--  ========== Compile Target ================= -->\n");
     out.print("	<target name=\"compile\" description=\"Compile .java files\">\n");
@@ -60,8 +61,8 @@ public class DavaBuildFile {
     out.print("	<!--  ==========AST METRICS FOR DECOMPILED CODE================= -->\n");
     out.print("<target name=\"ast-metrics\" description=\"Compute the ast metrics\">\n");
     /*
-     * NEED TO MAKE SURE SRC-PREC IS SET so that java to jimple gets evaluate The command is going to be java soot.Main -ast-metrics followed by all
-     * the classes on which we had originally done the decompile Need a specialized task
+     * NEED TO MAKE SURE SRC-PREC IS SET so that java to jimple gets evaluate The command is going to be java soot.Main
+     * -ast-metrics followed by all the classes on which we had originally done the decompile Need a specialized task
      */
 
     out.print("   <exec executable=\"java\" dir=\"src\">\n");

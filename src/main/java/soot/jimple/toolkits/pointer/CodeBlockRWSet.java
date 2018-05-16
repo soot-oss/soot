@@ -40,8 +40,8 @@ public class CodeBlockRWSet extends MethodRWSet {
         Object baseObj = fields.get(field);
         if (baseObj instanceof PointsToSetInternal) {
           /*
-           * PointsToSetInternal base = (PointsToSetInternal) fields.get(field); base.forall( new P2SetVisitor() { public void visit( Node n ) {
-           * ret.append(n.getNumber() + " "); } } );
+           * PointsToSetInternal base = (PointsToSetInternal) fields.get(field); base.forall( new P2SetVisitor() { public
+           * void visit( Node n ) { ret.append(n.getNumber() + " "); } } );
            */
           int baseSize = ((PointsToSetInternal) baseObj).size();
           ret.append(baseSize + (baseSize == 1 ? " Node]\n" : " Nodes]\n"));
@@ -205,7 +205,8 @@ public class CodeBlockRWSet extends MethodRWSet {
     }
     if (base == null) {
       // NOTE: this line makes unsafe assumptions about the PTA
-      PointsToSetInternal newpti = new HashPointsToSet(((PointsToSetInternal) otherBase).getType(), (PAG) Scene.v().getPointsToAnalysis());
+      PointsToSetInternal newpti
+          = new HashPointsToSet(((PointsToSetInternal) otherBase).getType(), (PAG) Scene.v().getPointsToAnalysis());
       base = newpti;
       fields.put(field, base);
     }

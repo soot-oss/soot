@@ -48,8 +48,8 @@ import soot.jimple.Stmt;
 import soot.util.Chain;
 
 /**
- * Changes the sequence of statements in which they appear in methods, preserving the sequence they are executed using {@code goto} commands and
- * {@code labels}. Also if possible adds {@code try-catch} block in random position.
+ * Changes the sequence of statements in which they appear in methods, preserving the sequence they are executed using
+ * {@code goto} commands and {@code labels}. Also if possible adds {@code try-catch} block in random position.
  *
  * @author Michael Batchelder
  * @since 15-Feb-2006
@@ -85,9 +85,11 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    if (SootMethod.constructorName.equals(body.getMethod().getName()) || SootMethod.staticInitializerName.equals(body.getMethod().getName())) {
+    if (SootMethod.constructorName.equals(body.getMethod().getName())
+        || SootMethod.staticInitializerName.equals(body.getMethod().getName())) {
       if (isVerbose()) {
-        logger.info("Skipping {} method GOTO instrumentation as it is constructor/initializer.", body.getMethod().getSignature());
+        logger.info("Skipping {} method GOTO instrumentation as it is constructor/initializer.",
+            body.getMethod().getSignature());
       }
       return;
     }
@@ -170,13 +172,15 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
     }
 
     // add goto as FIRST unit to point to new chunk location
-    final Unit firstReorderingNotGotoStmt = first instanceof GotoStmt ? ((GotoStmt) first).getTargetBox().getUnit() : firstReorderingUnit;
+    final Unit firstReorderingNotGotoStmt
+        = first instanceof GotoStmt ? ((GotoStmt) first).getTargetBox().getUnit() : firstReorderingUnit;
     final GotoStmt gotoFirstReorderingNotGotoStmt = Jimple.v().newGotoStmt(firstReorderingNotGotoStmt);
     units.insertBeforeNoRedirect(gotoFirstReorderingNotGotoStmt, reorderingUnit);
 
     // add goto as LAST unit to point to new position of second chunk
     if (units.getLast().fallsThrough()) {
-      final Stmt gotoStmt = (reorderingUnit instanceof GotoStmt) ? Jimple.v().newGotoStmt(((GotoStmt) reorderingUnit).getTargetBox().getUnit())
+      final Stmt gotoStmt = (reorderingUnit instanceof GotoStmt)
+          ? Jimple.v().newGotoStmt(((GotoStmt) reorderingUnit).getTargetBox().getUnit())
           : Jimple.v().newGotoStmt(reorderingUnit);
 
       units.add(gotoStmt);
@@ -185,7 +189,8 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
     gotosInstrumented++;
 
     Unit secondReorderedUnit = units.getSuccOf(firstReorderingNotGotoStmt);
-    if (secondReorderedUnit == null || (secondReorderedUnit.equals(units.getLast()) && secondReorderedUnit instanceof IdentityStmt)) {
+    if (secondReorderedUnit == null
+        || (secondReorderedUnit.equals(units.getLast()) && secondReorderedUnit instanceof IdentityStmt)) {
 
       if (firstReorderingNotGotoStmt instanceof IdentityStmt) {
         if (isVerbose()) {
@@ -205,15 +210,16 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
     units.add(caughtExceptionHandler);
     units.add(Jimple.v().newThrowStmt(caughtExceptionLocal));
 
-    final Iterator<Unit> reorderedUnitsIterator = units.iterator(secondReorderedUnit, units.getPredOf(caughtExceptionHandler));
+    final Iterator<Unit> reorderedUnitsIterator
+        = units.iterator(secondReorderedUnit, units.getPredOf(caughtExceptionHandler));
     Unit trapEndUnit = reorderedUnitsIterator.next();
     while (trapEndUnit instanceof IdentityStmt && reorderedUnitsIterator.hasNext()) {
       trapEndUnit = reorderedUnitsIterator.next();
     }
     trapEndUnit = units.getSuccOf(trapEndUnit);
 
-    body.getTraps()
-        .add(Jimple.v().newTrap(throwable.getSootClass(), units.getPredOf(firstReorderingNotGotoStmt), trapEndUnit, caughtExceptionHandler));
+    body.getTraps().add(Jimple.v().newTrap(throwable.getSootClass(), units.getPredOf(firstReorderingNotGotoStmt),
+        trapEndUnit, caughtExceptionHandler));
 
     trapsAdded++;
   }

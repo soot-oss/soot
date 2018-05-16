@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * 
+ *
  * Copyright (C) 2013 Bernhard J. Berger
  *
  * This library is free software; you can redistribute it and/or
@@ -24,10 +24,11 @@ import soot.Transformer;
 import soot.plugins.model.PhasePluginDescription;
 
 /**
- * An interface every phase plugin has to implement. The plugin has to support basic functionality, such as creating the transformer and support a
- * list of possible options. The first method that is called after object creation is {@code setDescription} then the list of possible parameters is
- * called and the last step is the call to {@code getTransformer}.
- * 
+ * An interface every phase plugin has to implement. The plugin has to support basic functionality, such as creating the
+ * transformer and support a list of possible options. The first method that is called after object creation is
+ * {@code setDescription} then the list of possible parameters is called and the last step is the call to
+ * {@code getTransformer}.
+ *
  * @author Bernhard J. Berger
  */
 public interface SootPhasePlugin {
@@ -42,16 +43,17 @@ public interface SootPhasePlugin {
   public abstract String[] getDeclaredOptions();
 
   /**
-   * Returns a list of default values for initializing the parameters. Each entry in the list is of kind "<parameter-name>:<default-value>". Please
-   * note, that you have to add the {@code ENABLED_BY_DEFAULT} option if you want the plugin to be enabled.
-   * 
+   * Returns a list of default values for initializing the parameters. Each entry in the list is of kind
+   * "<parameter-name>:<default-value>". Please note, that you have to add the {@code ENABLED_BY_DEFAULT} option if you want
+   * the plugin to be enabled.
+   *
    * @return a list of default values.
    */
   public abstract String[] getDefaultOptions();
 
   /**
    * Creates a new transformer instance (either SceneTransformer or BodyTransformer). The method will be called just once.
-   * 
+   *
    * @return a new transformer instance.
    */
   public abstract Transformer getTransformer();

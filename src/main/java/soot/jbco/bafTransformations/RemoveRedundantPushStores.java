@@ -17,7 +17,7 @@ import soot.util.Chain;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 16-Jun-2006
  */
 public class RemoveRedundantPushStores extends BodyTransformer implements IJbcoTransform {
@@ -49,7 +49,8 @@ public class RemoveRedundantPushStores extends BodyTransformer implements IJbcoT
       while (it.hasNext()) {
         Unit u = it.next();
         if (prev != null && prev instanceof PushInst && u instanceof StoreInst) {
-          if (prevprev != null && prevprev instanceof StoreInst && prevprevprev != null && prevprevprev instanceof PushInst) {
+          if (prevprev != null && prevprev instanceof StoreInst && prevprevprev != null
+              && prevprevprev instanceof PushInst) {
             Local lprev = ((StoreInst) prevprev).getLocal();
             Local l = ((StoreInst) u).getLocal();
             if (l == lprev && eug.getSuccsOf(prevprevprev).size() == 1 && eug.getSuccsOf(prevprev).size() == 1) {

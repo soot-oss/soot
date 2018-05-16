@@ -208,8 +208,8 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     Instruction referenceTable = body.instructionAtAddress(targetAddress).instruction;
 
     if (!(referenceTable instanceof ArrayPayload)) {
-      throw new RuntimeException(
-          "Address 0x" + Integer.toHexString(targetAddress) + " refers to an invalid PseudoInstruction (" + referenceTable.getClass() + ").");
+      throw new RuntimeException("Address 0x" + Integer.toHexString(targetAddress)
+          + " refers to an invalid PseudoInstruction (" + referenceTable.getClass() + ").");
     }
 
     ArrayPayload arrayTable = (ArrayPayload) referenceTable;

@@ -70,7 +70,8 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
     AbstractDataSource sharedDataSource = new AbstractDataSource(new String("SHARED"));
 
     List<Object> sharedRefs = context.getSharedRefs();
-    Iterator<Object> sharedRefEqValIt = sharedRefs.iterator(); // returns a list of (correctly structured) EquivalentValue wrapped refs that should be
+    Iterator<Object> sharedRefEqValIt = sharedRefs.iterator(); // returns a list of (correctly structured) EquivalentValue
+                                                               // wrapped refs that should be
                                                                // treated as shared
     while (sharedRefEqValIt.hasNext()) {
       EquivalentValue refEqVal = (EquivalentValue) sharedRefEqValIt.next();
@@ -106,8 +107,8 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
     if (infoFlowGraph.containsNode(source)) {
       List sinks = infoFlowGraph.getSuccsOf(source);
       if (printMessages) {
-        logger.debug(
-            "      Requested value " + local + " is " + (!sinks.contains(new CachedEquivalentValue(local)) ? "Local" : "Shared") + " in " + sm + " ");
+        logger.debug("      Requested value " + local + " is "
+            + (!sinks.contains(new CachedEquivalentValue(local)) ? "Local" : "Shared") + " in " + sm + " ");
       }
       return !sinks.contains(new CachedEquivalentValue(local));
     } else {

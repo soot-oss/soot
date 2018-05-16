@@ -75,7 +75,8 @@ public class JimpleIFDSSolver<D, I extends InterproceduralCFG<Unit, SootMethod>>
           i++;
         }
 
-        res.add(new SortableCSVString(methodOf + ";" + entry.getRowKey() + "@" + i + ";" + entry.getColumnKey() + ";" + entry.getValue(), i));
+        res.add(new SortableCSVString(
+            methodOf + ";" + entry.getRowKey() + "@" + i + ";" + entry.getColumnKey() + ";" + entry.getValue(), i));
       }
       Collections.sort(res);
       // replacement is bugfix for excel view:

@@ -27,8 +27,8 @@ import soot.jimple.Stmt;
 import soot.toolkits.graph.UnitGraph;
 
 /**
- * A (natural) loop in Jimple. A back-edge (t,h) is a control-flog edge for which h dominates t. In this case h is the header and the loop consists of
- * all statements s which reach t without passing through h.
+ * A (natural) loop in Jimple. A back-edge (t,h) is a control-flog edge for which h dominates t. In this case h is the header
+ * and the loop consists of all statements s which reach t without passing through h.
  *
  * @author Eric Bodden
  */
@@ -41,9 +41,9 @@ public class Loop {
   protected Collection<Stmt> loopExits;
 
   /**
-   * Creates a new loop. Expects that the last statement in the list is the loop head and the second-last statement is the back-jump to the head.
-   * {@link LoopFinder} will normally guarantee this.
-   * 
+   * Creates a new loop. Expects that the last statement in the list is the loop head and the second-last statement is the
+   * back-jump to the head. {@link LoopFinder} will normally guarantee this.
+   *
    * @param head
    *          the loop header
    * @param loopStatements
@@ -82,8 +82,8 @@ public class Loop {
   }
 
   /**
-   * @return all statements of the loop, including the header; the header will be the first element returned and then the other statements follow in
-   *         the natural ordering of the loop
+   * @return all statements of the loop, including the header; the header will be the first element returned and then the
+   *         other statements follow in the natural ordering of the loop
    */
   public List<Stmt> getLoopStatements() {
     return loopStatements;
@@ -123,7 +123,7 @@ public class Loop {
 
   /**
    * Returns <code>true</code> if this loop certainly loops forever, i.e. if it has not exit.
-   * 
+   *
    * @see #getLoopExits()
    */
   public boolean loopsForever() {
@@ -132,7 +132,7 @@ public class Loop {
 
   /**
    * Returns <code>true</code> if this loop has a single exit statement.
-   * 
+   *
    * @see #getLoopExits()
    */
   public boolean hasSingleExit() {

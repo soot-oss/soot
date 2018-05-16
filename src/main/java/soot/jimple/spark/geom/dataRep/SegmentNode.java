@@ -20,9 +20,9 @@ package soot.jimple.spark.geom.dataRep;
 
 /**
  * The segment figure for encoding the one-to-one relation.
- * 
+ *
  * @author richardxx
- * 
+ *
  */
 public class SegmentNode implements Comparable<SegmentNode> {
 
@@ -105,9 +105,10 @@ public class SegmentNode implements Comparable<SegmentNode> {
   }
 
   /**
-   * Testing if two figures are intersected. This interface implements standard intersection testing that ignores the semantics of the X- and Y- axis.
-   * Processing the semantics issues before calling this method. A sample usage, please @see heap_sensitive_intersection
-   * 
+   * Testing if two figures are intersected. This interface implements standard intersection testing that ignores the
+   * semantics of the X- and Y- axis. Processing the semantics issues before calling this method. A sample usage, please @see
+   * heap_sensitive_intersection
+   *
    * @param q
    * @return
    */

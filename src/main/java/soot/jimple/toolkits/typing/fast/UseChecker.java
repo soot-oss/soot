@@ -91,8 +91,9 @@ import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
- * This checks all uses against the rules in Jimple, except some uses are not checked where the bytecode verifier guarantees use validity.
- * 
+ * This checks all uses against the rules in Jimple, except some uses are not checked where the bytecode verifier guarantees
+ * use validity.
+ *
  * @author Ben Bellamy
  */
 public class UseChecker extends AbstractStmtSwitch {
@@ -140,9 +141,9 @@ public class UseChecker extends AbstractStmtSwitch {
     Value opl = be.getOp1(), opr = be.getOp2();
     Type tl = AugEvalFunction.eval_(this.tg, opl, stmt, this.jb), tr = AugEvalFunction.eval_(this.tg, opr, stmt, this.jb);
 
-    if (be instanceof AddExpr || be instanceof SubExpr || be instanceof MulExpr || be instanceof DivExpr || be instanceof RemExpr
-        || be instanceof GeExpr || be instanceof GtExpr || be instanceof LeExpr || be instanceof LtExpr || be instanceof ShlExpr
-        || be instanceof ShrExpr || be instanceof UshrExpr) {
+    if (be instanceof AddExpr || be instanceof SubExpr || be instanceof MulExpr || be instanceof DivExpr
+        || be instanceof RemExpr || be instanceof GeExpr || be instanceof GtExpr || be instanceof LeExpr
+        || be instanceof LtExpr || be instanceof ShlExpr || be instanceof ShrExpr || be instanceof UshrExpr) {
       if (tlhs instanceof IntegerType) {
         be.setOp1(this.uv.visit(opl, IntType.v(), stmt));
         be.setOp2(this.uv.visit(opr, IntType.v(), stmt));
@@ -259,7 +260,8 @@ public class UseChecker extends AbstractStmtSwitch {
         // For some fixed type T, we assume that we can fix the array to T[].
         if (bt instanceof RefType || bt instanceof NullType) {
           RefType rt = bt instanceof NullType ? null : (RefType) bt;
-          if (rt == null || rt.getSootClass().getName().equals("java.lang.Object") || rt.getSootClass().getName().equals("java.io.Serializable")
+          if (rt == null || rt.getSootClass().getName().equals("java.lang.Object")
+              || rt.getSootClass().getName().equals("java.io.Serializable")
               || rt.getSootClass().getName().equals("java.lang.Cloneable")) {
             if (defs == null) {
               defs = LocalDefs.Factory.newLocalDefs(jb);

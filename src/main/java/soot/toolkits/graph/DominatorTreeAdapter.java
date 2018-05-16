@@ -28,7 +28,8 @@ import java.util.List;
  *
  * <p>
  *
- * This might be useful if e.g. you want to apply a DirectedGraph analysis such as the PseudoTopologicalOrderer to a DominatorTree.
+ * This might be useful if e.g. you want to apply a DirectedGraph analysis such as the PseudoTopologicalOrderer to a
+ * DominatorTree.
  *
  * @author Navindra Umanee
  **/

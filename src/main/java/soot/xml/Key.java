@@ -53,8 +53,8 @@ public class Key {
   }
 
   public void print(PrintWriter writerOut) {
-    writerOut
-        .println("<key red=\"" + red() + "\" green=\"" + green() + "\" blue=\"" + blue() + "\" key=\"" + key() + "\" aType=\"" + aType() + "\"/>");
+    writerOut.println("<key red=\"" + red() + "\" green=\"" + green() + "\" blue=\"" + blue() + "\" key=\"" + key()
+        + "\" aType=\"" + aType() + "\"/>");
   }
 
   public String aType() {

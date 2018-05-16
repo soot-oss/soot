@@ -64,7 +64,8 @@ public class ReflInliner {
       soot.Main.main(argList.toArray(new String[0]));
     } catch (CompilationDeathException e) {
       logger.debug("\nERROR: " + e.getMessage() + "\n");
-      logger.debug("The command-line options are described at:\n" + "http://www.sable.mcgill.ca/soot/tutorial/usage/index.html");
+      logger.debug(
+          "The command-line options are described at:\n" + "http://www.sable.mcgill.ca/soot/tutorial/usage/index.html");
       if (Options.v().verbose()) {
         throw e;
       } else {

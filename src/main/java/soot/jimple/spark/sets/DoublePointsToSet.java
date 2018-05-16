@@ -29,9 +29,9 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 
 /**
- * Implementation of points-to set that holds two sets: one for new elements that have not yet been propagated, and the other for elements that have
- * already been propagated.
- * 
+ * Implementation of points-to set that holds two sets: one for new elements that have not yet been propagated, and the other
+ * for elements that have already been propagated.
+ *
  * @author Ondrej Lhotak
  */
 public class DoublePointsToSet extends PointsToSetInternal {

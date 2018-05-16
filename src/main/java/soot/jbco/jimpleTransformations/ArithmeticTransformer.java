@@ -276,7 +276,8 @@ public class ArithmeticTransformer extends BodyTransformer implements IJbcoTrans
 
     out.println(" after as: ");
     for (Unit uu : unitsBuilt) {
-      out.println("\t" + uu + "\ttype : " + (uu instanceof AssignStmt ? ((AssignStmt) uu).getLeftOp().getType().toString() : ""));
+      out.println(
+          "\t" + uu + "\ttype : " + (uu instanceof AssignStmt ? ((AssignStmt) uu).getLeftOp().getType().toString() : ""));
     }
   }
 

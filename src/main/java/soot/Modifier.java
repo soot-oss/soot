@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -28,9 +28,10 @@
 package soot;
 
 /**
- * A class that provides static methods and constants to represent and work with with Java modifiers (ie public, final,...) Represents Java modifiers
- * as int constants that can be packed and combined by bitwise operations and methods to query these.
- * 
+ * A class that provides static methods and constants to represent and work with with Java modifiers (ie public, final,...)
+ * Represents Java modifiers as int constants that can be packed and combined by bitwise operations and methods to query
+ * these.
+ *
  */
 public class Modifier {
   public static final int ABSTRACT = 0x0400;
@@ -127,7 +128,7 @@ public class Modifier {
 
   /**
    * Converts the given modifiers to their string representation, in canonical form.
-   * 
+   *
    * @param m
    *          a modifier set
    * @return a textual representation of the modifiers.

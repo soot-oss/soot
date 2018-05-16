@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -154,7 +154,8 @@ public class XMLNode extends XMLRoot {
       endTag.append("</" + xmlName + ">\n");
     }
 
-    // return ( prev.toString() + beginTag.toString() + value.toString() + child.toString() + endTag.toString() + next.toString() );
+    // return ( prev.toString() + beginTag.toString() + value.toString() + child.toString() + endTag.toString() +
+    // next.toString() );
     String returnStr = indent + beginTag.toString();
     if (value.length() > 0) {
       returnStr += value.toString();

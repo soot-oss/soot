@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -314,8 +314,8 @@ class ConstraintCollector extends AbstractStmtSwitch {
         throw new RuntimeException("Unhandled binary expression right operand type: " + rv.getClass());
       }
 
-      if ((be instanceof AddExpr) || (be instanceof SubExpr) || (be instanceof MulExpr) || (be instanceof DivExpr) || (be instanceof RemExpr)
-          || (be instanceof AndExpr) || (be instanceof OrExpr) || (be instanceof XorExpr)) {
+      if ((be instanceof AddExpr) || (be instanceof SubExpr) || (be instanceof MulExpr) || (be instanceof DivExpr)
+          || (be instanceof RemExpr) || (be instanceof AndExpr) || (be instanceof OrExpr) || (be instanceof XorExpr)) {
         if (uses) {
           TypeVariable common = resolver.typeVariable();
           rop.addParent(common);
@@ -332,8 +332,9 @@ class ConstraintCollector extends AbstractStmtSwitch {
         }
 
         right = lop;
-      } else if ((be instanceof CmpExpr) || (be instanceof CmpgExpr) || (be instanceof CmplExpr) || (be instanceof EqExpr) || (be instanceof GeExpr)
-          || (be instanceof GtExpr) || (be instanceof LeExpr) || (be instanceof LtExpr) || (be instanceof NeExpr)) {
+      } else if ((be instanceof CmpExpr) || (be instanceof CmpgExpr) || (be instanceof CmplExpr) || (be instanceof EqExpr)
+          || (be instanceof GeExpr) || (be instanceof GtExpr) || (be instanceof LeExpr) || (be instanceof LtExpr)
+          || (be instanceof NeExpr)) {
         if (uses) {
           TypeVariable common = resolver.typeVariable();
           rop.addParent(common);
@@ -362,7 +363,8 @@ class ConstraintCollector extends AbstractStmtSwitch {
       Type baseType = nae.getBaseType();
 
       if (baseType instanceof ArrayType) {
-        right = resolver.typeVariable(ArrayType.v(((ArrayType) baseType).baseType, ((ArrayType) baseType).numDimensions + 1));
+        right
+            = resolver.typeVariable(ArrayType.v(((ArrayType) baseType).baseType, ((ArrayType) baseType).numDimensions + 1));
       } else {
         right = resolver.typeVariable(ArrayType.v(baseType, 1));
       }

@@ -19,7 +19,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -154,7 +154,7 @@ import soot.jimple.XorExpr;
 /**
  * The Grimp class contains all the constructors for the components of the Grimp grammar for the Grimp body. <br>
  * <br>
- * 
+ *
  * Immediate -> Local | Constant <br>
  * RValue -> Local | Constant | ConcreteRef | Expr<br>
  * Variable -> Local | ArrayRef | InstanceFieldRef | StaticFieldRef <br>
@@ -419,8 +419,8 @@ public class Grimp {
   /**
    * Constructs a new DynamicInvokeExpr grammar chunk.
    */
-  public DynamicInvokeExpr newDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<Value> bootstrapArgs, SootMethodRef methodRef, int tag,
-      List args) {
+  public DynamicInvokeExpr newDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<Value> bootstrapArgs,
+      SootMethodRef methodRef, int tag, List args) {
     return new GDynamicInvokeExpr(bootstrapMethodRef, bootstrapArgs, methodRef, tag, args);
   }
 
@@ -834,8 +834,8 @@ public class Grimp {
           for (int i = 0; i < v.getArgCount(); i++) {
             newArgList.add(newExpr(v.getArg(i)));
           }
-          returnedExpr
-              .setValue(newDynamicInvokeExpr(v.getBootstrapMethodRef(), v.getBootstrapArgs(), v.getMethodRef(), v.getHandleTag(), newArgList));
+          returnedExpr.setValue(newDynamicInvokeExpr(v.getBootstrapMethodRef(), v.getBootstrapArgs(), v.getMethodRef(),
+              v.getHandleTag(), newArgList));
         }
 
         public void caseCastExpr(CastExpr v) {
@@ -876,7 +876,8 @@ public class Grimp {
         return newArrayRef(((ArrayRef) value).getBase(), newExpr(((ArrayRef) value).getIndex()));
       }
       if (value instanceof InstanceFieldRef) {
-        return newInstanceFieldRef(newExpr((((InstanceFieldRef) value).getBase())), ((InstanceFieldRef) value).getFieldRef());
+        return newInstanceFieldRef(newExpr((((InstanceFieldRef) value).getBase())),
+            ((InstanceFieldRef) value).getFieldRef());
       }
       /* have Ref/Value, which is fine -- not Jimple-specific. */
       return value;

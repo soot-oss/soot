@@ -19,10 +19,10 @@ import soot.jimple.SubExpr;
 /*
  * x = 2+3  should be simplified to x =5
  * 4l -3l should be 1l DONE
- 
- * Unary Condition:DONT NEED TO HANDLE IT since what would simplify 
+
+ * Unary Condition:DONT NEED TO HANDLE IT since what would simplify
  * in a boolean flag which is what unary conditions are
- *  
+ *
  * Binary Codition: has a ConditionExpr stored in it not a valuebox???
  * all other expression to be handled by caseExprOrRefValueBox
  */
@@ -40,9 +40,9 @@ public class SimplifyExpressions extends DepthFirstAdapter {
 
   /*
    * public void inASTBinaryCondition(ASTBinaryCondition cond){ ConditionExpr condExpr = cond.getConditionExpr();
-   * 
+   *
    * ValueBox op1Box = condExpr.getOp1Box();
-   * 
+   *
    * ValueBox op2Box = condExpr.getOp2Box(); }
    */
 
@@ -78,7 +78,8 @@ public class SimplifyExpressions extends DepthFirstAdapter {
     int op = 0;
     if (binop instanceof AddExpr) {
       op = 1;
-    } else if (binop instanceof SubExpr || binop instanceof DCmpExpr || binop instanceof DCmpgExpr || binop instanceof DCmplExpr) {
+    } else if (binop instanceof SubExpr || binop instanceof DCmpExpr || binop instanceof DCmpgExpr
+        || binop instanceof DCmplExpr) {
       op = 2;
     } else if (binop instanceof MulExpr) {
       op = 3;

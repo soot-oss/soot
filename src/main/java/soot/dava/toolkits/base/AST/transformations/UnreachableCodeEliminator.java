@@ -72,7 +72,8 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
       while (it.hasNext()) {
         ASTNode temp = it.next();
         if (!codeFinder.isConstructReachable(temp)) {
-          // System.out.println("-------------------------A child of node of type "+node.getClass()+" whose type is "+temp.getClass()+" is
+          // System.out.println("-------------------------A child of node of type "+node.getClass()+" whose type is
+          // "+temp.getClass()+" is
           // unreachable");
           toReturn.add(temp);
         } else {
@@ -184,7 +185,8 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
         ASTNode temp = (ASTNode) itBody.next();
         // System.out.println("Checking whether child of type "+temp.getClass()+" is reachable");
         if (!codeFinder.isConstructReachable(temp)) {
-          // System.out.println(">>>>>>>>>>>>>>>>>-------------------------A child of node of type "+node.getClass()+" whose type is
+          // System.out.println(">>>>>>>>>>>>>>>>>-------------------------A child of node of type "+node.getClass()+" whose
+          // type is
           // "+temp.getClass()+" is unreachable");
           toReturn.add(temp);
         } else {

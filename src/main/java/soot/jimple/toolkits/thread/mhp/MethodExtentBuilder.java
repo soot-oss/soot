@@ -83,8 +83,9 @@ public class MethodExtentBuilder {
           String name = method.getName();
 
           if (name.equals("wait") || name.equals("notify") || name.equals("notifyAll")
-              || ((name.equals("start") || name.equals("join") || name.equals("suspend") || name.equals("resume") || name.equals("destroy")
-                  || name.equals("stop")) && method.getDeclaringClass().getName().equals("java.lang.Thread"))) {
+              || ((name.equals("start") || name.equals("join") || name.equals("suspend") || name.equals("resume")
+                  || name.equals("destroy") || name.equals("stop"))
+                  && method.getDeclaringClass().getName().equals("java.lang.Thread"))) {
             methodsNeedingInlining.add(targetMethod);
             return;
           } else {
@@ -113,7 +114,8 @@ public class MethodExtentBuilder {
 
   protected void propagate(PegCallGraph cg) {
     /*
-     * if a method is not in methodsNeedingInlining, use DFS to find out if it's parents need inlining. If so, add it to methodsNeedingInlining
+     * if a method is not in methodsNeedingInlining, use DFS to find out if it's parents need inlining. If so, add it to
+     * methodsNeedingInlining
      */
     Set<Object> gray = new HashSet<Object>();
     Iterator it = cg.iterator();

@@ -8,10 +8,11 @@ import soot.jimple.Stmt;
 public class Util {
 
   /**
-   * A new "normal" statement cannot be inserted in the middle of special "identity statements" (a = @parameter or b = @this in Jimple).
-   * 
+   * A new "normal" statement cannot be inserted in the middle of special "identity statements" (a = @parameter or b = @this
+   * in Jimple).
+   *
    * This method returns the last "identity statement" of the method.
-   * 
+   *
    * @param b
    * @param s
    * @return
@@ -28,7 +29,7 @@ public class Util {
 
   /**
    * Returns the first statement after all the "identity statements".
-   * 
+   *
    * @param b
    * @param s
    * @return

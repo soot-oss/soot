@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -32,8 +32,8 @@ import soot.options.JBOptions;
 import soot.options.Options;
 
 /**
- * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key is the phase name. This is a specific one for the
- * very messy jb phase.
+ * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key is the phase name. This
+ * is a specific one for the very messy jb phase.
  */
 public class JimpleBodyPack extends BodyPack {
   public JimpleBodyPack() {

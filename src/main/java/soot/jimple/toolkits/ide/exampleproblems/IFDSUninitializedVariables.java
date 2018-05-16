@@ -49,7 +49,8 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
 
-public class IFDSUninitializedVariables extends DefaultJimpleIFDSTabulationProblem<Local, InterproceduralCFG<Unit, SootMethod>> {
+public class IFDSUninitializedVariables
+    extends DefaultJimpleIFDSTabulationProblem<Local, InterproceduralCFG<Unit, SootMethod>> {
 
   public IFDSUninitializedVariables(InterproceduralCFG<Unit, SootMethod> icfg) {
     super(icfg);
@@ -137,7 +138,8 @@ public class IFDSUninitializedVariables extends DefaultJimpleIFDSTabulationProbl
 
             for (Local localArgument : localArguments) {
               if (source.equivTo(localArgument)) {
-                return Collections.<Local>singleton(destinationMethod.getActiveBody().getParameterLocal(args.indexOf(localArgument)));
+                return Collections
+                    .<Local>singleton(destinationMethod.getActiveBody().getParameterLocal(args.indexOf(localArgument)));
               }
             }
 
@@ -158,7 +160,8 @@ public class IFDSUninitializedVariables extends DefaultJimpleIFDSTabulationProbl
       }
 
       @Override
-      public FlowFunction<Local> getReturnFlowFunction(final Unit callSite, SootMethod calleeMethod, final Unit exitStmt, Unit returnSite) {
+      public FlowFunction<Local> getReturnFlowFunction(final Unit callSite, SootMethod calleeMethod, final Unit exitStmt,
+          Unit returnSite) {
         if (callSite instanceof DefinitionStmt) {
           final DefinitionStmt definition = (DefinitionStmt) callSite;
           if (definition.getLeftOp() instanceof Local) {
@@ -212,7 +215,8 @@ public class IFDSUninitializedVariables extends DefaultJimpleIFDSTabulationProbl
   }
 
   public Map<Unit, Set<Local>> initialSeeds() {
-    return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()), zeroValue());
+    return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()),
+        zeroValue());
   }
 
   @Override

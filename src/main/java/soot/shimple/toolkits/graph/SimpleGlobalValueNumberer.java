@@ -205,11 +205,12 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
     }
 
     /*
-     * Iterator partitionsIt = partitions.iterator(); while(partitionsIt.hasNext()){ Partition partition = (Partition) partitionsIt.next(); int
-     * partitionNumber = partition.getPartitionNumber();
-     * 
-     * Iterator partitionIt = partition.iterator(); while(partitionIt.hasNext()){ Local local = vg.getLocal((Node)partitionIt.next()); if(local ==
-     * null) continue; tmp.append(local + "\t" + partitionNumber + "\n"); } }
+     * Iterator partitionsIt = partitions.iterator(); while(partitionsIt.hasNext()){ Partition partition = (Partition)
+     * partitionsIt.next(); int partitionNumber = partition.getPartitionNumber();
+     *
+     * Iterator partitionIt = partition.iterator(); while(partitionIt.hasNext()){ Local local =
+     * vg.getLocal((Node)partitionIt.next()); if(local == null) continue; tmp.append(local + "\t" + partitionNumber + "\n");
+     * } }
      */
 
     return tmp.toString();

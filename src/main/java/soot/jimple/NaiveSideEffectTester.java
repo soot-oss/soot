@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -35,11 +35,12 @@ import soot.Value;
 import soot.ValueBox;
 
 /**
- * Provides naive side effect information. Relies on no context information; instead, does the least conservative thing possible even in the possible
- * presence of badness.
+ * Provides naive side effect information. Relies on no context information; instead, does the least conservative thing
+ * possible even in the possible presence of badness.
  *
- * Possible weakness of SideEffectTester: consider a Box. We don't have a name for "what-is-inside-the-box" and so we can't ask questions about it.
- * But perhaps we need only ask questions about the box itself; the side effect tester can deal with that internally.
+ * Possible weakness of SideEffectTester: consider a Box. We don't have a name for "what-is-inside-the-box" and so we can't
+ * ask questions about it. But perhaps we need only ask questions about the box itself; the side effect tester can deal with
+ * that internally.
  */
 
 // ArrayRef,

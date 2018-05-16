@@ -45,7 +45,7 @@ import soot.toolkits.graph.BriefUnitGraph;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 31-Mar-2006
  */
 public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform {
@@ -140,8 +140,9 @@ public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform
         units.insertBefore(dup, u);
         units.insertBefore(Baf.v().newPopInst(t2), u);
         /*
-         * units.insertAfter(clone,p); Type t2 = clone.getOpType(); Unit dup; if (category(t2)==2) { dup = Baf.v().newDup2_x2Inst(t2,null,t,t); } else
-         * { dup = Baf.v().newDup1_x2Inst(t2,t,t); } units.insertAfter(dup,clone); units.insertAfter(Baf.v().newPopInst(t2),dup);
+         * units.insertAfter(clone,p); Type t2 = clone.getOpType(); Unit dup; if (category(t2)==2) { dup =
+         * Baf.v().newDup2_x2Inst(t2,null,t,t); } else { dup = Baf.v().newDup1_x2Inst(t2,t,t); }
+         * units.insertAfter(dup,clone); units.insertAfter(Baf.v().newPopInst(t2),dup);
          */
       } else {
         if (category(clone.getOpType()) == 2 || Rand.getInt(10) > weight) {

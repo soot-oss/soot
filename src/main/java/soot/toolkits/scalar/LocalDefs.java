@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -44,7 +44,7 @@ public interface LocalDefs {
 
     /**
      * Creates a new LocalDefs analysis based on a {@code ExceptionalUnitGraph}
-     * 
+     *
      * @see soot.toolkits.graph.ExceptionalUnitGraph#ExceptionalUnitGraph(Body)
      * @see soot.validation.UsesValidator
      * @param body
@@ -57,7 +57,7 @@ public interface LocalDefs {
     /**
      * Creates a new LocalDefs analysis based on a {@code ExceptionalUnitGraph} If you don't trust the input you should set
      * <code>expectUndefined</code> to <code>true</code>
-     * 
+     *
      * @see soot.toolkits.graph.ExceptionalUnitGraph#ExceptionalUnitGraph(Body)
      * @param body
      * @param expectUndefinedUses
@@ -70,7 +70,7 @@ public interface LocalDefs {
 
     /**
      * Creates a new LocalDefs analysis based on a given {@code UnitGraph}
-     * 
+     *
      * @see soot.toolkits.graph.UnitGraph#UnitGraph(Body)
      * @param graph
      *          the graph to work with
@@ -81,9 +81,9 @@ public interface LocalDefs {
     }
 
     /**
-     * Creates a new LocalDefs analysis based on a given {@code UnitGraph}. If you don't trust the input you should set <code>expectUndefined</code>
-     * to <code>true</code>
-     * 
+     * Creates a new LocalDefs analysis based on a given {@code UnitGraph}. If you don't trust the input you should set
+     * <code>expectUndefined</code> to <code>true</code>
+     *
      * @see soot.toolkits.graph.UnitGraph#UnitGraph(Body)
      * @see soot.validation.UsesValidator
      * @param graph
@@ -98,9 +98,10 @@ public interface LocalDefs {
     }
 
     /**
-     * Creates a new LocalDefs analysis based on a given {@code UnitGraph}. This analysis will be flow-insensitive, i.e., for a given local, it will
-     * always give all statements that ever write to that local regardless of potential redefinitions in between.
-     * 
+     * Creates a new LocalDefs analysis based on a given {@code UnitGraph}. This analysis will be flow-insensitive, i.e., for
+     * a given local, it will always give all statements that ever write to that local regardless of potential redefinitions
+     * in between.
+     *
      * @see soot.toolkits.graph.UnitGraph#UnitGraph(Body)
      * @see soot.validation.UsesValidator
      * @param graph
@@ -122,7 +123,8 @@ public interface LocalDefs {
    *          the Local in question.
    * @param s
    *          a unit that specifies the method context (location) to query for the definitions of the Local.
-   * @return a list of Units where the local is defined in the current method context. If there are no uses an empty list will returned.
+   * @return a list of Units where the local is defined in the current method context. If there are no uses an empty list
+   *         will returned.
    */
   public List<Unit> getDefsOfAt(Local l, Unit s);
 
@@ -133,7 +135,8 @@ public interface LocalDefs {
    *
    * @param l
    *          the Local in question.
-   * @return a list of Units where the local is defined in the current method context. If there are no uses an empty list will returned.
+   * @return a list of Units where the local is defined in the current method context. If there are no uses an empty list
+   *         will returned.
    */
   public List<Unit> getDefsOf(Local l);
 

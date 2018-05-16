@@ -35,7 +35,7 @@ import soot.toolkits.scalar.Pair;
 
 /**
  * Factory for nodes not specific to a given method.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class GlobalNodeFactory {
@@ -44,7 +44,8 @@ public class GlobalNodeFactory {
   }
 
   final public Node caseDefaultClassLoader() {
-    AllocNode a = pag.makeAllocNode(PointsToAnalysis.DEFAULT_CLASS_LOADER, AnySubType.v(RefType.v("java.lang.ClassLoader")), null);
+    AllocNode a
+        = pag.makeAllocNode(PointsToAnalysis.DEFAULT_CLASS_LOADER, AnySubType.v(RefType.v("java.lang.ClassLoader")), null);
     VarNode v = pag.makeGlobalVarNode(PointsToAnalysis.DEFAULT_CLASS_LOADER_LOCAL, RefType.v("java.lang.ClassLoader"));
     pag.addEdge(a, v);
     return v;
@@ -58,16 +59,19 @@ public class GlobalNodeFactory {
   }
 
   final public Node caseMainThreadGroup() {
-    AllocNode threadGroupNode = pag.makeAllocNode(PointsToAnalysis.MAIN_THREAD_GROUP_NODE, RefType.v("java.lang.ThreadGroup"), null);
-    VarNode threadGroupNodeLocal = pag.makeGlobalVarNode(PointsToAnalysis.MAIN_THREAD_GROUP_NODE_LOCAL, RefType.v("java.lang.ThreadGroup"));
+    AllocNode threadGroupNode
+        = pag.makeAllocNode(PointsToAnalysis.MAIN_THREAD_GROUP_NODE, RefType.v("java.lang.ThreadGroup"), null);
+    VarNode threadGroupNodeLocal
+        = pag.makeGlobalVarNode(PointsToAnalysis.MAIN_THREAD_GROUP_NODE_LOCAL, RefType.v("java.lang.ThreadGroup"));
     pag.addEdge(threadGroupNode, threadGroupNodeLocal);
     return threadGroupNodeLocal;
   }
 
   final public Node casePrivilegedActionException() {
-    AllocNode a = pag.makeAllocNode(PointsToAnalysis.PRIVILEGED_ACTION_EXCEPTION, AnySubType.v(RefType.v("java.security.PrivilegedActionException")),
-        null);
-    VarNode v = pag.makeGlobalVarNode(PointsToAnalysis.PRIVILEGED_ACTION_EXCEPTION_LOCAL, RefType.v("java.security.PrivilegedActionException"));
+    AllocNode a = pag.makeAllocNode(PointsToAnalysis.PRIVILEGED_ACTION_EXCEPTION,
+        AnySubType.v(RefType.v("java.security.PrivilegedActionException")), null);
+    VarNode v = pag.makeGlobalVarNode(PointsToAnalysis.PRIVILEGED_ACTION_EXCEPTION_LOCAL,
+        RefType.v("java.security.PrivilegedActionException"));
     pag.addEdge(a, v);
     return v;
   }
@@ -91,8 +95,10 @@ public class GlobalNodeFactory {
   }
 
   final public Node caseArgv() {
-    AllocNode argv = pag.makeAllocNode(PointsToAnalysis.STRING_ARRAY_NODE, ArrayType.v(RefType.v("java.lang.String"), 1), null);
-    VarNode sanl = pag.makeGlobalVarNode(PointsToAnalysis.STRING_ARRAY_NODE_LOCAL, ArrayType.v(RefType.v("java.lang.String"), 1));
+    AllocNode argv
+        = pag.makeAllocNode(PointsToAnalysis.STRING_ARRAY_NODE, ArrayType.v(RefType.v("java.lang.String"), 1), null);
+    VarNode sanl
+        = pag.makeGlobalVarNode(PointsToAnalysis.STRING_ARRAY_NODE_LOCAL, ArrayType.v(RefType.v("java.lang.String"), 1));
     AllocNode stringNode = pag.makeAllocNode(PointsToAnalysis.STRING_NODE, RefType.v("java.lang.String"), null);
     VarNode stringNodeLocal = pag.makeGlobalVarNode(PointsToAnalysis.STRING_NODE_LOCAL, RefType.v("java.lang.String"));
     pag.addEdge(argv, sanl);

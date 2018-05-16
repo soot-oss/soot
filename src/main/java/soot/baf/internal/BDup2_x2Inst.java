@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -68,7 +68,8 @@ public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst {
     res.add(mOp1Type);
 
     // 07-20-2006 Michael Batchelder
-    // previously did not handle all types of dup2_x2 Now, will take null as mOp2Type, so don't add to overtypes if it is null
+    // previously did not handle all types of dup2_x2 Now, will take null as mOp2Type, so don't add to overtypes if it is
+    // null
     if (mOp2Type != null) {
       res.add(mOp2Type);
     }
@@ -80,7 +81,8 @@ public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst {
     res.add(mUnder1Type);
 
     // 07-20-2006 Michael Batchelder
-    // previously did not handle all types of dup2_x2 Now, will take null as mUnder2Type, so don't add to undertypes if it is null
+    // previously did not handle all types of dup2_x2 Now, will take null as mUnder2Type, so don't add to undertypes if it is
+    // null
     if (mUnder2Type != null) {
       res.add(mUnder2Type);
     }
@@ -97,10 +99,12 @@ public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst {
 
   public String toString() {
     // 07-20-2006 Michael Batchelder
-    // previously did not handle all types of dup2_x2 Now, will take null as either mOp2Type or null as mUnder2Type to handle ALL types of dup2_x2
+    // previously did not handle all types of dup2_x2 Now, will take null as either mOp2Type or null as mUnder2Type to handle
+    // ALL types of dup2_x2
 
     // old code:
-    // return "dup2_x2." + Baf.bafDescriptorOf(mOp1Type) + "." + Baf.bafDescriptorOf(mOp2Type) + "_" + Baf.bafDescriptorOf(mUnder1Type) + "." +
+    // return "dup2_x2." + Baf.bafDescriptorOf(mOp1Type) + "." + Baf.bafDescriptorOf(mOp2Type) + "_" +
+    // Baf.bafDescriptorOf(mUnder1Type) + "." +
     // Baf.bafDescriptorOf(mUnder2Type);
 
     String optypes = Baf.bafDescriptorOf(mOp1Type);

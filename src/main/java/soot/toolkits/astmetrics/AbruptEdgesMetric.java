@@ -25,7 +25,7 @@ import polyglot.visit.NodeVisitor;
 
 /*
  * Should take care of the following metrics:
- * 
+ *
  * Break Statements
 
        1. of implicit breaks (breaking inner most loop)   DONE
@@ -48,9 +48,9 @@ public class AbruptEdgesMetric extends ASTMetric {
 
   /*
    * (non-Javadoc)
-   * 
-   * @see soot.toolkits.astmetrics.ASTMetric#reset() Implementation of the abstract method which is invoked by parent constructor and whenever the
-   * classDecl in the polyglot changes
+   *
+   * @see soot.toolkits.astmetrics.ASTMetric#reset() Implementation of the abstract method which is invoked by parent
+   * constructor and whenever the classDecl in the polyglot changes
    */
   public void reset() {
     iBreaks = eBreaks = iContinues = eContinues = 0;
@@ -58,7 +58,7 @@ public class AbruptEdgesMetric extends ASTMetric {
 
   /*
    * Implementation of the abstract method
-   * 
+   *
    * Should add the metrics to the data object sent
    */
   public void addMetrics(ClassData data) {

@@ -85,7 +85,8 @@ class CriticalSection extends SynchronizedRegion {
     this.edges = (HashSet<CriticalSectionDataDependency>) tn.edges.clone();
     this.waits = (HashSet<Unit>) tn.waits.clone();
     this.notifys = (HashSet<Unit>) tn.notifys.clone();
-    this.transitiveTargets = (HashSet<MethodOrMethodContext>) (tn.transitiveTargets == null ? null : tn.transitiveTargets.clone());
+    this.transitiveTargets
+        = (HashSet<MethodOrMethodContext>) (tn.transitiveTargets == null ? null : tn.transitiveTargets.clone());
     this.lockObject = tn.lockObject;
     this.lockObjectArrayIndex = tn.lockObjectArrayIndex;
     this.lockset = tn.lockset;

@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -34,8 +34,8 @@ import java.util.List;
 import soot.util.Chain;
 
 /**
- * An implementation of a Chain which can contain only Units, and handles patching to deal with element insertions and removals. This is done by
- * calling Unit.redirectJumpsToThisTo at strategic times.
+ * An implementation of a Chain which can contain only Units, and handles patching to deal with element insertions and
+ * removals. This is done by calling Unit.redirectJumpsToThisTo at strategic times.
  */
 @SuppressWarnings("serial")
 public class PatchingChain<E extends Unit> extends AbstractCollection<E> implements Chain<E> {
@@ -47,8 +47,9 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /**
-   * Returns the inner chain used by the PatchingChain. In general, this should not be used. However, direct access to the inner chain may be
-   * necessary if you wish to perform certain operations (such as control-flow manipulations) without interference from the patching algorithms.
+   * Returns the inner chain used by the PatchingChain. In general, this should not be used. However, direct access to the
+   * inner chain may be necessary if you wish to perform certain operations (such as control-flow manipulations) without
+   * interference from the patching algorithms.
    **/
   public Chain<E> getNonPatchingChain() {
     return innerChain;
@@ -115,9 +116,9 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain <code>toInsert</code> on an edge
-   * that is defined by <code>point_source</code> and <code>point_target</code>.
-   * 
+   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain
+   * <code>toInsert</code> on an edge that is defined by <code>point_source</code> and <code>point_target</code>.
+   *
    * @param toInsert
    *          the instrumentation to be added in the Chain
    * @param point_src
@@ -130,9 +131,9 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain <code>toInsert</code> on an edge
-   * that is defined by <code>point_source</code> and <code>point_target</code>.
-   * 
+   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain
+   * <code>toInsert</code> on an edge that is defined by <code>point_source</code> and <code>point_target</code>.
+   *
    * @param toInsert
    *          instrumentation to be added in the Chain
    * @param point_src
@@ -145,9 +146,9 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain <code>toInsert</code> on an edge
-   * that is defined by <code>point_source</code> and <code>point_target</code>.
-   * 
+   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain
+   * <code>toInsert</code> on an edge that is defined by <code>point_source</code> and <code>point_target</code>.
+   *
    * @param toInsert
    *          instrumentation to be added in the Chain
    * @param point_src
@@ -292,8 +293,8 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /**
-   * Returns an iterator over a copy of this chain. This avoids ConcurrentModificationExceptions from being thrown if the underlying Chain is modified
-   * during iteration. Do not use this to remove elements which have not yet been iterated over!
+   * Returns an iterator over a copy of this chain. This avoids ConcurrentModificationExceptions from being thrown if the
+   * underlying Chain is modified during iteration. Do not use this to remove elements which have not yet been iterated over!
    */
   public Iterator<E> snapshotIterator() {
     List<E> l = new LinkedList<E>(this);

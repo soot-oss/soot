@@ -33,7 +33,8 @@ import java.util.Map;
 import soot.SootMethod;
 
 /**
- * Kind of Stmt inside node, but global to the method. Used for synthetic summary of unalysed methods returning a fresh object.
+ * Kind of Stmt inside node, but global to the method. Used for synthetic summary of unalysed methods returning a fresh
+ * object.
  */
 public class PurityMethodNode implements PurityNode {
   /** Method that created the node */

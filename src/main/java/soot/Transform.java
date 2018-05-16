@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-2003.  
+ * Modified by the Sable Research Group and others 1997-2003.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -74,16 +74,18 @@ public class Transform implements HasPhaseOptions {
   }
 
   /**
-   * Allows user-defined phases to have options other than just enabled without having to mess with the XML. Call this method with a space-separated
-   * list of options declared for this Transform. Only declared options may be passed to this transform as a phase option.
+   * Allows user-defined phases to have options other than just enabled without having to mess with the XML. Call this method
+   * with a space-separated list of options declared for this Transform. Only declared options may be passed to this
+   * transform as a phase option.
    */
   public void setDeclaredOptions(String options) {
     declaredOpts = options;
   }
 
   /**
-   * Allows user-defined phases to have options other than just enabled without having to mess with the XML. Call this method with a space-separated
-   * list of option:value pairs that this Transform is to use as default parameters (eg `enabled:off').
+   * Allows user-defined phases to have options other than just enabled without having to mess with the XML. Call this method
+   * with a space-separated list of option:value pairs that this Transform is to use as default parameters (eg
+   * `enabled:off').
    */
   public void setDefaultOptions(String options) {
     defaultOpts = options;

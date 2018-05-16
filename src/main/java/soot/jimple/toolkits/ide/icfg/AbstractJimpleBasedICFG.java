@@ -35,8 +35,8 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   protected final Map<Unit, Body> unitToOwner = new HashMap<Unit, Body>();
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
-  protected final LoadingCache<Body, DirectedGraph<Unit>> bodyToUnitGraph = IDESolver.DEFAULT_CACHE_BUILDER
-      .build(new CacheLoader<Body, DirectedGraph<Unit>>() {
+  protected final LoadingCache<Body, DirectedGraph<Unit>> bodyToUnitGraph
+      = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<Body, DirectedGraph<Unit>>() {
         @Override
         public DirectedGraph<Unit> load(Body body) throws Exception {
           return makeGraph(body);
@@ -44,8 +44,8 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
       });
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
-  protected final LoadingCache<SootMethod, List<Value>> methodToParameterRefs = IDESolver.DEFAULT_CACHE_BUILDER
-      .build(new CacheLoader<SootMethod, List<Value>>() {
+  protected final LoadingCache<SootMethod, List<Value>> methodToParameterRefs
+      = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<SootMethod, List<Value>>() {
         @Override
         public List<Value> load(SootMethod m) throws Exception {
           return m.getActiveBody().getParameterRefs();
@@ -53,8 +53,8 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
       });
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
-  protected final LoadingCache<SootMethod, Set<Unit>> methodToCallsFromWithin = IDESolver.DEFAULT_CACHE_BUILDER
-      .build(new CacheLoader<SootMethod, Set<Unit>>() {
+  protected final LoadingCache<SootMethod, Set<Unit>> methodToCallsFromWithin
+      = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<SootMethod, Set<Unit>>() {
         @Override
         public Set<Unit> load(SootMethod m) throws Exception {
           Set<Unit> res = null;

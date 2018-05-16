@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -73,9 +73,10 @@ public class JimpleAST {
   }
 
   /**
-   * Applies a SkeletonExtractorWalker to the given SootClass, using the given Resolver to resolve the reference types it contains. The given
-   * SootClass instance will be filled to contain a class skeleton: that is no Body instances will be created for the class' methods.
-   * 
+   * Applies a SkeletonExtractorWalker to the given SootClass, using the given Resolver to resolve the reference types it
+   * contains. The given SootClass instance will be filled to contain a class skeleton: that is no Body instances will be
+   * created for the class' methods.
+   *
    * @param sc
    *          a SootClass to fill in.
    */
@@ -85,8 +86,9 @@ public class JimpleAST {
   }
 
   /**
-   * Returns a body corresponding to the parsed jimple for m. If necessary, applies the BodyExtractorWalker to initialize the bodies map.
-   * 
+   * Returns a body corresponding to the parsed jimple for m. If necessary, applies the BodyExtractorWalker to initialize the
+   * bodies map.
+   *
    * @param m
    *          the method we want to get a body for.
    * @return the actual body for the given method.
@@ -104,7 +106,7 @@ public class JimpleAST {
 
   /**
    * Extracts the reference constant pool for this JimpleAST.
-   * 
+   *
    * @return the Set of RefTypes for the reference types contained this AST.
    */
   public Set<String> getCstPool() {
@@ -118,7 +120,8 @@ public class JimpleAST {
   }
 
   /*
-   * Runs a Walker on the InputStream associated to this object. The SootClass which we want bodies for is passed as the argument.
+   * Runs a Walker on the InputStream associated to this object. The SootClass which we want bodies for is passed as the
+   * argument.
    */
   private void stashBodiesForClass(SootClass sc) {
     HashMap<SootMethod, JimpleBody> methodToBodyMap = new HashMap<SootMethod, JimpleBody>();

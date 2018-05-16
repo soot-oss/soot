@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -126,7 +126,8 @@ class TypeStack {
   public TypeStack merge(TypeStack other) {
 
     if (types.length != other.types.length) {
-      throw new RuntimeException("TypeStack merging failed; unequal " + "stack lengths: " + types.length + " and " + other.types.length);
+      throw new RuntimeException(
+          "TypeStack merging failed; unequal " + "stack lengths: " + types.length + " and " + other.types.length);
     }
 
     TypeStack newStack = new TypeStack();

@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -43,9 +43,10 @@ import soot.G;
 import soot.Singletons;
 
 /**
- * Driver class to run peepholes on the Baf IR. The peepholes applied must implement the Peephole interface. Peepholes are loaded dynamically by the
- * soot runtime; the runtime reads the file peephole.dat, in order to determine which peepholes to apply.
- * 
+ * Driver class to run peepholes on the Baf IR. The peepholes applied must implement the Peephole interface. Peepholes are
+ * loaded dynamically by the soot runtime; the runtime reads the file peephole.dat, in order to determine which peepholes to
+ * apply.
+ *
  * @see Peephole
  * @see ExamplePeephole
  */
@@ -95,7 +96,8 @@ public class PeepholeOptimizer extends BodyTransformer {
               line = reader.readLine();
             }
           } catch (IOException e) {
-            throw new RuntimeException("IO error occured while reading file:  " + line + System.getProperty("line.separator") + e);
+            throw new RuntimeException(
+                "IO error occured while reading file:  " + line + System.getProperty("line.separator") + e);
           }
 
           try {

@@ -19,7 +19,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -52,12 +52,13 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
   protected ValueBox[] bsmArgBoxes;
   protected int tag;
 
-  public JDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<? extends Value> bootstrapArgs, SootMethodRef methodRef, int tag,
-      List<? extends Value> methodArgs) {
+  public JDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<? extends Value> bootstrapArgs, SootMethodRef methodRef,
+      int tag, List<? extends Value> methodArgs) {
     super(methodRef, new ValueBox[methodArgs.size()]);
 
     if (!methodRef.getSignature().startsWith("<" + SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME + ": ")) {
-      throw new IllegalArgumentException("Receiver type of JDynamicInvokeExpr must be " + SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME + "!");
+      throw new IllegalArgumentException(
+          "Receiver type of JDynamicInvokeExpr must be " + SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME + "!");
     }
 
     this.bsmRef = bootstrapMethodRef;
@@ -115,7 +116,8 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
         }
         i++;
       }
-      if (!(getMethod().equals(ie.getMethod()) && (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+      if (!(getMethod().equals(ie.getMethod())
+          && (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
         return false;
       }
       if (argBoxes != null) {
@@ -157,7 +159,8 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
     buffer.append(methodRef.name()); // quoted method name (can be any UTF8
     // string)
     buffer.append("\" <");
-    buffer.append(SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()));
+    buffer
+        .append(SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()));
     buffer.append(">(");
 
     if (argBoxes != null) {
@@ -189,7 +192,8 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
   public void toString(UnitPrinter up) {
     up.literal(Jimple.DYNAMICINVOKE);
     up.literal(" \"" + methodRef.name() + "\" <"
-        + SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()) + ">(");
+        + SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType())
+        + ">(");
 
     if (argBoxes != null) {
       for (int i = 0; i < argBoxes.length; i++) {

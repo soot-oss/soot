@@ -1,6 +1,6 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2008 Ben Bellamy 
- * 
+ * Copyright (C) 2008 Ben Bellamy
+ *
  * All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -121,8 +121,8 @@ public class AugEvalFunction implements IEvalFunction {
 
       if (expr instanceof CmpExpr || expr instanceof CmpgExpr || expr instanceof CmplExpr) {
         return ByteType.v();
-      } else if (expr instanceof GeExpr || expr instanceof GtExpr || expr instanceof LeExpr || expr instanceof LtExpr || expr instanceof EqExpr
-          || expr instanceof NeExpr) {
+      } else if (expr instanceof GeExpr || expr instanceof GtExpr || expr instanceof LeExpr || expr instanceof LtExpr
+          || expr instanceof EqExpr || expr instanceof NeExpr) {
         return BooleanType.v();
       } else if (expr instanceof ShlExpr) {
         if (tl instanceof IntegerType) {
@@ -167,7 +167,8 @@ public class AugEvalFunction implements IEvalFunction {
       Type t = eval_(tg, ((NegExpr) expr).getOp(), stmt, jb);
       if (t instanceof IntegerType) {
         /*
-         * Here I repeat the behaviour of the original type assigner, but is it right? For example, -128 is a byte, but -(-128) is not! --BRB
+         * Here I repeat the behaviour of the original type assigner, but is it right? For example, -128 is a byte, but
+         * -(-128) is not! --BRB
          */
         if (t instanceof Integer1Type || t instanceof BooleanType || t instanceof Integer127Type || t instanceof ByteType) {
           return ByteType.v();
@@ -190,15 +191,16 @@ public class AugEvalFunction implements IEvalFunction {
           r = throwableType;
         } else {
           /*
-           * In theory, we could have multiple exception types pointing here. The JLS requires the exception parameter be a *subclass* of Throwable,
-           * so we do not need to worry about multiple inheritance.
+           * In theory, we could have multiple exception types pointing here. The JLS requires the exception parameter be a
+           * *subclass* of Throwable, so we do not need to worry about multiple inheritance.
            */
           r = BytecodeHierarchy.lcsc(r, t, throwableType);
         }
       }
 
       if (r == null) {
-        throw new RuntimeException("Exception reference used other than as the first " + "statement of an exception handler.");
+        throw new RuntimeException(
+            "Exception reference used other than as the first " + "statement of an exception handler.");
       }
 
       return r;
@@ -210,7 +212,8 @@ public class AugEvalFunction implements IEvalFunction {
         return ((ArrayType) at).getElementType();
       } else if (at instanceof RefType) {
         RefType ref = (RefType) at;
-        if (ref.getSootClass().getName().equals("java.lang.Object") || ref.getSootClass().getName().equals("java.io.Serializable")
+        if (ref.getSootClass().getName().equals("java.lang.Object")
+            || ref.getSootClass().getName().equals("java.io.Serializable")
             || ref.getSootClass().getName().equals("java.lang.Cloneable")) {
           return ref;
         } else {

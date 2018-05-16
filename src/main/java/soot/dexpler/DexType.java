@@ -168,11 +168,12 @@ public class DexType {
   }
 
   /**
-   * Seems that representation of Annotation type in Soot is not consistent with the normal type representation. Normal type representation would be
-   * a.b.c.ClassName Java bytecode representation is La/b/c/ClassName; Soot Annotation type representation (and Jasmin's) is a/b/c/ClassName.
-   * 
+   * Seems that representation of Annotation type in Soot is not consistent with the normal type representation. Normal type
+   * representation would be a.b.c.ClassName Java bytecode representation is La/b/c/ClassName; Soot Annotation type
+   * representation (and Jasmin's) is a/b/c/ClassName.
+   *
    * This method transforms the Java bytecode representation into the Soot annotation type representation.
-   * 
+   *
    * Ljava/lang/Class<Ljava/lang/Enum<*>;>; becomes java/lang/Class<java/lang/Enum<*>>
    *
    * @param type
@@ -208,8 +209,9 @@ public class DexType {
   }
 
   /**
-   * Types read from annotations should be converted to Soot type. However, to maintain compatibility with Soot code most type will not be converted.
-   * 
+   * Types read from annotations should be converted to Soot type. However, to maintain compatibility with Soot code most
+   * type will not be converted.
+   *
    * @param type
    * @return
    */

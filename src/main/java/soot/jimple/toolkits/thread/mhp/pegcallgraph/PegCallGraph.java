@@ -110,8 +110,8 @@ public class PegCallGraph implements DirectedGraph {
     }
     // testChain();
     /*
-     * Because CallGraph.sourceMethods only "Returns an iterator over all methods that are the sources of at least one edge", some application methods
-     * may not in methodToSuccs. So add them.
+     * Because CallGraph.sourceMethods only "Returns an iterator over all methods that are the sources of at least one edge",
+     * some application methods may not in methodToSuccs. So add them.
      */
     {
       Iterator chainIt = chain.iterator();

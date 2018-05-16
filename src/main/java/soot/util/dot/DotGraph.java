@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -50,7 +50,8 @@ public class DotGraph implements Renderable {
   private static final Logger logger = LoggerFactory.getLogger(DotGraph.class);
 
   /*
-   * allow a serialized drawing, following steps: 1. new DotGraph 2. draw(Directed)Edge / drawUndirectedEdge attachAttributes, addNode 3. plot
+   * allow a serialized drawing, following steps: 1. new DotGraph 2. draw(Directed)Edge / drawUndirectedEdge
+   * attachAttributes, addNode 3. plot
    */
   private String graphname;
   private boolean isSubGraph;
@@ -68,7 +69,7 @@ public class DotGraph implements Renderable {
 
   /**
    * Creates a new graph for drawing.
-   * 
+   *
    * @param graphname,
    *          the name used to identify the graph in the dot source.
    */
@@ -82,7 +83,7 @@ public class DotGraph implements Renderable {
 
   /**
    * Generates the drawing on canvas to the dot file.
-   * 
+   *
    * @param filename
    *          the name for the output file. By convention, it should end with DOT_EXTENSION, but this is not enforced.
    */
@@ -99,7 +100,7 @@ public class DotGraph implements Renderable {
 
   /**
    * Draws a directed edge (including the source and end nodes, if they have not already been drawn).
-   * 
+   *
    * @param from,
    *          the source node
    * @param to,
@@ -118,7 +119,7 @@ public class DotGraph implements Renderable {
 
   /**
    * Draws a node.
-   * 
+   *
    * @param name,
    *          the node to draw.
    * @return the {@link DotGraphNode} corresponding to the specified name.
@@ -139,7 +140,7 @@ public class DotGraph implements Renderable {
 
   /**
    * Gets the graph node by name.
-   * 
+   *
    * @param name,
    *          unique name of the node.
    * @return the node with the specified name, adding a new node to the graph if there is no such node.
@@ -159,7 +160,7 @@ public class DotGraph implements Renderable {
 
   /**
    * Sets all node shapes, see the list of node shapes in DotGraphConstants.
-   * 
+   *
    * @param shape,
    *          the node shape
    */
@@ -172,7 +173,7 @@ public class DotGraph implements Renderable {
 
   /**
    * Sets all node styles
-   * 
+   *
    * @param style,
    *          the node style
    */
@@ -224,7 +225,7 @@ public class DotGraph implements Renderable {
 
   /**
    * sets any general attributes
-   * 
+   *
    * @param id
    *          is the attribute name.
    * @param value
@@ -236,7 +237,7 @@ public class DotGraph implements Renderable {
 
   /**
    * sets any general attributes
-   * 
+   *
    * @param attr
    *          a {@link DotGraphAttribute} specifying the attribute name and value.
    */
@@ -246,7 +247,7 @@ public class DotGraph implements Renderable {
 
   /**
    * draws an undirected edge
-   * 
+   *
    * @param label1,
    *          label2
    */
@@ -255,7 +256,7 @@ public class DotGraph implements Renderable {
 
   /**
    * creates a sub graph.
-   * 
+   *
    * @return the newly created sub graph.
    */
   public DotGraph createSubGraph(String label) {

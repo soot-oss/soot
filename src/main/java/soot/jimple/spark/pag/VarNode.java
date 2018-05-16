@@ -35,7 +35,7 @@ import soot.toolkits.scalar.Pair;
 
 /**
  * Represents a simple variable node (Green) in the pointer assignment graph.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public abstract class VarNode extends ValNode implements Comparable {
@@ -83,28 +83,32 @@ public abstract class VarNode extends ValNode implements Comparable {
   }
 
   /**
-   * Designates this node as the potential target of a interprocedural assignment edge which may be added during on-the-fly call graph updating.
+   * Designates this node as the potential target of a interprocedural assignment edge which may be added during on-the-fly
+   * call graph updating.
    */
   public void setInterProcTarget() {
     interProcTarget = true;
   }
 
   /**
-   * Returns true if this node is the potential target of a interprocedural assignment edge which may be added during on-the-fly call graph updating.
+   * Returns true if this node is the potential target of a interprocedural assignment edge which may be added during
+   * on-the-fly call graph updating.
    */
   public boolean isInterProcTarget() {
     return interProcTarget;
   }
 
   /**
-   * Designates this node as the potential source of a interprocedural assignment edge which may be added during on-the-fly call graph updating.
+   * Designates this node as the potential source of a interprocedural assignment edge which may be added during on-the-fly
+   * call graph updating.
    */
   public void setInterProcSource() {
     interProcSource = true;
   }
 
   /**
-   * Returns true if this node is the potential source of a interprocedural assignment edge which may be added during on-the-fly call graph updating.
+   * Returns true if this node is the potential source of a interprocedural assignment edge which may be added during
+   * on-the-fly call graph updating.
    */
   public boolean isInterProcSource() {
     return interProcSource;

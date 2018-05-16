@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -57,9 +57,10 @@ import soot.jimple.VirtualInvokeExpr;
 /** Methods for checking Java scope and visibiliity requirements. */
 public class AccessManager {
   /**
-   * Returns true iff target is legally accessible from container. Illegal access occurs when any of the following cases holds: 1. target is private,
-   * but container.declaringClass() != target.declaringClass(); or, 2. target is package-visible, and its package differs from that of container; or,
-   * 3. target is protected, and either: a. container doesn't belong to target.declaringClass, or any subclass of ;
+   * Returns true iff target is legally accessible from container. Illegal access occurs when any of the following cases
+   * holds: 1. target is private, but container.declaringClass() != target.declaringClass(); or, 2. target is
+   * package-visible, and its package differs from that of container; or, 3. target is protected, and either: a. container
+   * doesn't belong to target.declaringClass, or any subclass of ;
    */
   public static boolean isAccessLegal(SootMethod container, ClassMember target) {
     SootClass targetClass = target.getDeclaringClass();
@@ -105,9 +106,9 @@ public class AccessManager {
   }
 
   /**
-   * Returns true if the statement <code>stmt</code> contains an illegal access to a field or method, assuming the statement is in method
-   * <code>container</code>
-   * 
+   * Returns true if the statement <code>stmt</code> contains an illegal access to a field or method, assuming the statement
+   * is in method <code>container</code>
+   *
    * @param container
    * @param stmt
    * @return
@@ -130,9 +131,9 @@ public class AccessManager {
   }
 
   /**
-   * Resolves illegal accesses in the interval ]before,after[ by creating accessor methods. <code>before</code> and <code>after</code> can be null to
-   * indicate beginning/end respectively.
-   * 
+   * Resolves illegal accesses in the interval ]before,after[ by creating accessor methods. <code>before</code> and
+   * <code>after</code> can be null to indicate beginning/end respectively.
+   *
    * @param body
    * @param before
    * @param after
@@ -174,7 +175,7 @@ public class AccessManager {
 
   /**
    * Creates a name for an accessor method.
-   * 
+   *
    * @param member
    * @param setter
    * @return
@@ -204,8 +205,9 @@ public class AccessManager {
   }
 
   /**
-   * Turns a field access or method call into a call to an accessor method. Reuses existing accessors based on name mangling (see createAccessorName)
-   * 
+   * Turns a field access or method call into a call to an accessor method. Reuses existing accessors based on name mangling
+   * (see createAccessorName)
+   *
    * @param container
    * @param stmt
    */
@@ -276,7 +278,8 @@ public class AccessManager {
       accStmts.add(Jimple.v().newAssignStmt(l, v));
       accStmts.add(Jimple.v().newReturnStmt(l));
 
-      accessor = Scene.v().makeSootMethod(name, parameterTypes, returnType, Modifier.PUBLIC | Modifier.STATIC, thrownExceptions);
+      accessor
+          = Scene.v().makeSootMethod(name, parameterTypes, returnType, Modifier.PUBLIC | Modifier.STATIC, thrownExceptions);
       accessorBody.setMethod(accessor);
       accessor.setActiveBody(accessorBody);
       target.addMethod(accessor);
@@ -326,7 +329,8 @@ public class AccessManager {
       accStmts.addLast(Jimple.v().newReturnVoidStmt());
       Type returnType = VoidType.v();
 
-      accessor = Scene.v().makeSootMethod(name, parameterTypes, returnType, Modifier.PUBLIC | Modifier.STATIC, thrownExceptions);
+      accessor
+          = Scene.v().makeSootMethod(name, parameterTypes, returnType, Modifier.PUBLIC | Modifier.STATIC, thrownExceptions);
       accessorBody.setMethod(accessor);
       accessor.setActiveBody(accessorBody);
       target.addMethod(accessor);
@@ -419,7 +423,8 @@ public class AccessManager {
         accStmts.add(Jimple.v().newReturnStmt(resultLocal));
       }
 
-      accessor = Scene.v().makeSootMethod(name, parameterTypes, returnType, Modifier.PUBLIC | Modifier.STATIC, thrownExceptions);
+      accessor
+          = Scene.v().makeSootMethod(name, parameterTypes, returnType, Modifier.PUBLIC | Modifier.STATIC, thrownExceptions);
       accessorBody.setMethod(accessor);
       accessor.setActiveBody(accessorBody);
       target.addMethod(accessor);
@@ -437,9 +442,9 @@ public class AccessManager {
 
   /**
    * Modifies code so that an access to <code>target</code> is legal from code in <code>container</code>.
-   * 
+   *
    * The "accessors" option assumes suitable accessor methods will be created after checking.
-   * 
+   *
    */
   public static boolean ensureAccess(SootMethod container, ClassMember target, String options) {
     boolean accessors = options.equals("accessors");

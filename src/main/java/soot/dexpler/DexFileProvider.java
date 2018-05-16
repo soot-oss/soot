@@ -181,7 +181,8 @@ public class DexFileProvider {
     boolean multiple_dex = Options.v().process_multiple_dex();
 
     // load dex files from apk/folder/file
-    MultiDexContainer<? extends DexBackedDexFile> dexContainer = DexFileFactory.loadDexContainer(dexSourceFile, Opcodes.forApi(api));
+    MultiDexContainer<? extends DexBackedDexFile> dexContainer
+        = DexFileFactory.loadDexContainer(dexSourceFile, Opcodes.forApi(api));
 
     List<String> dexEntryNameList = dexContainer.getDexEntryNames();
     int dexFileCount = dexEntryNameList.size();
@@ -196,14 +197,15 @@ public class DexFileProvider {
     Map<String, DexContainer> dexMap = new HashMap<>(dexFileCount);
 
     // report found dex files and add to list.
-    // We do this in reverse order to make sure that we add the first entry if there is no classes.dex file in single dex mode
+    // We do this in reverse order to make sure that we add the first entry if there is no classes.dex file in single dex
+    // mode
     ListIterator<String> entryNameIterator = dexEntryNameList.listIterator(dexFileCount);
     while (entryNameIterator.hasPrevious()) {
       String entryName = entryNameIterator.previous();
       DexBackedDexFile entry = dexContainer.getEntry(entryName);
       entryName = deriveDexName(entryName);
-      logger.debug(
-          "" + String.format("Found dex file '%s' with %d classes in '%s'", entryName, entry.getClasses().size(), dexSourceFile.getCanonicalPath()));
+      logger.debug("" + String.format("Found dex file '%s' with %d classes in '%s'", entryName, entry.getClasses().size(),
+          dexSourceFile.getCanonicalPath()));
 
       if (multiple_dex) {
         dexMap.put(entryName, new DexContainer(entry, entryName, dexSourceFile));
@@ -212,7 +214,8 @@ public class DexFileProvider {
         // If we haven't found a classes.dex until the last element, take the last!
         dexMap = Collections.singletonMap(entryName, new DexContainer(entry, entryName, dexSourceFile));
         if (dexFileCount > 1) {
-          logger.warn("Multiple dex files detected, only processing '" + entryName + "'. Use '-process-multiple-dex' option to process them all.");
+          logger.warn("Multiple dex files detected, only processing '" + entryName
+              + "'. Use '-process-multiple-dex' option to process them all.");
         }
       }
     }

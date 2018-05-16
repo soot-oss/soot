@@ -60,13 +60,15 @@ public class CFGToDotGraph {
 
   /**
    * <p>
-   * Returns a CFGToDotGraph converter which will draw the graph as a single arbitrarily-sized page, with full-length node labels.
+   * Returns a CFGToDotGraph converter which will draw the graph as a single arbitrarily-sized page, with full-length node
+   * labels.
    * </p>
    *
    * <p>
-   * If asked to draw a <code>ExceptionalGraph</code>, the converter will identify the exceptions that will be thrown. By default, it will distinguish
-   * different edges by coloring regular control flow edges black, exceptional control flow edges red, and thrown exception edges light gray. Head and
-   * tail nodes are filled in, head nodes with gray, and tail nodes with light gray.
+   * If asked to draw a <code>ExceptionalGraph</code>, the converter will identify the exceptions that will be thrown. By
+   * default, it will distinguish different edges by coloring regular control flow edges black, exceptional control flow
+   * edges red, and thrown exception edges light gray. Head and tail nodes are filled in, head nodes with gray, and tail
+   * nodes with light gray.
    * </p>
    */
   public CFGToDotGraph() {
@@ -84,16 +86,17 @@ public class CFGToDotGraph {
    * Specify whether to split the graph into pages.
    *
    * @param onePage
-   *          indicates whether to produce the graph as a single, arbitrarily-sized page (if <code>onePage</code> is <code>true</code>) or several
-   *          8.5x11-inch pages (if <code>onePage</code> is <code>false</code>).
+   *          indicates whether to produce the graph as a single, arbitrarily-sized page (if <code>onePage</code> is
+   *          <code>true</code>) or several 8.5x11-inch pages (if <code>onePage</code> is <code>false</code>).
    */
   public void setOnePage(boolean onePage) {
     this.onePage = onePage;
   }
 
   /**
-   * Specify whether to abbreviate the text in node labels. This is most relevant when the nodes represent basic blocks: abbreviated node labels
-   * contain only a numeric label for the block, while unabbreviated labels contain the code of its instructions.
+   * Specify whether to abbreviate the text in node labels. This is most relevant when the nodes represent basic blocks:
+   * abbreviated node labels contain only a numeric label for the block, while unabbreviated labels contain the code of its
+   * instructions.
    *
    * @param useBrief
    *          indicates whether to abbreviate the text of node labels.
@@ -103,8 +106,9 @@ public class CFGToDotGraph {
   }
 
   /**
-   * Specify whether the graph should depict the exceptions which each node may throw, in the form of an edge from the throwing node to the handler
-   * (if any), labeled with the possible exception types. This parameter has an effect only when drawing <code>ExceptionalGraph</code>s.
+   * Specify whether the graph should depict the exceptions which each node may throw, in the form of an edge from the
+   * throwing node to the handler (if any), labeled with the possible exception types. This parameter has an effect only when
+   * drawing <code>ExceptionalGraph</code>s.
    *
    * @param showExceptions
    *          indicates whether to show possible exceptions and their handlers.
@@ -130,8 +134,8 @@ public class CFGToDotGraph {
   }
 
   /**
-   * Specify the dot graph attribute to use for exceptional control flow edges. This parameter has an effect only when drawing
-   * <code>ExceptionalGraph</code>s.
+   * Specify the dot graph attribute to use for exceptional control flow edges. This parameter has an effect only when
+   * drawing <code>ExceptionalGraph</code>s.
    *
    * @param id
    *          The attribute name, for example "style" or "color".
@@ -146,8 +150,8 @@ public class CFGToDotGraph {
   }
 
   /**
-   * Specify the dot graph attribute to use for edges depicting the exceptions each node may throw, and their handlers. This parameter has an effect
-   * only when drawing <code>ExceptionalGraph</code>s.
+   * Specify the dot graph attribute to use for edges depicting the exceptions each node may throw, and their handlers. This
+   * parameter has an effect only when drawing <code>ExceptionalGraph</code>s.
    *
    * @param id
    *          The attribute name, for example "style" or "color".
@@ -192,9 +196,9 @@ public class CFGToDotGraph {
   }
 
   /**
-   * Returns an {@link Iterator} over a {@link Collection} which iterates over its elements in a specified order. Used to order lists of destination
-   * nodes consistently before adding the corresponding edges to the graph. (Maintaining a consistent ordering of edges makes it easier to diff the
-   * dot files output for different graphs of a given method.)
+   * Returns an {@link Iterator} over a {@link Collection} which iterates over its elements in a specified order. Used to
+   * order lists of destination nodes consistently before adding the corresponding edges to the graph. (Maintaining a
+   * consistent ordering of edges makes it easier to diff the dot files output for different graphs of a given method.)
    *
    * @param coll
    *          The collection to iterator over.
@@ -262,15 +266,16 @@ public class CFGToDotGraph {
   }
 
   /**
-   * Create a <code>DotGraph</code> whose nodes and edges depict a control flow graph without distinguished exceptional edges.
-   * 
+   * Create a <code>DotGraph</code> whose nodes and edges depict a control flow graph without distinguished exceptional
+   * edges.
+   *
    * @param graph
-   *          a <code>DirectedGraph</code> representing a CFG (probably an instance of {@link UnitGraph}, {@link BlockGraph}, or one of their
-   *          subclasses).
+   *          a <code>DirectedGraph</code> representing a CFG (probably an instance of {@link UnitGraph}, {@link BlockGraph},
+   *          or one of their subclasses).
    *
    * @param body
-   *          the <code>Body</code> represented by <code>graph</code> (used to format the text within nodes). If no body is available, pass
-   *          <code>null</code>.
+   *          the <code>Body</code> represented by <code>graph</code> (used to format the text within nodes). If no body is
+   *          available, pass <code>null</code>.
    *
    * @return a visualization of <code>graph</code>.
    */
@@ -306,9 +311,9 @@ public class CFGToDotGraph {
   }
 
   /**
-   * Create a <code>DotGraph</code> whose nodes and edges depict the control flow in a <code>ExceptionalGraph</code>, with distinguished edges for
-   * exceptional control flow.
-   * 
+   * Create a <code>DotGraph</code> whose nodes and edges depict the control flow in a <code>ExceptionalGraph</code>, with
+   * distinguished edges for exceptional control flow.
+   *
    * @param graph
    *          the control flow graph
    *
@@ -344,8 +349,8 @@ public class CFGToDotGraph {
       }
 
       if (showExceptions) {
-        for (Iterator<ExceptionDest<N>> destsIt = sortedIterator(graph.getExceptionDests(node), new ExceptionDestComparator(namer)); destsIt
-            .hasNext();) {
+        for (Iterator<ExceptionDest<N>> destsIt
+            = sortedIterator(graph.getExceptionDests(node), new ExceptionDestComparator(namer)); destsIt.hasNext();) {
           ExceptionDest<N> dest = destsIt.next();
           Object handlerStart = dest.getHandlerNode();
           if (handlerStart == null) {
@@ -378,8 +383,8 @@ public class CFGToDotGraph {
    * A utility method that initializes a DotGraph object for use in any variety of drawCFG().
    *
    * @param body
-   *          The <code>Body</code> that the graph will represent (used in the graph's title). If no <code>Body</code> is available, pass
-   *          <code>null</code>.
+   *          The <code>Body</code> that the graph will represent (used in the graph's title). If no <code>Body</code> is
+   *          available, pass <code>null</code>.
    *
    * @return a <code>DotGraph</code> for visualizing <code>body</code>.
    */
@@ -402,8 +407,8 @@ public class CFGToDotGraph {
   }
 
   /**
-   * A utility class for assigning unique names to DotGraph entities. It maintains a mapping from CFG <code>Object</code>s to strings identifying the
-   * corresponding nodes in generated dot source.
+   * A utility class for assigning unique names to DotGraph entities. It maintains a mapping from CFG <code>Object</code>s to
+   * strings identifying the corresponding nodes in generated dot source.
    */
   @SuppressWarnings("serial")
   private static class DotNamer<N> extends HashMap<N, Integer> {
@@ -495,8 +500,9 @@ public class CFGToDotGraph {
   }
 
   /**
-   * Utility routine for setting some common formatting style for the {@link DotGraphNode}s corresponding to some collection of objects.
-   * 
+   * Utility routine for setting some common formatting style for the {@link DotGraphNode}s corresponding to some collection
+   * of objects.
+   *
    * @param objects
    *          is the collection of {@link Object}s whose nodes are to be styled.
    * @param canvas
@@ -508,7 +514,8 @@ public class CFGToDotGraph {
    * @param attrib
    *          if non-null, an additional attribute to associate with each of the nodes.
    */
-  private <N> void setStyle(Collection<? extends N> objects, DotGraph canvas, DotNamer<N> namer, String style, DotGraphAttribute attrib) {
+  private <N> void setStyle(Collection<? extends N> objects, DotGraph canvas, DotNamer<N> namer, String style,
+      DotGraphAttribute attrib) {
     // Fill the entry and exit nodes.
     for (N object : objects) {
       DotGraphNode objectNode = canvas.getNode(namer.getName(object));
@@ -518,7 +525,8 @@ public class CFGToDotGraph {
   }
 
   /**
-   * Utility routine to format the list of names in a ThrowableSet into a label for the edge showing where those Throwables are handled.
+   * Utility routine to format the list of names in a ThrowableSet into a label for the edge showing where those Throwables
+   * are handled.
    */
   private String formatThrowableSet(ThrowableSet set) {
     String input = set.toAbbreviatedString();

@@ -7,7 +7,8 @@ import org.jf.dexlib2.builder.instruction.BuilderInstruction10x;
 import soot.toDex.LabelAssigner;
 
 /**
- * The "10x" instruction format: It needs one 16-bit code unit, does not have any registers and is used for general purposes (hence the "x").<br>
+ * The "10x" instruction format: It needs one 16-bit code unit, does not have any registers and is used for general purposes
+ * (hence the "x").<br>
  * <br>
  * It is used by the opcodes "nop" and "return-void".
  */

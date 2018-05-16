@@ -46,7 +46,7 @@ import soot.util.queue.QueueReader;
 
 /**
  * Part of a pointer assignment graph for a single method.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public final class MethodPAG {
@@ -310,5 +310,6 @@ public final class MethodPAG {
     }
   }
 
-  protected final NumberedString sigCanonicalize = Scene.v().getSubSigNumberer().findOrAdd("java.lang.String canonicalize(java.lang.String)");
+  protected final NumberedString sigCanonicalize
+      = Scene.v().getSubSigNumberer().findOrAdd("java.lang.String canonicalize(java.lang.String)");
 }

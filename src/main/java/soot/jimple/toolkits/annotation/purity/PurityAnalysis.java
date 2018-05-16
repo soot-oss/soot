@@ -42,8 +42,8 @@ import soot.options.PurityOptions;
 /**
  * Purity analysis phase.
  *
- * TODO: - test, test, and test (and correct the potentially infinite bugs) - optimise PurityGraph, especially methodCall) - find a better abstraction
- * for exceptions (throw & catch) - output nicer graphs (especially clusters!)
+ * TODO: - test, test, and test (and correct the potentially infinite bugs) - optimise PurityGraph, especially methodCall) -
+ * find a better abstraction for exceptions (throw & catch) - output nicer graphs (especially clusters!)
  */
 public class PurityAnalysis extends SceneTransformer {
   private static final Logger logger = LoggerFactory.getLogger(PurityAnalysis.class);

@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,8 @@ import soot.Type;
 import soot.dexpler.DexBody;
 
 /**
- * Interface for instructions that can/must be retyped, i.e. instructions that assign to a local and have to retype it after local splitting.
+ * Interface for instructions that can/must be retyped, i.e. instructions that assign to a local and have to retype it after
+ * local splitting.
  *
  * @author Michael Markert <michael.markert@googlemail.com>
  */
@@ -48,7 +49,7 @@ public interface RetypeableInstruction {
    * Do actual retype.
    *
    * Retyping is separated from setting the type, to make it possible to retype after local splitting.
-   * 
+   *
    * @param body
    *          The body containing the processed statement
    */

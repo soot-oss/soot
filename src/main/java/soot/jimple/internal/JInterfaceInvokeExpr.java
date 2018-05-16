@@ -19,7 +19,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -44,8 +44,8 @@ public class JInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr {
     methodRef.declaringClass().checkLevelIgnoreResolving(SootClass.HIERARCHY);
     // now check if the class is valid
     if (!methodRef.declaringClass().isInterface() && !methodRef.declaringClass().isPhantom()) {
-      throw new RuntimeException("Trying to create interface invoke expression for non-interface type: " + methodRef.declaringClass()
-          + " Use JVirtualInvokeExpr or JSpecialInvokeExpr instead!");
+      throw new RuntimeException("Trying to create interface invoke expression for non-interface type: "
+          + methodRef.declaringClass() + " Use JVirtualInvokeExpr or JSpecialInvokeExpr instead!");
     }
 
     for (int i = 0; i < args.size(); i++) {
