@@ -34,8 +34,9 @@ public class StringConstant extends Constant {
   public final String value;
 
   private StringConstant(String s) {
-    if (s == null)
+    if (s == null) {
       throw new IllegalArgumentException("String constant cannot be null");
+    }
     this.value = s;
   }
 
