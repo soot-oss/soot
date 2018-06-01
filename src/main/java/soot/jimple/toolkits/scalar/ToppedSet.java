@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -33,8 +33,9 @@ import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.FlowSet;
 
 /**
- * Represents information for flow analysis, adding a top element to a lattice. A FlowSet is an element of a lattice; this lattice might be described
- * by a FlowUniverse. If add, remove, size, isEmpty, toList and contains are implemented, the lattice must be the powerset of some set.
+ * Represents information for flow analysis, adding a top element to a lattice. A FlowSet is an element of a lattice; this
+ * lattice might be described by a FlowUniverse. If add, remove, size, isEmpty, toList and contains are implemented, the
+ * lattice must be the powerset of some set.
  *
  */
 public class ToppedSet<T> extends AbstractFlowSet<T> {

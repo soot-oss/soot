@@ -1,6 +1,6 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2008 Ben Bellamy 
- * 
+ * Copyright (C) 2008 Ben Bellamy
+ *
  * All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -53,7 +53,8 @@ public class AugHierarchy implements IHierarchy {
         return Collections.<Type>singletonList(a);
       } else if (a instanceof BooleanType || b instanceof BooleanType) {
         return Collections.<Type>emptyList();
-      } else if ((a instanceof ByteType && b instanceof Integer32767Type) || (b instanceof ByteType && a instanceof Integer32767Type)) {
+      } else if ((a instanceof ByteType && b instanceof Integer32767Type)
+          || (b instanceof ByteType && a instanceof Integer32767Type)) {
         return Collections.<Type>singletonList(ShortType.v());
       } else if ((a instanceof CharType && (b instanceof ShortType || b instanceof ByteType))
           || (b instanceof CharType && (a instanceof ShortType || a instanceof ByteType))) {
@@ -102,21 +103,23 @@ public class AugHierarchy implements IHierarchy {
         return false;
       }
     } else if (ancestor instanceof CharType) {
-      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type || child instanceof Integer32767Type) {
+      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type
+          || child instanceof Integer32767Type) {
         return true;
       } else {
         return false;
       }
     } else if (ancestor instanceof ShortType) {
-      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type || child instanceof Integer32767Type
-          || child instanceof ByteType) {
+      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type
+          || child instanceof Integer32767Type || child instanceof ByteType) {
         return true;
       } else {
         return false;
       }
     } else if (ancestor instanceof IntType) {
-      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type || child instanceof Integer32767Type
-          || child instanceof ByteType || child instanceof CharType || child instanceof ShortType) {
+      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type
+          || child instanceof Integer32767Type || child instanceof ByteType || child instanceof CharType
+          || child instanceof ShortType) {
         return true;
       } else {
         return false;

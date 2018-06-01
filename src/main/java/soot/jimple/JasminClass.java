@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -202,7 +202,8 @@ public class JasminClass extends AbstractJasminClass {
       int[] paramSlots = new int[method.getParameterCount()];
       int thisSlot = 0;
       Set<Local> assignedLocals = new HashSet<Local>();
-      Map<GroupIntPair, Integer> groupColorPairToSlot = new HashMap<GroupIntPair, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
+      Map<GroupIntPair, Integer> groupColorPairToSlot
+          = new HashMap<GroupIntPair, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
 
       localToSlot = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
 
@@ -379,7 +380,8 @@ public class JasminClass extends AbstractJasminClass {
           // we use structural equality
           // for rvalue & nextStmt.getLeftOp().
 
-          if (!(lvalue instanceof Local) || !nextStmt.getLeftOp().equivTo(rvalue) || !(nextStmt.getRightOp() instanceof AddExpr)) {
+          if (!(lvalue instanceof Local) || !nextStmt.getLeftOp().equivTo(rvalue)
+              || !(nextStmt.getRightOp() instanceof AddExpr)) {
             break;
           }
 
@@ -706,7 +708,7 @@ public class JasminClass extends AbstractJasminClass {
 
             /*
              * if ( slot >= 0 && slot <= 3) emit("astore_" + slot, ); else emit("astore " + slot, );
-             * 
+             *
              */
 
           }
@@ -731,8 +733,8 @@ public class JasminClass extends AbstractJasminClass {
         SootFieldRef field = v.getFieldRef();
 
         emitValue(rvalue);
-        emit("putstatic " + slashify(field.declaringClass().getName()) + "/" + field.name() + " " + jasminDescriptorOf(field.type()),
-            -sizeOfType(v.getFieldRef().type()));
+        emit("putstatic " + slashify(field.declaringClass().getName()) + "/" + field.name() + " "
+            + jasminDescriptorOf(field.type()), -sizeOfType(v.getFieldRef().type()));
       }
     });
   }
@@ -1858,8 +1860,8 @@ public class JasminClass extends AbstractJasminClass {
           emitValue(v.getArg(i));
         }
 
-        emit("invokeinterface " + slashify(m.declaringClass().getName()) + "/" + m.name() + jasminDescriptorOf(m) + " " + (argCountOf(m) + 1),
-            -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
+        emit("invokeinterface " + slashify(m.declaringClass().getName()) + "/" + m.name() + jasminDescriptorOf(m) + " "
+            + (argCountOf(m) + 1), -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
       }
 
       public void caseLengthExpr(LengthExpr v) {

@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -28,10 +28,10 @@ package soot.coffi;
 import java.util.Enumeration;
 
 /**
- * An enumeration of a Utf8 allows one to run through the characters in a unicode string; used primarily for comparing unicode strings. Note that
- * unlike regular enumerations, and to be efficient (ie to avoid allocating an object in each call to nextElement), the return value is accessed by
- * this object's 'c' field, and nextElement merely returns this.
- * 
+ * An enumeration of a Utf8 allows one to run through the characters in a unicode string; used primarily for comparing
+ * unicode strings. Note that unlike regular enumerations, and to be efficient (ie to avoid allocating an object in each call
+ * to nextElement), the return value is accessed by this object's 'c' field, and nextElement merely returns this.
+ *
  * @see CONSTANT_Utf8_info
  * @see Utf8_Enumeration#c
  * @see Utf8_Enumeration#nextElement
@@ -41,7 +41,7 @@ public class Utf8_Enumeration implements Enumeration {
 
   /**
    * The latest character, as determined by nextElement.
-   * 
+   *
    * @see Utf8_Enumeration#nextElement
    */
   public int c; // latest character
@@ -52,7 +52,7 @@ public class Utf8_Enumeration implements Enumeration {
 
   /**
    * For creating an empty enumeration; you must use reset() after this to initialize the enumeration.
-   * 
+   *
    * @see Utf8_Enumeration#reset
    */
   public Utf8_Enumeration() {
@@ -60,7 +60,7 @@ public class Utf8_Enumeration implements Enumeration {
 
   /**
    * For creating a normal enumeration of the given Utf8 string.
-   * 
+   *
    * @param b
    *          array of bytes in Utf8 format.
    */
@@ -72,7 +72,7 @@ public class Utf8_Enumeration implements Enumeration {
 
   /**
    * Resets this object to be an enumeration of the given Utf8 string.
-   * 
+   *
    * @param b
    *          array of bytes in Utf8 format.
    */
@@ -92,7 +92,7 @@ public class Utf8_Enumeration implements Enumeration {
 
   /**
    * Determines the next Utf8 character, and stores it in c.
-   * 
+   *
    * @return <i>this</i>
    * @see Utf8_Enumeration#c
    */

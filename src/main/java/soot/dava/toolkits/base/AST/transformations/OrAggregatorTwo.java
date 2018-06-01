@@ -44,7 +44,7 @@ import soot.jimple.Stmt;
      A                            A                      A
   }                       }                         }
   else{          --->     else{               --->
-     if(cond2){              empty else body           
+     if(cond2){              empty else body
         A                 }
      }
   }
@@ -59,7 +59,7 @@ we need a reference to the parent node of this if
   if(cond1){                   if(!cond1){
      break label_1;                   Body1
   }                   ---->    }
-  else{                        else{ 
+  else{                        else{
       Body1                          break label_1
   }                            }
 
@@ -113,9 +113,9 @@ public class OrAggregatorTwo extends DepthFirstAdapter {
     ASTCondition newCond = new ASTOrCondition(leftCond, rightCond);
 
     /*
-     * The outer if and inner if could both have labels. Note that if the inner if had a label which was broken from inside its body the two bodies
-     * would not have been the same since the outerifbody could not have the same label.
-     * 
+     * The outer if and inner if could both have labels. Note that if the inner if had a label which was broken from inside
+     * its body the two bodies would not have been the same since the outerifbody could not have the same label.
+     *
      * We therefore keep the outerIfElse label
      */
     // System.out.println("OR AGGREGATOR TWO");

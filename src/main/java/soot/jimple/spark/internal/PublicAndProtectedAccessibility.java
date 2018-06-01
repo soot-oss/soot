@@ -25,9 +25,9 @@ import soot.SootField;
 import soot.SootMethod;
 
 /**
- * Using this oracle one assumes, that a client of the target library can call every public or protected method and access every public or protected
- * field.
- * 
+ * Using this oracle one assumes, that a client of the target library can call every public or protected method and access
+ * every public or protected field.
+ *
  * @author Florian Kuebler
  *
  */

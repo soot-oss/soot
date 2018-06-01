@@ -47,9 +47,9 @@ import soot.jbco.util.Rand;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 22-Mar-2006
- * 
+ *
  *         This transformer transforms gotos/ifs into JSRS, but not all of them.
  */
 public class AddJSRs extends BodyTransformer implements IJbcoTransform {
@@ -165,7 +165,8 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
         // if we haven't dealt with a target yet, add the pop inst
         if (!popsBuilt.containsKey(tu)) {
           throw new RuntimeException(
-              "It appears a target was found that was not updated with a POP.\n\"This makes no sense,\" said the bug as it flew through the code.");
+              "It appears a target was found that was not updated with a POP.\n\"This makes no sense,\" "
+                  + "said the bug as it flew through the code.");
         }
 
         JSRInst ji = builtJsrs.get(popsBuilt.get(tu));

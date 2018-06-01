@@ -43,26 +43,28 @@ import soot.jimple.Stmt;
 //import soot.dava.internal.SET.*;
 
 /**
- * CHANGE LOG: * November 21st Added support for implicit breaks and continues Tested code for reaching defs within switch/try/if/while/for
+ * CHANGE LOG: * November 21st Added support for implicit breaks and continues Tested code for reaching defs within
+ * switch/try/if/while/for
  *
  * * November 22nd Refactored code to make structure flow analysis framework handle breaks and returns.
  *
- * * November 24th newInitialFlow ERROR............initialFlow should be the set of all defs........since there needs to exist SOME path
+ * * November 24th newInitialFlow ERROR............initialFlow should be the set of all defs........since there needs to
+ * exist SOME path
  */
 
 /*
- * Reaching Defs Step 1: Set of definitions (a definition is a Stmt within a StatementSequenceNode) Step 2: A definition d: x = ... reaches a point p
- * in the program if there exists a path from p such that there is no other definition of x between d and p. Step 3: Forward Analysis Step 4: Union
- * Step 5: d: x = expr kill = { all existing defs of x}
- * 
+ * Reaching Defs Step 1: Set of definitions (a definition is a Stmt within a StatementSequenceNode) Step 2: A definition d: x
+ * = ... reaches a point p in the program if there exists a path from p such that there is no other definition of x between d
+ * and p. Step 3: Forward Analysis Step 4: Union Step 5: d: x = expr kill = { all existing defs of x}
+ *
  * gen = (d)
- * 
- * Step 6: newInitialFlow: No definitions reach (safe) (Catch bodies) //November 24th.........changing above to be the universal set of all
- * definitions
- * 
- * 
+ *
+ * Step 6: newInitialFlow: No definitions reach (safe) (Catch bodies) //November 24th.........changing above to be the
+ * universal set of all definitions
+ *
+ *
  * out(start) = {} since there has been no definition so far
- * 
+ *
  * out(Si) not needed for structured flow analysis
  */
 

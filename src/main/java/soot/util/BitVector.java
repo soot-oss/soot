@@ -20,9 +20,9 @@
 package soot.util;
 
 /**
- * This is the Soot internal implementation of java.util.BitSet with Felix and Jerome's clever efficient iterator. It was re-implemented from scratch
- * by Ondrej Lhotak to avoid licence issues. It was named BitVector rather than BitSet to avoid a name clash with the one in the standard Java
- * library.
+ * This is the Soot internal implementation of java.util.BitSet with Felix and Jerome's clever efficient iterator. It was
+ * re-implemented from scratch by Ondrej Lhotak to avoid licence issues. It was named BitVector rather than BitSet to avoid a
+ * name clash with the one in the standard Java library.
  *
  * @author Ondrej Lhotak
  */
@@ -199,9 +199,9 @@ public class BitVector {
 
   /**
    * Count the number of ones in the bitvector.
-   * 
-   * @author Adam Richard This is Brian Kernighan's algorithm from: http://graphics.stanford.edu/~seander/bithacks.html and is efficient for sparse
-   *         bit sets.
+   *
+   * @author Adam Richard This is Brian Kernighan's algorithm from: http://graphics.stanford.edu/~seander/bithacks.html and
+   *         is efficient for sparse bit sets.
    */
   public int cardinality() {
     int c = 0;
@@ -216,7 +216,7 @@ public class BitVector {
 
   /**
    * Returns true if the both the current and the specified bitvectors have at least one bit set in common.
-   * 
+   *
    * @author Quentin Sabah Inspired by the BitVector.and method.
    */
   public boolean intersects(BitVector other) {
@@ -294,14 +294,16 @@ public class BitVector {
   }
 
   /*
-   * public boolean orAndAndNotCheck(BitVector orset, BitVector andset, BitVector andnotset) { BitVector orAndAnd = (BitVector) orset.clone(); if(
-   * andset != null ) orAndAnd.and( andset ); if( andnotset != null ) orAndAnd.andNot( andnotset ); orAndAnd.or( this ); boolean ret =
-   * !orAndAnd.equals(this); orAndAndNotOld( orset, andset, andnotset ); if( !this.equals( orAndAnd ) ) { throw new RuntimeException(
-   * "orset is "+orset+"\nandset is "+andset+"\nandnotset is "+andnotset+"\nthis is "+this+"\ncorrect is "+orAndAnd ); } return ret; }
+   * public boolean orAndAndNotCheck(BitVector orset, BitVector andset, BitVector andnotset) { BitVector orAndAnd =
+   * (BitVector) orset.clone(); if( andset != null ) orAndAnd.and( andset ); if( andnotset != null ) orAndAnd.andNot(
+   * andnotset ); orAndAnd.or( this ); boolean ret = !orAndAnd.equals(this); orAndAndNotOld( orset, andset, andnotset ); if(
+   * !this.equals( orAndAnd ) ) { throw new RuntimeException(
+   * "orset is "+orset+"\nandset is "+andset+"\nandnotset is "+andnotset+"\nthis is "+this+"\ncorrect is "+orAndAnd ); }
+   * return ret; }
    */
   /**
    * Computes this = this OR ((orset AND andset ) AND (NOT andnotset)) Returns true iff this is modified.
-   * 
+   *
    * @param set
    *          a bit set.
    */

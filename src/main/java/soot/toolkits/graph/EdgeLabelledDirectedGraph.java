@@ -25,7 +25,8 @@ public interface EdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N> {
   public List<L> getLabelsForEdges(N from, N to);
 
   /**
-   * Returns a DirectedGraph consisting of all edges with the given label and their nodes. Nodes without edges are not included in the new graph.
+   * Returns a DirectedGraph consisting of all edges with the given label and their nodes. Nodes without edges are not
+   * included in the new graph.
    *
    * @param label
    *          edge label to use as a filter in building the subgraph

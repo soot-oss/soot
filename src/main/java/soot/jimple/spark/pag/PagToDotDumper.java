@@ -38,9 +38,9 @@ import soot.jimple.spark.sets.P2SetVisitor;
 
 /**
  * Utilities for dumping dot representations of parts of a {@link PAG}.
- * 
+ *
  * @author msridhar
- * 
+ *
  */
 public class PagToDotDumper {
   private static final Logger logger = LoggerFactory.getLogger(PagToDotDumper.class);
@@ -60,7 +60,7 @@ public class PagToDotDumper {
 
   /**
    * Build vmatchEdges and store them in vmatches field
-   * 
+   *
    */
   private void buildVmatchEdges() {
     // for each store and load pair
@@ -156,7 +156,7 @@ public class PagToDotDumper {
 
   /**
    * Generate a node declaration for a dot file.
-   * 
+   *
    * @param node
    *          the node
    * @param p
@@ -194,7 +194,8 @@ public class PagToDotDumper {
    * @return
    */
   private boolean isDefinedIn(LocalVarNode lvNode, String cName, String mName) {
-    return lvNode.getMethod() != null && lvNode.getMethod().getDeclaringClass().getName().equals(cName) && lvNode.getMethod().getName().equals(mName);
+    return lvNode.getMethod() != null && lvNode.getMethod().getDeclaringClass().getName().equals(cName)
+        && lvNode.getMethod().getName().equals(mName);
   }
 
   private void printOneNode(VarNode node) {
@@ -233,9 +234,9 @@ public class PagToDotDumper {
   }
 
   /**
-   * dumps the points-to sets for all locals in a method in a dot representation. The graph has edges from each local to all {@link AllocNode}s in its
-   * points-to set
-   * 
+   * dumps the points-to sets for all locals in a method in a dot representation. The graph has edges from each local to all
+   * {@link AllocNode}s in its points-to set
+   *
    * @param fName
    *          a name for the output file
    * @param mName
@@ -274,7 +275,7 @@ public class PagToDotDumper {
 
   /**
    * Dump the PAG for some method in the program in dot format
-   * 
+   *
    * @param fName
    *          The filename for the output
    * @param cName
@@ -459,9 +460,9 @@ public class PagToDotDumper {
   }
 
   /**
-   * 
+   *
    * Do a DFS traversal
-   * 
+   *
    * @param name
    * @param name2
    * @param ps2

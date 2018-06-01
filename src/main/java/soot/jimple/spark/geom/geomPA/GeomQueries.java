@@ -40,7 +40,7 @@ import soot.jimple.toolkits.callgraph.Edge;
 
 /**
  * A powerful interface for querying points-to results in many ways. It is an extension for SPARK standard querying system.
- * 
+ *
  * @author xiao
  *
  */
@@ -69,7 +69,7 @@ public class GeomQueries {
 
   /**
    * We copy and make a condensed version of call graph.
-   * 
+   *
    * @param geom_pts
    */
   public GeomQueries(GeomPointsTo geom_pta) {
@@ -175,7 +175,7 @@ public class GeomQueries {
 
   /**
    * Retrieve the subgraph from s->target. An edge s->t is included in the subgraph iff target is reachable from t.
-   * 
+   *
    * @param s
    * @param target
    * @return
@@ -241,8 +241,9 @@ public class GeomQueries {
   }
 
   /**
-   * Compute the mapping from interval [L, R) of method start to the intervals of method target. Return true if the mapping is feasible.
-   * 
+   * Compute the mapping from interval [L, R) of method start to the intervals of method target. Return true if the mapping
+   * is feasible.
+   *
    * @param start
    * @param L
    * @param R
@@ -322,11 +323,11 @@ public class GeomQueries {
 
   /**
    * Answer contexts-go-by query.
-   * 
-   * Usually, users specify the last K paths as the context. We call it k-CFA context. However, k-CFA is too restrictive. In contexts-go-by query,
-   * user specifies arbitrary call edge in the call graph. The query searches for all contexts induced by the specified call edge and collect
-   * points-to results under these contexts.
-   * 
+   *
+   * Usually, users specify the last K paths as the context. We call it k-CFA context. However, k-CFA is too restrictive. In
+   * contexts-go-by query, user specifies arbitrary call edge in the call graph. The query searches for all contexts induced
+   * by the specified call edge and collect points-to results under these contexts.
+   *
    * @param sootEdge:
    *          the specified context edge in soot edge format
    * @param l:
@@ -400,7 +401,7 @@ public class GeomQueries {
 
   /**
    * Searching the points-to results for field expression such as p.f.
-   * 
+   *
    * @param sootEdge
    * @param l
    * @param field
@@ -446,9 +447,10 @@ public class GeomQueries {
 
   /**
    * Standard K-CFA querying for arbitrary K.
-   * 
+   *
    * @param callEdgeChain:
-   *          last K call edges leading to the method that contains l. callEdgeChain[0] is the farthest call edge in the chain.
+   *          last K call edges leading to the method that contains l. callEdgeChain[0] is the farthest call edge in the
+   *          chain.
    * @param l:
    *          the querying pointer
    * @param visitor:
@@ -525,7 +527,7 @@ public class GeomQueries {
 
   /**
    * Standard K-CFA querying for field expression.
-   * 
+   *
    * @param callEdgeChain:
    *          callEdgeChain[0] is the farthest call edge in the chain.
    * @param l
@@ -584,7 +586,7 @@ public class GeomQueries {
 
   /**
    * Test if two pointers given in geomPTA form are an alias under any contexts.
-   * 
+   *
    * @param pn1
    *          and @param pn2 cannot be null.
    */

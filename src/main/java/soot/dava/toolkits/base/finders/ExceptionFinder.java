@@ -228,7 +228,8 @@ public class ExceptionFinder implements FactFinder {
     // Aggregate the try blocks.
     {
       LinkedList<ExceptionNode> reps = new LinkedList<ExceptionNode>();
-      HashMap<Serializable, LinkedList<IterableSet<AugmentedStmt>>> hCode2bucket = new HashMap<Serializable, LinkedList<IterableSet<AugmentedStmt>>>();
+      HashMap<Serializable, LinkedList<IterableSet<AugmentedStmt>>> hCode2bucket
+          = new HashMap<Serializable, LinkedList<IterableSet<AugmentedStmt>>>();
       HashMap<Serializable, ExceptionNode> tryBody2exceptionNode = new HashMap<Serializable, ExceptionNode>();
 
       for (ExceptionNode en : enlist) {

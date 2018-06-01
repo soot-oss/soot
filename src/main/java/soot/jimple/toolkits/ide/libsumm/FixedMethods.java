@@ -16,20 +16,21 @@ public class FixedMethods {
   public final static boolean ASSUME_PACKAGES_SEALED = false;
 
   /**
-   * Returns true if a method call is fixed, i.e., assuming that all classes in the Scene resemble library code, then client code cannot possible
-   * overwrite the called method. This is trivially true for InvokeStatic and InvokeSpecial, but can also hold for virtual invokes if all possible
-   * call targets in the library cannot be overwritten.
-   * 
+   * Returns true if a method call is fixed, i.e., assuming that all classes in the Scene resemble library code, then client
+   * code cannot possible overwrite the called method. This is trivially true for InvokeStatic and InvokeSpecial, but can
+   * also hold for virtual invokes if all possible call targets in the library cannot be overwritten.
+   *
    * @see #clientOverwriteableOverwrites(SootMethod)
    */
   public static boolean isFixed(InvokeExpr ie) {
-    return ie instanceof StaticInvokeExpr || ie instanceof SpecialInvokeExpr || !clientOverwriteableOverwrites(ie.getMethod());
+    return ie instanceof StaticInvokeExpr || ie instanceof SpecialInvokeExpr
+        || !clientOverwriteableOverwrites(ie.getMethod());
   }
 
   /**
-   * Returns true if this method itself is visible to the client and overwriteable or if the same holds for any of the methods in the library that
-   * overwrite the argument method.
-   * 
+   * Returns true if this method itself is visible to the client and overwriteable or if the same holds for any of the
+   * methods in the library that overwrite the argument method.
+   *
    * @see #clientOverwriteable(SootMethod)
    */
   private static boolean clientOverwriteableOverwrites(SootMethod m) {
@@ -51,9 +52,9 @@ public class FixedMethods {
   }
 
   /**
-   * Returns true if the given method itself is visible to the client and overwriteable. This is true if neither the method nor its declaring class
-   * are final, if the method is visible and if the declaring class can be instantiated.
-   * 
+   * Returns true if the given method itself is visible to the client and overwriteable. This is true if neither the method
+   * nor its declaring class are final, if the method is visible and if the declaring class can be instantiated.
+   *
    * @see #visible(SootMethod)
    * @see #clientCanInstantiate(SootClass)
    */
@@ -66,8 +67,9 @@ public class FixedMethods {
   }
 
   /**
-   * Returns true if clients can instantiate the given class. This holds if the given class is actually an interface, or if it contains a visible
-   * constructor. If the class is an inner class, then the enclosing classes must be instantiable as well.
+   * Returns true if clients can instantiate the given class. This holds if the given class is actually an interface, or if
+   * it contains a visible constructor. If the class is an inner class, then the enclosing classes must be instantiable as
+   * well.
    */
   private static boolean clientCanInstantiate(SootClass cPrime) {
     // subtypes of interface types can always be instantiated

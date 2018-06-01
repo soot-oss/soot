@@ -70,9 +70,9 @@ public class ForLoopCreator extends DepthFirstAdapter {
 
   /*
    * Note the ASTNode in this case can be any of the following:
-   * 
-   * ASTMethodNode ASTSwitchNode ASTIfNode ASTIfElseNode ASTUnconditionalWhileNode ASTWhileNode ASTDoWhileNode ASTForLoopNode ASTLabeledBlockNode
-   * ASTSynchronizedBlockNode
+   *
+   * ASTMethodNode ASTSwitchNode ASTIfNode ASTIfElseNode ASTUnconditionalWhileNode ASTWhileNode ASTDoWhileNode ASTForLoopNode
+   * ASTLabeledBlockNode ASTSynchronizedBlockNode
    */
   public void normalRetrieving(ASTNode node) {
     if (node instanceof ASTSwitchNode) {
@@ -101,7 +101,8 @@ public class ForLoopCreator extends DepthFirstAdapter {
             if (temp1 instanceof ASTWhileNode) {
               // a statement sequence node followed by a while node
 
-              ForLoopCreationHelper helper = new ForLoopCreationHelper((ASTStatementSequenceNode) temp, (ASTWhileNode) temp1);
+              ForLoopCreationHelper helper
+                  = new ForLoopCreationHelper((ASTStatementSequenceNode) temp, (ASTWhileNode) temp1);
 
               if (helper.checkPattern()) {
                 // pattern matched
@@ -265,7 +266,8 @@ public class ForLoopCreator extends DepthFirstAdapter {
             if (temp1 instanceof ASTWhileNode) {
               // a statement sequence node followed by a while node
 
-              ForLoopCreationHelper helper = new ForLoopCreationHelper((ASTStatementSequenceNode) temp, (ASTWhileNode) temp1);
+              ForLoopCreationHelper helper
+                  = new ForLoopCreationHelper((ASTStatementSequenceNode) temp, (ASTWhileNode) temp1);
 
               if (helper.checkPattern()) {
                 // pattern matched
@@ -320,7 +322,8 @@ public class ForLoopCreator extends DepthFirstAdapter {
               if (temp1 instanceof ASTWhileNode) {
                 // a statement sequence node followed by a while node
 
-                ForLoopCreationHelper helper = new ForLoopCreationHelper((ASTStatementSequenceNode) temp, (ASTWhileNode) temp1);
+                ForLoopCreationHelper helper
+                    = new ForLoopCreationHelper((ASTStatementSequenceNode) temp, (ASTWhileNode) temp1);
 
                 if (helper.checkPattern()) {
                   // pattern matched

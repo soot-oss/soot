@@ -23,7 +23,8 @@ public class InvokeCallSite {
     this(stmt, container, iie, base, (Local) null, 0);
   }
 
-  public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, Local argArray, int nullnessCode) {
+  public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, Local argArray,
+      int nullnessCode) {
     this.stmt = stmt;
     this.container = container;
     this.iie = iie;
@@ -32,7 +33,8 @@ public class InvokeCallSite {
     this.nullnessCode = nullnessCode;
   }
 
-  public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, ArrayTypes reachingArgTypes, int nullnessCode) {
+  public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, ArrayTypes reachingArgTypes,
+      int nullnessCode) {
     this.stmt = stmt;
     this.container = container;
     this.iie = iie;

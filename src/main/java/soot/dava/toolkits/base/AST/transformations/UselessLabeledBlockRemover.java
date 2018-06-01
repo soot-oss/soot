@@ -45,14 +45,14 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
  *     17th April 2006
  *     The class was implemented all wrong since the case methods were being overriddern and hence
  *     the analysis was nto going into all children.
- *     
+ *
  *     changed this by overridding out methods instead of case
- *     
- *     
+ *
+ *
  * Class serves two purposes.
  * If you know there is a useless labeled block then its static methods can be invoked
  * as done by the ASTCleaner
- * 
+ *
  * It can also be used to apply the UselessLabelFinder to all nodes of the AST
  * if that is done then make sure to set the ASTAnalysisModified
  */
@@ -77,12 +77,14 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
   }
 
   /*
-   * public void caseASTSynchronizedBlockNode(ASTSynchronizedBlockNode node){ changed=UselessLabelFinder.v().findAndKill(node); } public void
-   * caseASTLabeledBlockNode (ASTLabeledBlockNode node){ changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTUnconditionalLoopNode
-   * (ASTUnconditionalLoopNode node){ changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTSwitchNode(ASTSwitchNode node){
-   * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTIfNode(ASTIfNode node){ changed=UselessLabelFinder.v().findAndKill(node);
-   * } public void caseASTIfElseNode(ASTIfElseNode node){ changed=UselessLabelFinder.v().findAndKill(node); } public void
-   * caseASTWhileNode(ASTWhileNode node){ changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTForLoopNode(ASTForLoopNode node){
+   * public void caseASTSynchronizedBlockNode(ASTSynchronizedBlockNode node){
+   * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTLabeledBlockNode (ASTLabeledBlockNode node){
+   * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTUnconditionalLoopNode (ASTUnconditionalLoopNode
+   * node){ changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTSwitchNode(ASTSwitchNode node){
+   * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTIfNode(ASTIfNode node){
+   * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTIfElseNode(ASTIfElseNode node){
+   * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTWhileNode(ASTWhileNode node){
+   * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTForLoopNode(ASTForLoopNode node){
    * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTDoWhileNode(ASTDoWhileNode node){
    * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTTryNode(ASTTryNode node){
    * changed=UselessLabelFinder.v().findAndKill(node); }

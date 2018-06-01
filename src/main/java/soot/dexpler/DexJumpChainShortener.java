@@ -10,9 +10,9 @@ import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 
 /**
- * Transformer for reducing goto chains. If there is a chain of jumps in the code before the final target is reached, we collapse this chain into a
- * direct jump to the target location.
- * 
+ * Transformer for reducing goto chains. If there is a chain of jumps in the code before the final target is reached, we
+ * collapse this chain into a direct jump to the target location.
+ *
  * @author Steven Arzt
  *
  */

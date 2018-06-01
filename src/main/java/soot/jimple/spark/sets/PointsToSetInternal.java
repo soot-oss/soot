@@ -39,7 +39,7 @@ import soot.util.BitVector;
 
 /**
  * Abstract base class for implementations of points-to sets.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public abstract class PointsToSetInternal implements PointsToSet, EqualsSupportingPointsToSet {
@@ -202,8 +202,8 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
   // Added by Adam Richard
   protected BitVector getBitMask(PointsToSetInternal other, PAG pag) {
     /*
-     * Prevents propogating points-to sets of inappropriate type. E.g. if you have in the code being analyzed: Shape s = (Circle)c; then the points-to
-     * set of s is only the elements in the points-to set of c that have type Circle.
+     * Prevents propogating points-to sets of inappropriate type. E.g. if you have in the code being analyzed: Shape s =
+     * (Circle)c; then the points-to set of s is only the elements in the points-to set of c that have type Circle.
      */
     // Code ripped from BitPointsToSet
 

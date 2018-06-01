@@ -26,7 +26,7 @@ import soot.util.BitVector;
 
 /**
  * Implementation of points-to set using a sorted array.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public final class SortedArraySet extends PointsToSetInternal {
@@ -63,7 +63,8 @@ public final class SortedArraySet extends PointsToSetInternal {
             if (myhc < ohc) {
               newa[newi++] = mya[myi++];
             } else if (myhc > ohc) {
-              if ((type == null || typeMask == null || typeMask.get(ohc)) && (exclude == null || !exclude.contains(oa[oi]))) {
+              if ((type == null || typeMask == null || typeMask.get(ohc))
+                  && (exclude == null || !exclude.contains(oa[oi]))) {
                 newa[newi++] = oa[oi];
                 ret = true;
               }

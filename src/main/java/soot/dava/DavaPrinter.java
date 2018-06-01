@@ -213,8 +213,8 @@ public class DavaPrinter {
       }
 
       /*
-       * Check that we are not importing two classes with the same last name If yes then remove explicit import and import the whole package else
-       * output explicit import statement
+       * Check that we are not importing two classes with the same last name If yes then remove explicit import and import
+       * the whole package else output explicit import statement
        */
       Iterator it = toImport.iterator();
       while (it.hasNext()) {
@@ -247,7 +247,7 @@ public class DavaPrinter {
 
       /*
        * if (!packagesUsed.isEmpty()) out.println();
-       * 
+       *
        * packagesUsed.add("java.lang"); packagesUsed.add(curPackage);
        */
       Dava.v().set_CurrentPackageContext(importList);
@@ -430,10 +430,11 @@ public class DavaPrinter {
     }
 
     /*
-     * January 23rd, 2006 In trying to handle the suepr class problem we need to introduce an inner class Instead of creating a data structure for it
-     * we are right now just going to print it in the form of a string
+     * January 23rd, 2006 In trying to handle the suepr class problem we need to introduce an inner class Instead of creating
+     * a data structure for it we are right now just going to print it in the form of a string
      *
-     * It would be interesting to later have an internal inner class structure so that we could decompile inner classes into inner classes
+     * It would be interesting to later have an internal inner class structure so that we could decompile inner classes into
+     * inner classes
      */
 
     if (G.v().SootClassNeedsDavaSuperHandlerClass.contains(cl)) {
@@ -454,7 +455,8 @@ public class DavaPrinter {
   }
 
   /**
-   * Prints out the method corresponding to b Body, (declaration and body), in the textual format corresponding to the IR used to encode b body.
+   * Prints out the method corresponding to b Body, (declaration and body), in the textual format corresponding to the IR
+   * used to encode b body.
    *
    * @param out
    *          a PrintWriter instance to print to.

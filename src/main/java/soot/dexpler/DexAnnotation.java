@@ -86,7 +86,7 @@ public class DexAnnotation {
 
   /**
    * Converts Class annotations from Dexlib to Jimple.
-   * 
+   *
    * @param h
    * @param classDef
    */
@@ -261,7 +261,7 @@ public class DexAnnotation {
 
   /**
    * Converts field annotations from Dexlib to Jimple
-   * 
+   *
    * @param h
    * @param f
    */
@@ -281,7 +281,7 @@ public class DexAnnotation {
 
   /**
    * Converts method and method parameters annotations from Dexlib to Jimple
-   * 
+   *
    * @param h
    * @param method
    */
@@ -323,7 +323,8 @@ public class DexAnnotation {
     }
 
     if (doParam) {
-      VisibilityParameterAnnotationTag tag = new VisibilityParameterAnnotationTag(parameters.size(), AnnotationConstants.RUNTIME_VISIBLE);
+      VisibilityParameterAnnotationTag tag
+          = new VisibilityParameterAnnotationTag(parameters.size(), AnnotationConstants.RUNTIME_VISIBLE);
       for (MethodParameter p : parameters) {
         List<Tag> tags = handleAnnotation(p.getAnnotations(), null);
 
@@ -392,7 +393,7 @@ public class DexAnnotation {
   }
 
   /**
-   * 
+   *
    * @param annotations
    * @return
    */
@@ -443,9 +444,10 @@ public class DexAnnotation {
           if (outerClass.equals(clazz.getName())) {
             if (outerClass.contains("$-")) {
               /*
-               * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may contain '$' which do not
-               * indicate an inner/outer class separator if the '$' occurs after a inner class with a name starting with '-'. Thus we search for '$-'
-               * and anything after it including '-' is the inner classes name and anything before it is the outer classes name.
+               * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may
+               * contain '$' which do not indicate an inner/outer class separator if the '$' occurs after a inner class with
+               * a name starting with '-'. Thus we search for '$-' and anything after it including '-' is the inner classes
+               * name and anything before it is the outer classes name.
                */
               outerClass = outerClass.substring(0, outerClass.indexOf("$-"));
             } else if (outerClass.contains("$")) {
@@ -514,9 +516,10 @@ public class DexAnnotation {
           outerClass = clazz.getOuterClass().getName();
         } else if (classType.contains("$-")) {
           /*
-           * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may contain '$' which do not
-           * indicate an inner/outer class separator if the '$' occurs after a inner class with a name starting with '-'. Thus we search for '$-' and
-           * anything after it including '-' is the inner classes name and anything before it is the outer classes name.
+           * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may
+           * contain '$' which do not indicate an inner/outer class separator if the '$' occurs after a inner class with a
+           * name starting with '-'. Thus we search for '$-' and anything after it including '-' is the inner classes name
+           * and anything before it is the outer classes name.
            */
           outerClass = classType.substring(0, classType.indexOf("$-"));
           if (Util.isByteCodeClassName(classType)) {
@@ -535,8 +538,8 @@ public class DexAnnotation {
           outerClass = null;
         }
 
-        Tag innerTag = new InnerClassTag(DexType.toSootICAT(classType), outerClass == null ? null : DexType.toSootICAT(outerClass), name,
-            accessFlags);
+        Tag innerTag = new InnerClassTag(DexType.toSootICAT(classType),
+            outerClass == null ? null : DexType.toSootICAT(outerClass), name, accessFlags);
         tags.add(innerTag);
 
         if (outerClass != null && !clazz.hasOuterClass()) {
@@ -557,9 +560,10 @@ public class DexAnnotation {
           String name;
           if (innerClass.contains("$-")) {
             /*
-             * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may contain '$' which do not
-             * indicate an inner/outer class separator if the '$' occurs after a inner class with a name starting with '-'. Thus we search for '$-'
-             * and anything after it including '-' is the inner classes name and anything before it is the outer classes name.
+             * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may
+             * contain '$' which do not indicate an inner/outer class separator if the '$' occurs after a inner class with a
+             * name starting with '-'. Thus we search for '$-' and anything after it including '-' is the inner classes name
+             * and anything before it is the outer classes name.
              */
             int i = innerClass.indexOf("$-");
             outerClass = innerClass.substring(0, i);
@@ -586,8 +590,8 @@ public class DexAnnotation {
           int accessFlags = 0; // seems like this information is lost
           // during the .class -- dx --> .dex
           // process.
-          Tag innerTag = new InnerClassTag(DexType.toSootICAT(innerClass), outerClass == null ? null : DexType.toSootICAT(outerClass), name,
-              accessFlags);
+          Tag innerTag = new InnerClassTag(DexType.toSootICAT(innerClass),
+              outerClass == null ? null : DexType.toSootICAT(outerClass), name, accessFlags);
           tags.add(innerTag);
         }
         continue;
@@ -812,10 +816,10 @@ public class DexAnnotation {
 
   /**
    * Converts Dexlib visibility to Jimple visibility.
-   * 
-   * In Dalvik: VISIBILITY_BUILD 0x00 intended only to be visible at build time (e.g., during compilation of other code) VISIBILITY_RUNTIME 0x01
-   * intended to visible at runtime VISIBILITY_SYSTEM 0x02 intended to visible at runtime, but only to the underlying system (and not to regular user
-   * code)
+   *
+   * In Dalvik: VISIBILITY_BUILD 0x00 intended only to be visible at build time (e.g., during compilation of other code)
+   * VISIBILITY_RUNTIME 0x01 intended to visible at runtime VISIBILITY_SYSTEM 0x02 intended to visible at runtime, but only
+   * to the underlying system (and not to regular user code)
    *
    * @param visibility
    *          Dexlib visibility

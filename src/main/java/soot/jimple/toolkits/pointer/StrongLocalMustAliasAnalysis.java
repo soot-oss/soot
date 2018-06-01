@@ -33,17 +33,18 @@ import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.toolkits.graph.UnitGraph;
 
 /**
- * A special version of the local must-alias analysis that takes redefinitions within loops into account. For variable that is redefined in a loop,
- * the must-alias information is invalidated and set to {@link LocalMustAliasAnalysis#UNKNOWN}. E.g. assume the following example: <code>
+ * A special version of the local must-alias analysis that takes redefinitions within loops into account. For variable that
+ * is redefined in a loop, the must-alias information is invalidated and set to {@link LocalMustAliasAnalysis#UNKNOWN}. E.g.
+ * assume the following example: <code>
  * while(..) {
  *   c = foo();        //(1)
  *   c.doSomething();  //(2)
  * }
  * </code>
- * 
- * While it is certainly true that c at (2) must-alias c at (1) (they have the same value number), it is also true that in a second iteration, c at
- * (2) may not alias the previous c at (2).
- * 
+ *
+ * While it is certainly true that c at (2) must-alias c at (1) (they have the same value number), it is also true that in a
+ * second iteration, c at (2) may not alias the previous c at (2).
+ *
  * @author Eric Bodden
  */
 public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {

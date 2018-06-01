@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -62,12 +62,14 @@ import soot.util.Chain;
 import soot.util.UnitMap;
 
 /**
- * Performs a partial redundancy elimination (= code motion). This is done, by introducing helper-vars, that store an already computed value, or if a
- * computation only arrives partially (not from all predecessors) inserts a new computation on these paths afterwards).
+ * Performs a partial redundancy elimination (= code motion). This is done, by introducing helper-vars, that store an already
+ * computed value, or if a computation only arrives partially (not from all predecessors) inserts a new computation on these
+ * paths afterwards).
  * <p>
  *
- * In order to catch every redundant expression, this transformation must be done on a graph without critical edges. Therefore the first thing we do,
- * is removing them. A subsequent pass can then easily remove the synthetic nodes we have introduced.
+ * In order to catch every redundant expression, this transformation must be done on a graph without critical edges.
+ * Therefore the first thing we do, is removing them. A subsequent pass can then easily remove the synthetic nodes we have
+ * introduced.
  * <p>
  *
  * The term "lazy" refers to the fact, that we move computations only if necessary.
@@ -175,13 +177,14 @@ public class LazyCodeMotion extends BodyTransformer {
 
     /* debug */
     /*
-     * { logger.debug("========" + b.getMethod().getName()); Iterator unitIt = unitChain.iterator(); while (unitIt.hasNext()) { Unit currentUnit =
-     * (Unit) unitIt.next(); Value equiVal = (Value)unitToEquivRhs.get(currentUnit); FlowSet latestSet = (FlowSet)latest.getFlowBefore(currentUnit);
-     * FlowSet notIsolatedSet = (FlowSet)notIsolated.getFlowAfter(currentUnit); FlowSet delaySet = (FlowSet)delay.getFlowBefore(currentUnit); FlowSet
-     * earlySet = ((FlowSet)earliest.getFlowBefore(currentUnit)); FlowSet upSet = (FlowSet)upSafe.getFlowBefore(currentUnit); FlowSet downSet =
-     * (FlowSet)downSafe.getFlowBefore(currentUnit); logger.debug(""+currentUnit); logger.debug(" rh: " + equiVal); logger.debug(" up: " + upSet);
-     * logger.debug(" do: " + downSet); logger.debug(" is: " + notIsolatedSet); logger.debug(" ea: " + earlySet); logger.debug(" db: " + delaySet);
-     * logger.debug(" la: " + latestSet); } }
+     * { logger.debug("========" + b.getMethod().getName()); Iterator unitIt = unitChain.iterator(); while (unitIt.hasNext())
+     * { Unit currentUnit = (Unit) unitIt.next(); Value equiVal = (Value)unitToEquivRhs.get(currentUnit); FlowSet latestSet =
+     * (FlowSet)latest.getFlowBefore(currentUnit); FlowSet notIsolatedSet = (FlowSet)notIsolated.getFlowAfter(currentUnit);
+     * FlowSet delaySet = (FlowSet)delay.getFlowBefore(currentUnit); FlowSet earlySet =
+     * ((FlowSet)earliest.getFlowBefore(currentUnit)); FlowSet upSet = (FlowSet)upSafe.getFlowBefore(currentUnit); FlowSet
+     * downSet = (FlowSet)downSafe.getFlowBefore(currentUnit); logger.debug(""+currentUnit); logger.debug(" rh: " + equiVal);
+     * logger.debug(" up: " + upSet); logger.debug(" do: " + downSet); logger.debug(" is: " + notIsolatedSet);
+     * logger.debug(" ea: " + earlySet); logger.debug(" db: " + delaySet); logger.debug(" la: " + latestSet); } }
      */
 
     { /* insert the computations */

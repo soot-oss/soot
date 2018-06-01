@@ -1,8 +1,8 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1997-2000 Etienne Gagnon.
- * Copyright (C) 2008 Ben Bellamy 
- * Copyright (C) 2008 Eric Bodden 
- * 
+ * Copyright (C) 2008 Ben Bellamy
+ * Copyright (C) 2008 Eric Bodden
+ *
  * All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -69,7 +69,7 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
 
 /**
  * This transformer assigns types to local variables.
- * 
+ *
  * @author Etienne Gagnon
  * @author Ben Bellamy
  * @author Eric Bodden
@@ -100,17 +100,19 @@ public class TypeAssigner extends BodyTransformer {
     JBTROptions opt = new JBTROptions(options);
 
     /*
-     * Setting this guard to true enables comparison of the original and new type assigners. This will be slow since type assignment will always
-     * happen twice. The actual types used for Jimple are determined by the use-old-type-assigner option.
-     * 
-     * Each comparison is written as a separate semicolon-delimited line to the standard output, and the first field is always 'cmp' for use in grep.
-     * The format is:
-     * 
+     * Setting this guard to true enables comparison of the original and new type assigners. This will be slow since type
+     * assignment will always happen twice. The actual types used for Jimple are determined by the use-old-type-assigner
+     * option.
+     *
+     * Each comparison is written as a separate semicolon-delimited line to the standard output, and the first field is
+     * always 'cmp' for use in grep. The format is:
+     *
      * cmp;Method Name;Stmt Count;Old Inference Time (ms); New Inference Time (ms);Typing Comparison
-     * 
-     * The Typing Comparison field compares the old and new typings: -2 - Old typing contains fewer variables (BAD!) -1 - Old typing is tighter (BAD!)
-     * 0 - Typings are equal 1 - New typing is tighter 2 - New typing contains fewer variables 3 - Typings are incomparable (inspect manually)
-     * 
+     *
+     * The Typing Comparison field compares the old and new typings: -2 - Old typing contains fewer variables (BAD!) -1 - Old
+     * typing is tighter (BAD!) 0 - Typings are equal 1 - New typing is tighter 2 - New typing contains fewer variables 3 -
+     * Typings are incomparable (inspect manually)
+     *
      * In a final release this guard, and anything in the first branch, would probably be removed.
      */
     if (opt.compare_type_assigners()) {
@@ -141,11 +143,11 @@ public class TypeAssigner extends BodyTransformer {
   }
 
   /**
-   * Replace statements using locals with null_type type and that would throw a NullPointerException at runtime by a set of instructions throwing a
-   * NullPointerException.
-   * 
+   * Replace statements using locals with null_type type and that would throw a NullPointerException at runtime by a set of
+   * instructions throwing a NullPointerException.
+   *
    * This is done to remove locals with null_type type.
-   * 
+   *
    * @param b
    */
   private void replaceNullType(Body b) {
@@ -213,7 +215,8 @@ public class TypeAssigner extends BodyTransformer {
     }
 
     for (Unit u : unitToReplaceByException) {
-      soot.dexpler.Util.addExceptionAfterUnit(b, "java.lang.NullPointerException", u, "This statement would have triggered an Exception: " + u);
+      soot.dexpler.Util.addExceptionAfterUnit(b, "java.lang.NullPointerException", u,
+          "This statement would have triggered an Exception: " + u);
       b.getUnits().remove(u);
     }
 

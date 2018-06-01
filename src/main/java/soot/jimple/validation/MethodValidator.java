@@ -27,9 +27,10 @@ public enum MethodValidator implements BodyValidator {
       return;
     }
     if (method.isStaticInitializer() && !method.isStatic()) {
-      exceptions.add(
-          new ValidationException(method, SootMethod.staticInitializerName + " should be static! Static initializer without 'static'('0x8') modifier"
-              + " will cause problem when running on android platform: " + "\"<clinit> is not flagged correctly wrt/ static\"!"));
+      exceptions.add(new ValidationException(method,
+          SootMethod.staticInitializerName + " should be static! Static initializer without 'static'('0x8') modifier"
+              + " will cause problem when running on android platform: "
+              + "\"<clinit> is not flagged correctly wrt/ static\"!"));
     }
   }
 

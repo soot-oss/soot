@@ -1,5 +1,5 @@
-// 
-// (c) 2012 University of Luxembourg - Interdisciplinary Centre for 
+//
+// (c) 2012 University of Luxembourg - Interdisciplinary Centre for
 // Security Reliability and Trust (SnT) - All rights reserved
 //
 // Author: Alexandre Bartel
@@ -15,7 +15,7 @@
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
 package soot.dexpler.typing;
@@ -138,7 +138,8 @@ public class DalvikTyper implements IDalvikTyper {
       }
       local2Obj.get(k).add(lb);
     } else {
-      // Debug.printDbg(IDalvikTyper.DEBUG, "not instance of local: vb: ", vb, " value: ", vb.getValue(), " class: ", vb.getValue().getClass());
+      // Debug.printDbg(IDalvikTyper.DEBUG, "not instance of local: vb: ", vb, " value: ", vb.getValue(), " class: ",
+      // vb.getValue().getClass());
     }
   }
 
@@ -458,7 +459,8 @@ public class DalvikTyper implements IDalvikTyper {
                         }
                       }
                       if (aTypeOtherThanObject == null) {
-                        throw new RuntimeException("error: did not found array type for base " + arBase + " " + local2Obj.get(arBase) + " \n " + b);
+                        throw new RuntimeException(
+                            "error: did not found array type for base " + arBase + " " + local2Obj.get(arBase) + " \n " + b);
                       }
                       baseT = aTypeOtherThanObject;
                     }
@@ -520,7 +522,8 @@ public class DalvikTyper implements IDalvikTyper {
             }
           }
           if (aTypeOtherThanObject == null) {
-            throw new RuntimeException("did not found array type for base " + baselocal + " " + local2Obj.get(baselocal) + " \n " + b);
+            throw new RuntimeException(
+                "did not found array type for base " + baselocal + " " + local2Obj.get(baselocal) + " \n " + b);
           }
           baseT = aTypeOtherThanObject;
         }
@@ -610,7 +613,8 @@ public class DalvikTyper implements IDalvikTyper {
           Type lt = localTyped.get(l);
           // Debug.printDbg(IDalvikTyper.DEBUG, "would like to set type ", lt, " to constant: ", c);
           Value newValue = null;
-          if (lt instanceof IntType || lt instanceof BooleanType || lt instanceof ShortType || lt instanceof CharType || lt instanceof ByteType) {
+          if (lt instanceof IntType || lt instanceof BooleanType || lt instanceof ShortType || lt instanceof CharType
+              || lt instanceof ByteType) {
             UntypedIntOrFloatConstant uf = (UntypedIntOrFloatConstant) cst;
             newValue = uf.toIntConstant();
           } else if (lt instanceof FloatType) {
@@ -754,7 +758,8 @@ public class DalvikTyper implements IDalvikTyper {
           UntypedIntOrFloatConstant cst = (UntypedIntOrFloatConstant) r;
           Value newValue = null;
           if (cst.value != 0) {
-            // Debug.printDbg(IDalvikTyper.DEBUG, "[untyped constaints] set type int to non zero constant: ", c, " = ", cst.value);
+            // Debug.printDbg(IDalvikTyper.DEBUG, "[untyped constaints] set type int to non zero constant: ", c, " = ",
+            // cst.value);
             newValue = cst.toIntConstant();
           } else { // check if used in cast, just in case...
             for (Unit u : b.getUnits()) {

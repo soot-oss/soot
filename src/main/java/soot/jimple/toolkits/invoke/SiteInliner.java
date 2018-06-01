@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -75,7 +75,8 @@ public class SiteInliner {
   }
 
   /**
-   * Iterates over a list of sites, inlining them in order. Each site is given as a 3-element list (inlinee, toInline, container).
+   * Iterates over a list of sites, inlining them in order. Each site is given as a 3-element list (inlinee, toInline,
+   * container).
    */
   public static void inlineSites(List sites, Map options) {
     Iterator it = sites.iterator();
@@ -97,9 +98,9 @@ public class SiteInliner {
   }
 
   /**
-   * Inlines the given site. Note that this method does not actually check if it's safe (with respect to access modifiers and special invokes) for it
-   * to be inlined. That functionality is handled by the InlinerSafetyManager.
-   * 
+   * Inlines the given site. Note that this method does not actually check if it's safe (with respect to access modifiers and
+   * special invokes) for it to be inlined. That functionality is handled by the InlinerSafetyManager.
+   *
    */
   public static List inlineSite(SootMethod inlinee, Stmt toInline, SootMethod container, Map options) {
 
@@ -140,8 +141,8 @@ public class SiteInliner {
         if (localType.isInterface() || hierarchy.isClassSuperclassOf(localType, parameterType)) {
           Local castee = Jimple.v().newLocal("__castee", parameterType.getType());
           containerB.getLocals().add(castee);
-          containerB.getUnits().insertBefore(
-              Jimple.v().newAssignStmt(castee, Jimple.v().newCastExpr(((InstanceInvokeExpr) ie).getBase(), parameterType.getType())), toInline);
+          containerB.getUnits().insertBefore(Jimple.v().newAssignStmt(castee,
+              Jimple.v().newCastExpr(((InstanceInvokeExpr) ie).getBase(), parameterType.getType())), toInline);
           thisToAdd = castee;
         }
       }
@@ -150,14 +151,16 @@ public class SiteInliner {
     // (If enabled), add a null pointer check.
     {
       if (enableNullPointerCheckInsertion && ie instanceof InstanceInvokeExpr) {
-        boolean caught = TrapManager.isExceptionCaughtAt(Scene.v().getSootClass("java.lang.NullPointerException"), toInline, containerB);
+        boolean caught = TrapManager.isExceptionCaughtAt(Scene.v().getSootClass("java.lang.NullPointerException"), toInline,
+            containerB);
 
         /* Ah ha. Caught again! */
         if (caught) {
           /*
            * In this case, we don't use throwPoint; instead, put the code right there.
            */
-          Stmt insertee = Jimple.v().newIfStmt(Jimple.v().newNeExpr(((InstanceInvokeExpr) ie).getBase(), NullConstant.v()), toInline);
+          Stmt insertee
+              = Jimple.v().newIfStmt(Jimple.v().newNeExpr(((InstanceInvokeExpr) ie).getBase(), NullConstant.v()), toInline);
 
           containerB.getUnits().insertBefore(insertee, toInline);
 
@@ -167,8 +170,9 @@ public class SiteInliner {
           ThrowManager.addThrowAfter(containerB, insertee);
         } else {
           Stmt throwPoint = ThrowManager.getNullPointerExceptionThrower(containerB);
-          containerB.getUnits()
-              .insertBefore(Jimple.v().newIfStmt(Jimple.v().newEqExpr(((InstanceInvokeExpr) ie).getBase(), NullConstant.v()), throwPoint), toInline);
+          containerB.getUnits().insertBefore(
+              Jimple.v().newIfStmt(Jimple.v().newEqExpr(((InstanceInvokeExpr) ie).getBase(), NullConstant.v()), throwPoint),
+              toInline);
         }
       }
     }
@@ -326,7 +330,8 @@ public class SiteInliner {
     }
 
     List<Unit> newStmts = new ArrayList<Unit>();
-    for (Iterator<Unit> i = containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); i.hasNext();) {
+    for (Iterator<Unit> i
+        = containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); i.hasNext();) {
       newStmts.add(i.next());
     }
 

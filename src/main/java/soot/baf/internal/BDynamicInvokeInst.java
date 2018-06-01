@@ -19,7 +19,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -91,7 +91,8 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
     buffer.append(" \"");
     buffer.append(methodRef.name()); // quoted method name (can be any UTF8 string)
     buffer.append("\" <");
-    buffer.append(SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()));
+    buffer
+        .append(SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()));
     buffer.append(">");
     buffer.append(bsmRef.getSignature());
     buffer.append("(");
@@ -110,7 +111,8 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
   public void toString(UnitPrinter up) {
     up.literal(Jimple.DYNAMICINVOKE);
     up.literal(" \"" + methodRef.name() + "\" <"
-        + SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()) + "> ");
+        + SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType())
+        + "> ");
     up.methodRef(bsmRef);
     up.literal("(");
 

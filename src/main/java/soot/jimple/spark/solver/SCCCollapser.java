@@ -33,7 +33,7 @@ import soot.jimple.spark.sets.PointsToSetInternal;
 
 /**
  * Collapses VarNodes (green) forming strongly-connected components in the pointer assignment graph.
- * 
+ *
  * @author Ondrej Lhotak
  */
 
@@ -90,7 +90,8 @@ public class SCCCollapser {
     }
     if (v != rootOfSCC) {
       if (!ignoreTypes) {
-        if (typeManager.castNeverFails(v.getType(), rootOfSCC.getType()) && typeManager.castNeverFails(rootOfSCC.getType(), v.getType())) {
+        if (typeManager.castNeverFails(v.getType(), rootOfSCC.getType())
+            && typeManager.castNeverFails(rootOfSCC.getType(), v.getType())) {
           rootOfSCC.mergeWith(v);
           numCollapsed++;
         }

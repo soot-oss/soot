@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -103,8 +103,9 @@ public class HashMutableDirectedGraph<N> implements MutableDirectedGraph<N> {
   }
 
   /**
-   * Same as {@link #getPredsOf(Object)} but returns a set. This is faster than calling {@link #getPredsOf(Object)}. Also, certain operations like
-   * {@link Collection#contains(Object)} execute faster on the set than on the list. The returned set is unmodifiable.
+   * Same as {@link #getPredsOf(Object)} but returns a set. This is faster than calling {@link #getPredsOf(Object)}. Also,
+   * certain operations like {@link Collection#contains(Object)} execute faster on the set than on the list. The returned set
+   * is unmodifiable.
    */
   public Set<N> getPredsOfAsSet(N s) {
     Set<N> preds = nodeToPreds.get(s);
@@ -126,8 +127,9 @@ public class HashMutableDirectedGraph<N> implements MutableDirectedGraph<N> {
   }
 
   /**
-   * Same as {@link #getSuccsOf(Object)} but returns a set. This is faster than calling {@link #getSuccsOf(Object)}. Also, certain operations like
-   * {@link Collection#contains(Object)} execute faster on the set than on the list. The returned set is unmodifiable.
+   * Same as {@link #getSuccsOf(Object)} but returns a set. This is faster than calling {@link #getSuccsOf(Object)}. Also,
+   * certain operations like {@link Collection#contains(Object)} execute faster on the set than on the list. The returned set
+   * is unmodifiable.
    */
   public Set<N> getSuccsOfAsSet(N s) {
     Set<N> succs = nodeToSuccs.get(s);

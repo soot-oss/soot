@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -46,8 +46,8 @@ import soot.options.Options;
 import soot.toolkits.graph.UnitGraph;
 
 /**
- * Analysis that implements the LocalUses interface. Uses for a Local defined at a given Unit are returned as a list of UnitValueBoxPairs each
- * containing a Unit that use the local and the Local itself wrapped in a ValueBox.
+ * Analysis that implements the LocalUses interface. Uses for a Local defined at a given Unit are returned as a list of
+ * UnitValueBoxPairs each containing a Unit that use the local and the Local itself wrapped in a ValueBox.
  */
 public class SimpleLocalUses implements LocalUses {
   private static final Logger logger = LoggerFactory.getLogger(SimpleLocalUses.class);
@@ -55,8 +55,8 @@ public class SimpleLocalUses implements LocalUses {
   private Map<Unit, List<UnitValueBoxPair>> unitToUses;
 
   /**
-   * Construct the analysis from a UnitGraph representation of a method body and a LocalDefs interface. This supposes that a LocalDefs analysis must
-   * have been computed prior.
+   * Construct the analysis from a UnitGraph representation of a method body and a LocalDefs interface. This supposes that a
+   * LocalDefs analysis must have been computed prior.
    *
    * <p>
    * Note: If you do not already have a UnitGraph, it may be cheaper to use the constructor which only requires a Body.
@@ -66,7 +66,8 @@ public class SimpleLocalUses implements LocalUses {
   }
 
   /**
-   * Construct the analysis from a method body and a LocalDefs interface. This supposes that a LocalDefs analysis must have been computed prior.
+   * Construct the analysis from a method body and a LocalDefs interface. This supposes that a LocalDefs analysis must have
+   * been computed prior.
    */
   public SimpleLocalUses(Body body, LocalDefs localDefs) {
     this.body = body;
@@ -124,9 +125,9 @@ public class SimpleLocalUses implements LocalUses {
   }
 
   /**
-   * Uses for a Local defined at a given Unit are returned as a list of UnitValueBoxPairs each containing a Unit that use the local and the Local
-   * itself wrapped in a ValueBox.
-   * 
+   * Uses for a Local defined at a given Unit are returned as a list of UnitValueBoxPairs each containing a Unit that use the
+   * local and the Local itself wrapped in a ValueBox.
+   *
    * @param s
    *          a unit that we want to query for the uses of the Local it (may) define.
    * @return a UnitValueBoxPair of the Units that use the Local.
@@ -143,7 +144,7 @@ public class SimpleLocalUses implements LocalUses {
 
   /**
    * Gets all variables that are used in this body
-   * 
+   *
    * @return The list of variables used in this body
    */
   public Set<Local> getUsedVariables() {
@@ -158,7 +159,7 @@ public class SimpleLocalUses implements LocalUses {
 
   /**
    * Gets all variables that are not used in this body
-   * 
+   *
    * @return The list of variables declared, but not used in this body
    */
   public Set<Local> getUnusedVariables() {

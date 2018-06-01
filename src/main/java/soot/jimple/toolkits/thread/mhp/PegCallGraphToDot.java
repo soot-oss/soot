@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -70,14 +70,15 @@ public class PegCallGraphToDot {
   }
 
   /*
-   * public PegToDotFile(PegGraph graph, boolean onepage, String name) { this.onepage = onepage; toDotFile(name, graph,"Simple graph"); }
+   * public PegToDotFile(PegGraph graph, boolean onepage, String name) { this.onepage = onepage; toDotFile(name,
+   * graph,"Simple graph"); }
    */
 
   private static int nodecount = 0;
 
   /**
    * Generates a dot format file for a DirectedGraph
-   * 
+   *
    * @param methodname,
    *          the name of generated dot file
    * @param graph,

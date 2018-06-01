@@ -41,10 +41,10 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 
 /**
- * Finds the set of local variables and/or references that represent all of the relevant objects used in a synchronized region, as accessible at the
- * start of that region. Basically this is value numbering, done in reverse, interprocedurally, and only tracking the values that contribute to the
- * given set of side effects.
- * 
+ * Finds the set of local variables and/or references that represent all of the relevant objects used in a synchronized
+ * region, as accessible at the start of that region. Basically this is value numbering, done in reverse, interprocedurally,
+ * and only tracking the values that contribute to the given set of side effects.
+ *
  * @author Richard L. Halpert
  * @since 2007-04-19
  */
@@ -88,7 +88,8 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
     logger.debug("" + msg);
   }
 
-  public List<EquivalentValue> getLocksetOf(CriticalSectionAwareSideEffectAnalysis tasea, RWSet contributingRWSet, CriticalSection tn) {
+  public List<EquivalentValue> getLocksetOf(CriticalSectionAwareSideEffectAnalysis tasea, RWSet contributingRWSet,
+      CriticalSection tn) {
     analyzing.add(method);
 
     this.tasea = tasea;
@@ -172,12 +173,12 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
     }
 
     if (lockset.size() == 0) {
-      printMsg("Empty lockset: S" + lockset.size() + "/G" + reversed.keySet().size() + "/O" + results.keySet().size() + " Method:" + method
-          + " Begin:" + begin + " Result:" + results + " RW:" + contributingRWSet);
+      printMsg("Empty lockset: S" + lockset.size() + "/G" + reversed.keySet().size() + "/O" + results.keySet().size()
+          + " Method:" + method + " Begin:" + begin + " Result:" + results + " RW:" + contributingRWSet);
       printMsg("|= results:" + results + " refToBaseGroup:" + resultsInfo.refToBaseGroup);
     } else {
-      printMsg("Healthy lockset: S" + lockset.size() + "/G" + reversed.keySet().size() + "/O" + results.keySet().size() + " " + lockset
-          + " refToBase:" + refToBase + " refToIndex:" + refToIndex);
+      printMsg("Healthy lockset: S" + lockset.size() + "/G" + reversed.keySet().size() + "/O" + results.keySet().size() + " "
+          + lockset + " refToBase:" + refToBase + " refToIndex:" + refToIndex);
       printMsg("|= results:" + results + " refToBaseGroup:" + resultsInfo.refToBaseGroup);
     }
 
@@ -468,7 +469,8 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
             }
           }
 
-          // it would be better to just check if the value has reaching objects in common with the bases of the contributingRWSet
+          // it would be better to just check if the value has reaching objects in common with the bases of the
+          // contributingRWSet
           RWSet valRW = tasea.valueRWSet(v, method, stmt, tn);
           if (valRW != null && valRW.hasNonEmptyIntersection(contributingRWSet)) {
             uses.add(vEqVal);
@@ -479,7 +481,8 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
           InvokeExpr ie = stmt.getInvokeExpr();
           SootMethod called = ie.getMethod();
           if (called.isConcrete()) {
-            if (called.getDeclaringClass().toString().startsWith("java.util") || called.getDeclaringClass().toString().startsWith("java.lang")) {
+            if (called.getDeclaringClass().toString().startsWith("java.util")
+                || called.getDeclaringClass().toString().startsWith("java.lang")) {
               // these uses should already be in use list
               if (uses.size() <= 0) {
                 printMsg("Lost Object at library call at " + stmt);
@@ -488,7 +491,8 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
             } else {
               // find and add this callsite's uses
               if (!analyzing.contains(called)) {
-                LockableReferenceAnalysis la = new LockableReferenceAnalysis(new BriefUnitGraph(called.retrieveActiveBody()));
+                LockableReferenceAnalysis la
+                    = new LockableReferenceAnalysis(new BriefUnitGraph(called.retrieveActiveBody()));
                 List<EquivalentValue> innerLockset = la.getLocksetOf(tasea, stmtRW, null);
 
                 if (innerLockset == null || innerLockset.size() <= 0) {
@@ -545,7 +549,9 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
             Value oldindex = ar.getIndex();
             if (!(oldbase instanceof FakeJimpleLocal)) {
               Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase, this);
-              Value newindex = (oldindex instanceof Local) ? new FakeJimpleLocal("fakeindex", oldindex.getType(), (Local) oldindex, this) : oldindex;
+              Value newindex = (oldindex instanceof Local)
+                  ? new FakeJimpleLocal("fakeindex", oldindex.getType(), (Local) oldindex, this)
+                  : oldindex;
               Value node = Jimple.v().newArrayRef(newbase, newindex);
               EquivalentValue nodeEqVal = new EquivalentValue(node); // fake thisLocal
 
@@ -594,7 +600,9 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
         Value oldindex = ar.getIndex();
         if (!(oldbase instanceof FakeJimpleLocal)) {
           Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase, this);
-          Value newindex = (oldindex instanceof Local) ? new FakeJimpleLocal("fakeindex", oldindex.getType(), (Local) oldindex, this) : oldindex;
+          Value newindex
+              = (oldindex instanceof Local) ? new FakeJimpleLocal("fakeindex", oldindex.getType(), (Local) oldindex, this)
+                  : oldindex;
           Value node = Jimple.v().newArrayRef(newbase, newindex);
           EquivalentValue nodeEqVal = new EquivalentValue(node); // fake thisLocal
 
@@ -624,7 +632,9 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
         Value oldindex = ar.getIndex();
         if (!(oldbase instanceof FakeJimpleLocal)) {
           Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase, this);
-          Value newindex = (oldindex instanceof Local) ? new FakeJimpleLocal("fakeindex", oldindex.getType(), (Local) oldindex, this) : oldindex;
+          Value newindex
+              = (oldindex instanceof Local) ? new FakeJimpleLocal("fakeindex", oldindex.getType(), (Local) oldindex, this)
+                  : oldindex;
           Value node = Jimple.v().newArrayRef(newbase, newindex);
           EquivalentValue nodeEqVal = new EquivalentValue(node); // fake thisLocal
 
@@ -665,7 +675,8 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
           } else {
             out.put(rvalue, lvaluevalue);
           }
-        } else // if( !(lvalue.getValue() instanceof StaticFieldRef && !(lvalue.getValue().getType() instanceof RefLikeType)) )
+        } else // if( !(lvalue.getValue() instanceof StaticFieldRef && !(lvalue.getValue().getType() instanceof RefLikeType))
+               // )
         {
           if (out.containsKey(rvalue)) {
             // Merge the two groups
@@ -694,7 +705,8 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
               }
             }
           } else {
-            if (rvalue.getValue() instanceof Local || rvalue.getValue() instanceof StaticFieldRef || rvalue.getValue() instanceof Constant) {
+            if (rvalue.getValue() instanceof Local || rvalue.getValue() instanceof StaticFieldRef
+                || rvalue.getValue() instanceof Constant) {
               out.put(rvalue, lvaluevalue); // value not lost
             } else if (rvalue.getValue() instanceof InstanceFieldRef) {
               // value is not lost, but it is now dependant on both fieldref and base
@@ -717,12 +729,14 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
               out.put(new EquivalentValue(oldbase), baseGroup); // track base group, no lock required
             } else if (rvalue.getValue() instanceof ArrayRef) {
               // value is not lost, but it is now dependant on all of arrayref, base, and index
-              // we need to somehow note that, if used as a lock, arrayref's base and index must come from the new groups we create here
+              // we need to somehow note that, if used as a lock, arrayref's base and index must come from the new groups we
+              // create here
               ArrayRef ar = (ArrayRef) rvalue.getValue();
               FakeJimpleLocal newbase = (FakeJimpleLocal) ar.getBase();
               Local oldbase = newbase.getRealLocal();
               FakeJimpleLocal newindex = (ar.getIndex() instanceof FakeJimpleLocal) ? (FakeJimpleLocal) ar.getIndex() : null;
-              Value oldindex = (newindex != null) ? (Value) newindex.getRealLocal() : ar.getIndex(); // it's a FJL or a Constant
+              Value oldindex = (newindex != null) ? (Value) newindex.getRealLocal() : ar.getIndex(); // it's a FJL or a
+                                                                                                     // Constant
 
               out.put(rvalue, lvaluevalue);
 

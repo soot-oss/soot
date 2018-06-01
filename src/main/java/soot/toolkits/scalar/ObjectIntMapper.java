@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -32,7 +32,8 @@ import java.util.Map;
 import java.util.Vector;
 
 /**
- * gives an injection of Objects to ints. Different instances of <code>ObjectIntMap</code> may map different ints to the same object.
+ * gives an injection of Objects to ints. Different instances of <code>ObjectIntMap</code> may map different ints to the same
+ * object.
  */
 public class ObjectIntMapper<E> {
   private Vector<E> intToObjects;
@@ -72,8 +73,8 @@ public class ObjectIntMapper<E> {
   }
 
   /**
-   * returns the mapping of <code>o</code>. if there has been a call to <code>objectToInt</code> with the same <code>o</code> before, the same value
-   * will be returned.
+   * returns the mapping of <code>o</code>. if there has been a call to <code>objectToInt</code> with the same <code>o</code>
+   * before, the same value will be returned.
    *
    * @param o
    * @return <code>o</code>'s mapping

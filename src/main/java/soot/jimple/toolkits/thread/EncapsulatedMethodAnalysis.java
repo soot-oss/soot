@@ -27,7 +27,8 @@ public class EncapsulatedMethodAnalysis // extends ForwardFlowAnalysis
       Stmt s = (Stmt) stmtIt.next();
       if (s.containsFieldRef()) {
         FieldRef ref = s.getFieldRef();
-        if ((ref instanceof StaticFieldRef) && (Type.toMachineType(((StaticFieldRef) ref).getType()) instanceof RefLikeType)) {
+        if ((ref instanceof StaticFieldRef)
+            && (Type.toMachineType(((StaticFieldRef) ref).getType()) instanceof RefLikeType)) {
           isMethodPure = false; // kills purity
           isMethodConditionallyPure = false; // kills conditional purity
           return;
@@ -62,24 +63,24 @@ public class EncapsulatedMethodAnalysis // extends ForwardFlowAnalysis
     return isMethodConditionallyPure;
   }
   /*
-   * protected void merge(Object in1, Object in2, Object out) { FlowSet inSet1 = (FlowSet) in1; FlowSet inSet2 = (FlowSet) in2; FlowSet outSet =
-   * (FlowSet) out;
-   * 
+   * protected void merge(Object in1, Object in2, Object out) { FlowSet inSet1 = (FlowSet) in1; FlowSet inSet2 = (FlowSet)
+   * in2; FlowSet outSet = (FlowSet) out;
+   *
    * inSet1.intersection(inSet2, outSet); }
-   * 
-   * protected void flowThrough(Object inValue, Object unit, Object outValue) { FlowSet in = (FlowSet) inValue; FlowSet out = (FlowSet) outValue; Stmt
-   * stmt = (Stmt) unit;
-   * 
+   *
+   * protected void flowThrough(Object inValue, Object unit, Object outValue) { FlowSet in = (FlowSet) inValue; FlowSet out =
+   * (FlowSet) outValue; Stmt stmt = (Stmt) unit;
+   *
    * in.copy(out); }
-   * 
+   *
    * protected void copy(Object source, Object dest) {
-   * 
+   *
    * FlowSet sourceSet = (FlowSet) source; FlowSet destSet = (FlowSet) dest;
-   * 
+   *
    * sourceSet.copy(destSet); }
-   * 
+   *
    * protected Object entryInitialFlow() { return new ArraySparseSet(); }
-   * 
+   *
    * protected Object newInitialFlow() { return new ArraySparseSet(); } //
    */
 }

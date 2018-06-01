@@ -19,13 +19,13 @@ import soot.jimple.NewArrayExpr;
 
 /**
  * Detector class that identifies array initializations and packs them into a single instruction:
- * 
+ *
  * a = new char[2]; a[0] = 42; a[1] = 3;
- * 
+ *
  * In dex, this can be expressed in a more concise way:
- * 
+ *
  * a = new char[2]; fill(a, ...)
- * 
+ *
  * @author Steven Arzt
  *
  */
@@ -36,7 +36,7 @@ public class DexArrayInitDetector {
 
   /**
    * Constructs packed array initializations from the individual element assignments in the given body
-   * 
+   *
    * @param body
    *          The body in which to look for element assignments
    */
@@ -64,7 +64,10 @@ public class DexArrayInitDetector {
         } else {
           arrayValues = null;
         }
-      } else if (assignStmt.getLeftOp() instanceof ArrayRef && assignStmt.getRightOp() instanceof IntConstant /* NumericConstant */
+      } else if (assignStmt.getLeftOp() instanceof ArrayRef && assignStmt.getRightOp() instanceof IntConstant
+      /*
+       * NumericConstant
+       */
           && arrayValues != null) {
         ArrayRef aref = (ArrayRef) assignStmt.getLeftOp();
         if (aref.getIndex() instanceof IntConstant) {
@@ -109,9 +112,9 @@ public class DexArrayInitDetector {
   }
 
   /**
-   * Fixes the traps in the given body to account for assignments to individual array elements being replaced by a single fill instruction. If a trap
-   * starts or ends in the middle of the replaced instructions, we have to move the trap.
-   * 
+   * Fixes the traps in the given body to account for assignments to individual array elements being replaced by a single
+   * fill instruction. If a trap starts or ends in the middle of the replaced instructions, we have to move the trap.
+   *
    * @param activeBody
    *          The body in which to fix the traps
    */

@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -53,8 +53,8 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
 
   public void add(Transform t) {
     if (!t.getPhaseName().startsWith(getPhaseName() + ".")) {
-      throw new RuntimeException(
-          "Transforms in pack '" + getPhaseName() + "' must have a phase name " + "that starts with '" + getPhaseName() + ".'.");
+      throw new RuntimeException("Transforms in pack '" + getPhaseName() + "' must have a phase name " + "that starts with '"
+          + getPhaseName() + ".'.");
     }
     PhaseOptions.v().getPM().notifyAddPack();
     if (get(t.getPhaseName()) != null) {

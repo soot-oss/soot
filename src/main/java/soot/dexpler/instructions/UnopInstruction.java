@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -69,9 +69,10 @@ public class UnopInstruction extends TaggedInstruction {
 
     if (IDalvikTyper.ENABLE_DVKTYPER) {
       /*
-       * int op = (int)instruction.getOpcode().value; //DalvikTyper.v().captureAssign((JAssignStmt)assign, op); JAssignStmt jass =
-       * (JAssignStmt)assign; DalvikTyper.v().setType((expr instanceof JCastExpr) ? ((JCastExpr) expr).getOpBox() : ((UnopExpr) expr).getOpBox(),
-       * opUnType[op - 0x7b], true); DalvikTyper.v().setType(jass.leftBox, resUnType[op - 0x7b], false);
+       * int op = (int)instruction.getOpcode().value; //DalvikTyper.v().captureAssign((JAssignStmt)assign, op); JAssignStmt
+       * jass = (JAssignStmt)assign; DalvikTyper.v().setType((expr instanceof JCastExpr) ? ((JCastExpr) expr).getOpBox() :
+       * ((UnopExpr) expr).getOpBox(), opUnType[op - 0x7b], true); DalvikTyper.v().setType(jass.leftBox, resUnType[op -
+       * 0x7b], false);
        */
     }
   }
@@ -108,7 +109,7 @@ public class UnopInstruction extends TaggedInstruction {
 
   /**
    * returns bitwise negation of an integer
-   * 
+   *
    * @param source
    * @return
    */
@@ -119,7 +120,7 @@ public class UnopInstruction extends TaggedInstruction {
 
   /**
    * returns bitwise negation of a long
-   * 
+   *
    * @param source
    * @return
    */

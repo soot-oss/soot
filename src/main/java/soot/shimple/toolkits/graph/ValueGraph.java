@@ -574,8 +574,8 @@ public class ValueGraph {
         // StaticInvokeExpr
         // VirtualInvokeExpr
         nodeLabel = node.toString();
-        if ((node instanceof NewExpr) || (node instanceof NewArrayExpr) || (node instanceof NewMultiArrayExpr) || (node instanceof Ref)
-            || (node instanceof InvokeExpr)) {
+        if ((node instanceof NewExpr) || (node instanceof NewArrayExpr) || (node instanceof NewMultiArrayExpr)
+            || (node instanceof Ref) || (node instanceof InvokeExpr)) {
           nodeLabel = nodeLabel + " " + getNodeNumber();
         }
       }

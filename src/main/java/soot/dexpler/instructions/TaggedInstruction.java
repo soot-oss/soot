@@ -1,5 +1,5 @@
-// 
-// (c) 2012 University of Luxembourg - Interdisciplinary Centre for 
+//
+// (c) 2012 University of Luxembourg - Interdisciplinary Centre for
 // Security Reliability and Trust (SnT) - All rights reserved
 //
 // Author: Alexandre Bartel
@@ -15,7 +15,7 @@
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
 package soot.dexpler.instructions;
@@ -38,7 +38,8 @@ public abstract class TaggedInstruction extends DexlibAbstractInstruction {
 
   public Tag getTag() {
     if (instructionTag == null) {
-      throw new RuntimeException("Must tag instruction first! (0x" + Integer.toHexString(codeAddress) + ": " + instruction + ")");
+      throw new RuntimeException(
+          "Must tag instruction first! (0x" + Integer.toHexString(codeAddress) + ": " + instruction + ")");
     }
     return instructionTag;
   }

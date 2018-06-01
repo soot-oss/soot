@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-2003.  
+ * Modified by the Sable Research Group and others 1997-2003.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -35,8 +35,9 @@ import soot.baf.Inst;
 import soot.jimple.Stmt;
 
 /**
- * A CFG where the nodes are {@link Block} instances, and where {@link Unit}s which include array references start new blocks. Exceptional control
- * flow is ignored, so the graph will be a forest where each exception handler constitutes a disjoint subgraph.
+ * A CFG where the nodes are {@link Block} instances, and where {@link Unit}s which include array references start new
+ * blocks. Exceptional control flow is ignored, so the graph will be a forest where each exception handler constitutes a
+ * disjoint subgraph.
  */
 public class ArrayRefBlockGraph extends BlockGraph {
   /**
@@ -45,9 +46,9 @@ public class ArrayRefBlockGraph extends BlockGraph {
    * </p>
    *
    * <p>
-   * Note that this constructor builds a {@link BriefUnitGraph} internally when splitting <tt>body</tt>'s {@link Unit}s into {@link Block}s. Callers
-   * who need both a {@link BriefUnitGraph} and an {@link ArrayRefBlockGraph} should use the constructor taking the <tt>BriefUnitGraph</tt> as a
-   * parameter, as a minor optimization.
+   * Note that this constructor builds a {@link BriefUnitGraph} internally when splitting <tt>body</tt>'s {@link Unit}s into
+   * {@link Block}s. Callers who need both a {@link BriefUnitGraph} and an {@link ArrayRefBlockGraph} should use the
+   * constructor taking the <tt>BriefUnitGraph</tt> as a parameter, as a minor optimization.
    * </p>
    *
    * @param the
@@ -58,7 +59,8 @@ public class ArrayRefBlockGraph extends BlockGraph {
   }
 
   /**
-   * Constructs an <tt>ArrayRefBlockGraph</tt> corresponding to the <tt>Unit</tt>-level control flow represented by the passed {@link BriefUnitGraph}.
+   * Constructs an <tt>ArrayRefBlockGraph</tt> corresponding to the <tt>Unit</tt>-level control flow represented by the
+   * passed {@link BriefUnitGraph}.
    *
    * @param unitGraph
    *          The <tt>BriefUnitGraph</tt> for which to build an <tt>ArrayRefBlockGraph</tt>.
@@ -71,8 +73,8 @@ public class ArrayRefBlockGraph extends BlockGraph {
 
   /**
    * <p>
-   * Utility method for computing the basic block leaders for a {@link Body}, given its {@link UnitGraph} (i.e., the instructions which begin new
-   * basic blocks).
+   * Utility method for computing the basic block leaders for a {@link Body}, given its {@link UnitGraph} (i.e., the
+   * instructions which begin new basic blocks).
    * </p>
    *
    * <p>
@@ -80,9 +82,11 @@ public class ArrayRefBlockGraph extends BlockGraph {
    *
    * <ul>
    *
-   * <li>All <tt>Unit</tt>s which contain an array reference, as defined by {@link Stmt.containsArrayRef()} and {@link Inst.containsArrayRef()}.
+   * <li>All <tt>Unit</tt>s which contain an array reference, as defined by {@link Stmt.containsArrayRef()} and
+   * {@link Inst.containsArrayRef()}.
    *
-   * <li>The first <tt>Unit</tt> not covered by each {@link Trap} (i.e., the <tt>Unit</tt> returned by {@link Trap.getLastUnit()}.</li>
+   * <li>The first <tt>Unit</tt> not covered by each {@link Trap} (i.e., the <tt>Unit</tt> returned by
+   * {@link Trap.getLastUnit()}.</li>
    *
    * </ul>
    * </p>
@@ -95,13 +99,15 @@ public class ArrayRefBlockGraph extends BlockGraph {
   protected Set<Unit> computeLeaders(UnitGraph unitGraph) {
     Body body = unitGraph.getBody();
     if (body != mBody) {
-      throw new RuntimeException("ArrayRefBlockGraph.computeLeaders() called with a UnitGraph that doesn't match its mBody.");
+      throw new RuntimeException(
+          "ArrayRefBlockGraph.computeLeaders() called with a UnitGraph that doesn't match its mBody.");
     }
     Set<Unit> leaders = super.computeLeaders(unitGraph);
 
     for (Iterator<Unit> it = body.getUnits().iterator(); it.hasNext();) {
       Unit unit = it.next();
-      if (((unit instanceof Stmt) && ((Stmt) unit).containsArrayRef()) || ((unit instanceof Inst) && ((Inst) unit).containsArrayRef())) {
+      if (((unit instanceof Stmt) && ((Stmt) unit).containsArrayRef())
+          || ((unit instanceof Inst) && ((Inst) unit).containsArrayRef())) {
         leaders.add(unit);
       }
     }

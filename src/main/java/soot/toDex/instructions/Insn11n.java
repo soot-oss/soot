@@ -10,7 +10,8 @@ import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
- * The "11n" instruction format: It needs one 16-bit code unit, has one register and is used for a 4-bit literal (hence the "n" for "nibble").<br>
+ * The "11n" instruction format: It needs one 16-bit code unit, has one register and is used for a 4-bit literal (hence the
+ * "n" for "nibble").<br>
  * <br>
  * It is used by the opcode "const/4".
  */

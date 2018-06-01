@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -104,7 +104,7 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
 
 /**
- * 
+ *
  * @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead
  */
 @Deprecated
@@ -360,8 +360,8 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
         throw new RuntimeException("Unhandled binary expression right operand type: " + rv.getClass());
       }
 
-      if ((be instanceof AddExpr) || (be instanceof SubExpr) || (be instanceof MulExpr) || (be instanceof DivExpr) || (be instanceof RemExpr)
-          || (be instanceof AndExpr) || (be instanceof OrExpr) || (be instanceof XorExpr)) {
+      if ((be instanceof AddExpr) || (be instanceof SubExpr) || (be instanceof MulExpr) || (be instanceof DivExpr)
+          || (be instanceof RemExpr) || (be instanceof AndExpr) || (be instanceof OrExpr) || (be instanceof XorExpr)) {
         if (uses) {
           TypeVariableBV common = resolver.typeVariable();
           rop.addParent(common);
@@ -378,8 +378,9 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
         }
 
         right = lop;
-      } else if ((be instanceof CmpExpr) || (be instanceof CmpgExpr) || (be instanceof CmplExpr) || (be instanceof EqExpr) || (be instanceof GeExpr)
-          || (be instanceof GtExpr) || (be instanceof LeExpr) || (be instanceof LtExpr) || (be instanceof NeExpr)) {
+      } else if ((be instanceof CmpExpr) || (be instanceof CmpgExpr) || (be instanceof CmplExpr) || (be instanceof EqExpr)
+          || (be instanceof GeExpr) || (be instanceof GtExpr) || (be instanceof LeExpr) || (be instanceof LtExpr)
+          || (be instanceof NeExpr)) {
         if (uses) {
           TypeVariableBV common = resolver.typeVariable();
           rop.addParent(common);
@@ -408,7 +409,8 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
       Type baseType = nae.getBaseType();
 
       if (baseType instanceof ArrayType) {
-        right = resolver.typeVariable(ArrayType.v(((ArrayType) baseType).baseType, ((ArrayType) baseType).numDimensions + 1));
+        right
+            = resolver.typeVariable(ArrayType.v(((ArrayType) baseType).baseType, ((ArrayType) baseType).numDimensions + 1));
       } else {
         right = resolver.typeVariable(ArrayType.v(baseType, 1));
       }

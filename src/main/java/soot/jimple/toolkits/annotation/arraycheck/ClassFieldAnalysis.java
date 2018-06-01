@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -75,11 +75,12 @@ public class ClassFieldAnalysis {
 
   /*
    * A map hold class object to other information
-   * 
+   *
    * SootClass --> FieldInfoTable
    */
 
-  private final Map<SootClass, Hashtable<SootField, IntValueContainer>> classToFieldInfoMap = new HashMap<SootClass, Hashtable<SootField, IntValueContainer>>();
+  private final Map<SootClass, Hashtable<SootField, IntValueContainer>> classToFieldInfoMap
+      = new HashMap<SootClass, Hashtable<SootField, IntValueContainer>>();
 
   protected void internalTransform(SootClass c) {
     if (classToFieldInfoMap.containsKey(c)) {
@@ -126,13 +127,14 @@ public class ClassFieldAnalysis {
     /* For FINAL field, it only needs to scan the <clinit> and <init> methods. */
 
     /*
-     * For PRIVATE field, <clinit> is scanned to make sure that it is always assigned a value before other uses. And no other assignment in other
-     * methods.
+     * For PRIVATE field, <clinit> is scanned to make sure that it is always assigned a value before other uses. And no other
+     * assignment in other methods.
      */
 
     /*
-     * The fastest way to determine the value of one field may get. Scan all method to get all definitions, and summerize the final value. For PRIVATE
-     * STATIC field, if it is not always assigned value, it may count null pointer exception before array exception
+     * The fastest way to determine the value of one field may get. Scan all method to get all definitions, and summerize the
+     * final value. For PRIVATE STATIC field, if it is not always assigned value, it may count null pointer exception before
+     * array exception
      */
 
     Iterator<SootMethod> methodIt = c.methodIterator();
@@ -163,8 +165,8 @@ public class ClassFieldAnalysis {
   }
 
   /*
-   * method, to be scanned candidates, the candidate set of fields, fields with value TOP are moved out of the set. fieldinfo, keep the field ->
-   * value.
+   * method, to be scanned candidates, the candidate set of fields, fields with value TOP are moved out of the set.
+   * fieldinfo, keep the field -> value.
    */
 
   public void ScanMethod(SootMethod method, Set<SootField> candidates, Hashtable<SootField, IntValueContainer> fieldinfo) {
@@ -205,7 +207,8 @@ public class ClassFieldAnalysis {
 
     /* Linearly scan the method body, if it has field references in candidate set. */
     /*
-     * Only a.f = ... needs consideration. this.f, or other.f are treated as same because we summerize the field as a class's field.
+     * Only a.f = ... needs consideration. this.f, or other.f are treated as same because we summerize the field as a class's
+     * field.
      */
 
     HashMap<Stmt, SootField> stmtfield = new HashMap<Stmt, SootField>();

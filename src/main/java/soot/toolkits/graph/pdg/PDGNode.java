@@ -25,10 +25,10 @@ import soot.toolkits.graph.Block;
 
 /**
  *
- * This class defines a Node in the Program Dependence Graph. There might be a need to store additional information in the PDG nodes. In essence, the
- * PDG nodes represent (within them) either CFG nodes or Region nodes.
- * 
- * 
+ * This class defines a Node in the Program Dependence Graph. There might be a need to store additional information in the
+ * PDG nodes. In essence, the PDG nodes represent (within them) either CFG nodes or Region nodes.
+ *
+ *
  *
  * @author Hossein Sadat-Mohtasham June 2009
  */

@@ -43,7 +43,8 @@ import soot.tagkit.ColorTag;
 import soot.tagkit.StringTag;
 
 /**
- * a scene transformer that add tags to indicate the tightest qualifies possible for fields and methods (ie: private, protected or public)
+ * a scene transformer that add tags to indicate the tightest qualifies possible for fields and methods (ie: private,
+ * protected or public)
  */
 public class TightestQualifiersTagger extends SceneTransformer {
 
@@ -114,11 +115,11 @@ public class TightestQualifiersTagger extends SceneTransformer {
 
       if (!sRes.equals(actual)) {
         if (meth.getName().equals("<init>")) {
-          meth.addTag(new StringTag(
-              "Constructor: " + meth.getDeclaringClass().getName() + " has " + actual + " level access, can have: " + sRes + " level access.",
-              "Tightest Qualifiers"));
+          meth.addTag(new StringTag("Constructor: " + meth.getDeclaringClass().getName() + " has " + actual
+              + " level access, can have: " + sRes + " level access.", "Tightest Qualifiers"));
         } else {
-          meth.addTag(new StringTag("Method: " + meth.getName() + " has " + actual + " level access, can have: " + sRes + " level access.",
+          meth.addTag(new StringTag(
+              "Method: " + meth.getName() + " has " + actual + " level access, can have: " + sRes + " level access.",
               "Tightest Qualifiers"));
         }
         meth.addTag(new ColorTag(255, 10, 0, true, "Tightest Qualifiers"));
@@ -174,7 +175,8 @@ public class TightestQualifiersTagger extends SceneTransformer {
   private boolean analyzeProtectedMethod(SootMethod sm, SootClass callingClass) {
     SootClass methodClass = sm.getDeclaringClass();
 
-    // System.out.println("protected method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class: "+callingClass.getName());
+    // System.out.println("protected method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class:
+    // "+callingClass.getName());
 
     boolean insidePackageAccess = isCallSamePackage(callingClass, methodClass);
     boolean subClassAccess = isCallClassSubClass(callingClass, methodClass);
@@ -195,7 +197,8 @@ public class TightestQualifiersTagger extends SceneTransformer {
   private boolean analyzePackageMethod(SootMethod sm, SootClass callingClass) {
     SootClass methodClass = sm.getDeclaringClass();
 
-    // System.out.println("package method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class: "+callingClass.getName());
+    // System.out.println("package method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class:
+    // "+callingClass.getName());
     boolean insidePackageAccess = isCallSamePackage(callingClass, methodClass);
     boolean subClassAccess = isCallClassSubClass(callingClass, methodClass);
     boolean sameClassAccess = isCallClassMethodClass(callingClass, methodClass);
@@ -213,7 +216,8 @@ public class TightestQualifiersTagger extends SceneTransformer {
 
     SootClass methodClass = sm.getDeclaringClass();
 
-    // System.out.println("public method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class: "+callingClass.getName());
+    // System.out.println("public method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class:
+    // "+callingClass.getName());
 
     boolean insidePackageAccess = isCallSamePackage(callingClass, methodClass);
     boolean subClassAccess = isCallClassSubClass(callingClass, methodClass);
@@ -327,7 +331,8 @@ public class TightestQualifiersTagger extends SceneTransformer {
 
       if (!sRes.equals(actual)) {
         f.addTag(
-            new StringTag("Field: " + f.getName() + " has " + actual + " level access, can have: " + sRes + " level access.", "Tightest Qualifiers"));
+            new StringTag("Field: " + f.getName() + " has " + actual + " level access, can have: " + sRes + " level access.",
+                "Tightest Qualifiers"));
         f.addTag(new ColorTag(255, 10, 0, true, "Tightest Qualifiers"));
       }
     }

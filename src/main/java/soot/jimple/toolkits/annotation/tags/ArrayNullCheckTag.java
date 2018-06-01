@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -26,12 +26,13 @@
 package soot.jimple.toolkits.annotation.tags;
 
 /**
- * ArrayNullCheckTag combines ArrayCheckTag and NullCheckTag into one tag. It uses bits of one byte value to represent the check information. The
- * right-most two bits stand for the array bounds checks, and the right third bit represents the null check.
+ * ArrayNullCheckTag combines ArrayCheckTag and NullCheckTag into one tag. It uses bits of one byte value to represent the
+ * check information. The right-most two bits stand for the array bounds checks, and the right third bit represents the null
+ * check.
  * <p>
- * 
+ *
  * For array references, the right three bits are meaningful; for other object refrences, only null check bit should be used.
- * 
+ *
  * @see ArrayCheckTag
  * @see NullCheckTag
  */

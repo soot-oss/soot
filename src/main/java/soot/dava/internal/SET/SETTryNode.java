@@ -134,8 +134,8 @@ public class SETTryNode extends SETNode {
         Stmt s = ((AugmentedStmt) bit.next()).get_Stmt();
 
         /*
-         * 04.04.2006 mbatch if an implicit try due to a finally block, make sure to get the exception identifier from the goto target (it's a
-         * different block)
+         * 04.04.2006 mbatch if an implicit try due to a finally block, make sure to get the exception identifier from the
+         * goto target (it's a different block)
          */
 
         // TODO: HOW the heck do you handle finallys with NO finally?
@@ -159,7 +159,8 @@ public class SETTryNode extends SETNode {
       }
     }
 
-    return new ASTTryNode(get_Label(), emit_ASTBody(body2childChain.get(en.get_TryBody())), catchList, exceptionMap, paramMap);
+    return new ASTTryNode(get_Label(), emit_ASTBody(body2childChain.get(en.get_TryBody())), catchList, exceptionMap,
+        paramMap);
   }
 
   protected boolean resolve(SETNode parent) {
@@ -208,8 +209,8 @@ public class SETTryNode extends SETNode {
               } else if ((child instanceof SETControlFlowNode) && ((child instanceof SETUnconditionalWhileNode) == false)) {
                 SETControlFlowNode scfn = (SETControlFlowNode) child;
 
-                if ((scfn.get_CharacterizingStmt() == as)
-                    || ((as.cpreds.size() == 1) && (as.get_Stmt() instanceof GotoStmt) && (scfn.get_CharacterizingStmt() == as.cpreds.get(0)))) {
+                if ((scfn.get_CharacterizingStmt() == as) || ((as.cpreds.size() == 1) && (as.get_Stmt() instanceof GotoStmt)
+                    && (scfn.get_CharacterizingStmt() == as.cpreds.get(0)))) {
                   remove_AugmentedStmt(as);
                 }
               }

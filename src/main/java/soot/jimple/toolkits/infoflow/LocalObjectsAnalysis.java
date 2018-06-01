@@ -69,7 +69,8 @@ public class LocalObjectsAnalysis {
   }
 
   // meant to be overridden by specialty local objects analyses
-  protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, InfoFlowAnalysis dfa, UseFinder uf, SootClass sc) {
+  protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, InfoFlowAnalysis dfa,
+      UseFinder uf, SootClass sc) {
     return new ClassLocalObjectsAnalysis(loa, dfa, uf, sc);
   }
 
@@ -100,9 +101,10 @@ public class LocalObjectsAnalysis {
       // logger.debug(" Directly Reachable: ");
       boolean isLocal = isObjectLocalToParent(localOrRef, sm);
       if (dfa.printDebug()) {
-        logger
-            .debug("    " + (isLocal ? "LOCAL  (Directly Reachable from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")"
-                : "SHARED (Directly Reachable from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")"));
+        logger.debug("    " + (isLocal
+            ? "LOCAL  (Directly Reachable from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")"
+            : "SHARED (Directly Reachable from " + context.getDeclaringClass().getShortName() + "." + context.getName()
+                + ")"));
       }
       return isLocal;
     }
@@ -110,7 +112,8 @@ public class LocalObjectsAnalysis {
     // Handle obvious case
     if (localOrRef instanceof StaticFieldRef) {
       if (dfa.printDebug()) {
-        logger.debug("    SHARED (Static             from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+        logger.debug("    SHARED (Static             from " + context.getDeclaringClass().getShortName() + "."
+            + context.getName() + ")");
       }
       return false;
     }
@@ -125,17 +128,19 @@ public class LocalObjectsAnalysis {
     Body b = sm.retrieveActiveBody(); // sm is guaranteed concrete (see above)
     // Check if localOrRef is Local in smContext
     /*
-     * SmartMethodLocalObjectsAnalysis mloa = null; // Pair mloaKey = new Pair(sm, mergedContext); if( mloaCache.containsKey(sm) ) { mloa =
-     * (SmartMethodLocalObjectsAnalysis) mloaCache.get(sm); // logger.debug("      Retrieved mloa From Cache: "); } else { UnitGraph g = new
-     * ExceptionalUnitGraph(b); mloa = new SmartMethodLocalObjectsAnalysis(g, dfa); // logger.debug("        Caching mloa (smdfa " +
-     * SmartMethodInfoFlowAnalysis.counter + // " smloa " + SmartMethodLocalObjectsAnalysis.counter + ") for " + sm.getName() + " on goal:");
-     * mloaCache.put(sm, mloa); } //
+     * SmartMethodLocalObjectsAnalysis mloa = null; // Pair mloaKey = new Pair(sm, mergedContext); if(
+     * mloaCache.containsKey(sm) ) { mloa = (SmartMethodLocalObjectsAnalysis) mloaCache.get(sm); //
+     * logger.debug("      Retrieved mloa From Cache: "); } else { UnitGraph g = new ExceptionalUnitGraph(b); mloa = new
+     * SmartMethodLocalObjectsAnalysis(g, dfa); // logger.debug("        Caching mloa (smdfa " +
+     * SmartMethodInfoFlowAnalysis.counter + // " smloa " + SmartMethodLocalObjectsAnalysis.counter + ") for " + sm.getName()
+     * + " on goal:"); mloaCache.put(sm, mloa); } //
      */
 
     CallLocalityContext mergedContext = getClassLocalObjectsAnalysis(context.getDeclaringClass()).getMergedContext(sm);
     if (mergedContext == null) {
       if (dfa.printDebug()) {
-        logger.debug("      ------ (Unreachable        from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+        logger.debug("      ------ (Unreachable        from " + context.getDeclaringClass().getShortName() + "."
+            + context.getName() + ")");
       }
       return true; // it's not non-local...
     }
@@ -155,9 +160,11 @@ public class LocalObjectsAnalysis {
         boolean isLocal = mergedContext.isFieldLocal(InfoFlowAnalysis.getNodeForFieldRef(sm, ifr.getField()));
         if (dfa.printDebug()) {
           if (isLocal) {
-            logger.debug("      LOCAL  (this  .localField  from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+            logger.debug("      LOCAL  (this  .localField  from " + context.getDeclaringClass().getShortName() + "."
+                + context.getName() + ")");
           } else {
-            logger.debug("      SHARED (this  .sharedField from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+            logger.debug("      SHARED (this  .sharedField from " + context.getDeclaringClass().getShortName() + "."
+                + context.getName() + ")");
           }
         }
         return isLocal;
@@ -168,15 +175,18 @@ public class LocalObjectsAnalysis {
           isLocal = !cloa.getInnerSharedFields().contains(ifr.getField());
           if (dfa.printDebug()) {
             if (isLocal) {
-              logger.debug("      LOCAL  (local .localField  from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+              logger.debug("      LOCAL  (local .localField  from " + context.getDeclaringClass().getShortName() + "."
+                  + context.getName() + ")");
             } else {
-              logger.debug("      SHARED (local .sharedField from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+              logger.debug("      SHARED (local .sharedField from " + context.getDeclaringClass().getShortName() + "."
+                  + context.getName() + ")");
             }
           }
           return isLocal;
         } else {
           if (dfa.printDebug()) {
-            logger.debug("      SHARED (shared.someField   from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+            logger.debug("      SHARED (shared.someField   from " + context.getDeclaringClass().getShortName() + "."
+                + context.getName() + ")");
           }
           return isLocal;
         }
@@ -186,39 +196,44 @@ public class LocalObjectsAnalysis {
     boolean isLocal = SmartMethodLocalObjectsAnalysis.isObjectLocal(dfa, sm, mergedContext, localOrRef);
     if (dfa.printDebug()) {
       if (isLocal) {
-        logger.debug("      LOCAL  ( local             from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+        logger.debug("      LOCAL  ( local             from " + context.getDeclaringClass().getShortName() + "."
+            + context.getName() + ")");
       } else {
-        logger.debug("      SHARED (shared             from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+        logger.debug("      SHARED (shared             from " + context.getDeclaringClass().getShortName() + "."
+            + context.getName() + ")");
       }
     }
     return isLocal;
   }
 
   /*
-   * BROKEN public boolean isFieldLocalToContext(SootField sf, SootMethod sm, SootClass context) { logger.debug("    Checking if " + sf + " in " + sm
-   * + " is local to " + context + ":");
-   * 
-   * if(sm.getDeclaringClass() == context) // special case { boolean isLocal = isFieldLocalToParent(sf); logger.debug("      Directly Reachable: " +
-   * (isLocal ? "LOCAL" : "SHARED")); return isLocal; }
-   * 
-   * // The rest of the time, we must find all call chains from context to sm // if it's local on all of them, then return true.
-   * 
-   * // Find Call Chains (separate chains for separate possible virtual call targets) // TODO right now we discard reentrant call chains... but this
-   * is UNSAFE // TODO right now we are stupid about virtual calls... but this is UNSAFE
-   * 
-   * // for each method in the context class (OR JUST FROM THE RUN METHOD IF IT'S A THREAD?) List classMethods = getAllMethodsForClass(context); //
-   * gets methods in context class and superclasses List callChains = new ArrayList(); List startingMethods = new ArrayList(); Iterator classMethodsIt
-   * = classMethods.iterator(); while(classMethodsIt.hasNext()) { SootMethod classMethod = (SootMethod) classMethodsIt.next(); List methodCallChains =
-   * getCallChainsBetween(classMethod, sm); Iterator methodCallChainsIt = methodCallChains.iterator(); while(methodCallChainsIt.hasNext()) {
-   * callChains.add(methodCallChainsIt.next()); startingMethods.add(classMethod); // need to add this once for each method call chain being added } }
-   * 
+   * BROKEN public boolean isFieldLocalToContext(SootField sf, SootMethod sm, SootClass context) {
+   * logger.debug("    Checking if " + sf + " in " + sm + " is local to " + context + ":");
+   *
+   * if(sm.getDeclaringClass() == context) // special case { boolean isLocal = isFieldLocalToParent(sf);
+   * logger.debug("      Directly Reachable: " + (isLocal ? "LOCAL" : "SHARED")); return isLocal; }
+   *
+   * // The rest of the time, we must find all call chains from context to sm // if it's local on all of them, then return
+   * true.
+   *
+   * // Find Call Chains (separate chains for separate possible virtual call targets) // TODO right now we discard reentrant
+   * call chains... but this is UNSAFE // TODO right now we are stupid about virtual calls... but this is UNSAFE
+   *
+   * // for each method in the context class (OR JUST FROM THE RUN METHOD IF IT'S A THREAD?) List classMethods =
+   * getAllMethodsForClass(context); // gets methods in context class and superclasses List callChains = new ArrayList();
+   * List startingMethods = new ArrayList(); Iterator classMethodsIt = classMethods.iterator();
+   * while(classMethodsIt.hasNext()) { SootMethod classMethod = (SootMethod) classMethodsIt.next(); List methodCallChains =
+   * getCallChainsBetween(classMethod, sm); Iterator methodCallChainsIt = methodCallChains.iterator();
+   * while(methodCallChainsIt.hasNext()) { callChains.add(methodCallChainsIt.next()); startingMethods.add(classMethod); //
+   * need to add this once for each method call chain being added } }
+   *
    * if(callChains.size() == 0) { logger.debug("      Unreachable: treat as local."); return true; // it's not non-local... }
-   * logger.debug("      Found " + callChains.size() + " Call Chains..."); // for(int i = 0; i < callChains.size(); i++) // logger.debug("      " +
-   * callChains.get(i));
-   * 
+   * logger.debug("      Found " + callChains.size() + " Call Chains..."); // for(int i = 0; i < callChains.size(); i++) //
+   * logger.debug("      " + callChains.get(i));
+   *
    * // Check Call Chains for(int i = 0; i < callChains.size(); i++) { List callChain = (List) callChains.get(i);
-   * if(!isFieldLocalToContextViaCallChain(sf, sm, context, (SootMethod) startingMethods.get(i), callChain)) { logger.debug("      SHARED"); return
-   * false; } } logger.debug("      LOCAL"); return true; }
+   * if(!isFieldLocalToContextViaCallChain(sf, sm, context, (SootMethod) startingMethods.get(i), callChain)) {
+   * logger.debug("      SHARED"); return false; } } logger.debug("      LOCAL"); return true; }
    */
   Map<SootMethod, ReachableMethods> rmCache = new HashMap<SootMethod, ReachableMethods>();
 
@@ -250,8 +265,8 @@ public class LocalObjectsAnalysis {
 
   Map callChainsCache = new HashMap();
 
-  public CallChain getNextCallChainBetween(ReachableMethods rm, SootMethod start, SootMethod end, Edge endToPath, CallChain path,
-      List previouslyFound) {
+  public CallChain getNextCallChainBetween(ReachableMethods rm, SootMethod start, SootMethod end, Edge endToPath,
+      CallChain path, List previouslyFound) {
     Pair cacheKey = new Pair(start, end);
     if (callChainsCache.containsKey(cacheKey)) {
       // logger.debug("C");
@@ -288,7 +303,8 @@ public class LocalObjectsAnalysis {
       SootMethod node = e.src();
       if (!path.containsMethod(node) && e.isExplicit() && e.srcStmt().containsInvokeExpr()) {
         // logger.debug("R");
-        CallChain newpath = getNextCallChainBetween(rm, start, node, e, path, previouslyFound); // node is supposed to be a method
+        CallChain newpath = getNextCallChainBetween(rm, start, node, e, path, previouslyFound); // node is supposed to be a
+                                                                                                // method
         if (newpath != null) {
           // logger.debug("|");
           if (!previouslyFound.contains(newpath)) {
@@ -314,63 +330,71 @@ public class LocalObjectsAnalysis {
   }
 
   /*
-   * // callChains go from current to goal public void getCallChainsBetween(SootMethod start, SootMethod current, SootMethod goal, ReachableMethods
-   * rm, List callChains, Set methodsInAnyChain) { List oldCallChains = new ArrayList(); oldCallChains.addAll(callChains); callChains.clear();
-   * 
-   * Pair cacheKey = new Pair(start, current); if(callChainsCache.containsKey(cacheKey)) { List cachedChains = (List) callChainsCache.get(cacheKey);
-   * 
-   * Iterator cachedChainsIt = cachedChains.iterator(); while(cachedChainsIt.hasNext()) { CallChain cachedChain = (CallChain) cachedChainsIt.next();
-   * Iterator oldCallChainsIt = oldCallChains.iterator(); while(oldCallChainsIt.hasNext()) { CallChain oldChain = (CallChain) oldCallChainsIt.next();
-   * callChains.add(cachedChain.cloneAndExtend(oldChain)); } }
-   * 
+   * // callChains go from current to goal public void getCallChainsBetween(SootMethod start, SootMethod current, SootMethod
+   * goal, ReachableMethods rm, List callChains, Set methodsInAnyChain) { List oldCallChains = new ArrayList();
+   * oldCallChains.addAll(callChains); callChains.clear();
+   *
+   * Pair cacheKey = new Pair(start, current); if(callChainsCache.containsKey(cacheKey)) { List cachedChains = (List)
+   * callChainsCache.get(cacheKey);
+   *
+   * Iterator cachedChainsIt = cachedChains.iterator(); while(cachedChainsIt.hasNext()) { CallChain cachedChain = (CallChain)
+   * cachedChainsIt.next(); Iterator oldCallChainsIt = oldCallChains.iterator(); while(oldCallChainsIt.hasNext()) { CallChain
+   * oldChain = (CallChain) oldCallChainsIt.next(); callChains.add(cachedChain.cloneAndExtend(oldChain)); } }
+   *
    * // We now have chains from start to goal
-   * 
+   *
    * logger.debug("C"); return; }
-   * 
-   * // For each edge into goal, clone the existing call chains and add that edge to the beginning, then call self with new goal Iterator edgeIt =
-   * cg.edgesInto(current); while(edgeIt.hasNext()) { Edge e = (Edge) edgeIt.next(); // Stmt currentCallerStmt = e.srcStmt(); SootMethod currentCaller
-   * = e.src();
-   * 
-   * // If the source of this edge is unreachable, ignore it if( !rm.contains(currentCaller) ) { logger.debug("U"); continue; }
-   * 
-   * // If this would introduce an SCC, skip it (TODO: Deal with it, instead) boolean currentCallerIsAlreadyInAChain = false; Iterator oldCallChainsIt
-   * = oldCallChains.iterator(); while(oldCallChainsIt.hasNext()) { CallChain oldCallChain = (CallChain) oldCallChainsIt.next();
-   * if(oldCallChain.containsMethod(currentCaller)) { currentCallerIsAlreadyInAChain = true; break; } }
-   * 
-   * if( ( currentCaller == goal ) || currentCallerIsAlreadyInAChain) // methodsInAnyChain.contains(goalCaller) ) { logger.debug("S"); continue; // if
-   * this goalCaller would be an SCC, ignore it }
-   * 
-   * // If this is the type of edge that we'd like to include in our call chains if(e.isExplicit())// && goalCallerStmt.containsInvokeExpr()) { //
-   * Make a copy of all call chains // List newCallChains = cloneCallChains(oldCallChains); List newCallChains = new ArrayList();
-   * 
-   * if(oldCallChains.size() == 0) { newCallChains.add(new CallChain(e, null)); } else { // Add this edge to each call chain oldCallChainsIt =
-   * oldCallChains.iterator(); while(oldCallChainsIt.hasNext()) { CallChain oldCallChain = (CallChain) oldCallChainsIt.next(); newCallChains.add(new
-   * CallChain(e, oldCallChain)); } }
-   * 
+   *
+   * // For each edge into goal, clone the existing call chains and add that edge to the beginning, then call self with new
+   * goal Iterator edgeIt = cg.edgesInto(current); while(edgeIt.hasNext()) { Edge e = (Edge) edgeIt.next(); // Stmt
+   * currentCallerStmt = e.srcStmt(); SootMethod currentCaller = e.src();
+   *
+   * // If the source of this edge is unreachable, ignore it if( !rm.contains(currentCaller) ) { logger.debug("U"); continue;
+   * }
+   *
+   * // If this would introduce an SCC, skip it (TODO: Deal with it, instead) boolean currentCallerIsAlreadyInAChain = false;
+   * Iterator oldCallChainsIt = oldCallChains.iterator(); while(oldCallChainsIt.hasNext()) { CallChain oldCallChain =
+   * (CallChain) oldCallChainsIt.next(); if(oldCallChain.containsMethod(currentCaller)) { currentCallerIsAlreadyInAChain =
+   * true; break; } }
+   *
+   * if( ( currentCaller == goal ) || currentCallerIsAlreadyInAChain) // methodsInAnyChain.contains(goalCaller) ) {
+   * logger.debug("S"); continue; // if this goalCaller would be an SCC, ignore it }
+   *
+   * // If this is the type of edge that we'd like to include in our call chains if(e.isExplicit())// &&
+   * goalCallerStmt.containsInvokeExpr()) { // Make a copy of all call chains // List newCallChains =
+   * cloneCallChains(oldCallChains); List newCallChains = new ArrayList();
+   *
+   * if(oldCallChains.size() == 0) { newCallChains.add(new CallChain(e, null)); } else { // Add this edge to each call chain
+   * oldCallChainsIt = oldCallChains.iterator(); while(oldCallChainsIt.hasNext()) { CallChain oldCallChain = (CallChain)
+   * oldCallChainsIt.next(); newCallChains.add(new CallChain(e, oldCallChain)); } }
+   *
    * // methodsInAnyChain.add(goalCaller);
-   * 
-   * // If the call chains don't now start from start, then get ones that do (recursively) if(currentCaller != start) { logger.debug("R");
-   * 
-   * // Call self to extend these new call chains all the way to start getCallChainsBetween(start, currentCaller, goal, rm, newCallChains,
-   * methodsInAnyChain); } else { logger.debug("F"); }
-   * 
-   * // Add all the new call chains to our set callChains.addAll(newCallChains); } } logger.debug("(" + callChains.size() + ")"); if(callChains.size()
-   * > 0) callChainsCache.put(new Pair(start, goal), callChains); }
+   *
+   * // If the call chains don't now start from start, then get ones that do (recursively) if(currentCaller != start) {
+   * logger.debug("R");
+   *
+   * // Call self to extend these new call chains all the way to start getCallChainsBetween(start, currentCaller, goal, rm,
+   * newCallChains, methodsInAnyChain); } else { logger.debug("F"); }
+   *
+   * // Add all the new call chains to our set callChains.addAll(newCallChains); } } logger.debug("(" + callChains.size() +
+   * ")"); if(callChains.size() > 0) callChainsCache.put(new Pair(start, goal), callChains); }
    */
   /*
-   * // returns a 1-deep clone of a List of Lists private List cloneCallChains(List callChains) { List ret = new ArrayList(); Iterator callChainsIt =
-   * callChains.iterator(); while(callChainsIt.hasNext()) ret.add( ((LinkedList) callChainsIt.next()).clone() ); // add a clone of each call chain
-   * return ret; }
+   * // returns a 1-deep clone of a List of Lists private List cloneCallChains(List callChains) { List ret = new ArrayList();
+   * Iterator callChainsIt = callChains.iterator(); while(callChainsIt.hasNext()) ret.add( ((LinkedList)
+   * callChainsIt.next()).clone() ); // add a clone of each call chain return ret; }
    */
   /*
-   * public List getCallChainsBetween(SootMethod start, SootMethod goal) { logger.debug("Q"); List callChains = new ArrayList(); Iterator edgeIt =
-   * cg.edgesInto(goal); while(edgeIt.hasNext()) { Edge e = (Edge) edgeIt.next(); Stmt goalCallerStmt = e.srcStmt(); SootMethod goalCaller = e.src();
-   * if(e.isExplicit() && goalCallerStmt.containsInvokeExpr()) // if not, we're not interested { List edgeCallChains = null; if(goalCaller == start) {
-   * edgeCallChains = new ArrayList(); edgeCallChains.add(new LinkedList()); } else { edgeCallChains = getCallChainsBetween(start, goalCaller); }
-   * 
-   * Pair pair = new Pair(new EquivalentValue(goalCallerStmt.getInvokeExpr()), goal); Iterator edgeCallChainsIt = edgeCallChains.iterator();
-   * while(edgeCallChainsIt.hasNext()) { List edgeCallChain = (List) edgeCallChainsIt.next(); if( !edgeCallChain.contains(pair) ) // SCC, we must
-   * ignore, sadly... TODO FIX THIS { edgeCallChain.add(pair); callChains.add(edgeCallChain); } } } } return callChains; }
+   * public List getCallChainsBetween(SootMethod start, SootMethod goal) { logger.debug("Q"); List callChains = new
+   * ArrayList(); Iterator edgeIt = cg.edgesInto(goal); while(edgeIt.hasNext()) { Edge e = (Edge) edgeIt.next(); Stmt
+   * goalCallerStmt = e.srcStmt(); SootMethod goalCaller = e.src(); if(e.isExplicit() && goalCallerStmt.containsInvokeExpr())
+   * // if not, we're not interested { List edgeCallChains = null; if(goalCaller == start) { edgeCallChains = new
+   * ArrayList(); edgeCallChains.add(new LinkedList()); } else { edgeCallChains = getCallChainsBetween(start, goalCaller); }
+   *
+   * Pair pair = new Pair(new EquivalentValue(goalCallerStmt.getInvokeExpr()), goal); Iterator edgeCallChainsIt =
+   * edgeCallChains.iterator(); while(edgeCallChainsIt.hasNext()) { List edgeCallChain = (List) edgeCallChainsIt.next(); if(
+   * !edgeCallChain.contains(pair) ) // SCC, we must ignore, sadly... TODO FIX THIS { edgeCallChain.add(pair);
+   * callChains.add(edgeCallChain); } } } } return callChains; }
    */
 
   // returns a list of all methods that can be invoked on an object of type sc
@@ -410,7 +434,8 @@ public class LocalObjectsAnalysis {
 
   public boolean hasNonLocalEffects(SootMethod containingMethod, InvokeExpr ie, SootMethod context) {
     SootMethod target = ie.getMethodRef().resolve();
-    MutableDirectedGraph dataFlowGraph = dfa.getMethodInfoFlowSummary(target); // TODO actually we want a graph that is sensitive to scalar data, too
+    MutableDirectedGraph dataFlowGraph = dfa.getMethodInfoFlowSummary(target); // TODO actually we want a graph that is
+                                                                               // sensitive to scalar data, too
 
     // For a static invoke, check if any fields or any shared params are read/written
     if (ie instanceof StaticInvokeExpr) {

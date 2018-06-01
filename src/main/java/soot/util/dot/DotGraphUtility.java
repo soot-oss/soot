@@ -18,11 +18,11 @@
  */
 
 /*
-* Modified by the Sable Research Group and others 1997-1999.  
+* Modified by the Sable Research Group and others 1997-1999.
 * See the 'credits' file distributed with Soot for the complete list of
 * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
 *
-* @author Feng Qian 
+* @author Feng Qian
 */
 package soot.util.dot;
 
@@ -36,8 +36,8 @@ public class DotGraphUtility {
   private static final Logger logger = LoggerFactory.getLogger(DotGraphUtility.class);
 
   /**
-   * Replace any {@code "} with {@code \"}. If the {@code "} character was already escaped (i.e. {@code \"}), then the escape character is also
-   * escaped (i.e. {@code \\\"}).
+   * Replace any {@code "} with {@code \"}. If the {@code "} character was already escaped (i.e. {@code \"}), then the escape
+   * character is also escaped (i.e. {@code \\\"}).
    *
    * @param original
    *

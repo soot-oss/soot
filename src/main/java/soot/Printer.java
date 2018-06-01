@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -143,8 +143,8 @@ public class Printer {
     out.println();
     incJimpleLnNum();
     /*
-     * if (!addJimpleLn()) { Iterator clTagsIt = cl.getTags().iterator(); while (clTagsIt.hasNext()) { final Tag t = (Tag)clTagsIt.next();
-     * out.println(t); } }
+     * if (!addJimpleLn()) { Iterator clTagsIt = cl.getTags().iterator(); while (clTagsIt.hasNext()) { final Tag t =
+     * (Tag)clTagsIt.next(); out.println(t); } }
      */
     out.println("{");
     incJimpleLnNum();
@@ -256,7 +256,8 @@ public class Printer {
   }
 
   /**
-   * Prints out the method corresponding to b Body, (declaration and body), in the textual format corresponding to the IR used to encode b body.
+   * Prints out the method corresponding to b Body, (declaration and body), in the textual format corresponding to the IR
+   * used to encode b body.
    *
    * @param out
    *          a PrintWriter instance to print to.
@@ -274,15 +275,17 @@ public class Printer {
     // only print tags if not printing attributes in a file
     if (!addJimpleLn()) {
       /*
-       * for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) { final Tag t = (Tag) tIt.next(); out.println(t); incJimpleLnNum();
-       * 
+       * for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) { final Tag t = (Tag) tIt.next();
+       * out.println(t); incJimpleLnNum();
+       *
        * }
        */
     }
 
     if (addJimpleLn()) {
       setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), b.getMethod()));
-      // logger.debug("added jimple ln tag for method: "+b.getMethod().toString()+" "+b.getMethod().getDeclaringClass().getName());
+      // logger.debug("added jimple ln tag for method: "+b.getMethod().toString()+"
+      // "+b.getMethod().getDeclaringClass().getName());
     }
 
     out.println("    {");
@@ -371,9 +374,9 @@ public class Printer {
           up.newline();
         }
         /*
-         * Iterator udIt = currentStmt.getUseAndDefBoxes().iterator(); while (udIt.hasNext()) { ValueBox temp = (ValueBox)udIt.next(); Iterator vbtags
-         * = temp.getTags().iterator(); while (vbtags.hasNext()) { Tag t = (Tag) vbtags.next(); up.noIndent(); up.literal("VB Tag: "+t.toString());
-         * up.newline(); } }
+         * Iterator udIt = currentStmt.getUseAndDefBoxes().iterator(); while (udIt.hasNext()) { ValueBox temp =
+         * (ValueBox)udIt.next(); Iterator vbtags = temp.getTags().iterator(); while (vbtags.hasNext()) { Tag t = (Tag)
+         * vbtags.next(); up.noIndent(); up.literal("VB Tag: "+t.toString()); up.newline(); } }
          */
       }
     }
@@ -395,8 +398,9 @@ public class Printer {
       while (trapIt.hasNext()) {
         Trap trap = trapIt.next();
 
-        out.println("        catch " + Scene.v().quotedNameOf(trap.getException().getName()) + " from " + up.labels().get(trap.getBeginUnit())
-            + " to " + up.labels().get(trap.getEndUnit()) + " with " + up.labels().get(trap.getHandlerUnit()) + ";");
+        out.println("        catch " + Scene.v().quotedNameOf(trap.getException().getName()) + " from "
+            + up.labels().get(trap.getBeginUnit()) + " to " + up.labels().get(trap.getEndUnit()) + " with "
+            + up.labels().get(trap.getHandlerUnit()) + ";");
 
         incJimpleLnNum();
 

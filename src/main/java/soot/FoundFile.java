@@ -82,11 +82,13 @@ public class FoundFile {
           zipEntry = zipFile.getEntry(entryName);
           if (zipEntry == null) {
             silentClose();
-            throw new RuntimeException("Error: Failed to find entry '" + entryName + "' in the archive file at path '" + file.getPath() + "'.");
+            throw new RuntimeException(
+                "Error: Failed to find entry '" + entryName + "' in the archive file at path '" + file.getPath() + "'.");
           }
         } catch (Exception e) {
           silentClose();
-          throw new RuntimeException("Error: Failed to open the archive file at path '" + file.getPath() + "' for entry '" + entryName + "'.", e);
+          throw new RuntimeException(
+              "Error: Failed to open the archive file at path '" + file.getPath() + "' for entry '" + entryName + "'.", e);
         }
       }
 
@@ -95,8 +97,8 @@ public class FoundFile {
         stream = zipFile.getInputStream(zipEntry);
         ret = doJDKBugWorkaround(stream, zipEntry.getSize());
       } catch (Exception e) {
-        throw new RuntimeException(
-            "Error: Failed to open a InputStream for the entry '" + zipEntry.getName() + "' of the archive at path '" + zipFile.getName() + "'.", e);
+        throw new RuntimeException("Error: Failed to open a InputStream for the entry '" + zipEntry.getName()
+            + "' of the archive at path '" + zipFile.getName() + "'.", e);
       } finally {
         if (stream != null) {
           try {

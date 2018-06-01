@@ -190,11 +190,12 @@ public class SideEffectTagger extends BodyTransformer {
 
         // The loop below is just for calculating stats.
         /*
-         * if( !justDoTotallyConservativeThing ) { for( Iterator innerIt = body.getUnits().iterator(); innerIt.hasNext(); ) { final Stmt inner =
-         * (Stmt) innerIt.next(); Object ikey; if( optionNaive && inner.containsInvokeExpr() ) { ikey = inner; } else { ikey = keyFor( inner ); }
-         * RWSet innerRead = (RWSet) stmtToReadSet.get( ikey ); RWSet innerWrite = (RWSet) stmtToWriteSet.get( ikey ); if( graph.areAdjacent(
-         * sets.indexOf( read ), sets.indexOf( innerWrite ) ) ) numRWs++; if( graph.areAdjacent( sets.indexOf( write ), sets.indexOf( innerRead ) ) )
-         * numWRs++; if( inner == stmt ) continue; if( graph.areAdjacent( sets.indexOf( write ), sets.indexOf( innerWrite ) ) ) numWWs++; if(
+         * if( !justDoTotallyConservativeThing ) { for( Iterator innerIt = body.getUnits().iterator(); innerIt.hasNext(); ) {
+         * final Stmt inner = (Stmt) innerIt.next(); Object ikey; if( optionNaive && inner.containsInvokeExpr() ) { ikey =
+         * inner; } else { ikey = keyFor( inner ); } RWSet innerRead = (RWSet) stmtToReadSet.get( ikey ); RWSet innerWrite =
+         * (RWSet) stmtToWriteSet.get( ikey ); if( graph.areAdjacent( sets.indexOf( read ), sets.indexOf( innerWrite ) ) )
+         * numRWs++; if( graph.areAdjacent( sets.indexOf( write ), sets.indexOf( innerRead ) ) ) numWRs++; if( inner == stmt
+         * ) continue; if( graph.areAdjacent( sets.indexOf( write ), sets.indexOf( innerWrite ) ) ) numWWs++; if(
          * graph.areAdjacent( sets.indexOf( read ), sets.indexOf( innerRead ) ) ) numRRs++; } }
          */
       }

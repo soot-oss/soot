@@ -25,7 +25,7 @@ import soot.jimple.spark.geom.dataRep.SimpleInterval;
 
 /**
  * Manage context intervals.
- * 
+ *
  * @author xiao
  *
  */
@@ -36,8 +36,8 @@ public class ContextsCollector {
   protected SimpleInterval tmp_si;
 
   /*
-   * We are creating a performance-precision tunable container. When there are more than nBudget in the container, we merge them and create a super
-   * containing interval. nBudget = -1 means the intervals are never merged.
+   * We are creating a performance-precision tunable container. When there are more than nBudget in the container, we merge
+   * them and create a super containing interval. nBudget = -1 means the intervals are never merged.
    */
   protected int nBudget = -1;
 

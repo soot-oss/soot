@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,7 +51,8 @@ public class ReturnInstruction extends DexlibAbstractInstruction {
 
     if (IDalvikTyper.ENABLE_DVKTYPER) {
 
-      // DalvikTyper.v().addConstraint(returnStmt.getOpBox(), new ImmediateBox(Jimple.body.getBody().getMethod().getReturnType()));
+      // DalvikTyper.v().addConstraint(returnStmt.getOpBox(), new
+      // ImmediateBox(Jimple.body.getBody().getMethod().getReturnType()));
       DalvikTyper.v().setType(returnStmt.getOpBox(), body.getBody().getMethod().getReturnType(), true);
     }
   }

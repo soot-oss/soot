@@ -110,7 +110,8 @@ public class SootToDexUtils {
 
   private static String getDexArrayTypeDescriptor(ArrayType sootArray) {
     if (sootArray.numDimensions > 255) {
-      throw new RuntimeException("dex does not support more than 255 dimensions! " + sootArray + " has " + sootArray.numDimensions);
+      throw new RuntimeException(
+          "dex does not support more than 255 dimensions! " + sootArray + " has " + sootArray.numDimensions);
     }
     String baseTypeDescriptor = getDexTypeDescriptor(sootArray.baseType);
     StringBuilder sb = new StringBuilder(sootArray.numDimensions + baseTypeDescriptor.length());

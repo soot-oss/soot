@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -47,8 +47,8 @@ public abstract class Type implements Switchable, Serializable, Numberable {
   }
 
   /**
-   * Returns a textual (and quoted as needed) representation of this type for serialization, e.g. to .jimple format Replaced by toQuotedString; only
-   * here for backwards compatibility.
+   * Returns a textual (and quoted as needed) representation of this type for serialization, e.g. to .jimple format Replaced
+   * by toQuotedString; only here for backwards compatibility.
    */
   @Deprecated
   public String getEscapedName() {
@@ -88,7 +88,7 @@ public abstract class Type implements Switchable, Serializable, Numberable {
 
   /**
    * Returns <code>true</code> if this type is allowed to appear in final (clean) Jimple code.
-   * 
+   *
    * @return
    */
   public boolean isAllowedInFinalCode() {

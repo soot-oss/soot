@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -37,9 +37,9 @@ import soot.jimple.Jimple;
 import soot.jimple.LookupSwitchStmt;
 
 /**
- * Removes empty switch statements which always take the default action from a method body, i.e. blocks of the form switch(x) { default: ... }. Such
- * blocks are replaced by the code of the default block.
- * 
+ * Removes empty switch statements which always take the default action from a method body, i.e. blocks of the form switch(x)
+ * { default: ... }. Such blocks are replaced by the code of the default block.
+ *
  * @author Steven Arzt
  *
  */

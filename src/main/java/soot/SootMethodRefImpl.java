@@ -39,15 +39,16 @@ import soot.options.Options;
 import soot.util.NumberedString;
 
 /**
- * Representation of a reference to a method as it appears in a class file. Note that the method directly referred to may not actually exist; the
- * actual target of the reference is determined according to the resolution procedure in the Java Virtual Machine Specification, 2nd ed, section
- * 5.4.3.3.
+ * Representation of a reference to a method as it appears in a class file. Note that the method directly referred to may not
+ * actually exist; the actual target of the reference is determined according to the resolution procedure in the Java Virtual
+ * Machine Specification, 2nd ed, section 5.4.3.3.
  */
 
 public class SootMethodRefImpl implements SootMethodRef {
   private static final Logger logger = LoggerFactory.getLogger(SootMethodRefImpl.class);
 
-  public SootMethodRefImpl(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType, boolean isStatic) {
+  public SootMethodRefImpl(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType,
+      boolean isStatic) {
     this.declaringClass = declaringClass;
     this.name = name;
 
@@ -125,13 +126,13 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   public class ClassResolutionFailedException extends ResolutionFailedException {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 5430199603403917938L;
 
     public ClassResolutionFailedException() {
-      super("Class " + declaringClass + " doesn't have method " + name + "(" + (parameterTypes == null ? "" : parameterTypes) + ")" + " : "
-          + returnType + "; failed to resolve in superclasses and interfaces");
+      super("Class " + declaringClass + " doesn't have method " + name + "(" + (parameterTypes == null ? "" : parameterTypes)
+          + ")" + " : " + returnType + "; failed to resolve in superclasses and interfaces");
     }
 
     @Override
@@ -155,7 +156,8 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   private SootMethod checkStatic(SootMethod ret) {
     if (ret.isStatic() != isStatic()) {
-      if (Options.v().wrong_staticness() != Options.wrong_staticness_ignore && Options.v().wrong_staticness() != Options.wrong_staticness_fixstrict) {
+      if (Options.v().wrong_staticness() != Options.wrong_staticness_ignore
+          && Options.v().wrong_staticness() != Options.wrong_staticness_fixstrict) {
         throw new ResolutionFailedException("Resolved " + this + " to " + ret + " which has wrong static-ness");
       }
     }
@@ -243,7 +245,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   /**
    * Creates a method body that throws an "unresolved compilation error" message
-   * 
+   *
    * @param declaringClass
    *          The class that was supposed to contain the method
    * @return The created SootMethod

@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -124,19 +124,21 @@ public class RectangularArrayFinder extends SceneTransformer {
     }
 
     /*
-     * MutableDirectedGraph methodGraph = ig.newMethodGraph(); HashSet visitedMethods = new HashSet(); LinkedList tovisitMethods = new LinkedList();
-     * 
+     * MutableDirectedGraph methodGraph = ig.newMethodGraph(); HashSet visitedMethods = new HashSet(); LinkedList
+     * tovisitMethods = new LinkedList();
+     *
      * List heads = methodGraph.getHeads(); Iterator headIt = heads.iterator(); while (headIt.hasNext()) { SootMethod entry =
      * (SootMethod)headIt.next(); String sig = entry.getSubSignature();
-     * 
+     *
      * if (sig.equals(mainSignature)) tovisitMethods.add(entry); }
-     * 
-     * while (!tovisitMethods.isEmpty()) { SootMethod visiting = (SootMethod)tovisitMethods.removeFirst(); visitedMethods.add(visiting);
-     * 
+     *
+     * while (!tovisitMethods.isEmpty()) { SootMethod visiting = (SootMethod)tovisitMethods.removeFirst();
+     * visitedMethods.add(visiting);
+     *
      * recoverRectArray(visiting); addInfoFromMethod(visiting);
-     * 
-     * List succs = methodGraph.getSuccsOf(visiting); Iterator succIt = succs.iterator(); while (succIt.hasNext()) { Object succ = succIt.next(); if
-     * (!visitedMethods.contains(succ)) tovisitMethods.add(succ); } }
+     *
+     * List succs = methodGraph.getSuccsOf(visiting); Iterator succIt = succs.iterator(); while (succIt.hasNext()) { Object
+     * succ = succIt.next(); if (!visitedMethods.contains(succ)) tovisitMethods.add(succ); } }
      */
 
     /* propagate the graph info from FALSE node. */
@@ -356,7 +358,8 @@ public class RectangularArrayFinder extends SceneTransformer {
             if (leftDims != rightDims) {
               ehmdg.addEdge(BoolValue.v(false), from);
             }
-          } else if (!arrayLocal.contains(leftOp)) { /* implicitly cast from right side to left side, and the left side declare type is Object ... */
+          } else if (!arrayLocal.contains(
+              leftOp)) { /* implicitly cast from right side to left side, and the left side declare type is Object ... */
             ehmdg.addEdge(BoolValue.v(false), new MethodLocal(method, (Local) rightOp));
           }
         } else if ((leftOp instanceof Local) && (rightOp instanceof ParameterRef)) {
@@ -469,7 +472,8 @@ public class RectangularArrayFinder extends SceneTransformer {
 
             needTransfer = true;
           }
-        } else if ((leftOp instanceof Local) && ((rightOp instanceof NewArrayExpr) || (rightOp instanceof NewMultiArrayExpr))) {
+        } else if ((leftOp instanceof Local)
+            && ((rightOp instanceof NewArrayExpr) || (rightOp instanceof NewMultiArrayExpr))) {
           if (arrayLocal.contains(leftOp)) {
             ehmdg.addEdge(BoolValue.v(true), new MethodLocal(method, (Local) leftOp));
           }
@@ -600,7 +604,8 @@ public class RectangularArrayFinder extends SceneTransformer {
   private int lookforPattern(Chain units, Stmt startpoint, int firstdim, Local local, Type basetype, Local[] tmplocals) {
     /* It is a state machine to match the pattern */
     /*
-     * state input goto start r1 = new(A[])[c] 1 1 r2 = newA[d] 2 2 r2[?] = ... 2 r1[e] = r2 (e = c-1) 3 r1[e] = r2 (e = e'+1) 2 3 end
+     * state input goto start r1 = new(A[])[c] 1 1 r2 = newA[d] 2 2 r2[?] = ... 2 r1[e] = r2 (e = c-1) 3 r1[e] = r2 (e =
+     * e'+1) 2 3 end
      */
 
     int seconddim = -1;
@@ -714,7 +719,8 @@ public class RectangularArrayFinder extends SceneTransformer {
     }
   }
 
-  private void transferPattern(Chain units, Stmt startpoint, int firstdim, int seconddim, Local local, Type basetype, Local[] tmplocals) {
+  private void transferPattern(Chain units, Stmt startpoint, int firstdim, int seconddim, Local local, Type basetype,
+      Local[] tmplocals) {
     /* sequentially search and replace the sub dimension assignment */
     {
       /* change the first one, reset the right op */

@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -212,7 +212,8 @@ public class ArraySparseSet<T> extends AbstractFlowSet<T> {
   }
 
   /**
-   * @deprecated This method uses linear-time lookup. For better performance, consider using a {@link HashSet} instead, if you require this operation.
+   * @deprecated This method uses linear-time lookup. For better performance, consider using a {@link HashSet} instead, if
+   *             you require this operation.
    */
   @Deprecated
   public boolean contains(Object obj) {
@@ -244,9 +245,9 @@ public class ArraySparseSet<T> extends AbstractFlowSet<T> {
       }
 
       /*
-       * both arrays have the same size, no element appears twice in one array, all elements of ThisFlow are in otherFlow -> they are equal! we don't
-       * need to test again! // Make sure that otherFlow is contained in ThisFlow for(int i = 0; i < size; i++) if(!this.contains(other.elements[i]))
-       * return false;
+       * both arrays have the same size, no element appears twice in one array, all elements of ThisFlow are in otherFlow ->
+       * they are equal! we don't need to test again! // Make sure that otherFlow is contained in ThisFlow for(int i = 0; i <
+       * size; i++) if(!this.contains(other.elements[i])) return false;
        */
 
       return true;

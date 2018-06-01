@@ -28,8 +28,8 @@ import soot.UnitBox;
  **/
 public interface SUnitBox extends UnitBox {
   /**
-   * Indicates whether the contents of the UnitBox may have been changed. Returns true if setUnit(Unit) has been called recently and was not followed
-   * by setUnitChanged(false).
+   * Indicates whether the contents of the UnitBox may have been changed. Returns true if setUnit(Unit) has been called
+   * recently and was not followed by setUnitChanged(false).
    *
    * <p>
    * Needed for Shimple internal Unit chain patching.

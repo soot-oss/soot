@@ -17,13 +17,13 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/* 
+/*
  * Maintained by Nomair A. Naeem
  */
 
 /*
  * CHANGLE LOG:
- * 
+ *
  */
 package soot.dava.toolkits.base.AST.traversals;
 
@@ -45,14 +45,15 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.Stmt;
 
 /**
- * This class has been created because we need the immediate target of a implicit break/continue statement i.e. a break/continue statement which does
- * not break/continue a particular label explicitly.
- * 
+ * This class has been created because we need the immediate target of a implicit break/continue statement i.e. a
+ * break/continue statement which does not break/continue a particular label explicitly.
+ *
  * Notice that this is only allowed for while do while, unconditional loop for loop switch construct.
- * 
+ *
  * Notice continue is not allowed for switch also
- * 
- * Explicit breaks can on the other hand break any label (that on a construct) which we are not worried about in this analysis
+ *
+ * Explicit breaks can on the other hand break any label (that on a construct) which we are not worried about in this
+ * analysis
  */
 public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
 
@@ -63,8 +64,10 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
     return G.v().soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder();
   }
 
-  HashMap<DAbruptStmt, ASTNode> closestNode = new HashMap<DAbruptStmt, ASTNode>();// a mapping of each abrupt statement to the node they are targeting
-  ArrayList<ASTLabeledNode> nodeStack = new ArrayList<ASTLabeledNode>(); // the last element will always be the "currentNode" meaning the closest
+  HashMap<DAbruptStmt, ASTNode> closestNode = new HashMap<DAbruptStmt, ASTNode>();// a mapping of each abrupt statement to
+                                                                                  // the node they are targeting
+  ArrayList<ASTLabeledNode> nodeStack = new ArrayList<ASTLabeledNode>(); // the last element will always be the "currentNode"
+                                                                         // meaning the closest
                                                                          // target to a abrupt stmt
 
   /**
@@ -80,8 +83,8 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
   }
 
   /**
-   * Following methods add a new node to the end of the nodeStack arrayList Since that node becomes the closest target of an implicit break or
-   * continue
+   * Following methods add a new node to the end of the nodeStack arrayList Since that node becomes the closest target of an
+   * implicit break or continue
    */
 
   public void inASTWhileNode(ASTWhileNode node) {
@@ -105,8 +108,8 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
   }
 
   /**
-   * Following methods remove the last node from the end of the nodeStack arrayList Since the previous node now becomes the closest target to an
-   * implicit break or continue
+   * Following methods remove the last node from the end of the nodeStack arrayList Since the previous node now becomes the
+   * closest target to an implicit break or continue
    */
 
   public void outASTWhileNode(ASTWhileNode node) {
@@ -193,9 +196,10 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
   }
 
   /*
-   * public void outASTMethodNode(ASTMethodNode node){ Iterator it = closestNode.keySet().iterator(); while(it.hasNext()){ DAbruptStmt ab =
-   * (DAbruptStmt)it.next(); System.out.println("Closest to "+ab+" is "+((ASTNode)closestNode.get(ab)).toString()+"\n\n"); }
-   * 
+   * public void outASTMethodNode(ASTMethodNode node){ Iterator it = closestNode.keySet().iterator(); while(it.hasNext()){
+   * DAbruptStmt ab = (DAbruptStmt)it.next();
+   * System.out.println("Closest to "+ab+" is "+((ASTNode)closestNode.get(ab)).toString()+"\n\n"); }
+   *
    * }
    */
 }

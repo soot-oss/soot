@@ -29,7 +29,7 @@ import soot.jimple.Jimple;
 
 /**
  * Utility class used to package a Value and a Unit together.
- * 
+ *
  * @author Navindra Umanee
  **/
 public class ValueUnitPair extends AbstractValueBox implements UnitBox, EquivTo {
@@ -43,7 +43,7 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox, EquivTo 
 
   /**
    * Constructs a ValueUnitPair from a Unit object and a Value object.
-   * 
+   *
    * @param value
    *          some Value
    * @param unit
@@ -152,8 +152,8 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox, EquivTo 
    *
    * <p>
    *
-   * <b>Note:</b> If you are concerned about non-determinism, remember that current implementations of equivHashCode() in other parts of Soot are
-   * non-deterministic as well (see Constant.java for example).
+   * <b>Note:</b> If you are concerned about non-determinism, remember that current implementations of equivHashCode() in
+   * other parts of Soot are non-deterministic as well (see Constant.java for example).
    **/
   public int equivHashCode() {
     // this is not deterministic because a Unit's hash code is

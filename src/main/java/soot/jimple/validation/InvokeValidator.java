@@ -61,7 +61,8 @@ public enum InvokeValidator implements BodyValidator {
             if (clazzDeclaring.isInterface()) {
               shouldBeVirtual = false;
               if (!(invokeExpr instanceof InterfaceInvokeExpr)) {
-                exceptions.add(new ValidationException(unit, "Invokes a interface method. Should be interfaceinvoke instead."));
+                exceptions
+                    .add(new ValidationException(unit, "Invokes a interface method. Should be interfaceinvoke instead."));
               }
             }
             if (method.isEntryMethod()) {

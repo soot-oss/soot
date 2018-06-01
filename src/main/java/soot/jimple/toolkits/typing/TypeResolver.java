@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -65,7 +65,7 @@ import soot.toolkits.scalar.LocalDefs;
 
 /**
  * This class resolves the type of local variables.
- * 
+ *
  * <b>NOTE:</b> This class has been superseded by {@link soot.jimple.toolkits.typing.fast.TypeResolver}.
  **/
 public class TypeResolver {
@@ -388,8 +388,8 @@ public class TypeResolver {
     while (varIt.hasNext()) {
       TypeVariable var = varIt.next();
 
-      if (var.type().type() instanceof IntType || var.type().type() instanceof LongType || var.type().type() instanceof FloatType
-          || var.type().type() instanceof DoubleType) {
+      if (var.type().type() instanceof IntType || var.type().type() instanceof LongType
+          || var.type().type() instanceof FloatType || var.type().type() instanceof DoubleType) {
         List<TypeVariable> parents;
         List<TypeVariable> children;
         boolean finished;
@@ -557,7 +557,8 @@ public class TypeResolver {
 
               if (lca == null) {
                 if (DEBUG) {
-                  logger.debug("==++==" + stmtBody.getMethod().getDeclaringClass().getName() + "." + stmtBody.getMethod().getName());
+                  logger.debug(
+                      "==++==" + stmtBody.getMethod().getDeclaringClass().getName() + "." + stmtBody.getMethod().getName());
                 }
 
                 continue multiple_children;
@@ -647,8 +648,8 @@ public class TypeResolver {
       }
 
       if (DEBUG) {
-        if ((var != null) && (var.approx() != null) && (var.approx().type() != null) && (local != null) && (local.getType() != null)
-            && !local.getType().equals(var.approx().type())) {
+        if ((var != null) && (var.approx() != null) && (var.approx().type() != null) && (local != null)
+            && (local.getType() != null) && !local.getType().equals(var.approx().type())) {
           logger.debug("local: " + local + ", type: " + local.getType() + ", approx: " + var.approx().type());
         }
       }

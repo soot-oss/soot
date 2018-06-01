@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -34,8 +34,9 @@ import soot.G;
 import soot.Singletons;
 
 /**
- * Provide the pseudo topological order of a graph's nodes. It has same functionality as PseudoTopologicalOrderer; however, this class considers the
- * order of successors. It runs slower but more precise. Currently it was only used by ArrayBoundsCheckerAnalysis to reduce the iteration numbers.
+ * Provide the pseudo topological order of a graph's nodes. It has same functionality as PseudoTopologicalOrderer; however,
+ * this class considers the order of successors. It runs slower but more precise. Currently it was only used by
+ * ArrayBoundsCheckerAnalysis to reduce the iteration numbers.
  *
  * @see: PseudoTopologicalOrderer
  */

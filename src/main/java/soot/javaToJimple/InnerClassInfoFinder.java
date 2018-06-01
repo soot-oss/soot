@@ -37,7 +37,7 @@ public class InnerClassInfoFinder extends polyglot.visit.NodeVisitor {
 
   /*
    * public ArrayList declaredInstList(){ return declaredInstList; }
-   * 
+   *
    * public ArrayList usedInstList(){ return usedInstList; }
    */
 
@@ -68,23 +68,23 @@ public class InnerClassInfoFinder extends polyglot.visit.NodeVisitor {
         anonBodyList.add(n);
       }
       /*
-       * polyglot.types.ProcedureInstance pi = ((polyglot.ast.New)n).constructorInstance(); if (pi.isPrivate()){ usedInstList.add(new
-       * polyglot.util.IdentityKey(pi)); }
+       * polyglot.types.ProcedureInstance pi = ((polyglot.ast.New)n).constructorInstance(); if (pi.isPrivate()){
+       * usedInstList.add(new polyglot.util.IdentityKey(pi)); }
        */
     }
 
     if (n instanceof polyglot.ast.ProcedureDecl) {
       memberList.add(n);
       /*
-       * polyglot.types.ProcedureInstance pi = ((polyglot.ast.ProcedureDecl)n).procedureInstance(); if (pi.flags().isPrivate()){
-       * declaredInstList.add(new polyglot.util.IdentityKey(pi)); }
+       * polyglot.types.ProcedureInstance pi = ((polyglot.ast.ProcedureDecl)n).procedureInstance(); if
+       * (pi.flags().isPrivate()){ declaredInstList.add(new polyglot.util.IdentityKey(pi)); }
        */
     }
     if (n instanceof polyglot.ast.FieldDecl) {
       memberList.add(n);
       /*
-       * polyglot.types.FieldInstance fi = ((polyglot.ast.FieldDecl)n).fieldInstance(); if (fi.flags().isPrivate()){ declaredInstList.add(new
-       * polyglot.util.IdentityKey(fi)); }
+       * polyglot.types.FieldInstance fi = ((polyglot.ast.FieldDecl)n).fieldInstance(); if (fi.flags().isPrivate()){
+       * declaredInstList.add(new polyglot.util.IdentityKey(fi)); }
        */
     }
     if (n instanceof polyglot.ast.Initializer) {
@@ -92,11 +92,12 @@ public class InnerClassInfoFinder extends polyglot.visit.NodeVisitor {
     }
 
     /*
-     * if (n instanceof polyglot.ast.Field) { polyglot.types.FieldInstance fi = ((polyglot.ast.Field)n).fieldInstance(); if (fi.isPrivate()){
-     * usedInstList.add(new polyglot.util.IdentityKey(fi)); } } if (n instanceof polyglot.ast.Call){ polyglot.types.ProcedureInst pi =
-     * ((polyglot.ast.Call)n).methodInstance(); if (pi.isPrivate()){ usedInstList.add(new polyglot.util.IdentityKey(pi)); } } if (n instanceof
-     * polyglot.ast.ConstructorCall){ polyglot.types.ProcedureInstance pi = ((polyglot.ast.ConstructorCall)n).constructorInstance(); if
-     * (pi.isPrivate()){ usedInstList.add(new polyglot.util.IdentityKey(pi)); } }
+     * if (n instanceof polyglot.ast.Field) { polyglot.types.FieldInstance fi = ((polyglot.ast.Field)n).fieldInstance(); if
+     * (fi.isPrivate()){ usedInstList.add(new polyglot.util.IdentityKey(fi)); } } if (n instanceof polyglot.ast.Call){
+     * polyglot.types.ProcedureInst pi = ((polyglot.ast.Call)n).methodInstance(); if (pi.isPrivate()){ usedInstList.add(new
+     * polyglot.util.IdentityKey(pi)); } } if (n instanceof polyglot.ast.ConstructorCall){ polyglot.types.ProcedureInstance
+     * pi = ((polyglot.ast.ConstructorCall)n).constructorInstance(); if (pi.isPrivate()){ usedInstList.add(new
+     * polyglot.util.IdentityKey(pi)); } }
      */
 
     return enter(n);

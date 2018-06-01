@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -180,22 +180,23 @@ public class ArrayBoundsChecker extends BodyTransformer {
 
             /*
              * boolean lowercheck = true; boolean uppercheck = true;
-             * 
-             * { if (Options.v().debug()) { if (!vgraph.makeShortestPathGraph()) { logger.debug(""+stmt+" :"); logger.debug(""+vgraph); } }
-             * 
+             *
+             * { if (Options.v().debug()) { if (!vgraph.makeShortestPathGraph()) { logger.debug(""+stmt+" :");
+             * logger.debug(""+vgraph); } }
+             *
              * Value base = aref.getBase(); Value index = aref.getIndex();
-             * 
+             *
              * if (index instanceof IntConstant) { int indexv = ((IntConstant)index).value;
-             * 
+             *
              * if (vgraph.hasEdge(base, zero)) { int alength = vgraph.edgeWeight(base, zero);
-             * 
+             *
              * if (-alength > indexv) uppercheck = false; }
-             * 
-             * if (indexv >= 0) lowercheck = false; } else { if (vgraph.hasEdge(base, index)) { int upperdistance = vgraph.edgeWeight(base, index); if
-             * (upperdistance < 0) uppercheck = false; }
-             * 
+             *
+             * if (indexv >= 0) lowercheck = false; } else { if (vgraph.hasEdge(base, index)) { int upperdistance =
+             * vgraph.edgeWeight(base, index); if (upperdistance < 0) uppercheck = false; }
+             *
              * if (vgraph.hasEdge(index, zero)) { int lowerdistance = vgraph.edgeWeight(index, zero);
-             * 
+             *
              * if (lowerdistance <= 0) lowercheck = false; } } }
              */
 
@@ -205,23 +206,27 @@ public class ArrayBoundsChecker extends BodyTransformer {
                 lowercounter = 1;
               }
 
-              units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(increase.makeRef(), IntConstant.v(lowercounter))), stmt);
+              units.insertBefore(
+                  Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(increase.makeRef(), IntConstant.v(lowercounter))),
+                  stmt);
 
               int uppercounter = 2;
               if (!uppercheck) {
                 uppercounter = 3;
               }
 
-              units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(increase.makeRef(), IntConstant.v(uppercounter))), stmt);
+              units.insertBefore(
+                  Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(increase.makeRef(), IntConstant.v(uppercounter))),
+                  stmt);
 
               /*
-               * if (!lowercheck && !uppercheck) { units.insertBefore(Jimple.v().newInvokeStmt( Jimple.v().newStaticInvokeExpr(increase,
-               * IntConstant.v(4))), stmt);
-               * 
+               * if (!lowercheck && !uppercheck) { units.insertBefore(Jimple.v().newInvokeStmt(
+               * Jimple.v().newStaticInvokeExpr(increase, IntConstant.v(4))), stmt);
+               *
                * NullCheckTag nullTag = (NullCheckTag)stmt.getTag("NullCheckTag");
-               * 
-               * if (nullTag != null && !nullTag.needCheck()) units.insertBefore(Jimple.v().newInvokeStmt( Jimple.v().newStaticInvokeExpr(increase,
-               * IntConstant.v(7))), stmt); }
+               *
+               * if (nullTag != null && !nullTag.needCheck()) units.insertBefore(Jimple.v().newInvokeStmt(
+               * Jimple.v().newStaticInvokeExpr(increase, IntConstant.v(7))), stmt); }
                */
             } else {
               Tag checkTag = new ArrayCheckTag(lowercheck, uppercheck);
@@ -254,7 +259,8 @@ public class ArrayBoundsChecker extends BodyTransformer {
       Date finish = new Date();
       if (Options.v().verbose()) {
         long runtime = finish.getTime() - start.getTime();
-        logger.debug("[abc] ended on " + finish + ". It took " + (runtime / 60000) + " min. " + ((runtime % 60000) / 1000) + " sec.");
+        logger.debug(
+            "[abc] ended on " + finish + ". It took " + (runtime / 60000) + " min. " + ((runtime % 60000) / 1000) + " sec.");
       }
     }
   }

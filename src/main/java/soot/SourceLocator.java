@@ -56,60 +56,63 @@ public class SourceLocator {
   protected List<String> classPath;
   private List<String> sourcePath;
 
-  private LoadingCache<String, ClassSourceType> pathToSourceType = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(500).softValues()
-      .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(new CacheLoader<String, ClassSourceType>() {
-        @Override
-        public ClassSourceType load(String path) throws Exception {
-          File f = new File(path);
-          if (!f.exists() && !Options.v().ignore_classpath_errors()) {
-            throw new Exception("Error: The path '" + path + "' does not exist.");
-          }
-          if (!f.canRead() && !Options.v().ignore_classpath_errors()) {
-            throw new Exception("Error: The path '" + path + "' exists but is not readable.");
-          }
-          if (f.isFile()) {
-            if (path.endsWith(".zip")) {
-              return ClassSourceType.zip;
-            } else if (path.endsWith(".jar")) {
-              return ClassSourceType.jar;
-            } else if (path.endsWith(".apk")) {
-              return ClassSourceType.apk;
-            } else if (path.endsWith(".dex")) {
-              return ClassSourceType.dex;
-            } else {
-              return ClassSourceType.unknown;
+  private LoadingCache<String, ClassSourceType> pathToSourceType
+      = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(500).softValues()
+          .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(new CacheLoader<String, ClassSourceType>() {
+            @Override
+            public ClassSourceType load(String path) throws Exception {
+              File f = new File(path);
+              if (!f.exists() && !Options.v().ignore_classpath_errors()) {
+                throw new Exception("Error: The path '" + path + "' does not exist.");
+              }
+              if (!f.canRead() && !Options.v().ignore_classpath_errors()) {
+                throw new Exception("Error: The path '" + path + "' exists but is not readable.");
+              }
+              if (f.isFile()) {
+                if (path.endsWith(".zip")) {
+                  return ClassSourceType.zip;
+                } else if (path.endsWith(".jar")) {
+                  return ClassSourceType.jar;
+                } else if (path.endsWith(".apk")) {
+                  return ClassSourceType.apk;
+                } else if (path.endsWith(".dex")) {
+                  return ClassSourceType.dex;
+                } else {
+                  return ClassSourceType.unknown;
+                }
+              }
+              return ClassSourceType.directory;
             }
-          }
-          return ClassSourceType.directory;
-        }
-      });
-  private LoadingCache<String, Set<String>> archivePathsToEntriesCache = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(500).softValues()
-      .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(new CacheLoader<String, Set<String>>() {
-        @Override
-        public Set<String> load(String archivePath) throws Exception {
-          ZipFile archive = null;
-          try {
-            archive = new ZipFile(archivePath);
-            Set<String> ret = new HashSet<String>();
-            Enumeration<? extends ZipEntry> it = archive.entries();
-            while (it.hasMoreElements()) {
-              ret.add(it.nextElement().getName());
+          });
+  private LoadingCache<String, Set<String>> archivePathsToEntriesCache
+      = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(500).softValues()
+          .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(new CacheLoader<String, Set<String>>() {
+            @Override
+            public Set<String> load(String archivePath) throws Exception {
+              ZipFile archive = null;
+              try {
+                archive = new ZipFile(archivePath);
+                Set<String> ret = new HashSet<String>();
+                Enumeration<? extends ZipEntry> it = archive.entries();
+                while (it.hasMoreElements()) {
+                  ret.add(it.nextElement().getName());
+                }
+                return ret;
+              } finally {
+                if (archive != null) {
+                  archive.close();
+                }
+              }
             }
-            return ret;
-          } finally {
-            if (archive != null) {
-              archive.close();
-            }
-          }
-        }
-      });
+          });
   /**
-   * Set containing all dex files that were appended to the classpath later on. The classes from these files are not yet loaded and are still missing
-   * from dexClassIndex.
+   * Set containing all dex files that were appended to the classpath later on. The classes from these files are not yet
+   * loaded and are still missing from dexClassIndex.
    */
   private Set<String> dexClassPathExtensions;
   /**
-   * The index that maps classes to the files they are defined in. This is necessary because a dex file can hold multiple classes.
+   * The index that maps classes to the files they are defined in. This is necessary because a dex file can hold multiple
+   * classes.
    */
   private Map<String, File> dexClassIndex;
 
@@ -513,7 +516,8 @@ public class SourceLocator {
   }
 
   /**
-   * Returns the output directory given by {@link Options} or a default if not set. Also ensures that all directories in the path exist.
+   * Returns the output directory given by {@link Options} or a default if not set. Also ensures that all directories in the
+   * path exist.
    *
    * @return the output directory from {@link Options} or a default if not set
    */
@@ -539,8 +543,9 @@ public class SourceLocator {
   }
 
   /**
-   * If {@link Options#v()#output_jar()} is set, returns the name of the jar file to which the output will be written. The name of the jar file can be
-   * given with the -output-dir option or a default will be used. Also ensures that all directories in the path exist.
+   * If {@link Options#v()#output_jar()} is set, returns the name of the jar file to which the output will be written. The
+   * name of the jar file can be given with the -output-dir option or a default will be used. Also ensures that all
+   * directories in the path exist.
    *
    * @return the name of the Jar file to which outputs are written
    */
@@ -597,7 +602,8 @@ public class SourceLocator {
     try {
       entryNames = archivePathsToEntriesCache.get(archivePath);
     } catch (Exception e) {
-      throw new RuntimeException("Error: Failed to retrieve the archive entries list for the archive at path '" + archivePath + "'.", e);
+      throw new RuntimeException(
+          "Error: Failed to retrieve the archive entries list for the archive at path '" + archivePath + "'.", e);
     }
     if (entryNames.contains(fileName)) {
       return new FoundFile(archivePath, fileName);
@@ -649,7 +655,8 @@ public class SourceLocator {
   }
 
   /**
-   * Gets all files that were added to the classpath later on and that have not yet been processed for the dexClassIndex mapping
+   * Gets all files that were added to the classpath later on and that have not yet been processed for the dexClassIndex
+   * mapping
    *
    * @return The set of dex or apk files that still need to be indexed
    */

@@ -73,7 +73,8 @@ import soot.util.dot.DotGraphNode;
 /**
  * Intra-procedural purity-graph analysis.
  *
- * You must pass an {@link AbstractInterproceduralAnalysis} object so that the intraprocedural part can resolve the effect of method calls.
+ * You must pass an {@link AbstractInterproceduralAnalysis} object so that the intraprocedural part can resolve the effect of
+ * method calls.
  */
 public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis<Unit, PurityGraphBox> {
   private static final Logger logger = LoggerFactory.getLogger(PurityIntraproceduralAnalysis.class);
@@ -320,8 +321,9 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis<Unit, Pur
     //////////
     // ignored
     //////////
-    else if (stmt instanceof IfStmt || stmt instanceof GotoStmt || stmt instanceof LookupSwitchStmt || stmt instanceof TableSwitchStmt
-        || stmt instanceof MonitorStmt || stmt instanceof BreakpointStmt || stmt instanceof NopStmt) {
+    else if (stmt instanceof IfStmt || stmt instanceof GotoStmt || stmt instanceof LookupSwitchStmt
+        || stmt instanceof TableSwitchStmt || stmt instanceof MonitorStmt || stmt instanceof BreakpointStmt
+        || stmt instanceof NopStmt) {
       // do nothing...
     } else {
       throw new Error("Stmt match faliure " + stmt);
@@ -331,8 +333,8 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis<Unit, Pur
   }
 
   /**
-   * Draw the result of the intra-procedural analysis as one big dot file, named className.methodName.dot, containing one purity graph for each
-   * statement in the method.
+   * Draw the result of the intra-procedural analysis as one big dot file, named className.methodName.dot, containing one
+   * purity graph for each statement in the method.
    *
    * @param prefix
    * @param name
@@ -376,8 +378,8 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis<Unit, Pur
   }
 
   /**
-   * Put into dst the purity graph obtained by merging all purity graphs at the method return. It is a valid summary that can be used in methodCall if
-   * you do interprocedural analysis.
+   * Put into dst the purity graph obtained by merging all purity graphs at the method return. It is a valid summary that can
+   * be used in methodCall if you do interprocedural analysis.
    *
    * @param dst
    */
@@ -394,8 +396,8 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis<Unit, Pur
   }
 
   /**
-   * Perform purity analysis on the Jimple unit graph g, as part of a larger interprocedural analysis. Once constructed, you may call copyResult and
-   * drawAsOneDot to query the analysis result.
+   * Perform purity analysis on the Jimple unit graph g, as part of a larger interprocedural analysis. Once constructed, you
+   * may call copyResult and drawAsOneDot to query the analysis result.
    */
   PurityIntraproceduralAnalysis(UnitGraph g, AbstractInterproceduralAnalysis<PurityGraphBox> inter) {
     super(g);

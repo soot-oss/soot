@@ -124,26 +124,28 @@ public class ClassInfoFlowAnalysis {
   }
 
   /*
-   * public void doFixedPointDataFlowAnalysis() { Iterator it = sootClass.getMethods().iterator(); while(it.hasNext()) { SootMethod method =
-   * (SootMethod) it.next();
-   * 
-   * if(method.isConcrete()) { Body b = method.retrieveActiveBody(); UnitGraph g = new ExceptionalUnitGraph(b); SmartMethodInfoFlowAnalysis smdfa =
-   * new SmartMethodInfoFlowAnalysis(g, dfa, true); if(methodToInfoFlowSummary.containsKey(method)) methodToInfoFlowSummary.remove(method); else
-   * methodCount++; methodToInfoFlowSummary.put(method, smdfa.getMethodDataFlowSummary());
-   * 
-   * // logger.debug(""+method + " has FLOW SENSITIVE infoFlowGraph: "); // printDataFlowGraph(mdfa.getMethodDataFlowGraph()); } else {
-   * if(methodToInfoFlowSummary.containsKey(method)) methodToInfoFlowSummary.remove(method); else methodCount++; methodToInfoFlowSummary.put(method,
+   * public void doFixedPointDataFlowAnalysis() { Iterator it = sootClass.getMethods().iterator(); while(it.hasNext()) {
+   * SootMethod method = (SootMethod) it.next();
+   *
+   * if(method.isConcrete()) { Body b = method.retrieveActiveBody(); UnitGraph g = new ExceptionalUnitGraph(b);
+   * SmartMethodInfoFlowAnalysis smdfa = new SmartMethodInfoFlowAnalysis(g, dfa, true);
+   * if(methodToInfoFlowSummary.containsKey(method)) methodToInfoFlowSummary.remove(method); else methodCount++;
+   * methodToInfoFlowSummary.put(method, smdfa.getMethodDataFlowSummary());
+   *
+   * // logger.debug(""+method + " has FLOW SENSITIVE infoFlowGraph: "); //
+   * printDataFlowGraph(mdfa.getMethodDataFlowGraph()); } else { if(methodToInfoFlowSummary.containsKey(method))
+   * methodToInfoFlowSummary.remove(method); else methodCount++; methodToInfoFlowSummary.put(method,
    * triviallyConservativeDataFlowAnalysis(method));
-   * 
+   *
    * // logger.debug(""+method + " has TRIVIALLY CONSERVATIVE infoFlowGraph: "); // printDataFlowGraph((MutableDirectedGraph)
    * methodToInfoFlowSummary.get(method)); } } } //
    */
   /*
-   * private void doSimpleConservativeDataFlowAnalysis() { Iterator it = sootClass.getMethods().iterator(); while(it.hasNext()) { SootMethod method =
-   * (SootMethod) it.next(); MutableDirectedGraph infoFlowGraph = simpleConservativeDataFlowAnalysis(method);
-   * if(methodToInfoFlowSummary.containsKey(method)) methodToInfoFlowSummary.remove(method); else methodCount++; methodToInfoFlowSummary.put(method,
-   * infoFlowGraph);
-   * 
+   * private void doSimpleConservativeDataFlowAnalysis() { Iterator it = sootClass.getMethods().iterator();
+   * while(it.hasNext()) { SootMethod method = (SootMethod) it.next(); MutableDirectedGraph infoFlowGraph =
+   * simpleConservativeDataFlowAnalysis(method); if(methodToInfoFlowSummary.containsKey(method))
+   * methodToInfoFlowSummary.remove(method); else methodCount++; methodToInfoFlowSummary.put(method, infoFlowGraph);
+   *
    * // logger.debug(""+method + " has infoFlowGraph: "); // printDataFlowGraph(infoFlowGraph); } } //
    */
   /** Does not require any fixed point calculation */

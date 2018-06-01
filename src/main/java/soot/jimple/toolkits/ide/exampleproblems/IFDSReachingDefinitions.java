@@ -74,7 +74,8 @@ public class IFDSReachingDefinitions
                 return Collections.singleton(source);
               } else {
                 LinkedHashSet<Pair<Value, Set<DefinitionStmt>>> res = new LinkedHashSet<Pair<Value, Set<DefinitionStmt>>>();
-                res.add(new Pair<Value, Set<DefinitionStmt>>(assignment.getLeftOp(), Collections.<DefinitionStmt>singleton(assignment)));
+                res.add(new Pair<Value, Set<DefinitionStmt>>(assignment.getLeftOp(),
+                    Collections.<DefinitionStmt>singleton(assignment)));
                 return res;
               }
             }
@@ -85,7 +86,8 @@ public class IFDSReachingDefinitions
       }
 
       @Override
-      public FlowFunction<Pair<Value, Set<DefinitionStmt>>> getCallFlowFunction(Unit callStmt, final SootMethod destinationMethod) {
+      public FlowFunction<Pair<Value, Set<DefinitionStmt>>> getCallFlowFunction(Unit callStmt,
+          final SootMethod destinationMethod) {
         Stmt stmt = (Stmt) callStmt;
         InvokeExpr invokeExpr = stmt.getInvokeExpr();
         final List<Value> args = invokeExpr.getArgs();
@@ -103,11 +105,14 @@ public class IFDSReachingDefinitions
 
           @Override
           public Set<Pair<Value, Set<DefinitionStmt>>> computeTargets(Pair<Value, Set<DefinitionStmt>> source) {
-            if (!destinationMethod.getName().equals("<clinit>") && !destinationMethod.getSubSignature().equals("void run()")) {
+            if (!destinationMethod.getName().equals("<clinit>")
+                && !destinationMethod.getSubSignature().equals("void run()")) {
               if (localArguments.contains(source.getO1())) {
                 int paramIndex = args.indexOf(source.getO1());
                 Pair<Value, Set<DefinitionStmt>> pair = new Pair<Value, Set<DefinitionStmt>>(
-                    new EquivalentValue(Jimple.v().newParameterRef(destinationMethod.getParameterType(paramIndex), paramIndex)), source.getO2());
+                    new EquivalentValue(
+                        Jimple.v().newParameterRef(destinationMethod.getParameterType(paramIndex), paramIndex)),
+                    source.getO2());
                 return Collections.singleton(pair);
               }
             }
@@ -118,8 +123,8 @@ public class IFDSReachingDefinitions
       }
 
       @Override
-      public FlowFunction<Pair<Value, Set<DefinitionStmt>>> getReturnFlowFunction(final Unit callSite, SootMethod calleeMethod, final Unit exitStmt,
-          Unit returnSite) {
+      public FlowFunction<Pair<Value, Set<DefinitionStmt>>> getReturnFlowFunction(final Unit callSite,
+          SootMethod calleeMethod, final Unit exitStmt, Unit returnSite) {
         if (!(callSite instanceof DefinitionStmt)) {
           return KillAll.v();
         }
@@ -136,7 +141,8 @@ public class IFDSReachingDefinitions
               ReturnStmt returnStmt = (ReturnStmt) exitStmt;
               if (returnStmt.getOp().equivTo(source.getO1())) {
                 DefinitionStmt definitionStmt = (DefinitionStmt) callSite;
-                Pair<Value, Set<DefinitionStmt>> pair = new Pair<Value, Set<DefinitionStmt>>(definitionStmt.getLeftOp(), source.getO2());
+                Pair<Value, Set<DefinitionStmt>> pair
+                    = new Pair<Value, Set<DefinitionStmt>>(definitionStmt.getLeftOp(), source.getO2());
                 return Collections.singleton(pair);
               }
             }
@@ -168,11 +174,13 @@ public class IFDSReachingDefinitions
   }
 
   public Map<Unit, Set<Pair<Value, Set<DefinitionStmt>>>> initialSeeds() {
-    return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()), zeroValue());
+    return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()),
+        zeroValue());
   }
 
   public Pair<Value, Set<DefinitionStmt>> createZeroValue() {
-    return new Pair<Value, Set<DefinitionStmt>>(new JimpleLocal("<<zero>>", NullType.v()), Collections.<DefinitionStmt>emptySet());
+    return new Pair<Value, Set<DefinitionStmt>>(new JimpleLocal("<<zero>>", NullType.v()),
+        Collections.<DefinitionStmt>emptySet());
   }
 
 }

@@ -31,8 +31,9 @@ import soot.SootMethod;
 import soot.Unit;
 
 /**
- * This utility class can convert any BlockGraph to a single-headed and single-tailed graph by inserting appropriate Start or Stop nodes. It can also
- * fully reverse the graph, something that might be useful e.g. when computing control dependences with a dominators algorithm.
+ * This utility class can convert any BlockGraph to a single-headed and single-tailed graph by inserting appropriate Start or
+ * Stop nodes. It can also fully reverse the graph, something that might be useful e.g. when computing control dependences
+ * with a dominators algorithm.
  *
  * <p>
  * Note: This class may be retracted in a future release when a suitable replacement becomes available.
@@ -42,7 +43,8 @@ import soot.Unit;
  **/
 public class BlockGraphConverter {
   /**
-   * Transforms a multi-headed and/or multi-tailed BlockGraph to a single-headed singled-tailed BlockGraph by inserting a dummy start and stop nodes.
+   * Transforms a multi-headed and/or multi-tailed BlockGraph to a single-headed singled-tailed BlockGraph by inserting a
+   * dummy start and stop nodes.
    **/
   public static void addStartStopNodesTo(BlockGraph graph) {
     ADDSTART: {
@@ -94,8 +96,9 @@ public class BlockGraphConverter {
   }
 
   /**
-   * Reverses a BlockGraph by making the heads tails, the tails heads and reversing the edges. It does not change the ordering of Units in individual
-   * blocks, nor does it change the Block labels. This utility could be useful when calculating control dependences with a dominators algorithm.
+   * Reverses a BlockGraph by making the heads tails, the tails heads and reversing the edges. It does not change the
+   * ordering of Units in individual blocks, nor does it change the Block labels. This utility could be useful when
+   * calculating control dependences with a dominators algorithm.
    **/
   public static void reverse(BlockGraph graph) {
     // Issue: Do we change indexInMethod? No...

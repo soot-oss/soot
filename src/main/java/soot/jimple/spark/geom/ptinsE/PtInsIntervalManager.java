@@ -24,9 +24,9 @@ import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.IFigureManager;
 
 /**
- * The figure manager for the PtIns descriptors. The implementation is almost same to the HeapIns manager, please refer to HeapInsIntervalManager for
- * more detailed comments.
- * 
+ * The figure manager for the PtIns descriptors. The implementation is almost same to the HeapIns manager, please refer to
+ * HeapInsIntervalManager for more detailed comments.
+ *
  * @author xiao
  *
  */
@@ -380,7 +380,8 @@ public class PtInsIntervalManager extends IFigureManager {
 
     while (list != null) {
       long L = list.L;
-      if ((predator.I2 - predator.I1 == list.I2 - list.I1) && predator.I1 <= list.I1 && (predator.I1 + predator.L >= list.I2 + L)) {
+      if ((predator.I2 - predator.I1 == list.I2 - list.I1) && predator.I1 <= list.I1
+          && (predator.I1 + predator.L >= list.I2 + L)) {
         // The checked figure is completely contained in the predator
         // So we ignore it
         ;

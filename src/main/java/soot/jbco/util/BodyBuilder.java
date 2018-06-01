@@ -53,7 +53,7 @@ import soot.util.Chain;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 7-Feb-2006
  */
 public class BodyBuilder {
@@ -112,7 +112,8 @@ public class BodyBuilder {
     return ths;
   }
 
-  public static List<Local> buildParameterLocals(PatchingChain<Unit> units, Collection<Local> locals, List<Type> paramTypes) {
+  public static List<Local> buildParameterLocals(PatchingChain<Unit> units, Collection<Local> locals,
+      List<Type> paramTypes) {
     List<Local> args = new ArrayList<Local>();
     for (int k = 0; k < paramTypes.size(); k++) {
       Type type = paramTypes.get(k);
@@ -173,9 +174,10 @@ public class BodyBuilder {
   }
 
   public static boolean isBafIf(Unit u) {
-    if (u instanceof IfCmpEqInst || u instanceof IfCmpGeInst || u instanceof IfCmpGtInst || u instanceof IfCmpLeInst || u instanceof IfCmpLtInst
-        || u instanceof IfCmpNeInst || u instanceof IfEqInst || u instanceof IfGeInst || u instanceof IfGtInst || u instanceof IfLeInst
-        || u instanceof IfLtInst || u instanceof IfNeInst || u instanceof IfNonNullInst || u instanceof IfNullInst) {
+    if (u instanceof IfCmpEqInst || u instanceof IfCmpGeInst || u instanceof IfCmpGtInst || u instanceof IfCmpLeInst
+        || u instanceof IfCmpLtInst || u instanceof IfCmpNeInst || u instanceof IfEqInst || u instanceof IfGeInst
+        || u instanceof IfGtInst || u instanceof IfLeInst || u instanceof IfLtInst || u instanceof IfNeInst
+        || u instanceof IfNonNullInst || u instanceof IfNullInst) {
       return true;
     }
     return false;

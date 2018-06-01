@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -34,7 +34,7 @@ import soot.Value;
 
 /**
  * Base abstract class for constant pool entries; includes some utility methods.
- * 
+ *
  * @see ClassFile#constant_pool
  * @author Clark Verbrugge
  */
@@ -81,14 +81,14 @@ abstract class cp_info {
 
   /**
    * Returns the size of this entry.
-   * 
+   *
    * @return size (in bytes) of this entry.
    */
   public abstract int size();
 
   /**
    * Returns a String representation of this entry.
-   * 
+   *
    * @param constant_pool
    *          constant pool of ClassFile.
    * @return String representation of this entry.
@@ -97,14 +97,14 @@ abstract class cp_info {
 
   /**
    * Returns a String description of what kind of entry this is.
-   * 
+   *
    * @return String representation of this kind of entry.
    */
   public abstract String typeName();
 
   /**
    * Compares this entry with another cp_info object (which may reside in a different constant pool).
-   * 
+   *
    * @param constant_pool
    *          constant pool of ClassFile for this.
    * @param cp
@@ -117,7 +117,7 @@ abstract class cp_info {
 
   /**
    * Utility method, converts two integers into a single long.
-   * 
+   *
    * @param high
    *          upper 32 bits of the long.
    * @param low
@@ -133,7 +133,7 @@ abstract class cp_info {
 
   /**
    * Utility method, returns a String binary representation of the given integer.
-   * 
+   *
    * @param i
    *          the integer in question.
    * @return a String of 0's and 1's.
@@ -156,7 +156,7 @@ abstract class cp_info {
 
   /**
    * Utility method, returns a String binary representation of the given long.
-   * 
+   *
    * @param i
    *          the long in question.
    * @return a String of 0's and 1's.
@@ -178,9 +178,9 @@ abstract class cp_info {
   }
 
   /**
-   * Locates the name of the corresponding class, given the constant pool index of either a CONSTANT_Class, _Fieldref, Methodref or
-   * InterfaceMethodref.
-   * 
+   * Locates the name of the corresponding class, given the constant pool index of either a CONSTANT_Class, _Fieldref,
+   * Methodref or InterfaceMethodref.
+   *
    * @param constant_pool
    *          constant pool of ClassFile.
    * @param i
@@ -204,8 +204,9 @@ abstract class cp_info {
   }
 
   /**
-   * Returns the name of the given constant pool object, assuming it is of type CONSTANT_NameAndType, _FieldRef, _Methodref or _InterfaceMethodref.
-   * 
+   * Returns the name of the given constant pool object, assuming it is of type CONSTANT_NameAndType, _FieldRef, _Methodref
+   * or _InterfaceMethodref.
+   *
    * @param constant_pool
    *          constant pool of ClassFile.
    * @param i
@@ -233,7 +234,7 @@ abstract class cp_info {
 
   /**
    * Counts the number of parameters of the given method.
-   * 
+   *
    * @param constant_pool
    *          constant pool of ClassFile.
    * @param m
@@ -250,13 +251,14 @@ abstract class cp_info {
   }
 
   /**
-   * Returns the type descriptor for the given constant pool object, which must be a CONSTANT_Utf8, CONSTANT_NameAndType, CONSTANT_Fieldref,
-   * CONSTANT_MethodRef, or CONSTANT_InterfaceMethodRef.
-   * 
+   * Returns the type descriptor for the given constant pool object, which must be a CONSTANT_Utf8, CONSTANT_NameAndType,
+   * CONSTANT_Fieldref, CONSTANT_MethodRef, or CONSTANT_InterfaceMethodRef.
+   *
    * @param constant_pool
    *          constant pool of ClassFile.
    * @param i
-   *          a constant pool index for an entry of type CONSTANT_Utf8, CONSTANT_NameAndType, CONSTANT_MethodRef, or CONSTANT_InterfaceMethodRef.
+   *          a constant pool index for an entry of type CONSTANT_Utf8, CONSTANT_NameAndType, CONSTANT_MethodRef, or
+   *          CONSTANT_InterfaceMethodRef.
    * @return the type descriptor.
    * @see CONSTANT_Utf8_info
    */
@@ -283,7 +285,7 @@ abstract class cp_info {
 
   /**
    * Returns the name of the field type of the given constant pool object.
-   * 
+   *
    * @param constant_pool
    *          constant pool of ClassFile.
    * @param i
@@ -297,7 +299,8 @@ abstract class cp_info {
   }
 
   /**
-   * Creates an appropriate jimple representation of this constant. Field and method constants are assumed to point to static fields/methods.
+   * Creates an appropriate jimple representation of this constant. Field and method constants are assumed to point to static
+   * fields/methods.
    */
   public abstract Value createJimpleConstantValue(cp_info[] constant_pool);
 }

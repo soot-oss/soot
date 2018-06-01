@@ -41,10 +41,10 @@ import soot.toolkits.exceptions.ThrowableSet;
 
 /**
  * <p>
- * Represents a CFG where the nodes are {@link Block}s and the edges are derived from control flow. Control flow associated with exceptions is taken
- * into account: when a {@link Unit} may throw an exception that is caught by a {@link Trap} within the <code>Body</code>, the excepting
- * <code>Unit</code> starts a new basic block (<code>Unit</code>s do not start a new block when all the exceptions they might throw would escape the
- * method without being caught).
+ * Represents a CFG where the nodes are {@link Block}s and the edges are derived from control flow. Control flow associated
+ * with exceptions is taken into account: when a {@link Unit} may throw an exception that is caught by a {@link Trap} within
+ * the <code>Body</code>, the excepting <code>Unit</code> starts a new basic block (<code>Unit</code>s do not start a new
+ * block when all the exceptions they might throw would escape the method without being caught).
  * </p>
  */
 
@@ -72,14 +72,14 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 
   /**
    * <p>
-   * Constructs an <code>ExceptionalBlockGraph</code> for the blocks found by partitioning the the units of the provided <code>Body</code> instance
-   * into basic blocks.
+   * Constructs an <code>ExceptionalBlockGraph</code> for the blocks found by partitioning the the units of the provided
+   * <code>Body</code> instance into basic blocks.
    * </p>
    *
    * <p>
-   * Note that this constructor builds an {@link ExceptionalUnitGraph} internally when splitting <code>body</code>'s {@link Unit}s into
-   * {@link Block}s. Callers who already have an <code>ExceptionalUnitGraph</code> to hand can use the constructor taking an
-   * <code>ExceptionalUnitGraph</code> as a parameter, as a minor optimization.
+   * Note that this constructor builds an {@link ExceptionalUnitGraph} internally when splitting <code>body</code>'s
+   * {@link Unit}s into {@link Block}s. Callers who already have an <code>ExceptionalUnitGraph</code> to hand can use the
+   * constructor taking an <code>ExceptionalUnitGraph</code> as a parameter, as a minor optimization.
    *
    * @param body
    *          The underlying body we want to make a graph for.
@@ -103,8 +103,8 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
   /**
    * {@inheritDoc}
    *
-   * This implementation calls the inherited implementation to split units into blocks, before adding the distinctions between exceptional and
-   * unexceptional control flow.
+   * This implementation calls the inherited implementation to split units into blocks, before adding the distinctions
+   * between exceptional and unexceptional control flow.
    *
    * @param {@inheritDoc}
    *
@@ -172,8 +172,8 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
   }
 
   /**
-   * Utility method which, given a {@link List} of objects and a {@link Map} where those objects appear as keys, returns a <code>List</code> of the
-   * values to which the keys map, in the corresponding order.
+   * Utility method which, given a {@link List} of objects and a {@link Map} where those objects appear as keys, returns a
+   * <code>List</code> of the values to which the keys map, in the corresponding order.
    *
    * @param keys
    *          the keys to be looked up.
@@ -196,8 +196,10 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
     return result;
   }
 
-  private Map<Block, Collection<ExceptionDest>> buildExceptionDests(ExceptionalUnitGraph unitGraph, Map<Unit, Block> unitToBlock) {
-    Map<Block, Collection<ExceptionDest>> result = new HashMap<Block, Collection<ExceptionDest>>(mBlocks.size() * 2 + 1, 0.7f);
+  private Map<Block, Collection<ExceptionDest>> buildExceptionDests(ExceptionalUnitGraph unitGraph,
+      Map<Unit, Block> unitToBlock) {
+    Map<Block, Collection<ExceptionDest>> result
+        = new HashMap<Block, Collection<ExceptionDest>>(mBlocks.size() * 2 + 1, 0.7f);
     for (Block block : mBlocks) {
       result.put(block, collectDests(block, unitGraph, unitToBlock));
     }
@@ -205,8 +207,8 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
   }
 
   /**
-   * Utility method which, given a {@link Block} and the {@link ExceptionalUnitGraph} from which it was constructed, returns the
-   * {@link ExceptionDest}s representing the exceptions which may be thrown by units in the block.
+   * Utility method which, given a {@link Block} and the {@link ExceptionalUnitGraph} from which it was constructed, returns
+   * the {@link ExceptionDest}s representing the exceptions which may be thrown by units in the block.
    *
    * @param block
    *          the {@link Block} whose exceptions are to be collected.
@@ -217,8 +219,8 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
    * @param unitToBlock
    *          a {@link Map} from the units which are block heads or tails to the blocks that they belong to.
    *
-   * @return a {@link Collection} of {@link ExceptionDest}s representing the exceptions that may be thrown by this block, together with their
-   *         catchers.
+   * @return a {@link Collection} of {@link ExceptionDest}s representing the exceptions that may be thrown by this block,
+   *         together with their catchers.
    */
   private Collection<ExceptionDest> collectDests(Block block, ExceptionalUnitGraph unitGraph, Map<Unit, Block> unitToBlock) {
     Unit blockHead = block.getHead();
@@ -232,7 +234,8 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
       Unit unit = unit2;
       Collection<ExceptionalUnitGraph.ExceptionDest> unitDests = unitGraph.getExceptionDests(unit);
       if (unitDests.size() != 1 && unit != blockHead && unit != blockTail) {
-        throw new IllegalStateException("Multiple ExceptionDests associated with a unit which does not begin or end its block.");
+        throw new IllegalStateException(
+            "Multiple ExceptionDests associated with a unit which does not begin or end its block.");
       }
       for (soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest unitDest : unitDests) {
         if (unitDest.getTrap() == null) {
@@ -253,8 +256,8 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
         } else {
           if (unit != blockHead && unit != blockTail) {
             // Assertion failure.
-            throw new IllegalStateException(
-                "Unit " + unit.toString() + " is not a block head or tail, yet it throws " + unitDest.getThrowables() + " to " + unitDest.getTrap());
+            throw new IllegalStateException("Unit " + unit.toString() + " is not a block head or tail, yet it throws "
+                + unitDest.getThrowables() + " to " + unitDest.getTrap());
           }
           caughtCount++;
           if (trapToThrowables == null) {

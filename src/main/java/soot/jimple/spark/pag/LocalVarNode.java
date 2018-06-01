@@ -26,8 +26,9 @@ import soot.SootMethod;
 import soot.Type;
 
 /**
- * Represents a simple variable node (Green) in the pointer assignment graph that is specific to a particular method invocation.
- * 
+ * Represents a simple variable node (Green) in the pointer assignment graph that is specific to a particular method
+ * invocation.
+ *
  * @author Ondrej Lhotak
  */
 public class LocalVarNode extends VarNode {

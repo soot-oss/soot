@@ -11,9 +11,9 @@ import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
 /**
- * A basic validator that checks whether the length of the invoke statement's argument list matches the length of the target methods's parameter type
- * list.
- * 
+ * A basic validator that checks whether the length of the invoke statement's argument list matches the length of the target
+ * methods's parameter type list.
+ *
  * @author Steven Arzt
  */
 public enum InvokeArgumentValidator implements BodyValidator {

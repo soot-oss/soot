@@ -74,9 +74,10 @@ public class JimpleClassSource extends ClassSource {
       if (!sc.hasOuterClass() && className.contains("$")) {
         if (className.contains("$-")) {
           /*
-           * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may contain '$' which do not
-           * indicate an inner/outer class separator if the '$' occurs after a inner class with a name starting with '-'. Thus we search for '$-' and
-           * anything after it including '-' is the inner classes name and anything before it is the outer classes name.
+           * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may
+           * contain '$' which do not indicate an inner/outer class separator if the '$' occurs after a inner class with a
+           * name starting with '-'. Thus we search for '$-' and anything after it including '-' is the inner classes name
+           * and anything before it is the outer classes name.
            */
           outerClassName = className.substring(0, className.indexOf("$-"));
         } else {
@@ -97,7 +98,8 @@ public class JimpleClassSource extends ClassSource {
 
       return deps;
     } catch (IOException e) {
-      throw new RuntimeException("Error: Failed to create JimpleAST from source input stream for class " + className + ".", e);
+      throw new RuntimeException("Error: Failed to create JimpleAST from source input stream for class " + className + ".",
+          e);
     } catch (ParserException e) {
       throw new RuntimeException("Error: Failed when parsing class " + className + ".", e);
     } catch (LexerException e) {

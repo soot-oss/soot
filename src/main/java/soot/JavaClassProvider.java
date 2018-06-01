@@ -18,8 +18,8 @@
  */
 
 /* 04.04.2006 mbatch	if there is a $ in the name,
- *						we need to check if it's a real file, 
- * 						not just inner class								
+ *						we need to check if it's a real file,
+ * 						not just inner class
  */
 
 package soot;
@@ -27,14 +27,16 @@ package soot;
 import soot.options.Options;
 
 /**
- * A class provider looks for a file of a specific format for a specified class, and returns a ClassSource for it if it finds it.
+ * A class provider looks for a file of a specific format for a specified class, and returns a ClassSource for it if it finds
+ * it.
  */
 public class JavaClassProvider implements ClassProvider {
   public static class JarException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public JarException(String className) {
-      super("Class " + className + " was found in an archive, but Soot doesn't support reading source files out of an archive");
+      super("Class " + className
+          + " was found in an archive, but Soot doesn't support reading source files out of an archive");
     }
 
   }

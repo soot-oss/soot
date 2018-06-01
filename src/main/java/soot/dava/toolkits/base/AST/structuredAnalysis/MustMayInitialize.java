@@ -53,7 +53,7 @@ import soot.jimple.Stmt;
  Set of initialized locals/SootField
  Step 2:
  A local or SootField is MUST initialized at a program point p if on all paths from the start to this
- point the local or SootField is assigned a value. 
+ point the local or SootField is assigned a value.
 
  Similarly a local or SootField is MAY initialized at a program point p if there is a path from the start
  to this point on wich the local or SootField is assigned
@@ -137,8 +137,8 @@ public class MustMayInitialize extends StructuredAnalysis {
   }
 
   /*
-   * By construction the synchronized Local is a Value and can definetly not have an assignment stmt Processing a synch local has no effect on this
-   * analysis
+   * By construction the synchronized Local is a Value and can definetly not have an assignment stmt Processing a synch local
+   * has no effect on this analysis
    */
   @Override
   public DavaFlowSet processSynchronizedLocal(Local local, DavaFlowSet input) {
@@ -146,7 +146,8 @@ public class MustMayInitialize extends StructuredAnalysis {
   }
 
   /*
-   * The switch key is stored as a value and hence can never have an assignment stmt Processing the switch key has no effect on the analysis
+   * The switch key is stored as a value and hence can never have an assignment stmt Processing the switch key has no effect
+   * on the analysis
    */
   @Override
   public DavaFlowSet processSwitchKey(Value key, DavaFlowSet input) {

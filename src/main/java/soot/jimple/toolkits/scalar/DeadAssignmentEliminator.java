@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -154,7 +154,8 @@ public class DeadAssignmentEliminator extends BodyTransformer {
           continue;
         }
 
-        if (lhs instanceof Local && (!eliminateOnlyStackLocals || ((Local) lhs).getName().startsWith("$") || lhs.getType() instanceof NullType)) {
+        if (lhs instanceof Local
+            && (!eliminateOnlyStackLocals || ((Local) lhs).getName().startsWith("$") || lhs.getType() instanceof NullType)) {
 
           isEssential = false;
 
@@ -168,8 +169,8 @@ public class DeadAssignmentEliminator extends BodyTransformer {
             Type t = ce.getCastType();
             Value v = ce.getOp();
             isEssential = !(v instanceof NullConstant && t instanceof RefType);
-          } else if (rhs instanceof InvokeExpr || rhs instanceof ArrayRef || rhs instanceof NewExpr || rhs instanceof NewArrayExpr
-              || rhs instanceof NewMultiArrayExpr) {
+          } else if (rhs instanceof InvokeExpr || rhs instanceof ArrayRef || rhs instanceof NewExpr
+              || rhs instanceof NewArrayExpr || rhs instanceof NewMultiArrayExpr) {
             // ArrayRef : can have side effects (like throwing a null pointer exception)
             // InvokeExpr : can have side effects (like throwing a null pointer exception)
             // NewArrayExpr : can throw exception
@@ -202,8 +203,8 @@ public class DeadAssignmentEliminator extends BodyTransformer {
 
             boolean t2Int = t2 instanceof IntType;
 
-            isEssential = t2Int || t1 instanceof IntType || t1 instanceof LongType || t2 instanceof LongType || t1 instanceof UnknownType
-                || t2 instanceof UnknownType;
+            isEssential = t2Int || t1 instanceof IntType || t1 instanceof LongType || t2 instanceof LongType
+                || t1 instanceof UnknownType || t2 instanceof UnknownType;
 
             if (isEssential && t2Int) {
               Value v = expr.getOp2();

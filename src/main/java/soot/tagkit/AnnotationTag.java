@@ -19,12 +19,12 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- * 
+ *
  * Modified by Marc-Andre Laverdiere-Papineau in 2013
- * 
+ *
  */
 package soot.tagkit;
 
@@ -35,7 +35,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Represents the annotation attribute attached to a class, method, field, method param - they could have many annotations each for Java 1.5.
+ * Represents the annotation attribute attached to a class, method, field, method param - they could have many annotations
+ * each for Java 1.5.
  */
 
 public class AnnotationTag implements Tag {
@@ -131,7 +132,7 @@ public class AnnotationTag implements Tag {
 
   /**
    * Adds one element to the list
-   * 
+   *
    * @param elem
    *          the element
    */
@@ -144,7 +145,7 @@ public class AnnotationTag implements Tag {
 
   /**
    * Overwrites the elements stored previously
-   * 
+   *
    * @param list
    *          the new list of elements
    */

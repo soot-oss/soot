@@ -37,7 +37,8 @@ import soot.toolkits.scalar.FlowUniverse;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 /**
- * Wrapper class for a simple dominators analysis based on a simple flow analysis algorithm. Works with any DirectedGraph with a single head.
+ * Wrapper class for a simple dominators analysis based on a simple flow analysis algorithm. Works with any DirectedGraph
+ * with a single head.
  *
  * @author Navindra Umanee
  **/
@@ -117,7 +118,7 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N> {
  * Calculate dominators for basic blocks.
  * <p>
  * Uses the algorithm contained in Dragon book, pg. 670-1.
- * 
+ *
  * <pre>
  *       D(n0) := { n0 }
  *       for n in N - { n0 } do D(n) := N;

@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -33,7 +33,8 @@ import java.util.List;
 // extended by SootClass, SootField, SootMethod, Scene
 
 /**
- * This class is the reference implementation for the Host interface, which allows arbitrary taggable data to be stored with Soot objects.
+ * This class is the reference implementation for the Host interface, which allows arbitrary taggable data to be stored with
+ * Soot objects.
  */
 public class AbstractHost implements Host {
 

@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -58,24 +58,27 @@ import soot.jimple.NewArrayExpr;
 import soot.jimple.ReturnStmt;
 
 /**
- * BodyTransformer to find and change initialization type of Jimple variables. Dalvik bytecode does not provide enough information regarding the type
- * of initialized variables. For instance, using the dexdump disassembler on some Dalvik bytecode can produce the following (wrong) output:
- * 
- * 006c : const -wide v6 , #double 0.000000 // #0014404410000000 0071: and-long /2 addr v6 , v4
- * 
- * At 0x6c, the initialized register is not of type double, but of type long because it is used in a long and operation at 0x71. Thus, one need to
- * check how the register is used to deduce its type. By default, and since the dexdump disassembler does not perform such analysis, it supposes the
- * register is of type double.
- * 
- * Dalvik comes with the following instructions to initialize constants: 0x12 const/4 vx,lit4 0x13 const/16 vx,lit16 0x14 const vx, lit32 0x15
- * const/high16 v0, lit16 0x16 const-wide/16 vx, lit16 0x17 const-wide/32 vx, lit32 0x18 const-wide vx, lit64 0x19 const-wide/high16 vx,lit16 0x1A
- * const-string vx,string id 0x1B const-string-jumbo vx,string 0x1C const-class vx,type id
+ * BodyTransformer to find and change initialization type of Jimple variables. Dalvik bytecode does not provide enough
+ * information regarding the type of initialized variables. For instance, using the dexdump disassembler on some Dalvik
+ * bytecode can produce the following (wrong) output:
  *
- * Instructions 0x12, 0x1A, 0x1B, 0x1C can not produce wrong initialized registers. The other instructions are converted to the following Jimple
- * statement: JAssignStmt ( Local, rightValue ). Since at the time of the statement creation the no analysis can be performed, a default type is given
- * to rightValue. This default type is "int" for registers whose size is less or equal to 32bits and "long" to registers whose size is 64bits. The
- * problem is that 32bits registers could be either "int" or "float" and 64bits registers "long" or "double". If the analysis concludes that an "int"
- * has to be changed to a "float", rightValue has to change from IntConstant.v(literal) to Float.intBitsToFloat((int) literal). If the analysis
+ * 006c : const -wide v6 , #double 0.000000 // #0014404410000000 0071: and-long /2 addr v6 , v4
+ *
+ * At 0x6c, the initialized register is not of type double, but of type long because it is used in a long and operation at
+ * 0x71. Thus, one need to check how the register is used to deduce its type. By default, and since the dexdump disassembler
+ * does not perform such analysis, it supposes the register is of type double.
+ *
+ * Dalvik comes with the following instructions to initialize constants: 0x12 const/4 vx,lit4 0x13 const/16 vx,lit16 0x14
+ * const vx, lit32 0x15 const/high16 v0, lit16 0x16 const-wide/16 vx, lit16 0x17 const-wide/32 vx, lit32 0x18 const-wide vx,
+ * lit64 0x19 const-wide/high16 vx,lit16 0x1A const-string vx,string id 0x1B const-string-jumbo vx,string 0x1C const-class
+ * vx,type id
+ *
+ * Instructions 0x12, 0x1A, 0x1B, 0x1C can not produce wrong initialized registers. The other instructions are converted to
+ * the following Jimple statement: JAssignStmt ( Local, rightValue ). Since at the time of the statement creation the no
+ * analysis can be performed, a default type is given to rightValue. This default type is "int" for registers whose size is
+ * less or equal to 32bits and "long" to registers whose size is 64bits. The problem is that 32bits registers could be either
+ * "int" or "float" and 64bits registers "long" or "double". If the analysis concludes that an "int" has to be changed to a
+ * "float", rightValue has to change from IntConstant.v(literal) to Float.intBitsToFloat((int) literal). If the analysis
  * concludes that an "long" has to be changed to a "double, rightValue has to change from LongConstant.v(literal) to
  * DoubleConstant.v(Double.longBitsToDouble(literal)).
  */

@@ -13,9 +13,10 @@ import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
 
 /**
- * Tries may not start or end at units which have no corresponding Dalvik instructions such as IdentityStmts. We reduce the traps to start at the
- * first "real" instruction. We could also use a TrapTigthener, but that would be too expensive for just producing working Dex code.
- * 
+ * Tries may not start or end at units which have no corresponding Dalvik instructions such as IdentityStmts. We reduce the
+ * traps to start at the first "real" instruction. We could also use a TrapTigthener, but that would be too expensive for
+ * just producing working Dex code.
+ *
  * @author Steven Arzt
  */
 public class FastDexTrapTightener extends BodyTransformer {

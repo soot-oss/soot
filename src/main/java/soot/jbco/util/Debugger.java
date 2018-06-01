@@ -45,8 +45,8 @@ public class Debugger {
     it = b.getUnits().iterator();
     while (it.hasNext()) {
       Object o = it.next();
-      System.out.println(
-          index.get(o).toString() + " " + o + " " + (o instanceof TargetArgInst ? index.get(((TargetArgInst) o).getTarget()).toString() : ""));
+      System.out.println(index.get(o).toString() + " " + o + " "
+          + (o instanceof TargetArgInst ? index.get(((TargetArgInst) o).getTarget()).toString() : ""));
     }
     System.out.println("\n");
   }
@@ -88,7 +88,8 @@ public class Debugger {
         System.out.println("\tdefault: " + tswi.getDefaultTarget() + "  " + numbers.get(tswi.getDefaultTarget()).toString());
         int index = 0;
         for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++) {
-          System.out.println("\t " + x + ": " + tswi.getTarget(index) + "  " + numbers.get(tswi.getTarget(index++)).toString());
+          System.out
+              .println("\t " + x + ": " + tswi.getTarget(index) + "  " + numbers.get(tswi.getTarget(index++)).toString());
         }
         continue;
       }
@@ -98,8 +99,8 @@ public class Debugger {
     Iterator<Trap> tit = b.getTraps().iterator();
     while (tit.hasNext()) {
       Trap t = tit.next();
-      System.out.println(numbers.get(t.getBeginUnit()) + " " + t.getBeginUnit() + " to " + numbers.get(t.getEndUnit()) + " " + t.getEndUnit()
-          + "  at " + numbers.get(t.getHandlerUnit()) + " " + t.getHandlerUnit());
+      System.out.println(numbers.get(t.getBeginUnit()) + " " + t.getBeginUnit() + " to " + numbers.get(t.getEndUnit()) + " "
+          + t.getEndUnit() + "  at " + numbers.get(t.getHandlerUnit()) + " " + t.getHandlerUnit());
     }
     if (jsr > 0) {
       System.out.println("\r\tJSR Instructions: " + jsr);
@@ -138,7 +139,8 @@ public class Debugger {
         System.out.println("\tdefault: " + tswi.getDefaultTarget() + "  " + numbers.get(tswi.getDefaultTarget()).toString());
         int index = 0;
         for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++) {
-          System.out.println("\t " + x + ": " + tswi.getTarget(index) + "  " + numbers.get(tswi.getTarget(index++)).toString());
+          System.out
+              .println("\t " + x + ": " + tswi.getTarget(index) + "  " + numbers.get(tswi.getTarget(index++)).toString());
         }
         continue;
       }

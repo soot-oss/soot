@@ -78,11 +78,11 @@ public class Base64 {
   }
 
   /**
-   * Decodes a BASE-64 encoded stream to recover the original data. White space before and after will be trimmed away, but no other manipulation of
-   * the input will be performed.
+   * Decodes a BASE-64 encoded stream to recover the original data. White space before and after will be trimmed away, but no
+   * other manipulation of the input will be performed.
    *
-   * As of version 1.2 this method will properly handle input containing junk characters (newlines and the like) rather than throwing an error. It
-   * does this by pre-parsing the input and generating from that a count of VALID input characters.
+   * As of version 1.2 this method will properly handle input containing junk characters (newlines and the like) rather than
+   * throwing an error. It does this by pre-parsing the input and generating from that a count of VALID input characters.
    **/
   static public byte[] decode(char[] data) {
     // as our input could contain non-BASE64 data (newlines,

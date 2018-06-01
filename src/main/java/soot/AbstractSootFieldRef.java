@@ -27,8 +27,9 @@ import org.slf4j.LoggerFactory;
 import soot.options.Options;
 
 /**
- * Representation of a reference to a field as it appears in a class file. Note that the field directly referred to may not actually exist; the actual
- * target of the reference is determined according to the resolution procedure in the Java Virtual Machine Specification, 2nd ed, section 5.4.3.2.
+ * Representation of a reference to a field as it appears in a class file. Note that the field directly referred to may not
+ * actually exist; the actual target of the reference is determined according to the resolution procedure in the Java Virtual
+ * Machine Specification, 2nd ed, section 5.4.3.2.
  */
 
 public class AbstractSootFieldRef implements SootFieldRef {
@@ -82,12 +83,13 @@ public class AbstractSootFieldRef implements SootFieldRef {
 
   public class FieldResolutionFailedException extends ResolutionFailedException {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -4657113720516199499L;
 
     public FieldResolutionFailedException() {
-      super("Class " + declaringClass + " doesn't have field " + name + " : " + type + "; failed to resolve in superclasses and interfaces");
+      super("Class " + declaringClass + " doesn't have field " + name + " : " + type
+          + "; failed to resolve in superclasses and interfaces");
     }
 
     @Override
@@ -105,7 +107,8 @@ public class AbstractSootFieldRef implements SootFieldRef {
   }
 
   private SootField checkStatic(SootField ret) {
-    if (Options.v().wrong_staticness() == Options.wrong_staticness_fail || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) {
+    if (Options.v().wrong_staticness() == Options.wrong_staticness_fail
+        || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) {
       if (ret.isStatic() != isStatic() && !ret.isPhantom()) {
         throw new ResolutionFailedException("Resolved " + this + " to " + ret + " which has wrong static-ness");
       }
@@ -220,7 +223,8 @@ public class AbstractSootFieldRef implements SootFieldRef {
       case Options.field_type_mismatches_null:
         return null;
     }
-    throw new RuntimeException(String.format("Unsupported option for handling field type mismatches: %d", Options.v().field_type_mismatches()));
+    throw new RuntimeException(
+        String.format("Unsupported option for handling field type mismatches: %d", Options.v().field_type_mismatches()));
   }
 
   @Override

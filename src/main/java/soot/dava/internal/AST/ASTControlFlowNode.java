@@ -37,8 +37,8 @@ public abstract class ASTControlFlowNode extends ASTLabeledNode {
   }
 
   /*
-   * Nomair A. Naeem 17-FEB-05 Needed because of change of grammar of condition being stored as a ASTCondition rather than the ConditionExpr which was
-   * the case before
+   * Nomair A. Naeem 17-FEB-05 Needed because of change of grammar of condition being stored as a ASTCondition rather than
+   * the ConditionExpr which was the case before
    */
   public ASTControlFlowNode(SETNodeLabel label, ASTCondition condition) {
     super(label);
@@ -56,12 +56,12 @@ public abstract class ASTControlFlowNode extends ASTLabeledNode {
   public void perform_Analysis(ASTAnalysis a) {
     /*
      * Nomair A Naeem 17-FEB-05 Changed because the ASTControlFlowNode does not have a ConditionBox anymore
-     * 
-     * The if check is not an ideal way of implementation What should be done is to do a DepthFirst of the Complete Condition hierarcy and walk all
-     * values that are found
-     * 
+     *
+     * The if check is not an ideal way of implementation What should be done is to do a DepthFirst of the Complete Condition
+     * hierarcy and walk all values that are found
+     *
      * Notice this condition will always return true UNLESS transformations aggregating the control flow have been performed.
-     * 
+     *
      * This method is deprecated do not use it. Use the DepthFirstAdapter class in dava.toolkits.base.AST.analysis.
      */
     if (condition instanceof ASTBinaryCondition) {

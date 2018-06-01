@@ -26,10 +26,10 @@ import soot.jimple.JimpleBody;
 import soot.shimple.Shimple;
 
 /**
- * An enumeration type for representing the varieties of intermediate representation available, for use in tools that compare or display control flow
- * graphs.
+ * An enumeration type for representing the varieties of intermediate representation available, for use in tools that compare
+ * or display control flow graphs.
  *
- * 
+ *
  */
 public abstract class CFGIntermediateRep extends CFGOptionMatcher.CFGOption {
 
@@ -77,8 +77,8 @@ public abstract class CFGIntermediateRep extends CFGOptionMatcher.CFGOption {
     }
   };
 
-  private final static CFGOptionMatcher irOptions = new CFGOptionMatcher(
-      new CFGIntermediateRep[] { JIMPLE_IR, BAF_IR, GRIMP_IR, SHIMPLE_IR, VIA_SHIMPLE_JIMPLE_IR, });
+  private final static CFGOptionMatcher irOptions
+      = new CFGOptionMatcher(new CFGIntermediateRep[] { JIMPLE_IR, BAF_IR, GRIMP_IR, SHIMPLE_IR, VIA_SHIMPLE_JIMPLE_IR, });
 
   /**
    * Returns the <code>CFGIntermediateRep</code> identified by the passed name.
@@ -86,24 +86,27 @@ public abstract class CFGIntermediateRep extends CFGOptionMatcher.CFGOption {
    * @param name
    *          A {@link String} identifying the intermediate representation.
    *
-   * @return A <code>CFGIntermediateRep</code> object whose {@link #getBody(JimpleBody)} method will create the desired intermediate representation.
+   * @return A <code>CFGIntermediateRep</code> object whose {@link #getBody(JimpleBody)} method will create the desired
+   *         intermediate representation.
    */
   public static CFGIntermediateRep getIR(String name) {
     return (CFGIntermediateRep) irOptions.match(name);
   }
 
   /**
-   * Returns a string containing the names of all the available <code>CFGIntermediateRep</code>s, separated by '|' characters.
+   * Returns a string containing the names of all the available <code>CFGIntermediateRep</code>s, separated by '|'
+   * characters.
    *
    * @param initialIndent
    *          The number of blank spaces to insert at the beginning of the returned string. Ignored if negative.
    *
    * @param rightMargin
-   *          If positive, newlines will be inserted to try to keep the length of each line in the returned string less than or equal to
-   *          *<code>rightMargin</code>.
-   * 
+   *          If positive, newlines will be inserted to try to keep the length of each line in the returned string less than
+   *          or equal to *<code>rightMargin</code>.
+   *
    * @param hangingIndent
-   *          If positive, this number of spaces will be inserted immediately after each newline inserted to respect the <code>rightMargin</code>.
+   *          If positive, this number of spaces will be inserted immediately after each newline inserted to respect the
+   *          <code>rightMargin</code>.
    */
   public static String help(int initialIndent, int rightMargin, int hangingIndent) {
     return irOptions.help(initialIndent, rightMargin, hangingIndent);

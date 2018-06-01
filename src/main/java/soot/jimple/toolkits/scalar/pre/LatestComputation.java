@@ -37,17 +37,18 @@ import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
 
 /**
- * Performs a Latest-Computation on the given graph. a computation is latest, when we can't delay it anymore. This uses the Delayability-analysis.
- * More precise: The delayability-analysis says us already until which point we can delay a computation from the earliest computation-point. We just
- * have to search for points, where there's a computation, or, where we can't delay the computation to one of the successors.
+ * Performs a Latest-Computation on the given graph. a computation is latest, when we can't delay it anymore. This uses the
+ * Delayability-analysis. More precise: The delayability-analysis says us already until which point we can delay a
+ * computation from the earliest computation-point. We just have to search for points, where there's a computation, or, where
+ * we can't delay the computation to one of the successors.
  */
 public class LatestComputation {
   private Map<Unit, FlowSet<EquivalentValue>> unitToLatest;
 
   /**
-   * given a DelayabilityAnalysis and the computations of each unit, calculates the latest computation-point for each expression. the
-   * <code>equivRhsMap</code> could be calculated on the fly, but it is <b>very</b> likely that it already exists (as similar maps are used for
-   * calculating Earliestness, Delayed,...
+   * given a DelayabilityAnalysis and the computations of each unit, calculates the latest computation-point for each
+   * expression. the <code>equivRhsMap</code> could be calculated on the fly, but it is <b>very</b> likely that it already
+   * exists (as similar maps are used for calculating Earliestness, Delayed,...
    *
    * @param dg
    *          a ExceptionalUnitGraph
@@ -57,14 +58,17 @@ public class LatestComputation {
    *          all computations of the graph
    */
   public LatestComputation(UnitGraph unitGraph, DelayabilityAnalysis delayed, Map<Unit, EquivalentValue> equivRhsMap) {
-    this(unitGraph, delayed, equivRhsMap, new ArrayPackedSet<EquivalentValue>(new CollectionFlowUniverse<EquivalentValue>(equivRhsMap.values())));
+    this(unitGraph, delayed, equivRhsMap,
+        new ArrayPackedSet<EquivalentValue>(new CollectionFlowUniverse<EquivalentValue>(equivRhsMap.values())));
   }
 
   /**
-   * given a DelayabilityAnalysis and the computations of each unit, calculates the latest computation-point for each expression.<br>
-   * the <code>equivRhsMap</code> could be calculated on the fly, but it is <b>very</b> likely that it already exists (as similar maps are used for
-   * calculating Earliestness, Delayed,...<br>
-   * the shared set allows more efficient set-operations, when they the computation is merged with other analyses/computations.
+   * given a DelayabilityAnalysis and the computations of each unit, calculates the latest computation-point for each
+   * expression.<br>
+   * the <code>equivRhsMap</code> could be calculated on the fly, but it is <b>very</b> likely that it already exists (as
+   * similar maps are used for calculating Earliestness, Delayed,...<br>
+   * the shared set allows more efficient set-operations, when they the computation is merged with other
+   * analyses/computations.
    *
    * @param dg
    *          a ExceptionalUnitGraph
@@ -82,8 +86,8 @@ public class LatestComputation {
     for (Unit currentUnit : unitGraph) {
       /* create a new Earliest-list for each unit */
       /*
-       * basically the latest-set is: (delayed) INTERSECT (comp UNION (UNION_successors ~Delayed)) = (delayed) MINUS ((INTERSECTION_successors
-       * Delayed) MINUS comp).
+       * basically the latest-set is: (delayed) INTERSECT (comp UNION (UNION_successors ~Delayed)) = (delayed) MINUS
+       * ((INTERSECTION_successors Delayed) MINUS comp).
        */
 
       FlowSet<EquivalentValue> delaySet = delayed.getFlowBefore(currentUnit);

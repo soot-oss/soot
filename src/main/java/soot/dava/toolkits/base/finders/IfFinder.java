@@ -70,7 +70,8 @@ public class IfFinder implements FactFinder {
         asg.calculate_Reachability(succIf, succElse, as);
         asg.calculate_Reachability(succElse, succIf, as);
 
-        IterableSet fullBody = new IterableSet(), ifBody = find_Body(succIf, succElse), elseBody = find_Body(succElse, succIf);
+        IterableSet fullBody = new IterableSet(), ifBody = find_Body(succIf, succElse),
+            elseBody = find_Body(succElse, succIf);
 
         fullBody.add(as);
         fullBody.addAll(ifBody);

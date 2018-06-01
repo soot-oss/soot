@@ -38,7 +38,8 @@ public class JavaLangThrowableNative extends NativeMethodClass {
   /**
    * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
    */
-  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
+  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 
@@ -66,7 +67,7 @@ public class JavaLangThrowableNative extends NativeMethodClass {
 
   /**
    * NO side effects.
-   * 
+   *
    * private native void printStackTrace0(java.lang.Object);
    */
 

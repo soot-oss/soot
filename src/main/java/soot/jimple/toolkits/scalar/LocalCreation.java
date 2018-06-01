@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -35,8 +35,8 @@ import soot.Type;
 import soot.jimple.Jimple;
 
 /**
- * provides an easy interface to handle new var-names. New names are automatically added to the chain, and the provided locals are guaranteed to have
- * a unique name.
+ * provides an easy interface to handle new var-names. New names are automatically added to the chain, and the provided
+ * locals are guaranteed to have a unique name.
  */
 public class LocalCreation {
   /** if no prefix is given, this one's used */
@@ -77,9 +77,11 @@ public class LocalCreation {
   }
 
   /**
-   * returns a new local with the prefix given to the constructor (or the default-prefix if none has been given) and the given type.<br>
+   * returns a new local with the prefix given to the constructor (or the default-prefix if none has been given) and the
+   * given type.<br>
    * The returned local will automatically added to the locals-chain.<br>
-   * The local will be of the form: <tt>prefix</tt><i>X</i> (where the last <i>X</i> is a number, so the localname is unique).
+   * The local will be of the form: <tt>prefix</tt><i>X</i> (where the last <i>X</i> is a number, so the localname is
+   * unique).
    *
    * @param type
    *          the Type of the new local.
@@ -91,8 +93,8 @@ public class LocalCreation {
 
   /**
    * returns a new local with the given prefix and the given type.<br>
-   * the returned local will automatically added to the locals-chain. The local will be of the form: <tt>prefix</tt><i>X</i> (where the last <i>X</i>
-   * is a number, so the localname is unique).
+   * the returned local will automatically added to the locals-chain. The local will be of the form: <tt>prefix</tt><i>X</i>
+   * (where the last <i>X</i> is a number, so the localname is unique).
    *
    * @param prefix
    *          the prefix for the now local.

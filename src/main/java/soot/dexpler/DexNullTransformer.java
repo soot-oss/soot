@@ -314,8 +314,8 @@ public class DexNullTransformer extends AbstractNullTransformer {
         if (u instanceof DefinitionStmt) {
           l = (Local) ((DefinitionStmt) u).getLeftOp();
         } else if (u instanceof IfStmt) {
-          throw new RuntimeException(
-              "ERROR: def can not be something else than Assign or Identity statement! (def: " + u + " class: " + u.getClass() + "");
+          throw new RuntimeException("ERROR: def can not be something else than Assign or Identity statement! (def: " + u
+              + " class: " + u.getClass() + "");
         }
 
         // check defs
@@ -484,7 +484,8 @@ public class DexNullTransformer extends AbstractNullTransformer {
         }
         Local l = (Local) a.getLeftOp();
         Value r = a.getRightOp();
-        if ((r instanceof IntConstant && ((IntConstant) r).value == 0) || (r instanceof LongConstant && ((LongConstant) r).value == 0)) {
+        if ((r instanceof IntConstant && ((IntConstant) r).value == 0)
+            || (r instanceof LongConstant && ((LongConstant) r).value == 0)) {
           if (candidates == null) {
             candidates = new HashSet<Local>();
           }

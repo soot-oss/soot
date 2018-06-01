@@ -162,7 +162,8 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
             }
 
             if (isVerbose()) {
-              logger.info("\t\t\tChanging {} to {}\tUnit: ", invokedMethod.getSignature(), invokedMethodRef.getSignature(), unit);
+              logger.info("\t\t\tChanging {} to {}\tUnit: ", invokedMethod.getSignature(), invokedMethodRef.getSignature(),
+                  unit);
             }
 
             List<Value> args = invokeExpr.getArgs();
@@ -197,12 +198,14 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
   }
 
   private SootMethodRef getNewMethodRef(SootMethod method) {
-    Map<SootMethod, SootMethodRef> methods = libClassesToMethods.computeIfAbsent(method.getDeclaringClass(), key -> new HashMap<>());
+    Map<SootMethod, SootMethodRef> methods
+        = libClassesToMethods.computeIfAbsent(method.getDeclaringClass(), key -> new HashMap<>());
     return methods.get(method);
   }
 
   private void setNewMethodRef(SootMethod sm, SootMethodRef smr) {
-    Map<SootMethod, SootMethodRef> methods = libClassesToMethods.computeIfAbsent(sm.getDeclaringClass(), key -> new HashMap<>());
+    Map<SootMethod, SootMethodRef> methods
+        = libClassesToMethods.computeIfAbsent(sm.getDeclaringClass(), key -> new HashMap<>());
     methods.put(sm, smr);
   }
 
@@ -247,8 +250,8 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
       extraParams++;
     }
 
-    final int mods = ((((sm.getModifiers() | Modifier.STATIC | Modifier.PUBLIC) & (Modifier.ABSTRACT ^ 0xFFFF)) & (Modifier.NATIVE ^ 0xFFFF))
-        & (Modifier.SYNCHRONIZED ^ 0xFFFF));
+    final int mods = ((((sm.getModifiers() | Modifier.STATIC | Modifier.PUBLIC) & (Modifier.ABSTRACT ^ 0xFFFF))
+        & (Modifier.NATIVE ^ 0xFFFF)) & (Modifier.SYNCHRONIZED ^ 0xFFFF));
     SootMethod newMethod = Scene.v().makeSootMethod(methodNewName, smParamTypes, sm.getReturnType(), mods);
     randomClass.addMethod(newMethod);
 
@@ -374,7 +377,8 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
         return null;
       }
 
-      if (SootMethod.constructorName.equals(invokedMethod.getName()) || SootMethod.staticInitializerName.equals(invokedMethod.getName())) {
+      if (SootMethod.constructorName.equals(invokedMethod.getName())
+          || SootMethod.staticInitializerName.equals(invokedMethod.getName())) {
         logger.debug("Skipping wrapping method {} as it is constructor/initializer.", invokedMethod);
         return null;
       }

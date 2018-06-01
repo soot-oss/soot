@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -36,7 +36,8 @@ import soot.Body;
 
 public interface Peephole {
   /**
-   * Entry point for a peephole. This method is repeatedly called by the peephole driver, until a fixed-point is reached over all peepholes.
+   * Entry point for a peephole. This method is repeatedly called by the peephole driver, until a fixed-point is reached over
+   * all peepholes.
    *
    * @param b
    *          Body to apply peephole to.

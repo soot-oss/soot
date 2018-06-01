@@ -218,7 +218,8 @@ public class SPatchingChain extends PatchingChain<Unit> {
   protected Set<Unit> phiNodeSet = new HashSet<Unit>();
 
   /**
-   * Flag that indicates whether control flow falls through from the box to the Phi node. null indicates we probably need a call to computeInternal().
+   * Flag that indicates whether control flow falls through from the box to the Phi node. null indicates we probably need a
+   * call to computeInternal().
    **/
   protected Map<SUnitBox, Boolean> boxToNeedsPatching = new HashMap<SUnitBox, Boolean>();
 
@@ -255,8 +256,8 @@ public class SPatchingChain extends PatchingChain<Unit> {
   }
 
   /**
-   * NOTE: This will *miss* all the Phi nodes outside a chain. So make sure you know what you are doing if you remove a Phi node from a chain and
-   * don't put it back or call clearUnitBoxes() on it.
+   * NOTE: This will *miss* all the Phi nodes outside a chain. So make sure you know what you are doing if you remove a Phi
+   * node from a chain and don't put it back or call clearUnitBoxes() on it.
    **/
   protected void computeNeedsPatching() {
     {

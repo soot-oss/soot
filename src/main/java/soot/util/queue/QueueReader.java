@@ -22,10 +22,11 @@ package soot.util.queue;
 import java.util.NoSuchElementException;
 
 /**
- * A queue of Object's. One can add objects to the queue, and they are later read by a QueueReader. One can create arbitrary numbers of QueueReader's
- * for a queue, and each one receives all the Object's that are added. Only objects that have not been read by all the QueueReader's are kept. A
- * QueueReader only receives the Object's added to the queue <b>after</b> the QueueReader was created.
- * 
+ * A queue of Object's. One can add objects to the queue, and they are later read by a QueueReader. One can create arbitrary
+ * numbers of QueueReader's for a queue, and each one receives all the Object's that are added. Only objects that have not
+ * been read by all the QueueReader's are kept. A QueueReader only receives the Object's added to the queue <b>after</b> the
+ * QueueReader was created.
+ *
  * @author Ondrej Lhotak
  */
 public class QueueReader<E> implements java.util.Iterator<E> {
@@ -87,8 +88,9 @@ public class QueueReader<E> implements java.util.Iterator<E> {
   }
 
   /**
-   * Removes an element from the underlying queue. This operation can only delete elements that have not yet been consumed by this reader.
-   * 
+   * Removes an element from the underlying queue. This operation can only delete elements that have not yet been consumed by
+   * this reader.
+   *
    * @param o
    *          The element to remove
    */

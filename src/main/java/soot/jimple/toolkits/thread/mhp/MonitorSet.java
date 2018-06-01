@@ -44,10 +44,11 @@ public class MonitorSet extends ArraySparseSet {
     return newSet;
   }
   /*
-   * public void copy(MonitorSet dest){ System.out.println("====begin copy"); dest.clear(); Iterator iterator = iterator(); while
-   * (iterator.hasNext()){ Object obj = iterator.next(); if (obj instanceof MonitorDepth) {
-   * System.out.println("obj: "+((MonitorDepth)obj).getObjName()); System.out.println("depth: "+((MonitorDepth)obj).getDepth()); } else
-   * System.out.println("obj: "+obj); if (!dest.contains(obj)) dest.add(obj); else System.out.println("dest contains "+obj); }
+   * public void copy(MonitorSet dest){ System.out.println("====begin copy"); dest.clear(); Iterator iterator = iterator();
+   * while (iterator.hasNext()){ Object obj = iterator.next(); if (obj instanceof MonitorDepth) {
+   * System.out.println("obj: "+((MonitorDepth)obj).getObjName());
+   * System.out.println("depth: "+((MonitorDepth)obj).getDepth()); } else System.out.println("obj: "+obj); if
+   * (!dest.contains(obj)) dest.add(obj); else System.out.println("dest contains "+obj); }
    * System.out.println("===finish copy==="); }
    */
 
@@ -59,20 +60,21 @@ public class MonitorSet extends ArraySparseSet {
   }
 
   /**
-   * Returns the union (join) of this MonitorSet and <code>other</code>, putting result into <code>dest</code>. <code>dest</code>, <code>other</code>
-   * and <code>this</code> could be the same object.
+   * Returns the union (join) of this MonitorSet and <code>other</code>, putting result into <code>dest</code>.
+   * <code>dest</code>, <code>other</code> and <code>this</code> could be the same object.
    */
   /*
-   * ublic void union(MonitorSet other, MonitorSet dest){ other.copy(dest); Iterator iterator = iterator(); while (iterator.hasNext()){
-   * 
-   * MonitorDepth md = (MonitorDepth)iterator.next(); Object obj = dest.getMonitorDepth(md.getObjName()); if ( obj == null){ dest.add(md); } else{ if
-   * (obj instanceof MonitorDepth){ if (md.getDepth() != ((MonitorDepth)obj).getDepth()) throw new
+   * ublic void union(MonitorSet other, MonitorSet dest){ other.copy(dest); Iterator iterator = iterator(); while
+   * (iterator.hasNext()){
+   *
+   * MonitorDepth md = (MonitorDepth)iterator.next(); Object obj = dest.getMonitorDepth(md.getObjName()); if ( obj == null){
+   * dest.add(md); } else{ if (obj instanceof MonitorDepth){ if (md.getDepth() != ((MonitorDepth)obj).getDepth()) throw new
    * RuntimeException("Find different monitor depth at merge point!");
-   * 
+   *
    * } else throw new RuntimeException("MonitorSet contains non MonitorDepth element!"); }
-   * 
+   *
    * }
-   * 
+   *
    * }
    */
   public void intersection(MonitorSet other, MonitorSet dest) {

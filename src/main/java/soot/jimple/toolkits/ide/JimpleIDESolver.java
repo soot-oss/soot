@@ -38,7 +38,8 @@ import soot.PatchingChain;
 import soot.SootMethod;
 import soot.Unit;
 
-public class JimpleIDESolver<D, V, I extends InterproceduralCFG<Unit, SootMethod>> extends IDESolver<Unit, D, SootMethod, V, I> {
+public class JimpleIDESolver<D, V, I extends InterproceduralCFG<Unit, SootMethod>>
+    extends IDESolver<Unit, D, SootMethod, V, I> {
   private static final Logger logger = LoggerFactory.getLogger(JimpleIDESolver.class);
 
   private final boolean DUMP_RESULTS;

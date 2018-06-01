@@ -31,32 +31,36 @@ import soot.toolkits.exceptions.ThrowAnalysis;
 
 /**
  * <p>
- * Represents a CFG for a Body instance where the nodes are {@link Unit} instances, and where edges are a conservative indication of unexceptional and
- * exceptional control flow.
+ * Represents a CFG for a Body instance where the nodes are {@link Unit} instances, and where edges are a conservative
+ * indication of unexceptional and exceptional control flow.
  * </p>
  *
  * <p>
- * <tt>ClassicCompleteUnitGraph</tt> attempts to duplicate the results that would have been produced by Soot's <code>CompleteUnitGraph</code> in
- * releases up to Soot 2.1.0 (the one known discrepancy is that the 2.1.0 <code>CompleteUnitGraph</code> would include two edges joining one node to
- * another {@link Unit}s if the first node both branched to and fell through to the second). It is included solely for testing purposes, and should
- * not be used in actual analyses.
+ * <tt>ClassicCompleteUnitGraph</tt> attempts to duplicate the results that would have been produced by Soot's
+ * <code>CompleteUnitGraph</code> in releases up to Soot 2.1.0 (the one known discrepancy is that the 2.1.0
+ * <code>CompleteUnitGraph</code> would include two edges joining one node to another {@link Unit}s if the first node both
+ * branched to and fell through to the second). It is included solely for testing purposes, and should not be used in actual
+ * analyses.
  * </p>
  *
  * <p>
- * There are two distinctions between the graphs produced by the <tt>ClassicCompleteUnitGraph</tt> and <tt>ExceptionalUnitGraph</tt>:
+ * There are two distinctions between the graphs produced by the <tt>ClassicCompleteUnitGraph</tt> and
+ * <tt>ExceptionalUnitGraph</tt>:
  * <ol>
  *
- * <li><tt>ExceptionalUnitGraph</tt> only creates edges to a <tt>Trap</tt> handler for trapped <tt>Unit</tt>s that have the potential to throw the
- * particular exception type caught by the handler, according to the {@link ThrowAnalysis} used to estimate which exceptions each {@link Unit} may
- * throw. <tt>ClassicCompleteUnitGraph</tt> creates edges for all trapped <tt>Unit</tt>s, regardless of the types of exceptions they may throw.</li>
+ * <li><tt>ExceptionalUnitGraph</tt> only creates edges to a <tt>Trap</tt> handler for trapped <tt>Unit</tt>s that have the
+ * potential to throw the particular exception type caught by the handler, according to the {@link ThrowAnalysis} used to
+ * estimate which exceptions each {@link Unit} may throw. <tt>ClassicCompleteUnitGraph</tt> creates edges for all trapped
+ * <tt>Unit</tt>s, regardless of the types of exceptions they may throw.</li>
  *
- * <li>When <tt>ExceptionalUnitGraph</tt> creates edges for a trapped <tt>Unit</tt> that may throw a caught exception, it adds edges from each
- * predecessor of the excepting <tt>Unit</tt> to the handler. If the excepting <tt>Unit</tt> itself has no potential side effects,
- * <tt>ExceptionalUnitGraph</tt> may omit an edge from it to the handler, depending on the parameters passed to the
- * <tt>ExceptionalUnitGraph<tt> constructor.
- *  <tt>ClassicCompleteUnitGraph</tt>, on the other hand, always adds an edge from the excepting <tt>Unit</tt> itself to the handler, and adds edges
- * from the predecessor only of the first <tt>Unit</tt> covered by a <tt>Trap</tt> (in this one aspect <tt>ClassicCompleteUnitGraph</tt> is less
- * conservative than <tt>ExceptionalUnitGraph</tt>, since it ignores the possibility of a branch into the middle of a protected area).</li>
+ * <li>When <tt>ExceptionalUnitGraph</tt> creates edges for a trapped <tt>Unit</tt> that may throw a caught exception, it
+ * adds edges from each predecessor of the excepting <tt>Unit</tt> to the handler. If the excepting <tt>Unit</tt> itself has
+ * no potential side effects, <tt>ExceptionalUnitGraph</tt> may omit an edge from it to the handler, depending on the
+ * parameters passed to the <tt>ExceptionalUnitGraph<tt> constructor.
+ *  <tt>ClassicCompleteUnitGraph</tt>, on the other hand, always adds an edge from the excepting <tt>Unit</tt> itself to the
+ * handler, and adds edges from the predecessor only of the first <tt>Unit</tt> covered by a <tt>Trap</tt> (in this one
+ * aspect <tt>ClassicCompleteUnitGraph</tt> is less conservative than <tt>ExceptionalUnitGraph</tt>, since it ignores the
+ * possibility of a branch into the middle of a protected area).</li>
  *
  * </ol>
  * </p>
@@ -64,7 +68,7 @@ import soot.toolkits.exceptions.ThrowAnalysis;
 public class ClassicCompleteUnitGraph extends TrapUnitGraph {
   /**
    * Constructs the graph from a given Body instance.
-   * 
+   *
    * @param the
    *          Body instance from which the graph is built.
    */
@@ -77,13 +81,14 @@ public class ClassicCompleteUnitGraph extends TrapUnitGraph {
    * Method to compute the edges corresponding to exceptional control flow.
    *
    * @param unitToSuccs
-   *          A {@link Map} from {@link Unit}s to {@link List}s of {@link Unit}s. This is * an ``out parameter''; <tt>buildExceptionalEdges</tt> will
-   *          add a mapping for every <tt>Unit</tt> within the scope of one or more {@link Trap}s to a <tt>List</tt> of the handler units of those
-   *          <tt>Trap</tt>s.
+   *          A {@link Map} from {@link Unit}s to {@link List}s of {@link Unit}s. This is * an ``out parameter'';
+   *          <tt>buildExceptionalEdges</tt> will add a mapping for every <tt>Unit</tt> within the scope of one or more
+   *          {@link Trap}s to a <tt>List</tt> of the handler units of those <tt>Trap</tt>s.
    *
    * @param unitToPreds
-   *          A {@link Map} from {@link Unit}s to {@link List}s of {@link Unit}s. This is an ``out parameter''; <tt>buildExceptionalEdges</tt> will
-   *          add a mapping for every {@link Trap} handler to all the <tt>Unit</tt>s within the scope of that <tt>Trap</tt>.
+   *          A {@link Map} from {@link Unit}s to {@link List}s of {@link Unit}s. This is an ``out parameter'';
+   *          <tt>buildExceptionalEdges</tt> will add a mapping for every {@link Trap} handler to all the <tt>Unit</tt>s
+   *          within the scope of that <tt>Trap</tt>.
    */
   protected void buildExceptionalEdges(Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds) {
     // First, add the same edges as TrapUnitGraph.

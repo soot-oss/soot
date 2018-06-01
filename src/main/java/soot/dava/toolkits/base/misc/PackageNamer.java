@@ -387,10 +387,11 @@ public class PackageNamer {
       return;
     }
 
-    String[] keywordArray = { "abstract", "default", "if", "private", "this", "boolean", "do", "implements", "protected", "throw", "break", "double",
-        "import", "public", "throws", "byte", "else", "instanceof", "return", "transient", "case", "extends", "int", "short", "try", "catch", "final",
-        "interface", "static", "void", "char", "finally", "long", "strictfp", "volatile", "class", "float", "native", "super", "while", "const",
-        "for", "new", "switch", "continue", "goto", "package", "synchronized", "true", "false", "null" };
+    String[] keywordArray = { "abstract", "default", "if", "private", "this", "boolean", "do", "implements", "protected",
+        "throw", "break", "double", "import", "public", "throws", "byte", "else", "instanceof", "return", "transient",
+        "case", "extends", "int", "short", "try", "catch", "final", "interface", "static", "void", "char", "finally", "long",
+        "strictfp", "volatile", "class", "float", "native", "super", "while", "const", "for", "new", "switch", "continue",
+        "goto", "package", "synchronized", "true", "false", "null" };
 
     for (String element : keywordArray) {
       keywords.add(element);

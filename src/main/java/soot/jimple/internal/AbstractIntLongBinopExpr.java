@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -39,7 +39,8 @@ import soot.Value;
 abstract public class AbstractIntLongBinopExpr extends AbstractBinopExpr {
 
   public static boolean isIntLikeType(Type t) {
-    return t.equals(IntType.v()) || t.equals(ByteType.v()) || t.equals(ShortType.v()) || t.equals(CharType.v()) || t.equals(BooleanType.v());
+    return t.equals(IntType.v()) || t.equals(ByteType.v()) || t.equals(ShortType.v()) || t.equals(CharType.v())
+        || t.equals(BooleanType.v());
   }
 
   public Type getType() {

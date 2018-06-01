@@ -30,7 +30,7 @@ import soot.util.queue.QueueReader;
 
 /**
  * Keeps track of the methods transitively reachable from the specified entry points through the given call graph edges.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class ReachableMethods {
@@ -94,16 +94,16 @@ public class ReachableMethods {
   }
 
   /**
-   * Returns a QueueReader object containing all methods found reachable so far, and which will be informed of any new methods that are later found to
-   * be reachable.
+   * Returns a QueueReader object containing all methods found reachable so far, and which will be informed of any new
+   * methods that are later found to be reachable.
    */
   public QueueReader<MethodOrMethodContext> listener() {
     return allReachables.clone();
   }
 
   /**
-   * Returns a QueueReader object which will contain ONLY NEW methods which will be found to be reachable, but not those that have already been found
-   * to be reachable.
+   * Returns a QueueReader object which will contain ONLY NEW methods which will be found to be reachable, but not those that
+   * have already been found to be reachable.
    */
   public QueueReader<MethodOrMethodContext> newListener() {
     return reachables.reader();

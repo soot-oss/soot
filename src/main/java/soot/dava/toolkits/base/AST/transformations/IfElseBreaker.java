@@ -163,11 +163,11 @@ public class IfElseBreaker {
   }
 
   /*
-   * The purpose of this method is to replace the ASTIfElseNode given by the var nodeNumber with the new ASTIfNode and to add the remianing list of
-   * bodies after this ASTIfNode
-   * 
+   * The purpose of this method is to replace the ASTIfElseNode given by the var nodeNumber with the new ASTIfNode and to add
+   * the remianing list of bodies after this ASTIfNode
+   *
    * The new body is then returned;
-   * 
+   *
    */
   public List<Object> createNewBody(List<Object> oldSubBody, int nodeNumber) {
     if (newIfNode == null) {

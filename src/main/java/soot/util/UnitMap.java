@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -144,14 +144,16 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
   }
 
   /**
-   * allows one-time initialization before any mapping. This method is called before any mapping of a unit (but only once in the beginning).<br>
+   * allows one-time initialization before any mapping. This method is called before any mapping of a unit (but only once in
+   * the beginning).<br>
    * If not overwritten does nothing.
    */
   protected void init() {
   };
 
   /**
-   * maps a unit to an object. This method is called for every unit. If the returned object is <code>null</code> no object will be mapped.<br>
+   * maps a unit to an object. This method is called for every unit. If the returned object is <code>null</code> no object
+   * will be mapped.<br>
    *
    * @param the
    *          Unit to which <code>o</code> should be mapped.

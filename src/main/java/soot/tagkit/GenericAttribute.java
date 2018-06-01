@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -34,9 +34,9 @@ import java.util.List;
 import soot.UnitBox;
 
 /**
- * Represents a general attribute which can be attached to implementations of Host. It can be directly used to add attributes of class files, fields,
- * and methods.
- * 
+ * Represents a general attribute which can be attached to implementations of Host. It can be directly used to add attributes
+ * of class files, fields, and methods.
+ *
  * @see CodeAttribute
  */
 public class GenericAttribute implements Attribute {

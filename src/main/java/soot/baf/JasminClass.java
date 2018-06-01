@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -114,7 +114,8 @@ public class JasminClass extends AbstractJasminClass {
     if (!(activeBody instanceof BafBody)) {
       if (activeBody instanceof JimpleBody) {
         if (Options.v().verbose()) {
-          logger.debug("Was expecting Baf body for " + method + " but found a Jimple body. Will convert body to Baf on the fly.");
+          logger.debug(
+              "Was expecting Baf body for " + method + " but found a Jimple body. Will convert body to Baf on the fly.");
         }
         activeBody = PackManager.v().convertJimpleBodyToBaf(method);
       } else {
@@ -1307,7 +1308,8 @@ public class JasminClass extends AbstractJasminClass {
       @Override
       public void caseStaticGetInst(StaticGetInst i) {
         SootFieldRef field = i.getFieldRef();
-        emit("getstatic " + slashify(field.declaringClass().getName()) + "/" + field.name() + " " + jasminDescriptorOf(field.type()));
+        emit("getstatic " + slashify(field.declaringClass().getName()) + "/" + field.name() + " "
+            + jasminDescriptorOf(field.type()));
       }
 
       @Override
@@ -1375,12 +1377,13 @@ public class JasminClass extends AbstractJasminClass {
           }
 
         }
-        emit("invokedynamic \"" + m.name() + "\" " + jasminDescriptorOf(m) + " " + slashify(bsm.declaringClass().getName()) + "/" + bsm.name()
-            + jasminDescriptorOf(bsm) + "(" + bsmArgString + ")");
+        emit("invokedynamic \"" + m.name() + "\" " + jasminDescriptorOf(m) + " " + slashify(bsm.declaringClass().getName())
+            + "/" + bsm.name() + jasminDescriptorOf(bsm) + "(" + bsmArgString + ")");
       }
 
       private String escape(String bsmArgString) {
-        return bsmArgString.replace(",", "\\comma").replace(" ", "\\blank").replace("\t", "\\tab").replace("\n", "\\newline");
+        return bsmArgString.replace(",", "\\comma").replace(" ", "\\blank").replace("\t", "\\tab").replace("\n",
+            "\\newline");
       }
 
       @Override
@@ -1401,7 +1404,8 @@ public class JasminClass extends AbstractJasminClass {
       public void caseInterfaceInvokeInst(InterfaceInvokeInst i) {
         SootMethodRef m = i.getMethodRef();
 
-        emit("invokeinterface " + slashify(m.declaringClass().getName()) + "/" + m.name() + jasminDescriptorOf(m) + " " + (argCountOf(m) + 1));
+        emit("invokeinterface " + slashify(m.declaringClass().getName()) + "/" + m.name() + jasminDescriptorOf(m) + " "
+            + (argCountOf(m) + 1));
       }
 
       @Override
@@ -1678,9 +1682,9 @@ public class JasminClass extends AbstractJasminClass {
         // NOW handling all types of dup1_x2
         /*
          * From VM Spec: cat1 = category 1 (word type) cat2 = category 2 (doubleword)
-         * 
-         * Form 1: [..., cat1_value3, cat1_value2, cat1_value1]->[..., cat1_value2, cat1_value1, cat1_value3, cat1_value2, cat1_value1] Form 2: [...,
-         * cat1_value2, cat2_value1]->[..., cat2_value1, cat1_value2, cat2_value1]
+         *
+         * Form 1: [..., cat1_value3, cat1_value2, cat1_value1]->[..., cat1_value2, cat1_value1, cat1_value3, cat1_value2,
+         * cat1_value1] Form 2: [..., cat1_value2, cat2_value1]->[..., cat2_value1, cat1_value2, cat2_value1]
          */
 
         if (isDwordType(opType)) {
@@ -1708,9 +1712,9 @@ public class JasminClass extends AbstractJasminClass {
         // NOW handling all types of dup2_x1
         /*
          * From VM Spec: cat1 = category 1 (word type) cat2 = category 2 (doubleword)
-         * 
-         * Form 1: [..., cat1_value3, cat1_value2, cat1_value1]->[..., cat1_value2, cat1_value1, cat1_value3, cat1_value2, cat1_value1] Form 2: [...,
-         * cat1_value2, cat2_value1]->[..., cat2_value1, cat1_value2, cat2_value1]
+         *
+         * Form 1: [..., cat1_value3, cat1_value2, cat1_value1]->[..., cat1_value2, cat1_value1, cat1_value3, cat1_value2,
+         * cat1_value1] Form 2: [..., cat1_value2, cat2_value1]->[..., cat2_value1, cat1_value2, cat2_value1]
          */
         if (isDwordType(under1Type)) {
           if (!isDwordType(op1Type) && !isDwordType(op2Type)) {
@@ -1738,16 +1742,17 @@ public class JasminClass extends AbstractJasminClass {
         // NOW handling all types of dup2_x2
 
         /*
-         * From VM Spec: cat1 = category 1 (word type) cat2 = category 2 (doubleword) Form 1: [..., cat1_value4, cat1_value3, cat1_value2,
-         * cat1_value1]->[..., cat1_value2, cat1_value1, cat1_value4, cat1_value3, cat1_value2, cat1_value1] Form 2: [..., cat1_value3, cat1_value2,
-         * cat2_value1]->[ ..., cat2_value1, cat1_value3, cat1_value2, cat2_value1] Form 3: [..., cat2_value3, cat1_value2, cat1_value1]->[...,
-         * cat1_value2, cat1_value1, cat2_value3, cat1_value2, cat1_value1] Form 4: [..., cat2_value2, cat2_value1]->[..., cat2_value1, cat2_value2,
-         * cat2_value1]
+         * From VM Spec: cat1 = category 1 (word type) cat2 = category 2 (doubleword) Form 1: [..., cat1_value4, cat1_value3,
+         * cat1_value2, cat1_value1]->[..., cat1_value2, cat1_value1, cat1_value4, cat1_value3, cat1_value2, cat1_value1]
+         * Form 2: [..., cat1_value3, cat1_value2, cat2_value1]->[ ..., cat2_value1, cat1_value3, cat1_value2, cat2_value1]
+         * Form 3: [..., cat2_value3, cat1_value2, cat1_value1]->[..., cat1_value2, cat1_value1, cat2_value3, cat1_value2,
+         * cat1_value1] Form 4: [..., cat2_value2, cat2_value1]->[..., cat2_value1, cat2_value2, cat2_value1]
          */
         boolean malformed = true;
         if (isDwordType(op1Type)) {
           if (op2Type == null && under1Type != null) {
-            if ((under2Type == null && isDwordType(under1Type)) || (!isDwordType(under1Type) && under2Type != null && !isDwordType(under2Type))) {
+            if ((under2Type == null && isDwordType(under1Type))
+                || (!isDwordType(under1Type) && under2Type != null && !isDwordType(under2Type))) {
               malformed = false;
             }
           }
@@ -1784,9 +1789,10 @@ public class JasminClass extends AbstractJasminClass {
       blockHeight -= nInst.getInMachineCount();
 
       if (blockHeight < 0) {
-        throw new RuntimeException("Negative Stack height has been attained in :" + aBlock.getBody().getMethod().getSignature() + " \n"
-            + "StackHeight: " + blockHeight + "\n" + "At instruction:" + nInst + "\n" + "Block:\n" + aBlock + "\n\nMethod: "
-            + aBlock.getBody().getMethod().getName() + "\n" + aBlock.getBody().getMethod());
+        throw new RuntimeException(
+            "Negative Stack height has been attained in :" + aBlock.getBody().getMethod().getSignature() + " \n"
+                + "StackHeight: " + blockHeight + "\n" + "At instruction:" + nInst + "\n" + "Block:\n" + aBlock
+                + "\n\nMethod: " + aBlock.getBody().getMethod().getName() + "\n" + aBlock.getBody().getMethod());
       }
 
       blockHeight += nInst.getOutMachineCount();
@@ -1800,8 +1806,9 @@ public class JasminClass extends AbstractJasminClass {
       Integer i = blockToStackHeight.get(b);
       if (i != null) {
         if (i.intValue() != blockHeight) {
-          throw new RuntimeException(aBlock.getBody().getMethod().getSignature() + ": incoherent stack height at block merge point " + b + aBlock
-              + "\ncomputed blockHeight == " + blockHeight + " recorded blockHeight = " + i.intValue());
+          throw new RuntimeException(
+              aBlock.getBody().getMethod().getSignature() + ": incoherent stack height at block merge point " + b + aBlock
+                  + "\ncomputed blockHeight == " + blockHeight + " recorded blockHeight = " + i.intValue());
         }
 
       } else {
@@ -1819,8 +1826,9 @@ public class JasminClass extends AbstractJasminClass {
       blockHeight -= nInst.getInCount();
 
       if (blockHeight < 0) {
-        throw new RuntimeException("Negative Stack Logical height has been attained: \n" + "StackHeight: " + blockHeight + "\nAt instruction:" + nInst
-            + "\nBlock:\n" + aBlock + "\n\nMethod: " + aBlock.getBody().getMethod().getName() + "\n" + aBlock.getBody().getMethod());
+        throw new RuntimeException("Negative Stack Logical height has been attained: \n" + "StackHeight: " + blockHeight
+            + "\nAt instruction:" + nInst + "\nBlock:\n" + aBlock + "\n\nMethod: " + aBlock.getBody().getMethod().getName()
+            + "\n" + aBlock.getBody().getMethod());
       }
 
       blockHeight += nInst.getOutCount();

@@ -27,7 +27,7 @@ import soot.jimple.Stmt;
 
 /**
  * Represents a single context-sensitive edge in a call graph.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public interface ContextSensitiveEdge {
@@ -37,12 +37,14 @@ public interface ContextSensitiveEdge {
   public Context srcCtxt();
 
   /**
-   * The method in which the call occurs; may be null for calls not occurring in a specific method (eg. implicit calls by the VM)
+   * The method in which the call occurs; may be null for calls not occurring in a specific method (eg. implicit calls by the
+   * VM)
    */
   public SootMethod src();
 
   /**
-   * The unit at which the call occurs; may be null for calls not occurring at a specific statement (eg. calls in native code)
+   * The unit at which the call occurs; may be null for calls not occurring at a specific statement (eg. calls in native
+   * code)
    */
   public Unit srcUnit();
 
@@ -57,7 +59,8 @@ public interface ContextSensitiveEdge {
   public SootMethod tgt();
 
   /**
-   * The kind of edge. Note: kind should not be tested by other classes; instead, accessors such as isExplicit() should be added.
+   * The kind of edge. Note: kind should not be tested by other classes; instead, accessors such as isExplicit() should be
+   * added.
    **/
   public Kind kind();
 }

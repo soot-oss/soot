@@ -69,7 +69,8 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
   }
 
   // override
-  protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, InfoFlowAnalysis dfa, UseFinder uf, SootClass sc) {
+  protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, InfoFlowAnalysis dfa,
+      UseFinder uf, SootClass sc) {
     // find the right run methods to use for threads of type sc
     List<SootMethod> runMethods = new ArrayList<SootMethod>();
     Iterator<AbstractRuntimeThread> threadsIt = threads.iterator();
@@ -109,8 +110,8 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 
           if (runMethod.getDeclaringClass().isApplicationClass() && !isObjectLocalToContext(localOrRef, sm, runMethod)) {
             if (printDebug) {
-              logger.debug("  THREAD-SHARED (simpledfa " + ClassInfoFlowAnalysis.methodCount + " smartdfa " + SmartMethodInfoFlowAnalysis.counter
-                  + " smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");
+              logger.debug("  THREAD-SHARED (simpledfa " + ClassInfoFlowAnalysis.methodCount + " smartdfa "
+                  + SmartMethodInfoFlowAnalysis.counter + " smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");
             }
             // valueCache.put(cacheKey, Boolean.FALSE);
             // escapesThrough(localOrRef, sm);
@@ -120,19 +121,23 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
       }
     }
     if (printDebug) {
-      logger.debug("  THREAD-LOCAL (simpledfa " + ClassInfoFlowAnalysis.methodCount + " smartdfa " + SmartMethodInfoFlowAnalysis.counter
-          + " smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + localOrRef + " in " + sm + ")");
+      logger.debug("  THREAD-LOCAL (simpledfa " + ClassInfoFlowAnalysis.methodCount + " smartdfa "
+          + SmartMethodInfoFlowAnalysis.counter + " smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" +
+                                                                                                                // localOrRef
+                                                                                                                // + " in " +
+                                                                                                                // sm + ")");
     }
     // valueCache.put(cacheKey, Boolean.TRUE);
     return true;
   }
 
   /*
-   * public boolean isFieldThreadLocal(SootField sf, SootMethod sm) // this is kind of meaningless..., if we're looking in a particular method, we'd
-   * use isObjectThreadLocal { logger.debug("- Checking if " + sf + " in " + sm + " is thread-local"); Iterator threadClassesIt =
-   * threadClasses.iterator(); while(threadClassesIt.hasNext()) { SootClass threadClass = (SootClass) threadClassesIt.next();
-   * if(!isFieldLocalToContext(sf, sm, threadClass)) { logger.debug("  THREAD-SHARED"); return false; } } logger.debug("  THREAD-LOCAL");//
-   * (" + sf + " in " + sm + ")"); return true; }
+   * public boolean isFieldThreadLocal(SootField sf, SootMethod sm) // this is kind of meaningless..., if we're looking in a
+   * particular method, we'd use isObjectThreadLocal { logger.debug("- Checking if " + sf + " in " + sm +
+   * " is thread-local"); Iterator threadClassesIt = threadClasses.iterator(); while(threadClassesIt.hasNext()) { SootClass
+   * threadClass = (SootClass) threadClassesIt.next(); if(!isFieldLocalToContext(sf, sm, threadClass)) {
+   * logger.debug("  THREAD-SHARED"); return false; } } logger.debug("  THREAD-LOCAL");// (" + sf + " in " + sm + ")");
+   * return true; }
    */
 
   public boolean hasNonThreadLocalEffects(SootMethod containingMethod, InvokeExpr ie) {
@@ -141,17 +146,19 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
     }
     return true;
     /*
-     * Pair cacheKey = new Pair(new EquivalentValue(ie), containingMethod); if(invokeCache.containsKey(cacheKey)) { return ((Boolean)
-     * invokeCache.get(cacheKey)).booleanValue(); }
-     * 
-     * logger.debug("- " + ie + " in " + containingMethod + " has "); Iterator threadsIt = threads.iterator(); while(threadsIt.hasNext()) {
-     * AbstractRuntimeThread thread = (AbstractRuntimeThread) threadsIt.next(); Iterator runMethodsIt = thread.getRunMethods().iterator();
-     * while(runMethodsIt.hasNext()) { SootMethod runMethod = (SootMethod) runMethodsIt.next(); if( runMethod.getDeclaringClass().isApplicationClass()
-     * && hasNonLocalEffects(containingMethod, ie, runMethod)) { logger.debug("THREAD-VISIBLE (simpledfa " + ClassInfoFlowAnalysis.methodCount +
-     * " smartdfa " + SmartMethodInfoFlowAnalysis.counter + " smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + ie + " in
-     * " + containingMethod + ")"); invokeCache.put(cacheKey, Boolean.TRUE); return true; } } } logger.debug("THREAD-PRIVATE (simpledfa " +
-     * ClassInfoFlowAnalysis.methodCount + " smartdfa " + SmartMethodInfoFlowAnalysis.counter + " smartloa " + SmartMethodLocalObjectsAnalysis.counter
-     * + ")");// (" + ie + " in " + containingMethod + ")"); invokeCache.put(cacheKey, Boolean.FALSE); return false; //
+     * Pair cacheKey = new Pair(new EquivalentValue(ie), containingMethod); if(invokeCache.containsKey(cacheKey)) { return
+     * ((Boolean) invokeCache.get(cacheKey)).booleanValue(); }
+     *
+     * logger.debug("- " + ie + " in " + containingMethod + " has "); Iterator threadsIt = threads.iterator();
+     * while(threadsIt.hasNext()) { AbstractRuntimeThread thread = (AbstractRuntimeThread) threadsIt.next(); Iterator
+     * runMethodsIt = thread.getRunMethods().iterator(); while(runMethodsIt.hasNext()) { SootMethod runMethod = (SootMethod)
+     * runMethodsIt.next(); if( runMethod.getDeclaringClass().isApplicationClass() && hasNonLocalEffects(containingMethod,
+     * ie, runMethod)) { logger.debug("THREAD-VISIBLE (simpledfa " + ClassInfoFlowAnalysis.methodCount + " smartdfa " +
+     * SmartMethodInfoFlowAnalysis.counter + " smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + ie + " in
+     * " + containingMethod + ")"); invokeCache.put(cacheKey, Boolean.TRUE); return true; } } } logger.debug("THREAD-PRIVATE
+     * (simpledfa " + ClassInfoFlowAnalysis.methodCount + " smartdfa " + SmartMethodInfoFlowAnalysis.counter + " smartloa " +
+     * SmartMethodLocalObjectsAnalysis.counter + ")");// (" + ie + " in " + containingMethod + ")");
+     * invokeCache.put(cacheKey, Boolean.FALSE); return false; //
      */
   }
 
@@ -171,7 +178,8 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
         SootMethod runMethod = (SootMethod) meth;
 
         // We can only analyze application classes for TLO
-        if (runMethod.getDeclaringClass().isApplicationClass() && !isObjectLocalToContext(sharedValue, containingMethod, runMethod)) {
+        if (runMethod.getDeclaringClass().isApplicationClass()
+            && !isObjectLocalToContext(sharedValue, containingMethod, runMethod)) {
           // This is one of the threads for which sharedValue is thread-shared
           // so now we will look for which object it escapes through
           ClassLocalObjectsAnalysis cloa = getClassLocalObjectsAnalysis(containingMethod.getDeclaringClass());

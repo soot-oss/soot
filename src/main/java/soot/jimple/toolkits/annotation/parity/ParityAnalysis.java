@@ -52,9 +52,9 @@ import soot.toolkits.scalar.LiveLocals;
 // SETS OF PAIRS of form (X, T) => Use ArraySparseSet.
 //
 // STEP 2: Precisely define what we are computing.
-// For each statement compute the parity of all variables 
+// For each statement compute the parity of all variables
 // in the program.
-// 
+//
 // STEP 3: Decide whether it is a backwards or forwards analysis.
 // FORWARDS
 //
@@ -288,9 +288,9 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
   protected Map<Value, Parity> entryInitialFlow() {
     /*
      * HashMap initMap = new HashMap();
-     * 
-     * Chain locals = g.getBody().getLocals(); Iterator it = locals.iterator(); while (it.hasNext()) { initMap.put(it.next(), BOTTOM); } return
-     * initMap;
+     *
+     * Chain locals = g.getBody().getLocals(); Iterator it = locals.iterator(); while (it.hasNext()) { initMap.put(it.next(),
+     * BOTTOM); } return initMap;
      */
 
     return newInitialFlow();

@@ -64,7 +64,8 @@ import soot.toolkits.graph.interaction.InteractionHandler;
 import soot.util.Chain;
 
 /**
- * Abstract class providing an engine for branched forward flow analysis. WARNING: This does not handle exceptional flow as branches!
+ * Abstract class providing an engine for branched forward flow analysis. WARNING: This does not handle exceptional flow as
+ * branches!
  */
 public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysis<Unit, A> {
   private static final Logger logger = LoggerFactory.getLogger(ForwardBranchedFlowAnalysis.class);

@@ -20,7 +20,8 @@ import soot.toolkits.scalar.BackwardFlowAnalysis;
 import soot.toolkits.scalar.FlowSet;
 
 /**
- * @author Richard L. Halpert StrayRWFinder - Analysis to locate reads/writes to shared data that appear outside synchronization
+ * @author Richard L. Halpert StrayRWFinder - Analysis to locate reads/writes to shared data that appear outside
+ *         synchronization
  */
 public class StrayRWFinder extends BackwardFlowAnalysis {
   FlowSet emptySet = new ArraySparseSet();
@@ -73,7 +74,8 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
     Iterator tnIt = tns.iterator();
     while (tnIt.hasNext()) {
       CriticalSection tn = (CriticalSection) tnIt.next();
-      if (stmtRead.hasNonEmptyIntersection(tn.write) || stmtWrite.hasNonEmptyIntersection(tn.read) || stmtWrite.hasNonEmptyIntersection(tn.write)) {
+      if (stmtRead.hasNonEmptyIntersection(tn.write) || stmtWrite.hasNonEmptyIntersection(tn.read)
+          || stmtWrite.hasNonEmptyIntersection(tn.write)) {
         addSelf = Boolean.TRUE;
       }
     }
@@ -95,13 +97,14 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
   protected void merge(Object in1, Object in2, Object out) {
     FlowSet inSet1 = ((FlowSet) in1).clone(), inSet2 = ((FlowSet) in2).clone(), outSet = (FlowSet) out;
     /*
-     * boolean hasANull1 = false; Transaction tn1 = null; Iterator inIt1 = inSet1.iterator(); while(inIt1.hasNext()) { tn1 = (Transaction)
-     * inIt1.next(); if(tn1.entermonitor == null) { hasANull1 = true; break; } }
-     * 
-     * boolean hasANull2 = false; Transaction tn2 = null; Iterator inIt2 = inSet2.iterator(); while(inIt2.hasNext()) { tn2 = (Transaction)
-     * inIt2.next(); if(tn2.entermonitor == null) { hasANull2 = true; break; } } if(hasANull1 && hasANull2) { inSet1.remove(tn1); Iterator itends =
-     * tn1.exitmonitors.iterator(); while(itends.hasNext()) { Stmt stmt = (Stmt) itends.next(); if(!tn2.exitmonitors.contains(stmt))
-     * tn2.exitmonitors.add(stmt); } tn2.read.union(tn1.read); tn2.write.union(tn1.write); }
+     * boolean hasANull1 = false; Transaction tn1 = null; Iterator inIt1 = inSet1.iterator(); while(inIt1.hasNext()) { tn1 =
+     * (Transaction) inIt1.next(); if(tn1.entermonitor == null) { hasANull1 = true; break; } }
+     *
+     * boolean hasANull2 = false; Transaction tn2 = null; Iterator inIt2 = inSet2.iterator(); while(inIt2.hasNext()) { tn2 =
+     * (Transaction) inIt2.next(); if(tn2.entermonitor == null) { hasANull2 = true; break; } } if(hasANull1 && hasANull2) {
+     * inSet1.remove(tn1); Iterator itends = tn1.exitmonitors.iterator(); while(itends.hasNext()) { Stmt stmt = (Stmt)
+     * itends.next(); if(!tn2.exitmonitors.contains(stmt)) tn2.exitmonitors.add(stmt); } tn2.read.union(tn1.read);
+     * tn2.write.union(tn1.write); }
      */
     inSet1.union(inSet2, outSet);
   }

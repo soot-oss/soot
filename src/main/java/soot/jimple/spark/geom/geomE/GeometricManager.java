@@ -24,10 +24,11 @@ import soot.jimple.spark.geom.geomPA.IFigureManager;
 
 /**
  * This class implements the figure manager.
- * 
- * Currently, we apply a naive management strategy: For each type of object, we maintain a linked list. If we insert a new object, we don't test if
- * all the geometric objects on the plane together can cover the new object. Instead, we test if there is one object already covers the new object.
- * 
+ *
+ * Currently, we apply a naive management strategy: For each type of object, we maintain a linked list. If we insert a new
+ * object, we don't test if all the geometric objects on the plane together can cover the new object. Instead, we test if
+ * there is one object already covers the new object.
+ *
  * @author xiao
  *
  */
@@ -171,7 +172,7 @@ public class GeometricManager extends IFigureManager {
 
   /**
    * Is the input line covered by any rectangle?
-   * 
+   *
    * @param pnew,
    *          must be a line
    * @return
@@ -194,7 +195,7 @@ public class GeometricManager extends IFigureManager {
 
   /**
    * Judge if the newly added geometric shape is redundant.
-   * 
+   *
    * @param code
    * @param pnew
    * @return
@@ -238,7 +239,7 @@ public class GeometricManager extends IFigureManager {
 
   /**
    * Drop the redundant existing objects.
-   * 
+   *
    * @param code
    * @param p
    */
@@ -276,7 +277,8 @@ public class GeometricManager extends IFigureManager {
 
           case GeometricManager.MANY_TO_MANY:
             if (pold.I1 >= p.I1 && pold.I2 >= p.I2) {
-              if ((pold.I1 + pold.L) <= (p.I1 + p.L) && (pold.I2 + ((RectangleNode) pold).L_prime) <= (p.I2 + ((RectangleNode) p).L_prime)) {
+              if ((pold.I1 + pold.L) <= (p.I1 + p.L)
+                  && (pold.I2 + ((RectangleNode) pold).L_prime) <= (p.I2 + ((RectangleNode) p).L_prime)) {
                 flag = true;
               }
             }
@@ -315,7 +317,7 @@ public class GeometricManager extends IFigureManager {
 
   /**
    * Find the bounding rectangle for all the rectangle figures.
-   * 
+   *
    * @return
    */
   private RectangleNode mergeManyToMany() {
@@ -355,7 +357,7 @@ public class GeometricManager extends IFigureManager {
 
   /**
    * Find the bounding rectangle for all segment figures.
-   * 
+   *
    * @return
    */
   private RectangleNode mergeOneToOne() {

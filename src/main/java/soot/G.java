@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -112,7 +112,8 @@ public class G extends Singletons {
   public Set MethodRWSet_allFields = new HashSet();
   public int GeneralConstObject_counter = 0;
   public UnionFactory Union_factory = null;
-  public HashMap<Object, Array2ndDimensionSymbol> Array2ndDimensionSymbol_pool = new HashMap<Object, Array2ndDimensionSymbol>();
+  public HashMap<Object, Array2ndDimensionSymbol> Array2ndDimensionSymbol_pool
+      = new HashMap<Object, Array2ndDimensionSymbol>();
   public List<Timer> Timer_outstandingTimers = new ArrayList<Timer>();
   public boolean Timer_isGarbageCollecting;
   public Timer Timer_forcedGarbageCollectionTimer = new Timer("gc");
@@ -132,20 +133,23 @@ public class G extends Singletons {
   public boolean ASTTransformations_modified;
 
   /*
-   * 16th Feb 2006 Nomair The AST transformations are unfortunately non-monotonic. Infact one transformation on each iteration simply reverses the
-   * bodies of an if-else To make the remaining transformations monotonic this transformation is handled with a separate flag...clumsy but works
+   * 16th Feb 2006 Nomair The AST transformations are unfortunately non-monotonic. Infact one transformation on each
+   * iteration simply reverses the bodies of an if-else To make the remaining transformations monotonic this transformation
+   * is handled with a separate flag...clumsy but works
    */
   public boolean ASTIfElseFlipped;
 
   /*
    * Nomair A. Naeem January 15th 2006 Added For Dava.toolkits.AST.transformations.SuperFirstStmtHandler
    *
-   * The SootMethodAddedByDava is checked by the PackManager after decompiling methods for a class. If any additional methods were added by the
-   * decompiler (refer to filer SuperFirstStmtHandler) SootMethodsAdded ArrayList contains these method. These methods are then added to the SootClass
-   * 
-   * Some of these newly added methods make use of an object of a static inner class DavaSuperHandler which is to be output in the decompilers output.
-   * The class is marked to need a DavaSuperHandlerClass by adding it into the SootClassNeedsDavaSuperHandlerClass list. The DavaPrinter when printing
-   * out the class checks this list and if this class's name exists in the list prints out an implementation of DavSuperHandler
+   * The SootMethodAddedByDava is checked by the PackManager after decompiling methods for a class. If any additional methods
+   * were added by the decompiler (refer to filer SuperFirstStmtHandler) SootMethodsAdded ArrayList contains these method.
+   * These methods are then added to the SootClass
+   *
+   * Some of these newly added methods make use of an object of a static inner class DavaSuperHandler which is to be output
+   * in the decompilers output. The class is marked to need a DavaSuperHandlerClass by adding it into the
+   * SootClassNeedsDavaSuperHandlerClass list. The DavaPrinter when printing out the class checks this list and if this
+   * class's name exists in the list prints out an implementation of DavSuperHandler
    */
   public boolean SootMethodAddedByDava;
   public ArrayList<SootClass> SootClassNeedsDavaSuperHandlerClass = new ArrayList<SootClass>();

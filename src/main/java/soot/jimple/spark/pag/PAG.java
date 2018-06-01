@@ -90,7 +90,7 @@ import soot.util.queue.QueueReader;
 
 /**
  * Pointer assignment graph.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class PAG implements PointsToAnalysis {
@@ -103,8 +103,8 @@ public class PAG implements PointsToAnalysis {
       nodeToTag = new HashMap<Node, Tag>();
     }
     if (opts.rta() && opts.on_fly_cg()) {
-      throw new RuntimeException(
-          "Incompatible options rta:true and on-fly-cg:true for cg.spark. Use -p cg-" + ".spark on-fly-cg:false when using RTA.");
+      throw new RuntimeException("Incompatible options rta:true and on-fly-cg:true for cg.spark. Use -p cg-"
+          + ".spark on-fly-cg:false when using RTA.");
     }
     typeManager = new TypeManager(this);
     if (!opts.ignore_types()) {
@@ -241,7 +241,8 @@ public class PAG implements PointsToAnalysis {
       return n.getP2Set();
     }
     if ((getOpts()).propagator() == SparkOptions.propagator_alias) {
-      throw new RuntimeException("The alias edge propagator does not compute points-to information for instance fields! Use a different propagator.");
+      throw new RuntimeException("The alias edge propagator does not compute points-to information for instance fields!"
+          + "Use a different propagator.");
     }
     PointsToSetInternal bases = (PointsToSetInternal) s;
     final PointsToSetInternal ret = setFactory.newSet((f instanceof SootField) ? ((SootField) f).getType() : null, this);
@@ -1333,10 +1334,11 @@ public class PAG implements PointsToAnalysis {
   }
 
   /**
-   * Adds method target as a possible target of the invoke expression in s. If target is null, only creates the nodes for the call site, without
-   * actually connecting them to any target method.
+   * Adds method target as a possible target of the invoke expression in s. If target is null, only creates the nodes for the
+   * call site, without actually connecting them to any target method.
    **/
-  final public void addCallTarget(MethodPAG srcmpag, MethodPAG tgtmpag, Stmt s, Context srcContext, Context tgtContext, Edge e) {
+  final public void addCallTarget(MethodPAG srcmpag, MethodPAG tgtmpag, Stmt s, Context srcContext, Context tgtContext,
+      Edge e) {
     MethodNodeFactory srcnf = srcmpag.nodeFactory();
     MethodNodeFactory tgtnf = tgtmpag.nodeFactory();
     InvokeExpr ie = s.getInvokeExpr();

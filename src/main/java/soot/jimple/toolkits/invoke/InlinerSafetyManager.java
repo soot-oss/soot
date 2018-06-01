@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -105,11 +105,13 @@ public class InlinerSafetyManager {
           Value lhs = ((AssignStmt) st).getLeftOp();
           Value rhs = ((AssignStmt) st).getRightOp();
 
-          if (lhs instanceof FieldRef && !AccessManager.ensureAccess(container, ((FieldRef) lhs).getField(), modifierOptions)) {
+          if (lhs instanceof FieldRef
+              && !AccessManager.ensureAccess(container, ((FieldRef) lhs).getField(), modifierOptions)) {
             return false;
           }
 
-          if (rhs instanceof FieldRef && !AccessManager.ensureAccess(container, ((FieldRef) rhs).getField(), modifierOptions)) {
+          if (rhs instanceof FieldRef
+              && !AccessManager.ensureAccess(container, ((FieldRef) rhs).getField(), modifierOptions)) {
             return false;
           }
 
@@ -122,9 +124,9 @@ public class InlinerSafetyManager {
   }
 
   /**
-   * Returns true if this method can be inlined at the given site. Will try as hard as it can to change things to allow inlining (modifierOptions
-   * controls what it's allowed to do: safe, unsafe and nochanges)
-   * 
+   * Returns true if this method can be inlined at the given site. Will try as hard as it can to change things to allow
+   * inlining (modifierOptions controls what it's allowed to do: safe, unsafe and nochanges)
+   *
    * Returns false otherwise.
    */
 
@@ -205,8 +207,8 @@ public class InlinerSafetyManager {
 
     // Rule 7: Don't change semantics of program by moving
     // an invokespecial.
-    if (ie instanceof SpecialInvokeExpr
-        && (specialInvokePerformsLookupIn(ie, inlinee.getDeclaringClass()) || specialInvokePerformsLookupIn(ie, container.getDeclaringClass()))) {
+    if (ie instanceof SpecialInvokeExpr && (specialInvokePerformsLookupIn(ie, inlinee.getDeclaringClass())
+        || specialInvokePerformsLookupIn(ie, container.getDeclaringClass()))) {
       return false;
     }
 
@@ -214,10 +216,11 @@ public class InlinerSafetyManager {
   }
 
   /**
-   * Returns true if any of the following cases holds: 1. inlinee is private, but container.declaringClass() != inlinee.declaringClass(); or, 2.
-   * inlinee is package-visible, and its package differs from that of container; or, 3. inlinee is protected, and either: a. inlinee doesn't belong to
-   * container.declaringClass, or any superclass of container; b. the class of the base is not a (non-strict) subclass of container's declaringClass.
-   * The base class may be null, in which case 3b is omitted. (for instance, for a static method invocation.)
+   * Returns true if any of the following cases holds: 1. inlinee is private, but container.declaringClass() !=
+   * inlinee.declaringClass(); or, 2. inlinee is package-visible, and its package differs from that of container; or, 3.
+   * inlinee is protected, and either: a. inlinee doesn't belong to container.declaringClass, or any superclass of container;
+   * b. the class of the base is not a (non-strict) subclass of container's declaringClass. The base class may be null, in
+   * which case 3b is omitted. (for instance, for a static method invocation.)
    */
   private static boolean invokeThrowsAccessErrorIn(SootClass base, SootMethod inlinee, SootMethod container) {
     SootClass inlineeClass = inlinee.getDeclaringClass();
@@ -242,7 +245,8 @@ public class InlinerSafetyManager {
 
       // protected means that you can be accessed by your children.
       // i.e. container must be in a child of inlinee.
-      if (h.isClassSuperclassOfIncluding(inlineeClass, containerClass) || ((base != null) && h.isClassSuperclassOfIncluding(base, containerClass))) {
+      if (h.isClassSuperclassOfIncluding(inlineeClass, containerClass)
+          || ((base != null) && h.isClassSuperclassOfIncluding(base, containerClass))) {
         saved = true;
       }
 

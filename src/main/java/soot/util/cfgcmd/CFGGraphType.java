@@ -41,7 +41,8 @@ import soot.toolkits.graph.ZonedBlockGraph;
 import soot.util.dot.DotGraph;
 
 /**
- * An enumeration type for representing the varieties of control flow graph available, for use in tools that compare or display CFGs.
+ * An enumeration type for representing the varieties of control flow graph available, for use in tools that compare or
+ * display CFGs.
  */
 public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
   private static final Logger logger = LoggerFactory.getLogger(CFGGraphType.class);
@@ -59,8 +60,8 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
   public abstract DirectedGraph buildGraph(Body b);
 
   /**
-   * Method that will draw a {@link DotGraph} representation of the control flow in this type of graph. This method is intended for use within
-   * {@link soot.tools.CFGViewer CFGViewer}.
+   * Method that will draw a {@link DotGraph} representation of the control flow in this type of graph. This method is
+   * intended for use within {@link soot.tools.CFGViewer CFGViewer}.
    *
    * @param drawer
    *          The {@link CFGToDotGraph} object that will draw the graph.
@@ -85,8 +86,8 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
    * @param name
    *          A {@link String} identifying the graph type.
    *
-   * @return A {@link CFGGraphType} object whose {@link #buildGraph()} method will create the desired sort of control flow graph and whose
-   *         {@link #drawGraph} method will produce a {@link DotGraph} corresponding to the graph.
+   * @return A {@link CFGGraphType} object whose {@link #buildGraph()} method will create the desired sort of control flow
+   *         graph and whose {@link #drawGraph} method will produce a {@link DotGraph} corresponding to the graph.
    */
   public static CFGGraphType getGraphType(String option) {
     return (CFGGraphType) graphTypeOptions.match(option);
@@ -99,11 +100,12 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
    *          The number of blank spaces to insert at the beginning of the returned string. Ignored if negative.
    *
    * @param rightMargin
-   *          If positive, newlines will be inserted to try to keep the length of each line in the returned string less than or equal to
-   *          <code>rightMargin</code>.
-   * 
+   *          If positive, newlines will be inserted to try to keep the length of each line in the returned string less than
+   *          or equal to <code>rightMargin</code>.
+   *
    * @param hangingIndent
-   *          If positive, this number of spaces will be inserted immediately after each newline inserted to respect the <code>rightMargin</code>.
+   *          If positive, this number of spaces will be inserted immediately after each newline inserted to respect the
+   *          <code>rightMargin</code>.
    */
   public static String help(int initialIndent, int rightMargin, int hangingIndent) {
     return graphTypeOptions.help(initialIndent, rightMargin, hangingIndent);
@@ -243,17 +245,20 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
       if (DEBUG) {
         logger.error(e.getMessage(), e);
       }
-      throw new IllegalArgumentException("Unable to instantiate " + className + " in alternate classpath: " + e.getMessage());
+      throw new IllegalArgumentException(
+          "Unable to instantiate " + className + " in alternate classpath: " + e.getMessage());
     } catch (IllegalAccessException e) {
       if (DEBUG) {
         logger.error(e.getMessage(), e);
       }
-      throw new IllegalArgumentException("Unable to access " + className + "(Body) in alternate classpath: " + e.getMessage());
+      throw new IllegalArgumentException(
+          "Unable to access " + className + "(Body) in alternate classpath: " + e.getMessage());
     } catch (InvocationTargetException e) {
       if (DEBUG) {
         logger.error(e.getMessage(), e);
       }
-      throw new IllegalArgumentException("Unable to invoke " + className + "(Body) in alternate classpath: " + e.getMessage());
+      throw new IllegalArgumentException(
+          "Unable to invoke " + className + "(Body) in alternate classpath: " + e.getMessage());
     }
   }
 
@@ -327,8 +332,9 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
     }
   };
 
-  private final static CFGOptionMatcher graphTypeOptions = new CFGOptionMatcher(new CFGGraphType[] { BRIEF_UNIT_GRAPH, EXCEPTIONAL_UNIT_GRAPH,
-      COMPLETE_UNIT_GRAPH, TRAP_UNIT_GRAPH, CLASSIC_COMPLETE_UNIT_GRAPH, BRIEF_BLOCK_GRAPH, EXCEPTIONAL_BLOCK_GRAPH, COMPLETE_BLOCK_GRAPH,
-      CLASSIC_COMPLETE_BLOCK_GRAPH, ARRAY_REF_BLOCK_GRAPH, ZONED_BLOCK_GRAPH, ALT_ARRAY_REF_BLOCK_GRAPH, ALT_BRIEF_UNIT_GRAPH,
-      ALT_COMPLETE_UNIT_GRAPH, ALT_TRAP_UNIT_GRAPH, ALT_BRIEF_BLOCK_GRAPH, ALT_COMPLETE_BLOCK_GRAPH, ALT_ZONED_BLOCK_GRAPH, });
+  private final static CFGOptionMatcher graphTypeOptions = new CFGOptionMatcher(new CFGGraphType[] { BRIEF_UNIT_GRAPH,
+      EXCEPTIONAL_UNIT_GRAPH, COMPLETE_UNIT_GRAPH, TRAP_UNIT_GRAPH, CLASSIC_COMPLETE_UNIT_GRAPH, BRIEF_BLOCK_GRAPH,
+      EXCEPTIONAL_BLOCK_GRAPH, COMPLETE_BLOCK_GRAPH, CLASSIC_COMPLETE_BLOCK_GRAPH, ARRAY_REF_BLOCK_GRAPH, ZONED_BLOCK_GRAPH,
+      ALT_ARRAY_REF_BLOCK_GRAPH, ALT_BRIEF_UNIT_GRAPH, ALT_COMPLETE_UNIT_GRAPH, ALT_TRAP_UNIT_GRAPH, ALT_BRIEF_BLOCK_GRAPH,
+      ALT_COMPLETE_BLOCK_GRAPH, ALT_ZONED_BLOCK_GRAPH, });
 }

@@ -105,7 +105,8 @@ public class DexClassProvider implements ClassProvider {
             if (!index.containsKey(className)) {
               index.put(className, container.getFilePath());
             } else if (Options.v().verbose()) {
-              logger.debug("" + String.format("Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.", className,
+              logger.debug("" + String.format(
+                  "Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.", className,
                   container.getDexName(), container.getFilePath().getCanonicalPath()));
             }
           }

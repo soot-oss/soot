@@ -87,7 +87,8 @@ public class DeadlockDetector {
           CriticalSection tn2 = deadlockIt2.next();
 
           // skip if unlocked or in same set as tn1
-          if (tn2.setNumber <= 0 || (tn2.setNumber == tn1.setNumber && !optionAllowSelfEdges)) // this is wrong... dynamic locks in same group can be
+          if (tn2.setNumber <= 0 || (tn2.setNumber == tn1.setNumber && !optionAllowSelfEdges)) // this is wrong... dynamic
+                                                                                               // locks in same group can be
                                                                                                // diff locks
           {
             continue;
@@ -101,7 +102,8 @@ public class DeadlockDetector {
           if (tn1.transitiveTargets.contains(tn2.method)) {
             // This implies the partial ordering tn1lock before tn2lock
             if (optionPrintDebug) {
-              logger.debug("group" + (tn1.setNumber) + " before group" + (tn2.setNumber) + ": " + "outer: " + tn1.name + " inner: " + tn2.name);
+              logger.debug("group" + (tn1.setNumber) + " before group" + (tn2.setNumber) + ": " + "outer: " + tn1.name
+                  + " inner: " + tn2.name);
             }
 
             // Check if tn2lock before tn1lock is in our lock order
@@ -120,20 +122,20 @@ public class DeadlockDetector {
                 logger.debug("[DeadlockDetector]  DEADLOCK HAS BEEN DETECTED: not correcting");
                 foundDeadlock = true;
               } else {
-                logger.debug("[DeadlockDetector]  DEADLOCK HAS BEEN DETECTED: merging group" + (tn1.setNumber) + " and group" + (tn2.setNumber)
-                    + " and restarting deadlock detection");
+                logger.debug("[DeadlockDetector]  DEADLOCK HAS BEEN DETECTED: merging group" + (tn1.setNumber) + " and group"
+                    + (tn2.setNumber) + " and restarting deadlock detection");
 
                 if (optionPrintDebug) {
                   logger.debug("tn1.setNumber was " + tn1.setNumber + " and tn2.setNumber was " + tn2.setNumber);
-                  logger.debug(
-                      "tn1.group.size was " + tn1.group.criticalSections.size() + " and tn2.group.size was " + tn2.group.criticalSections.size());
+                  logger.debug("tn1.group.size was " + tn1.group.criticalSections.size() + " and tn2.group.size was "
+                      + tn2.group.criticalSections.size());
                   logger.debug("tn1.group.num was  " + tn1.group.num() + " and tn2.group.num was  " + tn2.group.num());
                 }
                 tn1.group.mergeGroups(tn2.group);
                 if (optionPrintDebug) {
                   logger.debug("tn1.setNumber is  " + tn1.setNumber + " and tn2.setNumber is  " + tn2.setNumber);
-                  logger.debug(
-                      "tn1.group.size is  " + tn1.group.criticalSections.size() + " and tn2.group.size is  " + tn2.group.criticalSections.size());
+                  logger.debug("tn1.group.size is  " + tn1.group.criticalSections.size() + " and tn2.group.size is  "
+                      + tn2.group.criticalSections.size());
                 }
 
                 foundDeadlock = true;
@@ -150,7 +152,8 @@ public class DeadlockDetector {
 
   public MutableEdgeLabelledDirectedGraph<Integer, CriticalSection> detectLocksetDeadlock(Map<Value, Integer> lockToLockNum,
       List<PointsToSetInternal> lockPTSets) {
-    HashMutableEdgeLabelledDirectedGraph<Integer, CriticalSection> permanentOrder = new HashMutableEdgeLabelledDirectedGraph<Integer, CriticalSection>();
+    HashMutableEdgeLabelledDirectedGraph<Integer, CriticalSection> permanentOrder
+        = new HashMutableEdgeLabelledDirectedGraph<Integer, CriticalSection>();
     MutableEdgeLabelledDirectedGraph<Integer, CriticalSection> lockOrder;
     boolean foundDeadlock;
     int iteration = 0;
@@ -213,8 +216,8 @@ public class DeadlockDetector {
             // This implies the partial ordering (locks in tn1) before (locks in tn2)
             if (true) // optionPrintDebug)
             {
-              logger.debug("[DeadlockDetector] locks in " + (tn1.name) + " before locks in " + (tn2.name) + ": " + "outer: " + tn1.name + " inner: "
-                  + tn2.name);
+              logger.debug("[DeadlockDetector] locks in " + (tn1.name) + " before locks in " + (tn2.name) + ": " + "outer: "
+                  + tn1.name + " inner: " + tn2.name);
             }
 
             // Check if tn2locks before tn1locks is in our lock order
@@ -258,8 +261,8 @@ public class DeadlockDetector {
                 }
               }
               /*
-               * for (int i = 0; i < afterTn2.size(); i++) { List<Integer> succs = lockOrder.getSuccsOf(afterTn2.get(i)); // but not here for (Integer
-               * o : succs) { if (!afterTn2.contains(o)) { afterTn2.add(o); } } }
+               * for (int i = 0; i < afterTn2.size(); i++) { List<Integer> succs = lockOrder.getSuccsOf(afterTn2.get(i)); //
+               * but not here for (Integer o : succs) { if (!afterTn2.contains(o)) { afterTn2.add(o); } } }
                */
               for (EquivalentValue lock1EqVal : tn1.lockset) {
                 Value lock1 = lock1EqVal.getValue();
@@ -270,8 +273,8 @@ public class DeadlockDetector {
                     logger.debug("[DeadlockDetector] DEADLOCK HAS BEEN DETECTED: not correcting");
                     foundDeadlock = true;
                   } else {
-                    logger.debug("[DeadlockDetector] DEADLOCK HAS BEEN DETECTED while inspecting " + lock1Num + " (" + lock1 + ") and " + lock2Num
-                        + " (" + lock2 + ") ");
+                    logger.debug("[DeadlockDetector] DEADLOCK HAS BEEN DETECTED while inspecting " + lock1Num + " (" + lock1
+                        + ") and " + lock2Num + " (" + lock2 + ") ");
 
                     // Create a deadlock avoidance edge
                     DeadlockAvoidanceEdge dae = new DeadlockAvoidanceEdge(tn1.method.getDeclaringClass());
@@ -281,7 +284,8 @@ public class DeadlockDetector {
                     Integer daeNum = -lockPTSets.size(); // negative indicates a static lock
                     permanentOrder.addNode(daeNum);
                     lockToLockNum.put(dae, daeNum);
-                    PointsToSetInternal dummyLockPT = new HashPointsToSet(lock1.getType(), (PAG) Scene.v().getPointsToAnalysis());
+                    PointsToSetInternal dummyLockPT
+                        = new HashPointsToSet(lock1.getType(), (PAG) Scene.v().getPointsToAnalysis());
                     lockPTSets.add(dummyLockPT);
 
                     // Add it to the locksets of tn1 and whoever says l2 before l1
@@ -322,7 +326,8 @@ public class DeadlockDetector {
                             permanentOrder.addEdge(daeNum, lockNum, tn);
                           }
                           tn.lockset.add(daeEqVal);
-                          logger.debug("[DeadlockDetector]   Adding deadlock avoidance edge between " + (tn1.name) + " and " + (tn.name));
+                          logger.debug("[DeadlockDetector]   Adding deadlock avoidance edge between " + (tn1.name) + " and "
+                              + (tn.name));
                         }
                       }
                       logger.debug("[DeadlockDetector]   Restarting deadlock detection");
@@ -348,7 +353,8 @@ public class DeadlockDetector {
     return lockOrder;
   }
 
-  public void reorderLocksets(Map<Value, Integer> lockToLockNum, MutableEdgeLabelledDirectedGraph<Integer, CriticalSection> lockOrder) {
+  public void reorderLocksets(Map<Value, Integer> lockToLockNum,
+      MutableEdgeLabelledDirectedGraph<Integer, CriticalSection> lockOrder) {
     for (CriticalSection tn : criticalSections) {
       // Get the portion of the lock order that is visible to tn
       HashMutableDirectedGraph<Integer> visibleOrder = new HashMutableDirectedGraph<Integer>();
@@ -403,9 +409,15 @@ public class DeadlockDetector {
             EquivalentValue existingLockEqVal = newLockset.get(i);
             Value existingLock = existingLockEqVal.getValue();
             Integer existingLockNum = lockToLockNum.get(existingLock);
-            if (visibleOrder.containsEdge(lockNumToInsert, existingLockNum) || lockNumToInsert < existingLockNum) // !visibleOrder.containsEdge(existingLockNum,
-                                                                                                                  // lockNumToInsert) ) // if(!
-                                                                                                                  // existing before toinsert )
+            if (visibleOrder.containsEdge(lockNumToInsert, existingLockNum) || lockNumToInsert < existingLockNum)
+            // !visibleOrder.containsEdge(existingLockNum,
+            // lockNumToInsert)
+            // ) //
+            // if(!
+            // existing
+            // before
+            // toinsert
+            // )
             {
               break;
             }

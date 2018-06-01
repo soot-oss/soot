@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -26,7 +26,8 @@
 package soot;
 
 /**
- * A context in a context-sensitive all graph. May be a unit (in a 1CFA call graph) or a Spark AllocNode (in an object-sensitive call graph).
+ * A context in a context-sensitive all graph. May be a unit (in a 1CFA call graph) or a Spark AllocNode (in an
+ * object-sensitive call graph).
  */
 public interface Context {
 }

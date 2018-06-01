@@ -44,10 +44,11 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 
 /**
- * An intraprocedural nullness assumption analysis that computes for each location and each value in a method if the value (before or after that
- * location) is treated as definitely null, definitely non-null or neither. This information could be useful in deciding whether or not to insert code
- * that accesses a potentially null object. If the original program assumes a value is non-null, then adding a use of that value will not introduce
- * any NEW nullness errors into the program. This code may be buggy, or just plain wrong. It has not been checked.
+ * An intraprocedural nullness assumption analysis that computes for each location and each value in a method if the value
+ * (before or after that location) is treated as definitely null, definitely non-null or neither. This information could be
+ * useful in deciding whether or not to insert code that accesses a potentially null object. If the original program assumes
+ * a value is non-null, then adding a use of that value will not introduce any NEW nullness errors into the program. This
+ * code may be buggy, or just plain wrong. It has not been checked.
  *
  * @author Richard L. Halpert Adapted from Eric Bodden's NullnessAnalysis
  */
@@ -79,7 +80,7 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
 
   /**
    * Creates a new analysis for the given graph/
-   * 
+   *
    * @param graph
    *          any unit graph
    */
@@ -171,7 +172,7 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
 
   /**
    * This can be overridden by sublasses to mark a certain value as constantly non-null.
-   * 
+   *
    * @param v
    *          any value
    * @return true if it is known that this value (e.g. a method return value) is never null
@@ -298,8 +299,9 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
   }
 
   /**
-   * Returns <code>true</code> if the analysis could determine that i is always treated as null after and including the statement s.
-   * 
+   * Returns <code>true</code> if the analysis could determine that i is always treated as null after and including the
+   * statement s.
+   *
    * @param s
    *          a statement of the respective body
    * @param i
@@ -312,8 +314,9 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
   }
 
   /**
-   * Returns <code>true</code> if the analysis could determine that i is always treated as non-null after and including the statement s.
-   * 
+   * Returns <code>true</code> if the analysis could determine that i is always treated as non-null after and including the
+   * statement s.
+   *
    * @param s
    *          a statement of the respective body
    * @param i
@@ -326,9 +329,9 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
   }
 
   /**
-   * The analysis info is a simple mapping of type {@link Value} to any of the constants BOTTOM, NON_NULL, NULL or TOP. This class returns BOTTOM by
-   * default.
-   * 
+   * The analysis info is a simple mapping of type {@link Value} to any of the constants BOTTOM, NON_NULL, NULL or TOP. This
+   * class returns BOTTOM by default.
+   *
    * @author Eric Bodden
    */
   protected static class AnalysisInfo extends HashMap {

@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -40,7 +40,8 @@ public class TrapManager {
    */
   public static boolean isExceptionCaughtAt(SootClass e, Unit u, Body b) {
     /*
-     * Look through the traps t of b, checking to see if: - caught exception is e; - and, unit lies between t.beginUnit and t.endUnit
+     * Look through the traps t of b, checking to see if: - caught exception is e; - and, unit lies between t.beginUnit and
+     * t.endUnit
      */
 
     Hierarchy h = Scene.v().getActiveHierarchy();
@@ -93,7 +94,8 @@ public class TrapManager {
   }
 
   /**
-   * Splits all traps so that they do not cross the range rangeStart - rangeEnd. Note that rangeStart is inclusive, rangeEnd is exclusive.
+   * Splits all traps so that they do not cross the range rangeStart - rangeEnd. Note that rangeStart is inclusive, rangeEnd
+   * is exclusive.
    */
   public static void splitTrapsAgainst(Body b, Unit rangeStart, Unit rangeEnd) {
     Chain<Trap> traps = b.getTraps();

@@ -57,7 +57,8 @@ public class CPVariable {
   }
 
   /*
-   * VERY IMPORTANT METHOD: invoked from ConstantPropagationTuple equals method which is invoked from the main merge intersection method of CPFlowSet
+   * VERY IMPORTANT METHOD: invoked from ConstantPropagationTuple equals method which is invoked from the main merge
+   * intersection method of CPFlowSet
    */
   public boolean equals(CPVariable var) {
     // check they have the same type Local or SootField

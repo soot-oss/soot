@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package soot.util;
 
@@ -18,10 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A fixed size priority queue based on bitsets. The elements of the priority queue are ordered according to a given universe. This priority queue
- * does not permit {@code null} elements. Inserting of elements that are not part of the universe is also permitted (doing so will result in a
- * {@code NoSuchElementException}).
- * 
+ * A fixed size priority queue based on bitsets. The elements of the priority queue are ordered according to a given
+ * universe. This priority queue does not permit {@code null} elements. Inserting of elements that are not part of the
+ * universe is also permitted (doing so will result in a {@code NoSuchElementException}).
+ *
  * @author Steven Lambeth
  * @param <E>
  *          the type of elements held in the universe
@@ -92,8 +92,8 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
   abstract void addAll();
 
   /**
-   * Returns the index of the first bit that is set to <code>true</code> that occurs on or after the specified starting index. If no such bit exists
-   * then a value bigger that {@code N} is returned.
+   * Returns the index of the first bit that is set to <code>true</code> that occurs on or after the specified starting
+   * index. If no such bit exists then a value bigger that {@code N} is returned.
    *
    * @param fromIndex
    *          the index to start checking from (inclusive).
@@ -109,7 +109,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    */
   @Override
   final public E peek() {
@@ -118,7 +118,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    */
   @Override
   final public E poll() {
@@ -132,7 +132,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @throws NoSuchElementException
    *           if e not part of the universe
    * @throws NullPointerException
@@ -145,7 +145,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @throws NoSuchElementException
    *           if e not part of the universe
    * @throws NullPointerException
@@ -158,7 +158,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    */
   @Override
   final public boolean remove(Object o) {
@@ -179,7 +179,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    */
   @Override
   final public boolean contains(Object o) {
@@ -200,7 +200,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    */
   @Override
   public boolean isEmpty() {
@@ -216,7 +216,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * Creates a new full priority queue
-   * 
+   *
    * @param universe
    * @return
    */
@@ -226,7 +226,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * Creates a new empty priority queue
-   * 
+   *
    * @param universe
    * @return
    */
@@ -236,7 +236,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * Creates a new full priority queue
-   * 
+   *
    * @param universe
    * @return
    */
@@ -248,7 +248,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * Creates a new empty priority queue
-   * 
+   *
    * @param universe
    * @return
    */
@@ -273,7 +273,8 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
     return q;
   }
 
-  public static <E extends Numberable> PriorityQueue<E> noneOf(final List<? extends E> universe, boolean useNumberInterface) {
+  public static <E extends Numberable> PriorityQueue<E> noneOf(final List<? extends E> universe,
+      boolean useNumberInterface) {
     if (!useNumberInterface) {
       return noneOf(universe);
     }

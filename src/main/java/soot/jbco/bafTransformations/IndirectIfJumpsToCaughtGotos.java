@@ -54,9 +54,9 @@ import soot.util.Chain;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 2-May-2006
- * 
+ *
  *         This transformer takes a portion of gotos/ifs and moves them into a TRY/CATCH block
  */
 public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJbcoTransform {
@@ -154,10 +154,11 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
       toinsert.add(Baf.v().newRemInst(ByteType.v()));
 
       /*
-       * toinsert.add(Baf.v().newDup1Inst(ByteType.v())); toinsert.add(Baf.v().newPrimitiveCastInst(ByteType.v(),IntType.v()));
-       * toinsert.add(Baf.v().newStaticGetInst(sys.getFieldByName("out").makeRef())); toinsert.add(Baf.v().newSwapInst(IntType.v(),RefType.v()));
-       * ArrayList parms = new ArrayList(); parms.add(IntType.v());
-       * toinsert.add(Baf.v().newVirtualInvokeInst(out.getMethod("println",parms).makeRef()));
+       * toinsert.add(Baf.v().newDup1Inst(ByteType.v()));
+       * toinsert.add(Baf.v().newPrimitiveCastInst(ByteType.v(),IntType.v()));
+       * toinsert.add(Baf.v().newStaticGetInst(sys.getFieldByName("out").makeRef()));
+       * toinsert.add(Baf.v().newSwapInst(IntType.v(),RefType.v())); ArrayList parms = new ArrayList();
+       * parms.add(IntType.v()); toinsert.add(Baf.v().newVirtualInvokeInst(out.getMethod("println",parms).makeRef()));
        */
       toinsert.add(Baf.v().newIfEqInst((Unit) units.getSuccOf(nonTrap)));
     }

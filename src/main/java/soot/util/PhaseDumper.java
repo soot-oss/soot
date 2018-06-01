@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-2003.  
+ * Modified by the Sable Research Group and others 1997-2003.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -48,10 +48,10 @@ import soot.util.cfgcmd.CFGToDotGraph;
 import soot.util.dot.DotGraph;
 
 /**
- * The <tt>PhaseDumper</tt> is a debugging aid. It maintains two lists of phases to be debugged. If a phase is on the <code>bodyDumpingPhases</code>
- * list, then the intermediate representation of the bodies being manipulated by the phase is dumped before and after the phase is applied. If a phase
- * is on the <code>cfgDumpingPhases</code> list, then whenever a CFG is constructed during the phase, a dot file is dumped representing the CFG
- * constructed.
+ * The <tt>PhaseDumper</tt> is a debugging aid. It maintains two lists of phases to be debugged. If a phase is on the
+ * <code>bodyDumpingPhases</code> list, then the intermediate representation of the bodies being manipulated by the phase is
+ * dumped before and after the phase is applied. If a phase is on the <code>cfgDumpingPhases</code> list, then whenever a CFG
+ * is constructed during the phase, a dot file is dumped representing the CFG constructed.
  */
 
 public class PhaseDumper {
@@ -116,7 +116,8 @@ public class PhaseDumper {
   }
 
   private boolean isBodyDumpingPhase(String phaseName) {
-    return ((bodyDumpingPhases != null) && (bodyDumpingPhases.contains(phaseName) || bodyDumpingPhases.contains(allWildcard)));
+    return ((bodyDumpingPhases != null)
+        && (bodyDumpingPhases.contains(phaseName) || bodyDumpingPhases.contains(allWildcard)));
   }
 
   private boolean isCFGDumpingPhase(String phaseName) {
@@ -252,8 +253,9 @@ public class PhaseDumper {
   }
 
   /**
-   * Tells the <code>PhaseDumper</code> that a {@link Body} transforming phase has started, so that it can dump the phases's &ldquo;before&rdquo;
-   * file. If the phase is to be dumped, <code>dumpBefore</code> deletes any old graph files dumped during previous runs of the phase.
+   * Tells the <code>PhaseDumper</code> that a {@link Body} transforming phase has started, so that it can dump the phases's
+   * &ldquo;before&rdquo; file. If the phase is to be dumped, <code>dumpBefore</code> deletes any old graph files dumped
+   * during previous runs of the phase.
    *
    * @param b
    *          the {@link Body} being transformed.
@@ -269,7 +271,8 @@ public class PhaseDumper {
   }
 
   /**
-   * Tells the <code>PhaseDumper</code> that a {@link Body} transforming phase has ended, so that it can dump the phases's &ldquo;after&rdquo; file.
+   * Tells the <code>PhaseDumper</code> that a {@link Body} transforming phase has ended, so that it can dump the phases's
+   * &ldquo;after&rdquo; file.
    *
    * @param b
    *          the {@link Body} being transformed.
@@ -291,8 +294,9 @@ public class PhaseDumper {
   }
 
   /**
-   * Tells the <code>PhaseDumper</code> that a {@link Scene} transforming phase has started, so that it can dump the phases's &ldquo;before&rdquo;
-   * files. If the phase is to be dumped, <code>dumpBefore</code> deletes any old graph files dumped during previous runs of the phase.
+   * Tells the <code>PhaseDumper</code> that a {@link Scene} transforming phase has started, so that it can dump the phases's
+   * &ldquo;before&rdquo; files. If the phase is to be dumped, <code>dumpBefore</code> deletes any old graph files dumped
+   * during previous runs of the phase.
    *
    * @param phaseName
    *          the name of the phase that has just started.
@@ -305,7 +309,8 @@ public class PhaseDumper {
   }
 
   /**
-   * Tells the <code>PhaseDumper</code> that a {@link Scene} transforming phase has ended, so that it can dump the phases's &ldquo;after&rdquo; files.
+   * Tells the <code>PhaseDumper</code> that a {@link Scene} transforming phase has ended, so that it can dump the phases's
+   * &ldquo;after&rdquo; files.
    *
    * @param phaseName
    *          the name of the phase that has just ended.
@@ -403,8 +408,9 @@ public class PhaseDumper {
   }
 
   /**
-   * Prints the current stack trace, as a brute force tool for program understanding. This method appeared in response to the many times dumpGraph()
-   * was being called while the phase stack was empty. Turned out that the Printer needs to build a BriefUnitGraph in order to print a graph. Doh!
+   * Prints the current stack trace, as a brute force tool for program understanding. This method appeared in response to the
+   * many times dumpGraph() was being called while the phase stack was empty. Turned out that the Printer needs to build a
+   * BriefUnitGraph in order to print a graph. Doh!
    */
   public void printCurrentStackTrace() {
     try {

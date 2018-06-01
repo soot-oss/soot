@@ -87,8 +87,8 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
   }
 
   /**
-   * Find all the locals of reference type and all the types used in casts to initialize the mapping from locals and types to bits in the bit vector
-   * in LocalTypeSet.
+   * Find all the locals of reference type and all the types used in casts to initialize the mapping from locals and types to
+   * bits in the bit vector in LocalTypeSet.
    */
   protected void makeInitialSet() {
     // Find all locals of reference type
@@ -130,7 +130,8 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
 
   /** This is the flow function as described in the assignment write-up. */
   @Override
-  protected void flowThrough(LocalTypeSet in, Unit unit, List<LocalTypeSet> outFallValues, List<LocalTypeSet> outBranchValues) {
+  protected void flowThrough(LocalTypeSet in, Unit unit, List<LocalTypeSet> outFallValues,
+      List<LocalTypeSet> outBranchValues) {
     final LocalTypeSet out = (LocalTypeSet) in.clone();
     LocalTypeSet outBranch = out; // aliased to out unless unit is IfStmt
     final Stmt stmt = (Stmt) unit;

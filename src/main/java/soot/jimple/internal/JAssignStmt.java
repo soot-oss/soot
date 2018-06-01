@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -112,7 +112,8 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
     ((LinkedRValueBox) rightBox).setOtherBox(leftBox);
 
     if (!leftBox.canContainValue(variable) || !rightBox.canContainValue(rvalue)) {
-      throw new RuntimeException("Illegal assignment statement.  Make sure that either left side or right hand side has a local or constant.");
+      throw new RuntimeException(
+          "Illegal assignment statement.  Make sure that either left side or right hand side has a local or constant.");
     }
 
   }
@@ -270,7 +271,8 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
         }
 
         if (isValidCase && x >= Short.MIN_VALUE && x <= Short.MAX_VALUE) {
-          Unit u = Baf.v().newIncInst(context.getBafLocalOfJimpleLocal(l), IntConstant.v((expr instanceof AddExpr) ? x : -x));
+          Unit u
+              = Baf.v().newIncInst(context.getBafLocalOfJimpleLocal(l), IntConstant.v((expr instanceof AddExpr) ? x : -x));
 
           u.addAllTagsOf(this);
           out.add(u);
@@ -312,8 +314,8 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
          */
 
         /*
-         * No: the convertToBaf on the rvalue already adds them, so no need to add them here. However, with the current semantics, we should add them
-         * to every statement and let the aggregator sort them out.
+         * No: the convertToBaf on the rvalue already adds them, so no need to add them here. However, with the current
+         * semantics, we should add them to every statement and let the aggregator sort them out.
          */
 
         Unit u = Baf.v().newStoreInst(v.getType(), context.getBafLocalOfJimpleLocal(v));

@@ -196,22 +196,22 @@ import soot.shimple.ShimpleValueSwitch;
 import soot.toolkits.exceptions.ThrowableSet.Pair;
 
 /**
- * A {@link ThrowAnalysis} which returns the set of runtime exceptions and errors that might be thrown by the bytecode instructions represented by a
- * unit, as indicated by the Java Virtual Machine specification. I.e. this analysis is based entirely on the &ldquo;opcode&rdquo; of the unit, the
- * types of its arguments, and the values of constant arguments.
+ * A {@link ThrowAnalysis} which returns the set of runtime exceptions and errors that might be thrown by the bytecode
+ * instructions represented by a unit, as indicated by the Java Virtual Machine specification. I.e. this analysis is based
+ * entirely on the &ldquo;opcode&rdquo; of the unit, the types of its arguments, and the values of constant arguments.
  *
  * <p>
- * The <code>mightThrow</code> methods could be declared static. They are left virtual to facilitate testing. For example, to verify that the
- * expressions in a method call are actually being examined, a test case can override the mightThrow(SootMethod) with an implementation which returns
- * the empty set instead of all possible exceptions.
+ * The <code>mightThrow</code> methods could be declared static. They are left virtual to facilitate testing. For example, to
+ * verify that the expressions in a method call are actually being examined, a test case can override the
+ * mightThrow(SootMethod) with an implementation which returns the empty set instead of all possible exceptions.
  */
 public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
   protected final ThrowableSet.Manager mgr = ThrowableSet.Manager.v();
 
   // Cache the response to mightThrowImplicitly():
-  private final ThrowableSet implicitThrowExceptions = ThrowableSet.Manager.v().VM_ERRORS.add(ThrowableSet.Manager.v().NULL_POINTER_EXCEPTION)
-      .add(ThrowableSet.Manager.v().ILLEGAL_MONITOR_STATE_EXCEPTION);
+  private final ThrowableSet implicitThrowExceptions = ThrowableSet.Manager.v().VM_ERRORS
+      .add(ThrowableSet.Manager.v().NULL_POINTER_EXCEPTION).add(ThrowableSet.Manager.v().ILLEGAL_MONITOR_STATE_EXCEPTION);
 
   /**
    * Constructs a <code>UnitThrowAnalysis</code> for inclusion in Soot's global variable manager, {@link G}.
@@ -313,8 +313,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     return methodToThrowSet.getUnchecked(sm);
   }
 
-  protected final LoadingCache<SootMethod, ThrowableSet> methodToThrowSet = IDESolver.DEFAULT_CACHE_BUILDER
-      .build(new CacheLoader<SootMethod, ThrowableSet>() {
+  protected final LoadingCache<SootMethod, ThrowableSet> methodToThrowSet
+      = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<SootMethod, ThrowableSet>() {
         @Override
         public ThrowableSet load(SootMethod sm) throws Exception {
           return mightThrow(sm, new HashSet<SootMethod>());
@@ -345,7 +345,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     // We need a mapping between unit and exception
     final PatchingChain<Unit> units = sm.getActiveBody().getUnits();
-    Map<Unit, Collection<Trap>> unitToTraps = sm.getActiveBody().getTraps().isEmpty() ? null : new HashMap<Unit, Collection<Trap>>();
+    Map<Unit, Collection<Trap>> unitToTraps
+        = sm.getActiveBody().getTraps().isEmpty() ? null : new HashMap<Unit, Collection<Trap>>();
     for (Trap t : sm.getActiveBody().getTraps()) {
       for (Iterator<Unit> unitIt = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit())); unitIt.hasNext();) {
         Unit unit = unitIt.next();
@@ -975,7 +976,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
         // fromType might still be unknown when we are called,
         // but toType will have a value.
         FastHierarchy h = Scene.v().getOrMakeFastHierarchy();
-        if (fromType == null || fromType instanceof UnknownType || ((!(fromType instanceof NullType)) && (!h.canStoreType(fromType, toType)))) {
+        if (fromType == null || fromType instanceof UnknownType
+            || ((!(fromType instanceof NullType)) && (!h.canStoreType(fromType, toType)))) {
           result = result.add(mgr.CLASS_CAST_EXCEPTION);
         }
       }
@@ -992,7 +994,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
         result = result.add(mgr.RESOLVE_CLASS_ERRORS);
       }
       Value count = expr.getSize();
-      if ((!(count instanceof IntConstant)) || (((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO))) {
+      if ((!(count instanceof IntConstant))
+          || (((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO))) {
         result = result.add(mgr.NEGATIVE_ARRAY_SIZE_EXCEPTION);
       }
       result = result.add(mightThrow(count));
@@ -1002,7 +1005,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
       result = result.add(mgr.RESOLVE_CLASS_ERRORS);
       for (int i = 0; i < expr.getSizeCount(); i++) {
         Value count = expr.getSize(i);
-        if ((!(count instanceof IntConstant)) || (((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO))) {
+        if ((!(count instanceof IntConstant))
+            || (((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO))) {
           result = result.add(mgr.NEGATIVE_ARRAY_SIZE_EXCEPTION);
         }
         result = result.add(mightThrow(count));
@@ -1092,7 +1096,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
       } else if ((divisorType instanceof IntegerType)
           && ((!(divisor instanceof IntConstant)) || (((IntConstant) divisor).equals(INT_CONSTANT_ZERO)))) {
         result = result.add(mgr.ARITHMETIC_EXCEPTION);
-      } else if ((divisorType == LongType.v()) && ((!(divisor instanceof LongConstant)) || (((LongConstant) divisor).equals(LONG_CONSTANT_ZERO)))) {
+      } else if ((divisorType == LongType.v())
+          && ((!(divisor instanceof LongConstant)) || (((LongConstant) divisor).equals(LONG_CONSTANT_ZERO)))) {
         result = result.add(mgr.ARITHMETIC_EXCEPTION);
       }
       caseBinopExpr(expr);

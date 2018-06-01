@@ -29,11 +29,11 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 
 /**
- * This class implements a pool for {@link SmartLocalDefs} instances. This is useful, as these analyses are expensive to compute. A
- * {@link SmartLocalDefs} instance requires a {@link UnitGraph} (usually a {@link ExceptionalUnitGraph}), and creating these repeatedly, and applying
- * the {@link SmartLocalDefs} analysis repeatedly costs time. Therefore in this class we pool these instances in cases in which the respective body is
- * still the same.
- * 
+ * This class implements a pool for {@link SmartLocalDefs} instances. This is useful, as these analyses are expensive to
+ * compute. A {@link SmartLocalDefs} instance requires a {@link UnitGraph} (usually a {@link ExceptionalUnitGraph}), and
+ * creating these repeatedly, and applying the {@link SmartLocalDefs} analysis repeatedly costs time. Therefore in this class
+ * we pool these instances in cases in which the respective body is still the same.
+ *
  * @author Eric Bodden
  */
 public class SmartLocalDefsPool {
@@ -41,10 +41,10 @@ public class SmartLocalDefsPool {
   protected Map<Body, Pair<Long, SmartLocalDefs>> pool = Maps.newHashMap();
 
   /**
-   * This method returns a fresh instance of a {@link SmartLocalDefs} analysis, based on a freshly created {@link ExceptionalUnitGraph} for b, with
-   * standard parameters. If the body b's modification count has not changed since the last time such an analysis was requested for b, then the
-   * previously created analysis is returned instead.
-   * 
+   * This method returns a fresh instance of a {@link SmartLocalDefs} analysis, based on a freshly created
+   * {@link ExceptionalUnitGraph} for b, with standard parameters. If the body b's modification count has not changed since
+   * the last time such an analysis was requested for b, then the previously created analysis is returned instead.
+   *
    * @see Body#getModificationCount()
    */
   public SmartLocalDefs getSmartLocalDefsFor(Body b) {

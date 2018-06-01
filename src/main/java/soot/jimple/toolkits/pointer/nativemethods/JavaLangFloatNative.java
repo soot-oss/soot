@@ -38,7 +38,8 @@ public class JavaLangFloatNative extends NativeMethodClass {
   /**
    * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
    */
-  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
+  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 
@@ -51,7 +52,7 @@ public class JavaLangFloatNative extends NativeMethodClass {
 
   /************************** java.lang.Float ***********************/
   /**
-   * Following methods have no side effects. public static native int floatToIntBits(float); public static native int floatToRawIntBits(float); public
-   * static native float intBitsToFloat(int);
+   * Following methods have no side effects. public static native int floatToIntBits(float); public static native int
+   * floatToRawIntBits(float); public static native float intBitsToFloat(int);
    */
 }

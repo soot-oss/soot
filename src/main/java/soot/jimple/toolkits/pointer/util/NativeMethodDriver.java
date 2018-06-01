@@ -19,7 +19,7 @@
 
 /**
  * A wrapper for native method side-effect simulation.
- * The caller passes in a native method with parameters, 
+ * The caller passes in a native method with parameters,
  * the corresponding native simulator gets called.
  *
  * @author Feng Qian
@@ -135,7 +135,7 @@ public class NativeMethodDriver {
 
   /**
    * The entry point of native method simulation.
-   * 
+   *
    * @param method,
    *          must be a native method
    * @param thisVar,
@@ -145,7 +145,8 @@ public class NativeMethodDriver {
    * @param params,
    *          array of parameters.
    */
-  public boolean process(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
+  public boolean process(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
 
     String cname = method.getDeclaringClass().getName();
     NativeMethodClass clsSim = cnameToSim.get(cname);

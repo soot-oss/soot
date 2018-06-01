@@ -19,10 +19,10 @@
 package soot.jimple.spark.geom.geomPA;
 
 /**
- * The implementation of prioritized worklist. The priority is computed by two parameters: the Topsort order and the least recent fired (LRF)
- * timestamp. For two pointers p and q p has higher priority than q iff: 1. topsort_order(p) < topsort_order(q) 2. topsort_order(p) ==
- * topsort_order(q) && LRF(p) < LRF(q)
- * 
+ * The implementation of prioritized worklist. The priority is computed by two parameters: the Topsort order and the least
+ * recent fired (LRF) timestamp. For two pointers p and q p has higher priority than q iff: 1. topsort_order(p) <
+ * topsort_order(q) 2. topsort_order(p) == topsort_order(q) && LRF(p) < LRF(q)
+ *
  * @author xiao
  *
  */

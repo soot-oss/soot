@@ -34,15 +34,16 @@ import soot.toolkits.scalar.LocalDefs;
 import soot.util.Chain;
 
 /**
- * This class implements the LocalDefs interface for Shimple. ShimpleLocalDefs can be used in conjunction with SimpleLocalUses to provide
- * Definition/Use and Use/Definition chains in SSA.
+ * This class implements the LocalDefs interface for Shimple. ShimpleLocalDefs can be used in conjunction with
+ * SimpleLocalUses to provide Definition/Use and Use/Definition chains in SSA.
  *
  * <p>
  * This implementation can be considered a small demo for how SSA can be put to good use since it is much simpler than
  * soot.toolkits.scalar.SimpleLocalDefs. Shimple can often be treated as Jimple with the added benefits of SSA assumptions.
  *
  * <p>
- * In addition to the interface required by LocalDefs, ShimpleLocalDefs also provides a method for obtaining the definition Unit given only the Local.
+ * In addition to the interface required by LocalDefs, ShimpleLocalDefs also provides a method for obtaining the definition
+ * Unit given only the Local.
  *
  * @author Navindra Umanee
  * @see ShimpleLocalUses
@@ -53,14 +54,15 @@ public class ShimpleLocalDefs implements LocalDefs {
   protected Map<Value, List<Unit>> localToDefs;
 
   /**
-   * Build a LocalDefs interface from a ShimpleBody. Proper SSA form is required, otherwise correct behaviour is not guaranteed.
+   * Build a LocalDefs interface from a ShimpleBody. Proper SSA form is required, otherwise correct behaviour is not
+   * guaranteed.
    **/
   public ShimpleLocalDefs(ShimpleBody sb) {
     // Instead of rebuilding the ShimpleBody without the
     // programmer's knowledge, throw a RuntimeException
     if (!sb.isSSA()) {
-      throw new RuntimeException(
-          "ShimpleBody is not in proper SSA form as required by ShimpleLocalDefs.  You may need to rebuild it or use SimpleLocalDefs instead.");
+      throw new RuntimeException("ShimpleBody is not in proper SSA form as required by ShimpleLocalDefs."
+          + "You may need to rebuild it or use SimpleLocalDefs instead.");
     }
 
     // build localToDefs map simply by iterating through all the

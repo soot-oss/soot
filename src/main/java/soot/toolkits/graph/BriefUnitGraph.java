@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-2003.  
+ * Modified by the Sable Research Group and others 1997-2003.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -34,7 +34,8 @@ import soot.Unit;
 import soot.options.Options;
 
 /**
- * Represents a CFG where the nodes are Unit instances, and where no edges are included to account for control flow associated with exceptions.
+ * Represents a CFG where the nodes are Unit instances, and where no edges are included to account for control flow
+ * associated with exceptions.
  *
  * @see Unit
  * @see UnitGraph
@@ -43,7 +44,7 @@ public class BriefUnitGraph extends UnitGraph {
 
   /**
    * Constructs a BriefUnitGraph given a Body instance.
-   * 
+   *
    * @param body
    *          The underlying body we want to make a graph for.
    */

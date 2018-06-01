@@ -28,8 +28,9 @@ import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
 
 /**
- * A loop nesting tree, implemented as a tree-map. Loops are represented by pairs of head-statements and the respective loop. The iterator over this
- * collection returns the loop in such an order that a loop l will always returned before a loop m if l is an inner loop of m.
+ * A loop nesting tree, implemented as a tree-map. Loops are represented by pairs of head-statements and the respective loop.
+ * The iterator over this collection returns the loop in such an order that a loop l will always returned before a loop m if
+ * l is an inner loop of m.
  *
  * @author Eric Bodden
  */

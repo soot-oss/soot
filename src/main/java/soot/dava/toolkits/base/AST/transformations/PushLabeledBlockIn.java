@@ -54,10 +54,10 @@ import soot.jimple.Stmt;
  |                   |
  |  Nothing here     |
  |___________________|
- }//end of label_1  
+ }//end of label_1
 
 
- The important thing to note in this case is that the node which uses breaks 
+ The important thing to note in this case is that the node which uses breaks
  extends ASTLabeledNode so that we can move the label down. Obviously there shouldnt be
  an already existing label on this node. Once the node containing the break is detected
  there should be no node following this in the body of the labeled block. This is so because
@@ -76,9 +76,9 @@ import soot.jimple.Stmt;
  |                   |
  |  Nothing here     |
  |___________________|
- }//end of label_1  
+ }//end of label_1
 
- If the previous pattern did not match because the node on which we wanted to push the label 
+ If the previous pattern did not match because the node on which we wanted to push the label
  inwards already had a label we can try to use the label on the inner node. This is only possible
  if there is only a single node in the labeledBlocks subBody, to make sure that we break and jump
  to exactly the same point as we were jumping before.
@@ -142,13 +142,14 @@ public class PushLabeledBlockIn extends DepthFirstAdapter {
           // there is only one node
           /*
            * The situation is that there is a labeled block whic has only one node that also has a label on it.
-           * 
+           *
            * There is some statement deep down which breaks the outer label
-           * 
+           *
            * No reason why it cant break the inner label since there is nothing after that!!!
-           * 
-           * label has the outer label whose break we found innerLabel has the label of the inner node which contains the break
-           * 
+           *
+           * label has the outer label whose break we found innerLabel has the label of the inner node which contains the
+           * break
+           *
            * replace all occurances of break of outer label with that of break of inner label
            */
 

@@ -38,7 +38,8 @@ public class JavaLangReflectMethodNative extends NativeMethodClass {
   /**
    * Implements the abstract method simulateMethod. It distributes the request to the corresponding methods by signatures.
    */
-  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
+  public void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
 
     String subSignature = method.getSubSignature();
 
@@ -55,26 +56,29 @@ public class JavaLangReflectMethodNative extends NativeMethodClass {
 
   /****************** java.lang.reflect.Method *********************/
   /**
-   * nvokes the underlying method represented by this Method object, on the specified object with the specified parameters. Individual parameters are
-   * automatically unwrapped to match primitive formal parameters, and both primitive and reference parameters are subject to widening conversions as
-   * necessary. The value returned by the underlying method is automatically wrapped in an object if it has a primitive type.
+   * nvokes the underlying method represented by this Method object, on the specified object with the specified parameters.
+   * Individual parameters are automatically unwrapped to match primitive formal parameters, and both primitive and reference
+   * parameters are subject to widening conversions as necessary. The value returned by the underlying method is
+   * automatically wrapped in an object if it has a primitive type.
    *
    * Method invocation proceeds with the following steps, in order:
    *
    * If the underlying method is static, then the specified obj argument is ignored. It may be null.
    *
    * NOTE: @this is an variable pointing to method objects,
-   * 
+   *
    * @param0 points to receivers
-   * 
+   *
    *         The possible target of this call is made by [thisVar] X [param0]
-   * 
+   *
    *         Also the parameters are not distinguishable.
    *
-   *         public native java.lang.Object invoke(java.lang.Object, java.lang.Object[]) throws java.lang.IllegalAccessException,
-   *         java.lang.IllegalArgumentException, java.lang.reflect.InvocationTargetException
+   *         public native java.lang.Object invoke(java.lang.Object, java.lang.Object[]) throws
+   *         java.lang.IllegalAccessException, java.lang.IllegalArgumentException,
+   *         java.lang.reflect.InvocationTargetException
    */
-  public void java_lang_reflect_Method_invoke(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
+  public void java_lang_reflect_Method_invoke(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
     throw new NativeMethodNotSupportedException(method);
   }
 }

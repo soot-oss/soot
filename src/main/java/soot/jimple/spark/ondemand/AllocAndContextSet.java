@@ -111,8 +111,8 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext> implemen
   }
 
   /**
-   * Computes a hash code based on the contents of the points-to set. Note that hashCode() is not overwritten on purpose. This is because Spark relies
-   * on comparison by object identity.
+   * Computes a hash code based on the contents of the points-to set. Note that hashCode() is not overwritten on purpose.
+   * This is because Spark relies on comparison by object identity.
    */
   public int pointsToSetHashCode() {
     final int PRIME = 31;
@@ -124,8 +124,8 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext> implemen
   }
 
   /**
-   * Returns <code>true</code> if and only if other holds the same alloc nodes as this. Note that equals() is not overwritten on purpose. This is
-   * because Spark relies on comparison by object identity.
+   * Returns <code>true</code> if and only if other holds the same alloc nodes as this. Note that equals() is not overwritten
+   * on purpose. This is because Spark relies on comparison by object identity.
    */
   public boolean pointsToSetEquals(Object other) {
     if (this == other) {

@@ -10,7 +10,8 @@ import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
- * The "22s" instruction format: It needs two 16-bit code units, has two registers and is used for a 16-bit literal (hence the "s" for "short").<br>
+ * The "22s" instruction format: It needs two 16-bit code units, has two registers and is used for a 16-bit literal (hence
+ * the "s" for "short").<br>
  * <br>
  * It is used by the "/lit16" opcodes for binary operations.
  */

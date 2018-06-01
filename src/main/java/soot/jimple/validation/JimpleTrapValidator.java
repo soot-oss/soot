@@ -32,8 +32,9 @@ import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
 /**
- * This validator checks whether the jimple traps are correct. It does not perform the same checks as {@link soot.validation.TrapsValidator}
- * 
+ * This validator checks whether the jimple traps are correct. It does not perform the same checks as
+ * {@link soot.validation.TrapsValidator}
+ *
  * @see JimpleTrapValidator#validate(Body, List)
  * @author Marc Miltenberger
  */
@@ -68,8 +69,8 @@ public enum JimpleTrapValidator implements BodyValidator {
         if (id.getRightOp() instanceof CaughtExceptionRef) {
           if (!caughtUnits.contains(id)) {
             exceptions.add(new ValidationException(id, "Could not find a corresponding trap using this statement as handler",
-                "Body of method " + body.getMethod().getSignature()
-                    + " contains a caught exception reference, but not a corresponding trap using this statement as handler"));
+                "Body of method " + body.getMethod().getSignature() + " contains a caught exception reference,"
+                    + "but not a corresponding trap using this statement as handler"));
           }
         }
       }

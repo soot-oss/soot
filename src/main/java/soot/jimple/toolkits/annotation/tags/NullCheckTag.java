@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -26,7 +26,8 @@
 package soot.jimple.toolkits.annotation.tags;
 
 /**
- * NullCheckTag contains the null pointer check information. The right third bit of a byte is used to represent whether the null check is needed.
+ * NullCheckTag contains the null pointer check information. The right third bit of a byte is used to represent whether the
+ * null check is needed.
  */
 
 public class NullCheckTag implements OneByteCodeTag {

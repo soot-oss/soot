@@ -40,16 +40,16 @@ import soot.jimple.Stmt;
   Nomair A. Naeem 18-FEB-2005
 
   The class is responsible to do the following transformation on the AST
-  
-  label_1:{                                  label_1:{ 
+
+  label_1:{                                  label_1:{
      label_0:{                                  if(cond1 || cond2){
          if(cond1){                                 Body1
             break label_0;                      }
          }                                   }
-         if(!cond2){                         Body2    
-            break label_1;     ------>  
-	 }                                     Cant remove label_1 as Body 1 
-    }//end of label_0                          might have reference to it  
+         if(!cond2){                         Body2
+            break label_1;     ------>
+	 }                                     Cant remove label_1 as Body 1
+    }//end of label_0                          might have reference to it
     Body1                                      can however set some flag if we are
   }//end of label_1                            sure that label_1 is not broken
   Body2                                        and later removed
@@ -299,8 +299,8 @@ public class OrAggregatorOne extends DepthFirstAdapter {
   }
 
   /*
-   * The method will go through the iterator because of the sequence of methods called before in the outASTLabeledBlockNode it knows the following: 1,
-   * All nodes are ASTIFNodes
+   * The method will go through the iterator because of the sequence of methods called before in the outASTLabeledBlockNode
+   * it knows the following: 1, All nodes are ASTIFNodes
    */
   private List<ASTCondition> getConditions(Iterator it) {
     List<ASTCondition> toReturn = new ArrayList<ASTCondition>();

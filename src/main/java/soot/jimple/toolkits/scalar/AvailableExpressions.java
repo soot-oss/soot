@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -31,8 +31,8 @@ import soot.Unit;
 import soot.util.Chain;
 
 /**
- * Provides an user-interface for the AvailableExpressionsAnalysis class. Returns, for each statement, the list of expressions available before and
- * after it.
+ * Provides an user-interface for the AvailableExpressionsAnalysis class. Returns, for each statement, the list of
+ * expressions available before and after it.
  */
 public interface AvailableExpressions {
   /** Returns a List containing the UnitValueBox pairs corresponding to expressions available before u. */

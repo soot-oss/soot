@@ -15,14 +15,15 @@ import soot.jimple.ReturnStmt;
 
 /**
  * Transformers that inlines returns that cast and return an object. We take a = .. goto l0;
- * 
+ *
  * l0: b = (B) a; return b;
- * 
+ *
  * and transform it into a = .. return a;
- * 
- * This makes it easier for the local splitter to split distinct uses of the same variable. Imagine that "a" can come from different parts of the code
- * and have different types. To be able to find a valid typing at all, we must break apart the uses of "a".
- * 
+ *
+ * This makes it easier for the local splitter to split distinct uses of the same variable. Imagine that "a" can come from
+ * different parts of the code and have different types. To be able to find a valid typing at all, we must break apart the
+ * uses of "a".
+ *
  * @author Steven Arzt
  */
 public class CastAndReturnInliner extends BodyTransformer {

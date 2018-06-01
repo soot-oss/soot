@@ -29,12 +29,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Constructs a dominator tree structure from the given DominatorsFinder. The nodes in DominatorTree are of type DominatorNode.
+ * Constructs a dominator tree structure from the given DominatorsFinder. The nodes in DominatorTree are of type
+ * DominatorNode.
  *
  * <p>
  *
- * Note: DominatorTree does not currently implement DirectedGraph since it provides 4 methods of navigating the nodes where the meaning of getPredsOf
- * and getSuccsOf diverge from the usual meaning in a DirectedGraph implementation.
+ * Note: DominatorTree does not currently implement DirectedGraph since it provides 4 methods of navigating the nodes where
+ * the meaning of getPredsOf and getSuccsOf diverge from the usual meaning in a DirectedGraph implementation.
  *
  * <p>
  *
@@ -85,8 +86,9 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
   }
 
   /**
-   * Gets the first head of the dominator tree. This function is implemented for single-headed trees and mainly for backwards compatibility.
-   * 
+   * Gets the first head of the dominator tree. This function is implemented for single-headed trees and mainly for backwards
+   * compatibility.
+   *
    * @return The first head of the dominator tree
    */
   public DominatorNode<N> getHead() {
@@ -160,7 +162,8 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
     DominatorNode<N> dode = godeToDode.get(gode);
 
     if (dode == null) {
-      throw new RuntimeException("Assertion failed: Dominator tree does not have a corresponding dode for gode (" + gode + ")");
+      throw new RuntimeException(
+          "Assertion failed: Dominator tree does not have a corresponding dode for gode (" + gode + ")");
     }
 
     return dode;

@@ -208,7 +208,8 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
 
       final String className = sootClass.getName();
 
-      if (sootClass.equals(mainClass) || oldToNewClassNames.containsValue(className) || soot.jbco.Main.getWeight(phaseName, className) == 0) {
+      if (sootClass.equals(mainClass) || oldToNewClassNames.containsValue(className)
+          || soot.jbco.Main.getWeight(phaseName, className) == 0) {
         continue;
       }
 
@@ -317,7 +318,8 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
 
     while (true) {
       final String junkName = nameGenerator.generateName(size);
-      final String newClassName = removePackages ? junkName : (renamePackages ? getNewPackageName(packageName) : packageName) + junkName;
+      final String newClassName
+          = removePackages ? junkName : (renamePackages ? getNewPackageName(packageName) : packageName) + junkName;
 
       synchronized (classNamesMapLock) {
         if (!oldToNewClassNames.containsKey(newClassName) && !oldToNewClassNames.containsValue(newClassName)
@@ -379,7 +381,8 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
   }
 
   private String getNewPackageNamePart(String oldPackageNamePart) {
-    if (oldPackageNamePart != null && !oldPackageNamePart.isEmpty() && oldToNewPackageNames.containsKey(oldPackageNamePart)) {
+    if (oldPackageNamePart != null && !oldPackageNamePart.isEmpty()
+        && oldToNewPackageNames.containsKey(oldPackageNamePart)) {
       return oldToNewPackageNames.get(oldPackageNamePart);
     }
 
@@ -392,9 +395,11 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
       newPackageNamePart = nameGenerator.generateName(size);
 
       synchronized (packageNamesMapLock) {
-        if (!oldToNewPackageNames.containsValue(newPackageNamePart) || !oldToNewPackageNames.containsKey(newPackageNamePart)) {
+        if (!oldToNewPackageNames.containsValue(newPackageNamePart)
+            || !oldToNewPackageNames.containsKey(newPackageNamePart)) {
 
-          final String key = oldPackageNamePart == null || oldPackageNamePart.isEmpty() ? newPackageNamePart : oldPackageNamePart;
+          final String key
+              = oldPackageNamePart == null || oldPackageNamePart.isEmpty() ? newPackageNamePart : oldPackageNamePart;
 
           oldToNewPackageNames.put(key, newPackageNamePart);
 

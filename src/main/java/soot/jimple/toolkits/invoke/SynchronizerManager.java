@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -80,10 +80,10 @@ public class SynchronizerManager {
    * <pre>
           $r3 = <quack: java.lang.Class class$quack>;
           .if $r3 != .null .goto label2;
-  
+
           $r3 = .staticinvoke <quack: java.lang.Class class$(java.lang.String)>("quack");
           <quack: java.lang.Class class$quack> = $r3;
-  
+
        label2:
    * </pre>
    */
@@ -128,8 +128,8 @@ public class SynchronizerManager {
     IfStmt ifStmt;
     units.insertBefore(ifStmt = Jimple.v().newIfStmt(Jimple.v().newNeExpr(l, NullConstant.v()), target), target);
 
-    units.insertBefore(Jimple.v().newAssignStmt(l,
-        Jimple.v().newStaticInvokeExpr(getClassFetcherFor(sc).makeRef(), Arrays.asList(new Value[] { StringConstant.v(sc.getName()) }))), target);
+    units.insertBefore(Jimple.v().newAssignStmt(l, Jimple.v().newStaticInvokeExpr(getClassFetcherFor(sc).makeRef(),
+        Arrays.asList(new Value[] { StringConstant.v(sc.getName()) }))), target);
     units.insertBefore(Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(classCacher.makeRef()), l), target);
 
     ifStmt.setTarget(target);
@@ -137,8 +137,8 @@ public class SynchronizerManager {
   }
 
   /**
-   * Finds a method which calls java.lang.Class.forName(String). Searches for names class$, _class$, __class$, etc. If no such method is found,
-   * creates one and returns it.
+   * Finds a method which calls java.lang.Class.forName(String). Searches for names class$, _class$, __class$, etc. If no
+   * such method is found, creates one and returns it.
    *
    * Uses dumb matching to do search. Not worth doing symbolic analysis for this!
    */
@@ -151,7 +151,8 @@ public class SynchronizerManager {
       }
 
       // Check signature.
-      if (!m.getSignature().equals("<" + c.getName().replace('.', '$') + ": java.lang.Class " + methodName + "(java.lang.String)>")) {
+      if (!m.getSignature()
+          .equals("<" + c.getName().replace('.', '$') + ": java.lang.Class " + methodName + "(java.lang.String)>")) {
         continue;
       }
 
@@ -162,7 +163,8 @@ public class SynchronizerManager {
 
       /* we now look for the following fragment: */
       /*
-       * r0 := @parameter0: java.lang.String; $r2 = .staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>(r0); .return $r2;
+       * r0 := @parameter0: java.lang.String; $r2 = .staticinvoke <java.lang.Class: java.lang.Class
+       * forName(java.lang.String)>(r0); .return $r2;
        *
        * Ignore the catching code; this is enough.
        */
@@ -228,7 +230,7 @@ public class SynchronizerManager {
    * Creates a method which calls java.lang.Class.forName(String).
    *
    * The method should look like the following:
-   * 
+   *
    * <pre>
            .static java.lang.Class class$(java.lang.String)
            {
@@ -236,13 +238,13 @@ public class SynchronizerManager {
                java.lang.ClassNotFoundException r1, $r3;
                java.lang.Class $r2;
                java.lang.NoClassDefFoundError $r4;
-  
+
                r0 := @parameter0: java.lang.String;
-  
+
            label0:
                $r2 = .staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>(r0);
                .return $r2;
-  
+
            label1:
                $r3 := @caughtexception;
                r1 = $r3;
@@ -250,7 +252,7 @@ public class SynchronizerManager {
                $r5 = .virtualinvoke r1.<java.lang.Throwable: java.lang.String getMessage()>();
                .specialinvoke $r4.<java.lang.NoClassDefFoundError: .void <init>(java.lang.String)>($r5);
                .throw $r4;
-  
+
                .catch java.lang.ClassNotFoundException .from label0 .to label1 .with label1;
            }
    * </pre>
@@ -291,8 +293,10 @@ public class SynchronizerManager {
       // add "$r2 = .staticinvoke <java.lang.Class: java.lang.Class
       // forName(java.lang.String)>(r0);
       AssignStmt asi;
-      units.add(asi = Jimple.v().newAssignStmt(l_r2, Jimple.v().newStaticInvokeExpr(
-          Scene.v().getMethod("<java.lang.Class: java.lang.Class" + " forName(java.lang.String)>").makeRef(), Arrays.asList(new Value[] { l_r0 }))));
+      units.add(asi = Jimple.v().newAssignStmt(l_r2,
+          Jimple.v().newStaticInvokeExpr(
+              Scene.v().getMethod("<java.lang.Class: java.lang.Class" + " forName(java.lang.String)>").makeRef(),
+              Arrays.asList(new Value[] { l_r0 }))));
 
       // insert "return $r2;"
       units.add(Jimple.v().newReturnStmt(l_r2));
@@ -322,14 +326,16 @@ public class SynchronizerManager {
       // add .throw $r4;
       units.add(Jimple.v().newThrowStmt(l_r4));
 
-      body.getTraps().add(Jimple.v().newTrap(Scene.v().getSootClass("java.lang.ClassNotFoundException"), asi, handlerStart, handlerStart));
+      body.getTraps().add(
+          Jimple.v().newTrap(Scene.v().getSootClass("java.lang.ClassNotFoundException"), asi, handlerStart, handlerStart));
     }
 
     return method;
   }
 
   /**
-   * Wraps stmt around a monitor associated with local lock. When inlining or static method binding, this is the former base of the invoke expression.
+   * Wraps stmt around a monitor associated with local lock. When inlining or static method binding, this is the former base
+   * of the invoke expression.
    */
   public void synchronizeStmtOn(Stmt stmt, JimpleBody b, Local lock) {
     Chain units = b.getUnits();
@@ -382,7 +388,8 @@ public class SynchronizerManager {
       l.add(Jimple.v().newThrowStmt(eRef));
       units.insertAfter(l, newGoto);
 
-      Trap newTrap = Jimple.v().newTrap(Scene.v().getSootClass("java.lang.Throwable"), stmt, (Stmt) units.getSuccOf(stmt), handlerStmt);
+      Trap newTrap = Jimple.v().newTrap(Scene.v().getSootClass("java.lang.Throwable"), stmt, (Stmt) units.getSuccOf(stmt),
+          handlerStmt);
       b.getTraps().addFirst(newTrap);
     }
   }

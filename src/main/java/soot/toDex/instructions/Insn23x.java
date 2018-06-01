@@ -10,7 +10,8 @@ import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
- * The "23x" instruction format: It needs two 16-bit code units, has three registers and is used for general purposes (hence the "x").<br>
+ * The "23x" instruction format: It needs two 16-bit code units, has three registers and is used for general purposes (hence
+ * the "x").<br>
  * <br>
  * It is used e.g. by the opcodes "cmp-long", "aput" and "add-int".
  */
@@ -37,7 +38,8 @@ public class Insn23x extends AbstractInsn implements ThreeRegInsn {
 
   @Override
   protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
-    return new BuilderInstruction23x(opc, (short) getRegA().getNumber(), (short) getRegB().getNumber(), (short) getRegC().getNumber());
+    return new BuilderInstruction23x(opc, (short) getRegA().getNumber(), (short) getRegB().getNumber(),
+        (short) getRegC().getNumber());
   }
 
   @Override

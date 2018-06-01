@@ -71,8 +71,8 @@ public class LoopStrengthener extends DepthFirstAdapter {
   }
 
   /*
-   * Note the ASTNode in this case can be any of the following: ASTMethodNode ASTSwitchNode ASTIfNode ASTIfElseNode ASTUnconditionalWhileNode
-   * ASTWhileNode ASTDoWhileNode ASTForLoopNode ASTLabeledBlockNode ASTSynchronizedBlockNode
+   * Note the ASTNode in this case can be any of the following: ASTMethodNode ASTSwitchNode ASTIfNode ASTIfElseNode
+   * ASTUnconditionalWhileNode ASTWhileNode ASTDoWhileNode ASTForLoopNode ASTLabeledBlockNode ASTSynchronizedBlockNode
    */
   public void normalRetrieving(ASTNode node) {
     if (node instanceof ASTSwitchNode) {
@@ -282,9 +282,9 @@ public class LoopStrengthener extends DepthFirstAdapter {
   }
 
   /*
-   * Given an ASTNode as input this method checks the following: 1, The node is either ASTWhile, ASTDoWhile or ASTUnconditionalLoop 2, The node has
-   * one subBody 3, The onlySubBody has one node
-   * 
+   * Given an ASTNode as input this method checks the following: 1, The node is either ASTWhile, ASTDoWhile or
+   * ASTUnconditionalLoop 2, The node has one subBody 3, The onlySubBody has one node
+   *
    * it returns the only node in the only SubBody
    */
   private ASTNode getOnlySubNode(ASTNode node) {
@@ -306,11 +306,11 @@ public class LoopStrengthener extends DepthFirstAdapter {
   }
 
   /*
-   * - Go through the node bodies till you find subBodyNumber - Go through this subBody until you find nodeNumber - This is the temp node Replace it
-   * with the newNodes
-   * 
-   * Node is the node which contains the loop node subBodyNumber is the subBody which of the node which contains the loopNode nodeNumber is the
-   * location of the loopNode in the subBody newNode is the loopNode which will replace the old loopNode
+   * - Go through the node bodies till you find subBodyNumber - Go through this subBody until you find nodeNumber - This is
+   * the temp node Replace it with the newNodes
+   *
+   * Node is the node which contains the loop node subBodyNumber is the subBody which of the node which contains the loopNode
+   * nodeNumber is the location of the loopNode in the subBody newNode is the loopNode which will replace the old loopNode
    */
   private void replaceNode(ASTNode node, int subBodyNumber, int nodeNumber, ASTNode loopNode, List<ASTNode> newNode) {
     if (!(node instanceof ASTIfElseNode)) {
@@ -406,7 +406,8 @@ public class LoopStrengthener extends DepthFirstAdapter {
     } // end of ASTIfElseNode
   }
 
-  public static List<Object> createNewSubBody(List<Object> oldSubBody, int nodeNumber, ASTNode oldNode, List<ASTNode> newNode) {
+  public static List<Object> createNewSubBody(List<Object> oldSubBody, int nodeNumber, ASTNode oldNode,
+      List<ASTNode> newNode) {
     // create a new SubBody
     List<Object> newSubBody = new ArrayList<Object>();
 

@@ -69,14 +69,14 @@ import soot.jimple.internal.JimpleLocal;
  */
 
 /**
- * CHANGE LOG: 30th January 2006: Class was created to get rid of the field might not be initialized error that used to show up when recompiling
- * decompiled code Will be throughly covered in "Programmer Friendly Code" Sable Tech Report (2006)
- * 
+ * CHANGE LOG: 30th January 2006: Class was created to get rid of the field might not be initialized error that used to show
+ * up when recompiling decompiled code Will be throughly covered in "Programmer Friendly Code" Sable Tech Report (2006)
+ *
  */
 
 /*
- * This class makes sure there is an initialization of all final variables (static or non static). If we cant guarantee initialization (may be
- * initialized on multiple paths but not all) then we remove the final keyword
+ * This class makes sure there is an initialization of all final variables (static or non static). If we cant guarantee
+ * initialization (may be initialized on multiple paths but not all) then we remove the final keyword
  */
 public class FinalFieldDefinition {
   // extends DepthFirstAdapter{
@@ -121,9 +121,9 @@ public class FinalFieldDefinition {
 
   /*
    * this method finds all the final fields in this class and assigns them to the finalFields list
-   * 
+   *
    * Note this stores a list of SootFields!!!
-   * 
+   *
    * Fields which are initialized in their declaration should not be added
    */
   public ArrayList<SootField> findFinalFields() {
@@ -203,9 +203,10 @@ public class FinalFieldDefinition {
   }
 
   /*
-   * One gets to this method only if there was NO definition of a static final field in the static body At the same time no TAG with a constant value
-   * matched, so we know the static final was not initialized at declaration time If this happens: though it shouldnt unless u come from non-java
-   * compilers...insert default value initialization into the static method...right at the end to make things easy
+   * One gets to this method only if there was NO definition of a static final field in the static body At the same time no
+   * TAG with a constant value matched, so we know the static final was not initialized at declaration time If this happens:
+   * though it shouldnt unless u come from non-java compilers...insert default value initialization into the static
+   * method...right at the end to make things easy
    */
   public void assignDefault(ASTMethodNode node, SootField f) {
 
@@ -291,8 +292,8 @@ public class FinalFieldDefinition {
       assignStmt = new GAssignStmt(ref, FloatConstant.v(0));
     } else if (fieldType instanceof LongType) {
       assignStmt = new GAssignStmt(ref, LongConstant.v(0));
-    } else if (fieldType instanceof IntType || fieldType instanceof ByteType || fieldType instanceof ShortType || fieldType instanceof CharType
-        || fieldType instanceof BooleanType) {
+    } else if (fieldType instanceof IntType || fieldType instanceof ByteType || fieldType instanceof ShortType
+        || fieldType instanceof CharType || fieldType instanceof BooleanType) {
 
       assignStmt = new GAssignStmt(ref, DIntConstant.v(0, fieldType));
     }
@@ -308,9 +309,10 @@ public class FinalFieldDefinition {
   }
 
   /*
-   * A sootfield gets to this method if it was an interesting field i.e static final for clinit and only final but non static for init and there was
-   * atleast one place that this var was defined but it was not defined on all paths and hence the recompilation will result in an error
-   * 
+   * A sootfield gets to this method if it was an interesting field i.e static final for clinit and only final but non static
+   * for init and there was atleast one place that this var was defined but it was not defined on all paths and hence the
+   * recompilation will result in an error
+   *
    * try{ staticFinal = defined; } catch(Exception e){}
    */
 
@@ -330,30 +332,33 @@ public class FinalFieldDefinition {
 
       if (allUses != null && allUses.size() != 0) {
         /*
-         * if the number of uses is not 0 then we dont want to get into trying to delay initialization just before assignment. Easier to remove
-         * "final"
+         * if the number of uses is not 0 then we dont want to get into trying to delay initialization just before
+         * assignment. Easier to remove "final"
          */
         cancelFinalModifier.add(field);
       } else {
         /*
-         * we have a final field with 1 def and 0 uses but is not initialized on all paths we can try to delay initialization using an indirect
-         * approach STMT0 TYPE DavaTemp_fieldName; STMT1 DavaTemp_fieldname = DEFAULT try{ try{ field = ... STMT2 DavaTemp_fieldname = ... } X
-         * catch(...){ }catch(..){ .... .... } } STMT3 field = Dava_tempVar
-         * 
-         * Notice the following code will try to place the field assignment as close to the original assignment as possible.
-         * 
-         * TODO: However there might still be issues with delaying this assignment e.g. what if the place marked by X (more specifically between the
-         * original def and the new def includes a method invocation which access the delayed field.
-         * 
-         * Original Comment February 2nd, 2006: Laurie mentioned that apart from direct uses we also have to be conservative about method calls since
-         * we are dealing with fields here What if some method was invoked and it tried to use a field whose initialization we are about to delay.
-         * This can be done by implementing a small analysis. (See end of this class file.
-         * 
-         * TODO: SHOULD BE CHECKED FOR CODE BETWEEN THE OLD DEF AND THE NEW ASSIGNMENT Currently checks from some point till end of method
+         * we have a final field with 1 def and 0 uses but is not initialized on all paths we can try to delay initialization
+         * using an indirect approach STMT0 TYPE DavaTemp_fieldName; STMT1 DavaTemp_fieldname = DEFAULT try{ try{ field = ...
+         * STMT2 DavaTemp_fieldname = ... } X catch(...){ }catch(..){ .... .... } } STMT3 field = Dava_tempVar
          *
-         * MethodCallFinder myMethodCallFinder = new MethodCallFinder( (GAssignStmt) defs.get(0)); node.apply(myMethodCallFinder); if
-         * (myMethodCallFinder.anyMethodCalls()) { // there was some method call after the definition stmt so // we cant continue // remove the final
-         * modifier and leave //System.out.println("Method invoked somewhere after definition"); cancelFinalModifier.add(field); return; }
+         * Notice the following code will try to place the field assignment as close to the original assignment as possible.
+         *
+         * TODO: However there might still be issues with delaying this assignment e.g. what if the place marked by X (more
+         * specifically between the original def and the new def includes a method invocation which access the delayed field.
+         *
+         * Original Comment February 2nd, 2006: Laurie mentioned that apart from direct uses we also have to be conservative
+         * about method calls since we are dealing with fields here What if some method was invoked and it tried to use a
+         * field whose initialization we are about to delay. This can be done by implementing a small analysis. (See end of
+         * this class file.
+         *
+         * TODO: SHOULD BE CHECKED FOR CODE BETWEEN THE OLD DEF AND THE NEW ASSIGNMENT Currently checks from some point till
+         * end of method
+         *
+         * MethodCallFinder myMethodCallFinder = new MethodCallFinder( (GAssignStmt) defs.get(0));
+         * node.apply(myMethodCallFinder); if (myMethodCallFinder.anyMethodCalls()) { // there was some method call after the
+         * definition stmt so // we cant continue // remove the final modifier and leave
+         * //System.out.println("Method invoked somewhere after definition"); cancelFinalModifier.add(field); return; }
          */
 
         // Creating STMT0
@@ -391,7 +396,8 @@ public class FinalFieldDefinition {
         // STMT1 initialization
         AugmentedStmt initialization = createDefaultStmt(newLocal);
         /*
-         * The first node in a method is the declarations we know there is a second node because originaly the field was initialized on some path
+         * The first node in a method is the declarations we know there is a second node because originaly the field was
+         * initialized on some path
          */
         if (body.size() < 2) {
           throw new RuntimeException("Size of body is less than 1");
@@ -439,12 +445,14 @@ public class FinalFieldDefinition {
         AugmentedStmt assignStmt1 = new AugmentedStmt(assignStmt);
 
         /*
-         * 14th February 2006 Should add this statement to the first place in the code where we will have a mustInitialize satisfied
+         * 14th February 2006 Should add this statement to the first place in the code where we will have a mustInitialize
+         * satisfied
          */
 
         // the def is at (GAssignStmt) defs.get(0)
         // its parent is ASTStatementSequence and its parent is now needed
-        soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder parentFinder = new soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder();
+        soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder parentFinder
+            = new soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder();
         node.apply(parentFinder);
 
         Object parent = parentFinder.getParentOf(defs.get(0));

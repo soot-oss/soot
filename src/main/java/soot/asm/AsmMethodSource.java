@@ -281,7 +281,7 @@ import soot.util.Chain;
 
 /**
  * Generates Jimple bodies from bytecode.
- * 
+ *
  * @author Aaloan Miftah
  */
 final class AsmMethodSource implements MethodSource {
@@ -618,8 +618,8 @@ final class AsmMethodSource implements MethodSource {
       }
     }
     /*
-     * in case any static field or array is read from, and the static constructor or the field this instruction writes to, modifies that field, write
-     * out any previous read from field/array
+     * in case any static field or array is read from, and the static constructor or the field this instruction writes to,
+     * modifies that field, write out any previous read from field/array
      */
     assignReadOps(null);
   }
@@ -725,11 +725,12 @@ final class AsmMethodSource implements MethodSource {
    * Following version is more complex, using stack frames as opposed to simply swapping
    */
   /*
-   * StackFrame frame = getFrame(insn); Operand[] out = frame.out(); Operand dup, dup2 = null, dupd, dupd2 = null; if (out == null) { dupd =
-   * popImmediate(); dup = new Operand(insn, dupd.stackOrValue()); if (dword) { dupd2 = peek(); if (dupd2 == DWORD_DUMMY) { pop(); dupd2 = dupd; }
-   * else { dupd2 = popImmediate(); } dup2 = new Operand(insn, dupd2.stackOrValue()); frame.out(dup, dup2); frame.in(dupd, dupd2); } else {
-   * frame.out(dup); frame.in(dupd); } } else { dupd = pop(); dup = out[0]; if (dword) { dupd2 = pop(); if (dupd2 == DWORD_DUMMY) dupd2 = dupd; dup2 =
-   * out[1]; frame.mergeIn(dupd, dupd2); } else { frame.mergeIn(dupd); } }
+   * StackFrame frame = getFrame(insn); Operand[] out = frame.out(); Operand dup, dup2 = null, dupd, dupd2 = null; if (out ==
+   * null) { dupd = popImmediate(); dup = new Operand(insn, dupd.stackOrValue()); if (dword) { dupd2 = peek(); if (dupd2 ==
+   * DWORD_DUMMY) { pop(); dupd2 = dupd; } else { dupd2 = popImmediate(); } dup2 = new Operand(insn, dupd2.stackOrValue());
+   * frame.out(dup, dup2); frame.in(dupd, dupd2); } else { frame.out(dup); frame.in(dupd); } } else { dupd = pop(); dup =
+   * out[0]; if (dword) { dupd2 = pop(); if (dupd2 == DWORD_DUMMY) dupd2 = dupd; dup2 = out[1]; frame.mergeIn(dupd, dupd2); }
+   * else { frame.mergeIn(dupd); } }
    */
 
   private void convertDupInsn(InsnNode insn) {
@@ -799,8 +800,9 @@ final class AsmMethodSource implements MethodSource {
 
   private void convertBinopInsn(InsnNode insn) {
     int op = insn.getOpcode();
-    boolean dword = op == DADD || op == LADD || op == DSUB || op == LSUB || op == DMUL || op == LMUL || op == DDIV || op == LDIV || op == DREM
-        || op == LREM || op == LSHL || op == LSHR || op == LUSHR || op == LAND || op == LOR || op == LXOR || op == LCMP || op == DCMPL || op == DCMPG;
+    boolean dword = op == DADD || op == LADD || op == DSUB || op == LSUB || op == DMUL || op == LMUL || op == DDIV
+        || op == LDIV || op == DREM || op == LREM || op == LSHL || op == LSHR || op == LUSHR || op == LAND || op == LOR
+        || op == LXOR || op == LCMP || op == DCMPL || op == DCMPG;
     StackFrame frame = getFrame(insn);
     Operand[] out = frame.out();
     Operand opr;
@@ -1022,7 +1024,8 @@ final class AsmMethodSource implements MethodSource {
       StackFrame frame = getFrame(insn);
       if (!units.containsKey(insn)) {
         Operand opr = popStackConst();
-        MonitorStmt ts = op == MONITORENTER ? Jimple.v().newEnterMonitorStmt(opr.stackOrValue()) : Jimple.v().newExitMonitorStmt(opr.stackOrValue());
+        MonitorStmt ts = op == MONITORENTER ? Jimple.v().newEnterMonitorStmt(opr.stackOrValue())
+            : Jimple.v().newExitMonitorStmt(opr.stackOrValue());
         opr.addBox(ts.getOpBox());
         frame.in(opr);
         frame.boxes(ts.getOpBox());
@@ -1389,7 +1392,8 @@ final class AsmMethodSource implements MethodSource {
       // of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
       SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);
 
-      DynamicInvokeExpr indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmMethodArgs, methodRef, insn.bsm.getTag(), methodArgs);
+      DynamicInvokeExpr indy
+          = Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmMethodArgs, methodRef, insn.bsm.getTag(), methodArgs);
       if (boxes != null) {
         for (int i = 0; i < types.length - 1; i++) {
           boxes[i] = indy.getArgBox(i);

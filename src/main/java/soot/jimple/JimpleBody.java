@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -57,13 +57,14 @@ public class JimpleBody extends StmtBody {
 
   /**
    * Returns an array containing some validators in order to validate the JimpleBody
-   * 
+   *
    * @return the array containing validators
    */
   private synchronized static BodyValidator[] getValidators() {
     if (validators == null) {
       validators = new BodyValidator[] { IdentityStatementsValidator.v(), TypesValidator.v(), ReturnStatementsValidator.v(),
-          InvokeArgumentValidator.v(), FieldRefValidator.v(), NewValidator.v(), JimpleTrapValidator.v(), IdentityValidator.v(), MethodValidator.v()
+          InvokeArgumentValidator.v(), FieldRefValidator.v(), NewValidator.v(), JimpleTrapValidator.v(),
+          IdentityValidator.v(), MethodValidator.v()
           // InvokeValidator.v()
       };
     }
@@ -105,7 +106,7 @@ public class JimpleBody extends StmtBody {
 
   /**
    * Validates the jimple body and saves a list of all validation errors
-   * 
+   *
    * @param exceptionList
    *          the list of validation errors
    */
@@ -132,7 +133,7 @@ public class JimpleBody extends StmtBody {
 
   /**
    * Inserts usual statements for handling this & parameters into body.
-   * 
+   *
    * @param declaringClass
    *          the class, which should be used for this references. Can be null for static methods
    */
@@ -145,7 +146,8 @@ public class JimpleBody extends StmtBody {
     // add this-ref before everything else
     if (!getMethod().isStatic()) {
       if (declaringClass == null) {
-        throw new IllegalArgumentException(String.format("No declaring class given for method %s", method.getSubSignature()));
+        throw new IllegalArgumentException(
+            String.format("No declaring class given for method %s", method.getSubSignature()));
       }
       Local l = jimple.newLocal("this", RefType.v(declaringClass));
       Stmt s = jimple.newIdentityStmt(l, jimple.newThisRef((RefType) l.getType()));

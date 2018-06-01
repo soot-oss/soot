@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -30,8 +30,8 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * A FilterWriter which catches to-be-escaped characters (<code>\\unnnn</code>) in the input and substitutes their escaped representation. Used for
- * Soot output.
+ * A FilterWriter which catches to-be-escaped characters (<code>\\unnnn</code>) in the input and substitutes their escaped
+ * representation. Used for Soot output.
  */
 public class EscapedWriter extends FilterWriter {
   /** Convenience field containing the system's line separator. */

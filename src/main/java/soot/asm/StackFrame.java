@@ -29,7 +29,7 @@ import soot.jimple.Jimple;
 
 /**
  * Frame of stack for an instruction.
- * 
+ *
  * @author Aaloan Miftah
  */
 final class StackFrame {
@@ -42,7 +42,7 @@ final class StackFrame {
 
   /**
    * Constructs a new stack frame.
-   * 
+   *
    * @param src
    *          source the frame belongs to.
    */
@@ -59,7 +59,7 @@ final class StackFrame {
 
   /**
    * Sets the operands used by this frame.
-   * 
+   *
    * @param oprs
    *          the operands.
    */
@@ -76,7 +76,7 @@ final class StackFrame {
 
   /**
    * Sets the value boxes corresponding to the operands used by this frame.
-   * 
+   *
    * @param boxes
    *          the boxes.
    */
@@ -86,7 +86,7 @@ final class StackFrame {
 
   /**
    * Sets the operands produced by this frame.
-   * 
+   *
    * @param oprs
    *          the operands.
    */
@@ -96,7 +96,7 @@ final class StackFrame {
 
   /**
    * Merges the specified operands with the operands used by this frame.
-   * 
+   *
    * @param oprs
    *          the new operands.
    * @throws IllegalArgumentException
@@ -187,13 +187,15 @@ final class StackFrame {
        * this version uses allocates local if it finds both operands have stack locals allocated already
        */
       /*
-       * if (stack == null) { if (in.size() != 1) throw new AssertionError("Local h " + in.size()); stack = src.newStackLocal(); inStackLocals[i] =
-       * stack; ValueBox box = boxes == null ? null : boxes[i]; /* add assign statement for prevOp * for (int j = 0; j != nrIn; j++) { Operand prevOp
-       * = in.get(j)[i]; prevOp.removeBox(box); if (prevOp.stack == null) { prevOp.stack = stack; as = Jimple.v().newAssignStmt(stack, prevOp.value);
-       * src.setUnit(prevOp.insn, as); prevOp.updateBoxes(); } else { as = Jimple.v().newAssignStmt(stack, prevOp.stackOrValue());
-       * src.mergeUnits(prevOp.insn, as); } prevOp.addBox(as.getRightOpBox()); } if (box != null) box.setValue(stack); } if (newOp.stack == null) {
-       * newOp.stack = stack; as = Jimple.v().newAssignStmt(stack, newOp.value); src.setUnit(newOp.insn, as); newOp.updateBoxes(); } else { as =
-       * Jimple.v().newAssignStmt(stack, newOp.stackOrValue()); src.mergeUnits(newOp.insn, as); } newOp.addBox(as.getRightOpBox());
+       * if (stack == null) { if (in.size() != 1) throw new AssertionError("Local h " + in.size()); stack =
+       * src.newStackLocal(); inStackLocals[i] = stack; ValueBox box = boxes == null ? null : boxes[i]; /* add assign
+       * statement for prevOp * for (int j = 0; j != nrIn; j++) { Operand prevOp = in.get(j)[i]; prevOp.removeBox(box); if
+       * (prevOp.stack == null) { prevOp.stack = stack; as = Jimple.v().newAssignStmt(stack, prevOp.value);
+       * src.setUnit(prevOp.insn, as); prevOp.updateBoxes(); } else { as = Jimple.v().newAssignStmt(stack,
+       * prevOp.stackOrValue()); src.mergeUnits(prevOp.insn, as); } prevOp.addBox(as.getRightOpBox()); } if (box != null)
+       * box.setValue(stack); } if (newOp.stack == null) { newOp.stack = stack; as = Jimple.v().newAssignStmt(stack,
+       * newOp.value); src.setUnit(newOp.insn, as); newOp.updateBoxes(); } else { as = Jimple.v().newAssignStmt(stack,
+       * newOp.stackOrValue()); src.mergeUnits(newOp.insn, as); } newOp.addBox(as.getRightOpBox());
        */
     }
     if (diff) {

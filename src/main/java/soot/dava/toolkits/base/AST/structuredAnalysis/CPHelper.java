@@ -12,7 +12,7 @@ public class CPHelper {
 
   /*
    * The helper class just checks the type of the data being sent and create a clone of it
-   * 
+   *
    * If it is not a data of interest a null is send back
    */
   public static Object wrapperClassCloner(Object value) {
@@ -32,9 +32,9 @@ public class CPHelper {
   }
 
   /*
-   * isAConstantValue(Value toCheck) it will check whether toCheck is one of the interesting Constants IntConstant FloatConstant etc etc if yes return
-   * the Integer/Long/float/Double
-   * 
+   * isAConstantValue(Value toCheck) it will check whether toCheck is one of the interesting Constants IntConstant
+   * FloatConstant etc etc if yes return the Integer/Long/float/Double
+   *
    * Notice for integer the callee has to check whether what is required is a Boolean!!!!
    */
   public static Object isAConstantValue(Value toCheck) {

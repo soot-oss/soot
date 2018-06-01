@@ -78,13 +78,14 @@ public class MethodCallFinder extends DepthFirstAdapter {
   }
 
   /*
-   * some ASTConstuct{ ASTConstruct{ Some bodies Some Bodies Statement SequenceNode New Stmt seq node with some stmts some stmts ----------> Body of
-   * method to inline the invoke stmt New Stmt seq node with other stmts some other stmts Some other bodies Some other bodies End ASTConstruct End
-   * ASTConstruct
+   * some ASTConstuct{ ASTConstruct{ Some bodies Some Bodies Statement SequenceNode New Stmt seq node with some stmts some
+   * stmts ----------> Body of method to inline the invoke stmt New Stmt seq node with other stmts some other stmts Some
+   * other bodies Some other bodies End ASTConstruct End ASTConstruct
    */
 
   /*
-   * Notice that since this class is only invoked for clinit methods this invoke statement is some invocation that occured within the clinit method
+   * Notice that since this class is only invoked for clinit methods this invoke statement is some invocation that occured
+   * within the clinit method
    */
   public void inInvokeStmt(InvokeStmt s) {
     InvokeExpr invokeExpr = s.getInvokeExpr();
@@ -130,8 +131,8 @@ public class MethodCallFinder extends DepthFirstAdapter {
             SootMethod sootMethod = runtime.getMethod("void <init>(java.lang.String)");
             SootMethodRef methodRef = sootMethod.makeRef();
             RefType myRefType = RefType.v(runtime);
-            StringConstant tempString = StringConstant
-                .v("This method used to have a definition of a final variable. " + "Dava inlined the definition into the static initializer");
+            StringConstant tempString = StringConstant.v("This method used to have a definition of a final variable. "
+                + "Dava inlined the definition into the static initializer");
             List list = new ArrayList();
             list.add(tempString);
 
@@ -163,7 +164,8 @@ public class MethodCallFinder extends DepthFirstAdapter {
     return (List<Object>) subBodies.get(0);
   }
 
-  public List<Object> createNewSubBody(List<Object> orignalBody, List<ASTStatementSequenceNode> partNewBody, Object stmtSeqNode) {
+  public List<Object> createNewSubBody(List<Object> orignalBody, List<ASTStatementSequenceNode> partNewBody,
+      Object stmtSeqNode) {
 
     List<Object> newBody = new ArrayList<Object>();
 
@@ -189,7 +191,8 @@ public class MethodCallFinder extends DepthFirstAdapter {
     return newBody;
   }
 
-  public boolean replaceSubBody(InvokeStmt s, List<ASTStatementSequenceNode> newChangedBodyPart, ASTParentNodeFinder finder) {
+  public boolean replaceSubBody(InvokeStmt s, List<ASTStatementSequenceNode> newChangedBodyPart,
+      ASTParentNodeFinder finder) {
 
     // get the stmt seq node of invoke stmt
     Object stmtSeqNode = finder.getParentOf(s);
@@ -372,9 +375,9 @@ public class MethodCallFinder extends DepthFirstAdapter {
   }
 
   /*
-   * Given an invoke stmt this method finds the parent of this stmt which should always be a StatementSequenceNode Then the sequence is broken into
-   * three parts. The first part contains stmts till above the invoke stmt. The second part contains the body argument which is the body of the
-   * inlined method and the third part are the stmts below the invoke stmt
+   * Given an invoke stmt this method finds the parent of this stmt which should always be a StatementSequenceNode Then the
+   * sequence is broken into three parts. The first part contains stmts till above the invoke stmt. The second part contains
+   * the body argument which is the body of the inlined method and the third part are the stmts below the invoke stmt
    */
 
   public List<ASTStatementSequenceNode> createChangedBodyPart(InvokeStmt s, List body, ASTParentNodeFinder finder) {

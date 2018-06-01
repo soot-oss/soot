@@ -84,8 +84,8 @@ public class StrengthenByIf {
             return null;
           } else if (loopNode instanceof ASTUnconditionalLoopNode) {
             /*
-             * An UnconditionalLoopNode has a single If Condition which breaks the loop In this case Create an ASTWhileLoop Node with the flipped
-             * Condition of the If statement
+             * An UnconditionalLoopNode has a single If Condition which breaks the loop In this case Create an ASTWhileLoop
+             * Node with the flipped Condition of the If statement
              */
 
             // flip the inner condition
@@ -197,9 +197,9 @@ public class StrengthenByIf {
   } // end of method
 
   /*
-   * Given a body of a node the method checks for the following: 1, the body has only one node 2, the node is a statementSequenceNode 3, There is only
-   * one statement in the stmt seq node 4, the stmt is a break stmt
-   * 
+   * Given a body of a node the method checks for the following: 1, the body has only one node 2, the node is a
+   * statementSequenceNode 3, There is only one statement in the stmt seq node 4, the stmt is a break stmt
+   *
    * If the conditions are true the label of the break stmt is returned otherwise null is returned
    */
   private static String isItOnlyBreak(List<Object> body) {

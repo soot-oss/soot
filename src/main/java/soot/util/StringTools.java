@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -34,7 +34,8 @@ import java.text.StringCharacterIterator;
 public class StringTools {
 
   /**
-   * Returns fromString, but with non-isalpha() characters printed as <code>'\\unnnn'</code>. Used by SootClass to generate output.
+   * Returns fromString, but with non-isalpha() characters printed as <code>'\\unnnn'</code>. Used by SootClass to generate
+   * output.
    */
   public static java.lang.String getEscapedStringOf(String fromString) {
     char[] fromStringArray;
@@ -77,7 +78,8 @@ public class StringTools {
   public final static String lineSeparator = System.getProperty("line.separator");
 
   /**
-   * Returns fromString, but with certain characters printed as if they were in a Java string literal. Used by StringConstant.toString()
+   * Returns fromString, but with certain characters printed as if they were in a Java string literal. Used by
+   * StringConstant.toString()
    */
   public static java.lang.String getQuotedStringOf(String fromString) {
     // We definitely need fromString.length + 2, but let's have some

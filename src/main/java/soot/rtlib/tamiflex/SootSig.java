@@ -13,9 +13,12 @@ import org.slf4j.LoggerFactory;
 public class SootSig {
   private static final Logger logger = LoggerFactory.getLogger(SootSig.class);
 
-  private static Map<Constructor<?>, String> constrCache = new ConcurrentHashMap<Constructor<?>, String>(); // TODO should be a map with soft keys,
+  private static Map<Constructor<?>, String> constrCache = new ConcurrentHashMap<Constructor<?>, String>(); // TODO should be
+                                                                                                            // a map with
+                                                                                                            // soft keys,
                                                                                                             // actually
-  private static Map<Method, String> methodCache = new ConcurrentHashMap<Method, String>(); // TODO should be a map with soft keys, actually
+  private static Map<Method, String> methodCache = new ConcurrentHashMap<Method, String>(); // TODO should be a map with soft
+                                                                                            // keys, actually
 
   public static String sootSignature(Constructor<?> c) {
     String res = constrCache.get(c);
@@ -48,7 +51,8 @@ public class SootSig {
       String res = methodCache.get(resolved);
       if (res == null) {
         String[] paramTypes = classesToTypeNames(resolved.getParameterTypes());
-        res = sootSignature(resolved.getDeclaringClass().getName(), getTypeName(resolved.getReturnType()), resolved.getName(), paramTypes);
+        res = sootSignature(resolved.getDeclaringClass().getName(), getTypeName(resolved.getReturnType()),
+            resolved.getName(), paramTypes);
         methodCache.put(resolved, res);
       }
       return res;

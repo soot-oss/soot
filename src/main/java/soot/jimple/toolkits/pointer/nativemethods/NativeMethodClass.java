@@ -18,8 +18,8 @@
  */
 
 /**
- * NativeMethodClass defines side-effect simulation of native methods 
- * in a class. 
+ * NativeMethodClass defines side-effect simulation of native methods
+ * in a class.
  */
 package soot.jimple.toolkits.pointer.nativemethods;
 
@@ -43,13 +43,15 @@ public abstract class NativeMethodClass {
   /*
    * If a native method has no side effect, call this method. Currently, it does nothing.
    */
-  public static void defaultMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
+  public static void defaultMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
     if (DEBUG) {
       logger.debug("No side effects : " + method.toString());
     }
   }
 
   /* To be implemented by individual classes */
-  public abstract void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]);
+  public abstract void simulateMethod(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]);
 
 }
