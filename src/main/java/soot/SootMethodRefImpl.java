@@ -225,7 +225,7 @@ public class SootMethodRefImpl implements SootMethodRef {
     // we simply create the methods on the fly; the method body will throw
     // an appropriate
     // error just in case the code *is* actually reached at runtime
-    if (Options.v().allow_phantom_refs()) {
+    if (Options.v().allow_phantom_refs() && !declaringClass.isInterface()) {
       return createUnresolvedErrorMethod(declaringClass);
     }
 
