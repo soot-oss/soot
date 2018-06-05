@@ -46,15 +46,15 @@ public class LineNumbersTest extends AbstractASMBackendTestWithSources {
 			mv.visitCode();
 			Label l1 = new Label();
 			mv.visitLabel(l1);
-			mv.visitLineNumber(3, l1);
+			mv.visitLineNumber(25, l1);
 			mv.visitVarInsn(ALOAD, 0);
 			Label l2 = new Label();
 			mv.visitLabel(l2);
-			mv.visitLineNumber(3, l2);
+			mv.visitLineNumber(25, l2);
 			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
 			Label l3 = new Label();
 			mv.visitLabel(l3);
-			mv.visitLineNumber(3, l3);
+			mv.visitLineNumber(25, l3);
 			mv.visitInsn(RETURN);
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
@@ -64,7 +64,7 @@ public class LineNumbersTest extends AbstractASMBackendTestWithSources {
 			mv.visitCode();
 			Label l0 = new Label();
 			mv.visitLabel(l0);
-			mv.visitLineNumber(6, l0);
+			mv.visitLineNumber(28, l0);
 			mv.visitInsn(RETURN);
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
