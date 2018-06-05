@@ -27,7 +27,6 @@
 	</properties>
 	<build>
 		<finalName>sootclasses-trunk</finalName>
-
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -266,19 +265,19 @@
 					<execution>
 						<id>validate</id>
 						<phase>validate</phase>
-						<configuration>
-							<propertyExpansion>config_loc=${checkstyle.dir.path}</propertyExpansion>
-							<configLocation>${checkstyle.file.path}</configLocation>
-							<encoding>UTF-8</encoding>
-							<logViolationsToConsole>true</logViolationsToConsole>
-							<failOnViolation>${checkstyle.failOnViolation}</failOnViolation>
-							<violationSeverity>warning</violationSeverity>
-						</configuration>
 						<goals>
 							<goal>check</goal>
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<propertyExpansion>config_loc=${checkstyle.dir.path}</propertyExpansion>
+					<configLocation>${checkstyle.file.path}</configLocation>
+					<encoding>UTF-8</encoding>
+					<logViolationsToConsole>true</logViolationsToConsole>
+					<failOnViolation>${checkstyle.failOnViolation}</failOnViolation>
+					<violationSeverity>warning</violationSeverity>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -321,7 +320,6 @@
 			<version>1.10.1</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<!-- Local dependencies -->
 		<dependency>
 			<groupId>pxb.android</groupId>
@@ -333,7 +331,6 @@
 			<artifactId>polyglot</artifactId>
 			<version>2006</version>
 		</dependency>
-
 		<!-- Published from the github repo -->
 		<!-- Built by http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/ -->
 		<dependency>
@@ -341,7 +338,6 @@
 			<artifactId>heros</artifactId>
 			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
-
 		<!-- Uploaded to http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/
 			from the nightly build server -->
 		<dependency>
@@ -349,7 +345,6 @@
 			<artifactId>jasmin</artifactId>
 			<version>3.0.1-SNAPSHOT</version>
 		</dependency>
-
 		<!-- Logging dependencies -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -362,7 +357,6 @@
 			<version>1.7.5</version>
 			<optional>true</optional>
 		</dependency>
-
 		<!-- Testing dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -390,7 +384,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<repositories>
 		<repository>
 			<id>soot-snapshot</id>
@@ -403,5 +396,4 @@
 			<url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
 		</repository>
 	</repositories>
-
 </project>
