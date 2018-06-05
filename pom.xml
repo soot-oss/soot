@@ -273,19 +273,19 @@
 					<execution>
 						<id>stylecheck</id>
 						<phase>verify</phase>
-						<configuration>
-							<propertyExpansion>config_loc=${checkstyle.dir.path}</propertyExpansion>
-							<configLocation>${checkstyle.file.path}</configLocation>
-							<encoding>UTF-8</encoding>
-							<logViolationsToConsole>true</logViolationsToConsole>
-							<failOnViolation>${checkstyle.failOnViolation}</failOnViolation>
-							<violationSeverity>warning</violationSeverity>
-						</configuration>
 						<goals>
 							<goal>check</goal>
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<propertyExpansion>config_loc=${checkstyle.dir.path}</propertyExpansion>
+					<configLocation>${checkstyle.file.path}</configLocation>
+					<encoding>UTF-8</encoding>
+					<logViolationsToConsole>true</logViolationsToConsole>
+					<failOnViolation>${checkstyle.failOnViolation}</failOnViolation>
+					<violationSeverity>warning</violationSeverity>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
