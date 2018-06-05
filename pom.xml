@@ -6,6 +6,13 @@
 	<name>Soot</name>
 	<version>3.1.0-SNAPSHOT</version>
 	<description>A Java Optimization Framework</description>
+	<licenses>
+		<license>
+			<name>GNU LESSER GENERAL PUBLIC LICENSE 2.1</name>
+			<url>https://www.gnu.org/licenses/lgpl-2.1.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -23,11 +30,11 @@
 		<checkstyle.version>8.9</checkstyle.version>
 		<checkstyle.dir.path>${basedir}/codingstyle</checkstyle.dir.path>
 		<checkstyle.file.path>${checkstyle.dir.path}/soot_checkstyle_checks.xml</checkstyle.file.path>
-		<checkstyle.failOnViolation>false</checkstyle.failOnViolation>
+		<checkstyle.failOnViolation>true</checkstyle.failOnViolation>
+		<licence-check.failOnMissingHeader>true</licence-check.failOnMissingHeader>
 	</properties>
 	<build>
 		<finalName>sootclasses-trunk</finalName>
-
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -264,8 +271,8 @@
 				</dependencies>
 				<executions>
 					<execution>
-						<id>validate</id>
-						<phase>validate</phase>
+						<id>stylecheck</id>
+						<phase>verify</phase>
 						<configuration>
 							<propertyExpansion>config_loc=${checkstyle.dir.path}</propertyExpansion>
 							<configLocation>${checkstyle.file.path}</configLocation>
@@ -277,6 +284,32 @@
 						<goals>
 							<goal>check</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>1.16</version>
+				<configuration>
+					<failOnMissingHeader>${licence-check.failOnMissingHeader}</failOnMissingHeader>
+					<failOnNotUptodateHeader>${licence-check.failOnMissingHeader}</failOnNotUptodateHeader>
+					<inceptionYear>1997</inceptionYear>
+					<addJavaLicenseAfterPackage>true</addJavaLicenseAfterPackage>
+					<organizationName>Sable</organizationName>
+					<projectName>Soot - a J*va Optimization Framework</projectName>
+					<licenseName>lgpl_v2_1</licenseName>
+					<roots>
+						<root>src/</root>
+					</roots>
+				</configuration>
+				<executions>
+					<execution>
+						<id>licence-check</id>
+						<goals>
+							<goal>check-file-header</goal>
+						</goals>
+						<phase>verify</phase>
 					</execution>
 				</executions>
 			</plugin>
@@ -321,7 +354,6 @@
 			<version>1.10.1</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<!-- Local dependencies -->
 		<dependency>
 			<groupId>pxb.android</groupId>
@@ -333,7 +365,6 @@
 			<artifactId>polyglot</artifactId>
 			<version>2006</version>
 		</dependency>
-
 		<!-- Published from the github repo -->
 		<!-- Built by http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/ -->
 		<dependency>
@@ -341,7 +372,6 @@
 			<artifactId>heros</artifactId>
 			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
-
 		<!-- Uploaded to http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/
 			from the nightly build server -->
 		<dependency>
@@ -349,7 +379,6 @@
 			<artifactId>jasmin</artifactId>
 			<version>3.0.1-SNAPSHOT</version>
 		</dependency>
-
 		<!-- Logging dependencies -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -362,7 +391,6 @@
 			<version>1.7.5</version>
 			<optional>true</optional>
 		</dependency>
-
 		<!-- Testing dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -390,7 +418,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<repositories>
 		<repository>
 			<id>soot-snapshot</id>
@@ -403,5 +430,4 @@
 			<url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
 		</repository>
 	</repositories>
-
 </project>
