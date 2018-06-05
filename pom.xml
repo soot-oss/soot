@@ -301,8 +301,12 @@
 					<inceptionYear>1997</inceptionYear>
 					<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
 					<licenseName>lgpl_v2_1</licenseName>
+					<organizationName>Raja Vallée-Rai and others</organizationName>
+					<descriptionTemplate>${checkstyle.dir.path}/license-header.ftl</descriptionTemplate>
 					<roots>
-						<root>src/</root>
+						<root>src/main/java</root>
+						<root>src/test/java</root> 
+					    <root>src/it</root>
 					</roots>
 				</configuration>
 				<executions>
