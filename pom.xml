@@ -3,9 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ca.mcgill.sable</groupId>
 	<artifactId>soot</artifactId>
-	<name>Soot</name>
+	<name>Soot - a J*va Optimization Framework</name>
 	<version>3.1.0-SNAPSHOT</version>
 	<description>A Java Optimization Framework</description>
+	<organization>
+		<name>Sable</name>
+		<url>http://www.sable.mcgill.ca/</url>
+	</organization>
 	<licenses>
 		<license>
 			<name>GNU LESSER GENERAL PUBLIC LICENSE 2.1</name>
@@ -295,9 +299,7 @@
 					<failOnMissingHeader>${licence-check.failOnMissingHeader}</failOnMissingHeader>
 					<failOnNotUptodateHeader>${licence-check.failOnMissingHeader}</failOnNotUptodateHeader>
 					<inceptionYear>1997</inceptionYear>
-					<addJavaLicenseAfterPackage>true</addJavaLicenseAfterPackage>
-					<organizationName>Sable</organizationName>
-					<projectName>Soot - a J*va Optimization Framework</projectName>
+					<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
 					<licenseName>lgpl_v2_1</licenseName>
 					<roots>
 						<root>src/</root>
@@ -305,9 +307,9 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>licence-check</id>
+						<id>license-check</id>
 						<goals>
-							<goal>check-file-header</goal>
+							<goal>check-file-header</goal>	
 						</goals>
 						<phase>verify</phase>
 					</execution>
