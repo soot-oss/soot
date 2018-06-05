@@ -4,7 +4,7 @@ package soot.toolkits.graph;
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (c) 2014, Tim Henderson, Case Western Reserve University
+ * Copyright (c) 2014 Tim Henderson, Case Western Reserve University
  *   Cleveland, Ohio 44106
  *   All Rights Reserved.
  * %%
