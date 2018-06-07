@@ -1,118 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005-2006 Nomair A. Naeem (nomair.naeem@mail.mcgill.ca)
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Deal with the problem that super has to be the first stmt in a method body
- * The problem is as follows:
- * Suppose you had a call to super with some complicated arguments
- * or suppose an Aspect added some preinitialization
- * In both cases some code gets decompiled BEFORE the call to super
- * this is just initializing the arguments.
- * However the call to super() has to be the first stmt
- *
- *
- * January 23rd 2006 Writing New Algorithm...
- *
- *  Original constructor         ONE:Changed Constructor
- *
- *  B(args1){                       B(args1){
- *    ----------                       this(..args1..,B.preInit1(args1));
- *  X ----------                    }
- *    ----------
- *    super(args2);
- *    ----------
- *  Y ----------
- *    ----------
- *
- *
- ********************************************************************
- *  New method in Class being Decompiled
- *
- *  private static preInit1(args1){
- *
- *      ----------
- *    X ----------
- *      ----------
- *
- *    DavaSuperHandler handler = new DavaSuperHandler();
- *    //code to evaluate all args in args2
- *
- *    //evaluate 1st arg in args2
- *     ---------
- *    handler.store(firstArg);
- *
- *    //evaluate 2nd arg in args2
- *     ---------
- *    handler.store(secondArg);
- *
- *    //AND SO ON TILL ALL ARGS ARE FINISHED
- *
- *    return handler;
- *  }
- *
- *
- ********************************************************************
- *  New Constructor Introduced
- *
- * B(..args1.., DavaSuperHandler handler){
- *
- *    super(
- *         (CAST-TYPE)handler.get(0),
- *         ((CAST-TYPE)handler.get(1)).CONVERSION(),
- *          .......);
- *
- *    ----------
- *  Y ----------
- *    ----------
- * }
- *
- *
- ***********************************************************************
- *  New Class Created  (Inner class will work best)
- *
- *  class DavaSuperHandler{
- *     Vector myVector = new Vector();
- *
- *     public Object get(int pos){
- *        return myVector.elementAt(pos);
- *     }
- *
- *     public void store(Object obj){
- *           myVector.add(obj);
- *     }
- *  }
- *
- ***********************************************************************
- *
- *
- *
- * ONE: Important to check that the parent of the call to super is the ASTMethodNode
- *      This is important because of the super call is nested within some control flow
- *      we cannot simply remove the super call (Although this shouldnt happen but just for completness)
- *
- * TWO: It is necessary to run on AST Analysis on the new SootMethod since
- *      the DavaBody usually invokes these anlayses
- *      but our newly created method will never go through that process
- *
- */
-
 package soot.dava.toolkits.base.AST.transformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 - 2006 Nomair A. Naeem (nomair.naeem@mail.mcgill.ca)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
