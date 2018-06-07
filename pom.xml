@@ -3,9 +3,20 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ca.mcgill.sable</groupId>
 	<artifactId>soot</artifactId>
-	<name>Soot</name>
+	<name>Soot - a J*va Optimization Framework</name>
 	<version>3.1.0-SNAPSHOT</version>
 	<description>A Java Optimization Framework</description>
+	<organization>
+		<name>Sable</name>
+		<url>http://www.sable.mcgill.ca/</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>GNU LESSER GENERAL PUBLIC LICENSE 2.1</name>
+			<url>https://www.gnu.org/licenses/lgpl-2.1.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -23,7 +34,8 @@
 		<checkstyle.version>8.9</checkstyle.version>
 		<checkstyle.dir.path>${basedir}/codingstyle</checkstyle.dir.path>
 		<checkstyle.file.path>${checkstyle.dir.path}/soot_checkstyle_checks.xml</checkstyle.file.path>
-		<checkstyle.failOnViolation>false</checkstyle.failOnViolation>
+		<checkstyle.failOnViolation>true</checkstyle.failOnViolation>
+		<licence-check.failOnMissingHeader>true</licence-check.failOnMissingHeader>
 	</properties>
 	<build>
 		<finalName>sootclasses-trunk</finalName>
@@ -263,8 +275,8 @@
 				</dependencies>
 				<executions>
 					<execution>
-						<id>validate</id>
-						<phase>validate</phase>
+						<id>stylecheck</id>
+						<phase>verify</phase>
 						<goals>
 							<goal>check</goal>
 						</goals>
@@ -278,6 +290,33 @@
 					<failOnViolation>${checkstyle.failOnViolation}</failOnViolation>
 					<violationSeverity>warning</violationSeverity>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>1.16</version>
+				<configuration>
+					<failOnMissingHeader>${licence-check.failOnMissingHeader}</failOnMissingHeader>
+					<failOnNotUptodateHeader>${licence-check.failOnMissingHeader}</failOnNotUptodateHeader>
+					<inceptionYear>1997</inceptionYear>
+					<addJavaLicenseAfterPackage>true</addJavaLicenseAfterPackage>
+					<licenseName>lgpl_v2_1</licenseName>
+					<organizationName>Raja Vallée-Rai and others</organizationName>
+					<roots>
+						<root>src/main/java</root>
+						<root>src/test/java</root> 
+					    <root>src/it</root>
+					</roots>
+				</configuration>
+				<executions>
+					<execution>
+						<id>license-check</id>
+						<goals>
+							<goal>check-file-header</goal>	
+						</goals>
+						<phase>verify</phase>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
