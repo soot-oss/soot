@@ -24,6 +24,7 @@ package soot.jimple.internal;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import soot.Local;
 import soot.Scene;
@@ -55,7 +56,10 @@ public class JimpleLocal implements Local, ConvertToBaf {
   /** Returns true if the given object is structurally equal to this one. */
   @Override
   public boolean equivTo(Object o) {
-    return this.equals(o);
+    if (!(o instanceof JimpleLocal)) return false;
+
+    JimpleLocal that = (JimpleLocal) o;
+    return Objects.equals(this.type, that.type);
   }
 
   /**
@@ -64,10 +68,7 @@ public class JimpleLocal implements Local, ConvertToBaf {
   @Override
   public int equivHashCode() {
     final int prime = 31;
-    int result = 1;
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    result = prime * result + ((type == null) ? 0 : type.hashCode());
-    return result;
+    return prime + ((type == null) ? 0 : type.hashCode());
   }
 
   /** Returns a clone of the current JimpleLocal. */
