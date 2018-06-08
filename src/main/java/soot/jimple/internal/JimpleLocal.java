@@ -56,7 +56,9 @@ public class JimpleLocal implements Local, ConvertToBaf {
   /** Returns true if the given object is structurally equal to this one. */
   @Override
   public boolean equivTo(Object o) {
-    if (!(o instanceof JimpleLocal)) return false;
+    if (!(o instanceof JimpleLocal)) {
+      return false;
+    }
 
     JimpleLocal that = (JimpleLocal) o;
     return Objects.equals(this.type, that.type);
