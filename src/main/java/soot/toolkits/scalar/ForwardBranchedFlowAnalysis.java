@@ -1,45 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2000 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-2000.
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
-/*
- 2000, March 20 - Updated code provided by Patrick Lam
- <plam@sable.mcgill.ca>
- from 1.beta.4.dev.60
- to 1.beta.6.dev.34
- Plus some bug fixes.
- -- Janus <janus@place.org>
-
-
- KNOWN LIMITATION: the analysis doesn't handle traps since traps
- handler statements have predecessors, but they
- don't have the trap handler as successor.  This
- might be a limitation of the CompleteUnitGraph
- tho.
- */
-
 package soot.toolkits.scalar;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2000 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -64,7 +45,8 @@ import soot.toolkits.graph.interaction.InteractionHandler;
 import soot.util.Chain;
 
 /**
- * Abstract class providing an engine for branched forward flow analysis. WARNING: This does not handle exceptional flow as branches!
+ * Abstract class providing an engine for branched forward flow analysis. WARNING: This does not handle exceptional flow as
+ * branches!
  */
 public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysis<Unit, A> {
   private static final Logger logger = LoggerFactory.getLogger(ForwardBranchedFlowAnalysis.class);

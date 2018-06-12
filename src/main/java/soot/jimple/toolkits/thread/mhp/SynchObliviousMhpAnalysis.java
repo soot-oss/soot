@@ -1,6 +1,28 @@
 
 package soot.jimple.toolkits.thread.mhp;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import heros.util.SootThreadGroup;
 
 import java.util.ArrayList;
@@ -35,20 +57,23 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.FlowSet;
 
 /**
- * UnsynchronizedMhpAnalysis written by Richard L. Halpert 2006-12-09 Calculates May-Happen-in-Parallel (MHP) information as if in the absence of
- * synchronization. Any synchronization statements (synchronized, wait, notify, etc.) are ignored. If the program has no synchronization, then this
- * actually generates correct MHP. This is useful if you are trying to generate (replacement) synchronization. It is also useful if an approximation
- * is acceptable, because it runs much faster than a synch-aware MHP analysis.
+ * UnsynchronizedMhpAnalysis written by Richard L. Halpert 2006-12-09 Calculates May-Happen-in-Parallel (MHP) information as
+ * if in the absence of synchronization. Any synchronization statements (synchronized, wait, notify, etc.) are ignored. If
+ * the program has no synchronization, then this actually generates correct MHP. This is useful if you are trying to generate
+ * (replacement) synchronization. It is also useful if an approximation is acceptable, because it runs much faster than a
+ * synch-aware MHP analysis.
  *
- * This analysis uses may-alias information to determine the types of threads launched and the call graph to determine which methods they may call.
- * This analysis uses a run-once/run-one-at-a-time/run-many classification to determine if a thread may be run in parallel with itself.
+ * This analysis uses may-alias information to determine the types of threads launched and the call graph to determine which
+ * methods they may call. This analysis uses a run-once/run-one-at-a-time/run-many classification to determine if a thread
+ * may be run in parallel with itself.
  */
 
 public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
   private static final Logger logger = LoggerFactory.getLogger(SynchObliviousMhpAnalysis.class);
   List<AbstractRuntimeThread> threadList;
   boolean optionPrintDebug;
-  boolean optionThreaded = false; // DOESN'T WORK if set to true... ForwardFlowAnalysis uses a static field in a thread-unsafe way
+  boolean optionThreaded = false; // DOESN'T WORK if set to true... ForwardFlowAnalysis uses a static field in a
+                                  // thread-unsafe way
 
   Thread self;
 
@@ -128,7 +153,8 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
       List threadAllocNodes = startToAllocNodes.get(e.getKey());
 
       // Get a list of all possible unique Runnable.run methods for this thread start statement
-      AbstractRuntimeThread thread = new AbstractRuntimeThread(); // provides a list interface to the methods in a thread's sub-call-graph
+      AbstractRuntimeThread thread = new AbstractRuntimeThread(); // provides a list interface to the methods in a thread's
+                                                                  // sub-call-graph
       thread.setStartStmt(startStmt);
       // List threadMethods = new ArrayList();
       Iterator runMethodsIt = runMethods.iterator();
@@ -140,10 +166,12 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
         }
       }
 
-      // Get a list containing all methods in the call graph(s) rooted at the possible run methods for this thread start statement
+      // Get a list containing all methods in the call graph(s) rooted at the possible run methods for this thread start
+      // statement
       // AKA a list of all methods that might be called by the thread started here
       int methodNum = 0;
-      while (methodNum < thread.methodCount()) // iterate over all methods in threadMethods, even as new methods are being added to it
+      while (methodNum < thread.methodCount()) // iterate over all methods in threadMethods, even as new methods are being
+                                               // added to it
       {
         Iterator succMethodsIt = pecg.getSuccsOf(thread.getMethod(methodNum)).iterator();
         while (succMethodsIt.hasNext()) {
@@ -154,7 +182,8 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
           Iterator edgeInIt = callGraph.edgesInto(method);
           while (edgeInIt.hasNext()) {
             Edge edge = (Edge) edgeInIt.next();
-            if (edge.kind() != Kind.THREAD && edge.kind() != Kind.EXECUTOR && edge.kind() != Kind.ASYNCTASK && thread.containsMethod(edge.src())) {
+            if (edge.kind() != Kind.THREAD && edge.kind() != Kind.EXECUTOR && edge.kind() != Kind.ASYNCTASK
+                && thread.containsMethod(edge.src())) {
               ignoremethod = false;
             }
           }
@@ -191,8 +220,10 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
       boolean mayBeRunMultipleTimes = multiCalledMethods.contains(startStmtMethod); // if method is called more than once...
       if (!mayBeRunMultipleTimes) {
         UnitGraph graph = new CompleteUnitGraph(startStmtMethod.getActiveBody());
-        MultiRunStatementsFinder finder = new MultiRunStatementsFinder(graph, startStmtMethod, multiCalledMethods, callGraph);
-        FlowSet multiRunStatements = finder.getMultiRunStatements(); // list of all units that may be run more than once in this method
+        MultiRunStatementsFinder finder
+            = new MultiRunStatementsFinder(graph, startStmtMethod, multiCalledMethods, callGraph);
+        FlowSet multiRunStatements = finder.getMultiRunStatements(); // list of all units that may be run more than once in
+                                                                     // this method
         if (multiRunStatements.contains(startStmt)) {
           mayBeRunMultipleTimes = true;
         }
@@ -211,7 +242,8 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
         methodNum = 0;
         List<SootMethod> containingMethodCalls = new ArrayList<SootMethod>();
         containingMethodCalls.add(startStmtMethod);
-        while (methodNum < containingMethodCalls.size()) // iterate over all methods in threadMethods, even as new methods are being added to it
+        while (methodNum < containingMethodCalls.size()) // iterate over all methods in threadMethods, even as new methods
+                                                         // are being added to it
         {
           Iterator succMethodsIt = pecg.getSuccsOf(containingMethodCalls.get(methodNum)).iterator();
           while (succMethodsIt.hasNext()) {
@@ -228,7 +260,8 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
           }
           methodNum++;
         }
-        if (!mayBeRunMultipleTimes) { // There's still one thing that might cause this to be run multiple times: if it can be run in parallel with
+        if (!mayBeRunMultipleTimes) { // There's still one thing that might cause this to be run multiple times: if it can be
+                                      // run in parallel with
                                       // itself
                                       // but we can't find that out 'till we're done
           runAtOnceCandidates.add(thread);
@@ -239,8 +272,8 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
       // and this start statement may be run more than once,
       // then add this list of methods to MHPLists *AGAIN*
       if (optionPrintDebug) {
-        System.out.println("Start Stmt " + startStmt.toString() + " mayStartMultipleThreadObjects=" + mayStartMultipleThreadObjects
-            + " mayBeRunMultipleTimes=" + mayBeRunMultipleTimes);
+        System.out.println("Start Stmt " + startStmt.toString() + " mayStartMultipleThreadObjects="
+            + mayStartMultipleThreadObjects + " mayBeRunMultipleTimes=" + mayBeRunMultipleTimes);
       }
       if (mayStartMultipleThreadObjects && mayBeRunMultipleTimes) {
         threadList.add(thread); // add another copy

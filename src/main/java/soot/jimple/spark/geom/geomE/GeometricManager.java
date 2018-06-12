@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.spark.geom.geomE;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2011 Richard Xiao
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import soot.jimple.spark.geom.dataRep.RectangleNode;
 import soot.jimple.spark.geom.dataRep.SegmentNode;
@@ -24,10 +28,11 @@ import soot.jimple.spark.geom.geomPA.IFigureManager;
 
 /**
  * This class implements the figure manager.
- * 
- * Currently, we apply a naive management strategy: For each type of object, we maintain a linked list. If we insert a new object, we don't test if
- * all the geometric objects on the plane together can cover the new object. Instead, we test if there is one object already covers the new object.
- * 
+ *
+ * Currently, we apply a naive management strategy: For each type of object, we maintain a linked list. If we insert a new
+ * object, we don't test if all the geometric objects on the plane together can cover the new object. Instead, we test if
+ * there is one object already covers the new object.
+ *
  * @author xiao
  *
  */
@@ -171,7 +176,7 @@ public class GeometricManager extends IFigureManager {
 
   /**
    * Is the input line covered by any rectangle?
-   * 
+   *
    * @param pnew,
    *          must be a line
    * @return
@@ -194,7 +199,7 @@ public class GeometricManager extends IFigureManager {
 
   /**
    * Judge if the newly added geometric shape is redundant.
-   * 
+   *
    * @param code
    * @param pnew
    * @return
@@ -238,7 +243,7 @@ public class GeometricManager extends IFigureManager {
 
   /**
    * Drop the redundant existing objects.
-   * 
+   *
    * @param code
    * @param p
    */
@@ -276,7 +281,8 @@ public class GeometricManager extends IFigureManager {
 
           case GeometricManager.MANY_TO_MANY:
             if (pold.I1 >= p.I1 && pold.I2 >= p.I2) {
-              if ((pold.I1 + pold.L) <= (p.I1 + p.L) && (pold.I2 + ((RectangleNode) pold).L_prime) <= (p.I2 + ((RectangleNode) p).L_prime)) {
+              if ((pold.I1 + pold.L) <= (p.I1 + p.L)
+                  && (pold.I2 + ((RectangleNode) pold).L_prime) <= (p.I2 + ((RectangleNode) p).L_prime)) {
                 flag = true;
               }
             }
@@ -315,7 +321,7 @@ public class GeometricManager extends IFigureManager {
 
   /**
    * Find the bounding rectangle for all the rectangle figures.
-   * 
+   *
    * @return
    */
   private RectangleNode mergeManyToMany() {
@@ -355,7 +361,7 @@ public class GeometricManager extends IFigureManager {
 
   /**
    * Find the bounding rectangle for all segment figures.
-   * 
+   *
    * @return
    */
   private RectangleNode mergeOneToOne() {

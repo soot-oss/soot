@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2006 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.AST.interProcedural;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2006 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,7 +50,7 @@ public class InterProceduralAnalyses {
 
   /*
    * Method is invoked by postProcessDava in PackManager if the transformations flag is true
-   * 
+   *
    * All interproceduralAnalyses should be applied in here
    */
   public static void applyInterProceduralAnalyses() {
@@ -95,7 +98,8 @@ public class InterProceduralAnalyses {
           if (DEBUG) {
             System.out.println("\nSTART CP Class:" + s.getName() + " Method: " + m.getName());
           }
-          CPApplication CPApp = new CPApplication((ASTMethodNode) AST, constantValueFields, finder.getClassNameFieldNameToSootFieldMapping());
+          CPApplication CPApp = new CPApplication((ASTMethodNode) AST, constantValueFields,
+              finder.getClassNameFieldNameToSootFieldMapping());
           AST.apply(CPApp);
 
           if (DEBUG) {
@@ -146,8 +150,9 @@ public class InterProceduralAnalyses {
   }
 
   /*
-   * If there is any interprocedural information required it should be passed as argument to this method and then the renamer can make use of it.
-   * 
+   * If there is any interprocedural information required it should be passed as argument to this method and then the renamer
+   * can make use of it.
+   *
    *
    */
   private static void applyRenamerAnalyses(ASTNode AST, DavaBody body) {

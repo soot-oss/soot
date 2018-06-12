@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 John Jorgensen
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.toolkits.exceptions;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 John Jorgensen
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import soot.Unit;
 import soot.baf.ThrowInst;
@@ -29,11 +32,12 @@ import soot.jimple.ThrowStmt;
  * </p>
  *
  * <p>
- * The <code>Unit</code>s corresponding to <code>athrow</code> instructions may throw exceptions either explicitly&mdash;because the exception is the
- * <code>athrow</code>'s argument&mdash; or implicitly&mdash;because some error arises in the course of executing the instruction (only implicit
- * exceptions are possible for bytecode instructions other than <code>athrow</code>). The <code>mightThrowExplicitly()</code> and
- * <code>mightThrowImplicitly()</code> methods allow analyses to exploit any extra precision that may be gained by distinguishing between an
- * <code>athrow</code>'s implicit and explicit exceptions.
+ * The <code>Unit</code>s corresponding to <code>athrow</code> instructions may throw exceptions either
+ * explicitly&mdash;because the exception is the <code>athrow</code>'s argument&mdash; or implicitly&mdash;because some error
+ * arises in the course of executing the instruction (only implicit exceptions are possible for bytecode instructions other
+ * than <code>athrow</code>). The <code>mightThrowExplicitly()</code> and <code>mightThrowImplicitly()</code> methods allow
+ * analyses to exploit any extra precision that may be gained by distinguishing between an <code>athrow</code>'s implicit and
+ * explicit exceptions.
  * </p>
  */
 
@@ -49,8 +53,8 @@ public interface ThrowAnalysis {
   ThrowableSet mightThrow(Unit u);
 
   /**
-   * Returns a set representing the {@link Throwable} types that the specified throw instruction might throw explicitly, that is, the possible types
-   * for its <code>Throwable</code> argument.
+   * Returns a set representing the {@link Throwable} types that the specified throw instruction might throw explicitly, that
+   * is, the possible types for its <code>Throwable</code> argument.
    *
    * @param t
    *          {@link ThrowInst} whose explicit exceptions are to be returned.
@@ -60,8 +64,8 @@ public interface ThrowAnalysis {
   ThrowableSet mightThrowExplicitly(ThrowInst t);
 
   /**
-   * Returns a set representing the {@link Throwable} types that the specified throw statement might throw explicitly, that is, the possible types for
-   * its <code>Throwable</code> argument.
+   * Returns a set representing the {@link Throwable} types that the specified throw statement might throw explicitly, that
+   * is, the possible types for its <code>Throwable</code> argument.
    *
    * @param t
    *          {@link ThrowStmt} whose explicit exceptions are to be returned.
@@ -71,9 +75,9 @@ public interface ThrowAnalysis {
   ThrowableSet mightThrowExplicitly(ThrowStmt t);
 
   /**
-   * Returns a set representing the {@link Throwable} types that the specified throw instruction might throw implicitly, that is, the possible types
-   * of errors which might arise in the course of executing the <code>throw</code> instruction, rather than the type of the <code>throw</code>'s
-   * operand.
+   * Returns a set representing the {@link Throwable} types that the specified throw instruction might throw implicitly, that
+   * is, the possible types of errors which might arise in the course of executing the <code>throw</code> instruction, rather
+   * than the type of the <code>throw</code>'s operand.
    *
    * @param t
    *          {@link ThrowStmt} whose implicit exceptions are to be returned.
@@ -83,8 +87,9 @@ public interface ThrowAnalysis {
   ThrowableSet mightThrowImplicitly(ThrowInst t);
 
   /**
-   * Returns a set representing the {@link Throwable} types that the specified throw statement might throw implicitly, that is, the possible types of
-   * errors which might arise in the course of executing the <code>throw</code> statement, rather than the type of the <code>throw</code>'s operand.
+   * Returns a set representing the {@link Throwable} types that the specified throw statement might throw implicitly, that
+   * is, the possible types of errors which might arise in the course of executing the <code>throw</code> statement, rather
+   * than the type of the <code>throw</code>'s operand.
    *
    * @param t
    *          {@link ThrowStmt} whose implicit exceptions are to be returned.

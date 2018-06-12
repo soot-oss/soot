@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2006 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.dava.toolkits.base.AST.transformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2006 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import soot.BooleanType;
 import soot.Value;
@@ -42,28 +46,28 @@ import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
 
 /*
- * 	5 == 5  true   DONE              
+ * 	5 == 5  true   DONE
  *  5 != 5 false   DONE (all other relational operators done)
- *  
+ *
  *    !true  --> false DONE
  *    !false --> true DONE
- *  
+ *
  *   DONE WHEN one or both are constants (did all combinations)
  *    true || b   ---->   true
  *    true && b   ----->  b
  *    false || b  -----> b
- *    false && b -------> false              
- *  
- *  if ( (z0 && z1)  ||  ( ! ( ! (z2) ||  ! (z3)) ) )     
+ *    false && b -------> false
+ *
+ *  if ( (z0 && z1)  ||  ( ! ( ! (z2) ||  ! (z3)) ) )
  *                 ---> if ( (z0 && z1)  ||   (z2 && z3)  )     DONE
- *    
- *    
- *    
+ *
+ *
+ *
  * TODO currently only doing primtype comparison of same types not handled are following types
  *        long <= int
  *        int <=long
  *         bla bla
- *         
+ *
  *
  * TODO IDEA     if(io==0 && io==0) --> if(io==0)
  */
@@ -117,7 +121,7 @@ public class SimplifyConditions extends DepthFirstAdapter {
 
   /*
    * !z0 && !z1 ----> !(z0 || z1) !z0 || !z1 ----> !(z0 && z1)
-   * 
+   *
    * Send null if no change else send new condition CONDITION
    */
   public ASTCondition applyDeMorgans(ASTAggregatedCondition aggCond) {
@@ -138,7 +142,8 @@ public class SimplifyConditions extends DepthFirstAdapter {
       return aggCond;
     }
 
-    if ((left.isNotted() && right.isNotted() && (!(left instanceof ASTBinaryCondition) && !(right instanceof ASTBinaryCondition)))
+    if ((left.isNotted() && right.isNotted()
+        && (!(left instanceof ASTBinaryCondition) && !(right instanceof ASTBinaryCondition)))
         || (left.isNotted() && aggCond.isNotted() && !(left instanceof ASTBinaryCondition))
         || (right.isNotted() && aggCond.isNotted() && !(right instanceof ASTBinaryCondition))) {
       // both are notted and atleast one is not a binaryCondition
@@ -164,9 +169,9 @@ public class SimplifyConditions extends DepthFirstAdapter {
   }
 
   /*
-   * When this method is invoked we are sure that there are no occurences of !true or !false since this is AFTER doing depth first of the children so
-   * the unaryCondition must have simplified the above
-   * 
+   * When this method is invoked we are sure that there are no occurences of !true or !false since this is AFTER doing depth
+   * first of the children so the unaryCondition must have simplified the above
+   *
    * Return Null if no change else return changed condition
    */
   public ASTCondition simplifyIfAtleastOneConstant(ASTAggregatedCondition aggCond) {
@@ -185,9 +190,9 @@ public class SimplifyConditions extends DepthFirstAdapter {
 
     /*
      * a && b NOCHANGE DONE b && a NOCHANGE DONE
-     * 
+     *
      * a || b NOCHANGE DONE b || a NOCHANGE DONE
-     * 
+     *
      */
     if (leftBool == null && rightBool == null) {
       // meaning both are not constants
@@ -197,11 +202,12 @@ public class SimplifyConditions extends DepthFirstAdapter {
     if (aggCond instanceof ASTAndCondition) {
       /*
        * true && true ---> true DONE true && false --> false DONE false && false ---> false DONE false && true --> false DONE
-       * 
+       *
        * true && b -----> b DONE false && b -------> false DONE
-       * 
-       * b && true ---> b DONE b && false ---> b && false (since b could have side effects and the overall condition has to be false) DONE
-       * 
+       *
+       * b && true ---> b DONE b && false ---> b && false (since b could have side effects and the overall condition has to
+       * be false) DONE
+       *
        */
 
       if (leftBool != null && rightBool != null) {
@@ -244,15 +250,15 @@ public class SimplifyConditions extends DepthFirstAdapter {
 
     } else if (aggCond instanceof ASTOrCondition) {
       /*
-       * 
+       *
        * true || false ---> true DONE true || true --> true DONE false || true --> true DONE false || false ---> false DONE
-       * 
-       * 
+       *
+       *
        * true || b ----> true DONE false || b -----> b DONE
-       * 
-       * b || true ---> b || true .... although we know the condition is true we have to evaluate b because of possible side effects DONE b || false
-       * ---> b DONE
-       * 
+       *
+       * b || true ---> b || true .... although we know the condition is true we have to evaluate b because of possible side
+       * effects DONE b || false ---> b DONE
+       *
        */
       if (leftBool != null && rightBool != null) {
         // meaning both are constants
@@ -295,8 +301,8 @@ public class SimplifyConditions extends DepthFirstAdapter {
   }
 
   /*
-   * Method returns null if the Value is not a constant or not a boolean constant return true if the constant is true return false if the constant is
-   * false
+   * Method returns null if the Value is not a constant or not a boolean constant return true if the constant is true return
+   * false if the constant is false
    */
   public Boolean isBooleanConstant(Value internal) {
 
@@ -330,7 +336,7 @@ public class SimplifyConditions extends DepthFirstAdapter {
 
   /*
    * In a loop keep simplifying the condition as much as possible
-   * 
+   *
    */
   public ASTCondition simplifyTheCondition(ASTCondition cond) {
     if (cond instanceof ASTAggregatedCondition) {

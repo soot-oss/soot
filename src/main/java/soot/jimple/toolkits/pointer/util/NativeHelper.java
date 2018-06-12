@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Feng Qian
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/**
- * Native method helper 
- *
- * @author Feng Qian
- */
-
 package soot.jimple.toolkits.pointer.util;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Feng Qian
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import soot.SootMethod;
 import soot.jimple.toolkits.pointer.representations.AbstractObject;
@@ -39,7 +36,8 @@ public abstract class NativeHelper {
   }
 
   /**
-   * Assignment of an abstract object to the variable, such as " a = new A()", which is considered to add a target in a's points-to set.
+   * Assignment of an abstract object to the variable, such as " a = new A()", which is considered to add a target in a's
+   * points-to set.
    *
    * This method is used to formulate the effect of getting an environmental constant object such as 'getClass'.
    */
@@ -63,7 +61,7 @@ public abstract class NativeHelper {
 
   /**
    * Returns a variable which has the effect of cloning. A moderate approach would return the variable itself.
-   * 
+   *
    * e.g., a = b.clone() will be rendered to: Vr.isAssigned(Vb.cloneObject()); Va = Vr;
    */
   public ReferenceVariable cloneObject(ReferenceVariable source) {
@@ -71,8 +69,8 @@ public abstract class NativeHelper {
   }
 
   /**
-   * Returns a variable which carries an allocation site with the least type (an artificial type, subtype of any other types, which means such type
-   * info is useless for resolving invocation targets).
+   * Returns a variable which carries an allocation site with the least type (an artificial type, subtype of any other types,
+   * which means such type info is useless for resolving invocation targets).
    *
    * It is used for simulating java.lang.Class.newInstance0(); To verify, @this variable mush have CLASSCLASS type.
    */
@@ -81,8 +79,8 @@ public abstract class NativeHelper {
   }
 
   /**
-   * Returns a reference variable representing a static Java field. The implementation must ensure that there is only one such representation for each
-   * static field.
+   * Returns a reference variable representing a static Java field. The implementation must ensure that there is only one
+   * such representation for each static field.
    *
    * @param field,
    *          must be a static field
@@ -92,8 +90,8 @@ public abstract class NativeHelper {
   }
 
   /**
-   * Returns a variable representing a non-existing Java field, used by e.g., java.lang.Class: getSingers, setSigners java.lang.Class:
-   * getProtectionDomain0, setProtectionDomain0
+   * Returns a variable representing a non-existing Java field, used by e.g., java.lang.Class: getSingers, setSigners
+   * java.lang.Class: getProtectionDomain0, setProtectionDomain0
    *
    * To simplify simulation, the temporary field variable is like a static field.
    *
@@ -104,8 +102,9 @@ public abstract class NativeHelper {
   }
 
   /**
-   * Make a temporary variable. It is used for assignment where both sides are complex variables. e.g., for java.lang.System arraycopy(src, ..., dst,
-   * ...) instead of make an expression : dst[] = src[], it introduces a temporary variable t = src[] dst[] = t
+   * Make a temporary variable. It is used for assignment where both sides are complex variables. e.g., for java.lang.System
+   * arraycopy(src, ..., dst, ...) instead of make an expression : dst[] = src[], it introduces a temporary variable t =
+   * src[] dst[] = t
    *
    * The temporary variable has to be unique.
    */

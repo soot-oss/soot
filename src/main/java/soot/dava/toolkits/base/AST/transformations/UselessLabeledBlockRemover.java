@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.AST.transformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,14 +48,14 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
  *     17th April 2006
  *     The class was implemented all wrong since the case methods were being overriddern and hence
  *     the analysis was nto going into all children.
- *     
+ *
  *     changed this by overridding out methods instead of case
- *     
- *     
+ *
+ *
  * Class serves two purposes.
  * If you know there is a useless labeled block then its static methods can be invoked
  * as done by the ASTCleaner
- * 
+ *
  * It can also be used to apply the UselessLabelFinder to all nodes of the AST
  * if that is done then make sure to set the ASTAnalysisModified
  */
@@ -77,12 +80,14 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
   }
 
   /*
-   * public void caseASTSynchronizedBlockNode(ASTSynchronizedBlockNode node){ changed=UselessLabelFinder.v().findAndKill(node); } public void
-   * caseASTLabeledBlockNode (ASTLabeledBlockNode node){ changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTUnconditionalLoopNode
-   * (ASTUnconditionalLoopNode node){ changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTSwitchNode(ASTSwitchNode node){
-   * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTIfNode(ASTIfNode node){ changed=UselessLabelFinder.v().findAndKill(node);
-   * } public void caseASTIfElseNode(ASTIfElseNode node){ changed=UselessLabelFinder.v().findAndKill(node); } public void
-   * caseASTWhileNode(ASTWhileNode node){ changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTForLoopNode(ASTForLoopNode node){
+   * public void caseASTSynchronizedBlockNode(ASTSynchronizedBlockNode node){
+   * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTLabeledBlockNode (ASTLabeledBlockNode node){
+   * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTUnconditionalLoopNode (ASTUnconditionalLoopNode
+   * node){ changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTSwitchNode(ASTSwitchNode node){
+   * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTIfNode(ASTIfNode node){
+   * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTIfElseNode(ASTIfElseNode node){
+   * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTWhileNode(ASTWhileNode node){
+   * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTForLoopNode(ASTForLoopNode node){
    * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTDoWhileNode(ASTDoWhileNode node){
    * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTTryNode(ASTTryNode node){
    * changed=UselessLabelFinder.v().findAndKill(node); }

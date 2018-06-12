@@ -1,5 +1,27 @@
 package soot.toDex;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
@@ -17,8 +39,8 @@ import soot.toDex.instructions.Insn23x;
 import soot.toDex.instructions.TwoRegInsn;
 
 /**
- * Assigns final register numbers in instructions so that they fit into their format and obey the calling convention (that is, the last registers are
- * for the parameters).<br>
+ * Assigns final register numbers in instructions so that they fit into their format and obey the calling convention (that
+ * is, the last registers are for the parameters).<br>
  * <br>
  * Note that the final instruction list can contain additional "move" instructions.<br>
  * <br>
@@ -32,7 +54,8 @@ class RegisterAssigner {
     private final Map<Insn, Stmt> insnStmtMap;
     private final Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap;
 
-    public InstructionIterator(List<Insn> insns, Map<Insn, Stmt> insnStmtMap, Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap) {
+    public InstructionIterator(List<Insn> insns, Map<Insn, Stmt> insnStmtMap,
+        Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap) {
       this.insnStmtMap = insnStmtMap;
       this.insnsIterator = insns.listIterator();
       this.insnRegisterMap = insnRegisterMap;
@@ -61,7 +84,8 @@ class RegisterAssigner {
       LocalRegisterAssignmentInformation originalRegisterLocal = this.insnRegisterMap.get(forOriginal);
       if (originalRegisterLocal != null) {
         if (newRegister != null) {
-          this.insnRegisterMap.put(element, LocalRegisterAssignmentInformation.v(newRegister, this.insnRegisterMap.get(forOriginal).getLocal()));
+          this.insnRegisterMap.put(element,
+              LocalRegisterAssignmentInformation.v(newRegister, this.insnRegisterMap.get(forOriginal).getLocal()));
         } else {
           this.insnRegisterMap.put(element, originalRegisterLocal);
         }
@@ -95,7 +119,8 @@ class RegisterAssigner {
     this.regAlloc = regAlloc;
   }
 
-  public List<Insn> finishRegs(List<Insn> insns, Map<Insn, Stmt> insnsStmtMap, Map<Insn, LocalRegisterAssignmentInformation> instructionRegisterMap,
+  public List<Insn> finishRegs(List<Insn> insns, Map<Insn, Stmt> insnsStmtMap,
+      Map<Insn, LocalRegisterAssignmentInformation> instructionRegisterMap,
       List<LocalRegisterAssignmentInformation> parameterInstructionsList) {
     renumParamRegsToHigh(insns, parameterInstructionsList);
     reserveRegisters(insns, insnsStmtMap, parameterInstructionsList);
@@ -144,14 +169,15 @@ class RegisterAssigner {
   }
 
   /**
-   * Reserves low registers in case we later find an instruction that has short operands. We can then move the real operands into the reserved low
-   * ones and use those instead.
-   * 
+   * Reserves low registers in case we later find an instruction that has short operands. We can then move the real operands
+   * into the reserved low ones and use those instead.
+   *
    * @param insns
    * @param insnsStmtMap
    * @param parameterInstructionsList
    */
-  private void reserveRegisters(List<Insn> insns, Map<Insn, Stmt> insnsStmtMap, List<LocalRegisterAssignmentInformation> parameterInstructionsList) {
+  private void reserveRegisters(List<Insn> insns, Map<Insn, Stmt> insnsStmtMap,
+      List<LocalRegisterAssignmentInformation> parameterInstructionsList) {
     // reserve registers as long as new ones are needed
     int reservedRegs = 0;
     while (true) {
@@ -175,7 +201,7 @@ class RegisterAssigner {
 
   /**
    * Gets the maximum number of registers needed by a single instruction in the given list of instructions.
-   * 
+   *
    * @param regsAlreadyReserved
    * @param insns
    * @param insnsStmtMap
@@ -223,7 +249,8 @@ class RegisterAssigner {
 
     // is there an incompat result reg which is not also used as a source
     // (like in /2addr)?
-    if (hasResultReg && isResultRegIncompat && !insn.getOpcode().name.endsWith("/2addr") && !insn.getOpcode().name.equals("check-cast")) {
+    if (hasResultReg && isResultRegIncompat && !insn.getOpcode().name.endsWith("/2addr")
+        && !insn.getOpcode().name.equals("check-cast")) {
       // yes, so pretend result reg is compatible, since it will get a
       // special move
       incompatRegs.clear(0);
@@ -246,7 +273,8 @@ class RegisterAssigner {
     }
   }
 
-  private void addMoveForIncompatResultReg(InstructionIterator insns, Register destReg, Register origResultReg, Insn curInsn) {
+  private void addMoveForIncompatResultReg(InstructionIterator insns, Register destReg, Register origResultReg,
+      Insn curInsn) {
     if (destReg.getNumber() == 0) {
       // destination reg is already where we want it: avoid "move r0, r0"
       return;
@@ -258,9 +286,9 @@ class RegisterAssigner {
   }
 
   /**
-   * Adds move instructions to put values into lower registers before using them in an instruction. This assumes that enough registers have been
-   * reserved at 0...n.
-   * 
+   * Adds move instructions to put values into lower registers before using them in an instruction. This assumes that enough
+   * registers have been reserved at 0...n.
+   *
    * @param curInsn
    * @param insns
    * @param regs
@@ -280,7 +308,8 @@ class RegisterAssigner {
         Register incompatReg = regs.get(regIdx);
         if (incompatReg.isEmptyReg()) {
           /*
-           * second half of a wide reg: do not add a move, since the empty reg is only considered incompatible to reserve the subsequent reg number
+           * second half of a wide reg: do not add a move, since the empty reg is only considered incompatible to reserve the
+           * subsequent reg number
            */
           continue;
         }
@@ -341,8 +370,8 @@ class RegisterAssigner {
       }
     } else if (insn instanceof TwoRegInsn && SootToDexUtils.isNormalMove(opc)) {
       /*
-       * move+ (12x, byteReg,byteReg) -> move+/from16 (22x, shortReg,unconstReg) -> move+/16 (32x, unconstReg,unconstReg) where "+" is "", "-object"
-       * or "-wide"
+       * move+ (12x, byteReg,byteReg) -> move+/from16 (22x, shortReg,unconstReg) -> move+/16 (32x, unconstReg,unconstReg)
+       * where "+" is "", "-object" or "-wide"
        */
       Register regA = ((TwoRegInsn) insn).getRegA();
       Register regB = ((TwoRegInsn) insn).getRegB();

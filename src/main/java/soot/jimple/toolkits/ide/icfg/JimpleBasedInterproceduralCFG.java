@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2013 Eric Bodden and others
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.toolkits.ide.icfg;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2013 Eric Bodden and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -47,9 +51,9 @@ import soot.jimple.toolkits.callgraph.EdgePredicate;
 import soot.jimple.toolkits.callgraph.Filter;
 
 /**
- * Default implementation for the {@link InterproceduralCFG} interface. Includes all statements reachable from {@link Scene#getEntryPoints()} through
- * explicit call statements or through calls to {@link Thread#start()}.
- * 
+ * Default implementation for the {@link InterproceduralCFG} interface. Includes all statements reachable from
+ * {@link Scene#getEntryPoints()} through explicit call statements or through calls to {@link Thread#start()}.
+ *
  * This class is designed to be thread safe, and subclasses of this class must be designed in a thread-safe way, too.
  */
 @ThreadSafe
@@ -66,8 +70,8 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
       super(new EdgePredicate() {
         @Override
         public boolean want(Edge e) {
-          return e.kind().isExplicit() || e.kind().isThread() || e.kind().isExecutor() || e.kind().isAsyncTask() || e.kind().isClinit()
-              || e.kind().isPrivileged() || (includeReflectiveCalls && e.kind().isReflection());
+          return e.kind().isExplicit() || e.kind().isThread() || e.kind().isExecutor() || e.kind().isAsyncTask()
+              || e.kind().isClinit() || e.kind().isPrivileged() || (includeReflectiveCalls && e.kind().isReflection());
         }
       });
     }
@@ -106,25 +110,28 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
   };
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
-  protected final LoadingCache<Unit, Collection<SootMethod>> unitToCallees = IDESolver.DEFAULT_CACHE_BUILDER.build(loaderUnitToCallees);
+  protected final LoadingCache<Unit, Collection<SootMethod>> unitToCallees
+      = IDESolver.DEFAULT_CACHE_BUILDER.build(loaderUnitToCallees);
 
-  protected CacheLoader<SootMethod, Collection<Unit>> loaderMethodToCallers = new CacheLoader<SootMethod, Collection<Unit>>() {
-    @Override
-    public Collection<Unit> load(SootMethod m) throws Exception {
-      ArrayList<Unit> res = new ArrayList<Unit>();
-      // only retain callers that are explicit call sites or
-      // Thread.start()
-      Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesInto(m));
-      while (edgeIter.hasNext()) {
-        Edge edge = edgeIter.next();
-        res.add(edge.srcUnit());
-      }
-      res.trimToSize();
-      return res;
-    }
-  };
+  protected CacheLoader<SootMethod, Collection<Unit>> loaderMethodToCallers
+      = new CacheLoader<SootMethod, Collection<Unit>>() {
+        @Override
+        public Collection<Unit> load(SootMethod m) throws Exception {
+          ArrayList<Unit> res = new ArrayList<Unit>();
+          // only retain callers that are explicit call sites or
+          // Thread.start()
+          Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesInto(m));
+          while (edgeIter.hasNext()) {
+            Edge edge = edgeIter.next();
+            res.add(edge.srcUnit());
+          }
+          res.trimToSize();
+          return res;
+        }
+      };
   @SynchronizedBy("by use of synchronized LoadingCache class")
-  protected final LoadingCache<SootMethod, Collection<Unit>> methodToCallers = IDESolver.DEFAULT_CACHE_BUILDER.build(loaderMethodToCallers);
+  protected final LoadingCache<SootMethod, Collection<Unit>> methodToCallers
+      = IDESolver.DEFAULT_CACHE_BUILDER.build(loaderMethodToCallers);
 
   public JimpleBasedInterproceduralCFG() {
     this(true);
@@ -171,7 +178,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 
   /**
    * Sets whether methods that operate on the callgraph shall also return phantom methods as potential callees
-   * 
+   *
    * @param includePhantomCallees
    *          True if phantom methods shall be returned as potential callees, otherwise false
    */

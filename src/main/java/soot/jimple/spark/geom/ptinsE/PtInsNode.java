@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2012 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.spark.geom.ptinsE;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2012 Richard Xiao
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -49,7 +53,7 @@ import soot.jimple.spark.sets.P2SetVisitor;
 
 /**
  * This class defines a pointer variable in the PtIns encoding based points-to solver. Also, it is NOT recommended to use.
- * 
+ *
  * @author xiao
  *
  */
@@ -283,14 +287,16 @@ public class PtInsNode extends IVarAbstraction {
                 case Constants.STORE_CONS:
                   // Store, qv -> pv.field
                   // pts.I2 may be zero, pts.L may be less than zero
-                  if (qn.add_simple_constraint_3(objn, pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0, pts.I2, pts.L)) {
+                  if (qn.add_simple_constraint_3(objn, pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0, pts.I2,
+                      pts.L)) {
                     worklist.push(qn);
                   }
                   break;
 
                 case Constants.LOAD_CONS:
                   // Load, pv.field -> qv
-                  if (objn.add_simple_constraint_3(qn, pts.I2, pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0, pts.L)) {
+                  if (objn.add_simple_constraint_3(qn, pts.I2, pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0,
+                      pts.L)) {
                     worklist.push(objn);
                   }
                   break;

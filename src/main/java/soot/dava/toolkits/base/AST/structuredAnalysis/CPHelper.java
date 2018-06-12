@@ -1,5 +1,27 @@
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import soot.BooleanType;
 import soot.Value;
 import soot.dava.internal.javaRep.DIntConstant;
@@ -12,7 +34,7 @@ public class CPHelper {
 
   /*
    * The helper class just checks the type of the data being sent and create a clone of it
-   * 
+   *
    * If it is not a data of interest a null is send back
    */
   public static Object wrapperClassCloner(Object value) {
@@ -32,9 +54,9 @@ public class CPHelper {
   }
 
   /*
-   * isAConstantValue(Value toCheck) it will check whether toCheck is one of the interesting Constants IntConstant FloatConstant etc etc if yes return
-   * the Integer/Long/float/Double
-   * 
+   * isAConstantValue(Value toCheck) it will check whether toCheck is one of the interesting Constants IntConstant
+   * FloatConstant etc etc if yes return the Integer/Long/float/Double
+   *
    * Notice for integer the callee has to check whether what is required is a Boolean!!!!
    */
   public static Object isAConstantValue(Value toCheck) {

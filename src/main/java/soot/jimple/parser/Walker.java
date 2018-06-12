@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2000 Patrice Pominville
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.parser;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2000 Patrice Pominville
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -297,8 +294,8 @@ public class Walker extends DepthFirstAdapter {
       mSootClass.setResolvingLevel(SootClass.BODIES);
     } else {
       if (!mSootClass.getName().equals(className)) {
-        throw new RuntimeException("Invalid SootClass for this JimpleAST. The SootClass provided is of type: >" + mSootClass.getName()
-            + "< whereas this parse tree is for type: >" + className + "<");
+        throw new RuntimeException("Invalid SootClass for this JimpleAST. The SootClass provided is of type: >"
+            + mSootClass.getName() + "< whereas this parse tree is for type: >" + className + "<");
       }
     }
 
@@ -356,7 +353,8 @@ public class Walker extends DepthFirstAdapter {
   }
 
   /*
-   * member = {field} modifier* type name semicolon | {method} modifier* type name l_paren parameter_list? r_paren throws_clause? method_body;
+   * member = {field} modifier* type name semicolon | {method} modifier* type name l_paren parameter_list? r_paren
+   * throws_clause? method_body;
    */
   public void outAFieldMember(AFieldMember node) {
     int modifier = 0;
@@ -429,8 +427,8 @@ public class Walker extends DepthFirstAdapter {
   }
 
   /*
-   * nonvoid_type = {base} base_type_no_name array_brackets*; {quoted} quoted_name array_brackets* | {ident} identifier array_brackets* | {full_ident}
-   * full_identifier array_brackets*;
+   * nonvoid_type = {base} base_type_no_name array_brackets*; {quoted} quoted_name array_brackets* | {ident} identifier
+   * array_brackets* | {full_ident} full_identifier array_brackets*;
    */
   public void outABaseNonvoidType(ABaseNonvoidType node) {
     Type t = (Type) mProductions.removeLast();
@@ -473,8 +471,8 @@ public class Walker extends DepthFirstAdapter {
   }
 
   /*
-   * base_type_no_name = {boolean} boolean | {byte} byte | {char} char | {short} short | {int} int | {long} long | {float} float | {double} double |
-   * {null} null_type;
+   * base_type_no_name = {boolean} boolean | {byte} byte | {char} char | {short} short | {int} int | {long} long | {float}
+   * float | {double} double | {null} null_type;
    */
 
   public void outABooleanBaseTypeNoName(ABooleanBaseTypeNoName node) {
@@ -514,8 +512,8 @@ public class Walker extends DepthFirstAdapter {
   }
 
   /*
-   * base_type = {boolean} boolean | {byte} byte | {char} char | {short} short | {int} int | {long} long | {float} float | {double} double | {null}
-   * null_type | {class_name} class_name;
+   * base_type = {boolean} boolean | {byte} byte | {char} char | {short} short | {int} int | {long} long | {float} float |
+   * {double} double | {null} null_type | {class_name} class_name;
    */
 
   public void outABooleanBaseType(ABooleanBaseType node) {
@@ -623,11 +621,11 @@ public class Walker extends DepthFirstAdapter {
     }
 
     /*
-     * Iterator it = mLabelToStmtMap.keySet().iterator(); while(it.hasNext()) { String label = (String) it.next(); Unit target = (Unit)
-     * mLabelToStmtMap.get(label);
-     * 
-     * List l = (List) mLabelToPatchList.get(label); if(l != null) { Iterator patchIt = l.iterator(); while(patchIt.hasNext()) { UnitBox box =
-     * (UnitBox) patchIt.next(); box.setUnit(target); } } }
+     * Iterator it = mLabelToStmtMap.keySet().iterator(); while(it.hasNext()) { String label = (String) it.next(); Unit
+     * target = (Unit) mLabelToStmtMap.get(label);
+     *
+     * List l = (List) mLabelToPatchList.get(label); if(l != null) { Iterator patchIt = l.iterator();
+     * while(patchIt.hasNext()) { UnitBox box = (UnitBox) patchIt.next(); box.setUnit(target); } } }
      */
 
     mProductions.addLast(jBody);
@@ -697,7 +695,8 @@ public class Walker extends DepthFirstAdapter {
   }
 
   /*
-   * catch_clause = catch [name]:class_name from [from_label]:label_name to [to_label]:label_name with [with_label]:label_name semicolon;
+   * catch_clause = catch [name]:class_name from [from_label]:label_name to [to_label]:label_name with
+   * [with_label]:label_name semicolon;
    */
 
   // public void caseACatchClause(ACatchClause node){}
@@ -763,11 +762,12 @@ public class Walker extends DepthFirstAdapter {
   }
 
   /*
-   * statement = {label} label_name colon | {breakpoint} breakpoint semicolon | {entermonitor} entermonitor immediate semicolon | {exitmonitor}
-   * exitmonitor immediate semicolon | {switch} switch l_paren immediate r_paren l_brace case_stmt+ r_brace semicolon | {identity} local_name
-   * colon_equals at_identifier type semicolon | {identity_no_type} local_name colon_equals at_identifier semicolon | {assign} variable equals
-   * expression semicolon | {if} if bool_expr goto_stmt | {goto} goto_stmt | {nop} nop semicolon | {ret} ret immediate? semicolon | {return} return
-   * immediate? semicolon | {throw} throw immediate semicolon | {invoke} invoke_expr semicolon;
+   * statement = {label} label_name colon | {breakpoint} breakpoint semicolon | {entermonitor} entermonitor immediate
+   * semicolon | {exitmonitor} exitmonitor immediate semicolon | {switch} switch l_paren immediate r_paren l_brace case_stmt+
+   * r_brace semicolon | {identity} local_name colon_equals at_identifier type semicolon | {identity_no_type} local_name
+   * colon_equals at_identifier semicolon | {assign} variable equals expression semicolon | {if} if bool_expr goto_stmt |
+   * {goto} goto_stmt | {nop} nop semicolon | {ret} ret immediate? semicolon | {return} return immediate? semicolon | {throw}
+   * throw immediate semicolon | {invoke} invoke_expr semicolon;
    */
 
   public void outALabelStatement(ALabelStatement node) {
@@ -1060,7 +1060,7 @@ public class Walker extends DepthFirstAdapter {
     mProductions.addLast(StringConstant.v(s));
     /*
      * try { String t = StringTools.getUnEscapedStringOf(s);
-     * 
+     *
      * mProductions.push(StringConstant.v(t)); } catch(RuntimeException e) { logger.debug(""+s); throw e; }
      */
   }
@@ -1149,13 +1149,13 @@ public class Walker extends DepthFirstAdapter {
 
   /*
    * binop = {and} and | {or} or | {xor} xor | {mod} mod |
-   * 
+   *
    * {cmp} cmp | {cmpg} cmpg | {cmpl} cmpl | {cmpeq} cmpeq |
-   * 
+   *
    * {cmpne} cmpne | {cmpgt} cmpgt | {cmpge} cmpge | {cmplt} cmplt |
-   * 
+   *
    * {cmple} cmple | {shl} shl | {shr} shr | {ushr} ushr |
-   * 
+   *
    * {plus} plus | {minus} minus | {mult} mult | {div} div;
    */
 
@@ -1334,9 +1334,9 @@ public class Walker extends DepthFirstAdapter {
   }
 
   /*
-   * expression = {new} new_expr | {cast} l_paren nonvoid_type r_paren local_name | {instanceof} immediate instanceof nonvoid_type | {invoke}
-   * invoke_expr |
-   * 
+   * expression = {new} new_expr | {cast} l_paren nonvoid_type r_paren local_name | {instanceof} immediate instanceof
+   * nonvoid_type | {invoke} invoke_expr |
+   *
    * {reference} reference | {binop} binop_expr | {unop} unop_expr | {immediate} immediate;
    */
   public void outACastExpression(ACastExpression node) {
@@ -1375,8 +1375,8 @@ public class Walker extends DepthFirstAdapter {
   }
 
   /*
-   * invoke_expr = {nonstatic} nonstatic_invoke local_name dot method_signature l_paren arg_list? r_paren | {static} staticinvoke method_signature
-   * l_paren arg_list? r_paren;
+   * invoke_expr = {nonstatic} nonstatic_invoke local_name dot method_signature l_paren arg_list? r_paren | {static}
+   * staticinvoke method_signature l_paren arg_list? r_paren;
    */
 
   public void outANonstaticInvokeExpr(ANonstaticInvokeExpr node) {
@@ -1427,7 +1427,8 @@ public class Walker extends DepthFirstAdapter {
     }
 
     SootMethodRef method = (SootMethodRef) mProductions.removeLast();
-    method = Scene.v().makeMethodRef(method.declaringClass(), method.name(), method.parameterTypes(), method.returnType(), true);
+    method = Scene.v().makeMethodRef(method.declaringClass(), method.name(), method.parameterTypes(), method.returnType(),
+        true);
 
     mProductions.addLast(Jimple.v().newStaticInvokeExpr(method, args));
   }
@@ -1471,7 +1472,8 @@ public class Walker extends DepthFirstAdapter {
   }
 
   /*
-   * method_signature = cmplt [class_name]:class_name [first]:colon type [method_name]:name l_paren parameter_list? r_paren cmpgt;
+   * method_signature = cmplt [class_name]:class_name [first]:colon type [method_name]:name l_paren parameter_list? r_paren
+   * cmpgt;
    */
   public void outAMethodSignature(AMethodSignature node) {
     String className, methodName;
@@ -1491,8 +1493,8 @@ public class Walker extends DepthFirstAdapter {
   }
 
   /*
-   * new_expr = {simple} new base_type | {array} newarray l_paren nonvoid_type r_paren fixed_array_descriptor | {multi} newmultiarray l_paren
-   * base_type r_paren array_descriptor+;
+   * new_expr = {simple} new base_type | {array} newarray l_paren nonvoid_type r_paren fixed_array_descriptor | {multi}
+   * newmultiarray l_paren base_type r_paren array_descriptor+;
    */
   public void outASimpleNewExpr(ASimpleNewExpr node) {
     mProductions.addLast(Jimple.v().newNewExpr((RefType) mProductions.removeLast()));
@@ -1528,7 +1530,8 @@ public class Walker extends DepthFirstAdapter {
   }
 
   public void defaultCase(Node node) {
-    if (node instanceof TQuotedName || node instanceof TFullIdentifier || node instanceof TIdentifier || node instanceof TStringConstant ||
+    if (node instanceof TQuotedName || node instanceof TFullIdentifier || node instanceof TIdentifier
+        || node instanceof TStringConstant ||
 
         node instanceof TIntegerConstant || node instanceof TFloatConstant || node instanceof TAtIdentifier
 
@@ -1543,7 +1546,8 @@ public class Walker extends DepthFirstAdapter {
         tokenString = Scene.v().unescapeName(tokenString);
       }
 
-      if (node instanceof TIdentifier || node instanceof TFullIdentifier || node instanceof TQuotedName || node instanceof TStringConstant) {
+      if (node instanceof TIdentifier || node instanceof TFullIdentifier || node instanceof TQuotedName
+          || node instanceof TStringConstant) {
         try {
           tokenString = StringTools.getUnEscapedStringOf(tokenString);
 
@@ -1590,7 +1594,8 @@ public class Walker extends DepthFirstAdapter {
       } else if (t instanceof AAnnotationModifier) {
         modifier |= Modifier.ANNOTATION;
       } else {
-        throw new RuntimeException("Impossible: modifier unknown - Have you added a new modifier and not updated this file?");
+        throw new RuntimeException(
+            "Impossible: modifier unknown - Have you added a new modifier and not updated this file?");
       }
     }
 

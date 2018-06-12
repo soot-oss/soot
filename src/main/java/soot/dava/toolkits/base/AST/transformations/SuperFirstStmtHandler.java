@@ -1,118 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005-2006 Nomair A. Naeem (nomair.naeem@mail.mcgill.ca)
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Deal with the problem that super has to be the first stmt in a method body
- * The problem is as follows:
- * Suppose you had a call to super with some complicated arguments
- * or suppose an Aspect added some preinitialization
- * In both cases some code gets decompiled BEFORE the call to super
- * this is just initializing the arguments.
- * However the call to super() has to be the first stmt
- * 
- *
- * January 23rd 2006 Writing New Algorithm...
- * 
- *  Original constructor         ONE:Changed Constructor
- *
- *  B(args1){                       B(args1){
- *    ----------                       this(..args1..,B.preInit1(args1));
- *  X ----------                    }  
- *    ----------
- *    super(args2);
- *    ----------
- *  Y ----------
- *    ----------
- *
- * 
- ********************************************************************
- *  New method in Class being Decompiled
- *  
- *  private static preInit1(args1){
- *    
- *      ----------
- *    X ----------
- *      ----------
- *  
- *    DavaSuperHandler handler = new DavaSuperHandler();
- *    //code to evaluate all args in args2
- *  
- *    //evaluate 1st arg in args2
- *     ---------
- *    handler.store(firstArg);
- *
- *    //evaluate 2nd arg in args2
- *     ---------
- *    handler.store(secondArg);
- *
- *    //AND SO ON TILL ALL ARGS ARE FINISHED
- *  
- *    return handler;
- *  } 
- *
- *  
- ********************************************************************
- *  New Constructor Introduced
- *
- * B(..args1.., DavaSuperHandler handler){
- *
- *    super(
- *         (CAST-TYPE)handler.get(0),
- *         ((CAST-TYPE)handler.get(1)).CONVERSION(),
- *          .......);
- *
- *    ----------
- *  Y ----------
- *    ----------
- * }
- *
- *  
- ***********************************************************************
- *  New Class Created  (Inner class will work best)
- * 
- *  class DavaSuperHandler{
- *     Vector myVector = new Vector();
- *
- *     public Object get(int pos){
- *        return myVector.elementAt(pos);
- *     }
- *
- *     public void store(Object obj){
- *           myVector.add(obj);
- *     }
- *  }
- * 
- ***********************************************************************
- *
- *  
- *
- * ONE: Important to check that the parent of the call to super is the ASTMethodNode
- *      This is important because of the super call is nested within some control flow
- *      we cannot simply remove the super call (Although this shouldnt happen but just for completness)
- *
- * TWO: It is necessary to run on AST Analysis on the new SootMethod since 	
- *      the DavaBody usually invokes these anlayses
- *      but our newly created method will never go through that process
- *
- */
-
 package soot.dava.toolkits.base.AST.transformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 - 2006 Nomair A. Naeem (nomair.naeem@mail.mcgill.ca)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -370,8 +278,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
   }
 
   /*
-   * When we havent created the indirection to take care of super bug be it cos we dont need to or that we CANT cos of some limitation....should
-   * atleast remove the jimple this.init call from the statements
+   * When we havent created the indirection to take care of super bug be it cos we dont need to or that we CANT cos of some
+   * limitation....should atleast remove the jimple this.init call from the statements
    */
   public void removeInit() {
     // remove constructorUnit from originalASTMethod
@@ -437,7 +345,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
 
     // the methodRef of themethod to be called is the new constructor we
     // created
-    InstanceInvokeExpr tempExpr = new DSpecialInvokeExpr(originalConstructorExpr.getBase(), newConstructor.makeRef(), thisArgList);
+    InstanceInvokeExpr tempExpr
+        = new DSpecialInvokeExpr(originalConstructorExpr.getBase(), newConstructor.makeRef(), thisArgList);
 
     originalDavaBody.set_ConstructorExpr(tempExpr);
 
@@ -466,7 +375,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
 
   /*
    * super( (CAST-TYPE)handler.get(0), ((CAST-TYPE)handler.get(1)).CONVERSION(), .......);
-   * 
+   *
    * returns false if we cant create the call to super
    */
   private boolean createCallToSuper() {
@@ -533,7 +442,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
       tempArgList = new ArrayList();
       tempArgList.add(arg);
 
-      DVirtualInvokeExpr tempInvokeExpr = new DVirtualInvokeExpr(jimpleLocal, getMethodRef, tempArgList, new HashSet<Object>());
+      DVirtualInvokeExpr tempInvokeExpr
+          = new DVirtualInvokeExpr(jimpleLocal, getMethodRef, tempArgList, new HashSet<Object>());
 
       // NECESASARY CASTING OR RETRIEVAL OF PRIM TYPES TO BE DONE HERE
       Value toAddExpr = getProperCasting(tempType, tempInvokeExpr);
@@ -550,8 +460,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
     // we are done with creating all necessary args to the virtualinvoke
     // expr constructor
 
-    DVirtualInvokeExpr virtualInvoke = new DVirtualInvokeExpr(originalConstructorExpr.getBase(), superConstructor.makeRef(), argsForConstructor,
-        new HashSet<Object>());
+    DVirtualInvokeExpr virtualInvoke = new DVirtualInvokeExpr(originalConstructorExpr.getBase(), superConstructor.makeRef(),
+        argsForConstructor, new HashSet<Object>());
 
     // set the constructors constructorExpr
     newConstructorDavaBody.set_ConstructorExpr(virtualInvoke);
@@ -772,7 +682,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
         ArrayList tempArgList = new ArrayList();
         tempArgList.add(arg);
 
-        DVirtualInvokeExpr tempInvokeExpr = new DVirtualInvokeExpr(jimpleLocal, getMethodRef, tempArgList, new HashSet<Object>());
+        DVirtualInvokeExpr tempInvokeExpr
+            = new DVirtualInvokeExpr(jimpleLocal, getMethodRef, tempArgList, new HashSet<Object>());
 
         // NECESASARY CASTING OR RETRIEVAL OF PRIM TYPES TO BE DONE HERE
         Value toAddExpr = getProperCasting(tempType, tempInvokeExpr);
@@ -798,7 +709,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
     }
     while (it.hasNext()) {
       /*
-       * notice we dont need to clone these because these will be removed from the other method from which we are copying these
+       * notice we dont need to clone these because these will be removed from the other method from which we are copying
+       * these
        */
       newStmts.add(it.next());
     }
@@ -924,7 +836,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
   }
 
   /*
-   * January 23rd New Algorithm Leave originalASTMethod unchanged Clone everything and copy only those which are needed in the newASTPreInitMethod
+   * January 23rd New Algorithm Leave originalASTMethod unchanged Clone everything and copy only those which are needed in
+   * the newASTPreInitMethod
    */
   private void createNewASTPreInitMethod(ASTStatementSequenceNode initNode) {
     List<Object> newPreinitBody = new ArrayList<Object>();
@@ -976,7 +889,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
       // adding any stmt until constructorUnit into topList for
       // newMethodNode
       /*
-       * notice we dont need to clone these because these will be removed from the other method from which we are copying these
+       * notice we dont need to clone these because these will be removed from the other method from which we are copying
+       * these
        */
       newStmts.add(augStmt);
     }
@@ -1068,8 +982,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
   }
 
   /*
-   * Check the sootClass that it doesnt have a name we have suggested ALSO VERY IMPORTANT TO CHECK THE NAMES IN THE SOOTMETHODSADDED Variable since
-   * these will be added to this sootclass by the PackManager
+   * Check the sootClass that it doesnt have a name we have suggested ALSO VERY IMPORTANT TO CHECK THE NAMES IN THE
+   * SOOTMETHODSADDED Variable since these will be added to this sootclass by the PackManager
    */
   private String getUniqueName() {
     String toReturn = "preInit";
@@ -1123,15 +1037,15 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
 
   /*
    * Create the following code:
-   * 
+   *
    * DavaSuperHandler handler; handler = new DavaSuperHandler(); //code to evaluate all args in args2
-   * 
+   *
    * //evaluate 1st arg in args2 --------- handler.store(firstArg);
-   * 
+   *
    * //evaluate 2nd arg in args2 --------- handler.store(secondArg);
-   * 
+   *
    * //AND SO ON TILL ALL ARGS ARE FINISHED
-   * 
+   *
    * return handler;
    */
 
@@ -1158,7 +1072,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
      */
 
     // create RHS
-    DNewInvokeExpr invokeExpr = new DNewInvokeExpr(RefType.v(sootClass), makeMethodRef("DavaSuperHandler", new ArrayList()), new ArrayList());
+    DNewInvokeExpr invokeExpr
+        = new DNewInvokeExpr(RefType.v(sootClass), makeMethodRef("DavaSuperHandler", new ArrayList()), new ArrayList());
 
     // create LHS
     GAssignStmt initialization = new GAssignStmt(newLocal, invokeExpr);
@@ -1265,7 +1180,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
         ArrayList typeList = new ArrayList();
         typeList.add(IntType.v());
 
-        DNewInvokeExpr argForStore = new DNewInvokeExpr(RefType.v("java.lang.Boolean"), makeMethodRef("Boolean", typeList), argList);
+        DNewInvokeExpr argForStore
+            = new DNewInvokeExpr(RefType.v("java.lang.Boolean"), makeMethodRef("Boolean", typeList), argList);
 
         return createAugmentedStmtToAdd(newLocal, getMethodRef, argForStore);
       } else if (t == ByteType.v()) {
@@ -1273,7 +1189,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
         ArrayList typeList = new ArrayList();
         typeList.add(ByteType.v());
 
-        DNewInvokeExpr argForStore = new DNewInvokeExpr(RefType.v("java.lang.Byte"), makeMethodRef("Byte", typeList), argList);
+        DNewInvokeExpr argForStore
+            = new DNewInvokeExpr(RefType.v("java.lang.Byte"), makeMethodRef("Byte", typeList), argList);
 
         return createAugmentedStmtToAdd(newLocal, getMethodRef, argForStore);
       } else if (t == CharType.v()) {
@@ -1281,7 +1198,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
         ArrayList typeList = new ArrayList();
         typeList.add(CharType.v());
 
-        DNewInvokeExpr argForStore = new DNewInvokeExpr(RefType.v("java.lang.Character"), makeMethodRef("Character", typeList), argList);
+        DNewInvokeExpr argForStore
+            = new DNewInvokeExpr(RefType.v("java.lang.Character"), makeMethodRef("Character", typeList), argList);
 
         return createAugmentedStmtToAdd(newLocal, getMethodRef, argForStore);
       } else if (t == DoubleType.v()) {
@@ -1289,7 +1207,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
         ArrayList typeList = new ArrayList();
         typeList.add(DoubleType.v());
 
-        DNewInvokeExpr argForStore = new DNewInvokeExpr(RefType.v("java.lang.Double"), makeMethodRef("Double", typeList), argList);
+        DNewInvokeExpr argForStore
+            = new DNewInvokeExpr(RefType.v("java.lang.Double"), makeMethodRef("Double", typeList), argList);
 
         return createAugmentedStmtToAdd(newLocal, getMethodRef, argForStore);
       } else if (t == FloatType.v()) {
@@ -1297,7 +1216,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
         ArrayList typeList = new ArrayList();
         typeList.add(FloatType.v());
 
-        DNewInvokeExpr argForStore = new DNewInvokeExpr(RefType.v("java.lang.Float"), makeMethodRef("Float", typeList), argList);
+        DNewInvokeExpr argForStore
+            = new DNewInvokeExpr(RefType.v("java.lang.Float"), makeMethodRef("Float", typeList), argList);
 
         return createAugmentedStmtToAdd(newLocal, getMethodRef, argForStore);
       } else if (t == IntType.v()) {
@@ -1305,7 +1225,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
         ArrayList typeList = new ArrayList();
         typeList.add(IntType.v());
 
-        DNewInvokeExpr argForStore = new DNewInvokeExpr(RefType.v("java.lang.Integer"), makeMethodRef("Integer", typeList), argList);
+        DNewInvokeExpr argForStore
+            = new DNewInvokeExpr(RefType.v("java.lang.Integer"), makeMethodRef("Integer", typeList), argList);
 
         return createAugmentedStmtToAdd(newLocal, getMethodRef, argForStore);
       } else if (t == LongType.v()) {
@@ -1313,7 +1234,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
         ArrayList typeList = new ArrayList();
         typeList.add(LongType.v());
 
-        DNewInvokeExpr argForStore = new DNewInvokeExpr(RefType.v("java.lang.Long"), makeMethodRef("Long", typeList), argList);
+        DNewInvokeExpr argForStore
+            = new DNewInvokeExpr(RefType.v("java.lang.Long"), makeMethodRef("Long", typeList), argList);
 
         return createAugmentedStmtToAdd(newLocal, getMethodRef, argForStore);
       } else if (t == ShortType.v()) {
@@ -1321,7 +1243,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
         ArrayList typeList = new ArrayList();
         typeList.add(ShortType.v());
 
-        DNewInvokeExpr argForStore = new DNewInvokeExpr(RefType.v("java.lang.Short"), makeMethodRef("Short", typeList), argList);
+        DNewInvokeExpr argForStore
+            = new DNewInvokeExpr(RefType.v("java.lang.Short"), makeMethodRef("Short", typeList), argList);
 
         return createAugmentedStmtToAdd(newLocal, getMethodRef, argForStore);
       } else {

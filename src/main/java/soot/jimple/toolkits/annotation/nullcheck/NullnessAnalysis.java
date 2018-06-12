@@ -1,24 +1,27 @@
-/* NullnessAnalysis
+package soot.jimple.toolkits.annotation.nullcheck;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2006 Eric Bodden
  * Copyright (C) 2007 Julian Tibble
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-
-package soot.jimple.toolkits.annotation.nullcheck;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,22 +59,23 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 
 /**
- * An intraprocedural nullness analysis that computes for each location and each value in a method if the value is (before or after that location)
- * definitely null, definitely non-null or neither. This class replaces {@link BranchedRefVarsAnalysis} which is known to have bugs.
+ * An intraprocedural nullness analysis that computes for each location and each value in a method if the value is (before or
+ * after that location) definitely null, definitely non-null or neither. This class replaces {@link BranchedRefVarsAnalysis}
+ * which is known to have bugs.
  *
  * @author Eric Bodden
  * @author Julian Tibble
  */
 public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalysis.AnalysisInfo> {
   /**
-   * The analysis info is a simple mapping of type {@link Value} to any of the constants BOTTOM, NON_NULL, NULL or TOP. This class returns BOTTOM by
-   * default.
-   * 
+   * The analysis info is a simple mapping of type {@link Value} to any of the constants BOTTOM, NON_NULL, NULL or TOP. This
+   * class returns BOTTOM by default.
+   *
    * @author Julian Tibble
    */
   protected class AnalysisInfo extends java.util.BitSet {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -9200043127757823764L;
 
@@ -120,7 +124,7 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
 
   /**
    * Creates a new analysis for the given graph/
-   * 
+   *
    * @param graph
    *          any unit graph
    */
@@ -193,7 +197,7 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
 
   /**
    * This can be overwritten by sublasses to mark a certain value as constantly non-null.
-   * 
+   *
    * @param v
    *          any value
    * @return true if it is known that this value (e.g. a method return value) is never null
@@ -215,7 +219,8 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     }
   }
 
-  private void handleEqualityOrNonEqualityCheck(AbstractBinopExpr eqExpr, AnalysisInfo in, AnalysisInfo out, AnalysisInfo outBranch) {
+  private void handleEqualityOrNonEqualityCheck(AbstractBinopExpr eqExpr, AnalysisInfo in, AnalysisInfo out,
+      AnalysisInfo outBranch) {
     Value left = eqExpr.getOp1();
     Value right = eqExpr.getOp2();
 
@@ -295,8 +300,9 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     }
 
     // if we have a definition (assignment) statement to a ref-like type, handle it,
-    if (isAlwaysNonNull(right) || right instanceof NewExpr || right instanceof NewArrayExpr || right instanceof NewMultiArrayExpr
-        || right instanceof ThisRef || right instanceof StringConstant || right instanceof ClassConstant || right instanceof CaughtExceptionRef) {
+    if (isAlwaysNonNull(right) || right instanceof NewExpr || right instanceof NewArrayExpr
+        || right instanceof NewMultiArrayExpr || right instanceof ThisRef || right instanceof StringConstant
+        || right instanceof ClassConstant || right instanceof CaughtExceptionRef) {
       // if we assign new... or @this, the result is non-null
       out.put(left, NON_NULL);
     } else if (right == NullConstant.v()) {
@@ -368,7 +374,7 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
 
   /**
    * Returns <code>true</code> if the analysis could determine that i is always null before the statement s.
-   * 
+   *
    * @param s
    *          a statement of the respective body
    * @param i
@@ -381,7 +387,7 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
 
   /**
    * Returns <code>true</code> if the analysis could determine that i is always non-null before the statement s.
-   * 
+   *
    * @param s
    *          a statement of the respective body
    * @param i

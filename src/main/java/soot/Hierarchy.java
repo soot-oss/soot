@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,8 +39,8 @@ import soot.util.Chain;
 /**
  * Represents the class hierarchy. It is closely linked to a Scene, and must be recreated if the Scene changes.
  *
- * The general convention is that if a method name contains "Including", then it returns the non-strict result; otherwise, it does a strict query
- * (e.g. strict superclass).
+ * The general convention is that if a method name contains "Including", then it returns the non-strict result; otherwise, it
+ * does a strict query (e.g. strict superclass).
  */
 public class Hierarchy {
   // These two maps are not filled in the constructor.
@@ -86,7 +83,7 @@ public class Hierarchy {
 
   /**
    * Initializes the hierarchy given a chain of all classes that shall be included in the hierarchy
-   * 
+   *
    * @param allClasses
    *          The chain of all classes to be included in the hierarchy
    */
@@ -463,8 +460,8 @@ public class Hierarchy {
   }
 
   /**
-   * Returns true if child is a subclass of possibleParent. If one of the known parent classes is phantom, we conservatively assume that the current
-   * class might be a child.
+   * Returns true if child is a subclass of possibleParent. If one of the known parent classes is phantom, we conservatively
+   * assume that the current class might be a child.
    */
   public boolean isClassSubclassOf(SootClass child, SootClass possibleParent) {
     child.checkLevel(SootClass.HIERARCHY);
@@ -484,8 +481,8 @@ public class Hierarchy {
   }
 
   /**
-   * Returns true if child is, or is a subclass of, possibleParent. If one of the known parent classes is phantom, we conservatively assume that the
-   * current class might be a child.
+   * Returns true if child is, or is a subclass of, possibleParent. If one of the known parent classes is phantom, we
+   * conservatively assume that the current class might be a child.
    */
   public boolean isClassSubclassOfIncluding(SootClass child, SootClass possibleParent) {
     child.checkLevel(SootClass.HIERARCHY);
@@ -563,8 +560,8 @@ public class Hierarchy {
   // Questions about method invocation.
 
   /**
-   * Checks whether check is a visible class in view of the from class. It assumes that protected and private classes do not exit. If they exist and
-   * check is either protected or private, the check will return false.
+   * Checks whether check is a visible class in view of the from class. It assumes that protected and private classes do not
+   * exit. If they exist and check is either protected or private, the check will return false.
    */
   public boolean isVisible(SootClass from, SootClass check) {
     if (check.isPublic()) {
@@ -597,7 +594,8 @@ public class Hierarchy {
       return from.equals(m.getDeclaringClass());
     }
     if (m.isProtected()) {
-      return isClassSubclassOfIncluding(from, m.getDeclaringClass()) || from.getJavaPackageName().equals(m.getDeclaringClass().getJavaPackageName());
+      return isClassSubclassOfIncluding(from, m.getDeclaringClass())
+          || from.getJavaPackageName().equals(m.getDeclaringClass().getJavaPackageName());
     }
     // m is package
     return from.getJavaPackageName().equals(m.getDeclaringClass().getJavaPackageName());
@@ -699,7 +697,8 @@ public class Hierarchy {
     target.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
 
     /*
-     * This is a bizarre condition! Hopefully the implementation is correct. See VM Spec, 2nd Edition, Chapter 6, in the definition of invokespecial.
+     * This is a bizarre condition! Hopefully the implementation is correct. See VM Spec, 2nd Edition, Chapter 6, in the
+     * definition of invokespecial.
      */
     if ("<init>".equals(target.getName()) || target.isPrivate()) {
       return target;

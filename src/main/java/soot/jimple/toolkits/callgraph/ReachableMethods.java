@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jimple.toolkits.callgraph;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,7 +33,7 @@ import soot.util.queue.QueueReader;
 
 /**
  * Keeps track of the methods transitively reachable from the specified entry points through the given call graph edges.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class ReachableMethods {
@@ -94,16 +97,16 @@ public class ReachableMethods {
   }
 
   /**
-   * Returns a QueueReader object containing all methods found reachable so far, and which will be informed of any new methods that are later found to
-   * be reachable.
+   * Returns a QueueReader object containing all methods found reachable so far, and which will be informed of any new
+   * methods that are later found to be reachable.
    */
   public QueueReader<MethodOrMethodContext> listener() {
     return allReachables.clone();
   }
 
   /**
-   * Returns a QueueReader object which will contain ONLY NEW methods which will be found to be reachable, but not those that have already been found
-   * to be reachable.
+   * Returns a QueueReader object which will contain ONLY NEW methods which will be found to be reachable, but not those that
+   * have already been found to be reachable.
    */
   public QueueReader<MethodOrMethodContext> newListener() {
     return reachables.reader();

@@ -1,28 +1,31 @@
-/* Soot - a Java Optimization Framework
+package soot.dexpler;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  *
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-
-package soot.dexpler;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -66,11 +69,11 @@ import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
 
 /**
- * BodyTransformer to find and change definition of locals used within an if which contains a condition involving two locals ( and not only one local
- * as in DexNullTransformer).
+ * BodyTransformer to find and change definition of locals used within an if which contains a condition involving two locals
+ * ( and not only one local as in DexNullTransformer).
  *
- * It this case, if any of the two locals leads to an object being def or used, all the appropriate defs of the two locals are updated to reflect the
- * use of objects (i.e: 0s are replaced by nulls).
+ * It this case, if any of the two locals leads to an object being def or used, all the appropriate defs of the two locals
+ * are updated to reflect the use of objects (i.e: 0s are replaced by nulls).
  */
 public class DexIfTransformer extends AbstractNullTransformer {
   // Note: we need an instance variable for inner class access, treat this as
@@ -105,8 +108,8 @@ public class DexIfTransformer extends AbstractNullTransformer {
           if (u instanceof DefinitionStmt) {
             l = (Local) ((DefinitionStmt) u).getLeftOp();
           } else {
-            throw new RuntimeException(
-                "ERROR: def can not be something else than Assign or Identity statement! (def: " + u + " class: " + u.getClass() + "");
+            throw new RuntimeException("ERROR: def can not be something else than Assign or Identity statement! (def: " + u
+                + " class: " + u.getClass() + "");
           }
 
           // check defs
@@ -411,7 +414,8 @@ public class DexIfTransformer extends AbstractNullTransformer {
         for (Unit u : defsOp1) {
           Stmt s = (Stmt) u;
           // If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
-          if (!s.containsArrayRef() || (!defsOp1.contains(s.getArrayRef().getBase()) && !defsOp2.contains(s.getArrayRef().getBase()))) {
+          if (!s.containsArrayRef()
+              || (!defsOp1.contains(s.getArrayRef().getBase()) && !defsOp2.contains(s.getArrayRef().getBase()))) {
             replaceWithNull(u);
           }
 
@@ -419,7 +423,8 @@ public class DexIfTransformer extends AbstractNullTransformer {
           for (Unit uuse : localDefs.getUsesOf(l)) {
             Stmt use = (Stmt) uuse;
             // If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
-            if (!use.containsArrayRef() || (twoIfLocals[0] != use.getArrayRef().getBase()) && twoIfLocals[1] != use.getArrayRef().getBase()) {
+            if (!use.containsArrayRef()
+                || (twoIfLocals[0] != use.getArrayRef().getBase()) && twoIfLocals[1] != use.getArrayRef().getBase()) {
               replaceWithNull(use);
             }
           }

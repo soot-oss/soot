@@ -1,30 +1,27 @@
-/* Soot - a J*va Optimization Framework
+package soot.grimp;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 1999 Patrick Lam
  * Copyright (C) 2004 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
-package soot.grimp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,7 +151,7 @@ import soot.jimple.XorExpr;
 /**
  * The Grimp class contains all the constructors for the components of the Grimp grammar for the Grimp body. <br>
  * <br>
- * 
+ *
  * Immediate -> Local | Constant <br>
  * RValue -> Local | Constant | ConcreteRef | Expr<br>
  * Variable -> Local | ArrayRef | InstanceFieldRef | StaticFieldRef <br>
@@ -419,8 +416,8 @@ public class Grimp {
   /**
    * Constructs a new DynamicInvokeExpr grammar chunk.
    */
-  public DynamicInvokeExpr newDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<Value> bootstrapArgs, SootMethodRef methodRef, int tag,
-      List args) {
+  public DynamicInvokeExpr newDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<Value> bootstrapArgs,
+      SootMethodRef methodRef, int tag, List args) {
     return new GDynamicInvokeExpr(bootstrapMethodRef, bootstrapArgs, methodRef, tag, args);
   }
 
@@ -834,8 +831,8 @@ public class Grimp {
           for (int i = 0; i < v.getArgCount(); i++) {
             newArgList.add(newExpr(v.getArg(i)));
           }
-          returnedExpr
-              .setValue(newDynamicInvokeExpr(v.getBootstrapMethodRef(), v.getBootstrapArgs(), v.getMethodRef(), v.getHandleTag(), newArgList));
+          returnedExpr.setValue(newDynamicInvokeExpr(v.getBootstrapMethodRef(), v.getBootstrapArgs(), v.getMethodRef(),
+              v.getHandleTag(), newArgList));
         }
 
         public void caseCastExpr(CastExpr v) {
@@ -876,7 +873,8 @@ public class Grimp {
         return newArrayRef(((ArrayRef) value).getBase(), newExpr(((ArrayRef) value).getIndex()));
       }
       if (value instanceof InstanceFieldRef) {
-        return newInstanceFieldRef(newExpr((((InstanceFieldRef) value).getBase())), ((InstanceFieldRef) value).getFieldRef());
+        return newInstanceFieldRef(newExpr((((InstanceFieldRef) value).getBase())),
+            ((InstanceFieldRef) value).getFieldRef());
       }
       /* have Ref/Value, which is fine -- not Jimple-specific. */
       return value;

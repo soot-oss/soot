@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2000 Feng Qian
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.toolkits.annotation.arraycheck;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2000 Feng Qian
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Collection;
 import java.util.Date;
@@ -75,11 +72,12 @@ public class ClassFieldAnalysis {
 
   /*
    * A map hold class object to other information
-   * 
+   *
    * SootClass --> FieldInfoTable
    */
 
-  private final Map<SootClass, Hashtable<SootField, IntValueContainer>> classToFieldInfoMap = new HashMap<SootClass, Hashtable<SootField, IntValueContainer>>();
+  private final Map<SootClass, Hashtable<SootField, IntValueContainer>> classToFieldInfoMap
+      = new HashMap<SootClass, Hashtable<SootField, IntValueContainer>>();
 
   protected void internalTransform(SootClass c) {
     if (classToFieldInfoMap.containsKey(c)) {
@@ -126,13 +124,14 @@ public class ClassFieldAnalysis {
     /* For FINAL field, it only needs to scan the <clinit> and <init> methods. */
 
     /*
-     * For PRIVATE field, <clinit> is scanned to make sure that it is always assigned a value before other uses. And no other assignment in other
-     * methods.
+     * For PRIVATE field, <clinit> is scanned to make sure that it is always assigned a value before other uses. And no other
+     * assignment in other methods.
      */
 
     /*
-     * The fastest way to determine the value of one field may get. Scan all method to get all definitions, and summerize the final value. For PRIVATE
-     * STATIC field, if it is not always assigned value, it may count null pointer exception before array exception
+     * The fastest way to determine the value of one field may get. Scan all method to get all definitions, and summerize the
+     * final value. For PRIVATE STATIC field, if it is not always assigned value, it may count null pointer exception before
+     * array exception
      */
 
     Iterator<SootMethod> methodIt = c.methodIterator();
@@ -163,8 +162,8 @@ public class ClassFieldAnalysis {
   }
 
   /*
-   * method, to be scanned candidates, the candidate set of fields, fields with value TOP are moved out of the set. fieldinfo, keep the field ->
-   * value.
+   * method, to be scanned candidates, the candidate set of fields, fields with value TOP are moved out of the set.
+   * fieldinfo, keep the field -> value.
    */
 
   public void ScanMethod(SootMethod method, Set<SootField> candidates, Hashtable<SootField, IntValueContainer> fieldinfo) {
@@ -205,7 +204,8 @@ public class ClassFieldAnalysis {
 
     /* Linearly scan the method body, if it has field references in candidate set. */
     /*
-     * Only a.f = ... needs consideration. this.f, or other.f are treated as same because we summerize the field as a class's field.
+     * Only a.f = ... needs consideration. this.f, or other.f are treated as same because we summerize the field as a class's
+     * field.
      */
 
     HashMap<Stmt, SootField> stmtfield = new HashMap<Stmt, SootField>();

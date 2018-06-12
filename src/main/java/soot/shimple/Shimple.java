@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.shimple;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,8 +50,8 @@ import soot.toolkits.scalar.ValueUnitPair;
 import soot.util.Chain;
 
 /**
- * Contains the constructors for the components of the SSA Shimple grammar. Methods are available to construct Shimple from Jimple/Shimple, create Phi
- * nodes, and converting back from Shimple to Jimple.
+ * Contains the constructors for the components of the SSA Shimple grammar. Methods are available to construct Shimple from
+ * Jimple/Shimple, create Phi nodes, and converting back from Shimple to Jimple.
  *
  * <p>
  * This should normally be used in conjunction with the constructor methods from soot.jimple.Jimple.
@@ -58,8 +61,8 @@ import soot.util.Chain;
  *
  * @author Navindra Umanee
  * @see soot.jimple.Jimple
- * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and the Control Dependence
- *      Graph</a>
+ * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
+ *      the Control Dependence Graph</a>
  **/
 public class Shimple {
   private static final Logger logger = LoggerFactory.getLogger(Shimple.class);
@@ -107,8 +110,8 @@ public class Shimple {
   }
 
   /**
-   * Create a trivial PhiExpr, where preds are an ordered list of the control predecessor Blocks of the Phi expression. Instead of a list of blocks,
-   * you may provide a list of the tail Units from the corresponding blocks.
+   * Create a trivial PhiExpr, where preds are an ordered list of the control predecessor Blocks of the Phi expression.
+   * Instead of a list of blocks, you may provide a list of the tail Units from the corresponding blocks.
    **/
   public PhiExpr newPhiExpr(Local leftLocal, List<Block> preds) {
     return new SPhiExpr(leftLocal, preds);
@@ -119,8 +122,8 @@ public class Shimple {
   }
 
   /**
-   * Create a PhiExpr with the provided list of Values (Locals or Constants) and the corresponding control flow predecessor Blocks. Instead of a list
-   * of predecessor blocks, you may provide a list of the tail Units from the corresponding blocks.
+   * Create a PhiExpr with the provided list of Values (Locals or Constants) and the corresponding control flow predecessor
+   * Blocks. Instead of a list of predecessor blocks, you may provide a list of the tail Units from the corresponding blocks.
    **/
   public PhiExpr newPhiExpr(List<Value> args, List<Unit> preds) {
     return new SPhiExpr(args, preds);
@@ -207,11 +210,13 @@ public class Shimple {
   }
 
   /**
-   * If you are removing a Unit from a Unit chain which contains PhiExpr's, you might want to call this utility function in order to update any
-   * PhiExpr pointers to the Unit to point to the Unit's predecessor(s). This function will not modify "branch target" UnitBoxes.
+   * If you are removing a Unit from a Unit chain which contains PhiExpr's, you might want to call this utility function in
+   * order to update any PhiExpr pointers to the Unit to point to the Unit's predecessor(s). This function will not modify
+   * "branch target" UnitBoxes.
    *
    * <p>
-   * Normally you should not have to call this function directly, since patching is taken care of Shimple's internal implementation of PatchingChain.
+   * Normally you should not have to call this function directly, since patching is taken care of Shimple's internal
+   * implementation of PatchingChain.
    **/
   public static void redirectToPreds(Body body, Unit remove) {
     boolean debug = Options.v().debug();
@@ -276,7 +281,8 @@ public class Shimple {
 
     if (preds.size() == 0) {
       if (debug) {
-        logger.warn("Shimple.redirectToPreds couldn't find any predecessors for " + remove + " in " + body.getMethod() + ".");
+        logger
+            .warn("Shimple.redirectToPreds couldn't find any predecessors for " + remove + " in " + body.getMethod() + ".");
       }
 
       if (!remove.equals(units.getFirst())) {
@@ -325,7 +331,8 @@ public class Shimple {
    * Redirects PhiExpr pointers to the given Unit to the new Unit.
    *
    * <p>
-   * Normally you should not have to call this function directly, since patching is taken care of Shimple's internal implementation of PatchingChain.
+   * Normally you should not have to call this function directly, since patching is taken care of Shimple's internal
+   * implementation of PatchingChain.
    **/
   public static void redirectPointers(Unit oldLocation, Unit newLocation) {
     List<UnitBox> boxesPointing = oldLocation.getBoxesPointingToThis();

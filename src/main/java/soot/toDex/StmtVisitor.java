@@ -1,5 +1,27 @@
 package soot.toDex;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -82,8 +104,8 @@ import soot.util.Switchable;
 /**
  * A visitor that builds a list of instructions from the Jimple statements it visits.<br>
  * <br>
- * Use {@link Switchable#apply(soot.util.Switch)} with this visitor to add statements and {@link #getFinalInsns()} to get the final dexlib
- * instructions.<br>
+ * Use {@link Switchable#apply(soot.util.Switch)} with this visitor to add statements and {@link #getFinalInsns()} to get the
+ * final dexlib instructions.<br>
  * <br>
  * These final instructions do have correct offsets, jump targets and register numbers.
  *
@@ -109,11 +131,14 @@ class StmtVisitor implements StmtSwitch {
 
   // maps used to map Jimple statements to dalvik instructions
   private Map<Insn, Stmt> insnStmtMap = new HashMap<Insn, Stmt>();
-  private Map<Instruction, LocalRegisterAssignmentInformation> instructionRegisterMap = new IdentityHashMap<Instruction, LocalRegisterAssignmentInformation>();
+  private Map<Instruction, LocalRegisterAssignmentInformation> instructionRegisterMap
+      = new IdentityHashMap<Instruction, LocalRegisterAssignmentInformation>();
   private Map<Instruction, Insn> instructionInsnMap = new IdentityHashMap<Instruction, Insn>();
-  private Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap = new IdentityHashMap<Insn, LocalRegisterAssignmentInformation>();
+  private Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap
+      = new IdentityHashMap<Insn, LocalRegisterAssignmentInformation>();
   private Map<Instruction, AbstractPayload> instructionPayloadMap = new IdentityHashMap<Instruction, AbstractPayload>();
-  private List<LocalRegisterAssignmentInformation> parameterInstructionsList = new ArrayList<LocalRegisterAssignmentInformation>();
+  private List<LocalRegisterAssignmentInformation> parameterInstructionsList
+      = new ArrayList<LocalRegisterAssignmentInformation>();
 
   private Map<Constant, Register> monitorRegs = new HashMap<Constant, Register>();
 
@@ -205,7 +230,7 @@ class StmtVisitor implements StmtSwitch {
 
   /**
    * Reduces the instruction list by removing unnecessary instruction pairs such as move v0 v1; move v1 v0;
-   * 
+   *
    * @param trapReferences
    */
   private void reduceInstructions(Set<Unit> trapReferences) {
@@ -716,13 +741,14 @@ class StmtVisitor implements StmtSwitch {
       this.insnRegisterMap.put(insns.get(insns.size() - 1), LocalRegisterAssignmentInformation.v(localReg, lhs));
     } else if (rhs instanceof ThisRef || rhs instanceof ParameterRef) {
       /*
-       * do not save the ThisRef or ParameterRef in a local, because it always has a parameter register already. at least use the local for further
-       * reference in the statements
+       * do not save the ThisRef or ParameterRef in a local, because it always has a parameter register already. at least use
+       * the local for further reference in the statements
        */
       Local localForThis = lhs;
       regAlloc.asParameter(belongingMethod, localForThis);
 
-      parameterInstructionsList.add(LocalRegisterAssignmentInformation.v(regAlloc.asLocal(localForThis).clone(), localForThis));
+      parameterInstructionsList
+          .add(LocalRegisterAssignmentInformation.v(regAlloc.asLocal(localForThis).clone(), localForThis));
     } else {
       throw new Error("unknown Value as right-hand side of IdentityStmt: " + rhs);
     }

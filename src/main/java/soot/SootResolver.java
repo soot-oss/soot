@@ -1,30 +1,27 @@
-/* Soot - a J*va Optimization Framework
+package soot;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2000 Patrice Pominville
  * Copyright (C) 2004 Ondrej Lhotak, Ganesh Sittampalam
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
-package soot;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -109,8 +106,8 @@ public class SootResolver {
   }
 
   /**
-   * Returns a (possibly not yet resolved) SootClass to be used in references to a class. If/when the class is resolved, it will be resolved into this
-   * SootClass.
+   * Returns a (possibly not yet resolved) SootClass to be used in references to a class. If/when the class is resolved, it
+   * will be resolved into this SootClass.
    */
   public SootClass makeClassRef(String className) {
     if (Scene.v().containsClass(className)) {
@@ -126,8 +123,8 @@ public class SootResolver {
   }
 
   /**
-   * Resolves the given class. Depending on the resolver settings, may decide to resolve other classes as well. If the class has already been
-   * resolved, just returns the class that was already resolved.
+   * Resolves the given class. Depending on the resolver settings, may decide to resolve other classes as well. If the class
+   * has already been resolved, just returns the class that was already resolved.
    */
   public SootClass resolveClass(String className, int desiredLevel) {
     SootClass resolvedClass = null;
@@ -152,8 +149,8 @@ public class SootResolver {
       while (!worklist[i].isEmpty()) {
         SootClass sc = worklist[i].pop();
         if (resolveEverything()) { // Whole program mode
-          boolean onlySignatures = sc.isPhantom()
-              || (Options.v().no_bodies_for_excluded() && Scene.v().isExcluded(sc) && !Scene.v().getBasicClasses().contains(sc.getName()));
+          boolean onlySignatures = sc.isPhantom() || (Options.v().no_bodies_for_excluded() && Scene.v().isExcluded(sc)
+              && !Scene.v().getBasicClasses().contains(sc.getName()));
           if (onlySignatures) {
             bringToSignatures(sc);
             sc.setPhantomClass();
@@ -202,7 +199,8 @@ public class SootResolver {
   }
 
   /**
-   * Hierarchy - we know the hierarchy of the class and that's it requires at least Hierarchy for all supertypes and enclosing types.
+   * Hierarchy - we know the hierarchy of the class and that's it requires at least Hierarchy for all supertypes and
+   * enclosing types.
    */
   protected void bringToHierarchy(SootClass sc) {
     if (sc.resolvingLevel() >= SootClass.HIERARCHY) {
@@ -231,7 +229,8 @@ public class SootResolver {
             suffix = " Try adding jce.jar to Soot's classpath, e.g.:\n" + "java -cp sootclasses.jar soot.Main -cp "
                 + ".:/path/to/jdk/jre/lib/rt.jar:/path/to/jdk/jre/lib/jce.jar <other options>";
           }
-          throw new SootClassNotFoundException("couldn't find class: " + className + " (is your soot-class-path set properly?)" + suffix);
+          throw new SootClassNotFoundException(
+              "couldn't find class: " + className + " (is your soot-class-path set properly?)" + suffix);
         } else {
           // logger.warn("" + className + " is a
           // phantom class!");
@@ -270,7 +269,8 @@ public class SootResolver {
   }
 
   /**
-   * Signatures - we know the signatures of all methods and fields requires at least Hierarchy for all referred to types in these signatures.
+   * Signatures - we know the signatures of all methods and fields requires at least Hierarchy for all referred to types in
+   * these signatures.
    */
   protected void bringToSignatures(SootClass sc) {
     if (sc.resolvingLevel() >= SootClass.SIGNATURES) {
@@ -307,9 +307,10 @@ public class SootResolver {
   }
 
   /**
-   * Bodies - we can now start loading the bodies of methods for all referred to methods and fields in the bodies, requires signatures for the method
-   * receiver and field container, and hierarchy for all other classes referenced in method references. Current implementation does not distinguish
-   * between the receiver and other references. Therefore, it is conservative and brings all of them to signatures. But this could/should be improved.
+   * Bodies - we can now start loading the bodies of methods for all referred to methods and fields in the bodies, requires
+   * signatures for the method receiver and field container, and hierarchy for all other classes referenced in method
+   * references. Current implementation does not distinguish between the receiver and other references. Therefore, it is
+   * conservative and brings all of them to signatures. But this could/should be improved.
    */
   protected void bringToBodies(SootClass sc) {
     if (sc.resolvingLevel() >= SootClass.BODIES) {
@@ -376,7 +377,7 @@ public class SootResolver {
 
   public class SootClassNotFoundException extends RuntimeException {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1563461446590293827L;
 

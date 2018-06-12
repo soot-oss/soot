@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.toolkits.graph;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,8 +34,9 @@ import soot.SootMethod;
 import soot.Unit;
 
 /**
- * This utility class can convert any BlockGraph to a single-headed and single-tailed graph by inserting appropriate Start or Stop nodes. It can also
- * fully reverse the graph, something that might be useful e.g. when computing control dependences with a dominators algorithm.
+ * This utility class can convert any BlockGraph to a single-headed and single-tailed graph by inserting appropriate Start or
+ * Stop nodes. It can also fully reverse the graph, something that might be useful e.g. when computing control dependences
+ * with a dominators algorithm.
  *
  * <p>
  * Note: This class may be retracted in a future release when a suitable replacement becomes available.
@@ -42,7 +46,8 @@ import soot.Unit;
  **/
 public class BlockGraphConverter {
   /**
-   * Transforms a multi-headed and/or multi-tailed BlockGraph to a single-headed singled-tailed BlockGraph by inserting a dummy start and stop nodes.
+   * Transforms a multi-headed and/or multi-tailed BlockGraph to a single-headed singled-tailed BlockGraph by inserting a
+   * dummy start and stop nodes.
    **/
   public static void addStartStopNodesTo(BlockGraph graph) {
     ADDSTART: {
@@ -94,8 +99,9 @@ public class BlockGraphConverter {
   }
 
   /**
-   * Reverses a BlockGraph by making the heads tails, the tails heads and reversing the edges. It does not change the ordering of Units in individual
-   * blocks, nor does it change the Block labels. This utility could be useful when calculating control dependences with a dominators algorithm.
+   * Reverses a BlockGraph by making the heads tails, the tails heads and reversing the edges. It does not change the
+   * ordering of Units in individual blocks, nor does it change the Block labels. This utility could be useful when
+   * calculating control dependences with a dominators algorithm.
    **/
   public static void reverse(BlockGraph graph) {
     // Issue: Do we change indexInMethod? No...

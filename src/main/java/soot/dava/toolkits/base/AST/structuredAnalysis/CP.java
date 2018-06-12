@@ -1,5 +1,27 @@
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,34 +60,34 @@ import soot.jimple.Stmt;
 public class CP extends StructuredAnalysis {
   /*
    * Constant Propagation:
-   * 
+   *
    * Step 1: Sets of CPTuple (className, CPVariable, value) where: CPVariable contains a local or SootField
-   * 
-   * Step 2: A local or SootField has a constant value at a program point p if on all program paths from the start of the method to point p the local
-   * or Sootfield has only been assigned this constant value.
-   * 
+   *
+   * Step 2: A local or SootField has a constant value at a program point p if on all program paths from the start of the
+   * method to point p the local or Sootfield has only been assigned this constant value.
+   *
    * Step 3: Forward Analysis
-   * 
+   *
    * Step 4: Intersection (See intersection method in CPFlowSet)
-   * 
+   *
    * Step 5: See method processStatement
-   * 
-   * Step 6: out(start) = all locals set to bottom(they shouldnt be present in the initialSet all formals set to Top, all constant fields set to
-   * constant values
-   * 
-   * newInitialFlow: all locals and formals set to Top, all constant fields set to constant values remember new InitialFlow is ONLY used for input to
-   * catchBodies
-   * 
+   *
+   * Step 6: out(start) = all locals set to bottom(they shouldnt be present in the initialSet all formals set to Top, all
+   * constant fields set to constant values
+   *
+   * newInitialFlow: all locals and formals set to Top, all constant fields set to constant values remember new InitialFlow
+   * is ONLY used for input to catchBodies
+   *
    * Any local or field which is not in the flow set at any time is necessarily bottom
-   * 
-   * 
-   * knowing how a condition evaluates can give us useful insight to the values of variables Handle this for a == b where both a and b are primtype
-   * and special case handle it for A where A is a unary boolean condition
-   * 
+   *
+   *
+   * knowing how a condition evaluates can give us useful insight to the values of variables Handle this for a == b where
+   * both a and b are primtype and special case handle it for A where A is a unary boolean condition
+   *
    * See following over-riden methods:
-   * 
-   * public Object processASTIfElseNode(ASTIfElseNode node,Object input) public Object processASTIfNode(ASTIfNode node,Object input) public Object
-   * processASTSwitchNode(ASTSwitchNode node,Object input)
+   *
+   * public Object processASTIfElseNode(ASTIfElseNode node,Object input) public Object processASTIfNode(ASTIfNode node,Object
+   * input) public Object processASTSwitchNode(ASTSwitchNode node,Object input)
    */
 
   ArrayList<CPTuple> constantFieldTuples = null; // VariableTuples of
@@ -85,7 +107,8 @@ public class CP extends StructuredAnalysis {
   /*
    * The start of the analysis takes place whenever this constructor is invoked
    */
-  public CP(ASTMethodNode analyze, HashMap<String, Object> constantFields, HashMap<String, SootField> classNameFieldNameToSootFieldMapping) {
+  public CP(ASTMethodNode analyze, HashMap<String, Object> constantFields,
+      HashMap<String, SootField> classNameFieldNameToSootFieldMapping) {
     super();
     /*
      * DEBUG = true; DEBUG_IF = true; DEBUG_WHILE = true; DEBUG_STATEMENTS = true;
@@ -195,7 +218,8 @@ public class CP extends StructuredAnalysis {
         CPTuple newTuple = new CPTuple(localClassName, newVar, value);
 
         /*
-         * Commenting the next line since we dont want initial Input to have any locals in it all locals are considered bottom initially
+         * Commenting the next line since we dont want initial Input to have any locals in it all locals are considered
+         * bottom initially
          */
         // initialInput.add(newTuple);
 
@@ -209,7 +233,8 @@ public class CP extends StructuredAnalysis {
   /*
    * Uses the results of the ConstantValueFinder to create a list of constantField CPTuple
    */
-  private void createConstantFieldsList(HashMap<String, Object> constantFields, HashMap<String, SootField> classNameFieldNameToSootFieldMapping) {
+  private void createConstantFieldsList(HashMap<String, Object> constantFields,
+      HashMap<String, SootField> classNameFieldNameToSootFieldMapping) {
     constantFieldTuples = new ArrayList<CPTuple>();
 
     Iterator<String> it = constantFields.keySet().iterator();
@@ -254,8 +279,9 @@ public class CP extends StructuredAnalysis {
   }
 
   /*
-   * Setting the mergetype to intersection but since we are going to have constantpropagation flow sets the intersection method for this flow set will
-   * be invoked which defines the correct semantics of intersection for the case of constant propagation
+   * Setting the mergetype to intersection but since we are going to have constantpropagation flow sets the intersection
+   * method for this flow set will be invoked which defines the correct semantics of intersection for the case of constant
+   * propagation
    */
   public void setMergeType() {
     MERGETYPE = INTERSECTION;
@@ -263,9 +289,10 @@ public class CP extends StructuredAnalysis {
 
   /*
    * newInitialFlow is invoked for the input set of the catchBodies
-   * 
-   * formals initialized to top since we dont know what has happened so far in the body locals initialized to top since we dont know what has happened
-   * so far in the method body constant fields present with their constant value since that never changes
+   *
+   * formals initialized to top since we dont know what has happened so far in the body locals initialized to top since we
+   * dont know what has happened so far in the method body constant fields present with their constant value since that never
+   * changes
    */
   @Override
   public DavaFlowSet newInitialFlow() {
@@ -309,8 +336,8 @@ public class CP extends StructuredAnalysis {
   }
 
   /*
-   * Since we are only keeping track of constant fields now there will be no kill if we were keeping track of fields then we woul dneed to kill all
-   * non constant fields if there was an invokeExpr
+   * Since we are only keeping track of constant fields now there will be no kill if we were keeping track of fields then we
+   * woul dneed to kill all non constant fields if there was an invokeExpr
    */
   @Override
   public DavaFlowSet processUnaryBinaryCondition(ASTUnaryBinaryCondition cond, DavaFlowSet input) {
@@ -335,8 +362,8 @@ public class CP extends StructuredAnalysis {
   }
 
   /*
-   * no effect on the analysis since we are keeping track of non constant fields only if we were tracking other fields then If the value contained an
-   * invoke expr top all non constant fields similar to as done for unarybinary condition
+   * no effect on the analysis since we are keeping track of non constant fields only if we were tracking other fields then
+   * If the value contained an invoke expr top all non constant fields similar to as done for unarybinary condition
    */
   @Override
   public DavaFlowSet processSwitchKey(Value key, DavaFlowSet input) {
@@ -350,15 +377,15 @@ public class CP extends StructuredAnalysis {
 
   /*
    * x = expr;
-   * 
+   *
    * expr is a constant
-   * 
+   *
    * epr is a local (Note we are not going to worry about fieldRefs)
-   * 
+   *
    * expr is a Unary op with neg followed by a local or field
-   * 
+   *
    * expr is actually exp1 op expr2 ..... ( x = x+1, y = i * 3, x = 3 *0
-   * 
+   *
    * expr contains an invokeExpr
    */
   @Override
@@ -388,8 +415,8 @@ public class CP extends StructuredAnalysis {
     CPFlowSet toReturn = (CPFlowSet) cloneFlowSet(inSet);
 
     /*
-     * KILL ANY PREVIOUS VALUE OF this local as this is an assignment Remember the returned value can be null if the element was not found or it was
-     * TOP
+     * KILL ANY PREVIOUS VALUE OF this local as this is an assignment Remember the returned value can be null if the element
+     * was not found or it was TOP
      */
     Object killedValue = killButGetValueForUse((Local) left, toReturn);
 
@@ -415,8 +442,8 @@ public class CP extends StructuredAnalysis {
   }
 
   /*
-   * The returned value is the current constant associated with left. Integer/Long/Double/Float/Boolean The returned value can also be null if the
-   * element was not found or it was TOP
+   * The returned value is the current constant associated with left. Integer/Long/Double/Float/Boolean The returned value
+   * can also be null if the element was not found or it was TOP
    */
   public Object killButGetValueForUse(Local left, CPFlowSet toReturn) {
 
@@ -461,15 +488,16 @@ public class CP extends StructuredAnalysis {
 
   /*
    * x = b where b is in the before set of the statement as a constant then we can simply say x = that constant also
-   * 
+   *
    * TODO: DONT WANT TO DO IT:::: If right expr is a unary expression see if the stuff inside is a Local
-   * 
+   *
    * x = exp1 op exp2 (check if both exp1 and exp2 are int constants
-   * 
-   * killedValuse is either the constant value which left had before this assignment stmt or null if left was Top or not in the set
-   * 
-   * handle the special case when the inputset could not find a value because its the killed value //eg. x = x+1 since we top x first we will never
-   * get a match IMPORTANT
+   *
+   * killedValuse is either the constant value which left had before this assignment stmt or null if left was Top or not in
+   * the set
+   *
+   * handle the special case when the inputset could not find a value because its the killed value //eg. x = x+1 since we top
+   * x first we will never get a match IMPORTANT
    */
   private void handleMathematical(CPFlowSet toReturn, Local left, Value right, Object killedValue) {
 
@@ -569,7 +597,7 @@ public class CP extends StructuredAnalysis {
 
   /*
    * Check whether it is a local or field which has a constant value (could be top) in the current inSet
-   * 
+   *
    * The method returns null if its not found or its TOP Otherwise it will return the constant value
    */
   private Object isANotTopConstantInInputSet(CPFlowSet set, Value toCheck) {
@@ -621,7 +649,8 @@ public class CP extends StructuredAnalysis {
   }
 
   /*
-   * over-riding the StructuredFlow Analysis implementation because we want to be able to gather information about the truth value in the condition
+   * over-riding the StructuredFlow Analysis implementation because we want to be able to gather information about the truth
+   * value in the condition
    */
   @Override
   public DavaFlowSet processASTIfNode(ASTIfNode node, DavaFlowSet input) {
@@ -650,7 +679,8 @@ public class CP extends StructuredAnalysis {
     DavaFlowSet output1 = processSingleSubBodyNode(node, inputToBody);
 
     if (DEBUG_IF) {
-      System.out.println("\n\nINPUTS TO MERGE ARE input (original):" + input.toString() + "processingBody output:" + output1.toString() + "\n\n\n");
+      System.out.println("\n\nINPUTS TO MERGE ARE input (original):" + input.toString() + "processingBody output:"
+          + output1.toString() + "\n\n\n");
     }
 
     // merge with input which tells if the cond did not evaluate to true
@@ -717,7 +747,8 @@ public class CP extends StructuredAnalysis {
 
     if (DEBUG_IF) {
 
-      System.out.println("\n\n  IF-ELSE   INPUTS TO MERGE ARE input (if):" + output1.toString() + " else:" + output2.toString() + "\n\n\n");
+      System.out.println(
+          "\n\n  IF-ELSE   INPUTS TO MERGE ARE input (if):" + output1.toString() + " else:" + output2.toString() + "\n\n\n");
     }
     DavaFlowSet temp = merge(output1, output2);
 
@@ -735,8 +766,8 @@ public class CP extends StructuredAnalysis {
   }
 
   /*
-   * The isElseBranch flag is true if the caller is the else branch of the ifelse statement. In that case we might be able to send something for the
-   * else branch
+   * The isElseBranch flag is true if the caller is the else branch of the ifelse statement. In that case we might be able to
+   * send something for the else branch
    */
   public CPTuple checkForValueHints(ASTCondition cond, CPFlowSet input, boolean isElseBranch) {
     if (cond instanceof ASTUnaryCondition) {
@@ -828,11 +859,11 @@ public class CP extends StructuredAnalysis {
 
   /*
    * Should create the final tuple to add
-   * 
+   *
    * a == b
-   * 
-   * case 1 a is constant b is constant dont give a damm case 2 a is constant b is a local useful case 3 a is a local b is a constant useful case 4 a
-   * is a local or sootfield b is a local or sootfield useful if one of them is in the inset
+   *
+   * case 1 a is constant b is constant dont give a damm case 2 a is constant b is a local useful case 3 a is a local b is a
+   * constant useful case 4 a is a local or sootfield b is a local or sootfield useful if one of them is in the inset
    */
   public CPTuple createCPTupleIfPossible(Value a, Value b, CPFlowSet input) {
     Object aVal = CPHelper.isAConstantValue(a);
@@ -941,9 +972,9 @@ public class CP extends StructuredAnalysis {
 
   /*
    * TODO some other time
-   * 
+   *
    * public Object processASTSwitchNode(ASTSwitchNode node,Object input){
-   * 
+   *
    * }
    */
 

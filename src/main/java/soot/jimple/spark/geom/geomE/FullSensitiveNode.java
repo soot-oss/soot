@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.spark.geom.geomE;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2011 Richard Xiao
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -47,10 +51,10 @@ import soot.jimple.spark.pag.StringConstantNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 
 /**
- * This class defines an abstract pointer in the geometric points-to solver. All the points-to/flows-to information and the load/store constraints
- * related to this pointer are stored here. The pointer assignment inference rules and the complex constraints initialization rules are also
- * implemented here.
- * 
+ * This class defines an abstract pointer in the geometric points-to solver. All the points-to/flows-to information and the
+ * load/store constraints related to this pointer are stored here. The pointer assignment inference rules and the complex
+ * constraints initialization rules are also implemented here.
+ *
  * @author xiao
  *
  */
@@ -112,11 +116,12 @@ public class FullSensitiveNode extends IVarAbstraction {
     do_flow_edge_interval_merge();
 
     /*
-     * The following code eliminates the spurious points-to relation for THIS pointer. For example we have two classes A and B, B is a child class of
-     * A. We have a virtual function foo defined in both A and B. We have a pointer p in type A. pts(p) = { o1, o2 }, where o1 is in type A and o2 is
-     * in type B. Therefore, the call p.foo() will be resolved to call both A::foo and B::foo. Then, in the points-to analysis, we have two
-     * assignments: p -> A::foo.THIS, p -> B::foo.THIS At this time, obviously, although with the type filter, A::foo.THIS will receive the object o2,
-     * which is definitely a fake. Thus, we need a new filter to guarantee that A::foo.THIS only points to o1. We call this filter
+     * The following code eliminates the spurious points-to relation for THIS pointer. For example we have two classes A and
+     * B, B is a child class of A. We have a virtual function foo defined in both A and B. We have a pointer p in type A.
+     * pts(p) = { o1, o2 }, where o1 is in type A and o2 is in type B. Therefore, the call p.foo() will be resolved to call
+     * both A::foo and B::foo. Then, in the points-to analysis, we have two assignments: p -> A::foo.THIS, p -> B::foo.THIS
+     * At this time, obviously, although with the type filter, A::foo.THIS will receive the object o2, which is definitely a
+     * fake. Thus, we need a new filter to guarantee that A::foo.THIS only points to o1. We call this filter
      * "this pointer filter".
      */
     Node wrappedNode = getWrappedNode();
@@ -545,8 +550,8 @@ public class FullSensitiveNode extends IVarAbstraction {
   }
 
   /**
-   * We transfer the SPARK results to current pointer if this pointer is not involved in the geometric analysis. Note that, the unreachable objects
-   * will not be inserted.
+   * We transfer the SPARK results to current pointer if this pointer is not involved in the geometric analysis. Note that,
+   * the unreachable objects will not be inserted.
    */
   @Override
   public void injectPts() {
@@ -813,9 +818,9 @@ public class FullSensitiveNode extends IVarAbstraction {
   }
 
   /**
-   * Implements the pointer assignment inference rules. The pts and pe are the points-to tuple and flow edge pres is the computed result code
-   * indicates the types of the pts and pe
-   * 
+   * Implements the pointer assignment inference rules. The pts and pe are the points-to tuple and flow edge pres is the
+   * computed result code indicates the types of the pts and pe
+   *
    * Return value is used to indicate the type of the result
    */
   private static boolean reasonAndPropagate(FullSensitiveNode qn, AllocNode obj, SegmentNode pts, SegmentNode pe, int code) {
@@ -891,7 +896,8 @@ public class FullSensitiveNode extends IVarAbstraction {
   }
 
   // code can only be 1-1 and 1-many
-  private static boolean instantiateStoreConstraint(FullSensitiveNode qn, FullSensitiveNode objn, SegmentNode pts, int code) {
+  private static boolean instantiateStoreConstraint(FullSensitiveNode qn, FullSensitiveNode objn, SegmentNode pts,
+      int code) {
     int ret_type = GeometricManager.Undefined_Mapping;
 
     if ((code >> 8) == GeometricManager.ONE_TO_ONE) {

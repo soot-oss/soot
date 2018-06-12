@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2004 Jennifer Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.javaToJimple;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2004 Jennifer Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +47,8 @@ public class InitialResolver implements IInitialResolver {
   private HashMap<IdentityKey, String> localTypeMap; // maps polyglot types to soot types
   private int privateAccessCounter = 0; // global for whole program because
                                         // the methods created are static
-  private HashMap<IdentityKey, AnonLocalClassInfo> finalLocalInfo; // new or lcd mapped to list of final locals avail in current meth and the whether
+  private HashMap<IdentityKey, AnonLocalClassInfo> finalLocalInfo; // new or lcd mapped to list of final locals avail in
+                                                                   // current meth and the whether
                                                                    // its static
   private HashMap<String, Node> sootNameToAST = null;
   private ArrayList hasOuterRefInInit; // list of sootclass types that need an outer class this param in for init
@@ -103,8 +107,8 @@ public class InitialResolver implements IInitialResolver {
    */
   public void setASTForSootName(String name) {
     if (!hasASTForSootName(name)) {
-      throw new RuntimeException(
-          "Can only set AST for name if it exists. You should probably not be calling this method unless you know what you're doing!");
+      throw new RuntimeException("Can only set AST for name if it exists."
+          + "You should probably not be calling this method unless you know what you're doing!");
     }
     setAst(sootNameToAST.get(name));
   }
@@ -353,7 +357,8 @@ public class InitialResolver implements IInitialResolver {
   }
 
   /**
-   * ClassToSourceMap is for classes whos names don't match the source file name - ex: multiple top level classes in a single file
+   * ClassToSourceMap is for classes whos names don't match the source file name - ex: multiple top level classes in a single
+   * file
    */
   private void addToClassToSourceMap(String className, String sourceName) {
 
@@ -438,7 +443,8 @@ public class InitialResolver implements IInitialResolver {
         ArrayList localsNeeded = typeToLocalUsed.get(new polyglot.util.IdentityKey(cType));
         Iterator usesIt = localsNeeded.iterator();
         while (usesIt.hasNext()) {
-          polyglot.types.LocalInstance li = (polyglot.types.LocalInstance) ((polyglot.util.IdentityKey) usesIt.next()).object();
+          polyglot.types.LocalInstance li
+              = (polyglot.types.LocalInstance) ((polyglot.util.IdentityKey) usesIt.next()).object();
           if (alci.finalLocalsAvail().contains(new polyglot.util.IdentityKey(li))) {
             localsUsed.add(new polyglot.util.IdentityKey(li));
           }

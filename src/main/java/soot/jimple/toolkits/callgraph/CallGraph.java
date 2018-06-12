@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jimple.toolkits.callgraph;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,9 +37,9 @@ import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
 /**
- * Represents the edges in a call graph. This class is meant to act as only a container of edges; code for various call graph builders should be kept
- * out of it, as well as most code for accessing the edges.
- * 
+ * Represents the edges in a call graph. This class is meant to act as only a container of edges; code for various call graph
+ * builders should be kept out of it, as well as most code for accessing the edges.
+ *
  * @author Ondrej Lhotak
  */
 public class CallGraph implements Iterable<Edge> {
@@ -83,7 +86,7 @@ public class CallGraph implements Iterable<Edge> {
 
   /**
    * Removes all outgoing edges that start at the given unit
-   * 
+   *
    * @param u
    *          The unit from which to remove all outgoing edges
    * @return True if at least one edge has been removed, otherwise false
@@ -101,9 +104,10 @@ public class CallGraph implements Iterable<Edge> {
   }
 
   /**
-   * Swaps an invocation statement. All edges that previously went from the given statement to some callee now go from the new statement to the same
-   * callee. This method is intended to be used when a Jimple statement is replaced, but the replacement does not semantically affect the edges.
-   * 
+   * Swaps an invocation statement. All edges that previously went from the given statement to some callee now go from the
+   * new statement to the same callee. This method is intended to be used when a Jimple statement is replaced, but the
+   * replacement does not semantically affect the edges.
+   *
    * @param out
    *          The old statement
    * @param in
@@ -161,7 +165,7 @@ public class CallGraph implements Iterable<Edge> {
 
   /**
    * Does this method have no incoming edge?
-   * 
+   *
    * @param method
    * @return
    */
@@ -170,9 +174,10 @@ public class CallGraph implements Iterable<Edge> {
   }
 
   /**
-   * Find the specific call edge that is going out from the callsite u and the call target is callee. Without advanced data structure, we can only
-   * sequentially search for the match. Fortunately, the number of outgoing edges for a unit is not too large.
-   * 
+   * Find the specific call edge that is going out from the callsite u and the call target is callee. Without advanced data
+   * structure, we can only sequentially search for the match. Fortunately, the number of outgoing edges for a unit is not
+   * too large.
+   *
    * @param u
    * @param callee
    * @return
@@ -319,7 +324,8 @@ public class CallGraph implements Iterable<Edge> {
   }
 
   /**
-   * Returns a QueueReader object containing all edges added so far, and which will be informed of any new edges that are later added to the graph.
+   * Returns a QueueReader object containing all edges added so far, and which will be informed of any new edges that are
+   * later added to the graph.
    */
   public QueueReader<Edge> listener() {
     return reader.clone();

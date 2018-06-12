@@ -1,23 +1,27 @@
-/* Soot - a J*va Optimization Framework
+package soot;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2008 Eric Bodden
  * Copyright (C) 2008 Torbjorn Ekman
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-package soot;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,7 +42,7 @@ import soot.javaToJimple.IInitialResolver;
 
 /**
  * An {@link IInitialResolver} for the JastAdd frontend.
- * 
+ *
  * @author Torbjorn Ekman
  * @author Eric Bodden
  */
@@ -154,7 +158,8 @@ public class JastAddInitialResolver implements IInitialResolver {
 
               }
             }
-            throw new RuntimeException("Could not find body for " + m.getSignature() + " in " + m.getDeclaringClass().getName());
+            throw new RuntimeException(
+                "Could not find body for " + m.getSignature() + " in " + m.getDeclaringClass().getName());
           }
         });
       }

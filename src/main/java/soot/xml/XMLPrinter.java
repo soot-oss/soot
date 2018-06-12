@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 David Eng
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.xml;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2002 David Eng
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.PrintWriter;
 import java.util.Collection;
@@ -143,21 +140,25 @@ public class XMLPrinter {
     long maxStmtCount = 0;
 
     /*
-     * // for invokes, add a list of potential targets if (!Scene.v().hasActiveInvokeGraph()) { InvokeGraphBuilder.v().transform("jil.igb"); }
-     * 
+     * // for invokes, add a list of potential targets if (!Scene.v().hasActiveInvokeGraph()) {
+     * InvokeGraphBuilder.v().transform("jil.igb"); }
+     *
      * // build an invoke graph based on class hiearchy analysis InvokeGraph igCHA = Scene.v().getActiveInvokeGraph();
-     * 
-     * // build an invoke graph based on variable type analysis InvokeGraph igVTA = Scene.v().getActiveInvokeGraph(); try { VariableTypeAnalysis vta =
-     * null; int VTApasses = 1; //Options.getInt( PackManager.v().getPhaseOptions( "jil.igb" ), "VTA-passes" ); for (int i = 0; i < VTApasses; i++) {
-     * vta = new VariableTypeAnalysis(igVTA); vta.trimActiveInvokeGraph(); igVTA.refreshReachableMethods(); } } catch (RuntimeException re) { // this
-     * will fail if the --analyze-context flag is not specified // logger.debug(""+ "JIL VTA FAILED: " + re ); igVTA = null; }
+     *
+     * // build an invoke graph based on variable type analysis InvokeGraph igVTA = Scene.v().getActiveInvokeGraph(); try {
+     * VariableTypeAnalysis vta = null; int VTApasses = 1; //Options.getInt( PackManager.v().getPhaseOptions( "jil.igb" ),
+     * "VTA-passes" ); for (int i = 0; i < VTApasses; i++) { vta = new VariableTypeAnalysis(igVTA);
+     * vta.trimActiveInvokeGraph(); igVTA.refreshReachableMethods(); } } catch (RuntimeException re) { // this will fail if
+     * the --analyze-context flag is not specified // logger.debug(""+ "JIL VTA FAILED: " + re ); igVTA = null; }
      */
 
     // add method node
-    XMLNode methodNode = xmlNode.addChild("method", new String[] { "name", "returntype", "class" },
-        new String[] { cleanMethodName, body.getMethod().getReturnType().toString(), body.getMethod().getDeclaringClass().getName().toString() });
+    XMLNode methodNode
+        = xmlNode.addChild("method", new String[] { "name", "returntype", "class" }, new String[] { cleanMethodName,
+            body.getMethod().getReturnType().toString(), body.getMethod().getDeclaringClass().getName().toString() });
     String declarationStr = body.getMethod().getDeclaration().toString().trim();
-    methodNode.addChild("declaration", toCDATA(declarationStr), new String[] { "length" }, new String[] { declarationStr.length() + "" });
+    methodNode.addChild("declaration", toCDATA(declarationStr), new String[] { "length" },
+        new String[] { declarationStr.length() + "" });
 
     // create references to parameters, locals, labels, stmts nodes
     XMLNode parametersNode = methodNode.addChild("parameters", new String[] { "method" }, new String[] { cleanMethodName });
@@ -167,7 +168,8 @@ public class XMLPrinter {
 
     // create default label
     XMLLabel xmlLabel = new XMLLabel(labelCount, cleanMethodName, currentLabel);
-    labelsNode.addChild("label", new String[] { "id", "name", "method" }, new String[] { (labelCount++) + "", currentLabel, cleanMethodName });
+    labelsNode.addChild("label", new String[] { "id", "name", "method" },
+        new String[] { (labelCount++) + "", currentLabel, cleanMethodName });
 
     // for each statement...
     while (unitIt.hasNext()) {
@@ -183,11 +185,13 @@ public class XMLPrinter {
         // xmlLabels = xmlLabels.substring( 0, index ) + ( labelID ) + xmlLabels.substring( index + 2 );
         // index = xmlLabels.indexOf( "%d" );
         // if( index != -1 )
-        // xmlLabels = xmlLabels.substring( 0, index ) + new Float( ( new Float( labelID ).floatValue() / new Float( units.size() ).intValue() ) *
+        // xmlLabels = xmlLabels.substring( 0, index ) + new Float( ( new Float( labelID ).floatValue() / new Float(
+        // units.size() ).intValue() ) *
         // 100.0 ).intValue() + xmlLabels.substring( index + 2 );
 
         xmlLabel.stmtCount = labelID;
-        xmlLabel.stmtPercentage = new Float((new Float(labelID).floatValue() / new Float(units.size()).intValue()) * 100.0).longValue();
+        xmlLabel.stmtPercentage
+            = new Float((new Float(labelID).floatValue() / new Float(units.size()).intValue()) * 100.0).longValue();
         if (xmlLabel.stmtPercentage > maxStmtCount) {
           maxStmtCount = xmlLabel.stmtPercentage;
         }
@@ -196,7 +200,8 @@ public class XMLPrinter {
         // xmlLabel.clear();
 
         xmlLabel = new XMLLabel(labelCount, cleanMethodName, currentLabel);
-        labelsNode.addChild("label", new String[] { "id", "name", "method" }, new String[] { labelCount + "", currentLabel, cleanMethodName });
+        labelsNode.addChild("label", new String[] { "id", "name", "method" },
+            new String[] { labelCount + "", currentLabel, cleanMethodName });
         labelCount++;
         labelID = 0;
       }
@@ -214,7 +219,8 @@ public class XMLPrinter {
         ValueBox box = (ValueBox) boxIt.next();
         if (box.getValue() instanceof Local) {
           String local = cleanLocal(((Local) box.getValue()).toString());
-          sootstmtNode.addChild("uses", new String[] { "id", "local", "method" }, new String[] { j + "", local, cleanMethodName });
+          sootstmtNode.addChild("uses", new String[] { "id", "local", "method" },
+              new String[] { j + "", local, cleanMethodName });
           j++;
 
           Vector<Long> tempVector = null;
@@ -243,7 +249,8 @@ public class XMLPrinter {
         ValueBox box = (ValueBox) boxIt.next();
         if (box.getValue() instanceof Local) {
           String local = cleanLocal(((Local) box.getValue()).toString());
-          sootstmtNode.addChild("defines", new String[] { "id", "local", "method" }, new String[] { j + "", local, cleanMethodName });
+          sootstmtNode.addChild("defines", new String[] { "id", "local", "method" },
+              new String[] { j + "", local, cleanMethodName });
           j++;
 
           Vector<Long> tempVector = null;
@@ -266,20 +273,22 @@ public class XMLPrinter {
       }
 
       /*
-       * // for invokes, add a list of potential targets if (stmtCurrentStmt.containsInvokeExpr()) { // default analysis is CHA if (igCHA != null) {
-       * try { List targets = igCHA.getTargetsOf(stmtCurrentStmt); XMLNode CHAinvoketargetsNode = sootstmtNode.addChild( "invoketargets", new String[]
-       * { "analysis", "count" }, new String[] { "CHA", targets.size() + "" }); for (int i = 0; i < targets.size(); i++) { SootMethod meth =
-       * (SootMethod) targets.get(i); CHAinvoketargetsNode.addChild( "target", new String[] { "id", "class", "method" }, new String[] { i + "",
-       * meth.getDeclaringClass().getFullName(), cleanMethod(meth.getName())}); } } catch (RuntimeException re) { //logger.debug(""+ "XML: " + re +
-       * " (" + stmtCurrentStmt + ")" ); } }
-       * 
-       * // now try VTA, which will only work if the -a or --analyze-context switch is specified if (igVTA != null) { InvokeExpr ie = (InvokeExpr)
-       * stmtCurrentStmt.getInvokeExpr(); if (!(ie instanceof StaticInvokeExpr) && !(ie instanceof SpecialInvokeExpr)) { try { List targets =
-       * igVTA.getTargetsOf(stmtCurrentStmt); XMLNode VTAinvoketargetsNode = sootstmtNode.addChild( "invoketargets", new String[] { "analysis",
-       * "count" }, new String[] { "VTA", targets.size() + "" }); for (int i = 0; i < targets.size(); i++) { SootMethod meth = (SootMethod)
-       * targets.get(i); VTAinvoketargetsNode.addChild( "target", new String[] { "id", "class", "method" }, new String[] { i + "",
-       * meth.getDeclaringClass().getFullName(), cleanMethod(meth.getName())}); } } catch (RuntimeException re) { //logger.debug(""+ "XML: " + re +
-       * " (" + stmtCurrentStmt + ")" ); } } } }
+       * // for invokes, add a list of potential targets if (stmtCurrentStmt.containsInvokeExpr()) { // default analysis is
+       * CHA if (igCHA != null) { try { List targets = igCHA.getTargetsOf(stmtCurrentStmt); XMLNode CHAinvoketargetsNode =
+       * sootstmtNode.addChild( "invoketargets", new String[] { "analysis", "count" }, new String[] { "CHA", targets.size() +
+       * "" }); for (int i = 0; i < targets.size(); i++) { SootMethod meth = (SootMethod) targets.get(i);
+       * CHAinvoketargetsNode.addChild( "target", new String[] { "id", "class", "method" }, new String[] { i + "",
+       * meth.getDeclaringClass().getFullName(), cleanMethod(meth.getName())}); } } catch (RuntimeException re) {
+       * //logger.debug(""+ "XML: " + re + " (" + stmtCurrentStmt + ")" ); } }
+       *
+       * // now try VTA, which will only work if the -a or --analyze-context switch is specified if (igVTA != null) {
+       * InvokeExpr ie = (InvokeExpr) stmtCurrentStmt.getInvokeExpr(); if (!(ie instanceof StaticInvokeExpr) && !(ie
+       * instanceof SpecialInvokeExpr)) { try { List targets = igVTA.getTargetsOf(stmtCurrentStmt); XMLNode
+       * VTAinvoketargetsNode = sootstmtNode.addChild( "invoketargets", new String[] { "analysis", "count" }, new String[] {
+       * "VTA", targets.size() + "" }); for (int i = 0; i < targets.size(); i++) { SootMethod meth = (SootMethod)
+       * targets.get(i); VTAinvoketargetsNode.addChild( "target", new String[] { "id", "class", "method" }, new String[] { i
+       * + "", meth.getDeclaringClass().getFullName(), cleanMethod(meth.getName())}); } } catch (RuntimeException re) {
+       * //logger.debug(""+ "XML: " + re + " (" + stmtCurrentStmt + ")" ); } } } }
        */
 
       // simple live locals
@@ -323,7 +332,8 @@ public class XMLPrinter {
       }
 
       // add plain jimple representation of each statement
-      sootstmtNode.addChild("jimple", toCDATA(jimpleStr), new String[] { "length" }, new String[] { (jimpleStr.length() + 1) + "" });
+      sootstmtNode.addChild("jimple", toCDATA(jimpleStr), new String[] { "length" },
+          new String[] { (jimpleStr.length() + 1) + "" });
 
       // increment statement counters
       labelID++;
@@ -336,8 +346,9 @@ public class XMLPrinter {
     // method parameters
     parametersNode.addAttribute("count", body.getMethod().getParameterCount() + "");
     for (int i = 0; i < body.getMethod().getParameterTypes().size(); i++) {
-      XMLNode paramNode = parametersNode.addChild("parameter", new String[] { "id", "type", "method", "name" },
-          new String[] { i + "", body.getMethod().getParameterTypes().get(i).toString(), cleanMethodName, "_parameter" + i });
+      XMLNode paramNode
+          = parametersNode.addChild("parameter", new String[] { "id", "type", "method", "name" }, new String[] { i + "",
+              body.getMethod().getParameterTypes().get(i).toString(), cleanMethodName, "_parameter" + i });
       XMLNode sootparamNode = paramNode.addChild("soot_parameter");
 
       Vector<String> tempVec = paramData.elementAt(i);
@@ -349,13 +360,15 @@ public class XMLPrinter {
     }
 
     /*
-     * index = xmlLabels.indexOf( "%s" ); if( index != -1 ) xmlLabels = xmlLabels.substring( 0, index ) + ( labelID ) + xmlLabels.substring( index + 2
-     * ); index = xmlLabels.indexOf( "%d" ); if( index != -1 ) xmlLabels = xmlLabels.substring( 0, index ) + new Float( ( new Float( labelID
-     * ).floatValue() / new Float( units.size() ).floatValue() ) * 100.0 ).intValue() + xmlLabels.substring( index + 2 );
+     * index = xmlLabels.indexOf( "%s" ); if( index != -1 ) xmlLabels = xmlLabels.substring( 0, index ) + ( labelID ) +
+     * xmlLabels.substring( index + 2 ); index = xmlLabels.indexOf( "%d" ); if( index != -1 ) xmlLabels =
+     * xmlLabels.substring( 0, index ) + new Float( ( new Float( labelID ).floatValue() / new Float( units.size()
+     * ).floatValue() ) * 100.0 ).intValue() + xmlLabels.substring( index + 2 );
      */
 
     xmlLabel.stmtCount = labelID;
-    xmlLabel.stmtPercentage = new Float((new Float(labelID).floatValue() / new Float(units.size()).floatValue()) * 100.0).longValue();
+    xmlLabel.stmtPercentage
+        = new Float((new Float(labelID).floatValue() / new Float(units.size()).floatValue()) * 100.0).longValue();
     if (xmlLabel.stmtPercentage > maxStmtCount) {
       maxStmtCount = xmlLabel.stmtPercentage;
     }
@@ -466,8 +479,9 @@ public class XMLPrinter {
     XMLNode current = labelsNode.child;
     for (int i = 0; i < xmlLabelsList.size(); i++) {
       XMLLabel tempLabel = xmlLabelsList.elementAt(i);
-      tempLabel.stmtPercentage = new Float((new Float(tempLabel.stmtPercentage).floatValue() / new Float(maxStmtCount).floatValue()) * 100.0)
-          .longValue();
+      tempLabel.stmtPercentage
+          = new Float((new Float(tempLabel.stmtPercentage).floatValue() / new Float(maxStmtCount).floatValue()) * 100.0)
+              .longValue();
 
       if (current != null) {
         current.addAttribute("stmtcount", tempLabel.stmtCount + "");
@@ -485,11 +499,13 @@ public class XMLPrinter {
         Trap trap = trapIt.next();
 
         // catch java.io.IOException from label0 to label1 with label2;
-        XMLNode catchNode = exceptionsNode.addChild("exception", new String[] { "id", "method", "type" },
-            new String[] { (statementCount++) + "", cleanMethodName, Scene.v().quotedNameOf(trap.getException().getName()) });
-        catchNode.addChild("begin", new String[] { "label" }, new String[] { stmtToName.get(trap.getBeginUnit()).toString() });
+        XMLNode catchNode = exceptionsNode.addChild("exception", new String[] { "id", "method", "type" }, new String[] {
+            (statementCount++) + "", cleanMethodName, Scene.v().quotedNameOf(trap.getException().getName()) });
+        catchNode.addChild("begin", new String[] { "label" },
+            new String[] { stmtToName.get(trap.getBeginUnit()).toString() });
         catchNode.addChild("end", new String[] { "label" }, new String[] { stmtToName.get(trap.getEndUnit()).toString() });
-        catchNode.addChild("handler", new String[] { "label" }, new String[] { stmtToName.get(trap.getHandlerUnit()).toString() });
+        catchNode.addChild("handler", new String[] { "label" },
+            new String[] { stmtToName.get(trap.getHandlerUnit()).toString() });
       }
     }
 
@@ -562,7 +578,8 @@ public class XMLPrinter {
           new String[] { Main.v().versionString, cmdlineStr.trim(), dateStr });
 
       // add class root node
-      xmlClassNode = xmlRootNode.addChild("class", new String[] { "name" }, new String[] { Scene.v().quotedNameOf(cl.getName()).toString() });
+      xmlClassNode = xmlRootNode.addChild("class", new String[] { "name" },
+          new String[] { Scene.v().quotedNameOf(cl.getName()).toString() });
       if (cl.getPackageName().length() > 0) {
         xmlClassNode.addAttribute("package", cl.getPackageName());
       }
@@ -581,7 +598,8 @@ public class XMLPrinter {
 
     // Print interfaces
     {
-      xmlTempNode = xmlClassNode.addChild("interfaces", "", new String[] { "count" }, new String[] { cl.getInterfaceCount() + "" });
+      xmlTempNode
+          = xmlClassNode.addChild("interfaces", "", new String[] { "count" }, new String[] { cl.getInterfaceCount() + "" });
 
       Iterator<SootClass> interfaceIt = cl.getInterfaces().iterator();
       if (interfaceIt.hasNext()) {
@@ -610,7 +628,8 @@ public class XMLPrinter {
           String name = f.getName().toString();
 
           // add the field node
-          XMLNode xmlFieldNode = xmlTempNode.addChild("field", "", new String[] { "id", "name", "type" }, new String[] { (i++) + "", name, type });
+          XMLNode xmlFieldNode = xmlTempNode.addChild("field", "", new String[] { "id", "name", "type" },
+              new String[] { (i++) + "", name, type });
           XMLNode xmlModifiersNode = xmlFieldNode.addChild("modifiers");
 
           StringTokenizer st = new StringTokenizer(Modifier.toString(f.getModifiers()));
@@ -655,7 +674,8 @@ public class XMLPrinter {
   }
 
   /**
-   * Prints out the method corresponding to b Body, (declaration and body), in the textual format corresponding to the IR used to encode b body.
+   * Prints out the method corresponding to b Body, (declaration and body), in the textual format corresponding to the IR
+   * used to encode b body.
    *
    * @param out
    *          a PrintWriter instance to print to.

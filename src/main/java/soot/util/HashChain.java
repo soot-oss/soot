@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrice Pominville
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.util;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1999 Patrice Pominville
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.Serializable;
 import java.util.AbstractCollection;
@@ -93,7 +90,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
   /**
    * Gets all elements in the chain. There is no guarantee on sorting.
-   * 
+   *
    * @return All elements in the chain in an unsorted collection
    */
   @Override
@@ -103,7 +100,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
   /**
    * Returns an unbacked list containing the contents of the given Chain.
-   * 
+   *
    * @deprecated you can use <code>new ArrayList<E>(c)</code> instead
    */
   @Deprecated
@@ -236,9 +233,9 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
   }
 
   /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain <code>toInsert</code> on an edge
-   * that is defined by <code>point_source</code> and <code>point_target</code>.
-   * 
+   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain
+   * <code>toInsert</code> on an edge that is defined by <code>point_source</code> and <code>point_target</code>.
+   *
    * @param toInsert
    *          the instrumentation to be added in the Chain
    * @param point_src
@@ -256,9 +253,9 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
   }
 
   /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain <code>toInsert</code> on an edge
-   * that is defined by <code>point_source</code> and <code>point_target</code>.
-   * 
+   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain
+   * <code>toInsert</code> on an edge that is defined by <code>point_source</code> and <code>point_target</code>.
+   *
    * @param toInsert
    *          instrumentation to be added in the Chain
    * @param point_src
@@ -376,13 +373,14 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
     // If the control reaches this point, it means that an edge [stc -> tgt]
     // as specified by user does not exist and is thus invalid
     // Return an exception.
-    throw new RuntimeException("insertOnEdge failed! No such edge found. The edge on which you want to insert an instrumentation is invalid.");
+    throw new RuntimeException(
+        "insertOnEdge failed! No such edge found. The edge on which you want to insert an instrumentation is invalid.");
   }
 
   /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain <code>toInsert</code> on an edge
-   * that is defined by <code>point_source</code> and <code>point_target</code>.
-   * 
+   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain
+   * <code>toInsert</code> on an edge that is defined by <code>point_source</code> and <code>point_target</code>.
+   *
    * @param toInsert
    *          instrumentation to be added in the Chain
    * @param point_src
@@ -396,9 +394,9 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
   }
 
   /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain <code>toInsert</code> on an edge
-   * that is defined by <code>point_source</code> and <code>point_target</code>.
-   * 
+   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain
+   * <code>toInsert</code> on an edge that is defined by <code>point_source</code> and <code>point_target</code>.
+   *
    * @param toInsert
    *          instrumentation to be added in the Chain
    * @param point_src
@@ -589,14 +587,14 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
    * <p>
    * Returns an iterator ranging from <code>head</code> to <code>tail</code>, inclusive.
    * </p>
-   * 
+   *
    * <p>
-   * If <code>tail</code> is the element immediately preceding <code>head</code> in this <code>HashChain</code>, the returned iterator will iterate 0
-   * times (a special case to allow the specification of an empty range of elements). Otherwise if <code>tail</code> is not one of the elements
-   * following <code>head</code>, the returned iterator will iterate past the end of the <code>HashChain</code>, provoking a
-   * {@link NoSuchElementException}.
+   * If <code>tail</code> is the element immediately preceding <code>head</code> in this <code>HashChain</code>, the returned
+   * iterator will iterate 0 times (a special case to allow the specification of an empty range of elements). Otherwise if
+   * <code>tail</code> is not one of the elements following <code>head</code>, the returned iterator will iterate past the
+   * end of the <code>HashChain</code>, provoking a {@link NoSuchElementException}.
    * </p>
-   * 
+   *
    * @throws NoSuchElementException
    *           if <code>head</code> is not an element of the chain.
    */
@@ -726,7 +724,8 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
     public LinkIterator(X item) {
       Link<E> nextLink = map.get(item);
       if (nextLink == null && item != null) {
-        throw new NoSuchElementException("HashChain.LinkIterator(obj) with obj that is not in the chain: " + item.toString());
+        throw new NoSuchElementException(
+            "HashChain.LinkIterator(obj) with obj that is not in the chain: " + item.toString());
       }
       currentLink = new Link<E>(null);
       currentLink.setNext(nextLink);

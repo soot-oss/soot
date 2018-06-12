@@ -1,31 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Antoine Mine
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/**
- * Implementation of the paper "A Combined Pointer and Purity Analysis for
- * Java Programs" by Alexandru Salcianu and Martin Rinard, within the
- * Soot Optimization Framework.
- *
- * by Antoine Mine, 2005/01/24
- */
-
 package soot.jimple.toolkits.annotation.purity;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Antoine Mine
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,29 +53,32 @@ import soot.util.dot.DotGraphNode;
 /**
  * Modifications with respect to the article:
  *
- * - "unanalizable call" are treated by first constructing a conservative calee graph where all parameters escape globally and return points to the
- * global node, and then applying the standard analysable call construction
+ * - "unanalizable call" are treated by first constructing a conservative calee graph where all parameters escape globally
+ * and return points to the global node, and then applying the standard analysable call construction
  *
- * - unanalysable calls add a mutation on the global node; the "field" is named "outside-world" and models the mutation of any static field, but also
- * side-effects by native methods, such as I/O, that make methods impure (see below).
+ * - unanalysable calls add a mutation on the global node; the "field" is named "outside-world" and models the mutation of
+ * any static field, but also side-effects by native methods, such as I/O, that make methods impure (see below).
  *
- * - Whenever a method mutates the global node, it is marked as "impure" (this can be due to a side-effect or static field mutation), even if the
- * global node is not rechable from parameter nodes through outside edges. It seems to me it was a defect from the article ? TODO: see if we must take
- * the global node into account also when stating whether a parameter is read-only or safe.
+ * - Whenever a method mutates the global node, it is marked as "impure" (this can be due to a side-effect or static field
+ * mutation), even if the global node is not rechable from parameter nodes through outside edges. It seems to me it was a
+ * defect from the article ? TODO: see if we must take the global node into account also when stating whether a parameter is
+ * read-only or safe.
  *
  * - "simplifyXXX" functions are experimental... they may be unsound, and thus, not used now.
  *
  *
  *
  *
- * NOTE: A lot of precision degradation comes from sequences of the form this.field = y; z = this.field in initialisers: the second statement creates
- * a load node because, as a parameter, this may have escaped and this.field may be externally modified in-between the two instructions. I am not sure
- * this can actually happend in an initialiser... in a a function called directly and only by initialisers.
+ * NOTE: A lot of precision degradation comes from sequences of the form this.field = y; z = this.field in initialisers: the
+ * second statement creates a load node because, as a parameter, this may have escaped and this.field may be externally
+ * modified in-between the two instructions. I am not sure this can actually happend in an initialiser... in a a function
+ * called directly and only by initialisers.
  *
- * For the moment, summary of unanalised methods are either pure, completely impure (modify args & side-effects) or partially impure (modify args but
- * not the gloal node). We should really be able to specify more precisely which arguments are r/o or safe within this methods. E.g., the analysis
- * java.lang.String: void getChars(int,int,char [],int) imprecisely finds that this is not safe (because of the internal call to System.arraycopy
- * that, in general, may introduce aliases) => it pollutes many things (e.g., StringBuffer append(String), and thus, exception constructors, etc.)
+ * For the moment, summary of unanalised methods are either pure, completely impure (modify args & side-effects) or partially
+ * impure (modify args but not the gloal node). We should really be able to specify more precisely which arguments are r/o or
+ * safe within this methods. E.g., the analysis java.lang.String: void getChars(int,int,char [],int) imprecisely finds that
+ * this is not safe (because of the internal call to System.arraycopy that, in general, may introduce aliases) => it pollutes
+ * many things (e.g., StringBuffer append(String), and thus, exception constructors, etc.)
  *
  */
 public class PurityGraph {
@@ -518,8 +516,8 @@ public class PurityGraph {
   }
 
   /**
-   * Call this on the merge of graphs at all return points of a method to know whether an object passed as method parameter is read only (PARAM_RO),
-   * read write (PARAM_RW), or safe (PARAM_SAFE). Returns PARAM_RW for primitive-type parameters.
+   * Call this on the merge of graphs at all return points of a method to know whether an object passed as method parameter
+   * is read only (PARAM_RO), read write (PARAM_RW), or safe (PARAM_SAFE). Returns PARAM_RW for primitive-type parameters.
    */
   public int paramStatus(int param) {
     return internalParamStatus(cacheNode(new PurityParamNode(param)));
@@ -674,7 +672,8 @@ public class PurityGraph {
   }
 
   /**
-   * Experimental simplification: remove inside nodes not reachable from escaping nodes (params, ret, globEscape) or load nodes.
+   * Experimental simplification: remove inside nodes not reachable from escaping nodes (params, ret, globEscape) or load
+   * nodes.
    */
   void simplifyInside() {
     Set<PurityNode> r = new HashSet<PurityNode>();
@@ -702,8 +701,8 @@ public class PurityGraph {
   }
 
   /**
-   * Remove all local bindings (except ret). This info is indeed superfluous on summary purity graphs representing the effect of a method. This saves
-   * a little memory, but also, simplify summary graph drawings a lot!
+   * Remove all local bindings (except ret). This info is indeed superfluous on summary purity graphs representing the effect
+   * of a method. This saves a little memory, but also, simplify summary graph drawings a lot!
    *
    * DO NOT USE DURING INTRA-PROCEDURAL ANALYSIS!
    */
@@ -1138,14 +1137,15 @@ public class PurityGraph {
    * Fills a dot graph or subgraph with the graphical representation of the purity graph.
    *
    * @param prefix
-   *          is used to prefix all dot node and edge names. Use it to avoid collision when several subgraphs are laid in the same dot file!
-   * 
+   *          is used to prefix all dot node and edge names. Use it to avoid collision when several subgraphs are laid in the
+   *          same dot file!
+   *
    * @param out
    *          is a newly created dot graph or subgraph where to put the result.
    *
    *          <p>
-   *          Note: outside edges, param and load nodes are gray dashed, while inside edges and nodes are solid black. Globally escaping nodes have a
-   *          red label.
+   *          Note: outside edges, param and load nodes are gray dashed, while inside edges and nodes are solid black.
+   *          Globally escaping nodes have a red label.
    */
   void fillDotGraph(String prefix, DotGraph out) {
     Map<PurityNode, String> nodeId = new HashMap<PurityNode, String>();
@@ -1279,8 +1279,8 @@ public class PurityGraph {
   static private int maxMutated = 0;
 
   void dumpStat() {
-    logger.debug("Stat: " + maxInsideNodes + " inNodes, " + maxLoadNodes + " loadNodes, " + maxInsideEdges + " inEdges, " + maxOutsideEdges
-        + " outEdges, " + maxMutated + " mutated.");
+    logger.debug("Stat: " + maxInsideNodes + " inNodes, " + maxLoadNodes + " loadNodes, " + maxInsideEdges + " inEdges, "
+        + maxOutsideEdges + " outEdges, " + maxMutated + " mutated.");
   }
 
   void updateStat() {

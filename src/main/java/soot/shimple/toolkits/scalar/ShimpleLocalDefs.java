@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.shimple.toolkits.scalar;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,15 +37,16 @@ import soot.toolkits.scalar.LocalDefs;
 import soot.util.Chain;
 
 /**
- * This class implements the LocalDefs interface for Shimple. ShimpleLocalDefs can be used in conjunction with SimpleLocalUses to provide
- * Definition/Use and Use/Definition chains in SSA.
+ * This class implements the LocalDefs interface for Shimple. ShimpleLocalDefs can be used in conjunction with
+ * SimpleLocalUses to provide Definition/Use and Use/Definition chains in SSA.
  *
  * <p>
  * This implementation can be considered a small demo for how SSA can be put to good use since it is much simpler than
  * soot.toolkits.scalar.SimpleLocalDefs. Shimple can often be treated as Jimple with the added benefits of SSA assumptions.
  *
  * <p>
- * In addition to the interface required by LocalDefs, ShimpleLocalDefs also provides a method for obtaining the definition Unit given only the Local.
+ * In addition to the interface required by LocalDefs, ShimpleLocalDefs also provides a method for obtaining the definition
+ * Unit given only the Local.
  *
  * @author Navindra Umanee
  * @see ShimpleLocalUses
@@ -53,14 +57,15 @@ public class ShimpleLocalDefs implements LocalDefs {
   protected Map<Value, List<Unit>> localToDefs;
 
   /**
-   * Build a LocalDefs interface from a ShimpleBody. Proper SSA form is required, otherwise correct behaviour is not guaranteed.
+   * Build a LocalDefs interface from a ShimpleBody. Proper SSA form is required, otherwise correct behaviour is not
+   * guaranteed.
    **/
   public ShimpleLocalDefs(ShimpleBody sb) {
     // Instead of rebuilding the ShimpleBody without the
     // programmer's knowledge, throw a RuntimeException
     if (!sb.isSSA()) {
-      throw new RuntimeException(
-          "ShimpleBody is not in proper SSA form as required by ShimpleLocalDefs.  You may need to rebuild it or use SimpleLocalDefs instead.");
+      throw new RuntimeException("ShimpleBody is not in proper SSA form as required by ShimpleLocalDefs."
+          + "You may need to rebuild it or use SimpleLocalDefs instead.");
     }
 
     // build localToDefs map simply by iterating through all the

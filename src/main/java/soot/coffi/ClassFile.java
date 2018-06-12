@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997 Clark Verbrugge
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.coffi;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 Clark Verbrugge
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -43,7 +40,7 @@ import soot.options.Options;
  * A ClassFile object represents the contents of a <tt>.class</tt> file.
  * <p>
  * A ClassFile contains code for manipulation of its constituents.
- * 
+ *
  * @author Clark Verbrugge
  */
 public class ClassFile {
@@ -116,7 +113,7 @@ public class ClassFile {
 
   /**
    * Magic number read in.
-   * 
+   *
    * @see ClassFile#MAGIC
    */
   long magic;
@@ -128,7 +125,7 @@ public class ClassFile {
   public int constant_pool_count;
   /**
    * Array of constant pool items.
-   * 
+   *
    * @see cp_info
    */
   public cp_info constant_pool[];
@@ -138,21 +135,22 @@ public class ClassFile {
   public int access_flags;
   /**
    * Constant pool index of the Class constant describing <i>this</i>.
-   * 
+   *
    * @see CONSTANT_Class_info
    */
   public int this_class;
   /**
    * Constant pool index of the Class constant describing <i>super</i>.
-   * 
+   *
    * @see CONSTANT_Class_info
    */
   public int super_class;
   /** Count of interfaces implemented. */
   public int interfaces_count;
   /**
-   * Array of constant pool indices of Class constants describing each interace implemented by this class, as given in the source for this class.
-   * 
+   * Array of constant pool indices of Class constants describing each interace implemented by this class, as given in the
+   * source for this class.
+   *
    * @see CONSTANT_Class_info
    */
   public int interfaces[];
@@ -160,7 +158,7 @@ public class ClassFile {
   public int fields_count;
   /**
    * Array of field_info objects describing each field.
-   * 
+   *
    * @see field_info
    */
   public field_info fields[];
@@ -168,7 +166,7 @@ public class ClassFile {
   public int methods_count;
   /**
    * Array of method_info objects describing each field.
-   * 
+   *
    * @see method_info
    */
   public method_info methods[];
@@ -176,7 +174,7 @@ public class ClassFile {
   public int attributes_count;
   /**
    * Array of attribute_info objects for this class.
-   * 
+   *
    * @see attribute_info
    */
   public attribute_info attributes[];
@@ -186,7 +184,7 @@ public class ClassFile {
 
   /**
    * Creates a new ClassFile object given the name of the file.
-   * 
+   *
    * @param nfn
    *          file name which this ClassFile will represent.
    */
@@ -250,8 +248,9 @@ public class ClassFile {
   }
 
   /**
-   * Main entry point for writing a class file. The file name is given in the constructor; this opens the file and writes the internal representation.
-   * 
+   * Main entry point for writing a class file. The file name is given in the constructor; this opens the file and writes the
+   * internal representation.
+   *
    * @return <i>true</i> on success.
    */
   boolean saveClassFile() {
@@ -287,7 +286,7 @@ public class ClassFile {
 
   /**
    * Returns a String constructed by parsing the bits in the given access code (as defined by the ACC_* constants).
-   * 
+   *
    * @param af
    *          access code.
    * @param separator
@@ -412,7 +411,7 @@ public class ClassFile {
 
   /**
    * Builds the internal representation of this Class by reading in the given class file.
-   * 
+   *
    * @param d
    *          Stream forming the <tt>.class</tt> file.
    * @return <i>true</i> if read was successful, <i>false</i> on some error.
@@ -488,7 +487,7 @@ public class ClassFile {
 
   /**
    * Reads in the constant pool from the given stream.
-   * 
+   *
    * @param d
    *          Stream forming the <tt>.class</tt> file.
    * @return <i>true</i> if read was successful, <i>false</i> on some error.
@@ -637,7 +636,7 @@ public class ClassFile {
 
   /**
    * Reads in the given number of attributes from the given stream.
-   * 
+   *
    * @param d
    *          Stream forming the <tt>.class</tt> file.
    * @param attributes_count
@@ -876,7 +875,8 @@ public class ClassFile {
     return true;
   }
 
-  private element_value[] readElementValues(int count, DataInputStream d, boolean needName, int name_index) throws IOException {
+  private element_value[] readElementValues(int count, DataInputStream d, boolean needName, int name_index)
+      throws IOException {
     element_value[] list = new element_value[count];
     for (int x = 0; x < count; x++) {
       if (needName) {
@@ -884,7 +884,8 @@ public class ClassFile {
       }
       int tag = d.readUnsignedByte();
       char kind = (char) tag;
-      if (kind == 'B' || kind == 'C' || kind == 'D' || kind == 'F' || kind == 'I' || kind == 'J' || kind == 'S' || kind == 'Z' || kind == 's') {
+      if (kind == 'B' || kind == 'C' || kind == 'D' || kind == 'F' || kind == 'I' || kind == 'J' || kind == 'S'
+          || kind == 'Z' || kind == 's') {
         constant_element_value elem = new constant_element_value();
         elem.name_index = name_index;
         elem.tag = kind;
@@ -929,7 +930,7 @@ public class ClassFile {
 
   /**
    * Reads in the fields from the given stream.
-   * 
+   *
    * @param d
    *          Stream forming the <tt>.class</tt> file.
    * @return <i>true</i> if read was successful, <i>false</i> on some error.
@@ -953,7 +954,8 @@ public class ClassFile {
         readAttributes(d, fi.attributes_count, fi.attributes);
       }
       /*
-       * CONSTANT_Utf8_info ci; ci = (CONSTANT_Utf8_info)(constant_pool[fi.name_index]); logger.debug("Field: " + ci.convert());
+       * CONSTANT_Utf8_info ci; ci = (CONSTANT_Utf8_info)(constant_pool[fi.name_index]); logger.debug("Field: " +
+       * ci.convert());
        */
       fields[i] = fi;
     }
@@ -963,7 +965,7 @@ public class ClassFile {
 
   /**
    * Reads in the methods from the given stream.
-   * 
+   *
    * @param d
    *          Stream forming the <tt>.class</tt> file.
    * @return <i>true</i> if read was successful, <i>false</i> on some error.
@@ -1012,14 +1014,14 @@ public class ClassFile {
 
   /*
    * DEPRECATED public void showByteCode(Code_attribute ca) { int i=0,j;
-   * 
-   * logger.debug("Code bytes follow..."); while(i<ca.code_length) { j = (int)(ca.code[i]); j &= 0xff; logger.debug(""+Integer.toString(j) + " ");
-   * i++; } logger.debug(""); }
+   *
+   * logger.debug("Code bytes follow..."); while(i<ca.code_length) { j = (int)(ca.code[i]); j &= 0xff;
+   * logger.debug(""+Integer.toString(j) + " "); i++; } logger.debug(""); }
    */
 
   /**
    * Writes the current constant pool to the given stream.
-   * 
+   *
    * @param dd
    *          output stream.
    * @return <i>true</i> if write was successful, <i>false</i> on some error.
@@ -1090,7 +1092,7 @@ public class ClassFile {
 
   /**
    * Writes the given array of attributes to the given stream.
-   * 
+   *
    * @param dd
    *          output stream.
    * @param attributes_count
@@ -1181,7 +1183,7 @@ public class ClassFile {
 
   /**
    * Writes the fields to the given stream.
-   * 
+   *
    * @param dd
    *          output stream.
    * @return <i>true</i> if write was successful, <i>false</i> on some error.
@@ -1207,7 +1209,7 @@ public class ClassFile {
 
   /**
    * Writes the methods to the given stream.
-   * 
+   *
    * @param dd
    *          output stream.
    * @return <i>true</i> if write was successful, <i>false</i> on some error.
@@ -1233,7 +1235,7 @@ public class ClassFile {
 
   /**
    * Writes this entire ClassFile object to the given stream.
-   * 
+   *
    * @param dd
    *          output stream.
    * @return <i>true</i> if write was successful, <i>false</i> on some error.
@@ -1282,7 +1284,7 @@ public class ClassFile {
 
   /**
    * Parses the given method, converting its bytecode array into a list of Instruction objects.
-   * 
+   *
    * @param m
    *          method to parse.
    * @return head of a list of Instructions.
@@ -1365,8 +1367,9 @@ public class ClassFile {
   }
 
   /**
-   * For every method, this calls parseMethod, storing the list of Instructions in the method_info object, and also constructs the corresponding CFG.
-   * 
+   * For every method, this calls parseMethod, storing the list of Instructions in the method_info object, and also
+   * constructs the corresponding CFG.
+   *
    * @see ClassFile#parseMethod
    * @see CFG
    */
@@ -1384,7 +1387,7 @@ public class ClassFile {
 
   /**
    * Recomputes the offset of each Instruction starting from 0; used when converting references back to offsets.
-   * 
+   *
    * @param i
    *          list of Instructions to process.
    * @return length of corresponding bytecode.
@@ -1401,8 +1404,9 @@ public class ClassFile {
   }
 
   /**
-   * Inversive to parseMethod, this converts the list of Instructions stored in a method_info object back to an array of bytecode.
-   * 
+   * Inversive to parseMethod, this converts the list of Instructions stored in a method_info object back to an array of
+   * bytecode.
+   *
    * @param m
    *          method to unparse.
    * @return array of bytecode, or <i>null</i> on error.
@@ -1440,9 +1444,9 @@ public class ClassFile {
   }
 
   /**
-   * Inversive to parse, this method calls unparseMethod for each method, storing the resulting bytecode in the method's code attribute, and
-   * recomputing offsets for exception handlers.
-   * 
+   * Inversive to parse, this method calls unparseMethod for each method, storing the resulting bytecode in the method's code
+   * attribute, and recomputing offsets for exception handlers.
+   *
    * @see ClassFile#unparseMethod
    */
   void unparse() {
@@ -1482,7 +1486,7 @@ public class ClassFile {
 
   /**
    * Static utility method to parse the given method descriptor string.
-   * 
+   *
    * @param s
    *          descriptor string.
    * @return return type of method.
@@ -1500,7 +1504,7 @@ public class ClassFile {
 
   /**
    * Static utility method to parse the given method descriptor string.
-   * 
+   *
    * @param s
    *          descriptor string.
    * @return comma-separated ordered list of parameter types
@@ -1521,7 +1525,7 @@ public class ClassFile {
 
   /**
    * Static utility method to parse the given method descriptor string.
-   * 
+   *
    * @param desc
    *          descriptor string.
    * @param sep
@@ -1593,7 +1597,7 @@ public class ClassFile {
 
   /**
    * Locates a method by name.
-   * 
+   *
    * @param s
    *          name of method.
    * @return method_info object representing method, or <i>null</i> if not found.
@@ -1614,7 +1618,7 @@ public class ClassFile {
 
   /**
    * Displays a the prototypes for all the methods defined in this ClassFile.
-   * 
+   *
    * @see ClassFile#methods
    * @see ClassFile#methods_count
    * @see method_info#prototype
@@ -1629,7 +1633,7 @@ public class ClassFile {
 
   /**
    * Displays the entire constant pool.
-   * 
+   *
    * @see ClassFile#constant_pool
    * @see ClassFile#constant_pool_count
    * @see cp_info#toString
@@ -1651,7 +1655,7 @@ public class ClassFile {
 
   /**
    * Displays the list of fields defined in this ClassFile, including any static initializers (constants).
-   * 
+   *
    * @see ClassFile#fields
    * @see ClassFile#fields_count
    * @see field_info#prototype
@@ -1682,7 +1686,7 @@ public class ClassFile {
 
   /**
    * Moves a method to a different index in the methods array.
-   * 
+   *
    * @param m
    *          name of method to move.
    * @param pos
@@ -1714,8 +1718,9 @@ public class ClassFile {
   }
 
   /**
-   * Answers whether this class is an immediate descendant (as subclass or as an implementation of an interface) of the given class.
-   * 
+   * Answers whether this class is an immediate descendant (as subclass or as an implementation of an interface) of the given
+   * class.
+   *
    * @param cf
    *          ClassFile of supposed parent.
    * @return <i>true</i> if it is a parent, <i>false</i> otherwise.
@@ -1726,8 +1731,9 @@ public class ClassFile {
   }
 
   /**
-   * Answers whether this class is an immediate descendant (as subclass or as an implementation of an interface) of the given class.
-   * 
+   * Answers whether this class is an immediate descendant (as subclass or as an implementation of an interface) of the given
+   * class.
+   *
    * @param cname
    *          name of supposed parent.
    * @return <i>true</i> if it is a parent, <i>false</i> otherwise.
@@ -1751,7 +1757,7 @@ public class ClassFile {
 
   /**
    * Answers whether this class can have subclasses outside its package.
-   * 
+   *
    * @return <i>true</i> if it cannot, <i>false</i> if it might.
    */
   boolean isSterile() {
@@ -1762,8 +1768,9 @@ public class ClassFile {
   }
 
   /**
-   * Given the name of a class --- possibly with <tt>.class</tt> after it, this answers whether the class might refer to this ClassFile object.
-   * 
+   * Given the name of a class --- possibly with <tt>.class</tt> after it, this answers whether the class might refer to this
+   * ClassFile object.
+   *
    * @return <i>true</i> if it does, <i>false</i> if it doesn't.
    */
   boolean sameClass(String cfn) {
@@ -1780,7 +1787,7 @@ public class ClassFile {
 
   /**
    * Returns the name of a specific field in the field array.
-   * 
+   *
    * @param i
    *          index of field in field array.
    * @return name of field.
@@ -1790,63 +1797,72 @@ public class ClassFile {
   }
 
   /*
-   * DEPRECATED // Locates the given classfile, and extracts it from the list. // It cannot be the first one in the list, and this returns null // or
-   * the classfile. static ClassFile removeClassFile(ClassFile cfhead,String cfn) { ClassFile cf,cfprev; cf = cfhead; cfprev = null; while (cf!=null)
-   * { if (cf.sameClass(cfn)) { if (cfprev==null) return null; // this shouldn't happen cfprev.next = cf.next; cf.next = null; return cf; } cfprev =
-   * cf; cf = cf.next; } return null; }
-   * 
-   * // returns true if this class contains any references to the given // cuClass.cuName, which is of type cuDesc. Searches for methods if //
-   * ismethod is true, fields otherwise. boolean refersTo(boolean ismethod,CONSTANT_Utf8_info cuClass, CONSTANT_Utf8_info cuName,CONSTANT_Utf8_info
-   * cuDesc) { int i; CONSTANT_Utf8_info cu; // note that we start at 1 in the constant pool if (ismethod) { for (i=1;i<constant_pool_count;i++) { if
-   * ((constant_pool[i]).tag==cp_info.CONSTANT_Methodref) { CONSTANT_Methodref_info cf = (CONSTANT_Methodref_info)(constant_pool[i]);
-   * CONSTANT_Class_info cc = (CONSTANT_Class_info) (constant_pool[cf.class_index]); if (cuClass.equals((CONSTANT_Utf8_info)
-   * (constant_pool[cc.name_index]))) { CONSTANT_NameAndType_info cn = (CONSTANT_NameAndType_info) (constant_pool[cf.name_and_type_index]); if
-   * (cuName.equals((CONSTANT_Utf8_info) (constant_pool[cn.name_index])) && cuDesc.equals((CONSTANT_Utf8_info) (constant_pool[cn.descriptor_index])))
-   * return true; } } else if ((constant_pool[i]).tag== cp_info.CONSTANT_InterfaceMethodref) { CONSTANT_InterfaceMethodref_info cf =
-   * (CONSTANT_InterfaceMethodref_info)(constant_pool[i]); CONSTANT_Class_info cc = (CONSTANT_Class_info) (constant_pool[cf.class_index]); if
-   * (cuClass.equals((CONSTANT_Utf8_info) (constant_pool[cc.name_index]))) { CONSTANT_NameAndType_info cn = (CONSTANT_NameAndType_info)
-   * (constant_pool[cf.name_and_type_index]); if (cuName.equals((CONSTANT_Utf8_info) (constant_pool[cn.name_index])) &&
-   * cuDesc.equals((CONSTANT_Utf8_info) (constant_pool[cn.descriptor_index]))) return true; } } else if ((constant_pool[i]).tag==cp_info.CONSTANT_Long
-   * || (constant_pool[i]).tag==cp_info.CONSTANT_Double) { // must skip an entry after a long or double constant i++; } } } else { for
-   * (i=1;i<constant_pool_count;i++) { if ((constant_pool[i]).tag==cp_info.CONSTANT_Fieldref) { CONSTANT_Fieldref_info cf =
-   * (CONSTANT_Fieldref_info)(constant_pool[i]); CONSTANT_Class_info cc = (CONSTANT_Class_info) (constant_pool[cf.class_index]); if
-   * (cuClass.equals((CONSTANT_Utf8_info) (constant_pool[cc.name_index]))) { CONSTANT_NameAndType_info cn = (CONSTANT_NameAndType_info)
-   * (constant_pool[cf.name_and_type_index]); if (cuName.equals((CONSTANT_Utf8_info) (constant_pool[cn.name_index])) &&
-   * cuDesc.equals((CONSTANT_Utf8_info) (constant_pool[cn.descriptor_index]))) return true; } } else if ((constant_pool[i]).tag==cp_info.CONSTANT_Long
-   * || (constant_pool[i]).tag==cp_info.CONSTANT_Double) { // must skip an entry after a long or double constant i++; } } } return false; }
-   * 
-   * // produces a sorted array of constant pool indices, one for each Utf8 entry used // by any field short[] forbiddenFields() { short fFields[] =
-   * new short[fields_count]; for (int i=0;i<fields_count;i++) { fFields[i] = fields[i].name_index; } // now to sort the array return
-   * sortShorts(fFields); }
-   * 
-   * // sorts an array of shorts using selection sort. It's assumed no valid // entry is 0. static short[] sortShorts(short a[]) { int i,largest;
-   * short s; for(largest = a.length-1;largest>=1;largest--) { for (i=0;i<largest;i++) { if (a[i]>a[largest]) { s = a[i]; a[i] = a[largest];
-   * a[largest] = s; } } } return a; }
-   * 
-   * // Given a new constant pool, and a list of redirections // (new index = redirect[old index]), this changes all constant // pool entries, and
-   * installs the new constant pool of size size void changeConstantPool(short redirect[],cp_info newCP[],short size) { Debig d = new Debig(this);
-   * d.redirectCPRefs(redirect); constant_pool = newCP; constant_pool_count = size; }
-   * 
-   * // the constant pool is typically a few hundred entries in size, and so // is just a bit too big to make use of insertion/selection sort. //
-   * However, the variable size of the entries makes using a heapsort // or quicksort rather cumbersome, so since it is quite close to the // limits
-   * of efficient insertion/selection sort, we'll use that anyway. void sortConstantPool() { cp_info newcp[] = new cp_info[constant_pool_count]; short
-   * redirect[] = new short[constant_pool_count]; newcp[0] = constant_pool[0]; // the 0-entry stays put redirect[0] = (short)0; int smallest,j; for
-   * (int i=1;i<constant_pool_count;i++) redirect[i] = (short)0; for (int i=1;i<constant_pool_count;i++) { for (smallest =
-   * 1;smallest<constant_pool_count;smallest++) if (redirect[smallest]==(short)0) break; //logger.debug(" smallest = " + smallest); j =
-   * (constant_pool[smallest].tag==cp_info.CONSTANT_Double || constant_pool[smallest].tag==cp_info.CONSTANT_Long) ? smallest+2 : smallest+1; for
-   * (;j<constant_pool_count;j++) { if ((redirect[j]==(short)0) && constant_pool[j]. compareTo(constant_pool,constant_pool[smallest],constant_pool)<0)
-   * { smallest = j; } if (constant_pool[j].tag==cp_info.CONSTANT_Double || constant_pool[j].tag==cp_info.CONSTANT_Long) j++; } redirect[smallest] =
-   * (short)i; newcp[i] = constant_pool[smallest]; //logger.debug(" Smallest cp entry is [" + smallest + "] = " + constant_pool[smallest] // + " -> "
-   * + i);
-   * 
-   * if (constant_pool[smallest].tag==cp_info.CONSTANT_Double || constant_pool[smallest].tag==cp_info.CONSTANT_Long) { redirect[++smallest] =
-   * (short)(++i); newcp[i] = constant_pool[smallest]; } } // constant pool is now sorted into newcp
+   * DEPRECATED // Locates the given classfile, and extracts it from the list. // It cannot be the first one in the list, and
+   * this returns null // or the classfile. static ClassFile removeClassFile(ClassFile cfhead,String cfn) { ClassFile
+   * cf,cfprev; cf = cfhead; cfprev = null; while (cf!=null) { if (cf.sameClass(cfn)) { if (cfprev==null) return null; //
+   * this shouldn't happen cfprev.next = cf.next; cf.next = null; return cf; } cfprev = cf; cf = cf.next; } return null; }
+   *
+   * // returns true if this class contains any references to the given // cuClass.cuName, which is of type cuDesc. Searches
+   * for methods if // ismethod is true, fields otherwise. boolean refersTo(boolean ismethod,CONSTANT_Utf8_info cuClass,
+   * CONSTANT_Utf8_info cuName,CONSTANT_Utf8_info cuDesc) { int i; CONSTANT_Utf8_info cu; // note that we start at 1 in the
+   * constant pool if (ismethod) { for (i=1;i<constant_pool_count;i++) { if
+   * ((constant_pool[i]).tag==cp_info.CONSTANT_Methodref) { CONSTANT_Methodref_info cf =
+   * (CONSTANT_Methodref_info)(constant_pool[i]); CONSTANT_Class_info cc = (CONSTANT_Class_info)
+   * (constant_pool[cf.class_index]); if (cuClass.equals((CONSTANT_Utf8_info) (constant_pool[cc.name_index]))) {
+   * CONSTANT_NameAndType_info cn = (CONSTANT_NameAndType_info) (constant_pool[cf.name_and_type_index]); if
+   * (cuName.equals((CONSTANT_Utf8_info) (constant_pool[cn.name_index])) && cuDesc.equals((CONSTANT_Utf8_info)
+   * (constant_pool[cn.descriptor_index]))) return true; } } else if ((constant_pool[i]).tag==
+   * cp_info.CONSTANT_InterfaceMethodref) { CONSTANT_InterfaceMethodref_info cf =
+   * (CONSTANT_InterfaceMethodref_info)(constant_pool[i]); CONSTANT_Class_info cc = (CONSTANT_Class_info)
+   * (constant_pool[cf.class_index]); if (cuClass.equals((CONSTANT_Utf8_info) (constant_pool[cc.name_index]))) {
+   * CONSTANT_NameAndType_info cn = (CONSTANT_NameAndType_info) (constant_pool[cf.name_and_type_index]); if
+   * (cuName.equals((CONSTANT_Utf8_info) (constant_pool[cn.name_index])) && cuDesc.equals((CONSTANT_Utf8_info)
+   * (constant_pool[cn.descriptor_index]))) return true; } } else if ((constant_pool[i]).tag==cp_info.CONSTANT_Long ||
+   * (constant_pool[i]).tag==cp_info.CONSTANT_Double) { // must skip an entry after a long or double constant i++; } } } else
+   * { for (i=1;i<constant_pool_count;i++) { if ((constant_pool[i]).tag==cp_info.CONSTANT_Fieldref) { CONSTANT_Fieldref_info
+   * cf = (CONSTANT_Fieldref_info)(constant_pool[i]); CONSTANT_Class_info cc = (CONSTANT_Class_info)
+   * (constant_pool[cf.class_index]); if (cuClass.equals((CONSTANT_Utf8_info) (constant_pool[cc.name_index]))) {
+   * CONSTANT_NameAndType_info cn = (CONSTANT_NameAndType_info) (constant_pool[cf.name_and_type_index]); if
+   * (cuName.equals((CONSTANT_Utf8_info) (constant_pool[cn.name_index])) && cuDesc.equals((CONSTANT_Utf8_info)
+   * (constant_pool[cn.descriptor_index]))) return true; } } else if ((constant_pool[i]).tag==cp_info.CONSTANT_Long ||
+   * (constant_pool[i]).tag==cp_info.CONSTANT_Double) { // must skip an entry after a long or double constant i++; } } }
+   * return false; }
+   *
+   * // produces a sorted array of constant pool indices, one for each Utf8 entry used // by any field short[]
+   * forbiddenFields() { short fFields[] = new short[fields_count]; for (int i=0;i<fields_count;i++) { fFields[i] =
+   * fields[i].name_index; } // now to sort the array return sortShorts(fFields); }
+   *
+   * // sorts an array of shorts using selection sort. It's assumed no valid // entry is 0. static short[] sortShorts(short
+   * a[]) { int i,largest; short s; for(largest = a.length-1;largest>=1;largest--) { for (i=0;i<largest;i++) { if
+   * (a[i]>a[largest]) { s = a[i]; a[i] = a[largest]; a[largest] = s; } } } return a; }
+   *
+   * // Given a new constant pool, and a list of redirections // (new index = redirect[old index]), this changes all constant
+   * // pool entries, and installs the new constant pool of size size void changeConstantPool(short redirect[],cp_info
+   * newCP[],short size) { Debig d = new Debig(this); d.redirectCPRefs(redirect); constant_pool = newCP; constant_pool_count
+   * = size; }
+   *
+   * // the constant pool is typically a few hundred entries in size, and so // is just a bit too big to make use of
+   * insertion/selection sort. // However, the variable size of the entries makes using a heapsort // or quicksort rather
+   * cumbersome, so since it is quite close to the // limits of efficient insertion/selection sort, we'll use that anyway.
+   * void sortConstantPool() { cp_info newcp[] = new cp_info[constant_pool_count]; short redirect[] = new
+   * short[constant_pool_count]; newcp[0] = constant_pool[0]; // the 0-entry stays put redirect[0] = (short)0; int
+   * smallest,j; for (int i=1;i<constant_pool_count;i++) redirect[i] = (short)0; for (int i=1;i<constant_pool_count;i++) {
+   * for (smallest = 1;smallest<constant_pool_count;smallest++) if (redirect[smallest]==(short)0) break;
+   * //logger.debug(" smallest = " + smallest); j = (constant_pool[smallest].tag==cp_info.CONSTANT_Double ||
+   * constant_pool[smallest].tag==cp_info.CONSTANT_Long) ? smallest+2 : smallest+1; for (;j<constant_pool_count;j++) { if
+   * ((redirect[j]==(short)0) && constant_pool[j]. compareTo(constant_pool,constant_pool[smallest],constant_pool)<0) {
+   * smallest = j; } if (constant_pool[j].tag==cp_info.CONSTANT_Double || constant_pool[j].tag==cp_info.CONSTANT_Long) j++; }
+   * redirect[smallest] = (short)i; newcp[i] = constant_pool[smallest]; //logger.debug(" Smallest cp entry is [" + smallest +
+   * "] = " + constant_pool[smallest] // + " -> " + i);
+   *
+   * if (constant_pool[smallest].tag==cp_info.CONSTANT_Double || constant_pool[smallest].tag==cp_info.CONSTANT_Long) {
+   * redirect[++smallest] = (short)(++i); newcp[i] = constant_pool[smallest]; } } // constant pool is now sorted into newcp
    * changeConstantPool(redirect,newcp,constant_pool_count); logger.debug("Finished sorting constant pool"); }
-   * 
-   * // just a wrapper for the debigulation, so we can elegantly allocate // a new debigulator, debigualte and then produce some output void
-   * debigulate(boolean attribs,boolean privates) { Debig debigulator = new Debig(this); debigulator.debigulate(attribs,privates);
-   * debigulator.setCF(null);
-   * 
+   *
+   * // just a wrapper for the debigulation, so we can elegantly allocate // a new debigulator, debigualte and then produce
+   * some output void debigulate(boolean attribs,boolean privates) { Debig debigulator = new Debig(this);
+   * debigulator.debigulate(attribs,privates); debigulator.setCF(null);
+   *
    * inf.verboseReport(G.v().out); }
    */
 

@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -57,13 +54,14 @@ public class JimpleBody extends StmtBody {
 
   /**
    * Returns an array containing some validators in order to validate the JimpleBody
-   * 
+   *
    * @return the array containing validators
    */
   private synchronized static BodyValidator[] getValidators() {
     if (validators == null) {
       validators = new BodyValidator[] { IdentityStatementsValidator.v(), TypesValidator.v(), ReturnStatementsValidator.v(),
-          InvokeArgumentValidator.v(), FieldRefValidator.v(), NewValidator.v(), JimpleTrapValidator.v(), IdentityValidator.v(), MethodValidator.v()
+          InvokeArgumentValidator.v(), FieldRefValidator.v(), NewValidator.v(), JimpleTrapValidator.v(),
+          IdentityValidator.v(), MethodValidator.v()
           // InvokeValidator.v()
       };
     }
@@ -105,7 +103,7 @@ public class JimpleBody extends StmtBody {
 
   /**
    * Validates the jimple body and saves a list of all validation errors
-   * 
+   *
    * @param exceptionList
    *          the list of validation errors
    */
@@ -132,7 +130,7 @@ public class JimpleBody extends StmtBody {
 
   /**
    * Inserts usual statements for handling this & parameters into body.
-   * 
+   *
    * @param declaringClass
    *          the class, which should be used for this references. Can be null for static methods
    */
@@ -145,7 +143,8 @@ public class JimpleBody extends StmtBody {
     // add this-ref before everything else
     if (!getMethod().isStatic()) {
       if (declaringClass == null) {
-        throw new IllegalArgumentException(String.format("No declaring class given for method %s", method.getSubSignature()));
+        throw new IllegalArgumentException(
+            String.format("No declaring class given for method %s", method.getSubSignature()));
       }
       Local l = jimple.newLocal("this", RefType.v(declaringClass));
       Stmt s = jimple.newIdentityStmt(l, jimple.newThisRef((RefType) l.getType()));

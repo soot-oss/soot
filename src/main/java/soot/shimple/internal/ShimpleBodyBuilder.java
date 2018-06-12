@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.shimple.internal;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,13 +70,13 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  * This class can also translate out of Shimple by producing an equivalent Jimple body with all Phi nodes removed.
  *
  * <p>
- * Note that this is an internal class, understanding it should not be necessary from a user point-of-view and relying on it directly is not
- * recommended.
+ * Note that this is an internal class, understanding it should not be necessary from a user point-of-view and relying on it
+ * directly is not recommended.
  *
  * @author Navindra Umanee
  * @see soot.shimple.ShimpleBody
- * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and the Control Dependence
- *      Graph</a>
+ * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
+ *      the Control Dependence Graph</a>
  **/
 public class ShimpleBodyBuilder {
   protected ShimpleBody body;
@@ -162,7 +165,8 @@ public class ShimpleBodyBuilder {
    * Remove Phi nodes from current body, high probablity this destroys SSA form.
    *
    * <p>
-   * Dead code elimination + register aggregation are performed as recommended by Cytron. The Aggregator looks like it could use some improvements.
+   * Dead code elimination + register aggregation are performed as recommended by Cytron. The Aggregator looks like it could
+   * use some improvements.
    *
    * @see soot.options.ShimpleOptions
    **/
@@ -192,8 +196,8 @@ public class ShimpleBodyBuilder {
   protected Stack<Integer>[] namingStacks;
 
   /**
-   * Variable Renaming Algorithm from Cytron et al 91, P26-8, implemented in various bits and pieces by the next functions. Must be called after
-   * trivial nodes have been added.
+   * Variable Renaming Algorithm from Cytron et al 91, P26-8, implemented in various bits and pieces by the next functions.
+   * Must be called after trivial nodes have been added.
    **/
   public void renameLocals() {
     update();
@@ -409,7 +413,8 @@ public class ShimpleBodyBuilder {
   }
 
   /**
-   * Convenient function that maps new Locals to the originating Local, and finds the appropriate array index into the naming structures.
+   * Convenient function that maps new Locals to the originating Local, and finds the appropriate array index into the naming
+   * structures.
    **/
   protected int indexOfLocal(Value local) {
     int localIndex = origLocals.indexOf(local);

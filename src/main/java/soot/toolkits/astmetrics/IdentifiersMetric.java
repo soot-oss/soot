@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.toolkits.astmetrics;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,7 +44,7 @@ import soot.options.Options;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 5-Mar-2006
  */
 public class IdentifiersMetric extends ASTMetric {
@@ -58,31 +61,34 @@ public class IdentifiersMetric extends ASTMetric {
 
   /**
    * @param astNode
-   * 
-   *          This metric will take a measure of the "complexity" of each identifier used within the program. An identifier's complexity is computed
-   *          as follows:
-   * 
+   *
+   *          This metric will take a measure of the "complexity" of each identifier used within the program. An identifier's
+   *          complexity is computed as follows:
+   *
    *          First the alpha tokens are parsed by splitting on non-alphas and capitals:
-   * 
-   *          example identifier: getASTNode alpha tokens: get, AST, Node example identifier: ___Junk$$name alpha tokens: Junk, name)
-   * 
-   *          The alpha tokens are then counted and a 'token complexity' is formed by the ratio of total tokens to the number of tokens found in the
-   *          dictionary:
-   * 
+   *
+   *          example identifier: getASTNode alpha tokens: get, AST, Node example identifier: ___Junk$$name alpha tokens:
+   *          Junk, name)
+   *
+   *          The alpha tokens are then counted and a 'token complexity' is formed by the ratio of total tokens to the number
+   *          of tokens found in the dictionary:
+   *
    *          example identifier: getASTNode Total: 3, Found: 2, Complexity: 1.5
-   * 
-   *          Then the 'character complexity' is computed, which is a ratio of total number of characters to the number of non-complex characters.
-   *          Non-complex characters are those which are NOT part of a multiple string of non-alphas.
-   * 
-   *          example identifier: ___Junk$$name complex char strings: '___', '$$' number of non-complex (Junk + name): 8, total: 13, Complexity: 1.625
-   * 
-   *          Finally, the total identifier complexity is the sum of the token and character complexities multipled by the 'importance' of an
-   *          identifier:
-   * 
+   *
+   *          Then the 'character complexity' is computed, which is a ratio of total number of characters to the number of
+   *          non-complex characters. Non-complex characters are those which are NOT part of a multiple string of non-alphas.
+   *
+   *          example identifier: ___Junk$$name complex char strings: '___', '$$' number of non-complex (Junk + name): 8,
+   *          total: 13, Complexity: 1.625
+   *
+   *          Finally, the total identifier complexity is the sum of the token and character complexities multipled by the
+   *          'importance' of an identifier:
+   *
    *          Multipliers are as follows:
-   * 
-   *          Class multiplier = 3; Method multiplier = 4; Field multiplier = 2; Formal multiplier = 1.5; Local multiplier = 1;
-   * 
+   *
+   *          Class multiplier = 3; Method multiplier = 4; Field multiplier = 2; Formal multiplier = 1.5; Local multiplier =
+   *          1;
+   *
    */
   public IdentifiersMetric(Node astNode) {
     super(astNode);
@@ -164,7 +170,7 @@ public class IdentifiersMetric extends ASTMetric {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see soot.toolkits.astmetrics.ASTMetric#reset()
    */
   public void reset() {
@@ -174,7 +180,7 @@ public class IdentifiersMetric extends ASTMetric {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see soot.toolkits.astmetrics.ASTMetric#addMetrics(soot.toolkits.astmetrics.ClassData)
    */
   public void addMetrics(ClassData data) {
@@ -313,11 +319,11 @@ public class IdentifiersMetric extends ASTMetric {
 
   /*
    * @author Michael Batchelder
-   * 
+   *
    * Created on 6-Mar-2006
-   * 
+   *
    * @param name string to parse
-   * 
+   *
    * @return number of leading capital letters
    */
   private int countCaps(String name) {
@@ -336,11 +342,11 @@ public class IdentifiersMetric extends ASTMetric {
 
   /*
    * @author Michael Batchelder
-   * 
+   *
    * Created on 6-Mar-2006
-   * 
+   *
    * @param name string to parse
-   * 
+   *
    * @return index of first capital letter
    */
   private int findCap(String name) {

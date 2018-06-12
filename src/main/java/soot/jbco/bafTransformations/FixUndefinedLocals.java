@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jbco.bafTransformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -59,7 +62,7 @@ import soot.toolkits.scalar.GuaranteedDefs;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 16-Jun-2006
  */
 public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransform {
@@ -157,8 +160,8 @@ public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransfor
         Unit pinit = getPushInitializer(l, t);
         units.insertBefore(pinit, store);
         /*
-         * if (t instanceof RefType) { SootClass sc = ((RefType)t).getSootClass(); if (sc != null) units.insertAfter(Baf.v().newInstanceCastInst(t),
-         * pinit); }
+         * if (t instanceof RefType) { SootClass sc = ((RefType)t).getSootClass(); if (sc != null)
+         * units.insertAfter(Baf.v().newInstanceCastInst(t), pinit); }
          */
 
         initialized.add(l);
@@ -188,21 +191,21 @@ public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransfor
   }
 
   /*
-   * 
-   * private Unit findInitializerSpotFor(Value v, Unit u, UnitGraph ug, GuaranteedDefs gd) { List preds = ug.getPredsOf(u); while (preds.size() == 1)
-   * { Unit p = (Unit) preds.get(0); //if (p instanceof IdentityInst) // break;
-   * 
+   *
+   * private Unit findInitializerSpotFor(Value v, Unit u, UnitGraph ug, GuaranteedDefs gd) { List preds = ug.getPredsOf(u);
+   * while (preds.size() == 1) { Unit p = (Unit) preds.get(0); //if (p instanceof IdentityInst) // break;
+   *
    * u = p; preds = ug.getPredsOf(u); }
-   * 
+   *
    * if (preds.size() <= 1) return u;
-   * 
-   * ArrayList nodef = new ArrayList(); Iterator pIt = preds.iterator(); while (pIt.hasNext()) { Unit u1 = (Unit) pIt.next(); if
-   * (!gd.getGuaranteedDefs(u1).contains(v)) { nodef.add(u1); } }
-   * 
+   *
+   * ArrayList nodef = new ArrayList(); Iterator pIt = preds.iterator(); while (pIt.hasNext()) { Unit u1 = (Unit) pIt.next();
+   * if (!gd.getGuaranteedDefs(u1).contains(v)) { nodef.add(u1); } }
+   *
    * if (nodef.size() == preds.size()) return u;
-   * 
+   *
    * if (nodef.size() == 1) return findInitializerSpotFor(v, (Unit) nodef.get(0), ug, gd);
-   * 
+   *
    * throw new RuntimeException("Shouldn't Ever Get Here!"); }
    */
 }

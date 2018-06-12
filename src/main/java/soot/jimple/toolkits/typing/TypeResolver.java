@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2000 Etienne Gagnon.  All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.toolkits.typing;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2000 Etienne Gagnon.  All rights reserved.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -65,7 +62,7 @@ import soot.toolkits.scalar.LocalDefs;
 
 /**
  * This class resolves the type of local variables.
- * 
+ *
  * <b>NOTE:</b> This class has been superseded by {@link soot.jimple.toolkits.typing.fast.TypeResolver}.
  **/
 public class TypeResolver {
@@ -388,8 +385,8 @@ public class TypeResolver {
     while (varIt.hasNext()) {
       TypeVariable var = varIt.next();
 
-      if (var.type().type() instanceof IntType || var.type().type() instanceof LongType || var.type().type() instanceof FloatType
-          || var.type().type() instanceof DoubleType) {
+      if (var.type().type() instanceof IntType || var.type().type() instanceof LongType
+          || var.type().type() instanceof FloatType || var.type().type() instanceof DoubleType) {
         List<TypeVariable> parents;
         List<TypeVariable> children;
         boolean finished;
@@ -557,7 +554,8 @@ public class TypeResolver {
 
               if (lca == null) {
                 if (DEBUG) {
-                  logger.debug("==++==" + stmtBody.getMethod().getDeclaringClass().getName() + "." + stmtBody.getMethod().getName());
+                  logger.debug(
+                      "==++==" + stmtBody.getMethod().getDeclaringClass().getName() + "." + stmtBody.getMethod().getName());
                 }
 
                 continue multiple_children;
@@ -647,8 +645,8 @@ public class TypeResolver {
       }
 
       if (DEBUG) {
-        if ((var != null) && (var.approx() != null) && (var.approx().type() != null) && (local != null) && (local.getType() != null)
-            && !local.getType().equals(var.approx().type())) {
+        if ((var != null) && (var.approx() != null) && (var.approx().type() != null) && (local != null)
+            && (local.getType() != null) && !local.getType().equals(var.approx().type())) {
           logger.debug("local: " + local + ", type: " + local.getType() + ", approx: " + var.approx().type());
         }
       }

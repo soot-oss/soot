@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1999-2010 Hossein Sadat-Mohtasham
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.toolkits.graph.pdg;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1999 - 2010 Hossein Sadat-Mohtasham
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,12 +40,13 @@ import soot.toolkits.graph.UnitGraph;
 import soot.util.Chain;
 
 /**
- * 
- * This class represents a control flow graph which behaves like an ExceptionalUnitGraph and BriefUnitGraph when there are no exception handling
- * construct in the method; at the presence of such constructs, the CFG is constructed from a brief graph by adding a concise representation of the
- * exceptional flow as well as START/STOP auxiliary nodes. In a nutshell, the exceptional flow is represented at the level of try-catch-finally blocks
- * instead of the Unit level to allow a more useful region analysis.
- * 
+ *
+ * This class represents a control flow graph which behaves like an ExceptionalUnitGraph and BriefUnitGraph when there are no
+ * exception handling construct in the method; at the presence of such constructs, the CFG is constructed from a brief graph
+ * by adding a concise representation of the exceptional flow as well as START/STOP auxiliary nodes. In a nutshell, the
+ * exceptional flow is represented at the level of try-catch-finally blocks instead of the Unit level to allow a more useful
+ * region analysis.
+ *
  * @author Hossein Sadat-Mohtasham
  *
  */
@@ -295,8 +300,9 @@ public class EnhancedUnitGraph extends UnitGraph {
         // the child that is
         // immediately
         /*
-         * if(mergePoint == null) { //throw new RuntimeException("No child post-dominates x."); mergePoint = potentialMergePoint;
-         * 
+         * if(mergePoint == null) { //throw new RuntimeException("No child post-dominates x."); mergePoint =
+         * potentialMergePoint;
+         *
          * }
          */
         // This means no (dom) child of x post-dominates x, so just use
@@ -377,7 +383,7 @@ public class EnhancedUnitGraph extends UnitGraph {
 
       /**
        * Find the real header of this handler block
-       * 
+       *
        */
       Unit handler = trap.getHandlerUnit();
 
@@ -393,8 +399,8 @@ public class EnhancedUnitGraph extends UnitGraph {
        * Keep this here for possible future changes.
        */
       /*
-       * GuardedBlock gb = new GuardedBlock(trap.getBeginUnit(), trap.getEndUnit()); Unit ehnop; if(try2nop.containsKey(gb)) ehnop = try2nop.get(gb);
-       * else { ehnop = new EHNopStmt(); try2nop.put(gb, ehnop); }
+       * GuardedBlock gb = new GuardedBlock(trap.getBeginUnit(), trap.getEndUnit()); Unit ehnop; if(try2nop.containsKey(gb))
+       * ehnop = try2nop.get(gb); else { ehnop = new EHNopStmt(); try2nop.put(gb, ehnop); }
        */
 
       Unit ehnop;
@@ -419,13 +425,13 @@ public class EnhancedUnitGraph extends UnitGraph {
       handler = handler2header.get(handler);
 
       /**
-       * Check if this trap is a finally trap that handles exceptions of an adjacent catch block; what differentiates such trap is that it's guarded
-       * region has the same parent as the handler of the trap itself, in the dom tree.
-       * 
+       * Check if this trap is a finally trap that handles exceptions of an adjacent catch block; what differentiates such
+       * trap is that it's guarded region has the same parent as the handler of the trap itself, in the dom tree.
+       *
        * The problem is that we don't have a complete DOM tree at this transient state.
-       * 
+       *
        * The work-around is to not process a trap that has already an edge pointing to it.
-       * 
+       *
        */
 
       if (this.unitToPreds.containsKey(handler)) {
@@ -497,8 +503,9 @@ public class EnhancedUnitGraph extends UnitGraph {
 }
 
 /**
- * This class represents a block of code guarded by a trap. Currently, this is not used but it might well be put to use in later updates.
- * 
+ * This class represents a block of code guarded by a trap. Currently, this is not used but it might well be put to use in
+ * later updates.
+ *
  * @author Hossein Sadat-Mohtasham
  *
  */
@@ -532,11 +539,11 @@ class GuardedBlock {
 }
 
 /**
- * 
+ *
  * @author Hossein Sadat-Mohtasham Feb 2010
- * 
- *         This class represents a special nop statement that marks the beginning of a try block at the Jimple level. This is going to be used in the
- *         CFG enhancement.
+ *
+ *         This class represents a special nop statement that marks the beginning of a try block at the Jimple level. This is
+ *         going to be used in the CFG enhancement.
  *
  */
 
@@ -560,11 +567,11 @@ class EHNopStmt extends JNopStmt {
 }
 
 /**
- * 
+ *
  * @author Hossein Sadat-Mohtasham Feb 2010
- * 
- *         This class represents a special nop statement that marks the beginning of method body at the Jimple level. This is going to be used in the
- *         CFG enhancement.
+ *
+ *         This class represents a special nop statement that marks the beginning of method body at the Jimple level. This is
+ *         going to be used in the CFG enhancement.
  *
  */
 @SuppressWarnings("serial")
@@ -587,11 +594,11 @@ class EntryStmt extends JNopStmt {
 }
 
 /**
- * 
+ *
  * @author Hossein Sadat-Mohtasham Feb 2010
- * 
- *         This class represents a special nop statement that marks the exit of method body at the Jimple level. This is going to be used in the CFG
- *         enhancement.
+ *
+ *         This class represents a special nop statement that marks the exit of method body at the Jimple level. This is
+ *         going to be used in the CFG enhancement.
  *
  */
 

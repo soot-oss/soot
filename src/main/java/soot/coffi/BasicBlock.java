@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997 Clark Verbrugge
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.coffi;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 Clark Verbrugge
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.List;
 import java.util.Set;
@@ -35,7 +32,7 @@ import soot.util.ArraySet;
 
 /**
  * Represents one basic block in a control flow graph.
- * 
+ *
  * @see CFG
  * @see ClassFile#parse
  * @author Clark Verbrugge
@@ -48,21 +45,22 @@ class BasicBlock {
   /**
    * Tail of the list of instructions.
    * <p>
-   * Normally, the last instruction will have a next pointer with value <i>null</i>. After a Instruction sequences are reconstructed though, the
-   * instruction lists are rejoined in order, and so the tail instruction will not have a <i>null</i> next pointer.
-   * 
+   * Normally, the last instruction will have a next pointer with value <i>null</i>. After a Instruction sequences are
+   * reconstructed though, the instruction lists are rejoined in order, and so the tail instruction will not have a
+   * <i>null</i> next pointer.
+   *
    * @see CFG#reconstructInstructions
    */
   public Instruction tail;
   /**
    * Vector of predecessor BasicBlocks.
-   * 
+   *
    * @see java.util.Vector
    */
   public Vector<BasicBlock> succ;
   /**
    * Vector of successor BasicBlocks.
-   * 
+   *
    * @see java.util.Vector
    */
   public Vector<BasicBlock> pred;
@@ -74,7 +72,7 @@ class BasicBlock {
   public boolean beginCode;
   /**
    * Flag for semantic stack analysis fixup pass.
-   * 
+   *
    * @see CFG#jimplify
    */
 
@@ -122,7 +120,7 @@ class BasicBlock {
 
   /**
    * Computes a hash code for this block from the label of the first instruction in its contents.
-   * 
+   *
    * @return the hash code.
    * @see Instruction#label
    */
@@ -132,7 +130,7 @@ class BasicBlock {
 
   /**
    * True if this block represents the same piece of code. Basically compares labels of the head instructions.
-   * 
+   *
    * @param b
    *          block to compare against.
    * @return <i>true</i> if they do, <i>false</i> if they don't.

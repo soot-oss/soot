@@ -3,9 +3,20 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ca.mcgill.sable</groupId>
 	<artifactId>soot</artifactId>
-	<name>Soot</name>
+	<name>Soot - a J*va Optimization Framework</name>
 	<version>3.1.0-SNAPSHOT</version>
 	<description>A Java Optimization Framework</description>
+	<organization>
+		<name>Sable</name>
+		<url>http://www.sable.mcgill.ca/</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>GNU LESSER GENERAL PUBLIC LICENSE 2.1</name>
+			<url>https://www.gnu.org/licenses/lgpl-2.1.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -23,11 +34,11 @@
 		<checkstyle.version>8.9</checkstyle.version>
 		<checkstyle.dir.path>${basedir}/codingstyle</checkstyle.dir.path>
 		<checkstyle.file.path>${checkstyle.dir.path}/soot_checkstyle_checks.xml</checkstyle.file.path>
-		<checkstyle.failOnViolation>false</checkstyle.failOnViolation>
+		<checkstyle.failOnViolation>true</checkstyle.failOnViolation>
+		<licence-check.failOnMissingHeader>true</licence-check.failOnMissingHeader>
 	</properties>
 	<build>
 		<finalName>sootclasses-trunk</finalName>
-
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -264,19 +275,46 @@
 				</dependencies>
 				<executions>
 					<execution>
-						<id>validate</id>
-						<phase>validate</phase>
-						<configuration>
-							<propertyExpansion>config_loc=${checkstyle.dir.path}</propertyExpansion>
-							<configLocation>${checkstyle.file.path}</configLocation>
-							<encoding>UTF-8</encoding>
-							<logViolationsToConsole>true</logViolationsToConsole>
-							<failOnViolation>${checkstyle.failOnViolation}</failOnViolation>
-							<violationSeverity>warning</violationSeverity>
-						</configuration>
+						<id>stylecheck</id>
+						<phase>verify</phase>
 						<goals>
 							<goal>check</goal>
 						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<propertyExpansion>config_loc=${checkstyle.dir.path}</propertyExpansion>
+					<configLocation>${checkstyle.file.path}</configLocation>
+					<encoding>UTF-8</encoding>
+					<logViolationsToConsole>true</logViolationsToConsole>
+					<failOnViolation>${checkstyle.failOnViolation}</failOnViolation>
+					<violationSeverity>warning</violationSeverity>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>1.16</version>
+				<configuration>
+					<failOnMissingHeader>${licence-check.failOnMissingHeader}</failOnMissingHeader>
+					<failOnNotUptodateHeader>${licence-check.failOnMissingHeader}</failOnNotUptodateHeader>
+					<inceptionYear>1997</inceptionYear>
+					<addJavaLicenseAfterPackage>true</addJavaLicenseAfterPackage>
+					<licenseName>lgpl_v2_1</licenseName>
+					<organizationName>Raja Vallée-Rai and others</organizationName>
+					<roots>
+						<root>src/main/java</root>
+						<root>src/test/java</root> 
+					    <root>src/it</root>
+					</roots>
+				</configuration>
+				<executions>
+					<execution>
+						<id>license-check</id>
+						<goals>
+							<goal>check-file-header</goal>	
+						</goals>
+						<phase>verify</phase>
 					</execution>
 				</executions>
 			</plugin>
@@ -321,7 +359,6 @@
 			<version>1.10.1</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<!-- Local dependencies -->
 		<dependency>
 			<groupId>pxb.android</groupId>
@@ -333,7 +370,6 @@
 			<artifactId>polyglot</artifactId>
 			<version>2006</version>
 		</dependency>
-
 		<!-- Published from the github repo -->
 		<!-- Built by http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/ -->
 		<dependency>
@@ -341,7 +377,6 @@
 			<artifactId>heros</artifactId>
 			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
-
 		<!-- Uploaded to http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/
 			from the nightly build server -->
 		<dependency>
@@ -349,7 +384,6 @@
 			<artifactId>jasmin</artifactId>
 			<version>3.0.1-SNAPSHOT</version>
 		</dependency>
-
 		<!-- Logging dependencies -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -360,8 +394,8 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.7.5</version>
+			<optional>true</optional>
 		</dependency>
-
 		<!-- Testing dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -389,7 +423,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<repositories>
 		<repository>
 			<id>soot-snapshot</id>
@@ -402,5 +435,4 @@
 			<url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
 		</repository>
 	</repositories>
-
 </project>

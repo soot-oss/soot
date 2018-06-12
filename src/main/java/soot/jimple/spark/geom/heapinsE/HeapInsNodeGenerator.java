@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.spark.geom.heapinsE;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2011 Richard Xiao
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Iterator;
 
@@ -35,13 +39,13 @@ import soot.jimple.toolkits.callgraph.Edge;
 
 /**
  * Build the initial pointer assignment graph with the HeapIns encoding.
- * 
+ *
  * @author xiao
  *
  */
 public class HeapInsNodeGenerator extends IEncodingBroker {
-  private static final int full_convertor[] = { GeometricManager.ONE_TO_ONE, GeometricManager.MANY_TO_MANY, GeometricManager.MANY_TO_MANY,
-      GeometricManager.MANY_TO_MANY };
+  private static final int full_convertor[] = { GeometricManager.ONE_TO_ONE, GeometricManager.MANY_TO_MANY,
+      GeometricManager.MANY_TO_MANY, GeometricManager.MANY_TO_MANY };
 
   @Override
   public void initFlowGraph(GeomPointsTo ptAnalyzer) {
@@ -71,7 +75,8 @@ public class HeapInsNodeGenerator extends IEncodingBroker {
         case Constants.NEW_CONS:
           // We directly add the objects to the points-to set
 
-          my_rhs.add_points_to_3((AllocNode) my_lhs.getWrappedNode(), (code & 1) == 1 ? 0 : 1, // to decide if the receiver is a global or not
+          my_rhs.add_points_to_3((AllocNode) my_lhs.getWrappedNode(), (code & 1) == 1 ? 0 : 1, // to decide if the receiver
+                                                                                               // is a global or not
               (code >> 1) == 1 ? 0 : 1, // if the object is a global or not
               (code & 1) == 1 ? ptAnalyzer.context_size[nf1] : ptAnalyzer.context_size[nf2]);
 
@@ -93,7 +98,8 @@ public class HeapInsNodeGenerator extends IEncodingBroker {
               // Parameter passing
               if (nf2 == q.t) {
                 /*
-                 * The receiver must be a local, while the sender is perhaps not (e.g. for handling reflection, see class PAG) In that case, nf1 is 0.
+                 * The receiver must be a local, while the sender is perhaps not (e.g. for handling reflection, see class
+                 * PAG) In that case, nf1 is 0.
                  */
 
                 if (nf1 == Constants.SUPER_MAIN) {

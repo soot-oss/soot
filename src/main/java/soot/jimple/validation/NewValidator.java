@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jimple.validation;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -43,8 +46,8 @@ import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
 /**
- * A relatively simple validator. It tries to check whether after each new-expression-statement there is a corresponding call to the &lt;init&gt;
- * method before a use or the end of the method.
+ * A relatively simple validator. It tries to check whether after each new-expression-statement there is a corresponding call
+ * to the &lt;init&gt; method before a use or the end of the method.
  *
  * @author Marc Miltenberger
  * @author Steven Arzt
@@ -52,7 +55,8 @@ import soot.validation.ValidationException;
 public enum NewValidator implements BodyValidator {
   INSTANCE;
 
-  private static final String errorMsg = "There is a path from '%s' to the usage '%s' where <init> does not get called in between.";
+  private static final String errorMsg
+      = "There is a path from '%s' to the usage '%s' where <init> does not get called in between.";
 
   public static boolean MUST_CALL_CONSTRUCTOR_BEFORE_RETURN = false;
 
@@ -73,8 +77,9 @@ public enum NewValidator implements BodyValidator {
         // First seek for a JNewExpr.
         if (assign.getRightOp() instanceof NewExpr) {
           if (!(assign.getLeftOp().getType() instanceof RefType)) {
-            exceptions.add(new ValidationException(u, "A new-expression must be used on reference type locals", String
-                .format("Body of method %s contains a new-expression, which is assigned to a non-reference local", body.getMethod().getSignature())));
+            exceptions.add(new ValidationException(u, "A new-expression must be used on reference type locals",
+                String.format("Body of method %s contains a new-expression, which is assigned to a non-reference local",
+                    body.getMethod().getSignature())));
             return;
           }
 
@@ -99,8 +104,8 @@ public enum NewValidator implements BodyValidator {
    * </code>
    * <p>
    * Regarding <i>aliasingLocals</i>:<br>
-   * The first local in the set is always the local on the LHS of the new-expression-assignment (called: original local; in the example
-   * <code>$r0</code>).
+   * The first local in the set is always the local on the LHS of the new-expression-assignment (called: original local; in
+   * the example <code>$r0</code>).
    * </p>
    *
    * @param g

@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2006 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2006 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -46,7 +49,8 @@ public class DavaBuildFile {
     /*
      * out.print("<target name=\"init\" description=\"Create necessary directories\">\n"); out.print("<tstamp/>\n");
      * out.print("		<!-- set the timestamps -->\n"); out.print("		<mkdir dir=\"${classesDir}\"/>\n");
-     * out.print("		<mkdir dir=\"${docDir}\"/>\n"); // out.print("		<mkdir dir=\"${libDir}\"/>\n"); out.print("</target>\n");
+     * out.print("		<mkdir dir=\"${docDir}\"/>\n"); // out.print("		<mkdir dir=\"${libDir}\"/>\n");
+     * out.print("</target>\n");
      */
     out.print("	<!--  ========== Compile Target ================= -->\n");
     out.print("	<target name=\"compile\" description=\"Compile .java files\">\n");
@@ -60,8 +64,8 @@ public class DavaBuildFile {
     out.print("	<!--  ==========AST METRICS FOR DECOMPILED CODE================= -->\n");
     out.print("<target name=\"ast-metrics\" description=\"Compute the ast metrics\">\n");
     /*
-     * NEED TO MAKE SURE SRC-PREC IS SET so that java to jimple gets evaluate The command is going to be java soot.Main -ast-metrics followed by all
-     * the classes on which we had originally done the decompile Need a specialized task
+     * NEED TO MAKE SURE SRC-PREC IS SET so that java to jimple gets evaluate The command is going to be java soot.Main
+     * -ast-metrics followed by all the classes on which we had originally done the decompile Need a specialized task
      */
 
     out.print("   <exec executable=\"java\" dir=\"src\">\n");

@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2007 Manu Sridharan
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jimple.spark.pag;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2007 Manu Sridharan
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,9 +41,9 @@ import soot.jimple.spark.sets.P2SetVisitor;
 
 /**
  * Utilities for dumping dot representations of parts of a {@link PAG}.
- * 
+ *
  * @author msridhar
- * 
+ *
  */
 public class PagToDotDumper {
   private static final Logger logger = LoggerFactory.getLogger(PagToDotDumper.class);
@@ -60,7 +63,7 @@ public class PagToDotDumper {
 
   /**
    * Build vmatchEdges and store them in vmatches field
-   * 
+   *
    */
   private void buildVmatchEdges() {
     // for each store and load pair
@@ -156,7 +159,7 @@ public class PagToDotDumper {
 
   /**
    * Generate a node declaration for a dot file.
-   * 
+   *
    * @param node
    *          the node
    * @param p
@@ -194,7 +197,8 @@ public class PagToDotDumper {
    * @return
    */
   private boolean isDefinedIn(LocalVarNode lvNode, String cName, String mName) {
-    return lvNode.getMethod() != null && lvNode.getMethod().getDeclaringClass().getName().equals(cName) && lvNode.getMethod().getName().equals(mName);
+    return lvNode.getMethod() != null && lvNode.getMethod().getDeclaringClass().getName().equals(cName)
+        && lvNode.getMethod().getName().equals(mName);
   }
 
   private void printOneNode(VarNode node) {
@@ -233,9 +237,9 @@ public class PagToDotDumper {
   }
 
   /**
-   * dumps the points-to sets for all locals in a method in a dot representation. The graph has edges from each local to all {@link AllocNode}s in its
-   * points-to set
-   * 
+   * dumps the points-to sets for all locals in a method in a dot representation. The graph has edges from each local to all
+   * {@link AllocNode}s in its points-to set
+   *
    * @param fName
    *          a name for the output file
    * @param mName
@@ -274,7 +278,7 @@ public class PagToDotDumper {
 
   /**
    * Dump the PAG for some method in the program in dot format
-   * 
+   *
    * @param fName
    *          The filename for the output
    * @param cName
@@ -459,9 +463,9 @@ public class PagToDotDumper {
   }
 
   /**
-   * 
+   *
    * Do a DFS traversal
-   * 
+   *
    * @param name
    * @param name2
    * @param ps2

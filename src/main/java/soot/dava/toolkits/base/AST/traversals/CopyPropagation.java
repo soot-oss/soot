@@ -1,42 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Maintained by Nomair A. Naeem
- */
-
-/*
- * Change log: * November 22nd 2005: Moved this class from structuredAnalysis
- *               package to traversals package. Since this is a traversal not an analysis
- *
- *             * November 23rd 2005. MASSIVE CHANGES
- *                                   Created a Class LocalVariableCleaner which should
- *                                   be run after running copy prop and moved some of the
- *                                   functionality from this class to localVariableCleaner
- */
-
-/*
- * TODO: November 23rd, 2005. What if removeStmt removes a copyStmt and that was the only 
- *       stmt in the stmtSequenceBlock. Shouldnt that block be removed??
- */
-
 package soot.dava.toolkits.base.AST.traversals;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -69,8 +53,8 @@ import soot.jimple.Stmt;
 /*
  * TODO: shouldnt this be a transformation and hence under the transformation package???
  This analysis uses the results from
- 1 ReachingCopies 
- 2 uD and dU chains 
+ 1 ReachingCopies
+ 2 uD and dU chains
  to eliminate extra copies
 
 
@@ -191,7 +175,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 
   /*
    * Given a copy stmt (a=b) find all uses of local a (using dU chain)
-   * 
+   *
    * if For ALL uses the ReachingCopies set contains copy stmt (a=b) Remove Copy Stmt Replace use of a with use of b
    */
   public void handleCopyStmt(DefinitionStmt copyStmt) {
@@ -305,7 +289,8 @@ public class CopyPropagation extends DepthFirstAdapter {
   }
 
   /*
-   * Method goes depth first into the condition tree and finds any use of local "from" If it finds the use it replaces it with the use of local "to"
+   * Method goes depth first into the condition tree and finds any use of local "from" If it finds the use it replaces it
+   * with the use of local "to"
    */
   public void modifyUses(Local from, Local to, ASTCondition cond) {
     if (cond instanceof ASTAggregatedCondition) {
@@ -379,7 +364,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 
   /*
    * Invoked by handleCopyStmt to replace the use of local <from> to the use of local <to> in <use>
-   * 
+   *
    * Notice <use> can be a stmt or an ASTNode
    */
 

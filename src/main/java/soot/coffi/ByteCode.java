@@ -1,36 +1,33 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997 Clark Verbrugge
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.coffi;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 Clark Verbrugge
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Procedural code for parsing and otherwise handling bytecode.
- * 
+ *
  * @author Clark Verbrugge
  */
 class ByteCode {
@@ -240,21 +237,24 @@ class ByteCode {
   public static final int JSR_W = 201;
   public static final int BREAKPOINT = 202;
   /*
-   * public static final int = 203; public static final int = 204; public static final int = 205; public static final int = 206; public static final
-   * int = 207; public static final int = 208;
+   * public static final int = 203; public static final int = 204; public static final int = 205; public static final int =
+   * 206; public static final int = 207; public static final int = 208;
    */
   public static final int RET_W = 209;
   /*
-   * public static final int = 210; public static final int = 211; public static final int = 212; public static final int = 213; public static final
-   * int = 214; public static final int = 215; public static final int = 216; public static final int = 217; public static final int = 218; public
-   * static final int = 219; public static final int = 220; public static final int = 221; public static final int = 222; public static final int =
-   * 223; public static final int = 224; public static final int = 225; public static final int = 226; public static final int = 227; public static
-   * final int = 228; public static final int = 229; public static final int = 230; public static final int = 231; public static final int = 232;
-   * public static final int = 233; public static final int = 234; public static final int = 235; public static final int = 236; public static final
-   * int = 237; public static final int = 238; public static final int = 239; public static final int = 240; public static final int = 241; public
-   * static final int = 242; public static final int = 243; public static final int = 244; public static final int = 245; public static final int =
-   * 246; public static final int = 247; public static final int = 248; public static final int = 249; public static final int = 250; public static
-   * final int = 251; public static final int = 252; public static final int = 253; public static final int = 254; public static final int = 255;
+   * public static final int = 210; public static final int = 211; public static final int = 212; public static final int =
+   * 213; public static final int = 214; public static final int = 215; public static final int = 216; public static final
+   * int = 217; public static final int = 218; public static final int = 219; public static final int = 220; public static
+   * final int = 221; public static final int = 222; public static final int = 223; public static final int = 224; public
+   * static final int = 225; public static final int = 226; public static final int = 227; public static final int = 228;
+   * public static final int = 229; public static final int = 230; public static final int = 231; public static final int =
+   * 232; public static final int = 233; public static final int = 234; public static final int = 235; public static final
+   * int = 236; public static final int = 237; public static final int = 238; public static final int = 239; public static
+   * final int = 240; public static final int = 241; public static final int = 242; public static final int = 243; public
+   * static final int = 244; public static final int = 245; public static final int = 246; public static final int = 247;
+   * public static final int = 248; public static final int = 249; public static final int = 250; public static final int =
+   * 251; public static final int = 252; public static final int = 253; public static final int = 254; public static final
+   * int = 255;
    */
 
   private int icount;
@@ -265,9 +265,9 @@ class ByteCode {
   }
 
   /**
-   * Main.v() entry point for disassembling bytecode into Instructions; this method converts the given single bytecode into an Instruction (with label
-   * set to index).
-   * 
+   * Main.v() entry point for disassembling bytecode into Instructions; this method converts the given single bytecode into
+   * an Instruction (with label set to index).
+   *
    * @param bc
    *          complete array of bytecode.
    * @param index
@@ -981,7 +981,7 @@ class ByteCode {
 
   /**
    * Given a list of Instructions, this method converts all offsets to pointers.
-   * 
+   *
    * @param insts
    *          list of instructions; labels must be accurate.
    * @see Instruction#offsetToPointer
@@ -1024,7 +1024,7 @@ class ByteCode {
 
   /**
    * Displays the code (in the form of Instructions) for the given list of Instructions.
-   * 
+   *
    * @param inst
    *          input list of instructions.
    * @param constant_pool
@@ -1037,7 +1037,7 @@ class ByteCode {
 
   /**
    * Displays the code (in the form of Instructions) for the given list of Instructions.
-   * 
+   *
    * @param inst
    *          input list of instructions.
    * @param startinst
@@ -1070,7 +1070,7 @@ class ByteCode {
 
   /**
    * Locates the Instruction in the list with the given label.
-   * 
+   *
    * @param index
    *          label of desired instruction
    * @return Instruction object wiht that label, or <i>null</i> if not found.

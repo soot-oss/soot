@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.scalar;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,7 +49,7 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 // Determines if a set of uses of locals all use the same value
 // whenever they occur together.  Can accept a set of boundary
 // statements which define a region which, if exited, counts
-// 
+//
 // The locals being used need not be the same
 
 /**
@@ -81,8 +103,10 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
     return areEqualUses(stmtToLocal, new ArrayList());
   }
 
-  public boolean areEqualUses(Map<Stmt, Local> stmtToLocal, List boundaryStmts) { // You may optionally specify start and end statements... for if
-                                                                                  // you're interested only in a certain part of the method
+  public boolean areEqualUses(Map<Stmt, Local> stmtToLocal, List boundaryStmts) { // You may optionally specify start and end
+                                                                                  // statements... for if
+                                                                                  // you're interested only in a certain part
+                                                                                  // of the method
     this.stmtToLocal = stmtToLocal;
     this.useStmts = stmtToLocal.keySet();
     this.useLocals = stmtToLocal.values();
@@ -195,8 +219,8 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
     if (boundaryStmts.contains(stmt)) {
       // find the alias entry in the flow set
       /*
-       * List aliases = null; Iterator outIt = out.iterator(); while(outIt.hasNext()) { Object o = outIt.next(); if( o instanceof List ) aliases =
-       * (List) o; }
+       * List aliases = null; Iterator outIt = out.iterator(); while(outIt.hasNext()) { Object o = outIt.next(); if( o
+       * instanceof List ) aliases = (List) o; }
        */
       // clear the flow set, and add aliases back in
       out.clear();

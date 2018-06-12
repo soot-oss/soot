@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
@@ -112,7 +109,8 @@ public class G extends Singletons {
   public Set MethodRWSet_allFields = new HashSet();
   public int GeneralConstObject_counter = 0;
   public UnionFactory Union_factory = null;
-  public HashMap<Object, Array2ndDimensionSymbol> Array2ndDimensionSymbol_pool = new HashMap<Object, Array2ndDimensionSymbol>();
+  public HashMap<Object, Array2ndDimensionSymbol> Array2ndDimensionSymbol_pool
+      = new HashMap<Object, Array2ndDimensionSymbol>();
   public List<Timer> Timer_outstandingTimers = new ArrayList<Timer>();
   public boolean Timer_isGarbageCollecting;
   public Timer Timer_forcedGarbageCollectionTimer = new Timer("gc");
@@ -132,20 +130,23 @@ public class G extends Singletons {
   public boolean ASTTransformations_modified;
 
   /*
-   * 16th Feb 2006 Nomair The AST transformations are unfortunately non-monotonic. Infact one transformation on each iteration simply reverses the
-   * bodies of an if-else To make the remaining transformations monotonic this transformation is handled with a separate flag...clumsy but works
+   * 16th Feb 2006 Nomair The AST transformations are unfortunately non-monotonic. Infact one transformation on each
+   * iteration simply reverses the bodies of an if-else To make the remaining transformations monotonic this transformation
+   * is handled with a separate flag...clumsy but works
    */
   public boolean ASTIfElseFlipped;
 
   /*
    * Nomair A. Naeem January 15th 2006 Added For Dava.toolkits.AST.transformations.SuperFirstStmtHandler
    *
-   * The SootMethodAddedByDava is checked by the PackManager after decompiling methods for a class. If any additional methods were added by the
-   * decompiler (refer to filer SuperFirstStmtHandler) SootMethodsAdded ArrayList contains these method. These methods are then added to the SootClass
-   * 
-   * Some of these newly added methods make use of an object of a static inner class DavaSuperHandler which is to be output in the decompilers output.
-   * The class is marked to need a DavaSuperHandlerClass by adding it into the SootClassNeedsDavaSuperHandlerClass list. The DavaPrinter when printing
-   * out the class checks this list and if this class's name exists in the list prints out an implementation of DavSuperHandler
+   * The SootMethodAddedByDava is checked by the PackManager after decompiling methods for a class. If any additional methods
+   * were added by the decompiler (refer to filer SuperFirstStmtHandler) SootMethodsAdded ArrayList contains these method.
+   * These methods are then added to the SootClass
+   *
+   * Some of these newly added methods make use of an object of a static inner class DavaSuperHandler which is to be output
+   * in the decompilers output. The class is marked to need a DavaSuperHandlerClass by adding it into the
+   * SootClassNeedsDavaSuperHandlerClass list. The DavaPrinter when printing out the class checks this list and if this
+   * class's name exists in the list prints out an implementation of DavSuperHandler
    */
   public boolean SootMethodAddedByDava;
   public ArrayList<SootClass> SootClassNeedsDavaSuperHandlerClass = new ArrayList<SootClass>();

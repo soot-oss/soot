@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Florian Loitsch
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.toolkits.scalar.pre;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2002 Florian Loitsch
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -57,12 +54,15 @@ import soot.util.Chain;
 import soot.util.UnitMap;
 
 /**
- * Performs a partial redundancy elimination (= code motion). This is done, by moving <b>every</b>computation as high as possible (it is easy to show,
- * that they are computationally optimal), and then replacing the original computation by a reference to this new high computation. This implies, that
- * we introduce <b>many</b> new helper-variables (that can easily be eliminated afterwards).<br>
- * In order to catch every redundant expression, this transformation must be done on a graph without critical edges. Therefore the first thing we do,
- * is removing them. A subsequent pass can then easily remove the synthetic nodes we have introduced.<br>
- * The term "busy" refers to the fact, that we <b>always</b> move computations as high as possible. Even, if this is not necessary.
+ * Performs a partial redundancy elimination (= code motion). This is done, by moving <b>every</b>computation as high as
+ * possible (it is easy to show, that they are computationally optimal), and then replacing the original computation by a
+ * reference to this new high computation. This implies, that we introduce <b>many</b> new helper-variables (that can easily
+ * be eliminated afterwards).<br>
+ * In order to catch every redundant expression, this transformation must be done on a graph without critical edges.
+ * Therefore the first thing we do, is removing them. A subsequent pass can then easily remove the synthetic nodes we have
+ * introduced.<br>
+ * The term "busy" refers to the fact, that we <b>always</b> move computations as high as possible. Even, if this is not
+ * necessary.
  *
  * @see soot.jimple.toolkits.graph.CriticalEdgeRemover
  */

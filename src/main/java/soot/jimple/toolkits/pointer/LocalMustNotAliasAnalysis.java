@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2007 Patrick Lam
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.toolkits.pointer;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2007 Patrick Lam
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,14 +42,15 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 /**
- * LocalNotMayAliasAnalysis attempts to determine if two local variables (at two potentially different program points) definitely point to different
- * objects.
+ * LocalNotMayAliasAnalysis attempts to determine if two local variables (at two potentially different program points)
+ * definitely point to different objects.
  *
- * The underlying abstraction is that of definition expressions. When a local variable gets assigned a new object (unlike LocalMust, only NewExprs),
- * the analysis tracks the source of the value. If two variables have different sources, then they are different.
- * 
+ * The underlying abstraction is that of definition expressions. When a local variable gets assigned a new object (unlike
+ * LocalMust, only NewExprs), the analysis tracks the source of the value. If two variables have different sources, then they
+ * are different.
+ *
  * See Sable TR 2007-8 for details.
- * 
+ *
  * @author Patrick Lam
  */
 public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Local, Set<NewExpr>>> {
@@ -144,9 +149,10 @@ public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap
   }
 
   /**
-   * Returns true if this analysis has any information about local l at statement s (i.e. it is not {@link #UNKNOWN}). In particular, it is safe to
-   * pass in locals/statements that are not even part of the right method. In those cases <code>false</code> will be returned. Permits s to be
-   * <code>null</code>, in which case <code>false</code> will be returned.
+   * Returns true if this analysis has any information about local l at statement s (i.e. it is not {@link #UNKNOWN}). In
+   * particular, it is safe to pass in locals/statements that are not even part of the right method. In those cases
+   * <code>false</code> will be returned. Permits s to be <code>null</code>, in which case <code>false</code> will be
+   * returned.
    */
   public boolean hasInfoOn(Local l, Stmt s) {
     HashMap<Local, Set<NewExpr>> flowBefore = getFlowBefore(s);
@@ -176,8 +182,8 @@ public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap
   }
 
   /**
-   * If the given local at the given statement was initialized with a single, concrete new-expression then the type of this expression is returned.
-   * Otherwise this method returns null.
+   * If the given local at the given statement was initialized with a single, concrete new-expression then the type of this
+   * expression is returned. Otherwise this method returns null.
    */
   public RefType concreteType(Local l, Stmt s) {
     HashMap<Local, Set<NewExpr>> flowBefore = getFlowBefore(s);

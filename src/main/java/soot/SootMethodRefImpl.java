@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2004 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2004 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -39,15 +42,16 @@ import soot.options.Options;
 import soot.util.NumberedString;
 
 /**
- * Representation of a reference to a method as it appears in a class file. Note that the method directly referred to may not actually exist; the
- * actual target of the reference is determined according to the resolution procedure in the Java Virtual Machine Specification, 2nd ed, section
- * 5.4.3.3.
+ * Representation of a reference to a method as it appears in a class file. Note that the method directly referred to may not
+ * actually exist; the actual target of the reference is determined according to the resolution procedure in the Java Virtual
+ * Machine Specification, 2nd ed, section 5.4.3.3.
  */
 
 public class SootMethodRefImpl implements SootMethodRef {
   private static final Logger logger = LoggerFactory.getLogger(SootMethodRefImpl.class);
 
-  public SootMethodRefImpl(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType, boolean isStatic) {
+  public SootMethodRefImpl(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType,
+      boolean isStatic) {
     this.declaringClass = declaringClass;
     this.name = name;
 
@@ -125,13 +129,13 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   public class ClassResolutionFailedException extends ResolutionFailedException {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 5430199603403917938L;
 
     public ClassResolutionFailedException() {
-      super("Class " + declaringClass + " doesn't have method " + name + "(" + (parameterTypes == null ? "" : parameterTypes) + ")" + " : "
-          + returnType + "; failed to resolve in superclasses and interfaces");
+      super("Class " + declaringClass + " doesn't have method " + name + "(" + (parameterTypes == null ? "" : parameterTypes)
+          + ")" + " : " + returnType + "; failed to resolve in superclasses and interfaces");
     }
 
     @Override
@@ -155,7 +159,8 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   private SootMethod checkStatic(SootMethod ret) {
     if (ret.isStatic() != isStatic()) {
-      if (Options.v().wrong_staticness() != Options.wrong_staticness_ignore && Options.v().wrong_staticness() != Options.wrong_staticness_fixstrict) {
+      if (Options.v().wrong_staticness() != Options.wrong_staticness_ignore
+          && Options.v().wrong_staticness() != Options.wrong_staticness_fixstrict) {
         throw new ResolutionFailedException("Resolved " + this + " to " + ret + " which has wrong static-ness");
       }
     }
@@ -166,8 +171,9 @@ public class SootMethodRefImpl implements SootMethodRef {
     if (declaringClass.getName().equals("java.dyn.InvokeDynamic")) {
       throw new IllegalStateException("Cannot resolve invokedynamic method references at compile time!");
     }
+
     SootClass cl = declaringClass;
-    while (true) {
+    while (cl != null) {
       if (trace != null) {
         trace.append("Looking in " + cl + " which has methods " + cl.getMethods() + "\n");
       }
@@ -175,27 +181,21 @@ public class SootMethodRefImpl implements SootMethodRef {
       if (sm != null) {
         return checkStatic(sm);
       }
-      if (Scene.v().allowsPhantomRefs() && (cl.isPhantom() || Options.v().ignore_resolution_errors())) {
+      if (Scene.v().allowsPhantomRefs() && cl.isPhantom()) {
         SootMethod m = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
         m.setPhantom(true);
         m = cl.getOrAddMethod(m);
         return checkStatic(m);
       }
-      if (cl.hasSuperclass()) {
-        cl = cl.getSuperclass();
-      } else {
-        break;
-      }
+      cl = cl.getSuperclassUnsafe();
     }
+
     cl = declaringClass;
-    while (true) {
+    while (cl != null) {
       ArrayDeque<SootClass> queue = new ArrayDeque<SootClass>();
       queue.addAll(cl.getInterfaces());
-      while (true) {
+      while (!queue.isEmpty()) {
         SootClass iface = queue.poll();
-        if (iface == null) {
-          break;
-        }
         if (trace != null) {
           trace.append("Looking in " + iface + " which has methods " + iface.getMethods() + "\n");
         }
@@ -205,12 +205,17 @@ public class SootMethodRefImpl implements SootMethodRef {
         }
         queue.addAll(iface.getInterfaces());
       }
-      if (cl.hasSuperclass()) {
-        cl = cl.getSuperclass();
-      } else {
-        break;
-      }
+      cl = cl.getSuperclassUnsafe();
     }
+
+    // If we don't have a method yet, we try to fix it on the fly
+    if (cl == null && Scene.v().allowsPhantomRefs() && Options.v().ignore_resolution_errors()) {
+      SootMethod m = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
+      m.setPhantom(true);
+      m = declaringClass.getOrAddMethod(m);
+      return checkStatic(m);
+    }
+
     return null;
   }
 
@@ -225,7 +230,7 @@ public class SootMethodRefImpl implements SootMethodRef {
     // we simply create the methods on the fly; the method body will throw
     // an appropriate
     // error just in case the code *is* actually reached at runtime
-    if (Options.v().allow_phantom_refs()) {
+    if (Options.v().allow_phantom_refs() && !declaringClass.isInterface()) {
       return createUnresolvedErrorMethod(declaringClass);
     }
 
@@ -243,7 +248,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   /**
    * Creates a method body that throws an "unresolved compilation error" message
-   * 
+   *
    * @param declaringClass
    *          The class that was supposed to contain the method
    * @return The created SootMethod

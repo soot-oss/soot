@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.thread.synchronization;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -63,7 +85,8 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
   public boolean optionPrintDebug = false;
   public boolean optionOpenNesting = true;
 
-  SynchronizedRegionFinder(UnitGraph graph, Body b, boolean optionPrintDebug, boolean optionOpenNesting, ThreadLocalObjectsAnalysis tlo) {
+  SynchronizedRegionFinder(UnitGraph graph, Body b, boolean optionPrintDebug, boolean optionOpenNesting,
+      ThreadLocalObjectsAnalysis tlo) {
     super(graph);
 
     this.optionPrintDebug = optionPrintDebug;
@@ -200,8 +223,12 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
         if (stmt.containsInvokeExpr()) {
           // Note if this unit is a call to wait() or notify()/notifyAll()
           String InvokeSig = stmt.getInvokeExpr().getMethod().getSubSignature();
-          if ((InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()")) && tn.nestLevel == nestLevel) // only applies to outermost
-                                                                                                                        // txn
+          if ((InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()")) && tn.nestLevel == nestLevel)
+          // only
+          // applies
+          // to
+          // outermost
+          // txn
           {
             if (!tn.notifys.contains(unit)) {
               tn.notifys.add(unit);
@@ -209,8 +236,8 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
             if (optionPrintDebug) {
               logger.debug("{x,x} ");
             }
-          } else if ((InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)"))
-              && tn.nestLevel == nestLevel) // only applies to outermost txn
+          } else if ((InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)")
+              || InvokeSig.equals("void wait(long,int)")) && tn.nestLevel == nestLevel) // only applies to outermost txn
           {
             if (!tn.waits.contains(unit)) {
               tn.waits.add(unit);
@@ -264,7 +291,8 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
           } else if (nextUnit instanceof ThrowStmt) {
             tn.exceptionalEnd = new Pair(nextUnit, stmt);
           } else {
-            throw new RuntimeException("Unknown bytecode pattern: exitmonitor not followed by return, exitmonitor, goto, or throw");
+            throw new RuntimeException(
+                "Unknown bytecode pattern: exitmonitor not followed by return, exitmonitor, goto, or throw");
           }
 
           if (optionPrintDebug) {
@@ -309,8 +337,8 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
       logger.debug("" + unit.toString());
 
       // If this unit is an invoke statement calling a library function and the R/W sets are huge, print out the targets
-      if (stmt.containsInvokeExpr() && stmt.getInvokeExpr().getMethod().getDeclaringClass().toString().startsWith("java.") && stmtRead != null
-          && stmtWrite != null) {
+      if (stmt.containsInvokeExpr() && stmt.getInvokeExpr().getMethod().getDeclaringClass().toString().startsWith("java.")
+          && stmtRead != null && stmtWrite != null) {
         if (stmtRead.size() < 25 && stmtWrite.size() < 25) {
           logger.debug("        Read/Write Set for LibInvoke:");
           logger.debug("Read Set:(" + stmtRead.size() + ")" + stmtRead.toString().replaceAll("\n", "\n        "));
@@ -342,7 +370,8 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
         Iterator<UnitValueBoxPair> uses = slu.getUsesOf(prepUnit).iterator();
         while (uses.hasNext()) {
           UnitValueBoxPair use = (UnitValueBoxPair) uses.next();
-          if (use.getUnit() == (Unit) unit) { // if this transaction's monitorenter statement is one of the uses of this preparatory unit
+          if (use.getUnit() == (Unit) unit) { // if this transaction's monitorenter statement is one of the uses of this
+                                              // preparatory unit
             newTn.prepStmt = (Stmt) prepUnit;
           }
         }

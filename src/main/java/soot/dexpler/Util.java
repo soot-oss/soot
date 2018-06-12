@@ -1,28 +1,31 @@
-/* Soot - a Java Optimization Framework
+package soot.dexpler;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
+ *
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
  * 
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-
-package soot.dexpler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,8 +78,8 @@ public class Util {
         idx++;
       }
       String c = t.substring(idx);
-      if (c.length() == 1 && (c.startsWith("I") || c.startsWith("B") || c.startsWith("C") || c.startsWith("S") || c.startsWith("J")
-          || c.startsWith("D") || c.startsWith("F") || c.startsWith("Z"))) {
+      if (c.length() == 1 && (c.startsWith("I") || c.startsWith("B") || c.startsWith("C") || c.startsWith("S")
+          || c.startsWith("J") || c.startsWith("D") || c.startsWith("F") || c.startsWith("Z"))) {
         Type ty = getType(t);
         return ty == null ? "" : getType(t).toString();
       }
@@ -208,12 +211,14 @@ public class Util {
    *          the type to test
    */
   public static boolean isFloatLike(Type t) {
-    return t.equals(FloatType.v()) || t.equals(DoubleType.v()) || t.equals(RefType.v("java.lang.Float")) || t.equals(RefType.v("java.lang.Double"));
+    return t.equals(FloatType.v()) || t.equals(DoubleType.v()) || t.equals(RefType.v("java.lang.Float"))
+        || t.equals(RefType.v("java.lang.Double"));
   }
 
   /**
-   * Remove all statements except from IdentityStatements for parameters. Return default value (null or zero or nothing depending on the return type).
-   * 
+   * Remove all statements except from IdentityStatements for parameters. Return default value (null or zero or nothing
+   * depending on the return type).
+   *
    * @param jBody
    */
   public static void emptyBody(Body jBody) {
@@ -276,8 +281,8 @@ public class Util {
   }
 
   /**
-   * Insert a runtime exception before unit u of body b. Useful to analyze broken code (which make reference to inexisting class for instance)
-   * exceptionType: e.g., "java.lang.RuntimeException"
+   * Insert a runtime exception before unit u of body b. Useful to analyze broken code (which make reference to inexisting
+   * class for instance) exceptionType: e.g., "java.lang.RuntimeException"
    */
   public static void addExceptionAfterUnit(Body b, String exceptionType, Unit u, String m) {
     LocalCreation lc = new LocalCreation(b.getLocals());
@@ -285,8 +290,12 @@ public class Util {
 
     List<Unit> newUnits = new ArrayList<Unit>();
     Unit u1 = Jimple.v().newAssignStmt(l, Jimple.v().newNewExpr(RefType.v(exceptionType)));
-    Unit u2 = Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(l, Scene.v().makeMethodRef(Scene.v().getSootClass(exceptionType), "<init>",
-        Collections.singletonList((Type) RefType.v("java.lang.String")), VoidType.v(), false), StringConstant.v(m)));
+    Unit u2
+        = Jimple.v()
+            .newInvokeStmt(Jimple.v().newSpecialInvokeExpr(l,
+                Scene.v().makeMethodRef(Scene.v().getSootClass(exceptionType), "<init>",
+                    Collections.singletonList((Type) RefType.v("java.lang.String")), VoidType.v(), false),
+                StringConstant.v(m)));
     Unit u3 = Jimple.v().newThrowStmt(l);
     newUnits.add(u1);
     newUnits.add(u2);

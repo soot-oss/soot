@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jimple.toolkits.callgraph;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -110,47 +113,58 @@ import soot.util.queue.QueueReader;
 public final class OnFlyCallGraphBuilder {
   private static final Logger logger = LoggerFactory.getLogger(OnFlyCallGraphBuilder.class);
   private static final PrimType[] CHAR_NARROWINGS = new PrimType[] { CharType.v() };
-  private static final PrimType[] INT_NARROWINGS = new PrimType[] { IntType.v(), CharType.v(), ShortType.v(), ByteType.v(), ShortType.v() };
+  private static final PrimType[] INT_NARROWINGS
+      = new PrimType[] { IntType.v(), CharType.v(), ShortType.v(), ByteType.v(), ShortType.v() };
   private static final PrimType[] SHORT_NARROWINGS = new PrimType[] { ShortType.v(), ByteType.v() };
-  private static final PrimType[] LONG_NARROWINGS = new PrimType[] { LongType.v(), IntType.v(), CharType.v(), ShortType.v(), ByteType.v(),
-      ShortType.v() };
+  private static final PrimType[] LONG_NARROWINGS
+      = new PrimType[] { LongType.v(), IntType.v(), CharType.v(), ShortType.v(), ByteType.v(), ShortType.v() };
   private static final ByteType[] BYTE_NARROWINGS = new ByteType[] { ByteType.v() };
-  private static final PrimType[] FLOAT_NARROWINGS = new PrimType[] { FloatType.v(), LongType.v(), IntType.v(), CharType.v(), ShortType.v(),
-      ByteType.v(), ShortType.v(), };
-  private static final PrimType[] BOOLEAN_NARROWINGS = new PrimType[] { BooleanType.v() };
-  private static final PrimType[] DOUBLE_NARROWINGS = new PrimType[] { DoubleType.v(), FloatType.v(), LongType.v(), IntType.v(), CharType.v(),
+  private static final PrimType[] FLOAT_NARROWINGS = new PrimType[] { FloatType.v(), LongType.v(), IntType.v(), CharType.v(),
       ShortType.v(), ByteType.v(), ShortType.v(), };
+  private static final PrimType[] BOOLEAN_NARROWINGS = new PrimType[] { BooleanType.v() };
+  private static final PrimType[] DOUBLE_NARROWINGS = new PrimType[] { DoubleType.v(), FloatType.v(), LongType.v(),
+      IntType.v(), CharType.v(), ShortType.v(), ByteType.v(), ShortType.v(), };
   protected final NumberedString sigFinalize = Scene.v().getSubSigNumberer().findOrAdd("void finalize()");
   protected final NumberedString sigInit = Scene.v().getSubSigNumberer().findOrAdd("void <init>()");
   protected final NumberedString sigStart = Scene.v().getSubSigNumberer().findOrAdd("void start()");
   protected final NumberedString sigRun = Scene.v().getSubSigNumberer().findOrAdd("void run()");
-  protected final NumberedString sigExecute = Scene.v().getSubSigNumberer().findOrAdd("android.os.AsyncTask execute(java.lang.Object[])");
-  protected final NumberedString sigExecutorExecute = Scene.v().getSubSigNumberer().findOrAdd("void execute(java.lang.Runnable)");
-  protected final NumberedString sigHandlerPost = Scene.v().getSubSigNumberer().findOrAdd("boolean post(java.lang.Runnable)");
-  protected final NumberedString sigHandlerPostAtFrontOfQueue = Scene.v().getSubSigNumberer()
-      .findOrAdd("boolean postAtFrontOfQueue(java.lang.Runnable)");
+  protected final NumberedString sigExecute
+      = Scene.v().getSubSigNumberer().findOrAdd("android.os.AsyncTask execute(java.lang.Object[])");
+  protected final NumberedString sigExecutorExecute
+      = Scene.v().getSubSigNumberer().findOrAdd("void execute(java.lang.Runnable)");
+  protected final NumberedString sigHandlerPost
+      = Scene.v().getSubSigNumberer().findOrAdd("boolean post(java.lang.Runnable)");
+  protected final NumberedString sigHandlerPostAtFrontOfQueue
+      = Scene.v().getSubSigNumberer().findOrAdd("boolean postAtFrontOfQueue(java.lang.Runnable)");
 
   // type based reflection resolution state
-  protected final NumberedString sigHandlerPostAtTime = Scene.v().getSubSigNumberer().findOrAdd("boolean postAtTime(java.lang.Runnable,long)");
-  protected final NumberedString sigHandlerPostAtTimeWithToken = Scene.v().getSubSigNumberer()
-      .findOrAdd("boolean postAtTime(java.lang.Runnable,java.lang.Object,long)");
-  protected final NumberedString sigHandlerPostDelayed = Scene.v().getSubSigNumberer().findOrAdd("boolean postDelayed(java.lang.Runnable,long)");
-  protected final NumberedString sigHandlerSendEmptyMessage = Scene.v().getSubSigNumberer().findOrAdd("boolean sendEmptyMessage(int)");
-  protected final NumberedString sigHandlerSendEmptyMessageAtTime = Scene.v().getSubSigNumberer()
-      .findOrAdd("boolean sendEmptyMessageAtTime(int,long)");
-  protected final NumberedString sigHandlerSendEmptyMessageDelayed = Scene.v().getSubSigNumberer()
-      .findOrAdd("boolean sendEmptyMessageDelayed(int,long)");
-  protected final NumberedString sigHandlerSendMessage = Scene.v().getSubSigNumberer().findOrAdd("boolean postAtTime(java.lang.Runnable,long)");
-  protected final NumberedString sigHandlerSendMessageAtFrontOfQueue = Scene.v().getSubSigNumberer()
-      .findOrAdd("boolean sendMessageAtFrontOfQueue(android.os.Message)");
-  protected final NumberedString sigHandlerSendMessageAtTime = Scene.v().getSubSigNumberer()
-      .findOrAdd("boolean sendMessageAtTime(android.os.Message,long)");
-  protected final NumberedString sigHandlerSendMessageDelayed = Scene.v().getSubSigNumberer()
-      .findOrAdd("boolean sendMessageDelayed(android.os.Message,long)");
-  protected final NumberedString sigHandlerHandleMessage = Scene.v().getSubSigNumberer().findOrAdd("void handleMessage(android.os.Message)");
+  protected final NumberedString sigHandlerPostAtTime
+      = Scene.v().getSubSigNumberer().findOrAdd("boolean postAtTime(java.lang.Runnable,long)");
+  protected final NumberedString sigHandlerPostAtTimeWithToken
+      = Scene.v().getSubSigNumberer().findOrAdd("boolean postAtTime(java.lang.Runnable,java.lang.Object,long)");
+  protected final NumberedString sigHandlerPostDelayed
+      = Scene.v().getSubSigNumberer().findOrAdd("boolean postDelayed(java.lang.Runnable,long)");
+  protected final NumberedString sigHandlerSendEmptyMessage
+      = Scene.v().getSubSigNumberer().findOrAdd("boolean sendEmptyMessage(int)");
+  protected final NumberedString sigHandlerSendEmptyMessageAtTime
+      = Scene.v().getSubSigNumberer().findOrAdd("boolean sendEmptyMessageAtTime(int,long)");
+  protected final NumberedString sigHandlerSendEmptyMessageDelayed
+      = Scene.v().getSubSigNumberer().findOrAdd("boolean sendEmptyMessageDelayed(int,long)");
+  protected final NumberedString sigHandlerSendMessage
+      = Scene.v().getSubSigNumberer().findOrAdd("boolean postAtTime(java.lang.Runnable,long)");
+  protected final NumberedString sigHandlerSendMessageAtFrontOfQueue
+      = Scene.v().getSubSigNumberer().findOrAdd("boolean sendMessageAtFrontOfQueue(android.os.Message)");
+  protected final NumberedString sigHandlerSendMessageAtTime
+      = Scene.v().getSubSigNumberer().findOrAdd("boolean sendMessageAtTime(android.os.Message,long)");
+  protected final NumberedString sigHandlerSendMessageDelayed
+      = Scene.v().getSubSigNumberer().findOrAdd("boolean sendMessageDelayed(android.os.Message,long)");
+  protected final NumberedString sigHandlerHandleMessage
+      = Scene.v().getSubSigNumberer().findOrAdd("void handleMessage(android.os.Message)");
   protected final NumberedString sigObjRun = Scene.v().getSubSigNumberer().findOrAdd("java.lang.Object run()");
-  protected final NumberedString sigDoInBackground = Scene.v().getSubSigNumberer().findOrAdd("java.lang.Object doInBackground(java.lang.Object[])");
-  protected final NumberedString sigForName = Scene.v().getSubSigNumberer().findOrAdd("java.lang.Class forName(java.lang.String)");
+  protected final NumberedString sigDoInBackground
+      = Scene.v().getSubSigNumberer().findOrAdd("java.lang.Object doInBackground(java.lang.Object[])");
+  protected final NumberedString sigForName
+      = Scene.v().getSubSigNumberer().findOrAdd("java.lang.Class forName(java.lang.String)");
   protected final RefType clRunnable = RefType.v("java.lang.Runnable");
   protected final RefType clAsyncTask = RefType.v("android.os.AsyncTask");
   protected final RefType clHandler = RefType.v("android.os.Handler");
@@ -159,25 +173,26 @@ public final class OnFlyCallGraphBuilder {
   private final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
 
   // end type based reflection resolution
-  private final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites = new LargeNumberedMap<Local, List<VirtualCallSite>>(
-      Scene.v().getLocalNumberer()); // Local -> List(VirtualCallSite)
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers = new LargeNumberedMap<SootMethod, List<Local>>(
-      Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases = new LargeNumberedMap<SootMethod, List<Local>>(
-      Scene.v().getMethodNumberer());
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs = new LargeNumberedMap<SootMethod, List<Local>>(
-      Scene.v().getMethodNumberer());
+  private final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites
+      = new LargeNumberedMap<Local, List<VirtualCallSite>>(Scene.v().getLocalNumberer()); // Local -> List(VirtualCallSite)
+  private final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers
+      = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
+  private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases
+      = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
+  private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs
+      = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
   private final MultiMap<Local, InvokeCallSite> baseToInvokeSite = new HashMultiMap<>();
   private final MultiMap<Local, InvokeCallSite> invokeArgsToInvokeSite = new HashMultiMap<>();
   private final Map<Local, BitSet> invokeArgsToSize = new IdentityHashMap<>();
   private final MultiMap<AllocDotField, Local> allocDotFieldToLocal = new HashMultiMap<>();
   private final MultiMap<Local, Type> reachingArgTypes = new HashMultiMap<>();
   private final MultiMap<Local, Type> reachingBaseTypes = new HashMultiMap<>();
-  private final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites = new SmallNumberedMap<List<VirtualCallSite>>(); // Local
+  private final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites = new SmallNumberedMap<List<VirtualCallSite>>();
+  // Local
   // ->
   // List(VirtualCallSite)
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants = new LargeNumberedMap<SootMethod, List<Local>>(
-      Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
+  private final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants
+      = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
   private final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
   private final QueueReader<SootMethod> targets = targetsQueue.reader();
   ReflectionModel reflectionModel;
@@ -198,7 +213,8 @@ public final class OnFlyCallGraphBuilder {
     worklist = rm.listener();
     options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
     if (!options.verbose()) {
-      logger.debug("" + "[Call Graph] For information on where the call graph may be incomplete, use the verbose option to the cg phase.");
+      logger.debug("" + "[Call Graph] For information on where the call graph may be incomplete,"
+          + "use the verbose option to the cg phase.");
     }
 
     if (options.reflection_log() == null || options.reflection_log().length() == 0) {
@@ -339,14 +355,15 @@ public final class OnFlyCallGraphBuilder {
         }
       } else {
         /*
-         * In this branch, either the invoke arg must not be null, or may be null and we have size and type information. Invert the above condition:
-         * ~mustBeNull && (~mayBeNull || (has-size && has-type)) => (~mustBeNull && ~mayBeNull) || (~mustBeNull && has-size && has-type) =>
-         * mustNotBeNull || (~mustBeNull && has-types && has-size) => mustNotBeNull || (mayBeNull && has-types && has-size)
+         * In this branch, either the invoke arg must not be null, or may be null and we have size and type information.
+         * Invert the above condition: ~mustBeNull && (~mayBeNull || (has-size && has-type)) => (~mustBeNull && ~mayBeNull)
+         * || (~mustBeNull && has-size && has-type) => mustNotBeNull || (~mustBeNull && has-types && has-size) =>
+         * mustNotBeNull || (mayBeNull && has-types && has-size)
          */
         Set<Type> reachingTypes = reachingArgTypes.get(ics.argArray());
         /*
-         * the path condition allows must-not-be null without type and size info. Do nothing in this case. THIS IS UNSOUND if default null values in
-         * an argument array are used.
+         * the path condition allows must-not-be null without type and size info. Do nothing in this case. THIS IS UNSOUND if
+         * default null values in an argument array are used.
          */
         if (reachingTypes == null || !invokeArgsToSize.containsKey(ics.argArray())) {
           assert ics.nullnessCode() == InvokeCallSite.MUST_NOT_BE_NULL : ics;
@@ -446,8 +463,8 @@ public final class OnFlyCallGraphBuilder {
     } else if (paramType instanceof PrimType) {
       PrimType primType = (PrimType) paramType;
       /*
-       * It appears, java reflection allows for unboxing followed by widening, so if there is a wrapper type that whose corresponding primitive type
-       * can be widened into the expected primitive type, we're set
+       * It appears, java reflection allows for unboxing followed by widening, so if there is a wrapper type that whose
+       * corresponding primitive type can be widened into the expected primitive type, we're set
        */
       for (PrimType narrowings : narrowings(primType)) {
         if (reachingTypes.contains(narrowings.boxedType())) {
@@ -461,8 +478,8 @@ public final class OnFlyCallGraphBuilder {
     }
   }
 
-  private Iterator<SootMethod> getPublicMethodIterator(final SootClass baseClass, final Set<Type> reachingTypes, final BitSet methodSizes,
-      final boolean mustNotBeNull) {
+  private Iterator<SootMethod> getPublicMethodIterator(final SootClass baseClass, final Set<Type> reachingTypes,
+      final BitSet methodSizes, final boolean mustNotBeNull) {
     if (baseClass.isPhantom()) {
       return Collections.emptyIterator();
     }
@@ -521,8 +538,10 @@ public final class OnFlyCallGraphBuilder {
           continue;
         }
 
-        if (site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD && site.kind != Kind.EXECUTOR && site.kind != Kind.ASYNCTASK) {
-          SootMethod target = VirtualCalls.v().resolveSpecial((SpecialInvokeExpr) site.iie(), site.subSig(), site.container(), appOnly);
+        if (site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD && site.kind != Kind.EXECUTOR
+            && site.kind != Kind.ASYNCTASK) {
+          SootMethod target
+              = VirtualCalls.v().resolveSpecial((SpecialInvokeExpr) site.iie(), site.subSig(), site.container(), appOnly);
           // if the call target resides in a phantom class then
           // "target" will be null;
           // simply do not add the target in that case
@@ -565,8 +584,8 @@ public final class OnFlyCallGraphBuilder {
         }
         if (!Scene.v().containsClass(constant)) {
           if (options.verbose()) {
-            logger.debug(
-                "" + "Warning: Class " + constant + " is" + " a dynamic class, and you did not specify" + " it as such; graph will be incomplete!");
+            logger.debug("" + "Warning: Class " + constant + " is" + " a dynamic class, and you did not specify"
+                + " it as such; graph will be incomplete!");
           }
         } else {
           SootClass sootcls = Scene.v().getSootClass(constant);
@@ -605,24 +624,25 @@ public final class OnFlyCallGraphBuilder {
   /*
    * How type based reflection resolution works:
    *
-   * In general, for each call to invoke(), we record the local of the receiver argument and the argument array. Whenever a new type is added to the
-   * points to set of the receiver argument we add that type to the reachingBaseTypes and try to resolve the reflective method call (see addType,
-   * addBaseType, and updatedNode() in OnFlyCallGraph).
+   * In general, for each call to invoke(), we record the local of the receiver argument and the argument array. Whenever a
+   * new type is added to the points to set of the receiver argument we add that type to the reachingBaseTypes and try to
+   * resolve the reflective method call (see addType, addBaseType, and updatedNode() in OnFlyCallGraph).
    *
-   * For added precision, we also record the second argument to invoke. If it is always null, this means the invoke() call resolves only to nullary
-   * methods.
+   * For added precision, we also record the second argument to invoke. If it is always null, this means the invoke() call
+   * resolves only to nullary methods.
    *
-   * When the second argument is a variable that must not be null we can narrow down the called method based on the possible sizes of the argument
-   * array and the types it contains. Whenever a new allocation reaches this variable we record the possible size of the array (by looking at the
-   * allocation site) and the possible types stored in the array (see updatedNode in OnFlyCallGraph in the branch wantInvokeArg()). If the size of the
-   * array isn't statically known, the analysis considers methods of all possible arities. In addition, we track the PAG node corresponding to the
-   * array contents. If a new type reaches this node, we update the possible argument types. (see propagate() in PropWorklist and the visitor, and
-   * updatedFieldRef in OnFlyCallGraph).
+   * When the second argument is a variable that must not be null we can narrow down the called method based on the possible
+   * sizes of the argument array and the types it contains. Whenever a new allocation reaches this variable we record the
+   * possible size of the array (by looking at the allocation site) and the possible types stored in the array (see
+   * updatedNode in OnFlyCallGraph in the branch wantInvokeArg()). If the size of the array isn't statically known, the
+   * analysis considers methods of all possible arities. In addition, we track the PAG node corresponding to the array
+   * contents. If a new type reaches this node, we update the possible argument types. (see propagate() in PropWorklist and
+   * the visitor, and updatedFieldRef in OnFlyCallGraph).
    *
    * For details on the method resolution process, see resolveInvoke()
    *
-   * Finally, for cases like o.invoke(b, foo, bar, baz); it is very easy to statically determine precisely which types are in which argument
-   * positions. This is computed using the ConstantArrayAnalysis and are resolved using resolveStaticTypes().
+   * Finally, for cases like o.invoke(b, foo, bar, baz); it is very easy to statically determine precisely which types are in
+   * which argument positions. This is computed using the ConstantArrayAnalysis and are resolved using resolveStaticTypes().
    */
   private void addInvokeCallSite(Stmt s, SootMethod container, InstanceInvokeExpr d) {
     Local l = (Local) d.getArg(0);
@@ -660,7 +680,8 @@ public final class OnFlyCallGraphBuilder {
     baseToInvokeSite.put(l, ics);
   }
 
-  private void addVirtualCallSite(Stmt s, SootMethod m, Local receiver, InstanceInvokeExpr iie, NumberedString subSig, Kind kind) {
+  private void addVirtualCallSite(Stmt s, SootMethod m, Local receiver, InstanceInvokeExpr iie, NumberedString subSig,
+      Kind kind) {
     List<VirtualCallSite> sites = receiverToSites.get(receiver);
     if (sites == null) {
       receiverToSites.put(receiver, sites = new ArrayList<VirtualCallSite>());
@@ -696,15 +717,17 @@ public final class OnFlyCallGraphBuilder {
           if (subSig == sigStart) {
             addVirtualCallSite(s, m, receiver, iie, sigRun, Kind.THREAD);
           } else if (subSig == sigExecutorExecute || subSig == sigHandlerPost || subSig == sigHandlerPostAtFrontOfQueue
-              || subSig == sigHandlerPostAtTime || subSig == sigHandlerPostAtTimeWithToken || subSig == sigHandlerPostDelayed) {
+              || subSig == sigHandlerPostAtTime || subSig == sigHandlerPostAtTimeWithToken
+              || subSig == sigHandlerPostDelayed) {
             if (iie.getArgCount() > 0) {
               Value runnable = iie.getArg(0);
               if (runnable instanceof Local) {
                 addVirtualCallSite(s, m, (Local) runnable, iie, sigRun, Kind.EXECUTOR);
               }
             }
-          } else if (subSig == sigHandlerSendEmptyMessage || subSig == sigHandlerSendEmptyMessageAtTime || subSig == sigHandlerSendEmptyMessageDelayed
-              || subSig == sigHandlerSendMessage || subSig == sigHandlerSendMessageAtFrontOfQueue || subSig == sigHandlerSendMessageAtTime
+          } else if (subSig == sigHandlerSendEmptyMessage || subSig == sigHandlerSendEmptyMessageAtTime
+              || subSig == sigHandlerSendEmptyMessageDelayed || subSig == sigHandlerSendMessage
+              || subSig == sigHandlerSendMessageAtFrontOfQueue || subSig == sigHandlerSendMessageAtTime
               || subSig == sigHandlerSendMessageDelayed) {
             addVirtualCallSite(s, m, receiver, iie, sigHandlerHandleMessage, Kind.HANDLER);
           } else if (subSig == sigExecute) {
@@ -719,19 +742,22 @@ public final class OnFlyCallGraphBuilder {
           if (tgt != null) {
             addEdge(m, s, tgt);
             String signature = tgt.getSignature();
-            if (signature.equals("<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>")
-                || signature.equals("<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>")
-                || signature.equals(
-                    "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)>")
-                || signature.equals(
-                    "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>")) {
+            if (signature
+                .equals("<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>")
+                || signature.equals("<java.security.AccessController: java.lang.Object doPrivileged"
+                    + "(java.security.PrivilegedExceptionAction)>")
+                || signature.equals("<java.security.AccessController: java.lang.Object doPrivileged"
+                    + "(java.security.PrivilegedAction,java.security.AccessControlContext)>")
+                || signature.equals("<java.security.AccessController: java.lang.Object doPrivileged"
+                    + "(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>")) {
 
               Local receiver = (Local) ie.getArg(0);
               addVirtualCallSite(s, m, receiver, null, sigObjRun, Kind.PRIVILEGED);
             }
           } else {
             if (!Options.v().ignore_resolution_errors()) {
-              throw new InternalError("Unresolved target " + ie.getMethod() + ". Resolution error should have occured earlier.");
+              throw new InternalError(
+                  "Unresolved target " + ie.getMethod() + ". Resolution error should have occured earlier.");
             }
           }
         }
@@ -755,7 +781,8 @@ public final class OnFlyCallGraphBuilder {
         SootMethodRef methodRef = ie.getMethodRef();
         switch (methodRef.declaringClass().getName()) {
           case "java.lang.reflect.Method":
-            if (methodRef.getSubSignature().getString().equals("java.lang.Object invoke(java.lang.Object,java.lang.Object[])")) {
+            if (methodRef.getSubSignature().getString()
+                .equals("java.lang.Object invoke(java.lang.Object,java.lang.Object[])")) {
               reflectionModel.methodInvoke(source, s);
             }
             break;
@@ -835,7 +862,8 @@ public final class OnFlyCallGraphBuilder {
     } else {
       if (!Scene.v().containsClass(cls)) {
         if (options.verbose()) {
-          logger.warn("Class " + cls + " is" + " a dynamic class, and you did not specify" + " it as such; graph will be incomplete!");
+          logger.warn("Class " + cls + " is" + " a dynamic class, and you did not specify"
+              + " it as such; graph will be incomplete!");
         }
       } else {
         SootClass sootcls = Scene.v().getSootClass(cls);
@@ -1014,7 +1042,8 @@ public final class OnFlyCallGraphBuilder {
     public void classForName(SootMethod container, Stmt forNameInvokeStmt) {
       Set<String> classNames = reflectionInfo.classForNameClassNames(container);
       if (classNames == null || classNames.isEmpty()) {
-        registerGuard(container, forNameInvokeStmt, "Class.forName() call site; Soot did not expect this site to be reached");
+        registerGuard(container, forNameInvokeStmt,
+            "Class.forName() call site; Soot did not expect this site to be reached");
       } else {
         for (String clsName : classNames) {
           constantForName(clsName, container, forNameInvokeStmt);
@@ -1029,7 +1058,8 @@ public final class OnFlyCallGraphBuilder {
     public void classNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
       Set<String> classNames = reflectionInfo.classNewInstanceClassNames(container);
       if (classNames == null || classNames.isEmpty()) {
-        registerGuard(container, newInstanceInvokeStmt, "Class.newInstance() call site; Soot did not expect this site to be reached");
+        registerGuard(container, newInstanceInvokeStmt,
+            "Class.newInstance() call site; Soot did not expect this site to be reached");
       } else {
         for (String clsName : classNames) {
           SootClass cls = Scene.v().getSootClass(clsName);
@@ -1043,8 +1073,9 @@ public final class OnFlyCallGraphBuilder {
 
     /**
      * Adds a special edge of kind {@link Kind#REFL_CONSTR_NEWINSTANCE} to all possible target constructors of this call to
-     * {@link Constructor#newInstance(Object...)}. Those kinds of edges are treated specially in terms of how parameters are assigned, as parameters
-     * to the reflective call are passed into the argument array of {@link Constructor#newInstance(Object...)}.
+     * {@link Constructor#newInstance(Object...)}. Those kinds of edges are treated specially in terms of how parameters are
+     * assigned, as parameters to the reflective call are passed into the argument array of
+     * {@link Constructor#newInstance(Object...)}.
      *
      * @see PAG#addCallTarget(Edge)
      */
@@ -1052,7 +1083,8 @@ public final class OnFlyCallGraphBuilder {
     public void contructorNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
       Set<String> constructorSignatures = reflectionInfo.constructorNewInstanceSignatures(container);
       if (constructorSignatures == null || constructorSignatures.isEmpty()) {
-        registerGuard(container, newInstanceInvokeStmt, "Constructor.newInstance(..) call site; Soot did not expect this site to be reached");
+        registerGuard(container, newInstanceInvokeStmt,
+            "Constructor.newInstance(..) call site; Soot did not expect this site to be reached");
       } else {
         for (String constructorSignature : constructorSignatures) {
           SootMethod constructor = Scene.v().getMethod(constructorSignature);
@@ -1062,9 +1094,10 @@ public final class OnFlyCallGraphBuilder {
     }
 
     /**
-     * Adds a special edge of kind {@link Kind#REFL_INVOKE} to all possible target methods of this call to {@link Method#invoke(Object, Object...)}.
-     * Those kinds of edges are treated specially in terms of how parameters are assigned, as parameters to the reflective call are passed into the
-     * argument array of {@link Method#invoke(Object, Object...)}.
+     * Adds a special edge of kind {@link Kind#REFL_INVOKE} to all possible target methods of this call to
+     * {@link Method#invoke(Object, Object...)}. Those kinds of edges are treated specially in terms of how parameters are
+     * assigned, as parameters to the reflective call are passed into the argument array of
+     * {@link Method#invoke(Object, Object...)}.
      *
      * @see PAG#addCallTarget(Edge)
      */
@@ -1090,9 +1123,11 @@ public final class OnFlyCallGraphBuilder {
         if (options.guards().equals("ignore")) {
           logger.debug("Guarding strategy is set to 'ignore'. Will ignore this problem.");
         } else if (options.guards().equals("print")) {
-          logger.debug("Guarding strategy is set to 'print'. " + "Program will print a stack trace if this location is reached during execution.");
+          logger.debug("Guarding strategy is set to 'print'. "
+              + "Program will print a stack trace if this location is reached during execution.");
         } else if (options.guards().equals("throw")) {
-          logger.debug("Guarding strategy is set to 'throw'. Program will throw an " + "Error if this location is reached during execution.");
+          logger.debug("Guarding strategy is set to 'throw'. Program will throw an "
+              + "Error if this location is reached during execution.");
         } else {
           throw new RuntimeException("Invalid value for phase option (guarding): " + options.guards());
         }
@@ -1134,16 +1169,17 @@ public final class OnFlyCallGraphBuilder {
         body.getUnits().insertBefore(assignStmt, insertionPoint);
 
         // exc.<init>(message)
-        SootMethodRef cref = runtimeExceptionType.getSootClass().getMethod("<init>", Collections.<Type>singletonList(RefType.v("java.lang.String")))
-            .makeRef();
-        SpecialInvokeExpr constructorInvokeExpr = Jimple.v().newSpecialInvokeExpr(exceptionLocal, cref, StringConstant.v(guard.message));
+        SootMethodRef cref = runtimeExceptionType.getSootClass()
+            .getMethod("<init>", Collections.<Type>singletonList(RefType.v("java.lang.String"))).makeRef();
+        SpecialInvokeExpr constructorInvokeExpr
+            = Jimple.v().newSpecialInvokeExpr(exceptionLocal, cref, StringConstant.v(guard.message));
         InvokeStmt initStmt = Jimple.v().newInvokeStmt(constructorInvokeExpr);
         body.getUnits().insertAfter(initStmt, assignStmt);
 
         if (options.guards().equals("print")) {
           // logger.error(exc.getMessage(), exc);
-          VirtualInvokeExpr printStackTraceExpr = Jimple.v().newVirtualInvokeExpr(exceptionLocal,
-              Scene.v().getSootClass("java.lang.Throwable").getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
+          VirtualInvokeExpr printStackTraceExpr = Jimple.v().newVirtualInvokeExpr(exceptionLocal, Scene.v()
+              .getSootClass("java.lang.Throwable").getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
           InvokeStmt printStackTraceStmt = Jimple.v().newInvokeStmt(printStackTraceExpr);
           body.getUnits().insertAfter(printStackTraceStmt, initStmt);
         } else if (options.guards().equals("throw")) {
@@ -1200,7 +1236,8 @@ public final class OnFlyCallGraphBuilder {
           next = n;
           return;
         }
-        if (currClass.hasSuperclass() && !currClass.getSuperclass().isPhantom() && !currClass.getSuperclass().getName().equals("java.lang.Object")) {
+        if (currClass.hasSuperclass() && !currClass.getSuperclass().isPhantom()
+            && !currClass.getSuperclass().getName().equals("java.lang.Object")) {
           currClass = currClass.getSuperclass();
           methodIterator = currClass.methodIterator();
           continue;

@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Florian Loitsch
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.toolkits.scalar;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2002 Florian Loitsch
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -35,8 +32,8 @@ import soot.Type;
 import soot.jimple.Jimple;
 
 /**
- * provides an easy interface to handle new var-names. New names are automatically added to the chain, and the provided locals are guaranteed to have
- * a unique name.
+ * provides an easy interface to handle new var-names. New names are automatically added to the chain, and the provided
+ * locals are guaranteed to have a unique name.
  */
 public class LocalCreation {
   /** if no prefix is given, this one's used */
@@ -77,9 +74,11 @@ public class LocalCreation {
   }
 
   /**
-   * returns a new local with the prefix given to the constructor (or the default-prefix if none has been given) and the given type.<br>
+   * returns a new local with the prefix given to the constructor (or the default-prefix if none has been given) and the
+   * given type.<br>
    * The returned local will automatically added to the locals-chain.<br>
-   * The local will be of the form: <tt>prefix</tt><i>X</i> (where the last <i>X</i> is a number, so the localname is unique).
+   * The local will be of the form: <tt>prefix</tt><i>X</i> (where the last <i>X</i> is a number, so the localname is
+   * unique).
    *
    * @param type
    *          the Type of the new local.
@@ -91,8 +90,8 @@ public class LocalCreation {
 
   /**
    * returns a new local with the given prefix and the given type.<br>
-   * the returned local will automatically added to the locals-chain. The local will be of the form: <tt>prefix</tt><i>X</i> (where the last <i>X</i>
-   * is a number, so the localname is unique).
+   * the returned local will automatically added to the locals-chain. The local will be of the form: <tt>prefix</tt><i>X</i>
+   * (where the last <i>X</i> is a number, so the localname is unique).
    *
    * @param prefix
    *          the prefix for the now local.

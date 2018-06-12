@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrice Pominville, Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-2003.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.toolkits.graph;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1999 Patrice Pominville, Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,14 +39,15 @@ import soot.util.Chain;
 
 /**
  * <p>
- * Represents the control flow graph of a {@link Body} at the basic block level. Each node of the graph is a {@link Block} while the edges represent
- * the flow of control from one basic block to the next.
+ * Represents the control flow graph of a {@link Body} at the basic block level. Each node of the graph is a {@link Block}
+ * while the edges represent the flow of control from one basic block to the next.
  * </p>
  *
  * <p>
- * This is an abstract base class for different variants of {@link BlockGraph}, where the variants differ in how they analyze the control flow between
- * individual units (represented by passing different variants of {@link UnitGraph} to the <code>BlockGraph</code> constructor) and in how they
- * identify block leaders (represented by overriding <code>BlockGraph</code>'s definition of {@link computeLeaders()}.
+ * This is an abstract base class for different variants of {@link BlockGraph}, where the variants differ in how they analyze
+ * the control flow between individual units (represented by passing different variants of {@link UnitGraph} to the
+ * <code>BlockGraph</code> constructor) and in how they identify block leaders (represented by overriding
+ * <code>BlockGraph</code>'s definition of {@link computeLeaders()}.
  */
 public abstract class BlockGraph implements DirectedGraph<Block> {
   protected Body mBody;
@@ -59,8 +57,8 @@ public abstract class BlockGraph implements DirectedGraph<Block> {
   protected List<Block> mTails = new ArrayList<Block>();
 
   /**
-   * Create a <code>BlockGraph</code> representing at the basic block level the control flow specified, at the <code>Unit</code> level, by a given
-   * {@link UnitGraph}.
+   * Create a <code>BlockGraph</code> representing at the basic block level the control flow specified, at the
+   * <code>Unit</code> level, by a given {@link UnitGraph}.
    *
    * @param unitGraph
    *          A representation of the control flow at the level of individual {@link Unit}s.
@@ -74,8 +72,8 @@ public abstract class BlockGraph implements DirectedGraph<Block> {
 
   /**
    * <p>
-   * Utility method for computing the basic block leaders for a {@link Body}, given its {@link UnitGraph} (i.e., the instructions which begin new
-   * basic blocks).
+   * Utility method for computing the basic block leaders for a {@link Body}, given its {@link UnitGraph} (i.e., the
+   * instructions which begin new basic blocks).
    * </p>
    *
    * <p>
@@ -83,20 +81,22 @@ public abstract class BlockGraph implements DirectedGraph<Block> {
    *
    * <ul>
    *
-   * <li>Any <code>Unit</code> which has zero predecessors (e.g. the <code>Unit</code> following a return or unconditional branch) or more than one
-   * predecessor (e.g. a merge point).</li>
+   * <li>Any <code>Unit</code> which has zero predecessors (e.g. the <code>Unit</code> following a return or unconditional
+   * branch) or more than one predecessor (e.g. a merge point).</li>
    *
-   * <li><code>Unit</code>s which are the target of any branch (even if they have no other predecessors and the branch has no other successors, which
-   * is possible for the targets of unconditional branches or degenerate conditional branches which both branch and fall through to the same
-   * <code>Unit</code>).</li>
+   * <li><code>Unit</code>s which are the target of any branch (even if they have no other predecessors and the branch has no
+   * other successors, which is possible for the targets of unconditional branches or degenerate conditional branches which
+   * both branch and fall through to the same <code>Unit</code>).</li>
    *
-   * <li>All successors of any <code>Unit</code> which has more than one successor (this includes the successors of <code>Unit</code>s which may throw
-   * an exception that gets caught within the <code>Body</code>, as well the successors of conditional branches).</li>
+   * <li>All successors of any <code>Unit</code> which has more than one successor (this includes the successors of
+   * <code>Unit</code>s which may throw an exception that gets caught within the <code>Body</code>, as well the successors of
+   * conditional branches).</li>
    *
    * <li>The first <code>Unit</code> in any <code>Trap</code> handler. (Strictly speaking, if <code>unitGraph</code> were a
-   * <code>ExceptionalUnitGraph</code> that included only a single unexceptional predecessor for some handler&mdash;because no trapped unit could
-   * possibly throw the exception that the handler catches, while the code preceding the handler fell through to the handler's code&mdash;then you
-   * could merge the handler into the predecessor's basic block; but such situations occur only in carefully contrived bytecode.)
+   * <code>ExceptionalUnitGraph</code> that included only a single unexceptional predecessor for some handler&mdash;because
+   * no trapped unit could possibly throw the exception that the handler catches, while the code preceding the handler fell
+   * through to the handler's code&mdash;then you could merge the handler into the predecessor's basic block; but such
+   * situations occur only in carefully contrived bytecode.)
    *
    * </ul>
    * </p>
@@ -142,22 +142,23 @@ public abstract class BlockGraph implements DirectedGraph<Block> {
 
   /**
    * <p>
-   * A utility method that does most of the work of constructing basic blocks, once the set of block leaders has been determined, and which designates
-   * the heads and tails of the graph.
+   * A utility method that does most of the work of constructing basic blocks, once the set of block leaders has been
+   * determined, and which designates the heads and tails of the graph.
    * </p>
    *
    * <p>
-   * <code>BlockGraph</code> provides an implementation of <code>buildBlocks()</code> which splits the {@link Unit}s in <code>unitGraph</code> so that
-   * each <code>Unit</code> in the passed set of block leaders is the first unit in a block. It defines as heads the blocks which begin with
-   * <code>Unit</code>s which are heads in <code>unitGraph</code>, and defines as tails the blocks which end with <code>Unit</code>s which are tails
-   * in <code>unitGraph</code>. Subclasses might override this behavior.
+   * <code>BlockGraph</code> provides an implementation of <code>buildBlocks()</code> which splits the {@link Unit}s in
+   * <code>unitGraph</code> so that each <code>Unit</code> in the passed set of block leaders is the first unit in a block.
+   * It defines as heads the blocks which begin with <code>Unit</code>s which are heads in <code>unitGraph</code>, and
+   * defines as tails the blocks which end with <code>Unit</code>s which are tails in <code>unitGraph</code>. Subclasses
+   * might override this behavior.
    *
    * @param leaders
    *          Contains <code>Unit</code>s which are to be block leaders.
    *
    * @param unitGraph
-   *          Provides information about the predecessors and successors of each <code>Unit</code> in the <code>Body</code>, for determining the
-   *          predecessors and successors of each created {@link Block}.
+   *          Provides information about the predecessors and successors of each <code>Unit</code> in the <code>Body</code>,
+   *          for determining the predecessors and successors of each created {@link Block}.
    *
    * @return a {@link Map} from {@link Unit}s which begin or end a block to the block which contains them.
    */
@@ -239,9 +240,9 @@ public abstract class BlockGraph implements DirectedGraph<Block> {
         // predecessors, yet not be heads.
         /*
          * if (! mHeads.contains(block)) { throw new RuntimeException("Block with no predecessors is not a head!" );
-         * 
-         * // Note that a block can be a head even if it has // predecessors: a handler that might catch an exception // thrown by the first Unit in
-         * the method. }
+         *
+         * // Note that a block can be a head even if it has // predecessors: a handler that might catch an exception //
+         * thrown by the first Unit in the method. }
          */
       } else {
         block.setPreds(Collections.unmodifiableList(predBlocks));
@@ -302,7 +303,8 @@ public abstract class BlockGraph implements DirectedGraph<Block> {
    * @param blockList
    *          The list of blocks for this method. <code>addBlock()</code> will add the newly created block to this list.
    * @param unitToBlock
-   *          A map from units to blocks. <code>addBlock()</code> will add mappings from <code>head</code> and <code>tail</code> to the new block
+   *          A map from units to blocks. <code>addBlock()</code> will add mappings from <code>head</code> and
+   *          <code>tail</code> to the new block
    */
   private void addBlock(Unit head, Unit tail, int index, int length, List<Block> blockList, Map<Unit, Block> unitToBlock) {
     Block block = new Block(head, tail, mBody, index, length, this);
@@ -313,7 +315,7 @@ public abstract class BlockGraph implements DirectedGraph<Block> {
 
   /**
    * Returns the {@link Body} this {@link BlockGraph} is derived from.
-   * 
+   *
    * @return The {@link Body} this {@link BlockGraph} is derived from.
    */
   public Body getBody() {
@@ -322,8 +324,9 @@ public abstract class BlockGraph implements DirectedGraph<Block> {
 
   /**
    * Returns a list of the Blocks composing this graph.
-   * 
-   * @return A list of the blocks composing this graph in the same order as they partition underlying Body instance's unit chain.
+   *
+   * @return A list of the blocks composing this graph in the same order as they partition underlying Body instance's unit
+   *         chain.
    * @see Block
    */
   public List<Block> getBlocks() {

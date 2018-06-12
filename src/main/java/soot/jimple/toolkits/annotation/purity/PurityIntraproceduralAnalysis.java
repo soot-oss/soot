@@ -1,31 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Antoine Mine
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/**
- * Implementation of the paper "A Combined Pointer and Purity Analysis for
- * Java Programs" by Alexandru Salcianu and Martin Rinard, within the
- * Soot Optimization Framework.
- *
- * by Antoine Mine, 2005/01/24
- */
-
 package soot.jimple.toolkits.annotation.purity;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Antoine Mine
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.File;
 import java.util.HashMap;
@@ -73,7 +68,8 @@ import soot.util.dot.DotGraphNode;
 /**
  * Intra-procedural purity-graph analysis.
  *
- * You must pass an {@link AbstractInterproceduralAnalysis} object so that the intraprocedural part can resolve the effect of method calls.
+ * You must pass an {@link AbstractInterproceduralAnalysis} object so that the intraprocedural part can resolve the effect of
+ * method calls.
  */
 public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis<Unit, PurityGraphBox> {
   private static final Logger logger = LoggerFactory.getLogger(PurityIntraproceduralAnalysis.class);
@@ -320,8 +316,9 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis<Unit, Pur
     //////////
     // ignored
     //////////
-    else if (stmt instanceof IfStmt || stmt instanceof GotoStmt || stmt instanceof LookupSwitchStmt || stmt instanceof TableSwitchStmt
-        || stmt instanceof MonitorStmt || stmt instanceof BreakpointStmt || stmt instanceof NopStmt) {
+    else if (stmt instanceof IfStmt || stmt instanceof GotoStmt || stmt instanceof LookupSwitchStmt
+        || stmt instanceof TableSwitchStmt || stmt instanceof MonitorStmt || stmt instanceof BreakpointStmt
+        || stmt instanceof NopStmt) {
       // do nothing...
     } else {
       throw new Error("Stmt match faliure " + stmt);
@@ -331,8 +328,8 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis<Unit, Pur
   }
 
   /**
-   * Draw the result of the intra-procedural analysis as one big dot file, named className.methodName.dot, containing one purity graph for each
-   * statement in the method.
+   * Draw the result of the intra-procedural analysis as one big dot file, named className.methodName.dot, containing one
+   * purity graph for each statement in the method.
    *
    * @param prefix
    * @param name
@@ -376,8 +373,8 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis<Unit, Pur
   }
 
   /**
-   * Put into dst the purity graph obtained by merging all purity graphs at the method return. It is a valid summary that can be used in methodCall if
-   * you do interprocedural analysis.
+   * Put into dst the purity graph obtained by merging all purity graphs at the method return. It is a valid summary that can
+   * be used in methodCall if you do interprocedural analysis.
    *
    * @param dst
    */
@@ -394,8 +391,8 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis<Unit, Pur
   }
 
   /**
-   * Perform purity analysis on the Jimple unit graph g, as part of a larger interprocedural analysis. Once constructed, you may call copyResult and
-   * drawAsOneDot to query the analysis result.
+   * Perform purity analysis on the Jimple unit graph g, as part of a larger interprocedural analysis. Once constructed, you
+   * may call copyResult and drawAsOneDot to query the analysis result.
    */
   PurityIntraproceduralAnalysis(UnitGraph g, AbstractInterproceduralAnalysis<PurityGraphBox> inter) {
     super(g);

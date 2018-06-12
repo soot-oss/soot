@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.AST.transformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Iterator;
 import java.util.List;
@@ -68,8 +71,8 @@ public class ASTCleaner extends DepthFirstAdapter {
   }
 
   /*
-   * Note the ASTNode in this case can be any of the following: ASTMethodNode ASTSwitchNode ASTIfNode ASTIfElseNode ASTUnconditionalWhileNode
-   * ASTWhileNode ASTDoWhileNode ASTForLoopNode ASTLabeledBlockNode ASTSynchronizedBlockNode
+   * Note the ASTNode in this case can be any of the following: ASTMethodNode ASTSwitchNode ASTIfNode ASTIfElseNode
+   * ASTUnconditionalWhileNode ASTWhileNode ASTDoWhileNode ASTForLoopNode ASTLabeledBlockNode ASTSynchronizedBlockNode
    */
   public void normalRetrieving(ASTNode node) {
     if (node instanceof ASTSwitchNode) {
@@ -178,7 +181,8 @@ public class ASTCleaner extends DepthFirstAdapter {
           ASTNode nextNode = (ASTNode) tryBody.get(nodeNumber + 1);
           if (nextNode instanceof ASTIfNode) {
             // found an If followed by another if might match Patter 3.
-            List<Object> newBody = OrAggregatorThree.createNewNodeBody(tryBody, nodeNumber, (ASTIfNode) temp, (ASTIfNode) nextNode);
+            List<Object> newBody
+                = OrAggregatorThree.createNewNodeBody(tryBody, nodeNumber, (ASTIfNode) temp, (ASTIfNode) nextNode);
             if (newBody != null) {
               // something did not go wrong and pattern was matched
               node.replaceTryBody(newBody);
@@ -262,7 +266,8 @@ public class ASTCleaner extends DepthFirstAdapter {
             ASTNode nextNode = (ASTNode) body.get(nodeNumber + 1);
             if (nextNode instanceof ASTIfNode) {
               // found an If followed by another if might match Patter 3.
-              List<Object> newBody = OrAggregatorThree.createNewNodeBody(body, nodeNumber, (ASTIfNode) temp, (ASTIfNode) nextNode);
+              List<Object> newBody
+                  = OrAggregatorThree.createNewNodeBody(body, nodeNumber, (ASTIfNode) temp, (ASTIfNode) nextNode);
               if (newBody != null) {
                 // something did not go wrong and pattern was matched
                 catchBody.replaceBody(newBody);
@@ -345,7 +350,8 @@ public class ASTCleaner extends DepthFirstAdapter {
               ASTNode nextNode = (ASTNode) body.get(nodeNumber + 1);
               if (nextNode instanceof ASTIfNode) {
                 // found an If followed by another if might match Patter 3.
-                List<Object> newBody = OrAggregatorThree.createNewNodeBody(body, nodeNumber, (ASTIfNode) temp, (ASTIfNode) nextNode);
+                List<Object> newBody
+                    = OrAggregatorThree.createNewNodeBody(body, nodeNumber, (ASTIfNode) temp, (ASTIfNode) nextNode);
                 if (newBody != null) {
                   // something did not go wrong and pattern was matched
 

@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2012 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.spark.geom.ptinsE;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2012 Richard Xiao
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Iterator;
 
@@ -36,13 +40,13 @@ import soot.jimple.toolkits.callgraph.Edge;
 
 /**
  * Build the initial encoded pointer assignment graph with the PtIns encoding.
- * 
+ *
  * @author xiao
  *
  */
 public class PtInsNodeGenerator extends IEncodingBroker {
-  private static final int full_convertor[] = { GeometricManager.ONE_TO_ONE, GeometricManager.MANY_TO_MANY, GeometricManager.MANY_TO_MANY,
-      GeometricManager.MANY_TO_MANY };
+  private static final int full_convertor[] = { GeometricManager.ONE_TO_ONE, GeometricManager.MANY_TO_MANY,
+      GeometricManager.MANY_TO_MANY, GeometricManager.MANY_TO_MANY };
 
   @Override
   public void initFlowGraph(GeomPointsTo ptAnalyzer) {
@@ -72,7 +76,8 @@ public class PtInsNodeGenerator extends IEncodingBroker {
       switch (cons.type) {
         case Constants.NEW_CONS:
           // We directly add the objects to the points-to set
-          my_rhs.add_points_to_3((AllocNode) my_lhs.getWrappedNode(), nf2 == Constants.SUPER_MAIN ? 0 : 1, nf1 == Constants.SUPER_MAIN ? 0 : 1,
+          my_rhs.add_points_to_3((AllocNode) my_lhs.getWrappedNode(), nf2 == Constants.SUPER_MAIN ? 0 : 1,
+              nf1 == Constants.SUPER_MAIN ? 0 : 1,
               nf2 == Constants.SUPER_MAIN ? ptAnalyzer.context_size[nf1] : ptAnalyzer.context_size[nf2]);
 
           // Enqueue to the worklist

@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2000 Patrice Pominville
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.parser;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2000 Patrice Pominville
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -58,13 +55,15 @@ public class Parse {
   private static final String USAGE = "usage: java Parse [options] " + "jimple_file [jimple_file ...]";
 
   /*
-   * Parses a jimple input stream. If you just want to get the method bodies for a SootClass, pass as the second argument the SootClass you want fill
-   * it's method bodies. If you want to create a SootClass for the inputStream set the 2nd arg to null.
+   * Parses a jimple input stream. If you just want to get the method bodies for a SootClass, pass as the second argument the
+   * SootClass you want fill it's method bodies. If you want to create a SootClass for the inputStream set the 2nd arg to
+   * null.
    */
   static public SootClass parse(InputStream istream, SootClass sc) {
     Start tree = null;
 
-    Parser p = new Parser(new Lexer(new PushbackReader(new EscapedReader(new BufferedReader(new InputStreamReader(istream))), 1024)));
+    Parser p = new Parser(
+        new Lexer(new PushbackReader(new EscapedReader(new BufferedReader(new InputStreamReader(istream))), 1024)));
 
     try {
       tree = p.parse();

@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jimple.spark.internal;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2002 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import soot.AnySubType;
 import soot.ArrayType;
@@ -34,9 +37,9 @@ import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.VarNode;
 
 /**
- * This {@link TypeSwitch} can be used to add library behavior to the PAG. It adds allocation nodes with {@link AnySubType} of the declared type to
- * the target node.
- * 
+ * This {@link TypeSwitch} can be used to add library behavior to the PAG. It adds allocation nodes with {@link AnySubType}
+ * of the declared type to the target node.
+ *
  * @author Florian Kuebler
  *
  */
@@ -48,7 +51,7 @@ public class SparkLibraryHelper extends TypeSwitch {
 
   /**
    * The constructor for this {@link TypeSwitch}.
-   * 
+   *
    * @param pag
    *          the pointer assignment graph in that the new edges and nodes should be added into.
    * @param node
@@ -63,8 +66,8 @@ public class SparkLibraryHelper extends TypeSwitch {
   }
 
   /**
-   * A new local will be created and connected to {@link SparkLibraryHelper#node} of type {@link RefType}. For this new local an allocation edge to
-   * {@link AnySubType} of its declared type will be added.
+   * A new local will be created and connected to {@link SparkLibraryHelper#node} of type {@link RefType}. For this new local
+   * an allocation edge to {@link AnySubType} of its declared type will be added.
    */
   @Override
   public void caseRefType(RefType t) {
@@ -82,10 +85,11 @@ public class SparkLibraryHelper extends TypeSwitch {
   }
 
   /**
-   * A new local array will be created and connected to {@link SparkLibraryHelper#node} of type {@link ArrayType}. For this new local an allocation
-   * edge to a new array of its declared type will be added. If the {@link ArrayType#getElementType()} is still an array an allocation to a new array
-   * of this element type will be made and stored until the element type is a {@link RefType}. If this is the case an allocation to {@link AnySubType}
-   * of {@link ArrayType#baseType} will be made.
+   * A new local array will be created and connected to {@link SparkLibraryHelper#node} of type {@link ArrayType}. For this
+   * new local an allocation edge to a new array of its declared type will be added. If the
+   * {@link ArrayType#getElementType()} is still an array an allocation to a new array of this element type will be made and
+   * stored until the element type is a {@link RefType}. If this is the case an allocation to {@link AnySubType} of
+   * {@link ArrayType#baseType} will be made.
    */
   @Override
   public void caseArrayType(ArrayType type) {

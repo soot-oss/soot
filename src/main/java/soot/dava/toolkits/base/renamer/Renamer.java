@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2006 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.renamer;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2006 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +69,7 @@ public class Renamer {
 
   /*
    * Add any naming heuristic as a separate method and invoke the method from this method.
-   * 
+   *
    * HOWEVER, NOTE that the order of naming really really matters
    */
   public void rename() {
@@ -191,8 +194,8 @@ public class Renamer {
   }
 
   /*
-   * If a local is assigned the resullt of a cast expression temp = (List) object; then u can use list as the name...however only if its always casted
-   * to the same object
+   * If a local is assigned the resullt of a cast expression temp = (List) object; then u can use list as the name...however
+   * only if its always casted to the same object
    */
   private void castedObject() {
     debug("castedObject", "");
@@ -224,7 +227,8 @@ public class Renamer {
         if (classNameToUse != null) {
           debug("castedObject", "found a classNametoUse through cast expr");
           /*
-           * We should use this classNAme to assign to the local name We are guaranteed that all cast expressions use this type
+           * We should use this classNAme to assign to the local name We are guaranteed that all cast expressions use this
+           * type
            */
           String newName = classNameToUse.toLowerCase();
           int count = 0;
@@ -275,7 +279,8 @@ public class Renamer {
         if (classNameToUse != null) {
           debug("newClassName", "found a classNametoUse");
           /*
-           * We should use this classNAme to assign to the local name We are guaranteed that all new invocations use this class name
+           * We should use this classNAme to assign to the local name We are guaranteed that all new invocations use this
+           * class name
            */
           String newName = classNameToUse.toLowerCase();
           int count = 0;
@@ -294,10 +299,11 @@ public class Renamer {
   }
 
   /*
-   * If a local is assigned from a field (static or non staitc) we can use that name to assign a some what better name for the local
-   * 
+   * If a local is assigned from a field (static or non staitc) we can use that name to assign a some what better name for
+   * the local
+   *
    * If multiple fields are assigned then it might be a better idea to not do anything since that will only confuse the user
-   * 
+   *
    */
   private void assignedFromAField() {
     Iterator<Local> it = heuristics.getLocalsIterator();
@@ -354,7 +360,7 @@ public class Renamer {
   }
 
   /*
-   * 
+   *
    */
   private void exceptionNaming() {
     Iterator<Local> it = heuristics.getLocalsIterator();
@@ -452,8 +458,9 @@ public class Renamer {
   }
 
   /*
-   * In order to make sure that some previous heuristic which is usually a STRONGER heuristic has not already changed the name we use this method
-   * which checks for past name changes and only changes the name if the name hasnt been changed previously
+   * In order to make sure that some previous heuristic which is usually a STRONGER heuristic has not already changed the
+   * name we use this method which checks for past name changes and only changes the name if the name hasnt been changed
+   * previously
    */
   private void setName(Local var, String newName) {
 
@@ -478,9 +485,9 @@ public class Renamer {
 
   /*
    * Check if a local has already been changed
-   * 
+   *
    * @param local to check
-   * 
+   *
    * @return true if already changed otherwise false
    */
   private boolean alreadyChanged(Local var) {
@@ -532,8 +539,8 @@ public class Renamer {
   }
 
   /*
-   * Method is responsible to find all names with which there could be a potential clash The variables are: all the fields of this class and all the
-   * locals defined in this method
+   * Method is responsible to find all names with which there could be a potential clash The variables are: all the fields of
+   * this class and all the locals defined in this method
    */
   private Iterator getScopedFields() {
     // get the fields for this class and store them
@@ -544,8 +551,8 @@ public class Renamer {
   }
 
   /*
-   * Method is responsible to find all variable names with which there could be a potential clash The variables are: all the fields of this class and
-   * all the locals defined in this method
+   * Method is responsible to find all variable names with which there could be a potential clash The variables are: all the
+   * fields of this class and all the locals defined in this method
    */
   private Iterator getScopedLocals() {
     Iterator<Local> it = heuristics.getLocalsIterator();

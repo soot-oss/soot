@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jimple.toolkits.pointer;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import soot.Local;
 import soot.PointsToAnalysis;
@@ -30,10 +33,11 @@ import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
 import soot.jimple.spark.sets.PointsToSetEqualsWrapper;
 
 /**
- * An instance key is a static representative of a runtime object. An instance key, if based on a {@link StrongLocalMustAliasAnalysis}, is guaranteed
- * to represent a single runtime object within a its declared method. If based on a (non-strong) {@link LocalMustAliasAnalysis}, it represents the
- * value of a variable at a single location, which itself can represent multiple runtime objects, if the location is contained in a loop.
- * 
+ * An instance key is a static representative of a runtime object. An instance key, if based on a
+ * {@link StrongLocalMustAliasAnalysis}, is guaranteed to represent a single runtime object within a its declared method. If
+ * based on a (non-strong) {@link LocalMustAliasAnalysis}, it represents the value of a variable at a single location, which
+ * itself can represent multiple runtime objects, if the location is contained in a loop.
+ *
  * See Sable TR 2007-8 for details.
  *
  * @author Eric Bodden
@@ -49,9 +53,9 @@ public class InstanceKey {
   protected final PointsToSet pts;
 
   /**
-   * Creates a new instance key representing the value stored in local, just before stmt. The identity of the key is defined via lmaa, and its
-   * must-not-alias relationship to other keys via lmna.
-   * 
+   * Creates a new instance key representing the value stored in local, just before stmt. The identity of the key is defined
+   * via lmaa, and its must-not-alias relationship to other keys via lmna.
+   *
    * @param local
    *          the local variable whose value this key represents
    * @param stmt
@@ -116,7 +120,8 @@ public class InstanceKey {
   }
 
   public String toString() {
-    String instanceKeyString = stmtAfterAssignStmt != null ? lmaa.instanceKeyString(assignedLocal, stmtAfterAssignStmt) : "pts(" + hashCode + ")";
+    String instanceKeyString
+        = stmtAfterAssignStmt != null ? lmaa.instanceKeyString(assignedLocal, stmtAfterAssignStmt) : "pts(" + hashCode + ")";
     return instanceKeyString + "(" + assignedLocal.getName() + ")";
   }
 

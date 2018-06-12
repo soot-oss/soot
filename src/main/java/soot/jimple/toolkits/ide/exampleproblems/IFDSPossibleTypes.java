@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2013 Eric Bodden and others
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.toolkits.ide.exampleproblems;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2013 Eric Bodden and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import heros.DefaultSeeds;
 import heros.FlowFunction;
@@ -56,7 +60,8 @@ import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
 import soot.toolkits.scalar.Pair;
 
 @SuppressWarnings("serial")
-public class IFDSPossibleTypes extends DefaultJimpleIFDSTabulationProblem<Pair<Value, Type>, InterproceduralCFG<Unit, SootMethod>> {
+public class IFDSPossibleTypes
+    extends DefaultJimpleIFDSTabulationProblem<Pair<Value, Type>, InterproceduralCFG<Unit, SootMethod>> {
 
   public IFDSPossibleTypes(InterproceduralCFG<Unit, SootMethod> icfg) {
     super(icfg);
@@ -114,7 +119,8 @@ public class IFDSPossibleTypes extends DefaultJimpleIFDSTabulationProblem<Pair<V
               }
 
               private boolean maybeSameLocation(Value v1, Value v2) {
-                if (!(v1 instanceof InstanceFieldRef && v2 instanceof InstanceFieldRef) && !(v1 instanceof ArrayRef && v2 instanceof ArrayRef)) {
+                if (!(v1 instanceof InstanceFieldRef && v2 instanceof InstanceFieldRef)
+                    && !(v1 instanceof ArrayRef && v2 instanceof ArrayRef)) {
                   return v1.equivTo(v2);
                 }
                 if (v1 instanceof InstanceFieldRef && v2 instanceof InstanceFieldRef) {
@@ -170,7 +176,8 @@ public class IFDSPossibleTypes extends DefaultJimpleIFDSTabulationProblem<Pair<V
         };
       }
 
-      public FlowFunction<Pair<Value, Type>> getReturnFlowFunction(Unit callSite, SootMethod callee, Unit exitStmt, Unit retSite) {
+      public FlowFunction<Pair<Value, Type>> getReturnFlowFunction(Unit callSite, SootMethod callee, Unit exitStmt,
+          Unit retSite) {
         if (exitStmt instanceof ReturnStmt) {
           ReturnStmt returnStmt = (ReturnStmt) exitStmt;
           Value op = returnStmt.getOp();
@@ -205,7 +212,8 @@ public class IFDSPossibleTypes extends DefaultJimpleIFDSTabulationProblem<Pair<V
   }
 
   public Map<Unit, Set<Pair<Value, Type>>> initialSeeds() {
-    return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()), zeroValue());
+    return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()),
+        zeroValue());
   }
 
   public Pair<Value, Type> createZeroValue() {

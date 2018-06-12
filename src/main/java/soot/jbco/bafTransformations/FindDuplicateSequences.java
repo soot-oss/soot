@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jbco.bafTransformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,7 +80,7 @@ import soot.util.Chain;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 12-May-2006
  */
 public class FindDuplicateSequences extends BodyTransformer implements IJbcoTransform {
@@ -138,7 +141,8 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
           // horrible approximatin about which init call belongs to which new
           if (v instanceof SpecialInvokeInst) {
             SpecialInvokeInst si = (SpecialInvokeInst) v;
-            if (si.getMethodRef().getSignature().indexOf("void <init>") < 0 || si.getMethodRef().declaringClass() != t.getSootClass()) {
+            if (si.getMethodRef().getSignature().indexOf("void <init>") < 0
+                || si.getMethodRef().declaringClass() != t.getSootClass()) {
               tmpWorkList.addAll(bug.getSuccsOf(v));
             }
           } else {
@@ -440,8 +444,8 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
     }
 
     /*
-     * if (o1 instanceof IncInst) { IncInst ii = (IncInst)o1; if (ii.getLocal() != ((IncInst)o2).getLocal() || ii.getConstant() !=
-     * ((IncInst)o2).getConstant()) return false; return true; }
+     * if (o1 instanceof IncInst) { IncInst ii = (IncInst)o1; if (ii.getLocal() != ((IncInst)o2).getLocal() ||
+     * ii.getConstant() != ((IncInst)o2).getConstant()) return false; return true; }
      */
 
     if (o1 instanceof TargetArgInst) {
@@ -520,7 +524,8 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
     }
 
     if (o1 instanceof SwapInst) {
-      return ((SwapInst) o1).getFromType() == ((SwapInst) o2).getFromType() && ((SwapInst) o1).getToType() == ((SwapInst) o2).getToType();
+      return ((SwapInst) o1).getFromType() == ((SwapInst) o2).getFromType()
+          && ((SwapInst) o1).getToType() == ((SwapInst) o2).getToType();
     }
 
     return false;

@@ -1,5 +1,27 @@
 package soot.jimple.spark.sets;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.List;
 
 import soot.Type;
@@ -15,25 +37,26 @@ import soot.util.BitVector;
  * pointing to another node.  Why not just take that node's bitvector as a base?
  * -addAll could probably use many improvements.
  * -Cast masking - calling typeManager.get
- * -An interesting problem is that when merging a bitvector into an overflow list, if 
+ * -An interesting problem is that when merging a bitvector into an overflow list, if
  * the one being merged
  * in has a bitvector, the mask or exclude might mask it down to a bitvector with very
  * few ones.  (In fact, this might even result in one with 0 ones!)
  * Should that new bitvector stay as a bitvector, or be converted to an
  * overflow list?  And how can we tell when it will have few ones?  (Modify BitVector?)
- * 
+ *
  */
 /**
- * A shared representation of a points-to set which uses a bit vector + a list of extra elements, an "overflow list", to make adding single elements
- * fast in most cases.
- * 
+ * A shared representation of a points-to set which uses a bit vector + a list of extra elements, an "overflow list", to make
+ * adding single elements fast in most cases.
+ *
  * The bit vector may be shared by multiple points-to sets, while the overflow list is specific to each points-to set.
- * 
- * To facilitate sharing of the bitvectors, there is a "hash table" of all existing bitvectors kept, called BitVectorLookupMap, where the ith element
- * contains a list of all existing bitvectors of cardinality i (i.e. has i one bits).
- * 
+ *
+ * To facilitate sharing of the bitvectors, there is a "hash table" of all existing bitvectors kept, called
+ * BitVectorLookupMap, where the ith element contains a list of all existing bitvectors of cardinality i (i.e. has i one
+ * bits).
+ *
  * @author Adam Richard
- * 
+ *
  */
 
 public class SharedHybridSet extends PointsToSetInternal {
@@ -56,8 +79,8 @@ public class SharedHybridSet extends PointsToSetInternal {
   public final static int OVERFLOW_THRESHOLD = 5;
 
   /**
-   * When the overflow list overflows, the maximum number of elements that may remain in the overflow list (the rest are moved into the base bit
-   * vector)
+   * When the overflow list overflows, the maximum number of elements that may remain in the overflow list (the rest are
+   * moved into the base bit vector)
    */
 
   public boolean contains(Node n) {
@@ -103,7 +126,8 @@ public class SharedHybridSet extends PointsToSetInternal {
   // elements missing. If we find one, make that set the new `bitVector', and
   // the leftovers the new `overflow'
   // szBitVector is the size of the ORIGINAL bit vector, NOT the size of newBitVector
-  private void findAppropriateBitVector(PointsToBitVector newBitVector, PointsToBitVector otherBitVector, int otherSize, int szBitvector) {
+  private void findAppropriateBitVector(PointsToBitVector newBitVector, PointsToBitVector otherBitVector, int otherSize,
+      int szBitvector) {
     // First check "other" and "this"'s bitvector, to maximize sharing and
     // minimize searching for a new bitvector
     if (otherBitVector != null && otherSize <= numElements && otherSize + OVERFLOW_THRESHOLD >= numElements
@@ -161,7 +185,8 @@ public class SharedHybridSet extends PointsToSetInternal {
 
   public boolean add(Node n) {
     /*
-     * This algorithm is described in the paper "IBM Research Report: Fast Pointer Analysis" by Hirzel, Dincklage, Diwan, and Hind, pg. 11
+     * This algorithm is described in the paper "IBM Research Report: Fast Pointer Analysis" by Hirzel, Dincklage, Diwan, and
+     * Hind, pg. 11
      */
     if (contains(n)) {
       return false;
@@ -196,9 +221,9 @@ public class SharedHybridSet extends PointsToSetInternal {
 
   private boolean nativeAddAll(SharedHybridSet other, SharedHybridSet exclude) {
     /*
-     * If one of the shared hybrid sets has a bitvector but the other doesn't, set that bitvector as the base bitvector and add the stuff from the
-     * other overflow list. If they both have a bitvector, AND them together, then add it to the lookupMap. If neither of them has a bitvector, just
-     * combine the overflow lists.
+     * If one of the shared hybrid sets has a bitvector but the other doesn't, set that bitvector as the base bitvector and
+     * add the stuff from the other overflow list. If they both have a bitvector, AND them together, then add it to the
+     * lookupMap. If neither of them has a bitvector, just combine the overflow lists.
      */
 
     BitVector mask = getBitMask(other, pag);
@@ -225,7 +250,8 @@ public class SharedHybridSet extends PointsToSetInternal {
       }
     }
 
-    int originalSize = size(), originalOnes = originalSize - overflow.size(), otherBitVectorSize = other.size() - other.overflow.size();
+    int originalSize = size(), originalOnes = originalSize - overflow.size(),
+        otherBitVectorSize = other.size() - other.overflow.size();
 
     // Decide on the base bitvector
     if (bitVector == null) {
@@ -364,7 +390,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 
   /**
    * @ Adds the Nodes in arr to this bitvector.
-   * 
+   *
    * @return The number of new nodes actually added.
    */
   private int add(PointsToBitVector p, OverflowList arr) {
@@ -382,8 +408,9 @@ public class SharedHybridSet extends PointsToSetInternal {
   }
 
   /*
-   * //A class invariant - numElements correctly holds the size //Only used for testing private void checkSize() { int realSize = overflow.size(); if
-   * (bitVector != null) realSize += bitVector.cardinality(); if (numElements != realSize) { throw new RuntimeException("Assertion failed."); } }
+   * //A class invariant - numElements correctly holds the size //Only used for testing private void checkSize() { int
+   * realSize = overflow.size(); if (bitVector != null) realSize += bitVector.cardinality(); if (numElements != realSize) {
+   * throw new RuntimeException("Assertion failed."); } }
    */
 
   public boolean addAll(PointsToSetInternal other, final PointsToSetInternal exclude) {

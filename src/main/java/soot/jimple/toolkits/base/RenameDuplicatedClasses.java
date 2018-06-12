@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.base;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,16 +45,17 @@ import soot.util.Chain;
 
 /**
  * A scene transformer that renames the duplicated class names.
- * 
- * The definition of duplicated class names. if (className1.equalsIgnoreCase(className2) { //className1 and className2 are duplicated class names. }
- * 
- * Because some file systems are case-insensitive (e.g., Mac OS). When file a.b.c.class exists, a.b.C.class will over-write the content of a.b.c.class
- * and case inconsistent that a.b.c.class file contains the content of a.b.C.class.
- * 
+ *
+ * The definition of duplicated class names. if (className1.equalsIgnoreCase(className2) { //className1 and className2 are
+ * duplicated class names. }
+ *
+ * Because some file systems are case-insensitive (e.g., Mac OS). When file a.b.c.class exists, a.b.C.class will over-write
+ * the content of a.b.c.class and case inconsistent that a.b.c.class file contains the content of a.b.C.class.
+ *
  * However, in some case, at lest in Android applications, the duplicated class names exist. For example, an app (Sha256:
- * 0015AE7C27688D45F79170DCEA16131CE557912A1A0C5F3B6B0465EE0774A452) in the Genome project contains duplicated class names. When transforming the app
- * to classes, some classes are missing and consequently case problems for other analysis tools that relay on Soot (e.g., Error: class
- * com.adwo.adsdk.s read in from a classfile in which com.adwo.adsdk.S was expected).
+ * 0015AE7C27688D45F79170DCEA16131CE557912A1A0C5F3B6B0465EE0774A452) in the Genome project contains duplicated class names.
+ * When transforming the app to classes, some classes are missing and consequently case problems for other analysis tools
+ * that relay on Soot (e.g., Error: class com.adwo.adsdk.s read in from a classfile in which com.adwo.adsdk.S was expected).
  *
  *
  */
@@ -105,7 +128,7 @@ public class RenameDuplicatedClasses extends SceneTransformer {
 
   /**
    * An naive approach to check whether the file system is case sensitive or not
-   * 
+   *
    * @return
    */
   public boolean isFileSystemCaseSensitive() {

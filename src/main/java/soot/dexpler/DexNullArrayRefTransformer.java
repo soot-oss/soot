@@ -1,5 +1,5 @@
-// 
-// (c) 2012 University of Luxembourg - Interdisciplinary Centre for 
+//
+// (c) 2012 University of Luxembourg - Interdisciplinary Centre for
 // Security Reliability and Trust (SnT) - All rights reserved
 //
 // Author: Alexandre Bartel
@@ -15,10 +15,32 @@
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
 package soot.dexpler;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -48,11 +70,12 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 
 /**
- * If Dalvik bytecode contains statements using a base array which is always null, Soot's fast type resolver will fail with the following exception:
- * "Exception in thread " main" java.lang.RuntimeException: Base of array reference is not an array!"
- * 
+ * If Dalvik bytecode contains statements using a base array which is always null, Soot's fast type resolver will fail with
+ * the following exception: "Exception in thread " main" java.lang.RuntimeException: Base of array reference is not an
+ * array!"
+ *
  * Those statements are replaced by a throw statement (this is what will happen in practice if the code is executed).
- * 
+ *
  * @author alex
  * @author Steven Arzt
  *
@@ -107,7 +130,7 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
 
   /**
    * Checks whether the given local is guaranteed to be always null at the given statement
-   * 
+   *
    * @param s
    *          The statement at which to check the local
    * @param base
@@ -136,7 +159,7 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
 
   /**
    * Creates a new statement that throws a NullPointerException
-   * 
+   *
    * @param body
    *          The body in which to create the statement
    * @param oldStmt
@@ -148,7 +171,8 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
     RefType tp = RefType.v("java.lang.NullPointerException");
     Local lcEx = lc.newLocal(tp);
 
-    SootMethodRef constructorRef = Scene.v().makeConstructorRef(tp.getSootClass(), Collections.singletonList((Type) RefType.v("java.lang.String")));
+    SootMethodRef constructorRef
+        = Scene.v().makeConstructorRef(tp.getSootClass(), Collections.singletonList((Type) RefType.v("java.lang.String")));
 
     // Create the exception instance
     Stmt newExStmt = Jimple.v().newAssignStmt(lcEx, Jimple.v().newNewExpr(tp));

@@ -26,6 +26,28 @@
 
 package soot.tagkit;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 /**
  * Provides encoding of raw bytes to base64-encoded characters, and decoding of base64 characters to raw bytes.
  *
@@ -78,11 +100,11 @@ public class Base64 {
   }
 
   /**
-   * Decodes a BASE-64 encoded stream to recover the original data. White space before and after will be trimmed away, but no other manipulation of
-   * the input will be performed.
+   * Decodes a BASE-64 encoded stream to recover the original data. White space before and after will be trimmed away, but no
+   * other manipulation of the input will be performed.
    *
-   * As of version 1.2 this method will properly handle input containing junk characters (newlines and the like) rather than throwing an error. It
-   * does this by pre-parsing the input and generating from that a count of VALID input characters.
+   * As of version 1.2 this method will properly handle input containing junk characters (newlines and the like) rather than
+   * throwing an error. It does this by pre-parsing the input and generating from that a count of VALID input characters.
    **/
   static public byte[] decode(char[] data) {
     // as our input could contain non-BASE64 data (newlines,

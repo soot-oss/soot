@@ -1,24 +1,28 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2008 Ben Bellamy 
- * 
- * All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.toolkits.typing.fast;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2008 Ben Bellamy
+ *
+ * All rights reserved.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Collection;
 import java.util.Collections;
@@ -121,8 +125,8 @@ public class AugEvalFunction implements IEvalFunction {
 
       if (expr instanceof CmpExpr || expr instanceof CmpgExpr || expr instanceof CmplExpr) {
         return ByteType.v();
-      } else if (expr instanceof GeExpr || expr instanceof GtExpr || expr instanceof LeExpr || expr instanceof LtExpr || expr instanceof EqExpr
-          || expr instanceof NeExpr) {
+      } else if (expr instanceof GeExpr || expr instanceof GtExpr || expr instanceof LeExpr || expr instanceof LtExpr
+          || expr instanceof EqExpr || expr instanceof NeExpr) {
         return BooleanType.v();
       } else if (expr instanceof ShlExpr) {
         if (tl instanceof IntegerType) {
@@ -167,7 +171,8 @@ public class AugEvalFunction implements IEvalFunction {
       Type t = eval_(tg, ((NegExpr) expr).getOp(), stmt, jb);
       if (t instanceof IntegerType) {
         /*
-         * Here I repeat the behaviour of the original type assigner, but is it right? For example, -128 is a byte, but -(-128) is not! --BRB
+         * Here I repeat the behaviour of the original type assigner, but is it right? For example, -128 is a byte, but
+         * -(-128) is not! --BRB
          */
         if (t instanceof Integer1Type || t instanceof BooleanType || t instanceof Integer127Type || t instanceof ByteType) {
           return ByteType.v();
@@ -190,15 +195,16 @@ public class AugEvalFunction implements IEvalFunction {
           r = throwableType;
         } else {
           /*
-           * In theory, we could have multiple exception types pointing here. The JLS requires the exception parameter be a *subclass* of Throwable,
-           * so we do not need to worry about multiple inheritance.
+           * In theory, we could have multiple exception types pointing here. The JLS requires the exception parameter be a
+           * *subclass* of Throwable, so we do not need to worry about multiple inheritance.
            */
           r = BytecodeHierarchy.lcsc(r, t, throwableType);
         }
       }
 
       if (r == null) {
-        throw new RuntimeException("Exception reference used other than as the first " + "statement of an exception handler.");
+        throw new RuntimeException(
+            "Exception reference used other than as the first " + "statement of an exception handler.");
       }
 
       return r;
@@ -210,7 +216,8 @@ public class AugEvalFunction implements IEvalFunction {
         return ((ArrayType) at).getElementType();
       } else if (at instanceof RefType) {
         RefType ref = (RefType) at;
-        if (ref.getSootClass().getName().equals("java.lang.Object") || ref.getSootClass().getName().equals("java.io.Serializable")
+        if (ref.getSootClass().getName().equals("java.lang.Object")
+            || ref.getSootClass().getName().equals("java.io.Serializable")
             || ref.getSootClass().getName().equals("java.lang.Cloneable")) {
           return ref;
         } else {

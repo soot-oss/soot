@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.shimple.toolkits.scalar;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,12 +67,13 @@ import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
 /**
- * A powerful constant propagator and folder based on an algorithm sketched by Cytron et al that takes conditional control flow into account. This
- * optimization demonstrates some of the benefits of SSA -- particularly the fact that Phi nodes represent natural merge points in the control flow.
+ * A powerful constant propagator and folder based on an algorithm sketched by Cytron et al that takes conditional control
+ * flow into account. This optimization demonstrates some of the benefits of SSA -- particularly the fact that Phi nodes
+ * represent natural merge points in the control flow.
  *
  * @author Navindra Umanee
- * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and the Control Dependence
- *      Graph</a>
+ * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
+ *      the Control Dependence Graph</a>
  **/
 public class SConstantPropagatorAndFolder extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(SConstantPropagatorAndFolder.class);
@@ -92,8 +96,8 @@ public class SConstantPropagatorAndFolder extends BodyTransformer {
     this.sb = (ShimpleBody) b;
 
     if (!sb.isSSA()) {
-      throw new RuntimeException(
-          "ShimpleBody is not in proper SSA form as required by SConstantPropagatorAndFolder.  You may need to rebuild it or use ConstantPropagatorAndFolder instead.");
+      throw new RuntimeException("ShimpleBody is not in proper SSA form as required by SConstantPropagatorAndFolder."
+          + "You may need to rebuild it or use ConstantPropagatorAndFolder instead.");
     }
 
     boolean pruneCFG = PhaseOptions.getBoolean(options, "prune-cfg");
@@ -115,8 +119,8 @@ public class SConstantPropagatorAndFolder extends BodyTransformer {
   }
 
   /**
-   * Propagates constants to the definition and uses of the relevant locals given a mapping. Notice that we use the Shimple implementation of
-   * LocalDefs and LocalUses.
+   * Propagates constants to the definition and uses of the relevant locals given a mapping. Notice that we use the Shimple
+   * implementation of LocalDefs and LocalUses.
    **/
   protected void propagateResults(Map<Local, Constant> localToConstant) {
     Chain<Unit> units = sb.getUnits();
@@ -163,7 +167,8 @@ public class SConstantPropagatorAndFolder extends BodyTransformer {
           if (useBox.canContainValue(constant)) {
             useBox.setValue(constant);
           } else if (debug) {
-            logger.warn("Couldn't propagate constant " + constant + " to box " + useBox.getValue() + " in unit " + pair.getUnit());
+            logger.warn(
+                "Couldn't propagate constant " + constant + " to box " + useBox.getValue() + " in unit " + pair.getUnit());
           }
         }
       }
@@ -203,24 +208,25 @@ public class SConstantPropagatorAndFolder extends BodyTransformer {
  * The actual branching flow analysis implementation. Briefly, a sketch of the sketch from the Cytron et al paper:
  *
  * <p>
- * Initially the algorithm assumes that each edge is unexecutable (the entry nodes are reachable) and that each variable is constant with an unknown
- * value, Top. Assumptions are corrected until they stabilise.
+ * Initially the algorithm assumes that each edge is unexecutable (the entry nodes are reachable) and that each variable is
+ * constant with an unknown value, Top. Assumptions are corrected until they stabilise.
  *
  * <p>
- * For example, if <tt>q</tt> is found to be not a constant (Bottom) in <tt>if(q == 0) goto label1</tt> then both edges leaving the the statement are
- * considered executable, if <tt>q</tt> is found to be a constant then only one of the edges are executable.
+ * For example, if <tt>q</tt> is found to be not a constant (Bottom) in <tt>if(q == 0) goto label1</tt> then both edges
+ * leaving the the statement are considered executable, if <tt>q</tt> is found to be a constant then only one of the edges
+ * are executable.
  *
  * <p>
- * Whenever a reachable definition statement such as "x = 3" is found, the information is propagated to all uses of x (this works due to the SSA
- * property).
+ * Whenever a reachable definition statement such as "x = 3" is found, the information is propagated to all uses of x (this
+ * works due to the SSA property).
  *
  * <p>
  * Perhaps the crucial point is that if a node such as <tt>x =
  * Phi(x_1, x_2)</tt> is ever found, information on <tt>x</tt> is assumed as follows:
  *
  * <ul>
- * <li>If <tt>x_1</tt> and <tt>x_2</tt> are the same assumed constant, <tt>x</tt> is assumed to be that constant. If they are not the same constant,
- * <tt>x</tt> is Bottom.</li>
+ * <li>If <tt>x_1</tt> and <tt>x_2</tt> are the same assumed constant, <tt>x</tt> is assumed to be that constant. If they are
+ * not the same constant, <tt>x</tt> is Bottom.</li>
  *
  * <li>If either one is Top and the other is a constant, <tt>x</tt> is assumed to be the same as the known constant.</li>
  *
@@ -228,8 +234,9 @@ public class SConstantPropagatorAndFolder extends BodyTransformer {
  * </ul>
  *
  * <p>
- * The crucial point about the crucial point is that if definitions of <tt>x_1</tt> or <tt>x_2</tt> are never reached, the Phi node will still assume
- * them to be Top and hence they will not influence the decision as to whether <tt>x</tt> is a constant or not.
+ * The crucial point about the crucial point is that if definitions of <tt>x_1</tt> or <tt>x_2</tt> are never reached, the
+ * Phi node will still assume them to be Top and hence they will not influence the decision as to whether <tt>x</tt> is a
+ * constant or not.
  **/
 class SCPFAnalysis extends ForwardBranchedFlowAnalysis {
   protected FlowSet emptySet;
@@ -301,8 +308,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis {
   }
 
   /**
-   * If a node has empty IN sets we assume that it is not reachable. Hence, we initialise the entry sets to be non-empty to indicate that they are
-   * reachable.
+   * If a node has empty IN sets we assume that it is not reachable. Hence, we initialise the entry sets to be non-empty to
+   * indicate that they are reachable.
    **/
   protected Object entryInitialFlow() {
     FlowSet entrySet = (FlowSet) emptySet.emptySet();
@@ -339,13 +346,13 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis {
   }
 
   /**
-   * If a node has an empty in set, it is considered unreachable. Otherwise the node is examined and if any assumptions have to be corrected, a Pair
-   * containing the corrected assumptions is flowed to the reachable nodes. If no assumptions have to be corrected then no information other than the
-   * in set is propagated to the reachable nodes.
+   * If a node has an empty in set, it is considered unreachable. Otherwise the node is examined and if any assumptions have
+   * to be corrected, a Pair containing the corrected assumptions is flowed to the reachable nodes. If no assumptions have to
+   * be corrected then no information other than the in set is propagated to the reachable nodes.
    *
    * <p>
-   * Pair serves no other purpose than to keep the analysis flowing for as long as needed. The final results are accumulated in the localToConstant
-   * map.
+   * Pair serves no other purpose than to keep the analysis flowing for as long as needed. The final results are accumulated
+   * in the localToConstant map.
    **/
   protected void flowThrough(Object in, Unit s, List fallOut, List branchOuts) {
     FlowSet fin = ((FlowSet) in).clone();
@@ -570,8 +577,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis {
   }
 
   /**
-   * Verifies if the given assumption "constant" changes the previous assumption about "local" and merges the information into the localToConstant
-   * map. Returns true if something changed.
+   * Verifies if the given assumption "constant" changes the previous assumption about "local" and merges the information
+   * into the localToConstant map. Returns true if something changed.
    **/
   protected boolean merge(Local local, Constant constant) {
     Constant current = localToConstant.get(local);

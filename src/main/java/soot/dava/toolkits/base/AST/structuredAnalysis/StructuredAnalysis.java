@@ -1,46 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/**
- * Maintained by: Nomair A. Naeem
- */
-
-/**
- * CHANGE LOG:
- *     November 21st, 2005: Reasoning about correctness of implementation.
- *     November 22nd, 2005: Found bug in process_DoWhile while implementing ReachingCopies..
- *                          see method for details
- *     January 30th, 2006:  Found bug in handling of breaks inside the ASTTryNode while implementing 
- *                          MustMayinitialize...see ASTTryNode method for details
- *     January 30th, 2006:  Found bug in handling of switchNode while implementing MustMayInitialize
- *                          NEEDS THOROUGH TESTING!!!
- *
- */
-
-/**
- * TODO:
- * Refactor the class into a top level class and a forward analysis subclass
- * Write the backwards flow analysis
- *
- *  THOROUGH TESTING OF BUG FOUND ON 30th January
- */
 package soot.dava.toolkits.base.AST.structuredAnalysis;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,9 +71,9 @@ public abstract class StructuredAnalysis<E> {
   public static boolean DEBUG_STATEMENTS = false;
   public static boolean DEBUG_TRY = false;
   /*
-   * public static boolean DEBUG = true; public static boolean DEBUG_IF = true; public static boolean DEBUG_WHILE = true; public static boolean
-   * DEBUG_STATEMENTS = true; public static boolean DEBUG_TRY = true; /* /** Whenever an abrupt edge is encountered the flow set is added into a the
-   * break or continue list and a NOPATH object is returned
+   * public static boolean DEBUG = true; public static boolean DEBUG_IF = true; public static boolean DEBUG_WHILE = true;
+   * public static boolean DEBUG_STATEMENTS = true; public static boolean DEBUG_TRY = true; /* /** Whenever an abrupt edge is
+   * encountered the flow set is added into a the break or continue list and a NOPATH object is returned
    */
   DavaFlowSet<E> NOPATH = emptyFlowSet();
   public int MERGETYPE; // the confluence operator
@@ -120,8 +100,8 @@ public abstract class StructuredAnalysis<E> {
   }
 
   /*
-   * This method should be used to set the variable MERGETYPE use StructuredAnalysis.UNION for union use StructuredAnalysis.INTERSECTION for
-   * intersection
+   * This method should be used to set the variable MERGETYPE use StructuredAnalysis.UNION for union use
+   * StructuredAnalysis.INTERSECTION for intersection
    */
   public abstract void setMergeType();
 
@@ -131,7 +111,8 @@ public abstract class StructuredAnalysis<E> {
   public abstract DavaFlowSet<E> newInitialFlow();
 
   /*
-   * Returns an empty flow set object Notice this has to be a DavaFlowSet or a set extending DavaFlowSet (hopefully constantpropagationFlowSET??)
+   * Returns an empty flow set object Notice this has to be a DavaFlowSet or a set extending DavaFlowSet (hopefully
+   * constantpropagationFlowSET??)
    */
   public abstract DavaFlowSet<E> emptyFlowSet();
 
@@ -141,14 +122,15 @@ public abstract class StructuredAnalysis<E> {
   public abstract DavaFlowSet<E> cloneFlowSet(DavaFlowSet<E> flowSet);
 
   /**
-   * Specific stmts within AST Constructs are processed through this method. It will be invoked everytime a stmt is encountered
+   * Specific stmts within AST Constructs are processed through this method. It will be invoked everytime a stmt is
+   * encountered
    */
   public abstract DavaFlowSet<E> processStatement(Stmt s, DavaFlowSet<E> input);
 
   /**
-   * To have maximum flexibility in analyzing conditions the analysis API breaks down the aggregated conditions to simple unary or binary conditions
-   * user defined code can then deal with each condition separately. To be able to deal with entire aggregated conditions the user should wite their
-   * own implementation of the method processCondition
+   * To have maximum flexibility in analyzing conditions the analysis API breaks down the aggregated conditions to simple
+   * unary or binary conditions user defined code can then deal with each condition separately. To be able to deal with
+   * entire aggregated conditions the user should wite their own implementation of the method processCondition
    */
   public abstract DavaFlowSet<E> processUnaryBinaryCondition(ASTUnaryBinaryCondition cond, DavaFlowSet<E> input);
 
@@ -167,9 +149,9 @@ public abstract class StructuredAnalysis<E> {
   }
 
   /**
-   * This implementation breaks down the aggregated condition to the terminal conditions which all have type ASTUnaryBinaryCondition. Once these are
-   * obtained the abstract method processUnaryBinaryCondition is invoked. For aggregated conditions the merging is done in a depth first order of the
-   * condition tree.
+   * This implementation breaks down the aggregated condition to the terminal conditions which all have type
+   * ASTUnaryBinaryCondition. Once these are obtained the abstract method processUnaryBinaryCondition is invoked. For
+   * aggregated conditions the merging is done in a depth first order of the condition tree.
    */
   public DavaFlowSet<E> processCondition(ASTCondition cond, DavaFlowSet<E> input) {
     if (cond instanceof ASTUnaryBinaryCondition) {
@@ -188,8 +170,8 @@ public abstract class StructuredAnalysis<E> {
   }
 
   /*
-   * The parameter body contains the body to be analysed It can be an ASTNode, a Stmt, an augmentedStmt or a list of ASTNodes The input is any data
-   * that is gathered plus any info needed for making decisions during the analysis
+   * The parameter body contains the body to be analysed It can be an ASTNode, a Stmt, an augmentedStmt or a list of ASTNodes
+   * The input is any data that is gathered plus any info needed for making decisions during the analysis
    */
   public DavaFlowSet<E> process(Object body, DavaFlowSet<E> input) {
     if (body instanceof ASTNode) {
@@ -218,7 +200,8 @@ public abstract class StructuredAnalysis<E> {
       while (it.hasNext()) {
         Object temp = it.next();
         if (!(temp instanceof ASTNode)) {
-          throw new RuntimeException("Body sent to be processed by " + "StructuredAnalysis contains a list which does not have ASTNodes");
+          throw new RuntimeException(
+              "Body sent to be processed by " + "StructuredAnalysis contains a list which does not have ASTNodes");
         } else {
           /*
            * As we are simply going through a list of ASTNodes The output of the previous becomes the input of the next
@@ -271,8 +254,8 @@ public abstract class StructuredAnalysis<E> {
   }
 
   /**
-   * This method is called from the specialized ASTNodes. The purpose was to deal with different ASTNodes with similar structure in one go. The method
-   * will deal with retrieve the body of the ASTNode which are known to have only one subBody
+   * This method is called from the specialized ASTNodes. The purpose was to deal with different ASTNodes with similar
+   * structure in one go. The method will deal with retrieve the body of the ASTNode which are known to have only one subBody
    */
   public final DavaFlowSet<E> processSingleSubBodyNode(ASTNode node, DavaFlowSet<E> input) {
     // get the subBodies
@@ -299,9 +282,10 @@ public abstract class StructuredAnalysis<E> {
   }
 
   /**
-   * Whenever a statement has to be processed the first step is to invoke this method. This is to remove the tedious work of adding code to deal with
-   * abrupt control flow from the programmer of the analysis. The method invokes the processStatement method for all other statements
-   * 
+   * Whenever a statement has to be processed the first step is to invoke this method. This is to remove the tedious work of
+   * adding code to deal with abrupt control flow from the programmer of the analysis. The method invokes the
+   * processStatement method for all other statements
+   *
    * A programmer can decide to override this method if they want to do something specific
    */
   public DavaFlowSet<E> processAbruptStatements(Stmt s, DavaFlowSet<E> input) {
@@ -349,9 +333,9 @@ public abstract class StructuredAnalysis<E> {
   }
 
   /*
-   * Notice Right now the output of the processing of method bodies is returned as the output. This only works for INTRA procedural Analysis. For
-   * accomodating INTER procedural analysis one needs to have a return list of all possible returns (stored in the flowset) And merge Returns with the
-   * output of normal execution of the body
+   * Notice Right now the output of the processing of method bodies is returned as the output. This only works for INTRA
+   * procedural Analysis. For accomodating INTER procedural analysis one needs to have a return list of all possible returns
+   * (stored in the flowset) And merge Returns with the output of normal execution of the body
    */
   // reasoned about this....seems right!!
   public DavaFlowSet<E> processASTMethodNode(ASTMethodNode node, DavaFlowSet<E> input) {
@@ -586,8 +570,8 @@ public abstract class StructuredAnalysis<E> {
   }
 
   /*
-   * Notice ASTSwitch is horribly conservative....eg. if all cases break properly it will still merge with defaultOut which will be a NOPATH and bound
-   * to have empty or full sets
+   * Notice ASTSwitch is horribly conservative....eg. if all cases break properly it will still merge with defaultOut which
+   * will be a NOPATH and bound to have empty or full sets
    */
   public DavaFlowSet<E> processASTSwitchNode(ASTSwitchNode node, DavaFlowSet<E> input) {
     if (DEBUG) {
@@ -638,8 +622,9 @@ public abstract class StructuredAnalysis<E> {
       // present
 
       /*
-       * January 30th 2006, FOUND BUG The initialIn should only be merge with the out if there is no default in the list of switch cases If there is a
-       * default then there is no way that the initialIn is the actual result. Then its either the default or one of the outs!!!
+       * January 30th 2006, FOUND BUG The initialIn should only be merge with the out if there is no default in the list of
+       * switch cases If there is a default then there is no way that the initialIn is the actual result. Then its either the
+       * default or one of the outs!!!
        */
       if (defaultOut != null) {
         // there was a default
@@ -693,7 +678,8 @@ public abstract class StructuredAnalysis<E> {
     // System.out.println("SET end of tryBody is:"+tryBodyOutput);
 
     /*
-     * By default take either top or bottom as the input to the catch statements Which goes in depends on the type of analysis.
+     * By default take either top or bottom as the input to the catch statements Which goes in depends on the type of
+     * analysis.
      */
     DavaFlowSet<E> inputCatch = newInitialFlow();
     if (DEBUG_TRY) {
@@ -721,9 +707,10 @@ public abstract class StructuredAnalysis<E> {
 
     /*
      * 30th Jan 2005, Found bug in handling out breaks what was being done was that handleBreak was invoked using just
-     * handleBreak(label,tryBodyoutput,node) Now what it does is that it looks for the breakList stored in the tryBodyOutput node What might happen is
-     * that there might be some breaks in the catchOutput which would have gotten stored in the breakList of the respective catchoutput
-     * 
+     * handleBreak(label,tryBodyoutput,node) Now what it does is that it looks for the breakList stored in the tryBodyOutput
+     * node What might happen is that there might be some breaks in the catchOutput which would have gotten stored in the
+     * breakList of the respective catchoutput
+     *
      * The correct way to handle this is create a list of handledBreak objects (in the outList) And then to merge them
      */
     List<DavaFlowSet<E>> outList = new ArrayList<DavaFlowSet<E>>();
@@ -842,7 +829,8 @@ public abstract class StructuredAnalysis<E> {
   }
 
   /**
-   * Need to handleBreak stmts There can be explicit breaks (in which case label is non null) There can always be implicit breaks ASTNode is non null
+   * Need to handleBreak stmts There can be explicit breaks (in which case label is non null) There can always be implicit
+   * breaks ASTNode is non null
    */
   public DavaFlowSet<E> handleBreak(String label, DavaFlowSet<E> out, ASTNode node) {
     // get the explicit list with this label from the breakList
@@ -861,8 +849,8 @@ public abstract class StructuredAnalysis<E> {
   }
 
   /**
-   * Need to handleContinue stmts There can be explicit continues (in which case label is non null) There can always be implicit continues ASTNode is
-   * non null
+   * Need to handleContinue stmts There can be explicit continues (in which case label is non null) There can always be
+   * implicit continues ASTNode is non null
    */
   public DavaFlowSet<E> handleContinue(String label, DavaFlowSet<E> out, ASTNode node) {
     // get the explicit list with this label from the continueList
@@ -945,11 +933,11 @@ public abstract class StructuredAnalysis<E> {
   }
 
   /*
-   * The before set contains the before set of an ASTNode , a Stmt , and AugmentedStmt, Notice for instance for a for loop we will get a before set
-   * before the loop and an after set after the loop
-   * 
-   * we dont have info about before set before executing a particular stmt that kind of info is available if you know which stmt u want e.g. the
-   * update stmt
+   * The before set contains the before set of an ASTNode , a Stmt , and AugmentedStmt, Notice for instance for a for loop we
+   * will get a before set before the loop and an after set after the loop
+   *
+   * we dont have info about before set before executing a particular stmt that kind of info is available if you know which
+   * stmt u want e.g. the update stmt
    */
   public DavaFlowSet<E> getBeforeSet(Object beforeThis) {
     return beforeSets.get(beforeThis);

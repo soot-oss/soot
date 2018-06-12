@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.infoflow;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -52,7 +74,8 @@ import soot.toolkits.scalar.Pair;
 // large data structure, but that entire structure will be represented only by
 // the parameter's one node in the data flow graph.
 
-public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Pair<EquivalentValue, EquivalentValue>>> {
+public class SimpleMethodInfoFlowAnalysis
+    extends ForwardFlowAnalysis<Unit, FlowSet<Pair<EquivalentValue, EquivalentValue>>> {
   private static final Logger logger = LoggerFactory.getLogger(SimpleMethodInfoFlowAnalysis.class);
   SootMethod sm;
   Value thisLocal;
@@ -130,7 +153,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
   }
 
   /** A constructor that doesn't run the analysis */
-  protected SimpleMethodInfoFlowAnalysis(UnitGraph g, InfoFlowAnalysis dfa, boolean ignoreNonRefTypeFlow, boolean dummyDontRunAnalysisYet) {
+  protected SimpleMethodInfoFlowAnalysis(UnitGraph g, InfoFlowAnalysis dfa, boolean ignoreNonRefTypeFlow,
+      boolean dummyDontRunAnalysisYet) {
     super(g);
     this.sm = g.getBody().getMethod();
     if (sm.isStatic()) {
@@ -172,8 +196,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
     return infoFlowGraph;
   }
 
-  protected void merge(FlowSet<Pair<EquivalentValue, EquivalentValue>> in1, FlowSet<Pair<EquivalentValue, EquivalentValue>> in2,
-      FlowSet<Pair<EquivalentValue, EquivalentValue>> out) {
+  protected void merge(FlowSet<Pair<EquivalentValue, EquivalentValue>> in1,
+      FlowSet<Pair<EquivalentValue, EquivalentValue>> in2, FlowSet<Pair<EquivalentValue, EquivalentValue>> out) {
     in1.union(in2, out);
   }
 
@@ -256,7 +280,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
   }
 
   // for when data flows to the data structure pointed to by a local
-  protected void handleFlowsToDataStructure(Value base, Value initialSource, FlowSet<Pair<EquivalentValue, EquivalentValue>> fs) {
+  protected void handleFlowsToDataStructure(Value base, Value initialSource,
+      FlowSet<Pair<EquivalentValue, EquivalentValue>> fs) {
     List<Value> sinks = getDirectSources(base, fs);
     if (isTrackableSink(base)) {
       sinks.add(base);
@@ -322,7 +347,9 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
 
   protected List<Value> handleInvokeExpr(InvokeExpr ie, Stmt is, FlowSet<Pair<EquivalentValue, EquivalentValue>> fs) {
     // get the data flow graph
-    MutableDirectedGraph<EquivalentValue> dataFlowGraph = dfa.getInvokeInfoFlowSummary(ie, is, sm); // must return a graph whose nodes are Refs!!!
+    MutableDirectedGraph<EquivalentValue> dataFlowGraph = dfa.getInvokeInfoFlowSummary(ie, is, sm); // must return a graph
+                                                                                                    // whose nodes are
+                                                                                                    // Refs!!!
     // if( ie.getMethodRef().resolve().getSubSignature().equals(new String("boolean remove(java.lang.Object)")) )
     // {
     // logger.debug("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE infoFlowGraph: ");
@@ -336,7 +363,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
       EquivalentValue nodeEqVal = nodeIt.next();
 
       if (!(nodeEqVal.getValue() instanceof Ref)) {
-        throw new RuntimeException("Illegal node type in data flow graph:" + nodeEqVal.getValue() + " should be an object of type Ref.");
+        throw new RuntimeException(
+            "Illegal node type in data flow graph:" + nodeEqVal.getValue() + " should be an object of type Ref.");
       }
 
       Ref node = (Ref) nodeEqVal.getValue();
@@ -380,7 +408,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
     return returnValueSources;
   }
 
-  protected void flowThrough(FlowSet<Pair<EquivalentValue, EquivalentValue>> in, Unit unit, FlowSet<Pair<EquivalentValue, EquivalentValue>> out) {
+  protected void flowThrough(FlowSet<Pair<EquivalentValue, EquivalentValue>> in, Unit unit,
+      FlowSet<Pair<EquivalentValue, EquivalentValue>> out) {
     Stmt stmt = (Stmt) unit;
 
     if (in != out) {
@@ -396,10 +425,11 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
     // out.difference(oldFlow, changedFlow);
 
     /*
-     * Iterator changedFlowIt = changedFlow.iterator(); while(changedFlowIt.hasNext()) { Pair pair = (Pair) changedFlowIt.next(); EquivalentValue
-     * defEqVal = (EquivalentValue) pair.getO1(); Value def = defEqVal.getValue(); boolean defIsUsed = false; Iterator usesIt =
-     * stmt.getUseBoxes().iterator(); while(usesIt.hasNext()) { Value use = ((ValueBox) usesIt.next()).getValue(); if(use.equivTo(def)) defIsUsed =
-     * true; } if(!defIsUsed) changedFlow.remove(pair); }
+     * Iterator changedFlowIt = changedFlow.iterator(); while(changedFlowIt.hasNext()) { Pair pair = (Pair)
+     * changedFlowIt.next(); EquivalentValue defEqVal = (EquivalentValue) pair.getO1(); Value def = defEqVal.getValue();
+     * boolean defIsUsed = false; Iterator usesIt = stmt.getUseBoxes().iterator(); while(usesIt.hasNext()) { Value use =
+     * ((ValueBox) usesIt.next()).getValue(); if(use.equivTo(def)) defIsUsed = true; } if(!defIsUsed)
+     * changedFlow.remove(pair); }
      */
 
     // Bail out if there's nothing to consider, unless this might be the first run
@@ -541,7 +571,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
     // changedFlow.union(out, out); - OBSELETE optimization
   }
 
-  protected void copy(FlowSet<Pair<EquivalentValue, EquivalentValue>> source, FlowSet<Pair<EquivalentValue, EquivalentValue>> dest) {
+  protected void copy(FlowSet<Pair<EquivalentValue, EquivalentValue>> source,
+      FlowSet<Pair<EquivalentValue, EquivalentValue>> dest) {
     source.copy(dest);
 
   }

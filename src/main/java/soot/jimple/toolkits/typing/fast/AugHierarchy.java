@@ -1,24 +1,28 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2008 Ben Bellamy 
- * 
- * All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.toolkits.typing.fast;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2008 Ben Bellamy
+ *
+ * All rights reserved.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Collection;
 import java.util.Collections;
@@ -53,7 +57,8 @@ public class AugHierarchy implements IHierarchy {
         return Collections.<Type>singletonList(a);
       } else if (a instanceof BooleanType || b instanceof BooleanType) {
         return Collections.<Type>emptyList();
-      } else if ((a instanceof ByteType && b instanceof Integer32767Type) || (b instanceof ByteType && a instanceof Integer32767Type)) {
+      } else if ((a instanceof ByteType && b instanceof Integer32767Type)
+          || (b instanceof ByteType && a instanceof Integer32767Type)) {
         return Collections.<Type>singletonList(ShortType.v());
       } else if ((a instanceof CharType && (b instanceof ShortType || b instanceof ByteType))
           || (b instanceof CharType && (a instanceof ShortType || a instanceof ByteType))) {
@@ -102,21 +107,23 @@ public class AugHierarchy implements IHierarchy {
         return false;
       }
     } else if (ancestor instanceof CharType) {
-      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type || child instanceof Integer32767Type) {
+      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type
+          || child instanceof Integer32767Type) {
         return true;
       } else {
         return false;
       }
     } else if (ancestor instanceof ShortType) {
-      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type || child instanceof Integer32767Type
-          || child instanceof ByteType) {
+      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type
+          || child instanceof Integer32767Type || child instanceof ByteType) {
         return true;
       } else {
         return false;
       }
     } else if (ancestor instanceof IntType) {
-      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type || child instanceof Integer32767Type
-          || child instanceof ByteType || child instanceof CharType || child instanceof ShortType) {
+      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type
+          || child instanceof Integer32767Type || child instanceof ByteType || child instanceof CharType
+          || child instanceof ShortType) {
         return true;
       } else {
         return false;

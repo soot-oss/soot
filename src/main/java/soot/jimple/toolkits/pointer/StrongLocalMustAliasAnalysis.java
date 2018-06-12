@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jimple.toolkits.pointer;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.HashSet;
 import java.util.List;
@@ -33,17 +36,18 @@ import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.toolkits.graph.UnitGraph;
 
 /**
- * A special version of the local must-alias analysis that takes redefinitions within loops into account. For variable that is redefined in a loop,
- * the must-alias information is invalidated and set to {@link LocalMustAliasAnalysis#UNKNOWN}. E.g. assume the following example: <code>
+ * A special version of the local must-alias analysis that takes redefinitions within loops into account. For variable that
+ * is redefined in a loop, the must-alias information is invalidated and set to {@link LocalMustAliasAnalysis#UNKNOWN}. E.g.
+ * assume the following example: <code>
  * while(..) {
  *   c = foo();        //(1)
  *   c.doSomething();  //(2)
  * }
  * </code>
- * 
- * While it is certainly true that c at (2) must-alias c at (1) (they have the same value number), it is also true that in a second iteration, c at
- * (2) may not alias the previous c at (2).
- * 
+ *
+ * While it is certainly true that c at (2) must-alias c at (1) (they have the same value number), it is also true that in a
+ * second iteration, c at (2) may not alias the previous c at (2).
+ *
  * @author Eric Bodden
  */
 public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {

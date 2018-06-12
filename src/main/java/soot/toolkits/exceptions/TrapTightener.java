@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 John Jorgensen
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.toolkits.exceptions;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 John Jorgensen
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Iterator;
 import java.util.Map;
@@ -39,14 +42,14 @@ import soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest;
 import soot.util.Chain;
 
 /**
- * A {@link BodyTransformer} that shrinks the protected area covered by each {@link Trap} in the {@link Body} so that it begins at the first of the
- * {@link Body}'s {@link Unit}s which might throw an exception caught by the {@link Trap} and ends just after the last {@link Unit} which might throw
- * an exception caught by the {@link Trap}. In the case where none of the {@link Unit}s protected by a {@link Trap} can throw the exception it
- * catches, the {@link Trap}'s protected area is left completely empty, which will likely cause the {@link UnreachableCodeEliminator} to remove the
- * {@link Trap} completely.
+ * A {@link BodyTransformer} that shrinks the protected area covered by each {@link Trap} in the {@link Body} so that it
+ * begins at the first of the {@link Body}'s {@link Unit}s which might throw an exception caught by the {@link Trap} and ends
+ * just after the last {@link Unit} which might throw an exception caught by the {@link Trap}. In the case where none of the
+ * {@link Unit}s protected by a {@link Trap} can throw the exception it catches, the {@link Trap}'s protected area is left
+ * completely empty, which will likely cause the {@link UnreachableCodeEliminator} to remove the {@link Trap} completely.
  *
- * The {@link TrapTightener} is used to reduce the risk of unverifiable code which can result from the use of {@link ExceptionalUnitGraph}s from which
- * unrealizable exceptional control flow edges have been removed.
+ * The {@link TrapTightener} is used to reduce the risk of unverifiable code which can result from the use of
+ * {@link ExceptionalUnitGraph}s from which unrealizable exceptional control flow edges have been removed.
  */
 
 public final class TrapTightener extends TrapTransformer {
@@ -139,8 +142,8 @@ public final class TrapTightener extends TrapTransformer {
   }
 
   /**
-   * A utility routine which determines if a particular {@link Unit} might throw an exception to a particular {@link Trap}, according to the
-   * information supplied by a particular control flow graph.
+   * A utility routine which determines if a particular {@link Unit} might throw an exception to a particular {@link Trap},
+   * according to the information supplied by a particular control flow graph.
    *
    * @param g
    *          The control flow graph providing information about exceptions.

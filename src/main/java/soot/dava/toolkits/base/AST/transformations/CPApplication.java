@@ -1,5 +1,27 @@
 package soot.dava.toolkits.base.AST.transformations;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,20 +53,20 @@ import soot.jimple.Stmt;
 /*
  * The traversal utilizes the results of the CP (constant propagation analysis) to substitute uses
  * of locals where ever possible. Note we also have information about the constant fields in the program but
- * we are not going to de-inline those fields because it is thought that refereing to the field as a TYPE-DEF 
+ * we are not going to de-inline those fields because it is thought that refereing to the field as a TYPE-DEF
  * gives more info than the actual value
- * 
- * 
+ *
+ *
  Need to be very clear when a local can be used
  It can be used in the following places:
- a, a conditional in if, ifelse, 
+ a, a conditional in if, ifelse,
  a1 while , do while, for condition  (after set of these will be used since those are the vars true at the start of the loop
  i.e. when the loop has not executed and also true at the end of the loop
 
  b, in the for init or update
- c, in a switch choice 
+ c, in a switch choice
  d, in a syncrhnoized block //wont do dont think we need to since this is a local
- and synching is always done on objects and we are not tracking objects 
+ and synching is always done on objects and we are not tracking objects
  d, in a statement
  *
  */
@@ -270,8 +292,8 @@ public class CPApplication extends DepthFirstAdapter {
   }
 
   /*
-   * Given a unary/binary or aggregated condition this method is used to find all the useBoxes or locals or fieldref in the case of unary conditions
-   * and then the set is checked for appropriate substitutions
+   * Given a unary/binary or aggregated condition this method is used to find all the useBoxes or locals or fieldref in the
+   * case of unary conditions and then the set is checked for appropriate substitutions
    */
   public ASTCondition changedCondition(ASTCondition cond, CPFlowSet set) {
     if (cond instanceof ASTAggregatedCondition) {

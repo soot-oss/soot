@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.AbstractCollection;
 import java.util.Collection;
@@ -34,8 +31,8 @@ import java.util.List;
 import soot.util.Chain;
 
 /**
- * An implementation of a Chain which can contain only Units, and handles patching to deal with element insertions and removals. This is done by
- * calling Unit.redirectJumpsToThisTo at strategic times.
+ * An implementation of a Chain which can contain only Units, and handles patching to deal with element insertions and
+ * removals. This is done by calling Unit.redirectJumpsToThisTo at strategic times.
  */
 @SuppressWarnings("serial")
 public class PatchingChain<E extends Unit> extends AbstractCollection<E> implements Chain<E> {
@@ -47,8 +44,9 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /**
-   * Returns the inner chain used by the PatchingChain. In general, this should not be used. However, direct access to the inner chain may be
-   * necessary if you wish to perform certain operations (such as control-flow manipulations) without interference from the patching algorithms.
+   * Returns the inner chain used by the PatchingChain. In general, this should not be used. However, direct access to the
+   * inner chain may be necessary if you wish to perform certain operations (such as control-flow manipulations) without
+   * interference from the patching algorithms.
    **/
   public Chain<E> getNonPatchingChain() {
     return innerChain;
@@ -115,9 +113,9 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain <code>toInsert</code> on an edge
-   * that is defined by <code>point_source</code> and <code>point_target</code>.
-   * 
+   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain
+   * <code>toInsert</code> on an edge that is defined by <code>point_source</code> and <code>point_target</code>.
+   *
    * @param toInsert
    *          the instrumentation to be added in the Chain
    * @param point_src
@@ -130,9 +128,9 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain <code>toInsert</code> on an edge
-   * that is defined by <code>point_source</code> and <code>point_target</code>.
-   * 
+   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain
+   * <code>toInsert</code> on an edge that is defined by <code>point_source</code> and <code>point_target</code>.
+   *
    * @param toInsert
    *          instrumentation to be added in the Chain
    * @param point_src
@@ -145,9 +143,9 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain <code>toInsert</code> on an edge
-   * that is defined by <code>point_source</code> and <code>point_target</code>.
-   * 
+   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain
+   * <code>toInsert</code> on an edge that is defined by <code>point_source</code> and <code>point_target</code>.
+   *
    * @param toInsert
    *          instrumentation to be added in the Chain
    * @param point_src
@@ -292,8 +290,8 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /**
-   * Returns an iterator over a copy of this chain. This avoids ConcurrentModificationExceptions from being thrown if the underlying Chain is modified
-   * during iteration. Do not use this to remove elements which have not yet been iterated over!
+   * Returns an iterator over a copy of this chain. This avoids ConcurrentModificationExceptions from being thrown if the
+   * underlying Chain is modified during iteration. Do not use this to remove elements which have not yet been iterated over!
    */
   public Iterator<E> snapshotIterator() {
     List<E> l = new LinkedList<E>(this);

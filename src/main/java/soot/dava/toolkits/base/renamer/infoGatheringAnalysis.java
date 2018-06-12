@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.renamer;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -167,9 +170,11 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   }
 
   /*
-   * This can be either an assignment or an identity statement. We are however only concerned with stmts which assign values to locals
-   * 
-   * The method sets the inDefinitionStmt flag to true and if this is a local assignment The ref to the local is stored in definedLocal
+   * This can be either an assignment or an identity statement. We are however only concerned with stmts which assign values
+   * to locals
+   *
+   * The method sets the inDefinitionStmt flag to true and if this is a local assignment The ref to the local is stored in
+   * definedLocal
    */
   public void inDefinitionStmt(DefinitionStmt s) {
     inDefinitionStmt = true;
@@ -178,9 +183,9 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
     if (v instanceof Local) {
       // System.out.println("This is a local:"+v);
       /*
-       * We want definedLocal to be set only if we are interested in naming it Variables that are created by Dava itself e.g. handler (refer to
-       * SuperFirstStmtHandler) Need not be renamed. So we check whether definedLocal is present in the info set if it is we set this other wise we
-       * dont
+       * We want definedLocal to be set only if we are interested in naming it Variables that are created by Dava itself e.g.
+       * handler (refer to SuperFirstStmtHandler) Need not be renamed. So we check whether definedLocal is present in the
+       * info set if it is we set this other wise we dont
        */
       if (info.contains((Local) v)) {
         definedLocal = (Local) v;
@@ -230,9 +235,9 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 
   /*
    * (non-Javadoc)
-   * 
-   * @see soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter#outInvokeExpr(soot.jimple.InvokeExpr) If it is a newInvoke expr we know that the name
-   * of the class can come in handy while renaming because this could be a subtype
+   *
+   * @see soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter#outInvokeExpr(soot.jimple.InvokeExpr) If it is a newInvoke
+   * expr we know that the name of the class can come in handy while renaming because this could be a subtype
    */
   public void outInvokeExpr(InvokeExpr ie) {
     // If this is within a definitionStmt of a local
@@ -384,7 +389,8 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   }
 
   /*
-   * If there are any locals at this point who do not have any className set it might be a good idea to store that information
+   * If there are any locals at this point who do not have any className set it might be a good idea to store that
+   * information
    */
   public void outASTMethodNode(ASTMethodNode node) {
     if (DEBUG) {
@@ -395,7 +401,8 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   }
 
   /*
-   * The method checks whether a particular ConditionExpr is a comparison of a local with a boolean If so the local is returned
+   * The method checks whether a particular ConditionExpr is a comparison of a local with a boolean If so the local is
+   * returned
    */
   private Local checkBooleanUse(ConditionExpr condition) {
     boolean booleanUse = false;

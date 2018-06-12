@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.AST.transformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,16 +43,16 @@ import soot.jimple.Stmt;
   Nomair A. Naeem 18-FEB-2005
 
   The class is responsible to do the following transformation on the AST
-  
-  label_1:{                                  label_1:{ 
+
+  label_1:{                                  label_1:{
      label_0:{                                  if(cond1 || cond2){
          if(cond1){                                 Body1
             break label_0;                      }
          }                                   }
-         if(!cond2){                         Body2    
-            break label_1;     ------>  
-	 }                                     Cant remove label_1 as Body 1 
-    }//end of label_0                          might have reference to it  
+         if(!cond2){                         Body2
+            break label_1;     ------>
+	 }                                     Cant remove label_1 as Body 1
+    }//end of label_0                          might have reference to it
     Body1                                      can however set some flag if we are
   }//end of label_1                            sure that label_1 is not broken
   Body2                                        and later removed
@@ -299,8 +302,8 @@ public class OrAggregatorOne extends DepthFirstAdapter {
   }
 
   /*
-   * The method will go through the iterator because of the sequence of methods called before in the outASTLabeledBlockNode it knows the following: 1,
-   * All nodes are ASTIFNodes
+   * The method will go through the iterator because of the sequence of methods called before in the outASTLabeledBlockNode
+   * it knows the following: 1, All nodes are ASTIFNodes
    */
   private List<ASTCondition> getConditions(Iterator it) {
     List<ASTCondition> toReturn = new ArrayList<ASTCondition>();

@@ -1,5 +1,27 @@
 package soot.toDex;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -158,18 +180,20 @@ import soot.util.Chain;
  * Creates {@code apk} or {@code jar} file with compiled {@code dex} classes. Main entry point for the "dex" output format.
  * </p>
  * <p>
- * Use {@link #add(SootClass)} to add classes that should be printed as dex output and {@link #print()} to finally print the classes.
+ * Use {@link #add(SootClass)} to add classes that should be printed as dex output and {@link #print()} to finally print the
+ * classes.
  * </p>
  * <p>
- * If the printer has found the original {@code APK} of an added class (via {@link SourceLocator#dexClassIndex()}), the files in the {@code APK} are
- * copied to a new one, replacing it's {@code classes.dex} and excluding the signature files. Note that you have to sign and align the APK yourself,
- * with jarsigner and zipalign, respectively.
+ * If the printer has found the original {@code APK} of an added class (via {@link SourceLocator#dexClassIndex()}), the files
+ * in the {@code APK} are copied to a new one, replacing it's {@code classes.dex} and excluding the signature files. Note
+ * that you have to sign and align the APK yourself, with jarsigner and zipalign, respectively.
  * </p>
  * <p>
  * If {@link Options#output_jar} flag is set, the printer produces {@code JAR} file.
  * </p>
  * <p>
- * If there is no original {@code APK} and {@link Options#output_jar} flag is not set the printer just emits a {@code classes.dex}.
+ * If there is no original {@code APK} and {@link Options#output_jar} flag is not set the printer just emits a
+ * {@code classes.dex}.
  * </p>
  *
  * @see <a href= "https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jarsigner.html">jarsigner documentation</a>
@@ -189,8 +213,8 @@ public class DexPrinter {
   }
 
   /**
-   * Creates the {@link MultiDexBuilder} that shall be used for creating potentially multiple dex files. This method makes sure that users of Soot can
-   * overwrite the {@link MultiDexBuilder} with custom strategies.
+   * Creates the {@link MultiDexBuilder} that shall be used for creating potentially multiple dex files. This method makes
+   * sure that users of Soot can overwrite the {@link MultiDexBuilder} with custom strategies.
    *
    * @return The new {@link MultiDexBuilder}
    */
@@ -224,14 +248,14 @@ public class DexPrinter {
   }
 
   protected static FieldReference toFieldReference(SootField f) {
-    FieldReference fieldRef = new ImmutableFieldReference(SootToDexUtils.getDexClassName(f.getDeclaringClass().getName()), f.getName(),
-        SootToDexUtils.getDexTypeDescriptor(f.getType()));
+    FieldReference fieldRef = new ImmutableFieldReference(SootToDexUtils.getDexClassName(f.getDeclaringClass().getName()),
+        f.getName(), SootToDexUtils.getDexTypeDescriptor(f.getType()));
     return fieldRef;
   }
 
   protected static FieldReference toFieldReference(SootFieldRef ref) {
-    FieldReference fieldRef = new ImmutableFieldReference(SootToDexUtils.getDexClassName(ref.declaringClass().getName()), ref.name(),
-        SootToDexUtils.getDexTypeDescriptor(ref.type()));
+    FieldReference fieldRef = new ImmutableFieldReference(SootToDexUtils.getDexClassName(ref.declaringClass().getName()),
+        ref.name(), SootToDexUtils.getDexTypeDescriptor(ref.type()));
     return fieldRef;
   }
 
@@ -240,8 +264,8 @@ public class DexPrinter {
     for (Type t : m.parameterTypes()) {
       parameters.add(SootToDexUtils.getDexTypeDescriptor(t));
     }
-    MethodReference methodRef = new ImmutableMethodReference(SootToDexUtils.getDexClassName(m.declaringClass().getName()), m.name(), parameters,
-        SootToDexUtils.getDexTypeDescriptor(m.returnType()));
+    MethodReference methodRef = new ImmutableMethodReference(SootToDexUtils.getDexClassName(m.declaringClass().getName()),
+        m.name(), parameters, SootToDexUtils.getDexTypeDescriptor(m.returnType()));
     return methodRef;
   }
 
@@ -366,7 +390,8 @@ public class DexPrinter {
     manifest.getMainAttributes().put(new Attributes.Name("Created-By"), "Soot Dex Printer");
 
     if (dexFiles != null && !dexFiles.isEmpty()) {
-      manifest.getMainAttributes().put(new Attributes.Name("Dex-Location"), dexFiles.stream().map(File::getName).collect(Collectors.joining(" ")));
+      manifest.getMainAttributes().put(new Attributes.Name("Dex-Location"),
+          dexFiles.stream().map(File::getName).collect(Collectors.joining(" ")));
     }
 
     final ZipEntry manifestEntry = new ZipEntry(JarFile.MANIFEST_NAME);
@@ -511,7 +536,8 @@ public class DexPrinter {
         String parameters = sp2[1].replaceAll("\\)", "");
         List<String> paramTypeList = parameters.isEmpty() ? null : Arrays.asList(parameters.split(","));
 
-        return new ImmutableMethodEncodedValue(new ImmutableMethodReference(classString, methodNameString, paramTypeList, returnType));
+        return new ImmutableMethodEncodedValue(
+            new ImmutableMethodReference(classString, methodNameString, paramTypeList, returnType));
       }
       case 'N': { // null (Dalvik specific?)
         return ImmutableNullEncodedValue.INSTANCE;
@@ -621,15 +647,16 @@ public class DexPrinter {
         // Build field annotations
         Set<Annotation> fieldAnnotations = buildFieldAnnotations(f);
 
-        ImmutableField field = new ImmutableField(classType, f.getName(), SootToDexUtils.getDexTypeDescriptor(f.getType()), f.getModifiers(),
-            staticInit, fieldAnnotations);
+        ImmutableField field = new ImmutableField(classType, f.getName(), SootToDexUtils.getDexTypeDescriptor(f.getType()),
+            f.getModifiers(), staticInit, fieldAnnotations);
         fields.add(field);
       }
     }
 
     Collection<Method> methods = toMethods(c);
 
-    ClassDef classDef = new ImmutableClassDef(classType, accessFlags, superClass, interfaces, sourceFile, buildClassAnnotations(c), fields, methods);
+    ClassDef classDef = new ImmutableClassDef(classType, accessFlags, superClass, interfaces, sourceFile,
+        buildClassAnnotations(c), fields, methods);
     dexBuilder.internClass(classDef);
   }
 
@@ -651,8 +678,8 @@ public class DexPrinter {
         // EnclosingClass annotation
         ImmutableAnnotationElement enclosingElement = new ImmutableAnnotationElement("value",
             new ImmutableTypeEncodedValue(SootToDexUtils.getDexClassName(c.getOuterClass().getName())));
-        annotations
-            .add(new ImmutableAnnotation(AnnotationVisibility.SYSTEM, "Ldalvik/annotation/EnclosingClass;", Collections.singleton(enclosingElement)));
+        annotations.add(new ImmutableAnnotation(AnnotationVisibility.SYSTEM, "Ldalvik/annotation/EnclosingClass;",
+            Collections.singleton(enclosingElement)));
       }
     }
 
@@ -757,7 +784,7 @@ public class DexPrinter {
 
   /**
    * Returns all method parameter annotations (or null) for a specific parameter
-   * 
+   *
    * @param m
    *          the method
    * @param paramIdx
@@ -814,7 +841,8 @@ public class DexPrinter {
         LOGGER.info("Signature annotation without value detected");
       }
 
-      ImmutableAnnotation ann = new ImmutableAnnotation(AnnotationVisibility.SYSTEM, "Ldalvik/annotation/Signature;", elements);
+      ImmutableAnnotation ann
+          = new ImmutableAnnotation(AnnotationVisibility.SYSTEM, "Ldalvik/annotation/Signature;", elements);
       annotations.add(ann);
       skipList.add("Ldalvik/annotation/Signature;");
     }
@@ -859,7 +887,8 @@ public class DexPrinter {
     return annotations;
   }
 
-  private List<ImmutableAnnotation> buildVisibilityParameterAnnotationTag(VisibilityParameterAnnotationTag t, Set<String> skipList, int paramIdx) {
+  private List<ImmutableAnnotation> buildVisibilityParameterAnnotationTag(VisibilityParameterAnnotationTag t,
+      Set<String> skipList, int paramIdx) {
     if (t.getVisibilityAnnotations() == null) {
       return Collections.emptyList();
     }
@@ -892,8 +921,8 @@ public class DexPrinter {
             }
           }
 
-          ImmutableAnnotation ann = new ImmutableAnnotation(getVisibility(vat.getVisibility()), SootToDexUtils.getDexClassName(at.getType()),
-              elements);
+          ImmutableAnnotation ann = new ImmutableAnnotation(getVisibility(vat.getVisibility()),
+              SootToDexUtils.getDexClassName(at.getType()), elements);
           annotations.add(ann);
         }
       }
@@ -924,12 +953,13 @@ public class DexPrinter {
       }
     }
 
-    ImmutableMethodReference mRef = new ImmutableMethodReference(SootToDexUtils.getDexClassName(t.getEnclosingClass()), t.getEnclosingMethod(),
-        typeList, returnTypeS);
+    ImmutableMethodReference mRef = new ImmutableMethodReference(SootToDexUtils.getDexClassName(t.getEnclosingClass()),
+        t.getEnclosingMethod(), typeList, returnTypeS);
     ImmutableMethodEncodedValue methodRef = new ImmutableMethodEncodedValue(mRef);
     AnnotationElement methodElement = new ImmutableAnnotationElement("value", methodRef);
 
-    return new ImmutableAnnotation(AnnotationVisibility.SYSTEM, "Ldalvik/annotation/EnclosingMethod;", Collections.singleton(methodElement));
+    return new ImmutableAnnotation(AnnotationVisibility.SYSTEM, "Ldalvik/annotation/EnclosingMethod;",
+        Collections.singleton(methodElement));
   }
 
   private List<Annotation> buildInnerClassAttribute(SootClass parentClass, InnerClassAttribute t, Set<String> skipList) {
@@ -971,7 +1001,8 @@ public class DexPrinter {
         // InnerClass annotation
         List<AnnotationElement> elements = new ArrayList<AnnotationElement>();
 
-        ImmutableAnnotationElement flagsElement = new ImmutableAnnotationElement("accessFlags", new ImmutableIntEncodedValue(icTag.getAccessFlags()));
+        ImmutableAnnotationElement flagsElement
+            = new ImmutableAnnotationElement("accessFlags", new ImmutableIntEncodedValue(icTag.getAccessFlags()));
         elements.add(flagsElement);
 
         ImmutableEncodedValue nameValue;
@@ -1022,8 +1053,8 @@ public class DexPrinter {
 
       ImmutableArrayEncodedValue classesValue = new ImmutableArrayEncodedValue(classes);
       ImmutableAnnotationElement element = new ImmutableAnnotationElement("value", classesValue);
-      ImmutableAnnotation memberAnnotation = new ImmutableAnnotation(AnnotationVisibility.SYSTEM, "Ldalvik/annotation/MemberClasses;",
-          Collections.singletonList(element));
+      ImmutableAnnotation memberAnnotation = new ImmutableAnnotation(AnnotationVisibility.SYSTEM,
+          "Ldalvik/annotation/MemberClasses;", Collections.singletonList(element));
       if (anns == null) {
         anns = new ArrayList<Annotation>();
       }
@@ -1067,7 +1098,8 @@ public class DexPrinter {
       String returnType = SootToDexUtils.getDexTypeDescriptor(sm.getReturnType());
 
       int accessFlags = SootToDexUtils.getDexAccessFlags(sm);
-      ImmutableMethod meth = new ImmutableMethod(classType, sm.getName(), parameters, returnType, accessFlags, buildMethodAnnotations(sm), impl);
+      ImmutableMethod meth = new ImmutableMethod(classType, sm.getName(), parameters, returnType, accessFlags,
+          buildMethodAnnotations(sm), impl);
       methods.add(meth);
     }
     return methods;
@@ -1140,11 +1172,13 @@ public class DexPrinter {
     int registerCount = stmtV.getRegisterCount();
     if (inWords > registerCount) {
       /*
-       * as the Dalvik VM moves the parameters into the last registers, the "in" word count must be at least equal to the register count. a smaller
-       * register count could occur if soot generated the method body, see e.g. the handling of phantom refs in
-       * SootMethodRefImpl.resolve(StringBuffer): the body has no locals for the ParameterRefs, it just throws an error.
+       * as the Dalvik VM moves the parameters into the last registers, the "in" word count must be at least equal to the
+       * register count. a smaller register count could occur if soot generated the method body, see e.g. the handling of
+       * phantom refs in SootMethodRefImpl.resolve(StringBuffer): the body has no locals for the ParameterRefs, it just
+       * throws an error.
        *
-       * we satisfy the verifier by just increasing the register count, since calling phantom refs will lead to an error anyway.
+       * we satisfy the verifier by just increasing the register count, since calling phantom refs will lead to an error
+       * anyway.
        */
       registerCount = inWords;
     }
@@ -1315,8 +1349,8 @@ public class DexPrinter {
    * @param labelAssigner
    *          The label assigner to be used for creating new labels
    */
-  private void insertIntermediateJump(int targetInsPos, int jumpInsPos, StmtVisitor stmtV, List<BuilderInstruction> instructions,
-      LabelAssigner labelAssigner) {
+  private void insertIntermediateJump(int targetInsPos, int jumpInsPos, StmtVisitor stmtV,
+      List<BuilderInstruction> instructions, LabelAssigner labelAssigner) {
     // Get the original jump instruction
     BuilderInstruction originalJumpInstruction = instructions.get(jumpInsPos);
     Insn originalJumpInsn = stmtV.getInsnForInstruction(originalJumpInstruction);
@@ -1402,8 +1436,8 @@ public class DexPrinter {
     stmtV.fakeNewInsn(Jimple.v().newNopStmt(), jumpAround, jumpAroundInstruction);
   }
 
-  private void addRegisterAssignmentDebugInfo(LocalRegisterAssignmentInformation registerAssignment, Map<Local, Integer> seenRegisters,
-      MethodImplementationBuilder builder) {
+  private void addRegisterAssignmentDebugInfo(LocalRegisterAssignmentInformation registerAssignment,
+      Map<Local, Integer> seenRegisters, MethodImplementationBuilder builder) {
     Local local = registerAssignment.getLocal();
     String dexLocalType = SootToDexUtils.getDexTypeDescriptor(local.getType());
     StringReference localName = new ImmutableStringReference(local.getName());
@@ -1448,7 +1482,8 @@ public class DexPrinter {
     stmtV.finalizeInstructions(trapReferences);
   }
 
-  private void toTries(Collection<Trap> traps, StmtVisitor stmtV, MethodImplementationBuilder builder, LabelAssigner labelAssigner) {
+  private void toTries(Collection<Trap> traps, StmtVisitor stmtV, MethodImplementationBuilder builder,
+      LabelAssigner labelAssigner) {
     // Original code: assume that the mapping startCodeAddress -> TryItem is
     // enough for
     // a "code range", ignore different end Units / try lengths
@@ -1558,14 +1593,16 @@ public class DexPrinter {
         // therefore hack it using java.lang.Throwable.
         if ("Ljava/lang/Throwable;".equals(handler.getExceptionType())) {
           /*
-           * builder.addCatch(labelAssigner.getLabelAtAddress(range. startAddress), labelAssigner.getLabelAtAddress(range.endAddress),
-           * labelAssigner.getLabelAtAddress(handler. getHandlerCodeAddress()));
+           * builder.addCatch(labelAssigner.getLabelAtAddress(range. startAddress),
+           * labelAssigner.getLabelAtAddress(range.endAddress), labelAssigner.getLabelAtAddress(handler.
+           * getHandlerCodeAddress()));
            */
           allCaughtForRange = true;
         }
         // else
-        builder.addCatch(new ImmutableTypeReference(handler.getExceptionType()), labelAssigner.getLabelAtAddress(range.startAddress),
-            labelAssigner.getLabelAtAddress(range.endAddress), labelAssigner.getLabelAtAddress(handler.getHandlerCodeAddress()));
+        builder.addCatch(new ImmutableTypeReference(handler.getExceptionType()),
+            labelAssigner.getLabelAtAddress(range.startAddress), labelAssigner.getLabelAtAddress(range.endAddress),
+            labelAssigner.getLabelAtAddress(handler.getHandlerCodeAddress()));
       }
     }
   }
@@ -1595,7 +1632,8 @@ public class DexPrinter {
 
   public void print() {
     try {
-      if (Options.v().output_jar() || (originalApk != null && Options.v().output_format() != Options.output_format_force_dex)) {
+      if (Options.v().output_jar()
+          || (originalApk != null && Options.v().output_format() != Options.output_format_force_dex)) {
         printZip();
       } else {
         final String outputDir = SourceLocator.v().getOutputDir();

@@ -1,24 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * 
- * Copyright (C) 2013 Bernhard J. Berger
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.plugins.internal;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2013 Bernhard J. Berger
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.File;
 import java.security.InvalidParameterException;
@@ -39,7 +41,7 @@ import soot.plugins.model.Plugins;
 
 /**
  * Class for loading xml-based plugin configuration files.
- * 
+ *
  * @author Bernhard J. Berger
  */
 public class PluginLoader {
@@ -49,7 +51,7 @@ public class PluginLoader {
 
   /**
    * Each phase has to support the enabled option. We will add it if necessary.
-   * 
+   *
    * @param declaredOptions
    *          Options declared by the plugin.
    * @return option list definitly containing enabled.
@@ -70,7 +72,7 @@ public class PluginLoader {
 
   /**
    * Creates a space separated list from {@code declaredOptions}.
-   * 
+   *
    * @param options
    *          the list to transform.
    * @return a string containing all options separated by a space.
@@ -92,7 +94,7 @@ public class PluginLoader {
 
   /**
    * Splits a phase name and returns the pack name.
-   * 
+   *
    * @param phaseName
    *          Name of the phase.
    * @return the name of the pack.
@@ -107,7 +109,7 @@ public class PluginLoader {
 
   /**
    * Loads the phase plugin and adds it to PackManager.
-   * 
+   *
    * @param pluginDescription
    *          the plugin description instance read from configuration file.
    */
@@ -116,7 +118,8 @@ public class PluginLoader {
       final Object instance = PluginLoader.loadStrategy.create(pluginDescription.getClassName());
 
       if (!(instance instanceof SootPhasePlugin)) {
-        throw new RuntimeException("The plugin class '" + pluginDescription.getClassName() + "' does not implement SootPhasePlugin.");
+        throw new RuntimeException(
+            "The plugin class '" + pluginDescription.getClassName() + "' does not implement SootPhasePlugin.");
       }
 
       final SootPhasePlugin phasePlugin = (SootPhasePlugin) instance;
@@ -138,7 +141,7 @@ public class PluginLoader {
 
   /**
    * Loads the plugin configuration file {@code file} and registers the plugins.
-   * 
+   *
    * @param file
    *          the plugin configuration file.
    * @return {@code true} on success.
@@ -157,7 +160,8 @@ public class PluginLoader {
     }
 
     try {
-      final JAXBContext context = JAXBContext.newInstance(Plugins.class, PluginDescription.class, PhasePluginDescription.class);
+      final JAXBContext context
+          = JAXBContext.newInstance(Plugins.class, PluginDescription.class, PhasePluginDescription.class);
       final Unmarshaller unmarshaller = context.createUnmarshaller();
       final Object root = unmarshaller.unmarshal(configFile);
 
@@ -182,10 +186,10 @@ public class PluginLoader {
 
   /**
    * Load all plugins. Can be called by a custom main function.
-   * 
+   *
    * @param plugins
    *          the plugins to load.
-   * 
+   *
    * @throws RuntimeException
    *           if an error occurs during loading.
    */

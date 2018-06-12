@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2006 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.AST.transformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2006 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Iterator;
 import java.util.List;
@@ -47,24 +50,24 @@ import soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder;
 
 /*
  * if (true)   ---> remove conditional copy ifbody to parent
- * 
+ *
  * if(false) eliminate in all entirety
- * 
+ *
  * if(true)
  *    bla1
- * else 
+ * else
  *    bla2        remove conditional copy bla1 to parent
- *    
+ *
  * if(false)
  *    bla1
  *  else
  *    bla2      remoce conditional copy bla2 to parent
- *    
- *       
+ *
+ *
  * while(false)  eliminate in entirety... notice this is not an Uncondition loop but a ASTWhileNode
- * 
+ *
  * do{ .... } while(false)  eliminate loop copy body to parent
- * 
+ *
  * for(int i =0;false;i++)   remove for .  copy init stmts to parent
  */
 public class EliminateConditions extends DepthFirstAdapter {
@@ -195,8 +198,8 @@ public class EliminateConditions extends DepthFirstAdapter {
   }
 
   /*
-   * Method returns null if the Value is not a constant or not a boolean constant return true if the constant is true return false if the constant is
-   * false
+   * Method returns null if the Value is not a constant or not a boolean constant return true if the constant is true return
+   * false if the constant is false
    */
   public Boolean isBooleanConstant(Value internal) {
 
@@ -392,8 +395,8 @@ public class EliminateConditions extends DepthFirstAdapter {
           // transformations might remove it
           String label = ((ASTLabeledNode) temp).get_Label().toString();
           if (label != null) {
-            ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode(((ASTLabeledNode) temp).get_Label(),
-                (List<Object>) temp.get_SubBodies().get(0));
+            ASTLabeledBlockNode labeledNode
+                = new ASTLabeledBlockNode(((ASTLabeledNode) temp).get_Label(), (List<Object>) temp.get_SubBodies().get(0));
             bodyContainingNode.add(index, labeledNode);
           } else {
             bodyContainingNode.addAll(index, (List) temp.get_SubBodies().get(0));
@@ -412,8 +415,8 @@ public class EliminateConditions extends DepthFirstAdapter {
           // transformations might remove it
           String label = ((ASTLabeledNode) temp).get_Label().toString();
           if (label != null) {
-            ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode(((ASTLabeledNode) temp).get_Label(),
-                (List<Object>) temp.get_SubBodies().get(0));
+            ASTLabeledBlockNode labeledNode
+                = new ASTLabeledBlockNode(((ASTLabeledNode) temp).get_Label(), (List<Object>) temp.get_SubBodies().get(0));
             bodyContainingNode.add(index, labeledNode);
           } else {
             bodyContainingNode.addAll(index, (List) temp.get_SubBodies().get(0));
@@ -424,8 +427,8 @@ public class EliminateConditions extends DepthFirstAdapter {
           // transformations might remove it
           String label = ((ASTLabeledNode) temp).get_Label().toString();
           if (label != null) {
-            ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode(((ASTLabeledNode) temp).get_Label(),
-                (List<Object>) temp.get_SubBodies().get(1));
+            ASTLabeledBlockNode labeledNode
+                = new ASTLabeledBlockNode(((ASTLabeledNode) temp).get_Label(), (List<Object>) temp.get_SubBodies().get(1));
             bodyContainingNode.add(index, labeledNode);
           } else {
             bodyContainingNode.addAll(index, (List) temp.get_SubBodies().get(1));

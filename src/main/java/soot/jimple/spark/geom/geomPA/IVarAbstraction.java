@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.spark.geom.geomPA;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2011 Richard Xiao
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.PrintStream;
 import java.util.Set;
@@ -34,7 +38,7 @@ import soot.util.Numberable;
 
 /**
  * Pointer/object representation in geomPTA. This interface defines the operations needed for manipulating a pointer/object.
- * 
+ *
  * @author xiao
  *
  */
@@ -83,7 +87,7 @@ public abstract class IVarAbstraction implements Numberable {
 
   /**
    * Make the variable other be the parent of this variable.
-   * 
+   *
    * @param other
    * @return
    */
@@ -112,16 +116,16 @@ public abstract class IVarAbstraction implements Numberable {
   }
 
   /**
-   * This pointer/object is reachable if its enclosing method is reachable. Pleas always call this method to check the status before querying
-   * points-to information.
+   * This pointer/object is reachable if its enclosing method is reachable. Pleas always call this method to check the status
+   * before querying points-to information.
    */
   public boolean reachable() {
     return id != -1;
   }
 
   /**
-   * Test if this pointer currently has points-to result. The result can be computed in the last iteration of geomPTA, although its willUpdate = false
-   * this round.
+   * Test if this pointer currently has points-to result. The result can be computed in the last iteration of geomPTA,
+   * although its willUpdate = false this round.
    */
   public boolean hasPTResult() {
     return num_of_diff_objs() != -1;
@@ -182,8 +186,8 @@ public abstract class IVarAbstraction implements Numberable {
 
   // Obtaining points-to information statistics
   /**
-   * Return -1 if this pointer does not have points-to information. This function can be used for testing if the pointer has been processed by
-   * geomPTA.
+   * Return -1 if this pointer does not have points-to information. This function can be used for testing if the pointer has
+   * been processed by geomPTA.
    */
   public abstract int num_of_diff_objs();
 
@@ -198,7 +202,7 @@ public abstract class IVarAbstraction implements Numberable {
   // Querying procedures
   /**
    * Perform context sensitive alias checking with qv.
-   * 
+   *
    * @param qv
    * @return
    */
@@ -206,7 +210,7 @@ public abstract class IVarAbstraction implements Numberable {
 
   /**
    * Test if the pointer in the context range [l, R) points to object obj.
-   * 
+   *
    * @param l
    * @param r
    * @param obj
@@ -216,7 +220,7 @@ public abstract class IVarAbstraction implements Numberable {
 
   /**
    * Test if the particular object has been obsoleted. It's mainly for points-to developer use.
-   * 
+   *
    * @param obj
    * @return
    */
@@ -224,15 +228,15 @@ public abstract class IVarAbstraction implements Numberable {
 
   /**
    * Obtain context insensitive points-to result (by removing contexts).
-   * 
+   *
    * @return
    */
   public abstract Set<AllocNode> get_all_points_to_objects();
 
   /**
-   * Given the pointers falling in the context range [l, r), we compute the set of context sensitive objects pointed to by those pointers. This
-   * function is designed in visitor pattern.
-   * 
+   * Given the pointers falling in the context range [l, r), we compute the set of context sensitive objects pointed to by
+   * those pointers. This function is designed in visitor pattern.
+   *
    * @see Obj_1cfa_extractor
    * @see Obj_full_extractor
    */

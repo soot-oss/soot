@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.infoflow;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -124,26 +146,28 @@ public class ClassInfoFlowAnalysis {
   }
 
   /*
-   * public void doFixedPointDataFlowAnalysis() { Iterator it = sootClass.getMethods().iterator(); while(it.hasNext()) { SootMethod method =
-   * (SootMethod) it.next();
-   * 
-   * if(method.isConcrete()) { Body b = method.retrieveActiveBody(); UnitGraph g = new ExceptionalUnitGraph(b); SmartMethodInfoFlowAnalysis smdfa =
-   * new SmartMethodInfoFlowAnalysis(g, dfa, true); if(methodToInfoFlowSummary.containsKey(method)) methodToInfoFlowSummary.remove(method); else
-   * methodCount++; methodToInfoFlowSummary.put(method, smdfa.getMethodDataFlowSummary());
-   * 
-   * // logger.debug(""+method + " has FLOW SENSITIVE infoFlowGraph: "); // printDataFlowGraph(mdfa.getMethodDataFlowGraph()); } else {
-   * if(methodToInfoFlowSummary.containsKey(method)) methodToInfoFlowSummary.remove(method); else methodCount++; methodToInfoFlowSummary.put(method,
+   * public void doFixedPointDataFlowAnalysis() { Iterator it = sootClass.getMethods().iterator(); while(it.hasNext()) {
+   * SootMethod method = (SootMethod) it.next();
+   *
+   * if(method.isConcrete()) { Body b = method.retrieveActiveBody(); UnitGraph g = new ExceptionalUnitGraph(b);
+   * SmartMethodInfoFlowAnalysis smdfa = new SmartMethodInfoFlowAnalysis(g, dfa, true);
+   * if(methodToInfoFlowSummary.containsKey(method)) methodToInfoFlowSummary.remove(method); else methodCount++;
+   * methodToInfoFlowSummary.put(method, smdfa.getMethodDataFlowSummary());
+   *
+   * // logger.debug(""+method + " has FLOW SENSITIVE infoFlowGraph: "); //
+   * printDataFlowGraph(mdfa.getMethodDataFlowGraph()); } else { if(methodToInfoFlowSummary.containsKey(method))
+   * methodToInfoFlowSummary.remove(method); else methodCount++; methodToInfoFlowSummary.put(method,
    * triviallyConservativeDataFlowAnalysis(method));
-   * 
+   *
    * // logger.debug(""+method + " has TRIVIALLY CONSERVATIVE infoFlowGraph: "); // printDataFlowGraph((MutableDirectedGraph)
    * methodToInfoFlowSummary.get(method)); } } } //
    */
   /*
-   * private void doSimpleConservativeDataFlowAnalysis() { Iterator it = sootClass.getMethods().iterator(); while(it.hasNext()) { SootMethod method =
-   * (SootMethod) it.next(); MutableDirectedGraph infoFlowGraph = simpleConservativeDataFlowAnalysis(method);
-   * if(methodToInfoFlowSummary.containsKey(method)) methodToInfoFlowSummary.remove(method); else methodCount++; methodToInfoFlowSummary.put(method,
-   * infoFlowGraph);
-   * 
+   * private void doSimpleConservativeDataFlowAnalysis() { Iterator it = sootClass.getMethods().iterator();
+   * while(it.hasNext()) { SootMethod method = (SootMethod) it.next(); MutableDirectedGraph infoFlowGraph =
+   * simpleConservativeDataFlowAnalysis(method); if(methodToInfoFlowSummary.containsKey(method))
+   * methodToInfoFlowSummary.remove(method); else methodCount++; methodToInfoFlowSummary.put(method, infoFlowGraph);
+   *
    * // logger.debug(""+method + " has infoFlowGraph: "); // printDataFlowGraph(infoFlowGraph); } } //
    */
   /** Does not require any fixed point calculation */

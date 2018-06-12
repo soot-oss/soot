@@ -1,34 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Maintained by: Nomair A. Naeem
- */
-
-/*
- * CHANGE LOG:  * November 22nd 2005 Moved this class from structuredAnalysis to traversals
- *                as this is a traversal
- *              * November 22nd 2005 Reasoned about correctness of code
- *              * Extensively tested this
- */
-
 package soot.dava.toolkits.base.AST.traversals;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,7 +65,7 @@ import soot.jimple.Stmt;
  a, a conditional in if, ifelse, while , do while, for condition
  b, in the for init or update
  c, in a switch choice
- d, in a syncrhnoized block 
+ d, in a syncrhnoized block
  d, in a statement
 
  */
@@ -127,8 +119,9 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
 
     /*
      * see if this is a def stmt in which case add an empty entry into the dU chain
-     * 
-     * The wisdowm behind this is that later on when this definition is used we will use this arraylist to store the uses of this definition
+     *
+     * The wisdowm behind this is that later on when this definition is used we will use this arraylist to store the uses of
+     * this definition
      */
     if (s instanceof DefinitionStmt) {
       // check if dU doesnt already have something for this
@@ -139,8 +132,8 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
   }
 
   /*
-   * The method gets the reaching defs of local used Then all the possible defs are added into the uD chain of the node The use is added to all the
-   * defs reaching this node
+   * The method gets the reaching defs of local used Then all the possible defs are added into the uD chain of the node The
+   * use is added to all the defs reaching this node
    */
   public void createUDDUChain(Local local, Object useNodeOrStatement) {
     // System.out.println("Local is:"+local);
@@ -237,7 +230,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
 
   /*
    * The key in a switch stmt can be a local or a value which can contain Locals
-   * 
+   *
    * Hence the some what indirect approach
    */
   public void inASTSwitchNode(ASTSwitchNode node) {
@@ -298,7 +291,8 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
   }
 
   /*
-   * The init of a for loop can use a local The condition of a for node can use a local The update in a for loop can use a local
+   * The init of a for loop can use a local The condition of a for node can use a local The update in a for loop can use a
+   * local
    */
   public void inASTForLoopNode(ASTForLoopNode node) {
 
@@ -332,8 +326,9 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
   }
 
   /*
-   * Input is a construct (ASTNode or statement) that has some locals used and output are all defs reached for all the uses in that construct...
-   * 
+   * Input is a construct (ASTNode or statement) that has some locals used and output are all defs reached for all the uses
+   * in that construct...
+   *
    * dont know whether it actually makes sense for the nodes but it definetly makes sense for the statements
    */
   public List getUDChain(Object node) {
@@ -341,7 +336,8 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
   }
 
   /*
-   * Give it a def stmt and it will return all places where it is used a use is either a statement or a node(condition, synch, switch , for etc)
+   * Give it a def stmt and it will return all places where it is used a use is either a statement or a node(condition,
+   * synch, switch , for etc)
    */
   public List getDUChain(Object node) {
     return dU.get(node);

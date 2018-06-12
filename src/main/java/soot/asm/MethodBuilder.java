@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2014 Raja Vallee-Rai and others
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.asm;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
@@ -37,7 +41,7 @@ import soot.tagkit.VisibilityParameterAnnotationTag;
 
 /**
  * Soot method builder.
- * 
+ *
  * @author Aaloan Miftah
  */
 class MethodBuilder extends JSRInlinerAdapter {
@@ -182,16 +186,16 @@ class MethodBuilder extends JSRInlinerAdapter {
   public void visitEnd() {
     super.visitEnd();
     if (visibleParamAnnotations != null) {
-      VisibilityParameterAnnotationTag tag = new VisibilityParameterAnnotationTag(visibleParamAnnotations.length,
-          AnnotationConstants.RUNTIME_VISIBLE);
+      VisibilityParameterAnnotationTag tag
+          = new VisibilityParameterAnnotationTag(visibleParamAnnotations.length, AnnotationConstants.RUNTIME_VISIBLE);
       for (VisibilityAnnotationTag vat : visibleParamAnnotations) {
         tag.addVisibilityAnnotation(vat);
       }
       method.addTag(tag);
     }
     if (invisibleParamAnnotations != null) {
-      VisibilityParameterAnnotationTag tag = new VisibilityParameterAnnotationTag(invisibleParamAnnotations.length,
-          AnnotationConstants.RUNTIME_INVISIBLE);
+      VisibilityParameterAnnotationTag tag
+          = new VisibilityParameterAnnotationTag(invisibleParamAnnotations.length, AnnotationConstants.RUNTIME_INVISIBLE);
       for (VisibilityAnnotationTag vat : invisibleParamAnnotations) {
         tag.addVisibilityAnnotation(vat);
       }

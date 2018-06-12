@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrick Lam, Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.toolkits.invoke;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1999 Patrick Lam, Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -163,8 +160,8 @@ public class StaticMethodBinder extends SceneTransformer {
               newName = newName + "_static";
             }
 
-            SootMethod ct = Scene.v().makeSootMethod(newName, newParameterTypes, target.getReturnType(), target.getModifiers() | Modifier.STATIC,
-                target.getExceptions());
+            SootMethod ct = Scene.v().makeSootMethod(newName, newParameterTypes, target.getReturnType(),
+                target.getModifiers() | Modifier.STATIC, target.getExceptions());
             target.getDeclaringClass().addMethod(ct);
 
             methodsList.addLast(ct);
@@ -207,7 +204,8 @@ public class StaticMethodBinder extends SceneTransformer {
                 if (st instanceof IdentityStmt) {
                   IdentityStmt is = (IdentityStmt) st;
                   if (is.getRightOp() instanceof ThisRef) {
-                    units.swapWith(st, Jimple.v().newIdentityStmt(is.getLeftOp(), Jimple.v().newParameterRef(is.getRightOp().getType(), 0)));
+                    units.swapWith(st, Jimple.v().newIdentityStmt(is.getLeftOp(),
+                        Jimple.v().newParameterRef(is.getRightOp().getType(), 0)));
                   } else {
                     if (is.getRightOp() instanceof ParameterRef) {
                       ParameterRef ro = (ParameterRef) is.getRightOp();
@@ -239,8 +237,8 @@ public class StaticMethodBinder extends SceneTransformer {
             if (localType.isInterface() || hierarchy.isClassSuperclassOf(localType, parameterType)) {
               Local castee = Jimple.v().newLocal("__castee", parameterType.getType());
               b.getLocals().add(castee);
-              b.getUnits().insertBefore(
-                  Jimple.v().newAssignStmt(castee, Jimple.v().newCastExpr(((InstanceInvokeExpr) ie).getBase(), parameterType.getType())), s);
+              b.getUnits().insertBefore(Jimple.v().newAssignStmt(castee,
+                  Jimple.v().newCastExpr(((InstanceInvokeExpr) ie).getBase(), parameterType.getType())), s);
               thisToAdd = castee;
             }
           }
@@ -268,7 +266,8 @@ public class StaticMethodBinder extends SceneTransformer {
               /*
                * In this case, we don't use throwPoint; instead, put the code right there.
                */
-              Stmt insertee = Jimple.v().newIfStmt(Jimple.v().newNeExpr(((InstanceInvokeExpr) ie).getBase(), NullConstant.v()), s);
+              Stmt insertee
+                  = Jimple.v().newIfStmt(Jimple.v().newNeExpr(((InstanceInvokeExpr) ie).getBase(), NullConstant.v()), s);
 
               b.getUnits().insertBefore(insertee, s);
 
@@ -278,8 +277,8 @@ public class StaticMethodBinder extends SceneTransformer {
               ThrowManager.addThrowAfter(b, insertee);
             } else {
               Stmt throwPoint = ThrowManager.getNullPointerExceptionThrower(b);
-              b.getUnits().insertBefore(Jimple.v().newIfStmt(Jimple.v().newEqExpr(((InstanceInvokeExpr) ie).getBase(), NullConstant.v()), throwPoint),
-                  s);
+              b.getUnits().insertBefore(Jimple.v()
+                  .newIfStmt(Jimple.v().newEqExpr(((InstanceInvokeExpr) ie).getBase(), NullConstant.v()), throwPoint), s);
             }
           }
 

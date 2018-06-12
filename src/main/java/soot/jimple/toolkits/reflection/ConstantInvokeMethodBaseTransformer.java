@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.reflection;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.Iterator;
 import java.util.Map;
 
@@ -21,16 +43,17 @@ import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 
 /**
- * This class creates a local for each string constant that is used as a base object to a reflective Method.invoke call. Therefore,
- * {@link soot.jimple.toolkits.callgraph.OnFlyCallGraphBuilder.TypeBasedReflectionModel} can handle such cases and extend the call graph for edges to
- * the specific java.lang.String method invoked by the reflective call.
+ * This class creates a local for each string constant that is used as a base object to a reflective Method.invoke call.
+ * Therefore, {@link soot.jimple.toolkits.callgraph.OnFlyCallGraphBuilder.TypeBasedReflectionModel} can handle such cases and
+ * extend the call graph for edges to the specific java.lang.String method invoked by the reflective call.
  *
  * @author Manuel Benz created on 02.08.17
  */
 public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
   private static final Logger logger = LoggerFactory.getLogger(ConstantInvokeMethodBaseTransformer.class);
 
-  private final static String INVOKE_SIG = "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>";
+  private final static String INVOKE_SIG
+      = "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>";
 
   public ConstantInvokeMethodBaseTransformer(Singletons.Global g) {
   }
@@ -44,8 +67,10 @@ public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
     boolean verbose = options.containsKey("verbose");
 
     for (SootClass sootClass : Scene.v().getApplicationClasses()) {
-      // In some rare cases we will have application classes that are not resolved due to being located in excluded packages (e.g., the
-      // ServiceConnection class constructed by FlowDroid: soot.jimple.infoflow.cfg.LibraryClassPatcher#patchServiceConnection)
+      // In some rare cases we will have application classes that are not resolved due to being located in excluded packages
+      // (e.g., the
+      // ServiceConnection class constructed by FlowDroid:
+      // soot.jimple.infoflow.cfg.LibraryClassPatcher#patchServiceConnection)
       if (sootClass.resolvingLevel() < SootClass.BODIES) {
         continue;
       }

@@ -1,45 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Feng Qian
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/**
- * Environment simulates the VM environment such as objects representing
- * classes, methods, fields, and so on. There is only one:
- *
- *  java.lang.ClassLoader object,
- *  java.lang.Class       object,
- *  java.lang.Field       object,
- *  java.lang.Method      object,
- *  java.lang.Constructor object,
- *  java.lang.Process     object,
- *  java.lang.Thread      object,
- *  java.io.FileSystem    object
- *
- * String objects are special, since there are other string constants.
- * An unknown object has the least type, same as array.
- * 
- * This class defines all abstract object as constants.
- * Temporary variables can be obtained from NativeHelper. 
- *
- * @author Feng Qian
- */
-
 package soot.jimple.toolkits.pointer.representations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Feng Qian
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import soot.G;
 import soot.Singletons;
@@ -71,14 +52,14 @@ public class Environment {
   private final ConstantObject stringobject = new GeneralConstObject(TypeConstants.v().STRINGCLASS, "unknownstring");
 
   /*
-   * to get finer resolution, it is worth to distinguish arrays and general scalars. WARNING: making array with java.lang.Object type may be a
-   * problem!
+   * to get finer resolution, it is worth to distinguish arrays and general scalars. WARNING: making array with
+   * java.lang.Object type may be a problem!
    */
   private final ConstantObject leastarray = new GeneralConstObject(TypeConstants.v().LEASTCLASS, "leastarray");
 
   /*
-   * makes a general unknown object, WARNING: unknown object must have the least type, it won't be useful when resolve virtual calls. Null type is a
-   * good candidate for this.
+   * makes a general unknown object, WARNING: unknown object must have the least type, it won't be useful when resolve
+   * virtual calls. Null type is a good candidate for this.
    */
   private final ConstantObject leastobject = new GeneralConstObject(TypeConstants.v().LEASTCLASS, "leastobject");
 
@@ -100,7 +81,8 @@ public class Environment {
   /*
    * represents the PrivilegedActionException thrown by AccessController.doPrivileged
    */
-  private final ConstantObject privilegedActionException = new GeneralConstObject(TypeConstants.v().PRIVILEGEDACTIONEXCEPTION, "constructor");
+  private final ConstantObject privilegedActionException
+      = new GeneralConstObject(TypeConstants.v().PRIVILEGEDACTIONEXCEPTION, "constructor");
 
   /********************* INTERFACE to NATIVE METHODS *******************/
   public ConstantObject getClassLoaderObject() {
