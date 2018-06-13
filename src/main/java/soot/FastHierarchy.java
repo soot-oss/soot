@@ -317,7 +317,7 @@ public class FastHierarchy {
    * is an interface that is not a subinterface of parent, this method will return false even though some objects
    * implementing the child interface may also implement the parent interface.
    */
-  protected boolean canStoreClass(SootClass child, SootClass parent) {
+  public boolean canStoreClass(SootClass child, SootClass parent) {
     parent.checkLevel(SootClass.HIERARCHY);
     child.checkLevel(SootClass.HIERARCHY);
     Interval parentInterval = classToInterval.get(parent);
