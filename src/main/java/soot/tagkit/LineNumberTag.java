@@ -24,7 +24,7 @@ package soot.tagkit;
 
 public class LineNumberTag implements Tag {
   /* it is a u2 value representing line number. */
-  int line_number;
+  protected int line_number;
 
   public LineNumberTag(int ln) {
     line_number = ln;

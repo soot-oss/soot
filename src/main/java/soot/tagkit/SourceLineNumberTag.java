@@ -24,8 +24,8 @@ package soot.tagkit;
 
 public class SourceLineNumberTag implements Tag {
   /* it is a value representing line number. */
-  private int startLineNumber;
-  private int endLineNumber;
+  protected int startLineNumber;
+  protected int endLineNumber;
 
   public SourceLineNumberTag(int ln) {
     startLineNumber = ln;
