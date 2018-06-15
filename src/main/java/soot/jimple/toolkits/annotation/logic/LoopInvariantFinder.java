@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,10 +72,7 @@ public class LoopInvariantFinder extends BodyTransformer {
     UnitGraph g = sld.getGraph();
     NaiveSideEffectTester nset = new NaiveSideEffectTester();
 
-    LoopFinder lf = new LoopFinder();
-    lf.internalTransform(b, phaseName, options);
-
-    Collection<Loop> loops = lf.loops();
+    Collection<Loop> loops = new LoopFinder().getLoops(b);
     constants = new ArrayList();
 
     // no loop invariants if no loops
