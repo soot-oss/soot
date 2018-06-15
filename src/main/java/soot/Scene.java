@@ -790,7 +790,7 @@ public class Scene // extends AbstractHost
     if (index < 0) {
       throw new RuntimeException("oops " + sig);
     }
-    return sig.substring(1, index);
+    return unescapeName(sig.substring(1, index));
   }
 
   public String signatureToSubsignature(String sig) {
