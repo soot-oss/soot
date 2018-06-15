@@ -998,13 +998,29 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Returns the SootClass with the given className. If no class with the given name exists, null is returned
+   * Returns the SootClass with the given className. If no class with the 
+   * given name exists, null is returned unless phantom refs are allowed.
+   * In this case, a new phantom class is created.
    *
-   * @param className
-   *          The name of the class to get
+   * @param className The name of the class to get
    * @return The class if it exists, otherwise null
    */
   public SootClass getSootClassUnsafe(String className) {
+	  return getSootClassUnsafe(className,true);
+  }
+  
+  /**
+   * Returns the SootClass with the given className. If no class with the
+   * given name exists, null is returned unless phantomNonExist=true and
+   * phantom refs are allowed. In this case, a new phantom class is created
+   * and returned.
+   * 
+   * @param className The name of the class to get
+   * @param phantomNonExist Indicates that a phantom class should be created if a 
+   * class with the given name does not exist and phantom refs are allowed
+   * @return The class if it exists, otherwise null  
+   */
+  public SootClass getSootClassUnsafe(String className, boolean phantomNonExist) {
     RefType type = nameToClass.get(className);
     if (type != null) {
       SootClass tsc = type.getSootClass();
@@ -1013,7 +1029,7 @@ public class Scene // extends AbstractHost
       }
     }
 
-    if (allowsPhantomRefs() || className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
+    if ((allowsPhantomRefs() && phantomNonExist) || className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
       SootClass c = new SootClass(className);
       c.isPhantom = true;
       addClassSilent(c);
