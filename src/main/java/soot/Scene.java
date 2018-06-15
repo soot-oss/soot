@@ -923,6 +923,18 @@ public class Scene // extends AbstractHost
    *           registered RefType.
    */
   public Type getType(String arg) {
+    Type t = getTypeUnsafe(arg, false);//Set to false to preserve the original functionality just in case
+    if(t == null) {
+      throw new RuntimeException("Unknown Type: '" + t + "'");
+    }
+    return t;
+  }
+  
+  public Type getTypeUnsafe(String arg) {
+    return getTypeUnsafe(arg, true);
+  }
+  
+  public Type getTypeUnsafe(String arg, boolean phantomNonExist) {
     String type = arg.replaceAll("([^\\[\\]]*)(.*)", "$1");
     int arrayCount = arg.contains("[") ? arg.replaceAll("([^\\[\\]]*)(.*)", "$2").length() / 2 : 0;
 
@@ -947,12 +959,13 @@ public class Scene // extends AbstractHost
         result = VoidType.v();
       } else if (type.equals("boolean")) {
         result = BooleanType.v();
-      } else {
-        throw new RuntimeException("unknown type: '" + type + "'");
+      } else if (allowsPhantomRefs() && phantomNonExist) {
+        getSootClassUnsafe(type, phantomNonExist);
+        result = getRefTypeUnsafe(type);
       }
     }
 
-    if (arrayCount != 0) {
+    if (result != null && arrayCount != 0) {
       result = ArrayType.v(result, arrayCount);
     }
     return result;
@@ -1006,7 +1019,7 @@ public class Scene // extends AbstractHost
    * @return The class if it exists, otherwise null
    */
   public SootClass getSootClassUnsafe(String className) {
-	  return getSootClassUnsafe(className,true);
+    return getSootClassUnsafe(className,true);
   }
   
   /**
@@ -1031,14 +1044,14 @@ public class Scene // extends AbstractHost
 
     if ((allowsPhantomRefs() && phantomNonExist) || className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
       synchronized(this) {
-    	//Double check the class has not been created already between last check an synchronize
-    	type = nameToClass.get(className);
-    	if (type != null) {
-    	  SootClass tsc = type.getSootClass();
-    	  if (tsc != null) {
-    	    return tsc;
-    	  }
-    	}
+        //Double check the class has not been created already between last check an synchronize
+        type = nameToClass.get(className);
+        if (type != null) {
+          SootClass tsc = type.getSootClass();
+          if (tsc != null) {
+            return tsc;
+          }
+        }
         SootClass c = new SootClass(className);
         c.isPhantom = true;
         addClassSilent(c);
