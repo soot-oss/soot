@@ -258,6 +258,9 @@ public class UseChecker extends AbstractStmtSwitch {
         at = (ArrayType) this.tg.get(base);
       } else {
         Type bt = this.tg.get(base);
+        // At the very least, the the type for this array should be whatever its
+        // base type is
+        et = bt;
 
         // If we have a type of java.lang.Object and access it like an object,
         // this could lead to any kind of object, so we have to look at the uses.
