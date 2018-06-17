@@ -1,5 +1,7 @@
 package soot.jimple.toolkits.typing.fast;
 
+import java.util.ArrayDeque;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -242,24 +244,33 @@ public class BytecodeHierarchy implements IHierarchy {
     }
   }
 
+  /* Returns a list of the super classes of a given type in which the anchor
+   * will always be the first element even when the types class is phantom.
+   * Note anchor should always be type Throwable as this is the root of all
+   * exception types.
+   */
   private static Deque<RefType> superclassPath(RefType t, RefType anchor) {
-    Deque<RefType> r = new LinkedList<RefType>();
+    Deque<RefType> r = new ArrayDeque<RefType>();
     r.addFirst(t);
-    if (t.getSootClass().isPhantom() && anchor != null) {
-      r.addFirst(anchor);
+    
+    if(TypeResolver.typesEqual(t, anchor)) {
       return r;
     }
-
+    
     SootClass sc = t.getSootClass();
-    while (sc.hasSuperclass()) {
+    while(sc.hasSuperclass()) {
       sc = sc.getSuperclass();
-      r.addFirst(sc.getType());
-      if (sc.isPhantom() && anchor != null) {
-        r.addFirst(anchor);
+      RefType cur = sc.getType();
+      r.addFirst(cur);
+      if(TypeResolver.typesEqual(cur, anchor)) {
         break;
       }
     }
-
+    
+    if(!TypeResolver.typesEqual(r.getFirst(), anchor)) {
+      r.addFirst(anchor);
+    }
+    
     return r;
   }
 
