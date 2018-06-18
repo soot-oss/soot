@@ -1334,7 +1334,6 @@
                 <name>Fix</name>
                 <alias>fix</alias>
                 <short_desc>Transparently fix staticness errors</short_desc>
-                <default/>
                 <long_desc>
                     When Soot detects a case in which a static field is accessed as if it were an instance field, Soot
                     will transparently fix the error and generate Jimple code for the fixed program. If a problem cannot

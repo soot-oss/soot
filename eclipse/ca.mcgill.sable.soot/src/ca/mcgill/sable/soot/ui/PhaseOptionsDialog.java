@@ -1320,7 +1320,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			getConfig().put(getProcessing_Optionsplugin_widget().getAlias(), stringRes);
 		}
 		stringRes = getProcessing_Optionswrong_staticness_widget().getSelectedAlias();
-		defStringRes = "fix";
 		defStringRes = "fixstrict";
 
 		if (!stringRes.equals(defStringRes)) {
@@ -9142,7 +9141,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 				new OptionData("Fix",
 						"fix",
 						"\nWhen Soot detects a case in which a static field is accessed as \nif it were an instance field, Soot will transparently fix the \nerror and generate Jimple code for the fixed program. If a \nproblem cannot be fixed, an access to that method or field will \nnot throw an exception.",
-						true),
+						false),
 				new OptionData("FixStrict",
 						"fixstrict",
 						"\nWhen Soot detects a case in which a static field is accessed as \nif it were an instance field, Soot will transparently fix the \nerror and generate Jimple code for the fixed program. If a \nproblem cannot be fixed, an access to that method or field will \nstill throw an exception. This makes sure that problems cannot \nsilently disappear and cause invalid Jimple code.",
