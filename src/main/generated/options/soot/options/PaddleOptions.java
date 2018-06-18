@@ -22,10 +22,12 @@ package soot.options;
  * #L%
  */
 
+/* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
+
 import java.util.*;
 
 /** Option parser for Paddle. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-04-16T19:15:43.228+02:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-06-18T10:22:17.884-04:00", comments = "from soot_options.xml")
 public class PaddleOptions {
 
     private Map<String, String> options;

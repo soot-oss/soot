@@ -22,6 +22,8 @@ package soot.options;
  * #L%
  */
 
+/* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
+
 import soot.*;
 import java.util.*;
 
@@ -30,7 +32,7 @@ import java.util.*;
  *
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-04-16T19:15:43.228+02:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-06-18T10:22:17.884-04:00", comments = "from soot_options.xml")
 public class Options extends OptionsBase {
 
     public Options(Singletons.Global g) {
@@ -1494,7 +1496,6 @@ public class Options extends OptionsBase {
     private List<String> plugin = null;
 
     public int wrong_staticness() {
-        if (wrong_staticness == 0) return wrong_staticness_fix;
         if (wrong_staticness == 0) return wrong_staticness_fixstrict;
         return wrong_staticness; 
     }
@@ -1687,7 +1688,7 @@ public class Options extends OptionsBase {
                 + padOpt("-wrong-staticness ARG", "Ignores or fixes errors due to wrong staticness")
                     + padVal("fail", "Raise an error when wrong staticness is detected")
                     + padVal("ignore", "Ignore errors caused by wrong staticness")
-                    + padVal("fix (default)", "Transparently fix staticness errors")
+                    + padVal("fix", "Transparently fix staticness errors")
                     + padVal("fixstrict (default)", "Transparently fix staticness errors, but do not ignore remaining errors")
                 + padOpt("-field-type-mismatches ARG", "Specifies how errors shall be handled when resolving field references with mismatching types")
                     + padVal("fail", "Raise an error when a field type mismatch is detected")
