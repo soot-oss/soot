@@ -759,7 +759,8 @@ public class DexBody {
 
     // Some apps reference static fields as instance fields. We fix this
     // on the fly.
-    if (options.wrong_staticness() == Options.wrong_staticness_fix) {
+    if (Options.v().wrong_staticness() == Options.wrong_staticness_fix
+          || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) {
       FieldStaticnessCorrector.v().transform(jBody);
       MethodStaticnessCorrector.v().transform(jBody);
     }
