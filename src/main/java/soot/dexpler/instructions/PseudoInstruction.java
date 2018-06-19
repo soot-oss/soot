@@ -52,11 +52,11 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
     super(instruction, codeAddress);
   }
 
-  int dataFirstByte = -1;
-  int dataLastByte = -1;
-  int dataSize = -1;
-  byte[] data = null;
-  boolean loaded = false;
+  protected int dataFirstByte = -1;
+  protected int dataLastByte = -1;
+  protected int dataSize = -1;
+  protected byte[] data = null;
+  protected boolean loaded = false;
 
   public boolean isLoaded() {
     return loaded;

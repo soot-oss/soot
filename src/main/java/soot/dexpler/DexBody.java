@@ -125,32 +125,32 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  */
 public class DexBody {
   private static final Logger logger = LoggerFactory.getLogger(DexBody.class);
-  private List<DexlibAbstractInstruction> instructions;
+  protected List<DexlibAbstractInstruction> instructions;
   // keeps track about the jimple locals that are associated with the dex
   // registers
-  private Local[] registerLocals;
-  private Local storeResultLocal;
-  private Map<Integer, DexlibAbstractInstruction> instructionAtAddress;
+  protected Local[] registerLocals;
+  protected Local storeResultLocal;
+  protected Map<Integer, DexlibAbstractInstruction> instructionAtAddress;
 
-  private List<DeferableInstruction> deferredInstructions;
-  private Set<RetypeableInstruction> instructionsToRetype;
-  private DanglingInstruction dangling;
+  protected List<DeferableInstruction> deferredInstructions;
+  protected Set<RetypeableInstruction> instructionsToRetype;
+  protected DanglingInstruction dangling;
 
-  private int numRegisters;
-  private int numParameterRegisters;
-  private final List<Type> parameterTypes;
-  private boolean isStatic;
+  protected int numRegisters;
+  protected int numParameterRegisters;
+  protected final List<Type> parameterTypes;
+  protected boolean isStatic;
 
-  private JimpleBody jBody;
-  private List<? extends TryBlock<? extends ExceptionHandler>> tries;
+  protected JimpleBody jBody;
+  protected List<? extends TryBlock<? extends ExceptionHandler>> tries;
 
-  private RefType declaringClassType;
+  protected RefType declaringClassType;
 
-  private final DexFile dexFile;
-  private final Method method;
+  protected final DexFile dexFile;
+  protected final Method method;
 
   // detect array/instructions overlapping obfuscation
-  private ArrayList<PseudoInstruction> pseudoInstructionData = new ArrayList<PseudoInstruction>();
+  protected List<PseudoInstruction> pseudoInstructionData = new ArrayList<PseudoInstruction>();
 
   PseudoInstruction isAddressInData(int a) {
     for (PseudoInstruction pi : pseudoInstructionData) {
@@ -169,7 +169,7 @@ public class DexBody {
    * @param method
    *          the method that is associated with this body
    */
-  DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
+  protected DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
     MethodImplementation code = method.getImplementation();
     if (code == null) {
       throw new RuntimeException("error: no code for method " + method.getName());
@@ -196,17 +196,9 @@ public class DexBody {
 
     instructions = new ArrayList<DexlibAbstractInstruction>();
     instructionAtAddress = new HashMap<Integer, DexlibAbstractInstruction>();
-
     registerLocals = new Local[numRegisters];
 
-    int address = 0;
-
-    for (Instruction instruction : code.getInstructions()) {
-      DexlibAbstractInstruction dexInstruction = fromInstruction(instruction, address);
-      instructions.add(dexInstruction);
-      instructionAtAddress.put(address, dexInstruction);
-      address += instruction.getCodeUnits();
-    }
+    extractDexInstructions(code);
 
     // Check taken from Android's dalvik/libdex/DexSwapVerify.cpp
     if (numParameterRegisters > numRegisters) {
@@ -229,6 +221,22 @@ public class DexBody {
 
     this.dexFile = dexFile;
     this.method = method;
+  }
+
+  /**
+   * Extracts the list of dalvik instructions from dexlib and converts them into our own instruction data model
+   * 
+   * @param code
+   *          The dexlib method implementation
+   */
+  protected void extractDexInstructions(MethodImplementation code) {
+    int address = 0;
+    for (Instruction instruction : code.getInstructions()) {
+      DexlibAbstractInstruction dexInstruction = fromInstruction(instruction, address);
+      instructions.add(dexInstruction);
+      instructionAtAddress.put(address, dexInstruction);
+      address += instruction.getCodeUnits();
+    }
   }
 
   /**
@@ -528,19 +536,8 @@ public class DexBody {
       addTraps();
     }
 
-    int prevLn = -1;
-    final boolean keepLineNumber = options.keep_line_number();
-    for (DexlibAbstractInstruction instruction : instructions) {
-      Unit unit = instruction.getUnit();
-      int lineNumber = unit.getJavaSourceStartLineNumber();
-      if (keepLineNumber && lineNumber < 0) {
-        if (prevLn >= 0) {
-          unit.addTag(new LineNumberTag(prevLn));
-          unit.addTag(new SourceLineNumberTag(prevLn));
-        }
-      } else {
-        prevLn = lineNumber;
-      }
+    if (options.keep_line_number()) {
+      fixLineNumbers();
     }
 
     // At this point Jimple code is generated
@@ -857,6 +854,26 @@ public class DexBody {
     // t_whole_jimplification.end();
 
     return jBody;
+  }
+
+  /**
+   * Fixes the line numbers. If there is a unit without a line number, it gets the line number of the last (transitive)
+   * predecessor that has a line number.
+   */
+  protected void fixLineNumbers() {
+    int prevLn = -1;
+    for (DexlibAbstractInstruction instruction : instructions) {
+      Unit unit = instruction.getUnit();
+      int lineNumber = unit.getJavaSourceStartLineNumber();
+      if (lineNumber < 0) {
+        if (prevLn >= 0) {
+          unit.addTag(new LineNumberTag(prevLn));
+          unit.addTag(new SourceLineNumberTag(prevLn));
+        }
+      } else {
+        prevLn = lineNumber;
+      }
+    }
   }
 
   private LocalSplitter localSplitter = null;

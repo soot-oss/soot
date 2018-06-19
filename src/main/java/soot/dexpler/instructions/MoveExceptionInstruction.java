@@ -42,8 +42,8 @@ import soot.jimple.Jimple;
 
 public class MoveExceptionInstruction extends DexlibAbstractInstruction implements RetypeableInstruction {
 
-  private Type realType;
-  private IdentityStmt stmtToRetype;
+  protected Type realType;
+  protected IdentityStmt stmtToRetype;
 
   public MoveExceptionInstruction(Instruction instruction, int codeAdress) {
     super(instruction, codeAdress);

@@ -33,7 +33,7 @@ public class BytecodeOffsetTag implements Tag {
   /**
    * The index of the last byte-code instruction.
    */
-  private int offset;
+  protected int offset;
 
   /**
    * Constructs a tag from the index offset.
