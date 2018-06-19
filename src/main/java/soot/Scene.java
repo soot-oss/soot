@@ -478,9 +478,11 @@ public class Scene // extends AbstractHost
                   versionInfo.platformBuildVersionCode = Integer.valueOf("" + obj);
                 }
               } else if (nodeName.equals("uses-sdk")) {
-                if (name.equals("targetSdkVersion")) {
+                // Obfuscated APKs often remove the attribute names and use the resourceId instead
+                // Therefore it is better to check for both variants
+                if (name.equals("targetSdkVersion") || (name.equals("") && resourceId == 16843376)) {
                   versionInfo.sdkTargetVersion = Integer.valueOf("" + obj);
-                } else if (name.equals("minSdkVersion")) {
+                } else if (name.equals("minSdkVersion") || (name.equals("") && resourceId == 16843276)) {
                   versionInfo.minSdkVersion = Integer.valueOf("" + obj);
                 }
               }
