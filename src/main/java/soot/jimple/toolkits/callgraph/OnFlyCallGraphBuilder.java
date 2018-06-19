@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,6 +39,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import soot.AnySubType;
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -325,6 +327,39 @@ public final class OnFlyCallGraphBuilder {
       }
     }
   }
+  
+  private Set<Type> resolveToClasses(Set<Type> rawTypes) {
+    Set<Type> toReturn = new HashSet<Type>();
+    for (Type ty : rawTypes) {
+      if (ty instanceof AnySubType) {
+        AnySubType anySubType = (AnySubType) ty;
+        RefType base = anySubType.getBase();
+        Set<SootClass> classRoots;
+        if (base.getSootClass().isInterface()) {
+          classRoots = fh.getAllImplementersOfInterface(base.getSootClass());
+        } else {
+          classRoots = Collections.singleton(base.getSootClass());
+        }
+        toReturn.addAll(getTransitiveSubClasses(classRoots));
+      } else if (ty instanceof ArrayType || ty instanceof RefType) {
+        toReturn.add(ty);
+      }
+    }
+    return toReturn;
+  }
+
+  private Collection<Type> getTransitiveSubClasses(Set<SootClass> classRoots) {
+    LinkedList<SootClass> worklist = new LinkedList<>(classRoots);
+    Set<Type> resolved = new HashSet<>();
+    while (!worklist.isEmpty()) {
+      SootClass cls = worklist.removeFirst();
+      if (!resolved.add(cls.getType())) {
+        continue;
+      }
+      worklist.addAll(fh.getSubclassesOf(cls));
+    }
+    return resolved;
+  }
 
   private void resolveInvoke(Collection<InvokeCallSite> list) {
     for (InvokeCallSite ics : list) {
@@ -343,7 +378,7 @@ public final class OnFlyCallGraphBuilder {
       // yet, then generate nullary methods
       if (mustBeNull || (ics.nullnessCode() == InvokeCallSite.MAY_BE_NULL
           && (!invokeArgsToSize.containsKey(ics.argArray()) || !reachingArgTypes.containsKey(ics.argArray())))) {
-        for (Type bType : s) {
+        for (Type bType : resolveToClasses(s)) {
           assert bType instanceof RefType;
           SootClass baseClass = ((RefType) bType).getSootClass();
           assert !baseClass.isInterface();
@@ -371,7 +406,7 @@ public final class OnFlyCallGraphBuilder {
         }
         assert reachingTypes != null && invokeArgsToSize.containsKey(ics.argArray());
         BitSet methodSizes = invokeArgsToSize.get(ics.argArray());
-        for (Type bType : s) {
+        for (Type bType : resolveToClasses(s)) {
           assert bType instanceof RefLikeType;
           // we do not handle static methods or array reflection
           if (bType instanceof NullType || bType instanceof ArrayType) {
@@ -393,7 +428,7 @@ public final class OnFlyCallGraphBuilder {
 
   private void resolveStaticTypes(Set<Type> s, InvokeCallSite ics) {
     ArrayTypes at = ics.reachingTypes();
-    for (Type bType : s) {
+    for (Type bType : resolveToClasses(s)) {
       SootClass baseClass = ((RefType) bType).getSootClass();
       Iterator<SootMethod> mIt = getPublicMethodIterator(baseClass, at);
       while (mIt.hasNext()) {
