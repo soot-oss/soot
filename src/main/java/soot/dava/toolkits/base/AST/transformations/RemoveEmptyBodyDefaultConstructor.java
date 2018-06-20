@@ -85,6 +85,11 @@ public class RemoveEmptyBodyDefaultConstructor {
       debug("No active body found for the default constructor");
       return;
     }
+    
+    if (!constructor.isPublic()) {
+      debug("Default constructor is not public.");
+      return;
+    }
 
     Body body = constructor.getActiveBody();
     Chain units = ((DavaBody) body).getUnits();
