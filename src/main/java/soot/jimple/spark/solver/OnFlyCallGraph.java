@@ -159,7 +159,7 @@ public class OnFlyCallGraph {
         public void visit(Node n) {
           if (n instanceof AllocNode) {
             AllocNode an = ((AllocNode) n);
-            ofcgb.addInvokeArgDotField(receiver, an.dot(ArrayElement.v()));
+            ofcgb.addInvokeArgDotField(receiver, pag.makeAllocDotField(an, ArrayElement.v()));
             assert an.getNewExpr() instanceof NewArrayExpr;
             NewArrayExpr nae = (NewArrayExpr) an.getNewExpr();
             if (!(nae.getSize() instanceof IntConstant)) {
