@@ -243,17 +243,7 @@ public class BafASMBackend extends AbstractASMBackend {
       if (branchTargetLabels.containsKey(u)) {
         mv.visitLabel(branchTargetLabels.get(u));
       }
-      if (u.hasTag("LineNumberTag")) {
-        LineNumberTag lnt = (LineNumberTag) u.getTag("LineNumberTag");
-        Label l;
-        if (branchTargetLabels.containsKey(u)) {
-          l = branchTargetLabels.get(u);
-        } else {
-          l = new Label();
-          mv.visitLabel(l);
-        }
-        mv.visitLineNumber(lnt.getLineNumber(), l);
-      }
+      generateTagsForUnit(mv, u);
       generateInstruction(mv, (Inst) u);
     }
 
@@ -275,6 +265,28 @@ public class BafASMBackend extends AbstractASMBackend {
           }
         }
       }
+    }
+  }
+
+  /**
+   * Writes out the information stored in tags associated with the given unit
+   * 
+   * @param mv
+   *          The method visitor for writing out the bytecode
+   * @param u
+   *          The unit for which to write out the tags
+   */
+  protected void generateTagsForUnit(MethodVisitor mv, Unit u) {
+    if (u.hasTag("LineNumberTag")) {
+      LineNumberTag lnt = (LineNumberTag) u.getTag("LineNumberTag");
+      Label l;
+      if (branchTargetLabels.containsKey(u)) {
+        l = branchTargetLabels.get(u);
+      } else {
+        l = new Label();
+        mv.visitLabel(l);
+      }
+      mv.visitLineNumber(lnt.getLineNumber(), l);
     }
   }
 

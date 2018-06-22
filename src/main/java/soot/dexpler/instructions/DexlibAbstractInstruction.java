@@ -53,8 +53,8 @@ public abstract class DexlibAbstractInstruction {
 
   protected int lineNumber = -1;
 
-  protected Instruction instruction;
-  protected int codeAddress;
+  protected final Instruction instruction;
+  protected final int codeAddress;
   // protected Unit beginUnit;
   // protected Unit endUnit;
   protected Unit unit;

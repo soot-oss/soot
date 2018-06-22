@@ -1226,16 +1226,7 @@ public class DexPrinter {
 
         // Add the tags
         if (stmtV.getStmtForInstruction(ins) != null) {
-          List<Tag> tags = origStmt.getTags();
-          for (Tag t : tags) {
-            if (t instanceof LineNumberTag) {
-              LineNumberTag lnt = (LineNumberTag) t;
-              builder.addLineNumber(lnt.getLineNumber());
-            } else if (t instanceof SourceFileTag) {
-              SourceFileTag sft = (SourceFileTag) t;
-              builder.addSetSourceFile(new ImmutableStringReference(sft.getSourceFile()));
-            }
-          }
+          writeTagsForStatement(builder, origStmt);
         }
       }
 
@@ -1262,6 +1253,27 @@ public class DexPrinter {
     }
 
     return builder.getMethodImplementation();
+  }
+
+  /**
+   * Writes out the information stored in the tags associated with the given statement
+   * 
+   * @param builder
+   *          The builder used to generate the Dalvik method implementation
+   * @param stmt
+   *          The statement for which to write out the tags
+   */
+  protected void writeTagsForStatement(MethodImplementationBuilder builder, Stmt stmt) {
+    List<Tag> tags = stmt.getTags();
+    for (Tag t : tags) {
+      if (t instanceof LineNumberTag) {
+        LineNumberTag lnt = (LineNumberTag) t;
+        builder.addLineNumber(lnt.getLineNumber());
+      } else if (t instanceof SourceFileTag) {
+        SourceFileTag sft = (SourceFileTag) t;
+        builder.addSetSourceFile(new ImmutableStringReference(sft.getSourceFile()));
+      }
+    }
   }
 
   /**

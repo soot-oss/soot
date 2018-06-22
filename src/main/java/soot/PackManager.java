@@ -1149,20 +1149,14 @@ public class PackManager {
       Printer.v().setOption(Printer.ADD_JIMPLE_LN);
     }
 
-    int java_version = Options.v().java_version();
-
     switch (format) {
       case Options.output_format_class:
         if (!Options.v().jasmin_backend()) {
-          new BafASMBackend(c, java_version).generateClassFile(streamOut);
+          createASMBackend(c).generateClassFile(streamOut);
           break;
         }
       case Options.output_format_jasmin:
-        if (c.containsBafBody()) {
-          new soot.baf.JasminClass(c).print(writerOut);
-        } else {
-          new soot.jimple.JasminClass(c).print(writerOut);
-        }
+        createJasminBackend(c).print(writerOut);
         break;
       case Options.output_format_jimp:
       case Options.output_format_shimp:
@@ -1187,7 +1181,7 @@ public class PackManager {
         TemplatePrinter.v().printTo(c, writerOut);
         break;
       case Options.output_format_asm:
-        new BafASMBackend(c, java_version).generateTextualRepresentation(writerOut);
+        createASMBackend(c).generateTextualRepresentation(writerOut);
         break;
       default:
         throw new RuntimeException();
@@ -1204,6 +1198,34 @@ public class PackManager {
     } catch (IOException e) {
       throw new CompilationDeathException("Cannot close output file " + fileName);
     }
+  }
+
+  /**
+   * Factory method for creating a new backend on top of Jasmin
+   * 
+   * @param c
+   *          The class for which to create a Jasmin-based backend
+   * @return The Jasmin-based backend for writing the given class into bytecode
+   */
+  private AbstractJasminClass createJasminBackend(SootClass c) {
+    if (c.containsBafBody()) {
+      return new soot.baf.JasminClass(c);
+    } else {
+      return new soot.jimple.JasminClass(c);
+    }
+  }
+
+  /**
+   * Factory method for creating a new backend on top of ASM. At the moment, we always start from BAF. Custom implementations
+   * can use other techniques.
+   * 
+   * @param c
+   *          The class for which to create the ASM backend
+   * @return The ASM backend for writing the class into bytecode
+   */
+  protected BafASMBackend createASMBackend(SootClass c) {
+    int java_version = Options.v().java_version();
+    return new BafASMBackend(c, java_version);
   }
 
   private void postProcessXML(Iterator<SootClass> classes) {
