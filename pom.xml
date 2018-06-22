@@ -393,6 +393,8 @@
                         <root>src/main/java</root>
                         <root>src/test/java</root>
                         <root>src/it</root>
+                        <root>src/systemTest/java</root>
+                        <root>src/systemTest/targets</root>
                     </roots>
                 </configuration>
                 <executions>
