@@ -24,8 +24,8 @@ package soot.testing.framework;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.runner.RunWith;
@@ -61,13 +61,35 @@ public abstract class AbstractTestingFramework {
    * generating an entry point that calls the method with the given signature.
    * <p>
    * <p>
-   * * Important: Every test case has to call this method with an appropriate target before testing something.
+   * Important: Every test case has to call this method with an appropriate target before testing something.
    *
    * @param targetMethodSignature
    *          Signature of the method to be analyzed
+   * @param classesOrPackagesToAnalyze
+   *          Defines the list of classes/packages that are included when building the Scene. State package with wildcards,
+   *          e.g., "soot.*" to include all classes in the soot package. Note that it is good practice to include all classes
+   *          that are tested (or the complete package) explicitly, to ensure they are not excluded when building the Scene.
    */
-  protected SootMethod prepareTarget(String targetMethodSignature) {
-    setupSoot();
+  protected SootMethod prepareTarget(String targetMethodSignature, String... classesOrPackagesToAnalyze) {
+    return prepareTarget(targetMethodSignature, Arrays.asList(classesOrPackagesToAnalyze));
+  }
+
+  /**
+   * Sets up the Scene by analyzing all included classes and generating a call graph for the given target. This is done by
+   * generating an entry point that calls the method with the given signature.
+   * <p>
+   * <p>
+   * Important: Every test case has to call this method with an appropriate target before testing something.
+   *
+   * @param targetMethodSignature
+   *          Signature of the method to be analyzed
+   * @param classesOrPackagesToAnalyze
+   *          Defines the list of classes/packages that are included when building the Scene. State package with wildcards,
+   *          e.g., "soot.*" to include all classes in the soot package. Note that it is good practice to include all classes
+   *          that are tested (or the complete package) explicitly, to ensure they are not excluded when building the Scene.
+   */
+  protected SootMethod prepareTarget(String targetMethodSignature, Collection<String> classesOrPackagesToAnalyze) {
+    setupSoot(classesOrPackagesToAnalyze);
     mockStatics();
     SootMethod sootTestMethod = createTestTarget(targetMethodSignature);
     runSoot();
@@ -88,14 +110,14 @@ public abstract class AbstractTestingFramework {
     PackManager.v().getPack("wjpp").apply();
   }
 
-  protected void setupSoot() {
+  protected void setupSoot(Collection<String> classesOrPackagesToAnalyze) {
     G.reset();
     Options.v().set_whole_program(true);
     Options.v().set_output_format(Options.output_format_none);
     Options.v().set_allow_phantom_refs(true);
     Options.v().set_no_bodies_for_excluded(true);
     Options.v().set_exclude(getExcludes());
-    Options.v().set_include(getIncludes());
+    Options.v().set_include(new ArrayList<>(classesOrPackagesToAnalyze));
     PhaseOptions.v().setPhaseOption("cg.spark", "on");
     Options.v().set_process_dir(Collections.singletonList(SYSTEMTEST_TARGET_CLASSES_DIR));
   }
@@ -103,11 +125,15 @@ public abstract class AbstractTestingFramework {
   /**
    * Defines the list of classes/packages that are excluded when building the Scene. State package with wildcards, e.g.,
    * "soot.*" to exclude all classes in the soot package.
+   * <p>
+   * <p>
+   * Note that it is good practice to exclude everything and include only the needed classes for the specific test case when
+   * calling {@link AbstractTestingFramework#prepareTarget(String, String...)}
    * 
    * @return A list of excluded packages and classes
    */
   protected List<String> getExcludes() {
-    List<String> excludeList = new LinkedList<>();
+    List<String> excludeList = new ArrayList<>();
     excludeList.add("java.*");
     excludeList.add("sun.*");
     excludeList.add("android.*");
@@ -117,19 +143,6 @@ public abstract class AbstractTestingFramework {
     excludeList.add("javax.*");
     return excludeList;
   }
-
-  /**
-   * Defines the list of classes/packages that are included when building the Scene. State package with wildcards, e.g.,
-   * "soot.*" to exclude all classes in the soot package.
-   *
-   * <p>
-   * <p>
-   * Note that it is good practice to include the solo class that is tested or the complete package if multiple classes are
-   * tested, to ensure they are not excluded when building the Scene
-   *
-   * @return A list of included packages and classes
-   */
-  protected abstract List<String> getIncludes();
 
   private SootMethod createTestTarget(String targetMethod) {
     SootMethod sootTestMethod = getMethodForSig(targetMethod);

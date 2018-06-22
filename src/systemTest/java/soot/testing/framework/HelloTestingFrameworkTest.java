@@ -22,9 +22,6 @@ package soot.testing.framework;
  * #L%
  */
 
-import java.util.Collections;
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,12 +36,7 @@ public class HelloTestingFrameworkTest extends AbstractTestingFramework {
 
   @Test
   public void findsTarget() {
-    final SootMethod sootMethod = prepareTarget("<" + TEST_TARGET_CLASS + ": void helloWorld()>");
+    final SootMethod sootMethod = prepareTarget("<" + TEST_TARGET_CLASS + ": void helloWorld()>", TEST_TARGET_CLASS);
     Assert.assertNotNull("Could not find target method. System test setup seems to be incorrect.", sootMethod);
-  }
-
-  @Override
-  protected List<String> getIncludes() {
-    return Collections.singletonList(TEST_TARGET_CLASS);
   }
 }
