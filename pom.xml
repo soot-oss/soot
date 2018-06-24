@@ -191,30 +191,6 @@
                             </sources>
                         </configuration>
                     </execution>
-                 <!--   <execution>
-                        <id>add system test target sources</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>src/systemTest/targets</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>add system test sources</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>src/systemTest/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>-->
                 </executions>
             </plugin>
             <plugin>
