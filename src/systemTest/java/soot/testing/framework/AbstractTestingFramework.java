@@ -110,7 +110,12 @@ public abstract class AbstractTestingFramework {
     PackManager.v().getPack("wjpp").apply();
   }
 
-  protected void setupSoot(Collection<String> classesOrPackagesToAnalyze) {
+  /**
+   * Sets common options for all test cases
+   * 
+   * @param classesOrPackagesToAnalyze
+   */
+  private void setupSoot(Collection<String> classesOrPackagesToAnalyze) {
     G.reset();
     Options.v().set_whole_program(true);
     Options.v().set_output_format(Options.output_format_none);
@@ -118,8 +123,15 @@ public abstract class AbstractTestingFramework {
     Options.v().set_no_bodies_for_excluded(true);
     Options.v().set_exclude(getExcludes());
     Options.v().set_include(new ArrayList<>(classesOrPackagesToAnalyze));
-    PhaseOptions.v().setPhaseOption("cg.spark", "on");
     Options.v().set_process_dir(Collections.singletonList(SYSTEMTEST_TARGET_CLASSES_DIR));
+    setupSoot();
+  }
+
+  /**
+   * Can be used to set Soot options as needed
+   */
+  protected void setupSoot() {
+    PhaseOptions.v().setPhaseOption("cg.spark", "on");
   }
 
   /**
@@ -153,9 +165,7 @@ public abstract class AbstractTestingFramework {
     Scene.v().addBasicClass(targetClass, SootClass.BODIES);
     Scene.v().loadNecessaryClasses();
     SootClass c = Scene.v().forceResolve(targetClass, SootClass.BODIES);
-    if (c != null) {
-      c.setApplicationClass();
-    }
+    c.setApplicationClass();
     Scene.v().setEntryPoints(Collections.singletonList(c.getMethodByName("main")));
     return sootTestMethod;
   }
@@ -179,6 +189,7 @@ public abstract class AbstractTestingFramework {
     }
     body.getUnits()
         .add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(allocatedTestObj, sootTestMethod.makeRef(), args)));
+
     Scene.v().addClass(sootClass);
     return sootClass.toString();
   }
@@ -187,7 +198,7 @@ public abstract class AbstractTestingFramework {
     return targetMethod.substring(1, targetMethod.indexOf(":"));
   }
 
-  protected SootMethod getMethodForSig(String sig) {
+  private SootMethod getMethodForSig(String sig) {
     Scene.v().forceResolve(classFromSignature(sig), SootClass.BODIES);
     return Scene.v().getMethod(sig);
   }
