@@ -22,14 +22,14 @@ package soot.jimple.toolkits.annotation.logic;
  * #L%
  */
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
+import java.util.Set;
 
 import soot.Body;
 import soot.BodyTransformer;
@@ -41,67 +41,69 @@ import soot.toolkits.graph.UnitGraph;
 
 public class LoopFinder extends BodyTransformer {
 
-  private UnitGraph g;
+  private Set<Loop> loops;
 
-  private HashMap<Stmt, List<Stmt>> loops;
-
-  public Collection<Loop> loops() {
-    Collection<Loop> result = new HashSet<Loop>();
-    for (Map.Entry<Stmt, List<Stmt>> entry : loops.entrySet()) {
-      result.add(new Loop(entry.getKey(), entry.getValue(), g));
-    }
-    return result;
+  public LoopFinder() {
+    loops = null;
   }
 
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    g = new ExceptionalUnitGraph(b);
-    MHGDominatorsFinder<Unit> a = new MHGDominatorsFinder<>(g);
+    getLoops(b);
+  }
 
-    loops = new HashMap<Stmt, List<Stmt>>();
+  public Set<Loop> getLoops(Body b) {
+    if (loops != null) {
+      return loops;
+    }
+    return getLoops(new ExceptionalUnitGraph(b));
+  }
 
-    Iterator<Unit> stmtsIt = b.getUnits().iterator();
-    while (stmtsIt.hasNext()) {
-      Stmt s = (Stmt) stmtsIt.next();
+  public Set<Loop> getLoops(UnitGraph g) {
+    if (loops != null) {
+      return loops;
+    }
 
-      List<Unit> succs = g.getSuccsOf(s);
-      Collection<Unit> dominaters = (Collection<Unit>) a.getDominators(s);
+    MHGDominatorsFinder<Unit> a = new MHGDominatorsFinder<Unit>(g);
+    Map<Stmt, List<Stmt>> loops = new HashMap<Stmt, List<Stmt>>();
 
-      ArrayList<Stmt> headers = new ArrayList<Stmt>();
+    for (Unit u : g.getBody().getUnits()) {
+      List<Unit> succs = g.getSuccsOf(u);
+      List<Unit> dominaters = a.getDominators(u);
+      List<Stmt> headers = new ArrayList<Stmt>();
 
-      Iterator<Unit> succsIt = succs.iterator();
-      while (succsIt.hasNext()) {
-        Stmt succ = (Stmt) succsIt.next();
+      for (Unit succ : succs) {
         if (dominaters.contains(succ)) {
           // header succeeds and dominates s, we have a loop
-          headers.add(succ);
+          headers.add((Stmt) succ);
         }
       }
 
-      Iterator<Stmt> headersIt = headers.iterator();
-      while (headersIt.hasNext()) {
-        Stmt header = headersIt.next();
-        List<Stmt> loopBody = getLoopBodyFor(header, s);
-
-        // for now just print out loops as sets of stmts
-        // System.out.println("FOUND LOOP: Header: "+header+" Body: "+loopBody);
+      for (Unit header : headers) {
+        List<Stmt> loopBody = getLoopBodyFor(header, u, g);
         if (loops.containsKey(header)) {
           // merge bodies
           List<Stmt> lb1 = loops.get(header);
-          loops.put(header, union(lb1, loopBody));
+          loops.put((Stmt) header, union(lb1, loopBody));
         } else {
-          loops.put(header, loopBody);
+          loops.put((Stmt) header, loopBody);
         }
       }
     }
 
+    Set<Loop> ret = new HashSet<Loop>();
+    for (Map.Entry<Stmt, List<Stmt>> entry : loops.entrySet()) {
+      ret.add(new Loop(entry.getKey(), entry.getValue(), g));
+    }
+
+    this.loops = ret;
+    return ret;
   }
 
-  private List<Stmt> getLoopBodyFor(Stmt header, Stmt node) {
+  private List<Stmt> getLoopBodyFor(Unit header, Unit node, UnitGraph g) {
+    List<Stmt> loopBody = new ArrayList<Stmt>();
+    Deque<Unit> stack = new ArrayDeque<Unit>();
 
-    ArrayList<Stmt> loopBody = new ArrayList<Stmt>();
-    Stack<Unit> stack = new Stack<Unit>();
-
-    loopBody.add(header);
+    loopBody.add((Stmt) header);
     stack.push(node);
 
     while (!stack.isEmpty()) {
@@ -110,9 +112,8 @@ public class LoopFinder extends BodyTransformer {
         // add next to loop body
         loopBody.add(0, next);
         // put all preds of next on stack
-        Iterator<Unit> it = g.getPredsOf(next).iterator();
-        while (it.hasNext()) {
-          stack.push(it.next());
+        for (Unit u : g.getPredsOf(next)) {
+          stack.push(u);
         }
       }
     }
@@ -124,9 +125,7 @@ public class LoopFinder extends BodyTransformer {
   }
 
   private List<Stmt> union(List<Stmt> l1, List<Stmt> l2) {
-    Iterator<Stmt> it = l2.iterator();
-    while (it.hasNext()) {
-      Stmt next = it.next();
+    for (Stmt next : l2) {
       if (!l1.contains(next)) {
         l1.add(next);
       }
