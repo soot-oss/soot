@@ -103,14 +103,17 @@ public class DexClassProvider implements ClassProvider {
   private void buildDexIndex(Map<String, File> index, List<String> classPath) {
     for (String path : classPath) {
       try {
-        for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(new File(path))) {
-          for (String className : classesOfDex(container.getBase())) {
-            if (!index.containsKey(className)) {
-              index.put(className, container.getFilePath());
-            } else if (Options.v().verbose()) {
-              logger.debug("" + String.format(
-                  "Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.", className,
-                  container.getDexName(), container.getFilePath().getCanonicalPath()));
+        File dexFile = new File(path);
+        if (dexFile.exists()) {
+          for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(dexFile)) {
+            for (String className : classesOfDex(container.getBase())) {
+              if (!index.containsKey(className)) {
+                index.put(className, container.getFilePath());
+              } else if (Options.v().verbose()) {
+                logger.debug("" + String.format(
+                    "Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.", className,
+                    container.getDexName(), container.getFilePath().getCanonicalPath()));
+              }
             }
           }
         }
