@@ -99,10 +99,6 @@ public class AugEvalFunction implements IEvalFunction {
     this.jb = jb;
   }
 
-  public Collection<Type> eval(Typing tg, Value expr, Stmt stmt) {
-    return Collections.<Type>singletonList(eval_(tg, expr, stmt, this.jb));
-  }
-
   public static Type eval_(Typing tg, Value expr, Stmt stmt, JimpleBody jb) {
     if (expr instanceof ThisRef) {
       return ((ThisRef) expr).getType();
@@ -190,7 +186,7 @@ public class AugEvalFunction implements IEvalFunction {
 
       for (RefType t : TrapManager.getExceptionTypesOf(stmt, jb)) {
         if (r == null) {
-          if(t.getSootClass().isPhantom()) {
+          if (t.getSootClass().isPhantom()) {
             r = throwableType;
           } else {
             r = t;
@@ -283,5 +279,9 @@ public class AugEvalFunction implements IEvalFunction {
     } else {
       throw new RuntimeException("Unhandled expression: " + expr);
     }
+  }
+
+  public Collection<Type> eval(Typing tg, Value expr, Stmt stmt) {
+    return Collections.<Type>singletonList(eval_(tg, expr, stmt, this.jb));
   }
 }
