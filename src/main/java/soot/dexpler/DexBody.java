@@ -528,6 +528,9 @@ public class DexBody {
         instruction.setLineNumber(prevLineNumber);
       }
     }
+    if (dangling != null) {
+      dangling.finalize(this, null);
+    }
     for (DeferableInstruction instruction : deferredInstructions) {
       instruction.deferredJimplify(this);
     }
