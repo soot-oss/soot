@@ -99,10 +99,6 @@ public class AugEvalFunction implements IEvalFunction {
     this.jb = jb;
   }
 
-  public Collection<Type> eval(Typing tg, Value expr, Stmt stmt) {
-    return Collections.<Type>singletonList(eval_(tg, expr, stmt, this.jb));
-  }
-
   public static Type eval_(Typing tg, Value expr, Stmt stmt, JimpleBody jb) {
     if (expr instanceof ThisRef) {
       return ((ThisRef) expr).getType();
@@ -190,15 +186,21 @@ public class AugEvalFunction implements IEvalFunction {
 
       for (RefType t : TrapManager.getExceptionTypesOf(stmt, jb)) {
         if (r == null) {
-          r = t;
-        } else if (t.getSootClass().isPhantom() || r.getSootClass().isPhantom()) {
-          r = throwableType;
+          if (t.getSootClass().isPhantom()) {
+            r = throwableType;
+          } else {
+            r = t;
+          }
         } else {
-          /*
-           * In theory, we could have multiple exception types pointing here. The JLS requires the exception parameter be a
-           * *subclass* of Throwable, so we do not need to worry about multiple inheritance.
-           */
-          r = BytecodeHierarchy.lcsc(r, t, throwableType);
+          if (t.getSootClass().isPhantom()) {
+            r = throwableType;
+          } else {
+            /*
+             * In theory, we could have multiple exception types pointing here. The JLS requires the exception parameter be a
+             * *subclass* of Throwable, so we do not need to worry about multiple inheritance.
+             */
+            r = BytecodeHierarchy.lcsc(r, t, throwableType);
+          }
         }
       }
 
@@ -277,5 +279,9 @@ public class AugEvalFunction implements IEvalFunction {
     } else {
       throw new RuntimeException("Unhandled expression: " + expr);
     }
+  }
+
+  public Collection<Type> eval(Typing tg, Value expr, Stmt stmt) {
+    return Collections.<Type>singletonList(eval_(tg, expr, stmt, this.jb));
   }
 }
