@@ -63,6 +63,7 @@ import soot.jimple.FieldRef;
 import soot.jimple.IdentityStmt;
 import soot.jimple.InvokeExpr;
 import soot.jimple.NewArrayExpr;
+import soot.jimple.NewExpr;
 import soot.jimple.Stmt;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
@@ -209,6 +210,15 @@ public abstract class DexTransformer extends BodyTransformer {
             } else {
               return t;
             }
+          }
+        } else if (r instanceof NewExpr) {
+          NewExpr expr = (NewExpr) r;
+          Type t = expr.getBaseType();
+          if (depth == 0) {
+            aType = t;
+            break;
+          } else {
+            return t;
           }
         } else if (r instanceof NewArrayExpr) {
           NewArrayExpr expr = (NewArrayExpr) r;
