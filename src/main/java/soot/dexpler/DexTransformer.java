@@ -261,7 +261,8 @@ public abstract class DexTransformer extends BodyTransformer {
           // a[12] = 42;
           nullDefCount++;
         } else {
-          throw new RuntimeException("ERROR: def statement not possible! " + stmt);
+          throw new RuntimeException(String.format("ERROR: def statement not possible! Statement: %s, right side: %s",
+              stmt.toString(), r.getClass().getName()));
         }
 
       } else if (baseDef instanceof IdentityStmt) {
