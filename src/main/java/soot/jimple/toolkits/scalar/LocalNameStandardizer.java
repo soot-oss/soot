@@ -70,7 +70,7 @@ public class LocalNameStandardizer extends BodyTransformer {
   }
 
   private final static String genName(String prefix, String type, int n, int digits) {
-    return String.format("%s%s%0"+digits+"d", prefix, type, n);
+    return String.format("%s%s%0" + digits + "d", prefix, type, n);
   }
 
   @Override
@@ -160,10 +160,10 @@ public class LocalNameStandardizer extends BodyTransformer {
       locals.addAll(sortedLocals);
     }
 
-    if(!onlyStackName) {
+    if (!onlyStackName) {
       // Change the names to the standard forms now.
       Chain<Local> locals = body.getLocals();
-      int maxDigits = digits(locals.size());
+      int maxDigits = sortLocals ? digits(locals.size()) : 1;
       for (Local l : locals) {
         String prefix = l.getName().startsWith("$") ? "$" : "";
         final Type type = l.getType();

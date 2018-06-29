@@ -1471,9 +1471,10 @@
                     <short_desc/>
                     <long_desc>
                         Make sure that local names are stable between runs. This requires re-normalizing all
-                        local names after the standard transformations and then sorting them which can negatively
-                        impact performance. This option automatically sets "sort-locals" in "jb.lns" during the
-                        second re-normalization pass.
+                        local names after the standard transformations, sorting them, and padding all local names 
+                        with leading zeros up to the maximum number of digits in the local with the highest integer 
+                        value. This can negatively impact performance. This option automatically sets "sort-locals" 
+                        in "jb.lns" during the second re-normalization pass.
                     </long_desc>
                 </boolopt>
                 <sub_phase>
@@ -1697,7 +1698,10 @@
                             that remains consistent between different soot instances. It achieves
                             this by determining the position of a local's first occurrence in the
                             instruction's list of definition statements. This position is then used
-                            to sort the locals with the same type in an ascending order.
+                            to sort the locals with the same type in an ascending order. The local
+                            names are then appended with leading zeros so that all local names have
+                            the same length (i.e., the same number of digits) as the largest local 
+                            name in each individual method body.
                         </long_desc>
                     </boolopt>
                 </sub_phase>

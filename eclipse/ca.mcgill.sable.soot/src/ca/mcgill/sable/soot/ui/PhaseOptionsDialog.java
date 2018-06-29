@@ -9332,7 +9332,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultBool = false;
 		}
 
-		setjbstabilize_local_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Stabilize local names", "p phase-option", "jb","stabilize-local-names", "\nMake sure that local names are stable between runs. This \nrequires re-normalizing all local names after the standard \ntransformations and then sorting them which can negatively \nimpact performance. This option automatically sets "sort-locals" \nin "jb.lns" during the second re-normalization pass.", defaultBool)));
+		setjbstabilize_local_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Stabilize local names", "p phase-option", "jb","stabilize-local-names", "\nMake sure that local names are stable between runs. This \nrequires re-normalizing all local names after the standard \ntransformations, sorting them, and padding all local names with \nleading zeros up to the maximum number of digits in the local \nwith the highest integer value. This can negatively impact \nperformance. This option automatically sets "sort-locals" in \n"jb.lns" during the second re-normalization pass.", defaultBool)));
 
 
 		return editGroupjb;
@@ -9737,7 +9737,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultBool = false;
 		}
 
-		setjbjb_lnssort_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Sort Locals", "p phase-option", "jb.lns","sort-locals", "\nFirst sorts the locals alphabetically by the string \nrepresentation of their type. Then if there are two locals with \nthe same type, it uses the only other source of structurally \nstable information (i.e. the instructions themselves) to produce \nan ordering for the locals that remains consistent between \ndifferent soot instances. It achieves this by determining the \nposition of a local's first occurrence in the instruction's list \nof definition statements. This position is then used to sort the \nlocals with the same type in an ascending order.", defaultBool)));
+		setjbjb_lnssort_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Sort Locals", "p phase-option", "jb.lns","sort-locals", "\nFirst sorts the locals alphabetically by the string \nrepresentation of their type. Then if there are two locals with \nthe same type, it uses the only other source of structurally \nstable information (i.e. the instructions themselves) to produce \nan ordering for the locals that remains consistent between \ndifferent soot instances. It achieves this by determining the \nposition of a local's first occurrence in the instruction's list \nof definition statements. This position is then used to sort the \nlocals with the same type in an ascending order. The local names \nare then appended with leading zeros so that all local names \nhave the same length (i.e., the same number of digits) as the \nlargest local name in each individual method body.", defaultBool)));
 
 
 		return editGroupjbjb_lns;
