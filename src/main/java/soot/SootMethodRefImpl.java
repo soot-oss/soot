@@ -167,10 +167,6 @@ public class SootMethodRefImpl implements SootMethodRef {
   }
 
   private SootMethod tryResolve(StringBuffer trace) {
-    if (declaringClass.getName().equals("java.dyn.InvokeDynamic")) {
-      throw new IllegalStateException("Cannot resolve invokedynamic method references at compile time!");
-    }
-
     SootClass cl = declaringClass;
     while (cl != null) {
       if (trace != null) {
@@ -229,7 +225,12 @@ public class SootMethodRefImpl implements SootMethodRef {
     // we simply create the methods on the fly; the method body will throw
     // an appropriate
     // error just in case the code *is* actually reached at runtime
-    if (Options.v().allow_phantom_refs() && !declaringClass.isInterface()) {
+    boolean treatAsPhantomClass = Options.v().allow_phantom_refs() && !declaringClass.isInterface();
+
+    //declaring class of dynamic invocations not known at compile time, treat as phantom class regardless if phantom classes are enabled
+    treatAsPhantomClass = treatAsPhantomClass || declaringClass.getName().equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
+
+    if (treatAsPhantomClass) {
       return createUnresolvedErrorMethod(declaringClass);
     }
 
