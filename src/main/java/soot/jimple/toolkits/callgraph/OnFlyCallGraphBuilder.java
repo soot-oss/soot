@@ -585,7 +585,7 @@ public final class OnFlyCallGraphBuilder {
           }
         } else {
           VirtualCalls.v().resolve(type, receiver.getType(), site.subSig(), site.container(), targetsQueue, appOnly);
-          if(!targets.hasNext()) {
+          if (!targets.hasNext() && options.resolve_all_abstract_invokes()) {
             /* In the situation where we find nothing to resolve an invoke to in the first call, this
              * might be because the type for the invoking object is a abstract class and the method is
              * declared in a parent class. In this situation, when the abstract class has no classes
@@ -593,7 +593,7 @@ public final class OnFlyCallGraphBuilder {
              * if the parent contained a possible target. 
              * 
              * This may have been by design since without a concrete class, we have no idea if the 
-             * method in the parent class is override. However, the same could be said for any non
+             * method in the parent class is overridden. However, the same could be said for any non
              * private method in the abstract class (and these all resolve fine inside the abstract
              * class even though there are no sub classes of the abstract class). This makes this
              * situation a corner case.
