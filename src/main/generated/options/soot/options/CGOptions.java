@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Call Graph Constructor. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-06-18T10:22:17.884-04:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-06-29T13:00:47.973-04:00", comments = "from soot_options.xml")
 public class CGOptions {
 
     private Map<String, String> options;
@@ -157,6 +157,30 @@ public class CGOptions {
      */
     public boolean types_for_invoke() {
         return soot.PhaseOptions.getBoolean(options, "types-for-invoke");
+    }
+
+    /**
+     * Resolve Abstract Classes with No Children --
+     * Causes methods invoked on abstract classes to be resolved even 
+     * if there are no non-abstract children of the classes in the 
+     * Scene.
+     *
+     * Normally, if a method is invoked on a class that is abstract and 
+     * said class does not have any children in the Scene, the method 
+     * invoke will not be resolved to any concrete methods even if the 
+     * abstract class or its parent classes contain a concrete 
+     * declaration of the method. This is because without any 
+     * non-abstract children it is impossible to tell if the resolution 
+     * is correct (since any child may override any non-private method 
+     * in any of its parent classes). However, sometimes it is 
+     * necessary to resolve methods in such situations (e.g. when 
+     * analyzing libraries or incomplete code). This forces all methods 
+     * invoked on abstract classes to be resolved if there exists a 
+     * parent class with a concrete definition of the method even if 
+     * there are no non-abstract children of the abstract class.
+     */
+    public boolean resolve_all_abstract_invokes() {
+        return soot.PhaseOptions.getBoolean(options, "resolve-all-abstract-invokes");
     }
 
     /**

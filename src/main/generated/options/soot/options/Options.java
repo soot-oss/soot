@@ -32,7 +32,7 @@ import java.util.*;
  *
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-06-18T10:22:17.884-04:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-06-29T13:00:47.973-04:00", comments = "from soot_options.xml")
 public class Options extends OptionsBase {
 
     public Options(Singletons.Global g) {
@@ -2086,7 +2086,8 @@ public class Options extends OptionsBase {
                     + padOpt("trim-clinit (true)", "Removes redundant static initializer calls")
                     + padOpt("reflection-log", "Uses a reflection log to resolve reflective calls.")
                     + padOpt("guards (ignore)", "Describes how to guard the program from unsound assumptions.")
-                    + padOpt("types-for-invoke (false)", "Uses reaching types inferred by the pointer analysis to resolve reflective calls.");
+                    + padOpt("types-for-invoke (false)", "Uses reaching types inferred by the pointer analysis to resolve reflective calls.")
+                    + padOpt("resolve-all-abstract-invokes (false)", "Causes methods invoked on abstract classes to be resolved even if there are no non-abstract children of the classes in the Scene.");
 
         if (phaseName.equals("cg.cha"))
             return "Phase " + phaseName + ":\n"
@@ -2999,7 +3000,8 @@ public class Options extends OptionsBase {
                     "trim-clinit",
                     "reflection-log",
                     "guards",
-                    "types-for-invoke"
+                    "types-for-invoke",
+                    "resolve-all-abstract-invokes"
             );
 
         if (phaseName.equals("cg.cha"))
@@ -3709,7 +3711,8 @@ public class Options extends OptionsBase {
                     + "implicit-entry:true "
                     + "trim-clinit:true "
                     + "guards:ignore "
-                    + "types-for-invoke:false ";
+                    + "types-for-invoke:false "
+                    + "resolve-all-abstract-invokes:false ";
 
         if (phaseName.equals("cg.cha"))
             return ""

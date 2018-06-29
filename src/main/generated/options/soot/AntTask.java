@@ -34,7 +34,7 @@ import java.util.*;
  * Soot ant task.
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-06-18T10:30:24.079-04:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-06-29T13:00:48.166-04:00", comments = "from soot_options.xml")
 public class AntTask extends MatchingTask {
     public static final boolean DEBUG = true;
     private void debug(String s) {
@@ -1303,6 +1303,12 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("cg");
             addArg("types-for-invoke:"+(arg?"true":"false"));
+          }
+      
+          public void setresolve_all_abstract_invokes(boolean arg) {
+            addArg("-p");
+            addArg("cg");
+            addArg("resolve-all-abstract-invokes:"+(arg?"true":"false"));
           }
       
           public void setlibrary(String arg) {

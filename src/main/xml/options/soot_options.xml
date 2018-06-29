@@ -2487,6 +2487,23 @@
                         Currently only works for context insensitive pointer analyses.
                     </long_desc>
                 </boolopt>
+                <boolopt>
+                    <name>Resolve Abstract Classes with No Children</name>
+                    <alias>resolve-all-abstract-invokes</alias>
+                    <default>false</default>
+                    <short_desc>Causes methods invoked on abstract classes to be resolved even if there are no
+                        non-abstract children of the classes in the Scene.</short_desc>
+                    <long_desc>Normally, if a method is invoked on a class that is abstract and said class does
+                        not have any children in the Scene, the method invoke will not be resolved to any concrete 
+                        methods even if the abstract class or its parent classes contain a concrete declaration of
+                        the method. This is because without any non-abstract children it is impossible to tell if
+                        the resolution is correct (since any child may override any non-private method in any of
+                        its parent classes). However, sometimes it is necessary to resolve methods in such situations
+                        (e.g. when analyzing libraries or incomplete code). This forces all methods invoked on
+                        abstract classes to be resolved if there exists a parent class with a concrete definition
+                        of the method even if there are no non-abstract children of the abstract class.
+                    </long_desc>
+                </boolopt>
                 <sub_phase>
                     <name>Class Hierarchy Analysis</name>
                     <alias>cg.cha</alias>
