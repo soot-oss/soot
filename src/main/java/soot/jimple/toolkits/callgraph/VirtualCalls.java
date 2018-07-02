@@ -108,7 +108,7 @@ public class VirtualCalls {
 
     SootMethod m = cls.getMethodUnsafe(subSig);
     if (m != null) {
-      if (m.isConcrete() || m.isNative() || m.isPhantom()) {
+      if (!m.isAbstract()) {
         ret = m;
       }
     } else {
@@ -185,6 +185,43 @@ public class VirtualCalls {
     } else if (t instanceof NullType) {
     } else {
       throw new RuntimeException("oops " + t);
+    }
+  }
+
+  public void resolveSuperType(Type t, Type declaredType, NumberedString subSig, ChunkedQueue<SootMethod> targets, 
+      boolean appOnly) {
+    if (declaredType == null) {
+      return;
+    }
+    if (t == null) {
+      return;
+    }
+    if (declaredType instanceof ArrayType) {
+      declaredType = RefType.v("java.lang.Object");
+    }
+    if (t instanceof ArrayType) {
+      t = RefType.v("java.lang.Object");
+    }
+    if (declaredType instanceof RefType) {
+      RefType parent = (RefType)declaredType;
+      SootClass parentClass = parent.getSootClass();
+      RefType child;
+      SootClass childClass;
+      if (t instanceof AnySubType) {
+        child = ((AnySubType) t).getBase();
+      } else if (t instanceof RefType) {
+        child = (RefType)t;
+      } else {
+        return;
+      }
+      childClass = child.getSootClass();
+      FastHierarchy fastHierachy = Scene.v().getOrMakeFastHierarchy();
+      if (fastHierachy.canStoreClass(childClass,parentClass)) {
+        SootMethod target = resolveNonSpecial(child, subSig, appOnly);
+        if (target != null) {
+          targets.add(target);
+        }
+      }
     }
   }
 
@@ -281,7 +318,7 @@ public class VirtualCalls {
     Chain<SootClass> classes = Scene.v().getClasses();
     for (SootClass sc : classes) {
       for (SootMethod sm : sc.getMethods()) {
-        if (sm.isConcrete() || sm.isNative()) {
+        if (!sm.isAbstract()) {
 
           // method name has to match
           if (!sm.getName().equals(declaredName)) {

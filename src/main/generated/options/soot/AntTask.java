@@ -1305,6 +1305,12 @@ public class AntTask extends MatchingTask {
             addArg("types-for-invoke:"+(arg?"true":"false"));
           }
       
+          public void setresolve_all_abstract_invokes(boolean arg) {
+            addArg("-p");
+            addArg("cg");
+            addArg("resolve-all-abstract-invokes:"+(arg?"true":"false"));
+          }
+      
           public void setlibrary(String arg) {
             addArg("-p");
             addArg("cg");

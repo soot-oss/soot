@@ -2398,6 +2398,31 @@
                
             </p>
          </li>
+         <li><b>Resolve Abstract Classes with No Children</b>
+            (resolve-all-abstract-invokes)
+            <br>
+            (default value:
+            <span class="value">false</span>
+            )
+            
+            <p>Normally, if a method is invoked on a class that is abstract and said class does
+               not have any children in the Scene, the method invoke will not be resolved to any
+               concrete 
+               methods even if the abstract class or its parent classes contain a concrete declaration
+               of
+               the method. This is because without any non-abstract children it is impossible to
+               tell if
+               the resolution is correct (since any child may override any non-private method in
+               any of
+               its parent classes). However, sometimes it is necessary to resolve methods in such
+               situations
+               (e.g. when analyzing libraries or incomplete code). This forces all methods invoked
+               on
+               abstract classes to be resolved if there exists a parent class with a concrete definition
+               of the method even if there are no non-abstract children of the abstract class.
+               
+            </p>
+         </li>
       </ul>
       <h2><a name="phase_5_1">Class Hierarchy Analysis (cg.cha)
             </a></h2>

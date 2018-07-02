@@ -412,6 +412,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("cg", getcgimplicit_entry_widget(), "implicit-entry");
 		addToEnableGroup("cg", getcgtrim_clinit_widget(), "trim-clinit");
 		addToEnableGroup("cg", getcgtypes_for_invoke_widget(), "types-for-invoke");
+		addToEnableGroup("cg", getcgresolve_all_abstract_invokes_widget(), "resolve-all-abstract-invokes");
 		getcgenabled_widget().getButton().addSelectionListener(this);
 		getcgsafe_forname_widget().getButton().addSelectionListener(this);
 		getcgsafe_newinstance_widget().getButton().addSelectionListener(this);
@@ -420,6 +421,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		getcgimplicit_entry_widget().getButton().addSelectionListener(this);
 		getcgtrim_clinit_widget().getButton().addSelectionListener(this);
 		getcgtypes_for_invoke_widget().getButton().addSelectionListener(this);
+		getcgresolve_all_abstract_invokes_widget().getButton().addSelectionListener(this);
 
 		makeNewEnableGroup("cg", "cg.cha");
 		addToEnableGroup("cg", "cg.cha", getcgcg_chaenabled_widget(), "enabled");
@@ -1726,6 +1728,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgtypes_for_invoke_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getcgresolve_all_abstract_invokes_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgresolve_all_abstract_invokes_widget().getAlias(), new Boolean(boolRes));
 		}
 		stringRes = getcgjdkver_widget().getText().getText();
 		defStringRes = "3";
@@ -5675,6 +5683,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getcgtypes_for_invoke_widget() {
 		return cgtypes_for_invoke_widget;
+	}	
+	
+	private BooleanOptionWidget cgresolve_all_abstract_invokes_widget;
+	
+	private void setcgresolve_all_abstract_invokes_widget(BooleanOptionWidget widget) {
+		cgresolve_all_abstract_invokes_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgresolve_all_abstract_invokes_widget() {
+		return cgresolve_all_abstract_invokes_widget;
 	}	
 	
 	
@@ -10953,6 +10971,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setcgtypes_for_invoke_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Types for invoke", "p phase-option", "cg","types-for-invoke", "\nFor each call to Method.invoke(), use the possible types of the \nfirst receiver argument and the possible types stored in the \nsecond argument array to resolve calls to Method.invoke(). This \nstrategy makes no attempt to resolve reflectively invoked static \nmethods. Currently only works for context insensitive pointer \nanalyses.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg"+" "+"resolve-all-abstract-invokes";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setcgresolve_all_abstract_invokes_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Resolve Abstract Classes with No Children", "p phase-option", "cg","resolve-all-abstract-invokes", "\nNormally, if a method is invoked on a class that is abstract and \nsaid class does not have any children in the Scene, the method \ninvoke will not be resolved to any concrete methods even if the \nabstract class or its parent classes contain a concrete \ndeclaration of the method. This is because without any \nnon-abstract children it is impossible to tell if the resolution \nis correct (since any child may override any non-private method \nin any of its parent classes). However, sometimes it is \nnecessary to resolve methods in such situations (e.g. when \nanalyzing libraries or incomplete code). This forces all methods \ninvoked on abstract classes to be resolved if there exists a \nparent class with a concrete definition of the method even if \nthere are no non-abstract children of the abstract class.", defaultBool)));
 
 		data = new OptionData [] {
 		
