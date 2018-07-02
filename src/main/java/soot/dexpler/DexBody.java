@@ -62,6 +62,8 @@ import soot.Local;
 import soot.LongType;
 import soot.Modifier;
 import soot.NullType;
+import soot.PackManager;
+import soot.PhaseOptions;
 import soot.PrimType;
 import soot.RefType;
 import soot.Scene;
@@ -104,11 +106,11 @@ import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.FieldStaticnessCorrector;
 import soot.jimple.toolkits.scalar.IdentityCastEliminator;
 import soot.jimple.toolkits.scalar.IdentityOperationEliminator;
-import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.jimple.toolkits.scalar.MethodStaticnessCorrector;
 import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.typing.TypeAssigner;
+import soot.options.JBOptions;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLineNumberTag;
@@ -389,9 +391,17 @@ public class DexBody {
      * t_whole_jimplification.start();
      */
 
+    JBOptions jbOptions = new JBOptions(PhaseOptions.v().getPhaseOptions("jb"));
     jBody = (JimpleBody) b;
     deferredInstructions = new ArrayList<DeferableInstruction>();
     instructionsToRetype = new HashSet<RetypeableInstruction>();
+    
+    if (jbOptions.use_original_names()) {
+      PhaseOptions.v().setPhaseOptionIfUnset("jb.lns", "only-stack-locals");
+    }
+    if (jbOptions.stabilize_local_names()) {
+      PhaseOptions.v().setPhaseOption("jb.lns", "sort-locals:true");
+    }
 
     if (IDalvikTyper.ENABLE_DVKTYPER) {
       DalvikTyper.v().clear();
@@ -417,30 +427,11 @@ public class DexBody {
     }
     {
       int i = 0; // index of parameter type
-      int parameterRegister = numRegisters - numParameterRegisters; // index
-      // of
-      // parameter
-      // register
+      int parameterRegister = numRegisters - numParameterRegisters; // index of parameter register
       for (Type t : parameterTypes) {
-
-        Local gen = jimple.newLocal("$u" + parameterRegister, unknownType); // may
-        // only
-        // use
-        // UnknownType
-        // here
-        // because
-        // the
-        // local
-        // may
-        // be
-        // reused
-        // with
-        // a
-        // different
-        // type
-        // later
-        // (before
-        // splitting)
+        // may only use UnknownType here because the local may be reused with a different 
+        // type later (before splitting)
+        Local gen = jimple.newLocal("$u" + parameterRegister, unknownType);
         jBody.getLocals().add(gen);
 
         registerLocals[parameterRegister] = gen;
@@ -455,28 +446,12 @@ public class DexBody {
         // in Jimple only the first Dalvik register name is used
         // as the corresponding Jimple Local name. However, we also add
         // the second register to the registerLocals array since it
-        // could be
-        // used later in the Dalvik bytecode
+        // could be used later in the Dalvik bytecode
         if (t instanceof LongType || t instanceof DoubleType) {
           parameterRegister++;
-          Local g = jimple.newLocal("$u" + parameterRegister, unknownType); // may
-          // only
-          // use
-          // UnknownType
-          // here
-          // because
-          // the
-          // local
-          // may
-          // be
-          // reused
-          // with
-          // a
-          // different
-          // type
-          // later
-          // (before
-          // splitting)
+          // may only use UnknownType here because the local may be reused with a different 
+          // type later (before splitting)
+          Local g = jimple.newLocal("$u" + parameterRegister, unknownType);
           jBody.getLocals().add(g);
           registerLocals[parameterRegister] = g;
         }
@@ -758,7 +733,7 @@ public class DexBody {
     // again lead to unused locals which we have to remove.
     LocalPacker.v().transform(jBody);
     UnusedLocalEliminator.v().transform(jBody);
-    LocalNameStandardizer.v().transform(jBody);
+    PackManager.v().getTransform("jb.lns").apply(jBody);
 
     // Some apps reference static fields as instance fields. We fix this
     // on the fly.
@@ -854,6 +829,9 @@ public class DexBody {
         l.setType(objectType);
       }
     }
+    
+    //Must be last to ensure local ordering does not change
+    PackManager.v().getTransform("jb.lns").apply(jBody);
 
     // t_whole_jimplification.end();
 

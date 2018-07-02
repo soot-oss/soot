@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Jimple Body Creation. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-06-18T10:22:17.884-04:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-06-29T10:19:20.928-04:00", comments = "from soot_options.xml")
 public class JBOptions {
 
     private Map<String, String> options;
@@ -66,9 +66,11 @@ public class JBOptions {
      * Stabilize local names
      * Make sure that local names are stable between runs. This 
      * requires re-normalizing all local names after the standard 
-     * transformations and then sorting them which can negatively 
-     * impact performance. This option automatically sets "sort-locals" 
-     * in "jb.lns" during the second re-normalization pass.
+     * transformations, sorting them, and padding all local names with 
+     * leading zeros up to the maximum number of digits in the local 
+     * with the highest integer value. This can negatively impact 
+     * performance. This option automatically sets "sort-locals" in 
+     * "jb.lns" during the second re-normalization pass.
      */
     public boolean stabilize_local_names() {
         return soot.PhaseOptions.getBoolean(options, "stabilize-local-names");
