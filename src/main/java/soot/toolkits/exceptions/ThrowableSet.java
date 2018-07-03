@@ -87,7 +87,7 @@ import soot.options.Options;
  * </p>
  */
 
-public final class ThrowableSet {
+public class ThrowableSet {
 
   private static final boolean INSTRUMENTING = false;
 
@@ -326,6 +326,8 @@ public final class ThrowableSet {
   }
 
   public static class AlreadyHasExclusionsException extends IllegalStateException {
+    private static final long serialVersionUID = 6785184160868722359L;
+
     public AlreadyHasExclusionsException(String s) {
       super(s);
     }
@@ -334,14 +336,14 @@ public final class ThrowableSet {
   /**
    * Set of exception types included within the set.
    */
-  private final Set<RefLikeType> exceptionsIncluded;
+  protected final Set<RefLikeType> exceptionsIncluded;
 
   /**
    * Set of exception types which, though members of exceptionsIncluded, are to be excluded from the types represented by
    * this <code>ThrowableSet</code>. To simplify the implementation, once a <code>ThrowableSet</code> has any excluded types,
    * the various <code>add()</code> methods of this class must bar additions of subtypes of those excluded types.
    */
-  private final Set<AnySubType> exceptionsExcluded;
+  protected final Set<AnySubType> exceptionsExcluded;
 
   /**
    * A map from ({@link RefLikeType} \\union <code>ThrowableSet</code>) to <code>ThrowableSet</code>. If the mapping (k,v) is
@@ -349,7 +351,7 @@ public final class ThrowableSet {
    * elements in k to <code>this</code>. If (k,v) is in <code>memoizedAdds</code> and k is a {@link RefLikeType}, then v is
    * the set that results from adding k to <code>this</code>.
    */
-  private Map<Object, ThrowableSet> memoizedAdds;
+  protected Map<Object, ThrowableSet> memoizedAdds;
 
   private ThrowableSet getMemoizedAdds(Object key) {
     return memoizedAdds == null ? null : memoizedAdds.get(key);
@@ -372,7 +374,7 @@ public final class ThrowableSet {
    * @param exclude
    *          The set of {@link AnySubType} objects representing the types to be excluded from the set.
    */
-  private ThrowableSet(Set<RefLikeType> include, Set<AnySubType> exclude) {
+  protected ThrowableSet(Set<RefLikeType> include, Set<AnySubType> exclude) {
     exceptionsIncluded = getImmutable(include);
     exceptionsExcluded = getImmutable(exclude);
     // We don't need to clone include and exclude to guarantee
