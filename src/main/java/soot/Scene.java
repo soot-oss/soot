@@ -154,10 +154,10 @@ public class Scene // extends AbstractHost
   protected List<SootMethod> entryPoints;
   protected ClientAccessibilityOracle accessibilityOracle;
 
-  boolean allowsPhantomRefs = false;
+  protected boolean allowsPhantomRefs = false;
 
-  SootClass mainClass;
-  String sootClassPath = null;
+  protected SootClass mainClass;
+  protected String sootClassPath = null;
 
   // Two default values for constructing ExceptionalUnitGraphs:
   private ThrowAnalysis defaultThrowAnalysis = null;
@@ -923,47 +923,43 @@ public class Scene // extends AbstractHost
    *           registered RefType.
    */
   public Type getType(String arg) {
-    Type t = getTypeUnsafe(arg, false);//Set to false to preserve the original functionality just in case
+    Type t = getTypeUnsafe(arg, false);// Set to false to preserve the original functionality just in case
     if (t == null) {
       throw new RuntimeException("Unknown Type: '" + t + "'");
     }
     return t;
   }
-  
+
   /**
-   * Returns a Type object representing the given type string. It will first
-   * attempt to resolve the type as a reference type that currently exists in
-   * the Scene. If this fails it will attempt to resolve the type as a java
-   * primitive type. Lastly, if phantom refs are allowed
-   * it will construct a phantom class for the given type and return a reference
-   * type based on the phantom class. Otherwise, this method will return null.
-   * Note, if the resolved base type is not null and the string representation of
-   * the type is an array, the returned type will be an ArrayType with the base
-   * type resolved as described above.
+   * Returns a Type object representing the given type string. It will first attempt to resolve the type as a reference type
+   * that currently exists in the Scene. If this fails it will attempt to resolve the type as a java primitive type. Lastly,
+   * if phantom refs are allowed it will construct a phantom class for the given type and return a reference type based on
+   * the phantom class. Otherwise, this method will return null. Note, if the resolved base type is not null and the string
+   * representation of the type is an array, the returned type will be an ArrayType with the base type resolved as described
+   * above.
    * 
-   * @param arg A string description of the type
+   * @param arg
+   *          A string description of the type
    * @return The Type if it can be resolved and null otherwise
    */
   public Type getTypeUnsafe(String arg) {
     return getTypeUnsafe(arg, true);
   }
-  
+
   /**
-   * Returns a Type object representing the given type string. It will first
-   * attempt to resolve the type as a reference type that currently exists in
-   * the Scene. If this fails it will attempt to resolve the type as a java
-   * primitive type. Lastly, if phantom refs are allowed and phantomNonExist=true
-   * it will construct a phantom class for the given type and return a reference
-   * type based on the phantom class. Otherwise, this method will return null.
-   * Note, if the resolved base type is not null and the string representation of
-   * the type is an array, the returned type will be an ArrayType with the base
+   * Returns a Type object representing the given type string. It will first attempt to resolve the type as a reference type
+   * that currently exists in the Scene. If this fails it will attempt to resolve the type as a java primitive type. Lastly,
+   * if phantom refs are allowed and phantomNonExist=true it will construct a phantom class for the given type and return a
+   * reference type based on the phantom class. Otherwise, this method will return null. Note, if the resolved base type is
+   * not null and the string representation of the type is an array, the returned type will be an ArrayType with the base
    * type resolved as described above.
    * 
-   * @param arg A string description of the type
-   * @param phantomNonExist Indicates that a phantom class should be created for
-   * the given type string and a Type object should be created based on the phantom
-   * class if a class matching the type name does not exists in the scene and phantom
-   * refs are allowed
+   * @param arg
+   *          A string description of the type
+   * @param phantomNonExist
+   *          Indicates that a phantom class should be created for the given type string and a Type object should be created
+   *          based on the phantom class if a class matching the type name does not exists in the scene and phantom refs are
+   *          allowed
    * @return The Type if it can be resolved and null otherwise
    */
   public Type getTypeUnsafe(String arg, boolean phantomNonExist) {
@@ -1043,27 +1039,27 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Returns the SootClass with the given className. If no class with the 
-   * given name exists, null is returned unless phantom refs are allowed.
-   * In this case, a new phantom class is created.
+   * Returns the SootClass with the given className. If no class with the given name exists, null is returned unless phantom
+   * refs are allowed. In this case, a new phantom class is created.
    *
-   * @param className The name of the class to get
+   * @param className
+   *          The name of the class to get
    * @return The class if it exists, otherwise null
    */
   public SootClass getSootClassUnsafe(String className) {
-    return getSootClassUnsafe(className,true);
+    return getSootClassUnsafe(className, true);
   }
-  
+
   /**
-   * Returns the SootClass with the given className. If no class with the
-   * given name exists, null is returned unless phantomNonExist=true and
-   * phantom refs are allowed. In this case, a new phantom class is created
-   * and returned.
+   * Returns the SootClass with the given className. If no class with the given name exists, null is returned unless
+   * phantomNonExist=true and phantom refs are allowed. In this case, a new phantom class is created and returned.
    * 
-   * @param className The name of the class to get
-   * @param phantomNonExist Indicates that a phantom class should be created if a 
-   * class with the given name does not exist and phantom refs are allowed
-   * @return The class if it exists, otherwise null  
+   * @param className
+   *          The name of the class to get
+   * @param phantomNonExist
+   *          Indicates that a phantom class should be created if a class with the given name does not exist and phantom refs
+   *          are allowed
+   * @return The class if it exists, otherwise null
    */
   public SootClass getSootClassUnsafe(String className, boolean phantomNonExist) {
     RefType type = nameToClass.get(className);
@@ -1076,7 +1072,7 @@ public class Scene // extends AbstractHost
 
     if ((allowsPhantomRefs() && phantomNonExist) || className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
       synchronized (this) {
-        //Double check the class has not been created already between last check an synchronize
+        // Double check the class has not been created already between last check an synchronize
         type = nameToClass.get(className);
         if (type != null) {
           SootClass tsc = type.getSootClass();
