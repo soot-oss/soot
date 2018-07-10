@@ -273,22 +273,25 @@ public class ArraySparseSet<T> extends AbstractFlowSet<T> {
   public Iterator<T> iterator() {
     return new Iterator<T>() {
 
-      int lastIdx = 0;
+      int nextIdx = 0;
 
       @Override
       public boolean hasNext() {
-        return lastIdx < numElements;
+        return nextIdx < numElements;
       }
 
       @Override
       public T next() {
-        return elements[lastIdx++];
+        return elements[nextIdx++];
       }
 
       @Override
       public void remove() {
-        ArraySparseSet.this.remove(lastIdx);
-        lastIdx--;
+        if (nextIdx == 0) {
+          throw new IllegalStateException("'next' has not been called yet.");
+        }
+        ArraySparseSet.this.remove(nextIdx - 1);
+        nextIdx--;
       }
 
     };
