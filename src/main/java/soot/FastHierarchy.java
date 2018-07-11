@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import soot.jimple.SpecialInvokeExpr;
 import soot.util.ConcurrentHashMultiMap;
@@ -333,13 +334,12 @@ public class FastHierarchy {
       }
     } else {
       Set<SootClass> impl = getAllImplementersOfInterface(parent);
-      for (Iterator<SootClass> it = impl.iterator(); it.hasNext();) {
-        parentInterval = classToInterval.get(it.next());
-        if (parentInterval != null && parentInterval.isSubrange(childInterval)) {
-          return true;
-        }
-      }
-      return false;
+      // If we have more than 1000 entries use multi-threaded search
+      Stream<SootClass> stream = (impl.size() > 1000) ? impl.parallelStream() : impl.stream();
+      return stream.anyMatch(c -> {
+        Interval interval = classToInterval.get(c);
+        return (interval != null && interval.isSubrange(childInterval));
+      });
     }
   }
 
