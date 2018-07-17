@@ -34,7 +34,7 @@ import java.util.*;
  * Soot ant task.
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-07-02T12:04:47.39+02:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-07-17T12:52:18.009+02:00", comments = "from soot_options.xml")
 public class AntTask extends MatchingTask {
     public static final boolean DEBUG = true;
     private void debug(String s) {
@@ -471,6 +471,14 @@ public class AntTask extends MatchingTask {
   
         public void setvia_grimp(boolean arg) {
             if(arg) addArg("-via-grimp");
+        }
+  
+        public void setgenerate_memberclasses_dex_annotation_on_write(boolean arg) {
+            if(arg) addArg("-generate-memberclasses-dex-annotation-on-write");
+        }
+  
+        public void settransform_memberclasses_dex_annotation(boolean arg) {
+            if(arg) addArg("-transform-memberclasses-dex-annotation");
         }
   
         public void setvia_shimple(boolean arg) {

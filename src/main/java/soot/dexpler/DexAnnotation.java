@@ -63,6 +63,7 @@ import soot.SootMethod;
 import soot.SootResolver;
 import soot.Type;
 import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.options.Options;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationBooleanElem;
@@ -573,7 +574,7 @@ public class DexAnnotation {
 
         continue;
 
-      } else if (atypes.equals("dalvik.annotation.MemberClasses")) {
+      } else if (atypes.equals("dalvik.annotation.MemberClasses") && Options.v().transform_memberclasses_dex_annotation()) {
         AnnotationArrayElem e = (AnnotationArrayElem) getElements(a.getElements()).get(0);
         for (AnnotationElem ae : e.getValues()) {
           AnnotationClassElem c = (AnnotationClassElem) ae;

@@ -32,7 +32,7 @@ import java.util.*;
  *
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-07-02T12:04:46.647+02:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-07-17T12:52:17.76+02:00", comments = "from soot_options.xml")
 public class Options extends OptionsBase {
 
     public Options(Singletons.Global g) {
@@ -978,6 +978,14 @@ public class Options extends OptionsBase {
             )
                 via_grimp = true;
             else if (false
+                    || option.equals("no-generate-memberclasses-dex-annotation-on-write")
+            )
+                generate_memberclasses_dex_annotation_on_write = false;
+            else if (false
+                    || option.equals("no-transform-memberclasses-dex-annotation")
+            )
+                transform_memberclasses_dex_annotation = false;
+            else if (false
                     || option.equals("via-shimple")
             )
                 via_shimple = true;
@@ -1513,6 +1521,14 @@ public class Options extends OptionsBase {
     private boolean via_grimp = false;
     public void set_via_grimp(boolean setting) { via_grimp = setting; }
 
+    public boolean generate_memberclasses_dex_annotation_on_write() { return generate_memberclasses_dex_annotation_on_write; }
+    private boolean generate_memberclasses_dex_annotation_on_write = true;
+    public void set_generate_memberclasses_dex_annotation_on_write(boolean setting) { generate_memberclasses_dex_annotation_on_write = setting; }
+
+    public boolean transform_memberclasses_dex_annotation() { return transform_memberclasses_dex_annotation; }
+    private boolean transform_memberclasses_dex_annotation = true;
+    public void set_transform_memberclasses_dex_annotation(boolean setting) { transform_memberclasses_dex_annotation = setting; }
+
     public boolean via_shimple() { return via_shimple; }
     private boolean via_shimple = false;
     public void set_via_shimple(boolean setting) { via_shimple = setting; }
@@ -1698,6 +1714,8 @@ public class Options extends OptionsBase {
                 + padOpt("-O, -optimize", "Perform intraprocedural optimizations")
                 + padOpt("-W, -whole-optimize", "Perform whole program optimizations")
                 + padOpt("-via-grimp", "Convert to bytecode via Grimp instead of via Baf")
+                + padOpt("-generate-memberclasses-dex-annotation-on-write", "Generate MemberClasses when writing DEX code")
+                + padOpt("-transform-memberclasses-dex-annotation", "Transform MemberClasses when reading DEX code")
                 + padOpt("-via-shimple", "Enable Shimple SSA representation")
                 + padOpt("-throw-analysis ARG", "")
                     + padVal("pedantic", "Pedantically conservative throw analysis")

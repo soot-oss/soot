@@ -6784,6 +6784,31 @@ This locking scheme aims to achieve simple fine-grained locking.
             </long_desc>
         </boolopt>
         <boolopt>
+            <name>Generate MemberClasses DEX annotation on write</name>
+            <alias>generate-memberclasses-dex-annotation-on-write</alias>
+            <default>true</default>
+            <short_desc>Generate MemberClasses when writing DEX code</short_desc>
+            <long_desc>
+                If this option is set, soot automatically generates dalvik.annotation.MemberClasses
+                annotations for inner class relations.
+                To preserve the annotations of the original application when transforming from dex to dex,
+                ensure that both this option and the transform-memberclasses-dex-annotation is set to false.
+            </long_desc>
+        </boolopt>
+        <boolopt>
+            <name>Transform MemberClasses DEX annotation</name>
+            <alias>transform-memberclasses-dex-annotation</alias>
+            <default>true</default>
+            <short_desc>Transform MemberClasses when reading DEX code</short_desc>
+            <long_desc>
+                If this option is set, soot derives inner class relations when the memberclass annotation is found.
+                If this option has been disabled, soot does not transform the member class annotation, but preserves
+                it in its original form.
+                To preserve the annotations of the original application when transforming from dex to dex,
+                ensure that both this option and the write-memberclasses-dex-annotation is set to false.
+            </long_desc>
+        </boolopt>
+        <boolopt>
             <name>Via Shimple</name>
             <alias>via-shimple</alias>
             <short_desc>Enable Shimple SSA representation</short_desc>
@@ -6959,7 +6984,7 @@ This locking scheme aims to achieve simple fine-grained locking.
             </long_desc>
         </macroopt>
         <boolopt>
-            <name>Ignore reolution errors</name>
+            <name>Ignore resolution errors</name>
             <alias>ire</alias>
             <alias>ignore-resolution-errors</alias>
             <default>false</default>
