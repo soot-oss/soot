@@ -1291,6 +1291,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getProcessing_Optionsvia_grimp_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getProcessing_Optionsgenerate_memberclasses_dex_annotation_on_write_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getProcessing_Optionsgenerate_memberclasses_dex_annotation_on_write_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getProcessing_Optionstransform_memberclasses_dex_annotation_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getProcessing_Optionstransform_memberclasses_dex_annotation_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getProcessing_Optionsvia_shimple_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -4943,6 +4955,26 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getProcessing_Optionsvia_grimp_widget() {
 		return Processing_Optionsvia_grimp_widget;
+	}	
+	
+	private BooleanOptionWidget Processing_Optionsgenerate_memberclasses_dex_annotation_on_write_widget;
+	
+	private void setProcessing_Optionsgenerate_memberclasses_dex_annotation_on_write_widget(BooleanOptionWidget widget) {
+		Processing_Optionsgenerate_memberclasses_dex_annotation_on_write_widget = widget;
+	}
+	
+	public BooleanOptionWidget getProcessing_Optionsgenerate_memberclasses_dex_annotation_on_write_widget() {
+		return Processing_Optionsgenerate_memberclasses_dex_annotation_on_write_widget;
+	}	
+	
+	private BooleanOptionWidget Processing_Optionstransform_memberclasses_dex_annotation_widget;
+	
+	private void setProcessing_Optionstransform_memberclasses_dex_annotation_widget(BooleanOptionWidget widget) {
+		Processing_Optionstransform_memberclasses_dex_annotation_widget = widget;
+	}
+	
+	public BooleanOptionWidget getProcessing_Optionstransform_memberclasses_dex_annotation_widget() {
+		return Processing_Optionstransform_memberclasses_dex_annotation_widget;
 	}	
 	
 	private BooleanOptionWidget Processing_Optionsvia_shimple_widget;
@@ -9102,6 +9134,28 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		setProcessing_Optionsvia_grimp_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Grimp", "", "","via-grimp", "\nConvert Jimple to bytecode via the Grimp intermediate \nrepresentation instead of via the Baf intermediate \nrepresentation.", defaultBool)));
 
+		defKey = ""+" "+""+" "+"generate-memberclasses-dex-annotation-on-write";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setProcessing_Optionsgenerate_memberclasses_dex_annotation_on_write_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Generate MemberClasses DEX annotation on write", "", "","generate-memberclasses-dex-annotation-on-write", "\nIf this option is set, soot automatically generates \ndalvik.annotation.MemberClasses annotations for inner class \nrelations. To preserve the annotations of the original \napplication when transforming from dex to dex, ensure that both \nthis option and the transform-memberclasses-dex-annotation is \nset to false.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"transform-memberclasses-dex-annotation";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setProcessing_Optionstransform_memberclasses_dex_annotation_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Transform MemberClasses DEX annotation", "", "","transform-memberclasses-dex-annotation", "\nIf this option is set, soot derives inner class relations when \nthe memberclass annotation is found. If this option has been \ndisabled, soot does not transform the member class annotation, \nbut preserves it in its original form. To preserve the \nannotations of the original application when transforming from \ndex to dex, ensure that both this option and the \nwrite-memberclasses-dex-annotation is set to false.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"via-shimple";
 		defKey = defKey.trim();
 
@@ -9144,7 +9198,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultBool = false;
 		}
 
-		setProcessing_Optionsignore_resolution_errors_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Ignore reolution errors", "", "","ire ignore-resolution-errors", "\nSome programs may contain dead code that references fields or \nmethods that do not exist. By default, Soot exists with an \nexception when this happens. If this option is enabled, Soot \nonly prints a warning but does not exit.", defaultBool)));
+		setProcessing_Optionsignore_resolution_errors_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Ignore resolution errors", "", "","ire ignore-resolution-errors", "\nSome programs may contain dead code that references fields or \nmethods that do not exist. By default, Soot exists with an \nexception when this happens. If this option is enabled, Soot \nonly prints a warning but does not exit.", defaultBool)));
 
 		data = new OptionData [] {
 		

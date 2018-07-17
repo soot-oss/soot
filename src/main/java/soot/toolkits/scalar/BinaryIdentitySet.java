@@ -1,5 +1,7 @@
 package soot.toolkits.scalar;
 
+import soot.util.IdentityHashSet;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework

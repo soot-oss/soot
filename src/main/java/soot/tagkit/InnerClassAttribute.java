@@ -88,8 +88,7 @@ public class InnerClassAttribute implements Tag {
             // The Dalvik parser may find an InnerClass annotation without accessFlags in the outer class
             // and then an annotation with the accessFlags in the inner class.
             // When we have more information about the accessFlags we update the InnerClassTag.
-            list.remove(ict);
-            list.add(newt);
+        	ict.accessFlags = newt.accessFlags;
           }
           return;
         }

@@ -697,20 +697,28 @@ public class DexPrinter {
       }
     }
 
-    // Write the MemberClasses tag
-    InnerClassAttribute icTag = (InnerClassAttribute) c.getTag("InnerClassAttribute");
-    if (icTag != null) {
-      List<Annotation> memberClassesItem = buildMemberClassesAttribute(c, icTag, skipList);
-      if (memberClassesItem != null) {
-        annotations.addAll(memberClassesItem);
-      }
+    if (Options.v().generate_memberclasses_dex_annotation_on_write()) {
+	    // Write the MemberClasses tag
+	    InnerClassAttribute icTag = (InnerClassAttribute) c.getTag("InnerClassAttribute");
+	    if (icTag != null) {
+	      List<Annotation> memberClassesItem = buildMemberClassesAttribute(c, icTag, skipList);
+	      if (memberClassesItem != null) {
+	        annotations.addAll(memberClassesItem);
+	      }
+	    }
     }
 
     for (Tag t : c.getTags()) {
-      if (t.getName().equals("VisibilityAnnotationTag")) {
-        List<ImmutableAnnotation> visibilityItems = buildVisibilityAnnotationTag((VisibilityAnnotationTag) t, skipList);
-        annotations.addAll(visibilityItems);
-      }
+        if (t instanceof InnerClassAttribute) {
+          List<Annotation> innerClassItem = buildInnerClassAttribute(c, (InnerClassAttribute) t, skipList);
+          if (innerClassItem != null) {
+            annotations.addAll(innerClassItem);
+          }
+        } else if (t instanceof VisibilityAnnotationTag) {
+	      List<ImmutableAnnotation> visibilityItems = buildVisibilityAnnotationTag((VisibilityAnnotationTag) t, skipList);
+	      annotations.addAll(visibilityItems);
+	    }
+      
     }
 
     // Write default-annotation tags

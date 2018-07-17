@@ -46,9 +46,55 @@ public class InnerClassTag implements Tag {
     if (name != null && name.endsWith(";")) {
       throw new RuntimeException("InnerClass name cannot end with ';', got '" + name + "'");
     }
-  }
+	  }
+	
+	  @Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((innerClass == null) ? 0 : innerClass.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((outerClass == null) ? 0 : outerClass.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+      return true;
+    }
+		if (obj == null) {
+      return false;
+    }
+		if (getClass() != obj.getClass()) {
+      return false;
+    }
+		InnerClassTag other = (InnerClassTag) obj;
+		if (innerClass == null) {
+			if (other.innerClass != null) {
+        return false;
+      }
+		} else if (!innerClass.equals(other.innerClass)) {
+      return false;
+    }
+		if (name == null) {
+			if (other.name != null) {
+        return false;
+      }
+		} else if (!name.equals(other.name)) {
+      return false;
+    }
+		if (outerClass == null) {
+			if (other.outerClass != null) {
+        return false;
+      }
+		} else if (!outerClass.equals(other.outerClass)) {
+      return false;
+    }
+		return true;
+	}
 
-  public String getName() {
+	public String getName() {
     return "InnerClassTag";
   }
 
