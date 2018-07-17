@@ -76,7 +76,7 @@ public class SourceLocator {
                   return ClassSourceType.zip;
                 } else if (path.endsWith(".jar")) {
                   return ClassSourceType.jar;
-                } else if (path.endsWith(".apk")) {
+                } else if (Scene.isApk(path)) {
                   return ClassSourceType.apk;
                 } else if (path.endsWith(".dex")) {
                   return ClassSourceType.dex;
