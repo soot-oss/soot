@@ -44,7 +44,6 @@ import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
 import soot.jimple.Stmt;
-import soot.toolkits.exceptions.UnitThrowAnalysis;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
