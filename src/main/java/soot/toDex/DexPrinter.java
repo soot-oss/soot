@@ -697,14 +697,7 @@ public class DexPrinter {
       }
     }
 
-    // Write the MemberClasses tag
-    InnerClassAttribute icTag = (InnerClassAttribute) c.getTag("InnerClassAttribute");
-    if (icTag != null) {
-      List<Annotation> memberClassesItem = buildMemberClassesAttribute(c, icTag, skipList);
-      if (memberClassesItem != null) {
-        annotations.addAll(memberClassesItem);
-      }
-    }
+    writeMemberClasses(c, skipList, annotations);
 
     for (Tag t : c.getTags()) {
       if (t.getName().equals("VisibilityAnnotationTag")) {
@@ -740,6 +733,17 @@ public class DexPrinter {
     }
 
     return annotations;
+  }
+
+  protected void writeMemberClasses(SootClass c, Set<String> skipList, Set<Annotation> annotations) {
+    // Write the MemberClasses tag
+    InnerClassAttribute icTag = (InnerClassAttribute) c.getTag("InnerClassAttribute");
+    if (icTag != null) {
+      List<Annotation> memberClassesItem = buildMemberClassesAttribute(c, icTag, skipList);
+      if (memberClassesItem != null) {
+        annotations.addAll(memberClassesItem);
+      }
+    }
   }
 
   private Set<Annotation> buildFieldAnnotations(SootField f) {
