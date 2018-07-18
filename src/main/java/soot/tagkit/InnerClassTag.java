@@ -48,6 +48,7 @@ public class InnerClassTag implements Tag {
     }
   }
 
+  @Override
   public String getName() {
     return "InnerClassTag";
   }
@@ -56,6 +57,7 @@ public class InnerClassTag implements Tag {
    * Returns the inner class name (only) encoded in UTF8. There is no obvious standalone byte[] encoding for this attribute
    * because it contains embedded constant pool indicies.
    */
+  @Override
   public byte[] getValue() {
     try {
       return innerClass.getBytes("UTF8");
@@ -80,6 +82,7 @@ public class InnerClassTag implements Tag {
     return accessFlags;
   }
 
+  @Override
   public String toString() {
     return "[inner=" + innerClass + ", outer=" + outerClass + ", name=" + name + ",flags=" + accessFlags + "]";
   }

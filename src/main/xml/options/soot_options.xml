@@ -6959,7 +6959,7 @@ This locking scheme aims to achieve simple fine-grained locking.
             </long_desc>
         </macroopt>
         <boolopt>
-            <name>Ignore reolution errors</name>
+            <name>Ignore resolution errors</name>
             <alias>ire</alias>
             <alias>ignore-resolution-errors</alias>
             <default>false</default>
