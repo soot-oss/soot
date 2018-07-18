@@ -505,11 +505,13 @@ public class DexAnnotation {
           clazz.setOuterClass(SootResolver.v().makeClassRef(outerClass));
           assert clazz.getOuterClass() != clazz;
         }
+        // Do not add annotation tag
         return;
       case DALVIK_ANNOTATION_ENCLOSINGMETHOD:
         // If we don't have any pointer to the enclosing method, we just
         // ignore the annotation
         if (eSize == 0) {
+          // Do not add annotation tag
           return;
         }
         // If the pointer is ambiguous, we are in trouble
@@ -578,6 +580,7 @@ public class DexAnnotation {
           clazz.setOuterClass(SootResolver.v().makeClassRef(sootOuterClass));
           assert clazz.getOuterClass() != clazz;
         }
+        // Do not add annotation tag
         return;
       case DALVIK_ANNOTATION_MEMBERCLASSES:
         AnnotationArrayElem arre = (AnnotationArrayElem) getElements(a.getElements()).get(0);
@@ -620,6 +623,7 @@ public class DexAnnotation {
               outerClass == null ? null : DexType.toSootICAT(outerClass), name, accessFlags);
           tags.add(innerTag);
         }
+        // Do not add annotation tag
         return;
       case DALVIK_ANNOTATION_SIGNATURE:
         if (eSize != 1) {
@@ -634,6 +638,7 @@ public class DexAnnotation {
         t = new SignatureTag(sig);
         break;
       case DALVIK_ANNOTATION_THROWS:
+        // Do not add annotation tag
         return;
       case JAVA_DEPRECATED:
         if (eSize != 0) {
