@@ -598,12 +598,7 @@ public class Scene // extends AbstractHost
       String targetApk = "";
       Set<String> targetDexs = new HashSet<String>();
       for (String entry : classPathEntries) {
-          if (isApk(entry)) { // on Windows, file
-          // names are
-          // case-insensitive
-          // We cannot have multiple APKs, because this would give us
-          // multiple
-          // manifests which we do not support right now
+          if (isApk(entry)) {
           if (targetApk != null && !targetApk.isEmpty()) {
             throw new RuntimeException("only one Android application can be analyzed when using option -android-jars.");
           }
