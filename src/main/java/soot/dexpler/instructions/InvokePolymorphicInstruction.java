@@ -98,7 +98,8 @@ public class InvokePolymorphicInstruction extends MethodInvocationInstruction {
     }
   
     // The invoking object will always be included in the parameter types here
-    List<Local> temp = buildParameters(body, ((MethodProtoReference) ((DualReferenceInstruction) instruction).getReference2()).getParameterTypes(), false);
+    List<Local> temp = buildParameters(body, 
+        ((MethodProtoReference) ((DualReferenceInstruction) instruction).getReference2()).getParameterTypes(), false);
     List<Local> parms = temp.subList(1, temp.size());
     Local invoker = temp.get(0);
     
@@ -116,7 +117,7 @@ public class InvokePolymorphicInstruction extends MethodInvocationInstruction {
       units.add(newArr);
     
       int i = 0;
-      for(Local l : parms) {
+      for (Local l : parms) {
         units.add(new JAssignStmt(new JArrayRef(newArrL, IntConstant.v(i)), l));
         i++;
       }
