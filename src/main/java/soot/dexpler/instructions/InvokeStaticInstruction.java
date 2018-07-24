@@ -28,7 +28,6 @@ package soot.dexpler.instructions;
  */
 
 import org.jf.dexlib2.iface.instruction.Instruction;
-
 import soot.dexpler.DexBody;
 
 public class InvokeStaticInstruction extends MethodInvocationInstruction {
@@ -37,21 +36,19 @@ public class InvokeStaticInstruction extends MethodInvocationInstruction {
     super(instruction, codeAdress);
   }
 
+  // // use Nop as begin marker
+  // NopStmt nop = Jimple.v().newNopStmt();
+  // defineBlock(nop);
+  // tagWithLineNumber(nop);
+  // body.add(nop);
+  // beginUnit = nop;
   public void jimplify(DexBody body) {
-    // // use Nop as begin marker
-    // NopStmt nop = Jimple.v().newNopStmt();
-    // defineBlock(nop);
-    // tagWithLineNumber(nop);
-    // body.add(nop);
-    // beginUnit = nop;
-
     jimplifyStatic(body);
-
-    // setUnit() is called in MethodInvocationInstruction
   }
 
   @Override
   boolean isUsedAsFloatingPoint(DexBody body, int register) {
     return isUsedAsFloatingPoint(body, register, true);
   }
+  
 }
