@@ -465,8 +465,8 @@ public class BafASMBackend extends AbstractASMBackend {
           Handle handle;
           if (((MethodHandle) c).isMethodRef()) {
             SootMethodRef methodRef = ((MethodHandle) c).getMethodRef();
-            handle = new Handle(((MethodHandle) c).getKind(), slashify(methodRef.declaringClass().getName()), methodRef.name(),
-                toTypeDesc(methodRef), methodRef.declaringClass().isInterface());
+            handle = new Handle(((MethodHandle) c).getKind(), slashify(methodRef.declaringClass().getName()), 
+                methodRef.name(), toTypeDesc(methodRef), methodRef.declaringClass().isInterface());
           } else { 
             SootFieldRef fieldRef = ((MethodHandle) c).getFieldRef();
             handle = new Handle(((MethodHandle) c).getKind(), slashify(fieldRef.declaringClass().getName()), fieldRef.name(),

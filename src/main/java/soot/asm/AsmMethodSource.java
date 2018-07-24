@@ -1474,7 +1474,8 @@ final class AsmMethodSource implements MethodSource {
     Type t = AsmUtil.toJimpleDesc(methodHandle.getDesc()).get(0);
     int kind = methodHandle.getTag();
     return Scene.v().makeFieldRef(bsmCls, methodHandle.getName(), t, 
-        kind  == MethodHandle.Kind.REF_GET_FIELD_STATIC.getValue() || kind == MethodHandle.Kind.REF_PUT_FIELD_STATIC.getValue());
+        kind == MethodHandle.Kind.REF_GET_FIELD_STATIC.getValue() 
+        || kind == MethodHandle.Kind.REF_PUT_FIELD_STATIC.getValue());
   }
 
   private void convertMultiANewArrayInsn(MultiANewArrayInsnNode insn) {
