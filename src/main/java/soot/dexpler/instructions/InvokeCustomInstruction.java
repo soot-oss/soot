@@ -211,7 +211,7 @@ public class InvokeCustomInstruction extends MethodInvocationInstruction {
    */
   protected SootMethodRef getBootStrapSootMethodRef() {
     MethodHandleReference mh = ((CallSiteReference) ((ReferenceInstruction) instruction).getReference()).getMethodHandle();
-    return getSootMethodRef((MethodReference) mh.getMemberReference(), dexToSootMethodHandleKind(mhr.getMethodHandleType()));
+    return getSootMethodRef((MethodReference) mh.getMemberReference(), dexToSootMethodHandleKind(mh.getMethodHandleType()));
   }
 
 }
