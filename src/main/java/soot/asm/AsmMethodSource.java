@@ -194,6 +194,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.objectweb.asm.Handle;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.IincInsnNode;
@@ -268,6 +269,7 @@ import soot.jimple.JimpleBody;
 import soot.jimple.LongConstant;
 import soot.jimple.LookupSwitchStmt;
 import soot.jimple.MethodHandle;
+import soot.jimple.MethodType;
 import soot.jimple.MonitorStmt;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewMultiArrayExpr;
@@ -1210,9 +1212,21 @@ final class AsmMethodSource implements MethodSource {
     } else if (val instanceof String) {
       v = StringConstant.v(val.toString());
     } else if (val instanceof org.objectweb.asm.Type) {
-      v = ClassConstant.v(((org.objectweb.asm.Type) val).getDescriptor());
+      org.objectweb.asm.Type t = (org.objectweb.asm.Type) val;
+      if (t.getSort() == org.objectweb.asm.Type.METHOD) {
+        List<Type> paramTypes = AsmUtil.toJimpleDesc(((org.objectweb.asm.Type) val).getDescriptor());
+        Type returnType = paramTypes.remove(paramTypes.size() - 1);
+        v = MethodType.v(paramTypes, returnType);
+      } else {
+        v = ClassConstant.v(((org.objectweb.asm.Type) val).getDescriptor());
+      }
     } else if (val instanceof Handle) {
-      v = MethodHandle.v(toSootMethodRef((Handle) val), ((Handle) val).getTag());
+      Handle h = (Handle) val;
+      if (MethodHandle.isMethodRef(h.getTag())) {
+        v = MethodHandle.v(toSootMethodRef((Handle) val), ((Handle) val).getTag());
+      } else {
+        v = MethodHandle.v(toSootFieldRef((Handle) val), ((Handle) val).getTag());
+      }
     } else {
       throw new AssertionError("Unknown constant type: " + val.getClass());
     }
@@ -1450,7 +1464,17 @@ final class AsmMethodSource implements MethodSource {
     SootClass bsmCls = Scene.v().getSootClass(bsmClsName);
     List<Type> bsmSigTypes = AsmUtil.toJimpleDesc(methodHandle.getDesc());
     Type returnType = bsmSigTypes.remove(bsmSigTypes.size() - 1);
-    return Scene.v().makeMethodRef(bsmCls, methodHandle.getName(), bsmSigTypes, returnType, true /* always static */);
+    return Scene.v().makeMethodRef(bsmCls, methodHandle.getName(), bsmSigTypes, returnType, 
+        methodHandle.getTag() == MethodHandle.Kind.REF_INVOKE_STATIC.getValue());
+  }
+  
+  private SootFieldRef toSootFieldRef(Handle methodHandle) {
+    String bsmClsName = AsmUtil.toQualifiedName(methodHandle.getOwner());
+    SootClass bsmCls = Scene.v().getSootClass(bsmClsName);
+    Type t = AsmUtil.toJimpleDesc(methodHandle.getDesc()).get(0);
+    int kind = methodHandle.getTag();
+    return Scene.v().makeFieldRef(bsmCls, methodHandle.getName(), t, 
+        kind  == MethodHandle.Kind.REF_GET_FIELD_STATIC.getValue() || kind == MethodHandle.Kind.REF_PUT_FIELD_STATIC.getValue());
   }
 
   private void convertMultiANewArrayInsn(MultiANewArrayInsnNode insn) {

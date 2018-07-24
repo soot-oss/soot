@@ -1,5 +1,7 @@
 package soot.util.backend;
 
+import java.util.List;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -71,7 +73,8 @@ public class ASMBackendUtils {
     }
     return s.replace('.', '/');
   }
-
+  
+  
   /**
    * Compute type description for methods, comprising parameter types and return type.
    *
@@ -80,13 +83,24 @@ public class ASMBackendUtils {
    * @return Method type description
    */
   public static String toTypeDesc(SootMethodRef m) {
+    return toTypeDesc(m.parameterTypes(),m.returnType());
+  }
+
+  /**
+   * Compute type description for methods, comprising parameter types and return type.
+   * 
+   * @param parameterTypes The parameters for some method
+   * @param returnType The return type for some method
+   * @return Method type description
+   */
+  public static String toTypeDesc(List<Type> parameterTypes, Type returnType) {
     StringBuilder sb = new StringBuilder();
     sb.append('(');
-    for (Type t : m.parameterTypes()) {
+    for (Type t : parameterTypes) {
       sb.append(toTypeDesc(t));
     }
     sb.append(')');
-    sb.append(toTypeDesc(m.returnType()));
+    sb.append(toTypeDesc(returnType));
     return sb.toString();
   }
 

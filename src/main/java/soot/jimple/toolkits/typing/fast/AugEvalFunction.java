@@ -70,6 +70,7 @@ import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
 import soot.jimple.LtExpr;
 import soot.jimple.MethodHandle;
+import soot.jimple.MethodType;
 import soot.jimple.MulExpr;
 import soot.jimple.NeExpr;
 import soot.jimple.NegExpr;
@@ -276,6 +277,8 @@ public class AugEvalFunction implements IEvalFunction {
       return RefType.v("java.lang.Class");
     } else if (expr instanceof MethodHandle) {
       return RefType.v("java.lang.invoke.MethodHandle");
+    } else if (expr instanceof MethodType) {
+      return RefType.v("java.lang.invoke.MethodType");
     } else {
       throw new RuntimeException("Unhandled expression: " + expr);
     }
