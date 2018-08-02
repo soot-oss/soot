@@ -30,8 +30,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.util.Classes;
-
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationEnumElem;
 import soot.tagkit.AnnotationTag;
@@ -72,7 +70,7 @@ public class AnnotationInstanceCreator {
 
     try {
       // load the class of the annotation to be created
-      final Class<?> clazz = Classes.loadClass(tag.getType().replace('/', '.'));
+      final Class<?> clazz = ClassLoaderUtils.loadClass(tag.getType().replace('/', '.'));
       final Map<String, Object> map = new HashMap<String, Object>();
 
       // for every element generate the result
