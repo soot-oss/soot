@@ -97,11 +97,19 @@ import soot.toDex.SootToDexUtils;
  */
 public class DexAnnotation {
 
+  public static final String JAVA_DEPRECATED = "java.lang.Deprecated";
+  public static final String DALVIK_ANNOTATION_THROWS = "dalvik.annotation.Throws";
+  public static final String DALVIK_ANNOTATION_SIGNATURE = "dalvik.annotation.Signature";
+  public static final String DALVIK_ANNOTATION_MEMBERCLASSES = "dalvik.annotation.MemberClasses";
+  public static final String DALVIK_ANNOTATION_INNERCLASS = "dalvik.annotation.InnerClass";
+  public static final String DALVIK_ANNOTATION_ENCLOSINGMETHOD = "dalvik.annotation.EnclosingMethod";
+  public static final String DALVIK_ANNOTATION_ENCLOSINGCLASS = "dalvik.annotation.EnclosingClass";
+  public static final String DALVIK_ANNOTATION_DEFAULT = "dalvik.annotation.AnnotationDefault";
   private final Type ARRAY_TYPE = RefType.v("Array");
   private final SootClass clazz;
   private final Dependencies deps;
 
-  DexAnnotation(SootClass clazz, Dependencies deps) {
+  public DexAnnotation(SootClass clazz, Dependencies deps) {
     this.clazz = clazz;
     this.deps = deps;
   }
@@ -432,31 +440,45 @@ public class DexAnnotation {
     // soot.tagkit.AnnotationConstants
 
     for (Annotation a : annotations) {
-      int v = getVisibility(a.getVisibility());
+      addAnnotation(classType, tags, vatg, a);
+    }
 
-      Tag t = null;
-      Type atype = DexType.toSoot(a.getType());
-      String atypes = atype.toString();
-      int eSize = a.getElements().size();
+    for (VisibilityAnnotationTag vat : vatg) {
+      if (vat != null) {
+        tags.add(vat);
+      }
+    }
 
-      if (atypes.equals("dalvik.annotation.AnnotationDefault")) {
+    return tags;
+
+  }
+
+  protected void addAnnotation(String classType, List<Tag> tags, VisibilityAnnotationTag[] vatg, Annotation a) {
+    int v = getVisibility(a.getVisibility());
+
+    Tag t = null;
+    Type atype = DexType.toSoot(a.getType());
+    String atypes = atype.toString();
+    int eSize = a.getElements().size();
+
+    switch (atypes) {
+      case DALVIK_ANNOTATION_DEFAULT:
         if (eSize != 1) {
           throw new RuntimeException("error: expected 1 element for annotation Default. Got " + eSize + " instead.");
         }
         // get element
-        AnnotationElem e = getElements(a.getElements()).get(0);
+        AnnotationElem anne = getElements(a.getElements()).get(0);
         AnnotationTag adt = new AnnotationTag(a.getType());
-        adt.addElem(e);
+        adt.addElem(anne);
         if (vatg[v] == null) {
           vatg[v] = new VisibilityAnnotationTag(v);
         }
         vatg[v].addAnnotation(adt);
-
-      } else if (atypes.equals("dalvik.annotation.EnclosingClass")) {
+        break;
+      case DALVIK_ANNOTATION_ENCLOSINGCLASS:
         if (eSize != 1) {
           throw new RuntimeException("error: expected 1 element for annotation EnclosingClass. Got " + eSize + " instead.");
         }
-
         for (AnnotationElement elem : a.getElements()) {
           String outerClass = ((TypeEncodedValue) elem.getValue()).getValue();
           outerClass = Util.dottedClassName(outerClass);
@@ -483,25 +505,19 @@ public class DexAnnotation {
           clazz.setOuterClass(SootResolver.v().makeClassRef(outerClass));
           assert clazz.getOuterClass() != clazz;
         }
-
-        // EnclosingClass comes in pair with InnerClass.
-        // Those are generated from a single InnerClassTag,
-        // that is re-constructed only for the InnerClass Dalvik
-        // annotation.
-        continue;
-
-      } else if (atypes.equals("dalvik.annotation.EnclosingMethod")) {
+        // Do not add annotation tag
+        return;
+      case DALVIK_ANNOTATION_ENCLOSINGMETHOD:
         // If we don't have any pointer to the enclosing method, we just
         // ignore the annotation
         if (eSize == 0) {
-          continue;
+          // Do not add annotation tag
+          return;
         }
-
         // If the pointer is ambiguous, we are in trouble
         if (eSize != 1) {
           throw new RuntimeException("error: expected 1 element for annotation EnclosingMethod. Got " + eSize + " instead.");
         }
-
         AnnotationStringElem e = (AnnotationStringElem) getElements(a.getElements()).get(0);
         String[] split1 = e.getValue().split("\\ \\|");
         String classString = split1[0];
@@ -510,16 +526,14 @@ public class DexAnnotation {
         String returnType = split1[3];
         String methodSigString = "(" + parameters + ")" + returnType;
         t = new EnclosingMethodTag(classString, methodString, methodSigString);
-
         String outerClass = classString.replace("/", ".");
         deps.typesToSignature.add(RefType.v(outerClass));
         clazz.setOuterClass(SootResolver.v().makeClassRef(outerClass));
         assert clazz.getOuterClass() != clazz;
-
-      } else if (atypes.equals("dalvik.annotation.InnerClass")) {
+        break;
+      case DALVIK_ANNOTATION_INNERCLASS:
         int accessFlags = -1; // access flags of the inner class
         String name = null; // name of the inner class
-
         for (AnnotationElem ele : getElements(a.getElements())) {
           if (ele instanceof AnnotationIntElem && ele.getName().equals("accessFlags")) {
             accessFlags = ((AnnotationIntElem) ele).getValue();
@@ -529,8 +543,6 @@ public class DexAnnotation {
             throw new RuntimeException("Unexpected inner class annotation element");
           }
         }
-
-        String outerClass; // outer class name
         if (clazz.hasOuterClass()) {
           // If we have already set an outer class from some other
           // annotation, we use that
@@ -559,27 +571,22 @@ public class DexAnnotation {
           // annotation is broken and does not end in $nn.
           outerClass = null;
         }
-
         Tag innerTag = new InnerClassTag(DexType.toSootICAT(classType),
             outerClass == null ? null : DexType.toSootICAT(outerClass), name, accessFlags);
         tags.add(innerTag);
-
         if (outerClass != null && !clazz.hasOuterClass()) {
           String sootOuterClass = Util.dottedClassName(outerClass);
           deps.typesToSignature.add(RefType.v(sootOuterClass));
           clazz.setOuterClass(SootResolver.v().makeClassRef(sootOuterClass));
           assert clazz.getOuterClass() != clazz;
         }
-
-        continue;
-
-      } else if (atypes.equals("dalvik.annotation.MemberClasses")) {
-        AnnotationArrayElem e = (AnnotationArrayElem) getElements(a.getElements()).get(0);
-        for (AnnotationElem ae : e.getValues()) {
+        // Do not add annotation tag
+        return;
+      case DALVIK_ANNOTATION_MEMBERCLASSES:
+        AnnotationArrayElem arre = (AnnotationArrayElem) getElements(a.getElements()).get(0);
+        for (AnnotationElem ae : arre.getValues()) {
           AnnotationClassElem c = (AnnotationClassElem) ae;
           String innerClass = c.getDesc();
-          String outerClass;
-          String name;
           if (innerClass.contains("$-")) {
             /*
              * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may
@@ -609,68 +616,69 @@ public class DexAnnotation {
             name = null;
           }
 
-          int accessFlags = 0; // seems like this information is lost
+          accessFlags = 0; // seems like this information is lost
           // during the .class -- dx --> .dex
           // process.
-          Tag innerTag = new InnerClassTag(DexType.toSootICAT(innerClass),
+          innerTag = new InnerClassTag(DexType.toSootICAT(innerClass),
               outerClass == null ? null : DexType.toSootICAT(outerClass), name, accessFlags);
           tags.add(innerTag);
         }
-        continue;
-
-      } else if (atypes.equals("dalvik.annotation.Signature")) {
+        // Do not add annotation tag
+        return;
+      case DALVIK_ANNOTATION_SIGNATURE:
         if (eSize != 1) {
           throw new RuntimeException("error: expected 1 element for annotation Signature. Got " + eSize + " instead.");
         }
-        AnnotationArrayElem e = (AnnotationArrayElem) getElements(a.getElements()).get(0);
+        arre = (AnnotationArrayElem) getElements(a.getElements()).get(0);
         String sig = "";
-        for (AnnotationElem ae : e.getValues()) {
+        for (AnnotationElem ae : arre.getValues()) {
           AnnotationStringElem s = (AnnotationStringElem) ae;
           sig += s.getValue();
         }
         t = new SignatureTag(sig);
-
-      } else if (atypes.equals("dalvik.annotation.Throws")) {
-        // this is handled in soot.dexpler.DexMethod
-        continue;
-
-      } else if (atypes.equals("java.lang.Deprecated")) {
+        break;
+      case DALVIK_ANNOTATION_THROWS:
+        // Do not add annotation tag
+        return;
+      case JAVA_DEPRECATED:
         if (eSize != 0) {
           throw new RuntimeException("error: expected 1 element for annotation Deprecated. Got " + eSize + " instead.");
         }
-
         t = new DeprecatedTag();
-
-        AnnotationTag adt = new AnnotationTag("Ljava/lang/Deprecated;");
+        AnnotationTag deprecated = new AnnotationTag("Ljava/lang/Deprecated;");
         if (vatg[v] == null) {
           vatg[v] = new VisibilityAnnotationTag(v);
         }
-        vatg[v].addAnnotation(adt);
-
-      } else {
-        if (vatg[v] == null) {
-          vatg[v] = new VisibilityAnnotationTag(v);
-        }
-
-        AnnotationTag tag = new AnnotationTag(a.getType());
-        for (AnnotationElem e : getElements(a.getElements())) {
-          tag.addElem(e);
-        }
-        vatg[v].addAnnotation(tag);
-
-      }
-
-      tags.add(t);
+        vatg[v].addAnnotation(deprecated);
+        break;
+      default:
+        addNormalAnnotation(vatg, a, v);
+        break;
     }
 
-    for (VisibilityAnnotationTag vat : vatg) {
-      if (vat != null) {
-        tags.add(vat);
-      }
+    tags.add(t);
+  }
+
+  /**
+   * Processes a normal annotation and adds it to the proper visibility annotation tag in the given array
+   * 
+   * @param vatg
+   *          the visibility annotation tags for different visibility levels
+   * @param a
+   *          the annotation
+   * @param v
+   *          the visibility
+   */
+  protected void addNormalAnnotation(VisibilityAnnotationTag[] vatg, Annotation a, int v) {
+    if (vatg[v] == null) {
+      vatg[v] = new VisibilityAnnotationTag(v);
     }
 
-    return tags;
-
+    AnnotationTag tag = new AnnotationTag(a.getType());
+    for (AnnotationElem e : getElements(a.getElements())) {
+      tag.addElem(e);
+    }
+    vatg[v].addAnnotation(tag);
   }
 
   private ArrayList<AnnotationElem> getElements(Set<? extends AnnotationElement> set) {
@@ -847,17 +855,17 @@ public class DexAnnotation {
    *          Dexlib visibility
    * @return Jimple visibility
    */
-  private int getVisibility(int visibility) {
-    if ("runtime".equals(AnnotationVisibility.getVisibility(visibility))) {
-      return AnnotationConstants.RUNTIME_VISIBLE;
+  protected static int getVisibility(int visibility) {
+    switch (AnnotationVisibility.getVisibility(visibility)) {
+      case "runtime":
+        return AnnotationConstants.RUNTIME_VISIBLE;
+      case "system":
+        return AnnotationConstants.RUNTIME_INVISIBLE;
+      case "build":
+        return AnnotationConstants.SOURCE_VISIBLE;
+      default:
+        throw new RuntimeException(String.format("error: unknown annotation visibility: '%d'", visibility));
     }
-    if ("system".equals(AnnotationVisibility.getVisibility(visibility))) {
-      return AnnotationConstants.RUNTIME_INVISIBLE;
-    }
-    if ("build".equals(AnnotationVisibility.getVisibility(visibility))) {
-      return AnnotationConstants.SOURCE_VISIBLE;
-    }
-    throw new RuntimeException("error: unknown annotation visibility: '" + visibility + "'");
   }
 
 }

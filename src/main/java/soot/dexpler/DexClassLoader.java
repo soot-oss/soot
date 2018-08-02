@@ -107,7 +107,7 @@ public class DexClassLoader {
     if (Options.v().oaat() && sc.resolvingLevel() <= SootClass.HIERARCHY) {
       return deps;
     }
-    DexAnnotation da = new DexAnnotation(sc, deps);
+    DexAnnotation da = createDexAnnotation(sc, deps);
 
     // get the fields of the class
     for (Field sf : defItem.getStaticFields()) {
@@ -207,6 +207,17 @@ public class DexClassLoader {
     }
 
     return deps;
+  }
+
+  /**
+   * Allow custom implementations to use different dex annotation implementations
+   *
+   * @param clazz
+   * @param deps
+   * @return
+   */
+  protected DexAnnotation createDexAnnotation(SootClass clazz, Dependencies deps) {
+    return new DexAnnotation(clazz, deps);
   }
 
   /**
