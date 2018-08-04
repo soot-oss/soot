@@ -1121,6 +1121,17 @@
             </long_desc>
         </boolopt>
         <boolopt>
+            <name>Generate class hierarchy directories</name>
+            <alias>hierarchy-dirs</alias>
+            <short_desc>Generate class hierarchy directories for Jimple/Shimple</short_desc>
+            <long_desc>
+                Given class a.b.C, generates a/b/C.shimple (directory
+                structure in the filesystem) instead of a.b.C.shimple
+                (default flat-hierarchy approach). Valid for
+                Jimple/Shimple generation.
+            </long_desc>
+        </boolopt>
+        <boolopt>
             <name>Save Tags to XML</name>
             <alias>xml-attributes</alias>
             <short_desc>Save tags to XML attributes for Eclipse</short_desc>

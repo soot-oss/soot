@@ -1202,6 +1202,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getOutput_Optionsoutput_jar_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getOutput_Optionshierarchy_dirs_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getOutput_Optionshierarchy_dirs_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getOutput_Optionsxml_attributes_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -4783,6 +4789,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getOutput_Optionsoutput_jar_widget() {
 		return Output_Optionsoutput_jar_widget;
+	}	
+	
+	private BooleanOptionWidget Output_Optionshierarchy_dirs_widget;
+	
+	private void setOutput_Optionshierarchy_dirs_widget(BooleanOptionWidget widget) {
+		Output_Optionshierarchy_dirs_widget = widget;
+	}
+	
+	public BooleanOptionWidget getOutput_Optionshierarchy_dirs_widget() {
+		return Output_Optionshierarchy_dirs_widget;
 	}	
 	
 	private BooleanOptionWidget Output_Optionsxml_attributes_widget;
@@ -8790,6 +8806,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		setOutput_Optionsoutput_jar_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Jar File", "", "","outjar output-jar", "\nSaves output files into a Jar file instead of a directory. The \noutput Jar file name should be specified using the Output \nDirectory (output-dir) option. Note that if the output Jar file \nexists before Soot runs, any files inside it will first be \nremoved.", defaultBool)));
 
+		defKey = ""+" "+""+" "+"hierarchy-dirs";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setOutput_Optionshierarchy_dirs_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Generate class hierarchy directories", "", "","hierarchy-dirs", "\nGiven class a.b.C, generates a/b/C.shimple (directory structure \nin the filesystem) instead of a.b.C.shimple (default \nflat-hierarchy approach). Valid for Jimple/Shimple generation.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"xml-attributes";
 		defKey = defKey.trim();
 
@@ -9144,7 +9171,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultBool = false;
 		}
 
-		setProcessing_Optionsignore_resolution_errors_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Ignore reolution errors", "", "","ire ignore-resolution-errors", "\nSome programs may contain dead code that references fields or \nmethods that do not exist. By default, Soot exists with an \nexception when this happens. If this option is enabled, Soot \nonly prints a warning but does not exit.", defaultBool)));
+		setProcessing_Optionsignore_resolution_errors_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Ignore resolution errors", "", "","ire ignore-resolution-errors", "\nSome programs may contain dead code that references fields or \nmethods that do not exist. By default, Soot exists with an \nexception when this happens. If this option is enabled, Soot \nonly prints a warning but does not exit.", defaultBool)));
 
 		data = new OptionData [] {
 		

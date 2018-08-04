@@ -32,7 +32,7 @@ import java.util.*;
  *
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-07-02T12:04:46.647+02:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-08-04T18:22:41.593+03:00", comments = "from soot_options.xml")
 public class Options extends OptionsBase {
 
     public Options(Singletons.Global g) {
@@ -752,6 +752,10 @@ public class Options extends OptionsBase {
             )
                 output_jar = true;
             else if (false
+                    || option.equals("hierarchy-dirs")
+            )
+                hierarchy_dirs = true;
+            else if (false
                     || option.equals("xml-attributes")
             )
                 xml_attributes = true;
@@ -1449,6 +1453,10 @@ public class Options extends OptionsBase {
     private boolean output_jar = false;
     public void set_output_jar(boolean setting) { output_jar = setting; }
 
+    public boolean hierarchy_dirs() { return hierarchy_dirs; }
+    private boolean hierarchy_dirs = false;
+    public void set_hierarchy_dirs(boolean setting) { hierarchy_dirs = setting; }
+
     public boolean xml_attributes() { return xml_attributes; }
     private boolean xml_attributes = false;
     public void set_xml_attributes(boolean setting) { xml_attributes = setting; }
@@ -1674,6 +1682,7 @@ public class Options extends OptionsBase {
                     + padVal("1.7 7", "Force Java 1.7 as output version.")
                     + padVal("1.8 8", "Force Java 1.8 as output version.")
                 + padOpt("-outjar, -output-jar", "Make output dir a Jar file instead of dir")
+                + padOpt("-hierarchy-dirs", "Generate class hierarchy directories for Jimple/Shimple")
                 + padOpt("-xml-attributes", "Save tags to XML attributes for Eclipse")
                 + padOpt("-print-tags, -print-tags-in-output", "Print tags in output files after stmt")
                 + padOpt("-no-output-source-file-attribute", "Don't output Source File Attribute when producing class files")
