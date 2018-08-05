@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Class Hierarchy Analysis. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-07-02T12:04:46.647+02:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-08-04T23:39:17.07-04:00", comments = "from soot_options.xml")
 public class CHAOptions {
 
     private Map<String, String> options;
