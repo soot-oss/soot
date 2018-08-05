@@ -25,6 +25,7 @@ package soot;
 
 import soot.jimple.paddle.PaddleField;
 import soot.jimple.spark.pag.SparkField;
+import soot.options.Options;
 import soot.tagkit.AbstractHost;
 import soot.util.Numberable;
 
@@ -125,8 +126,13 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
   @Override
   public void setPhantom(boolean value) {
-    if(value && !Scene.v().allowsPhantomRefs()) {
-      throw new RuntimeException("Phantom refs not allowed");
+    if (value) {
+      if (!Scene.v().allowsPhantomRefs()) {
+        throw new RuntimeException("Phantom refs not allowed");
+      }
+      if (!Options.v().allow_phantom_elms() && declaringClass != null && !declaringClass.isPhantom()) {
+        throw new RuntimeException("Declaring class would have to be phantom");
+      }
     }
     isPhantom = value;
   }

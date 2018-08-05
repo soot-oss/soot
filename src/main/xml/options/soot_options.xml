@@ -724,7 +724,18 @@
             </long_desc>
         </boolopt>
         <boolopt>
-            <name>Allow Phantom References</name>
+            <name>Allow Phantom Elements in Non-Phantom Classes</name>
+            <alias>allow-phantom-elms</alias>
+            <short_desc>Allow phantom methods and fields in non-phantom classes</short_desc>
+            <long_desc>
+                Allow non-phantom classes to contain phantom fields and methods
+                when allow-phantom-refs is enabled. This can be used to add missing
+                methods and fields to a class that may not exactly match a similar
+                class used by other classes.
+            </long_desc>
+        </boolopt>
+        <boolopt>
+            <name>No Bodies for Excluded</name>
             <alias>no-bodies-for-excluded</alias>
             <short_desc>Do not load bodies for excluded classes</short_desc>
             <long_desc>

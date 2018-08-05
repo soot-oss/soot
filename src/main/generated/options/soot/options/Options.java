@@ -32,7 +32,7 @@ import java.util.*;
  *
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-07-02T12:04:46.647+02:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-08-04T23:39:17.07-04:00", comments = "from soot_options.xml")
 public class Options extends OptionsBase {
 
     public Options(Singletons.Global g) {
@@ -405,6 +405,10 @@ public class Options extends OptionsBase {
                     || option.equals("allow-phantom-refs")
             )
                 allow_phantom_refs = true;
+            else if (false
+                    || option.equals("allow-phantom-elms")
+            )
+                allow_phantom_elms = true;
             else if (false
                     || option.equals("no-bodies-for-excluded")
             )
@@ -1404,6 +1408,10 @@ public class Options extends OptionsBase {
     private boolean allow_phantom_refs = false;
     public void set_allow_phantom_refs(boolean setting) { allow_phantom_refs = setting; }
 
+    public boolean allow_phantom_elms() { return allow_phantom_elms; }
+    private boolean allow_phantom_elms = false;
+    public void set_allow_phantom_elms(boolean setting) { allow_phantom_elms = setting; }
+
     public boolean no_bodies_for_excluded() { return no_bodies_for_excluded; }
     private boolean no_bodies_for_excluded = false;
     public void set_no_bodies_for_excluded(boolean setting) { no_bodies_for_excluded = setting; }
@@ -1637,6 +1645,7 @@ public class Options extends OptionsBase {
                     + padVal("apk-class-jimple apk-c-j", "Favour APK files as Soot source, disregard Java files")
                 + padOpt("-full-resolver", "Force transitive resolving of referenced classes")
                 + padOpt("-allow-phantom-refs", "Allow unresolved classes; may cause errors")
+                + padOpt("-allow-phantom-elms", "Allow phantom methods and fields in non-phantom classes")
                 + padOpt("-no-bodies-for-excluded", "Do not load bodies for excluded classes")
                 + padOpt("-j2me", "Use J2ME mode; changes assignment of types")
                 + padOpt("-main-class ARG", "Sets the main class for whole-program analysis.")

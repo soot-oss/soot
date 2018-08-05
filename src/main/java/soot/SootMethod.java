@@ -203,8 +203,13 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   /** Sets the phantom flag on this method. */
   @Override
   public void setPhantom(boolean value) {
-    if(value && !Scene.v().allowsPhantomRefs()) {
-      throw new RuntimeException("Phantom refs not allowed");
+    if (value) {
+      if (!Scene.v().allowsPhantomRefs()) {
+        throw new RuntimeException("Phantom refs not allowed");
+      }
+      if (!Options.v().allow_phantom_elms() && declaringClass != null && !declaringClass.isPhantom()) {
+        throw new RuntimeException("Declaring class would have to be phantom");
+      }
     }
     isPhantom = value;
   }
