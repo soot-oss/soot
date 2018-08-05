@@ -169,23 +169,23 @@ public class InvokeCustomInstruction extends MethodInvocationInstruction {
   
   private Kind dexToSootMethodHandleKind(int kind) {
     switch (kind) {
-      case MethodHandleType.REF_GET_FIELD:
+      case MethodHandleType.INSTANCE_GET:
         return MethodHandle.Kind.REF_GET_FIELD;
-      case MethodHandleType.REF_GET_FIELD_STATIC:
+      case MethodHandleType.STATIC_GET:
         return MethodHandle.Kind.REF_GET_FIELD_STATIC;
-      case MethodHandleType.REF_PUT_FIELD:
+      case MethodHandleType.INSTANCE_PUT:
         return MethodHandle.Kind.REF_PUT_FIELD;
-      case MethodHandleType.REF_PUT_FIELD_STATIC:
+      case MethodHandleType.STATIC_PUT:
         return MethodHandle.Kind.REF_PUT_FIELD_STATIC;
-      case MethodHandleType.REF_INVOKE_VIRTUAL:
+      case MethodHandleType.INVOKE_INSTANCE:
         return MethodHandle.Kind.REF_INVOKE_VIRTUAL;
-      case MethodHandleType.REF_INVOKE_STATIC:
+      case MethodHandleType.INVOKE_STATIC:
         return MethodHandle.Kind.REF_INVOKE_STATIC;
-      case MethodHandleType.REF_INVOKE_SPECIAL:
+      case MethodHandleType.INVOKE_DIRECT:
         return MethodHandle.Kind.REF_INVOKE_SPECIAL;
-      case MethodHandleType.REF_INVOKE_CONSTRUCTOR:
+      case MethodHandleType.INVOKE_CONSTRUCTOR:
         return MethodHandle.Kind.REF_INVOKE_CONSTRUCTOR;
-      case MethodHandleType.REF_INVOKE_INTERFACE:
+      case MethodHandleType.INVOKE_INTERFACE:
         return MethodHandle.Kind.REF_INVOKE_INTERFACE;
       default:
         throw new RuntimeException("Error: Unknown kind '" + kind + "' for method handle");
