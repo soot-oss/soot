@@ -32,14 +32,14 @@ import soot.util.Numberable;
  * Soot representation of a Java field. Can be declared to belong to a SootClass.
  */
 public class SootField extends AbstractHost implements ClassMember, SparkField, Numberable, PaddleField {
-  private String name;
-  private Type type;
-  private int modifiers;
-  private boolean isDeclared = false;
-  private SootClass declaringClass;
-  private boolean isPhantom = false;
-  private volatile String sig;
-  private volatile String subSig;
+  protected String name;
+  protected Type type;
+  protected int modifiers;
+  protected boolean isDeclared = false;
+  protected SootClass declaringClass;
+  protected boolean isPhantom = false;
+  protected volatile String sig;
+  protected volatile String subSig;
 
   /** Constructs a Soot field with the given name, type and modifiers. */
   public SootField(String name, Type type, int modifiers) {
