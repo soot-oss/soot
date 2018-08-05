@@ -44,7 +44,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
   /** Constructs a Soot field with the given name, type and modifiers. */
   public SootField(String name, Type type, int modifiers) {
-    if(name == null || type == null) {
+    if (name == null || type == null) {
       throw new RuntimeException("A SootField cannot have a null name or type.");
     }
     this.name = name;
@@ -63,7 +63,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
   public String getSignature() {
     if (sig == null) {
-      synchronized(this) {
+      synchronized (this) {
         if (sig == null) {
           sig = getSignature(getDeclaringClass(), getSubSignature());
         }
@@ -88,7 +88,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
   public String getSubSignature() {
     if (subSig == null) {
-      synchronized(this) {
+      synchronized (this) {
         if (subSig == null) {
           subSig = getSubSignature(getName(), getType());
         }

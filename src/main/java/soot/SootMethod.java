@@ -315,7 +315,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     
     // Synchronize because we are operating on two fields that may be updated
     // separately otherwise.
-    synchronized(this) {
+    synchronized (this) {
       // Re-check the activeBody because things might have changed
       activeBody = this.activeBody;
       if (activeBody != null) {
@@ -377,7 +377,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     
     // Synchronize because we are operating on multiple fields that may be updated
     // separately otherwise.
-    synchronized(this) {
+    synchronized (this) {
       // Re-check the activeBody because things might have changed
       activeBody = this.activeBody;
       if (activeBody != null) {
@@ -635,7 +635,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    */
   public String getSignature() {
     if (sig == null) {
-      synchronized(this) {
+      synchronized (this) {
         if (sig == null) {
           sig = getSignature(getDeclaringClass(), getSubSignature());
         }
@@ -664,7 +664,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    */
   public String getSubSignature() {
     if (subSig == null) {
-      synchronized(this) {
+      synchronized (this) {
         if (subSig == null) {
           subSig = getSubSignatureImpl(getName(), getParameterTypes(), getReturnType());
         }
