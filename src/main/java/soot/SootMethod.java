@@ -48,43 +48,43 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   public static final String staticInitializerName = "<clinit>";
   public static boolean DEBUG = false;
   /** Name of the current method. */
-  private String name;
+  protected String name;
 
   /**
    * An array of parameter types taken by this <code>SootMethod</code> object, in declaration order.
    */
-  private Type[] parameterTypes;
+  protected Type[] parameterTypes;
 
   /** The return type of this object. */
-  private Type returnType;
+  protected Type returnType;
 
   /**
    * True when some <code>SootClass</code> object declares this <code>SootMethod</code> object.
    */
-  private boolean isDeclared;
+  protected boolean isDeclared;
 
   /** Holds the class which declares this <code>SootClass</code> method. */
-  private SootClass declaringClass;
+  protected SootClass declaringClass;
 
   /**
    * Modifiers associated with this SootMethod (e.g. private, protected, etc.)
    */
-  private int modifiers;
+  protected int modifiers;
 
   /** Is this method a phantom method? */
-  private boolean isPhantom = false;
+  protected boolean isPhantom = false;
 
   /** Declared exceptions thrown by this method. Created upon demand. */
-  private List<SootClass> exceptions = null;
+  protected List<SootClass> exceptions = null;
 
   /** Active body associated with this method. */
-  private volatile Body activeBody;
+  protected volatile Body activeBody;
 
   /** Tells this method how to find out where its body lives. */
-  private volatile MethodSource ms;
+  protected volatile MethodSource ms;
   
-  private volatile String sig;
-  private volatile String subSig;
+  protected volatile String sig;
+  protected volatile String subSig;
 
   /**
    * Constructs a SootMethod with the given name, parameter types and return type.
