@@ -39,6 +39,16 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
   protected boolean isDeclared = false;
   protected SootClass declaringClass;
   protected boolean isPhantom = false;
+  String initialValueString; // Dalvik-only
+
+  /** Constructs a Soot field with the given name, type, modifiers and initial value. */
+  public SootField(String name, Type type, int modifiers, String initialValueString)
+  {
+    this.name = name;
+    this.type = type;
+    this.modifiers = modifiers;
+    this.initialValueString = initialValueString;
+  }
 
   /** Constructs a Soot field with the given name, type and modifiers. */
   public SootField(String name, Type type, int modifiers) {

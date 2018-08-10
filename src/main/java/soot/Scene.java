@@ -1993,6 +1993,10 @@ public class Scene // extends AbstractHost
     return new SootMethod(name, parameterTypes, returnType, modifiers, thrownExceptions);
   }
 
+  public SootField makeSootField(String name, Type type, int modifiers, String initialValue) {
+    return new SootField(name, type, modifiers, initialValue);
+  }
+
   public SootField makeSootField(String name, Type type, int modifiers) {
     return new SootField(name, type, modifiers);
   }
