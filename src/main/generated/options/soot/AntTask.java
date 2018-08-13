@@ -265,6 +265,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-allow-phantom-refs");
         }
   
+        public void setallow_phantom_elms(boolean arg) {
+            if(arg) addArg("-allow-phantom-elms");
+        }
+  
         public void setno_bodies_for_excluded(boolean arg) {
             if(arg) addArg("-no-bodies-for-excluded");
         }

@@ -598,7 +598,7 @@ public class Scene // extends AbstractHost
       String targetApk = "";
       Set<String> targetDexs = new HashSet<String>();
       for (String entry : classPathEntries) {
-          if (isApk(entry)) {
+        if (isApk(entry)) {
           if (targetApk != null && !targetApk.isEmpty()) {
             throw new RuntimeException("only one Android application can be analyzed when using option -android-jars.");
           }

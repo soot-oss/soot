@@ -82,64 +82,9 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 
   /** Tells this method how to find out where its body lives. */
   protected volatile MethodSource ms;
-
-  /**
-   * Uses methodSource to retrieve the method body in question; does not set it to be the active body.
-   *
-   * @param phaseName
-   *          Phase name for body loading.
-   */
-  private Body getBodyFromMethodSource(String phaseName) {
-    // We get a copy of the field value just in case another thread
-    // overwrites the method source in the meantime. We then check
-    // again whether we really need to load anything.
-    //
-    // The loader does something like this:
-    // (1) <a lot of stuff>
-    // (2) activeBody = ...;
-    // (3) ms = null;
-    //
-    // We need to avoid the situation in which we don't have a body yet,
-    // trigger the loader, and then another thread triggers
-    // retrieveActiveBody() again. If the first loader is between
-    // statements (2) and (3), we would pass the check on the body, but
-    // but then find that the method source is already gone when the other
-    // thread finally passes statement (3) before we attempt to use the
-    // method source here.
-
-    MethodSource ms = this.ms;
-
-    // Method sources are not expected to be thread safe
-    synchronized (this) {
-      if (this.activeBody == null) {
-        if (ms == null) {
-          throw new RuntimeException("No method source set for method " + this.getSignature());
-        }
-
-        // Method sources are not expected to be thread safe
-        return ms.getBody(this, phaseName);
-      } else {
-        return this.activeBody;
-      }
-    }
-  }
-
-  /** Sets the MethodSource of the current SootMethod. */
-  public void setSource(MethodSource ms) {
-    this.ms = ms;
-  }
-
-  /** Returns the MethodSource of the current SootMethod. */
-  public MethodSource getSource() {
-    return ms;
-  }
-
-  /**
-   * Returns a hash code for this method consistent with structural equality.
-   */
-  public int equivHashCode() {
-    return returnType.hashCode() * 101 + modifiers * 17 + name.hashCode();
-  }
+  
+  protected volatile String sig;
+  protected volatile String subSig;
 
   /**
    * Constructs a SootMethod with the given name, parameter types and return type.
@@ -172,33 +117,51 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     if (exceptions == null && !thrownExceptions.isEmpty()) {
       exceptions = new ArrayList<SootClass>();
       this.exceptions.addAll(thrownExceptions);
-      /*
-       * DEBUG=true; if(DEBUG) System.out.println("Added thrown exceptions"+thrownExceptions); DEBUG=false;
-       */
     }
-    final Scene scene = Scene.v();
-    subsignature = scene.getSubSigNumberer().findOrAdd(getSubSignature());
-
+    subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
+  }
+  
+  /**
+   * Returns a hash code for this method consistent with structural equality.
+   */
+  public int equivHashCode() {
+    return returnType.hashCode() * 101 + modifiers * 17 + name.hashCode();
   }
 
   /** Returns the name of this method. */
   public String getName() {
     return name;
   }
-
-  /**
-   * Nomair A. Naeem , January 14th 2006 Need it for the decompiler to create a new SootMethod The SootMethod can be created
-   * fine but when one tries to create a SootMethodRef there is an error because there is no declaring class set. Dava cannot
-   * add the method to the class until after it has ended decompiling the remaining method (new method added is added in the
-   * PackManager) It would make sense to setDeclared to true within this method too. However later when the sootMethod is
-   * added it checks that the method is not set to declared (isDeclared).
-   */
-  public void setDeclaringClass(SootClass declClass) {
-    if (declClass != null) {
-      declaringClass = declClass;
-      // setDeclared(true);
+  
+  /** Sets the name of this method. */
+  public synchronized void setName(String name) {
+    boolean wasDeclared = isDeclared;
+    SootClass oldDeclaringClass = declaringClass;
+    if (wasDeclared) {
+      oldDeclaringClass.removeMethod(this);
     }
-    Scene.v().getMethodNumberer().add(this);
+    this.name = name;
+    subSig = null;
+    sig = null;
+    subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
+    if (wasDeclared) {
+      oldDeclaringClass.addMethod(this);
+    }
+  }
+
+  /** Sets the declaring class */
+  public synchronized void setDeclaringClass(SootClass declClass) {
+    // There is nothing to stop this field from being null except when it actually gets in
+    // other classes such as SootMethodRef (when it tries to resolve the method). However, if
+    // the method is not declared, it should not be trying to resolve it anyways. So I see no
+    // problem with having it able to be null. 
+    if (declClass != null) {
+      Scene.v().getMethodNumberer().add(this);
+    }
+    // We could call setDeclared here, however, when SootClass adds a method, it checks isDeclared
+    // and throws an exception if set. So we currently cannot call setDeclared here.
+    declaringClass = declClass;
+    sig = null;
   }
 
   /** Returns the class which declares the current <code>SootMethod</code>. */
@@ -244,25 +207,11 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
       if (!Scene.v().allowsPhantomRefs()) {
         throw new RuntimeException("Phantom refs not allowed");
       }
-      if (declaringClass != null && !declaringClass.isPhantom()) {
+      if (!Options.v().allow_phantom_elms() && declaringClass != null && !declaringClass.isPhantom()) {
         throw new RuntimeException("Declaring class would have to be phantom");
       }
     }
     isPhantom = value;
-  }
-
-  /** Sets the name of this method. */
-  public void setName(String name) {
-    boolean wasDeclared = isDeclared;
-    SootClass oldDeclaringClass = declaringClass;
-    if (wasDeclared) {
-      oldDeclaringClass.removeMethod(this);
-    }
-    this.name = name;
-    subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
-    if (wasDeclared) {
-      oldDeclaringClass.addMethod(this);
-    }
   }
 
   /**
@@ -282,9 +231,6 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    */
   @Override
   public void setModifiers(int modifiers) {
-    if ((declaringClass != null) && (!declaringClass.isApplicationClass())) {
-      throw new RuntimeException("Cannot set modifiers of a method from a non-app class!");
-    }
     this.modifiers = modifiers;
   }
 
@@ -294,13 +240,15 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   }
 
   /** Sets the return type of this method. */
-  public void setReturnType(Type t) {
+  public synchronized void setReturnType(Type t) {
     boolean wasDeclared = isDeclared;
     SootClass oldDeclaringClass = declaringClass;
     if (wasDeclared) {
       oldDeclaringClass.removeMethod(this);
     }
     returnType = t;
+    subSig = null;
+    sig = null;
     subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
     if (wasDeclared) {
       oldDeclaringClass.addMethod(this);
@@ -327,75 +275,72 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   /**
    * Changes the set of parameter types of this method.
    */
-  public void setParameterTypes(List<Type> l) {
+  public synchronized void setParameterTypes(List<Type> l) {
     boolean wasDeclared = isDeclared;
     SootClass oldDeclaringClass = declaringClass;
     if (wasDeclared) {
       oldDeclaringClass.removeMethod(this);
     }
     this.parameterTypes = l.toArray(new Type[l.size()]);
+    subSig = null;
+    sig = null;
     subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
     if (wasDeclared) {
       oldDeclaringClass.addMethod(this);
     }
   }
 
+  /** Returns the MethodSource of the current SootMethod. */
+  public MethodSource getSource() {
+    return ms;
+  }
+  
+  /** Sets the MethodSource of the current SootMethod. */
+  public synchronized void setSource(MethodSource ms) {
+    this.ms = ms;
+  }
+  
   /**
    * Retrieves the active body for this method.
    */
+  @SuppressWarnings("deprecation")
   public Body getActiveBody() {
+    // Retrieve the active body so thread changes do not affect the
+    // synchronization between if the body exists and the returned body.
+    // This is a quick check just in case the activeBody exists.
+    Body activeBody = this.activeBody;
     if (activeBody != null) {
       return activeBody;
     }
-
-    if (declaringClass != null && declaringClass.isPhantomClass()) {
-      throw new RuntimeException("cannot get active body for phantom class: " + getSignature());
+    
+    // Synchronize because we are operating on two fields that may be updated
+    // separately otherwise.
+    synchronized (this) {
+      // Re-check the activeBody because things might have changed
+      activeBody = this.activeBody;
+      if (activeBody != null) {
+        return activeBody;
+      }
+      
+      if (declaringClass != null) {
+        declaringClass.checkLevel(SootClass.BODIES);
+      }
+      if ((declaringClass != null && declaringClass.isPhantomClass()) || isPhantom()) {
+        throw new RuntimeException("cannot get active body for phantom method: " + getSignature());
+      }
+      
+      // ignore empty body exceptions if we are just computing coffi metrics
+      if (!soot.jbco.Main.metrics) {
+        throw new RuntimeException("no active body present for method " + getSignature());
+      }
+      return null;
     }
-
-    // ignore empty body exceptions if we are just computing coffi metrics
-    if (!soot.jbco.Main.metrics) {
-      throw new RuntimeException("no active body present for method " + getSignature());
-    }
-
-    return activeBody;
-  }
-
-  /**
-   * Returns the active body if present, else constructs an active body and returns that.
-   *
-   * If you called Scene.v().loadClassAndSupport() for a class yourself, it will not be an application class, so you cannot
-   * get retrieve its active body. Please call setApplicationClass() on the relevant class.
-   */
-
-  public Body retrieveActiveBody() {
-    // If we already have a body for some reason, we just take it. In this
-    // case,
-    // we don't care about resolving levels or whatever.
-    if (hasActiveBody()) {
-      return getActiveBody();
-    }
-
-    declaringClass.checkLevel(SootClass.BODIES);
-    if (declaringClass.isPhantomClass()) {
-      throw new RuntimeException("cannot get resident body for phantom class : " + getSignature()
-          + "; maybe you want to call c.setApplicationClass() on this class!");
-    }
-
-    Body b = this.getBodyFromMethodSource("jb");
-    setActiveBody(b);
-
-    // If configured, we drop the method source to save memory
-    if (Options.v().drop_bodies_after_load()) {
-      ms = null;
-    }
-
-    return b;
   }
 
   /**
    * Sets the active body for this method.
    */
-  public void setActiveBody(Body body) {
+  public synchronized void setActiveBody(Body body) {
     if ((declaringClass != null) && declaringClass.isPhantomClass()) {
       throw new RuntimeException("cannot set active body for phantom class! " + this);
     }
@@ -412,7 +357,54 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
       body.setMethod(this);
     }
 
-    activeBody = body;
+    this.activeBody = body;
+  }
+  
+  /**
+   * Returns the active body if present, else constructs an active body and returns that.
+   *
+   * If you called Scene.v().loadClassAndSupport() for a class yourself, it will not be an application class, so you cannot
+   * get retrieve its active body. Please call setApplicationClass() on the relevant class.
+   */
+  public Body retrieveActiveBody() {
+    // Retrieve the active body so thread changes do not affect the
+    // synchronization between if the body exists and the returned body.
+    // This is a quick check just in case the activeBody exists.
+    Body activeBody = this.activeBody;
+    if (activeBody != null) {
+      return activeBody;
+    }
+    
+    // Synchronize because we are operating on multiple fields that may be updated
+    // separately otherwise.
+    synchronized (this) {
+      // Re-check the activeBody because things might have changed
+      activeBody = this.activeBody;
+      if (activeBody != null) {
+        return activeBody;
+      }
+      
+      if (declaringClass != null) {
+        declaringClass.checkLevel(SootClass.BODIES);
+      }
+      if ((declaringClass != null && declaringClass.isPhantomClass()) || isPhantom()) {
+        throw new RuntimeException("cannot get resident body for phantom method : " + this);
+      }
+      
+      if (ms == null) {
+        throw new RuntimeException("No method source set for method " + this);
+      }
+      
+      // Method sources are not expected to be thread safe
+      activeBody = ms.getBody(this, "jb");
+      setActiveBody(activeBody);
+      
+      // If configured, we drop the method source to save memory
+      if (Options.v().drop_bodies_after_load()) {
+        ms = null;
+      }
+      return activeBody;
+    }
   }
 
   /** Returns true if this method has an active body. */
@@ -421,7 +413,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   }
 
   /** Releases the active body associated with this method. */
-  public void releaseActiveBody() {
+  public synchronized void releaseActiveBody() {
     activeBody = null;
   }
 
@@ -642,31 +634,43 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    * Returns the Soot signature of this method. Used to refer to methods unambiguously.
    */
   public String getSignature() {
-    return getSignature(getDeclaringClass(), getName(), getParameterTypes(), getReturnType());
+    if (sig == null) {
+      synchronized (this) {
+        if (sig == null) {
+          sig = getSignature(getDeclaringClass(), getSubSignature());
+        }
+      }
+    }
+    return sig;
+  }
+  
+  public static String getSignature(SootClass cl, String name, List<Type> params, Type returnType) {
+    return getSignature(cl,getSubSignatureImpl(name, params, returnType));
   }
 
-  public static String getSignature(SootClass cl, String name, List<Type> params, Type returnType) {
+  public static String getSignature(SootClass cl, String subSignature) {
     StringBuilder buffer = new StringBuilder();
     buffer.append("<");
     buffer.append(Scene.v().quotedNameOf(cl.getName()));
     buffer.append(": ");
-    buffer.append(getSubSignatureImpl(name, params, returnType));
+    buffer.append(subSignature);
     buffer.append(">");
 
-    // Again, memory-usage tweak depending on JDK implementation due
-    // to Michael Pan.
-    return buffer.toString().intern();
+    return buffer.toString();
   }
 
   /**
    * Returns the Soot subsignature of this method. Used to refer to methods unambiguously.
    */
   public String getSubSignature() {
-    String name = getName();
-    List<Type> params = getParameterTypes();
-    Type returnType = getReturnType();
-
-    return getSubSignatureImpl(name, params, returnType);
+    if (subSig == null) {
+      synchronized (this) {
+        if (subSig == null) {
+          subSig = getSubSignatureImpl(getName(), getParameterTypes(), getReturnType());
+        }
+      }
+    }
+    return subSig;
   }
 
   public static String getSubSignature(String name, List<Type> params, Type returnType) {
