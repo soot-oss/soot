@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Side Effect tagger. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-08-04T18:22:41.593+03:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-08-13T11:22:22.459+02:00", comments = "from soot_options.xml")
 public class SETOptions {
 
     private Map<String, String> options;
