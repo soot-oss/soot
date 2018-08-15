@@ -43,8 +43,14 @@ public interface Chain<E> extends Collection<E>, Serializable {
   /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
   public void insertAfter(E toInsert, E point);
 
+  /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
+  public void insertAfter(Collection<? extends E> toInsert, E point);
+
   /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
   public void insertBefore(E toInsert, E point);
+
+  /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
+  public void insertBefore(Collection<? extends E> toInsert, E point);
 
   /**
    * Inserts <code>toInsert</code> in the Chain before <code>point</code>. (It would probably be better to make Chain
@@ -58,45 +64,6 @@ public interface Chain<E> extends Collection<E>, Serializable {
    */
   public void insertAfter(Chain<E> toInsert, E point);
 
-  /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain
-   * <code>toInsert</code> on an edge that is defined by <code>point_source</code> and <code>point_target</code>.
-   *
-   * @param toInsert
-   *          the instrumentation to be added in the Chain
-   * @param point_src
-   *          the source point of an edge in CFG
-   * @param point_tgt
-   *          the target point of an edge
-   */
-  public void insertOnEdge(E toInsert, E point_src, E point_tgt);
-
-  /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain
-   * <code>toInsert</code> on an edge that is defined by <code>point_source</code> and <code>point_target</code>.
-   *
-   * @param toInsert
-   *          instrumentation to be added in the Chain
-   * @param point_src
-   *          the source point of an edge in CFG
-   * @param point_tgt
-   *          the target point of an edge
-   */
-  public void insertOnEdge(List<E> toInsert, E point_src, E point_tgt);
-
-  /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain
-   * <code>toInsert</code> on an edge that is defined by <code>point_source</code> and <code>point_target</code>.
-   *
-   * @param toInsert
-   *          instrumentation to be added in the Chain
-   * @param point_src
-   *          the source point of an edge in CFG
-   * @param point_tgt
-   *          the target point of an edge
-   */
-  public void insertOnEdge(Chain<E> toInsert, E point_src, E point_tgt);
-
   /** Replaces <code>out</code> in the Chain by <code>in</code>. */
   public void swapWith(E out, E in);
 
@@ -104,6 +71,7 @@ public interface Chain<E> extends Collection<E>, Serializable {
    * Removes the given object from this Chain. Parameter has to be of type {@link Object} to be compatible with the
    * {@link Collection} interface.
    */
+  @Override
   public boolean remove(Object u);
 
   /** Adds the given object at the beginning of the Chain. */
@@ -140,6 +108,7 @@ public interface Chain<E> extends Collection<E>, Serializable {
   public Iterator<E> snapshotIterator();
 
   /** Returns an iterator over this Chain. */
+  @Override
   public Iterator<E> iterator();
 
   /** Returns an iterator over this Chain, starting at the given object. */
@@ -149,6 +118,7 @@ public interface Chain<E> extends Collection<E>, Serializable {
   public Iterator<E> iterator(E head, E tail);
 
   /** Returns the size of this Chain. */
+  @Override
   public int size();
 
   /** Returns the number of times this chain has been modified. */

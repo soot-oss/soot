@@ -34,10 +34,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.Body;
-import soot.PatchingChain;
 import soot.TrapManager;
 import soot.Unit;
 import soot.UnitBox;
+import soot.UnitPatchingChain;
 import soot.options.Options;
 import soot.shimple.PhiExpr;
 import soot.shimple.Shimple;
@@ -52,7 +52,7 @@ import soot.util.MultiMap;
  * @author Navindra Umanee
  * @see soot.PatchingChain
  **/
-public class SPatchingChain extends PatchingChain<Unit> {
+public class SPatchingChain extends UnitPatchingChain {
   private static final Logger logger = LoggerFactory.getLogger(SPatchingChain.class);
   /**
    * Needed to find non-trapped Units of the body.
@@ -69,11 +69,13 @@ public class SPatchingChain extends PatchingChain<Unit> {
     }
   }
 
+  @Override
   public boolean add(Unit o) {
     processPhiNode(o);
     return super.add(o);
   }
 
+  @Override
   public void swapWith(Unit out, Unit in) {
     // Ensure that branching statements are swapped correctly.
     // The normal swapWith implementation would still work
@@ -82,18 +84,19 @@ public class SPatchingChain extends PatchingChain<Unit> {
     // actual CFG predecessors for out was found due to the
     // insertion of branching statement in.
     processPhiNode(in);
-    Shimple.redirectPointers((Unit) out, (Unit) in);
+    Shimple.redirectPointers(out, in);
     super.insertBefore(in, out);
     super.remove(out);
   }
 
+  @Override
   public void insertAfter(Unit toInsert, Unit point) {
     // important to do these before the patching, so that
     // computeNeedsPatching works properly
     processPhiNode(toInsert);
     super.insertAfter(toInsert, point);
 
-    Unit unit = (Unit) point;
+    Unit unit = point;
 
     // update any pointers from Phi nodes only if the unit
     // being inserted is in the same basic block as point, or if
@@ -111,14 +114,14 @@ public class SPatchingChain extends PatchingChain<Unit> {
           trappedUnits = TrapManager.getTrappedUnitsOf(body);
         }
         if (!trappedUnits.contains(unit)) {
-          Shimple.redirectPointers(unit, (Unit) toInsert);
+          Shimple.redirectPointers(unit, toInsert);
           break patchpointers;
         }
       }
 
       /* handle each UnitBox individually */
 
-      UnitBox[] boxes = (UnitBox[]) unit.getBoxesPointingToThis().toArray(new UnitBox[0]);
+      UnitBox[] boxes = unit.getBoxesPointingToThis().toArray(new UnitBox[0]);
 
       for (UnitBox ub : boxes) {
 
@@ -167,13 +170,14 @@ public class SPatchingChain extends PatchingChain<Unit> {
         }
 
         if (needsPatching) {
-          box.setUnit((Unit) toInsert);
+          box.setUnit(toInsert);
           box.setUnitChanged(false);
         }
       }
     }
   }
 
+  @Override
   public void insertAfter(List<Unit> toInsert, Unit point) {
     for (Unit unit : toInsert) {
       processPhiNode(unit);
@@ -181,6 +185,7 @@ public class SPatchingChain extends PatchingChain<Unit> {
     super.insertAfter(toInsert, point);
   }
 
+  @Override
   public void insertBefore(List<Unit> toInsert, Unit point) {
     for (Unit unit : toInsert) {
       processPhiNode(unit);
@@ -188,16 +193,19 @@ public class SPatchingChain extends PatchingChain<Unit> {
     super.insertBefore(toInsert, point);
   }
 
+  @Override
   public void insertBefore(Unit toInsert, Unit point) {
     processPhiNode(toInsert);
     super.insertBefore(toInsert, point);
   }
 
+  @Override
   public void addFirst(Unit u) {
     processPhiNode(u);
     super.addFirst(u);
   }
 
+  @Override
   public void addLast(Unit u) {
     processPhiNode(u);
     super.addLast(u);
@@ -205,7 +213,7 @@ public class SPatchingChain extends PatchingChain<Unit> {
 
   public boolean remove(Unit obj) {
     if (contains(obj)) {
-      Shimple.redirectToPreds(body, (Unit) obj);
+      Shimple.redirectToPreds(body, obj);
     }
 
     return super.remove(obj);
@@ -227,7 +235,7 @@ public class SPatchingChain extends PatchingChain<Unit> {
   protected Map<SUnitBox, Boolean> boxToNeedsPatching = new HashMap<SUnitBox, Boolean>();
 
   protected void processPhiNode(Unit o) {
-    Unit phiNode = (Unit) o;
+    Unit phiNode = o;
     PhiExpr phi = Shimple.getPhiExpr(phiNode);
 
     // not a Phi node
@@ -362,8 +370,9 @@ public class SPatchingChain extends PatchingChain<Unit> {
       super(innerChain, head, tail);
     }
 
+    @Override
     public void remove() {
-      Unit victim = (Unit) lastObject;
+      Unit victim = lastObject;
 
       if (!state) {
         throw new IllegalStateException("remove called before first next() call");
@@ -374,8 +383,8 @@ public class SPatchingChain extends PatchingChain<Unit> {
       // super.remove();
       Unit successor;
 
-      if ((successor = (Unit) getSuccOf(victim)) == null) {
-        successor = (Unit) getPredOf(victim);
+      if ((successor = getSuccOf(victim)) == null) {
+        successor = getPredOf(victim);
       }
 
       innerIterator.remove();
@@ -383,14 +392,17 @@ public class SPatchingChain extends PatchingChain<Unit> {
     }
   }
 
+  @Override
   public Iterator<Unit> iterator() {
     return new SPatchingIterator(innerChain);
   }
 
+  @Override
   public Iterator<Unit> iterator(Unit u) {
     return new SPatchingIterator(innerChain, u);
   }
 
+  @Override
   public Iterator<Unit> iterator(Unit head, Unit tail) {
     return new SPatchingIterator(innerChain, head, tail);
   }

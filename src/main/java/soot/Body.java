@@ -81,7 +81,7 @@ public abstract class Body extends AbstractHost implements Serializable {
   protected Chain<Trap> trapChain = new HashChain<Trap>();
 
   /** The chain of units for this Body. */
-  protected PatchingChain<Unit> unitChain = new PatchingChain<Unit>(new HashChain<Unit>());
+  protected UnitPatchingChain unitChain = new UnitPatchingChain(new HashChain<Unit>());
 
   private static BodyValidator[] validators;
 
@@ -372,7 +372,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @see PatchingChain
    * @see Unit
    */
-  public PatchingChain<Unit> getUnits() {
+  public UnitPatchingChain getUnits() {
     return unitChain;
   }
 
