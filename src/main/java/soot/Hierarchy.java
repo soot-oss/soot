@@ -308,8 +308,9 @@ public class Hierarchy {
 
     // Otherwise, build up the hashmap.
     List<SootClass> directSubInterfaces = interfaceToDirSubinterfaces.get(sootClass);
-    if (directSubInterfaces == null || directSubInterfaces.isEmpty())
+    if (directSubInterfaces == null || directSubInterfaces.isEmpty()) {
       return Collections.emptyList();
+    }
     
     final List<SootClass> result = new ArrayList<>();
     for (SootClass si : directSubInterfaces) {
