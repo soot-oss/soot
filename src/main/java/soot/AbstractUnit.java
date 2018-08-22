@@ -64,7 +64,7 @@ public abstract class AbstractUnit extends AbstractHost implements Unit {
   }
 
   /** List of UnitBoxes pointing to this Unit. */
-  List<UnitBox> boxesPointingToThis = null;
+  protected List<UnitBox> boxesPointingToThis = null;
 
   /** Returns a list of Boxes pointing to this Unit. */
   @Override
