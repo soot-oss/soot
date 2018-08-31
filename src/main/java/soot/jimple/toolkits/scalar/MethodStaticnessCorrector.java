@@ -70,6 +70,9 @@ public class MethodStaticnessCorrector extends AbstractStaticnessCorrector {
               SootMethod target = Scene.v().grabMethod(iexpr.getMethodRef().getSignature());
               if (target != null && !target.isStatic()) {
                 if (canBeMadeStatic(target)) {
+                  // Remove the this-assignment to prevent
+                  // 'this-assignment in a static method!' exception
+                  target.getActiveBody().getUnits().remove(target.getActiveBody().getThisUnit());
                   target.setModifiers(target.getModifiers() | Modifier.STATIC);
                 }
               }
