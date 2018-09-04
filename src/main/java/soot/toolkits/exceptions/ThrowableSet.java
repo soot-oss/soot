@@ -123,7 +123,7 @@ public class ThrowableSet {
      * <code>ThrowableSet</code> containing all the exceptions that may be thrown in the course of resolving a reference to
      * another class, including the process of loading, preparing, and verifying the referenced class.
      */
-    final ThrowableSet RESOLVE_CLASS_ERRORS;
+    public final ThrowableSet RESOLVE_CLASS_ERRORS;
 
     /**
      * <code>ThrowableSet</code> containing all the exceptions that may be thrown in the course of resolving a reference to a

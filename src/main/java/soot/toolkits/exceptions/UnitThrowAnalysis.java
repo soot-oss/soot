@@ -832,7 +832,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
   protected class ValueSwitch implements GrimpValueSwitch, ShimpleValueSwitch {
 
     // Asynchronous errors are always possible:
-    private ThrowableSet result = defaultResult();
+    protected ThrowableSet result = defaultResult();
 
     ThrowableSet getResult() {
       return result;

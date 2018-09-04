@@ -20,6 +20,8 @@
 
 package soot.dexpler;
 
+import soot.FastHierarchy;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -43,11 +45,18 @@ package soot.dexpler;
  */
 
 import soot.G;
+import soot.NullType;
+import soot.PrimType;
+import soot.RefLikeType;
+import soot.Scene;
 import soot.Singletons;
+import soot.Type;
+import soot.UnknownType;
 import soot.baf.EnterMonitorInst;
 import soot.baf.ReturnInst;
 import soot.baf.ReturnVoidInst;
 import soot.jimple.AssignStmt;
+import soot.jimple.CastExpr;
 import soot.jimple.ClassConstant;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.StringConstant;
@@ -288,7 +297,29 @@ public class DalvikThrowAnalysis extends UnitThrowAnalysis {
         //
         // result = result.add(mgr.RESOLVE_CLASS_ERRORS);
       }
+
+      @Override
+      public void caseCastExpr(CastExpr expr) {
+        if (expr.getCastType() instanceof PrimType) {
+          // No exception are thrown for primitive casts
+          return;
+        }
+        Type fromType = expr.getOp().getType();
+        Type toType = expr.getCastType();
+        result = result.add(mgr.RESOLVE_CLASS_ERRORS);
+        if (toType instanceof RefLikeType) {
+          // fromType might still be unknown when we are called,
+          // but toType will have a value.
+          FastHierarchy h = Scene.v().getOrMakeFastHierarchy();
+          if (fromType == null || fromType instanceof UnknownType
+              || ((!(fromType instanceof NullType)) && (!h.canStoreType(fromType, toType)))) {
+            result = result.add(mgr.CLASS_CAST_EXCEPTION);
+          }
+        }
+        result = result.add(mightThrow(expr.getOp()));
+      }
     };
+
   }
 
 }
