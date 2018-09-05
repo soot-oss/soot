@@ -1282,7 +1282,7 @@ public class PackManager {
       // note: the following is a snapshot iterator;
       // this is necessary because it can happen that phantom methods
       // are added during resolution
-      Iterator<SootMethod> methodIt = cl.getMethods().iterator();
+      Iterator<SootMethod> methodIt = new ArrayList<SootMethod>(cl.getMethods()).iterator();
       while (methodIt.hasNext()) {
         final SootMethod m = methodIt.next();
         if (m.isConcrete()) {
