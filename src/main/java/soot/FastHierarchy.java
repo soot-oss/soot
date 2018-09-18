@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import soot.jimple.SpecialInvokeExpr;
 import soot.util.ConcurrentHashMultiMap;
@@ -334,12 +333,22 @@ public class FastHierarchy {
       }
     } else {
       Set<SootClass> impl = getAllImplementersOfInterface(parent);
-      // If we have more than 1000 entries use multi-threaded search
-      Stream<SootClass> stream = (impl.size() > 1000) ? impl.parallelStream() : impl.stream();
-      return stream.anyMatch(c -> {
-        Interval interval = classToInterval.get(c);
-        return (interval != null && interval.isSubrange(childInterval));
-      });
+      // If we have more than 1000 entries use multi-threaded search. If we only have a few entries, you can't beat the
+      // performance of a plain old loop. Therefore, we only use streams for the multi-threaded case.
+      if (impl.size() > 1000) {
+        return impl.parallelStream().anyMatch(c -> {
+          Interval interval = classToInterval.get(c);
+          return (interval != null && interval.isSubrange(childInterval));
+        });
+      } else {
+        for (SootClass c : impl) {
+          Interval interval = classToInterval.get(c);
+          if (interval != null && interval.isSubrange(childInterval)) {
+            return true;
+          }
+        }
+        return false;
+      }
     }
   }
 
