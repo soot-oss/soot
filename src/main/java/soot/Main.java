@@ -172,7 +172,7 @@ public class Main {
         sb.append("Follow these steps to fix the problem:\n");
         sb.append("1.) Are you sure you used the right command line?\n");
         sb.append("    Click here to double-check:\n");
-        sb.append("    https://soot-build.cs.uni-paderborn.de/doc/sootoptions/\n");
+        sb.append("    https://github.com/Sable/soot/wiki/Options-and-JavaDoc\n");
         sb.append("\n");
         sb.append("2.) Not sure whether it's a bug? Feel free to discuss\n");
         sb.append("    the issue on the Soot mailing list:\n");
