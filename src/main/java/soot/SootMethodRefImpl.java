@@ -82,8 +82,6 @@ public class SootMethodRefImpl implements SootMethodRef {
   private final Type returnType;
   private final boolean isStatic;
 
-  private NumberedString subsig;
-
   @Override
   public SootClass declaringClass() {
     return declaringClass;
@@ -111,10 +109,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   @Override
   public NumberedString getSubSignature() {
-    if (subsig == null) {
-      subsig = Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
-    }
-    return subsig;
+    return Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
   }
 
   @Override
@@ -299,6 +294,7 @@ public class SootMethodRefImpl implements SootMethodRef {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+    NumberedString subsig = getSubSignature();
     result = prime * result + ((declaringClass == null) ? 0 : declaringClass.hashCode());
     result = prime * result + (isStatic ? 1231 : 1237);
     result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -351,11 +347,13 @@ public class SootMethodRefImpl implements SootMethodRef {
     } else if (!returnType.equals(other.returnType)) {
       return false;
     }
+    NumberedString subsig = getSubSignature();
+
     if (subsig == null) {
-      if (other.subsig != null) {
+      if (other.getSubSignature() != null) {
         return false;
       }
-    } else if (!subsig.equals(other.subsig)) {
+    } else if (!subsig.equals(other.getSubSignature())) {
       return false;
     }
     return true;
