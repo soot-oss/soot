@@ -141,10 +141,9 @@ public class DexClassLoader {
 
           // Get the outer class name
           String outer = DexInnerClassParser.getOuterClassNameFromTag(ict);
-          if (outer == null) {
+          if (outer == null || outer.length() == 0) {
             // If we don't have any clue what the outer class is, we
-            // just remove
-            // the reference entirely
+            // just remove the reference entirely
             innerTagIt.remove();
             continue;
           }
