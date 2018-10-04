@@ -40,8 +40,6 @@ import org.objectweb.asm.util.TraceClassVisitor;
 import soot.G;
 import soot.Main;
 
-import com.sun.org.apache.bcel.internal.classfile.ClassFormatException;
-
 /**
  * Test for fields that contain constant values
  *
@@ -244,8 +242,6 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
 		} catch (MalformedURLException e) {
 			logger.error(e.getMessage(), e);
 		} catch (ClassNotFoundException e) {
-			logger.error(e.getMessage(), e);
-		} catch (ClassFormatException e) {
 			logger.error(e.getMessage(), e);
 		}
 
