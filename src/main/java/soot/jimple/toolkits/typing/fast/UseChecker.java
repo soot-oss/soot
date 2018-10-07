@@ -1,24 +1,28 @@
-/* Soot - a J*va Optimization Framework
+package soot.jimple.toolkits.typing.fast;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2008 Ben Bellamy
  *
  * All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-package soot.jimple.toolkits.typing.fast;
 
 import java.util.Iterator;
 
@@ -91,8 +95,9 @@ import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
- * This checks all uses against the rules in Jimple, except some uses are not checked where the bytecode verifier guarantees use validity.
- * 
+ * This checks all uses against the rules in Jimple, except some uses are not checked where the bytecode verifier guarantees
+ * use validity.
+ *
  * @author Ben Bellamy
  */
 public class UseChecker extends AbstractStmtSwitch {
@@ -140,9 +145,9 @@ public class UseChecker extends AbstractStmtSwitch {
     Value opl = be.getOp1(), opr = be.getOp2();
     Type tl = AugEvalFunction.eval_(this.tg, opl, stmt, this.jb), tr = AugEvalFunction.eval_(this.tg, opr, stmt, this.jb);
 
-    if (be instanceof AddExpr || be instanceof SubExpr || be instanceof MulExpr || be instanceof DivExpr || be instanceof RemExpr
-        || be instanceof GeExpr || be instanceof GtExpr || be instanceof LeExpr || be instanceof LtExpr || be instanceof ShlExpr
-        || be instanceof ShrExpr || be instanceof UshrExpr) {
+    if (be instanceof AddExpr || be instanceof SubExpr || be instanceof MulExpr || be instanceof DivExpr
+        || be instanceof RemExpr || be instanceof GeExpr || be instanceof GtExpr || be instanceof LeExpr
+        || be instanceof LtExpr || be instanceof ShlExpr || be instanceof ShrExpr || be instanceof UshrExpr) {
       if (tlhs instanceof IntegerType) {
         be.setOp1(this.uv.visit(opl, IntType.v(), stmt));
         be.setOp2(this.uv.visit(opr, IntType.v(), stmt));
@@ -253,13 +258,17 @@ public class UseChecker extends AbstractStmtSwitch {
         at = (ArrayType) this.tg.get(base);
       } else {
         Type bt = this.tg.get(base);
+        // At the very least, the the type for this array should be whatever its
+        // base type is
+        et = bt;
 
         // If we have a type of java.lang.Object and access it like an object,
         // this could lead to any kind of object, so we have to look at the uses.
         // For some fixed type T, we assume that we can fix the array to T[].
         if (bt instanceof RefType || bt instanceof NullType) {
           RefType rt = bt instanceof NullType ? null : (RefType) bt;
-          if (rt == null || rt.getSootClass().getName().equals("java.lang.Object") || rt.getSootClass().getName().equals("java.io.Serializable")
+          if (rt == null || rt.getSootClass().getName().equals("java.lang.Object")
+              || rt.getSootClass().getName().equals("java.io.Serializable")
               || rt.getSootClass().getName().equals("java.lang.Cloneable")) {
             if (defs == null) {
               defs = LocalDefs.Factory.newLocalDefs(jb);

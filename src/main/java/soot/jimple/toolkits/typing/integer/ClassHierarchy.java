@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2000 Etienne Gagnon.  All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.toolkits.typing.integer;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2000 Etienne Gagnon.  All rights reserved.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,49 +70,71 @@ public class ClassHierarchy {
   // becomes short
 
   private final boolean[][] ancestors_1 = { { false, false, false, false, false, true, false, false, false, },
-      { false, false, true, false, true, true, false, false, false, }, { false, false, false, false, true, true, false, false, false, },
-      { false, false, false, false, true, true, false, false, false, }, { false, false, false, false, false, true, false, false, false, },
-      { false, false, false, false, false, false, false, false, false, }, { true, true, true, true, true, true, false, true, true, },
-      { false, true, true, true, true, true, false, false, true, }, { false, false, true, true, true, true, false, false, false, }, };
+      { false, false, true, false, true, true, false, false, false, },
+      { false, false, false, false, true, true, false, false, false, },
+      { false, false, false, false, true, true, false, false, false, },
+      { false, false, false, false, false, true, false, false, false, },
+      { false, false, false, false, false, false, false, false, false, },
+      { true, true, true, true, true, true, false, true, true, },
+      { false, true, true, true, true, true, false, false, true, },
+      { false, false, true, true, true, true, false, false, false, }, };
 
   private final boolean[][] ancestors_2 = { { false, true, true, true, true, false, false, true, true, },
-      { false, false, true, false, true, false, false, false, false, }, { false, false, false, false, true, false, false, false, false, },
-      { false, false, false, false, true, false, false, false, false, }, { false, false, false, false, false, false, false, false, false, }, {}, {},
-      { false, true, true, true, true, false, false, false, true, }, { false, false, true, true, true, false, false, false, false, }, };
+      { false, false, true, false, true, false, false, false, false, },
+      { false, false, false, false, true, false, false, false, false, },
+      { false, false, false, false, true, false, false, false, false, },
+      { false, false, false, false, false, false, false, false, false, }, {}, {},
+      { false, true, true, true, true, false, false, false, true, },
+      { false, false, true, true, true, false, false, false, false, }, };
 
   private final boolean[][] descendants_1 = { { false, false, false, false, false, false, true, false, false, },
-      { false, false, false, false, false, false, true, true, false, }, { false, true, false, false, false, false, true, true, true, },
-      { false, false, false, false, false, false, true, true, true, }, { false, true, true, true, false, false, true, true, true, },
-      { true, true, true, true, true, false, true, true, true, }, { false, false, false, false, false, false, false, false, false, },
-      { false, false, false, false, false, false, true, false, false, }, { false, false, false, false, false, false, true, true, false, }, };
+      { false, false, false, false, false, false, true, true, false, },
+      { false, true, false, false, false, false, true, true, true, },
+      { false, false, false, false, false, false, true, true, true, },
+      { false, true, true, true, false, false, true, true, true, },
+      { true, true, true, true, true, false, true, true, true, },
+      { false, false, false, false, false, false, false, false, false, },
+      { false, false, false, false, false, false, true, false, false, },
+      { false, false, false, false, false, false, true, true, false, }, };
 
   private final boolean[][] descendants_2 = { { false, false, false, false, false, false, false, false, false, },
-      { true, false, false, false, false, false, false, true, false, }, { true, true, false, false, false, false, false, true, true, },
-      { true, false, false, false, false, false, false, true, true, }, { true, true, true, true, false, false, false, true, true, }, {}, {},
-      { true, false, false, false, false, false, false, false, false, }, { true, false, false, false, false, false, false, true, false, }, };
+      { true, false, false, false, false, false, false, true, false, },
+      { true, true, false, false, false, false, false, true, true, },
+      { true, false, false, false, false, false, false, true, true, },
+      { true, true, true, true, false, false, false, true, true, }, {}, {},
+      { true, false, false, false, false, false, false, false, false, },
+      { true, false, false, false, false, false, false, true, false, }, };
 
   private final TypeNode[][] lca_1 = { { BOOLEAN, TOP, TOP, TOP, TOP, TOP, BOOLEAN, TOP, TOP, },
       { TOP, BYTE, SHORT, INT, INT, TOP, BYTE, BYTE, SHORT, }, { TOP, SHORT, SHORT, INT, INT, TOP, SHORT, SHORT, SHORT, },
       { TOP, INT, INT, CHAR, INT, TOP, CHAR, CHAR, CHAR, }, { TOP, INT, INT, INT, INT, TOP, INT, INT, INT, },
       { TOP, TOP, TOP, TOP, TOP, TOP, TOP, TOP, TOP, }, { BOOLEAN, BYTE, SHORT, CHAR, INT, TOP, R0_1, R0_127, R0_32767, },
-      { TOP, BYTE, SHORT, CHAR, INT, TOP, R0_127, R0_127, R0_32767, }, { TOP, SHORT, SHORT, CHAR, INT, TOP, R0_32767, R0_32767, R0_32767, }, };
+      { TOP, BYTE, SHORT, CHAR, INT, TOP, R0_127, R0_127, R0_32767, },
+      { TOP, SHORT, SHORT, CHAR, INT, TOP, R0_32767, R0_32767, R0_32767, }, };
 
   private final TypeNode[][] lca_2 = { { BOOLEAN, BYTE, SHORT, CHAR, INT, null, null, R0_127, R0_32767, },
-      { BYTE, BYTE, SHORT, INT, INT, null, null, BYTE, SHORT, }, { SHORT, SHORT, SHORT, INT, INT, null, null, SHORT, SHORT, },
-      { CHAR, INT, INT, CHAR, INT, null, null, CHAR, CHAR, }, { INT, INT, INT, INT, INT, null, null, INT, INT, }, {}, {},
-      { R0_127, BYTE, SHORT, CHAR, INT, null, null, R0_127, R0_32767, }, { R0_32767, SHORT, SHORT, CHAR, INT, null, null, R0_32767, R0_32767, }, };
+      { BYTE, BYTE, SHORT, INT, INT, null, null, BYTE, SHORT, },
+      { SHORT, SHORT, SHORT, INT, INT, null, null, SHORT, SHORT, }, { CHAR, INT, INT, CHAR, INT, null, null, CHAR, CHAR, },
+      { INT, INT, INT, INT, INT, null, null, INT, INT, }, {}, {},
+      { R0_127, BYTE, SHORT, CHAR, INT, null, null, R0_127, R0_32767, },
+      { R0_32767, SHORT, SHORT, CHAR, INT, null, null, R0_32767, R0_32767, }, };
 
   private final TypeNode[][] gcd_1 = { { BOOLEAN, R0_1, R0_1, R0_1, R0_1, BOOLEAN, R0_1, R0_1, R0_1, },
-      { R0_1, BYTE, BYTE, R0_127, BYTE, BYTE, R0_1, R0_127, R0_127, }, { R0_1, BYTE, SHORT, R0_32767, SHORT, SHORT, R0_1, R0_127, R0_32767, },
-      { R0_1, R0_127, R0_32767, CHAR, CHAR, CHAR, R0_1, R0_127, R0_32767, }, { R0_1, BYTE, SHORT, CHAR, INT, INT, R0_1, R0_127, R0_32767, },
-      { BOOLEAN, BYTE, SHORT, CHAR, INT, TOP, R0_1, R0_127, R0_32767, }, { R0_1, R0_1, R0_1, R0_1, R0_1, R0_1, R0_1, R0_1, R0_1, },
+      { R0_1, BYTE, BYTE, R0_127, BYTE, BYTE, R0_1, R0_127, R0_127, },
+      { R0_1, BYTE, SHORT, R0_32767, SHORT, SHORT, R0_1, R0_127, R0_32767, },
+      { R0_1, R0_127, R0_32767, CHAR, CHAR, CHAR, R0_1, R0_127, R0_32767, },
+      { R0_1, BYTE, SHORT, CHAR, INT, INT, R0_1, R0_127, R0_32767, },
+      { BOOLEAN, BYTE, SHORT, CHAR, INT, TOP, R0_1, R0_127, R0_32767, },
+      { R0_1, R0_1, R0_1, R0_1, R0_1, R0_1, R0_1, R0_1, R0_1, },
       { R0_1, R0_127, R0_127, R0_127, R0_127, R0_127, R0_1, R0_127, R0_127, },
       { R0_1, R0_127, R0_32767, R0_32767, R0_32767, R0_32767, R0_1, R0_127, R0_32767, }, };
 
   private final TypeNode[][] gcd_2 = { { BOOLEAN, BOOLEAN, BOOLEAN, BOOLEAN, BOOLEAN, null, null, BOOLEAN, BOOLEAN, },
-      { BOOLEAN, BYTE, BYTE, R0_127, BYTE, null, null, R0_127, R0_127, }, { BOOLEAN, BYTE, SHORT, R0_32767, SHORT, null, null, R0_127, R0_32767, },
-      { BOOLEAN, R0_127, R0_32767, CHAR, CHAR, null, null, R0_127, R0_32767, }, { BOOLEAN, BYTE, SHORT, CHAR, INT, null, null, R0_127, R0_32767, },
-      {}, {}, { BOOLEAN, R0_127, R0_127, R0_127, R0_127, null, null, R0_127, R0_127, },
+      { BOOLEAN, BYTE, BYTE, R0_127, BYTE, null, null, R0_127, R0_127, },
+      { BOOLEAN, BYTE, SHORT, R0_32767, SHORT, null, null, R0_127, R0_32767, },
+      { BOOLEAN, R0_127, R0_32767, CHAR, CHAR, null, null, R0_127, R0_32767, },
+      { BOOLEAN, BYTE, SHORT, CHAR, INT, null, null, R0_127, R0_32767, }, {}, {},
+      { BOOLEAN, R0_127, R0_127, R0_127, R0_127, null, null, R0_127, R0_127, },
       { BOOLEAN, R0_127, R0_32767, R0_32767, R0_32767, null, null, R0_127, R0_32767, }, };
 
   /** Map: Type -> TypeNode **/

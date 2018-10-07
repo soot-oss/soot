@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.toolkits.scalar;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -34,9 +31,9 @@ import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.interaction.InteractionHandler;
 
 /**
- * An abstract class providing a metaframework for carrying out dataflow analysis. This class provides common methods and fields required by the
- * BranchedFlowAnalysis and FlowAnalysis abstract classes.
- * 
+ * An abstract class providing a metaframework for carrying out dataflow analysis. This class provides common methods and
+ * fields required by the BranchedFlowAnalysis and FlowAnalysis abstract classes.
+ *
  * @param <N>
  *          node type of the directed graph
  * @param <A>
@@ -68,7 +65,7 @@ public abstract class AbstractFlowAnalysis<N, A> {
 
   /**
    * Returns the initial flow value for entry/exit graph nodes.
-   * 
+   *
    * This is equal to {@link #newInitialFlow()}
    */
   protected A entryInitialFlow() {
@@ -86,14 +83,15 @@ public abstract class AbstractFlowAnalysis<N, A> {
   protected abstract boolean isForward();
 
   /**
-   * Compute the merge of the <code>in1</code> and <code>in2</code> sets, putting the result into <code>out</code>. The behavior of this function
-   * depends on the implementation ( it may be necessary to check whether <code>in1</code> and <code>in2</code> are equal or aliased ). Used by the
-   * doAnalysis method.
+   * Compute the merge of the <code>in1</code> and <code>in2</code> sets, putting the result into <code>out</code>. The
+   * behavior of this function depends on the implementation ( it may be necessary to check whether <code>in1</code> and
+   * <code>in2</code> are equal or aliased ). Used by the doAnalysis method.
    */
   protected abstract void merge(A in1, A in2, A out);
 
   /**
-   * Merges in1 and in2 into out, just before node succNode. By default, this method just calls merge(A,A,A), ignoring the node.
+   * Merges in1 and in2 into out, just before node succNode. By default, this method just calls merge(A,A,A), ignoring the
+   * node.
    */
   protected void merge(N succNode, A in1, A in2, A out) {
     merge(in1, in2, out);

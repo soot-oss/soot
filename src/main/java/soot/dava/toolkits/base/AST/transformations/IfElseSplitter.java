@@ -1,5 +1,27 @@
 package soot.dava.toolkits.base.AST.transformations;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,12 +52,12 @@ import soot.jimple.Stmt;
  *   else{                       BodyB
  *      BodyB
  *   }
- *   
+ *
  *   Things to ensure:
  *       If abrupt then check BodyA does not target a label on the ifelse
- *       
+ *
  * ALWAYS  Make sure BodyB does not target a label on the ifelse
- *       
+ *
  *    If the pattern is NOT matched check the reverse i.e. maybe BodyB
  *    has the abrupt statement in that case we just negated the condition
  */
@@ -152,8 +174,9 @@ public class IfElseSplitter extends DepthFirstAdapter {
       }
 
       /*
-       * Setting globals since everything is ready for transformation BECAUSE we cant modify the parent here we are going to do some bad coding style
-       * store the information needed for this into globals set a flag and the outASTMethod checks for this
+       * Setting globals since everything is ready for transformation BECAUSE we cant modify the parent here we are going to
+       * do some bad coding style store the information needed for this into globals set a flag and the outASTMethod checks
+       * for this
        */
       parent = (ASTNode) returned;
       toReplace = node;
@@ -186,8 +209,8 @@ public class IfElseSplitter extends DepthFirstAdapter {
   }
 
   /*
-   * Check that label is non null and the string inside is non null... if yes return false Check that the given list (sequeneof ASTNodes have no
-   * abrupt edge targeting the label.
+   * Check that label is non null and the string inside is non null... if yes return false Check that the given list
+   * (sequeneof ASTNodes have no abrupt edge targeting the label.
    *
    */
   public boolean bodyTargetsLabel(SETNodeLabel label, List<Object> body) {
@@ -235,7 +258,8 @@ public class IfElseSplitter extends DepthFirstAdapter {
   }
 
   /*
-   * Given a list of ASTNodes see if the last astnode is a StatementSequenceNode if not return null else, return the last statement in this node
+   * Given a list of ASTNodes see if the last astnode is a StatementSequenceNode if not return null else, return the last
+   * statement in this node
    */
   public Stmt getLastStmt(List<Object> body) {
     if (body.size() == 0) {

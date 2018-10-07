@@ -1,31 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2006 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/**
- * Maintained by: Nomair A. Naeem
- */
-
-/**
- * CHANGE LOG:
- *
- */
 package soot.dava.toolkits.base.AST.structuredAnalysis;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2006 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -59,17 +54,17 @@ import soot.toolkits.scalar.FlowSet;
 /*
  * Sort of the mark phase of a mark and sweep dead code eliminator.
  * Carry NOPATH information through the flowsets
- * 
+ *
  * Will need to over ride the processAbruptStatement method of parent
  * class since we plan to do something special with abrupt stmts
- * 
+ *
  * ONLY PROCESS A CONSTRUCT IF ITS INSET HOLDS TRUE i.e. it is REACHABLE otherwise
  * simply pass on the inset
- * 
+ *
  * TODO:
  *   1, The child after any loop is always reachable (even for a while(true) which returns)
  *      Will probably have to override loop process methods, invoke the super process method and then change the outset
- *   2, handleBreak would need to see if there is any break stmt then set the out to contain true   
+ *   2, handleBreak would need to see if there is any break stmt then set the out to contain true
  */
 
 public class UnreachableCodeFinder extends StructuredAnalysis {
@@ -147,7 +142,8 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
   }
 
   /*
-   * Merge is intersection but our SPECIALIZED intersection hence creating our own specialize flow set with overriding the intersection method
+   * Merge is intersection but our SPECIALIZED intersection hence creating our own specialize flow set with overriding the
+   * intersection method
    */
   public void setMergeType() {
     MERGETYPE = INTERSECTION;
@@ -155,9 +151,9 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
 
   /*
    * For catch bodies.
-   * 
-   * If you are processing the catch body that means you can reach to the try Since you can always come to a catchbody the inset to the catch body to
-   * should be that there is a path
+   *
+   * If you are processing the catch body that means you can reach to the try Since you can always come to a catchbody the
+   * inset to the catch body to should be that there is a path
    */
   public DavaFlowSet newInitialFlow() {
     DavaFlowSet newSet = emptyFlowSet();
@@ -249,8 +245,9 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
   }
 
   /*
-   * If a particular node is targeted by a break statement then that means there is always a path to it Hence if there is even a single entry in the
-   * implicit or explicit break set return a flow set which contains true since there is a path to this point
+   * If a particular node is targeted by a break statement then that means there is always a path to it Hence if there is
+   * even a single entry in the implicit or explicit break set return a flow set which contains true since there is a path to
+   * this point
    */
   @Override
   public DavaFlowSet handleBreak(String label, DavaFlowSet output, ASTNode node) {

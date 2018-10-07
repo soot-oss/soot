@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2004 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2004 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayDeque;
 
@@ -27,8 +30,9 @@ import org.slf4j.LoggerFactory;
 import soot.options.Options;
 
 /**
- * Representation of a reference to a field as it appears in a class file. Note that the field directly referred to may not actually exist; the actual
- * target of the reference is determined according to the resolution procedure in the Java Virtual Machine Specification, 2nd ed, section 5.4.3.2.
+ * Representation of a reference to a field as it appears in a class file. Note that the field directly referred to may not
+ * actually exist; the actual target of the reference is determined according to the resolution procedure in the Java Virtual
+ * Machine Specification, 2nd ed, section 5.4.3.2.
  */
 
 public class AbstractSootFieldRef implements SootFieldRef {
@@ -82,12 +86,13 @@ public class AbstractSootFieldRef implements SootFieldRef {
 
   public class FieldResolutionFailedException extends ResolutionFailedException {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -4657113720516199499L;
 
     public FieldResolutionFailedException() {
-      super("Class " + declaringClass + " doesn't have field " + name + " : " + type + "; failed to resolve in superclasses and interfaces");
+      super("Class " + declaringClass + " doesn't have field " + name + " : " + type
+          + "; failed to resolve in superclasses and interfaces");
     }
 
     @Override
@@ -105,10 +110,10 @@ public class AbstractSootFieldRef implements SootFieldRef {
   }
 
   private SootField checkStatic(SootField ret) {
-    if (Options.v().wrong_staticness() == Options.wrong_staticness_fail || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) {
-      if (ret.isStatic() != isStatic() && !ret.isPhantom()) {
-        throw new ResolutionFailedException("Resolved " + this + " to " + ret + " which has wrong static-ness");
-      }
+    if ((Options.v().wrong_staticness() == Options.wrong_staticness_fail
+          || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict)
+          && ret.isStatic() != isStatic() && !ret.isPhantom()) {
+      throw new ResolutionFailedException("Resolved " + this + " to " + ret + " which has wrong static-ness");
     }
     return ret;
   }
@@ -220,7 +225,8 @@ public class AbstractSootFieldRef implements SootFieldRef {
       case Options.field_type_mismatches_null:
         return null;
     }
-    throw new RuntimeException(String.format("Unsupported option for handling field type mismatches: %d", Options.v().field_type_mismatches()));
+    throw new RuntimeException(
+        String.format("Unsupported option for handling field type mismatches: %d", Options.v().field_type_mismatches()));
   }
 
   @Override

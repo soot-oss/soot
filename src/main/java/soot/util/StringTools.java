@@ -1,31 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
-/* 04.04.2006 mbatch  added handling of \r, as compilers throw error if unicode */
-
 package soot.util;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
@@ -34,7 +29,8 @@ import java.text.StringCharacterIterator;
 public class StringTools {
 
   /**
-   * Returns fromString, but with non-isalpha() characters printed as <code>'\\unnnn'</code>. Used by SootClass to generate output.
+   * Returns fromString, but with non-isalpha() characters printed as <code>'\\unnnn'</code>. Used by SootClass to generate
+   * output.
    */
   public static java.lang.String getEscapedStringOf(String fromString) {
     char[] fromStringArray;
@@ -77,7 +73,8 @@ public class StringTools {
   public final static String lineSeparator = System.getProperty("line.separator");
 
   /**
-   * Returns fromString, but with certain characters printed as if they were in a Java string literal. Used by StringConstant.toString()
+   * Returns fromString, but with certain characters printed as if they were in a Java string literal. Used by
+   * StringConstant.toString()
    */
   public static java.lang.String getQuotedStringOf(String fromString) {
     // We definitely need fromString.length + 2, but let's have some

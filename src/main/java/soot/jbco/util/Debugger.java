@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jbco.util;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,8 +48,8 @@ public class Debugger {
     it = b.getUnits().iterator();
     while (it.hasNext()) {
       Object o = it.next();
-      System.out.println(
-          index.get(o).toString() + " " + o + " " + (o instanceof TargetArgInst ? index.get(((TargetArgInst) o).getTarget()).toString() : ""));
+      System.out.println(index.get(o).toString() + " " + o + " "
+          + (o instanceof TargetArgInst ? index.get(((TargetArgInst) o).getTarget()).toString() : ""));
     }
     System.out.println("\n");
   }
@@ -88,7 +91,8 @@ public class Debugger {
         System.out.println("\tdefault: " + tswi.getDefaultTarget() + "  " + numbers.get(tswi.getDefaultTarget()).toString());
         int index = 0;
         for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++) {
-          System.out.println("\t " + x + ": " + tswi.getTarget(index) + "  " + numbers.get(tswi.getTarget(index++)).toString());
+          System.out
+              .println("\t " + x + ": " + tswi.getTarget(index) + "  " + numbers.get(tswi.getTarget(index++)).toString());
         }
         continue;
       }
@@ -98,8 +102,8 @@ public class Debugger {
     Iterator<Trap> tit = b.getTraps().iterator();
     while (tit.hasNext()) {
       Trap t = tit.next();
-      System.out.println(numbers.get(t.getBeginUnit()) + " " + t.getBeginUnit() + " to " + numbers.get(t.getEndUnit()) + " " + t.getEndUnit()
-          + "  at " + numbers.get(t.getHandlerUnit()) + " " + t.getHandlerUnit());
+      System.out.println(numbers.get(t.getBeginUnit()) + " " + t.getBeginUnit() + " to " + numbers.get(t.getEndUnit()) + " "
+          + t.getEndUnit() + "  at " + numbers.get(t.getHandlerUnit()) + " " + t.getHandlerUnit());
     }
     if (jsr > 0) {
       System.out.println("\r\tJSR Instructions: " + jsr);
@@ -138,7 +142,8 @@ public class Debugger {
         System.out.println("\tdefault: " + tswi.getDefaultTarget() + "  " + numbers.get(tswi.getDefaultTarget()).toString());
         int index = 0;
         for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++) {
-          System.out.println("\t " + x + ": " + tswi.getTarget(index) + "  " + numbers.get(tswi.getTarget(index++)).toString());
+          System.out
+              .println("\t " + x + ": " + tswi.getTarget(index) + "  " + numbers.get(tswi.getTarget(index++)).toString());
         }
         continue;
       }

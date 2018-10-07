@@ -1,33 +1,30 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2000 Etienne Gagnon.
- * Copyright (C) 2008 Ben Bellamy 
- * Copyright (C) 2008 Eric Bodden 
- * 
- * All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.toolkits.typing;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2000 Etienne Gagnon.
+ * Copyright (C) 2008 Ben Bellamy
+ * Copyright (C) 2008 Eric Bodden
+ *
+ * All rights reserved.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,7 +66,7 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
 
 /**
  * This transformer assigns types to local variables.
- * 
+ *
  * @author Etienne Gagnon
  * @author Ben Bellamy
  * @author Eric Bodden
@@ -100,17 +97,19 @@ public class TypeAssigner extends BodyTransformer {
     JBTROptions opt = new JBTROptions(options);
 
     /*
-     * Setting this guard to true enables comparison of the original and new type assigners. This will be slow since type assignment will always
-     * happen twice. The actual types used for Jimple are determined by the use-old-type-assigner option.
-     * 
-     * Each comparison is written as a separate semicolon-delimited line to the standard output, and the first field is always 'cmp' for use in grep.
-     * The format is:
-     * 
+     * Setting this guard to true enables comparison of the original and new type assigners. This will be slow since type
+     * assignment will always happen twice. The actual types used for Jimple are determined by the use-old-type-assigner
+     * option.
+     *
+     * Each comparison is written as a separate semicolon-delimited line to the standard output, and the first field is
+     * always 'cmp' for use in grep. The format is:
+     *
      * cmp;Method Name;Stmt Count;Old Inference Time (ms); New Inference Time (ms);Typing Comparison
-     * 
-     * The Typing Comparison field compares the old and new typings: -2 - Old typing contains fewer variables (BAD!) -1 - Old typing is tighter (BAD!)
-     * 0 - Typings are equal 1 - New typing is tighter 2 - New typing contains fewer variables 3 - Typings are incomparable (inspect manually)
-     * 
+     *
+     * The Typing Comparison field compares the old and new typings: -2 - Old typing contains fewer variables (BAD!) -1 - Old
+     * typing is tighter (BAD!) 0 - Typings are equal 1 - New typing is tighter 2 - New typing contains fewer variables 3 -
+     * Typings are incomparable (inspect manually)
+     *
      * In a final release this guard, and anything in the first branch, would probably be removed.
      */
     if (opt.compare_type_assigners()) {
@@ -141,11 +140,11 @@ public class TypeAssigner extends BodyTransformer {
   }
 
   /**
-   * Replace statements using locals with null_type type and that would throw a NullPointerException at runtime by a set of instructions throwing a
-   * NullPointerException.
-   * 
+   * Replace statements using locals with null_type type and that would throw a NullPointerException at runtime by a set of
+   * instructions throwing a NullPointerException.
+   *
    * This is done to remove locals with null_type type.
-   * 
+   *
    * @param b
    */
   private void replaceNullType(Body b) {
@@ -213,7 +212,8 @@ public class TypeAssigner extends BodyTransformer {
     }
 
     for (Unit u : unitToReplaceByException) {
-      soot.dexpler.Util.addExceptionAfterUnit(b, "java.lang.NullPointerException", u, "This statement would have triggered an Exception: " + u);
+      soot.dexpler.Util.addExceptionAfterUnit(b, "java.lang.NullPointerException", u,
+          "This statement would have triggered an Exception: " + u);
       b.getUnits().remove(u);
     }
 

@@ -1,6 +1,26 @@
 package soot.util.annotations;
 
-import org.jboss.util.Classes;
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import soot.tagkit.AbstractAnnotationElemTypeSwitch;
 import soot.tagkit.AnnotationAnnotationElem;
@@ -16,18 +36,19 @@ import soot.tagkit.AnnotationLongElem;
 import soot.tagkit.AnnotationStringElem;
 
 /**
- * 
- * An {@link AbstractAnnotationElemTypeSwitch} that converts an {@link AnnotationElem} to a mapping of element name and the actual result.
- * 
+ *
+ * An {@link AbstractAnnotationElemTypeSwitch} that converts an {@link AnnotationElem} to a mapping of element name and the
+ * actual result.
+ *
  * @author Florian Kuebler
  *
  */
 public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
 
   /**
-   * 
+   *
    * A helper class to map method name and result.
-   * 
+   *
    * @author Florian Kuebler
    *
    * @param <V>
@@ -65,8 +86,8 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
   public void caseAnnotationArrayElem(AnnotationArrayElem v) {
 
     /*
-     * for arrays, apply a new AnnotationElemSwitch to every array element and collect the results. Note that the component type of the result is
-     * unknown here, s.t. object has to be used.
+     * for arrays, apply a new AnnotationElemSwitch to every array element and collect the results. Note that the component
+     * type of the result is unknown here, s.t. object has to be used.
      */
     Object[] result = new Object[v.getNumValues()];
 
@@ -92,7 +113,7 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
   @Override
   public void caseAnnotationClassElem(AnnotationClassElem v) {
     try {
-      Class<?> clazz = Classes.loadClass(v.getDesc().replace('/', '.'));
+      Class<?> clazz = ClassLoaderUtils.loadClass(v.getDesc().replace('/', '.'));
       setResult(new AnnotationElemResult<Class<?>>(v.getName(), clazz));
     } catch (ClassNotFoundException e) {
       throw new RuntimeException("Could not load class: " + v.getDesc());
@@ -108,7 +129,7 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
   @Override
   public void caseAnnotationEnumElem(AnnotationEnumElem v) {
     try {
-      Class<?> clazz = Classes.loadClass(v.getTypeName().replace('/', '.'));
+      Class<?> clazz = ClassLoaderUtils.loadClass(v.getTypeName().replace('/', '.'));
 
       // find out which enum constant is used.
       Enum<?> result = null;

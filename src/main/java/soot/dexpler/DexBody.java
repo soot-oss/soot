@@ -1,28 +1,31 @@
-/* Soot - a Java Optimization Framework
+package soot.dexpler;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  *
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-
-package soot.dexpler;
 
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
@@ -59,6 +62,8 @@ import soot.Local;
 import soot.LongType;
 import soot.Modifier;
 import soot.NullType;
+import soot.PackManager;
+import soot.PhaseOptions;
 import soot.PrimType;
 import soot.RefType;
 import soot.Scene;
@@ -101,11 +106,11 @@ import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.FieldStaticnessCorrector;
 import soot.jimple.toolkits.scalar.IdentityCastEliminator;
 import soot.jimple.toolkits.scalar.IdentityOperationEliminator;
-import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.jimple.toolkits.scalar.MethodStaticnessCorrector;
 import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.typing.TypeAssigner;
+import soot.options.JBOptions;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLineNumberTag;
@@ -122,32 +127,32 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  */
 public class DexBody {
   private static final Logger logger = LoggerFactory.getLogger(DexBody.class);
-  private List<DexlibAbstractInstruction> instructions;
+  protected List<DexlibAbstractInstruction> instructions;
   // keeps track about the jimple locals that are associated with the dex
   // registers
-  private Local[] registerLocals;
-  private Local storeResultLocal;
-  private Map<Integer, DexlibAbstractInstruction> instructionAtAddress;
+  protected Local[] registerLocals;
+  protected Local storeResultLocal;
+  protected Map<Integer, DexlibAbstractInstruction> instructionAtAddress;
 
-  private List<DeferableInstruction> deferredInstructions;
-  private Set<RetypeableInstruction> instructionsToRetype;
-  private DanglingInstruction dangling;
+  protected List<DeferableInstruction> deferredInstructions;
+  protected Set<RetypeableInstruction> instructionsToRetype;
+  protected DanglingInstruction dangling;
 
-  private int numRegisters;
-  private int numParameterRegisters;
-  private final List<Type> parameterTypes;
-  private boolean isStatic;
+  protected int numRegisters;
+  protected int numParameterRegisters;
+  protected final List<Type> parameterTypes;
+  protected boolean isStatic;
 
-  private JimpleBody jBody;
-  private List<? extends TryBlock<? extends ExceptionHandler>> tries;
+  protected JimpleBody jBody;
+  protected List<? extends TryBlock<? extends ExceptionHandler>> tries;
 
-  private RefType declaringClassType;
+  protected RefType declaringClassType;
 
-  private final DexFile dexFile;
-  private final Method method;
+  protected final DexFile dexFile;
+  protected final Method method;
 
   // detect array/instructions overlapping obfuscation
-  private ArrayList<PseudoInstruction> pseudoInstructionData = new ArrayList<PseudoInstruction>();
+  protected List<PseudoInstruction> pseudoInstructionData = new ArrayList<PseudoInstruction>();
 
   PseudoInstruction isAddressInData(int a) {
     for (PseudoInstruction pi : pseudoInstructionData) {
@@ -166,7 +171,7 @@ public class DexBody {
    * @param method
    *          the method that is associated with this body
    */
-  DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
+  protected DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
     MethodImplementation code = method.getImplementation();
     if (code == null) {
       throw new RuntimeException("error: no code for method " + method.getName());
@@ -193,21 +198,14 @@ public class DexBody {
 
     instructions = new ArrayList<DexlibAbstractInstruction>();
     instructionAtAddress = new HashMap<Integer, DexlibAbstractInstruction>();
-
     registerLocals = new Local[numRegisters];
 
-    int address = 0;
-
-    for (Instruction instruction : code.getInstructions()) {
-      DexlibAbstractInstruction dexInstruction = fromInstruction(instruction, address);
-      instructions.add(dexInstruction);
-      instructionAtAddress.put(address, dexInstruction);
-      address += instruction.getCodeUnits();
-    }
+    extractDexInstructions(code);
 
     // Check taken from Android's dalvik/libdex/DexSwapVerify.cpp
     if (numParameterRegisters > numRegisters) {
-      throw new RuntimeException("Malformed dex file: insSize (" + numParameterRegisters + ") > registersSize (" + numRegisters + ")");
+      throw new RuntimeException(
+          "Malformed dex file: insSize (" + numParameterRegisters + ") > registersSize (" + numRegisters + ")");
     }
 
     for (DebugItem di : code.getDebugItems()) {
@@ -225,6 +223,22 @@ public class DexBody {
 
     this.dexFile = dexFile;
     this.method = method;
+  }
+
+  /**
+   * Extracts the list of dalvik instructions from dexlib and converts them into our own instruction data model
+   * 
+   * @param code
+   *          The dexlib method implementation
+   */
+  protected void extractDexInstructions(MethodImplementation code) {
+    int address = 0;
+    for (Instruction instruction : code.getInstructions()) {
+      DexlibAbstractInstruction dexInstruction = fromInstruction(instruction, address);
+      instructions.add(dexInstruction);
+      instructionAtAddress.put(address, dexInstruction);
+      address += instruction.getCodeUnits();
+    }
   }
 
   /**
@@ -316,7 +330,8 @@ public class DexBody {
   public Local getRegisterLocal(int num) throws InvalidDalvikBytecodeException {
     int totalRegisters = registerLocals.length;
     if (num > totalRegisters) {
-      throw new InvalidDalvikBytecodeException("Trying to access register " + num + " but only " + totalRegisters + " is/are available.");
+      throw new InvalidDalvikBytecodeException(
+          "Trying to access register " + num + " but only " + totalRegisters + " is/are available.");
     }
     return registerLocals[num];
   }
@@ -372,13 +387,21 @@ public class DexBody {
 
     /*
      * Timer t_whole_jimplification = new Timer(); Timer t_num = new Timer(); Timer t_null = new Timer();
-     * 
+     *
      * t_whole_jimplification.start();
      */
 
+    JBOptions jbOptions = new JBOptions(PhaseOptions.v().getPhaseOptions("jb"));
     jBody = (JimpleBody) b;
     deferredInstructions = new ArrayList<DeferableInstruction>();
     instructionsToRetype = new HashSet<RetypeableInstruction>();
+    
+    if (jbOptions.use_original_names()) {
+      PhaseOptions.v().setPhaseOptionIfUnset("jb.lns", "only-stack-locals");
+    }
+    if (jbOptions.stabilize_local_names()) {
+      PhaseOptions.v().setPhaseOption("jb.lns", "sort-locals:true");
+    }
 
     if (IDalvikTyper.ENABLE_DVKTYPER) {
       DalvikTyper.v().clear();
@@ -404,30 +427,11 @@ public class DexBody {
     }
     {
       int i = 0; // index of parameter type
-      int parameterRegister = numRegisters - numParameterRegisters; // index
-      // of
-      // parameter
-      // register
+      int parameterRegister = numRegisters - numParameterRegisters; // index of parameter register
       for (Type t : parameterTypes) {
-
-        Local gen = jimple.newLocal("$u" + parameterRegister, unknownType); // may
-        // only
-        // use
-        // UnknownType
-        // here
-        // because
-        // the
-        // local
-        // may
-        // be
-        // reused
-        // with
-        // a
-        // different
-        // type
-        // later
-        // (before
-        // splitting)
+        // may only use UnknownType here because the local may be reused with a different 
+        // type later (before splitting)
+        Local gen = jimple.newLocal("$u" + parameterRegister, unknownType);
         jBody.getLocals().add(gen);
 
         registerLocals[parameterRegister] = gen;
@@ -442,28 +446,12 @@ public class DexBody {
         // in Jimple only the first Dalvik register name is used
         // as the corresponding Jimple Local name. However, we also add
         // the second register to the registerLocals array since it
-        // could be
-        // used later in the Dalvik bytecode
+        // could be used later in the Dalvik bytecode
         if (t instanceof LongType || t instanceof DoubleType) {
           parameterRegister++;
-          Local g = jimple.newLocal("$u" + parameterRegister, unknownType); // may
-          // only
-          // use
-          // UnknownType
-          // here
-          // because
-          // the
-          // local
-          // may
-          // be
-          // reused
-          // with
-          // a
-          // different
-          // type
-          // later
-          // (before
-          // splitting)
+          // may only use UnknownType here because the local may be reused with a different 
+          // type later (before splitting)
+          Local g = jimple.newLocal("$u" + parameterRegister, unknownType);
           jBody.getLocals().add(g);
           registerLocals[parameterRegister] = g;
         }
@@ -515,6 +503,9 @@ public class DexBody {
         instruction.setLineNumber(prevLineNumber);
       }
     }
+    if (dangling != null) {
+      dangling.finalize(this, null);
+    }
     for (DeferableInstruction instruction : deferredInstructions) {
       instruction.deferredJimplify(this);
     }
@@ -523,19 +514,8 @@ public class DexBody {
       addTraps();
     }
 
-    int prevLn = -1;
-    final boolean keepLineNumber = options.keep_line_number();
-    for (DexlibAbstractInstruction instruction : instructions) {
-      Unit unit = instruction.getUnit();
-      int lineNumber = unit.getJavaSourceStartLineNumber();
-      if (keepLineNumber && lineNumber < 0) {
-        if (prevLn >= 0) {
-          unit.addTag(new LineNumberTag(prevLn));
-          unit.addTag(new SourceLineNumberTag(prevLn));
-        }
-      } else {
-        prevLn = lineNumber;
-      }
+    if (options.keep_line_number()) {
+      fixLineNumbers();
     }
 
     // At this point Jimple code is generated
@@ -554,11 +534,12 @@ public class DexBody {
     /*
      * We eliminate dead code. Dead code has been shown to occur under the following circumstances.
      *
-     * 0006ec: 0d00 |00a2: move-exception v0 ... 0006f2: 0d00 |00a5: move-exception v0 ... 0x0041 - 0x008a Ljava/lang/Throwable; -> 0x00a5 <any> ->
-     * 0x00a2
-     * 
-     * Here there are two traps both over the same region. But the same always fires, hence rendering the code at a2 unreachable. Dead code yields
-     * problems during local splitting because locals within dead code will not be split. Hence we remove all dead code here.
+     * 0006ec: 0d00 |00a2: move-exception v0 ... 0006f2: 0d00 |00a5: move-exception v0 ... 0x0041 - 0x008a
+     * Ljava/lang/Throwable; -> 0x00a5 <any> -> 0x00a2
+     *
+     * Here there are two traps both over the same region. But the same always fires, hence rendering the code at a2
+     * unreachable. Dead code yields problems during local splitting because locals within dead code will not be split. Hence
+     * we remove all dead code here.
      */
 
     // Fix traps that do not catch exceptions
@@ -752,11 +733,12 @@ public class DexBody {
     // again lead to unused locals which we have to remove.
     LocalPacker.v().transform(jBody);
     UnusedLocalEliminator.v().transform(jBody);
-    LocalNameStandardizer.v().transform(jBody);
+    PackManager.v().getTransform("jb.lns").apply(jBody);
 
     // Some apps reference static fields as instance fields. We fix this
     // on the fly.
-    if (options.wrong_staticness() == Options.wrong_staticness_fix) {
+    if (Options.v().wrong_staticness() == Options.wrong_staticness_fix
+          || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) {
       FieldStaticnessCorrector.v().transform(jBody);
       MethodStaticnessCorrector.v().transform(jBody);
     }
@@ -823,7 +805,8 @@ public class DexBody {
           Type t = def.getLeftOp().getType();
           if (t instanceof RefType) {
             RefType rt = (RefType) t;
-            if (rt.getSootClass().isPhantom() && !rt.getSootClass().hasSuperclass() && !rt.getSootClass().getName().equals("java.lang.Throwable")) {
+            if (rt.getSootClass().isPhantom() && !rt.getSootClass().hasSuperclass()
+                && !rt.getSootClass().getName().equals("java.lang.Throwable")) {
               rt.getSootClass().setSuperclass(Scene.v().getSootClass("java.lang.Throwable"));
             }
           }
@@ -846,10 +829,33 @@ public class DexBody {
         l.setType(objectType);
       }
     }
+    
+    //Must be last to ensure local ordering does not change
+    PackManager.v().getTransform("jb.lns").apply(jBody);
 
     // t_whole_jimplification.end();
 
     return jBody;
+  }
+
+  /**
+   * Fixes the line numbers. If there is a unit without a line number, it gets the line number of the last (transitive)
+   * predecessor that has a line number.
+   */
+  protected void fixLineNumbers() {
+    int prevLn = -1;
+    for (DexlibAbstractInstruction instruction : instructions) {
+      Unit unit = instruction.getUnit();
+      int lineNumber = unit.getJavaSourceStartLineNumber();
+      if (lineNumber < 0) {
+        if (prevLn >= 0) {
+          unit.addTag(new LineNumberTag(prevLn));
+          unit.addTag(new SourceLineNumberTag(prevLn));
+        }
+      } else {
+        prevLn = lineNumber;
+      }
+    }
   }
 
   private LocalSplitter localSplitter = null;
@@ -964,7 +970,8 @@ public class DexBody {
           SootClass exception = ((RefType) t).getSootClass();
           DexlibAbstractInstruction instruction = instructionAtAddress(handler.getHandlerCodeAddress());
           if (!(instruction instanceof MoveExceptionInstruction)) {
-            logger.debug("" + String.format("First instruction of trap handler unit not MoveException but %s", instruction.getClass().getName()));
+            logger.debug("" + String.format("First instruction of trap handler unit not MoveException but %s",
+                instruction.getClass().getName()));
           } else {
             ((MoveExceptionInstruction) instruction).setRealType(this, exception.getType());
           }

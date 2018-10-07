@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2000 Feng Qian
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.toolkits.annotation.arraycheck;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2000 Feng Qian
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -113,8 +110,8 @@ class ArrayBoundsCheckerAnalysis {
   private final ArrayIndexLivenessAnalysis ailanalysis;
 
   /* A little bit different from ForwardFlowAnalysis */
-  public ArrayBoundsCheckerAnalysis(Body body, boolean takeClassField, boolean takeFieldRef, boolean takeArrayRef, boolean takeCSE,
-      boolean takeRectArray) {
+  public ArrayBoundsCheckerAnalysis(Body body, boolean takeClassField, boolean takeFieldRef, boolean takeArrayRef,
+      boolean takeCSE, boolean takeRectArray) {
     classfieldin = takeClassField;
     fieldin = takeFieldRef;
     arrayin = takeArrayRef;
@@ -227,7 +224,8 @@ class ArrayBoundsCheckerAnalysis {
 
   /* merge all preds' out set */
   private void mergebunch(Object ins[], Object s, Object prevOut, Object out) {
-    WeightedDirectedSparseGraph prevgraph = (WeightedDirectedSparseGraph) prevOut, outgraph = (WeightedDirectedSparseGraph) out;
+    WeightedDirectedSparseGraph prevgraph = (WeightedDirectedSparseGraph) prevOut,
+        outgraph = (WeightedDirectedSparseGraph) out;
 
     WeightedDirectedSparseGraph[] ingraphs = new WeightedDirectedSparseGraph[ins.length];
 
@@ -246,9 +244,10 @@ class ArrayBoundsCheckerAnalysis {
       // if (flowStable)
       /*
        * Integer round = (Integer)stableRoundOfUnits.get(s);
-       * 
-       * if (round.intValue() < 2) { stableRoundOfUnits.put(s, new Integer(round.intValue()+1)); } else { // To make output stable. compare with
-       * previous output value. outgraph.wideEdges((WeightedDirectedSparseGraph)prevOut); outgraph.makeShortestPathGraph(); }
+       *
+       * if (round.intValue() < 2) { stableRoundOfUnits.put(s, new Integer(round.intValue()+1)); } else { // To make output
+       * stable. compare with previous output value. outgraph.wideEdges((WeightedDirectedSparseGraph)prevOut);
+       * outgraph.makeShortestPathGraph(); }
        */
 
       outgraph.widenEdges(prevgraph);
@@ -256,7 +255,7 @@ class ArrayBoundsCheckerAnalysis {
       // outgraph.makeShortestPathGraph();
       /*
        * for (int i=0; i<ins.length; i++) { logger.debug("in " + i); logger.debug(""+ins[i]); }
-       * 
+       *
        * logger.debug("out "); logger.debug(""+out);
        */
     }
@@ -425,8 +424,8 @@ class ArrayBoundsCheckerAnalysis {
         }
 
         /*
-         * Compute afterFlow and store it. Now we do not have afterFlow, we only have the out edges. Different out edges may have different flow set.
-         * It returns back a list of succ units that edge has been changed.
+         * Compute afterFlow and store it. Now we do not have afterFlow, we only have the out edges. Different out edges may
+         * have different flow set. It returns back a list of succ units that edge has been changed.
          */
         {
           changedSuccs = flowThrough(beforeFlow, s);
@@ -509,13 +508,13 @@ class ArrayBoundsCheckerAnalysis {
 
     /*
      * ArrayRef op = null;
-     * 
+     *
      * Value leftOp = ((AssignStmt)s).getLeftOp(); Value rightOp = ((AssignStmt)s).getRightOp();
-     * 
+     *
      * if (leftOp instanceof ArrayRef) op = (ArrayRef)leftOp;
-     * 
+     *
      * if (rightOp instanceof ArrayRef) op = (ArrayRef)rightOp;
-     * 
+     *
      * if (op == null) return;
      */
 
@@ -579,7 +578,8 @@ class ArrayBoundsCheckerAnalysis {
 
                 SootClass lclass = ((RefType) ltype).getSootClass();
 
-                if (hierarchy.isClassSuperclassOfIncluding(pclass, lclass) || hierarchy.isClassSuperclassOfIncluding(lclass, pclass)) {
+                if (hierarchy.isClassSuperclassOfIncluding(pclass, lclass)
+                    || hierarchy.isClassSuperclassOfIncluding(lclass, pclass)) {
                   HashSet toadd = localToFieldRef.get(local);
                   tokills.addAll(toadd);
                 }
@@ -602,7 +602,8 @@ class ArrayBoundsCheckerAnalysis {
 
                 SootClass lclass = ((RefType) ltype).getSootClass();
 
-                if (hierarchy.isClassSuperclassOfIncluding(pclass, lclass) || hierarchy.isClassSuperclassOfIncluding(lclass, pclass)) {
+                if (hierarchy.isClassSuperclassOfIncluding(pclass, lclass)
+                    || hierarchy.isClassSuperclassOfIncluding(lclass, pclass)) {
                   HashSet toadd = localToFieldRef.get(local);
                   tokills.addAll(toadd);
                 }
@@ -719,9 +720,9 @@ class ArrayBoundsCheckerAnalysis {
       if (leftOp instanceof Local) {
         /*
          * HashSet arrayrefs = (HashSet)localToArrayRef.get(leftOp);
-         * 
-         * if (arrayrefs != null) { Iterator refsIt = arrayrefs.iterator(); while (refsIt.hasNext()) { Object ref = refsIt.next();
-         * ingraph.killNode(ref); } }
+         *
+         * if (arrayrefs != null) { Iterator refsIt = arrayrefs.iterator(); while (refsIt.hasNext()) { Object ref =
+         * refsIt.next(); ingraph.killNode(ref); } }
          */
         HashSet vertexes = ingraph.getVertexes();
         Iterator nodeIt = vertexes.iterator();
@@ -748,7 +749,8 @@ class ArrayBoundsCheckerAnalysis {
       } else if (leftOp instanceof ArrayRef) {
         /* kill all array references */
         /*
-         * Iterator allrefsIt = allArrayRefs.iterator(); while (allrefsIt.hasNext()) { Object ref = allrefsIt.next(); ingraph.killNode(ref); }
+         * Iterator allrefsIt = allArrayRefs.iterator(); while (allrefsIt.hasNext()) { Object ref = allrefsIt.next();
+         * ingraph.killNode(ref); }
          */
         HashSet vertexes = ingraph.getVertexes();
         {
@@ -764,9 +766,9 @@ class ArrayBoundsCheckerAnalysis {
         /* only when multiarray was given a new value to its sub dimension, we kill all second dimensions of arrays */
         /*
          * if (rectarray) { Value base = ((ArrayRef)leftOp).getBase();
-         * 
-         * if (multiarraylocals.contains(base)) { Iterator nodeIt = vertexes.iterator(); while (nodeIt.hasNext()) { Object node = nodeIt.next(); if
-         * (node instanceof Array2ndDimensionSymbol) ingraph.killNode(node); } } }
+         *
+         * if (multiarraylocals.contains(base)) { Iterator nodeIt = vertexes.iterator(); while (nodeIt.hasNext()) { Object
+         * node = nodeIt.next(); if (node instanceof Array2ndDimensionSymbol) ingraph.killNode(node); } } }
          */
       }
     }
@@ -859,11 +861,12 @@ class ArrayBoundsCheckerAnalysis {
 
     /*
      * if (rectarray) { Type leftType = leftOp.getType();
-     * 
-     * if ((leftType instanceof ArrayType) && (rightOp instanceof ArrayRef)) { Local base = (Local)((ArrayRef)rightOp).getBase();
-     * 
-     * SymbolArrayLength sv = (SymbolArrayLength)lra_analysis.getSymbolLengthAt(base, s); if (sv != null) { ingraph.addMutualEdges(leftOp, sv.next(),
-     * 0); } } }
+     *
+     * if ((leftType instanceof ArrayType) && (rightOp instanceof ArrayRef)) { Local base =
+     * (Local)((ArrayRef)rightOp).getBase();
+     *
+     * SymbolArrayLength sv = (SymbolArrayLength)lra_analysis.getSymbolLengthAt(base, s); if (sv != null) {
+     * ingraph.addMutualEdges(leftOp, sv.next(), 0); } } }
      */
 
     if (arrayin) {

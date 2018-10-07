@@ -1,5 +1,27 @@
 package soot;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2012 Michael Markert, Frank Hartmann
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,25 +39,6 @@ import org.slf4j.LoggerFactory;
 import soot.dexpler.DexFileProvider;
 import soot.dexpler.Util;
 import soot.options.Options;
-
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2012 Michael Markert, Frank Hartmann
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 
 /**
  * Looks for a dex file which includes the definition of a class.
@@ -100,13 +103,17 @@ public class DexClassProvider implements ClassProvider {
   private void buildDexIndex(Map<String, File> index, List<String> classPath) {
     for (String path : classPath) {
       try {
-        for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(new File(path))) {
-          for (String className : classesOfDex(container.getBase())) {
-            if (!index.containsKey(className)) {
-              index.put(className, container.getFilePath());
-            } else if (Options.v().verbose()) {
-              logger.debug("" + String.format("Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.", className,
-                  container.getDexName(), container.getFilePath().getCanonicalPath()));
+        File dexFile = new File(path);
+        if (dexFile.exists()) {
+          for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(dexFile)) {
+            for (String className : classesOfDex(container.getBase())) {
+              if (!index.containsKey(className)) {
+                index.put(className, container.getFilePath());
+              } else if (Options.v().verbose()) {
+                logger.debug("" + String.format(
+                    "Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.", className,
+                    container.getDexName(), container.getFilePath().getCanonicalPath()));
+              }
             }
           }
         }

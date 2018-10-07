@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.toolkits.scalar;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import soot.AbstractValueBox;
 import soot.EquivTo;
@@ -29,7 +32,7 @@ import soot.jimple.Jimple;
 
 /**
  * Utility class used to package a Value and a Unit together.
- * 
+ *
  * @author Navindra Umanee
  **/
 public class ValueUnitPair extends AbstractValueBox implements UnitBox, EquivTo {
@@ -43,7 +46,7 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox, EquivTo 
 
   /**
    * Constructs a ValueUnitPair from a Unit object and a Value object.
-   * 
+   *
    * @param value
    *          some Value
    * @param unit
@@ -152,8 +155,8 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox, EquivTo 
    *
    * <p>
    *
-   * <b>Note:</b> If you are concerned about non-determinism, remember that current implementations of equivHashCode() in other parts of Soot are
-   * non-deterministic as well (see Constant.java for example).
+   * <b>Note:</b> If you are concerned about non-determinism, remember that current implementations of equivHashCode() in
+   * other parts of Soot are non-deterministic as well (see Constant.java for example).
    **/
   public int equivHashCode() {
     // this is not deterministic because a Unit's hash code is

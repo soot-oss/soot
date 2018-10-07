@@ -1,29 +1,27 @@
-/* Soot - a J*va Optimization Framework
+package soot.dava.toolkits.base.finders;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2003 Jerome Miecznikowski
  * Copyright (C) 2006 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-
-/*
- * CHANGE LOG:
- * 26-January-2006: Fixed Bug in Dava. Could not detect empty infinte loops.
- * 5-April -2006: Fixed bug in Fix_MultiEntryPoint read comment dated 5 th April 2005 
- */
-package soot.dava.toolkits.base.finders;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -145,17 +143,19 @@ public class CycleFinder implements FactFinder {
 
         /*
          * if (tryBody.contains( asg.get_AugStmt( characterizing_stmt.get_Stmt()))) {
-         * 
+         *
          * if (checkExceptionNodes.contains( en) == false) checkExceptionNodes.add( en);
-         * 
-         * Iterator cbit = cycle_body.snapshotIterator(); while (cbit.hasNext()) { AugmentedStmt cbas = (AugmentedStmt) cbit.next();
-         * 
+         *
+         * Iterator cbit = cycle_body.snapshotIterator(); while (cbit.hasNext()) { AugmentedStmt cbas = (AugmentedStmt)
+         * cbit.next();
+         *
          * if (tryBody.contains( cbas) == false) cycle_body.remove( cbas); } } }
-         * 
-         * enlit = checkExceptionNodes.iterator(); exceptionNestingLoop: while (enlit.hasNext()) { ExceptionNode en = (ExceptionNode) enlit.next();
-         * 
+         *
+         * enlit = checkExceptionNodes.iterator(); exceptionNestingLoop: while (enlit.hasNext()) { ExceptionNode en =
+         * (ExceptionNode) enlit.next();
+         *
          * Iterator cbit = cycle_body.iterator(); while (cbit.hasNext()) { AugmentedStmt cbas = (AugmentedStmt) cbit.next();
-         * 
+         *
          * if (en.get_TryBody().contains( cbas) == false) { characterizing_stmt = null; break exceptionNestingLoop; } } } }
          */
 
@@ -177,7 +177,8 @@ public class CycleFinder implements FactFinder {
           if (characterizing_stmt == entry_point) {
             newNode = new SETWhileNode(asg.get_AugStmt(characterizing_stmt.get_Stmt()), cycle_body);
           } else {
-            newNode = new SETDoWhileNode(asg.get_AugStmt(characterizing_stmt.get_Stmt()), asg.get_AugStmt(entry_point.get_Stmt()), cycle_body);
+            newNode = new SETDoWhileNode(asg.get_AugStmt(characterizing_stmt.get_Stmt()),
+                asg.get_AugStmt(entry_point.get_Stmt()), cycle_body);
           }
         }
 
@@ -215,8 +216,8 @@ public class CycleFinder implements FactFinder {
 
     // makes sure that all scc's with only one statement in them are removed
     /*
-     * 26th Jan 2006 Nomair A. Naeem This could be potentially bad since self loops will also get removed Adding code to check for self loop (a stmt
-     * is a self loop if its pred and succ contain the stmt itself
+     * 26th Jan 2006 Nomair A. Naeem This could be potentially bad since self loops will also get removed Adding code to
+     * check for self loop (a stmt is a self loop if its pred and succ contain the stmt itself
      */
     for (List<AugmentedStmt> wcomp : scc.getComponents()) {
       if (wcomp.size() > 1) {
@@ -241,7 +242,8 @@ public class CycleFinder implements FactFinder {
     return c_list;
   }
 
-  private AugmentedStmt find_CharacterizingStmt(AugmentedStmt entry_point, IterableSet<AugmentedStmt> sc_component, AugmentedStmtGraph asg) {
+  private AugmentedStmt find_CharacterizingStmt(AugmentedStmt entry_point, IterableSet<AugmentedStmt> sc_component,
+      AugmentedStmtGraph asg) {
     /*
      * Check whether we are a while loop.
      */
@@ -356,8 +358,8 @@ public class CycleFinder implements FactFinder {
     throw new RuntimeException("Somehow didn't find a condition for a do-while loop!");
   }
 
-  private IterableSet<AugmentedStmt> get_CycleBody(AugmentedStmt entry_point, AugmentedStmt boundary_stmt, AugmentedStmtGraph asg,
-      AugmentedStmtGraph wasg) {
+  private IterableSet<AugmentedStmt> get_CycleBody(AugmentedStmt entry_point, AugmentedStmt boundary_stmt,
+      AugmentedStmtGraph asg, AugmentedStmtGraph wasg) {
     IterableSet<AugmentedStmt> cycle_body = new IterableSet<AugmentedStmt>();
     LinkedList<AugmentedStmt> worklist = new LinkedList<AugmentedStmt>();
     AugmentedStmt asg_ep = asg.get_AugStmt(entry_point.get_Stmt());
@@ -376,9 +378,10 @@ public class CycleFinder implements FactFinder {
         }
 
         /*
-         * if (sas.get_Dominators().contains( asg_ep) == false) { logger.debug(""+ wsas + " not dominated by " + asg_ep); logger.debug(""+ "doms");
-         * Iterator dit = sas.get_Dominators().iterator(); while (dit.hasNext()) logger.debug(""+ "    " + dit.next()); logger.debug("preds"); dit =
-         * sas.cpreds.iterator(); while (dit.hasNext()) logger.debug(""+ "    " + dit.next()); }
+         * if (sas.get_Dominators().contains( asg_ep) == false) { logger.debug(""+ wsas + " not dominated by " + asg_ep);
+         * logger.debug(""+ "doms"); Iterator dit = sas.get_Dominators().iterator(); while (dit.hasNext()) logger.debug(""+
+         * "    " + dit.next()); logger.debug("preds"); dit = sas.cpreds.iterator(); while (dit.hasNext()) logger.debug(""+
+         * "    " + dit.next()); }
          */
 
         if ((cycle_body.contains(sas) == false) && (sas.get_Dominators().contains(asg_ep))) {
@@ -398,7 +401,8 @@ public class CycleFinder implements FactFinder {
     return cycle_body;
   }
 
-  private void fix_MultiEntryPoint(DavaBody body, AugmentedStmtGraph asg, LinkedList<AugmentedStmt> entry_points, IterableSet<AugmentedStmt> scc) {
+  private void fix_MultiEntryPoint(DavaBody body, AugmentedStmtGraph asg, LinkedList<AugmentedStmt> entry_points,
+      IterableSet<AugmentedStmt> scc) {
     AugmentedStmt naturalEntryPoint = get_NaturalEntryPoint(entry_points, scc);
     Local controlLocal = body.get_ControlLocal();
 
@@ -406,10 +410,12 @@ public class CycleFinder implements FactFinder {
     LinkedList<AugmentedStmt> targets = new LinkedList<AugmentedStmt>();
 
     /*
-     * Nomair A Naeem, Micheal Batchelder 5 th April 2005 shouldnt send empty targets list to constructor of GTableSwitch since then it just creates
-     * an empty array to hold the targets.. we intend to fill these in later using the setTarget method
-     * 
-     * hence the hack is to just send in null fully aware that they are going to be changed to the target we want within the following while loop
+     * Nomair A Naeem, Micheal Batchelder 5 th April 2005 shouldnt send empty targets list to constructor of GTableSwitch
+     * since then it just creates an empty array to hold the targets.. we intend to fill these in later using the setTarget
+     * method
+     *
+     * hence the hack is to just send in null fully aware that they are going to be changed to the target we want within the
+     * following while loop
      */
     for (int i = 0; i < entry_points.size(); i++) {
       targets.add(null);
@@ -419,8 +425,8 @@ public class CycleFinder implements FactFinder {
     TableSwitchStmt tss = new GTableSwitchStmt(controlLocal, 0, entry_points.size() - 2, targets, defaultTarget);
     AugmentedStmt dispatchStmt = new AugmentedStmt(tss);
 
-    IterableSet<AugmentedStmt> predecessorSet = new IterableSet<AugmentedStmt>(), indirectionStmtSet = new IterableSet<AugmentedStmt>(),
-        directionStmtSet = new IterableSet<AugmentedStmt>();
+    IterableSet<AugmentedStmt> predecessorSet = new IterableSet<AugmentedStmt>(),
+        indirectionStmtSet = new IterableSet<AugmentedStmt>(), directionStmtSet = new IterableSet<AugmentedStmt>();
 
     int count = 0;
     Iterator<AugmentedStmt> epit = entry_points.iterator();
@@ -533,7 +539,8 @@ public class CycleFinder implements FactFinder {
     return best_candidate;
   }
 
-  private void DFS(AugmentedStmt as, HashSet<AugmentedStmt> touchSet, HashSet<AugmentedStmt> backTargets, IterableSet<AugmentedStmt> scc) {
+  private void DFS(AugmentedStmt as, HashSet<AugmentedStmt> touchSet, HashSet<AugmentedStmt> backTargets,
+      IterableSet<AugmentedStmt> scc) {
     for (AugmentedStmt sas : as.csuccs) {
       if (scc.contains(sas) == false) {
         continue;

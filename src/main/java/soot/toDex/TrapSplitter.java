@@ -1,5 +1,27 @@
 package soot.toDex;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.Map;
 
 import soot.Body;
@@ -10,8 +32,8 @@ import soot.Unit;
 import soot.jimple.Jimple;
 
 /**
- * Transformer that splits nested traps for Dalvik which does not support hierarchies of traps. If we have a trap (1-3) with handler A and a trap (2)
- * with handler B, we transform them into three new traps: (1) and (3) with A, (2) with A+B.
+ * Transformer that splits nested traps for Dalvik which does not support hierarchies of traps. If we have a trap (1-3) with
+ * handler A and a trap (2) with handler B, we transform them into three new traps: (1) and (3) with A, (2) with A+B.
  *
  * @author Steven Arzt
  */
@@ -74,7 +96,8 @@ public class TrapSplitter extends BodyTransformer {
 
         if (firstEndUnit == to.t1.getEndUnit()) {
           if (to.t1.getException() != to.t2.getException()) {
-            Trap newTrap = Jimple.v().newTrap(to.t2.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t2.getHandlerUnit());
+            Trap newTrap
+                = Jimple.v().newTrap(to.t2.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t2.getHandlerUnit());
             safeAddTrap(b, newTrap, to.t2);
           } else if (to.t1.getHandlerUnit() != to.t2.getHandlerUnit()) {
             // Traps t1 and t2 catch the same exception, but have different handlers
@@ -98,13 +121,15 @@ public class TrapSplitter extends BodyTransformer {
             //
             // t1 is first, so it stays the same.
             // t2 is reduced
-            Trap newTrap = Jimple.v().newTrap(to.t1.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t1.getHandlerUnit());
+            Trap newTrap
+                = Jimple.v().newTrap(to.t1.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t1.getHandlerUnit());
             safeAddTrap(b, newTrap, to.t1);
           }
           to.t2.setBeginUnit(firstEndUnit);
         } else if (firstEndUnit == to.t2.getEndUnit()) {
           if (to.t1.getException() != to.t2.getException()) {
-            Trap newTrap2 = Jimple.v().newTrap(to.t1.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t1.getHandlerUnit());
+            Trap newTrap2
+                = Jimple.v().newTrap(to.t1.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t1.getHandlerUnit());
             safeAddTrap(b, newTrap2, to.t1);
             to.t1.setBeginUnit(firstEndUnit);
           } else if (to.t1.getHandlerUnit() != to.t2.getHandlerUnit()) {
@@ -120,7 +145,7 @@ public class TrapSplitter extends BodyTransformer {
 
   /**
    * Adds a new trap to the given body only if the given trap is not empty
-   * 
+   *
    * @param b
    *          The body to which to add the trap
    * @param newTrap
@@ -141,7 +166,7 @@ public class TrapSplitter extends BodyTransformer {
 
   /**
    * Gets two arbitrary overlapping traps in the given method body
-   * 
+   *
    * @param b
    *          The body in which to look for overlapping traps
    * @return Two overlapping traps if they exist, otherwise null
@@ -152,7 +177,8 @@ public class TrapSplitter extends BodyTransformer {
       // statement of another trap
       for (Unit splitUnit = t1.getBeginUnit(); splitUnit != t1.getEndUnit(); splitUnit = b.getUnits().getSuccOf(splitUnit)) {
         for (Trap t2 : b.getTraps()) {
-          if (t1 != t2 && (t1.getEndUnit() != t2.getEndUnit() || t1.getException() == t2.getException()) && t2.getBeginUnit() == splitUnit) {
+          if (t1 != t2 && (t1.getEndUnit() != t2.getEndUnit() || t1.getException() == t2.getException())
+              && t2.getBeginUnit() == splitUnit) {
             return new TrapOverlap(t1, t2, t2.getBeginUnit());
           }
         }

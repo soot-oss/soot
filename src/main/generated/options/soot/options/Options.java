@@ -1,26 +1,28 @@
+package soot.options;
 
-/* Soot - a J*va Optimization Framework
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2003 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
-
-package soot.options;
 
 import soot.*;
 import java.util.*;
@@ -30,7 +32,7 @@ import java.util.*;
  *
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-05-09T17:39:02.901+02:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-08-13T11:30:57.578+02:00", comments = "from soot_options.xml")
 public class Options extends OptionsBase {
 
     public Options(Singletons.Global g) {
@@ -420,6 +422,10 @@ public class Options extends OptionsBase {
             )
                 allow_phantom_refs = true;
             else if (false
+                    || option.equals("allow-phantom-elms")
+            )
+                allow_phantom_elms = true;
+            else if (false
                     || option.equals("no-bodies-for-excluded")
             )
                 no_bodies_for_excluded = true;
@@ -765,6 +771,10 @@ public class Options extends OptionsBase {
                     || option.equals("output-jar")
             )
                 output_jar = true;
+            else if (false
+                    || option.equals("hierarchy-dirs")
+            )
+                hierarchy_dirs = true;
             else if (false
                     || option.equals("xml-attributes")
             )
@@ -1422,6 +1432,10 @@ public class Options extends OptionsBase {
     private boolean allow_phantom_refs = false;
     public void set_allow_phantom_refs(boolean setting) { allow_phantom_refs = setting; }
 
+    public boolean allow_phantom_elms() { return allow_phantom_elms; }
+    private boolean allow_phantom_elms = false;
+    public void set_allow_phantom_elms(boolean setting) { allow_phantom_elms = setting; }
+
     public boolean no_bodies_for_excluded() { return no_bodies_for_excluded; }
     private boolean no_bodies_for_excluded = false;
     public void set_no_bodies_for_excluded(boolean setting) { no_bodies_for_excluded = setting; }
@@ -1466,6 +1480,10 @@ public class Options extends OptionsBase {
     public boolean output_jar() { return output_jar; }
     private boolean output_jar = false;
     public void set_output_jar(boolean setting) { output_jar = setting; }
+
+    public boolean hierarchy_dirs() { return hierarchy_dirs; }
+    private boolean hierarchy_dirs = false;
+    public void set_hierarchy_dirs(boolean setting) { hierarchy_dirs = setting; }
 
     public boolean xml_attributes() { return xml_attributes; }
     private boolean xml_attributes = false;
@@ -1514,7 +1532,6 @@ public class Options extends OptionsBase {
     private List<String> plugin = null;
 
     public int wrong_staticness() {
-        if (wrong_staticness == 0) return wrong_staticness_fix;
         if (wrong_staticness == 0) return wrong_staticness_fixstrict;
         return wrong_staticness; 
     }
@@ -1657,6 +1674,7 @@ public class Options extends OptionsBase {
                     + padVal("apk-class-jimple apk-c-j", "Favour APK files as Soot source, disregard Java files")
                 + padOpt("-full-resolver", "Force transitive resolving of referenced classes")
                 + padOpt("-allow-phantom-refs", "Allow unresolved classes; may cause errors")
+                + padOpt("-allow-phantom-elms", "Allow phantom methods and fields in non-phantom classes")
                 + padOpt("-no-bodies-for-excluded", "Do not load bodies for excluded classes")
                 + padOpt("-j2me", "Use J2ME mode; changes assignment of types")
                 + padOpt("-main-class ARG", "Sets the main class for whole-program analysis.")
@@ -1694,6 +1712,7 @@ public class Options extends OptionsBase {
                     + padVal("1.7 7", "Force Java 1.7 as output version.")
                     + padVal("1.8 8", "Force Java 1.8 as output version.")
                 + padOpt("-outjar, -output-jar", "Make output dir a Jar file instead of dir")
+                + padOpt("-hierarchy-dirs", "Generate class hierarchy directories for Jimple/Shimple")
                 + padOpt("-xml-attributes", "Save tags to XML attributes for Eclipse")
                 + padOpt("-print-tags, -print-tags-in-output", "Print tags in output files after stmt")
                 + padOpt("-no-output-source-file-attribute", "Don't output Source File Attribute when producing class files")
@@ -1708,7 +1727,7 @@ public class Options extends OptionsBase {
                 + padOpt("-wrong-staticness ARG", "Ignores or fixes errors due to wrong staticness")
                     + padVal("fail", "Raise an error when wrong staticness is detected")
                     + padVal("ignore", "Ignore errors caused by wrong staticness")
-                    + padVal("fix (default)", "Transparently fix staticness errors")
+                    + padVal("fix", "Transparently fix staticness errors")
                     + padVal("fixstrict (default)", "Transparently fix staticness errors, but do not ignore remaining errors")
                 + padOpt("-field-type-mismatches ARG", "Specifies how errors shall be handled when resolving field references with mismatching types")
                     + padVal("fail", "Raise an error when a field type mismatch is detected")
@@ -2106,7 +2125,8 @@ public class Options extends OptionsBase {
                     + padOpt("trim-clinit (true)", "Removes redundant static initializer calls")
                     + padOpt("reflection-log", "Uses a reflection log to resolve reflective calls.")
                     + padOpt("guards (ignore)", "Describes how to guard the program from unsound assumptions.")
-                    + padOpt("types-for-invoke (false)", "Uses reaching types inferred by the pointer analysis to resolve reflective calls.");
+                    + padOpt("types-for-invoke (false)", "Uses reaching types inferred by the pointer analysis to resolve reflective calls.")
+                    + padOpt("resolve-all-abstract-invokes (false)", "Causes methods invoked on abstract classes to be resolved even if there are no non-abstract children of the classes in the Scene.");
 
         if (phaseName.equals("cg.cha"))
             return "Phase " + phaseName + ":\n"
@@ -3019,7 +3039,8 @@ public class Options extends OptionsBase {
                     "trim-clinit",
                     "reflection-log",
                     "guards",
-                    "types-for-invoke"
+                    "types-for-invoke",
+                    "resolve-all-abstract-invokes"
             );
 
         if (phaseName.equals("cg.cha"))
@@ -3729,7 +3750,8 @@ public class Options extends OptionsBase {
                     + "implicit-entry:true "
                     + "trim-clinit:true "
                     + "guards:ignore "
-                    + "types-for-invoke:false ";
+                    + "types-for-invoke:false "
+                    + "resolve-all-abstract-invokes:false ";
 
         if (phaseName.equals("cg.cha"))
             return ""

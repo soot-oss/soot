@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.toolkits.scalar;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -154,7 +151,8 @@ public class DeadAssignmentEliminator extends BodyTransformer {
           continue;
         }
 
-        if (lhs instanceof Local && (!eliminateOnlyStackLocals || ((Local) lhs).getName().startsWith("$") || lhs.getType() instanceof NullType)) {
+        if (lhs instanceof Local
+            && (!eliminateOnlyStackLocals || ((Local) lhs).getName().startsWith("$") || lhs.getType() instanceof NullType)) {
 
           isEssential = false;
 
@@ -168,8 +166,8 @@ public class DeadAssignmentEliminator extends BodyTransformer {
             Type t = ce.getCastType();
             Value v = ce.getOp();
             isEssential = !(v instanceof NullConstant && t instanceof RefType);
-          } else if (rhs instanceof InvokeExpr || rhs instanceof ArrayRef || rhs instanceof NewExpr || rhs instanceof NewArrayExpr
-              || rhs instanceof NewMultiArrayExpr) {
+          } else if (rhs instanceof InvokeExpr || rhs instanceof ArrayRef || rhs instanceof NewExpr
+              || rhs instanceof NewArrayExpr || rhs instanceof NewMultiArrayExpr) {
             // ArrayRef : can have side effects (like throwing a null pointer exception)
             // InvokeExpr : can have side effects (like throwing a null pointer exception)
             // NewArrayExpr : can throw exception
@@ -202,8 +200,8 @@ public class DeadAssignmentEliminator extends BodyTransformer {
 
             boolean t2Int = t2 instanceof IntType;
 
-            isEssential = t2Int || t1 instanceof IntType || t1 instanceof LongType || t2 instanceof LongType || t1 instanceof UnknownType
-                || t2 instanceof UnknownType;
+            isEssential = t2Int || t1 instanceof IntType || t1 instanceof LongType || t2 instanceof LongType
+                || t1 instanceof UnknownType || t2 instanceof UnknownType;
 
             if (isEssential && t2Int) {
               Value v = expr.getOp2();

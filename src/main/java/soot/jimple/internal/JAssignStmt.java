@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrick Lam
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.internal;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1999 Patrick Lam
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.List;
 
@@ -112,7 +109,8 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
     ((LinkedRValueBox) rightBox).setOtherBox(leftBox);
 
     if (!leftBox.canContainValue(variable) || !rightBox.canContainValue(rvalue)) {
-      throw new RuntimeException("Illegal assignment statement.  Make sure that either left side or right hand side has a local or constant.");
+      throw new RuntimeException(
+          "Illegal assignment statement.  Make sure that either left side or right hand side has a local or constant.");
     }
 
   }
@@ -270,7 +268,8 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
         }
 
         if (isValidCase && x >= Short.MIN_VALUE && x <= Short.MAX_VALUE) {
-          Unit u = Baf.v().newIncInst(context.getBafLocalOfJimpleLocal(l), IntConstant.v((expr instanceof AddExpr) ? x : -x));
+          Unit u
+              = Baf.v().newIncInst(context.getBafLocalOfJimpleLocal(l), IntConstant.v((expr instanceof AddExpr) ? x : -x));
 
           u.addAllTagsOf(this);
           out.add(u);
@@ -312,8 +311,8 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
          */
 
         /*
-         * No: the convertToBaf on the rvalue already adds them, so no need to add them here. However, with the current semantics, we should add them
-         * to every statement and let the aggregator sort them out.
+         * No: the convertToBaf on the rvalue already adds them, so no need to add them here. However, with the current
+         * semantics, we should add them to every statement and let the aggregator sort them out.
          */
 
         Unit u = Baf.v().newStoreInst(v.getType(), context.getBafLocalOfJimpleLocal(v));

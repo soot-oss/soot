@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2007 Eric Bodden
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.toolkits.graph;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2007 Eric Bodden
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -28,8 +32,9 @@ import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
 
 /**
- * A loop nesting tree, implemented as a tree-map. Loops are represented by pairs of head-statements and the respective loop. The iterator over this
- * collection returns the loop in such an order that a loop l will always returned before a loop m if l is an inner loop of m.
+ * A loop nesting tree, implemented as a tree-map. Loops are represented by pairs of head-statements and the respective loop.
+ * The iterator over this collection returns the loop in such an order that a loop l will always returned before a loop m if
+ * l is an inner loop of m.
  *
  * @author Eric Bodden
  */
@@ -80,11 +85,7 @@ public class LoopNestTree extends TreeSet<Loop> {
   }
 
   private static Collection<Loop> computeLoops(Body b) {
-    LoopFinder loopFinder = new LoopFinder();
-    loopFinder.transform(b);
-
-    Collection<Loop> loops = loopFinder.loops();
-    return loops;
+    return new LoopFinder().getLoops(b);
   }
 
   public boolean hasNestedLoops() {

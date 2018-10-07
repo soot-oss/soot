@@ -1,5 +1,27 @@
 package soot;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import static soot.util.backend.ASMBackendUtils.createASMAttribute;
 import static soot.util.backend.ASMBackendUtils.getDefaultValue;
 import static soot.util.backend.ASMBackendUtils.slashify;
@@ -57,10 +79,11 @@ import soot.tagkit.VisibilityParameterAnnotationTag;
 import soot.util.backend.SootASMClassWriter;
 
 /**
- * Abstract super-class for ASM-based back-ends. Generates byte-code for everything except the method bodies, as they are dependent on the IR.
- * 
+ * Abstract super-class for ASM-based back-ends. Generates byte-code for everything except the method bodies, as they are
+ * dependent on the IR.
+ *
  * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer
- * 
+ *
  */
 public abstract class AbstractASMBackend {
 
@@ -75,11 +98,12 @@ public abstract class AbstractASMBackend {
 
   /**
    * Creates a new ASM backend
-   * 
+   *
    * @param sc
    *          The SootClass that is to be converted into bytecode
    * @param javaVersion
-   *          A particular Java version enforced by the user, may be 0 for automatic detection, must not be lower than necessary for all features used
+   *          A particular Java version enforced by the user, may be 0 for automatic detection, must not be lower than
+   *          necessary for all features used
    */
   public AbstractASMBackend(SootClass sc, int javaVersion) {
     this.sc = sc;
@@ -91,8 +115,8 @@ public abstract class AbstractASMBackend {
     }
 
     if (javaVersion != Options.java_version_default && javaVersion < minVersion) {
-      throw new IllegalArgumentException("Enforced Java version " + translateJavaVersion(javaVersion) + " too low to support required features ("
-          + translateJavaVersion(minVersion) + " required)");
+      throw new IllegalArgumentException("Enforced Java version " + translateJavaVersion(javaVersion)
+          + " too low to support required features (" + translateJavaVersion(minVersion) + " required)");
     }
 
     javaVersion = Math.max(javaVersion, minVersion);
@@ -126,9 +150,9 @@ public abstract class AbstractASMBackend {
   }
 
   /**
-   * Gets the baf body for the given SootMethod. This method will first check whether the method already has a baf body. If not, it will query the
-   * local cache. If this fails as well, it will construct a new baf body.
-   * 
+   * Gets the baf body for the given SootMethod. This method will first check whether the method already has a baf body. If
+   * not, it will query the local cache. If this fails as well, it will construct a new baf body.
+   *
    * @param method
    *          The method for which to obtain a baf body
    * @return The baf body for the given method
@@ -156,7 +180,7 @@ public abstract class AbstractASMBackend {
 
   /**
    * Determines the minimum Java version required for the bytecode of the given SootClass
-   * 
+   *
    * @param sc
    *          The SootClass the minimum Java version is to be determined for
    * @return The minimum Java version required for the given SootClass
@@ -211,9 +235,9 @@ public abstract class AbstractASMBackend {
   }
 
   /**
-   * Determines the minimum Java version required for the bytecode of the given SootMethod Subclasses should override this method to suit their needs,
-   * otherwise Java 1.7 is assumed for compatibility with invokeDynamic
-   * 
+   * Determines the minimum Java version required for the bytecode of the given SootMethod Subclasses should override this
+   * method to suit their needs, otherwise Java 1.7 is assumed for compatibility with invokeDynamic
+   *
    * @param sm
    *          The SootMethod the minimum Java version is to be determined for
    * @return The minimum Java version required for the given SootMethod
@@ -224,7 +248,7 @@ public abstract class AbstractASMBackend {
 
   /**
    * Outputs the bytecode generated as a class file
-   * 
+   *
    * @param os
    *          The OutputStream the class file is written to
    */
@@ -241,7 +265,7 @@ public abstract class AbstractASMBackend {
 
   /**
    * Outputs the bytecode generated as a textual representation
-   * 
+   *
    * @param pw
    *          The PrintWriter the textual representation is written to
    */
@@ -287,9 +311,9 @@ public abstract class AbstractASMBackend {
   }
 
   /**
-   * Comparatator that is used to sort the methods before they are written out. This is mainly used to enforce a deterministic output between runs
-   * which we need for testing.
-   * 
+   * Comparatator that is used to sort the methods before they are written out. This is mainly used to enforce a
+   * deterministic output between runs which we need for testing.
+   *
    * @author Steven Arzt
    *
    */
@@ -355,7 +379,8 @@ public abstract class AbstractASMBackend {
                   continue;
                 }
                 for (AnnotationTag at : va.getAnnotations()) {
-                  AnnotationVisitor av = mv.visitParameterAnnotation(j, at.getType(), (va.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE));
+                  AnnotationVisitor av = mv.visitParameterAnnotation(j, at.getType(),
+                      (va.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE));
                   generateAnnotationElems(av, at.getElems(), true);
                 }
               }
@@ -406,9 +431,9 @@ public abstract class AbstractASMBackend {
   }
 
   /**
-   * Comparatator that is used to sort the inner class references before they are written out. This is mainly used to enforce a deterministic output
-   * between runs which we need for testing.
-   * 
+   * Comparatator that is used to sort the inner class references before they are written out. This is mainly used to enforce
+   * a deterministic output between runs which we need for testing.
+   *
    * @author Steven Arzt
    *
    */
@@ -452,7 +477,7 @@ public abstract class AbstractASMBackend {
 
   /**
    * Emits the bytecode for all attributes of a field
-   * 
+   *
    * @param fv
    *          The FieldVisitor to emit the bytecode to
    * @param f
@@ -469,7 +494,7 @@ public abstract class AbstractASMBackend {
 
   /**
    * Emits the bytecode for all attributes of a method
-   * 
+   *
    * @param fv
    *          The MethodVisitor to emit the bytecode to
    * @param f
@@ -486,7 +511,7 @@ public abstract class AbstractASMBackend {
 
   /**
    * Emits the bytecode for all annotations of a class, field or method
-   * 
+   *
    * @param visitor
    *          A ClassVisitor, FieldVisitor or MethodVisitor to emit the bytecode to
    * @param host
@@ -512,8 +537,8 @@ public abstract class AbstractASMBackend {
         }
       }
       /*
-       * Here TypeAnnotations could be visited potentially. Currently (2015/02/03) they are not supported by the ASM-front-end and their information
-       * is not accessible.
+       * Here TypeAnnotations could be visited potentially. Currently (2015/02/03) they are not supported by the
+       * ASM-front-end and their information is not accessible.
        */
 
       // Visit AnnotationDefault on methods
@@ -528,7 +553,7 @@ public abstract class AbstractASMBackend {
 
   /**
    * Emits the bytecode for the values of an annotation
-   * 
+   *
    * @param av
    *          The AnnotationVisitor to emit the bytecode to
    * @param elements
@@ -665,7 +690,7 @@ public abstract class AbstractASMBackend {
 
   /**
    * Utility method to get the access modifiers of a Host
-   * 
+   *
    * @param modVal
    *          The bitset representation of the Host's modifiers
    * @param host
@@ -724,7 +749,8 @@ public abstract class AbstractASMBackend {
       modifier |= Opcodes.ACC_STRICT;
     }
     /*
-     * Retrieve synthetic-modifier. Class not present in source-code but generated by e.g. compiler TODO Do we need both checks?
+     * Retrieve synthetic-modifier. Class not present in source-code but generated by e.g. compiler TODO Do we need both
+     * checks?
      */
     if (Modifier.isSynthetic(modVal) || host.hasTag("SyntheticTag")) {
       modifier |= Opcodes.ACC_SYNTHETIC;
@@ -742,7 +768,7 @@ public abstract class AbstractASMBackend {
 
   /**
    * Emits the bytecode for the body of a single method Has to be implemented by subclasses to suit their needs
-   * 
+   *
    * @param mv
    *          The MethodVisitor to emit the bytecode to
    * @param method

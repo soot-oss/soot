@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2012 Raja Vallee-Rai and others
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-2008.
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2012 Raja Vallee-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import static java.net.URLEncoder.encode;
 
@@ -163,10 +160,10 @@ public class Main {
       try {
         final String TRACKER_URL = "https://github.com/Sable/soot/issues/new?";
         String commandLineArgs = Joiner.on(" ").join(args);
-        String body = "Steps to reproduce:\n1.) ...\n\n" + "Files used to reproduce: \n...\n\n" + "Soot version: " + "<pre>" + escape(versionString)
-            + "</pre>" + "\n\n" + "Command line:\n" + "<pre>" + escape(commandLineArgs) + "</pre>\n\n" + "Max Memory:\n" + "<pre>"
-            + escape((Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB") + "</pre>" + "\n\n" + "Stack trace:\n" + "<pre>"
-            + escape(stackStraceString) + "</pre>";
+        String body = "Steps to reproduce:\n1.) ...\n\n" + "Files used to reproduce: \n...\n\n" + "Soot version: " + "<pre>"
+            + escape(versionString) + "</pre>" + "\n\n" + "Command line:\n" + "<pre>" + escape(commandLineArgs)
+            + "</pre>\n\n" + "Max Memory:\n" + "<pre>" + escape((Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB")
+            + "</pre>" + "\n\n" + "Stack trace:\n" + "<pre>" + escape(stackStraceString) + "</pre>";
 
         String title = e.getClass().getName() + " when ...";
 
@@ -175,7 +172,7 @@ public class Main {
         sb.append("Follow these steps to fix the problem:\n");
         sb.append("1.) Are you sure you used the right command line?\n");
         sb.append("    Click here to double-check:\n");
-        sb.append("    https://soot-build.cs.uni-paderborn.de/doc/sootoptions/\n");
+        sb.append("    https://github.com/Sable/soot/wiki/Options-and-JavaDoc\n");
         sb.append("\n");
         sb.append("2.) Not sure whether it's a bug? Feel free to discuss\n");
         sb.append("    the issue on the Soot mailing list:\n");

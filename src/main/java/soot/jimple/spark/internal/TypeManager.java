@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jimple.spark.internal;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2002 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Collection;
 import java.util.Collections;
@@ -50,13 +53,14 @@ import soot.util.queue.QueueReader;
 
 /**
  * A map of bit-vectors representing subtype relationships.
- * 
+ *
  * @author Ondrej Lhotak
- * 
- * @author Hamid A. Toussi (hamid2c@gmail.com): Making TypeManager faster by making type masks during a depth-first-traversal on the class hierarchy.
- *         First, type-masks of the leaves of Class Hierarchy are created and then the type mask of each type T is obtained by ORing type maks of
- *         Types sub-types and setting the bit-numbers associated with Allocation Nodes of type T. The type-mask of each interface is achieved by
- *         ORing the type-masks of its top-level concrete implementers. In fact, Reference types are visited in reversed-topological-order.
+ *
+ * @author Hamid A. Toussi (hamid2c@gmail.com): Making TypeManager faster by making type masks during a depth-first-traversal
+ *         on the class hierarchy. First, type-masks of the leaves of Class Hierarchy are created and then the type mask of
+ *         each type T is obtained by ORing type maks of Types sub-types and setting the bit-numbers associated with
+ *         Allocation Nodes of type T. The type-mask of each interface is achieved by ORing the type-masks of its top-level
+ *         concrete implementers. In fact, Reference types are visited in reversed-topological-order.
  */
 public final class TypeManager {
   private static final Logger logger = LoggerFactory.getLogger(TypeManager.class);

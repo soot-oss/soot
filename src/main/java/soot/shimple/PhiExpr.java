@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.shimple;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.List;
 
@@ -30,21 +33,23 @@ import soot.toolkits.scalar.ValueUnitPair;
 import soot.util.Switch;
 
 /**
- * A fully defined PhiExpr usually consists of a list of Values for the arguments alongst with the corresponding control flow predecessor for each
- * argument. This may be provided either as a Soot CFG Block or more directly as the Unit at the end of the corresponding CFG block.
+ * A fully defined PhiExpr usually consists of a list of Values for the arguments alongst with the corresponding control flow
+ * predecessor for each argument. This may be provided either as a Soot CFG Block or more directly as the Unit at the end of
+ * the corresponding CFG block.
  *
  * <p>
- * As much as possible we try to conform to the semantics as described by Cytron et al., TOPLAS Oct. 91. A Phi node such as "x_1 = Phi(x_2, x_3)" is
- * eliminated by respectively adding the statements "x_1 = x_2" and "x_1 = x_3" at the end of the corresponding control flow predecessor.
+ * As much as possible we try to conform to the semantics as described by Cytron et al., TOPLAS Oct. 91. A Phi node such as
+ * "x_1 = Phi(x_2, x_3)" is eliminated by respectively adding the statements "x_1 = x_2" and "x_1 = x_3" at the end of the
+ * corresponding control flow predecessor.
  *
  * <p>
- * However, due to the fact that each argument is explicitly associated with the control flow predecessor, there may be some subtle differences. We
- * tried to make the behaviour as robust and transparent as possible by handling the common cases of Unit chain manipulations in the Shimple internal
- * implementation of PatchingChain.
+ * However, due to the fact that each argument is explicitly associated with the control flow predecessor, there may be some
+ * subtle differences. We tried to make the behaviour as robust and transparent as possible by handling the common cases of
+ * Unit chain manipulations in the Shimple internal implementation of PatchingChain.
  *
  * @author Navindra Umanee
- * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and the Control Dependence
- *      Graph</a>
+ * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
+ *      the Control Dependence Graph</a>
  * @see Shimple#newPhiExpr(List, List)
  * @see Shimple#newPhiExpr(Local, List)
  **/

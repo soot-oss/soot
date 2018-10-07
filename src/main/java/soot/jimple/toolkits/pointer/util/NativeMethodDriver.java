@@ -1,30 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Feng Qian
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/**
- * A wrapper for native method side-effect simulation.
- * The caller passes in a native method with parameters, 
- * the corresponding native simulator gets called.
- *
- * @author Feng Qian
- */
 package soot.jimple.toolkits.pointer.util;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Feng Qian
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.HashMap;
 
@@ -135,7 +131,7 @@ public class NativeMethodDriver {
 
   /**
    * The entry point of native method simulation.
-   * 
+   *
    * @param method,
    *          must be a native method
    * @param thisVar,
@@ -145,7 +141,8 @@ public class NativeMethodDriver {
    * @param params,
    *          array of parameters.
    */
-  public boolean process(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar, ReferenceVariable params[]) {
+  public boolean process(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
+      ReferenceVariable params[]) {
 
     String cname = method.getDeclaringClass().getName();
     NativeMethodClass clsSim = cnameToSim.get(cname);

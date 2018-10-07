@@ -1,28 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Jerome Miecznikowski
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/* 04.04.2006	mbatch		if an implicit try due to a finally block,
- * 							make sure to get the exception identifier
- * 							from the goto target (it's a different block)
- */
-
 package soot.dava.internal.SET;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Jerome Miecznikowski
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -134,8 +132,8 @@ public class SETTryNode extends SETNode {
         Stmt s = ((AugmentedStmt) bit.next()).get_Stmt();
 
         /*
-         * 04.04.2006 mbatch if an implicit try due to a finally block, make sure to get the exception identifier from the goto target (it's a
-         * different block)
+         * 04.04.2006 mbatch if an implicit try due to a finally block, make sure to get the exception identifier from the
+         * goto target (it's a different block)
          */
 
         // TODO: HOW the heck do you handle finallys with NO finally?
@@ -159,7 +157,8 @@ public class SETTryNode extends SETNode {
       }
     }
 
-    return new ASTTryNode(get_Label(), emit_ASTBody(body2childChain.get(en.get_TryBody())), catchList, exceptionMap, paramMap);
+    return new ASTTryNode(get_Label(), emit_ASTBody(body2childChain.get(en.get_TryBody())), catchList, exceptionMap,
+        paramMap);
   }
 
   protected boolean resolve(SETNode parent) {
@@ -208,8 +207,8 @@ public class SETTryNode extends SETNode {
               } else if ((child instanceof SETControlFlowNode) && ((child instanceof SETUnconditionalWhileNode) == false)) {
                 SETControlFlowNode scfn = (SETControlFlowNode) child;
 
-                if ((scfn.get_CharacterizingStmt() == as)
-                    || ((as.cpreds.size() == 1) && (as.get_Stmt() instanceof GotoStmt) && (scfn.get_CharacterizingStmt() == as.cpreds.get(0)))) {
+                if ((scfn.get_CharacterizingStmt() == as) || ((as.cpreds.size() == 1) && (as.get_Stmt() instanceof GotoStmt)
+                    && (scfn.get_CharacterizingStmt() == as.cpreds.get(0)))) {
                   remove_AugmentedStmt(as);
                 }
               }

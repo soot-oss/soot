@@ -603,6 +603,10 @@
             <td colspan="2">Allow unresolved classes; may cause errors</td>
          </tr>
          <tr>
+            <td><tt>-allow-phantom-elms </tt><br></td>
+            <td colspan="2">Allow phantom methods and fields in non-phantom classes</td>
+         </tr>
+         <tr>
             <td><tt>-no-bodies-for-excluded </tt><br></td>
             <td colspan="2">Do not load bodies for excluded classes</td>
          </tr>
@@ -698,6 +702,10 @@
          <tr>
             <td><tt>-outjar </tt><br><tt>-output-jar </tt><br></td>
             <td colspan="2">Make output dir a Jar file instead of dir</td>
+         </tr>
+         <tr>
+            <td><tt>-hierarchy-dirs </tt><br></td>
+            <td colspan="2">Generate class hierarchy directories for Jimple/Shimple</td>
          </tr>
          <tr>
             <td><tt>-xml-attributes </tt><br></td>
@@ -1121,10 +1129,13 @@
             
             <p>
                Make sure that local names are stable between runs. This requires re-normalizing all
-               local names after the standard transformations and then sorting them which can negatively
-               impact performance. This option automatically sets "sort-locals" in "jb.lns" during
-               the
-               second re-normalization pass.
+               local names after the standard transformations, sorting them, and padding all local
+               names 
+               with leading zeros up to the maximum number of digits in the local with the highest
+               integer 
+               value. This can negatively impact performance. This option automatically sets "sort-locals"
+               
+               in "jb.lns" during the second re-normalization pass.
                
             </p>
          </li>
@@ -1411,7 +1422,10 @@
                that remains consistent between different soot instances. It achieves
                this by determining the position of a local's first occurrence in the
                instruction's list of definition statements. This position is then used
-               to sort the locals with the same type in an ascending order.
+               to sort the locals with the same type in an ascending order. The local
+               names are then appended with leading zeros so that all local names have
+               the same length (i.e., the same number of digits) as the largest local 
+               name in each individual method body.
                
             </p>
          </li>
@@ -2389,6 +2403,31 @@
                Method.invoke(). This strategy makes no attempt to resolve reflectively invoked static
                methods.
                Currently only works for context insensitive pointer analyses.
+               
+            </p>
+         </li>
+         <li><b>Resolve Abstract Classes with No Children</b>
+            (resolve-all-abstract-invokes)
+            <br>
+            (default value:
+            <span class="value">false</span>
+            )
+            
+            <p>Normally, if a method is invoked on a class that is abstract and said class does
+               not have any children in the Scene, the method invoke will not be resolved to any
+               concrete 
+               methods even if the abstract class or its parent classes contain a concrete declaration
+               of
+               the method. This is because without any non-abstract children it is impossible to
+               tell if
+               the resolution is correct (since any child may override any non-private method in
+               any of
+               its parent classes). However, sometimes it is necessary to resolve methods in such
+               situations
+               (e.g. when analyzing libraries or incomplete code). This forces all methods invoked
+               on
+               abstract classes to be resolved if there exists a parent class with a concrete definition
+               of the method even if there are no non-abstract children of the abstract class.
                
             </p>
          </li>

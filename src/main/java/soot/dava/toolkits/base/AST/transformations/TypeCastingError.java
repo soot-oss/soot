@@ -1,5 +1,27 @@
 package soot.dava.toolkits.base.AST.transformations;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import soot.ByteType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -76,12 +98,12 @@ public class TypeCastingError extends DepthFirstAdapter {
         }
         // ByteType, DoubleType, FloatType, IntType, LongType, ShortType
         /*
-         * byte Byte-length integer 8-bit two's complement short Short integer 16-bit two's complement int Integer 32-bit two's complement long Long
-         * integer 64-bit two's complement float Single-precision floating point 32-bit IEEE 754 double Double-precision floating point 64-bit IEEE
-         * 754
+         * byte Byte-length integer 8-bit two's complement short Short integer 16-bit two's complement int Integer 32-bit
+         * two's complement long Long integer 64-bit two's complement float Single-precision floating point 32-bit IEEE 754
+         * double Double-precision floating point 64-bit IEEE 754
          */
-        if (leftType instanceof ByteType && (rightType instanceof DoubleType || rightType instanceof FloatType || rightType instanceof IntType
-            || rightType instanceof LongType || rightType instanceof ShortType)) {
+        if (leftType instanceof ByteType && (rightType instanceof DoubleType || rightType instanceof FloatType
+            || rightType instanceof IntType || rightType instanceof LongType || rightType instanceof ShortType)) {
           // loss of precision do explicit casting
 
           if (DEBUG) {
@@ -94,8 +116,8 @@ public class TypeCastingError extends DepthFirstAdapter {
           continue;
         }
 
-        if (leftType instanceof ShortType
-            && (rightType instanceof DoubleType || rightType instanceof FloatType || rightType instanceof IntType || rightType instanceof LongType)) {
+        if (leftType instanceof ShortType && (rightType instanceof DoubleType || rightType instanceof FloatType
+            || rightType instanceof IntType || rightType instanceof LongType)) {
           // loss of precision do explicit casting
 
           if (DEBUG) {
@@ -108,7 +130,8 @@ public class TypeCastingError extends DepthFirstAdapter {
           continue;
         }
 
-        if (leftType instanceof IntType && (rightType instanceof DoubleType || rightType instanceof FloatType || rightType instanceof LongType)) {
+        if (leftType instanceof IntType
+            && (rightType instanceof DoubleType || rightType instanceof FloatType || rightType instanceof LongType)) {
           // loss of precision do explicit casting
 
           if (myDebug) {

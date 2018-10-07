@@ -1,5 +1,27 @@
 package soot.toolkits.scalar;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.HashSet;
@@ -33,9 +55,9 @@ import soot.tagkit.Tag;
 import soot.util.Chain;
 
 /**
- * Transformer that creates a static initializer which sets constant values into final static fields to emulate the initializations that are done
- * through the constant table in CLASS and DEX code, but that are not supported by Jimple.
- * 
+ * Transformer that creates a static initializer which sets constant values into final static fields to emulate the
+ * initializations that are done through the constant table in CLASS and DEX code, but that are not supported by Jimple.
+ *
  * @author Steven Arzt
  */
 public class ConstantValueToInitializerTransformer extends SceneTransformer {
@@ -111,9 +133,9 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
   private SootMethod getOrCreateInitializer(SootClass sc, Set<SootField> alreadyInitialized) {
     SootMethod smInit;
     // Create a static initializer if we don't already have one
-    smInit = sc.getMethodByNameUnsafe("<clinit>");
+    smInit = sc.getMethodByNameUnsafe(SootMethod.staticInitializerName);
     if (smInit == null) {
-      smInit = Scene.v().makeSootMethod("<clinit>", Collections.<Type>emptyList(), VoidType.v());
+      smInit = Scene.v().makeSootMethod(SootMethod.staticInitializerName, Collections.<Type>emptyList(), VoidType.v());
       smInit.setActiveBody(Jimple.v().newBody(smInit));
       sc.addMethod(smInit);
       smInit.setModifiers(Modifier.PUBLIC | Modifier.STATIC);

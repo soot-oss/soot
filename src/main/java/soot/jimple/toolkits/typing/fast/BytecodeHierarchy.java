@@ -1,25 +1,6 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2008 Ben Bellamy 
- * 
- * All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.toolkits.typing.fast;
 
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -37,20 +18,34 @@ import soot.Scene;
 import soot.SootClass;
 import soot.Type;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2008 Ben Bellamy
+ *
+ * All rights reserved.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 /**
  * @author Ben Bellamy
  */
 public class BytecodeHierarchy implements IHierarchy {
-  private static class AncestryTreeNode {
-    public final AncestryTreeNode next;
-    public final RefType type;
-
-    public AncestryTreeNode(AncestryTreeNode next, RefType type) {
-      this.next = next;
-      this.type = type;
-    }
-  }
-
   /*
    * Returns a collection of nodes, each with type Object, each at the leaf end of a different path from root to Object.
    */
@@ -94,10 +89,6 @@ public class BytecodeHierarchy implements IHierarchy {
       b = b.next;
     }
     return r;
-  }
-
-  public Collection<Type> lcas(Type a, Type b) {
-    return lcas_(a, b);
   }
 
   public static Collection<Type> lcas_(Type a, Type b) {
@@ -151,13 +142,14 @@ public class BytecodeHierarchy implements IHierarchy {
       }
 
       /*
-       * If the reference type implements Serializable or Cloneable then these are the least common supertypes, otherwise the only one is Object.
+       * If the reference type implements Serializable or Cloneable then these are the least common supertypes, otherwise the
+       * only one is Object.
        */
 
       LinkedList<Type> r = new LinkedList<Type>();
       /*
-       * Do not consider Object to be a subtype of Serializable or Cloneable (it can appear this way if phantom-refs is enabled and rt.jar is not
-       * available) otherwise an infinite loop can result.
+       * Do not consider Object to be a subtype of Serializable or Cloneable (it can appear this way if phantom-refs is
+       * enabled and rt.jar is not available) otherwise an infinite loop can result.
        */
       if (!TypeResolver.typesEqual(RefType.v("java.lang.Object"), rt)) {
         if (ancestor_(RefType.v("java.io.Serializable"), rt)) {
@@ -213,10 +205,6 @@ public class BytecodeHierarchy implements IHierarchy {
     }
   }
 
-  public boolean ancestor(Type ancestor, Type child) {
-    return ancestor_(ancestor, child);
-  }
-
   public static boolean ancestor_(Type ancestor, Type child) {
     if (TypeResolver.typesEqual(ancestor, child)) {
       return true;
@@ -237,22 +225,30 @@ public class BytecodeHierarchy implements IHierarchy {
     }
   }
 
+  /*
+   * Returns a list of the super classes of a given type in which the anchor will always be the first element even when the
+   * types class is phantom. Note anchor should always be type Throwable as this is the root of all exception types.
+   */
   private static Deque<RefType> superclassPath(RefType t, RefType anchor) {
-    Deque<RefType> r = new LinkedList<RefType>();
+    Deque<RefType> r = new ArrayDeque<RefType>();
     r.addFirst(t);
-    if (t.getSootClass().isPhantom() && anchor != null) {
-      r.addFirst(anchor);
+
+    if (TypeResolver.typesEqual(t, anchor)) {
       return r;
     }
 
     SootClass sc = t.getSootClass();
     while (sc.hasSuperclass()) {
       sc = sc.getSuperclass();
-      r.addFirst(sc.getType());
-      if (sc.isPhantom() && anchor != null) {
-        r.addFirst(anchor);
+      RefType cur = sc.getType();
+      r.addFirst(cur);
+      if (TypeResolver.typesEqual(cur, anchor)) {
         break;
       }
+    }
+
+    if (!TypeResolver.typesEqual(r.getFirst(), anchor)) {
+      r.addFirst(anchor);
     }
 
     return r;
@@ -286,6 +282,24 @@ public class BytecodeHierarchy implements IHierarchy {
       pathB.removeFirst();
     }
     return r;
+  }
+
+  public Collection<Type> lcas(Type a, Type b) {
+    return lcas_(a, b);
+  }
+
+  public boolean ancestor(Type ancestor, Type child) {
+    return ancestor_(ancestor, child);
+  }
+
+  private static class AncestryTreeNode {
+    public final AncestryTreeNode next;
+    public final RefType type;
+
+    public AncestryTreeNode(AncestryTreeNode next, RefType type) {
+      this.next = next;
+      this.type = type;
+    }
   }
 
 }

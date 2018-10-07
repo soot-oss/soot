@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jimple.spark.pag;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2002 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -90,7 +93,7 @@ import soot.util.queue.QueueReader;
 
 /**
  * Pointer assignment graph.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class PAG implements PointsToAnalysis {
@@ -103,8 +106,8 @@ public class PAG implements PointsToAnalysis {
       nodeToTag = new HashMap<Node, Tag>();
     }
     if (opts.rta() && opts.on_fly_cg()) {
-      throw new RuntimeException(
-          "Incompatible options rta:true and on-fly-cg:true for cg.spark. Use -p cg-" + ".spark on-fly-cg:false when using RTA.");
+      throw new RuntimeException("Incompatible options rta:true and on-fly-cg:true for cg.spark. Use -p cg-"
+          + ".spark on-fly-cg:false when using RTA.");
     }
     typeManager = new TypeManager(this);
     if (!opts.ignore_types()) {
@@ -241,7 +244,8 @@ public class PAG implements PointsToAnalysis {
       return n.getP2Set();
     }
     if ((getOpts()).propagator() == SparkOptions.propagator_alias) {
-      throw new RuntimeException("The alias edge propagator does not compute points-to information for instance fields! Use a different propagator.");
+      throw new RuntimeException("The alias edge propagator does not compute points-to information for instance fields!"
+          + "Use a different propagator.");
     }
     PointsToSetInternal bases = (PointsToSetInternal) s;
     final PointsToSetInternal ret = setFactory.newSet((f instanceof SootField) ? ((SootField) f).getType() : null, this);
@@ -1333,10 +1337,11 @@ public class PAG implements PointsToAnalysis {
   }
 
   /**
-   * Adds method target as a possible target of the invoke expression in s. If target is null, only creates the nodes for the call site, without
-   * actually connecting them to any target method.
+   * Adds method target as a possible target of the invoke expression in s. If target is null, only creates the nodes for the
+   * call site, without actually connecting them to any target method.
    **/
-  final public void addCallTarget(MethodPAG srcmpag, MethodPAG tgtmpag, Stmt s, Context srcContext, Context tgtContext, Edge e) {
+  final public void addCallTarget(MethodPAG srcmpag, MethodPAG tgtmpag, Stmt s, Context srcContext, Context tgtContext,
+      Edge e) {
     MethodNodeFactory srcnf = srcmpag.nodeFactory();
     MethodNodeFactory tgtnf = tgtmpag.nodeFactory();
     InvokeExpr ie = s.getInvokeExpr();

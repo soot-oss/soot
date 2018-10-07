@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2006 Nomair A. Naeem (nomair.naeem@mail.mcgill.ca)
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.AST.transformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2006 Nomair A. Naeem (nomair.naeem@mail.mcgill.ca)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,22 +86,24 @@ import soot.util.Chain;
  */
 
 /*
- * Both static and non-static BUT FINAL fields if initialized with constants get inlined A final initialized with an object (even if its a string) is
- * NOT inlined e.g. public static final String temp = "hello"; //use of temp will get inlined public static final String temp1 = new String("hello");
- * //use of temp will NOT get inlined
- * 
- * 
- * If its a static field we can get the info from a tag in the case of a non static we cant decide since the field is initialized inside a constructor
- * and depending on different constructors there coul dbe different values...conservative....
- * 
- * 
+ * Both static and non-static BUT FINAL fields if initialized with constants get inlined A final initialized with an object
+ * (even if its a string) is NOT inlined e.g. public static final String temp = "hello"; //use of temp will get inlined
+ * public static final String temp1 = new String("hello"); //use of temp will NOT get inlined
+ *
+ *
+ * If its a static field we can get the info from a tag in the case of a non static we cant decide since the field is
+ * initialized inside a constructor and depending on different constructors there coul dbe different
+ * values...conservative....
+ *
+ *
  * Need to be very clear when a SootField can be used It can be used in the following places:
- * 
- * a, NOT used inside a Synchronized Block ........ HOWEVER ADD IT SINCE I DONT SEE WHY THIS RESTRICTION EXISTS!!! TICK b, CAN BE USED in a condition
- * TICK c, CAN BE USED in the for init for update TICK d, CAN BE USED in a switch TICK e, CAN BE USED in a stmt TICK
- * 
- * These are the exact places to look for constants...a constant is StringConstant DoubleConstant FloatConstant IntConstant (shortype, booltype,
- * charType intType, byteType LongConstant
+ *
+ * a, NOT used inside a Synchronized Block ........ HOWEVER ADD IT SINCE I DONT SEE WHY THIS RESTRICTION EXISTS!!! TICK b,
+ * CAN BE USED in a condition TICK c, CAN BE USED in the for init for update TICK d, CAN BE USED in a switch TICK e, CAN BE
+ * USED in a stmt TICK
+ *
+ * These are the exact places to look for constants...a constant is StringConstant DoubleConstant FloatConstant IntConstant
+ * (shortype, booltype, charType intType, byteType LongConstant
  */
 
 public class DeInliningFinalFields extends DepthFirstAdapter {
@@ -184,8 +189,8 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
    * StringConstant DoubleConstant FloatConstant IntConstant (shortype, booltype, charType intType, byteType LongConstant
    */
   private boolean isConstant(Value val) {
-    if (val instanceof StringConstant || val instanceof DoubleConstant || val instanceof FloatConstant || val instanceof IntConstant
-        || val instanceof LongConstant) {
+    if (val instanceof StringConstant || val instanceof DoubleConstant || val instanceof FloatConstant
+        || val instanceof IntConstant || val instanceof LongConstant) {
       return true;
     }
     return false;
@@ -295,9 +300,9 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
 
   /*
    * The key in a switch stmt can be a local or a SootField or a value which can contain constant
-   * 
-   * Hence the some what indirect approach........notice we will work with valueBoxes so that by changing the value in the value box we can deInline
-   * any field
+   *
+   * Hence the some what indirect approach........notice we will work with valueBoxes so that by changing the value in the
+   * value box we can deInline any field
    */
   public void inASTSwitchNode(ASTSwitchNode node) {
     Value val = node.get_Key();

@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2004 Jennifer Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.javaToJimple;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2004 Jennifer Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,7 +96,8 @@ public class ClassResolver {
       if (InitialResolver.v().getInnerClassInfoMap() == null) {
         InitialResolver.v().setInnerClassInfoMap(new HashMap<SootClass, InnerClassInfo>());
       }
-      InitialResolver.v().getInnerClassInfoMap().put(sootClass, new InnerClassInfo(outerClass, cDecl.name(), InnerClassInfo.NESTED));
+      InitialResolver.v().getInnerClassInfoMap().put(sootClass,
+          new InnerClassInfo(outerClass, cDecl.name(), InnerClassInfo.NESTED));
       sootClass.setOuterClass(outerClass);
     }
 
@@ -112,7 +116,8 @@ public class ClassResolver {
         polyglot.types.ClassType superType = (polyglot.types.ClassType) cDecl.superClass().type();
         // add inner clas tag
 
-        Util.addInnerClassTag(sootClass, sootClass.getName(), ((soot.RefType) Util.getSootType(superType.outer())).toString(), superType.name(),
+        Util.addInnerClassTag(sootClass, sootClass.getName(),
+            ((soot.RefType) Util.getSootType(superType.outer())).toString(), superType.name(),
             Util.getModifier(superType.flags()));
       }
 
@@ -136,7 +141,8 @@ public class ClassResolver {
     if ((staticFieldInits != null) || (staticInitializerBlocks != null)) {
       soot.SootMethod clinitMethod;
       if (!sootClass.declaresMethod("<clinit>", new ArrayList(), soot.VoidType.v())) {
-        clinitMethod = Scene.v().makeSootMethod("<clinit>", new ArrayList(), soot.VoidType.v(), soot.Modifier.STATIC, new ArrayList<SootClass>());
+        clinitMethod = Scene.v().makeSootMethod("<clinit>", new ArrayList(), soot.VoidType.v(), soot.Modifier.STATIC,
+            new ArrayList<SootClass>());
 
         sootClass.addMethod(clinitMethod);
         PolyglotMethodSource mSource = new PolyglotMethodSource();
@@ -224,8 +230,9 @@ public class ClassResolver {
       } else if (next instanceof polyglot.ast.ClassDecl) {
         // this handles inner class tags for immediately enclosed
         // normal nested classes
-        Util.addInnerClassTag(sootClass, Util.getSootType(((polyglot.ast.ClassDecl) next).type()).toString(), sootClass.getName(),
-            ((polyglot.ast.ClassDecl) next).name().toString(), Util.getModifier(((polyglot.ast.ClassDecl) next).flags()));
+        Util.addInnerClassTag(sootClass, Util.getSootType(((polyglot.ast.ClassDecl) next).type()).toString(),
+            sootClass.getName(), ((polyglot.ast.ClassDecl) next).name().toString(),
+            Util.getModifier(((polyglot.ast.ClassDecl) next).flags()));
       } else if (next instanceof polyglot.ast.Initializer) {
         createInitializer((polyglot.ast.Initializer) next);
       } else if (Options.v().verbose()) {
@@ -275,7 +282,8 @@ public class ClassResolver {
     }
 
     // add field
-    soot.SootField sf = Scene.v().makeSootField("val$" + li.name(), Util.getSootType(li.type()), soot.Modifier.FINAL | soot.Modifier.PRIVATE);
+    soot.SootField sf = Scene.v().makeSootField("val$" + li.name(), Util.getSootType(li.type()),
+        soot.Modifier.FINAL | soot.Modifier.PRIVATE);
     sootClass.addField(sf);
     finalFields.add(sf);
     sf.addTag(new soot.tagkit.SyntheticTag());
@@ -290,12 +298,13 @@ public class ClassResolver {
     /* Iterator localsNeededIt = luc.getLocals().iterator(); */
     ArrayList<IdentityKey> localsUsed = new ArrayList<IdentityKey>();
     /*
-     * while (localsNeededIt.hasNext()){ polyglot.types.LocalInstance li = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)
-     * localsNeededIt.next()).object(); //if (luc.getLocalDecls().contains(new polyglot.util.IdentityKey(li))){ //} //else { //} if
-     * (finalLocalsAvail.contains(new polyglot.util.IdentityKey(li)) && !luc.getLocalDecls().contains(new polyglot.util.IdentityKey(li))){
-     * 
+     * while (localsNeededIt.hasNext()){ polyglot.types.LocalInstance li =
+     * (polyglot.types.LocalInstance)((polyglot.util.IdentityKey) localsNeededIt.next()).object(); //if
+     * (luc.getLocalDecls().contains(new polyglot.util.IdentityKey(li))){ //} //else { //} if (finalLocalsAvail.contains(new
+     * polyglot.util.IdentityKey(li)) && !luc.getLocalDecls().contains(new polyglot.util.IdentityKey(li))){
+     *
      * addFinals(li,finalFields);
-     * 
+     *
      * localsUsed.add(new polyglot.util.IdentityKey(li)); } }
      */
     Iterator<IdentityKey> fieldsNeededIt = finalLocalsAvail.iterator();
@@ -355,7 +364,8 @@ public class ClassResolver {
   }
 
   /**
-   * creates the Jimple for an anon class - in the AST there is no class decl for anon classes - the revelant fields and methods are created
+   * creates the Jimple for an anon class - in the AST there is no class decl for anon classes - the revelant fields and
+   * methods are created
    */
   private void createAnonClassDecl(polyglot.ast.New aNew) {
 
@@ -377,7 +387,8 @@ public class ClassResolver {
       if (((polyglot.types.ClassType) aNew.objectType().type()).isNested()) {
         polyglot.types.ClassType superType = (polyglot.types.ClassType) aNew.objectType().type();
         // add inner clas tag
-        Util.addInnerClassTag(sootClass, typeClass.getName(), ((soot.RefType) Util.getSootType(superType.outer())).toString(), superType.name(),
+        Util.addInnerClassTag(sootClass, typeClass.getName(),
+            ((soot.RefType) Util.getSootType(superType.outer())).toString(), superType.name(),
             Util.getModifier(superType.flags()));
 
       }
@@ -401,8 +412,8 @@ public class ClassResolver {
         }
       }
       /*
-       * Iterator aIt = aNew.arguments().iterator(); while (aIt.hasNext()){ polyglot.types.Type pType = ((polyglot.ast.Expr)aIt.next()).type();
-       * params.add(Util.getSootType(pType)); }
+       * Iterator aIt = aNew.arguments().iterator(); while (aIt.hasNext()){ polyglot.types.Type pType =
+       * ((polyglot.ast.Expr)aIt.next()).type(); params.add(Util.getSootType(pType)); }
        */
       method = Scene.v().makeSootMethod("<init>", params, soot.VoidType.v());
     }
@@ -526,7 +537,8 @@ public class ClassResolver {
     String fieldName = "$assertionsDisabled";
     soot.Type fieldType = soot.BooleanType.v();
     if (!sootClass.declaresField(fieldName, fieldType)) {
-      soot.SootField assertionsDisabledField = Scene.v().makeSootField(fieldName, fieldType, soot.Modifier.STATIC | soot.Modifier.FINAL);
+      soot.SootField assertionsDisabledField
+          = Scene.v().makeSootField(fieldName, fieldType, soot.Modifier.STATIC | soot.Modifier.FINAL);
       sootClass.addField(assertionsDisabledField);
       assertionsDisabledField.addTag(new soot.tagkit.SyntheticTag());
     }
@@ -535,7 +547,8 @@ public class ClassResolver {
     // containing the assert is inner - if the outer most class is
     // an interface - add instead to special interface anon class
     soot.SootClass addToClass = sootClass;
-    while ((InitialResolver.v().getInnerClassInfoMap() != null) && (InitialResolver.v().getInnerClassInfoMap().containsKey(addToClass))) {
+    while ((InitialResolver.v().getInnerClassInfoMap() != null)
+        && (InitialResolver.v().getInnerClassInfoMap().containsKey(addToClass))) {
       addToClass = InitialResolver.v().getInnerClassInfoMap().get(addToClass).getOuterClass();
     }
 
@@ -543,7 +556,8 @@ public class ClassResolver {
     // class is an interface and will be actually added to the
     // special interface anon class
     fieldName = "class$" + addToClass.getName().replaceAll(".", "$");
-    if ((InitialResolver.v().getInterfacesList() != null) && (InitialResolver.v().getInterfacesList().contains(addToClass.getName()))) {
+    if ((InitialResolver.v().getInterfacesList() != null)
+        && (InitialResolver.v().getInterfacesList().contains(addToClass.getName()))) {
       addToClass = getSpecialInterfaceAnonClass(addToClass);
     }
 
@@ -592,7 +606,8 @@ public class ClassResolver {
     if (!sootClass.declaresMethod(methodName, paramTypes, methodRetType)) {
       sootClass.addMethod(sootMethod);
     } else {
-      ((soot.javaToJimple.PolyglotMethodSource) sootClass.getMethod(methodName, paramTypes, methodRetType).getSource()).hasAssert(true);
+      ((soot.javaToJimple.PolyglotMethodSource) sootClass.getMethod(methodName, paramTypes, methodRetType).getSource())
+          .hasAssert(true);
     }
   }
 
@@ -720,14 +735,16 @@ public class ClassResolver {
       soot.tagkit.SourceFileTag t = (soot.tagkit.SourceFileTag) sootClass.getTag("SourceFileTag");
       /*
        * System.out.println("source: "+source); System.out.println("source.source(): "+source.source());
-       * System.out.println("source path: "+source.source().path()); System.out.println("source name: "+source.source().name());
+       * System.out.println("source path: "+source.source().path());
+       * System.out.println("source name: "+source.source().name());
        */
       t.setAbsolutePath(source.source().path());
     } else {
       soot.tagkit.SourceFileTag t = new soot.tagkit.SourceFileTag();
       /*
        * System.out.println("source: "+source); System.out.println("source.source(): "+source.source());
-       * System.out.println("source path: "+source.source().path()); System.out.println("source name: "+source.source().name());
+       * System.out.println("source path: "+source.source().path());
+       * System.out.println("source name: "+source.source().name());
        */
       t.setAbsolutePath(source.source().path());
       sootClass.addTag(t);
@@ -763,7 +780,8 @@ public class ClassResolver {
         if (type.isLocal() && !type.isAnonymous()) {
 
           if (InitialResolver.v().getLocalClassMap().containsVal(simpleName)) {
-            createClassDecl(((polyglot.ast.LocalClassDecl) InitialResolver.v().getLocalClassMap().getKey(simpleName)).decl());
+            createClassDecl(
+                ((polyglot.ast.LocalClassDecl) InitialResolver.v().getLocalClassMap().getKey(simpleName)).decl());
             found = true;
           }
         } else {
@@ -778,7 +796,8 @@ public class ClassResolver {
       if (!found) {
         // assume its anon class (only option left)
         //
-        if ((InitialResolver.v().getAnonClassMap() != null) && InitialResolver.v().getAnonClassMap().containsVal(simpleName)) {
+        if ((InitialResolver.v().getAnonClassMap() != null)
+            && InitialResolver.v().getAnonClassMap().containsVal(simpleName)) {
           polyglot.ast.New aNew = (polyglot.ast.New) InitialResolver.v().getAnonClassMap().getKey(simpleName);
           if (aNew == null) {
             throw new RuntimeException("Could resolve class: " + simpleName);
@@ -802,19 +821,23 @@ public class ClassResolver {
 
   private void handleInnerClassTags(polyglot.ast.ClassBody classBody) {
     // if this class is an inner class add self
-    if ((InitialResolver.v().getInnerClassInfoMap() != null) && (InitialResolver.v().getInnerClassInfoMap().containsKey(sootClass))) {
+    if ((InitialResolver.v().getInnerClassInfoMap() != null)
+        && (InitialResolver.v().getInnerClassInfoMap().containsKey(sootClass))) {
       // hasTag("OuterClassTag")){
 
       InnerClassInfo tag = InitialResolver.v().getInnerClassInfoMap().get(sootClass);
-      Util.addInnerClassTag(sootClass, sootClass.getName(), tag.getInnerType() == InnerClassInfo.ANON ? null : tag.getOuterClass().getName(),
+      Util.addInnerClassTag(sootClass, sootClass.getName(),
+          tag.getInnerType() == InnerClassInfo.ANON ? null : tag.getOuterClass().getName(),
           tag.getInnerType() == InnerClassInfo.ANON ? null : tag.getSimpleName(),
-          soot.Modifier.isInterface(tag.getOuterClass().getModifiers()) ? soot.Modifier.STATIC | soot.Modifier.PUBLIC : sootClass.getModifiers());
+          soot.Modifier.isInterface(tag.getOuterClass().getModifiers()) ? soot.Modifier.STATIC | soot.Modifier.PUBLIC
+              : sootClass.getModifiers());
       // if this class is an inner class and enclosing class is also
       // an inner class add enclsing class
       SootClass outerClass = tag.getOuterClass();
       while (InitialResolver.v().getInnerClassInfoMap().containsKey(outerClass)) {
         InnerClassInfo tag2 = InitialResolver.v().getInnerClassInfoMap().get(outerClass);
-        Util.addInnerClassTag(sootClass, outerClass.getName(), tag2.getInnerType() == InnerClassInfo.ANON ? null : tag2.getOuterClass().getName(),
+        Util.addInnerClassTag(sootClass, outerClass.getName(),
+            tag2.getInnerType() == InnerClassInfo.ANON ? null : tag2.getOuterClass().getName(),
             tag2.getInnerType() == InnerClassInfo.ANON ? null : tag2.getSimpleName(),
             tag2.getInnerType() == InnerClassInfo.ANON && soot.Modifier.isInterface(tag2.getOuterClass().getModifiers())
                 ? soot.Modifier.STATIC | soot.Modifier.PUBLIC
@@ -847,11 +870,14 @@ public class ClassResolver {
   private void addConstValTag(polyglot.ast.FieldDecl field, soot.SootField sootField) {
     // logger.debug("adding constantval tag to field: "+field);
     if (field.fieldInstance().constantValue() instanceof Integer) {
-      sootField.addTag(new soot.tagkit.IntegerConstantValueTag(((Integer) field.fieldInstance().constantValue()).intValue()));
+      sootField
+          .addTag(new soot.tagkit.IntegerConstantValueTag(((Integer) field.fieldInstance().constantValue()).intValue()));
     } else if (field.fieldInstance().constantValue() instanceof Character) {
-      sootField.addTag(new soot.tagkit.IntegerConstantValueTag(((Character) field.fieldInstance().constantValue()).charValue()));
+      sootField
+          .addTag(new soot.tagkit.IntegerConstantValueTag(((Character) field.fieldInstance().constantValue()).charValue()));
     } else if (field.fieldInstance().constantValue() instanceof Short) {
-      sootField.addTag(new soot.tagkit.IntegerConstantValueTag(((Short) field.fieldInstance().constantValue()).shortValue()));
+      sootField
+          .addTag(new soot.tagkit.IntegerConstantValueTag(((Short) field.fieldInstance().constantValue()).shortValue()));
     } else if (field.fieldInstance().constantValue() instanceof Byte) {
       sootField.addTag(new soot.tagkit.IntegerConstantValueTag(((Byte) field.fieldInstance().constantValue()).byteValue()));
     } else if (field.fieldInstance().constantValue() instanceof Boolean) {
@@ -862,9 +888,11 @@ public class ClassResolver {
     } else if (field.fieldInstance().constantValue() instanceof Double) {
       // System.out.println("const val:
       // "+field.fieldInstance().constantValue());
-      sootField.addTag(new soot.tagkit.DoubleConstantValueTag((long) ((Double) field.fieldInstance().constantValue()).doubleValue()));
+      sootField.addTag(
+          new soot.tagkit.DoubleConstantValueTag((long) ((Double) field.fieldInstance().constantValue()).doubleValue()));
       // System.out.println(((Double)field.fieldInstance().constantValue()).doubleValue());
-      soot.tagkit.DoubleConstantValueTag tag = (soot.tagkit.DoubleConstantValueTag) sootField.getTag("DoubleConstantValueTag");
+      soot.tagkit.DoubleConstantValueTag tag
+          = (soot.tagkit.DoubleConstantValueTag) sootField.getTag("DoubleConstantValueTag");
       // System.out.println("tag: "+tag);
     } else if (field.fieldInstance().constantValue() instanceof Float) {
       sootField.addTag(new soot.tagkit.FloatConstantValueTag(((Float) field.fieldInstance().constantValue()).floatValue()));
@@ -890,7 +918,8 @@ public class ClassResolver {
 
     if (field.fieldInstance().flags().isStatic()) {
       if (field.init() != null) {
-        if (field.flags().isFinal() && (field.type().type().isPrimitive() || (field.type().type().toString().equals("java.lang.String")))
+        if (field.flags().isFinal()
+            && (field.type().type().isPrimitive() || (field.type().type().toString().equals("java.lang.String")))
             && field.fieldInstance().isConstant()) {
           // System.out.println("adding constantValtag: to field:
           // "+sootField);
@@ -955,8 +984,8 @@ public class ClassResolver {
     return exceptions;
   }
 
-  private soot.SootMethod createSootMethod(String name, polyglot.types.Flags flags, polyglot.types.Type returnType, ArrayList parameters,
-      ArrayList<SootClass> exceptions) {
+  private soot.SootMethod createSootMethod(String name, polyglot.types.Flags flags, polyglot.types.Type returnType,
+      ArrayList parameters, ArrayList<SootClass> exceptions) {
 
     int modifier = Util.getModifier(flags);
     soot.Type sootReturnType = Util.getSootType(returnType);
@@ -982,7 +1011,8 @@ public class ClassResolver {
     }
   }
 
-  private soot.SootMethod createSootConstructor(String name, polyglot.types.Flags flags, ArrayList parameters, ArrayList<SootClass> exceptions) {
+  private soot.SootMethod createSootConstructor(String name, polyglot.types.Flags flags, ArrayList parameters,
+      ArrayList<SootClass> exceptions) {
     int modifier = Util.getModifier(flags);
     soot.SootMethod method = Scene.v().makeSootMethod(name, parameters, soot.VoidType.v(), modifier, exceptions);
     return method;

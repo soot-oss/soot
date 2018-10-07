@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.thread.mhp;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -83,8 +105,9 @@ public class MethodExtentBuilder {
           String name = method.getName();
 
           if (name.equals("wait") || name.equals("notify") || name.equals("notifyAll")
-              || ((name.equals("start") || name.equals("join") || name.equals("suspend") || name.equals("resume") || name.equals("destroy")
-                  || name.equals("stop")) && method.getDeclaringClass().getName().equals("java.lang.Thread"))) {
+              || ((name.equals("start") || name.equals("join") || name.equals("suspend") || name.equals("resume")
+                  || name.equals("destroy") || name.equals("stop"))
+                  && method.getDeclaringClass().getName().equals("java.lang.Thread"))) {
             methodsNeedingInlining.add(targetMethod);
             return;
           } else {
@@ -113,7 +136,8 @@ public class MethodExtentBuilder {
 
   protected void propagate(PegCallGraph cg) {
     /*
-     * if a method is not in methodsNeedingInlining, use DFS to find out if it's parents need inlining. If so, add it to methodsNeedingInlining
+     * if a method is not in methodsNeedingInlining, use DFS to find out if it's parents need inlining. If so, add it to
+     * methodsNeedingInlining
      */
     Set<Object> gray = new HashSet<Object>();
     Iterator it = cg.iterator();

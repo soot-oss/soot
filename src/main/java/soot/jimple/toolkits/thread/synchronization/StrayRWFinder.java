@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.thread.synchronization;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +42,8 @@ import soot.toolkits.scalar.BackwardFlowAnalysis;
 import soot.toolkits.scalar.FlowSet;
 
 /**
- * @author Richard L. Halpert StrayRWFinder - Analysis to locate reads/writes to shared data that appear outside synchronization
+ * @author Richard L. Halpert StrayRWFinder - Analysis to locate reads/writes to shared data that appear outside
+ *         synchronization
  */
 public class StrayRWFinder extends BackwardFlowAnalysis {
   FlowSet emptySet = new ArraySparseSet();
@@ -73,7 +96,8 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
     Iterator tnIt = tns.iterator();
     while (tnIt.hasNext()) {
       CriticalSection tn = (CriticalSection) tnIt.next();
-      if (stmtRead.hasNonEmptyIntersection(tn.write) || stmtWrite.hasNonEmptyIntersection(tn.read) || stmtWrite.hasNonEmptyIntersection(tn.write)) {
+      if (stmtRead.hasNonEmptyIntersection(tn.write) || stmtWrite.hasNonEmptyIntersection(tn.read)
+          || stmtWrite.hasNonEmptyIntersection(tn.write)) {
         addSelf = Boolean.TRUE;
       }
     }
@@ -95,13 +119,14 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
   protected void merge(Object in1, Object in2, Object out) {
     FlowSet inSet1 = ((FlowSet) in1).clone(), inSet2 = ((FlowSet) in2).clone(), outSet = (FlowSet) out;
     /*
-     * boolean hasANull1 = false; Transaction tn1 = null; Iterator inIt1 = inSet1.iterator(); while(inIt1.hasNext()) { tn1 = (Transaction)
-     * inIt1.next(); if(tn1.entermonitor == null) { hasANull1 = true; break; } }
-     * 
-     * boolean hasANull2 = false; Transaction tn2 = null; Iterator inIt2 = inSet2.iterator(); while(inIt2.hasNext()) { tn2 = (Transaction)
-     * inIt2.next(); if(tn2.entermonitor == null) { hasANull2 = true; break; } } if(hasANull1 && hasANull2) { inSet1.remove(tn1); Iterator itends =
-     * tn1.exitmonitors.iterator(); while(itends.hasNext()) { Stmt stmt = (Stmt) itends.next(); if(!tn2.exitmonitors.contains(stmt))
-     * tn2.exitmonitors.add(stmt); } tn2.read.union(tn1.read); tn2.write.union(tn1.write); }
+     * boolean hasANull1 = false; Transaction tn1 = null; Iterator inIt1 = inSet1.iterator(); while(inIt1.hasNext()) { tn1 =
+     * (Transaction) inIt1.next(); if(tn1.entermonitor == null) { hasANull1 = true; break; } }
+     *
+     * boolean hasANull2 = false; Transaction tn2 = null; Iterator inIt2 = inSet2.iterator(); while(inIt2.hasNext()) { tn2 =
+     * (Transaction) inIt2.next(); if(tn2.entermonitor == null) { hasANull2 = true; break; } } if(hasANull1 && hasANull2) {
+     * inSet1.remove(tn1); Iterator itends = tn1.exitmonitors.iterator(); while(itends.hasNext()) { Stmt stmt = (Stmt)
+     * itends.next(); if(!tn2.exitmonitors.contains(stmt)) tn2.exitmonitors.add(stmt); } tn2.read.union(tn1.read);
+     * tn2.write.union(tn1.write); }
      */
     inSet1.union(inSet2, outSet);
   }

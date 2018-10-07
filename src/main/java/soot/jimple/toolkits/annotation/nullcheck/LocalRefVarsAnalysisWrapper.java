@@ -1,52 +1,26 @@
-/*
- * Copyright (C) 2000 Janus
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
-
-     LocalRefVarsAnalysisWrapper class
-
-     Simple wrapper for BranchedRefVarsAnalysis, to be used by
-     the statement printer.
-
-     1) Compute lists of (ref, value) that have been analyzed: 
-     * before a statement
-     * after a statement fall through
-     * after a statement branches
-
-     Note: (ref, kTop) are discareded to improve readability.
-     (This behavior can be turned off at compile time.)
-
-     
-     2) Compute lists of references that need to be checked by
-        a null pointer check at a given statement.
-
-        Compute lists of references that DO NOT need to be 
-        checked by a null pointer check at a given statement.
-     
-	Notes: 
-	a) that computation can be turned off at compile time
-	b) lists all references that (do not) need to be checked
-	   not just the ones that have been analyzed.
-     
-*/
-
 package soot.jimple.toolkits.annotation.nullcheck;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2000 Janus
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,7 +37,8 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.FlowSet;
 
 /**
- * @deprecated uses deprecated type {@link BranchedRefVarsAnalysis} and seems of no use for Soot so marked for future deletion, unless clients object
+ * @deprecated uses deprecated type {@link BranchedRefVarsAnalysis} and seems of no use for Soot so marked for future
+ *             deletion, unless clients object
  */
 @Deprecated
 public class LocalRefVarsAnalysisWrapper {
@@ -173,11 +148,11 @@ public class LocalRefVarsAnalysisWrapper {
   } // end constructor & computations
 
   /*
-   * 
+   *
    * Accesor methods.
-   * 
+   *
    * Public accessor methods to the various class fields containing the results of the computations.
-   * 
+   *
    */
 
   public List getVarsBefore(Unit s) {

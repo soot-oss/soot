@@ -1,35 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Maintained by Nomair A. Naeem
- */
-
-/*
- * CHANGE LOG: * November 22nd: Removed check of DAbruptStmt from analysis since
- *               this is now handled by the structredAnalysis framework
- *             
- *             * November 22nd: Inlined the LocalPair class
- *               Tested Extensively: found bug in implementation of process_doWhile in structuredAnalysis :)
- */
-
 package soot.dava.toolkits.base.AST.structuredAnalysis;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Iterator;
 
@@ -55,7 +46,7 @@ import soot.jimple.Stmt;
  kill = { all pairs containing x in left or right position}
 
  if expr is a local , y
- gen = (x,y) 
+ gen = (x,y)
  Step 6:
  out(start) = {}
  newInitialFlow: No copies are available. an empty flow set
@@ -98,8 +89,8 @@ public class ReachingCopies extends StructuredAnalysis {
     }
 
     /**
-     * Method checks whether local occurs in the left or right side of the localpair different semantics than the usual contains method which checks
-     * something in a list
+     * Method checks whether local occurs in the left or right side of the localpair different semantics than the usual
+     * contains method which checks something in a list
      */
     public boolean contains(Local local) {
       if (leftLocal.toString().equals(local.toString()) || rightLocal.toString().equals(local.toString())) {
@@ -152,8 +143,8 @@ public class ReachingCopies extends StructuredAnalysis {
   }
 
   /*
-   * By construction the synchronized Local is a Value and can definetly not have an assignment stmt Processing a synch local has no effect on this
-   * analysis
+   * By construction the synchronized Local is a Value and can definetly not have an assignment stmt Processing a synch local
+   * has no effect on this analysis
    */
   @Override
   public DavaFlowSet processSynchronizedLocal(Local local, DavaFlowSet input) {
@@ -161,7 +152,8 @@ public class ReachingCopies extends StructuredAnalysis {
   }
 
   /*
-   * The switch key is stored as a value and hence can never have an assignment stmt Processing the switch key has no effect on the analysis
+   * The switch key is stored as a value and hence can never have an assignment stmt Processing the switch key has no effect
+   * on the analysis
    */
   @Override
   public DavaFlowSet processSwitchKey(Value key, DavaFlowSet input) {
@@ -238,7 +230,8 @@ public class ReachingCopies extends StructuredAnalysis {
     // Get all reachingCopies
 
     /*
-     * the list that toList of this object contains elements of type LocalPair (a,b) which means this is a copy stmt of the form a=b
+     * the list that toList of this object contains elements of type LocalPair (a,b) which means this is a copy stmt of the
+     * form a=b
      */
 
     return beforeSet;

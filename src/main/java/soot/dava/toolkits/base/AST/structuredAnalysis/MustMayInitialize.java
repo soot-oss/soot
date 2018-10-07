@@ -1,33 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2006 Nomair A. Naeem (nomair.naeem@mail.mcgill.ca)
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Maintained by Nomair A. Naeem
- */
-
-/*
- * CHANGE LOG: * 30th Jan 2006 Class Created (used atleast by FinalFieldDefinition)
- *
- *
- */
-
 package soot.dava.toolkits.base.AST.structuredAnalysis;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2006 Nomair A. Naeem (nomair.naeem@mail.mcgill.ca)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +46,7 @@ import soot.jimple.Stmt;
  Set of initialized locals/SootField
  Step 2:
  A local or SootField is MUST initialized at a program point p if on all paths from the start to this
- point the local or SootField is assigned a value. 
+ point the local or SootField is assigned a value.
 
  Similarly a local or SootField is MAY initialized at a program point p if there is a path from the start
  to this point on wich the local or SootField is assigned
@@ -137,8 +130,8 @@ public class MustMayInitialize extends StructuredAnalysis {
   }
 
   /*
-   * By construction the synchronized Local is a Value and can definetly not have an assignment stmt Processing a synch local has no effect on this
-   * analysis
+   * By construction the synchronized Local is a Value and can definetly not have an assignment stmt Processing a synch local
+   * has no effect on this analysis
    */
   @Override
   public DavaFlowSet processSynchronizedLocal(Local local, DavaFlowSet input) {
@@ -146,7 +139,8 @@ public class MustMayInitialize extends StructuredAnalysis {
   }
 
   /*
-   * The switch key is stored as a value and hence can never have an assignment stmt Processing the switch key has no effect on the analysis
+   * The switch key is stored as a value and hence can never have an assignment stmt Processing the switch key has no effect
+   * on the analysis
    */
   @Override
   public DavaFlowSet processSwitchKey(Value key, DavaFlowSet input) {

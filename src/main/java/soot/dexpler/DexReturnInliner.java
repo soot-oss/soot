@@ -1,28 +1,31 @@
-/* Soot - a Java Optimization Framework
+package soot.dexpler;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  *
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-
-package soot.dexpler;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,7 +44,7 @@ import soot.jimple.Stmt;
 
 /**
  * BodyTransformer to inline jumps to return statements. Take the following code: a = b goto label1
- * 
+ *
  * label1: return a We inline this to produce a = b return b
  *
  * @author Steven Arzt
@@ -128,9 +131,9 @@ public class DexReturnInliner extends DexTransformer {
   }
 
   /**
-   * Gets the set of return statements that can be reached via fall-throughs, i.e. normal sequential code execution. Dually, these are the statements
-   * that can be reached without jumping there.
-   * 
+   * Gets the set of return statements that can be reached via fall-throughs, i.e. normal sequential code execution. Dually,
+   * these are the statements that can be reached without jumping there.
+   *
    * @param body
    *          The method body
    * @return The set of fall-through return statements

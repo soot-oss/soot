@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.shimple;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Map;
 
@@ -40,12 +43,13 @@ import soot.util.HashChain;
 // * likely switch to an explicit Strategy pattern that will allow us to
 // * select different SSA behaviours and algorithms.
 /**
- * Implementation of the Body class for the SSA Shimple IR. This class provides methods for maintaining SSA form as well as eliminating SSA form.
+ * Implementation of the Body class for the SSA Shimple IR. This class provides methods for maintaining SSA form as well as
+ * eliminating SSA form.
  *
  * @author Navindra Umanee
  * @see soot.shimple.internal.ShimpleBodyBuilder
- * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and the Control Dependence
- *      Graph</a>
+ * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
+ *      the Control Dependence Graph</a>
  **/
 public class ShimpleBody extends StmtBody {
   private static final Logger logger = LoggerFactory.getLogger(ShimpleBody.class);
@@ -77,8 +81,8 @@ public class ShimpleBody extends StmtBody {
    * Constructs a ShimpleBody from the given Body and options.
    *
    * <p>
-   * Currently available option is "naive-phi-elimination", typically in the "shimple" phase (eg, -p shimple naive-phi-elimination) which can be
-   * useful for understanding the effect of analyses.
+   * Currently available option is "naive-phi-elimination", typically in the "shimple" phase (eg, -p shimple
+   * naive-phi-elimination) which can be useful for understanding the effect of analyses.
    **/
   ShimpleBody(Body body, Map options) {
     super(body.getMethod());
@@ -111,8 +115,8 @@ public class ShimpleBody extends StmtBody {
    * Recompute SSA form.
    *
    * <p>
-   * Note: assumes presence of Phi nodes in body that require elimination. If you *know* there are no Phi nodes present, you may prefer to use
-   * rebuild(false) in order to skip some transformations during the Phi elimination process.
+   * Note: assumes presence of Phi nodes in body that require elimination. If you *know* there are no Phi nodes present, you
+   * may prefer to use rebuild(false) in order to skip some transformations during the Phi elimination process.
    **/
   public void rebuild() {
     rebuild(true);
@@ -122,12 +126,12 @@ public class ShimpleBody extends StmtBody {
    * Rebuild SSA form.
    *
    * <p>
-   * If there are Phi nodes already present in the body, it is imperative that we specify this so that the algorithm can eliminate them before
-   * rebuilding SSA.
-   * 
+   * If there are Phi nodes already present in the body, it is imperative that we specify this so that the algorithm can
+   * eliminate them before rebuilding SSA.
+   *
    * <p>
-   * The eliminate Phi nodes stage is harmless, but if you *know* that no Phi nodes are present and you wish to avoid the transformations involved in
-   * eliminating Phi nodes, use rebuild(false).
+   * The eliminate Phi nodes stage is harmless, but if you *know* that no Phi nodes are present and you wish to avoid the
+   * transformations involved in eliminating Phi nodes, use rebuild(false).
    **/
   public void rebuild(boolean hasPhiNodes) {
     isExtendedSSA = options.extended();
@@ -139,9 +143,9 @@ public class ShimpleBody extends StmtBody {
    * Returns an equivalent unbacked JimpleBody of the current Body by eliminating the Phi nodes.
    *
    * <p>
-   * Currently available option is "naive-phi-elimination", typically specified in the "shimple" phase (eg, -p shimple naive-phi-elimination) which
-   * skips the dead code elimination and register allocation phase before eliminating Phi nodes. This can be useful for understanding the effect of
-   * analyses.
+   * Currently available option is "naive-phi-elimination", typically specified in the "shimple" phase (eg, -p shimple
+   * naive-phi-elimination) which skips the dead code elimination and register allocation phase before eliminating Phi nodes.
+   * This can be useful for understanding the effect of analyses.
    *
    * <p>
    * Remember to setActiveBody() if necessary in your SootMethod.
@@ -161,9 +165,9 @@ public class ShimpleBody extends StmtBody {
    * Remove Phi nodes from body. SSA form is no longer a given once done.
    *
    * <p>
-   * Currently available option is "naive-phi-elimination", typically specified in the "shimple" phase (eg, -p shimple naive-phi-elimination) which
-   * skips the dead code elimination and register allocation phase before eliminating Phi nodes. This can be useful for understanding the effect of
-   * analyses.
+   * Currently available option is "naive-phi-elimination", typically specified in the "shimple" phase (eg, -p shimple
+   * naive-phi-elimination) which skips the dead code elimination and register allocation phase before eliminating Phi nodes.
+   * This can be useful for understanding the effect of analyses.
    *
    * @see #toJimpleBody()
    **/
@@ -198,13 +202,14 @@ public class ShimpleBody extends StmtBody {
   }
 
   /**
-   * Set isSSA boolean to indicate whether a ShimpleBody is still in SSA form or not. Could be useful for book-keeping purposes.
+   * Set isSSA boolean to indicate whether a ShimpleBody is still in SSA form or not. Could be useful for book-keeping
+   * purposes.
    **/
   protected boolean isSSA = false;
 
   /**
-   * Sets a flag that indicates whether ShimpleBody is still in SSA form after a transformation or not. It is often up to the user to indicate if a
-   * body is no longer in SSA form.
+   * Sets a flag that indicates whether ShimpleBody is still in SSA form after a transformation or not. It is often up to the
+   * user to indicate if a body is no longer in SSA form.
    **/
   public void setSSA(boolean isSSA) {
     this.isSSA = isSSA;
@@ -231,9 +236,9 @@ public class ShimpleBody extends StmtBody {
   }
 
   /**
-   * Make sure the locals in this body all have unique String names. If the standard-local-names option is specified to Shimple, this results in the
-   * LocalNameStandardizer being applied. Otherwise, renaming is kept to a minimum and an underscore notation is used to differentiate locals
-   * previously of the same name.
+   * Make sure the locals in this body all have unique String names. If the standard-local-names option is specified to
+   * Shimple, this results in the LocalNameStandardizer being applied. Otherwise, renaming is kept to a minimum and an
+   * underscore notation is used to differentiate locals previously of the same name.
    *
    * @see soot.jimple.toolkits.scalar.LocalNameStandardizer
    **/

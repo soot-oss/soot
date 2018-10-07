@@ -6,6 +6,28 @@
  */
 package soot.jimple.spark.geom.heapinsE;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,9 +58,10 @@ import soot.jimple.spark.pag.StringConstantNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 
 /**
- * This class defines a pointer variable for use in the HeapIns encoding based points-to solver. HeapIns is a simpler form of geometric encoding.
- * HeapIns is faster and uses less memory, but also, it is less precise than geometric encoding. NOT recommended to use.
- * 
+ * This class defines a pointer variable for use in the HeapIns encoding based points-to solver. HeapIns is a simpler form of
+ * geometric encoding. HeapIns is faster and uses less memory, but also, it is less precise than geometric encoding. NOT
+ * recommended to use.
+ *
  * @author xiao
  *
  */
@@ -270,14 +293,16 @@ public class HeapInsNode extends IVarAbstraction {
                 case Constants.STORE_CONS:
                   // Store, qv -> pv.field
                   // pts.I2 may be zero, pts.L may be less than zero
-                  if (qn.add_simple_constraint_3(objn, pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0, pts.I2, pts.L < 0 ? -pts.L : pts.L)) {
+                  if (qn.add_simple_constraint_3(objn, pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0, pts.I2,
+                      pts.L < 0 ? -pts.L : pts.L)) {
                     worklist.push(qn);
                   }
                   break;
 
                 case Constants.LOAD_CONS:
                   // Load, pv.field -> qv
-                  if (objn.add_simple_constraint_3(qn, pts.I2, pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0, pts.L < 0 ? -pts.L : pts.L)) {
+                  if (objn.add_simple_constraint_3(qn, pts.I2, pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0,
+                      pts.L < 0 ? -pts.L : pts.L)) {
                     worklist.push(objn);
                   }
                   break;

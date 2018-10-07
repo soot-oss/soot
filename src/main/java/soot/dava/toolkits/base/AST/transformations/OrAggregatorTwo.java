@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.AST.transformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +47,7 @@ import soot.jimple.Stmt;
      A                            A                      A
   }                       }                         }
   else{          --->     else{               --->
-     if(cond2){              empty else body           
+     if(cond2){              empty else body
         A                 }
      }
   }
@@ -59,7 +62,7 @@ we need a reference to the parent node of this if
   if(cond1){                   if(!cond1){
      break label_1;                   Body1
   }                   ---->    }
-  else{                        else{ 
+  else{                        else{
       Body1                          break label_1
   }                            }
 
@@ -113,9 +116,9 @@ public class OrAggregatorTwo extends DepthFirstAdapter {
     ASTCondition newCond = new ASTOrCondition(leftCond, rightCond);
 
     /*
-     * The outer if and inner if could both have labels. Note that if the inner if had a label which was broken from inside its body the two bodies
-     * would not have been the same since the outerifbody could not have the same label.
-     * 
+     * The outer if and inner if could both have labels. Note that if the inner if had a label which was broken from inside
+     * its body the two bodies would not have been the same since the outerifbody could not have the same label.
+     *
      * We therefore keep the outerIfElse label
      */
     // System.out.println("OR AGGREGATOR TWO");

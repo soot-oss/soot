@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997 Clark Verbrugge
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.coffi;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 Clark Verbrugge
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,27 +32,27 @@ import soot.jimple.Jimple;
 
 /**
  * A constant pool entry of type CONSTANT_Methodref
- * 
+ *
  * @see cp_info
  * @author Clark Verbrugge
  */
 class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_info {
   /**
    * Constant pool index of a CONSTANT_Class object.
-   * 
+   *
    * @see CONSTANT_Class_info
    */
   public int class_index;
   /**
    * Constant pool index of a CONSTANT_NameAndType object.
-   * 
+   *
    * @see CONSTANT_NameAndType_info
    */
   public int name_and_type_index;
 
   /**
    * Returns the size of this cp_info object.
-   * 
+   *
    * @return number of bytes occupied by this object.
    * @see cp_info#size
    */
@@ -65,7 +62,7 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
 
   /**
    * Returns a String representation of this entry.
-   * 
+   *
    * @param constant_pool
    *          constant pool of ClassFile.
    * @return String representation of this entry.
@@ -79,7 +76,7 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
 
   /**
    * Returns a String description of what kind of entry this is.
-   * 
+   *
    * @return the String "methodref".
    * @see cp_info#typeName
    */
@@ -89,7 +86,7 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
 
   /**
    * Compares this entry with another cp_info object (which may reside in a different constant pool).
-   * 
+   *
    * @param constant_pool
    *          constant pool of ClassFile for this.
    * @param cp
@@ -109,7 +106,8 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
     if (i != 0) {
       return i;
     }
-    return constant_pool[name_and_type_index].compareTo(constant_pool, cp_constant_pool[cu.name_and_type_index], cp_constant_pool);
+    return constant_pool[name_and_type_index].compareTo(constant_pool, cp_constant_pool[cu.name_and_type_index],
+        cp_constant_pool);
   }
 
   public Value createJimpleConstantValue(cp_info[] constant_pool) {
@@ -133,7 +131,8 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
       returnType = types[types.length - 1];
     }
 
-    return Jimple.v().newStaticInvokeExpr(Scene.v().makeMethodRef(Scene.v().getSootClass(className), name, parameterTypes, returnType, true));
+    return Jimple.v().newStaticInvokeExpr(
+        Scene.v().makeMethodRef(Scene.v().getSootClass(className), name, parameterTypes, returnType, true));
   }
 
   public int getClassIndex() {

@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.AST.transformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import soot.BooleanType;
 import soot.Type;
@@ -54,8 +57,8 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
   }
 
   /*
-   * The method checks whether a particular ASTBinaryCondition is a comparison of a local with a boolean If so the ASTBinaryCondition is replaced by a
-   * ASTUnaryCondition
+   * The method checks whether a particular ASTBinaryCondition is a comparison of a local with a boolean If so the
+   * ASTBinaryCondition is replaced by a ASTUnaryCondition
    */
   public void outASTIfNode(ASTIfNode node) {
     ASTCondition condition = node.get_Condition();
@@ -124,8 +127,8 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
   }
 
   /*
-   * Used to decide what the condition should be if we are converting from ConditionExpr to Value A != false/0 --> A A != true/1 --> !A A == false/0
-   * --> !A A == true/1 --> A
+   * Used to decide what the condition should be if we are converting from ConditionExpr to Value A != false/0 --> A A !=
+   * true/1 --> !A A == false/0 --> !A A == true/1 --> A
    */
   private Value decideCondition(Value A, String truthString, ConditionExpr condition) {
     int truthValue = 0;

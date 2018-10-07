@@ -1,5 +1,27 @@
 package soot.dexpler;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -181,7 +203,8 @@ public class DexFileProvider {
     boolean multiple_dex = Options.v().process_multiple_dex();
 
     // load dex files from apk/folder/file
-    MultiDexContainer<? extends DexBackedDexFile> dexContainer = DexFileFactory.loadDexContainer(dexSourceFile, Opcodes.forApi(api));
+    MultiDexContainer<? extends DexBackedDexFile> dexContainer
+        = DexFileFactory.loadDexContainer(dexSourceFile, Opcodes.forApi(api));
 
     List<String> dexEntryNameList = dexContainer.getDexEntryNames();
     int dexFileCount = dexEntryNameList.size();
@@ -196,14 +219,15 @@ public class DexFileProvider {
     Map<String, DexContainer> dexMap = new HashMap<>(dexFileCount);
 
     // report found dex files and add to list.
-    // We do this in reverse order to make sure that we add the first entry if there is no classes.dex file in single dex mode
+    // We do this in reverse order to make sure that we add the first entry if there is no classes.dex file in single dex
+    // mode
     ListIterator<String> entryNameIterator = dexEntryNameList.listIterator(dexFileCount);
     while (entryNameIterator.hasPrevious()) {
       String entryName = entryNameIterator.previous();
       DexBackedDexFile entry = dexContainer.getEntry(entryName);
       entryName = deriveDexName(entryName);
-      logger.debug(
-          "" + String.format("Found dex file '%s' with %d classes in '%s'", entryName, entry.getClasses().size(), dexSourceFile.getCanonicalPath()));
+      logger.debug("" + String.format("Found dex file '%s' with %d classes in '%s'", entryName, entry.getClasses().size(),
+          dexSourceFile.getCanonicalPath()));
 
       if (multiple_dex) {
         dexMap.put(entryName, new DexContainer(entry, entryName, dexSourceFile));
@@ -212,7 +236,8 @@ public class DexFileProvider {
         // If we haven't found a classes.dex until the last element, take the last!
         dexMap = Collections.singletonMap(entryName, new DexContainer(entry, entryName, dexSourceFile));
         if (dexFileCount > 1) {
-          logger.warn("Multiple dex files detected, only processing '" + entryName + "'. Use '-process-multiple-dex' option to process them all.");
+          logger.warn("Multiple dex files detected, only processing '" + entryName
+              + "'. Use '-process-multiple-dex' option to process them all.");
         }
       }
     }

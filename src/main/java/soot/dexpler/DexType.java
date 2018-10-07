@@ -1,28 +1,31 @@
-/* Soot - a Java Optimization Framework
+package soot.dexpler;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  *
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-
-package soot.dexpler;
 
 import org.jf.dexlib2.iface.reference.TypeReference;
 import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
@@ -168,11 +171,12 @@ public class DexType {
   }
 
   /**
-   * Seems that representation of Annotation type in Soot is not consistent with the normal type representation. Normal type representation would be
-   * a.b.c.ClassName Java bytecode representation is La/b/c/ClassName; Soot Annotation type representation (and Jasmin's) is a/b/c/ClassName.
-   * 
+   * Seems that representation of Annotation type in Soot is not consistent with the normal type representation. Normal type
+   * representation would be a.b.c.ClassName Java bytecode representation is La/b/c/ClassName; Soot Annotation type
+   * representation (and Jasmin's) is a/b/c/ClassName.
+   *
    * This method transforms the Java bytecode representation into the Soot annotation type representation.
-   * 
+   *
    * Ljava/lang/Class<Ljava/lang/Enum<*>;>; becomes java/lang/Class<java/lang/Enum<*>>
    *
    * @param type
@@ -208,8 +212,9 @@ public class DexType {
   }
 
   /**
-   * Types read from annotations should be converted to Soot type. However, to maintain compatibility with Soot code most type will not be converted.
-   * 
+   * Types read from annotations should be converted to Soot type. However, to maintain compatibility with Soot code most
+   * type will not be converted.
+   *
    * @param type
    * @return
    */

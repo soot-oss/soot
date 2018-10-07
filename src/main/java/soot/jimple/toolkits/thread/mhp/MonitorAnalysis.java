@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.thread.mhp;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -171,7 +193,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
               changedUnitsSet.add(succ);
               /*
                * if (succ instanceof JPegStmt){ Tag tag1 = (Tag)((JPegStmt)succ).getTags().get(0);
-               * 
+               *
                * System.out.println("add to worklist: "+tag1+" "+succ); } else System.out.println("add to worklist: "+succ);
                */
             }
@@ -238,7 +260,8 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
           // System.out.println("add to out: "+md.getObjName()+" "+md.getDepth());
         }
         /*
-         * else{ throw new RuntimeException("The monitor depth can not be decreased at  "+ (Tag)((JPegStmt)s).getTags().get(0)+" "+unit); }
+         * else{ throw new RuntimeException("The monitor depth can not be decreased at  "+
+         * (Tag)((JPegStmt)s).getTags().get(0)+" "+unit); }
          */
 
       } else {
@@ -277,11 +300,13 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
   }
 
   /*
-   * private void testForDebug(){ System.out.println("--------test for debug-------"); int i = 0; for (i=0;i<nodes.size();i++){ JPegStmt stmt =
-   * (JPegStmt)nodes.elementAt(i); //System.out.println("Tag: "+ ((Tag)stmt.getTags().get(0)).toString()); if
-   * (((Tag)stmt.getTags().get(0)).toString().equals("8")){ int pos = nodes.indexOf(stmt); if (((MonitorSet)valueAfter.elementAt(pos)).size() >0 &&
-   * !((MonitorSet)valueAfter.elementAt(pos)).contains("&")){ System.out.println("sp"+stmt.getTags().get(0)+" "+nodes.elementAt(pos));
-   * 
+   * private void testForDebug(){ System.out.println("--------test for debug-------"); int i = 0; for
+   * (i=0;i<nodes.size();i++){ JPegStmt stmt = (JPegStmt)nodes.elementAt(i); //System.out.println("Tag: "+
+   * ((Tag)stmt.getTags().get(0)).toString()); if (((Tag)stmt.getTags().get(0)).toString().equals("8")){ int pos =
+   * nodes.indexOf(stmt); if (((MonitorSet)valueAfter.elementAt(pos)).size() >0 &&
+   * !((MonitorSet)valueAfter.elementAt(pos)).contains("&")){
+   * System.out.println("sp"+stmt.getTags().get(0)+" "+nodes.elementAt(pos));
+   *
    * ((MonitorSet)valueAfter.elementAt(pos)).test(); } } } System.out.println("--------test for debug end------"); }
    */
   protected void copy(Object source, Object dest) {
@@ -362,25 +387,25 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
     System.err.println("synch objects: " + num);
   }
   /*
-   * private void createWorkList(LinkedList changedUnits, HashSet changedUnitsSet, PegChain chain ){ //breadth first scan Iterator it =
-   * chain.getHeads().iterator();
-   * 
-   * while (it.hasNext()) { Object head = it.next(); Set gray = new HashSet(); LinkedList queue = new LinkedList(); queue.add(head);
-   * changedUnits.addLast(head); changedUnitsSet.add(head);
-   * 
-   * //unitToBeforeFlow.put(head, newInitialFlow()); //unitToAfterFlow.put(head, newInitialFlow()); // add for debug April 6 nodes.add(head);
-   * valueBefore.add(newInitialFlow()); valueAfter.add(newInitialFlow()); // end add for debug April 6
-   * 
+   * private void createWorkList(LinkedList changedUnits, HashSet changedUnitsSet, PegChain chain ){ //breadth first scan
+   * Iterator it = chain.getHeads().iterator();
+   *
+   * while (it.hasNext()) { Object head = it.next(); Set gray = new HashSet(); LinkedList queue = new LinkedList();
+   * queue.add(head); changedUnits.addLast(head); changedUnitsSet.add(head);
+   *
+   * //unitToBeforeFlow.put(head, newInitialFlow()); //unitToAfterFlow.put(head, newInitialFlow()); // add for debug April 6
+   * nodes.add(head); valueBefore.add(newInitialFlow()); valueAfter.add(newInitialFlow()); // end add for debug April 6
+   *
    * while (queue.size()>0){ Object root = queue.getFirst();
-   * 
-   * Iterator succsIt = graph.getSuccsOf(root).iterator(); while (succsIt.hasNext()){ Object succ = succsIt.next(); if (!gray.contains(succ)){
-   * gray.add(succ); queue.addLast(succ); changedUnits.addLast(succ); changedUnitsSet.add(succ);
-   * 
-   * // unitToBeforeFlow.put(succ, newInitialFlow()); //unitToAfterFlow.put(succ, newInitialFlow()); // add for debug April 6 nodes.add(succ);
-   * valueBefore.add(newInitialFlow()); valueAfter.add(newInitialFlow()); // end add for debug April 6
-   * 
+   *
+   * Iterator succsIt = graph.getSuccsOf(root).iterator(); while (succsIt.hasNext()){ Object succ = succsIt.next(); if
+   * (!gray.contains(succ)){ gray.add(succ); queue.addLast(succ); changedUnits.addLast(succ); changedUnitsSet.add(succ);
+   *
+   * // unitToBeforeFlow.put(succ, newInitialFlow()); //unitToAfterFlow.put(succ, newInitialFlow()); // add for debug April 6
+   * nodes.add(succ); valueBefore.add(newInitialFlow()); valueAfter.add(newInitialFlow()); // end add for debug April 6
+   *
    * } } queue.remove(root); } }
-   * 
+   *
    * }
    */
 

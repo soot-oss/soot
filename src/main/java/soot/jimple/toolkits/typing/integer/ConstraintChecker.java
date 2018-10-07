@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2000 Etienne Gagnon.  All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.toolkits.typing.integer;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2000 Etienne Gagnon.  All rights reserved.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -147,7 +144,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
       if (ie.getArg(i) instanceof Local) {
         Local local = (Local) ie.getArg(i);
         if (local.getType() instanceof IntegerType) {
-          if (!ClassHierarchy.v().typeNode(local.getType()).hasAncestor_1(ClassHierarchy.v().typeNode(method.parameterType(i)))) {
+          if (!ClassHierarchy.v().typeNode(local.getType())
+              .hasAncestor_1(ClassHierarchy.v().typeNode(method.parameterType(i)))) {
             if (fix) {
               ie.setArg(i, insertCast(local, method.parameterType(i), invokestmt));
             } else {
@@ -165,7 +163,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
         if (die.getBootstrapArg(i) instanceof Local) {
           Local local = (Local) die.getBootstrapArg(i);
           if (local.getType() instanceof IntegerType) {
-            if (!ClassHierarchy.v().typeNode(local.getType()).hasAncestor_1(ClassHierarchy.v().typeNode(bootstrapMethod.parameterType(i)))) {
+            if (!ClassHierarchy.v().typeNode(local.getType())
+                .hasAncestor_1(ClassHierarchy.v().typeNode(bootstrapMethod.parameterType(i)))) {
               if (fix) {
                 die.setArg(i, insertCast(local, bootstrapMethod.parameterType(i), invokestmt));
               } else {
@@ -366,7 +365,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
         throw new RuntimeException("Unhandled binary expression right operand type: " + rv.getClass());
       }
 
-      if ((be instanceof AddExpr) || (be instanceof SubExpr) || (be instanceof MulExpr) || (be instanceof DivExpr) || (be instanceof RemExpr)) {
+      if ((be instanceof AddExpr) || (be instanceof SubExpr) || (be instanceof MulExpr) || (be instanceof DivExpr)
+          || (be instanceof RemExpr)) {
         if (lop != null && rop != null) {
           if (!lop.hasAncestor_1(ClassHierarchy.v().INT)) {
             if (fix) {
@@ -451,8 +451,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
         right = lop;
       } else if ((be instanceof CmpExpr) || (be instanceof CmpgExpr) || (be instanceof CmplExpr)) {
         right = ClassHierarchy.v().BYTE;
-      } else if ((be instanceof EqExpr) || (be instanceof GeExpr) || (be instanceof GtExpr) || (be instanceof LeExpr) || (be instanceof LtExpr)
-          || (be instanceof NeExpr)) {
+      } else if ((be instanceof EqExpr) || (be instanceof GeExpr) || (be instanceof GtExpr) || (be instanceof LeExpr)
+          || (be instanceof LtExpr) || (be instanceof NeExpr)) {
         if (rop != null) {
           TypeNode lca = lop.lca_1(rop);
 
@@ -617,7 +617,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
 
         if (!right.hasAncestor_1(left)) {
           if (fix) {
-            ((soot.jimple.internal.JIdentityStmt) stmt).setLeftOp(insertCastAfter((Local) l, getTypeForCast(left), getTypeForCast(right), stmt));
+            ((soot.jimple.internal.JIdentityStmt) stmt)
+                .setLeftOp(insertCastAfter((Local) l, getTypeForCast(left), getTypeForCast(right), stmt));
           } else {
             error("Type Error(16)");
           }

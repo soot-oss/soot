@@ -1,30 +1,27 @@
-/* Soot - a J*va Optimization Framework
+package soot.jimple.toolkits.scalar.pre;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2002 Florian Loitsch
  *       based on FastAvailableExpressionsAnalysis from Patrick Lam.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-
-/*
- * Modified by the Sable Research Group and others 1997-2002.
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
-package soot.jimple.toolkits.scalar.pre;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -43,8 +40,8 @@ import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
 
 /**
- * Performs an DownSafe-analysis on the given graph. An expression is downsafe, if the computation will occur on every path from the current point
- * down to the END.
+ * Performs an DownSafe-analysis on the given graph. An expression is downsafe, if the computation will occur on every path
+ * from the current point down to the END.
  */
 public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<EquivalentValue>> {
   private SideEffectTester sideEffect = null;
@@ -74,13 +71,15 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equiv
    *          the SideEffectTester that performs kills.
    */
   public DownSafetyAnalysis(DirectedGraph<Unit> dg, Map<Unit, EquivalentValue> unitToGen, SideEffectTester sideEffect) {
-    this(dg, unitToGen, sideEffect, new ArrayPackedSet<EquivalentValue>(new CollectionFlowUniverse<EquivalentValue>(unitToGen.values())));
+    this(dg, unitToGen, sideEffect,
+        new ArrayPackedSet<EquivalentValue>(new CollectionFlowUniverse<EquivalentValue>(unitToGen.values())));
   }
 
   /**
    * This constructor automatically performs the DownSafety-analysis.<br>
    * the result of the analysis is as usual in FlowBefore (getFlowBefore()) and FlowAfter (getFlowAfter()).<br>
-   * as sets-operations are usually more efficient, if the original set comes from the same source, this allows to share sets.
+   * as sets-operations are usually more efficient, if the original set comes from the same source, this allows to share
+   * sets.
    *
    * @param dg
    *          a ExceptionalUnitGraph.

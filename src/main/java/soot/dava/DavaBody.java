@@ -1,24 +1,27 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Jerome Miecznikowski
- * Copyright (C) 2004-2006 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004 - 2006 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -157,16 +160,17 @@ import soot.util.Switchable;
  *
  *             Nomair - 7th Feb, 2006: Starting work on a naming mechanism
  *             Nomair - 13th Feb 2006: Added db phase options
- *             	        
+ *
  *				renamer: on /off  DEFAULT:TRUE
- *				deobfuscate: DEFAULT: FALSE, dead code eliminateion, class/field renaming, constant field elimination
+ *				deobfuscate: DEFAULT: FALSE, dead code eliminateion,
+ *				class/field renaming, constant field elimination
  *              force-recompilability: DEFAULT TRUE, super, final
- *              
+ *
  *            Nomair: March 28th, 2006: Removed the applyRenamerAnalyses method from DavaBody to InterProceduralAnalyses
  *                    Although currently renaming is done intra-proceduraly  there is strong indication that
  *                    inter procedural analyses will be required to get good names
- *                    
- *			Nomair: March 29th, 2006: dealing with trying to remove fully qualified names 			                    
+ *
+ *			Nomair: March 29th, 2006: dealing with trying to remove fully qualified names
  *
  */
 
@@ -175,7 +179,7 @@ import soot.util.Switchable;
  *  	    AST.perform_Analysis( UselessTryRemover.v());
  *         use the new AnalysisAdapter routines to write this analysis. Then delete these
  *         obselete and rather clumsy way of writing analyses
- *         
+ *
  * TODO: Nomair 14th Feb 2006, Use the Dava options renamer, deobfuscate, force-recompilability
  *          Specially the deobfuscate option with the boolean constant propagation analysis
  *
@@ -304,7 +308,8 @@ public class DavaBody extends Body {
 
     if (DEBUG) {
       if (body.getMethod().getExceptions().size() != 0) {
-        debug("DavaBody", "printing NON EMPTY exception list for " + body.getMethod().toString() + " " + body.getMethod().getExceptions().toString());
+        debug("DavaBody", "printing NON EMPTY exception list for " + body.getMethod().toString() + " "
+            + body.getMethod().getExceptions().toString());
       }
     }
     // copy and "convert" the grimp representation
@@ -360,9 +365,9 @@ public class DavaBody extends Body {
 
     /*
      * Nomair A Naeem 10-MARCH-2005
-     * 
-     * IT IS ESSENTIAL TO CALL THIS METHOD This method initializes the locals of the current method being processed Failure to invoke this method here
-     * will result in no locals being printed out
+     *
+     * IT IS ESSENTIAL TO CALL THIS METHOD This method initializes the locals of the current method being processed Failure
+     * to invoke this method here will result in no locals being printed out
      */
     if (AST instanceof ASTMethodNode) {
       ((ASTMethodNode) AST).storeLocals(this);
@@ -395,9 +400,9 @@ public class DavaBody extends Body {
   }
 
   /*
-   * Method is invoked by the packmanager just before it is actually about to generate decompiled code. Works as a separate stage from the DavaBody()
-   * constructor. All AST transformations should be implemented from within this method.
-   * 
+   * Method is invoked by the packmanager just before it is actually about to generate decompiled code. Works as a separate
+   * stage from the DavaBody() constructor. All AST transformations should be implemented from within this method.
+   *
    * Method is also invoked from the InterProceduralAnlaysis method once those have been invoked
    */
   public void analyzeAST() {
@@ -405,8 +410,8 @@ public class DavaBody extends Body {
     debug("analyzeAST", "Applying AST analyzes for method" + this.getMethod().toString());
 
     /*
-     * Nomair A. Naeem tranformations on the AST Any AST Transformations added should be added to the applyASTAnalyses method unless we are want to
-     * delay the analysis till for example THE LAST THING DONE
+     * Nomair A. Naeem tranformations on the AST Any AST Transformations added should be added to the applyASTAnalyses method
+     * unless we are want to delay the analysis till for example THE LAST THING DONE
      */
     applyASTAnalyses(AST);
 
@@ -418,11 +423,11 @@ public class DavaBody extends Body {
     applyStructuralAnalyses(AST);
     debug("analyzeAST", "Applying structure analysis DONE" + this.getMethod().toString());
     /*
-     * Renamer March 28th Nomair A. Naeem. Since there is a chance that the analyze method gets involved multiple times we dont want renaming done
-     * more than once.
-     * 
-     * hence removing the call of the renamer from here Also looking ahead i have a feeling that we will be going interprocedural for the renamer
-     * hence i am placing the renamer code inside the interprocedural class
+     * Renamer March 28th Nomair A. Naeem. Since there is a chance that the analyze method gets involved multiple times we
+     * dont want renaming done more than once.
+     *
+     * hence removing the call of the renamer from here Also looking ahead i have a feeling that we will be going
+     * interprocedural for the renamer hence i am placing the renamer code inside the interprocedural class
      */
 
     /*
@@ -464,16 +469,16 @@ public class DavaBody extends Body {
         AST.apply(new AndAggregator());
         debug("applyASTAnalyses", "after AndAggregator" + G.v().ASTTransformations_modified);
         /*
-         * The OrAggregatorOne internally calls UselessLabelFinder which sets the label to null Always apply a UselessLabeledBlockRemover in the end
-         * to remove such labeled blocks
+         * The OrAggregatorOne internally calls UselessLabelFinder which sets the label to null Always apply a
+         * UselessLabeledBlockRemover in the end to remove such labeled blocks
          */
 
         AST.apply(new OrAggregatorOne());
         debug("applyASTAnalyses", "after OraggregatorOne" + G.v().ASTTransformations_modified);
 
         /*
-         * Note OrAggregatorTwo should always be followed by an emptyElseRemover since orAggregatorTwo can create empty else bodies and the
-         * ASTIfElseNode can be replaced by ASTIfNodes OrAggregator has two patterns see the class for them
+         * Note OrAggregatorTwo should always be followed by an emptyElseRemover since orAggregatorTwo can create empty else
+         * bodies and the ASTIfElseNode can be replaced by ASTIfNodes OrAggregator has two patterns see the class for them
          */
 
         AST.apply(new OrAggregatorTwo());
@@ -484,15 +489,15 @@ public class DavaBody extends Body {
         debug("applyASTAnalyses", "after OraggregatorFour" + G.v().ASTTransformations_modified);
 
         /*
-         * ASTCleaner currently does the following tasks: 1, Remove empty Labeled Blocks UselessLabeledBlockRemover 2, convert ASTIfElseNodes with
-         * empty else bodies to ASTIfNodes 3, Apply OrAggregatorThree
+         * ASTCleaner currently does the following tasks: 1, Remove empty Labeled Blocks UselessLabeledBlockRemover 2,
+         * convert ASTIfElseNodes with empty else bodies to ASTIfNodes 3, Apply OrAggregatorThree
          */
         AST.apply(new ASTCleaner());
         debug("applyASTAnalyses", "after ASTCleaner" + G.v().ASTTransformations_modified);
 
         /*
-         * PushLabeledBlockIn should not be called unless we are sure that all labeledblocks have non null labels. A good way of ensuring this is to
-         * run the ASTCleaner directly before calling this
+         * PushLabeledBlockIn should not be called unless we are sure that all labeledblocks have non null labels. A good way
+         * of ensuring this is to run the ASTCleaner directly before calling this
          */
         AST.apply(new PushLabeledBlockIn());
         debug("applyASTAnalyses", "after PushLabeledBlockIn" + G.v().ASTTransformations_modified);
@@ -501,8 +506,8 @@ public class DavaBody extends Body {
         debug("applyASTAnalyses", "after LoopStrengthener" + G.v().ASTTransformations_modified);
 
         /*
-         * Pattern two carried out in OrAggregatorTwo restricts some patterns in for loop creation. Pattern two was implemented to give
-         * loopStrengthening a better chance SEE IfElseBreaker
+         * Pattern two carried out in OrAggregatorTwo restricts some patterns in for loop creation. Pattern two was
+         * implemented to give loopStrengthening a better chance SEE IfElseBreaker
          */
         AST.apply(new ASTCleanerTwo());
         debug("applyASTAnalyses", "after ASTCleanerTwo" + G.v().ASTTransformations_modified);
@@ -564,8 +569,8 @@ public class DavaBody extends Body {
     }
 
     /*
-     * ClosestAbruptTargetFinder should be reinitialized everytime there is a change to the AST This is utilized internally by the DavaFlowSet
-     * implementation to handle Abrupt Implicit Stmts
+     * ClosestAbruptTargetFinder should be reinitialized everytime there is a change to the AST This is utilized internally
+     * by the DavaFlowSet implementation to handle Abrupt Implicit Stmts
      */
     AST.apply(ClosestAbruptTargetFinder.v());
     debug("applyASTAnalyses", "after ClosestAbruptTargetFinder" + G.v().ASTTransformations_modified);
@@ -729,8 +734,8 @@ public class DavaBody extends Body {
     }
 
     /*
-     * Add one level of indirection to "if", "switch", and exceptional control flow. This allows for easy handling of breaks, continues and
-     * exceptional loops.
+     * Add one level of indirection to "if", "switch", and exceptional control flow. This allows for easy handling of breaks,
+     * continues and exceptional loops.
      */
     {
       PatchingChain<Unit> units = getUnits();

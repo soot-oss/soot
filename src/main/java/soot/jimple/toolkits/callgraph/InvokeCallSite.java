@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.callgraph;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import soot.Local;
 import soot.SootMethod;
 import soot.jimple.InstanceInvokeExpr;
@@ -23,7 +45,8 @@ public class InvokeCallSite {
     this(stmt, container, iie, base, (Local) null, 0);
   }
 
-  public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, Local argArray, int nullnessCode) {
+  public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, Local argArray,
+      int nullnessCode) {
     this.stmt = stmt;
     this.container = container;
     this.iie = iie;
@@ -32,7 +55,8 @@ public class InvokeCallSite {
     this.nullnessCode = nullnessCode;
   }
 
-  public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, ArrayTypes reachingArgTypes, int nullnessCode) {
+  public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, ArrayTypes reachingArgTypes,
+      int nullnessCode) {
     this.stmt = stmt;
     this.container = container;
     this.iie = iie;

@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2004 Jennifer Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.xml;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2004 Jennifer Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -59,7 +62,7 @@ public class Attribute {
 
   /*
    * public ColorAttribute color(){ return color; }
-   * 
+   *
    * public void color(ColorAttribute c){ color = c; }
    */
 
@@ -170,7 +173,8 @@ public class Attribute {
     } else if (t instanceof LinkTag) {
       LinkTag lt = (LinkTag) t;
       Host h = lt.getLink();
-      LinkAttribute link = new LinkAttribute(lt.getInfo(), getJimpleLnOfHost(h), getJavaLnOfHost(h), lt.getClassName(), lt.getAnalysisType());
+      LinkAttribute link = new LinkAttribute(lt.getInfo(), getJimpleLnOfHost(h), getJavaLnOfHost(h), lt.getClassName(),
+          lt.getAnalysisType());
       addLink(link);
 
     } else if (t instanceof StringTag) {
@@ -183,7 +187,8 @@ public class Attribute {
       jimpleEndPos(pt.getEndOffset());
     } else if (t instanceof ColorTag) {
       ColorTag ct = (ColorTag) t;
-      ColorAttribute ca = new ColorAttribute(ct.getRed(), ct.getGreen(), ct.getBlue(), ct.isForeground(), ct.getAnalysisType());
+      ColorAttribute ca
+          = new ColorAttribute(ct.getRed(), ct.getGreen(), ct.getBlue(), ct.isForeground(), ct.getAnalysisType());
       // color(ca);
       addColor(ca);
     }
@@ -232,10 +237,10 @@ public class Attribute {
 
   public String toString() {
     StringBuffer sb = new StringBuffer();
-    sb.append(
-        "<srcPos sline=\"" + javaStartLn() + "\" eline=\"" + javaEndLn() + "\" spos=\"" + javaStartPos() + "\" epos=\"" + javaEndPos() + "\"/>");
-    sb.append("<jmpPos sline=\"" + jimpleStartLn() + "\" eline=\"" + jimpleEndLn() + "\" spos=\"" + jimpleStartPos() + "\" epos=\"" + jimpleEndPos()
-        + "\"/>");
+    sb.append("<srcPos sline=\"" + javaStartLn() + "\" eline=\"" + javaEndLn() + "\" spos=\"" + javaStartPos() + "\" epos=\""
+        + javaEndPos() + "\"/>");
+    sb.append("<jmpPos sline=\"" + jimpleStartLn() + "\" eline=\"" + jimpleEndLn() + "\" spos=\"" + jimpleStartPos()
+        + "\" epos=\"" + jimpleEndPos() + "\"/>");
     return sb.toString();
   }
 
@@ -246,22 +251,23 @@ public class Attribute {
   public void print(PrintWriter writerOut) {
     if (isEmpty()) {
       // System.out.println("no data found for: ");
-      // System.out.println("<srcPos sline=\""+javaStartLn()+"\" eline=\""+javaEndLn()+"\" spos=\""+javaStartPos()+"\" epos=\""+javaEndPos()+"\"/>");
+      // System.out.println("<srcPos sline=\""+javaStartLn()+"\" eline=\""+javaEndLn()+"\" spos=\""+javaStartPos()+"\"
+      // epos=\""+javaEndPos()+"\"/>");
       // System.out.println("<jmpPos sline=\""+jimpleStartLn()+"\" eline=\""+jimpleEndLn()+"\" spos=\""+jimpleStartPos()+"\"
       // epos=\""+jimpleEndPos()+"\"/>");
       return;
     }
     writerOut.println("<attribute>");
-    writerOut.println(
-        "<srcPos sline=\"" + javaStartLn() + "\" eline=\"" + javaEndLn() + "\" spos=\"" + javaStartPos() + "\" epos=\"" + javaEndPos() + "\"/>");
-    writerOut.println("<jmpPos sline=\"" + jimpleStartLn() + "\" eline=\"" + jimpleEndLn() + "\" spos=\"" + jimpleStartPos() + "\" epos=\""
-        + jimpleEndPos() + "\"/>");
+    writerOut.println("<srcPos sline=\"" + javaStartLn() + "\" eline=\"" + javaEndLn() + "\" spos=\"" + javaStartPos()
+        + "\" epos=\"" + javaEndPos() + "\"/>");
+    writerOut.println("<jmpPos sline=\"" + jimpleStartLn() + "\" eline=\"" + jimpleEndLn() + "\" spos=\"" + jimpleStartPos()
+        + "\" epos=\"" + jimpleEndPos() + "\"/>");
     if (colors != null) {
       Iterator<ColorAttribute> cIt = colors.iterator();
       while (cIt.hasNext()) {
         ColorAttribute ca = cIt.next();
-        writerOut.println("<color r=\"" + ca.red() + "\" g=\"" + ca.green() + "\" b=\"" + ca.blue() + "\" fg=\"" + ca.fg() + "\" aType=\""
-            + ca.analysisType() + "\"/>");
+        writerOut.println("<color r=\"" + ca.red() + "\" g=\"" + ca.green() + "\" b=\"" + ca.blue() + "\" fg=\"" + ca.fg()
+            + "\" aType=\"" + ca.analysisType() + "\"/>");
       }
     }
     if (texts != null) {
@@ -275,8 +281,8 @@ public class Attribute {
       Iterator<LinkAttribute> linksIt = links.iterator();
       while (linksIt.hasNext()) {
         LinkAttribute la = linksIt.next();
-        writerOut.println("<link label=\"" + formatForXML(la.info()) + "\" jmpLink=\"" + la.jimpleLink() + "\" srcLink=\"" + la.javaLink()
-            + "\" clssNm=\"" + la.className() + "\" aType=\"" + la.analysisType() + "\"/>");
+        writerOut.println("<link label=\"" + formatForXML(la.info()) + "\" jmpLink=\"" + la.jimpleLink() + "\" srcLink=\""
+            + la.javaLink() + "\" clssNm=\"" + la.className() + "\" aType=\"" + la.analysisType() + "\"/>");
       }
     }
     writerOut.println("</attribute>");

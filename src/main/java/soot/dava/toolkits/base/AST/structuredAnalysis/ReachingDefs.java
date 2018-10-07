@@ -1,27 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/**
- * Maintained by: Nomair A. Naeem
- */
-
 package soot.dava.toolkits.base.AST.structuredAnalysis;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -44,26 +43,28 @@ import soot.jimple.Stmt;
 //import soot.dava.internal.SET.*;
 
 /**
- * CHANGE LOG: * November 21st Added support for implicit breaks and continues Tested code for reaching defs within switch/try/if/while/for
+ * CHANGE LOG: * November 21st Added support for implicit breaks and continues Tested code for reaching defs within
+ * switch/try/if/while/for
  *
  * * November 22nd Refactored code to make structure flow analysis framework handle breaks and returns.
  *
- * * November 24th newInitialFlow ERROR............initialFlow should be the set of all defs........since there needs to exist SOME path
+ * * November 24th newInitialFlow ERROR............initialFlow should be the set of all defs........since there needs to
+ * exist SOME path
  */
 
 /*
- * Reaching Defs Step 1: Set of definitions (a definition is a Stmt within a StatementSequenceNode) Step 2: A definition d: x = ... reaches a point p
- * in the program if there exists a path from p such that there is no other definition of x between d and p. Step 3: Forward Analysis Step 4: Union
- * Step 5: d: x = expr kill = { all existing defs of x}
- * 
+ * Reaching Defs Step 1: Set of definitions (a definition is a Stmt within a StatementSequenceNode) Step 2: A definition d: x
+ * = ... reaches a point p in the program if there exists a path from p such that there is no other definition of x between d
+ * and p. Step 3: Forward Analysis Step 4: Union Step 5: d: x = expr kill = { all existing defs of x}
+ *
  * gen = (d)
- * 
- * Step 6: newInitialFlow: No definitions reach (safe) (Catch bodies) //November 24th.........changing above to be the universal set of all
- * definitions
- * 
- * 
+ *
+ * Step 6: newInitialFlow: No definitions reach (safe) (Catch bodies) //November 24th.........changing above to be the
+ * universal set of all definitions
+ *
+ *
  * out(start) = {} since there has been no definition so far
- * 
+ *
  * out(Si) not needed for structured flow analysis
  */
 

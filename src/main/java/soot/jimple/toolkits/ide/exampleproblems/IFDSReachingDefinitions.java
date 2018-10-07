@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2013 Eric Bodden and others
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.toolkits.ide.exampleproblems;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2013 Eric Bodden and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import heros.DefaultSeeds;
 import heros.FlowFunction;
@@ -74,7 +78,8 @@ public class IFDSReachingDefinitions
                 return Collections.singleton(source);
               } else {
                 LinkedHashSet<Pair<Value, Set<DefinitionStmt>>> res = new LinkedHashSet<Pair<Value, Set<DefinitionStmt>>>();
-                res.add(new Pair<Value, Set<DefinitionStmt>>(assignment.getLeftOp(), Collections.<DefinitionStmt>singleton(assignment)));
+                res.add(new Pair<Value, Set<DefinitionStmt>>(assignment.getLeftOp(),
+                    Collections.<DefinitionStmt>singleton(assignment)));
                 return res;
               }
             }
@@ -85,7 +90,8 @@ public class IFDSReachingDefinitions
       }
 
       @Override
-      public FlowFunction<Pair<Value, Set<DefinitionStmt>>> getCallFlowFunction(Unit callStmt, final SootMethod destinationMethod) {
+      public FlowFunction<Pair<Value, Set<DefinitionStmt>>> getCallFlowFunction(Unit callStmt,
+          final SootMethod destinationMethod) {
         Stmt stmt = (Stmt) callStmt;
         InvokeExpr invokeExpr = stmt.getInvokeExpr();
         final List<Value> args = invokeExpr.getArgs();
@@ -103,11 +109,14 @@ public class IFDSReachingDefinitions
 
           @Override
           public Set<Pair<Value, Set<DefinitionStmt>>> computeTargets(Pair<Value, Set<DefinitionStmt>> source) {
-            if (!destinationMethod.getName().equals("<clinit>") && !destinationMethod.getSubSignature().equals("void run()")) {
+            if (!destinationMethod.getName().equals("<clinit>")
+                && !destinationMethod.getSubSignature().equals("void run()")) {
               if (localArguments.contains(source.getO1())) {
                 int paramIndex = args.indexOf(source.getO1());
                 Pair<Value, Set<DefinitionStmt>> pair = new Pair<Value, Set<DefinitionStmt>>(
-                    new EquivalentValue(Jimple.v().newParameterRef(destinationMethod.getParameterType(paramIndex), paramIndex)), source.getO2());
+                    new EquivalentValue(
+                        Jimple.v().newParameterRef(destinationMethod.getParameterType(paramIndex), paramIndex)),
+                    source.getO2());
                 return Collections.singleton(pair);
               }
             }
@@ -118,8 +127,8 @@ public class IFDSReachingDefinitions
       }
 
       @Override
-      public FlowFunction<Pair<Value, Set<DefinitionStmt>>> getReturnFlowFunction(final Unit callSite, SootMethod calleeMethod, final Unit exitStmt,
-          Unit returnSite) {
+      public FlowFunction<Pair<Value, Set<DefinitionStmt>>> getReturnFlowFunction(final Unit callSite,
+          SootMethod calleeMethod, final Unit exitStmt, Unit returnSite) {
         if (!(callSite instanceof DefinitionStmt)) {
           return KillAll.v();
         }
@@ -136,7 +145,8 @@ public class IFDSReachingDefinitions
               ReturnStmt returnStmt = (ReturnStmt) exitStmt;
               if (returnStmt.getOp().equivTo(source.getO1())) {
                 DefinitionStmt definitionStmt = (DefinitionStmt) callSite;
-                Pair<Value, Set<DefinitionStmt>> pair = new Pair<Value, Set<DefinitionStmt>>(definitionStmt.getLeftOp(), source.getO2());
+                Pair<Value, Set<DefinitionStmt>> pair
+                    = new Pair<Value, Set<DefinitionStmt>>(definitionStmt.getLeftOp(), source.getO2());
                 return Collections.singleton(pair);
               }
             }
@@ -168,11 +178,13 @@ public class IFDSReachingDefinitions
   }
 
   public Map<Unit, Set<Pair<Value, Set<DefinitionStmt>>>> initialSeeds() {
-    return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()), zeroValue());
+    return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()),
+        zeroValue());
   }
 
   public Pair<Value, Set<DefinitionStmt>> createZeroValue() {
-    return new Pair<Value, Set<DefinitionStmt>>(new JimpleLocal("<<zero>>", NullType.v()), Collections.<DefinitionStmt>emptySet());
+    return new Pair<Value, Set<DefinitionStmt>>(new JimpleLocal("<<zero>>", NullType.v()),
+        Collections.<DefinitionStmt>emptySet());
   }
 
 }

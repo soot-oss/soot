@@ -1,24 +1,28 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2008 Ben Bellamy 
- * 
- * All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.toolkits.typing.fast;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2008 Ben Bellamy
+ *
+ * All rights reserved.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -60,11 +64,12 @@ import soot.toolkits.scalar.LocalDefs;
 /**
  * New Type Resolver by Ben Bellamy (see 'Efficient Local Type Inference' at OOPSLA 08).
  *
- * Ben has tested this code, and verified that it provides a typing that is at least as tight as the original algorithm (tighter in 2914 methods out
- * of 295598) on a number of benchmarks. These are: abc-complete.jar, BlueJ, CSO (Scala code), Gant, Groovy, havoc.jar, Java 3D, jEdit, Java Grande
- * Forum, Jigsaw, Jython, Kawa, rt.jar, Kawa, Scala and tools.jar. The mean execution time improvement is around 10 times, but for the longest methods
- * (abc parser methods and havoc with >9000 statements) the improvement is between 200 and 500 times.
- * 
+ * Ben has tested this code, and verified that it provides a typing that is at least as tight as the original algorithm
+ * (tighter in 2914 methods out of 295598) on a number of benchmarks. These are: abc-complete.jar, BlueJ, CSO (Scala code),
+ * Gant, Groovy, havoc.jar, Java 3D, jEdit, Java Grande Forum, Jigsaw, Jython, Kawa, rt.jar, Kawa, Scala and tools.jar. The
+ * mean execution time improvement is around 10 times, but for the longest methods (abc parser methods and havoc with >9000
+ * statements) the improvement is between 200 and 500 times.
+ *
  * @author Ben Bellamy
  */
 public class TypeResolver {
@@ -213,7 +218,8 @@ public class TypeResolver {
           if (baseType instanceof RefType && defStmt.getLeftOp() instanceof Local) {
             RefType rt = (RefType) baseType;
             final String name = rt.getSootClass().getName();
-            if (name.equals("java.lang.Object") || name.equals("java.io.Serializable") || name.equals("java.lang.Cloneable")) {
+            if (name.equals("java.lang.Object") || name.equals("java.io.Serializable")
+                || name.equals("java.lang.Cloneable")) {
               tg.set((Local) ((DefinitionStmt) stmt).getLeftOp(), ((ArrayType) useType).getElementType());
             }
           }
@@ -222,7 +228,8 @@ public class TypeResolver {
         Local vold;
         if (!(op instanceof Local)) {
           /*
-           * By the time we have countOnly == false, all variables must by typed with concrete Jimple types, and never [0..1], [0..127] or [0..32767].
+           * By the time we have countOnly == false, all variables must by typed with concrete Jimple types, and never
+           * [0..1], [0..127] or [0..32767].
            */
           vold = jimple.newLocal("tmp", t);
           vold.setName("tmp$" + System.identityHashCode(vold));
@@ -279,8 +286,8 @@ public class TypeResolver {
           return Integer127Type.v();
         } else if (thigh instanceof ShortType) {
           return byteType;
-        } else if (thigh instanceof BooleanType || thigh instanceof ByteType || thigh instanceof CharType || thigh instanceof Integer127Type
-            || thigh instanceof Integer32767Type) {
+        } else if (thigh instanceof BooleanType || thigh instanceof ByteType || thigh instanceof CharType
+            || thigh instanceof Integer127Type || thigh instanceof Integer32767Type) {
           return thigh;
         } else {
           throw new RuntimeException();
@@ -318,7 +325,8 @@ public class TypeResolver {
 
       if (!AugHierarchy.ancestor_(useType, t)) {
         this.fail = true;
-      } else if (op instanceof Local && (t instanceof Integer1Type || t instanceof Integer127Type || t instanceof Integer32767Type)) {
+      } else if (op instanceof Local
+          && (t instanceof Integer1Type || t instanceof Integer127Type || t instanceof Integer32767Type)) {
         Local v = (Local) op;
         if (!typesEqual(t, useType)) {
           Type t_ = this.promote(t, useType);
@@ -451,8 +459,8 @@ public class TypeResolver {
         for (Type t_ : eval) {
           if (lhs instanceof ArrayRef) {
             /*
-             * We only need to consider array references on the LHS of assignments where there is supertyping between array types, which is only for
-             * arrays of reference types and multidimensional arrays.
+             * We only need to consider array references on the LHS of assignments where there is supertyping between array
+             * types, which is only for arrays of reference types and multidimensional arrays.
              */
             if (!(t_ instanceof RefType || t_ instanceof ArrayType)) {
               continue;

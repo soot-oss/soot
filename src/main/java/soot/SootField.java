@@ -1,33 +1,31 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- * Copyright (C) 2004 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * Copyright (C) 2004 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import soot.jimple.paddle.PaddleField;
 import soot.jimple.spark.pag.SparkField;
+import soot.options.Options;
 import soot.tagkit.AbstractHost;
 import soot.util.Numberable;
 
@@ -38,13 +36,17 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
   protected String name;
   protected Type type;
   protected int modifiers;
-
   protected boolean isDeclared = false;
   protected SootClass declaringClass;
   protected boolean isPhantom = false;
+  protected volatile String sig;
+  protected volatile String subSig;
 
   /** Constructs a Soot field with the given name, type and modifiers. */
   public SootField(String name, Type type, int modifiers) {
+    if (name == null || type == null) {
+      throw new RuntimeException("A SootField cannot have a null name or type.");
+    }
     this.name = name;
     this.type = type;
     this.modifiers = modifiers;
@@ -52,36 +54,52 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
   /** Constructs a Soot field with the given name, type and no modifiers. */
   public SootField(String name, Type type) {
-    this.name = name;
-    this.type = type;
-    this.modifiers = 0;
+    this(name, type, 0);
   }
 
   public int equivHashCode() {
     return type.hashCode() * 101 + modifiers * 17 + name.hashCode();
   }
 
-  public String getName() {
-    return name;
-  }
-
   public String getSignature() {
-    return getSignature(declaringClass, getName(), getType());
+    if (sig == null) {
+      synchronized (this) {
+        if (sig == null) {
+          sig = getSignature(getDeclaringClass(), getSubSignature());
+        }
+      }
+    }
+    return sig;
+  }
+  
+  public static String getSignature(SootClass cl, String name, Type type) {
+    return getSignature(cl,getSubSignature(name,type));
   }
 
-  public static String getSignature(SootClass cl, String name, Type type) {
-    StringBuffer buffer = new StringBuffer();
+  public static String getSignature(SootClass cl, String subSignature) {
+    StringBuilder buffer = new StringBuilder();
 
-    buffer.append("<" + Scene.v().quotedNameOf(cl.getName()) + ": ");
-    buffer.append(type.toQuotedString() + " " + Scene.v().quotedNameOf(name) + ">");
+    buffer.append("<").append(Scene.v().quotedNameOf(cl.getName())).append(": ");
+    buffer.append(subSignature).append(">");
 
     return buffer.toString();
 
   }
 
   public String getSubSignature() {
-    StringBuffer buffer = new StringBuffer();
-    buffer.append(getType() + " " + Scene.v().quotedNameOf(getName()));
+    if (subSig == null) {
+      synchronized (this) {
+        if (subSig == null) {
+          subSig = getSubSignature(getName(), getType());
+        }
+      }
+    }
+    return subSig;
+  }
+  
+  private static String getSubSignature(String name, Type type) {
+    StringBuilder buffer = new StringBuilder();
+    buffer.append(type.toQuotedString() + " " + Scene.v().quotedNameOf(name));
     return buffer.toString();
   }
 
@@ -91,6 +109,14 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
     }
 
     return declaringClass;
+  }
+  
+  public synchronized void setDeclaringClass(SootClass sc) {
+    if (sc != null && type instanceof RefLikeType) {
+      Scene.v().getFieldNumberer().add(this);
+    }
+    this.declaringClass = sc;
+    this.sig = null;
   }
 
   @Override
@@ -104,7 +130,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
       if (!Scene.v().allowsPhantomRefs()) {
         throw new RuntimeException("Phantom refs not allowed");
       }
-      if (declaringClass != null && !declaringClass.isPhantom()) {
+      if (!Options.v().allow_phantom_elms() && declaringClass != null && !declaringClass.isPhantom()) {
         throw new RuntimeException("Declaring class would have to be phantom");
       }
     }
@@ -115,16 +141,32 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
     return isDeclared;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setDeclared(boolean isDeclared) {
+    this.isDeclared = isDeclared;
+  }
+  
+  public String getName() {
+    return name;
+  }
+
+  public synchronized void setName(String name) {
+    if (name != null) {
+      this.name = name;
+      this.sig = null;
+      this.subSig = null;
+    }
   }
 
   public Type getType() {
     return type;
   }
 
-  public void setType(Type t) {
-    this.type = t;
+  public synchronized void setType(Type t) {
+    if (t != null) {
+      this.type = t;
+      this.sig = null;
+      this.subSig = null;
+    }
   }
 
   /**
@@ -163,10 +205,6 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
   }
 
   public void setModifiers(int modifiers) {
-    if (!declaringClass.isApplicationClass()) {
-      throw new RuntimeException("Cannot set modifiers of a field from a non-app class!");
-    }
-
     this.modifiers = modifiers;
   }
 
@@ -208,14 +246,4 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
     return Scene.v().makeFieldRef(declaringClass, name, type, isStatic());
   }
 
-  public void setDeclared(boolean declared) {
-    this.isDeclared = declared;
-  }
-
-  public void setDeclaringClass(SootClass sc) {
-    this.declaringClass = sc;
-    if (type instanceof RefLikeType) {
-      Scene.v().getFieldNumberer().add(this);
-    }
-  }
 }

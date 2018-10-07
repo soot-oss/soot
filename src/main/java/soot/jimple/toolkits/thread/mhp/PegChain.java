@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.thread.mhp;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -98,9 +120,10 @@ public class PegChain extends HashChain {
   Set multiRunAllocNodes;
   Map<AllocNode, String> allocNodeToObj;
 
-  PegChain(CallGraph callGraph, Hierarchy hierarchy, PAG pag, Set threadAllocSites, Set methodsNeedingInlining, Set allocNodes,
-      List<List> inlineSites, Map<SootMethod, String> synchObj, Set multiRunAllocNodes, Map<AllocNode, String> allocNodeToObj, Body unitBody,
-      SootMethod sm, String threadName, boolean addBeginNode, PegGraph pegGraph) {
+  PegChain(CallGraph callGraph, Hierarchy hierarchy, PAG pag, Set threadAllocSites, Set methodsNeedingInlining,
+      Set allocNodes, List<List> inlineSites, Map<SootMethod, String> synchObj, Set multiRunAllocNodes,
+      Map<AllocNode, String> allocNodeToObj, Body unitBody, SootMethod sm, String threadName, boolean addBeginNode,
+      PegGraph pegGraph) {
     this.allocNodeToObj = allocNodeToObj;
     this.multiRunAllocNodes = multiRunAllocNodes;
     this.synchObj = synchObj;
@@ -315,11 +338,12 @@ public class PegChain extends HashChain {
             // remeber to modify here!!! getMethodByName is unsafe!
             // if (method.getDeclaringClass()
             /*
-             * TargetMethodsFinder tmd = new TargetMethodsFinder(); List targetList = tmd.find(unit, callGraph, false); SootMethod meth=null; if
-             * (targetList.size()>1) { System.out.println("targetList: "+targetList); throw new RuntimeException("target of start >1!"); } else meth =
-             * (SootMethod)targetList.get(0);
+             * TargetMethodsFinder tmd = new TargetMethodsFinder(); List targetList = tmd.find(unit, callGraph, false);
+             * SootMethod meth=null; if (targetList.size()>1) { System.out.println("targetList: "+targetList); throw new
+             * RuntimeException("target of start >1!"); } else meth = (SootMethod)targetList.get(0);
              */
-            SootMethod meth = hierarchy.resolveConcreteDispatch(maySootClass, method.getDeclaringClass().getMethodByName("run"));
+            SootMethod meth
+                = hierarchy.resolveConcreteDispatch(maySootClass, method.getDeclaringClass().getMethodByName("run"));
             // System.out.println("==method is: "+meth);
 
             Body mBody = meth.getActiveBody();
@@ -331,8 +355,8 @@ public class PegChain extends HashChain {
 
             // map caller ()-> start pegStmt
             pg.getThreadNameToStart().put(callerName, pegStmt);
-            PegChain newChain = new PegChain(callGraph, hierarchy, pag, threadAllocSites, methodsNeedingInlining, allocNodes, inlineSites, synchObj,
-                multiRunAllocNodes, allocNodeToObj, mBody, sm, callerName, true, pg);
+            PegChain newChain = new PegChain(callGraph, hierarchy, pag, threadAllocSites, methodsNeedingInlining, allocNodes,
+                inlineSites, synchObj, multiRunAllocNodes, allocNodeToObj, mBody, sm, callerName, true, pg);
 
             pg.getAllocNodeToThread().put(allocNode, newChain);
 
@@ -423,7 +447,8 @@ public class PegChain extends HashChain {
             } else {
 
               // add Oct 8, for building pegs with inliner.
-              if (name.equals("notify") && paras.size() == 0 && method.getDeclaringClass().getName().equals("java.lang.Thread")) {
+              if (name.equals("notify") && paras.size() == 0
+                  && method.getDeclaringClass().getName().equals("java.lang.Thread")) {
                 objName = makeObjName(value, type, unit);
                 JPegStmt pegStmt = new NotifyStmt(objName, threadName, unit, graph, sm);
                 addAndPutNonCompacted(unit, pegStmt);
@@ -554,7 +579,8 @@ public class PegChain extends HashChain {
     return list;
   }
 
-  private void inlineMethod(SootMethod targetMethod, String objName, String name, String threadName, Unit unit, UnitGraph graph, SootMethod sm) {
+  private void inlineMethod(SootMethod targetMethod, String objName, String name, String threadName, Unit unit,
+      UnitGraph graph, SootMethod sm) {
     // System.out.println("inside extendMethod "+ targetMethod);
 
     Body unitBody = targetMethod.getActiveBody();
@@ -579,8 +605,8 @@ public class PegChain extends HashChain {
     }
     addAndPut(unit, pegStmt);
 
-    PegGraph pG = new PegGraph(callGraph, hierarchy, pag, methodsNeedingInlining, allocNodes, inlineSites, synchObj, multiRunAllocNodes,
-        allocNodeToObj, unitBody, threadName, targetMethod, true, false);
+    PegGraph pG = new PegGraph(callGraph, hierarchy, pag, methodsNeedingInlining, allocNodes, inlineSites, synchObj,
+        multiRunAllocNodes, allocNodeToObj, unitBody, threadName, targetMethod, true, false);
     // pg.addPeg(pG, this); // RLH
     // PegToDotFile printer1 = new PegToDotFile(pG, false, targetMethod.getName());
     // System.out.println("NeedInlining for "+targetMethod +": "+pG.getNeedInlining());
@@ -681,13 +707,13 @@ public class PegChain extends HashChain {
 
   /*
    * public List getPredsOf(Object s) { if(!unitToPreds.containsKey(s)) throw new RuntimeException("Invalid stmt" + s);
-   * 
+   *
    * return (List) unitToPreds.get(s); }
-   * 
+   *
    * public List getSuccsOf(Object s) {
-   * 
+   *
    * if(!unitToSuccs.containsKey(s)) throw new RuntimeException("Invalid stmt:" + s);
-   * 
+   *
    * return (List) unitToSuccs.get(s); }
    */
   // Sometimes, we can not find the target of join(). Now we should handle it.

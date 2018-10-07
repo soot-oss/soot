@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2014 Raja Vallee-Rai and others
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.asm;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 
@@ -29,7 +33,7 @@ import soot.jimple.Jimple;
 
 /**
  * Frame of stack for an instruction.
- * 
+ *
  * @author Aaloan Miftah
  */
 final class StackFrame {
@@ -42,7 +46,7 @@ final class StackFrame {
 
   /**
    * Constructs a new stack frame.
-   * 
+   *
    * @param src
    *          source the frame belongs to.
    */
@@ -59,7 +63,7 @@ final class StackFrame {
 
   /**
    * Sets the operands used by this frame.
-   * 
+   *
    * @param oprs
    *          the operands.
    */
@@ -76,7 +80,7 @@ final class StackFrame {
 
   /**
    * Sets the value boxes corresponding to the operands used by this frame.
-   * 
+   *
    * @param boxes
    *          the boxes.
    */
@@ -86,7 +90,7 @@ final class StackFrame {
 
   /**
    * Sets the operands produced by this frame.
-   * 
+   *
    * @param oprs
    *          the operands.
    */
@@ -96,7 +100,7 @@ final class StackFrame {
 
   /**
    * Merges the specified operands with the operands used by this frame.
-   * 
+   *
    * @param oprs
    *          the new operands.
    * @throws IllegalArgumentException
@@ -187,13 +191,15 @@ final class StackFrame {
        * this version uses allocates local if it finds both operands have stack locals allocated already
        */
       /*
-       * if (stack == null) { if (in.size() != 1) throw new AssertionError("Local h " + in.size()); stack = src.newStackLocal(); inStackLocals[i] =
-       * stack; ValueBox box = boxes == null ? null : boxes[i]; /* add assign statement for prevOp * for (int j = 0; j != nrIn; j++) { Operand prevOp
-       * = in.get(j)[i]; prevOp.removeBox(box); if (prevOp.stack == null) { prevOp.stack = stack; as = Jimple.v().newAssignStmt(stack, prevOp.value);
-       * src.setUnit(prevOp.insn, as); prevOp.updateBoxes(); } else { as = Jimple.v().newAssignStmt(stack, prevOp.stackOrValue());
-       * src.mergeUnits(prevOp.insn, as); } prevOp.addBox(as.getRightOpBox()); } if (box != null) box.setValue(stack); } if (newOp.stack == null) {
-       * newOp.stack = stack; as = Jimple.v().newAssignStmt(stack, newOp.value); src.setUnit(newOp.insn, as); newOp.updateBoxes(); } else { as =
-       * Jimple.v().newAssignStmt(stack, newOp.stackOrValue()); src.mergeUnits(newOp.insn, as); } newOp.addBox(as.getRightOpBox());
+       * if (stack == null) { if (in.size() != 1) throw new AssertionError("Local h " + in.size()); stack =
+       * src.newStackLocal(); inStackLocals[i] = stack; ValueBox box = boxes == null ? null : boxes[i]; /* add assign
+       * statement for prevOp * for (int j = 0; j != nrIn; j++) { Operand prevOp = in.get(j)[i]; prevOp.removeBox(box); if
+       * (prevOp.stack == null) { prevOp.stack = stack; as = Jimple.v().newAssignStmt(stack, prevOp.value);
+       * src.setUnit(prevOp.insn, as); prevOp.updateBoxes(); } else { as = Jimple.v().newAssignStmt(stack,
+       * prevOp.stackOrValue()); src.mergeUnits(prevOp.insn, as); } prevOp.addBox(as.getRightOpBox()); } if (box != null)
+       * box.setValue(stack); } if (newOp.stack == null) { newOp.stack = stack; as = Jimple.v().newAssignStmt(stack,
+       * newOp.value); src.setUnit(newOp.insn, as); newOp.updateBoxes(); } else { as = Jimple.v().newAssignStmt(stack,
+       * newOp.stackOrValue()); src.mergeUnits(newOp.insn, as); } newOp.addBox(as.getRightOpBox());
        */
     }
     if (diff) {

@@ -1,24 +1,27 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Jerome Miecznikowski
- * Copyright (C) 2004-2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004 - 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -213,8 +216,8 @@ public class DavaPrinter {
       }
 
       /*
-       * Check that we are not importing two classes with the same last name If yes then remove explicit import and import the whole package else
-       * output explicit import statement
+       * Check that we are not importing two classes with the same last name If yes then remove explicit import and import
+       * the whole package else output explicit import statement
        */
       Iterator it = toImport.iterator();
       while (it.hasNext()) {
@@ -247,7 +250,7 @@ public class DavaPrinter {
 
       /*
        * if (!packagesUsed.isEmpty()) out.println();
-       * 
+       *
        * packagesUsed.add("java.lang"); packagesUsed.add(curPackage);
        */
       Dava.v().set_CurrentPackageContext(importList);
@@ -430,10 +433,11 @@ public class DavaPrinter {
     }
 
     /*
-     * January 23rd, 2006 In trying to handle the suepr class problem we need to introduce an inner class Instead of creating a data structure for it
-     * we are right now just going to print it in the form of a string
+     * January 23rd, 2006 In trying to handle the suepr class problem we need to introduce an inner class Instead of creating
+     * a data structure for it we are right now just going to print it in the form of a string
      *
-     * It would be interesting to later have an internal inner class structure so that we could decompile inner classes into inner classes
+     * It would be interesting to later have an internal inner class structure so that we could decompile inner classes into
+     * inner classes
      */
 
     if (G.v().SootClassNeedsDavaSuperHandlerClass.contains(cl)) {
@@ -454,7 +458,8 @@ public class DavaPrinter {
   }
 
   /**
-   * Prints out the method corresponding to b Body, (declaration and body), in the textual format corresponding to the IR used to encode b body.
+   * Prints out the method corresponding to b Body, (declaration and body), in the textual format corresponding to the IR
+   * used to encode b body.
    *
    * @param out
    *          a PrintWriter instance to print to.

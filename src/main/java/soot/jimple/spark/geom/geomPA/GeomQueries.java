@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2013 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.spark.geom.geomPA;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2013 Richard Xiao
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -40,7 +44,7 @@ import soot.jimple.toolkits.callgraph.Edge;
 
 /**
  * A powerful interface for querying points-to results in many ways. It is an extension for SPARK standard querying system.
- * 
+ *
  * @author xiao
  *
  */
@@ -69,7 +73,7 @@ public class GeomQueries {
 
   /**
    * We copy and make a condensed version of call graph.
-   * 
+   *
    * @param geom_pts
    */
   public GeomQueries(GeomPointsTo geom_pta) {
@@ -175,7 +179,7 @@ public class GeomQueries {
 
   /**
    * Retrieve the subgraph from s->target. An edge s->t is included in the subgraph iff target is reachable from t.
-   * 
+   *
    * @param s
    * @param target
    * @return
@@ -241,8 +245,9 @@ public class GeomQueries {
   }
 
   /**
-   * Compute the mapping from interval [L, R) of method start to the intervals of method target. Return true if the mapping is feasible.
-   * 
+   * Compute the mapping from interval [L, R) of method start to the intervals of method target. Return true if the mapping
+   * is feasible.
+   *
    * @param start
    * @param L
    * @param R
@@ -322,11 +327,11 @@ public class GeomQueries {
 
   /**
    * Answer contexts-go-by query.
-   * 
-   * Usually, users specify the last K paths as the context. We call it k-CFA context. However, k-CFA is too restrictive. In contexts-go-by query,
-   * user specifies arbitrary call edge in the call graph. The query searches for all contexts induced by the specified call edge and collect
-   * points-to results under these contexts.
-   * 
+   *
+   * Usually, users specify the last K paths as the context. We call it k-CFA context. However, k-CFA is too restrictive. In
+   * contexts-go-by query, user specifies arbitrary call edge in the call graph. The query searches for all contexts induced
+   * by the specified call edge and collect points-to results under these contexts.
+   *
    * @param sootEdge:
    *          the specified context edge in soot edge format
    * @param l:
@@ -400,7 +405,7 @@ public class GeomQueries {
 
   /**
    * Searching the points-to results for field expression such as p.f.
-   * 
+   *
    * @param sootEdge
    * @param l
    * @param field
@@ -446,9 +451,10 @@ public class GeomQueries {
 
   /**
    * Standard K-CFA querying for arbitrary K.
-   * 
+   *
    * @param callEdgeChain:
-   *          last K call edges leading to the method that contains l. callEdgeChain[0] is the farthest call edge in the chain.
+   *          last K call edges leading to the method that contains l. callEdgeChain[0] is the farthest call edge in the
+   *          chain.
    * @param l:
    *          the querying pointer
    * @param visitor:
@@ -525,7 +531,7 @@ public class GeomQueries {
 
   /**
    * Standard K-CFA querying for field expression.
-   * 
+   *
    * @param callEdgeChain:
    *          callEdgeChain[0] is the farthest call edge in the chain.
    * @param l
@@ -584,7 +590,7 @@ public class GeomQueries {
 
   /**
    * Test if two pointers given in geomPTA form are an alias under any contexts.
-   * 
+   *
    * @param pn1
    *          and @param pn2 cannot be null.
    */

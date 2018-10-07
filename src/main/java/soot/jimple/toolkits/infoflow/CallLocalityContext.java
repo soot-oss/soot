@@ -1,6 +1,28 @@
 
 package soot.jimple.toolkits.infoflow;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +35,8 @@ import soot.jimple.StaticFieldRef;
 import soot.jimple.ThisRef;
 
 /**
- * CallLocalityContext written by Richard L. Halpert 2007-03-05 Acts as a container for the locality information collected about a call site by one of
- * the Local Objects Analyses.
+ * CallLocalityContext written by Richard L. Halpert 2007-03-05 Acts as a container for the locality information collected
+ * about a call site by one of the Local Objects Analyses.
  */
 
 public class CallLocalityContext {
@@ -237,7 +259,8 @@ public class CallLocalityContext {
     for (int i = 0; i < nodes.size(); i++) {
       if ((!refsOnly) && isNodeLocal.get(i).booleanValue()) {
         return false;
-      } else if (((EquivalentValue) nodes.get(i)).getValue().getType() instanceof RefLikeType && isNodeLocal.get(i).booleanValue()) {
+      } else if (((EquivalentValue) nodes.get(i)).getValue().getType() instanceof RefLikeType
+          && isNodeLocal.get(i).booleanValue()) {
         return false;
       }
     }

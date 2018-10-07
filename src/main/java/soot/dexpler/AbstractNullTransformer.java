@@ -1,5 +1,27 @@
 package soot.dexpler;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import soot.RefLikeType;
 import soot.Type;
 import soot.Unit;
@@ -16,7 +38,7 @@ import soot.jimple.NullConstant;
 
 /**
  * Abstract base class for {@link DexNullTransformer} and {@link DexIfTransformer}.
- * 
+ *
  * @author Steven Arzt
  */
 public abstract class AbstractNullTransformer extends DexTransformer {
@@ -54,11 +76,13 @@ public abstract class AbstractNullTransformer extends DexTransformer {
     } else if (u instanceof AssignStmt) {
       AssignStmt s = (AssignStmt) u;
       Value v = s.getRightOp();
-      if ((v instanceof IntConstant && ((IntConstant) v).value == 0) || (v instanceof LongConstant && ((LongConstant) v).value == 0)) {
+      if ((v instanceof IntConstant && ((IntConstant) v).value == 0)
+          || (v instanceof LongConstant && ((LongConstant) v).value == 0)) {
         // If this is a field assignment, double-check the type. We
         // might have a.f = 2 with a being a null candidate, but a.f
         // being an int.
-        if (!(s.getLeftOp() instanceof InstanceFieldRef) || ((InstanceFieldRef) s.getLeftOp()).getFieldRef().type() instanceof RefLikeType) {
+        if (!(s.getLeftOp() instanceof InstanceFieldRef)
+            || ((InstanceFieldRef) s.getLeftOp()).getFieldRef().type() instanceof RefLikeType) {
           s.setRightOp(NullConstant.v());
         }
       }

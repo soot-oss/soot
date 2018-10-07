@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.toolkits.graph;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,12 +32,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Constructs a dominator tree structure from the given DominatorsFinder. The nodes in DominatorTree are of type DominatorNode.
+ * Constructs a dominator tree structure from the given DominatorsFinder. The nodes in DominatorTree are of type
+ * DominatorNode.
  *
  * <p>
  *
- * Note: DominatorTree does not currently implement DirectedGraph since it provides 4 methods of navigating the nodes where the meaning of getPredsOf
- * and getSuccsOf diverge from the usual meaning in a DirectedGraph implementation.
+ * Note: DominatorTree does not currently implement DirectedGraph since it provides 4 methods of navigating the nodes where
+ * the meaning of getPredsOf and getSuccsOf diverge from the usual meaning in a DirectedGraph implementation.
  *
  * <p>
  *
@@ -85,8 +89,9 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
   }
 
   /**
-   * Gets the first head of the dominator tree. This function is implemented for single-headed trees and mainly for backwards compatibility.
-   * 
+   * Gets the first head of the dominator tree. This function is implemented for single-headed trees and mainly for backwards
+   * compatibility.
+   *
    * @return The first head of the dominator tree
    */
   public DominatorNode<N> getHead() {
@@ -160,7 +165,8 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
     DominatorNode<N> dode = godeToDode.get(gode);
 
     if (dode == null) {
-      throw new RuntimeException("Assertion failed: Dominator tree does not have a corresponding dode for gode (" + gode + ")");
+      throw new RuntimeException(
+          "Assertion failed: Dominator tree does not have a corresponding dode for gode (" + gode + ")");
     }
 
     return dode;

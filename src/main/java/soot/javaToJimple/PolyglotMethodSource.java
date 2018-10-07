@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2004 Jennifer Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.javaToJimple;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2004 Jennifer Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,7 +135,8 @@ public class PolyglotMethodSource implements MethodSource {
     }
 
     // field ref
-    soot.SootFieldRef field = soot.Scene.v().makeFieldRef(assertStatusClass, fieldName, soot.RefType.v("java.lang.Class"), true);
+    soot.SootFieldRef field
+        = soot.Scene.v().makeFieldRef(assertStatusClass, fieldName, soot.RefType.v("java.lang.Class"), true);
 
     soot.Local fieldLocal = soot.jimple.Jimple.v().newLocal("$r0", soot.RefType.v("java.lang.Class"));
 
@@ -160,8 +164,8 @@ public class PolyglotMethodSource implements MethodSource {
     ArrayList paramTypes = new ArrayList();
     paramTypes.add(soot.RefType.v("java.lang.String"));
 
-    soot.SootMethodRef methodToInvoke = soot.Scene.v().makeMethodRef(assertStatusClass, "class$", paramTypes, soot.RefType.v("java.lang.Class"),
-        true);
+    soot.SootMethodRef methodToInvoke
+        = soot.Scene.v().makeMethodRef(assertStatusClass, "class$", paramTypes, soot.RefType.v("java.lang.Class"), true);
 
     ArrayList params = new ArrayList();
     params.add(soot.jimple.StringConstant.v(paramName));
@@ -196,9 +200,10 @@ public class PolyglotMethodSource implements MethodSource {
     body.getLocals().add(boolLocal2);
 
     // virtual invoke
-    soot.SootMethodRef vMethodToInvoke = Scene.v().makeMethodRef(soot.Scene.v().getSootClass("java.lang.Class"), "desiredAssertionStatus",
-        new ArrayList(), soot.BooleanType.v(), false);
-    soot.jimple.VirtualInvokeExpr vInvoke = soot.jimple.Jimple.v().newVirtualInvokeExpr(invokeLocal, vMethodToInvoke, new ArrayList());
+    soot.SootMethodRef vMethodToInvoke = Scene.v().makeMethodRef(soot.Scene.v().getSootClass("java.lang.Class"),
+        "desiredAssertionStatus", new ArrayList(), soot.BooleanType.v(), false);
+    soot.jimple.VirtualInvokeExpr vInvoke
+        = soot.jimple.Jimple.v().newVirtualInvokeExpr(invokeLocal, vMethodToInvoke, new ArrayList());
 
     soot.jimple.AssignStmt testAssign = soot.jimple.Jimple.v().newAssignStmt(boolLocal1, vInvoke);
 
@@ -232,7 +237,8 @@ public class PolyglotMethodSource implements MethodSource {
     body.getUnits().add(nop4);
 
     // field assign
-    soot.SootFieldRef fieldD = Scene.v().makeFieldRef(body.getMethod().getDeclaringClass(), "$assertionsDisabled", soot.BooleanType.v(), true);
+    soot.SootFieldRef fieldD
+        = Scene.v().makeFieldRef(body.getMethod().getDeclaringClass(), "$assertionsDisabled", soot.BooleanType.v(), true);
 
     soot.jimple.FieldRef fieldRefD = soot.jimple.Jimple.v().newStaticFieldRef(fieldD);
     soot.jimple.AssignStmt fAssign = soot.jimple.Jimple.v().newAssignStmt(fieldRefD, boolLocal2);

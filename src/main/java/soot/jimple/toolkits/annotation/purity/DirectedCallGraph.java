@@ -1,31 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Antoine Mine
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/**
- * Implementation of the paper "A Combined Pointer and Purity Analysis for
- * Java Programs" by Alexandru Salcianu and Martin Rinard, within the
- * Soot Optimization Framework.
- *
- * by Antoine Mine, 2005/01/24
- */
-
 package soot.jimple.toolkits.annotation.purity;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Antoine Mine
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,8 +43,8 @@ import soot.util.MultiMap;
 /**
  * Builds a DirectedGraph from a CallGraph and SootMethodFilter.
  *
- * This is used in AbstractInterproceduralAnalysis to construct a reverse pseudo topological order on which to iterate. You can specify a
- * SootMethodFilter to trim the graph by cutting call edges.
+ * This is used in AbstractInterproceduralAnalysis to construct a reverse pseudo topological order on which to iterate. You
+ * can specify a SootMethodFilter to trim the graph by cutting call edges.
  *
  * Methods filtered-out by the SootMethodFilter will not appear in the DirectedGraph!
  */
@@ -64,11 +59,11 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
   protected int size;
 
   /**
-   * The constructor does all the work here. After constructed, you can safely use all interface methods. Moreover, these methods should perform very
-   * fast...
+   * The constructor does all the work here. After constructed, you can safely use all interface methods. Moreover, these
+   * methods should perform very fast...
    *
-   * The DirectedGraph will only contain methods in call paths from a method in head and comprising only methods wanted by filter. Moreover, only
-   * concrete methods are put in the graph...
+   * The DirectedGraph will only contain methods in call paths from a method in head and comprising only methods wanted by
+   * filter. Moreover, only concrete methods are put in the graph...
    *
    * @param cg
    * @param filter

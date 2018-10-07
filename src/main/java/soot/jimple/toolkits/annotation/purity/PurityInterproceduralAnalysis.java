@@ -1,31 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Antoine Mine
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/**
- * Implementation of the paper "A Combined Pointer and Purity Analysis for
- * Java Programs" by Alexandru Salcianu and Martin Rinard, within the
- * Soot Optimization Framework.
- *
- * by Antoine Mine, 2005/01/24
- */
-
 package soot.jimple.toolkits.annotation.purity;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Antoine Mine
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Date;
 import java.util.Iterator;
@@ -60,11 +55,12 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
   //
   // unanalysed methods assumed pure (& return a new obj)
   // class name prefix / method name
-  static private final String[][] pureMethods = { { "java.lang.", "valueOf" }, { "java.", "equals" }, { "javax.", "equals" }, { "sun.", "equals" },
-      { "java.", "compare" }, { "javax.", "compare" }, { "sun.", "compare" }, { "java.", "getClass" }, { "javax.", "getClass" },
-      { "sun.", "getClass" }, { "java.", "hashCode" }, { "javax.", "hashCode" }, { "sun.", "hashCode" }, { "java.", "toString" },
-      { "javax.", "toString" }, { "sun.", "toString" }, { "java.", "valueOf" }, { "javax.", "valueOf" }, { "sun.", "valueOf" },
-      { "java.", "compareTo" }, { "javax.", "compareTo" }, { "sun.", "compareTo" }, { "java.lang.System", "identityHashCode" },
+  static private final String[][] pureMethods = { { "java.lang.", "valueOf" }, { "java.", "equals" }, { "javax.", "equals" },
+      { "sun.", "equals" }, { "java.", "compare" }, { "javax.", "compare" }, { "sun.", "compare" }, { "java.", "getClass" },
+      { "javax.", "getClass" }, { "sun.", "getClass" }, { "java.", "hashCode" }, { "javax.", "hashCode" },
+      { "sun.", "hashCode" }, { "java.", "toString" }, { "javax.", "toString" }, { "sun.", "toString" },
+      { "java.", "valueOf" }, { "javax.", "valueOf" }, { "sun.", "valueOf" }, { "java.", "compareTo" },
+      { "javax.", "compareTo" }, { "sun.", "compareTo" }, { "java.lang.System", "identityHashCode" },
       // we assume that all standard class initialisers are pure!!!
       { "java.", "<clinit>" }, { "javax.", "<clinit>" }, { "sun.", "<clinit>" },
       // if we define these as pure, the analysis will find them impure as
@@ -72,38 +68,44 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
       // change the whole program state under our feets
       { "java.lang.Math", "abs" }, { "java.lang.Math", "acos" }, { "java.lang.Math", "asin" }, { "java.lang.Math", "atan" },
       { "java.lang.Math", "atan2" }, { "java.lang.Math", "ceil" }, { "java.lang.Math", "cos" }, { "java.lang.Math", "exp" },
-      { "java.lang.Math", "floor" }, { "java.lang.Math", "IEEEremainder" }, { "java.lang.Math", "log" }, { "java.lang.Math", "max" },
-      { "java.lang.Math", "min" }, { "java.lang.Math", "pow" }, { "java.lang.Math", "rint" }, { "java.lang.Math", "round" },
-      { "java.lang.Math", "sin" }, { "java.lang.Math", "sqrt" }, { "java.lang.Math", "tan" },
+      { "java.lang.Math", "floor" }, { "java.lang.Math", "IEEEremainder" }, { "java.lang.Math", "log" },
+      { "java.lang.Math", "max" }, { "java.lang.Math", "min" }, { "java.lang.Math", "pow" }, { "java.lang.Math", "rint" },
+      { "java.lang.Math", "round" }, { "java.lang.Math", "sin" }, { "java.lang.Math", "sqrt" }, { "java.lang.Math", "tan" },
       // TODO: put StrictMath as well ?
       { "java.lang.Throwable", "<init>" },
       // to break the cycle exception -> getCharsAt -> exception
       { "java.lang.StringIndexOutOfBoundsException", "<init>" } };
 
   // unanalysed methods that modify the whole environment
-  static private final String[][] impureMethods = { { "java.io.", "<init>" }, { "java.io.", "close" }, { "java.io.", "read" },
-      { "java.io.", "write" }, { "java.io.", "flush" }, { "java.io.", "flushBuffer" }, { "java.io.", "print" }, { "java.io.", "println" },
-      { "java.lang.Runtime",
+  static private final String[][] impureMethods = { { "java.io.", "<init>" }, { "java.io.", "close" },
+      { "java.io.", "read" }, { "java.io.", "write" }, { "java.io.", "flush" }, { "java.io.", "flushBuffer" },
+      { "java.io.", "print" }, { "java.io.", "println" }, { "java.lang.Runtime",
           "exit" }, /*
-                     * // for soot... {"java.io.","skip"}, {"java.io.","ensureOpen"}, {"java.io.","fill"}, {"java.io.","readLine"},
-                     * {"java.io.","available"}, {"java.io.","mark"}, {"java.io.","reset"}, {"java.io.","toByteArray"}, {"java.io.","size"},
-                     * {"java.io.","writeTo"}, {"java.io.","readBoolean"}, {"java.io.","readChar"}, {"java.io.","readDouble"},
-                     * {"java.io.","readFloat"}, {"java.io.","readByte"}, {"java.io.","readShort"}, {"java.io.","readInt"}, {"java.io.","readLong"},
-                     * {"java.io.","readUnsignedByte"}, {"java.io.","readUnsignedShort"}, {"java.io.","readUTF"}, {"java.io.","readFully"},
-                     * {"java.io.","writeBoolean"}, {"java.io.","writeChar"}, {"java.io.","writeChars"}, {"java.io.","writeDouble"},
-                     * {"java.io.","writeFloat"}, {"java.io.","writeByte"}, {"java.io.","writeBytes"}, {"java.io.","writeShort"},
-                     * {"java.io.","writeInt"}, {"java.io.","writeLong"}, {"java.io.","writeUTF"}, {"java.io.","canRead"}, {"java.io.","delete"},
-                     * {"java.io.","exists"}, {"java.io.","isDirectory"}, {"java.io.","isFile"}, {"java.io.","mkdir"}, {"java.io.","mkdirs"},
-                     * {"java.io.","getAbsoluteFile"}, {"java.io.","getCanonicalFile"}, {"java.io.","getParentFile"}, {"java.io.","listFiles"},
-                     * {"java.io.","getAbsolutePath"}, {"java.io.","getCanonicalPath"}, {"java.io.","getName"}, {"java.io.","getParent"},
-                     * {"java.io.","getPath"}, {"java.io.","list"}, {"java.io.","toURI"}, {"java.io.","lastModified"}, {"java.io.","length"},
-                     * {"java.io.","implies"}, {"java.io.","newPermissionCollection"}, {"java.io.","getLineNumber"},
-                     * {"java.io.","enableResolveObject"}, {"java.io.","readClassDescriptor"}, {"java.io.","readFields"}, {"java.io.","readObject"},
-                     * {"java.io.","readUnshared"}, {"java.io.","defaultReadObject"}, {"java.io.","defaultWriteObject"}, {"java.io.","putFields"},
-                     * {"java.io.","writeFields"}, {"java.io.","writeObject"}, {"java.io.","writeUnshared"}, {"java.io.","unread"},
-                     * {"java.io.","lineno"}, {"java.io.","nextToken"}, {"java.io.","commentChar"}, {"java.io.","lowerCaseMode"},
-                     * {"java.io.","ordinaryChar"}, {"java.io.","quoteChar"}, {"java.io.","resetSyntax"}, {"java.io.","slashSlashComments"},
-                     * {"java.io.","slashSltarComments"}, {"java.io.","whitespaceChars"}, {"java.io.","wordChars"}, {"java.io.","markSupported"},
+                     * // for soot... {"java.io.","skip"}, {"java.io.","ensureOpen"}, {"java.io.","fill"},
+                     * {"java.io.","readLine"}, {"java.io.","available"}, {"java.io.","mark"}, {"java.io.","reset"},
+                     * {"java.io.","toByteArray"}, {"java.io.","size"}, {"java.io.","writeTo"}, {"java.io.","readBoolean"},
+                     * {"java.io.","readChar"}, {"java.io.","readDouble"}, {"java.io.","readFloat"}, {"java.io.","readByte"},
+                     * {"java.io.","readShort"}, {"java.io.","readInt"}, {"java.io.","readLong"},
+                     * {"java.io.","readUnsignedByte"}, {"java.io.","readUnsignedShort"}, {"java.io.","readUTF"},
+                     * {"java.io.","readFully"}, {"java.io.","writeBoolean"}, {"java.io.","writeChar"},
+                     * {"java.io.","writeChars"}, {"java.io.","writeDouble"}, {"java.io.","writeFloat"},
+                     * {"java.io.","writeByte"}, {"java.io.","writeBytes"}, {"java.io.","writeShort"},
+                     * {"java.io.","writeInt"}, {"java.io.","writeLong"}, {"java.io.","writeUTF"}, {"java.io.","canRead"},
+                     * {"java.io.","delete"}, {"java.io.","exists"}, {"java.io.","isDirectory"}, {"java.io.","isFile"},
+                     * {"java.io.","mkdir"}, {"java.io.","mkdirs"}, {"java.io.","getAbsoluteFile"},
+                     * {"java.io.","getCanonicalFile"}, {"java.io.","getParentFile"}, {"java.io.","listFiles"},
+                     * {"java.io.","getAbsolutePath"}, {"java.io.","getCanonicalPath"}, {"java.io.","getName"},
+                     * {"java.io.","getParent"}, {"java.io.","getPath"}, {"java.io.","list"}, {"java.io.","toURI"},
+                     * {"java.io.","lastModified"}, {"java.io.","length"}, {"java.io.","implies"},
+                     * {"java.io.","newPermissionCollection"}, {"java.io.","getLineNumber"},
+                     * {"java.io.","enableResolveObject"}, {"java.io.","readClassDescriptor"}, {"java.io.","readFields"},
+                     * {"java.io.","readObject"}, {"java.io.","readUnshared"}, {"java.io.","defaultReadObject"},
+                     * {"java.io.","defaultWriteObject"}, {"java.io.","putFields"}, {"java.io.","writeFields"},
+                     * {"java.io.","writeObject"}, {"java.io.","writeUnshared"}, {"java.io.","unread"},
+                     * {"java.io.","lineno"}, {"java.io.","nextToken"}, {"java.io.","commentChar"},
+                     * {"java.io.","lowerCaseMode"}, {"java.io.","ordinaryChar"}, {"java.io.","quoteChar"},
+                     * {"java.io.","resetSyntax"}, {"java.io.","slashSlashComments"}, {"java.io.","slashSltarComments"},
+                     * {"java.io.","whitespaceChars"}, {"java.io.","wordChars"}, {"java.io.","markSupported"},
                      * {"java.","getCause"}, {"java.","getMessage"}, {"java.","getReason"},
                      */ };
 
@@ -111,8 +113,9 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
   static private final String[][] alterMethods = { { "java.lang.System", "arraycopy" },
       // these are really huge methods used internally by StringBuffer
       // printing => put here to speed-up the analysis
-      { "java.lang.FloatingDecimal", "dtoa" }, { "java.lang.FloatingDecimal", "developLongDigits" }, { "java.lang.FloatingDecimal", "big5pow" },
-      { "java.lang.FloatingDecimal", "getChars" }, { "java.lang.FloatingDecimal", "roundup" } };
+      { "java.lang.FloatingDecimal", "dtoa" }, { "java.lang.FloatingDecimal", "developLongDigits" },
+      { "java.lang.FloatingDecimal", "big5pow" }, { "java.lang.FloatingDecimal", "getChars" },
+      { "java.lang.FloatingDecimal", "roundup" } };
 
   /**
    * Filter out some method.

@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2007 Manu Sridharan
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.spark.ondemand.genericutil;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2007 Manu Sridharan
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -65,7 +69,7 @@ public class Util {
 
   /**
    * Factorial on doubles; avoids overflow problems present when using integers.
-   * 
+   *
    * @param n_
    *          arg on which to compute factorial
    * @return (<code>double</code> approximation to) factorial of largest positive integer <= (n_ + epsilon)
@@ -163,7 +167,7 @@ public class Util {
 
   /**
    * Test whether <em>some</em> element of the given {@link Collection} satisfies the given {@link Predicate}.
-   * 
+   *
    * @return The first element satisfying the predicate; otherwise null.
    */
   public static <T> T find(Collection<T> c_, Predicate<T> p_) {
@@ -179,7 +183,7 @@ public class Util {
 
   /**
    * Test whether <em>some</em> element of the given {@link Collection} satisfies the given {@link Predicate}.
-   * 
+   *
    * @return All the elements satisfying the predicate
    */
   public static <T> Collection<T> findAll(Collection<T> c_, Predicate<T> p_) {
@@ -209,7 +213,7 @@ public class Util {
 
   /**
    * Perform an action for all elements in a collection.
-   * 
+   *
    * @param c_
    *          the collection
    * @param v_
@@ -222,9 +226,9 @@ public class Util {
   }
 
   /**
-   * Map a list: generate a new list with each element mapped. The new list is always an {@link ArrayList}; it would have been more precise to use
-   * {@link java.lang.reflect reflection} to create a list of the same type as 'srcList', but reflection works really slowly in some implementations,
-   * so it's best to avoid it.
+   * Map a list: generate a new list with each element mapped. The new list is always an {@link ArrayList}; it would have
+   * been more precise to use {@link java.lang.reflect reflection} to create a list of the same type as 'srcList', but
+   * reflection works really slowly in some implementations, so it's best to avoid it.
    */
   public static <T, U> List<U> map(List<T> srcList, Mapper<T, U> mapper_) {
     ArrayList<U> result = new ArrayList<U>();
@@ -235,9 +239,10 @@ public class Util {
   }
 
   /**
-   * Filter a collection: generate a new list from an existing collection, consisting of the elements satisfying some predicate. The new list is
-   * always an {@link ArrayList}; it would have been more precise to use {@link java.lang.reflect reflection} to create a list of the same type as
-   * 'srcList', but reflection works really slowly in some implementations, so it's best to avoid it.
+   * Filter a collection: generate a new list from an existing collection, consisting of the elements satisfying some
+   * predicate. The new list is always an {@link ArrayList}; it would have been more precise to use {@link java.lang.reflect
+   * reflection} to create a list of the same type as 'srcList', but reflection works really slowly in some implementations,
+   * so it's best to avoid it.
    */
   public static <T> List<T> filter(Collection<T> src_, Predicate<T> pred_) {
     ArrayList<T> result = new ArrayList<T>();
@@ -252,7 +257,7 @@ public class Util {
 
   /**
    * Filter a collection according to some predicate, placing the result in a List
-   * 
+   *
    * @param src_
    *          collection to be filtered
    * @param pred_
@@ -269,9 +274,9 @@ public class Util {
   }
 
   /**
-   * Map a set: generate a new set with each element mapped. The new set is always a {@link HashSet}; it would have been more precise to use
-   * {@link java.lang.reflect reflection} to create a set of the same type as 'srcSet', but reflection works really slowly in some implementations, so
-   * it's best to avoid it.
+   * Map a set: generate a new set with each element mapped. The new set is always a {@link HashSet}; it would have been more
+   * precise to use {@link java.lang.reflect reflection} to create a set of the same type as 'srcSet', but reflection works
+   * really slowly in some implementations, so it's best to avoid it.
    */
   public static <T, U> Set<U> mapToSet(Collection<T> srcSet, Mapper<T, U> mapper_) {
     HashSet<U> result = new HashSet<U>();
@@ -412,7 +417,7 @@ public class Util {
 
   /**
    * checks if two sets have a non-empty intersection
-   * 
+   *
    * @param s1
    * @param s2
    * @return <code>true</code> if the sets intersect; <code>false</code> otherwise
@@ -434,8 +439,9 @@ public class Util {
   }
 
   /**
-   * given the name of a class C, returns the name of the top-most enclosing class of class C. For example, given A$B$C, the method returns A
-   * 
+   * given the name of a class C, returns the name of the top-most enclosing class of class C. For example, given A$B$C, the
+   * method returns A
+   *
    * @param typeStr
    * @return
    */

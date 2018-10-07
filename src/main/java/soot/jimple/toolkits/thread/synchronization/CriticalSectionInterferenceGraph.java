@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.thread.synchronization;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -114,7 +136,8 @@ public class CriticalSectionInterferenceGraph {
               } else if (!(tn1.origLock instanceof Local) || !(tn2.origLock instanceof Local)) {
                 emptyEdge = !tn1.origLock.equals(tn2.origLock);
               } else {
-                emptyEdge = !pta.reachingObjects((Local) tn1.origLock).hasNonEmptyIntersection(pta.reachingObjects((Local) tn2.origLock));
+                emptyEdge = !pta.reachingObjects((Local) tn1.origLock)
+                    .hasNonEmptyIntersection(pta.reachingObjects((Local) tn2.origLock));
               }
 
               // Check if types are compatible
@@ -135,14 +158,16 @@ public class CriticalSectionInterferenceGraph {
                   if (classTwo.isInterface()) {
                     typeCompatible = h.getImplementersOf(classTwo).contains(classOne);
                   } else {
-                    typeCompatible = (classOne != null && Scene.v().getActiveHierarchy().getSubclassesOfIncluding(classOne).contains(classTwo)
-                        || classTwo != null && Scene.v().getActiveHierarchy().getSubclassesOfIncluding(classTwo).contains(classOne));
+                    typeCompatible = (classOne != null
+                        && Scene.v().getActiveHierarchy().getSubclassesOfIncluding(classOne).contains(classTwo)
+                        || classTwo != null
+                            && Scene.v().getActiveHierarchy().getSubclassesOfIncluding(classTwo).contains(classOne));
                   }
                 }
               }
             }
-            if ((!optionLeaveOriginalLocks && (tn1.write.hasNonEmptyIntersection(tn2.write) || tn1.write.hasNonEmptyIntersection(tn2.read)
-                || tn1.read.hasNonEmptyIntersection(tn2.write)))
+            if ((!optionLeaveOriginalLocks && (tn1.write.hasNonEmptyIntersection(tn2.write)
+                || tn1.write.hasNonEmptyIntersection(tn2.read) || tn1.read.hasNonEmptyIntersection(tn2.write)))
                 || (optionLeaveOriginalLocks && typeCompatible && (optionIncludeEmptyPossibleEdges || !emptyEdge))) {
               // Determine the size of the intersection for GraphViz output
               CodeBlockRWSet rw = null;

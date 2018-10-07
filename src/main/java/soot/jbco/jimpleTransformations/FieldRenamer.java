@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jbco.jimpleTransformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import static java.util.Collections.emptyList;
 
@@ -198,13 +201,15 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
               if (newName.equals(oldName)) {
                 System.out.println("Strange.. Should not find a field with the same old and new name.");
               }
-              sootFieldRef = Scene.v().makeFieldRef(sootFieldRef.declaringClass(), newName, sootFieldRef.type(), sootFieldRef.isStatic());
+              sootFieldRef = Scene.v().makeFieldRef(sootFieldRef.declaringClass(), newName, sootFieldRef.type(),
+                  sootFieldRef.isStatic());
               fieldRef.setFieldRef(sootFieldRef);
               try {
                 sootFieldRef.resolve();
               } catch (Exception e) {
                 System.err.println("********ERROR Updating " + sootFieldRef.name() + " to " + newName);
-                System.err.println("Fields of " + sootFieldRef.declaringClass().getName() + ": " + sootFieldRef.declaringClass().getFields());
+                System.err.println("Fields of " + sootFieldRef.declaringClass().getName() + ": "
+                    + sootFieldRef.declaringClass().getFields());
                 throw new RuntimeException(e);
               }
             }
@@ -243,7 +248,8 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
 
       SootMethod boolInit = boolRef.getSootClass().getMethod("void <init>(boolean)");
       units.addFirst(Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(f.makeRef()), bool));
-      units.addFirst(Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(bool, boolInit.makeRef(), IntConstant.v(value ? 1 : 0))));
+      units.addFirst(
+          Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(bool, boolInit.makeRef(), IntConstant.v(value ? 1 : 0))));
       units.addFirst(Jimple.v().newAssignStmt(bool, Jimple.v().newNewExpr(boolRef)));
     }
     if (newInit) {

@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2004 Jennifer Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jimple.toolkits.base;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2004 Jennifer Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -92,7 +95,8 @@ public class ExceptionChecker extends BodyTransformer {
     }
 
     // handles case when exception is RuntimeException or Error
-    if (throwClass.equals(Scene.v().getSootClass("java.lang.RuntimeException")) || throwClass.equals(Scene.v().getSootClass("java.lang.Error"))) {
+    if (throwClass.equals(Scene.v().getSootClass("java.lang.RuntimeException"))
+        || throwClass.equals(Scene.v().getSootClass("java.lang.Error"))) {
       return true;
     }
     // handles case when exception is a subclass of RuntimeException or Error
@@ -224,8 +228,8 @@ public class ExceptionChecker extends BodyTransformer {
         if (s instanceof InvokeStmt) {
           reporter.reportError(new ExceptionCheckerError(b.getMethod(), sc, s, (SourceLnPosTag) s.getTag("SourceLnPosTag")));
         } else if (s instanceof AssignStmt) {
-          reporter.reportError(
-              new ExceptionCheckerError(b.getMethod(), sc, s, (SourceLnPosTag) ((AssignStmt) s).getRightOpBox().getTag("SourceLnPosTag")));
+          reporter.reportError(new ExceptionCheckerError(b.getMethod(), sc, s,
+              (SourceLnPosTag) ((AssignStmt) s).getRightOpBox().getTag("SourceLnPosTag")));
         }
       }
     }

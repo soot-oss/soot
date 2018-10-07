@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.infoflow;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -72,19 +94,20 @@ public class InfoFlowAnalysis {
   }
 
   /*
-   * public void doApplicationClassesAnalysis() { Iterator appClassesIt = Scene.v().getApplicationClasses().iterator(); while (appClassesIt.hasNext())
-   * { SootClass appClass = (SootClass) appClassesIt.next();
-   * 
+   * public void doApplicationClassesAnalysis() { Iterator appClassesIt = Scene.v().getApplicationClasses().iterator(); while
+   * (appClassesIt.hasNext()) { SootClass appClass = (SootClass) appClassesIt.next();
+   *
    * // Create the needed flow analysis object ClassInfoFlowAnalysis cdfa = new ClassInfoFlowAnalysis(appClass, this);
-   * 
-   * // Put the preliminary flow-insensitive results here in case they // are needed by the flow-sensitive version. This method will be // reentrant
-   * if any method we are analyzing is reentrant, so we // must do this to prevent an infinite recursive loop.
-   * classToClassInfoFlowAnalysis.put(appClass, cdfa); }
-   * 
-   * Iterator appClassesIt2 = Scene.v().getApplicationClasses().iterator(); while (appClassesIt2.hasNext()) { SootClass appClass = (SootClass)
-   * appClassesIt2.next(); // Now calculate the flow-sensitive version. If this classes methods // are reentrant, it will call this method and receive
-   * the flow // insensitive version that is already cached. ClassInfoFlowAnalysis cdfa = (ClassInfoFlowAnalysis)
-   * classToClassInfoFlowAnalysis.get(appClass); cdfa.doFixedPointDataFlowAnalysis(); } }
+   *
+   * // Put the preliminary flow-insensitive results here in case they // are needed by the flow-sensitive version. This
+   * method will be // reentrant if any method we are analyzing is reentrant, so we // must do this to prevent an infinite
+   * recursive loop. classToClassInfoFlowAnalysis.put(appClass, cdfa); }
+   *
+   * Iterator appClassesIt2 = Scene.v().getApplicationClasses().iterator(); while (appClassesIt2.hasNext()) { SootClass
+   * appClass = (SootClass) appClassesIt2.next(); // Now calculate the flow-sensitive version. If this classes methods // are
+   * reentrant, it will call this method and receive the flow // insensitive version that is already cached.
+   * ClassInfoFlowAnalysis cdfa = (ClassInfoFlowAnalysis) classToClassInfoFlowAnalysis.get(appClass);
+   * cdfa.doFixedPointDataFlowAnalysis(); } }
    */
 
   private ClassInfoFlowAnalysis getClassInfoFlowAnalysis(SootClass sc) {
@@ -101,8 +124,8 @@ public class InfoFlowAnalysis {
   }
 
   /**
-   * Returns a BACKED MutableDirectedGraph whose nodes are EquivalentValue wrapped Refs. It's perfectly safe to modify this graph, just so long as new
-   * nodes are EquivalentValue wrapped Refs.
+   * Returns a BACKED MutableDirectedGraph whose nodes are EquivalentValue wrapped Refs. It's perfectly safe to modify this
+   * graph, just so long as new nodes are EquivalentValue wrapped Refs.
    */
   public HashMutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(SootMethod sm) {
     return getMethodInfoFlowSummary(sm, true);
@@ -117,17 +140,17 @@ public class InfoFlowAnalysis {
    * Returns an unmodifiable list of EquivalentValue wrapped Refs that source flows to when method sm is called.
    */
   /*
-   * public List getSinksOf(SootMethod sm, EquivalentValue source) { ClassInfoFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
-   * MutableDirectedGraph g = cdfa.getMethodDataFlowGraph(sm); List sinks = null; if(g.containsNode(source)) sinks = g.getSuccsOf(source); else sinks
-   * = new ArrayList(); return sinks; }
+   * public List getSinksOf(SootMethod sm, EquivalentValue source) { ClassInfoFlowAnalysis cdfa =
+   * getClassDataFlowAnalysis(sm.getDeclaringClass()); MutableDirectedGraph g = cdfa.getMethodDataFlowGraph(sm); List sinks =
+   * null; if(g.containsNode(source)) sinks = g.getSuccsOf(source); else sinks = new ArrayList(); return sinks; }
    */
   /**
    * Returns an unmodifiable list of EquivalentValue wrapped Refs that sink flows from when method sm is called.
    */
   /*
-   * public List getSourcesOf(SootMethod sm, EquivalentValue sink) { ClassInfoFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
-   * MutableDirectedGraph g = cdfa.getMethodDataFlowGraph(sm); List sources = null; if(g.containsNode(sink)) sources = g.getPredsOf(sink); else
-   * sources = new ArrayList(); return sources; }
+   * public List getSourcesOf(SootMethod sm, EquivalentValue sink) { ClassInfoFlowAnalysis cdfa =
+   * getClassDataFlowAnalysis(sm.getDeclaringClass()); MutableDirectedGraph g = cdfa.getMethodDataFlowGraph(sm); List sources
+   * = null; if(g.containsNode(sink)) sources = g.getPredsOf(sink); else sources = new ArrayList(); return sources; }
    */
   // Returns an EquivalentValue wrapped Ref based on sfr
   // that is suitable for comparison to the nodes of a Data Flow Graph
@@ -141,7 +164,8 @@ public class InfoFlowAnalysis {
     } else {
       // Jimple.v().newThisRef(sf.getDeclaringClass().getType())
       if (sm.isConcrete() && !sm.isStatic() && sm.getDeclaringClass() == sf.getDeclaringClass() && realLocal == null) {
-        JimpleLocal fakethis = new FakeJimpleLocal("fakethis", sf.getDeclaringClass().getType(), sm.retrieveActiveBody().getThisLocal());
+        JimpleLocal fakethis
+            = new FakeJimpleLocal("fakethis", sf.getDeclaringClass().getType(), sm.retrieveActiveBody().getThisLocal());
 
         return new CachedEquivalentValue(Jimple.v().newInstanceFieldRef(fakethis, sf.makeRef())); // fake thisLocal
       } else {
@@ -186,7 +210,8 @@ public class InfoFlowAnalysis {
       // Verify that this target is an implementation of the method we intend to call,
       // and not just a class initializer or other unintended control flow.
       if (target.getSubSignature().equals(subSig)) {
-        HashMutableDirectedGraph<EquivalentValue> ifs = getMethodInfoFlowSummary(target, context.getDeclaringClass().isApplicationClass());
+        HashMutableDirectedGraph<EquivalentValue> ifs
+            = getMethodInfoFlowSummary(target, context.getDeclaringClass().isApplicationClass());
         if (ret == null) {
           ret = ifs;
         } else {
@@ -262,7 +287,8 @@ public class InfoFlowAnalysis {
     }
   }
 
-  public static void printGraphToDotFile(String filename, DirectedGraph<EquivalentValue> graph, String graphname, boolean onePage) {
+  public static void printGraphToDotFile(String filename, DirectedGraph<EquivalentValue> graph, String graphname,
+      boolean onePage) {
     // this makes the node name unique
     nodecount = 0; // reset node counter first.
 
@@ -305,9 +331,9 @@ public class InfoFlowAnalysis {
   public static String getNodeLabel(Object o) {
     Value node = ((EquivalentValue) o).getValue();
     /*
-     * if(node instanceof InstanceFieldRef) { InstanceFieldRef ifr = (InstanceFieldRef) node; if(ifr.getBase() instanceof FakeJimpleLocal) return
-     * ifr.getField().getDeclaringClass().getShortName() + "." + ifr.getFieldRef().name(); else return
-     * ifr.getField().getDeclaringClass().getShortName() + "." + ifr.getFieldRef().name(); } else
+     * if(node instanceof InstanceFieldRef) { InstanceFieldRef ifr = (InstanceFieldRef) node; if(ifr.getBase() instanceof
+     * FakeJimpleLocal) return ifr.getField().getDeclaringClass().getShortName() + "." + ifr.getFieldRef().name(); else
+     * return ifr.getField().getDeclaringClass().getShortName() + "." + ifr.getFieldRef().name(); } else
      */
     if (node instanceof FieldRef) {
       FieldRef fr = (FieldRef) node;

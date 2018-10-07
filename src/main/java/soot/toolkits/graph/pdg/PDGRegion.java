@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1999-2010 Hossein Sadat-Mohtasham
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.toolkits.graph.pdg;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1999 - 2010 Hossein Sadat-Mohtasham
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,9 +39,10 @@ import soot.toolkits.graph.Block;
 import soot.toolkits.graph.UnitGraph;
 
 /**
- * This represents a region of control dependence obtained by constructing a program dependence graph. A PDGRegion is slightly different than a weak
- * or strong region; the loops and conditional relations between regions are explicitly represented in the PDGRegion.
- * 
+ * This represents a region of control dependence obtained by constructing a program dependence graph. A PDGRegion is
+ * slightly different than a weak or strong region; the loops and conditional relations between regions are explicitly
+ * represented in the PDGRegion.
+ *
  * @author Hossein Sadat-Mohtasham Sep 2009
  */
 
@@ -80,8 +85,9 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
   }
 
   public PDGRegion(PDGNode node) {
-    this(((IRegion) node.getNode()).getID(), (List<PDGNode>) new ArrayList<PDGNode>(), ((IRegion) node.getNode()).getSootMethod(),
-        ((IRegion) node.getNode()).getSootClass(), ((IRegion) node.getNode()).getUnitGraph(), node);
+    this(((IRegion) node.getNode()).getID(), (List<PDGNode>) new ArrayList<PDGNode>(),
+        ((IRegion) node.getNode()).getSootMethod(), ((IRegion) node.getNode()).getSootClass(),
+        ((IRegion) node.getNode()).getUnitGraph(), node);
 
   }
 
@@ -115,9 +121,9 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
   }
 
   /**
-   * This is an iterator that knows how to follow the control flow in a region. It only iterates through the dependent nodes that contribute to the
-   * list of units in a region as defined by a weak region.
-   * 
+   * This is an iterator that knows how to follow the control flow in a region. It only iterates through the dependent nodes
+   * that contribute to the list of units in a region as defined by a weak region.
+   *
    */
   class ChildPDGFlowIterator implements Iterator<PDGNode> {
     List<PDGNode> m_list = null;
@@ -146,11 +152,11 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
         // Find the first node in the control flow
 
         /*
-         * There cannot be more than one CFG node in a region unless there is a control flow edge between them. However, there could be a CFG node and
-         * other region nodes (back dependency, or other.) In such cases, the one CFG node should be found and returned, and other region nodes should
-         * be ignored. Unless it's a LoopedPDGNode (in which case control flow edge should still exist if there are other sibling Looped PDGNodes or
-         * CFG nodes.)
-         * 
+         * There cannot be more than one CFG node in a region unless there is a control flow edge between them. However,
+         * there could be a CFG node and other region nodes (back dependency, or other.) In such cases, the one CFG node
+         * should be found and returned, and other region nodes should be ignored. Unless it's a LoopedPDGNode (in which case
+         * control flow edge should still exist if there are other sibling Looped PDGNodes or CFG nodes.)
+         *
          */
         while (m_current.getPrev() != null) {
           m_current = m_current.getPrev();
@@ -158,8 +164,9 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
 
         if (m_current.getType() != PDGNode.Type.CFGNODE && m_current.getAttrib() != PDGNode.Attribute.LOOPHEADER) {
           /*
-           * Look for useful dependence whose units are considered to be part of this region (loop header or CFG block nodes.)
-           * 
+           * Look for useful dependence whose units are considered to be part of this region (loop header or CFG block
+           * nodes.)
+           *
            */
 
           for (Iterator<PDGNode> depItr = m_list.iterator(); depItr.hasNext();) {
@@ -191,9 +198,10 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
   }
 
   /**
-   * return an iterator that know how to follow the control flow in a region. This actually returns a ChildPDGFlowIterator that only iterates through
-   * the dependent nodes that contribute to the units that belong to a region as defined by a weak region.
-   * 
+   * return an iterator that know how to follow the control flow in a region. This actually returns a ChildPDGFlowIterator
+   * that only iterates through the dependent nodes that contribute to the units that belong to a region as defined by a weak
+   * region.
+   *
    */
   public Iterator<PDGNode> iterator() {
     return new ChildPDGFlowIterator(this.m_nodes);
@@ -244,10 +252,10 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
   }
 
   /**
-   * 
+   *
    * @param a
    *          Statement within the region
-   * 
+   *
    * @return The PDGNode that contains that unit, if this unit is in this region.
    */
   public PDGNode unit2PDGNode(Unit u) {

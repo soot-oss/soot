@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Florian Loitsch
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-2002.
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.toolkits.scalar.pre;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2002 Florian Loitsch
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Map;
 
@@ -38,9 +35,10 @@ import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 /**
- * Performs a Delayability-analysis on the given graph. This analysis is the third analysis in the PRE (lazy code motion) and has little (no?) sense
- * if used alone. Basically it tries to push the computations we would insert in the Busy Code Motion as far down as possible, to decrease life-time
- * ranges (clearly this is not true, if the computation "uses" two variables and produces only one temporary).
+ * Performs a Delayability-analysis on the given graph. This analysis is the third analysis in the PRE (lazy code motion) and
+ * has little (no?) sense if used alone. Basically it tries to push the computations we would insert in the Busy Code Motion
+ * as far down as possible, to decrease life-time ranges (clearly this is not true, if the computation "uses" two variables
+ * and produces only one temporary).
  */
 public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<EquivalentValue>> {
   private EarliestnessComputation earliest;
@@ -57,7 +55,8 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
   }
 
   /**
-   * Automatically performs the Delayability-analysis on the graph <code>dg</code> and the Earliest-computation <code>earliest</code>.<br>
+   * Automatically performs the Delayability-analysis on the graph <code>dg</code> and the Earliest-computation
+   * <code>earliest</code>.<br>
    * the <code>equivRhsMap</code> is only here to avoid doing these things again...
    *
    * @param dg
@@ -67,15 +66,18 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
    * @param equivRhsMap
    *          the rhs of each unit (if assignment-stmt).
    */
-  public DelayabilityAnalysis(DirectedGraph<Unit> dg, EarliestnessComputation earliest, Map<Unit, EquivalentValue> equivRhsMap) {
-    this(dg, earliest, equivRhsMap, new ArrayPackedSet<EquivalentValue>(new CollectionFlowUniverse<EquivalentValue>(equivRhsMap.values())));
+  public DelayabilityAnalysis(DirectedGraph<Unit> dg, EarliestnessComputation earliest,
+      Map<Unit, EquivalentValue> equivRhsMap) {
+    this(dg, earliest, equivRhsMap,
+        new ArrayPackedSet<EquivalentValue>(new CollectionFlowUniverse<EquivalentValue>(equivRhsMap.values())));
   }
 
   /**
-   * Automatically performs the Delayability-analysis on the graph <code>dg</code> and the Earliest-computation <code>earliest</code>.<br>
+   * Automatically performs the Delayability-analysis on the graph <code>dg</code> and the Earliest-computation
+   * <code>earliest</code>.<br>
    * the <code>equivRhsMap</code> is only here to avoid doing these things again...<br>
-   * as set-operations are usually more efficient, if the sets come from one source, sets should be shared around analyses, if the analyses are to be
-   * combined.
+   * as set-operations are usually more efficient, if the sets come from one source, sets should be shared around analyses,
+   * if the analyses are to be combined.
    *
    * @param dg
    *          a ExceptionalUnitGraph
@@ -86,8 +88,8 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
    * @param set
    *          the shared set.
    */
-  public DelayabilityAnalysis(DirectedGraph<Unit> dg, EarliestnessComputation earliest, Map<Unit, EquivalentValue> equivRhsMap,
-      BoundedFlowSet<EquivalentValue> set) {
+  public DelayabilityAnalysis(DirectedGraph<Unit> dg, EarliestnessComputation earliest,
+      Map<Unit, EquivalentValue> equivRhsMap, BoundedFlowSet<EquivalentValue> set) {
     super(dg);
     UnitGraph g = (UnitGraph) dg;
     this.set = set;

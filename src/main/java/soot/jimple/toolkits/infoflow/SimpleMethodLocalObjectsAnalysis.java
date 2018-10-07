@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.infoflow;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -70,7 +92,8 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
     AbstractDataSource sharedDataSource = new AbstractDataSource(new String("SHARED"));
 
     List<Object> sharedRefs = context.getSharedRefs();
-    Iterator<Object> sharedRefEqValIt = sharedRefs.iterator(); // returns a list of (correctly structured) EquivalentValue wrapped refs that should be
+    Iterator<Object> sharedRefEqValIt = sharedRefs.iterator(); // returns a list of (correctly structured) EquivalentValue
+                                                               // wrapped refs that should be
                                                                // treated as shared
     while (sharedRefEqValIt.hasNext()) {
       EquivalentValue refEqVal = (EquivalentValue) sharedRefEqValIt.next();
@@ -106,8 +129,8 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
     if (infoFlowGraph.containsNode(source)) {
       List sinks = infoFlowGraph.getSuccsOf(source);
       if (printMessages) {
-        logger.debug(
-            "      Requested value " + local + " is " + (!sinks.contains(new CachedEquivalentValue(local)) ? "Local" : "Shared") + " in " + sm + " ");
+        logger.debug("      Requested value " + local + " is "
+            + (!sinks.contains(new CachedEquivalentValue(local)) ? "Local" : "Shared") + " in " + sm + " ");
       }
       return !sinks.contains(new CachedEquivalentValue(local));
     } else {

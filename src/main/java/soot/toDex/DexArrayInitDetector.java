@@ -1,5 +1,27 @@
 package soot.toDex;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,13 +41,13 @@ import soot.jimple.NewArrayExpr;
 
 /**
  * Detector class that identifies array initializations and packs them into a single instruction:
- * 
+ *
  * a = new char[2]; a[0] = 42; a[1] = 3;
- * 
+ *
  * In dex, this can be expressed in a more concise way:
- * 
+ *
  * a = new char[2]; fill(a, ...)
- * 
+ *
  * @author Steven Arzt
  *
  */
@@ -36,7 +58,7 @@ public class DexArrayInitDetector {
 
   /**
    * Constructs packed array initializations from the individual element assignments in the given body
-   * 
+   *
    * @param body
    *          The body in which to look for element assignments
    */
@@ -64,7 +86,10 @@ public class DexArrayInitDetector {
         } else {
           arrayValues = null;
         }
-      } else if (assignStmt.getLeftOp() instanceof ArrayRef && assignStmt.getRightOp() instanceof IntConstant /* NumericConstant */
+      } else if (assignStmt.getLeftOp() instanceof ArrayRef && assignStmt.getRightOp() instanceof IntConstant
+      /*
+       * NumericConstant
+       */
           && arrayValues != null) {
         ArrayRef aref = (ArrayRef) assignStmt.getLeftOp();
         if (aref.getIndex() instanceof IntConstant) {
@@ -109,9 +134,9 @@ public class DexArrayInitDetector {
   }
 
   /**
-   * Fixes the traps in the given body to account for assignments to individual array elements being replaced by a single fill instruction. If a trap
-   * starts or ends in the middle of the replaced instructions, we have to move the trap.
-   * 
+   * Fixes the traps in the given body to account for assignments to individual array elements being replaced by a single
+   * fill instruction. If a trap starts or ends in the middle of the replaced instructions, we have to move the trap.
+   *
    * @param activeBody
    *          The body in which to fix the traps
    */

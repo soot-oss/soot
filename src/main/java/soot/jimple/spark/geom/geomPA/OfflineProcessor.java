@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.spark.geom.geomPA;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2011 Richard Xiao
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -39,12 +43,12 @@ import soot.jimple.spark.sets.P2SetVisitor;
 
 /**
  * Implementation of pre-processing algorithms performed prior to the pointer analysis.
- * 
- * Currently supported techniques are: 1. Pointer distillation: the library code that does not impact the application code pointers is removed; 2.
- * Pointer ranking for worklist prioritizing.
- * 
+ *
+ * Currently supported techniques are: 1. Pointer distillation: the library code that does not impact the application code
+ * pointers is removed; 2. Pointer ranking for worklist prioritizing.
+ *
  * @author xiao
- * 
+ *
  */
 public class OfflineProcessor {
   class off_graph_edge {
@@ -129,7 +133,7 @@ public class OfflineProcessor {
 
   /**
    * Compute the refined points-to results for specified pointers.
-   * 
+   *
    * @param initVars
    */
   public void addUserDefPts(Set<Node> initVars) {
@@ -169,7 +173,7 @@ public class OfflineProcessor {
 
   /**
    * Preprocess the pointers and constraints before running geomPA.
-   * 
+   *
    * @param useSpark
    * @param multiCallsites
    */
@@ -198,8 +202,8 @@ public class OfflineProcessor {
   }
 
   /**
-   * The dependence graph reverses the assignment relations. E.g., p = q => p -> q Note that, the assignments that are eliminated by local variable
-   * merging should be used here. Otherwise, the graph would be erroneously disconnected.
+   * The dependence graph reverses the assignment relations. E.g., p = q => p -> q Note that, the assignments that are
+   * eliminated by local variable merging should be used here. Otherwise, the graph would be erroneously disconnected.
    */
   protected void buildDependenceGraph() {
     for (PlainConstraint cons : geomPTA.constraints) {
@@ -285,7 +289,7 @@ public class OfflineProcessor {
 
   /**
    * All the pointers that we need their points-to information are marked.
-   * 
+   *
    * @param virtualBaseSet
    */
   protected void setAllUserCodeVariablesUseful() {
@@ -364,7 +368,8 @@ public class OfflineProcessor {
   }
 
   /**
-   * Eliminate the constraints that do not contribute points-to information to the seed pointers. Prerequisite: dependence graph
+   * Eliminate the constraints that do not contribute points-to information to the seed pointers. Prerequisite: dependence
+   * graph
    */
   protected void distillConstraints() {
     IVarAbstraction pn;
@@ -388,8 +393,9 @@ public class OfflineProcessor {
 
         case Constants.STORE_CONS:
           /**
-           * Interesting point in store constraint p.f = q: For example, pts(p) = { o1, o2 }; If any of the o1.f and the o2.f (e.g. o1.f) will be
-           * updated, this constraint should be kept. However, in the points-to analysis, we only assign to o1.f.
+           * Interesting point in store constraint p.f = q: For example, pts(p) = { o1, o2 }; If any of the o1.f and the o2.f
+           * (e.g. o1.f) will be updated, this constraint should be kept. However, in the points-to analysis, we only assign
+           * to o1.f.
            */
           pn = pn.getRepresentative();
 
@@ -429,8 +435,8 @@ public class OfflineProcessor {
   }
 
   /**
-   * The dependence graph will be destroyed and the impact graph will be built. p = q means q impacts p. Therefore, we add en edge q -> p in impact
-   * graph.
+   * The dependence graph will be destroyed and the impact graph will be built. p = q means q impacts p. Therefore, we add en
+   * edge q -> p in impact graph.
    */
   protected void buildImpactGraph() {
     for (int i = 0; i < n_var; ++i) {

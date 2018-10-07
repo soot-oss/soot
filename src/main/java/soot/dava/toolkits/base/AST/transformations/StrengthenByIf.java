@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.AST.transformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -84,8 +87,8 @@ public class StrengthenByIf {
             return null;
           } else if (loopNode instanceof ASTUnconditionalLoopNode) {
             /*
-             * An UnconditionalLoopNode has a single If Condition which breaks the loop In this case Create an ASTWhileLoop Node with the flipped
-             * Condition of the If statement
+             * An UnconditionalLoopNode has a single If Condition which breaks the loop In this case Create an ASTWhileLoop
+             * Node with the flipped Condition of the If statement
              */
 
             // flip the inner condition
@@ -197,9 +200,9 @@ public class StrengthenByIf {
   } // end of method
 
   /*
-   * Given a body of a node the method checks for the following: 1, the body has only one node 2, the node is a statementSequenceNode 3, There is only
-   * one statement in the stmt seq node 4, the stmt is a break stmt
-   * 
+   * Given a body of a node the method checks for the following: 1, the body has only one node 2, the node is a
+   * statementSequenceNode 3, There is only one statement in the stmt seq node 4, the stmt is a break stmt
+   *
    * If the conditions are true the label of the break stmt is returned otherwise null is returned
    */
   private static String isItOnlyBreak(List<Object> body) {

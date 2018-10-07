@@ -1,5 +1,27 @@
 package soot.toDex;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,11 +102,11 @@ import soot.util.Switchable;
 /**
  * A visitor that builds a list of instructions from the Jimple expressions it visits.<br>
  * <br>
- * Use {@link Switchable#apply(soot.util.Switch)} with this visitor to add statements. These are added to the instructions in the
- * {@link StmtVisitor}.<br>
- * If the expression is part of an assignment or an if statement, use {@link #setDestinationReg(Register)} and {@link #setTargetForOffset(Stmt)},
- * respectively.
- * 
+ * Use {@link Switchable#apply(soot.util.Switch)} with this visitor to add statements. These are added to the instructions in
+ * the {@link StmtVisitor}.<br>
+ * If the expression is part of an assignment or an if statement, use {@link #setDestinationReg(Register)} and
+ * {@link #setTargetForOffset(Stmt)}, respectively.
+ *
  * @see StmtVisitor
  */
 class ExprVisitor implements ExprSwitch {
@@ -155,12 +177,14 @@ class ExprVisitor implements ExprSwitch {
     if (regCountForArguments <= 5) {
       Register[] paddedArray = pad35cRegs(argumentRegs);
       Opcode opc = Opcode.valueOf(invokeOpcode);
-      invokeInsn = new Insn35c(opc, regCountForArguments, paddedArray[0], paddedArray[1], paddedArray[2], paddedArray[3], paddedArray[4], method);
+      invokeInsn = new Insn35c(opc, regCountForArguments, paddedArray[0], paddedArray[1], paddedArray[2], paddedArray[3],
+          paddedArray[4], method);
     } else if (regCountForArguments <= 255) {
       Opcode opc = Opcode.valueOf(invokeOpcode + "_RANGE");
       invokeInsn = new Insn3rc(opc, argumentRegs, (short) regCountForArguments, method);
     } else {
-      throw new Error("too many parameter registers for invoke-* (> 255): " + regCountForArguments + " or registers too big (> 4 bits)");
+      throw new Error(
+          "too many parameter registers for invoke-* (> 255): " + regCountForArguments + " or registers too big (> 4 bits)");
     }
     // save the return type for the move-result insn
     stmtV.setLastReturnTypeDescriptor(method.getReturnType());
@@ -202,8 +226,8 @@ class ExprVisitor implements ExprSwitch {
   @Override
   public void caseVirtualInvokeExpr(VirtualInvokeExpr vie) {
     /*
-     * for final methods we build an invoke-virtual opcode, too, although the dex spec says that a virtual method is not final. An alternative would
-     * be the invoke-direct opcode, but this is inconsistent with dx's output...
+     * for final methods we build an invoke-virtual opcode, too, although the dex spec says that a virtual method is not
+     * final. An alternative would be the invoke-direct opcode, but this is inconsistent with dx's output...
      */
     MethodReference method = DexPrinter.toMethodReference(vie.getMethodRef());
     List<Register> argumentRegs = getInstanceInvokeArgumentRegs(vie);
@@ -240,7 +264,8 @@ class ExprVisitor implements ExprSwitch {
     for (Register realReg : realRegs) {
       paddedArray[nextReg] = realReg;
       /*
-       * we include the second half of a wide with an empty reg for the "gap". this will be made explicit for dexlib later on.
+       * we include the second half of a wide with an empty reg for the "gap". this will be made explicit for dexlib later
+       * on.
        */
       if (realReg.isWide()) {
         nextReg++;
@@ -271,14 +296,16 @@ class ExprVisitor implements ExprSwitch {
     stmtV.addInsn(buildInvokeInsn("INVOKE_STATIC", method, arguments), origStmt);
   }
 
-  private void buildCalculatingBinaryInsn(final String binaryOperation, Value firstOperand, Value secondOperand, Expr originalExpr) {
+  private void buildCalculatingBinaryInsn(final String binaryOperation, Value firstOperand, Value secondOperand,
+      Expr originalExpr) {
     constantV.setOrigStmt(origStmt);
     Register firstOpReg = regAlloc.asImmediate(firstOperand, constantV);
 
     // use special "/lit"-opcodes if int is the destination's type, the
     // second op is
     // an integer literal and the opc is not sub (no sub*/lit opc available)
-    if (destinationReg.getType() instanceof IntType && secondOperand instanceof IntConstant && !binaryOperation.equals("SUB")) {
+    if (destinationReg.getType() instanceof IntType && secondOperand instanceof IntConstant
+        && !binaryOperation.equals("SUB")) {
       int secondOpConstant = ((IntConstant) secondOperand).value;
       if (SootToDexUtils.fitsSigned8(secondOpConstant)) {
         stmtV.addInsn(buildLit8BinaryInsn(binaryOperation, firstOpReg, (byte) secondOpConstant), origStmt);
@@ -338,7 +365,8 @@ class ExprVisitor implements ExprSwitch {
   }
 
   private String fixIntTypeString(String typeString) {
-    if (typeString.equals("boolean") || typeString.equals("byte") || typeString.equals("char") || typeString.equals("short")) {
+    if (typeString.equals("boolean") || typeString.equals("byte") || typeString.equals("char")
+        || typeString.equals("short")) {
       return "int";
     }
     return typeString;
@@ -481,8 +509,8 @@ class ExprVisitor implements ExprSwitch {
 
   private Value fixNullConstant(Value potentialNullConstant) {
     /*
-     * The bytecode spec says: "In terms of bitwise representation, (Object) null == (int) 0." So use an IntConstant(0) for null comparison in if-*z
-     * opcodes.
+     * The bytecode spec says: "In terms of bitwise representation, (Object) null == (int) 0." So use an IntConstant(0) for
+     * null comparison in if-*z opcodes.
      */
     if (potentialNullConstant instanceof NullConstant) {
       return IntConstant.v(0);
@@ -614,14 +642,17 @@ class ExprVisitor implements ExprSwitch {
 
   private void castObject(Register sourceReg, Type castType) {
     /*
-     * No real "cast" is done: move the object to a tmp reg, check the cast with check-cast and finally move to the "cast" object location. This way
-     * a) the old reg is not touched by check-cast, and b) the new reg does change its type only after a successful check-cast.
-     * 
-     * a) is relevant e.g. for "r1 = (String) r0" if r0 contains null, since the internal type of r0 would change from Null to String after the
-     * check-cast opcode, which alerts the verifier in future uses of r0 although nothing should change during execution.
-     * 
-     * b) is relevant for exceptional control flow: if we move to the new reg and do the check-cast there, an exception between the end of the move's
-     * execution and the end of the check-cast execution leaves the new reg with the type of the old reg.
+     * No real "cast" is done: move the object to a tmp reg, check the cast with check-cast and finally move to the "cast"
+     * object location. This way a) the old reg is not touched by check-cast, and b) the new reg does change its type only
+     * after a successful check-cast.
+     *
+     * a) is relevant e.g. for "r1 = (String) r0" if r0 contains null, since the internal type of r0 would change from Null
+     * to String after the check-cast opcode, which alerts the verifier in future uses of r0 although nothing should change
+     * during execution.
+     *
+     * b) is relevant for exceptional control flow: if we move to the new reg and do the check-cast there, an exception
+     * between the end of the move's execution and the end of the check-cast execution leaves the new reg with the type of
+     * the old reg.
      */
     TypeReference castTypeItem = DexPrinter.toTypeReference(castType);
     if (sourceReg.getNumber() == destinationReg.getNumber()) {
@@ -678,8 +709,8 @@ class ExprVisitor implements ExprSwitch {
       }
     } else if (needsCastThroughInt(sourceType, castType)) {
       /*
-       * an unsupported "dest = (cast) src" is broken down to "tmp = (int) src" and "dest = (cast) tmp", using a tmp reg to not mess with the original
-       * reg types
+       * an unsupported "dest = (cast) src" is broken down to "tmp = (int) src" and "dest = (cast) tmp", using a tmp reg to
+       * not mess with the original reg types
        */
       Opcode castToIntOpc = getCastOpc(sourceType, PrimitiveType.INT);
       Opcode castFromIntOpc = getCastOpc(PrimitiveType.INT, castType);
@@ -769,7 +800,8 @@ class ExprVisitor implements ExprSwitch {
     constantV.setOrigStmt(origStmt);
     // get array dimensions
     if (nmae.getSizeCount() > 255) {
-      throw new RuntimeException("number of dimensions is too high (> 255) for the filled-new-array* opcodes: " + nmae.getSizeCount());
+      throw new RuntimeException(
+          "number of dimensions is too high (> 255) for the filled-new-array* opcodes: " + nmae.getSizeCount());
     }
     short dimensions = (short) nmae.getSizeCount();
     // get array base type
@@ -785,9 +817,8 @@ class ExprVisitor implements ExprSwitch {
     // create filled-new-array instruction, depending on the dimension sizes
     if (dimensions <= 5) {
       Register[] paddedRegs = pad35cRegs(dimensionSizeRegs);
-      stmtV.addInsn(
-          new Insn35c(Opcode.FILLED_NEW_ARRAY, dimensions, paddedRegs[0], paddedRegs[1], paddedRegs[2], paddedRegs[3], paddedRegs[4], arrayTypeItem),
-          null);
+      stmtV.addInsn(new Insn35c(Opcode.FILLED_NEW_ARRAY, dimensions, paddedRegs[0], paddedRegs[1], paddedRegs[2],
+          paddedRegs[3], paddedRegs[4], arrayTypeItem), null);
     } else {
       stmtV.addInsn(new Insn3rc(Opcode.FILLED_NEW_ARRAY_RANGE, dimensionSizeRegs, dimensions, arrayTypeItem), null);
     } // check for > 255 is done already

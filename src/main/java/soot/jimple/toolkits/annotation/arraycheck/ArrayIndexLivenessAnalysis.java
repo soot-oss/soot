@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2000 Feng Qian
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.toolkits.annotation.arraycheck;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2000 Feng Qian
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,8 +70,8 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis {
   ExceptionalUnitGraph eug;
 
   /*
-   * for each unit, kill set has variables to be killed. gen set was considered with conditionOfGenSet, for example, gen set of unit s are valid only
-   * when the condition object. was in the living input set.
+   * for each unit, kill set has variables to be killed. gen set was considered with conditionOfGenSet, for example, gen set
+   * of unit s are valid only when the condition object. was in the living input set.
    */
   HashMap<Stmt, HashSet<Object>> genOfUnit;
   HashMap<Stmt, HashSet<Value>> absGenOfUnit;
@@ -102,7 +99,8 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis {
   private final boolean rectarray;
   HashSet<Local> multiarraylocals;
 
-  public ArrayIndexLivenessAnalysis(DirectedGraph dg, boolean takeFieldRef, boolean takeArrayRef, boolean takeCSE, boolean takeRectArray) {
+  public ArrayIndexLivenessAnalysis(DirectedGraph dg, boolean takeFieldRef, boolean takeArrayRef, boolean takeCSE,
+      boolean takeRectArray) {
     super(dg);
 
     fieldin = takeFieldRef;
@@ -291,13 +289,13 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis {
           // i = ... --> kill all array reference with index as i
           /*
            * if (v instanceof ArrayRef) { Value base = ((ArrayRef)v).getBase(); Value index = ((ArrayRef)v).getIndex();
-           * 
-           * HashSet refset = (HashSet)localToArrayRef.get(base); if (refset == null) { refset = new HashSet(); localToArrayRef.put(base, refset); }
-           * refset.add(v);
-           * 
-           * if (index instanceof Local) { refset = (HashSet)localToArrayRef.get(index); if (refset == null) { refset = new HashSet();
-           * localToArrayRef.put(index, refset); }
-           * 
+           *
+           * HashSet refset = (HashSet)localToArrayRef.get(base); if (refset == null) { refset = new HashSet();
+           * localToArrayRef.put(base, refset); } refset.add(v);
+           *
+           * if (index instanceof Local) { refset = (HashSet)localToArrayRef.get(index); if (refset == null) { refset = new
+           * HashSet(); localToArrayRef.put(index, refset); }
+           *
            * refset.add(v); } allArrayRefs.add(v); }
            */
         }
@@ -327,8 +325,8 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis {
     }
   }
 
-  private void getGenAndKillSetForDefnStmt(DefinitionStmt asstmt, HashMap<Stmt, HashSet<Value>> absgen, HashSet<Object> genset,
-      HashSet<Value> absgenset, HashSet<Value> killset, HashSet<Value> condset) {
+  private void getGenAndKillSetForDefnStmt(DefinitionStmt asstmt, HashMap<Stmt, HashSet<Value>> absgen,
+      HashSet<Object> genset, HashSet<Value> absgenset, HashSet<Value> killset, HashSet<Value> condset) {
     /* kill left hand side */
     Value lhs = asstmt.getLeftOp();
     Value rhs = asstmt.getRightOp();
@@ -357,10 +355,11 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis {
       if (asstmt.containsInvokeExpr()) {
         /*
          * Value expr = asstmt.getInvokeExpr(); List parameters = ((InvokeExpr)expr).getArgs();
-         * 
-         * // add the method invocation boolean killall = false; if (expr instanceof InstanceInvokeExpr) killall = true; else { for (int i=0;
-         * i<parameters.size(); i++) { Value para = (Value)parameters.get(i); if (para.getType() instanceof RefType) { killall = true; break; } } }
-         * 
+         *
+         * // add the method invocation boolean killall = false; if (expr instanceof InstanceInvokeExpr) killall = true; else
+         * { for (int i=0; i<parameters.size(); i++) { Value para = (Value)parameters.get(i); if (para.getType() instanceof
+         * RefType) { killall = true; break; } } }
+         *
          * if (killall) { killset.addAll(allInstFieldRefs); }
          */
 

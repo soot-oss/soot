@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.jbco.util;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,7 +56,7 @@ import soot.util.Chain;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 7-Feb-2006
  */
 public class BodyBuilder {
@@ -112,7 +115,8 @@ public class BodyBuilder {
     return ths;
   }
 
-  public static List<Local> buildParameterLocals(PatchingChain<Unit> units, Collection<Local> locals, List<Type> paramTypes) {
+  public static List<Local> buildParameterLocals(PatchingChain<Unit> units, Collection<Local> locals,
+      List<Type> paramTypes) {
     List<Local> args = new ArrayList<Local>();
     for (int k = 0; k < paramTypes.size(); k++) {
       Type type = paramTypes.get(k);
@@ -173,9 +177,10 @@ public class BodyBuilder {
   }
 
   public static boolean isBafIf(Unit u) {
-    if (u instanceof IfCmpEqInst || u instanceof IfCmpGeInst || u instanceof IfCmpGtInst || u instanceof IfCmpLeInst || u instanceof IfCmpLtInst
-        || u instanceof IfCmpNeInst || u instanceof IfEqInst || u instanceof IfGeInst || u instanceof IfGtInst || u instanceof IfLeInst
-        || u instanceof IfLtInst || u instanceof IfNeInst || u instanceof IfNonNullInst || u instanceof IfNullInst) {
+    if (u instanceof IfCmpEqInst || u instanceof IfCmpGeInst || u instanceof IfCmpGtInst || u instanceof IfCmpLeInst
+        || u instanceof IfCmpLtInst || u instanceof IfCmpNeInst || u instanceof IfEqInst || u instanceof IfGeInst
+        || u instanceof IfGtInst || u instanceof IfLeInst || u instanceof IfLtInst || u instanceof IfNeInst
+        || u instanceof IfNonNullInst || u instanceof IfNullInst) {
       return true;
     }
     return false;

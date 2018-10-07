@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.AST.transformations;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -71,8 +74,8 @@ public class LoopStrengthener extends DepthFirstAdapter {
   }
 
   /*
-   * Note the ASTNode in this case can be any of the following: ASTMethodNode ASTSwitchNode ASTIfNode ASTIfElseNode ASTUnconditionalWhileNode
-   * ASTWhileNode ASTDoWhileNode ASTForLoopNode ASTLabeledBlockNode ASTSynchronizedBlockNode
+   * Note the ASTNode in this case can be any of the following: ASTMethodNode ASTSwitchNode ASTIfNode ASTIfElseNode
+   * ASTUnconditionalWhileNode ASTWhileNode ASTDoWhileNode ASTForLoopNode ASTLabeledBlockNode ASTSynchronizedBlockNode
    */
   public void normalRetrieving(ASTNode node) {
     if (node instanceof ASTSwitchNode) {
@@ -282,9 +285,9 @@ public class LoopStrengthener extends DepthFirstAdapter {
   }
 
   /*
-   * Given an ASTNode as input this method checks the following: 1, The node is either ASTWhile, ASTDoWhile or ASTUnconditionalLoop 2, The node has
-   * one subBody 3, The onlySubBody has one node
-   * 
+   * Given an ASTNode as input this method checks the following: 1, The node is either ASTWhile, ASTDoWhile or
+   * ASTUnconditionalLoop 2, The node has one subBody 3, The onlySubBody has one node
+   *
    * it returns the only node in the only SubBody
    */
   private ASTNode getOnlySubNode(ASTNode node) {
@@ -306,11 +309,11 @@ public class LoopStrengthener extends DepthFirstAdapter {
   }
 
   /*
-   * - Go through the node bodies till you find subBodyNumber - Go through this subBody until you find nodeNumber - This is the temp node Replace it
-   * with the newNodes
-   * 
-   * Node is the node which contains the loop node subBodyNumber is the subBody which of the node which contains the loopNode nodeNumber is the
-   * location of the loopNode in the subBody newNode is the loopNode which will replace the old loopNode
+   * - Go through the node bodies till you find subBodyNumber - Go through this subBody until you find nodeNumber - This is
+   * the temp node Replace it with the newNodes
+   *
+   * Node is the node which contains the loop node subBodyNumber is the subBody which of the node which contains the loopNode
+   * nodeNumber is the location of the loopNode in the subBody newNode is the loopNode which will replace the old loopNode
    */
   private void replaceNode(ASTNode node, int subBodyNumber, int nodeNumber, ASTNode loopNode, List<ASTNode> newNode) {
     if (!(node instanceof ASTIfElseNode)) {
@@ -406,7 +409,8 @@ public class LoopStrengthener extends DepthFirstAdapter {
     } // end of ASTIfElseNode
   }
 
-  public static List<Object> createNewSubBody(List<Object> oldSubBody, int nodeNumber, ASTNode oldNode, List<ASTNode> newNode) {
+  public static List<Object> createNewSubBody(List<Object> oldSubBody, int nodeNumber, ASTNode oldNode,
+      List<ASTNode> newNode) {
     // create a new SubBody
     List<Object> newSubBody = new ArrayList<Object>();
 

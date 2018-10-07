@@ -1,5 +1,27 @@
 package soot.jbco.bafTransformations;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.Iterator;
 import java.util.Map;
 
@@ -17,7 +39,7 @@ import soot.util.Chain;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 16-Jun-2006
  */
 public class RemoveRedundantPushStores extends BodyTransformer implements IJbcoTransform {
@@ -49,7 +71,8 @@ public class RemoveRedundantPushStores extends BodyTransformer implements IJbcoT
       while (it.hasNext()) {
         Unit u = it.next();
         if (prev != null && prev instanceof PushInst && u instanceof StoreInst) {
-          if (prevprev != null && prevprev instanceof StoreInst && prevprevprev != null && prevprevprev instanceof PushInst) {
+          if (prevprev != null && prevprev instanceof StoreInst && prevprevprev != null
+              && prevprevprev instanceof PushInst) {
             Local lprev = ((StoreInst) prevprev).getLocal();
             Local l = ((StoreInst) u).getLocal();
             if (l == lprev && eug.getSuccsOf(prevprevprev).size() == 1 && eug.getSuccsOf(prevprev).size() == 1) {

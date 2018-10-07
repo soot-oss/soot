@@ -1,32 +1,27 @@
-/* Soot - a J*va Optimization Framework
+package soot.tagkit;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2005 Jennifer Lhotak
  * Copyright (C) 2013 Tata Consultancy Services & Ecole Polytechnique de Montreal
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
  * 
- * Modified by Marc-Andre Laverdiere-Papineau in 2013
- * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-package soot.tagkit;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +30,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Represents the annotation attribute attached to a class, method, field, method param - they could have many annotations each for Java 1.5.
+ * Represents the annotation attribute attached to a class, method, field, method param - they could have many annotations
+ * each for Java 1.5.
  */
 
 public class AnnotationTag implements Tag {
@@ -131,7 +127,7 @@ public class AnnotationTag implements Tag {
 
   /**
    * Adds one element to the list
-   * 
+   *
    * @param elem
    *          the element
    */
@@ -144,7 +140,7 @@ public class AnnotationTag implements Tag {
 
   /**
    * Overwrites the elements stored previously
-   * 
+   *
    * @param list
    *          the new list of elements
    */

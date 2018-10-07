@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2000 Patrice Pominville
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.jimple.parser;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2000 Patrice Pominville
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -73,9 +70,10 @@ public class JimpleAST {
   }
 
   /**
-   * Applies a SkeletonExtractorWalker to the given SootClass, using the given Resolver to resolve the reference types it contains. The given
-   * SootClass instance will be filled to contain a class skeleton: that is no Body instances will be created for the class' methods.
-   * 
+   * Applies a SkeletonExtractorWalker to the given SootClass, using the given Resolver to resolve the reference types it
+   * contains. The given SootClass instance will be filled to contain a class skeleton: that is no Body instances will be
+   * created for the class' methods.
+   *
    * @param sc
    *          a SootClass to fill in.
    */
@@ -85,8 +83,9 @@ public class JimpleAST {
   }
 
   /**
-   * Returns a body corresponding to the parsed jimple for m. If necessary, applies the BodyExtractorWalker to initialize the bodies map.
-   * 
+   * Returns a body corresponding to the parsed jimple for m. If necessary, applies the BodyExtractorWalker to initialize the
+   * bodies map.
+   *
    * @param m
    *          the method we want to get a body for.
    * @return the actual body for the given method.
@@ -104,7 +103,7 @@ public class JimpleAST {
 
   /**
    * Extracts the reference constant pool for this JimpleAST.
-   * 
+   *
    * @return the Set of RefTypes for the reference types contained this AST.
    */
   public Set<String> getCstPool() {
@@ -118,7 +117,8 @@ public class JimpleAST {
   }
 
   /*
-   * Runs a Walker on the InputStream associated to this object. The SootClass which we want bodies for is passed as the argument.
+   * Runs a Walker on the InputStream associated to this object. The SootClass which we want bodies for is passed as the
+   * argument.
    */
   private void stashBodiesForClass(SootClass sc) {
     HashMap<SootMethod, JimpleBody> methodToBodyMap = new HashMap<SootMethod, JimpleBody>();

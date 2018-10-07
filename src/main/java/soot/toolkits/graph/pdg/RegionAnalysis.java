@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1999-2010 Hossein Sadat-Mohtasham
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.toolkits.graph.pdg;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1999 - 2010 Hossein Sadat-Mohtasham
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -47,10 +51,10 @@ import soot.toolkits.graph.UnitGraph;
 
 /**
  * This class computes the set of weak regions for a given method. It is based on the algorithm given in the following paper:
- * 
- * Ball, T. 1993. What's in a region?: or computing control dependence regions in near-linear time for reducible control flow. ACM Lett. Program.
- * Lang. Syst. 2, 1-4 (Mar. 1993), 1-16. DOI= http://doi.acm.org/10.1145/176454.176456
- * 
+ *
+ * Ball, T. 1993. What's in a region?: or computing control dependence regions in near-linear time for reducible control
+ * flow. ACM Lett. Program. Lang. Syst. 2, 1-4 (Mar. 1993), 1-16. DOI= http://doi.acm.org/10.1145/176454.176456
+ *
  * @author Hossein Sadat-Mohtasham Jan 2009
  */
 
@@ -80,7 +84,8 @@ public class RegionAnalysis {
     this.m_class = c;
 
     if (Options.v().verbose()) {
-      logger.debug("[RegionAnalysis]~~~~~~~~~~~~~~~ Begin Region Analsis for method: " + m.getName() + " ~~~~~~~~~~~~~~~~~~~~");
+      logger.debug(
+          "[RegionAnalysis]~~~~~~~~~~~~~~~ Begin Region Analsis for method: " + m.getName() + " ~~~~~~~~~~~~~~~~~~~~");
     }
     this.findWeakRegions();
     if (Options.v().verbose()) {
@@ -91,8 +96,8 @@ public class RegionAnalysis {
   private void findWeakRegions() {
 
     /*
-     * Check to see what kind of CFG has been passed in and create the appropriate block CFG. Note that almost all of the processing is done on the
-     * block CFG.
+     * Check to see what kind of CFG has been passed in and create the appropriate block CFG. Note that almost all of the
+     * processing is done on the block CFG.
      */
 
     if (this.m_cfg instanceof ExceptionalUnitGraph) {
@@ -118,15 +123,16 @@ public class RegionAnalysis {
       this.m_regCount = -1;
 
       /*
-       * If a Brief graph or Exceptional graph is used, the CFG might be multi-headed and/or multi-tailed, which in turn, could result in a
-       * post-dominator forest instead of tree. If the post-dominator tree has multiple heads, the weakRegionDFS does not work correctly because it is
-       * designed based on the assumption that there is an auxiliary STOP node in the CFG that post-dominates all other nodes. In fact, most of the
-       * CFG algorithms augment the control flow graph with two nodes: ENTRY and EXIT (or START and STOP) nodes. We have not added these nodes since
-       * the CFG here is created from the Jimple code and to be consistent we'd have to transform the code to reflect these nodes. Instead, we
-       * implemted the EnhancedUnitGraph (EnhancedBlockGraph) which is guaranteed to be single-headed single-tailed. But note that EnhancedUnitGraph
-       * represents exceptional flow differently.
-       * 
-       * 
+       * If a Brief graph or Exceptional graph is used, the CFG might be multi-headed and/or multi-tailed, which in turn,
+       * could result in a post-dominator forest instead of tree. If the post-dominator tree has multiple heads, the
+       * weakRegionDFS does not work correctly because it is designed based on the assumption that there is an auxiliary STOP
+       * node in the CFG that post-dominates all other nodes. In fact, most of the CFG algorithms augment the control flow
+       * graph with two nodes: ENTRY and EXIT (or START and STOP) nodes. We have not added these nodes since the CFG here is
+       * created from the Jimple code and to be consistent we'd have to transform the code to reflect these nodes. Instead,
+       * we implemted the EnhancedUnitGraph (EnhancedBlockGraph) which is guaranteed to be single-headed single-tailed. But
+       * note that EnhancedUnitGraph represents exceptional flow differently.
+       *
+       *
        */
 
       if (this.m_blockCFG.getHeads().size() == 1) {
@@ -140,7 +146,8 @@ public class RegionAnalysis {
 
       } else {
         if (Options.v().verbose()) {
-          logger.warn("RegionAnalysis: the CFG is multi-headed and tailed, so, the results of this analysis might not be reliable!");
+          logger.warn(
+              "RegionAnalysis: the CFG is multi-headed and tailed, so, the results of this analysis might not be reliable!");
         }
 
         for (int i = 0; i < this.m_blockCFG.getTails().size(); i++) {
@@ -159,11 +166,12 @@ public class RegionAnalysis {
   }
 
   /**
-   * This algorithms assumes that the first time it's called with a tail of the CFG. Then for each child node w of v in the post-dominator tree, it
-   * compares the parent of v in the dominator tree with w and if they are the same, that means w belongs to the same region as v, so weakRegionDFS is
-   * recursively called with w and the same region id as v. If the comparison fails, then a new region is created and weakRegionDFS is called
-   * recursively with w but this time with the newly created region id.
-   * 
+   * This algorithms assumes that the first time it's called with a tail of the CFG. Then for each child node w of v in the
+   * post-dominator tree, it compares the parent of v in the dominator tree with w and if they are the same, that means w
+   * belongs to the same region as v, so weakRegionDFS is recursively called with w and the same region id as v. If the
+   * comparison fails, then a new region is created and weakRegionDFS is called recursively with w but this time with the
+   * newly created region id.
+   *
    * @param v
    * @param r
    */
@@ -196,9 +204,9 @@ public class RegionAnalysis {
   }
 
   /**
-   * This algorithm starts from a head node in the CFG and is exactly the same as the above with the difference that post dominator and dominator
-   * trees switch positions.
-   * 
+   * This algorithm starts from a head node in the CFG and is exactly the same as the above with the difference that post
+   * dominator and dominator trees switch positions.
+   *
    * @param v
    * @param r
    */

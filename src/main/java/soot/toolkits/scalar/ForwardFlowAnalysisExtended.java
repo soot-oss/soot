@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.toolkits.scalar;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.BitSet;
 import java.util.IdentityHashMap;
@@ -37,14 +34,15 @@ import soot.toolkits.graph.Orderer;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
 
 /**
- * Abstract class that provides a fixed-point iteration for forward flow analyses that need to distinguish between the different successors of a unit
- * in an exceptional unit graph.
- * 
- * Note that this class does not extend FlowAnalysis as it has a different definition of a flow function (namely one that does not only include the
- * current unit, but also the successor). For the same reason, it does not integrate into the interactive analysis infrastructure of Soot either.
- * 
+ * Abstract class that provides a fixed-point iteration for forward flow analyses that need to distinguish between the
+ * different successors of a unit in an exceptional unit graph.
+ *
+ * Note that this class does not extend FlowAnalysis as it has a different definition of a flow function (namely one that
+ * does not only include the current unit, but also the successor). For the same reason, it does not integrate into the
+ * interactive analysis infrastructure of Soot either.
+ *
  * @author Steven Arzt
- * 
+ *
  */
 public abstract class ForwardFlowAnalysisExtended<N, A> {
   /** Maps graph nodes to IN sets. */
@@ -67,7 +65,7 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
 
   /**
    * Default implementation constructing a PseudoTopologicalOrderer.
-   * 
+   *
    * @return an Orderer to order the nodes for the fixed-point iteration
    */
   protected Orderer<N> constructOrderer() {
@@ -88,14 +86,15 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
   protected abstract void copy(A source, A dest);
 
   /**
-   * Compute the merge of the <code>in1</code> and <code>in2</code> sets, putting the result into <code>out</code>. The behavior of this function
-   * depends on the implementation ( it may be necessary to check whether <code>in1</code> and <code>in2</code> are equal or aliased ). Used by the
-   * doAnalysis method.
+   * Compute the merge of the <code>in1</code> and <code>in2</code> sets, putting the result into <code>out</code>. The
+   * behavior of this function depends on the implementation ( it may be necessary to check whether <code>in1</code> and
+   * <code>in2</code> are equal or aliased ). Used by the doAnalysis method.
    */
   protected abstract void merge(A in1, A in2, A out);
 
   /**
-   * Merges in1 and in2 into out, just before node succNode. By default, this method just calls merge(A,A,A), ignoring the node.
+   * Merges in1 and in2 into out, just before node succNode. By default, this method just calls merge(A,A,A), ignoring the
+   * node.
    */
   protected void merge(N succNode, A in1, A in2, A out) {
     merge(in1, in2, out);

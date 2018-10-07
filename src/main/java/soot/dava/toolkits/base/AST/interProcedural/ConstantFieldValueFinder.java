@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2006 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.AST.interProcedural;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2006 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,12 +61,12 @@ import soot.util.Chain;
  * Deemed important because of obfuscation techniques which add crazy
  * control flow under some condition which is never executed because
  * it uses some field which is always false!!
- * 
+ *
  * Goal:
  *    Prove that a field is never assigned a value or that if it is assigned a value
  *    we can statically tell this value
- *    
- *    
+ *
+ *
  */
 public class ConstantFieldValueFinder {
   public final boolean DEBUG = false;
@@ -85,8 +88,8 @@ public class ConstantFieldValueFinder {
   }
 
   /*
-   * The hashMap returned contains a mapping of class + combiner + field ----> Double/Float/Long/Integer if there is no mapping for a particular field
-   * then that means we couldnt detect a constant value for it
+   * The hashMap returned contains a mapping of class + combiner + field ----> Double/Float/Long/Integer if there is no
+   * mapping for a particular field then that means we couldnt detect a constant value for it
    */
   public HashMap<String, Object> getFieldsWithConstantValues() {
     return primTypeFieldValueToUse;
@@ -97,8 +100,8 @@ public class ConstantFieldValueFinder {
   }
 
   /*
-   * This method gives values to all the fields in all the classes if they can be determined statically We only care about fields which have primitive
-   * types
+   * This method gives values to all the fields in all the classes if they can be determined statically We only care about
+   * fields which have primitive types
    */
   private void valuesForPrimTypeFields() {
     // go through all the classes
@@ -224,8 +227,9 @@ public class ConstantFieldValueFinder {
         // agreed on a unique constant value
 
         /*
-         * Since these are fields are we are doing CONTEXT INSENSITIVE WE need to make sure that the agreed unique constant value is the default value
-         * 
+         * Since these are fields are we are doing CONTEXT INSENSITIVE WE need to make sure that the agreed unique constant
+         * value is the default value
+         *
          * I KNOW IT SUCKS BUT HEY WHAT CAN I DO!!!
          */
 
@@ -275,8 +279,8 @@ public class ConstantFieldValueFinder {
   }
 
   /*
-   * Go through all the methods in the application and make a mapping of className+methodName ---> values assigned There can obviously be more than
-   * one value assigned to each field
+   * Go through all the methods in the application and make a mapping of className+methodName ---> values assigned There can
+   * obviously be more than one value assigned to each field
    */
   private void computeFieldToValuesAssignedList() {
     // go through all the classes
@@ -366,8 +370,8 @@ public class ConstantFieldValueFinder {
 
       int temp = combined.indexOf(combiner, 0);
       if (temp > 0) {
-        System.out.println("Class: " + combined.substring(0, temp) + " Field: " + combined.substring(temp + combiner.length()) + " Value: "
-            + primTypeFieldValueToUse.get(combined));
+        System.out.println("Class: " + combined.substring(0, temp) + " Field: "
+            + combined.substring(temp + combiner.length()) + " Value: " + primTypeFieldValueToUse.get(combined));
 
       }
     }

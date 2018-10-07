@@ -1,28 +1,31 @@
-/* Soot - a Java Optimization Framework
+package soot.dexpler;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  *
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-
-package soot.dexpler;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,8 +53,8 @@ import soot.VoidType;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 
 /**
- * DexlibWrapper provides an entry point to the dexlib library from the smali project. Given a dex file, it will use dexlib to retrieve all classes
- * for further processing A call to getClass retrieves the specific class to analyze further.
+ * DexlibWrapper provides an entry point to the dexlib library from the smali project. Given a dex file, it will use dexlib
+ * to retrieve all classes for further processing A call to getClass retrieves the specific class to analyze further.
  */
 public class DexlibWrapper {
 
@@ -86,7 +89,8 @@ public class DexlibWrapper {
   private final Collection<DexBackedDexFile> dexFiles;
 
   /**
-   * Construct a DexlibWrapper from a dex file and stores its classes referenced by their name. No further process is done here.
+   * Construct a DexlibWrapper from a dex file and stores its classes referenced by their name. No further process is done
+   * here.
    */
 
   public DexlibWrapper(File dexSource) {
@@ -103,7 +107,7 @@ public class DexlibWrapper {
 
   /**
    * Allow custom implementations to use different class loading strategies. Do not remove this method.
-   * 
+   *
    * @return
    */
   protected DexClassLoader createDexClassLoader() {
@@ -136,8 +140,8 @@ public class DexlibWrapper {
             // primitive types - we obviously do not want them
             // to be resolved
             /*
-             * dex files contain references to the Type IDs of the system annotations. They are only visible to the Dalvik VM (for reflection, see
-             * vm/reflect/Annotations.cpp), and not to the user - so we do not want them to be resolved.
+             * dex files contain references to the Type IDs of the system annotations. They are only visible to the Dalvik VM
+             * (for reflection, see vm/reflect/Annotations.cpp), and not to the user - so we do not want them to be resolved.
              */
             continue;
           }

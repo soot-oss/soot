@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2004 Jennifer Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.javaToJimple;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2004 Jennifer Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 
@@ -37,8 +40,8 @@ public class AssertClassMethodSource implements soot.MethodSource {
 
     ArrayList paramTypes = new ArrayList();
     paramTypes.add(soot.RefType.v("java.lang.String"));
-    soot.SootMethodRef methodToInvoke = soot.Scene.v().makeMethodRef(soot.Scene.v().getSootClass("java.lang.Class"), "forName", paramTypes,
-        soot.RefType.v("java.lang.Class"), true);
+    soot.SootMethodRef methodToInvoke = soot.Scene.v().makeMethodRef(soot.Scene.v().getSootClass("java.lang.Class"),
+        "forName", paramTypes, soot.RefType.v("java.lang.Class"), true);
     soot.Local invokeLocal = soot.jimple.Jimple.v().newLocal("$r1", soot.RefType.v("java.lang.Class"));
     classBody.getLocals().add(invokeLocal);
     ArrayList params = new ArrayList();
@@ -67,8 +70,8 @@ public class AssertClassMethodSource implements soot.MethodSource {
 
     // no class def found invoke
     paramTypes = new ArrayList();
-    soot.SootMethodRef initMethToInvoke = soot.Scene.v().makeMethodRef(soot.Scene.v().getSootClass("java.lang.NoClassDefFoundError"), "<init>",
-        paramTypes, soot.VoidType.v(), false);
+    soot.SootMethodRef initMethToInvoke = soot.Scene.v().makeMethodRef(
+        soot.Scene.v().getSootClass("java.lang.NoClassDefFoundError"), "<init>", paramTypes, soot.VoidType.v(), false);
     params = new ArrayList();
     soot.jimple.Expr initInvoke = soot.jimple.Jimple.v().newSpecialInvokeExpr(noClassDefLocal, initMethToInvoke, params);
     soot.jimple.Stmt initStmt = soot.jimple.Jimple.v().newInvokeStmt(initInvoke);
@@ -81,10 +84,11 @@ public class AssertClassMethodSource implements soot.MethodSource {
     paramTypes.add(soot.RefType.v("java.lang.Throwable"));
     params = new ArrayList();
     params.add(catchRefLocal);
-    soot.SootMethodRef messageMethToInvoke = soot.Scene.v().makeMethodRef(soot.Scene.v().getSootClass("java.lang.Throwable"), "initCause", paramTypes,
-        soot.RefType.v("java.lang.Throwable"), false);
+    soot.SootMethodRef messageMethToInvoke = soot.Scene.v().makeMethodRef(soot.Scene.v().getSootClass("java.lang.Throwable"),
+        "initCause", paramTypes, soot.RefType.v("java.lang.Throwable"), false);
 
-    soot.jimple.Expr messageInvoke = soot.jimple.Jimple.v().newVirtualInvokeExpr(noClassDefLocal, messageMethToInvoke, params);
+    soot.jimple.Expr messageInvoke
+        = soot.jimple.Jimple.v().newVirtualInvokeExpr(noClassDefLocal, messageMethToInvoke, params);
     soot.jimple.Stmt messageAssign = soot.jimple.Jimple.v().newAssignStmt(throwLocal, messageInvoke);
     classBody.getUnits().add(messageAssign);
 
@@ -94,7 +98,8 @@ public class AssertClassMethodSource implements soot.MethodSource {
     classBody.getUnits().add(throwStmt);
 
     // trap
-    soot.Trap trap = soot.jimple.Jimple.v().newTrap(soot.Scene.v().getSootClass("java.lang.ClassNotFoundException"), assign, retStmt, caughtIdentity);
+    soot.Trap trap = soot.jimple.Jimple.v().newTrap(soot.Scene.v().getSootClass("java.lang.ClassNotFoundException"), assign,
+        retStmt, caughtIdentity);
     classBody.getTraps().add(trap);
 
     return classBody;

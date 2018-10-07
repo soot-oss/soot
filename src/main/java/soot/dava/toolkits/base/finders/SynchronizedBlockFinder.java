@@ -1,24 +1,27 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Jerome Miecznikowski
- * Copyright (C) 2004-20055 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.finders;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004 - 20055 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,8 +68,8 @@ public class SynchronizedBlockFinder implements FactFinder {
   private DavaBody davaBody;
 
   /*
-   * Nomair A Naeem 08-FEB-2005 monitorLocalSet contains all the locals that are used in monitors monitorEnterSet contains all enterMonitorStmts
-   * Statements
+   * Nomair A Naeem 08-FEB-2005 monitorLocalSet contains all the locals that are used in monitors monitorEnterSet contains
+   * all enterMonitorStmts Statements
    */
   private IterableSet monitorLocalSet, monitorEnterSet;
 
@@ -112,8 +115,8 @@ public class SynchronizedBlockFinder implements FactFinder {
           Value copiedLocal = null;
 
           /*
-           * Synch bug due to copy stmts r2 = r1 enter monitor r1 synch body exit monitor r2 we need to realize that r1 and r2 are the same
-           * implemented as a hack, the correct approach is reaching copies
+           * Synch bug due to copy stmts r2 = r1 enter monitor r1 synch body exit monitor r2 we need to realize that r1 and
+           * r2 are the same implemented as a hack, the correct approach is reaching copies
            */
           if (previousStmt != null) {
             Stmt previousS = previousStmt.get_Stmt();
@@ -148,9 +151,9 @@ public class SynchronizedBlockFinder implements FactFinder {
 
                   /*
                    * Jeromes Implementation: changed because of copy stmt bug
-                   * 
-                   * if ((sss instanceof MonitorStmt) && (((MonitorStmt) sss).getOp() == local) && (((Integer) ((HashMap) as2ml.get( ssas)).get(
-                   * local)).equals( level)) && (usedMonitors.contains( ssas) == false)){
+                   *
+                   * if ((sss instanceof MonitorStmt) && (((MonitorStmt) sss).getOp() == local) && (((Integer) ((HashMap)
+                   * as2ml.get( ssas)).get( local)).equals( level)) && (usedMonitors.contains( ssas) == false)){
                    */
                   if (sss instanceof MonitorStmt) {
                     if ((((MonitorStmt) sss).getOp() == local) && ((as2ml.get(ssas).get(local)).equals(level))
@@ -175,8 +178,8 @@ public class SynchronizedBlockFinder implements FactFinder {
             }
           }
           if (!done) {
-            throw new RuntimeException("Could not verify approximated Synchronized body!\n" + "Method:\n" + body.getMethod() + "Body:\n"
-                + "===============================================================\n" + body.getUnits()
+            throw new RuntimeException("Could not verify approximated Synchronized body!\n" + "Method:\n" + body.getMethod()
+                + "Body:\n" + "===============================================================\n" + body.getUnits()
                 + "===============================================================\n");
           }
         } // non null synch set for this enter monitor stmt
@@ -195,12 +198,12 @@ public class SynchronizedBlockFinder implements FactFinder {
   }
 
   /*
-   * as2locals: contains all locals which have unknown level for this augmented stmt viAugStmts: contains all augmented stmts which have some unknown
-   * level local in them
+   * as2locals: contains all locals which have unknown level for this augmented stmt viAugStmts: contains all augmented stmts
+   * which have some unknown level local in them
    */
 
-  private void find_VariableIncreasing(AugmentedStmtGraph asg, HashMap local2level_template, LinkedList<AugmentedStmt> viAugStmts,
-      HashMap<AugmentedStmt, LinkedList<Value>> as2locals) {
+  private void find_VariableIncreasing(AugmentedStmtGraph asg, HashMap local2level_template,
+      LinkedList<AugmentedStmt> viAugStmts, HashMap<AugmentedStmt, LinkedList<Value>> as2locals) {
     StronglyConnectedComponentsFast scc = new StronglyConnectedComponentsFast(asg);
     IterableSet viSeeds = new IterableSet();
     HashMap as2color = new HashMap(), as2rml = new HashMap();
@@ -277,8 +280,8 @@ public class SynchronizedBlockFinder implements FactFinder {
       }
     }
     /*
-     * At the end of this the worklist is empty the unknown level of locals of an augmentedstmt present in the viSeed has been propagated through out
-     * the stmts reachable from that stmt
+     * At the end of this the worklist is empty the unknown level of locals of an augmentedstmt present in the viSeed has
+     * been propagated through out the stmts reachable from that stmt
      */
 
     // Summarize the variable increasing information for the
@@ -296,8 +299,8 @@ public class SynchronizedBlockFinder implements FactFinder {
         if (local2level.get(local) == VARIABLE_INCR) {
 
           /*
-           * Nomair A. Naeem 08-FEB-2005 BUG IN CODE. The getLast method returns a NoSuchElementException if list is empty. Protect this by checking
-           * isEmpty
+           * Nomair A. Naeem 08-FEB-2005 BUG IN CODE. The getLast method returns a NoSuchElementException if list is empty.
+           * Protect this by checking isEmpty
            */
           if (!viAugStmts.isEmpty()) {
             if (viAugStmts.getLast() != as) {
@@ -322,15 +325,18 @@ public class SynchronizedBlockFinder implements FactFinder {
   }
 
   /*
-   * Inputs: as: the seed stmt, i.e. the first statement of a strongly connected component component: the strongly connected stmt being processed
-   * as2rml: a hashmap which contains an augmentedstmt as key and a hashmap with local to level mapping as value as2color: maps each augmentedstmt of
-   * a scc to a color (white initially) viSeeds: variable increasing levels, initially empty
-   * 
-   * Purpose: makes a traversal of the entire scc and increases the levels of locals when used in monitor enter decreases the levels of locals when
-   * leaving monitor if a successor has never been visited invoke same method on it with updated level information if a sucessor has been visited
-   * before and has a lower level than a seed the level of the sucessor is marked unknown and is added to the viSeeds list
+   * Inputs: as: the seed stmt, i.e. the first statement of a strongly connected component component: the strongly connected
+   * stmt being processed as2rml: a hashmap which contains an augmentedstmt as key and a hashmap with local to level mapping
+   * as value as2color: maps each augmentedstmt of a scc to a color (white initially) viSeeds: variable increasing levels,
+   * initially empty
+   *
+   * Purpose: makes a traversal of the entire scc and increases the levels of locals when used in monitor enter decreases the
+   * levels of locals when leaving monitor if a successor has never been visited invoke same method on it with updated level
+   * information if a sucessor has been visited before and has a lower level than a seed the level of the sucessor is marked
+   * unknown and is added to the viSeeds list
    */
-  private void DFS_Scc(AugmentedStmt as, IterableSet component, HashMap as2rml, HashMap as2color, AugmentedStmt seedStmt, IterableSet viSeeds) {
+  private void DFS_Scc(AugmentedStmt as, IterableSet component, HashMap as2rml, HashMap as2color, AugmentedStmt seedStmt,
+      IterableSet viSeeds) {
     as2color.put(as, GRAY);
 
     Stmt s = as.get_Stmt();
@@ -372,8 +378,8 @@ public class SynchronizedBlockFinder implements FactFinder {
           // for all locals which are used in monitor stmts
           Value local = (Value) mlsit.next();
           /*
-           * update the sucessors hashtable with level values from the seed stmt The loca2Level is the hashmap of local-->level for the seed The
-           * sLocal2Level is the hashmap of local --> level for the successor of the seed
+           * update the sucessors hashtable with level values from the seed stmt The loca2Level is the hashmap of
+           * local-->level for the seed The sLocal2Level is the hashmap of local --> level for the successor of the seed
            */
           slocal2level.put(local, local2level.get(local));
         }
@@ -409,8 +415,8 @@ public class SynchronizedBlockFinder implements FactFinder {
   }
 
   /*
-   * Created a synch set for each enter monitor stmt. The synch set contains all sucessors of the monitor enter stmt which is dominated by the enter
-   * stmt and the level is greater or equal to that of the enter stmt
+   * Created a synch set for each enter monitor stmt. The synch set contains all sucessors of the monitor enter stmt which is
+   * dominated by the enter stmt and the level is greater or equal to that of the enter stmt
    */
   private Map<AugmentedStmt, IterableSet> build_SynchSets() {
     HashMap<AugmentedStmt, IterableSet> as2synchSet = new HashMap<AugmentedStmt, IterableSet>();
@@ -445,8 +451,8 @@ public class SynchronizedBlockFinder implements FactFinder {
           int sml = (as2ml.get(sas).get(local)).intValue();
 
           /*
-           * if the sucessor is dominated by the head stmt and the level is greater or equal to that of the head and is not waiting to be analysed and
-           * is not in the synchSet.. then add it to worklist
+           * if the sucessor is dominated by the head stmt and the level is greater or equal to that of the head and is not
+           * waiting to be analysed and is not in the synchSet.. then add it to worklist
            */
           if (sas.get_Dominators().contains(headAs) && (sml >= monitorLevel) && (worklist.contains(sas) == false)
               && (synchSet.contains(sas) == false)) {
@@ -461,8 +467,9 @@ public class SynchronizedBlockFinder implements FactFinder {
   }
 
   /*
-   * MonitorLocalSet: contains all locals used in monitor enter statements MonitorEnterSet: contains all monitor enter statements as2ml : key is each
-   * augmented stmt of the augmented graph, value is a hashmap which contains a local as key and the level as value
+   * MonitorLocalSet: contains all locals used in monitor enter statements MonitorEnterSet: contains all monitor enter
+   * statements as2ml : key is each augmented stmt of the augmented graph, value is a hashmap which contains a local as key
+   * and the level as value
    */
   private void set_MonitorLevels(AugmentedStmtGraph asg) {
     monitorLocalSet = new IterableSet();
@@ -512,8 +519,8 @@ public class SynchronizedBlockFinder implements FactFinder {
     // setup the variable increasing monitor levels
     find_VariableIncreasing(asg, local2level_template, viAugStmts, incrAs2locals);
     /*
-     * At this time the viAugStmts contains all augments Stmt which have some local that has unknown level the incrAs2locals contains a map of
-     * augmented stmt to a linkedlist which contains locals with unknown level
+     * At this time the viAugStmts contains all augments Stmt which have some local that has unknown level the incrAs2locals
+     * contains a map of augmented stmt to a linkedlist which contains locals with unknown level
      */
 
     // going through all augmented stmts with some local with unknown level
@@ -566,8 +573,8 @@ public class SynchronizedBlockFinder implements FactFinder {
 
             ExitMonitorStmt ems = (ExitMonitorStmt) ps;
             /*
-             * if the predecessor stmt is a monitor exit and the local it exits is the same as this local and the predLevel is greater than 0 decrease
-             * the pred level
+             * if the predecessor stmt is a monitor exit and the local it exits is the same as this local and the predLevel
+             * is greater than 0 decrease the pred level
              */
             if ((ems.getOp() == local) && (predLevel > 0)) {
               predLevel--;
@@ -577,8 +584,8 @@ public class SynchronizedBlockFinder implements FactFinder {
           if (s instanceof EnterMonitorStmt) {
             EnterMonitorStmt ems = (EnterMonitorStmt) s;
             /*
-             * if the stmt is a monitor enter (which is true for the initial worklist) and the local it enters is the same as this local and the
-             * predLevel is greater or equal to 0 increase the pred level
+             * if the stmt is a monitor enter (which is true for the initial worklist) and the local it enters is the same as
+             * this local and the predLevel is greater or equal to 0 increase the pred level
              */
             if ((ems.getOp() == local) && (predLevel >= 0)) {
               predLevel++;
@@ -588,7 +595,8 @@ public class SynchronizedBlockFinder implements FactFinder {
           int curLevel = cur_local2level.get(local).intValue();
 
           /*
-           * if the pred level is greater than the current level update current level add the sucessors of the stmt to the worklist
+           * if the pred level is greater than the current level update current level add the sucessors of the stmt to the
+           * worklist
            */
           if (predLevel > curLevel) {
             cur_local2level.put(local, new Integer(predLevel));
@@ -608,7 +616,8 @@ public class SynchronizedBlockFinder implements FactFinder {
   }
 
   /*
-   * If a stmt is removed from the synchBody then all other stmts which are dominated by this stmt should also be removed from the synchBody
+   * If a stmt is removed from the synchBody then all other stmts which are dominated by this stmt should also be removed
+   * from the synchBody
    */
   private void removeOtherDominatedStmts(IterableSet synchBody, AugmentedStmt sas) {
     ArrayList toRemove = new ArrayList();
@@ -635,8 +644,8 @@ public class SynchronizedBlockFinder implements FactFinder {
     // System.out.println("starting verification");
     {
       /*
-       * synchBody is a likely superset of exception Node since the synchBody contains a goto stmt to the stmt right after the
-       * "to be created synch block" See if this is the case and remove the stmt
+       * synchBody is a likely superset of exception Node since the synchBody contains a goto stmt to the stmt right after
+       * the "to be created synch block" See if this is the case and remove the stmt
        */
 
       IterableSet tryBodySet = en.get_TryBody();
@@ -684,9 +693,9 @@ public class SynchronizedBlockFinder implements FactFinder {
     }
 
     /*
-     * In the abc created code when a synch body occurs within a try block There is an error because the synchBody created has addition statements
-     * regarding the catching of exception due to the outer try block
-     * 
+     * In the abc created code when a synch body occurs within a try block There is an error because the synchBody created
+     * has addition statements regarding the catching of exception due to the outer try block
+     *
      * Since these statements are not part of the synch body they should be removed
      */
     {
@@ -711,8 +720,8 @@ public class SynchronizedBlockFinder implements FactFinder {
                 DefinitionStmt defStmt = (DefinitionStmt) target;
 
                 /*
-                 * These are the caught exceptions (can be more than once if there are multiple areas of protection Keep the one which is of type
-                 * Throwable
+                 * These are the caught exceptions (can be more than once if there are multiple areas of protection Keep the
+                 * one which is of type Throwable
                  */
 
                 Value asnFrom = defStmt.getRightOp();
@@ -779,15 +788,15 @@ public class SynchronizedBlockFinder implements FactFinder {
     }
 
     /*
-     * There might be some unwanted stmts in the synch body. These are likely to be stmts which have no predecessor in the synchbody. Remove these
-     * stmts. NOTE: the entry of the synchbody is a special case since its predecessor is also not going to be in the synchbody but we SHOULD not
-     * remove the entry point
+     * There might be some unwanted stmts in the synch body. These are likely to be stmts which have no predecessor in the
+     * synchbody. Remove these stmts. NOTE: the entry of the synchbody is a special case since its predecessor is also not
+     * going to be in the synchbody but we SHOULD not remove the entry point
      */
 
     // find the entry point of synchbody
     /*
-     * One way of doing this is going through the synch body and finiding a stmt whose predecessor is an enter monitor stmt NOT present in the
-     * synchBody
+     * One way of doing this is going through the synch body and finiding a stmt whose predecessor is an enter monitor stmt
+     * NOT present in the synchBody
      */
     AugmentedStmt synchEnter = null;
     Iterator synchIt = synchBody.iterator();
@@ -819,7 +828,8 @@ public class SynchronizedBlockFinder implements FactFinder {
     // System.out.println("Enter stmt of synchBody is:"+synchEnter);
 
     /*
-     * Now that we know the exception case we can go through the synchBody and remove all stmts whose predecessor does not belong to the synchBody
+     * Now that we know the exception case we can go through the synchBody and remove all stmts whose predecessor does not
+     * belong to the synchBody
      */
 
     boolean unChanged = false;
@@ -866,8 +876,9 @@ public class SynchronizedBlockFinder implements FactFinder {
     }
 
     /*
-     * The two bodies match check if the exception thrown is of type "throwable" and that there is only one catchlist The reason for doing this is
-     * that synchronized blocks get converted to a try catch block with the catch , catching the throwable exception and this is the ONLY catch
+     * The two bodies match check if the exception thrown is of type "throwable" and that there is only one catchlist The
+     * reason for doing this is that synchronized blocks get converted to a try catch block with the catch , catching the
+     * throwable exception and this is the ONLY catch
      */
     if ((en.get_Exception().getName().equals(THROWABLE) == false) || (en.get_CatchList().size() > 1)) {
       // System.out.println("returning unverified here");
@@ -878,8 +889,8 @@ public class SynchronizedBlockFinder implements FactFinder {
     // exception is a throwable exception
 
     /*
-     * find the entry point of the catch boody The entry point of the catch body is the first stmt in the catchbody This can be found by finiding the
-     * stmt whose predecessor is not part of the catch body
+     * find the entry point of the catch boody The entry point of the catch body is the first stmt in the catchbody This can
+     * be found by finiding the stmt whose predecessor is not part of the catch body
      */
     IterableSet catchBody = en.get_CatchBody();
     AugmentedStmt entryPoint = null;
@@ -902,8 +913,9 @@ public class SynchronizedBlockFinder implements FactFinder {
     // Horror upon horrors, what follows is a hard coded state machine.
 
     /*
-     * To verify the catchbody one has to go through the catchbody ONE stmt at a time. This is NOT a good approach as it is using PATTERN MATCHING
-     * 
+     * To verify the catchbody one has to go through the catchbody ONE stmt at a time. This is NOT a good approach as it is
+     * using PATTERN MATCHING
+     *
      * FIRST STEP Need to verify that the entrypoint stmt and any goto stmts following it all point to the entrypoint
      */
 
@@ -981,7 +993,8 @@ public class SynchronizedBlockFinder implements FactFinder {
     s = as.get_Stmt();
 
     // this COULD be a copy stmt in which case update the throwlocal
-    while (s instanceof DefinitionStmt && (((DefinitionStmt) s).getRightOp().toString().compareTo(throwlocal.toString()) == 0)) {
+    while (s instanceof DefinitionStmt
+        && (((DefinitionStmt) s).getRightOp().toString().compareTo(throwlocal.toString()) == 0)) {
 
       // System.out.println("copy stmt using throwLocal found");
       // System.out.println("Right op is :"+((DefinitionStmt)s).getRightOp());
@@ -1041,7 +1054,8 @@ public class SynchronizedBlockFinder implements FactFinder {
   }
 
   /*
-   * DefinitionStmt s is the start of the area of protection The exception sucessors of as should directly or indirectly point to s
+   * DefinitionStmt s is the start of the area of protection The exception sucessors of as should directly or indirectly
+   * point to s
    */
   private boolean checkProtectionArea(AugmentedStmt as, DefinitionStmt s) {
     IterableSet esuccs = new IterableSet();
@@ -1089,7 +1103,8 @@ public class SynchronizedBlockFinder implements FactFinder {
   }
 
   /*
-   * Input: head: this is the monitor enter stmt synchSet: this contains all sucessors of head which have level greater or equal to the head
+   * Input: head: this is the monitor enter stmt synchSet: this contains all sucessors of head which have level greater or
+   * equal to the head
    */
   private IterableSet get_BodyApproximation(AugmentedStmt head, IterableSet synchSet) {
     IterableSet body = (IterableSet) synchSet.clone();
@@ -1104,7 +1119,8 @@ public class SynchronizedBlockFinder implements FactFinder {
       AugmentedStmt as = (AugmentedStmt) bit.next();
       Stmt s = as.get_Stmt();
 
-      if ((s instanceof ExitMonitorStmt) && (((ExitMonitorStmt) s).getOp() == local) && ((as2ml.get(as).get(local)).equals(level))) {
+      if ((s instanceof ExitMonitorStmt) && (((ExitMonitorStmt) s).getOp() == local)
+          && ((as2ml.get(as).get(local)).equals(level))) {
 
         Iterator sit = as.csuccs.iterator();
         while (sit.hasNext()) {

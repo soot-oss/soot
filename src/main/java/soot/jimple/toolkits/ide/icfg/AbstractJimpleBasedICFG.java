@@ -1,5 +1,27 @@
 package soot.jimple.toolkits.ide.icfg;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
@@ -22,7 +44,6 @@ import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
 import soot.jimple.Stmt;
-import soot.toolkits.exceptions.UnitThrowAnalysis;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
@@ -35,8 +56,8 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   protected final Map<Unit, Body> unitToOwner = new HashMap<Unit, Body>();
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
-  protected final LoadingCache<Body, DirectedGraph<Unit>> bodyToUnitGraph = IDESolver.DEFAULT_CACHE_BUILDER
-      .build(new CacheLoader<Body, DirectedGraph<Unit>>() {
+  protected LoadingCache<Body, DirectedGraph<Unit>> bodyToUnitGraph
+      = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<Body, DirectedGraph<Unit>>() {
         @Override
         public DirectedGraph<Unit> load(Body body) throws Exception {
           return makeGraph(body);
@@ -44,8 +65,8 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
       });
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
-  protected final LoadingCache<SootMethod, List<Value>> methodToParameterRefs = IDESolver.DEFAULT_CACHE_BUILDER
-      .build(new CacheLoader<SootMethod, List<Value>>() {
+  protected LoadingCache<SootMethod, List<Value>> methodToParameterRefs
+      = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<SootMethod, List<Value>>() {
         @Override
         public List<Value> load(SootMethod m) throws Exception {
           return m.getActiveBody().getParameterRefs();
@@ -53,21 +74,12 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
       });
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
-  protected final LoadingCache<SootMethod, Set<Unit>> methodToCallsFromWithin = IDESolver.DEFAULT_CACHE_BUILDER
-      .build(new CacheLoader<SootMethod, Set<Unit>>() {
+  protected LoadingCache<SootMethod, Set<Unit>> methodToCallsFromWithin
+      = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<SootMethod, Set<Unit>>() {
         @Override
         public Set<Unit> load(SootMethod m) throws Exception {
-          Set<Unit> res = null;
-          for (Unit u : m.getActiveBody().getUnits()) {
-            if (isCallStmt(u)) {
-              if (res == null) {
-                res = new LinkedHashSet<Unit>();
-              }
-              res.add(u);
-            }
-          }
-          return res == null ? Collections.<Unit>emptySet() : res;
-        }
+          return getCallsFromWithinMethod(m);
+        } 
       });
 
   public AbstractJimpleBasedICFG() {
@@ -105,7 +117,20 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   }
 
   protected DirectedGraph<Unit> makeGraph(Body body) {
-    return enableExceptions ? new ExceptionalUnitGraph(body, UnitThrowAnalysis.v(), true) : new BriefUnitGraph(body);
+    return enableExceptions ? new ExceptionalUnitGraph(body) : new BriefUnitGraph(body);
+  }
+
+  protected Set<Unit> getCallsFromWithinMethod(SootMethod m) {
+    Set<Unit> res = null;
+    for (Unit u : m.getActiveBody().getUnits()) {
+      if (isCallStmt(u)) {
+        if (res == null) {
+          res = new LinkedHashSet<Unit>();
+        }
+        res.add(u);
+      }
+    }
+    return res == null ? Collections.<Unit>emptySet() : res;
   }
 
   @Override

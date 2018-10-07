@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2007 Eric Bodden
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.toolkits.annotation.logic;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2007 Eric Bodden
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -27,8 +31,8 @@ import soot.jimple.Stmt;
 import soot.toolkits.graph.UnitGraph;
 
 /**
- * A (natural) loop in Jimple. A back-edge (t,h) is a control-flog edge for which h dominates t. In this case h is the header and the loop consists of
- * all statements s which reach t without passing through h.
+ * A (natural) loop in Jimple. A back-edge (t,h) is a control-flog edge for which h dominates t. In this case h is the header
+ * and the loop consists of all statements s which reach t without passing through h.
  *
  * @author Eric Bodden
  */
@@ -41,9 +45,9 @@ public class Loop {
   protected Collection<Stmt> loopExits;
 
   /**
-   * Creates a new loop. Expects that the last statement in the list is the loop head and the second-last statement is the back-jump to the head.
-   * {@link LoopFinder} will normally guarantee this.
-   * 
+   * Creates a new loop. Expects that the last statement in the list is the loop head and the second-last statement is the
+   * back-jump to the head. {@link LoopFinder} will normally guarantee this.
+   *
    * @param head
    *          the loop header
    * @param loopStatements
@@ -82,8 +86,8 @@ public class Loop {
   }
 
   /**
-   * @return all statements of the loop, including the header; the header will be the first element returned and then the other statements follow in
-   *         the natural ordering of the loop
+   * @return all statements of the loop, including the header; the header will be the first element returned and then the
+   *         other statements follow in the natural ordering of the loop
    */
   public List<Stmt> getLoopStatements() {
     return loopStatements;
@@ -123,7 +127,7 @@ public class Loop {
 
   /**
    * Returns <code>true</code> if this loop certainly loops forever, i.e. if it has not exit.
-   * 
+   *
    * @see #getLoopExits()
    */
   public boolean loopsForever() {
@@ -132,7 +136,7 @@ public class Loop {
 
   /**
    * Returns <code>true</code> if this loop has a single exit statement.
-   * 
+   *
    * @see #getLoopExits()
    */
   public boolean hasSingleExit() {

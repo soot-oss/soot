@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.shimple.internal;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Navindra Umanee <navindra@cs.mcgill.ca>
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,8 +58,8 @@ import soot.util.MultiMap;
 /**
  * @author Navindra Umanee
  * @see soot.shimple.ShimpleBody
- * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and the Control Dependence
- *      Graph</a>
+ * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
+ *      the Control Dependence Graph</a>
  **/
 public class PhiNodeManager {
   protected ShimpleBody body;
@@ -202,9 +205,9 @@ public class PhiNodeManager {
   }
 
   /**
-   * Exceptional Phi nodes have a huge number of arguments and control flow predecessors by default. Since it is useless trying to keep the number of
-   * arguments and control flow predecessors in synch, we might as well trim out all redundant arguments and eliminate a huge number of copy
-   * statements when we get out of SSA form in the process.
+   * Exceptional Phi nodes have a huge number of arguments and control flow predecessors by default. Since it is useless
+   * trying to keep the number of arguments and control flow predecessors in synch, we might as well trim out all redundant
+   * arguments and eliminate a huge number of copy statements when we get out of SSA form in the process.
    **/
   public void trimExceptionalPhiNodes() {
     Set<Unit> handlerUnits = new HashSet<Unit>();
@@ -237,8 +240,8 @@ public class PhiNodeManager {
    **/
   public void trimPhiNode(PhiExpr phiExpr) {
     /*
-     * A value may appear many times in an exceptional Phi. Hence, the same value may be associated with many UnitBoxes. We build the MultiMap
-     * valueToPairs for convenience.
+     * A value may appear many times in an exceptional Phi. Hence, the same value may be associated with many UnitBoxes. We
+     * build the MultiMap valueToPairs for convenience.
      */
 
     MultiMap<Value, ValueUnitPair> valueToPairs = new HashMultiMap<Value, ValueUnitPair>();
@@ -248,8 +251,8 @@ public class PhiNodeManager {
     }
 
     /*
-     * Consider each value and see if we can find the dominating UnitBoxes. Once we have found all the dominating UnitBoxes, the rest of the redundant
-     * arguments can be trimmed.
+     * Consider each value and see if we can find the dominating UnitBoxes. Once we have found all the dominating UnitBoxes,
+     * the rest of the redundant arguments can be trimmed.
      */
 
     Iterator<Value> valuesIt = valueToPairs.keySet().iterator();
@@ -310,17 +313,17 @@ public class PhiNodeManager {
 
     /*
      * { List preds = phiExpr.getPreds();
-     * 
-     * for(int i = 0; i < phiExpr.getArgCount(); i++){ ValueUnitPair vup = phiExpr.getArgBox(i); Value value = vup.getValue(); Unit unit =
-     * vup.getUnit();
-     * 
+     *
+     * for(int i = 0; i < phiExpr.getArgCount(); i++){ ValueUnitPair vup = phiExpr.getArgBox(i); Value value =
+     * vup.getValue(); Unit unit = vup.getUnit();
+     *
      * PhiExpr innerPhi = Shimple.getPhiExpr(unit); if(innerPhi == null) continue;
-     * 
+     *
      * Value innerValue = Shimple.getLhsLocal(unit); if(!innerValue.equals(value)) continue;
-     * 
+     *
      * boolean canRemove = true; for(int j = 0; j < innerPhi.getArgCount(); j++){ Unit innerPred = innerPhi.getPred(j);
      * if(!preds.contains(innerPred)){ canRemove = false; break; } }
-     * 
+     *
      * if(canRemove) phiExpr.removeArg(vup); } }
      */
   }
@@ -373,8 +376,8 @@ public class PhiNodeManager {
   }
 
   /**
-   * Eliminate Phi nodes in block by naively replacing them with shimple assignment statements in the control flow predecessors. Returns true if new
-   * locals were added to the body during the process, false otherwise.
+   * Eliminate Phi nodes in block by naively replacing them with shimple assignment statements in the control flow
+   * predecessors. Returns true if new locals were added to the body during the process, false otherwise.
    **/
   public boolean doEliminatePhiNodes() {
     // flag that indicates whether we created new locals during the

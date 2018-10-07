@@ -1,14 +1,36 @@
 package soot.jimple.spark.sets;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import soot.jimple.spark.pag.Node;
 import soot.util.BitVector;
 
 /**
  * An extension of a bit vector which is convenient to use to represent points-to sets. Used by SharedHybridSet.
  *
- * We have to extend soot.util.BitVector rather than java.util.BitSet because PointsToSetInternal.getBitMask() returns a soot.util.BitVector. which
- * must be combined with other bit vectors.
- * 
+ * We have to extend soot.util.BitVector rather than java.util.BitSet because PointsToSetInternal.getBitMask() returns a
+ * soot.util.BitVector. which must be combined with other bit vectors.
+ *
  * @author Adam Richard
  *
  */
@@ -19,7 +41,7 @@ public class PointsToBitVector extends BitVector {
 
   /**
    * Adds n to this
-   * 
+   *
    * @return Whether this actually changed
    */
   public boolean add(Node n) {
@@ -43,12 +65,12 @@ public class PointsToBitVector extends BitVector {
 
   /**
    * Adds the Nodes in arr to this bitvector, adding at most size Nodes.
-   * 
+   *
    * @return The number of new nodes actually added.
    */
   /*
-   * public int add(Node[] arr, int size) { //assert size <= arr.length; int retVal = 0; for (int i = 0; i < size; ++i) { int num =
-   * arr[i].getNumber(); if (!get(num)) { set(num); ++retVal; } } return retVal; }
+   * public int add(Node[] arr, int size) { //assert size <= arr.length; int retVal = 0; for (int i = 0; i < size; ++i) { int
+   * num = arr[i].getNumber(); if (!get(num)) { set(num); ++retVal; } } return retVal; }
    */
 
   /** Returns true iff other is a subset of this bitvector */
@@ -63,8 +85,8 @@ public class PointsToBitVector extends BitVector {
    */
 
   /*
-   * Old algorithm: public int cardinality() { int retVal = 0; BitSetIterator it = iterator(); while (it.hasNext()) { it.next(); ++retVal; } return
-   * retVal; }
+   * Old algorithm: public int cardinality() { int retVal = 0; BitSetIterator it = iterator(); while (it.hasNext()) {
+   * it.next(); ++retVal; } return retVal; }
    */
 
   public PointsToBitVector(PointsToBitVector other) {

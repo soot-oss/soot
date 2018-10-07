@@ -1,29 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.AbstractCollection;
 import java.util.Collection;
@@ -34,8 +31,8 @@ import java.util.List;
 import soot.util.Chain;
 
 /**
- * An implementation of a Chain which can contain only Units, and handles patching to deal with element insertions and removals. This is done by
- * calling Unit.redirectJumpsToThisTo at strategic times.
+ * An implementation of a Chain which can contain only Units, and handles patching to deal with element insertions and
+ * removals. This is done by calling Unit.redirectJumpsToThisTo at strategic times.
  */
 @SuppressWarnings("serial")
 public class PatchingChain<E extends Unit> extends AbstractCollection<E> implements Chain<E> {
@@ -47,39 +44,46 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /**
-   * Returns the inner chain used by the PatchingChain. In general, this should not be used. However, direct access to the inner chain may be
-   * necessary if you wish to perform certain operations (such as control-flow manipulations) without interference from the patching algorithms.
+   * Returns the inner chain used by the PatchingChain. In general, this should not be used. However, direct access to the
+   * inner chain may be necessary if you wish to perform certain operations (such as control-flow manipulations) without
+   * interference from the patching algorithms.
    **/
   public Chain<E> getNonPatchingChain() {
     return innerChain;
   }
 
   /** Adds the given object to this Chain. */
+  @Override
   public boolean add(E o) {
     return innerChain.add(o);
   }
 
   /** Replaces <code>out</code> in the Chain by <code>in</code>. */
+  @Override
   public void swapWith(E out, E in) {
     innerChain.swapWith(out, in);
     out.redirectJumpsToThisTo(in);
   }
 
   /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
+  @Override
   public void insertAfter(E toInsert, E point) {
     innerChain.insertAfter(toInsert, point);
   }
 
   /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
+  @Override
   public void insertAfter(List<E> toInsert, E point) {
     innerChain.insertAfter(toInsert, point);
   }
 
+  @Override
   public void insertAfter(Chain<E> toInsert, E point) {
     innerChain.insertAfter(toInsert, point);
   }
 
   /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
+  @Override
   public void insertBefore(List<E> toInsert, E point) {
     E previousPoint = point;
 
@@ -92,6 +96,7 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
+  @Override
   public void insertBefore(Chain<E> toInsert, E point) {
     Object[] obj = toInsert.toArray();
     E previousPoint = point;
@@ -104,6 +109,7 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
+  @Override
   public void insertBefore(E toInsert, E point) {
     point.redirectJumpsToThisTo(toInsert);
     innerChain.insertBefore(toInsert, point);
@@ -114,57 +120,14 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
     innerChain.insertBefore(toInsert, point);
   }
 
-  /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain <code>toInsert</code> on an edge
-   * that is defined by <code>point_source</code> and <code>point_target</code>.
-   * 
-   * @param toInsert
-   *          the instrumentation to be added in the Chain
-   * @param point_src
-   *          the source point of an edge in CFG
-   * @param point_tgt
-   *          the target point of an edge
-   */
-  public void insertOnEdge(E toInsert, E point_src, E point_tgt) {
-    innerChain.insertOnEdge(toInsert, point_src, point_tgt);
-  }
-
-  /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain <code>toInsert</code> on an edge
-   * that is defined by <code>point_source</code> and <code>point_target</code>.
-   * 
-   * @param toInsert
-   *          instrumentation to be added in the Chain
-   * @param point_src
-   *          the source point of an edge in CFG
-   * @param point_tgt
-   *          the target point of an edge
-   */
-  public void insertOnEdge(List<E> toInsert, E point_src, E point_tgt) {
-    innerChain.insertOnEdge(toInsert, point_src, point_tgt);
-  }
-
-  /**
-   * Inserts instrumentation in a manner such that the resulting control flow graph (CFG) of the program will contain <code>toInsert</code> on an edge
-   * that is defined by <code>point_source</code> and <code>point_target</code>.
-   * 
-   * @param toInsert
-   *          instrumentation to be added in the Chain
-   * @param point_src
-   *          the source point of an edge in CFG
-   * @param point_tgt
-   *          the target point of an edge
-   */
-  public void insertOnEdge(Chain<E> toInsert, E point_src, E point_tgt) {
-    innerChain.insertOnEdge(toInsert, point_src, point_tgt);
-  }
-
   /** Returns true if object <code>a</code> follows object <code>b</code> in the Chain. */
+  @Override
   public boolean follows(E a, E b) {
     return innerChain.follows(a, b);
   }
 
   /** Removes the given object from this Chain. */
+  @Override
   @SuppressWarnings("unchecked")
   public boolean remove(Object obj) {
     boolean res = false;
@@ -194,46 +157,55 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /** Returns true if this patching chain contains the specified element. */
+  @Override
   public boolean contains(Object u) {
     return innerChain.contains(u);
   }
 
   /** Adds the given object at the beginning of the Chain. */
+  @Override
   public void addFirst(E u) {
     innerChain.addFirst(u);
   }
 
   /** Adds the given object at the end of the Chain. */
+  @Override
   public void addLast(E u) {
     innerChain.addLast(u);
   }
 
   /** Removes the first object from this Chain. */
+  @Override
   public void removeFirst() {
     remove(innerChain.getFirst());
   }
 
   /** Removes the last object from this Chain. */
+  @Override
   public void removeLast() {
     remove(innerChain.getLast());
   }
 
   /** Returns the first object in this Chain. */
+  @Override
   public E getFirst() {
     return innerChain.getFirst();
   }
 
   /** Returns the last object in this Chain. */
+  @Override
   public E getLast() {
     return innerChain.getLast();
   }
 
   /** Returns the object immediately following <code>point</code>. */
+  @Override
   public E getSuccOf(E point) {
     return innerChain.getSuccOf(point);
   }
 
   /** Returns the object immediately preceding <code>point</code>. */
+  @Override
   public E getPredOf(E point) {
     return innerChain.getPredOf(point);
   }
@@ -255,16 +227,19 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
       innerIterator = innerChain.iterator(head, tail);
     }
 
+    @Override
     public boolean hasNext() {
       return innerIterator.hasNext();
     }
 
+    @Override
     public E next() {
       lastObject = innerIterator.next();
       state = true;
       return lastObject;
     }
 
+    @Override
     public void remove() {
       if (!state) {
         throw new IllegalStateException("remove called before first next() call");
@@ -292,30 +267,35 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   }
 
   /**
-   * Returns an iterator over a copy of this chain. This avoids ConcurrentModificationExceptions from being thrown if the underlying Chain is modified
-   * during iteration. Do not use this to remove elements which have not yet been iterated over!
+   * Returns an iterator over a copy of this chain. This avoids ConcurrentModificationExceptions from being thrown if the
+   * underlying Chain is modified during iteration. Do not use this to remove elements which have not yet been iterated over!
    */
+  @Override
   public Iterator<E> snapshotIterator() {
     List<E> l = new LinkedList<E>(this);
     return l.iterator();
   }
 
   /** Returns an iterator over this Chain. */
+  @Override
   public Iterator<E> iterator() {
     return new PatchingIterator(innerChain);
   }
 
   /** Returns an iterator over this Chain, starting at the given object. */
+  @Override
   public Iterator<E> iterator(E u) {
     return new PatchingIterator(innerChain, u);
   }
 
   /** Returns an iterator over this Chain, starting at head and reaching tail (inclusive). */
+  @Override
   public Iterator<E> iterator(E head, E tail) {
     return new PatchingIterator(innerChain, head, tail);
   }
 
   /** Returns the size of this Chain. */
+  @Override
   public int size() {
     return innerChain.size();
   }
@@ -329,5 +309,15 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   @Override
   public Collection<E> getElementsUnsorted() {
     return innerChain.getElementsUnsorted();
+  }
+
+  @Override
+  public void insertAfter(Collection<? extends E> toInsert, E point) {
+    innerChain.insertAfter(toInsert, point);
+  }
+
+  @Override
+  public void insertBefore(Collection<? extends E> toInsert, E point) {
+    innerChain.insertBefore(toInsert, point);
   }
 }

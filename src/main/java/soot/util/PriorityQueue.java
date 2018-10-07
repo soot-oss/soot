@@ -1,7 +1,29 @@
 /**
- * 
+ *
  */
 package soot.util;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.AbstractMap;
 import java.util.AbstractQueue;
@@ -18,10 +40,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A fixed size priority queue based on bitsets. The elements of the priority queue are ordered according to a given universe. This priority queue
- * does not permit {@code null} elements. Inserting of elements that are not part of the universe is also permitted (doing so will result in a
- * {@code NoSuchElementException}).
- * 
+ * A fixed size priority queue based on bitsets. The elements of the priority queue are ordered according to a given
+ * universe. This priority queue does not permit {@code null} elements. Inserting of elements that are not part of the
+ * universe is also permitted (doing so will result in a {@code NoSuchElementException}).
+ *
  * @author Steven Lambeth
  * @param <E>
  *          the type of elements held in the universe
@@ -92,8 +114,8 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
   abstract void addAll();
 
   /**
-   * Returns the index of the first bit that is set to <code>true</code> that occurs on or after the specified starting index. If no such bit exists
-   * then a value bigger that {@code N} is returned.
+   * Returns the index of the first bit that is set to <code>true</code> that occurs on or after the specified starting
+   * index. If no such bit exists then a value bigger that {@code N} is returned.
    *
    * @param fromIndex
    *          the index to start checking from (inclusive).
@@ -109,7 +131,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    */
   @Override
   final public E peek() {
@@ -118,7 +140,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    */
   @Override
   final public E poll() {
@@ -132,7 +154,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @throws NoSuchElementException
    *           if e not part of the universe
    * @throws NullPointerException
@@ -145,7 +167,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @throws NoSuchElementException
    *           if e not part of the universe
    * @throws NullPointerException
@@ -158,7 +180,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    */
   @Override
   final public boolean remove(Object o) {
@@ -179,7 +201,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    */
   @Override
   final public boolean contains(Object o) {
@@ -200,7 +222,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    */
   @Override
   public boolean isEmpty() {
@@ -216,7 +238,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * Creates a new full priority queue
-   * 
+   *
    * @param universe
    * @return
    */
@@ -226,7 +248,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * Creates a new empty priority queue
-   * 
+   *
    * @param universe
    * @return
    */
@@ -236,7 +258,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * Creates a new full priority queue
-   * 
+   *
    * @param universe
    * @return
    */
@@ -248,7 +270,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
   /**
    * Creates a new empty priority queue
-   * 
+   *
    * @param universe
    * @return
    */
@@ -273,7 +295,8 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
     return q;
   }
 
-  public static <E extends Numberable> PriorityQueue<E> noneOf(final List<? extends E> universe, boolean useNumberInterface) {
+  public static <E extends Numberable> PriorityQueue<E> noneOf(final List<? extends E> universe,
+      boolean useNumberInterface) {
     if (!useNumberInterface) {
       return noneOf(universe);
     }

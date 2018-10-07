@@ -1,5 +1,27 @@
 package soot.toDex;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.reference.StringReference;
 import org.jf.dexlib2.iface.reference.TypeReference;
@@ -26,10 +48,10 @@ import soot.util.Switchable;
 /**
  * A visitor that builds a list of instructions from the Jimple constants it visits.<br>
  * <br>
- * Use {@link Switchable#apply(soot.util.Switch)} with this visitor to add statements. These are added to the instructions in the
- * {@link StmtVisitor}.<br>
+ * Use {@link Switchable#apply(soot.util.Switch)} with this visitor to add statements. These are added to the instructions in
+ * the {@link StmtVisitor}.<br>
  * Do not forget to use {@link #setDestination(Register)} to set the storage location for the constant.
- * 
+ *
  * @see StmtVisitor
  */
 class ConstantVisitor extends AbstractConstantSwitch {

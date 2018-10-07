@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,10 +35,11 @@ import org.slf4j.LoggerFactory;
 public class PhaseOptions {
   private static final Logger logger = LoggerFactory.getLogger(PhaseOptions.class);
   /**
-   * Needed for preventing infinite recursion in constructor. Termination is assured: each constructor is called exactly once. Here is a case
-   * analysis. a. PackManager used first. Then its constructor needs PhaseOptions, which also needs a PackManager; OK because we store the PackManager
-   * being initialized in a field. b. PhaseOptions used first. Then getPM() calls PackManager.v(), which calls the constr, which sets the .pm field
-   * here, uses PhaseOptions (which uses PackManager), and returns. OK.
+   * Needed for preventing infinite recursion in constructor. Termination is assured: each constructor is called exactly
+   * once. Here is a case analysis. a. PackManager used first. Then its constructor needs PhaseOptions, which also needs a
+   * PackManager; OK because we store the PackManager being initialized in a field. b. PhaseOptions used first. Then getPM()
+   * calls PackManager.v(), which calls the constr, which sets the .pm field here, uses PhaseOptions (which uses
+   * PackManager), and returns. OK.
    */
   private PackManager pm;
 
@@ -57,7 +61,8 @@ public class PhaseOptions {
     return G.v().soot_PhaseOptions();
   }
 
-  private final Map<HasPhaseOptions, Map<String, String>> phaseToOptionMap = new HashMap<HasPhaseOptions, Map<String, String>>();
+  private final Map<HasPhaseOptions, Map<String, String>> phaseToOptionMap
+      = new HashMap<HasPhaseOptions, Map<String, String>>();
 
   public Map<String, String> getPhaseOptions(String phaseName) {
     return getPhaseOptions(getPM().getPhase(phaseName));
@@ -101,8 +106,8 @@ public class PhaseOptions {
   }
 
   /**
-   * If key "name" is in options, this method returns true iff it maps to "true". If the key "name" is not in options, the given default value is
-   * returned.
+   * If key "name" is in options, this method returns true iff it maps to "true". If the key "name" is not in options, the
+   * given default value is returned.
    */
   public static boolean getBoolean(Map<String, String> options, String name, boolean defaultValue) {
     String val = options.get(name);
@@ -191,10 +196,11 @@ public class PhaseOptions {
 
   private boolean checkParentEnabled(String phaseName) {
     /*
-     * if( true ) return true; for (Pack p : getPM().allPacks()) { if( getBoolean( getPhaseOptions( p ), "enabled" ) ) continue; for( Iterator tIt =
-     * p.iterator(); tIt.hasNext(); ) { final Transform t = (Transform) tIt.next(); if( t.getPhaseName().equals( phaseName ) ) { logger.debug(""+
+     * if( true ) return true; for (Pack p : getPM().allPacks()) { if( getBoolean( getPhaseOptions( p ), "enabled" ) )
+     * continue; for( Iterator tIt = p.iterator(); tIt.hasNext(); ) { final Transform t = (Transform) tIt.next(); if(
+     * t.getPhaseName().equals( phaseName ) ) { logger.debug(""+
      * "Attempt to set option for phase "+phaseName+" of disabled pack "+p.getPhaseName() ); return false;
-     * 
+     *
      * } } }
      */
     return true;

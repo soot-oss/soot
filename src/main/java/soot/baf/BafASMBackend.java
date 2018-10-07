@@ -1,5 +1,27 @@
 package soot.baf;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import static soot.util.backend.ASMBackendUtils.sizeOfType;
 import static soot.util.backend.ASMBackendUtils.slashify;
 import static soot.util.backend.ASMBackendUtils.toTypeDesc;
@@ -71,7 +93,7 @@ public class BafASMBackend extends AbstractASMBackend {
 
   /**
    * Returns the ASM Label for a given Unit that is the target of a branch or jump
-   * 
+   *
    * @param target
    *          The unit that is the branch target
    * @return The Label that specifies this unit
@@ -86,11 +108,12 @@ public class BafASMBackend extends AbstractASMBackend {
 
   /**
    * Creates a new BafASMBackend with a given enforced java version
-   * 
+   *
    * @param sc
    *          The SootClass the bytecode is to be generated for
    * @param javaVersion
-   *          A particular Java version enforced by the user, may be 0 for automatic detection, must not be lower than necessary for all features used
+   *          A particular Java version enforced by the user, may be 0 for automatic detection, must not be lower than
+   *          necessary for all features used
    */
   public BafASMBackend(SootClass sc, int javaVersion) {
     super(sc, javaVersion);
@@ -98,7 +121,7 @@ public class BafASMBackend extends AbstractASMBackend {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see soot.AbstractASMBackend#getMinJavaVersion(soot.SootMethod)
    */
   @Override
@@ -129,7 +152,7 @@ public class BafASMBackend extends AbstractASMBackend {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see soot.AbstractASMBackend#generateMethodBody(org.objectweb.asm. MethodVisitor, soot.SootMethod)
    */
   @Override
@@ -220,17 +243,7 @@ public class BafASMBackend extends AbstractASMBackend {
       if (branchTargetLabels.containsKey(u)) {
         mv.visitLabel(branchTargetLabels.get(u));
       }
-      if (u.hasTag("LineNumberTag")) {
-        LineNumberTag lnt = (LineNumberTag) u.getTag("LineNumberTag");
-        Label l;
-        if (branchTargetLabels.containsKey(u)) {
-          l = branchTargetLabels.get(u);
-        } else {
-          l = new Label();
-          mv.visitLabel(l);
-        }
-        mv.visitLineNumber(lnt.getLineNumber(), l);
-      }
+      generateTagsForUnit(mv, u);
       generateInstruction(mv, (Inst) u);
     }
 
@@ -246,7 +259,8 @@ public class BafASMBackend extends AbstractASMBackend {
           if (l.getOriginalLocal() != null) {
             Local jimpleLocal = l.getOriginalLocal();
             if (jimpleLocal != null) {
-              mv.visitLocalVariable(jimpleLocal.getName(), toTypeDesc(jimpleLocal.getType()), null, startLabel, endLabel, slot);
+              mv.visitLocalVariable(jimpleLocal.getName(), toTypeDesc(jimpleLocal.getType()), null, startLabel, endLabel,
+                  slot);
             }
           }
         }
@@ -255,8 +269,30 @@ public class BafASMBackend extends AbstractASMBackend {
   }
 
   /**
-   * Emits the bytecode for a single Baf instruction
+   * Writes out the information stored in tags associated with the given unit
    * 
+   * @param mv
+   *          The method visitor for writing out the bytecode
+   * @param u
+   *          The unit for which to write out the tags
+   */
+  protected void generateTagsForUnit(MethodVisitor mv, Unit u) {
+    if (u.hasTag("LineNumberTag")) {
+      LineNumberTag lnt = (LineNumberTag) u.getTag("LineNumberTag");
+      Label l;
+      if (branchTargetLabels.containsKey(u)) {
+        l = branchTargetLabels.get(u);
+      } else {
+        l = new Label();
+        mv.visitLabel(l);
+      }
+      mv.visitLineNumber(lnt.getLineNumber(), l);
+    }
+  }
+
+  /**
+   * Emits the bytecode for a single Baf instruction
+   *
    * @param mv
    *          The ASM MethodVisitor the bytecode is to be emitted to
    * @param inst
@@ -434,7 +470,8 @@ public class BafASMBackend extends AbstractASMBackend {
           } else {
             tag = Opcodes.H_INVOKEVIRTUAL;
           }
-          Handle handle = new Handle(tag, ref.declaringClass().getName(), ref.name(), ref.getSignature(), ref.declaringClass().isInnerClass());
+          Handle handle = new Handle(tag, ref.declaringClass().getName(), ref.name(), ref.getSignature(),
+              ref.declaringClass().isInnerClass());
 
           mv.visitLdcInsn(handle);
         } else {
@@ -1127,25 +1164,29 @@ public class BafASMBackend extends AbstractASMBackend {
       @Override
       public void caseStaticGetInst(StaticGetInst i) {
         SootFieldRef field = i.getFieldRef();
-        mv.visitFieldInsn(Opcodes.GETSTATIC, slashify(field.declaringClass().getName()), field.name(), toTypeDesc(field.type()));
+        mv.visitFieldInsn(Opcodes.GETSTATIC, slashify(field.declaringClass().getName()), field.name(),
+            toTypeDesc(field.type()));
       }
 
       @Override
       public void caseStaticPutInst(StaticPutInst i) {
         SootFieldRef field = i.getFieldRef();
-        mv.visitFieldInsn(Opcodes.PUTSTATIC, slashify(field.declaringClass().getName()), field.name(), toTypeDesc(field.type()));
+        mv.visitFieldInsn(Opcodes.PUTSTATIC, slashify(field.declaringClass().getName()), field.name(),
+            toTypeDesc(field.type()));
       }
 
       @Override
       public void caseFieldGetInst(FieldGetInst i) {
         SootFieldRef field = i.getFieldRef();
-        mv.visitFieldInsn(Opcodes.GETFIELD, slashify(field.declaringClass().getName()), field.name(), toTypeDesc(field.type()));
+        mv.visitFieldInsn(Opcodes.GETFIELD, slashify(field.declaringClass().getName()), field.name(),
+            toTypeDesc(field.type()));
       }
 
       @Override
       public void caseFieldPutInst(FieldPutInst i) {
         SootFieldRef field = i.getFieldRef();
-        mv.visitFieldInsn(Opcodes.PUTFIELD, slashify(field.declaringClass().getName()), field.name(), toTypeDesc(field.type()));
+        mv.visitFieldInsn(Opcodes.PUTFIELD, slashify(field.declaringClass().getName()), field.name(),
+            toTypeDesc(field.type()));
       }
 
       @Override
@@ -1297,7 +1338,8 @@ public class BafASMBackend extends AbstractASMBackend {
             @Override
             public void caseMethodHandle(MethodHandle handle) {
               SootMethodRef methodRef = handle.getMethodRef();
-              argsArray[j] = new Handle(handle.tag, slashify(methodRef.declaringClass().getName()), methodRef.name(), toTypeDesc(methodRef));
+              argsArray[j] = new Handle(handle.tag, slashify(methodRef.declaringClass().getName()), methodRef.name(),
+                  toTypeDesc(methodRef));
             }
 
             @Override
@@ -1341,7 +1383,8 @@ public class BafASMBackend extends AbstractASMBackend {
       @Override
       public void caseVirtualInvokeInst(VirtualInvokeInst i) {
         SootMethodRef m = i.getMethodRef();
-        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, slashify(m.declaringClass().getName()), m.name(), toTypeDesc(m), m.declaringClass().isInterface());
+        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, slashify(m.declaringClass().getName()), m.name(), toTypeDesc(m),
+            m.declaringClass().isInterface());
       }
 
       @Override
@@ -1351,8 +1394,9 @@ public class BafASMBackend extends AbstractASMBackend {
         boolean isInterface = true;
         if (!declaration.isPhantom() && !declaration.isInterface()) {
           /*
-           * If the declaring class of a method called via invokeinterface is a phantom class we assume the declaring class to be an interface. This
-           * might not be true in general, but as of today Soot can not evaluate isInterface() for phantom classes correctly.
+           * If the declaring class of a method called via invokeinterface is a phantom class we assume the declaring class
+           * to be an interface. This might not be true in general, but as of today Soot can not evaluate isInterface() for
+           * phantom classes correctly.
            */
           isInterface = false;
         }
@@ -1362,7 +1406,8 @@ public class BafASMBackend extends AbstractASMBackend {
       @Override
       public void caseSpecialInvokeInst(SpecialInvokeInst i) {
         SootMethodRef m = i.getMethodRef();
-        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, slashify(m.declaringClass().getName()), m.name(), toTypeDesc(m), m.declaringClass().isInterface());
+        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, slashify(m.declaringClass().getName()), m.name(), toTypeDesc(m),
+            m.declaringClass().isInterface());
       }
 
       @Override
