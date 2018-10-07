@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Static Inliner. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-08-13T11:30:57.578+02:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-10-07T13:22:53.294+02:00", comments = "from soot_options.xml")
 public class SIOptions {
 
     private Map<String, String> options;
