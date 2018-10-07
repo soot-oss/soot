@@ -1,3 +1,24 @@
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 package soot;
 
 import com.google.common.base.Optional;
@@ -25,7 +46,7 @@ import soot.options.Options;
 /**
  * A utility class for dealing with java 9 modules and module dependencies
  *
- * @author adann
+ * @author Andreas Dann
  */
 public final class ModuleUtil {
 
@@ -202,6 +223,8 @@ public final class ModuleUtil {
    * Wrapper class for backward compatibility with existing soot code In existing soot code classes are resolved based on
    * their name without specifying a module to avoid changing all occurrences of String constants in Soot this classes deals
    * with these String constants
+   *
+   * @author Andreas Dann
    */
   public static final class ModuleClassNameWrapper {
 
