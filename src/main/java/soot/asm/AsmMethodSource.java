@@ -22,158 +22,8 @@ package soot.asm;
  * #L%
  */
 
-import static org.objectweb.asm.Opcodes.ACONST_NULL;
-import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.ANEWARRAY;
-import static org.objectweb.asm.Opcodes.ARETURN;
-import static org.objectweb.asm.Opcodes.ARRAYLENGTH;
-import static org.objectweb.asm.Opcodes.ASTORE;
-import static org.objectweb.asm.Opcodes.ATHROW;
-import static org.objectweb.asm.Opcodes.BIPUSH;
-import static org.objectweb.asm.Opcodes.CHECKCAST;
-import static org.objectweb.asm.Opcodes.D2F;
-import static org.objectweb.asm.Opcodes.D2I;
-import static org.objectweb.asm.Opcodes.D2L;
-import static org.objectweb.asm.Opcodes.DADD;
-import static org.objectweb.asm.Opcodes.DALOAD;
-import static org.objectweb.asm.Opcodes.DASTORE;
-import static org.objectweb.asm.Opcodes.DCMPG;
-import static org.objectweb.asm.Opcodes.DCMPL;
-import static org.objectweb.asm.Opcodes.DCONST_0;
-import static org.objectweb.asm.Opcodes.DCONST_1;
-import static org.objectweb.asm.Opcodes.DDIV;
-import static org.objectweb.asm.Opcodes.DLOAD;
-import static org.objectweb.asm.Opcodes.DMUL;
-import static org.objectweb.asm.Opcodes.DNEG;
-import static org.objectweb.asm.Opcodes.DREM;
-import static org.objectweb.asm.Opcodes.DRETURN;
-import static org.objectweb.asm.Opcodes.DSTORE;
-import static org.objectweb.asm.Opcodes.DSUB;
-import static org.objectweb.asm.Opcodes.DUP;
-import static org.objectweb.asm.Opcodes.DUP2;
-import static org.objectweb.asm.Opcodes.DUP2_X1;
-import static org.objectweb.asm.Opcodes.DUP2_X2;
-import static org.objectweb.asm.Opcodes.DUP_X1;
-import static org.objectweb.asm.Opcodes.DUP_X2;
-import static org.objectweb.asm.Opcodes.F2D;
-import static org.objectweb.asm.Opcodes.F2I;
-import static org.objectweb.asm.Opcodes.F2L;
-import static org.objectweb.asm.Opcodes.FCMPG;
-import static org.objectweb.asm.Opcodes.FCMPL;
-import static org.objectweb.asm.Opcodes.FCONST_0;
-import static org.objectweb.asm.Opcodes.FCONST_2;
-import static org.objectweb.asm.Opcodes.GETFIELD;
-import static org.objectweb.asm.Opcodes.GETSTATIC;
-import static org.objectweb.asm.Opcodes.GOTO;
-import static org.objectweb.asm.Opcodes.I2B;
-import static org.objectweb.asm.Opcodes.I2C;
-import static org.objectweb.asm.Opcodes.I2D;
-import static org.objectweb.asm.Opcodes.I2F;
-import static org.objectweb.asm.Opcodes.I2L;
-import static org.objectweb.asm.Opcodes.I2S;
-import static org.objectweb.asm.Opcodes.IADD;
-import static org.objectweb.asm.Opcodes.IALOAD;
-import static org.objectweb.asm.Opcodes.IAND;
-import static org.objectweb.asm.Opcodes.IASTORE;
-import static org.objectweb.asm.Opcodes.ICONST_0;
-import static org.objectweb.asm.Opcodes.ICONST_5;
-import static org.objectweb.asm.Opcodes.ICONST_M1;
-import static org.objectweb.asm.Opcodes.IDIV;
-import static org.objectweb.asm.Opcodes.IFEQ;
-import static org.objectweb.asm.Opcodes.IFGE;
-import static org.objectweb.asm.Opcodes.IFGT;
-import static org.objectweb.asm.Opcodes.IFLE;
-import static org.objectweb.asm.Opcodes.IFLT;
-import static org.objectweb.asm.Opcodes.IFNE;
-import static org.objectweb.asm.Opcodes.IFNONNULL;
-import static org.objectweb.asm.Opcodes.IFNULL;
-import static org.objectweb.asm.Opcodes.IF_ACMPEQ;
-import static org.objectweb.asm.Opcodes.IF_ACMPNE;
-import static org.objectweb.asm.Opcodes.IF_ICMPEQ;
-import static org.objectweb.asm.Opcodes.IF_ICMPGE;
-import static org.objectweb.asm.Opcodes.IF_ICMPGT;
-import static org.objectweb.asm.Opcodes.IF_ICMPLE;
-import static org.objectweb.asm.Opcodes.IF_ICMPLT;
-import static org.objectweb.asm.Opcodes.IF_ICMPNE;
-import static org.objectweb.asm.Opcodes.ILOAD;
-import static org.objectweb.asm.Opcodes.IMUL;
-import static org.objectweb.asm.Opcodes.INEG;
-import static org.objectweb.asm.Opcodes.INSTANCEOF;
-import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
-import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
-import static org.objectweb.asm.Opcodes.INVOKESTATIC;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
-import static org.objectweb.asm.Opcodes.IOR;
-import static org.objectweb.asm.Opcodes.IREM;
-import static org.objectweb.asm.Opcodes.IRETURN;
-import static org.objectweb.asm.Opcodes.ISHL;
-import static org.objectweb.asm.Opcodes.ISHR;
-import static org.objectweb.asm.Opcodes.ISTORE;
-import static org.objectweb.asm.Opcodes.ISUB;
-import static org.objectweb.asm.Opcodes.IUSHR;
-import static org.objectweb.asm.Opcodes.IXOR;
-import static org.objectweb.asm.Opcodes.JSR;
-import static org.objectweb.asm.Opcodes.L2D;
-import static org.objectweb.asm.Opcodes.L2F;
-import static org.objectweb.asm.Opcodes.L2I;
-import static org.objectweb.asm.Opcodes.LADD;
-import static org.objectweb.asm.Opcodes.LALOAD;
-import static org.objectweb.asm.Opcodes.LAND;
-import static org.objectweb.asm.Opcodes.LASTORE;
-import static org.objectweb.asm.Opcodes.LCMP;
-import static org.objectweb.asm.Opcodes.LCONST_0;
-import static org.objectweb.asm.Opcodes.LCONST_1;
-import static org.objectweb.asm.Opcodes.LDIV;
-import static org.objectweb.asm.Opcodes.LLOAD;
-import static org.objectweb.asm.Opcodes.LMUL;
-import static org.objectweb.asm.Opcodes.LNEG;
-import static org.objectweb.asm.Opcodes.LOR;
-import static org.objectweb.asm.Opcodes.LREM;
-import static org.objectweb.asm.Opcodes.LRETURN;
-import static org.objectweb.asm.Opcodes.LSHL;
-import static org.objectweb.asm.Opcodes.LSHR;
-import static org.objectweb.asm.Opcodes.LSTORE;
-import static org.objectweb.asm.Opcodes.LSUB;
-import static org.objectweb.asm.Opcodes.LUSHR;
-import static org.objectweb.asm.Opcodes.LXOR;
-import static org.objectweb.asm.Opcodes.MONITORENTER;
-import static org.objectweb.asm.Opcodes.MONITOREXIT;
-import static org.objectweb.asm.Opcodes.NEW;
-import static org.objectweb.asm.Opcodes.NEWARRAY;
-import static org.objectweb.asm.Opcodes.NOP;
-import static org.objectweb.asm.Opcodes.POP;
-import static org.objectweb.asm.Opcodes.POP2;
-import static org.objectweb.asm.Opcodes.PUTFIELD;
-import static org.objectweb.asm.Opcodes.RET;
-import static org.objectweb.asm.Opcodes.RETURN;
-import static org.objectweb.asm.Opcodes.SALOAD;
-import static org.objectweb.asm.Opcodes.SASTORE;
-import static org.objectweb.asm.Opcodes.SIPUSH;
-import static org.objectweb.asm.Opcodes.SWAP;
-import static org.objectweb.asm.Opcodes.T_BOOLEAN;
-import static org.objectweb.asm.Opcodes.T_BYTE;
-import static org.objectweb.asm.Opcodes.T_CHAR;
-import static org.objectweb.asm.Opcodes.T_DOUBLE;
-import static org.objectweb.asm.Opcodes.T_FLOAT;
-import static org.objectweb.asm.Opcodes.T_INT;
-import static org.objectweb.asm.Opcodes.T_LONG;
-import static org.objectweb.asm.Opcodes.T_SHORT;
-import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
-import static org.objectweb.asm.tree.AbstractInsnNode.IINC_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.INT_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.INVOKE_DYNAMIC_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.JUMP_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.LABEL;
-import static org.objectweb.asm.tree.AbstractInsnNode.LDC_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.LINE;
-import static org.objectweb.asm.tree.AbstractInsnNode.LOOKUPSWITCH_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.METHOD_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.MULTIANEWARRAY_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.TABLESWITCH_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.TYPE_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN;
+import static org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.tree.AbstractInsnNode.*;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ArrayListMultimap;
@@ -214,6 +64,7 @@ import org.objectweb.asm.tree.TableSwitchInsnNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -285,8 +136,7 @@ import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
 import soot.util.Chain;
 
-
-
+;
 
 /**
  * Generates Jimple bodies from bytecode.
@@ -319,7 +169,8 @@ final class AsmMethodSource implements MethodSource {
 
   private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
 
-  AsmMethodSource(int maxLocals, InsnList insns, List<LocalVariableNode> localVars, List<TryCatchBlockNode> tryCatchBlocks, String module) {
+  AsmMethodSource(int maxLocals, InsnList insns, List<LocalVariableNode> localVars, List<TryCatchBlockNode> tryCatchBlocks,
+      String module) {
     this.maxLocals = maxLocals;
     this.instructions = insns;
     this.localVars = localVars;
@@ -1277,7 +1128,8 @@ final class AsmMethodSource implements MethodSource {
       }
       SootClass cls = this.getClassFromScene(clsName);
 
-      List<Type> sigTypes = AsmUtil.toJimpleDesc(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+      List<Type> sigTypes
+          = AsmUtil.toJimpleDesc(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
       returnType = sigTypes.remove(sigTypes.size() - 1);
       SootMethodRef ref = Scene.v().makeMethodRef(cls, insn.name, sigTypes, returnType, !instance);
       int nrArgs = sigTypes.size();
@@ -1475,7 +1327,8 @@ final class AsmMethodSource implements MethodSource {
     Operand[] out = frame.out();
     Operand opr;
     if (out == null) {
-      ArrayType t = (ArrayType) AsmUtil.toJimpleType(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+      ArrayType t = (ArrayType) AsmUtil.toJimpleType(insn.desc,
+          Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
       int dims = insn.dims;
       Operand[] sizes = new Operand[dims];
       Value[] sizeVals = new Value[dims];
@@ -1534,7 +1387,8 @@ final class AsmMethodSource implements MethodSource {
     Operand[] out = frame.out();
     Operand opr;
     if (out == null) {
-      Type t = AsmUtil.toJimpleRefType(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+      Type t
+          = AsmUtil.toJimpleRefType(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
       Value val;
       if (op == NEW) {
         val = Jimple.v().newNewExpr((RefType) t);

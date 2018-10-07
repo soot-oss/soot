@@ -22,8 +22,6 @@ import java.util.regex.Pattern;
 
 import soot.options.Options;
 
-
-
 /**
  * A utility class for dealing with java 9 modules and module dependencies
  *
@@ -42,8 +40,9 @@ public final class ModuleUtil {
 
   private final Cache<String, String> modulePackageCache = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(800)
       .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build();
-  private final LoadingCache<String, ModuleClassNameWrapper> wrapperCache = CacheBuilder.newBuilder().initialCapacity(100).maximumSize(1000)
-      .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(new CacheLoader<String, ModuleClassNameWrapper>() {
+  private final LoadingCache<String, ModuleClassNameWrapper> wrapperCache = CacheBuilder.newBuilder().initialCapacity(100)
+      .maximumSize(1000).concurrencyLevel(Runtime.getRuntime().availableProcessors())
+      .build(new CacheLoader<String, ModuleClassNameWrapper>() {
         @Override
         public ModuleClassNameWrapper load(String key) throws Exception {
           return new ModuleClassNameWrapper(key);
@@ -83,7 +82,8 @@ public final class ModuleUtil {
     }
     SootModuleInfo modInfo;
     if (ModuleScene.v().containsClass(SootModuleInfo.MODULE_INFO, Optional.fromNullable(toModuleName))) {
-      modInfo = (SootModuleInfo) ModuleScene.v().getSootClass(SootModuleInfo.MODULE_INFO, Optional.fromNullable(toModuleName));
+      modInfo
+          = (SootModuleInfo) ModuleScene.v().getSootClass(SootModuleInfo.MODULE_INFO, Optional.fromNullable(toModuleName));
       if (modInfo.resolvingLevel() < SootClass.BODIES) {
         modInfo = (SootModuleInfo) SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES,
             Optional.fromNullable(toModuleName));
@@ -159,8 +159,8 @@ public final class ModuleUtil {
   }
 
   /*
-   * In Soot are a hard coded class names as string constants that are now contained in the java.base module, this list serves as a lookup for these
-   * string constant
+   * In Soot are a hard coded class names as string constants that are now contained in the java.base module, this list
+   * serves as a lookup for these string constant
    */
   private static final List<String> packagesJavaBaseModule = parseJavaBasePackage();
   private static final String JAVABASEFILE = "javabase.txt";
@@ -199,8 +199,9 @@ public final class ModuleUtil {
   }
 
   /**
-   * Wrapper class for backward compatibility with existing soot code In existing soot code classes are resolved based on their name without
-   * specifying a module to avoid changing all occurrences of String constants in Soot this classes deals with these String constants
+   * Wrapper class for backward compatibility with existing soot code In existing soot code classes are resolved based on
+   * their name without specifying a module to avoid changing all occurrences of String constants in Soot this classes deals
+   * with these String constants
    */
   public static final class ModuleClassNameWrapper {
 

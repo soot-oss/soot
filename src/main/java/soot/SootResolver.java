@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import soot.JastAddJ.BytecodeParser;
 import soot.JastAddJ.CompilationUnit;
 import soot.JastAddJ.JastAddJavaParser;
@@ -42,8 +43,6 @@ import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
-
-
 
 /**
  * Loads symbols for SootClasses from either class files or jimple files.
@@ -239,7 +238,8 @@ public class SootResolver {
     String className = sc.getName();
     ClassSource is;
     if (ModuleUtil.module_mode()) {
-      is = ModulePathSourceLocator.v().getClassSource(className, com.google.common.base.Optional.fromNullable(sc.moduleName));
+      is = ModulePathSourceLocator.v().getClassSource(className,
+          com.google.common.base.Optional.fromNullable(sc.moduleName));
     } else {
       is = SourceLocator.v().getClassSource(className);
     }

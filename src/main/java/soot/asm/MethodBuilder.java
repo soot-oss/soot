@@ -23,12 +23,14 @@ package soot.asm;
  */
 
 import com.google.common.base.Optional;
+
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
+
 import soot.ArrayType;
 import soot.RefType;
 import soot.SootMethod;
@@ -202,7 +204,8 @@ class MethodBuilder extends JSRInlinerAdapter {
       method.addTag(tag);
     }
     if (method.isConcrete()) {
-      method.setSource(new AsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks, scb.getKlass().moduleName));
+      method.setSource(
+          new AsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks, scb.getKlass().moduleName));
     }
   }
 }

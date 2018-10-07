@@ -43,7 +43,6 @@ import soot.options.Options;
 import soot.util.Chain;
 import soot.util.HashChain;
 
-
 /**
  * Manages the SootClasses of the application being analyzed for Java 9 modules
  *
@@ -70,8 +69,9 @@ public class ModuleScene extends Scene // extends original Scene
   }
 
   /*
-   * holds the references to SootClass 1: String the class name 2: Map<String, RefType>: The String represents the module that holds the corresponding
-   * RefType since multiple modules may contain the same class this is a map (for fast look ups) TODO: evaluate if Guava's multimap is faster
+   * holds the references to SootClass 1: String the class name 2: Map<String, RefType>: The String represents the module
+   * that holds the corresponding RefType since multiple modules may contain the same class this is a map (for fast look ups)
+   * TODO: evaluate if Guava's multimap is faster
    */
   private final Map<String, Map<String, RefType>> nameToClass = new HashMap<>();
 
@@ -84,7 +84,8 @@ public class ModuleScene extends Scene // extends original Scene
     }
 
     SootMethod mainMethod = mainClass.getMethodUnsafe("main",
-        Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.of("java.base")), 1)), VoidType.v());
+        Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.of("java.base")), 1)),
+        VoidType.v());
     if (mainMethod == null) {
       throw new RuntimeException("Main class declares no main method!");
     }
@@ -235,7 +236,8 @@ public class ModuleScene extends Scene // extends original Scene
   }
 
   /**
-   * Attempts to load the given class and all of the required support classes. Returns the original class if it was loaded, or null otherwise.
+   * Attempts to load the given class and all of the required support classes. Returns the original class if it was loaded,
+   * or null otherwise.
    */
 
   public SootClass tryLoadClass(String className, int desiredLevel, Optional<String> moduleName) {
@@ -307,7 +309,8 @@ public class ModuleScene extends Scene // extends original Scene
    * Returns the RefType with the given class name or primitive type.
    *
    * @throws RuntimeException
-   *           if the Type for this name cannot be found. Use {@link #getRefTypeUnsafe(String, Optional)} to check if type is an registered RefType.
+   *           if the Type for this name cannot be found. Use {@link #getRefTypeUnsafe(String, Optional)} to check if type is
+   *           an registered RefType.
    */
   public Type getType(String arg, Optional<String> moduleName) {
     String type = arg.replaceAll("([^\\[\\]]*)(.*)", "$1");
@@ -349,14 +352,16 @@ public class ModuleScene extends Scene // extends original Scene
    * Returns the RefType with the given className.
    *
    * @throws IllegalStateException
-   *           if the RefType for this class cannot be found. Use {@link #containsType(String)} to check if type is registered
+   *           if the RefType for this class cannot be found. Use {@link #containsType(String)} to check if type is
+   *           registered
    */
   public RefType getRefType(String className, Optional<String> moduleName) {
 
     RefType refType = getRefTypeUnsafe(className, moduleName);
     if (refType == null) {
       throw new IllegalStateException("RefType " + className + " not loaded. "
-          + "If you tried to get the RefType of a library class, did you call loadNecessaryClasses()? " + "Otherwise please check Soot's classpath.");
+          + "If you tried to get the RefType of a library class, did you call loadNecessaryClasses()? "
+          + "Otherwise please check Soot's classpath.");
     }
     return refType;
   }
@@ -489,8 +494,8 @@ public class ModuleScene extends Scene // extends original Scene
   }
 
   /**
-   * Load the set of classes that soot needs, including those specified on the command-line. This is the standard way of initialising the list of
-   * classes soot should use.
+   * Load the set of classes that soot needs, including those specified on the command-line. This is the standard way of
+   * initialising the list of classes soot should use.
    */
   public void loadNecessaryClasses() {
     loadBasicClasses();
@@ -549,7 +554,8 @@ public class ModuleScene extends Scene // extends original Scene
       SootClass c = iterator.next();
       if (!c.isConcrete()) {
         if (Options.v().verbose()) {
-          G.v().out.println("Warning: dynamic class " + c.getName() + " is abstract or an interface, and it will not be considered.");
+          G.v().out.println(
+              "Warning: dynamic class " + c.getName() + " is abstract or an interface, and it will not be considered.");
         }
         iterator.remove();
       }
@@ -613,7 +619,8 @@ public class ModuleScene extends Scene // extends original Scene
       // try to infer a main class from the command line if none is given
       for (String s : Options.v().classes()) {
         SootClass c = getSootClass(s, null);
-        if (c.declaresMethod("main", Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.of("java.base")), 1)),
+        if (c.declaresMethod("main",
+            Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.of("java.base")), 1)),
             VoidType.v())) {
           G.v().out.println("No main class given. Inferred '" + c.getName() + "' as main class.");
           setMainClass(c);
@@ -623,7 +630,8 @@ public class ModuleScene extends Scene // extends original Scene
 
       // try to infer a main class from the usual classpath if none is given
       for (SootClass c : getApplicationClasses()) {
-        if (c.declaresMethod("main", Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.of("java.base")), 1)),
+        if (c.declaresMethod("main",
+            Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.of("java.base")), 1)),
             VoidType.v())) {
           G.v().out.println("No main class given. Inferred '" + c.getName() + "' as main class.");
           setMainClass(c);

@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +103,8 @@ public class FoundFile {
       try {
         ret = Files.newInputStream(path);
       } catch (IOException e) {
-        throw new RuntimeException("Error: Failed to open a InputStream for the file at path '" + path.toAbsolutePath().toString() + "'.", e);
+        throw new RuntimeException(
+            "Error: Failed to open a InputStream for the file at path '" + path.toAbsolutePath().toString() + "'.", e);
       }
     } else if (!isZipFile()) {
       try {

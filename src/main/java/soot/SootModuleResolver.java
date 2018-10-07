@@ -74,8 +74,8 @@ public class SootModuleResolver extends SootResolver {
   }
 
   /**
-   * Resolves the given class. Depending on the resolver settings, may decide to resolve other classes as well. If the class has already been
-   * resolved, just returns the class that was already resolved.
+   * Resolves the given class. Depending on the resolver settings, may decide to resolve other classes as well. If the class
+   * has already been resolved, just returns the class that was already resolved.
    */
   public SootClass resolveClass(String className, int desiredLevel, Optional<String> moduleName) {
     SootClass resolvedClass = null;

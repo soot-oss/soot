@@ -30,8 +30,6 @@ import java.util.regex.Pattern;
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmModuleClassProvider;
 
-
-
 /**
  * Provides utility methods to retrieve an input stream for a class , given a classfile and module
  *
@@ -185,8 +183,8 @@ public class ModulePathSourceLocator extends SourceLocator {
   }
 
   /**
-   * Scan the given module path entry. If the entry is a directory then it is a directory of modules or an exploded module. If the entry is a regular
-   * file then it is assumed to be a packaged module.
+   * Scan the given module path entry. If the entry is a directory then it is a directory of modules or an exploded module.
+   * If the entry is a regular file then it is assumed to be a packaged module.
    */
   public Map<String, List<String>> getClassUnderModulePath(String aPath) {
     Map<String, List<String>> mapModuleClasses = new HashMap<>();
@@ -297,7 +295,8 @@ public class ModulePathSourceLocator extends SourceLocator {
         for (ClassProvider cp : classProviders) {
           if (cp instanceof AsmModuleClassProvider) {
             String moduleName = ((AsmModuleClassProvider) cp).getModuleName(foundFile);
-            SootModuleInfo moduleInfo = (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
+            SootModuleInfo moduleInfo
+                = (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
             this.moduleNameToPath.put(moduleName, jar);
             List<String> classesInJar = super.getClassesUnder(jar.toAbsolutePath().toString());
             for (String foundClass : classesInJar) {
@@ -356,8 +355,8 @@ public class ModulePathSourceLocator extends SourceLocator {
   }
 
   /**
-   * Creates a name for an automatic module based on the name of a jar file this is based on the jdk parsing of module name in the JDK
-   * 9{@link ModulePathFinder} at least the patterns are the same
+   * Creates a name for an automatic module based on the name of a jar file this is based on the jdk parsing of module name
+   * in the JDK 9{@link ModulePathFinder} at least the patterns are the same
    *
    * @param filename
    *          the name of the jar file
@@ -417,7 +416,8 @@ public class ModulePathSourceLocator extends SourceLocator {
         // try (InputStream in = Files.newInputStream(mi)) {
 
         String moduleName = ((AsmModuleClassProvider) cp).getModuleName(foundFile);
-        SootModuleInfo moduleInfo = (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
+        SootModuleInfo moduleInfo
+            = (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
         this.moduleNameToPath.put(moduleName, dir);
 
         List<String> classes = getClassesUnderDirectory(dir);
@@ -444,7 +444,8 @@ public class ModulePathSourceLocator extends SourceLocator {
   @Override
   public Set<String> classesInDynamicPackage(String str) {
     HashSet<String> set = new HashSet<>(0);
-    StringTokenizer strtok = new StringTokenizer(ModuleScene.v().getSootModulePath(), String.valueOf(File.pathSeparatorChar));
+    StringTokenizer strtok
+        = new StringTokenizer(ModuleScene.v().getSootModulePath(), String.valueOf(File.pathSeparatorChar));
     while (strtok.hasMoreTokens()) {
       String path = strtok.nextToken();
 
@@ -590,7 +591,8 @@ public class ModulePathSourceLocator extends SourceLocator {
       }
       return new FoundFile(archive.toAbsolutePath().toString(), fileName);
     } catch (IOException e) {
-      throw new RuntimeException("Caught IOException " + e + " looking in archive file " + archivePath + " for file " + fileName);
+      throw new RuntimeException(
+          "Caught IOException " + e + " looking in archive file " + archivePath + " for file " + fileName);
 
     }
   }

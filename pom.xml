@@ -5,7 +5,6 @@
     <groupId>ca.mcgill.sable</groupId>
 	<artifactId>soot-j9</artifactId>
     <name>Soot - a J*va Optimization Framework</name>
-	<name>Soot</name>
 	<version>4.0.0-SNAPSHOT</version>
     <description>A Java Optimization Framework</description>
     <organization>
@@ -262,6 +261,21 @@
 						</configuration>
 					</execution>
 					<execution>
+                        <id>Run system tests</id>
+                        <goals>
+                            <goal>
+                                test
+                            </goal>
+                        </goals>
+                        <configuration>
+                            <testClassesDirectory>${project.build.directory}/systemTest-classes</testClassesDirectory>
+                            <testSourceDirectory>${project.basedir}/src/systemTest/java</testSourceDirectory>
+                            <trimStackTrace>false</trimStackTrace>
+                            <reuseForks>false</reuseForks>
+                            <forkCount>1</forkCount>
+                        </configuration>
+                    </execution>
+					<execution>
 						<id>j9-tests</id>
 						<phase>test</phase>
 						<goals>
@@ -279,23 +293,6 @@
 						</configuration>
 					</execution>
 				</executions>
-                <executions>
-                    <execution>
-                        <id>Run system tests</id>
-                        <goals>
-                            <goal>
-                                test
-                            </goal>
-                        </goals>
-                        <configuration>
-                            <testClassesDirectory>${project.build.directory}/systemTest-classes</testClassesDirectory>
-                            <testSourceDirectory>${project.basedir}/src/systemTest/java</testSourceDirectory>
-                            <trimStackTrace>false</trimStackTrace>
-                            <reuseForks>false</reuseForks>
-                            <forkCount>1</forkCount>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

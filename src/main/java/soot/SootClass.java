@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -46,8 +46,6 @@ import soot.validation.ClassValidator;
 import soot.validation.MethodDeclarationValidator;
 import soot.validation.OuterClassValidator;
 import soot.validation.ValidationException;
-
-
 
 /*
  * Incomplete and inefficient implementation.
@@ -164,7 +162,8 @@ public class SootClass extends AbstractHost implements Numberable {
    * is not completed.
    *
    * @param level
-   *          the resolution level, one of DANGLING, HIERARCHY, SIGNATURES, the resolution level, one of DANGLING, HIERARCHY, SIGNATURES, and BODIES
+   *          the resolution level, one of DANGLING, HIERARCHY, SIGNATURES, the resolution level, one of DANGLING, HIERARCHY,
+   *          SIGNATURES, and BODIES
    * @throws java.lang.RuntimeException
    *           if the resolution is at an insufficient level
    */
@@ -186,7 +185,8 @@ public class SootClass extends AbstractHost implements Numberable {
    * Checks if the class has at lease the resolving level specified. This check ignores the resolution completeness.
    *
    * @param level
-   *          the resolution level, one of DANGLING, HIERARCHY, SIGNATURES, the resolution level, one of DANGLING, HIERARCHY, SIGNATURES, and BODIES
+   *          the resolution level, one of DANGLING, HIERARCHY, SIGNATURES, the resolution level, one of DANGLING, HIERARCHY,
+   *          SIGNATURES, and BODIES
    * @throws java.lang.RuntimeException
    *           if the resolution is at an insufficient level
    */
@@ -663,11 +663,10 @@ public class SootClass extends AbstractHost implements Numberable {
     for (SootMethod method : methodList) {
       if (method.getName().equals(name) && method.getParameterTypes().equals(parameterTypes)
           && method.getReturnType().equals(returnType)) {
-      {
         return true;
       }
-    }
 
+    }
     return false;
   }
 
@@ -892,7 +891,7 @@ public class SootClass extends AbstractHost implements Numberable {
 
   /**
    * This method returns the superclass, or null if no superclass has been specified for this class.
-   *
+   * <p>
    * WARNING: interfaces are subclasses of the java.lang.Object class! Returns the superclass of this class. (see
    * hasSuperclass())
    */
@@ -1030,13 +1029,17 @@ public class SootClass extends AbstractHost implements Numberable {
     return Modifier.isInterface(this.getModifiers());
   }
 
-  /** Convenience method; returns true if this class is an enumeration. */
+  /**
+   * Convenience method; returns true if this class is an enumeration.
+   */
   public boolean isEnum() {
     checkLevel(HIERARCHY);
     return Modifier.isEnum(this.getModifiers());
   }
 
-  /** Convenience method; returns true if this class is synchronized. */
+  /**
+   * Convenience method; returns true if this class is synchronized.
+   */
   public boolean isSynchronized() {
     checkLevel(HIERARCHY);
     return Modifier.isSynchronized(this.getModifiers());
@@ -1303,8 +1306,6 @@ public class SootClass extends AbstractHost implements Numberable {
     }
     return validators;
   }
-
-  ;
 
   /**
    * Validates this SootClass for logical errors. Note that this does not validate the method bodies, only the class

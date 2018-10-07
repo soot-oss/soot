@@ -30,7 +30,6 @@ import java.util.Set;
 
 import soot.util.Chain;
 
-
 /**
  * Utility methods for dealing with traps.
  */
@@ -154,7 +153,8 @@ public class TrapManager {
       if (trap.getHandlerUnit() == u) {
         RefType type;
         if (ModuleUtil.module_mode()) {
-          type = ModuleRefType.v(trap.getException().getName(), com.google.common.base.Optional.fromNullable(trap.getException().moduleName));
+          type = ModuleRefType.v(trap.getException().getName(),
+              com.google.common.base.Optional.fromNullable(trap.getException().moduleName));
         } else {
           type = RefType.v(trap.getException().getName());
         }

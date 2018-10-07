@@ -31,10 +31,9 @@ import java.util.LinkedList;
 
 import soot.options.Options;
 
-
 /**
- * A class that models Java's reference types. RefTypes are parametrized by a class name. Two RefType are equal iff they are parametrized by the same
- * class name as a String. Extends RefType in order to deal with Java 9 modules.
+ * A class that models Java's reference types. RefTypes are parametrized by a class name. Two RefType are equal iff they are
+ * parametrized by the same class name as a String. Extends RefType in order to deal with Java 9 modules.
  * 
  * @author adann
  */
@@ -111,7 +110,8 @@ public class ModuleRefType extends RefType {
       // Return least common superclass
 
       SootClass thisClass = ((ModuleScene) cm).getSootClass(getClassName(), Optional.fromNullable(this.moduleName));
-      SootClass otherClass = ((ModuleScene) cm).getSootClass(((RefType) other).getClassName(), Optional.fromNullable(this.moduleName));
+      SootClass otherClass
+          = ((ModuleScene) cm).getSootClass(((RefType) other).getClassName(), Optional.fromNullable(this.moduleName));
       SootClass javalangObject = cm.getObjectType().getSootClass();
 
       LinkedList<SootClass> thisHierarchy = new LinkedList<>();
@@ -159,7 +159,8 @@ public class ModuleRefType extends RefType {
       {
         SootClass commonClass = null;
 
-        while (!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty() && otherHierarchy.getFirst() == thisHierarchy.getFirst()) {
+        while (!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty()
+            && otherHierarchy.getFirst() == thisHierarchy.getFirst()) {
           commonClass = otherHierarchy.removeFirst();
           thisHierarchy.removeFirst();
         }
@@ -176,7 +177,8 @@ public class ModuleRefType extends RefType {
 
   @Override
   public Type getArrayElementType() {
-    if (getClassName().equals("java.lang.Object") || getClassName().equals("java.io.Serializable") || getClassName().equals("java.lang.Cloneable")) {
+    if (getClassName().equals("java.lang.Object") || getClassName().equals("java.io.Serializable")
+        || getClassName().equals("java.lang.Cloneable")) {
       return ModuleRefType.v("java.lang.Object", Optional.of("java.base"));
     }
     throw new RuntimeException("Attempt to get array base type of a non-array");

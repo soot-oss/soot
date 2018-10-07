@@ -12,8 +12,6 @@ import java.util.Set;
 
 import soot.dava.toolkits.base.misc.PackageNamer;
 
-
-
 /**
  * Created by ralle on 14.08.16.
  */
@@ -102,7 +100,8 @@ public class SootModuleInfo extends SootClass {
     }
 
     for (SootModuleInfo moduleInfo : moduleInfos.keySet()) {
-      SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES, Optional.fromNullable(moduleInfo.moduleName));
+      SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES,
+          Optional.fromNullable(moduleInfo.moduleName));
     }
     return moduleInfos;
   }
