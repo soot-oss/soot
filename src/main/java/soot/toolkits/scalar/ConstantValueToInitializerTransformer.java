@@ -78,10 +78,10 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
     Set<SootField> alreadyInitialized = new HashSet<SootField>();
 
     for (SootField sf : sc.getFields()) {
-      // We can only create an initializer for static final fields that
-      // have a constant value. We ignore non-static final fields as
+      // We can only create an initializer for static fields that
+      // have a constant value. We ignore non-static fields as
       // different constructors might assign different values.
-      if (!sf.isStatic() || !sf.isFinal()) {
+      if (!sf.isStatic()) {
         continue;
       }
 
