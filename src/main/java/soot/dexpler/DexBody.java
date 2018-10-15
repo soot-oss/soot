@@ -443,14 +443,18 @@ public class DexBody {
           try {
             localName = parameterNames.get(argIdx);
             localType = parameterTypes.get(argIdx);
-          } catch (Exception ex) { }
+          } catch (Exception ex) { 
+            logger.error("Exception while reading original parameter names.", ex);
+          }
         }
-        if (localName == null)
+        if (localName == null) {
           localName = "$u" + parameterRegister;
-        if (localType == null)
+        }
+        if (localType == null) {
           // may only use UnknownType here because the local may be
           // reused with a different type later (before splitting)
           localType = unknownType;
+        }
 
         Local gen = jimple.newLocal(localName, localType);
         jBody.getLocals().add(gen);
