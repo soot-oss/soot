@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +95,7 @@ public class PhiNodeManager {
     update();
     boolean change = false;
     varToBlocks = new HashMultiMap<Local, Block>();
-    Map<Local, List<Block>> localsToDefPoints = new HashMap<Local, List<Block>>();
+    Map<Local, List<Block>> localsToDefPoints = new LinkedHashMap<Local, List<Block>>();
 
     // compute localsToDefPoints and varToBlocks
     for (Block block : cfg) {
