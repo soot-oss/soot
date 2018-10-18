@@ -73,7 +73,7 @@ import soot.toolkits.scalar.LocalDefs;
  * @author Ben Bellamy
  */
 public class TypeResolver {
-  private JimpleBody jb;
+  protected final JimpleBody jb;
 
   private final List<DefinitionStmt> assignments;
   private final HashMap<Local, BitSet> depends;
@@ -179,10 +179,10 @@ public class TypeResolver {
     }
   }
 
-  private class CastInsertionUseVisitor implements IUseVisitor {
-    private JimpleBody jb;
-    private Typing tg;
-    private IHierarchy h;
+  public class CastInsertionUseVisitor implements IUseVisitor {
+    protected JimpleBody jb;
+    protected Typing tg;
+    protected IHierarchy h;
 
     private boolean countOnly;
     private int count;
@@ -241,14 +241,31 @@ public class TypeResolver {
           vold = (Local) op;
         }
 
-        Local vnew = jimple.newLocal("tmp", useType);
-        vnew.setName("tmp$" + System.identityHashCode(vnew));
-        this.tg.set(vnew, useType);
-        this.jb.getLocals().add(vnew);
-        Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
-        this.jb.getUnits().insertBefore(jimple.newAssignStmt(vnew, jimple.newCastExpr(vold, useType)), u);
+        Local vnew = createCast(useType, stmt, vold);
         return vnew;
       }
+    }
+
+    /**
+     * Creates a cast at stmt of vold to the given type.
+     * 
+     * @param useType
+     *          the new type
+     * @param stmt
+     *          stmt
+     * @param old
+     *          the old local
+     * @return the new local
+     */
+    protected Local createCast(Type useType, Stmt stmt, Local old) {
+      Jimple jimple = Jimple.v();
+      Local vnew = jimple.newLocal("tmp", useType);
+      vnew.setName("tmp$" + System.identityHashCode(vnew));
+      this.tg.set(vnew, useType);
+      this.jb.getLocals().add(vnew);
+      Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
+      this.jb.getUnits().insertBefore(jimple.newAssignStmt(vnew, jimple.newCastExpr(old, useType)), u);
+      return vnew;
     }
 
     public int getCount() {
@@ -390,9 +407,24 @@ public class TypeResolver {
 
   private int insertCasts(Typing tg, IHierarchy h, boolean countOnly) {
     UseChecker uc = new UseChecker(this.jb);
-    CastInsertionUseVisitor uv = new CastInsertionUseVisitor(countOnly, this.jb, tg, h);
+    CastInsertionUseVisitor uv = createCastInsertionUseVisitor(tg, h, countOnly);
     uc.check(tg, uv);
     return uv.getCount();
+  }
+
+  /**
+   * Allows clients to provide an own visitor for cast insertion
+   * 
+   * @param tg
+   *          the typing
+   * @param h
+   *          the hierarchy
+   * @param countOnly
+   *          whether to count only (no actual changes)
+   * @return the visitor
+   */
+  protected CastInsertionUseVisitor createCastInsertionUseVisitor(Typing tg, IHierarchy h, boolean countOnly) {
+    return new CastInsertionUseVisitor(countOnly, this.jb, tg, h);
   }
 
   private Typing minCasts(Collection<Typing> sigma, IHierarchy h, int[] count) {
