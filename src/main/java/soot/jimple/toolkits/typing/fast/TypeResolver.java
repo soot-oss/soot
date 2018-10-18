@@ -180,9 +180,9 @@ public class TypeResolver {
   }
 
   public class CastInsertionUseVisitor implements IUseVisitor {
-    private JimpleBody jb;
-    private Typing tg;
-    private IHierarchy h;
+    protected JimpleBody jb;
+    protected Typing tg;
+    protected IHierarchy h;
 
     private boolean countOnly;
     private int count;
@@ -241,18 +241,31 @@ public class TypeResolver {
           vold = (Local) op;
         }
 
-        Local vnew = jimple.newLocal("tmp", useType);
-        vnew.setName("tmp$" + System.identityHashCode(vnew));
-        this.tg.set(vnew, useType);
-        this.jb.getLocals().add(vnew);
-        Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
-        this.jb.getUnits().insertBefore(jimple.newAssignStmt(vnew, newCastExpr(useType, vold)), u);
+        Local vnew = createCast(useType, stmt, vold);
         return vnew;
       }
     }
 
-    protected CastExpr newCastExpr(Type useType, Local vold) {
-      return Jimple.v().newCastExpr(vold, useType);
+    /**
+     * Creates a cast at stmt of vold to the given type.
+     * 
+     * @param useType
+     *          the new type
+     * @param stmt
+     *          stmt
+     * @param old
+     *          the old local
+     * @return the new local
+     */
+    protected Local createCast(Type useType, Stmt stmt, Local old) {
+      Jimple jimple = Jimple.v();
+      Local vnew = jimple.newLocal("tmp", useType);
+      vnew.setName("tmp$" + System.identityHashCode(vnew));
+      this.tg.set(vnew, useType);
+      this.jb.getLocals().add(vnew);
+      Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
+      this.jb.getUnits().insertBefore(jimple.newAssignStmt(vnew, jimple.newCastExpr(old, useType)), u);
+      return vnew;
     }
 
     public int getCount() {
@@ -399,6 +412,17 @@ public class TypeResolver {
     return uv.getCount();
   }
 
+  /**
+   * Allows clients to provide an own visitor for cast insertion
+   * 
+   * @param tg
+   *          the typing
+   * @param h
+   *          the hierarchy
+   * @param countOnly
+   *          whether to count only (no actual changes)
+   * @return the visitor
+   */
   protected CastInsertionUseVisitor createCastInsertionUseVisitor(Typing tg, IHierarchy h, boolean countOnly) {
     return new CastInsertionUseVisitor(countOnly, this.jb, tg, h);
   }

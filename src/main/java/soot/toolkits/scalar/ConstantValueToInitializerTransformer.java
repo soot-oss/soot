@@ -122,6 +122,12 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
               smInit.getActiveBody().getUnits().addFirst(initStmt);
             }
           } else {
+            // We have a default value for a non-static field
+            // So we have to get it into all <init>s, which
+            // do not call other constructors of the same class.
+            // It has to be after the constructor call to the super class
+            // so that it can be potentially overwritten within the method,
+            // without the default value taking precedence.
             for (SootMethod m : sc.getMethods()) {
               if (m.isConstructor()) {
                 final Body body = m.retrieveActiveBody();
@@ -131,9 +137,10 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
                     if (s.containsInvokeExpr()) {
                       final InvokeExpr expr = s.getInvokeExpr();
                       if (expr instanceof SpecialInvokeExpr) {
-                        if (expr.getMethod().getDeclaringClass() == sc)
+                        if (expr.getMethod().getDeclaringClass() == sc) {
                           // Calling another constructor in the same class
                           break;
+                        }
                         Stmt initStmt = Jimple.v()
                             .newAssignStmt(Jimple.v().newInstanceFieldRef(body.getThisLocal(), sf.makeRef()), constant);
 
