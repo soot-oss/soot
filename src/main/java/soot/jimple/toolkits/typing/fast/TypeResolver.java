@@ -73,7 +73,7 @@ import soot.toolkits.scalar.LocalDefs;
  * @author Ben Bellamy
  */
 public class TypeResolver {
-  private JimpleBody jb;
+  protected final JimpleBody jb;
 
   private final List<DefinitionStmt> assignments;
   private final HashMap<Local, BitSet> depends;
@@ -179,7 +179,7 @@ public class TypeResolver {
     }
   }
 
-  private class CastInsertionUseVisitor implements IUseVisitor {
+  public class CastInsertionUseVisitor implements IUseVisitor {
     private JimpleBody jb;
     private Typing tg;
     private IHierarchy h;
@@ -246,9 +246,13 @@ public class TypeResolver {
         this.tg.set(vnew, useType);
         this.jb.getLocals().add(vnew);
         Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
-        this.jb.getUnits().insertBefore(jimple.newAssignStmt(vnew, jimple.newCastExpr(vold, useType)), u);
+        this.jb.getUnits().insertBefore(jimple.newAssignStmt(vnew, newCastExpr(useType, vold)), u);
         return vnew;
       }
+    }
+
+    protected CastExpr newCastExpr(Type useType, Local vold) {
+      return Jimple.v().newCastExpr(vold, useType);
     }
 
     public int getCount() {
@@ -390,9 +394,13 @@ public class TypeResolver {
 
   private int insertCasts(Typing tg, IHierarchy h, boolean countOnly) {
     UseChecker uc = new UseChecker(this.jb);
-    CastInsertionUseVisitor uv = new CastInsertionUseVisitor(countOnly, this.jb, tg, h);
+    CastInsertionUseVisitor uv = createCastInsertionUseVisitor(tg, h, countOnly);
     uc.check(tg, uv);
     return uv.getCount();
+  }
+
+  protected CastInsertionUseVisitor createCastInsertionUseVisitor(Typing tg, IHierarchy h, boolean countOnly) {
+    return new CastInsertionUseVisitor(countOnly, this.jb, tg, h);
   }
 
   private Typing minCasts(Collection<Typing> sigma, IHierarchy h, int[] count) {

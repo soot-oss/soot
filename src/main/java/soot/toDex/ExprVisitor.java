@@ -109,19 +109,19 @@ import soot.util.Switchable;
  *
  * @see StmtVisitor
  */
-class ExprVisitor implements ExprSwitch {
+public class ExprVisitor implements ExprSwitch {
 
-  private StmtVisitor stmtV;
+  protected StmtVisitor stmtV;
 
-  private ConstantVisitor constantV;
+  protected ConstantVisitor constantV;
 
-  private RegisterAllocator regAlloc;
+  protected RegisterAllocator regAlloc;
 
-  private Register destinationReg;
+  protected Register destinationReg;
 
-  private Stmt targetForOffset;
+  protected Stmt targetForOffset;
 
-  private Stmt origStmt;
+  protected Stmt origStmt;
 
   private int lastInvokeInstructionPosition;
 
@@ -640,7 +640,7 @@ class ExprVisitor implements ExprSwitch {
     }
   }
 
-  private void castObject(Register sourceReg, Type castType) {
+  protected void castObject(Register sourceReg, Type castType) {
     /*
      * No real "cast" is done: move the object to a tmp reg, check the cast with check-cast and finally move to the "cast"
      * object location. This way a) the old reg is not touched by check-cast, and b) the new reg does change its type only
