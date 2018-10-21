@@ -103,23 +103,32 @@ public class CFGViewer extends BodyTransformer {
   }
 
   private static void usage() {
-    logger.debug("Usage:\n" + "   java soot.util.CFGViewer [soot options] [CFGViewer options] [class[:method]]...\n\n"
-        + "   CFGViewer options:\n" + "      (When specifying the value for an '=' option, you only\n"
-        + "       need to type enough characters to specify the choice\n" + "       unambiguously, and case is ignored.)\n"
-        + "\n" + "       --alt-classpath PATH :\n" + "                specifies the classpath from which to load classes\n"
-        + "                that implement graph types whose names begin with 'Alt'.\n" + "       --graph={"
-        + CFGGraphType.help(0, 70, "                ".length()) + "} :\n"
-        + "                show the specified type of graph.\n" + "                Defaults to " + defaultGraph + ".\n"
-        + "       --ir={" + CFGIntermediateRep.help(0, 70, "                ".length()) + "} :\n"
-        + "                create the CFG from the specified intermediate\n" + "                representation. Defaults to "
-        + defaultIR + ".\n" + "       --brief :\n" + "                label nodes with the unit or block index,\n"
-        + "                instead of the text of their statements.\n" + "       --multipages :\n"
-        + "                produce dot file output for multiple 8.5x11\" pages.\n"
-        + "                By default, a single page is produced.\n" + "       --help :\n"
-        + "                print this message.\n" + "\n"
-        + "   Particularly relevant soot options (see \"soot --help\" for details):\n" + "       --soot-class-path PATH\n"
-        + "       --show-exception-dests\n" + "       --throw-analysis {pedantic|unit}\n"
-        + "       --omit-excepting-unit-edges\n" + "       --trim-cfgs\n");
+    System.out.println("Usage:\n" //
+        + "   java soot.util.CFGViewer [soot options] [CFGViewer options] [class[:method]]...\n\n"
+        + "   CFGViewer options:\n" //
+        + "      (When specifying the value for an '=' option, you only\n" //
+        + "       need to type enough characters to specify the choice\n" //
+        + "       unambiguously, and case is ignored.)\n" + "\n" //
+        + "       --alt-classpath PATH :\n" //
+        + "                specifies the classpath from which to load classes\n" //
+        + "                that implement graph types whose names begin with 'Alt'.\n" //
+        + "       --graph={" + CFGGraphType.help(0, 70, "                ".length()) + "} :\n" //
+        + "                show the specified type of graph.\n" + "                Defaults to " + defaultGraph + ".\n" //
+        + "       --ir={" + CFGIntermediateRep.help(0, 70, "                ".length()) + "} :\n" //
+        + "                create the CFG from the specified intermediate\n" //
+        + "                representation. Defaults to " + defaultIR + ".\n" //
+        + "       --brief :\n" + "                label nodes with the unit or block index,\n" //
+        + "                instead of the text of their statements.\n" //
+        + "       --multipages :\n" + "                produce dot file output for multiple 8.5x11\" pages.\n" //
+        + "                By default, a single page is produced.\n" //
+        + "       --help :\n" + "                print this message.\n" //
+        + "\n" //
+        + "   Particularly relevant soot options (see \"soot --help\" for details):\n" //
+        + "       --soot-class-path PATH\n" //
+        + "       --show-exception-dests\n" //
+        + "       --throw-analysis {pedantic|unit}\n" //
+        + "       --omit-excepting-unit-edges\n" //
+        + "       --trim-cfgs\n");
   }
 
   /**
