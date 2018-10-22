@@ -28,7 +28,6 @@ package soot.dexpler.instructions;
  */
 
 import org.jf.dexlib2.iface.instruction.Instruction;
-
 import soot.dexpler.DexBody;
 
 public class InvokeSpecialInstruction extends MethodInvocationInstruction {
@@ -40,4 +39,5 @@ public class InvokeSpecialInstruction extends MethodInvocationInstruction {
   public void jimplify(DexBody body) {
     jimplifySpecial(body);
   }
+  
 }

@@ -3770,12 +3770,14 @@ public class CFG {
 
         SootMethodRef bootstrapMethodRef;
         List<Value> bootstrapArgs = new LinkedList<Value>();
+        int kind;
         {
           short[] bootstrapMethodTable = bootstrap_methods_attribute.method_handles;
           short methodSigIndex = bootstrapMethodTable[iv_info.bootstrap_method_index];
           CONSTANT_MethodHandle_info mhInfo = (CONSTANT_MethodHandle_info) constant_pool[methodSigIndex];
           CONSTANT_Methodref_info bsmInfo = (CONSTANT_Methodref_info) constant_pool[mhInfo.target_index];
           bootstrapMethodRef = createMethodRef(constant_pool, bsmInfo, false);
+          kind = mhInfo.kind;
 
           short[] bsmArgIndices = bootstrap_methods_attribute.arg_indices[iv_info.bootstrap_method_index];
           if (bsmArgIndices.length > 0) {
@@ -3829,7 +3831,7 @@ public class CFG {
           }
         }
 
-        rvalue = Jimple.v().newDynamicInvokeExpr(bootstrapMethodRef, bootstrapArgs, methodRef, Arrays.asList(params));
+        rvalue = Jimple.v().newDynamicInvokeExpr(bootstrapMethodRef, bootstrapArgs, methodRef, kind, Arrays.asList(params));
 
         if (!returnType.equals(VoidType.v())) {
           stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack, postTypeStack.topIndex()),
