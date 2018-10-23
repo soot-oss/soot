@@ -217,7 +217,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>compile system tests</id>
+                        <id>compile-system-tests</id>
                         <phase>test-compile</phase>
                         <goals>
                             <goal>testCompile</goal>
@@ -242,7 +242,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>Run system tests</id>
+                        <id>System-tests</id>
                         <goals>
                             <goal>
                                 test
@@ -455,6 +455,13 @@
             <artifactId>powermock-mockito-release-full</artifactId>
             <version>1.6.1</version>
             <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.android/android -->
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+            <version>4.1.1.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
