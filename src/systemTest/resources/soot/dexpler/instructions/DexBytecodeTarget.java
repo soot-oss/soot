@@ -23,22 +23,21 @@ package soot.dexpler.instructions;
  */
 
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.util.function.Supplier;
 
-
+/**
+ * Compile by using "$JAVA_HOME/bin/javac -cp $JAVA_HOME/lib/jrt-fs.jar *; dx --dex --min-sdk-version=26
+ * --output=dexBytecodeTarget.dex ../../../ "
+ *
+ */
 public class DexBytecodeTarget {
 
   void invokePolymorphicTarget(MethodHandle handle) throws Throwable {
-    handle.invoke(10, 20);
-    handle.invokeExact("foo", "bar");
+    handle.invoke("foo", "bar");
   }
 
   void invokeCustomTarget() throws Throwable {
     Supplier<String> someLambda = () -> "foo";
   }
 
-  void foo(){
-    System.out.println("a");
-  }
 }

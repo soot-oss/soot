@@ -41,6 +41,7 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.SootResolver;
 import soot.Type;
 import soot.VoidType;
 import soot.jimple.Jimple;
