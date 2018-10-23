@@ -24,6 +24,8 @@ package soot;
 
 import java.util.List;
 
+import soot.SootMethodRefImpl.ClassResolutionFailedException;
+import soot.options.Options;
 import soot.util.NumberedString;
 
 /**
@@ -31,15 +33,27 @@ import soot.util.NumberedString;
  * actually exist; the actual target of the reference is determined according to the resolution procedure in the Java Virtual
  * Machine Specification, 2nd ed, section 5.4.3.3.
  */
+public interface SootMethodRef extends SootMethodInterface {
 
-public interface SootMethodRef {
-  public SootClass declaringClass();
+  /**
+   * Use {@link #getDeclaringClass()} instead
+   */
+  public @Deprecated SootClass declaringClass();
 
-  public String name();
+  /**
+   * Use {@link #getName()} instead
+   */
+  public @Deprecated String name();
 
-  public List<Type> parameterTypes();
+  /**
+   * Use {@link #getParameterTypes()} instead
+   */
+  public @Deprecated List<Type> parameterTypes();
 
-  public Type returnType();
+  /**
+   * Use {@link #getReturnType()} instead
+   */
+  public @Deprecated Type returnType();
 
   public boolean isStatic();
 
@@ -47,26 +61,31 @@ public interface SootMethodRef {
 
   public String getSignature();
 
-  public Type parameterType(int i);
+  /**
+   * Use {@link #getParameterType(int)} instead
+   */
+  public @Deprecated Type parameterType(int i);
 
   /**
    * Resolves this method call, i.e., finds the method to which this reference points. This method does not handle virtual
    * dispatch, it just gives the immediate target, which can also be an abstract method.
    *
    * @return The immediate target if this method reference
+   * @throws ClassResolutionFailedException
+   *           (can be suppressed by {@link Options#set_ignore_resolution_errors(boolean)})
    */
   public SootMethod resolve();
 
   /**
    * Tries to resolve this method call, i.e., tries to finds the method to which this reference points. This method does not
    * handle virtual dispatch, it just gives the immediate target, which can also be an abstract method. This method is
-   * different from resolve() in the following ways:
+   * different from {@link #resolve()} in the following ways:
    *
    * (1) This method does not fail when the target method does not exist and phantom references are not allowed. In that
-   * case, it returns null. (2) While resolve() creates fake methods that throw exceptions when a target method does not
-   * exist and phantom references are allowed, this method returns null.
+   * case, it returns <code>null</code>. (2) While {@link #resolve()} creates fake methods that throw exceptions when a
+   * target method does not exist and phantom references are allowed, this method returns <code>null</code>.
    *
-   * @return The immediate target if this method reference if available, null otherwise
+   * @return The immediate target if this method reference if available, <code>null</code> otherwise
    */
   public SootMethod tryResolve();
 
