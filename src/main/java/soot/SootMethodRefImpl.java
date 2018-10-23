@@ -86,21 +86,39 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   @Override
   public SootClass declaringClass() {
+    return getDeclaringClass();
+  }
+
+  public SootClass getDeclaringClass() {
     return declaringClass;
   }
 
   @Override
   public String name() {
+    return getName();
+  }
+
+  @Override
+  public String getName() {
     return name;
   }
 
   @Override
   public List<Type> parameterTypes() {
+    return getParameterTypes();
+  }
+
+  public List<Type> getParameterTypes() {
     return parameterTypes == null ? Collections.<Type>emptyList() : parameterTypes;
   }
 
   @Override
   public Type returnType() {
+    return getReturnType();
+  }
+
+  @Override
+  public Type getReturnType() {
     return returnType;
   }
 
@@ -124,6 +142,11 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   @Override
   public Type parameterType(int i) {
+    return getParameterType(i);
+  }
+
+  @Override
+  public Type getParameterType(int i) {
     return parameterTypes.get(i);
   }
 
@@ -159,8 +182,8 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   private SootMethod checkStatic(SootMethod ret) {
     if ((Options.v().wrong_staticness() == Options.wrong_staticness_fail
-          || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict)
-          && ret.isStatic() != isStatic() && !ret.isPhantom()) {
+        || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) && ret.isStatic() != isStatic()
+        && !ret.isPhantom()) {
       throw new ResolutionFailedException("Resolved " + this + " to " + ret + " which has wrong static-ness");
     }
     return ret;
@@ -226,7 +249,7 @@ public class SootMethodRefImpl implements SootMethodRef {
     // an appropriate error just in case the code *is* actually reached at runtime
     boolean treatAsPhantomClass = Options.v().allow_phantom_refs() && !declaringClass.isInterface();
 
-    // declaring class of dynamic invocations not known at compile time, treat as 
+    // declaring class of dynamic invocations not known at compile time, treat as
     // phantom class regardless if phantom classes are enabled
     treatAsPhantomClass = treatAsPhantomClass || declaringClass.getName().equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
 
@@ -237,7 +260,7 @@ public class SootMethodRefImpl implements SootMethodRef {
     if (trace == null) {
       ClassResolutionFailedException e = new ClassResolutionFailedException();
       if (Options.v().ignore_resolution_errors()) {
-        logger.debug("" + e.getMessage());
+        logger.debug(e.getMessage());
       } else {
         throw e;
       }
