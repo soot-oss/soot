@@ -253,7 +253,6 @@ import soot.jimple.ConditionExpr;
 import soot.jimple.Constant;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.DoubleConstant;
-import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.FieldRef;
 import soot.jimple.FloatConstant;
 import soot.jimple.GotoStmt;
@@ -292,7 +291,18 @@ import soot.util.Chain;
 final class AsmMethodSource implements MethodSource {
 
   private static final Operand DWORD_DUMMY = new Operand(null, null);
-
+  private static final String METAFACTORY_SIGNATURE
+      = "<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite metafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType,java.lang.invoke.MethodType,java.lang.invoke.MethodHandle,java.lang.invoke.MethodType)>";
+  private static final String ALT_METAFACTORY_SIGNATURE
+      = "<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite altMetafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType,java.lang.Object[])>";
+  /* -const fields- */
+  private final int maxLocals;
+  private final InsnList instructions;
+  private final List<LocalVariableNode> localVars;
+  private final List<TryCatchBlockNode> tryCatchBlocks;
+  private final Set<LabelNode> inlineExceptionLabels = new HashSet<LabelNode>();
+  private final Map<LabelNode, Unit> inlineExceptionHandlers = new HashMap<LabelNode, Unit>();
+  private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
   /* -state fields- */
   private int nextLocal;
   private Map<Integer, Local> locals;
@@ -303,16 +313,8 @@ final class AsmMethodSource implements MethodSource {
   private Multimap<LabelNode, UnitBox> trapHandlers;
   private JimpleBody body;
   private int lastLineNumber = -1;
-  /* -const fields- */
-  private final int maxLocals;
-  private final InsnList instructions;
-  private final List<LocalVariableNode> localVars;
-  private final List<TryCatchBlockNode> tryCatchBlocks;
-
-  private final Set<LabelNode> inlineExceptionLabels = new HashSet<LabelNode>();
-  private final Map<LabelNode, Unit> inlineExceptionHandlers = new HashMap<LabelNode, Unit>();
-
-  private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
+  private Table<AbstractInsnNode, AbstractInsnNode, Edge> edges;
+  private ArrayDeque<Edge> conversionWorklist;
 
   AsmMethodSource(int maxLocals, InsnList insns, List<LocalVariableNode> localVars, List<TryCatchBlockNode> tryCatchBlocks) {
     this.maxLocals = maxLocals;
@@ -679,6 +681,18 @@ final class AsmMethodSource implements MethodSource {
     }
   }
 
+  /*
+   * Following version is more complex, using stack frames as opposed to simply swapping
+   */
+  /*
+   * StackFrame frame = getFrame(insn); Operand[] out = frame.out(); Operand dup, dup2 = null, dupd, dupd2 = null; if (out ==
+   * null) { dupd = popImmediate(); dup = new Operand(insn, dupd.stackOrValue()); if (dword) { dupd2 = peek(); if (dupd2 ==
+   * DWORD_DUMMY) { pop(); dupd2 = dupd; } else { dupd2 = popImmediate(); } dup2 = new Operand(insn, dupd2.stackOrValue());
+   * frame.out(dup, dup2); frame.in(dupd, dupd2); } else { frame.out(dup); frame.in(dupd); } } else { dupd = pop(); dup =
+   * out[0]; if (dword) { dupd2 = pop(); if (dupd2 == DWORD_DUMMY) dupd2 = dupd; dup2 = out[1]; frame.mergeIn(dupd, dupd2); }
+   * else { frame.mergeIn(dupd); } }
+   */
+
   private void convertArrayLoadInsn(InsnNode insn) {
     StackFrame frame = getFrame(insn);
     Operand[] out = frame.out();
@@ -725,18 +739,6 @@ final class AsmMethodSource implements MethodSource {
       frame.mergeIn(dword ? popDual() : pop(), pop(), pop());
     }
   }
-
-  /*
-   * Following version is more complex, using stack frames as opposed to simply swapping
-   */
-  /*
-   * StackFrame frame = getFrame(insn); Operand[] out = frame.out(); Operand dup, dup2 = null, dupd, dupd2 = null; if (out ==
-   * null) { dupd = popImmediate(); dup = new Operand(insn, dupd.stackOrValue()); if (dword) { dupd2 = peek(); if (dupd2 ==
-   * DWORD_DUMMY) { pop(); dupd2 = dupd; } else { dupd2 = popImmediate(); } dup2 = new Operand(insn, dupd2.stackOrValue());
-   * frame.out(dup, dup2); frame.in(dupd, dupd2); } else { frame.out(dup); frame.in(dupd); } } else { dupd = pop(); dup =
-   * out[0]; if (dword) { dupd2 = pop(); if (dupd2 == DWORD_DUMMY) dupd2 = dupd; dup2 = out[1]; frame.mergeIn(dupd, dupd2); }
-   * else { frame.mergeIn(dupd); } }
-   */
 
   private void convertDupInsn(InsnNode insn) {
     int op = insn.getOpcode();
@@ -1404,28 +1406,25 @@ final class AsmMethodSource implements MethodSource {
         Collections.reverse(parameterTypes);
       }
       returnType = types[types.length - 1];
-			
-			SootMethodRef bootstrap_model = null;
 
+      SootMethodRef bootstrap_model = null;
 
-			String bsmMethodRefStr = bsmMethodRef.toString();
-			if(bsmMethodRefStr.equals("<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite metafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType,java.lang.invoke.MethodType,java.lang.invoke.MethodHandle,java.lang.invoke.MethodType)>")
-			   || bsmMethodRefStr.equals("<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite altMetafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType,java.lang.Object[])>"))
-     			    bootstrap_model = LambdaMetaFactory.makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types);
+      String bsmMethodRefStr = bsmMethodRef.toString();
+      if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE))
+        bootstrap_model = LambdaMetaFactory.makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types);
 
-			InvokeExpr indy;
-			
-			if(bootstrap_model != null) {
-			    indy = Jimple.v().newStaticInvokeExpr(bootstrap_model, methodArgs);
-			} else {
-                            // we always model invokeDynamic method refs as static method references
-                            // of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
-                            SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);
+      InvokeExpr indy;
 
-                            indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef,
-                                            bsmMethodArgs, methodRef, insn.bsm.getTag(), methodArgs);
-                        }
-                        
+      if (bootstrap_model != null) {
+        indy = Jimple.v().newStaticInvokeExpr(bootstrap_model, methodArgs);
+      } else {
+        // we always model invokeDynamic method refs as static method references
+        // of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
+        SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);
+
+        indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmMethodArgs, methodRef, insn.bsm.getTag(), methodArgs);
+      }
+
       if (boxes != null) {
         for (int i = 0; i < types.length - 1; i++) {
           boxes[i] = indy.getArgBox(i);
@@ -1647,6 +1646,8 @@ final class AsmMethodSource implements MethodSource {
     }
   }
 
+  /* Conversion */
+
   private void convertLabel(LabelNode ln) {
     if (!trapHandlers.containsKey(ln)) {
       return;
@@ -1683,30 +1684,6 @@ final class AsmMethodSource implements MethodSource {
   private void convertLine(LineNumberNode ln) {
     lastLineNumber = ln.line;
   }
-
-  /* Conversion */
-
-  private final class Edge {
-    /* edge endpoint */
-    final AbstractInsnNode insn;
-    /* previous stacks at edge */
-    final LinkedList<Operand[]> prevStacks;
-    /* current stack at edge */
-    ArrayList<Operand> stack;
-
-    Edge(AbstractInsnNode insn, ArrayList<Operand> stack) {
-      this.insn = insn;
-      this.prevStacks = new LinkedList<Operand[]>();
-      this.stack = stack;
-    }
-
-    Edge(AbstractInsnNode insn) {
-      this(insn, new ArrayList<Operand>(AsmMethodSource.this.stack));
-    }
-  }
-
-  private Table<AbstractInsnNode, AbstractInsnNode, Edge> edges;
-  private ArrayDeque<Edge> conversionWorklist;
 
   private void addEdges(AbstractInsnNode cur, AbstractInsnNode tgt1, List<LabelNode> tgts) {
     int lastIdx = tgts == null ? -1 : tgts.size() - 1;
@@ -2084,5 +2061,24 @@ final class AsmMethodSource implements MethodSource {
     }
 
     return jb;
+  }
+
+  private final class Edge {
+    /* edge endpoint */
+    final AbstractInsnNode insn;
+    /* previous stacks at edge */
+    final LinkedList<Operand[]> prevStacks;
+    /* current stack at edge */
+    ArrayList<Operand> stack;
+
+    Edge(AbstractInsnNode insn, ArrayList<Operand> stack) {
+      this.insn = insn;
+      this.prevStacks = new LinkedList<Operand[]>();
+      this.stack = stack;
+    }
+
+    Edge(AbstractInsnNode insn) {
+      this(insn, new ArrayList<Operand>(AsmMethodSource.this.stack));
+    }
   }
 }
