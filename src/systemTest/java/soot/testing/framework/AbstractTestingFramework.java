@@ -41,7 +41,6 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.SootResolver;
 import soot.Type;
 import soot.VoidType;
 import soot.jimple.Jimple;
@@ -56,6 +55,10 @@ import soot.options.Options;
 public abstract class AbstractTestingFramework {
 
   private static final String SYSTEMTEST_TARGET_CLASSES_DIR = "target/systemTest-target-classes";
+
+  public static String methodSigFromComponents(String clazz, String subsig) {
+    return String.format("<%s: %s>", clazz, subsig);
+  }
 
   /**
    * Sets up the Scene by analyzing all included classes and generating a call graph for the given target. This is done by

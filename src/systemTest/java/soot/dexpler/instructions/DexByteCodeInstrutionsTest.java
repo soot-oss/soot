@@ -84,7 +84,7 @@ public class DexByteCodeInstrutionsTest extends AbstractTestingFramework {
   @Test
   public void InvokePolymorphic1() {
     final SootMethod testTarget = prepareTarget(
-        methodSig(TARGET_CLASS, "void invokePolymorphicTarget(java.lang.invoke.MethodHandle)"), TARGET_CLASS);
+        methodSigFromComponents(TARGET_CLASS, "void invokePolymorphicTarget(java.lang.invoke.MethodHandle)"), TARGET_CLASS);
 
     // We model invokePolymorphic as invokeVirtual
     final List<InvokeExpr> invokes = invokesFromMethod(testTarget);
@@ -92,12 +92,14 @@ public class DexByteCodeInstrutionsTest extends AbstractTestingFramework {
     final InvokeExpr invokePoly = invokes.get(0);
     Assert.assertTrue(invokePoly instanceof VirtualInvokeExpr);
     final SootMethodRef targetMethodRef = invokePoly.getMethodRef();
-    Assert.assertEquals(methodSig(METHOD_HANDLE_CLASS, METHOD_HANDLE_INVOKE_SUBSIG), targetMethodRef.getSignature());
+    Assert.assertEquals(methodSigFromComponents(METHOD_HANDLE_CLASS, METHOD_HANDLE_INVOKE_SUBSIG),
+        targetMethodRef.getSignature());
   }
 
   @Test
   public void InvokeCustom1() {
-    final SootMethod testTarget = prepareTarget(methodSig(TARGET_CLASS, "void invokeCustomTarget()"), TARGET_CLASS);
+    final SootMethod testTarget
+        = prepareTarget(methodSigFromComponents(TARGET_CLASS, "void invokeCustomTarget()"), TARGET_CLASS);
 
     // We model invokeCustom as invokeDynamic
     final List<InvokeExpr> invokes = invokesFromMethod(testTarget);
@@ -105,7 +107,7 @@ public class DexByteCodeInstrutionsTest extends AbstractTestingFramework {
     final InvokeExpr invokeCustom = invokes.get(0);
     Assert.assertTrue(invokeCustom instanceof DynamicInvokeExpr);
     final SootMethodRef targetMethodRef = invokeCustom.getMethodRef();
-    Assert.assertEquals(methodSig(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME, SUPPLIER_GET_SUBSIG),
+    Assert.assertEquals(methodSigFromComponents(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME, SUPPLIER_GET_SUBSIG),
         targetMethodRef.getSignature());
     final String callToLambdaMethaFactory
         = "dynamicinvoke \"get\" <java.util.function.Supplier ()>() <java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite metafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType,java.lang.invoke.MethodType,java.lang.invoke.MethodHandle,java.lang.invoke.MethodType)>(methodtype: java.lang.Object __METHODTYPE__(), methodhandle: \"REF_INVOKE_STATIC\" <soot.dexpler.instructions.DexBytecodeTarget: java.lang.String lambda$invokeCustomTarget$0()>, methodtype: java.lang.String __METHODTYPE__())";
@@ -116,10 +118,6 @@ public class DexByteCodeInstrutionsTest extends AbstractTestingFramework {
     final UnitPatchingChain units = testTarget.retrieveActiveBody().getUnits();
     return units.stream().filter(u -> ((Stmt) u).containsInvokeExpr()).map(u -> ((Stmt) u).getInvokeExpr())
         .collect(Collectors.toList());
-  }
-
-  private String methodSig(String clazz, String subsig) {
-    return String.format("<%s: %s>", clazz, subsig);
   }
 
 }
