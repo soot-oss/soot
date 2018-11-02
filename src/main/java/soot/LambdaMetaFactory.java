@@ -116,7 +116,10 @@ public final class LambdaMetaFactory {
     // Our thunk class implements the functional interface
     String className = "soot.dummy." + implMethod.name() + "$" + uniqSupply();
     SootClass tclass = new SootClass(className);
+
+    tclass.setSuperclass(Scene.v().getObjectType().getSootClass());
     tclass.addInterface(iface);
+
     if (serializable)
       tclass.addInterface(RefType.v("java.io.Serializable").getSootClass());
     for (int i = 0; i < markerInterfaces.size(); i++)
@@ -162,13 +165,11 @@ public final class LambdaMetaFactory {
     }
 
     Scene.v().addClass(tclass);
-
-    // FIXME remove debug stuff
-    System.out.println(tboot);
-
-    java.io.PrintWriter pw = new java.io.PrintWriter(System.out);
-    Printer.v().printTo(tclass, pw);
-    pw.close();
+    // The hierarchy has to be rebuild after adding the MetaFactory implementation
+    // soot.FastHierarchy.canStoreClass will otherwise fail due to not having an interval set for the class which eventually
+    // leads to the MetaFactory not being accepted as implementation of the functional interface it actually implements
+    // which, in turn, lead to missing edges in the call graph
+    Scene.v().releaseFastHierarchy();
 
     return tboot.makeRef();
   }
@@ -237,9 +238,8 @@ public final class LambdaMetaFactory {
         List<Local> args = new ArrayList<Local>();
 
         for (SootField f : capFields) {
-          int i = args.size();
           Local l = lc.generateLocal(f.getType());
-          us.add(Jimple.v().newAssignStmt(l, Jimple.v().newInstanceFieldRef(this_, f.makeRef())));
+          us.add(Jimple.v().newAssignStmt(l, Jimple.v().newInstanceFieldRef(l, f.makeRef())));
           args.add(l);
         }
 
@@ -250,6 +250,7 @@ public final class LambdaMetaFactory {
           args.add(l);
         }
 
+        // TODO care for instance invokes
         final StaticInvokeExpr invoke = Jimple.v().newStaticInvokeExpr(implMethod, args);
 
         if (retType == VoidType.v()) {
