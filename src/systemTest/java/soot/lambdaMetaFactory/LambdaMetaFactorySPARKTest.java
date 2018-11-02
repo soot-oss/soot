@@ -11,7 +11,6 @@ import soot.Scene;
 import soot.SootMethod;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
-import soot.options.Options;
 import soot.testing.framework.AbstractTestingFramework;
 
 /**
