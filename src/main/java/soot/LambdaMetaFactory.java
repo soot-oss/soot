@@ -32,11 +32,11 @@ import soot.javaToJimple.LocalGenerator;
 import soot.jimple.ClassConstant;
 import soot.jimple.IdentityStmt;
 import soot.jimple.IntConstant;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.MethodHandle;
 import soot.jimple.MethodType;
-import soot.jimple.StaticInvokeExpr;
 import soot.jimple.VirtualInvokeExpr;
 
 public final class LambdaMetaFactory {
@@ -243,15 +243,27 @@ public final class LambdaMetaFactory {
           args.add(l);
         }
 
-        for (Type ty : paramTypes) {
-          int i = args.size();
+        for (int i = 0; i < paramTypes.size(); i++) {
+          final Type ty = paramTypes.get(i);
           Local l = lc.generateLocal(ty);
           us.add(Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(ty, i)));
           args.add(l);
         }
 
-        // TODO care for instance invokes
-        final StaticInvokeExpr invoke = Jimple.v().newStaticInvokeExpr(implMethod, args);
+        // distinguish between static and instance invocations of the lambda body
+        final InvokeExpr invoke;
+        if (implMethod.isStatic()) {
+          invoke = Jimple.v().newStaticInvokeExpr(implMethod, args);
+        } else {
+          // in case of instance invoke, the first argument is the actual receiver of the call
+          final Local base = args.remove(0);
+
+          if (implMethod.declaringClass().isInterface()) {
+            invoke = Jimple.v().newInterfaceInvokeExpr(base, implMethod, args);
+          } else {
+            invoke = Jimple.v().newVirtualInvokeExpr(base, implMethod, args);
+          }
+        }
 
         if (retType == VoidType.v()) {
           us.add(Jimple.v().newInvokeStmt(invoke));
