@@ -1,22 +1,27 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2014 Raja Vallee-Rai and others
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2017 Brian Alliet Initial implementation
+ * Copyright (C) 2018 Manuel Benz Bug fixes and improvements
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import com.google.common.base.Preconditions;
 
@@ -120,10 +125,12 @@ public final class LambdaMetaFactory {
     tclass.setSuperclass(Scene.v().getObjectType().getSootClass());
     tclass.addInterface(iface);
 
-    if (serializable)
+    if (serializable) {
       tclass.addInterface(RefType.v("java.io.Serializable").getSootClass());
-    for (int i = 0; i < markerInterfaces.size(); i++)
+    }
+    for (int i = 0; i < markerInterfaces.size(); i++) {
       tclass.addInterface(RefType.v(markerInterfaces.get(i).getValue()).getSootClass());
+    }
 
     // It contains fields for all the captures in the lambda
     List<SootField> capFields = new ArrayList<SootField>(capTypes.size());
@@ -202,8 +209,9 @@ public final class LambdaMetaFactory {
     }
 
     public Body getBody(SootMethod m, String phaseName) {
-      if (!phaseName.equals("jb"))
+      if (!phaseName.equals("jb")) {
         throw new Error("unsupported body type: " + phaseName);
+      }
 
       SootClass tclass = m.getDeclaringClass();
       JimpleBody jb = Jimple.v().newBody(m);
@@ -297,8 +305,9 @@ public final class LambdaMetaFactory {
 
     @Override
     public Body getBody(SootMethod m, String phaseName) {
-      if (!phaseName.equals("jb"))
+      if (!phaseName.equals("jb")) {
         throw new Error("unsupported body type: " + phaseName);
+      }
 
       SootClass tclass = m.getDeclaringClass();
       JimpleBody jb = Jimple.v().newBody(m);

@@ -292,10 +292,12 @@ import soot.util.Chain;
 final class AsmMethodSource implements MethodSource {
 
   private static final Operand DWORD_DUMMY = new Operand(null, null);
-  private static final String METAFACTORY_SIGNATURE
-      = "<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite metafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType,java.lang.invoke.MethodType,java.lang.invoke.MethodHandle,java.lang.invoke.MethodType)>";
-  private static final String ALT_METAFACTORY_SIGNATURE
-      = "<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite altMetafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType,java.lang.Object[])>";
+  private static final String METAFACTORY_SIGNATURE = "<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite "
+      + "metafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType," + ""
+      + "java.lang.invoke.MethodType,java.lang.invoke.MethodHandle,java.lang.invoke.MethodType)>";
+  private static final String ALT_METAFACTORY_SIGNATURE = "<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite "
+      + "altMetafactory(java.lang.invoke.MethodHandles$Lookup,"
+      + "java.lang.String,java.lang.invoke.MethodType,java.lang.Object[])>";
   /* -const fields- */
   private final int maxLocals;
   private final InsnList instructions;
@@ -1411,8 +1413,9 @@ final class AsmMethodSource implements MethodSource {
       SootMethodRef bootstrap_model = null;
 
       String bsmMethodRefStr = bsmMethodRef.toString();
-      if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE))
+      if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE)) {
         bootstrap_model = LambdaMetaFactory.makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types);
+      }
 
       InvokeExpr indy;
 
