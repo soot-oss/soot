@@ -41,7 +41,7 @@ import soot.jimple.VirtualInvokeExpr;
 
 public final class LambdaMetaFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(LambdaMetaFactory.class);
-  // FIXME: Move to 'G'?
+
   private static int uniq;
 
   public static SootMethodRef makeLambdaHelper(List<? extends Value> bootstrapArgs, int tag, String name, Type[] types) {
