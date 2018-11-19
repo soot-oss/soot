@@ -30,9 +30,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
@@ -63,12 +60,20 @@ import soot.util.queue.QueueReader;
  *         concrete implementers. In fact, Reference types are visited in reversed-topological-order.
  */
 public final class TypeManager {
-  private static final Logger logger = LoggerFactory.getLogger(TypeManager.class);
+
   private Map<SootClass, List<AllocNode>> class2allocs = new HashMap<SootClass, List<AllocNode>>(1024);
   private List<AllocNode> anySubtypeAllocs = new LinkedList<AllocNode>();
 
+  protected final RefType rtObject;
+  protected final RefType rtSerializable;
+  protected final RefType rtCloneable;
+
   public TypeManager(PAG pag) {
     this.pag = pag;
+
+    this.rtObject = RefType.v("java.lang.Object");
+    this.rtSerializable = RefType.v("java.io.Serializable");
+    this.rtCloneable = RefType.v("java.lang.Cloneable");
   }
 
   public static boolean isUnresolved(Type type) {
@@ -123,7 +128,7 @@ public final class TypeManager {
       // If we have a phantom class and have no type mask, we assume that
       // it is not cast-compatible to anything
       SootClass curClass = ((RefType) type).getSootClass();
-      if (type instanceof RefType && curClass.isPhantom()) {
+      if (curClass.isPhantom()) {
         return new BitVector();
       } else {
         // Scan through the hierarchy. We might have a phantom class higher up
@@ -151,10 +156,6 @@ public final class TypeManager {
       return;
     }
 
-    int numTypes = Scene.v().getTypeNumberer().size();
-    if (pag.getOpts().verbose()) {
-      logger.debug("" + "Total types: " + numTypes);
-    }
     // **
     initClass2allocs();
     makeClassTypeMask(Scene.v().getSootClass("java.lang.Object"));
@@ -179,15 +180,14 @@ public final class TypeManager {
         continue;
       }
       // **
-      if (t instanceof RefType && !t.equals(RefType.v("java.lang.Object")) && !t.equals(RefType.v("java.io.Serializable"))
-          && !t.equals(RefType.v("java.lang.Cloneable"))) {
-
-        SootClass sc = ((RefType) t).getSootClass();
+      if (t instanceof RefType && t != rtObject && t != rtSerializable && t != rtCloneable) {
+        RefType rt = (RefType) t;
+        SootClass sc = rt.getSootClass();
         if (sc.isInterface()) {
           makeMaskOfInterface(sc);
         }
-        if (!visitedTypes.get(t.getNumber()) && !((RefType) t).getSootClass().isPhantom()) {
-          makeClassTypeMask(((RefType) t).getSootClass());
+        if (!visitedTypes.get(t.getNumber()) && !rt.getSootClass().isPhantom()) {
+          makeClassTypeMask(rt.getSootClass());
         }
         continue;
       }
@@ -209,32 +209,23 @@ public final class TypeManager {
   final public boolean castNeverFails(Type src, Type dst) {
     if (fh == null) {
       return true;
-    }
-    if (dst == null) {
+    } else if (dst == null) {
       return true;
-    }
-    if (dst == src) {
+    } else if (dst == src) {
       return true;
-    }
-    if (src == null) {
+    } else if (src == null) {
       return false;
-    }
-    if (dst.equals(src)) {
+    } else if (src instanceof NullType) {
       return true;
-    }
-    if (src instanceof NullType) {
+    } else if (src instanceof AnySubType) {
       return true;
-    }
-    if (src instanceof AnySubType) {
-      return true;
-    }
-    if (dst instanceof NullType) {
+    } else if (dst instanceof NullType) {
       return false;
-    }
-    if (dst instanceof AnySubType) {
+    } else if (dst instanceof AnySubType) {
       throw new RuntimeException("oops src=" + src + " dst=" + dst);
+    } else {
+      return fh.canStoreType(src, dst);
     }
-    return fh.canStoreType(src, dst);
   }
 
   public void setFastHierarchy(FastHierarchy fh) {
@@ -322,7 +313,7 @@ public final class TypeManager {
     Collection<SootClass> implementers = fh.getAllImplementersOfInterface(interf);
 
     for (SootClass impl : implementers) {
-      BitVector other = (BitVector) typeMask.get(impl.getType());
+      BitVector other = typeMask.get(impl.getType());
       if (other == null) {
         other = makeClassTypeMask(impl);
       }

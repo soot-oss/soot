@@ -59,7 +59,6 @@ import soot.jimple.XorExpr;
 public class Evaluator {
 
   public static boolean isValueConstantValued(Value op) {
-
     if (op instanceof Constant) {
       return true;
     } else if ((op instanceof UnopExpr)) {
@@ -74,26 +73,30 @@ public class Evaluator {
         return true;
       }
     } else if (op instanceof BinopExpr) {
+      final BinopExpr binExpr = (BinopExpr) op;
+      final Value op1 = binExpr.getOp1();
+      final Value op2 = binExpr.getOp2();
+
+      // Only evaluate these checks once, and use the result multiple times
+      final boolean isOp1Constant = isValueConstantValued(op1);
+      final boolean isOp2Constant = isValueConstantValued(op2);
+
       /* Handle weird cases. */
       if (op instanceof DivExpr || op instanceof RemExpr) {
-        if (!isValueConstantValued(((BinopExpr) op).getOp1()) || !isValueConstantValued(((BinopExpr) op).getOp2())) {
+        if (!isOp1Constant || !isOp2Constant) {
           return false;
         }
-
-        Value c1 = getConstantValueOf(((BinopExpr) op).getOp1());
-        Value c2 = getConstantValueOf(((BinopExpr) op).getOp2());
 
         /* check for a 0 value. If so, punt. */
+        Value c2 = getConstantValueOf(op2);
         if (c2 instanceof IntConstant && ((IntConstant) c2).value == 0) {
           return false;
-        }
-
-        if (c2 instanceof LongConstant && ((LongConstant) c2).value == 0) {
+        } else if (c2 instanceof LongConstant && ((LongConstant) c2).value == 0) {
           return false;
         }
       }
 
-      if (isValueConstantValued(((BinopExpr) op).getOp1()) && isValueConstantValued(((BinopExpr) op).getOp2())) {
+      if (isOp1Constant && isOp2Constant) {
         return true;
       }
     }
@@ -104,7 +107,6 @@ public class Evaluator {
    * Returns the constant value of <code>op</code> if it is easy to find the constant value; else returns <code>null</code>.
    */
   public static Value getConstantValueOf(Value op) {
-
     if (!isValueConstantValued(op)) {
       return null;
     }
@@ -117,8 +119,13 @@ public class Evaluator {
         return ((NumericConstant) c).negate();
       }
     } else if (op instanceof BinopExpr) {
-      Value c1 = getConstantValueOf(((BinopExpr) op).getOp1());
-      Value c2 = getConstantValueOf(((BinopExpr) op).getOp2());
+      final BinopExpr binExpr = (BinopExpr) op;
+      final Value op1 = binExpr.getOp1();
+      final Value op2 = binExpr.getOp2();
+
+      final Value c1 = getConstantValueOf(op1);
+      final Value c2 = getConstantValueOf(op2);
+
       if (op instanceof AddExpr) {
         return ((NumericConstant) c1).add((NumericConstant) c2);
       } else if (op instanceof SubExpr) {
@@ -131,7 +138,9 @@ public class Evaluator {
         return ((NumericConstant) c1).remainder((NumericConstant) c2);
       } else if (op instanceof EqExpr || op instanceof NeExpr) {
         if (c1 instanceof NumericConstant) {
-          if (op instanceof EqExpr) {
+          if (!(c2 instanceof NumericConstant)) {
+            return IntConstant.v(0);
+          } else if (op instanceof EqExpr) {
             return ((NumericConstant) c1).equalEqual((NumericConstant) c2);
           } else if (op instanceof NeExpr) {
             return ((NumericConstant) c1).notEqual((NumericConstant) c2);
