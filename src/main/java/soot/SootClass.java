@@ -84,6 +84,8 @@ public class SootClass extends AbstractHost implements Numberable {
 
   public final static String INVOKEDYNAMIC_DUMMY_CLASS_NAME = "soot.dummy.InvokeDynamic";
 
+  public final static String JAVA_LANG_OBJECT = "java.lang.Object";
+  
   /**
    * Constructs an empty SootClass with the given name and modifiers.
    */
