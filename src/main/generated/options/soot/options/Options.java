@@ -32,7 +32,7 @@ import java.util.*;
  *
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-07-02T12:04:46.647+02:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-08-13T11:30:57.578+02:00", comments = "from soot_options.xml")
 public class Options extends OptionsBase {
 
     public Options(Singletons.Global g) {
@@ -406,6 +406,10 @@ public class Options extends OptionsBase {
             )
                 allow_phantom_refs = true;
             else if (false
+                    || option.equals("allow-phantom-elms")
+            )
+                allow_phantom_elms = true;
+            else if (false
                     || option.equals("no-bodies-for-excluded")
             )
                 no_bodies_for_excluded = true;
@@ -751,6 +755,10 @@ public class Options extends OptionsBase {
                     || option.equals("output-jar")
             )
                 output_jar = true;
+            else if (false
+                    || option.equals("hierarchy-dirs")
+            )
+                hierarchy_dirs = true;
             else if (false
                     || option.equals("xml-attributes")
             )
@@ -1404,6 +1412,10 @@ public class Options extends OptionsBase {
     private boolean allow_phantom_refs = false;
     public void set_allow_phantom_refs(boolean setting) { allow_phantom_refs = setting; }
 
+    public boolean allow_phantom_elms() { return allow_phantom_elms; }
+    private boolean allow_phantom_elms = false;
+    public void set_allow_phantom_elms(boolean setting) { allow_phantom_elms = setting; }
+
     public boolean no_bodies_for_excluded() { return no_bodies_for_excluded; }
     private boolean no_bodies_for_excluded = false;
     public void set_no_bodies_for_excluded(boolean setting) { no_bodies_for_excluded = setting; }
@@ -1448,6 +1460,10 @@ public class Options extends OptionsBase {
     public boolean output_jar() { return output_jar; }
     private boolean output_jar = false;
     public void set_output_jar(boolean setting) { output_jar = setting; }
+
+    public boolean hierarchy_dirs() { return hierarchy_dirs; }
+    private boolean hierarchy_dirs = false;
+    public void set_hierarchy_dirs(boolean setting) { hierarchy_dirs = setting; }
 
     public boolean xml_attributes() { return xml_attributes; }
     private boolean xml_attributes = false;
@@ -1637,6 +1653,7 @@ public class Options extends OptionsBase {
                     + padVal("apk-class-jimple apk-c-j", "Favour APK files as Soot source, disregard Java files")
                 + padOpt("-full-resolver", "Force transitive resolving of referenced classes")
                 + padOpt("-allow-phantom-refs", "Allow unresolved classes; may cause errors")
+                + padOpt("-allow-phantom-elms", "Allow phantom methods and fields in non-phantom classes")
                 + padOpt("-no-bodies-for-excluded", "Do not load bodies for excluded classes")
                 + padOpt("-j2me", "Use J2ME mode; changes assignment of types")
                 + padOpt("-main-class ARG", "Sets the main class for whole-program analysis.")
@@ -1674,6 +1691,7 @@ public class Options extends OptionsBase {
                     + padVal("1.7 7", "Force Java 1.7 as output version.")
                     + padVal("1.8 8", "Force Java 1.8 as output version.")
                 + padOpt("-outjar, -output-jar", "Make output dir a Jar file instead of dir")
+                + padOpt("-hierarchy-dirs", "Generate class hierarchy directories for Jimple/Shimple")
                 + padOpt("-xml-attributes", "Save tags to XML attributes for Eclipse")
                 + padOpt("-print-tags, -print-tags-in-output", "Print tags in output files after stmt")
                 + padOpt("-no-output-source-file-attribute", "Don't output Source File Attribute when producing class files")

@@ -81,7 +81,7 @@ public abstract class Body extends AbstractHost implements Serializable {
   protected Chain<Trap> trapChain = new HashChain<Trap>();
 
   /** The chain of units for this Body. */
-  protected PatchingChain<Unit> unitChain = new PatchingChain<Unit>(new HashChain<Unit>());
+  protected UnitPatchingChain unitChain = new UnitPatchingChain(new HashChain<Unit>());
 
   private static BodyValidator[] validators;
 
@@ -289,15 +289,20 @@ public abstract class Body extends AbstractHost implements Serializable {
     return trapChain;
   }
 
-  /** Return LHS of the first identity stmt assigning from \@this. **/
-  public Local getThisLocal() {
-    for (Unit s : getUnits()) {
-      if (s instanceof IdentityStmt && ((IdentityStmt) s).getRightOp() instanceof ThisRef) {
-        return (Local) (((IdentityStmt) s).getLeftOp());
+  /** Return unit containing the \@this-assignment **/
+  public Unit getThisUnit() {
+    for (Unit u : getUnits()) {
+      if (u instanceof IdentityStmt && ((IdentityStmt) u).getRightOp() instanceof ThisRef) {
+        return u;
       }
     }
 
-    throw new RuntimeException("couldn't find identityref!" + " in " + getMethod());
+    throw new RuntimeException("couldn't find this-assignment!" + " in " + getMethod());
+  }
+
+  /** Return LHS of the first identity stmt assigning from \@this. **/
+  public Local getThisLocal() {
+    return (Local) (((IdentityStmt) getThisUnit()).getLeftOp());
   }
 
   /** Return LHS of the first identity stmt assigning from \@parameter i. **/
@@ -372,7 +377,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @see PatchingChain
    * @see Unit
    */
-  public PatchingChain<Unit> getUnits() {
+  public UnitPatchingChain getUnits() {
     return unitChain;
   }
 

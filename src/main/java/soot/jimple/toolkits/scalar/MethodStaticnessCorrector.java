@@ -25,6 +25,9 @@ package soot.jimple.toolkits.scalar;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.G;
 import soot.Modifier;
@@ -49,6 +52,7 @@ import soot.jimple.Stmt;
  *
  */
 public class MethodStaticnessCorrector extends AbstractStaticnessCorrector {
+  private static final Logger logger = LoggerFactory.getLogger(MethodStaticnessCorrector.class);
 
   public MethodStaticnessCorrector(Singletons.Global g) {
   }
@@ -70,7 +74,11 @@ public class MethodStaticnessCorrector extends AbstractStaticnessCorrector {
               SootMethod target = Scene.v().grabMethod(iexpr.getMethodRef().getSignature());
               if (target != null && !target.isStatic()) {
                 if (canBeMadeStatic(target)) {
+                  // Remove the this-assignment to prevent
+                  // 'this-assignment in a static method!' exception
+                  target.getActiveBody().getUnits().remove(target.getActiveBody().getThisUnit());
                   target.setModifiers(target.getModifiers() | Modifier.STATIC);
+                  logger.warn(target.getName() + " changed into a static method");
                 }
               }
             }

@@ -44,7 +44,6 @@ import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
 import soot.jimple.Stmt;
-import soot.toolkits.exceptions.UnitThrowAnalysis;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
@@ -57,7 +56,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   protected final Map<Unit, Body> unitToOwner = new HashMap<Unit, Body>();
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
-  protected final LoadingCache<Body, DirectedGraph<Unit>> bodyToUnitGraph
+  protected LoadingCache<Body, DirectedGraph<Unit>> bodyToUnitGraph
       = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<Body, DirectedGraph<Unit>>() {
         @Override
         public DirectedGraph<Unit> load(Body body) throws Exception {
@@ -66,7 +65,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
       });
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
-  protected final LoadingCache<SootMethod, List<Value>> methodToParameterRefs
+  protected LoadingCache<SootMethod, List<Value>> methodToParameterRefs
       = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<SootMethod, List<Value>>() {
         @Override
         public List<Value> load(SootMethod m) throws Exception {
@@ -75,20 +74,11 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
       });
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
-  protected final LoadingCache<SootMethod, Set<Unit>> methodToCallsFromWithin
+  protected LoadingCache<SootMethod, Set<Unit>> methodToCallsFromWithin
       = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<SootMethod, Set<Unit>>() {
         @Override
         public Set<Unit> load(SootMethod m) throws Exception {
-          Set<Unit> res = null;
-          for (Unit u : m.getActiveBody().getUnits()) {
-            if (isCallStmt(u)) {
-              if (res == null) {
-                res = new LinkedHashSet<Unit>();
-              }
-              res.add(u);
-            }
-          }
-          return res == null ? Collections.<Unit>emptySet() : res;
+          return getCallsFromWithinMethod(m);
         }
       });
 
@@ -128,6 +118,19 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 
   protected DirectedGraph<Unit> makeGraph(Body body) {
     return enableExceptions ? new ExceptionalUnitGraph(body) : new BriefUnitGraph(body);
+  }
+
+  protected Set<Unit> getCallsFromWithinMethod(SootMethod m) {
+    Set<Unit> res = null;
+    for (Unit u : m.getActiveBody().getUnits()) {
+      if (isCallStmt(u)) {
+        if (res == null) {
+          res = new LinkedHashSet<Unit>();
+        }
+        res.add(u);
+      }
+    }
+    return res == null ? Collections.<Unit>emptySet() : res;
   }
 
   @Override
@@ -225,6 +228,9 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   public List<Unit> getPredsOf(Unit u) {
     assert u != null;
     Body body = unitToOwner.get(u);
+    if (body == null) {
+      return Collections.emptyList();
+    }
     DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
     return unitGraph.getPredsOf(u);
   }

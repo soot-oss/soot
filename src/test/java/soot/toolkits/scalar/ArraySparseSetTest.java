@@ -23,6 +23,7 @@ package soot.toolkits.scalar;
  */
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -57,6 +58,41 @@ public class ArraySparseSetTest {
 		
 		Assert.assertEquals(ars1, aps);
 		Assert.assertEquals(ars1.hashCode(), aps.hashCode());
+	}
+
+	@Test
+	public void testIterator() {
+		ArraySparseSet<String> ars1 = new ArraySparseSet<String>();
+		ars1.add("a");
+		ars1.add("b");
+		ars1.add("c");
+
+		// remove element c
+		Iterator<String> it = ars1.iterator();
+		while (it.hasNext()) {
+			String element = it.next();
+			if (element.equals("c"))
+				it.remove();
+		}
+
+		// check size
+		Assert.assertEquals(2, ars1.size());
+
+		// check remaining elements
+		boolean aFound = false;
+		boolean bFound = false;
+		for (String element : ars1) {
+			if (element.equals("a")) {
+				Assert.assertFalse(aFound);
+				aFound = true;
+			}
+			if (element.equals("b")) {
+				Assert.assertFalse(bFound);
+				bFound = true;
+			}
+		}
+		Assert.assertTrue(aFound);
+		Assert.assertTrue(bFound);
 	}
 	
 }

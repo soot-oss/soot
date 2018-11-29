@@ -846,7 +846,7 @@ public final class OnFlyCallGraphBuilder {
             }
             break;
           case "java.lang.reflect.Constructor":
-            if (methodRef.getSubSignature().getString().equals("java.lang.Object newInstance(java.lang.Object[]))")) {
+            if (methodRef.getSubSignature().getString().equals("java.lang.Object newInstance(java.lang.Object[])")) {
               reflectionModel.contructorNewInstance(source, s);
             }
             break;

@@ -301,14 +301,19 @@ public class Hierarchy {
     checkState();
 
     // If already cached, return the value.
-    if (interfaceToSubinterfaces.get(sootClass) != null) {
-      return interfaceToSubinterfaces.get(sootClass);
+    List<SootClass> subInterfaces = interfaceToSubinterfaces.get(sootClass);
+    if (subInterfaces != null) {
+      return subInterfaces;
     }
 
     // Otherwise, build up the hashmap.
+    List<SootClass> directSubInterfaces = interfaceToDirSubinterfaces.get(sootClass);
+    if (directSubInterfaces == null || directSubInterfaces.isEmpty()) {
+      return Collections.emptyList();
+    }
+    
     final List<SootClass> result = new ArrayList<>();
-
-    for (SootClass si : interfaceToDirSubinterfaces.get(sootClass)) {
+    for (SootClass si : directSubInterfaces) {
       result.addAll(getSubinterfacesOfIncluding(si));
     }
 

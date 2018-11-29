@@ -269,7 +269,7 @@ public class DexPrinter {
     return methodRef;
   }
 
-  protected static TypeReference toTypeReference(Type t) {
+  public static TypeReference toTypeReference(Type t) {
     ImmutableTypeReference tRef = new ImmutableTypeReference(SootToDexUtils.getDexTypeDescriptor(t));
     return tRef;
   }
@@ -697,14 +697,7 @@ public class DexPrinter {
       }
     }
 
-    // Write the MemberClasses tag
-    InnerClassAttribute icTag = (InnerClassAttribute) c.getTag("InnerClassAttribute");
-    if (icTag != null) {
-      List<Annotation> memberClassesItem = buildMemberClassesAttribute(c, icTag, skipList);
-      if (memberClassesItem != null) {
-        annotations.addAll(memberClassesItem);
-      }
-    }
+    writeMemberClasses(c, skipList, annotations);
 
     for (Tag t : c.getTags()) {
       if (t.getName().equals("VisibilityAnnotationTag")) {
@@ -740,6 +733,17 @@ public class DexPrinter {
     }
 
     return annotations;
+  }
+
+  protected void writeMemberClasses(SootClass c, Set<String> skipList, Set<Annotation> annotations) {
+    // Write the MemberClasses tag
+    InnerClassAttribute icTag = (InnerClassAttribute) c.getTag("InnerClassAttribute");
+    if (icTag != null) {
+      List<Annotation> memberClassesItem = buildMemberClassesAttribute(c, icTag, skipList);
+      if (memberClassesItem != null) {
+        annotations.addAll(memberClassesItem);
+      }
+    }
   }
 
   private Set<Annotation> buildFieldAnnotations(SootField f) {
@@ -1157,7 +1161,7 @@ public class DexPrinter {
     Collection<Unit> units = activeBody.getUnits();
     // register count = parameters + additional registers, depending on the
     // dex instructions generated (e.g. locals used and constants loaded)
-    StmtVisitor stmtV = new StmtVisitor(m, initDetector);
+    StmtVisitor stmtV = buildStmtVisitor(m, initDetector);
 
     Chain<Trap> traps = activeBody.getTraps();
     Set<Unit> trapReferences = new HashSet<Unit>(traps.size() * 3);
@@ -1253,6 +1257,21 @@ public class DexPrinter {
     }
 
     return builder.getMethodImplementation();
+  }
+
+  /**
+   * Creates a statement visitor to build code for each statement.
+   * 
+   * Allows subclasses to use own implementations
+   * 
+   * @param belongingMethod
+   *          the method
+   * @param arrayInitDetector
+   *          auxilliary class for detecting array initializations
+   * @return the statement visitor
+   */
+  protected StmtVisitor buildStmtVisitor(SootMethod belongingMethod, DexArrayInitDetector arrayInitDetector) {
+    return new StmtVisitor(belongingMethod, arrayInitDetector);
   }
 
   /**

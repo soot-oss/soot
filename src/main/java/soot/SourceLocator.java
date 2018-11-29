@@ -76,7 +76,7 @@ public class SourceLocator {
                   return ClassSourceType.zip;
                 } else if (path.endsWith(".jar")) {
                   return ClassSourceType.jar;
-                } else if (path.endsWith(".apk")) {
+                } else if (Scene.isApk(path)) {
                   return ClassSourceType.apk;
                 } else if (path.endsWith(".dex")) {
                   return ClassSourceType.dex;
@@ -418,7 +418,13 @@ public class SourceLocator {
         b.append(c.getName().replace('.', '_'));
         b.append("_Maker");
       } else {
-        b.append(c.getName());
+        // Generate tree structure for Jimple output or generation
+        // fails for deep hierarchies ("file name too long").
+        if (Options.v().hierarchy_dirs() && (rep == Options.output_format_jimple || rep == Options.output_format_shimple)) {
+          b.append(c.getName().replace('.', File.separatorChar));
+        } else {
+          b.append(c.getName());
+        }
       }
       b.append(getExtensionFor(rep));
 

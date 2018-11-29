@@ -145,21 +145,6 @@ public class EmptyChain implements Chain {
   }
 
   @Override
-  public void insertOnEdge(Object toInsert, Object point_src, Object point_tgt) {
-    throw new RuntimeException("Cannot add elements to an unmodifiable chain");
-  }
-
-  @Override
-  public void insertOnEdge(List toInsert, Object point_src, Object point_tgt) {
-    throw new RuntimeException("Cannot add elements to an unmodifiable chain");
-  }
-
-  @Override
-  public void insertOnEdge(Chain toInsert, Object point_src, Object point_tgt) {
-    throw new RuntimeException("Cannot add elements to an unmodifiable chain");
-  }
-
-  @Override
   public void swapWith(Object out, Object in) {
     throw new RuntimeException("Cannot replace elements in an unmodifiable chain");
   }
@@ -247,6 +232,16 @@ public class EmptyChain implements Chain {
   @Override
   public Collection getElementsUnsorted() {
     return Collections.emptyList();
+  }
+
+  @Override
+  public void insertAfter(Collection toInsert, Object point) {
+    throw new RuntimeException("Cannot add elements to an unmodifiable chain");
+  }
+
+  @Override
+  public void insertBefore(Collection toInsert, Object point) {
+    throw new RuntimeException("Cannot add elements to an unmodifiable chain");
   }
 
 }

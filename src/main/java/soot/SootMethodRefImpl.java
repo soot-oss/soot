@@ -82,25 +82,41 @@ public class SootMethodRefImpl implements SootMethodRef {
   private final Type returnType;
   private final boolean isStatic;
 
-  private NumberedString subsig;
-
   @Override
   public SootClass declaringClass() {
+    return getDeclaringClass();
+  }
+
+  public SootClass getDeclaringClass() {
     return declaringClass;
   }
 
   @Override
   public String name() {
+    return getName();
+  }
+
+  @Override
+  public String getName() {
     return name;
   }
 
   @Override
   public List<Type> parameterTypes() {
+    return getParameterTypes();
+  }
+
+  public List<Type> getParameterTypes() {
     return parameterTypes == null ? Collections.<Type>emptyList() : parameterTypes;
   }
 
   @Override
   public Type returnType() {
+    return getReturnType();
+  }
+
+  @Override
+  public Type getReturnType() {
     return returnType;
   }
 
@@ -111,10 +127,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   @Override
   public NumberedString getSubSignature() {
-    if (subsig == null) {
-      subsig = Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
-    }
-    return subsig;
+    return Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
   }
 
   @Override
@@ -124,6 +137,11 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   @Override
   public Type parameterType(int i) {
+    return getParameterType(i);
+  }
+
+  @Override
+  public Type getParameterType(int i) {
     return parameterTypes.get(i);
   }
 
@@ -159,18 +177,14 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   private SootMethod checkStatic(SootMethod ret) {
     if ((Options.v().wrong_staticness() == Options.wrong_staticness_fail
-          || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict)
-          && ret.isStatic() != isStatic() && !ret.isPhantom()) {
+        || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) && ret.isStatic() != isStatic()
+        && !ret.isPhantom()) {
       throw new ResolutionFailedException("Resolved " + this + " to " + ret + " which has wrong static-ness");
     }
     return ret;
   }
 
   private SootMethod tryResolve(StringBuffer trace) {
-    if (declaringClass.getName().equals("java.dyn.InvokeDynamic")) {
-      throw new IllegalStateException("Cannot resolve invokedynamic method references at compile time!");
-    }
-
     SootClass cl = declaringClass;
     while (cl != null) {
       if (trace != null) {
@@ -227,16 +241,21 @@ public class SootMethodRefImpl implements SootMethodRef {
     // when allowing phantom refs we also allow for references to
     // non-existing methods;
     // we simply create the methods on the fly; the method body will throw
-    // an appropriate
-    // error just in case the code *is* actually reached at runtime
-    if (Options.v().allow_phantom_refs() && !declaringClass.isInterface()) {
+    // an appropriate error just in case the code *is* actually reached at runtime
+    boolean treatAsPhantomClass = Options.v().allow_phantom_refs() && !declaringClass.isInterface();
+
+    // declaring class of dynamic invocations not known at compile time, treat as
+    // phantom class regardless if phantom classes are enabled
+    treatAsPhantomClass = treatAsPhantomClass || declaringClass.getName().equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
+
+    if (treatAsPhantomClass) {
       return createUnresolvedErrorMethod(declaringClass);
     }
 
     if (trace == null) {
       ClassResolutionFailedException e = new ClassResolutionFailedException();
       if (Options.v().ignore_resolution_errors()) {
-        logger.debug("" + e.getMessage());
+        logger.debug(e.getMessage());
       } else {
         throw e;
       }
@@ -298,6 +317,7 @@ public class SootMethodRefImpl implements SootMethodRef {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+    NumberedString subsig = getSubSignature();
     result = prime * result + ((declaringClass == null) ? 0 : declaringClass.hashCode());
     result = prime * result + (isStatic ? 1231 : 1237);
     result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -350,11 +370,13 @@ public class SootMethodRefImpl implements SootMethodRef {
     } else if (!returnType.equals(other.returnType)) {
       return false;
     }
+    NumberedString subsig = getSubSignature();
+
     if (subsig == null) {
-      if (other.subsig != null) {
+      if (other.getSubSignature() != null) {
         return false;
       }
-    } else if (!subsig.equals(other.subsig)) {
+    } else if (!subsig.equals(other.getSubSignature())) {
       return false;
     }
     return true;

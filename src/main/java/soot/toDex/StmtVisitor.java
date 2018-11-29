@@ -112,16 +112,16 @@ import soot.util.Switchable;
  * @see Insn intermediate representation of an instruction
  * @see Instruction final representation of an instruction
  */
-class StmtVisitor implements StmtSwitch {
+public class StmtVisitor implements StmtSwitch {
 
   private final SootMethod belongingMethod;
   private final DexArrayInitDetector arrayInitDetector;
 
-  private ConstantVisitor constantV;
+  protected ConstantVisitor constantV;
 
-  private RegisterAllocator regAlloc;
+  protected RegisterAllocator regAlloc;
 
-  private ExprVisitor exprV;
+  protected ExprVisitor exprV;
 
   private String lastReturnTypeDescriptor;
 
@@ -206,7 +206,7 @@ class StmtVisitor implements StmtSwitch {
     return insns.size();
   }
 
-  protected void addInsn(Insn insn, Stmt s) {
+  public void addInsn(Insn insn, Stmt s) {
     insns.add(insn);
     if (s != null) {
       if (insnStmtMap.put(insn, s) != null) {
@@ -530,7 +530,7 @@ class StmtVisitor implements StmtSwitch {
     }
   }
 
-  protected static Insn buildMoveInsn(Register destinationReg, Register sourceReg) {
+  public static Insn buildMoveInsn(Register destinationReg, Register sourceReg) {
     // get the optional opcode suffix, depending on the sizes of the regs
     if (!destinationReg.fitsShort()) {
       Opcode opc;

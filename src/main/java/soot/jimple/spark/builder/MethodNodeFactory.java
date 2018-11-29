@@ -79,9 +79,27 @@ import soot.toolkits.scalar.Pair;
  * @author Ondrej Lhotak
  */
 public class MethodNodeFactory extends AbstractShimpleValueSwitch {
+
+  protected final RefType rtClass;
+  protected final RefType rtStringType;
+  protected final RefType rtHashSet;
+  protected final RefType rtHashMap;
+  protected final RefType rtLinkedList;
+  protected final RefType rtHashtableEmptyIterator;
+  protected final RefType rtHashtableEmptyEnumerator;
+
   public MethodNodeFactory(PAG pag, MethodPAG mpag) {
     this.pag = pag;
     this.mpag = mpag;
+
+    this.rtClass = RefType.v("java.lang.Class");
+    this.rtStringType = RefType.v("java.lang.String");
+    this.rtHashSet = RefType.v("java.util.HashSet");
+    this.rtHashMap = RefType.v("java.util.HashMap");
+    this.rtLinkedList = RefType.v("java.util.LinkedList");
+    this.rtHashtableEmptyIterator = RefType.v("java.util.Hashtable$EmptyIterator");
+    this.rtHashtableEmptyEnumerator = RefType.v("java.util.Hashtable$EmptyEnumerator");
+
     setCurrentMethod(mpag.getMethod());
   }
 
@@ -156,19 +174,17 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
           if (pag.getOpts().empties_as_allocs()) {
             if (s.declaringClass().getName().equals("java.util.Collections")) {
               if (s.name().equals("EMPTY_SET")) {
-                src = pag.makeAllocNode(RefType.v("java.util.HashSet"), RefType.v("java.util.HashSet"), method);
+                src = pag.makeAllocNode(rtHashSet, rtHashSet, method);
               } else if (s.name().equals("EMPTY_MAP")) {
-                src = pag.makeAllocNode(RefType.v("java.util.HashMap"), RefType.v("java.util.HashMap"), method);
+                src = pag.makeAllocNode(rtHashMap, rtHashMap, method);
               } else if (s.name().equals("EMPTY_LIST")) {
-                src = pag.makeAllocNode(RefType.v("java.util.LinkedList"), RefType.v("java.util.LinkedList"), method);
+                src = pag.makeAllocNode(rtLinkedList, rtLinkedList, method);
               }
             } else if (s.declaringClass().getName().equals("java.util.Hashtable")) {
               if (s.name().equals("emptyIterator")) {
-                src = pag.makeAllocNode(RefType.v("java.util.Hashtable$EmptyIterator"),
-                    RefType.v("java.util.Hashtable$EmptyIterator"), method);
+                src = pag.makeAllocNode(rtHashtableEmptyIterator, rtHashtableEmptyIterator, method);
               } else if (s.name().equals("emptyEnumerator")) {
-                src = pag.makeAllocNode(RefType.v("java.util.Hashtable$EmptyEnumerator"),
-                    RefType.v("java.util.Hashtable$EmptyEnumerator"), method);
+                src = pag.makeAllocNode(rtHashtableEmptyEnumerator, rtHashtableEmptyEnumerator, method);
               }
             }
           }
@@ -390,9 +406,9 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
         || (sc.value.length() > 0 && sc.value.charAt(0) == '[')) {
       stringConstant = pag.makeStringConstantNode(sc.value);
     } else {
-      stringConstant = pag.makeAllocNode(PointsToAnalysis.STRING_NODE, RefType.v("java.lang.String"), null);
+      stringConstant = pag.makeAllocNode(PointsToAnalysis.STRING_NODE, rtStringType, null);
     }
-    VarNode stringConstantLocal = pag.makeGlobalVarNode(stringConstant, RefType.v("java.lang.String"));
+    VarNode stringConstantLocal = pag.makeGlobalVarNode(stringConstant, rtStringType);
     pag.addEdge(stringConstant, stringConstantLocal);
     setResult(stringConstantLocal);
   }
@@ -410,7 +426,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
   @Override
   final public void caseClassConstant(ClassConstant cc) {
     AllocNode classConstant = pag.makeClassConstantNode(cc);
-    VarNode classConstantLocal = pag.makeGlobalVarNode(classConstant, RefType.v("java.lang.Class"));
+    VarNode classConstantLocal = pag.makeGlobalVarNode(classConstant, rtClass);
     pag.addEdge(classConstant, classConstantLocal);
     setResult(classConstantLocal);
   }

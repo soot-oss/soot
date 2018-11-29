@@ -1,27 +1,5 @@
 package soot.asm;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
@@ -151,6 +129,27 @@ import static org.objectweb.asm.Opcodes.SASTORE;
 import static org.objectweb.asm.Opcodes.SIPUSH;
 import static org.objectweb.asm.Opcodes.SWAP;
 import static org.objectweb.asm.Opcodes.T_BOOLEAN;
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 import static org.objectweb.asm.Opcodes.T_BYTE;
 import static org.objectweb.asm.Opcodes.T_CHAR;
 import static org.objectweb.asm.Opcodes.T_DOUBLE;
@@ -268,6 +267,7 @@ import soot.jimple.JimpleBody;
 import soot.jimple.LongConstant;
 import soot.jimple.LookupSwitchStmt;
 import soot.jimple.MethodHandle;
+import soot.jimple.MethodType;
 import soot.jimple.MonitorStmt;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewMultiArrayExpr;
@@ -1210,9 +1210,21 @@ final class AsmMethodSource implements MethodSource {
     } else if (val instanceof String) {
       v = StringConstant.v(val.toString());
     } else if (val instanceof org.objectweb.asm.Type) {
-      v = ClassConstant.v(((org.objectweb.asm.Type) val).getDescriptor());
+      org.objectweb.asm.Type t = (org.objectweb.asm.Type) val;
+      if (t.getSort() == org.objectweb.asm.Type.METHOD) {
+        List<Type> paramTypes = AsmUtil.toJimpleDesc(((org.objectweb.asm.Type) val).getDescriptor());
+        Type returnType = paramTypes.remove(paramTypes.size() - 1);
+        v = MethodType.v(paramTypes, returnType);
+      } else {
+        v = ClassConstant.v(((org.objectweb.asm.Type) val).getDescriptor());
+      }
     } else if (val instanceof Handle) {
-      v = MethodHandle.v(toSootMethodRef((Handle) val), ((Handle) val).getTag());
+      Handle h = (Handle) val;
+      if (MethodHandle.isMethodRef(h.getTag())) {
+        v = MethodHandle.v(toSootMethodRef((Handle) val), ((Handle) val).getTag());
+      } else {
+        v = MethodHandle.v(toSootFieldRef((Handle) val), ((Handle) val).getTag());
+      }
     } else {
       throw new AssertionError("Unknown constant type: " + val.getClass());
     }
@@ -1321,7 +1333,7 @@ final class AsmMethodSource implements MethodSource {
     } else {
       opr = out[0];
       InvokeExpr expr = (InvokeExpr) opr.value;
-      List<Type> types = expr.getMethodRef().parameterTypes();
+      List<Type> types = expr.getMethodRef().getParameterTypes();
       Operand[] oprs;
       int nrArgs = types.size();
       if (expr.getMethodRef().isStatic()) {
@@ -1339,7 +1351,7 @@ final class AsmMethodSource implements MethodSource {
         frame.mergeIn(oprs);
         nrArgs = types.size();
       }
-      returnType = expr.getMethodRef().returnType();
+      returnType = expr.getMethodRef().getReturnType();
     }
     if (AsmUtil.isDWord(returnType)) {
       pushDual(opr);
@@ -1412,7 +1424,7 @@ final class AsmMethodSource implements MethodSource {
     } else {
       opr = out[0];
       InvokeExpr expr = (InvokeExpr) opr.value;
-      List<Type> types = expr.getMethodRef().parameterTypes();
+      List<Type> types = expr.getMethodRef().getParameterTypes();
       Operand[] oprs;
       int nrArgs = types.size();
       if (expr.getMethodRef().isStatic()) {
@@ -1430,7 +1442,7 @@ final class AsmMethodSource implements MethodSource {
         frame.mergeIn(oprs);
         nrArgs = types.size();
       }
-      returnType = expr.getMethodRef().returnType();
+      returnType = expr.getMethodRef().getReturnType();
     }
     if (AsmUtil.isDWord(returnType)) {
       pushDual(opr);
@@ -1450,7 +1462,18 @@ final class AsmMethodSource implements MethodSource {
     SootClass bsmCls = Scene.v().getSootClass(bsmClsName);
     List<Type> bsmSigTypes = AsmUtil.toJimpleDesc(methodHandle.getDesc());
     Type returnType = bsmSigTypes.remove(bsmSigTypes.size() - 1);
-    return Scene.v().makeMethodRef(bsmCls, methodHandle.getName(), bsmSigTypes, returnType, true /* always static */);
+    return Scene.v().makeMethodRef(bsmCls, methodHandle.getName(), bsmSigTypes, returnType,
+        methodHandle.getTag() == MethodHandle.Kind.REF_INVOKE_STATIC.getValue());
+  }
+
+  private SootFieldRef toSootFieldRef(Handle methodHandle) {
+    String bsmClsName = AsmUtil.toQualifiedName(methodHandle.getOwner());
+    SootClass bsmCls = Scene.v().getSootClass(bsmClsName);
+    Type t = AsmUtil.toJimpleDesc(methodHandle.getDesc()).get(0);
+    int kind = methodHandle.getTag();
+    return Scene.v().makeFieldRef(bsmCls, methodHandle.getName(), t,
+        kind == MethodHandle.Kind.REF_GET_FIELD_STATIC.getValue()
+            || kind == MethodHandle.Kind.REF_PUT_FIELD_STATIC.getValue());
   }
 
   private void convertMultiANewArrayInsn(MultiANewArrayInsnNode insn) {
@@ -1772,6 +1795,7 @@ final class AsmMethodSource implements MethodSource {
           convertTableSwitchInsn(swtch);
           LabelNode dflt = swtch.dflt;
           addEdges(insn, dflt, swtch.labels);
+          break;
         } else if (type == TYPE_INSN) {
           convertTypeInsn((TypeInsnNode) insn);
         } else if (type == VAR_INSN) {

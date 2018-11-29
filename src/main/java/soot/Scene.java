@@ -47,6 +47,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.MagicNumberFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -597,12 +598,7 @@ public class Scene // extends AbstractHost
       String targetApk = "";
       Set<String> targetDexs = new HashSet<String>();
       for (String entry : classPathEntries) {
-        if (entry.toLowerCase().endsWith(".apk")) { // on Windows, file
-          // names are
-          // case-insensitive
-          // We cannot have multiple APKs, because this would give us
-          // multiple
-          // manifests which we do not support right now
+        if (isApk(entry)) {
           if (targetApk != null && !targetApk.isEmpty()) {
             throw new RuntimeException("only one Android application can be analyzed when using option -android-jars.");
           }
@@ -640,6 +636,44 @@ public class Scene // extends AbstractHost
     }
 
     return jarPath;
+  }
+  
+  public static boolean isApk(String file) {
+    // decide if a file is an APK by its magic number and whether it contains dex file.
+    boolean r = false;
+    // first check magic number
+    File apk = new File(file);
+    MagicNumberFileFilter apkFilter = new MagicNumberFileFilter(new byte[] {(byte) 0x50, (byte) 0x4B,
+                                                                            (byte) 0x03, (byte) 0x04});
+    if (!apkFilter.accept(apk)) {
+      return r;
+    }
+    // second check if contains dex file.
+    ZipFile zf = null;
+    try {
+      zf = new ZipFile(file);
+      Enumeration<?> en = zf.entries();
+      while (en.hasMoreElements()) {
+        ZipEntry z = (ZipEntry) en.nextElement();
+        String name = z.getName();
+        if (name.equals("classes.dex")) {
+          r = true;
+          break;
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      if (zf != null) {
+        try {
+          zf.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+    
+    return r;
   }
 
   private String defaultJavaClassPath() {

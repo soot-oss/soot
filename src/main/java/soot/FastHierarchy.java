@@ -25,12 +25,12 @@ package soot;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import soot.jimple.SpecialInvokeExpr;
 import soot.util.ConcurrentHashMultiMap;
@@ -83,6 +83,10 @@ public class FastHierarchy {
 
   protected Scene sc;
 
+  protected final RefType rtObject;
+  protected final RefType rtSerializable;
+  protected final RefType rtCloneable;
+
   protected class Interval {
     int lower;
     int upper;
@@ -128,6 +132,10 @@ public class FastHierarchy {
   /** Constructs a hierarchy from the current scene. */
   public FastHierarchy() {
     this.sc = Scene.v();
+
+    this.rtObject = Scene.v().getObjectType();
+    this.rtSerializable = RefType.v("java.io.Serializable");
+    this.rtCloneable = RefType.v("java.lang.Cloneable");
 
     /* First build the inverse maps. */
     for (SootClass cl : sc.getClasses().getElementsUnsorted()) {
@@ -203,8 +211,7 @@ public class FastHierarchy {
     if (!parent.isInterface()) {
       return Collections.<SootClass>emptySet();
     }
-    if (!interfaceToAllSubinterfaces.containsKey(parent)) {
-      interfaceToAllSubinterfaces.put(parent, parent);
+    if (interfaceToAllSubinterfaces.put(parent, parent)) {
       for (SootClass si : interfaceToSubinterfaces.get(parent)) {
         interfaceToAllSubinterfaces.putAll(parent, getAllSubinterfaces(si));
       }
@@ -218,20 +225,16 @@ public class FastHierarchy {
    * implementing the child interface may also implement the parent interface.
    */
   public boolean canStoreType(Type child, Type parent) {
-    if (child.equals(parent)) {
+    if (child == parent || child.equals(parent)) {
       return true;
-    }
-    if (parent instanceof NullType) {
+    } else if (parent instanceof NullType) {
       return false;
-    }
-    if (child instanceof NullType) {
+    } else if (child instanceof NullType) {
       return parent instanceof RefLikeType;
-    }
-    if (child instanceof RefType) {
-      if (parent.equals(sc.getObjectType())) {
+    } else if (child instanceof RefType) {
+      if (parent == rtObject) {
         return true;
-      }
-      if (parent instanceof RefType) {
+      } else if (parent instanceof RefType) {
         return canStoreClass(((RefType) child).getSootClass(), ((RefType) parent).getSootClass());
       } else {
         return false;
@@ -242,12 +245,11 @@ public class FastHierarchy {
       } else if (parent instanceof ArrayType) {
         Type base = ((AnySubType) child).getBase();
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
-        return base.equals(sc.getObjectType()) || base.equals(RefType.v("java.io.Serializable"))
-            || base.equals(RefType.v("java.lang.Cloneable"));
+        return base == rtObject || base == rtSerializable || base == rtCloneable;
       } else {
         SootClass base = ((AnySubType) child).getBase().getSootClass();
         SootClass parentClass = ((RefType) parent).getSootClass();
-        ArrayDeque<SootClass> worklist = new ArrayDeque<SootClass>();
+        Deque<SootClass> worklist = new ArrayDeque<SootClass>();
         if (base.isInterface()) {
           worklist.addAll(getAllImplementersOfInterface(base));
         } else {
@@ -258,11 +260,9 @@ public class FastHierarchy {
           SootClass cl = worklist.poll();
           if (cl == null) {
             break;
-          }
-          if (!workset.add(cl)) {
+          } else if (!workset.add(cl)) {
             continue;
-          }
-          if (cl.isConcrete() && canStoreClass(cl, parentClass)) {
+          } else if (cl.isConcrete() && canStoreClass(cl, parentClass)) {
             return true;
           }
           worklist.addAll(getSubclassesOf(cl));
@@ -273,10 +273,8 @@ public class FastHierarchy {
       ArrayType achild = (ArrayType) child;
       if (parent instanceof RefType) {
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
-        return parent.equals(sc.getObjectType()) || parent.equals(RefType.v("java.io.Serializable"))
-            || parent.equals(RefType.v("java.lang.Cloneable"));
-      }
-      if (!(parent instanceof ArrayType)) {
+        return parent == rtObject || parent == rtSerializable || parent == rtCloneable;
+      } else if (!(parent instanceof ArrayType)) {
         return false;
       }
       ArrayType aparent = (ArrayType) parent;
@@ -286,25 +284,21 @@ public class FastHierarchy {
       if (achild.numDimensions == aparent.numDimensions) {
         if (achild.baseType.equals(aparent.baseType)) {
           return true;
-        }
-        if (!(achild.baseType instanceof RefType)) {
+        } else if (!(achild.baseType instanceof RefType)) {
           return false;
-        }
-        if (!(aparent.baseType instanceof RefType)) {
+        } else if (!(aparent.baseType instanceof RefType)) {
           return false;
+        } else {
+          return canStoreType(achild.baseType, aparent.baseType);
         }
-        return canStoreType(achild.baseType, aparent.baseType);
       } else if (achild.numDimensions > aparent.numDimensions) {
-        if (aparent.baseType.equals(sc.getObjectType())) {
+        if (aparent.baseType == rtObject) {
           return true;
-        }
-        if (aparent.baseType.equals(RefType.v("java.io.Serializable"))) {
+        } else if (aparent.baseType == rtSerializable || aparent.baseType == rtCloneable) {
           return true;
+        } else {
+          return false;
         }
-        if (aparent.baseType.equals(RefType.v("java.lang.Cloneable"))) {
-          return true;
-        }
-        return false;
       } else {
         return false;
       }
@@ -325,21 +319,30 @@ public class FastHierarchy {
     Interval childInterval = classToInterval.get(child);
     if (parentInterval != null && childInterval != null) {
       return parentInterval.isSubrange(childInterval);
-    }
-    if (childInterval == null) { // child is interface
+    } else if (childInterval == null) { // child is interface
       if (parentInterval != null) { // parent is not interface
-        return parent.equals(sc.getObjectType().getSootClass());
+        return parent == rtObject.getSootClass();
       } else {
         return getAllSubinterfaces(parent).contains(child);
       }
     } else {
       Set<SootClass> impl = getAllImplementersOfInterface(parent);
-      // If we have more than 1000 entries use multi-threaded search
-      Stream<SootClass> stream = (impl.size() > 1000) ? impl.parallelStream() : impl.stream();
-      return stream.anyMatch(c -> {
-        Interval interval = classToInterval.get(c);
-        return (interval != null && interval.isSubrange(childInterval));
-      });
+      // If we have more than 1000 entries use multi-threaded search. If we only have a few entries, you can't beat the
+      // performance of a plain old loop. Therefore, we only use streams for the multi-threaded case.
+      if (impl.size() > 1000) {
+        return impl.parallelStream().anyMatch(c -> {
+          Interval interval = classToInterval.get(c);
+          return (interval != null && interval.isSubrange(childInterval));
+        });
+      } else {
+        for (SootClass c : impl) {
+          Interval interval = classToInterval.get(c);
+          if (interval != null && interval.isSubrange(childInterval)) {
+            return true;
+          }
+        }
+        return false;
+      }
     }
   }
 
@@ -362,14 +365,23 @@ public class FastHierarchy {
               ret.add(concreteM);
             }
           }
-          if (classToSubclasses.containsKey(c)) {
-            s.addAll(classToSubclasses.get(c));
+          {
+            Set<SootClass> subclasses = classToSubclasses.get(c);
+            if (subclasses != null) {
+              s.addAll(subclasses);
+            }
           }
-          if (interfaceToSubinterfaces.containsKey(c)) {
-            s.addAll(interfaceToSubinterfaces.get(c));
+          {
+            Set<SootClass> subinterfaces = interfaceToSubinterfaces.get(c);
+            if (subinterfaces != null) {
+              s.addAll(subinterfaces);
+            }
           }
-          if (interfaceToImplementers.containsKey(c)) {
-            s.addAll(interfaceToImplementers.get(c));
+          {
+            Set<SootClass> implementers = interfaceToImplementers.get(c);
+            if (implementers != null) {
+              s.addAll(implementers);
+            }
           }
         }
         return ret;
@@ -424,15 +436,25 @@ public class FastHierarchy {
               ret.add(concreteM);
             }
           }
-          if (classToSubclasses.containsKey(c)) {
-            s.addAll(classToSubclasses.get(c));
+          {
+            Set<SootClass> subclasses = classToSubclasses.get(c);
+            if (subclasses != null) {
+              s.addAll(subclasses);
+            }
           }
-          if (interfaceToSubinterfaces.containsKey(c)) {
-            s.addAll(interfaceToSubinterfaces.get(c));
+          {
+            Set<SootClass> subinterfaces = interfaceToSubinterfaces.get(c);
+            if (subinterfaces != null) {
+              s.addAll(subinterfaces);
+            }
           }
-          if (interfaceToImplementers.containsKey(c)) {
-            s.addAll(interfaceToImplementers.get(c));
+          {
+            Set<SootClass> implementers = interfaceToImplementers.get(c);
+            if (implementers != null) {
+              s.addAll(implementers);
+            }
           }
+
         }
         return ret;
       } else if (t instanceof RefType) {
@@ -446,7 +468,7 @@ public class FastHierarchy {
           ret.add(concreteM);
         }
       } else if (t instanceof ArrayType) {
-        SootMethod concreteM = resolveConcreteDispatch(RefType.v("java.lang.Object").getSootClass(), m);
+        SootMethod concreteM = resolveConcreteDispatch(rtObject.getSootClass(), m);
         if (concreteM != null) {
           ret.add(concreteM);
         }

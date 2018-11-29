@@ -22,8 +22,6 @@ package soot.util.annotations;
  * #L%
  */
 
-import org.jboss.util.Classes;
-
 import soot.tagkit.AbstractAnnotationElemTypeSwitch;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
@@ -115,7 +113,7 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
   @Override
   public void caseAnnotationClassElem(AnnotationClassElem v) {
     try {
-      Class<?> clazz = Classes.loadClass(v.getDesc().replace('/', '.'));
+      Class<?> clazz = ClassLoaderUtils.loadClass(v.getDesc().replace('/', '.'));
       setResult(new AnnotationElemResult<Class<?>>(v.getName(), clazz));
     } catch (ClassNotFoundException e) {
       throw new RuntimeException("Could not load class: " + v.getDesc());
@@ -131,7 +129,7 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
   @Override
   public void caseAnnotationEnumElem(AnnotationEnumElem v) {
     try {
-      Class<?> clazz = Classes.loadClass(v.getTypeName().replace('/', '.'));
+      Class<?> clazz = ClassLoaderUtils.loadClass(v.getTypeName().replace('/', '.'));
 
       // find out which enum constant is used.
       Enum<?> result = null;

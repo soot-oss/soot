@@ -54,7 +54,7 @@ import soot.util.Switchable;
  *
  * @see StmtVisitor
  */
-class ConstantVisitor extends AbstractConstantSwitch {
+public class ConstantVisitor extends AbstractConstantSwitch {
 
   private StmtVisitor stmtV;
 
@@ -74,22 +74,26 @@ class ConstantVisitor extends AbstractConstantSwitch {
     this.origStmt = stmt;
   }
 
+  @Override
   public void defaultCase(Object o) {
     // const* opcodes not used since there seems to be no point in doing so:
     // CONST_HIGH16, CONST_WIDE_HIGH16
     throw new Error("unknown Object (" + o.getClass() + ") as Constant: " + o);
   }
 
+  @Override
   public void caseStringConstant(StringConstant s) {
     StringReference ref = new ImmutableStringReference(s.value);
     stmtV.addInsn(new Insn21c(Opcode.CONST_STRING, destinationReg, ref), origStmt);
   }
 
+  @Override
   public void caseClassConstant(ClassConstant c) {
     TypeReference referencedClass = new ImmutableTypeReference(c.getValue());
     stmtV.addInsn(new Insn21c(Opcode.CONST_CLASS, destinationReg, referencedClass), origStmt);
   }
 
+  @Override
   public void caseLongConstant(LongConstant l) {
     long constant = l.value;
     stmtV.addInsn(buildConstWideInsn(constant), origStmt);
@@ -105,11 +109,13 @@ class ConstantVisitor extends AbstractConstantSwitch {
     }
   }
 
+  @Override
   public void caseDoubleConstant(DoubleConstant d) {
     long longBits = Double.doubleToLongBits(d.value);
     stmtV.addInsn(buildConstWideInsn(longBits), origStmt);
   }
 
+  @Override
   public void caseFloatConstant(FloatConstant f) {
     int intBits = Float.floatToIntBits(f.value);
     stmtV.addInsn(buildConstInsn(intBits), origStmt);
@@ -125,10 +131,12 @@ class ConstantVisitor extends AbstractConstantSwitch {
     }
   }
 
+  @Override
   public void caseIntConstant(IntConstant i) {
     stmtV.addInsn(buildConstInsn(i.value), origStmt);
   }
 
+  @Override
   public void caseNullConstant(NullConstant v) {
     // dex bytecode spec says: "In terms of bitwise representation, (Object)
     // null == (int) 0."

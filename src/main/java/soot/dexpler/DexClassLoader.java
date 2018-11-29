@@ -107,7 +107,7 @@ public class DexClassLoader {
     if (Options.v().oaat() && sc.resolvingLevel() <= SootClass.HIERARCHY) {
       return deps;
     }
-    DexAnnotation da = new DexAnnotation(sc, deps);
+    DexAnnotation da = createDexAnnotation(sc, deps);
 
     // get the fields of the class
     for (Field sf : defItem.getStaticFields()) {
@@ -141,10 +141,9 @@ public class DexClassLoader {
 
           // Get the outer class name
           String outer = DexInnerClassParser.getOuterClassNameFromTag(ict);
-          if (outer == null) {
+          if (outer == null || outer.length() == 0) {
             // If we don't have any clue what the outer class is, we
-            // just remove
-            // the reference entirely
+            // just remove the reference entirely
             innerTagIt.remove();
             continue;
           }
@@ -207,6 +206,17 @@ public class DexClassLoader {
     }
 
     return deps;
+  }
+
+  /**
+   * Allow custom implementations to use different dex annotation implementations
+   *
+   * @param clazz
+   * @param deps
+   * @return
+   */
+  protected DexAnnotation createDexAnnotation(SootClass clazz, Dependencies deps) {
+    return new DexAnnotation(clazz, deps);
   }
 
   /**

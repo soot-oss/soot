@@ -724,7 +724,18 @@
             </long_desc>
         </boolopt>
         <boolopt>
-            <name>Allow Phantom References</name>
+            <name>Allow Phantom Elements in Non-Phantom Classes</name>
+            <alias>allow-phantom-elms</alias>
+            <short_desc>Allow phantom methods and fields in non-phantom classes</short_desc>
+            <long_desc>
+                Allow non-phantom classes to contain phantom fields and methods
+                when allow-phantom-refs is enabled. This can be used to add missing
+                methods and fields to a class that may not exactly match a similar
+                class used by other classes.
+            </long_desc>
+        </boolopt>
+        <boolopt>
+            <name>No Bodies for Excluded</name>
             <alias>no-bodies-for-excluded</alias>
             <short_desc>Do not load bodies for excluded classes</short_desc>
             <long_desc>
@@ -1118,6 +1129,17 @@
                 Jar file name should be specified using the Output Directory
                 (<tt>output-dir</tt>) option. Note that if the output Jar file exists
                 before Soot runs, any files inside it will first be removed.
+            </long_desc>
+        </boolopt>
+        <boolopt>
+            <name>Generate class hierarchy directories</name>
+            <alias>hierarchy-dirs</alias>
+            <short_desc>Generate class hierarchy directories for Jimple/Shimple</short_desc>
+            <long_desc>
+                Given class a.b.C, generates a/b/C.shimple (directory
+                structure in the filesystem) instead of a.b.C.shimple
+                (default flat-hierarchy approach). Valid for
+                Jimple/Shimple generation.
             </long_desc>
         </boolopt>
         <boolopt>
@@ -6959,7 +6981,7 @@ This locking scheme aims to achieve simple fine-grained locking.
             </long_desc>
         </macroopt>
         <boolopt>
-            <name>Ignore reolution errors</name>
+            <name>Ignore resolution errors</name>
             <alias>ire</alias>
             <alias>ignore-resolution-errors</alias>
             <default>false</default>
