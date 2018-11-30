@@ -1414,7 +1414,9 @@ final class AsmMethodSource implements MethodSource {
 
       String bsmMethodRefStr = bsmMethodRef.toString();
       if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE)) {
-        bootstrap_model = LambdaMetaFactory.makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types);
+        SootClass enclosingClass = body.getMethod().getDeclaringClass();
+        bootstrap_model
+            = LambdaMetaFactory.makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types, enclosingClass);
       }
 
       InvokeExpr indy;
