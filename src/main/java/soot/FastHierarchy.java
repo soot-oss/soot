@@ -326,15 +326,16 @@ public class FastHierarchy {
         return getAllSubinterfaces(parent).contains(child);
       }
     } else {
-      Set<SootClass> impl = getAllImplementersOfInterface(parent);
-      // If we have more than 1000 entries use multi-threaded search. If we only have a few entries, you can't beat the
-      // performance of a plain old loop. Therefore, we only use streams for the multi-threaded case.
+      final Set<SootClass> impl = getAllImplementersOfInterface(parent);
       if (impl.size() > 1000) {
-        return impl.parallelStream().anyMatch(c -> {
-          Interval interval = classToInterval.get(c);
-          return (interval != null && interval.isSubrange(childInterval));
-        });
+        // If we have more than 1000 entries it is quite time consuming to check each and every implementing class
+        // if it is the "child" class. Therefore we use an alternative implementation which just checks the client
+        // class it's super classes and all the interfaces it implements.
+
+        return canStoreClassClassic(child, parent);
       } else {
+        // If we only have a few entries, you can't beat the performance of a plain old loop
+        // in combination with the interval approach.
         for (SootClass c : impl) {
           Interval interval = classToInterval.get(c);
           if (interval != null && interval.isSubrange(childInterval)) {
@@ -344,6 +345,50 @@ public class FastHierarchy {
         return false;
       }
     }
+  }
+
+  /**
+   * "Classic" implementation using the intuitive approach (without using {@link Interval}) to check whether
+   * <code>child</code> can be stored in a type of <code>parent</code>:
+   * 
+   * <p>
+   * If <code>parent</code> is not an interface we simply traverse and check the super-classes of <code>child</code>.
+   * </p>
+   * 
+   * <p>
+   * If <code>parent</code> is an interface we traverse the super-classes of <code>child</code> and check each interface
+   * implemented by this class. Also each interface is checked recursively for super interfaces it implements.
+   * </p>
+   * 
+   * <p>
+   * This implementation can be much faster (compared to the interval based implementation of
+   * {@link #canStoreClass(SootClass, SootClass)} in cases where one interface is implemented in thousands of classes.
+   * </p>
+   * 
+   * @param child
+   * @param parent
+   * @return
+   */
+  protected boolean canStoreClassClassic(final SootClass child, final SootClass parent) {
+    SootClass sc = child;
+    final boolean parentIsInterface = parent.isInterface();
+    while (sc != null) {
+      if (sc == parent) {
+        // We finally found the correct class/interface
+        return true;
+      }
+      if (parentIsInterface) {
+        // Interfaces can only extend other interfaces - therefore we only have to consider the
+        // interfaces of the child class if parent is an interface.
+        for (SootClass interf : sc.getInterfaces()) {
+          if (canStoreClassClassic(interf, parent)) {
+            return true;
+          }
+        }
+      }
+      sc = sc.getSuperclassUnsafe();
+    }
+    return false;
   }
 
   public Collection<SootMethod> resolveConcreteDispatchWithoutFailing(Collection<Type> concreteTypes, SootMethod m,
