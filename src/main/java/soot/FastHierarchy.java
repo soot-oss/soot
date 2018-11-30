@@ -371,12 +371,15 @@ public class FastHierarchy {
    */
   protected boolean canStoreClassClassic(final SootClass child, final SootClass parent) {
     SootClass sc = child;
+    final boolean parentIsInterface = parent.isInterface();
     while (sc != null) {
       if (sc.getName().equals(parent.getName())) {
         // We finally found the correct class/interface
         return true;
       }
-      if (parent.isInterface()) {
+      if (parentIsInterface) {
+        // Interfaces can only extend other interfaces - therefore we only have to consider the
+        // interfaces of a the child class if parent is an interface.
         for (SootClass interf : sc.getInterfaces()) {
           if (canStoreClassClassic(interf, parent)) {
             return true;
