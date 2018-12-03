@@ -57,7 +57,7 @@ import soot.asm.AsmModuleClassProvider;
  */
 public class ModulePathSourceLocator extends SourceLocator {
 
-  public static final String DUMMY_CLASSPATH_JDK9_FS = "VIRTUAL_FS_FOR_JDK9";
+  public static final String DUMMY_CLASSPATH_JDK9_FS = "VIRTUAL_FS_FOR_JDK";
 
   private List<String> sourcePath;
 

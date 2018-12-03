@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>ca.mcgill.sable</groupId>
-	<artifactId>soot-j9</artifactId>
+    <artifactId>soot-j9</artifactId>
     <name>Soot - a J*va Optimization Framework</name>
-	<version>4.0.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <description>A Java Optimization Framework</description>
     <url>https://sable.github.io/soot/</url>
     <organization>
@@ -50,7 +50,7 @@
         <url>https://github.com/Sable/soot/tree/master</url>
     </scm>
     <properties>
-		<!-- adann: officially the jrt filesystem used for modules in Java 9 requires at least java 8
+        <!-- adann: officially the jrt filesystem used for modules in Java 9 requires at least java 8
             there exists unoffical backport of rt.jar, but I've not tested them yet
             see http://openjdk.java.net/jeps/220 -->
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -67,8 +67,8 @@
         <maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- Default value for my.variable can be defined here -->
-		<jdk9.jrtjar>/opt/jdk-9/jrt-fs.jar</jdk9.jrtjar>
+        <!-- Default value for my.variable can be defined here -->
+        <jdk9.jrtjar>/opt/jdk-9/jrt-fs.jar</jdk9.jrtjar>
         <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
         <checkstyle.version>8.9</checkstyle.version>
         <checkstyle.dir.path>${basedir}/codingstyle</checkstyle.dir.path>
@@ -77,7 +77,7 @@
         <licence-check.failOnMissingHeader>true</licence-check.failOnMissingHeader>
     </properties>
     <build>
-		<finalName>sootclasses_j9-trunk</finalName>
+        <finalName>sootclasses_j9-trunk</finalName>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -101,7 +101,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/singletons/make-singletons.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>Singletons.java</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -115,7 +116,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/options/make-soot-options.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>Options.java</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -128,7 +130,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/options/ant-task.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>AntTask.java</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -141,7 +144,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/options/phase_options_dialog.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>PhaseOptionsDialog.java</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -154,7 +158,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/options/soot_options.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>soot_options.htm</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -278,22 +283,22 @@
                     <reuseForks>false</reuseForks>
                     <forkCount>1</forkCount>
                 </configuration>
-				<executions>
-					<execution>
-						<id>default-test</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<reuseForks>false</reuseForks>
-							<forkCount>1</forkCount>
-							<excludes>
-								<exclude>java9/**</exclude>
-							</excludes>
-						</configuration>
-					</execution>
-					<execution>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <reuseForks>false</reuseForks>
+                            <forkCount>1</forkCount>
+                            <excludes>
+                                <exclude>java9/**</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <goals>
                             <goal>test
                             </goal>
@@ -306,24 +311,24 @@
                             <forkCount>1</forkCount>
                         </configuration>
                     </execution>
-					<execution>
-						<id>j9-tests</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<reuseForks>false</reuseForks>
-							<forkCount>1</forkCount>
-							<additionalClasspathElements>
-								<additionalClasspathElement>${jdk9.jrtjar}</additionalClasspathElement>
-							</additionalClasspathElements>
-							<includes>
-								<include>java9/**</include>
-							</includes>
-						</configuration>
-					</execution>
-				</executions>
+                    <execution>
+                        <id>j9-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <reuseForks>false</reuseForks>
+                            <forkCount>1</forkCount>
+                            <additionalClasspathElements>
+                                <additionalClasspathElement>${jdk9.jrtjar}</additionalClasspathElement>
+                            </additionalClasspathElements>
+                            <includes>
+                                <include>java9/**</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -439,11 +444,19 @@
             <artifactId>dexlib2</artifactId>
             <version>2.2.5</version>
         </dependency>
+
         <dependency>
             <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-debug-all</artifactId>
-			<version>6.0_BETA</version>
+            <artifactId>asm-commons</artifactId>
+            <version>7.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-util</artifactId>
+            <version>7.0</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
