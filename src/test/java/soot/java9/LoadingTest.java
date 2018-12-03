@@ -69,8 +69,7 @@ public class LoadingTest {
     G.reset();
     File tempDir = Files.createTempDir();
 
-    Main.main(new String[] { "-soot-modulepath", tempDir.getAbsolutePath(), "-pp", "-src-prec", "only-class",
-        "-allow-phantom-refs", "java.lang.invoke.VarHandle" });
+    Main.main(new String[] { "-soot-modulepath", tempDir.getAbsolutePath(), "-pp", "-src-prec", "only-class", "java.lang.invoke.VarHandle" });
 
     SootClass klass = Scene.v().getSootClass("java.lang.invoke.VarHandle");
     assertTrue(klass.getName().equals("java.lang.invoke.VarHandle"));

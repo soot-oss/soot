@@ -67,9 +67,9 @@ Options.v().set_soot_modulepath(modulePath);
 
 ## Use from the Command Line
 To execute Soot using Java 1.9, but analyzing a classpath run:
-`java -cp soot-trunk-j9.jar soot.Main -cp VIRTUAL_FS_FOR_JDK9:directoryToAnalyse --process-dir directoryToAnalyse`
+`java -cp soot-trunk-j9.jar soot.Main -cp VIRTUAL_FS_FOR_JDK:directoryToAnalyse --process-dir directoryToAnalyse`
 
-the value `VIRTUAL_FS_FOR_JDK9` indicates that Soot should search Java's 9 virtual filesystem `jrt:/` for classes, too, although Soot is not executed in module mode.
+the value `VIRTUAL_FS_FOR_JDK` indicates that Soot should search Java's (>9) virtual filesystem `jrt:/` for classes, too, although Soot is not executed in module mode.
 
 To load modules and classes in Soot using java 1.8 run:
 
