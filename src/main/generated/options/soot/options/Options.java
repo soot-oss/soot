@@ -32,7 +32,7 @@ import java.util.*;
  *
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-12-03T17:15:29.784+01:00", comments = "from soot_options.xml")
 public class Options extends OptionsBase {
 
     public Options(Singletons.Global g) {
@@ -98,8 +98,6 @@ public class Options extends OptionsBase {
     public static final int java_version_7 = 8;
     public static final int java_version_1_8 = 9;
     public static final int java_version_8 = 9;
-    public static final int java_version_1_9 = 10;
-    public static final int java_version_9 = 10;
     public static final int wrong_staticness_fail = 1;
     public static final int wrong_staticness_ignore = 2;
     public static final int wrong_staticness_fix = 3;
@@ -762,16 +760,6 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     java_version = java_version_8;
-                }
-                else if (false
-                        || value.equals("1.9")
-                        || value.equals("9")
-                ) {
-                    if (java_version != 0 && java_version != java_version_9) {
-                        G.v().out.println("Multiple values given for option " + option);
-                        return false;
-                    }
-                    java_version = java_version_9;
                 }
                 else {
                     G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
@@ -1723,7 +1711,6 @@ public class Options extends OptionsBase {
                     + padVal("1.6 6", "Force Java 1.6 as output version.")
                     + padVal("1.7 7", "Force Java 1.7 as output version.")
                     + padVal("1.8 8", "Force Java 1.8 as output version.")
-                    + padVal("1.9 9", "Force Java 1.9 as output version (Experimental).")
                 + padOpt("-outjar, -output-jar", "Make output dir a Jar file instead of dir")
                 + padOpt("-hierarchy-dirs", "Generate class hierarchy directories for Jimple/Shimple")
                 + padOpt("-xml-attributes", "Save tags to XML attributes for Eclipse")
@@ -1906,13 +1893,12 @@ public class Options extends OptionsBase {
     public String getPhaseHelp(String phaseName) {
         if (phaseName.equals("jb"))
             return "Phase " + phaseName + ":\n"
-                    + "\nJimple Body Creation creates a JimpleBody for each input method, \nusing either asm, to read .class files, or the jimple parser, to \nread .jimple files."
+                    + "\nJimple Body Creation creates a JimpleBody for each input method, \nusing either coffi, to read .class files, or the jimple parser, \nto read .jimple files."
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (true)", "")
                     + padOpt("use-original-names (false)", "")
                     + padOpt("preserve-source-annotations (false)", "")
-                    + padOpt("stabilize-local-names (false)", "")
-                    + padOpt("model-lambdametafactory (true)", "Replace dynamic invoke instructions to the LambdaMetafactory by static invokes to a synthetic LambdaMetafactory implementation.");
+                    + padOpt("stabilize-local-names (false)", "");
 
         if (phaseName.equals("jb.dtr"))
             return "Phase " + phaseName + ":\n"
@@ -2861,8 +2847,7 @@ public class Options extends OptionsBase {
                     "enabled",
                     "use-original-names",
                     "preserve-source-annotations",
-                    "stabilize-local-names",
-                    "model-lambdametafactory"
+                    "stabilize-local-names"
             );
 
         if (phaseName.equals("jb.dtr"))
@@ -3606,8 +3591,7 @@ public class Options extends OptionsBase {
                     + "enabled:true "
                     + "use-original-names:false "
                     + "preserve-source-annotations:false "
-                    + "stabilize-local-names:false "
-                    + "model-lambdametafactory:true ";
+                    + "stabilize-local-names:false ";
 
         if (phaseName.equals("jb.dtr"))
             return ""
