@@ -1,31 +1,33 @@
+package soot.options;
 
-/* Soot - a J*va Optimization Framework
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2003 Ondrej Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
-package soot.options;
-
 import java.util.*;
 
 /** Option parser for Call Graph Constructor. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-04-16T19:15:43.228+02:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-08-13T11:30:57.578+02:00", comments = "from soot_options.xml")
 public class CGOptions {
 
     private Map<String, String> options;
@@ -155,6 +157,30 @@ public class CGOptions {
      */
     public boolean types_for_invoke() {
         return soot.PhaseOptions.getBoolean(options, "types-for-invoke");
+    }
+
+    /**
+     * Resolve Abstract Classes with No Children --
+     * Causes methods invoked on abstract classes to be resolved even 
+     * if there are no non-abstract children of the classes in the 
+     * Scene.
+     *
+     * Normally, if a method is invoked on a class that is abstract and 
+     * said class does not have any children in the Scene, the method 
+     * invoke will not be resolved to any concrete methods even if the 
+     * abstract class or its parent classes contain a concrete 
+     * declaration of the method. This is because without any 
+     * non-abstract children it is impossible to tell if the resolution 
+     * is correct (since any child may override any non-private method 
+     * in any of its parent classes). However, sometimes it is 
+     * necessary to resolve methods in such situations (e.g. when 
+     * analyzing libraries or incomplete code). This forces all methods 
+     * invoked on abstract classes to be resolved if there exists a 
+     * parent class with a concrete definition of the method even if 
+     * there are no non-abstract children of the abstract class.
+     */
+    public boolean resolve_all_abstract_invokes() {
+        return soot.PhaseOptions.getBoolean(options, "resolve-all-abstract-invokes");
     }
 
     /**

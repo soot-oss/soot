@@ -1,45 +1,67 @@
 package soot.rtlib.tamiflex;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class UnexpectedReflectiveCall {
-	
-	private final static IUnexpectedReflectiveCallHandler handler;
-	
-	static {
-		String listenerClassName = System.getProperty("BOOSTER_LISTENER", "soot.rtlib.tamiflex.DefaultHandler");
-		try {
-			handler = (IUnexpectedReflectiveCallHandler) Class.forName(listenerClassName).newInstance();
-		} catch (Exception e) {
-			throw new Error("Error instantiating listener for Booster.",e);
-		}
-	}
-	
-	//delegate methods
-	
-	public static void classNewInstance(Class<?> c) {
-		handler.classNewInstance(c);
-	}
 
-	public static void classForName(String typeName) {
-		handler.classForName(typeName);
-	}
+  private final static IUnexpectedReflectiveCallHandler handler;
 
-	public static void constructorNewInstance(Constructor<?> c) {
-		handler.constructorNewInstance(c);
-	}
+  static {
+    String listenerClassName = System.getProperty("BOOSTER_LISTENER", "soot.rtlib.tamiflex.DefaultHandler");
+    try {
+      handler = (IUnexpectedReflectiveCallHandler) Class.forName(listenerClassName).newInstance();
+    } catch (Exception e) {
+      throw new Error("Error instantiating listener for Booster.", e);
+    }
+  }
 
-	public static void methodInvoke(Object receiver, Method m) {
-		handler.methodInvoke(receiver, m);
-	}
+  // delegate methods
 
-	public static void fieldSet(Object receiver, Field f) {
-		handler.fieldSet(receiver, f);
-	}
+  public static void classNewInstance(Class<?> c) {
+    handler.classNewInstance(c);
+  }
 
-	public static void fieldGet(Object receiver, Field f) {
-		handler.fieldGet(receiver, f);
-	}
+  public static void classForName(String typeName) {
+    handler.classForName(typeName);
+  }
+
+  public static void constructorNewInstance(Constructor<?> c) {
+    handler.constructorNewInstance(c);
+  }
+
+  public static void methodInvoke(Object receiver, Method m) {
+    handler.methodInvoke(receiver, m);
+  }
+
+  public static void fieldSet(Object receiver, Field f) {
+    handler.fieldSet(receiver, f);
+  }
+
+  public static void fieldGet(Object receiver, Field f) {
+    handler.fieldGet(receiver, f);
+  }
 }

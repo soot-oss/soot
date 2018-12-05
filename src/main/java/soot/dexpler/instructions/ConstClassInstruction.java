@@ -1,28 +1,31 @@
-/* Soot - a Java Optimization Framework
+package soot.dexpler.instructions;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  *
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-
-package soot.dexpler.instructions;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -45,46 +48,47 @@ import soot.jimple.Jimple;
 
 public class ConstClassInstruction extends DexlibAbstractInstruction {
 
-	public ConstClassInstruction(Instruction instruction, int codeAdress) {
-		super(instruction, codeAdress);
-	}
+  public ConstClassInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
 
-	@Override
-	public void jimplify(DexBody body) {
-		if (!(instruction instanceof Instruction21c))
-			throw new IllegalArgumentException("Expected Instruction21c but got: " + instruction.getClass());
+  @Override
+  public void jimplify(DexBody body) {
+    if (!(instruction instanceof Instruction21c)) {
+      throw new IllegalArgumentException("Expected Instruction21c but got: " + instruction.getClass());
+    }
 
-		ReferenceInstruction constClass = (ReferenceInstruction) this.instruction;
+    ReferenceInstruction constClass = (ReferenceInstruction) this.instruction;
 
-		TypeReference tidi = (TypeReference) (constClass.getReference());
-		Constant cst = ClassConstant.v(tidi.getType());
+    TypeReference tidi = (TypeReference) (constClass.getReference());
+    Constant cst = ClassConstant.v(tidi.getType());
 
-		int dest = ((OneRegisterInstruction) instruction).getRegisterA();
-		AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cst);
-		setUnit(assign);
-		addTags(assign);
-		body.add(assign);
+    int dest = ((OneRegisterInstruction) instruction).getRegisterA();
+    AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cst);
+    setUnit(assign);
+    addTags(assign);
+    body.add(assign);
 
-		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			// DalvikTyper.v().captureAssign((JAssignStmt)assign, op); //TODO:
-			// classtype could be null!
-			DalvikTyper.v().setType(assign.getLeftOpBox(), cst.getType(), false);
-		}
-	}
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+      // DalvikTyper.v().captureAssign((JAssignStmt)assign, op); //TODO:
+      // classtype could be null!
+      DalvikTyper.v().setType(assign.getLeftOpBox(), cst.getType(), false);
+    }
+  }
 
-	@Override
-	boolean overridesRegister(int register) {
-		OneRegisterInstruction i = (OneRegisterInstruction) instruction;
-		int dest = i.getRegisterA();
-		return register == dest;
-	}
+  @Override
+  boolean overridesRegister(int register) {
+    OneRegisterInstruction i = (OneRegisterInstruction) instruction;
+    int dest = i.getRegisterA();
+    return register == dest;
+  }
 
-	@Override
-	public Set<Type> introducedTypes() {
-		ReferenceInstruction i = (ReferenceInstruction) instruction;
+  @Override
+  public Set<Type> introducedTypes() {
+    ReferenceInstruction i = (ReferenceInstruction) instruction;
 
-		Set<Type> types = new HashSet<Type>();
-		types.add(DexType.toSoot((TypeReference) i.getReference()));
-		return types;
-	}
+    Set<Type> types = new HashSet<Type>();
+    types.add(DexType.toSoot((TypeReference) i.getReference()));
+    return types;
+  }
 }

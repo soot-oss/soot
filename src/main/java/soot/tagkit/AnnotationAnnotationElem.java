@@ -1,61 +1,52 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Jennifer Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.tagkit;
 
-import soot.TypeSwitch;
-import soot.util.Switch;
-
-
-/** 
- * Represents the base class of annotation elements
- * each annotation can have several elements 
- * for Java 1.5.
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2005 Jennifer Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
 
-public class AnnotationAnnotationElem extends AnnotationElem
-{
+import soot.util.Switch;
 
-    AnnotationTag value;
+/**
+ * Represents the base class of annotation elements each annotation can have several elements for Java 1.5.
+ */
 
-    public AnnotationAnnotationElem(AnnotationTag t, char kind, String name){
-        super(kind, name);
-        this.value = t;
-    }
-    
-    public String toString(){
-        return super.toString()+ "value: "+value.toString();
-    }
+public class AnnotationAnnotationElem extends AnnotationElem {
 
-    public AnnotationTag getValue(){
-        return value;
-    }
+  AnnotationTag value;
 
-	@Override
-	public void apply(Switch sw) {
-		((IAnnotationElemTypeSwitch) sw).caseAnnotationAnnotationElem(this);
-	}
+  public AnnotationAnnotationElem(AnnotationTag t, char kind, String name) {
+    super(kind, name);
+    this.value = t;
+  }
+
+  public String toString() {
+    return super.toString() + "value: " + value.toString();
+  }
+
+  public AnnotationTag getValue() {
+    return value;
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((IAnnotationElemTypeSwitch) sw).caseAnnotationAnnotationElem(this);
+  }
 }
-

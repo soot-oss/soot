@@ -1,22 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2007 Manu Sridharan
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.spark.ondemand.genericutil;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2007 Manu Sridharan
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.AbstractSet;
 import java.util.Collection;
@@ -74,8 +78,9 @@ public class ArraySet<T> extends AbstractSet<T> {
   @SuppressWarnings("all")
   public boolean add(T obj_) {
     assert obj_ != null;
-    if (checkDupes && this.contains(obj_))
+    if (checkDupes && this.contains(obj_)) {
       return false;
+    }
     if (_curIndex == _elems.length) {
       // lengthen array
       Object[] tmp = _elems;
@@ -103,16 +108,18 @@ public class ArraySet<T> extends AbstractSet<T> {
    */
   public boolean contains(Object obj_) {
     for (int i = 0; i < _curIndex; i++) {
-      if (_elems[i].equals(obj_))
+      if (_elems[i].equals(obj_)) {
         return true;
+      }
     }
     return false;
   }
 
   public boolean intersects(ArraySet<T> other) {
     for (int i = 0; i < other.size(); i++) {
-      if (contains(other.get(i)))
+      if (contains(other.get(i))) {
         return true;
+      }
     }
     return false;
   }
@@ -141,8 +148,9 @@ public class ArraySet<T> extends AbstractSet<T> {
     for (ind = 0; ind < _curIndex && !_elems[ind].equals(obj_); ind++) {
     }
     // check if object was never there
-    if (ind == _curIndex)
+    if (ind == _curIndex) {
       return false;
+    }
     return remove(ind);
   }
 

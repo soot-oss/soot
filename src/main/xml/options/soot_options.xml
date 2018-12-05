@@ -724,7 +724,18 @@
             </long_desc>
         </boolopt>
         <boolopt>
-            <name>Allow Phantom References</name>
+            <name>Allow Phantom Elements in Non-Phantom Classes</name>
+            <alias>allow-phantom-elms</alias>
+            <short_desc>Allow phantom methods and fields in non-phantom classes</short_desc>
+            <long_desc>
+                Allow non-phantom classes to contain phantom fields and methods
+                when allow-phantom-refs is enabled. This can be used to add missing
+                methods and fields to a class that may not exactly match a similar
+                class used by other classes.
+            </long_desc>
+        </boolopt>
+        <boolopt>
+            <name>No Bodies for Excluded</name>
             <alias>no-bodies-for-excluded</alias>
             <short_desc>Do not load bodies for excluded classes</short_desc>
             <long_desc>
@@ -1121,6 +1132,17 @@
             </long_desc>
         </boolopt>
         <boolopt>
+            <name>Generate class hierarchy directories</name>
+            <alias>hierarchy-dirs</alias>
+            <short_desc>Generate class hierarchy directories for Jimple/Shimple</short_desc>
+            <long_desc>
+                Given class a.b.C, generates a/b/C.shimple (directory
+                structure in the filesystem) instead of a.b.C.shimple
+                (default flat-hierarchy approach). Valid for
+                Jimple/Shimple generation.
+            </long_desc>
+        </boolopt>
+        <boolopt>
             <name>Save Tags to XML</name>
             <alias>xml-attributes</alias>
             <short_desc>Save tags to XML attributes for Eclipse</short_desc>
@@ -1334,7 +1356,6 @@
                 <name>Fix</name>
                 <alias>fix</alias>
                 <short_desc>Transparently fix staticness errors</short_desc>
-                <default/>
                 <long_desc>
                     When Soot detects a case in which a static field is accessed as if it were an instance field, Soot
                     will transparently fix the error and generate Jimple code for the fixed program. If a problem cannot
@@ -1472,9 +1493,10 @@
                     <short_desc/>
                     <long_desc>
                         Make sure that local names are stable between runs. This requires re-normalizing all
-                        local names after the standard transformations and then sorting them which can negatively
-                        impact performance. This option automatically sets "sort-locals" in "jb.lns" during the
-                        second re-normalization pass.
+                        local names after the standard transformations, sorting them, and padding all local names 
+                        with leading zeros up to the maximum number of digits in the local with the highest integer 
+                        value. This can negatively impact performance. This option automatically sets "sort-locals" 
+                        in "jb.lns" during the second re-normalization pass.
                     </long_desc>
                 </boolopt>
                 <sub_phase>
@@ -1698,7 +1720,10 @@
                             that remains consistent between different soot instances. It achieves
                             this by determining the position of a local's first occurrence in the
                             instruction's list of definition statements. This position is then used
-                            to sort the locals with the same type in an ascending order.
+                            to sort the locals with the same type in an ascending order. The local
+                            names are then appended with leading zeros so that all local names have
+                            the same length (i.e., the same number of digits) as the largest local 
+                            name in each individual method body.
                         </long_desc>
                     </boolopt>
                 </sub_phase>
@@ -2486,6 +2511,23 @@
                         argument and the possible types stored in the second argument array to resolve calls to
                         Method.invoke(). This strategy makes no attempt to resolve reflectively invoked static methods.
                         Currently only works for context insensitive pointer analyses.
+                    </long_desc>
+                </boolopt>
+                <boolopt>
+                    <name>Resolve Abstract Classes with No Children</name>
+                    <alias>resolve-all-abstract-invokes</alias>
+                    <default>false</default>
+                    <short_desc>Causes methods invoked on abstract classes to be resolved even if there are no
+                        non-abstract children of the classes in the Scene.</short_desc>
+                    <long_desc>Normally, if a method is invoked on a class that is abstract and said class does
+                        not have any children in the Scene, the method invoke will not be resolved to any concrete 
+                        methods even if the abstract class or its parent classes contain a concrete declaration of
+                        the method. This is because without any non-abstract children it is impossible to tell if
+                        the resolution is correct (since any child may override any non-private method in any of
+                        its parent classes). However, sometimes it is necessary to resolve methods in such situations
+                        (e.g. when analyzing libraries or incomplete code). This forces all methods invoked on
+                        abstract classes to be resolved if there exists a parent class with a concrete definition
+                        of the method even if there are no non-abstract children of the abstract class.
                     </long_desc>
                 </boolopt>
                 <sub_phase>
@@ -6939,7 +6981,7 @@ This locking scheme aims to achieve simple fine-grained locking.
             </long_desc>
         </macroopt>
         <boolopt>
-            <name>Ignore reolution errors</name>
+            <name>Ignore resolution errors</name>
             <alias>ire</alias>
             <alias>ignore-resolution-errors</alias>
             <default>false</default>

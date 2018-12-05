@@ -20,6 +20,28 @@
 
 package soot.dexpler.instructions;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 
 import soot.dexpler.DexBody;
@@ -30,11 +52,11 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
     super(instruction, codeAddress);
   }
 
-  int dataFirstByte = -1;
-  int dataLastByte = -1;
-  int dataSize = -1;
-  byte[] data = null;
-  boolean loaded = false;
+  protected int dataFirstByte = -1;
+  protected int dataLastByte = -1;
+  protected int dataSize = -1;
+  protected byte[] data = null;
+  protected boolean loaded = false;
 
   public boolean isLoaded() {
     return loaded;
@@ -53,8 +75,9 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
   }
 
   public int getDataFirstByte() {
-    if (dataFirstByte == -1)
+    if (dataFirstByte == -1) {
       throw new RuntimeException("Error: dataFirstByte was not set!");
+    }
     return dataFirstByte;
   }
 
@@ -63,8 +86,9 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
   }
 
   public int getDataLastByte() {
-    if (dataLastByte == -1)
+    if (dataLastByte == -1) {
       throw new RuntimeException("Error: dataLastByte was not set!");
+    }
     return dataLastByte;
   }
 
@@ -73,8 +97,9 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
   }
 
   public int getDataSize() {
-    if (dataSize == -1)
+    if (dataSize == -1) {
       throw new RuntimeException("Error: dataFirstByte was not set!");
+    }
     return dataSize;
   }
 
@@ -84,8 +109,4 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
 
   public abstract void computeDataOffsets(DexBody body);
 
-  
-  
-  
-  
 }

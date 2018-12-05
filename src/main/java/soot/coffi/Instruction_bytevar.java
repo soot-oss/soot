@@ -1,40 +1,34 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997 Clark Verbrugge
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
-
-
-
-
-
-
 package soot.coffi;
-/** Instruction subclasses are used to represent parsed bytecode; each
- * bytecode operation has a corresponding subclass of Instruction.
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 Clark Verbrugge
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+/**
+ * Instruction subclasses are used to represent parsed bytecode; each bytecode operation has a corresponding subclass of
+ * Instruction.
  * <p>
  * Each subclass is derived from one of
- * <ul><li>Instruction</li>
+ * <ul>
+ * <li>Instruction</li>
  * <li>Instruction_noargs (an Instruction with no embedded arguments)</li>
  * <li>Instruction_byte (an Instruction with a single byte data argument)</li>
  * <li>Instruction_bytevar (a byte argument specifying a local variable)</li>
@@ -45,6 +39,7 @@ package soot.coffi;
  * <li>Instruction_intbranch (a short argument specifying a code offset)</li>
  * <li>Instruction_longbranch (an int argument specifying a code offset)</li>
  * </ul>
+ *
  * @author Clark Verbrugge
  * @see Instruction
  * @see Instruction_noargs
@@ -58,44 +53,47 @@ package soot.coffi;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-class Instruction_bytevar extends Instruction implements Interface_OneIntArg
-{
-    /**
-     * arg_b needs to be short in order to contain all the possible values for an unsigned byte
-     */
-    public int arg_b;
-    public boolean isWide;
+class Instruction_bytevar extends Instruction implements Interface_OneIntArg {
+  /**
+   * arg_b needs to be short in order to contain all the possible values for an unsigned byte
+   */
+  public int arg_b;
+  public boolean isWide;
 
-    public Instruction_bytevar(byte c) { super(c); }
-    public String toString(cp_info constant_pool[]) {
-	return super.toString(constant_pool) + argsep + LOCALPREFIX + arg_b;
+  public Instruction_bytevar(byte c) {
+    super(c);
+  }
+
+  public String toString(cp_info constant_pool[]) {
+    return super.toString(constant_pool) + argsep + LOCALPREFIX + arg_b;
+  }
+
+  public int nextOffset(int curr) {
+    return curr + 1 + ((isWide) ? 3 : 1);
+  }
+
+  public int parse(byte bc[], int index) {
+    int indexbyte1 = (bc[index]) & 0xff;
+
+    if (isWide) {
+      int indexbyte2 = (bc[index + 1]) & 0xff;
+
+      arg_b = (indexbyte1 << 8) | indexbyte2;
+
+      return index + 2;
+    } else {
+      arg_b = indexbyte1;
+      return index + 1;
     }
+  }
 
-    public int nextOffset(int curr) { return curr + 1 + ((isWide) ? 3 : 1); }
+  public int compile(byte bc[], int index) {
+    bc[index++] = code;
+    bc[index++] = (byte) arg_b;
+    return index;
+  }
 
-    public int parse(byte bc[],int index)
-    {
-        int indexbyte1 = (bc[index]) & 0xff;
-
-        if(isWide)
-        {
-            int indexbyte2 = (bc[index+1]) & 0xff;
-
-            arg_b = (indexbyte1 << 8) | indexbyte2;
-
-            return index+2;
-        }
-        else
-        {
-            arg_b = indexbyte1;
-            return index+1;
-        }
-    }
-
-    public int compile(byte bc[],int index) { bc[index++] = code; bc[index++] = (byte) arg_b; return index; }
-
-    public int getIntArg()
-    {
-	return arg_b;
-    }
+  public int getIntArg() {
+    return arg_b;
+  }
 }

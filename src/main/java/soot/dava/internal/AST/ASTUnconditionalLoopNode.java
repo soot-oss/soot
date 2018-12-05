@@ -1,104 +1,102 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Jerome Miecznikowski
- * Copyright (C) 2005 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.internal.AST;
 
-import java.util.*;
-import soot.*;
-import soot.dava.internal.SET.*;
-import soot.dava.toolkits.base.AST.analysis.*;
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2005 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
-public class ASTUnconditionalLoopNode extends ASTLabeledNode
-{
-    private List<Object> body;
+import java.util.ArrayList;
+import java.util.List;
 
-    public ASTUnconditionalLoopNode( SETNodeLabel label, List<Object> body)
-    {
-	super( label);
-	this.body = body;
+import soot.UnitPrinter;
+import soot.dava.internal.SET.SETNodeLabel;
+import soot.dava.toolkits.base.AST.analysis.Analysis;
 
-	subBodies.add( body);
-    }
+public class ASTUnconditionalLoopNode extends ASTLabeledNode {
+  private List<Object> body;
 
-    /*
-      Nomair A Naeem 20-FEB-2005
-      Added for UselessLabeledBlockRemover
-    */
-    public void replaceBody(List<Object> body){
-	this.body=body;
-	subBodies=new ArrayList<Object>();
-	subBodies.add(body);
-    }
+  public ASTUnconditionalLoopNode(SETNodeLabel label, List<Object> body) {
+    super(label);
+    this.body = body;
 
-    public Object clone()
-    {
-	return new ASTUnconditionalLoopNode( get_Label(), body);
-    }
+    subBodies.add(body);
+  }
 
-    public void toString( UnitPrinter up ) {
-        label_toString( up );
-        up.literal( "while" );
-        up.literal( " " );
-        up.literal( "(" );
-        up.literal( "true" );
-        up.literal( ")" );
-        up.newline();
+  /*
+   * Nomair A Naeem 20-FEB-2005 Added for UselessLabeledBlockRemover
+   */
+  public void replaceBody(List<Object> body) {
+    this.body = body;
+    subBodies = new ArrayList<Object>();
+    subBodies.add(body);
+  }
 
-        up.literal( "{" );
-        up.newline();
+  public Object clone() {
+    return new ASTUnconditionalLoopNode(get_Label(), body);
+  }
 
-        up.incIndent();
-        body_toString( up, body );
-        up.decIndent();
+  public void toString(UnitPrinter up) {
+    label_toString(up);
+    up.literal("while");
+    up.literal(" ");
+    up.literal("(");
+    up.literal("true");
+    up.literal(")");
+    up.newline();
 
-        up.literal( "}" );
-        up.newline();
-    }
+    up.literal("{");
+    up.newline();
 
-    public String toString()
-    {
-	StringBuffer b = new StringBuffer();
-	
-	b.append( label_toString( ));
+    up.incIndent();
+    body_toString(up, body);
+    up.decIndent();
 
-	b.append( "while (true)");
-	b.append( NEWLINE);
-	
-	b.append( "{");
-	b.append( NEWLINE);
+    up.literal("}");
+    up.newline();
+  }
 
-	b.append( body_toString( body));
+  public String toString() {
+    StringBuffer b = new StringBuffer();
 
-	b.append( "}");
-	b.append( NEWLINE);
+    b.append(label_toString());
 
-	return b.toString();
-    }
+    b.append("while (true)");
+    b.append(NEWLINE);
 
+    b.append("{");
+    b.append(NEWLINE);
 
-    /*
-      Nomair A. Naeem, 7-FEB-05
-      Part of Visitor Design Implementation for AST
-      See: soot.dava.toolkits.base.AST.analysis For details
-    */
-    public void apply(Analysis a){
-	a.caseASTUnconditionalLoopNode(this);
-    }
+    b.append(body_toString(body));
+
+    b.append("}");
+    b.append(NEWLINE);
+
+    return b.toString();
+  }
+
+  /*
+   * Nomair A. Naeem, 7-FEB-05 Part of Visitor Design Implementation for AST See: soot.dava.toolkits.base.AST.analysis For
+   * details
+   */
+  public void apply(Analysis a) {
+    a.caseASTUnconditionalLoopNode(this);
+  }
 }

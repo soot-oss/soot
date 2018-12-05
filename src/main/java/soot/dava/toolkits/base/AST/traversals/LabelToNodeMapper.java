@@ -1,23 +1,26 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2006 Nomair A. Naeem
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dava.toolkits.base.AST.traversals;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2006 Nomair A. Naeem
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.HashMap;
 
@@ -46,67 +49,68 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
  *        
  */
 public class LabelToNodeMapper extends DepthFirstAdapter {
-	private final HashMap<String, ASTLabeledNode> labelsToNode;
-	
-	public LabelToNodeMapper(){
-		labelsToNode = new HashMap<String, ASTLabeledNode>();
-	}
-	
-	public LabelToNodeMapper(boolean verbose){
-		super(verbose);
-		labelsToNode = new HashMap<String, ASTLabeledNode>();
-	}
-	
-	/*
-	 * If the returned object is non null it is safe to cast it to ASTLabeledNode
-	 */
-	public Object getTarget(String label){
-		return labelsToNode.get(label);
-	}
-	
-	private void addToMap(ASTLabeledNode node){
-		String str = node.get_Label().toString();
-		if(str != null)
-			labelsToNode.put(str,node);		
-	}
-	
-	public void inASTLabeledBlockNode(ASTLabeledBlockNode node){
-		addToMap(node);
-	}
-	
-	public void inASTTryNode(ASTTryNode node){
-		addToMap(node);
-	}
-	
-	public void inASTUnconditionalLoopNode (ASTUnconditionalLoopNode node){
-		addToMap(node);
-	}
-	
-	public void inASTDoWhileNode (ASTDoWhileNode node){
-		addToMap(node);
-	}
-	
-	public void inASTForLoopNode(ASTForLoopNode node){
-		addToMap(node);
-	}
-	
-	public void inASTIfElseNode(ASTIfElseNode node){
-		addToMap(node);
-	}
-	
-	public void inASTIfNode(ASTIfNode node){
-		addToMap(node);
-	}
-	
-	public void inASTWhileNode(ASTWhileNode node){
-		addToMap(node);
-	}
-	
-	public void inASTSwitchNode(ASTSwitchNode node){
-		addToMap(node);
-	}
-	
-	public void inASTSynchronizedBlockNode(ASTSynchronizedBlockNode node){
-		addToMap(node);
-	}
+  private final HashMap<String, ASTLabeledNode> labelsToNode;
+
+  public LabelToNodeMapper() {
+    labelsToNode = new HashMap<String, ASTLabeledNode>();
+  }
+
+  public LabelToNodeMapper(boolean verbose) {
+    super(verbose);
+    labelsToNode = new HashMap<String, ASTLabeledNode>();
+  }
+
+  /*
+   * If the returned object is non null it is safe to cast it to ASTLabeledNode
+   */
+  public Object getTarget(String label) {
+    return labelsToNode.get(label);
+  }
+
+  private void addToMap(ASTLabeledNode node) {
+    String str = node.get_Label().toString();
+    if (str != null) {
+      labelsToNode.put(str, node);
+    }
+  }
+
+  public void inASTLabeledBlockNode(ASTLabeledBlockNode node) {
+    addToMap(node);
+  }
+
+  public void inASTTryNode(ASTTryNode node) {
+    addToMap(node);
+  }
+
+  public void inASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
+    addToMap(node);
+  }
+
+  public void inASTDoWhileNode(ASTDoWhileNode node) {
+    addToMap(node);
+  }
+
+  public void inASTForLoopNode(ASTForLoopNode node) {
+    addToMap(node);
+  }
+
+  public void inASTIfElseNode(ASTIfElseNode node) {
+    addToMap(node);
+  }
+
+  public void inASTIfNode(ASTIfNode node) {
+    addToMap(node);
+  }
+
+  public void inASTWhileNode(ASTWhileNode node) {
+    addToMap(node);
+  }
+
+  public void inASTSwitchNode(ASTSwitchNode node) {
+    addToMap(node);
+  }
+
+  public void inASTSynchronizedBlockNode(ASTSynchronizedBlockNode node) {
+    addToMap(node);
+  }
 }

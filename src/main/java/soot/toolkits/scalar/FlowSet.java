@@ -1,40 +1,35 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
- *      modified 2002 Florian Loitsch
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
-
 package soot.toolkits.scalar;
 
-import java.util.*;
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ *      modified 2002 Florian Loitsch
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
- * Represents information for flow analysis.  
- * A FlowSet is an element of a lattice; this lattice might be described by a
- * FlowUniverse.
- * If add, remove, size, isEmpty, toList and contains are implemented, the
- * lattice must be the powerset of some set.
+ * Represents information for flow analysis. A FlowSet is an element of a lattice; this lattice might be described by a
+ * FlowUniverse. If add, remove, size, isEmpty, toList and contains are implemented, the lattice must be the powerset of some
+ * set.
  *
  * @see: FlowUniverse
  */
@@ -44,9 +39,8 @@ public interface FlowSet<T> extends Iterable<T> {
    */
   public FlowSet<T> clone();
 
-  /** 
-   * returns an empty set, most often more efficient than:
-   * <code>((FlowSet)clone()).clear()</code>
+  /**
+   * returns an empty set, most often more efficient than: <code>((FlowSet)clone()).clear()</code>
    */
   public FlowSet<T> emptySet();
 
@@ -55,47 +49,42 @@ public interface FlowSet<T> extends Iterable<T> {
    */
   public void copy(FlowSet<T> dest);
 
-  /** 
-   * Sets this FlowSet to the empty set (more generally, the bottom element
-   * of the lattice.) */
+  /**
+   * Sets this FlowSet to the empty set (more generally, the bottom element of the lattice.)
+   */
   public void clear();
 
   /**
-   * Returns the union (join) of this FlowSet and <code>other</code>, putting
-   * result into <code>this</code>. */
+   * Returns the union (join) of this FlowSet and <code>other</code>, putting result into <code>this</code>.
+   */
   public void union(FlowSet<T> other);
 
-  /** 
-   * Returns the union (join) of this FlowSet and <code>other</code>, putting
-   * result into <code>dest</code>. <code>dest</code>, <code>other</code> and
-   * <code>this</code> could be the same object.
+  /**
+   * Returns the union (join) of this FlowSet and <code>other</code>, putting result into <code>dest</code>.
+   * <code>dest</code>, <code>other</code> and <code>this</code> could be the same object.
    */
   public void union(FlowSet<T> other, FlowSet<T> dest);
 
   /**
-   * Returns the intersection (meet) of this FlowSet and <code>other</code>,
-   * putting result into <code>this</code>.
+   * Returns the intersection (meet) of this FlowSet and <code>other</code>, putting result into <code>this</code>.
    */
   public void intersection(FlowSet<T> other);
 
   /**
-   * Returns the intersection (meet) of this FlowSet and <code>other</code>,
-   * putting result into <code>dest</code>. <code>dest</code>,
-   * <code>other</code> and <code>this</code> could be the same object.
+   * Returns the intersection (meet) of this FlowSet and <code>other</code>, putting result into <code>dest</code>.
+   * <code>dest</code>, <code>other</code> and <code>this</code> could be the same object.
    */
   public void intersection(FlowSet<T> other, FlowSet<T> dest);
 
-  /** 
-   * Returns the set difference (this intersect ~other) of this FlowSet and
-   * <code>other</code>, putting result into <code>this</code>.
+  /**
+   * Returns the set difference (this intersect ~other) of this FlowSet and <code>other</code>, putting result into
+   * <code>this</code>.
    */
   public void difference(FlowSet<T> other);
 
   /**
-   * Returns the set difference (this intersect ~other) of this FlowSet and 
-   * <code>other</code>, putting result into <code>dest</code>.
-   * <code>dest</code>, <code>other</code> and <code>this</code> could be the
-   * same object.
+   * Returns the set difference (this intersect ~other) of this FlowSet and <code>other</code>, putting result into
+   * <code>dest</code>. <code>dest</code>, <code>other</code> and <code>this</code> could be the same object.
    */
   public void difference(FlowSet<T> other, FlowSet<T> dest);
 
@@ -140,11 +129,10 @@ public interface FlowSet<T> extends Iterable<T> {
    * Returns true if the <code>other</code> FlowSet is a subset of <code>this</code> FlowSet.
    */
   public boolean isSubSet(FlowSet<T> other);
-  
+
   /**
-   * returns an iterator over the elements of the flowSet. Note that the
-   * iterator might be backed, and hence be faster in the creation, than doing
-   * <code>toList().iterator()</code>.
+   * returns an iterator over the elements of the flowSet. Note that the iterator might be backed, and hence be faster in the
+   * creation, than doing <code>toList().iterator()</code>.
    */
   public Iterator<T> iterator();
 
@@ -153,4 +141,3 @@ public interface FlowSet<T> extends Iterable<T> {
    */
   public List<T> toList();
 }
-

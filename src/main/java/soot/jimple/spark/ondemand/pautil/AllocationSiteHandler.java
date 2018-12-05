@@ -1,26 +1,29 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2007 Manu Sridharan
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.spark.ondemand.pautil;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2007 Manu Sridharan
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 import java.util.HashSet;
 import java.util.Set;
-
 
 import soot.AnySubType;
 import soot.ArrayType;
@@ -40,8 +43,7 @@ import soot.jimple.toolkits.callgraph.VirtualCalls;
 import soot.util.NumberedString;
 
 /**
- * Interface for handler for when an allocation site is encountered in a pointer
- * analysis query.
+ * Interface for handler for when an allocation site is encountered in a pointer analysis query.
  * 
  * @author manu
  * 
@@ -69,8 +71,7 @@ public interface AllocationSiteHandler {
     /*
      * (non-Javadoc)
      * 
-     * @see AAA.algs.AllocationSiteHandler#handleAllocationSite(soot.jimple.spark.pag.AllocNode,
-     *      java.lang.Integer)
+     * @see AAA.algs.AllocationSiteHandler#handleAllocationSite(soot.jimple.spark.pag.AllocNode, java.lang.Integer)
      */
     public boolean handleAllocationSite(AllocNode allocNode, ImmutableStack<Integer> callStack) {
       p2set.add(allocNode);
@@ -107,8 +108,7 @@ public interface AllocationSiteHandler {
     /*
      * (non-Javadoc)
      * 
-     * @see AAA.algs.AllocationSiteHandler#handleAllocationSite(soot.jimple.spark.pag.AllocNode,
-     *      java.lang.Integer)
+     * @see AAA.algs.AllocationSiteHandler#handleAllocationSite(soot.jimple.spark.pag.AllocNode, java.lang.Integer)
      */
     public boolean handleAllocationSite(AllocNode allocNode, ImmutableStack<Integer> callStack) {
       castFailed = !manager.castNeverFails(allocNode.getType(), type);
@@ -171,13 +171,13 @@ public interface AllocationSiteHandler {
     /*
      * (non-Javadoc)
      * 
-     * @see AAA.algs.AllocationSiteHandler#handleAllocationSite(soot.jimple.spark.pag.AllocNode,
-     *      AAA.algs.MethodContext)
+     * @see AAA.algs.AllocationSiteHandler#handleAllocationSite(soot.jimple.spark.pag.AllocNode, AAA.algs.MethodContext)
      */
     public boolean handleAllocationSite(AllocNode allocNode, ImmutableStack<Integer> callStack) {
       Type type = allocNode.getType();
-      if (!pag.getTypeManager().castNeverFails(type, receiverType))
+      if (!pag.getTypeManager().castNeverFails(type, receiverType)) {
         return false;
+      }
       if (type instanceof AnySubType) {
         AnySubType any = (AnySubType) type;
         RefType refType = any.getBase();
@@ -198,8 +198,9 @@ public interface AllocationSiteHandler {
       targetMethod = VirtualCalls.v().resolveNonSpecial(refType, methodStr);
       if (!possibleMethods.contains(targetMethod)) {
         possibleMethods.add(targetMethod);
-        if (possibleMethods.size() > 1)
+        if (possibleMethods.size() > 1) {
           return true;
+        }
       }
       return false;
     }

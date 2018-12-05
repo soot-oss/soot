@@ -1,28 +1,31 @@
-/* Soot - a Java Optimization Framework
+package soot.dexpler.instructions;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  *
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-
-package soot.dexpler.instructions;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -42,46 +45,45 @@ import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
 
-
 public class CheckCastInstruction extends DexlibAbstractInstruction {
 
-    public CheckCastInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
+  public CheckCastInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
+
+  @Override
+  public void jimplify(DexBody body) {
+    if (!(instruction instanceof Instruction21c)) {
+      throw new IllegalArgumentException("Expected Instruction21c but got: " + instruction.getClass());
     }
 
-    @Override
-	public void jimplify (DexBody body) {
-        if(!(instruction instanceof Instruction21c))
-            throw new IllegalArgumentException("Expected Instruction21c but got: "+instruction.getClass());
+    Instruction21c checkCastInstr = (Instruction21c) instruction;
 
-        Instruction21c checkCastInstr = (Instruction21c)instruction;
+    Local castValue = body.getRegisterLocal(checkCastInstr.getRegisterA());
+    Type checkCastType = DexType.toSoot((TypeReference) checkCastInstr.getReference());
 
-        Local castValue = body.getRegisterLocal(checkCastInstr.getRegisterA());
-        Type checkCastType = DexType.toSoot((TypeReference) checkCastInstr.getReference());
+    CastExpr castExpr = Jimple.v().newCastExpr(castValue, checkCastType);
 
-        CastExpr castExpr =  Jimple.v().newCastExpr(castValue, checkCastType);
+    // generate "x = (Type) x"
+    // splitter will take care of the rest
+    AssignStmt assign = Jimple.v().newAssignStmt(castValue, castExpr);
 
-        //generate "x = (Type) x"
-        //splitter will take care of the rest
-        AssignStmt assign = Jimple.v().newAssignStmt(castValue, castExpr);
+    setUnit(assign);
+    addTags(assign);
+    body.add(assign);
 
-        setUnit(assign);
-        addTags(assign);
-        body.add(assign);
-        
-
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-            DalvikTyper.v().setType(assign.getLeftOpBox(), checkCastType, false);
-		}
-
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+      DalvikTyper.v().setType(assign.getLeftOpBox(), checkCastType, false);
     }
 
-    @Override
-    public Set<Type> introducedTypes() {
-        ReferenceInstruction i = (ReferenceInstruction) instruction;
+  }
 
-        Set<Type> types = new HashSet<Type>();
-        types.add(DexType.toSoot((TypeReference) i.getReference()));
-        return types;
-    }
+  @Override
+  public Set<Type> introducedTypes() {
+    ReferenceInstruction i = (ReferenceInstruction) instruction;
+
+    Set<Type> types = new HashSet<Type>();
+    types.add(DexType.toSoot((TypeReference) i.getReference()));
+    return types;
+  }
 }

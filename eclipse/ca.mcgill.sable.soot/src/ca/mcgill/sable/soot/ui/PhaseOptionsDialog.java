@@ -412,6 +412,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("cg", getcgimplicit_entry_widget(), "implicit-entry");
 		addToEnableGroup("cg", getcgtrim_clinit_widget(), "trim-clinit");
 		addToEnableGroup("cg", getcgtypes_for_invoke_widget(), "types-for-invoke");
+		addToEnableGroup("cg", getcgresolve_all_abstract_invokes_widget(), "resolve-all-abstract-invokes");
 		getcgenabled_widget().getButton().addSelectionListener(this);
 		getcgsafe_forname_widget().getButton().addSelectionListener(this);
 		getcgsafe_newinstance_widget().getButton().addSelectionListener(this);
@@ -420,6 +421,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		getcgimplicit_entry_widget().getButton().addSelectionListener(this);
 		getcgtrim_clinit_widget().getButton().addSelectionListener(this);
 		getcgtypes_for_invoke_widget().getButton().addSelectionListener(this);
+		getcgresolve_all_abstract_invokes_widget().getButton().addSelectionListener(this);
 
 		makeNewEnableGroup("cg", "cg.cha");
 		addToEnableGroup("cg", "cg.cha", getcgcg_chaenabled_widget(), "enabled");
@@ -1122,6 +1124,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsallow_phantom_refs_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getInput_Optionsallow_phantom_elms_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsallow_phantom_elms_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getInput_Optionsno_bodies_for_excluded_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -1199,6 +1207,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getOutput_Optionsoutput_jar_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getOutput_Optionshierarchy_dirs_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getOutput_Optionshierarchy_dirs_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getOutput_Optionsxml_attributes_widget().getButton().getSelection();
 		defBoolRes = false;
@@ -1320,7 +1334,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			getConfig().put(getProcessing_Optionsplugin_widget().getAlias(), stringRes);
 		}
 		stringRes = getProcessing_Optionswrong_staticness_widget().getSelectedAlias();
-		defStringRes = "fix";
 		defStringRes = "fixstrict";
 
 		if (!stringRes.equals(defStringRes)) {
@@ -1727,6 +1740,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgtypes_for_invoke_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getcgresolve_all_abstract_invokes_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgresolve_all_abstract_invokes_widget().getAlias(), new Boolean(boolRes));
 		}
 		stringRes = getcgjdkver_widget().getText().getText();
 		defStringRes = "3";
@@ -4634,6 +4653,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return Input_Optionsallow_phantom_refs_widget;
 	}	
 	
+	private BooleanOptionWidget Input_Optionsallow_phantom_elms_widget;
+	
+	private void setInput_Optionsallow_phantom_elms_widget(BooleanOptionWidget widget) {
+		Input_Optionsallow_phantom_elms_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsallow_phantom_elms_widget() {
+		return Input_Optionsallow_phantom_elms_widget;
+	}	
+	
 	private BooleanOptionWidget Input_Optionsno_bodies_for_excluded_widget;
 	
 	private void setInput_Optionsno_bodies_for_excluded_widget(BooleanOptionWidget widget) {
@@ -4776,6 +4805,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getOutput_Optionsoutput_jar_widget() {
 		return Output_Optionsoutput_jar_widget;
+	}	
+	
+	private BooleanOptionWidget Output_Optionshierarchy_dirs_widget;
+	
+	private void setOutput_Optionshierarchy_dirs_widget(BooleanOptionWidget widget) {
+		Output_Optionshierarchy_dirs_widget = widget;
+	}
+	
+	public BooleanOptionWidget getOutput_Optionshierarchy_dirs_widget() {
+		return Output_Optionshierarchy_dirs_widget;
 	}	
 	
 	private BooleanOptionWidget Output_Optionsxml_attributes_widget;
@@ -5676,6 +5715,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getcgtypes_for_invoke_widget() {
 		return cgtypes_for_invoke_widget;
+	}	
+	
+	private BooleanOptionWidget cgresolve_all_abstract_invokes_widget;
+	
+	private void setcgresolve_all_abstract_invokes_widget(BooleanOptionWidget widget) {
+		cgresolve_all_abstract_invokes_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgresolve_all_abstract_invokes_widget() {
+		return cgresolve_all_abstract_invokes_widget;
 	}	
 	
 	
@@ -8565,6 +8614,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		setInput_Optionsallow_phantom_refs_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","allow-phantom-refs", "\nAllow Soot to process a class even if it cannot find all classes \nreferenced by that class. This may cause Soot to produce \nincorrect results.", defaultBool)));
 
+		defKey = ""+" "+""+" "+"allow-phantom-elms";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setInput_Optionsallow_phantom_elms_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom Elements in Non-Phantom Classes", "", "","allow-phantom-elms", "\nAllow non-phantom classes to contain phantom fields and methods \nwhen allow-phantom-refs is enabled. This can be used to add \nmissing methods and fields to a class that may not exactly match \na similar class used by other classes.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"no-bodies-for-excluded";
 		defKey = defKey.trim();
 
@@ -8574,7 +8634,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultBool = false;
 		}
 
-		setInput_Optionsno_bodies_for_excluded_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","no-bodies-for-excluded", "\nPrevents Soot from loading method bodies for all excluded \nclasses (see exclude option), even when running in whole-program \nmode. This is useful for computing a shallow points-to analysis \nthat does not, for instance, take into account the JDK. Of \ncourse, such analyses may be unsound. You get what you are \nasking for.", defaultBool)));
+		setInput_Optionsno_bodies_for_excluded_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("No Bodies for Excluded", "", "","no-bodies-for-excluded", "\nPrevents Soot from loading method bodies for all excluded \nclasses (see exclude option), even when running in whole-program \nmode. This is useful for computing a shallow points-to analysis \nthat does not, for instance, take into account the JDK. Of \ncourse, such analyses may be unsound. You get what you are \nasking for.", defaultBool)));
 
 		defKey = ""+" "+""+" "+"j2me";
 		defKey = defKey.trim();
@@ -8772,6 +8832,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setOutput_Optionsoutput_jar_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Jar File", "", "","outjar output-jar", "\nSaves output files into a Jar file instead of a directory. The \noutput Jar file name should be specified using the Output \nDirectory (output-dir) option. Note that if the output Jar file \nexists before Soot runs, any files inside it will first be \nremoved.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"hierarchy-dirs";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setOutput_Optionshierarchy_dirs_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Generate class hierarchy directories", "", "","hierarchy-dirs", "\nGiven class a.b.C, generates a/b/C.shimple (directory structure \nin the filesystem) instead of a.b.C.shimple (default \nflat-hierarchy approach). Valid for Jimple/Shimple generation.", defaultBool)));
 
 		defKey = ""+" "+""+" "+"xml-attributes";
 		defKey = defKey.trim();
@@ -9127,7 +9198,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultBool = false;
 		}
 
-		setProcessing_Optionsignore_resolution_errors_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Ignore reolution errors", "", "","ire ignore-resolution-errors", "\nSome programs may contain dead code that references fields or \nmethods that do not exist. By default, Soot exists with an \nexception when this happens. If this option is enabled, Soot \nonly prints a warning but does not exit.", defaultBool)));
+		setProcessing_Optionsignore_resolution_errors_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Ignore resolution errors", "", "","ire ignore-resolution-errors", "\nSome programs may contain dead code that references fields or \nmethods that do not exist. By default, Soot exists with an \nexception when this happens. If this option is enabled, Soot \nonly prints a warning but does not exit.", defaultBool)));
 
 		data = new OptionData [] {
 		
@@ -9142,7 +9213,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 				new OptionData("Fix",
 						"fix",
 						"\nWhen Soot detects a case in which a static field is accessed as \nif it were an instance field, Soot will transparently fix the \nerror and generate Jimple code for the fixed program. If a \nproblem cannot be fixed, an access to that method or field will \nnot throw an exception.",
-						true),
+						false),
 				new OptionData("FixStrict",
 						"fixstrict",
 						"\nWhen Soot detects a case in which a static field is accessed as \nif it were an instance field, Soot will transparently fix the \nerror and generate Jimple code for the fixed program. If a \nproblem cannot be fixed, an access to that method or field will \nstill throw an exception. This makes sure that problems cannot \nsilently disappear and cause invalid Jimple code.",
@@ -9333,7 +9404,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultBool = false;
 		}
 
-		setjbstabilize_local_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Stabilize local names", "p phase-option", "jb","stabilize-local-names", "\nMake sure that local names are stable between runs. This \nrequires re-normalizing all local names after the standard \ntransformations and then sorting them which can negatively \nimpact performance. This option automatically sets "sort-locals" \nin "jb.lns" during the second re-normalization pass.", defaultBool)));
+		setjbstabilize_local_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Stabilize local names", "p phase-option", "jb","stabilize-local-names", "\nMake sure that local names are stable between runs. This \nrequires re-normalizing all local names after the standard \ntransformations, sorting them, and padding all local names with \nleading zeros up to the maximum number of digits in the local \nwith the highest integer value. This can negatively impact \nperformance. This option automatically sets "sort-locals" in \n"jb.lns" during the second re-normalization pass.", defaultBool)));
 
 
 		return editGroupjb;
@@ -9738,7 +9809,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultBool = false;
 		}
 
-		setjbjb_lnssort_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Sort Locals", "p phase-option", "jb.lns","sort-locals", "\nFirst sorts the locals alphabetically by the string \nrepresentation of their type. Then if there are two locals with \nthe same type, it uses the only other source of structurally \nstable information (i.e. the instructions themselves) to produce \nan ordering for the locals that remains consistent between \ndifferent soot instances. It achieves this by determining the \nposition of a local's first occurrence in the instruction's list \nof definition statements. This position is then used to sort the \nlocals with the same type in an ascending order.", defaultBool)));
+		setjbjb_lnssort_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Sort Locals", "p phase-option", "jb.lns","sort-locals", "\nFirst sorts the locals alphabetically by the string \nrepresentation of their type. Then if there are two locals with \nthe same type, it uses the only other source of structurally \nstable information (i.e. the instructions themselves) to produce \nan ordering for the locals that remains consistent between \ndifferent soot instances. It achieves this by determining the \nposition of a local's first occurrence in the instruction's list \nof definition statements. This position is then used to sort the \nlocals with the same type in an ascending order. The local names \nare then appended with leading zeros so that all local names \nhave the same length (i.e., the same number of digits) as the \nlargest local name in each individual method body.", defaultBool)));
 
 
 		return editGroupjbjb_lns;
@@ -10954,6 +11025,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setcgtypes_for_invoke_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Types for invoke", "p phase-option", "cg","types-for-invoke", "\nFor each call to Method.invoke(), use the possible types of the \nfirst receiver argument and the possible types stored in the \nsecond argument array to resolve calls to Method.invoke(). This \nstrategy makes no attempt to resolve reflectively invoked static \nmethods. Currently only works for context insensitive pointer \nanalyses.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg"+" "+"resolve-all-abstract-invokes";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setcgresolve_all_abstract_invokes_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Resolve Abstract Classes with No Children", "p phase-option", "cg","resolve-all-abstract-invokes", "\nNormally, if a method is invoked on a class that is abstract and \nsaid class does not have any children in the Scene, the method \ninvoke will not be resolved to any concrete methods even if the \nabstract class or its parent classes contain a concrete \ndeclaration of the method. This is because without any \nnon-abstract children it is impossible to tell if the resolution \nis correct (since any child may override any non-private method \nin any of its parent classes). However, sometimes it is \nnecessary to resolve methods in such situations (e.g. when \nanalyzing libraries or incomplete code). This forces all methods \ninvoked on abstract classes to be resolved if there exists a \nparent class with a concrete definition of the method even if \nthere are no non-abstract children of the abstract class.", defaultBool)));
 
 		data = new OptionData [] {
 		

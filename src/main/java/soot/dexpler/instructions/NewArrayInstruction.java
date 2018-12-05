@@ -1,28 +1,31 @@
-/* Soot - a Java Optimization Framework
+package soot.dexpler.instructions;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  *
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
  */
-
-package soot.dexpler.instructions;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,53 +51,54 @@ import soot.jimple.NewArrayExpr;
 
 public class NewArrayInstruction extends DexlibAbstractInstruction {
 
-    public NewArrayInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
+  public NewArrayInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
+
+  @Override
+  public void jimplify(DexBody body) {
+
+    if (!(instruction instanceof Instruction22c)) {
+      throw new IllegalArgumentException("Expected Instruction22c but got: " + instruction.getClass());
     }
 
-    @Override
-	public void jimplify (DexBody body) {
+    Instruction22c newArray = (Instruction22c) instruction;
+    int dest = newArray.getRegisterA();
 
-        if(!(instruction instanceof Instruction22c))
-            throw new IllegalArgumentException("Expected Instruction22c but got: "+instruction.getClass());
+    Value size = body.getRegisterLocal(newArray.getRegisterB());
 
-        Instruction22c newArray = (Instruction22c)instruction;
-        int dest = newArray.getRegisterA();
+    Type t = DexType.toSoot((TypeReference) newArray.getReference());
+    // NewArrayExpr needs the ElementType as it increases the array dimension by 1
+    Type arrayType = ((ArrayType) t).getElementType();
 
-        Value size = body.getRegisterLocal(newArray.getRegisterB());
+    NewArrayExpr newArrayExpr = Jimple.v().newNewArrayExpr(arrayType, size);
 
-        Type t = DexType.toSoot((TypeReference) newArray.getReference());
-        // NewArrayExpr needs the ElementType as it increases the array dimension by 1
-        Type arrayType = ((ArrayType) t).getElementType();
-        
-        NewArrayExpr newArrayExpr = Jimple.v().newNewArrayExpr(arrayType, size);
+    Local l = body.getRegisterLocal(dest);
+    AssignStmt assign = Jimple.v().newAssignStmt(l, newArrayExpr);
 
-        Local l = body.getRegisterLocal(dest);
-        AssignStmt assign = Jimple.v().newAssignStmt(l, newArrayExpr);
+    setUnit(assign);
+    addTags(assign);
+    body.add(assign);
 
-        setUnit(assign);
-        addTags(assign);
-        body.add(assign);
-
-		if (IDalvikTyper.ENABLE_DVKTYPER) {
-          DalvikTyper.v().setType(newArrayExpr.getSizeBox(), IntType.v(), true);
-          DalvikTyper.v().setType(assign.getLeftOpBox(), newArrayExpr.getType(), false);
-        }
+    if (IDalvikTyper.ENABLE_DVKTYPER) {
+      DalvikTyper.v().setType(newArrayExpr.getSizeBox(), IntType.v(), true);
+      DalvikTyper.v().setType(assign.getLeftOpBox(), newArrayExpr.getType(), false);
     }
+  }
 
-    @Override
-    boolean overridesRegister(int register) {
-        TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
-        int dest = i.getRegisterA();
-        return register == dest;
-    }
+  @Override
+  boolean overridesRegister(int register) {
+    TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
+    int dest = i.getRegisterA();
+    return register == dest;
+  }
 
-    @Override
-    public Set<Type> introducedTypes() {
-        ReferenceInstruction i = (ReferenceInstruction) instruction;
+  @Override
+  public Set<Type> introducedTypes() {
+    ReferenceInstruction i = (ReferenceInstruction) instruction;
 
-        Set<Type> types = new HashSet<Type>();
-        types.add(DexType.toSoot((TypeReference) i.getReference()));
-        return types;
-    }
+    Set<Type> types = new HashSet<Type>();
+    types.add(DexType.toSoot((TypeReference) i.getReference()));
+    return types;
+  }
 }

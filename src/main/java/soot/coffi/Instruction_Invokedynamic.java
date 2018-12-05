@@ -1,45 +1,37 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 1997 Clark Verbrugge
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
-
-
-
-
-
-
 package soot.coffi;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 Clark Verbrugge
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.G;
-
-/** Instruction subclasses are used to represent parsed bytecode; each
- * bytecode operation has a corresponding subclass of Instruction.
+/**
+ * Instruction subclasses are used to represent parsed bytecode; each bytecode operation has a corresponding subclass of
+ * Instruction.
  * <p>
  * Each subclass is derived from one of
- * <ul><li>Instruction</li>
+ * <ul>
+ * <li>Instruction</li>
  * <li>Instruction_noargs (an Instruction with no embedded arguments)</li>
  * <li>Instruction_byte (an Instruction with a single byte data argument)</li>
  * <li>Instruction_bytevar (a byte argument specifying a local variable)</li>
@@ -50,6 +42,7 @@ import soot.G;
  * <li>Instruction_intbranch (a short argument specifying a code offset)</li>
  * <li>Instruction_longbranch (an int argument specifying a code offset)</li>
  * </ul>
+ *
  * @author Clark Verbrugge
  * @see Instruction
  * @see Instruction_noargs
@@ -63,45 +56,43 @@ import soot.G;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-//INSERTED Instruction_Invokedynamic
+// INSERTED Instruction_Invokedynamic
 
 class Instruction_Invokedynamic extends Instruction_intindex {
-    private static final Logger logger = LoggerFactory.getLogger(Instruction_Invokedynamic.class);
-   public Instruction_Invokedynamic() {
-      super((byte)ByteCode.INVOKEDYNAMIC);
-      name = "invokedynamic";
-      //branches = true;
-      calls = true;
-   }
-   /*Instruction[] branchpoints(Instruction next) {
-     public Instruction i[] = new Instruction[1];
-     i[0] = null;
-     return i;
-     }*/
-   
-   public short invoke_dynamic_index;
-   
-   public short reserved;
-   
-   public int parse(byte bc[],int index) {
-	      invoke_dynamic_index = getShort(bc, index);
-	      index += 2;
-	      reserved = getShort(bc, index);
-	      if(reserved>0) {
-	    	  logger.debug("reserved value in invokedynamic is "+reserved);
-	      }
-	      index += 2;
-	      return index;
-   }
-   
-   public int compile(byte bc[],int index) {
-	      bc[index++] = code;
-	      shortToBytes(invoke_dynamic_index,bc,index);
-	      index += 2;
-	      shortToBytes(reserved,bc,index);
-	      index += 2;
-	      return index;
-   }
+  private static final Logger logger = LoggerFactory.getLogger(Instruction_Invokedynamic.class);
 
+  public Instruction_Invokedynamic() {
+    super((byte) ByteCode.INVOKEDYNAMIC);
+    name = "invokedynamic";
+    // branches = true;
+    calls = true;
+  }
+  /*
+   * Instruction[] branchpoints(Instruction next) { public Instruction i[] = new Instruction[1]; i[0] = null; return i; }
+   */
+
+  public short invoke_dynamic_index;
+
+  public short reserved;
+
+  public int parse(byte bc[], int index) {
+    invoke_dynamic_index = getShort(bc, index);
+    index += 2;
+    reserved = getShort(bc, index);
+    if (reserved > 0) {
+      logger.debug("reserved value in invokedynamic is " + reserved);
+    }
+    index += 2;
+    return index;
+  }
+
+  public int compile(byte bc[], int index) {
+    bc[index++] = code;
+    shortToBytes(invoke_dynamic_index, bc, index);
+    index += 2;
+    shortToBytes(reserved, bc, index);
+    index += 2;
+    return index;
+  }
 
 }
