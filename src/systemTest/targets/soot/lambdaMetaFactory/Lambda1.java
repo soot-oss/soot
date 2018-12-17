@@ -1,11 +1,4 @@
-/**
- * The code contained in this package is copied from 'The Java Call Graph Test Suite (JCG)' project:
- * https://bitbucket.org/delors/jcg/src/master/
- *
- *
- * @author Manuel Benz created on 31.10.18
- */
-package soot.lambdaMetaFactory.jcg;
+package soot.lambdaMetaFactory;
 
 /*-
  * #%L
@@ -28,3 +21,23 @@ package soot.lambdaMetaFactory.jcg;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
+import java.util.function.Function;
+
+/**
+ * Copy from the 'Java Call Graph Test Suite (JCG)' project: https://bitbucket.org/delors/jcg/src/master/
+ */
+class Lambda1 {
+  private static void doSomething() {
+    // call in lambda
+  }
+
+  public void main() {
+    Function<Integer, Boolean> isEven = (Integer a) -> {
+      doSomething();
+      return a % 2 == 0;
+    };
+    final Boolean res = isEven.apply(2);
+    System.out.println(res);
+  }
+}
