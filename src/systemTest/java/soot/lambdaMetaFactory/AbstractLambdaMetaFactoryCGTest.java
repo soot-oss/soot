@@ -57,7 +57,7 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
 
     final CallGraph cg = Scene.v().getCallGraph();
 
-    final String metaFactoryClass = getMetaFactoryName(testClass, TEST_METHOD_NAME);
+    final String metaFactoryClass = getMetaFactoryNameLambda(testClass, TEST_METHOD_NAME);
 
     final SootMethod bootstrap
         = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "java.util.function.Function", "bootstrap$"));
@@ -99,7 +99,7 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
 
     final CallGraph cg = Scene.v().getCallGraph();
 
-    final String metaFactoryClass = getMetaFactoryName(testClass, TEST_METHOD_NAME);
+    final String metaFactoryClass = getMetaFactoryNameLambda(testClass, TEST_METHOD_NAME);
 
     final SootMethod bootstrap = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "java.util.function.Supplier",
         "bootstrap$", testClass, "java.lang.String"));
@@ -139,7 +139,7 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
 
     final CallGraph cg = Scene.v().getCallGraph();
 
-    final String metaFactoryClass = getMetaFactoryName(testClass, TEST_METHOD_NAME);
+    final String metaFactoryClass = getMetaFactoryNameLambda(testClass, TEST_METHOD_NAME);
 
     final SootMethod bootstrap = Scene.v()
         .getMethod(methodSigFromComponents(metaFactoryClass, "java.util.function.Supplier", "bootstrap$", testClass));
@@ -170,7 +170,241 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
     validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
   }
 
-  private String getMetaFactoryName(String testClass, String testMethodName) {
+  @Test
+  public void staticMethodRef() {
+    String testClass = "soot.lambdaMetaFactory.StaticMethodRef";
+
+    final SootMethod target
+        = prepareTarget(methodSigFromComponents(testClass, TEST_METHOD_RET, TEST_METHOD_NAME), testClass);
+
+    final CallGraph cg = Scene.v().getCallGraph();
+
+    final String referencedMethodName = "staticMethod";
+
+    final String metaFactoryClass = getMetaFactoryNameMethodRef(testClass, referencedMethodName);
+
+    final SootMethod bootstrap
+        = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "java.util.function.Supplier", "bootstrap$"));
+    final SootMethod metaFactoryConstructor
+        = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "void", "<init>"));
+    final SootMethod get = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "java.lang.Object", "get"));
+    final SootMethod referencedMethod = Scene.v().getMethod(methodSigFromComponents(testClass, "int", referencedMethodName));
+
+    final List<Edge> edgesFromTarget = newArrayList(cg.edgesOutOf(target));
+
+    assertTrue("There should be an edge from main to the bootstrap method of the synthetic LambdaMetaFactory",
+        edgesFromTarget.stream().anyMatch(e -> e.tgt().equals(bootstrap) && e.isStatic()));
+    assertTrue("There should be an edge to the constructor of the LambdaMetaFactory in the bootstrap method",
+        newArrayList(cg.edgesOutOf(bootstrap)).stream()
+            .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
+    assertTrue(
+        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.isInstance()));
+    assertTrue(
+        "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
+        newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isStatic()));
+
+    validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
+  }
+
+  @Test
+  public void privateMethodRef() {
+    String testClass = "soot.lambdaMetaFactory.PrivateMethodRef";
+
+    final SootMethod target
+        = prepareTarget(methodSigFromComponents(testClass, TEST_METHOD_RET, TEST_METHOD_NAME), testClass);
+
+    final CallGraph cg = Scene.v().getCallGraph();
+
+    final String referencedMethodName = "privateMethod";
+
+    final String metaFactoryClass = getMetaFactoryNameMethodRef(testClass, referencedMethodName);
+
+    final SootMethod bootstrap = Scene.v()
+        .getMethod(methodSigFromComponents(metaFactoryClass, "java.util.function.Supplier", "bootstrap$", testClass));
+    final SootMethod metaFactoryConstructor
+        = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "void", "<init>", testClass));
+    final SootMethod get = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "java.lang.Object", "get"));
+    final SootMethod referencedMethod = Scene.v().getMethod(methodSigFromComponents(testClass, "int", referencedMethodName));
+
+    final List<Edge> edgesFromTarget = newArrayList(cg.edgesOutOf(target));
+
+    assertTrue("There should be an edge from main to the bootstrap method of the synthetic LambdaMetaFactory",
+        edgesFromTarget.stream().anyMatch(e -> e.tgt().equals(bootstrap) && e.isStatic()));
+    assertTrue("There should be an edge to the constructor of the LambdaMetaFactory in the bootstrap method",
+        newArrayList(cg.edgesOutOf(bootstrap)).stream()
+            .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
+    assertTrue(
+        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.isInstance()));
+    assertTrue(
+        "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
+        newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isSpecial()));
+
+    validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
+  }
+
+  @Test
+  public void publicMethodRef() {
+    String testClass = "soot.lambdaMetaFactory.PublicMethodRef";
+
+    final SootMethod target
+        = prepareTarget(methodSigFromComponents(testClass, TEST_METHOD_RET, TEST_METHOD_NAME), testClass);
+
+    final CallGraph cg = Scene.v().getCallGraph();
+
+    final String referencedMethodName = "publicMethod";
+
+    final String metaFactoryClass = getMetaFactoryNameMethodRef(testClass, referencedMethodName);
+
+    final SootMethod bootstrap = Scene.v()
+        .getMethod(methodSigFromComponents(metaFactoryClass, "java.util.function.Supplier", "bootstrap$", testClass));
+    final SootMethod metaFactoryConstructor
+        = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "void", "<init>", testClass));
+    final SootMethod get = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "java.lang.Object", "get"));
+    final SootMethod referencedMethod = Scene.v().getMethod(methodSigFromComponents(testClass, "int", referencedMethodName));
+
+    final List<Edge> edgesFromTarget = newArrayList(cg.edgesOutOf(target));
+
+    assertTrue("There should be an edge from main to the bootstrap method of the synthetic LambdaMetaFactory",
+        edgesFromTarget.stream().anyMatch(e -> e.tgt().equals(bootstrap) && e.isStatic()));
+    assertTrue("There should be an edge to the constructor of the LambdaMetaFactory in the bootstrap method",
+        newArrayList(cg.edgesOutOf(bootstrap)).stream()
+            .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
+    assertTrue(
+        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.isInstance()));
+    assertTrue(
+        "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
+        newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isVirtual()));
+
+    validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
+  }
+
+  @Test
+  public void constructorMethodRef() {
+    String testClass = "soot.lambdaMetaFactory.ConstructorMethodRef";
+
+    final SootMethod target
+        = prepareTarget(methodSigFromComponents(testClass, TEST_METHOD_RET, TEST_METHOD_NAME), testClass);
+
+    final CallGraph cg = Scene.v().getCallGraph();
+
+    final String referencedMethodName = "<init>";
+
+    final String metaFactoryClass = getMetaFactoryNameMethodRef(testClass, referencedMethodName);
+
+    final SootMethod bootstrap
+        = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "java.util.function.Supplier", "bootstrap$"));
+    final SootMethod metaFactoryConstructor
+        = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "void", "<init>"));
+    final SootMethod get = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "java.lang.Object", "get"));
+    final SootMethod referencedMethod
+        = Scene.v().getMethod(methodSigFromComponents(testClass, "void", referencedMethodName));
+
+    final List<Edge> edgesFromTarget = newArrayList(cg.edgesOutOf(target));
+
+    assertTrue("There should be an edge from main to the bootstrap method of the synthetic LambdaMetaFactory",
+        edgesFromTarget.stream().anyMatch(e -> e.tgt().equals(bootstrap) && e.isStatic()));
+    assertTrue("There should be an edge to the constructor of the LambdaMetaFactory in the bootstrap method",
+        newArrayList(cg.edgesOutOf(bootstrap)).stream()
+            .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
+    assertTrue(
+        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.isInstance()));
+    assertTrue(
+        "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
+        newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isSpecial()));
+
+    validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
+  }
+
+  @Test
+  public void inheritedMethodRef() {
+    String testClass = "soot.lambdaMetaFactory.InheritedMethodRef";
+
+    final SootMethod target
+        = prepareTarget(methodSigFromComponents(testClass, TEST_METHOD_RET, TEST_METHOD_NAME), testClass);
+
+    final CallGraph cg = Scene.v().getCallGraph();
+
+    final String referencedMethodName = "superMethod";
+
+    final String metaFactoryClass = getMetaFactoryNameLambda(testClass, TEST_METHOD_NAME);
+
+    final SootMethod bootstrap = Scene.v()
+        .getMethod(methodSigFromComponents(metaFactoryClass, "java.util.function.Supplier", "bootstrap$", testClass));
+    final SootMethod metaFactoryConstructor
+        = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "void", "<init>", testClass));
+    final SootMethod get = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "java.lang.Object", "get"));
+    final SootMethod referencedMethod
+        = Scene.v().getMethod(methodSigFromComponents("soot.lambdaMetaFactory.Super", "int", referencedMethodName));
+    final SootMethod lambdaBody
+        = Scene.v().getMethod(methodSigFromComponents(testClass, "java.lang.Integer", "lambda$main$0"));
+
+    final List<Edge> edgesFromTarget = newArrayList(cg.edgesOutOf(target));
+
+    assertTrue("There should be an edge from main to the bootstrap method of the synthetic LambdaMetaFactory",
+        edgesFromTarget.stream().anyMatch(e -> e.tgt().equals(bootstrap) && e.isStatic()));
+    assertTrue("There should be an edge to the constructor of the LambdaMetaFactory in the bootstrap method",
+        newArrayList(cg.edgesOutOf(bootstrap)).stream()
+            .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
+    assertTrue(
+        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.isInstance()));
+    assertTrue(
+        "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
+        newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(lambdaBody) && e.isSpecial()));
+    assertTrue("There should be a virtual call to the staticCallee method in actual lambda body implementation",
+        newArrayList(cg.edgesOutOf(lambdaBody)).stream()
+            .anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isSpecial()));
+
+    validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
+  }
+
+  @Test
+  public void methodRefWithParameters() {
+    String testClass = "soot.lambdaMetaFactory.MethodRefWithParameters";
+
+    final SootMethod target
+        = prepareTarget(methodSigFromComponents(testClass, TEST_METHOD_RET, TEST_METHOD_NAME), testClass);
+
+    final CallGraph cg = Scene.v().getCallGraph();
+
+    final String referencedMethodName = "staticWithCaptures";
+
+    final String metaFactoryClass = getMetaFactoryNameMethodRef(testClass, referencedMethodName);
+
+    final SootMethod bootstrap
+        = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "java.util.function.BiFunction", "bootstrap$"));
+    final SootMethod metaFactoryConstructor
+        = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "void", "<init>"));
+    final SootMethod apply = Scene.v().getMethod(
+        methodSigFromComponents(metaFactoryClass, "java.lang.Object", "apply", "java.lang.Object", "java.lang.Object"));
+    final SootMethod referencedMethod
+        = Scene.v().getMethod(methodSigFromComponents(testClass, "int", referencedMethodName, "int", "java.lang.Integer"));
+
+    final List<Edge> edgesFromTarget = newArrayList(cg.edgesOutOf(target));
+
+    assertTrue("There should be an edge from main to the bootstrap method of the synthetic LambdaMetaFactory",
+        edgesFromTarget.stream().anyMatch(e -> e.tgt().equals(bootstrap) && e.isStatic()));
+    assertTrue("There should be an edge to the constructor of the LambdaMetaFactory in the bootstrap method",
+        newArrayList(cg.edgesOutOf(bootstrap)).stream()
+            .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
+    assertTrue("There should be an interface invocation on the referenced method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(apply) && e.isInstance()));
+    assertTrue(
+        "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
+        newArrayList(cg.edgesOutOf(apply)).stream().anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isStatic()));
+
+    validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
+  }
+
+  private String getMetaFactoryNameMethodRef(String testClass, String referencedMethod) {
+    return testClass + "$" + referencedMethod.replace("<", "").replace(">", "") + "__1";
+  }
+
+  private String getMetaFactoryNameLambda(String testClass, String testMethodName) {
     return testClass + "$lambda_" + testMethodName + "_0__1";
   }
 
