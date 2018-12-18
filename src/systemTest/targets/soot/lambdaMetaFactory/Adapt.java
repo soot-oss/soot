@@ -100,6 +100,11 @@ public class Adapt {
 
   }
 
+  public void parameterWidening() {
+    parameterWidening(p -> System.out.println(p), p -> System.out.println(p), p -> System.out.println(p),
+        p -> System.out.println(p), p -> System.out.println(p), p -> System.out.println(p));
+  }
+
   public void parameterWidening(IntInterfaceParam I0param, IntegerInterfaceParam I1param, LongInterfaceParam L0param,
       FloatInterfaceParam F0param, NumberInterfaceParam Nparam, ObjectInterfaceParam Oparam) {
     // primitive widening; parameter
@@ -133,6 +138,10 @@ public class Adapt {
 
   }
 
+  public void returnBoxing() {
+    returnBoxing(() -> 1, () -> new Integer(2), () -> 3L);
+  }
+
   public void returnBoxing(IntInterfaceReturn I0param, IntegerInterfaceReturn I1param, LongInterfaceReturn L0param) {
     // unbox; parameter
     // Integer -> int
@@ -143,6 +152,10 @@ public class Adapt {
     // int -> Integer
     IntInterfaceReturn I0var = I1param::adapt;
     I0var.adapt();
+  }
+
+  public void returnWidening() {
+    returnWidening(() -> 1, () -> new Integer(2), () -> 3L);
   }
 
   public void returnWidening(IntInterfaceReturn I0param, IntegerInterfaceReturn I1param, LongInterfaceReturn L0param) {

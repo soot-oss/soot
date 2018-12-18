@@ -27,7 +27,7 @@ import soot.PhaseOptions;
 /**
  * @author Manuel Benz created on 31.10.18
  */
-public class LambdaMetaFactoryCHATest extends AbstractLambdaMetaFactoryTest {
+public class LambdaMetaFactoryCHATest extends AbstractLambdaMetaFactoryCGTest {
 
   @Override
   protected void setupSoot() {

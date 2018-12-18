@@ -1423,7 +1423,7 @@ final class AsmMethodSource implements MethodSource {
       if (bootstrap_model != null) {
         indy = Jimple.v().newStaticInvokeExpr(bootstrap_model, methodArgs);
       } else {
-        // we always model invokeDynamic method refs as static method references
+        // if not mimicking the LambdaMetaFactory, we model invokeDynamic method refs as static method references
         // of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
         SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);
 

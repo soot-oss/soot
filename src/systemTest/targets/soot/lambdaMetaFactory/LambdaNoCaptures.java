@@ -22,16 +22,19 @@ package soot.lambdaMetaFactory;
  * #L%
  */
 
-import soot.PhaseOptions;
+import java.util.function.Function;
 
-/**
- * @author Manuel Benz created on 31.10.18
- */
-public class LambdaMetaFactorySPARKTest extends AbstractLambdaMetaFactoryCGTest {
+class LambdaNoCaptures {
+  private static void staticCallee(Integer i) {
+    System.out.println(i);
+  }
 
-  @Override
-  protected void setupSoot() {
-    super.setupSoot();
-    PhaseOptions.v().setPhaseOption("cg.spark", "on");
+  public void main() {
+    Function<Integer, String> intToString = (Integer i) -> {
+      staticCallee(i);
+      return String.valueOf(i);
+    };
+    final String res = intToString.apply(2);
+    System.out.println(res);
   }
 }

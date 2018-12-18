@@ -27,7 +27,7 @@ import soot.options.Options;
 /**
  * @author Manuel Benz created on 31.10.18
  */
-public class LambdaMetaFactoryVTATest extends AbstractLambdaMetaFactoryTest {
+public class LambdaMetaFactoryVTATest extends AbstractLambdaMetaFactoryCGTest {
 
   @Override
   protected void setupSoot() {

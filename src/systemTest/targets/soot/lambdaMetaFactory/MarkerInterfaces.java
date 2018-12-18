@@ -22,19 +22,24 @@ package soot.lambdaMetaFactory;
  * #L%
  */
 
-import java.util.function.Function;
+import java.util.function.Supplier;
 
-class Lambda1 {
-  private static void staticCallee(Integer i) {
-    System.out.println(i);
+/**
+ * @author Manuel Benz created on 2018-12-18
+ */
+public class MarkerInterfaces {
+  public void main() {
+    Supplier<String> supplier = (Supplier & Marker1 & Marker2) () -> getString();
+    System.out.println(supplier.get());
   }
 
-  public void main() {
-    Function<Integer, String> intToString = (Integer i) -> {
-      staticCallee(i);
-      return String.valueOf(i);
-    };
-    final String res = intToString.apply(2);
-    System.out.println(res);
+  public String getString() {
+    return "Hello";
+  }
+
+  public interface Marker1 {
+  }
+
+  public interface Marker2 {
   }
 }

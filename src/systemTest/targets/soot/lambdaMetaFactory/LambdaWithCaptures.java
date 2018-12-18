@@ -1,6 +1,5 @@
 package soot.lambdaMetaFactory;
 
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,10 +22,21 @@ package soot.lambdaMetaFactory;
  * #L%
  */
 
+import java.util.function.Supplier;
 
 /**
- * @author Manuel Benz
- * created on 2018-12-18
+ * @author Manuel Benz created on 2018-12-18
  */
-public class Lambda2 {
+public class LambdaWithCaptures {
+
+  public void main() {
+    String capture = "Hello";
+
+    Supplier<String> s = () -> capture + " " + getString();
+    System.out.println(s.get());
+  }
+
+  private String getString() {
+    return "World";
+  }
 }

@@ -60,6 +60,20 @@ public abstract class AbstractTestingFramework {
     return String.format("<%s: %s>", clazz, subsig);
   }
 
+  public static String methodSigFromComponents(String clazz, String returnType, String methodName, String... params) {
+    final String subsig
+        = String.format("%s %s(%s)", returnType, methodName, params.length > 0 ? String.join(",", params) : "");
+    return methodSigFromComponents(clazz, subsig);
+  }
+
+  public static void validateAllBodies(SootClass... classes) {
+    for (SootClass aClass : classes) {
+      for (SootMethod method : aClass.getMethods()) {
+        method.retrieveActiveBody().validate();
+      }
+    }
+  }
+
   /**
    * Sets up the Scene by analyzing all included classes and generating a call graph for the given target. This is done by
    * generating an entry point that calls the method with the given signature.
@@ -128,6 +142,7 @@ public abstract class AbstractTestingFramework {
     Options.v().set_exclude(getExcludes());
     Options.v().set_include(new ArrayList<>(classesOrPackagesToAnalyze));
     Options.v().set_process_dir(Collections.singletonList(SYSTEMTEST_TARGET_CLASSES_DIR));
+    Options.v().set_validate(true);
     setupSoot();
   }
 
