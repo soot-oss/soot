@@ -54,7 +54,15 @@ import soot.util.HashChain;
 public final class LambdaMetaFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(LambdaMetaFactory.class);
 
-  private static int uniq;
+  private int uniq;
+
+  public LambdaMetaFactory(Singletons.Global g) {
+    uniq = 0;
+  }
+
+  public static LambdaMetaFactory v() {
+    return G.v().soot_LambdaMetaFactory();
+  }
 
   /**
    * 
@@ -63,11 +71,11 @@ public final class LambdaMetaFactory {
    * @param name
    * @param invokedType
    *          types of captured arguments, the last element is always the type of the FunctionalInterface
-   * @param enclosingClassname
+   * @param name
    * @return
    */
   // FIXME: synchronized to work around concurrency errors; possibly covering up actual problems
-  public synchronized static SootMethodRef makeLambdaHelper(List<? extends Value> bootstrapArgs, int tag, String name,
+  public synchronized SootMethodRef makeLambdaHelper(List<? extends Value> bootstrapArgs, int tag, String name,
       Type[] invokedType, SootClass enclosingClass) {
     if (bootstrapArgs.size() < 3 || !(bootstrapArgs.get(0) instanceof MethodType)
         || !(bootstrapArgs.get(1) instanceof MethodHandle) || !(bootstrapArgs.get(2) instanceof MethodType)
@@ -231,19 +239,59 @@ public final class LambdaMetaFactory {
     return tboot.makeRef();
   }
 
-  private static void addDispatch(String name, SootClass tclass, MethodType implMethodType,
-      MethodType instantiatedMethodType, List<SootField> capFields, MethodHandle implMethod) {
+  private void addDispatch(String name, SootClass tclass, MethodType implMethodType, MethodType instantiatedMethodType,
+      List<SootField> capFields, MethodHandle implMethod) {
     ThunkMethodSource ms = new ThunkMethodSource(capFields, implMethodType, implMethod, instantiatedMethodType);
     SootMethod m = new SootMethod(name, implMethodType.getParameterTypes(), implMethodType.getReturnType(), Modifier.PUBLIC);
     tclass.addMethod(m);
     m.setSource(ms);
   }
 
-  private static synchronized long uniqSupply() {
+  private synchronized long uniqSupply() {
     return ++uniq;
   }
 
-  private static class ThunkMethodSource implements MethodSource {
+  private static class Wrapper {
+
+    private static Map<RefType, PrimType> wrapperTypes;
+    /** valueOf(primitive) method signature */
+    private static Map<PrimType, SootMethod> valueOf;
+    /** primitiveValue() method signature */
+    private static Map<RefType, SootMethod> primitiveValue;
+
+    static {
+      PrimType[] tmp = { BooleanType.v(), ByteType.v(), CharType.v(), DoubleType.v(), FloatType.v(), IntType.v(),
+          LongType.v(), ShortType.v() };
+      wrapperTypes = new HashMap<>();
+      valueOf = new HashMap<>();
+      primitiveValue = new HashMap<>();
+      for (PrimType primType : tmp) {
+        RefType wrapperType = primType.boxedType();
+        String cn = wrapperType.getClassName();
+
+        wrapperTypes.put(wrapperType, primType);
+
+        String valueOfMethodSignature = cn + " valueOf(" + primType.toString() + ")";
+        SootMethod valueOfMethod = wrapperType.getSootClass().getMethod(valueOfMethodSignature);
+        valueOf.put(primType, valueOfMethod);
+
+        String primitiveValueMethodSignature = primType.toString() + " " + primType.toString() + "Value()";
+        SootMethod primitiveValueMethod = wrapperType.getSootClass().getMethod(primitiveValueMethodSignature);
+        primitiveValue.put(wrapperType, primitiveValueMethod);
+      }
+      wrapperTypes = Collections.unmodifiableMap(wrapperTypes);
+      valueOf = Collections.unmodifiableMap(valueOf);
+      primitiveValue = Collections.unmodifiableMap(primitiveValue);
+
+    }
+
+    private static boolean isWrapper(Type t) {
+      return wrapperTypes.containsKey(t);
+    }
+
+  }
+
+  private class ThunkMethodSource implements MethodSource {
     /**
      * fields storing capture variables, in the order they appear in invokedType; to be prepended at target invocation site
      */
@@ -286,7 +334,7 @@ public final class LambdaMetaFactory {
 
     /**
      * Thunk class init (constructor)
-     * 
+     *
      * @param tclass
      *          thunk class
      * @param jb
@@ -351,7 +399,7 @@ public final class LambdaMetaFactory {
 
     /**
      * Adds method which implements functional interface and invokes target implementation.
-     * 
+     *
      * @param tclass
      * @param jb
      */
@@ -478,7 +526,7 @@ public final class LambdaMetaFactory {
 
     /**
      * P box = P.valueOf(fromLocal);
-     * 
+     *
      * @param fromLocal
      *          primitive
      * @param jb
@@ -499,7 +547,7 @@ public final class LambdaMetaFactory {
 
     /**
      * p unbox = fromLocal.pValue();
-     * 
+     *
      * @param fromLocal
      *          boxed
      * @param jb
@@ -526,7 +574,7 @@ public final class LambdaMetaFactory {
 
     /**
      * T t = (T) fromLocal;
-     * 
+     *
      * @param fromLocal
      * @param to
      * @param jb
@@ -555,7 +603,7 @@ public final class LambdaMetaFactory {
 
     /**
      * T t = (T) fromLocal;
-     * 
+     *
      * @param fromLocal
      * @param to
      * @param jb
@@ -578,7 +626,7 @@ public final class LambdaMetaFactory {
 
     /**
      * Invocation of target implementation method.
-     * 
+     *
      * @param jb
      * @param us
      * @param args
@@ -652,46 +700,6 @@ public final class LambdaMetaFactory {
       }
       return args.subList(first, last);
     }
-  }
-
-  private static class Wrapper {
-
-    private static Map<RefType, PrimType> wrapperTypes;
-    /** valueOf(primitive) method signature */
-    private static Map<PrimType, SootMethod> valueOf;
-    /** primitiveValue() method signature */
-    private static Map<RefType, SootMethod> primitiveValue;
-
-    static {
-      PrimType[] tmp = { BooleanType.v(), ByteType.v(), CharType.v(), DoubleType.v(), FloatType.v(), IntType.v(),
-          LongType.v(), ShortType.v() };
-      wrapperTypes = new HashMap<>();
-      valueOf = new HashMap<>();
-      primitiveValue = new HashMap<>();
-      for (PrimType primType : tmp) {
-        RefType wrapperType = primType.boxedType();
-        String cn = wrapperType.getClassName();
-
-        wrapperTypes.put(wrapperType, primType);
-
-        String valueOfMethodSignature = cn + " valueOf(" + primType.toString() + ")";
-        SootMethod valueOfMethod = wrapperType.getSootClass().getMethod(valueOfMethodSignature);
-        valueOf.put(primType, valueOfMethod);
-
-        String primitiveValueMethodSignature = primType.toString() + " " + primType.toString() + "Value()";
-        SootMethod primitiveValueMethod = wrapperType.getSootClass().getMethod(primitiveValueMethodSignature);
-        primitiveValue.put(wrapperType, primitiveValueMethod);
-      }
-      wrapperTypes = Collections.unmodifiableMap(wrapperTypes);
-      valueOf = Collections.unmodifiableMap(valueOf);
-      primitiveValue = Collections.unmodifiableMap(primitiveValue);
-
-    }
-
-    private static boolean isWrapper(Type t) {
-      return wrapperTypes.containsKey(t);
-    }
-
   }
 
 }
