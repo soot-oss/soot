@@ -124,7 +124,7 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
         "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
         newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(lambdaBody) && e.isSpecial()));
 
-    assertTrue("There should be a static call to the getString method in actual lambda body implementation",
+    assertTrue("There should be a special call to the getString method in actual lambda body implementation",
         newArrayList(cg.edgesOutOf(lambdaBody)).stream().anyMatch(e -> e.getTgt().equals(getString) && e.isSpecial()));
 
     validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
@@ -135,37 +135,37 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
     String testClass = "soot.lambdaMetaFactory.MarkerInterfaces";
 
     final SootMethod target
-            = prepareTarget(methodSigFromComponents(testClass, TEST_METHOD_RET, TEST_METHOD_NAME), testClass);
+        = prepareTarget(methodSigFromComponents(testClass, TEST_METHOD_RET, TEST_METHOD_NAME), testClass);
 
     final CallGraph cg = Scene.v().getCallGraph();
 
     final String metaFactoryClass = getMetaFactoryName(testClass, TEST_METHOD_NAME);
 
-    final SootMethod bootstrap = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "java.util.function.Supplier",
-            "bootstrap$", testClass, "java.lang.String"));
+    final SootMethod bootstrap = Scene.v()
+        .getMethod(methodSigFromComponents(metaFactoryClass, "java.util.function.Supplier", "bootstrap$", testClass));
     final SootMethod metaFactoryConstructor
-            = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "void", "<init>", testClass, "java.lang.String"));
+        = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "void", "<init>", testClass));
     final SootMethod get = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "java.lang.Object", "get"));
     final SootMethod lambdaBody
-            = Scene.v().getMethod(methodSigFromComponents(testClass, "java.lang.String", "lambda$main$0", "java.lang.String"));
+        = Scene.v().getMethod(methodSigFromComponents(testClass, "java.lang.Object", "lambda$main$0"));
     final SootMethod getString = Scene.v().getMethod(methodSigFromComponents(testClass, "java.lang.String", "getString"));
 
     final List<Edge> edgesFromTarget = newArrayList(cg.edgesOutOf(target));
 
     assertTrue("There should be an edge from main to the bootstrap method of the synthetic LambdaMetaFactory",
-            edgesFromTarget.stream().anyMatch(e -> e.tgt().equals(bootstrap) && e.isStatic()));
+        edgesFromTarget.stream().anyMatch(e -> e.tgt().equals(bootstrap) && e.isStatic()));
     assertTrue("There should be an edge to the constructor of the LambdaMetaFactory in the bootstrap method",
-            newArrayList(cg.edgesOutOf(bootstrap)).stream()
-                    .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
+        newArrayList(cg.edgesOutOf(bootstrap)).stream()
+            .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
     assertTrue(
-            "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
-            edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.isInstance()));
+        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.isInstance()));
     assertTrue(
-            "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
-            newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(lambdaBody) && e.isSpecial()));
+        "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
+        newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(lambdaBody) && e.isSpecial()));
 
-    assertTrue("There should be a static call to the getString method in actual lambda body implementation",
-            newArrayList(cg.edgesOutOf(lambdaBody)).stream().anyMatch(e -> e.getTgt().equals(getString) && e.isSpecial()));
+    assertTrue("There should be a virtual call to the getString method in actual lambda body implementation",
+        newArrayList(cg.edgesOutOf(lambdaBody)).stream().anyMatch(e -> e.getTgt().equals(getString) && e.isVirtual()));
 
     validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
   }

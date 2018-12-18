@@ -34,6 +34,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import soot.asm.AsmUtil;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.ClassConstant;
 import soot.jimple.IntConstant;
@@ -171,7 +172,7 @@ public final class LambdaMetaFactory {
       tclass.addInterface(RefType.v("java.io.Serializable").getSootClass());
     }
     for (int i = 0; i < markerInterfaces.size(); i++) {
-      tclass.addInterface(RefType.v(markerInterfaces.get(i).getValue()).getSootClass());
+      tclass.addInterface(((RefType) AsmUtil.toBaseType(markerInterfaces.get(i).getValue())).getSootClass());
     }
 
     // It contains fields for all the captures in the lambda
@@ -655,15 +656,12 @@ public final class LambdaMetaFactory {
 
   private static class Wrapper {
 
-    private static boolean isWrapper(Type t) {
-      return wrapperTypes.containsKey(t);
-    }
-
     private static Map<RefType, PrimType> wrapperTypes;
     /** valueOf(primitive) method signature */
     private static Map<PrimType, SootMethod> valueOf;
     /** primitiveValue() method signature */
     private static Map<RefType, SootMethod> primitiveValue;
+
     static {
       PrimType[] tmp = { BooleanType.v(), ByteType.v(), CharType.v(), DoubleType.v(), FloatType.v(), IntType.v(),
           LongType.v(), ShortType.v() };
@@ -688,6 +686,10 @@ public final class LambdaMetaFactory {
       valueOf = Collections.unmodifiableMap(valueOf);
       primitiveValue = Collections.unmodifiableMap(primitiveValue);
 
+    }
+
+    private static boolean isWrapper(Type t) {
+      return wrapperTypes.containsKey(t);
     }
 
   }
