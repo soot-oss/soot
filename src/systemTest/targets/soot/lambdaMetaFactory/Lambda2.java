@@ -1,5 +1,6 @@
 package soot.lambdaMetaFactory;
 
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,19 +23,10 @@ package soot.lambdaMetaFactory;
  * #L%
  */
 
-import java.util.function.Function;
 
-class Lambda1 {
-  private static void staticCallee(Integer i) {
-    System.out.println(i);
-  }
-
-  public void main() {
-    Function<Integer, String> intToString = (Integer i) -> {
-      staticCallee(i);
-      return String.valueOf(i);
-    };
-    final String res = intToString.apply(2);
-    System.out.println(res);
-  }
+/**
+ * @author Manuel Benz
+ * created on 2018-12-18
+ */
+public class Lambda2 {
 }

@@ -217,13 +217,14 @@ public final class LambdaMetaFactory {
     }
 
     Scene.v().addClass(tclass);
-    if (enclosingClass.isApplicationClass())
+    if (enclosingClass.isApplicationClass()) {
       tclass.setApplicationClass();
+    }
 
-    // The hierarchy has to be rebuilt after adding the MetaFactory implementation
-    // soot.FastHierarchy.canStoreClass will otherwise fail due to not having an interval set for the class which eventually
-    // leads to the MetaFactory not being accepted as implementation of the functional interface it actually implements
-    // which, in turn, lead to missing edges in the call graph
+    // The hierarchy has to be rebuilt after adding the MetaFactory implementation.
+    // soot.FastHierarchy.canStoreClass will otherwise fail due to not having an interval set for the class. This eventually
+    // leads to the MetaFactory not being accepted as implementation of the functional interface it actually implements.
+    // This, in turn, leads to missing edges in the call graph.
     Scene.v().releaseFastHierarchy();
 
     return tboot.makeRef();

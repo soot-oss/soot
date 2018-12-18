@@ -1,10 +1,32 @@
 package soot.lambdaMetaFactory;
 
-import com.google.common.collect.Lists;
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2018 Manuel Benz
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+import static com.google.common.collect.Lists.newArrayList;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import soot.Scene;
@@ -44,26 +66,26 @@ public abstract class AbstractLambdaMetaFactoryTest extends AbstractTestingFrame
     final SootMethod apply
         = Scene.v().getMethod(methodSigFromComponents(metaFactoryClass, "java.lang.Object apply(java.lang.Object)"));
     final SootMethod lambdaBody
-        = Scene.v().getMethod(methodSigFromComponents(testClass, "java.lang.Boolean lambda$main$0(java.lang.Integer)"));
-    final SootMethod doSomething = Scene.v().getMethod(methodSigFromComponents(testClass, "void doSomething()"));
+        = Scene.v().getMethod(methodSigFromComponents(testClass, "java.lang.String lambda$main$0(java.lang.Integer)"));
+    final SootMethod doSomething
+        = Scene.v().getMethod(methodSigFromComponents(testClass, "void staticCallee(java.lang.Integer)"));
 
-    final List<Edge> edgesFromTarget = Lists.newArrayList(cg.edgesOutOf(target));
+    final List<Edge> edgesFromTarget = newArrayList(cg.edgesOutOf(target));
 
-    Assert.assertTrue("There should be an edge from main to the bootstrap method of the synthetic LambdaMetaFactory",
+    assertTrue("There should be an edge from main to the bootstrap method of the synthetic LambdaMetaFactory",
         edgesFromTarget.stream().anyMatch(e -> e.tgt().equals(bootstrap) && e.isStatic()));
-    Assert.assertTrue("There should be an edge to the constructor of the LambdaMetaFactory in the bootstrap method",
-        Lists.newArrayList(cg.edgesOutOf(bootstrap)).stream()
+    assertTrue("There should be an edge to the constructor of the LambdaMetaFactory in the bootstrap method",
+        newArrayList(cg.edgesOutOf(bootstrap)).stream()
             .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
-    Assert.assertTrue(
+    assertTrue(
         "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
         edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(apply) && e.isInstance()));
-    Assert.assertTrue(
+    assertTrue(
         "There should be a static call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
-        Lists.newArrayList(cg.edgesOutOf(apply)).stream()
-            .anyMatch(e -> e.getTgt().equals(lambdaBody) && e.isStatic()));
+        newArrayList(cg.edgesOutOf(apply)).stream().anyMatch(e -> e.getTgt().equals(lambdaBody) && e.isStatic()));
 
-    Assert.assertTrue("There should be a static call to the doSomething method in actual lambda body implementation", Lists
-        .newArrayList(cg.edgesOutOf(lambdaBody)).stream().anyMatch(e -> e.getTgt().equals(doSomething) && e.isStatic()));
+    assertTrue("There should be a static call to the doSomething method in actual lambda body implementation",
+        newArrayList(cg.edgesOutOf(lambdaBody)).stream().anyMatch(e -> e.getTgt().equals(doSomething) && e.isStatic()));
   }
 
   private String getMetaFactoryName(String testClass, String testMethodName) {
