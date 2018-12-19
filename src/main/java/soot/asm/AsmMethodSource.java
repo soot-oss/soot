@@ -226,6 +226,7 @@ import soot.Local;
 import soot.LongType;
 import soot.MethodSource;
 import soot.PackManager;
+import soot.PhaseOptions;
 import soot.RefType;
 import soot.Scene;
 import soot.ShortType;
@@ -1411,11 +1412,13 @@ final class AsmMethodSource implements MethodSource {
 
       SootMethodRef bootstrap_model = null;
 
-      String bsmMethodRefStr = bsmMethodRef.toString();
-      if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE)) {
-        SootClass enclosingClass = body.getMethod().getDeclaringClass();
-        bootstrap_model
-            = LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types, enclosingClass);
+      if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "model-lambdametafactory")) {
+        String bsmMethodRefStr = bsmMethodRef.toString();
+        if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE)) {
+          SootClass enclosingClass = body.getMethod().getDeclaringClass();
+          bootstrap_model
+              = LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types, enclosingClass);
+        }
       }
 
       InvokeExpr indy;
