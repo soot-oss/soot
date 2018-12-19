@@ -27,8 +27,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+import soot.Kind;
 import soot.Scene;
 import soot.SootMethod;
 import soot.jimple.toolkits.callgraph.CallGraph;
@@ -38,6 +40,7 @@ import soot.testing.framework.AbstractTestingFramework;
 /**
  * @author Manuel Benz created on 2018-12-17
  */
+@Ignore
 public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFramework {
 
   private static final String TEST_METHOD_NAME = "main";
@@ -78,8 +81,8 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
         newArrayList(cg.edgesOutOf(bootstrap)).stream()
             .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
     assertTrue(
-        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
-        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(apply) && e.isInstance()));
+        "There should be an instance invocation on the synthetic LambdaMetaFactory's implementation of the functional interface in the main method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(apply) && e.kind() == Kind.INTERFACE));
     assertTrue(
         "There should be a static call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
         newArrayList(cg.edgesOutOf(apply)).stream().anyMatch(e -> e.getTgt().equals(lambdaBody) && e.isStatic()));
@@ -118,8 +121,8 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
         newArrayList(cg.edgesOutOf(bootstrap)).stream()
             .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
     assertTrue(
-        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
-        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.isInstance()));
+        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface in the main method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.kind() == Kind.INTERFACE));
     assertTrue(
         "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
         newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(lambdaBody) && e.isSpecial()));
@@ -158,8 +161,8 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
         newArrayList(cg.edgesOutOf(bootstrap)).stream()
             .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
     assertTrue(
-        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
-        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.isInstance()));
+        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface in the main method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.kind() == Kind.INTERFACE));
     assertTrue(
         "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
         newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(lambdaBody) && e.isSpecial()));
@@ -198,10 +201,9 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
         newArrayList(cg.edgesOutOf(bootstrap)).stream()
             .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
     assertTrue(
-        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
-        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.isInstance()));
-    assertTrue(
-        "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
+        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface in the main method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.kind() == Kind.INTERFACE));
+    assertTrue("There should be a static call to the referenced method",
         newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isStatic()));
 
     validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
@@ -235,10 +237,9 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
         newArrayList(cg.edgesOutOf(bootstrap)).stream()
             .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
     assertTrue(
-        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
-        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.isInstance()));
-    assertTrue(
-        "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
+        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface in the main method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.kind() == Kind.INTERFACE));
+    assertTrue("There should be a special call to the referenced method",
         newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isSpecial()));
 
     validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
@@ -272,10 +273,9 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
         newArrayList(cg.edgesOutOf(bootstrap)).stream()
             .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
     assertTrue(
-        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
-        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.isInstance()));
-    assertTrue(
-        "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
+        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface in the main method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.kind() == Kind.INTERFACE));
+    assertTrue("There should be a virtual call to the referenced method",
         newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isVirtual()));
 
     validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
@@ -310,10 +310,9 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
         newArrayList(cg.edgesOutOf(bootstrap)).stream()
             .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
     assertTrue(
-        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
-        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.isInstance()));
-    assertTrue(
-        "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
+        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface  in the main method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.kind() == Kind.INTERFACE));
+    assertTrue("There should be a special call to the referenced method",
         newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isSpecial()));
 
     validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
@@ -350,14 +349,13 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
         newArrayList(cg.edgesOutOf(bootstrap)).stream()
             .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
     assertTrue(
-        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface (bridge) in the main method",
-        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.isInstance()));
+        "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface in the main method",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.kind() == Kind.INTERFACE));
     assertTrue(
         "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
         newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(lambdaBody) && e.isSpecial()));
-    assertTrue("There should be a virtual call to the staticCallee method in actual lambda body implementation",
-        newArrayList(cg.edgesOutOf(lambdaBody)).stream()
-            .anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isSpecial()));
+    assertTrue("There should be a special call to the referenced method", newArrayList(cg.edgesOutOf(lambdaBody)).stream()
+        .anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isSpecial()));
 
     validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
   }
@@ -392,9 +390,8 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
         newArrayList(cg.edgesOutOf(bootstrap)).stream()
             .anyMatch(e -> e.tgt().equals(metaFactoryConstructor) && e.isSpecial()));
     assertTrue("There should be an interface invocation on the referenced method",
-        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(apply) && e.isInstance()));
-    assertTrue(
-        "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
+        edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(apply) && e.kind() == Kind.INTERFACE));
+    assertTrue("There should be a static call to the referenced method",
         newArrayList(cg.edgesOutOf(apply)).stream().anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isStatic()));
 
     validateAllBodies(target.getDeclaringClass(), bootstrap.getDeclaringClass());
