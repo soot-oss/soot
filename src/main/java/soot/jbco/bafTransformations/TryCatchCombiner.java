@@ -243,7 +243,7 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
       }
 
       try {
-        SootField f[] = FieldRenamer.getRandomOpaques();
+        SootField f[] = FieldRenamer.v().getRandomOpaques();
         if (f[0] != null && f[1] != null) {
           loadBooleanValue(units, f[0], begUnit);
           loadBooleanValue(units, f[1], begUnit);

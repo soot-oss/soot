@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -657,14 +657,8 @@ public class PackManager {
 
     while (classes.hasNext()) {
       final SootClass c = classes.next();
-      executor.execute(new Runnable() {
-
-        @Override
-        public void run() {
-          runBodyPacks(c);
-        }
-
-      });
+      executor.execute(() -> runBodyPacks(c));
+      // runBodyPacks(c);
     }
 
     // Wait till all packs have been executed
@@ -703,14 +697,7 @@ public class PackManager {
 
     while (classes.hasNext()) {
       final SootClass c = classes.next();
-      executor.execute(new Runnable() {
-
-        @Override
-        public void run() {
-          writeClass(c);
-        }
-
-      });
+      executor.execute(() -> writeClass(c));
     }
 
     // Wait till all classes have been written
@@ -1202,7 +1189,7 @@ public class PackManager {
 
   /**
    * Factory method for creating a new backend on top of Jasmin
-   * 
+   *
    * @param c
    *          The class for which to create a Jasmin-based backend
    * @return The Jasmin-based backend for writing the given class into bytecode
@@ -1218,7 +1205,7 @@ public class PackManager {
   /**
    * Factory method for creating a new backend on top of ASM. At the moment, we always start from BAF. Custom implementations
    * can use other techniques.
-   * 
+   *
    * @param c
    *          The class for which to create the ASM backend
    * @return The ASM backend for writing the class into bytecode
