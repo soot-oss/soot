@@ -54,10 +54,13 @@ import soot.util.HashChain;
 public final class LambdaMetaFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(LambdaMetaFactory.class);
 
+  private final Wrapper wrapper;
+
   private int uniq;
 
   public LambdaMetaFactory(Singletons.Global g) {
     uniq = 0;
+    wrapper = new Wrapper();
   }
 
   public static LambdaMetaFactory v() {
@@ -253,13 +256,13 @@ public final class LambdaMetaFactory {
 
   private static class Wrapper {
 
-    private static Map<RefType, PrimType> wrapperTypes;
+    private Map<RefType, PrimType> wrapperTypes;
     /** valueOf(primitive) method signature */
-    private static Map<PrimType, SootMethod> valueOf;
+    private Map<PrimType, SootMethod> valueOf;
     /** primitiveValue() method signature */
-    private static Map<RefType, SootMethod> primitiveValue;
+    private Map<RefType, SootMethod> primitiveValue;
 
-    static {
+    public Wrapper() {
       PrimType[] tmp = { BooleanType.v(), ByteType.v(), CharType.v(), DoubleType.v(), FloatType.v(), IntType.v(),
           LongType.v(), ShortType.v() };
       wrapperTypes = new HashMap<>();
@@ -285,7 +288,7 @@ public final class LambdaMetaFactory {
 
     }
 
-    private static boolean isWrapper(Type t) {
+    private boolean isWrapper(Type t) {
       return wrapperTypes.containsKey(t);
     }
 
@@ -537,9 +540,13 @@ public final class LambdaMetaFactory {
       PrimType primitiveType = (PrimType) fromLocal.getType();
       RefType wrapperType = primitiveType.boxedType();
 
-      SootMethod valueOfMethod = Wrapper.valueOf.get(primitiveType);
+      SootMethod valueOfMethod = wrapper.valueOf.get(primitiveType);
 
       Local lBox = lc.generateLocal(wrapperType);
+      if (lBox == null || valueOfMethod == null || us == null) {
+        throw new NullPointerException(String.format("%s,%s,%s,%s", valueOfMethod, primitiveType, wrapper.valueOf.entrySet(),
+            wrapper.valueOf.get(primitiveType)));
+      }
       us.add(Jimple.v().newAssignStmt(lBox, Jimple.v().newStaticInvokeExpr(valueOfMethod.makeRef(), fromLocal)));
 
       return lBox;
@@ -556,9 +563,9 @@ public final class LambdaMetaFactory {
      */
     private Local unbox(Local fromLocal, JimpleBody jb, PatchingChain<Unit> us, LocalGenerator lc) {
       RefType wrapperType = (RefType) fromLocal.getType();
-      PrimType primitiveType = Wrapper.wrapperTypes.get(wrapperType);
+      PrimType primitiveType = wrapper.wrapperTypes.get(wrapperType);
 
-      SootMethod primitiveValueMethod = Wrapper.primitiveValue.get(wrapperType);
+      SootMethod primitiveValueMethod = wrapper.primitiveValue.get(wrapperType);
 
       Local lUnbox = lc.generateLocal(primitiveType);
       us.add(Jimple.v().newAssignStmt(lUnbox, Jimple.v().newVirtualInvokeExpr(fromLocal, primitiveValueMethod.makeRef())));
