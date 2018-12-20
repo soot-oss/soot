@@ -111,7 +111,7 @@ public class PAG implements PointsToAnalysis {
     }
     typeManager = new TypeManager(this);
     if (!opts.ignore_types()) {
-      typeManager.setFastHierarchy(Scene.v().getOrMakeFastHierarchy());
+      typeManager.setFastHierarchy(() -> Scene.v().getOrMakeFastHierarchy());
     }
     switch (opts.set_impl()) {
       case SparkOptions.set_impl_hash:

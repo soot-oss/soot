@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Jimple Body Creation. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-08-13T11:30:57.578+02:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-12-19T18:33:22.784+01:00", comments = "from soot_options.xml")
 public class JBOptions {
 
     private Map<String, String> options;
@@ -74,6 +74,27 @@ public class JBOptions {
      */
     public boolean stabilize_local_names() {
         return soot.PhaseOptions.getBoolean(options, "stabilize-local-names");
+    }
+
+    /**
+     * Model LambdaMetafactory --
+     * Replace dynamic invoke instructions to the LambdaMetafactory by 
+     * static invokes to a synthetic LambdaMetafactory implementation..
+     *
+     * When the asm bytecode frontend is used and this option is set to 
+     * true, Soot creates an implementation of the LambdaMetafactory 
+     * for each dynamic invoke and replaces the original dynamic invoke 
+     * by a static invocation of the factory's bootstrap method. This 
+     * allows the call-graph generation to find the lambda body 
+     * reachable, i.e., call-graphs contain paths from the invocation 
+     * of a functional interface to the lambda body implementing this 
+     * interface. Note that this procedure is not reversed when 
+     * writing-out. Therefore, written-out code will contain the 
+     * created LambdaMetafactories and instrumented calls to the 
+     * corresponding bootstrap methods.
+     */
+    public boolean model_lambdametafactory() {
+        return soot.PhaseOptions.getBoolean(options, "model-lambdametafactory");
     }
 
 }
