@@ -1,9 +1,3 @@
-# Looking for PostDoc or Ph.D. student to work on Soot!
-
-The [research group of Eric Bodden](https://www.hni.uni-paderborn.de/en/software-engineering/) has acquired funding for a three-year project that will fund a PostDoc or Ph.D. student with the goal of applying major upgrades to Soot to make it sustainable for the future. The position is fully funded and does not include any teaching or administrative duties (although teaching is possible if desired). We will assure that at least 50% of the time can also be spent on personal research.
-
-As Soot is one of the most widely used research infrastructures worldwide, this position will give you a great opportunity to obtain wide exposition in the research community. In case you are interested in applying, please [contact Eric Bodden directly](https://www.hni.uni-paderborn.de/en/software-engineering/staff/bodden/).
-
 # What is Soot?
 
 <img align="right" src="http://sable.github.io/soot/logo/soot-logo.png" width="150">
