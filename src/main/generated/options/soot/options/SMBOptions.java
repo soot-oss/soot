@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Static Method Binder. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-12-19T18:33:22.784+01:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-12-20T09:54:32.407+01:00", comments = "from soot_options.xml")
 public class SMBOptions {
 
     private Map<String, String> options;

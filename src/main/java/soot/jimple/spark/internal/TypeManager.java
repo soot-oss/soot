@@ -225,7 +225,7 @@ public final class TypeManager {
     } else if (dst instanceof AnySubType) {
       throw new RuntimeException("oops src=" + src + " dst=" + dst);
     } else {
-      return fh.canStoreType(src, dst);
+      return getFastHierarchy().canStoreType(src, dst);
     }
   }
 
@@ -311,7 +311,7 @@ public final class TypeManager {
 
     BitVector ret = new BitVector(pag.getAllocNodeNumberer().size());
     typeMask.put(interf.getType(), ret);
-    Collection<SootClass> implementers = fh.get().getAllImplementersOfInterface(interf);
+    Collection<SootClass> implementers = getFastHierarchy().getAllImplementersOfInterface(interf);
 
     for (SootClass impl : implementers) {
       BitVector other = typeMask.get(impl.getType());
