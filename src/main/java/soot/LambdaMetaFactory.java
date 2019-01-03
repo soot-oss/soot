@@ -689,7 +689,7 @@ public final class LambdaMetaFactory {
           // As such, we need a virtual call in these cases.
           if (Scene.v().getOrMakeFastHierarchy().canStoreClass(currentClass, calledClass))
           {
-  	return Jimple.v().newSpecialInvokeExpr(args.get(0), methodRef, rest(args));
+  	    return Jimple.v().newSpecialInvokeExpr(args.get(0), methodRef, rest(args));
           } else {
   	    return Jimple.v().newVirtualInvokeExpr(args.get(0), methodRef, rest(args));
           }
