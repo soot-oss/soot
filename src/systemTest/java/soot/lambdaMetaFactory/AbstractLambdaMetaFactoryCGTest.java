@@ -239,7 +239,6 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
     assertTrue(
         "There should be an interface invocation on the synthetic LambdaMetaFactory's implementation of the functional interface in the main method",
         edgesFromTarget.stream().anyMatch(e -> e.getTgt().equals(get) && e.kind() == Kind.INTERFACE));
-    System.out.println(referencedMethod.getDeclaringClass().getName() + " ===== " + get.getDeclaringClass().getName());
     assertTrue("There should be a virtual call to the referenced method",
         newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isVirtual()));
 
