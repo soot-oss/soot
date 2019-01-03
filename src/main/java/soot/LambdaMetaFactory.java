@@ -232,6 +232,12 @@ public final class LambdaMetaFactory {
     if (enclosingClass.isApplicationClass()) {
       tclass.setApplicationClass();
     }
+    
+    for (SootMethod m : tclass.getMethods()) {
+      // There is no reason not to load the bodies directly. After all,
+      // we are introducing new classes while loading bodies. 
+      m.retrieveActiveBody();
+    }
 
     // The hierarchy has to be rebuilt after adding the MetaFactory implementation.
     // soot.FastHierarchy.canStoreClass will otherwise fail due to not having an interval set for the class. This eventually
@@ -677,8 +683,16 @@ public final class LambdaMetaFactory {
         case REF_INVOKE_VIRTUAL:
           return Jimple.v().newVirtualInvokeExpr(args.get(0), methodRef, rest(args));
         case REF_INVOKE_SPECIAL:
-          // e.g. private
-          return Jimple.v().newSpecialInvokeExpr(args.get(0), methodRef, rest(args));
+          final SootClass currentClass = jb.getMethod().getDeclaringClass();
+          final SootClass calledClass = methodRef.getDeclaringClass();
+          // It can be the case that the method is not in the same class (or a super class).
+          // As such, we need a virtual call in these cases.
+          if (Scene.v().getOrMakeFastHierarchy().canStoreClass(currentClass, calledClass))
+          {
+  	        return Jimple.v().newSpecialInvokeExpr(args.get(0), methodRef, rest(args));
+          } else {
+  	        return Jimple.v().newVirtualInvokeExpr(args.get(0), methodRef, rest(args));
+          }
         case REF_INVOKE_CONSTRUCTOR:
           RefType type = methodRef.declaringClass().getType();
           NewExpr newRef = Jimple.v().newNewExpr(type);
