@@ -30,7 +30,7 @@ import soot.testing.framework.AbstractTestingFramework;
 /**
  * @author Manuel Benz created on 2018-12-18
  */
-public class LambdaMetaFacotoryAdaptTest extends AbstractTestingFramework {
+public class LambdaMetaFactoryAdaptTest extends AbstractTestingFramework {
 
   @Test
   public void parameterBoxing() {
