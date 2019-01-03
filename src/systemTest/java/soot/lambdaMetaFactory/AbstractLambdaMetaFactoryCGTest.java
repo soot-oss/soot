@@ -355,7 +355,7 @@ public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFra
     //to           <soot.lambdaMetaFactory.InheritedMethodRef: java.lang.Integer lambda$main$0()>
     //As such, it needs to be a virtual call.
     assertTrue(
-        "There should be a special call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
+        "There should be a virtual call to the lambda body implementation in the generated functional interface implementation of the synthetic LambdaMetaFactory",
         newArrayList(cg.edgesOutOf(get)).stream().anyMatch(e -> e.getTgt().equals(lambdaBody) && e.isVirtual()));
     assertTrue("There should be a special call to the referenced method", newArrayList(cg.edgesOutOf(lambdaBody)).stream()
         .anyMatch(e -> e.getTgt().equals(referencedMethod) && e.isSpecial()));
