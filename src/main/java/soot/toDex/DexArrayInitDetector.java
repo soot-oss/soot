@@ -124,6 +124,10 @@ public class DexArrayInitDetector {
   /**
    * Sets the minimum array length to consider
    * 
+   * Only arrays with more than this number of elements will be identified, because we only need to handle those explicitly.
+   * For small arrays, we can have individual assignments for each element in the code, but for larger methods, this would
+   * exceed the allowed method size according to the JVM / Dalvik Spec.
+   * 
    * @param l
    *          the minimum length of arrays
    */

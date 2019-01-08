@@ -60,6 +60,7 @@ public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> 
       return;
     }
 
+    // In case we removed entries from the numberer, we want to re-use the free space
     int chosenNumber = -1;
     if (freeNumbers != null) {
       int ns = freeNumbers.nextSetBit(0);
