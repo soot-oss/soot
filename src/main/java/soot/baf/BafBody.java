@@ -75,7 +75,6 @@ public class BafBody extends Body {
     }
 
     JimpleBody jimpleBody = (JimpleBody) body;
-    jimpleBody.validate();
 
     JimpleToBafContext context = new JimpleToBafContext(jimpleBody.getLocalCount());
     this.jimpleToBafContext = context;

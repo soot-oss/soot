@@ -32,6 +32,15 @@ public interface Numberer<E> {
   public void add(E o);
 
   /**
+   * Removes the number for a given object.
+   * 
+   * @param o
+   *          the element
+   * @return true if the removal was successful, false when not
+   */
+  public boolean remove(E o);
+
+  /**
    * Should return the number that was assigned to object o that was previously passed as an argument to add().
    */
   public long get(E o);
