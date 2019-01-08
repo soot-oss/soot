@@ -215,7 +215,8 @@ public abstract class AbstractASMBackend {
       }
     }
 
-    for (SootMethod sm : sc.getMethods()) {
+    List<SootMethod> clonedList = new ArrayList<>(sc.getMethods());
+    for (SootMethod sm : clonedList) {
       if (minVersion >= Options.java_version_1_8) {
         break;
       }

@@ -56,6 +56,8 @@ public class DexArrayInitDetector {
   private Map<Unit, List<Value>> arrayInitToFillValues = new HashMap<Unit, List<Value>>();
   private Set<Unit> ignoreUnits = new HashSet<Unit>();
 
+  private int minimumArrayLength = -1;
+
   /**
    * Constructs packed array initializations from the individual element assignments in the given body
    *
@@ -80,9 +82,11 @@ public class DexArrayInitDetector {
         NewArrayExpr newArrayExp = (NewArrayExpr) assignStmt.getRightOp();
         if (newArrayExp.getSize() instanceof IntConstant) {
           IntConstant intConst = (IntConstant) newArrayExp.getSize();
-          arrayValues = new ArrayList<Value>();
-          arraySize = intConst.value;
-          curIgnoreUnits = new HashSet<Unit>();
+          if (minimumArrayLength == -1 || intConst.value >= minimumArrayLength) {
+            arrayValues = new ArrayList<Value>();
+            arraySize = intConst.value;
+            curIgnoreUnits = new HashSet<Unit>();
+          }
         } else {
           arrayValues = null;
         }
@@ -115,6 +119,16 @@ public class DexArrayInitDetector {
         arrayValues = null;
       }
     }
+  }
+
+  /**
+   * Sets the minimum array length to consider
+   * 
+   * @param l
+   *          the minimum length of arrays
+   */
+  public void setMinimumArrayLength(int l) {
+    minimumArrayLength = l;
   }
 
   private void checkAndSave(Unit arrayInitStmt, List<Value> arrayValues, int arraySize, Set<Unit> curIgnoreUnits) {
