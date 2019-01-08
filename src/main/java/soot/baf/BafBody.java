@@ -67,15 +67,11 @@ public class BafBody extends Body {
     super(m);
   }
 
-  public BafBody(Body body, Map<String, String> options) {
+  public BafBody(JimpleBody body, Map<String, String> options) {
     super(body.getMethod());
 
     if (Options.v().verbose()) {
       logger.debug("[" + getMethod().getName() + "] Constructing BafBody...");
-    }
-
-    if (!(body instanceof JimpleBody)) {
-      throw new RuntimeException("Can only construct BafBody's directly" + " from JimpleBody's.");
     }
 
     JimpleBody jimpleBody = (JimpleBody) body;

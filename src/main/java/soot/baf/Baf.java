@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import soot.ArrayType;
-import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -129,6 +128,7 @@ import soot.baf.internal.BafLocal;
 import soot.baf.internal.BafLocalBox;
 import soot.jimple.Constant;
 import soot.jimple.IntConstant;
+import soot.jimple.JimpleBody;
 import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
 import soot.jimple.internal.IdentityRefBox;
@@ -545,12 +545,12 @@ public class Baf {
   }
 
   /** Returns a BafBody constructed from b. */
-  public BafBody newBody(Body b) {
+  public BafBody newBody(JimpleBody b) {
     return new BafBody(b, Collections.<String, String>emptyMap());
   }
 
   /** Returns a BafBody constructed from b. */
-  public BafBody newBody(Body b, String phase) {
+  public BafBody newBody(JimpleBody b, String phase) {
     Map<String, String> options = PhaseOptions.v().getPhaseOptions(phase);
     return new BafBody(b, options);
   }
