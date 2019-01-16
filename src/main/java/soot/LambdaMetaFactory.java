@@ -232,10 +232,10 @@ public final class LambdaMetaFactory {
     if (enclosingClass.isApplicationClass()) {
       tclass.setApplicationClass();
     }
-    
+
     for (SootMethod m : tclass.getMethods()) {
       // There is no reason not to load the bodies directly. After all,
-      // we are introducing new classes while loading bodies. 
+      // we are introducing new classes while loading bodies.
       m.retrieveActiveBody();
     }
 
@@ -320,6 +320,7 @@ public final class LambdaMetaFactory {
       this.instantiatedMethodType = instantiatedMethodType;
     }
 
+    @Override
     public Body getBody(SootMethod m, String phaseName) {
       if (!phaseName.equals("jb")) {
         throw new Error("unsupported body type: " + phaseName);
@@ -687,11 +688,18 @@ public final class LambdaMetaFactory {
           final SootClass calledClass = methodRef.getDeclaringClass();
           // It can be the case that the method is not in the same class (or a super class).
           // As such, we need a virtual call in these cases.
-          if (Scene.v().getOrMakeFastHierarchy().canStoreClass(currentClass, calledClass))
-          {
-  	    return Jimple.v().newSpecialInvokeExpr(args.get(0), methodRef, rest(args));
+          if (Scene.v().getOrMakeFastHierarchy().canStoreClass(currentClass, calledClass)) {
+            return Jimple.v().newSpecialInvokeExpr(args.get(0), methodRef, rest(args));
           } else {
-  	    return Jimple.v().newVirtualInvokeExpr(args.get(0), methodRef, rest(args));
+            SootMethod m = implMethod.getMethodRef().resolve();
+            if (!m.isPublic()) {
+              // make sure the method is public
+              int mod = Modifier.PUBLIC | m.getModifiers();
+              mod &= ~Modifier.PRIVATE;
+              mod &= ~Modifier.PROTECTED;
+              m.setModifiers(mod);
+            }
+            return Jimple.v().newVirtualInvokeExpr(args.get(0), methodRef, rest(args));
           }
         case REF_INVOKE_CONSTRUCTOR:
           RefType type = methodRef.declaringClass().getType();
