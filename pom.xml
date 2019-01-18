@@ -271,8 +271,7 @@
                     <execution>
                         <id>System-tests</id>
                         <goals>
-                            <goal>
-                                test
+                            <goal>test
                             </goal>
                         </goals>
                         <configuration>
