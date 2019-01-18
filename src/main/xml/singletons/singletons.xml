@@ -170,4 +170,5 @@
   <class>soot.jbco.jimpleTransformations.ClassRenamer</class>
   <class>soot.jbco.jimpleTransformations.MethodRenamer</class>
   <class>soot.LambdaMetaFactory</class>
+  <class>soot.jbco.jimpleTransformations.FieldRenamer</class>
 </singletons>

@@ -1,5 +1,8 @@
 [![Build Status](http://soot-build.cs.uni-paderborn.de/jenkins/buildStatus/icon?job=soot/soot-master)](http://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-master/)
 
+# Using Soot? Let us know about it!
+We are regularly applying for funding to help us maintain Soot. You can help us immensely by letting us know about [**projects that use Soot**](https://github.com/Sable/soot/wiki/Users-of-Soot), both commercially or in the form of research tools.
+
 # Soot supports Java 9 modules now!
 Try and get involved in Soot's Java 9 bleeding edge developement. Check out the [Soot-j9](https://github.com/sable/soot/tree/java9) branch.
 
@@ -65,10 +68,6 @@ mailing list at: http://www.sable.mcgill.ca/mailman/listinfo/soot-list/
 # How do I contribute to Soot?
 
 We are happy to accept arbitrary improvements to Soot in form of GitHub pull requests. Please read our [contribution guidelines](https://github.com/Sable/soot/wiki/Contributing-to-Soot) before setting up a pull request.
-
-# What extensions exist to Soot?
-
-We maintain a [list of extensions that can be used in combination with Soot](https://github.com/Sable/soot/wiki/Extensions-to-Soot). Feel free to add your own!
 
 # Please help us improve Soot!
 You are using Soot and would like to help us support it in the future? Then please support us by filling out [this little web form](https://goo.gl/forms/rk1oSxFIxAH0xaf52).

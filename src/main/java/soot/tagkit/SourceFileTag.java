@@ -22,9 +22,12 @@ package soot.tagkit;
  * #L%
  */
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 public class SourceFileTag implements Tag {
+
+  public static final String NAME = SourceFileTag.class.getSimpleName();
+
   private String sourceFile;
   private String absolutePath;
 
@@ -40,16 +43,14 @@ public class SourceFileTag implements Tag {
   public SourceFileTag() {
   }
 
+  @Override
   public String getName() {
-    return "SourceFileTag";
+    return NAME;
   }
 
+  @Override
   public byte[] getValue() {
-    try {
-      return sourceFile.getBytes("UTF8");
-    } catch (UnsupportedEncodingException e) {
-      return new byte[0];
-    }
+    return sourceFile.getBytes(StandardCharsets.UTF_8);
   }
 
   public void setSourceFile(String srcFile) {
@@ -68,7 +69,9 @@ public class SourceFileTag implements Tag {
     return absolutePath;
   }
 
+  @Override
   public String toString() {
     return sourceFile;
   }
+
 }

@@ -157,7 +157,7 @@ public class Main {
         transformsToAdd.add(arg);
         transformsToWeights.put(arg, new Integer(tweight));
         if (arg.equals("wjtp.jbco_fr")) {
-          FieldRenamer.rename_fields = true;
+          FieldRenamer.v().setRenameFields(true);
         }
         remove[i] = true;
         rcount++;
@@ -258,7 +258,7 @@ public class Main {
       if (transformsToAdd.contains("jtp.jbco_adss")) {
         wjtp.add(new Transform("wjtp.jbco_fr", newTransform((Transformer) getTransform("wjtp.jbco_fr"))));
         if (transformsToAdd.remove("wjtp.jbco_fr")) {
-          FieldRenamer.rename_fields = true;
+          FieldRenamer.v().setRenameFields(true);
         }
       }
 
@@ -433,7 +433,7 @@ public class Main {
       return new FixUndefinedLocals();
     }
     if (name.equals("wjtp.jbco_fr")) {
-      return new FieldRenamer();
+      return FieldRenamer.v();
     }
     if (name.equals("wjtp.jbco_mr")) {
       return MethodRenamer.v();
