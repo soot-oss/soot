@@ -32,19 +32,9 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
     <version>3.2.0</version>
   </dependency>
 </dependencies>
-<repositories>
-  <repository>
-    <id>soot-release</id>
-    <name>soot releases</name>
-    <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
-  </repository>
-</repositories>	
-
 ```
 
-**Please make sure that your Java version is up to date to avoid problems with our SSL certificate**
-
-You can also obtain older releases. A complete listing of builds can be found in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse/components:soot-release).
+You can also obtain older releases. A complete listing of releases can be found on [Maven Central](https://mvnrepository.com/artifact/ca.mcgill.sable/soot).
 
 # How do I obtain Soot without Maven?
 
