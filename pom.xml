@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>ca.mcgill.sable</groupId>
     <artifactId>soot</artifactId>
-    <name>Soot - a J*va Optimization Framework</name>
     <version>3.3.0-SNAPSHOT</version>
+    <name>Soot - a J*va Optimization Framework</name>
     <description>A Java Optimization Framework</description>
+    <url>https://sable.github.io/soot/</url>
     <organization>
         <name>Sable</name>
         <url>http://www.sable.mcgill.ca/</url>
@@ -18,6 +18,31 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    <developers>
+        <developer>
+            <name>Manuel Benz</name>
+            <email>manuel.benz@upb.de</email>
+            <organization>University of Paderborn</organization>
+            <organizationUrl>https://www.hni.uni-paderborn.de/en/software-engineering/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Eric Bodden</name>
+            <email>eric.bodden@uni-paderborn.de</email>
+            <organization>University of Paderborn</organization>
+            <organizationUrl>https://www.hni.uni-paderborn.de/en/software-engineering/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Steven Arzt</name>
+            <email>eric.bodden@uni-paderborn.de</email>
+            <organization>Frauenhofer SIT</organization>
+            <organizationUrl>https://www.sit.fraunhofer.de/en/</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:git@github.com:Sable/soot.git</connection>
+        <developerConnection>scm:git:git@github.com:Sable/soot.git</developerConnection>
+        <url>https://github.com/Sable/soot/tree/master</url>
+    </scm>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -30,6 +55,8 @@
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.0.0</maven-javadoc-plugin.version>
+        <maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
         <checkstyle.version>8.9</checkstyle.version>
@@ -244,8 +271,7 @@
                     <execution>
                         <id>System-tests</id>
                         <goals>
-                            <goal>
-                                test
+                            <goal>test
                             </goal>
                         </goals>
                         <configuration>
@@ -480,8 +506,12 @@
             </snapshots>
         </repository>
     </repositories>
-
-
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
     <profiles>
         <profile>
             <id>deploy</id>
@@ -491,8 +521,44 @@
                     <value>true</value>
                 </property>
             </activation>
+            <properties>
+                <gpg.executable>gpg2</gpg.executable>
+                <gpg.keyname>BA6398DCF4E2C1B6C5C7BDFC364F80C21BCC61BB</gpg.keyname>
+            </properties>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>${maven-nexus-staging-plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven-gpg-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- This is necessary for gpg to not try to use the pinentry programs -->
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>

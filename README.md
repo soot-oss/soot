@@ -1,4 +1,7 @@
-[![Build Status](http://soot-build.cs.uni-paderborn.de/jenkins/buildStatus/icon?job=soot/soot-develop)](http://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-develop/)
+[![Build Status](http://soot-build.cs.uni-paderborn.de/jenkins/buildStatus/icon?job=soot/soot-master)](http://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-master/)
+
+# Using Soot? Let us know about it!
+We are regularly applying for funding to help us maintain Soot. You can help us immensely by letting us know about [**projects that use Soot**](https://github.com/Sable/soot/wiki/Users-of-Soot), both commercially or in the form of research tools.
 
 # Soot supports Java 9 modules now!
 Try and get involved in Soot's Java 9 bleeding edge developement. Check out the [Soot-j9](https://github.com/sable/soot/tree/java9) branch.
@@ -20,7 +23,7 @@ We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/w
 
 # Including Soot in your Project
 
-A Soot snapshot release is currently built for each commit to the `develop` branch. You can include Soot as 
+A Soot SNAPSHOT is currently built for each commit to the `develop` branch. You can include Soot as 
 a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 
 
@@ -34,21 +37,21 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 </dependencies>
 <repositories>
   <repository>
-    <id>soot-snapshot</id>
-    <name>soot snapshots</name>
-    <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/</url>
+      <id>sonatype-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+          <enabled>false</enabled>
+      </releases>
   </repository>
 </repositories>	
 
 ```
 
-**Please make sure that your Java version is up to date to avoid problems with our SSL certificate**
-
-You can also obtain older builds of the `develop` branch. A complete listing of builds can be found in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse/components:soot-snapshot).
+You can also obtain older builds of the `develop` branch. A complete listing of builds can be found in [Sonatypes SNAPSHOT repository](https://oss.sonatype.org/content/repositories/snapshots/ca/mcgill/sable/soot).
 
 # How do I obtain Soot without Maven?
 
-All of our Soot builds for the `develop` branch are stored up to one month in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse/components:soot-snapshot) and can be obtained from there.
+All of our Soot builds for the `develop` branch are also stored up to one month in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse/components:soot-snapshot) and can be obtained from there.
 The latest snapshot build of Soot can also be obtained [directly](https://soot-build.cs.uni-paderborn.de/public/origin/develop/soot/soot-develop/build/). The "sootclasses-trunk-jar-with-dependencies.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
 
 # Building Soot yourself
@@ -65,10 +68,6 @@ mailing list at: http://www.sable.mcgill.ca/mailman/listinfo/soot-list/
 # How do I contribute to Soot?
 
 We are happy to accept arbitrary improvements to Soot in form of GitHub pull requests. Please read our [contribution guidelines](https://github.com/Sable/soot/wiki/Contributing-to-Soot) before setting up a pull request.
-
-# What extensions exist to Soot?
-
-We maintain a [list of extensions that can be used in combination with Soot](https://github.com/Sable/soot/wiki/Extensions-to-Soot). Feel free to add your own!
 
 # Please help us improve Soot!
 You are using Soot and would like to help us support it in the future? Then please support us by filling out [this little web form](https://goo.gl/forms/rk1oSxFIxAH0xaf52).
