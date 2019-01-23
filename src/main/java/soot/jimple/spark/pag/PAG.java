@@ -1061,7 +1061,7 @@ public class PAG implements PointsToAnalysis {
     return assign2edges.get(val);
   }
 
-  final public void addCallTarget(Edge e) {
+  public void addCallTarget(Edge e) {
     if (!e.passesParameters()) {
       return;
     }
