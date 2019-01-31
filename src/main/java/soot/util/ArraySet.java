@@ -60,10 +60,12 @@ public class ArraySet<E> extends AbstractSet<E> {
     }
   }
 
+  @Override
   final public void clear() {
     numElements = 0;
   }
 
+  @Override
   final public boolean contains(Object obj) {
     for (int i = 0; i < numElements; i++) {
       if (elements[i].equals(obj)) {
@@ -91,6 +93,7 @@ public class ArraySet<E> extends AbstractSet<E> {
     return true;
   }
 
+  @Override
   final public boolean add(E e) {
     if (e == null) {
       throw new RuntimeException("oops");
@@ -109,6 +112,7 @@ public class ArraySet<E> extends AbstractSet<E> {
     }
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   final public boolean addAll(Collection<? extends E> s) {
     boolean ret = false;
@@ -124,10 +128,12 @@ public class ArraySet<E> extends AbstractSet<E> {
     return ret;
   }
 
+  @Override
   final public int size() {
     return numElements;
   }
 
+  @Override
   final public Iterator<E> iterator() {
     return new ArrayIterator<E>();
   }
@@ -139,10 +145,12 @@ public class ArraySet<E> extends AbstractSet<E> {
       nextIndex = 0;
     }
 
+    @Override
     final public boolean hasNext() {
       return nextIndex < numElements;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     final public V next() throws NoSuchElementException {
       if (!(nextIndex < numElements)) {
@@ -152,6 +160,7 @@ public class ArraySet<E> extends AbstractSet<E> {
       return (V) elements[nextIndex++];
     }
 
+    @Override
     final public void remove() throws NoSuchElementException {
       if (nextIndex == 0) {
         throw new NoSuchElementException();
@@ -175,7 +184,8 @@ public class ArraySet<E> extends AbstractSet<E> {
   }
 
   final private void doubleCapacity() {
-    int newSize = maxElements * 2;
+    // plus one to ensure that we have at least one element
+    int newSize = maxElements * 2 + 1;
 
     Object[] newElements = new Object[newSize];
 
@@ -184,6 +194,7 @@ public class ArraySet<E> extends AbstractSet<E> {
     maxElements = newSize;
   }
 
+  @Override
   final public Object[] toArray() {
     Object[] array = new Object[numElements];
 
@@ -191,6 +202,7 @@ public class ArraySet<E> extends AbstractSet<E> {
     return array;
   }
 
+  @Override
   final public <T> T[] toArray(T[] array) {
     System.arraycopy(elements, 0, array, 0, numElements);
     return array;
