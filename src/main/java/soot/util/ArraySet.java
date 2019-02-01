@@ -23,6 +23,7 @@ package soot.util;
  */
 
 import java.util.AbstractSet;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -202,10 +203,17 @@ public class ArraySet<E> extends AbstractSet<E> {
     return array;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   final public <T> T[] toArray(T[] array) {
-    System.arraycopy(elements, 0, array, 0, numElements);
-    return array;
+    if (array.length < numElements) {
+      return (T[]) Arrays.copyOf(elements, numElements, array.getClass());
+    } else {
+      System.arraycopy(elements, 0, array, 0, numElements);
+      if (array.length > numElements)
+        array[numElements] = null;
+      return array;
+    }
   }
 
   final public Object[] getUnderlyingArray() {
