@@ -493,23 +493,15 @@
     </dependencies>
     <repositories>
         <repository>
-            <id>soot-snapshot</id>
-            <name>Soot snapshot server</name>
-            <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/</url>
-        </repository>
-        <repository>
-            <id>soot-release</id>
-            <name>Soot release server</name>
-            <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+            <id>swt-upb</id>
+            <name>Maven repository of the Software Engineering Group at University of Paderborn</name>
+            <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/swt-upb/</url>
         </repository>
     </repositories>
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>su
         </snapshotRepository>
     </distributionManagement>
     <profiles>
