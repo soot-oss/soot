@@ -493,12 +493,9 @@
     </dependencies>
     <repositories>
         <repository>
-            <id>soot-release</id>
-            <name>Soot release server</name>
-            <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+            <id>swt-upb</id>
+            <name>Maven repository of the Software Engineering Group at University of Paderborn</name>
+            <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/swt-upb/</url>
         </repository>
     </repositories>
     <distributionManagement>
