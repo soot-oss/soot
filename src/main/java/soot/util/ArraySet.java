@@ -210,8 +210,9 @@ public class ArraySet<E> extends AbstractSet<E> {
       return (T[]) Arrays.copyOf(elements, numElements, array.getClass());
     } else {
       System.arraycopy(elements, 0, array, 0, numElements);
-      if (array.length > numElements)
+      if (array.length > numElements) {
         array[numElements] = null;
+      }
       return array;
     }
   }
