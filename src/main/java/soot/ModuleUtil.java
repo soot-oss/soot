@@ -194,7 +194,7 @@ public final class ModuleUtil {
       if (!Files.exists(excludeFile)) {
         // else take the one package
 
-        in = ModuleUtil.class.getResourceAsStream(File.separator + JAVABASEFILE);
+        in = ModuleUtil.class.getResourceAsStream("/" + JAVABASEFILE);
       } else {
 
         in = Files.newInputStream(excludeFile);
