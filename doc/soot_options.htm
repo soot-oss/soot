@@ -1083,7 +1083,7 @@
             </a></h2>
       <p>
          Jimple Body Creation creates a JimpleBody for each input
-         method, using either coffi, to read .class files, or the
+         method, using either asm, to read .class files, or the
          jimple parser, to read .jimple files.
          
       </p>
@@ -1135,12 +1135,33 @@
             <p>
                Make sure that local names are stable between runs. This requires re-normalizing all
                local names after the standard transformations, sorting them, and padding all local
-               names 
+               names
                with leading zeros up to the maximum number of digits in the local with the highest
-               integer 
+               integer
                value. This can negatively impact performance. This option automatically sets "sort-locals"
-               
                in "jb.lns" during the second re-normalization pass.
+               
+            </p>
+         </li>
+         <li><b>Model LambdaMetafactory</b>
+            (model-lambdametafactory)
+            <br>
+            (default value:
+            <span class="value">true</span>
+            )
+            
+            <p>
+               When the asm bytecode frontend is used and this option is set to true, Soot creates
+               an
+               implementation of the LambdaMetafactory for each dynamic invoke and
+               replaces the original dynamic invoke by a static invocation of the factory's bootstrap
+               method.
+               This allows the call-graph generation to find the lambda body reachable, i.e., call-graphs
+               contain paths from the invocation of a functional interface to the lambda body implementing
+               this
+               interface. Note that this procedure is not reversed when writing-out. Therefore, written-out
+               code will contain the created LambdaMetafactories and instrumented calls to the corresponding
+               bootstrap methods.
                
             </p>
          </li>
@@ -1429,7 +1450,7 @@
                instruction's list of definition statements. This position is then used
                to sort the locals with the same type in an ascending order. The local
                names are then appended with leading zeros so that all local names have
-               the same length (i.e., the same number of digits) as the largest local 
+               the same length (i.e., the same number of digits) as the largest local
                name in each individual method body.
                
             </p>
@@ -2420,7 +2441,7 @@
             
             <p>Normally, if a method is invoked on a class that is abstract and said class does
                not have any children in the Scene, the method invoke will not be resolved to any
-               concrete 
+               concrete
                methods even if the abstract class or its parent classes contain a concrete declaration
                of
                the method. This is because without any non-abstract children it is impossible to

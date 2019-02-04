@@ -136,7 +136,7 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
     ArrayList<Unit> toinsert = new ArrayList<Unit>();
     SootField field = null;
     try {
-      field = soot.jbco.jimpleTransformations.FieldRenamer.getRandomOpaques()[Rand.getInt(2)];
+      field = soot.jbco.jimpleTransformations.FieldRenamer.v().getRandomOpaques()[Rand.getInt(2)];
     } catch (NullPointerException npe) {
       logger.debug(npe.getMessage(), npe);
     }

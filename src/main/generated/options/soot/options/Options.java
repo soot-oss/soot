@@ -32,7 +32,7 @@ import java.util.*;
  *
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2019-02-04T16:25:15.605+01:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2019-02-04T21:39:39.574+01:00", comments = "from soot_options.xml")
 public class Options extends OptionsBase {
 
     public Options(Singletons.Global g) {
@@ -1893,12 +1893,13 @@ public class Options extends OptionsBase {
     public String getPhaseHelp(String phaseName) {
         if (phaseName.equals("jb"))
             return "Phase " + phaseName + ":\n"
-                    + "\nJimple Body Creation creates a JimpleBody for each input method, \nusing either coffi, to read .class files, or the jimple parser, \nto read .jimple files."
+                    + "\nJimple Body Creation creates a JimpleBody for each input method, \nusing either asm, to read .class files, or the jimple parser, to \nread .jimple files."
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (true)", "")
                     + padOpt("use-original-names (false)", "")
                     + padOpt("preserve-source-annotations (false)", "")
-                    + padOpt("stabilize-local-names (false)", "");
+                    + padOpt("stabilize-local-names (false)", "")
+                    + padOpt("model-lambdametafactory (true)", "Replace dynamic invoke instructions to the LambdaMetafactory by static invokes to a synthetic LambdaMetafactory implementation.");
 
         if (phaseName.equals("jb.dtr"))
             return "Phase " + phaseName + ":\n"
@@ -2847,7 +2848,8 @@ public class Options extends OptionsBase {
                     "enabled",
                     "use-original-names",
                     "preserve-source-annotations",
-                    "stabilize-local-names"
+                    "stabilize-local-names",
+                    "model-lambdametafactory"
             );
 
         if (phaseName.equals("jb.dtr"))
@@ -3591,7 +3593,8 @@ public class Options extends OptionsBase {
                     + "enabled:true "
                     + "use-original-names:false "
                     + "preserve-source-annotations:false "
-                    + "stabilize-local-names:false ";
+                    + "stabilize-local-names:false "
+                    + "model-lambdametafactory:true ";
 
         if (phaseName.equals("jb.dtr"))
             return ""

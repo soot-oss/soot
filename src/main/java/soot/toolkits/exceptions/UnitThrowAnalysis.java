@@ -165,6 +165,7 @@ import soot.jimple.LongConstant;
 import soot.jimple.LookupSwitchStmt;
 import soot.jimple.LtExpr;
 import soot.jimple.MethodHandle;
+import soot.jimple.MethodType;
 import soot.jimple.MulExpr;
 import soot.jimple.NeExpr;
 import soot.jimple.NegExpr;
@@ -863,7 +864,10 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     public void caseMethodHandle(MethodHandle handle) {
     }
-
+    
+    public void caseMethodType(MethodType type) {
+    }
+    
     // Declared by ExprSwitch interface:
 
     public void caseAddExpr(AddExpr expr) {

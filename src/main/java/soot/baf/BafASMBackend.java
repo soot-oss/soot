@@ -72,6 +72,7 @@ import soot.jimple.IdentityRef;
 import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
 import soot.jimple.MethodHandle;
+import soot.jimple.MethodType;
 import soot.jimple.NullConstant;
 import soot.jimple.ParameterRef;
 import soot.jimple.StringConstant;
@@ -461,18 +462,16 @@ public class BafASMBackend extends AbstractASMBackend {
         } else if (c instanceof NullConstant) {
           mv.visitInsn(Opcodes.ACONST_NULL);
         } else if (c instanceof MethodHandle) {
-          SootMethodRef ref = ((MethodHandle) c).getMethodRef();
-          int tag;
-          if (ref.isStatic()) {
-            tag = Opcodes.H_INVOKESTATIC;
-          } else if (ref.declaringClass().isInterface()) {
-            tag = Opcodes.H_INVOKEINTERFACE;
-          } else {
-            tag = Opcodes.H_INVOKEVIRTUAL;
+          Handle handle;
+          if (((MethodHandle) c).isMethodRef()) {
+            SootMethodRef methodRef = ((MethodHandle) c).getMethodRef();
+            handle = new Handle(((MethodHandle) c).getKind(), slashify(methodRef.declaringClass().getName()), 
+                methodRef.name(), toTypeDesc(methodRef), methodRef.declaringClass().isInterface());
+          } else { 
+            SootFieldRef fieldRef = ((MethodHandle) c).getFieldRef();
+            handle = new Handle(((MethodHandle) c).getKind(), slashify(fieldRef.declaringClass().getName()), fieldRef.name(),
+                toTypeDesc(fieldRef.type()), fieldRef.declaringClass().isInterface());
           }
-          Handle handle = new Handle(tag, ref.declaringClass().getName(), ref.name(), ref.getSignature(),
-              ref.declaringClass().isInnerClass());
-
           mv.visitLdcInsn(handle);
         } else {
           throw new RuntimeException("unsupported opcode");
@@ -1337,9 +1336,20 @@ public class BafASMBackend extends AbstractASMBackend {
 
             @Override
             public void caseMethodHandle(MethodHandle handle) {
-              SootMethodRef methodRef = handle.getMethodRef();
-              argsArray[j] = new Handle(handle.tag, slashify(methodRef.declaringClass().getName()), methodRef.name(),
-                  toTypeDesc(methodRef));
+              if (handle.isMethodRef()) {
+                SootMethodRef methodRef = handle.getMethodRef();
+                argsArray[j] = new Handle(handle.getKind(), slashify(methodRef.declaringClass().getName()), methodRef.name(),
+                    toTypeDesc(methodRef), methodRef.declaringClass().isInterface());
+              } else { 
+                SootFieldRef fieldRef = handle.getFieldRef();
+                argsArray[j] = new Handle(handle.getKind(), slashify(fieldRef.declaringClass().getName()), fieldRef.name(),
+                    toTypeDesc(fieldRef.type()), fieldRef.declaringClass().isInterface());
+              }
+            }
+            
+            @Override
+            public void caseMethodType(MethodType type) {
+              argsArray[j] = org.objectweb.asm.Type.getType(toTypeDesc(type.getParameterTypes(),type.getReturnType()));
             }
 
             @Override
@@ -1370,7 +1380,8 @@ public class BafASMBackend extends AbstractASMBackend {
           ++index;
         }
         mv.visitInvokeDynamicInsn(m.name(), toTypeDesc(m),
-            new Handle(i.getHandleTag(), slashify(bsm.declaringClass().getName()), bsm.name(), toTypeDesc(bsm)), argsArray);
+            new Handle(i.getHandleTag(), slashify(bsm.declaringClass().getName()), bsm.name(), toTypeDesc(bsm), 
+                bsm.declaringClass().isInterface()), argsArray);
       }
 
       @Override

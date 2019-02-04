@@ -62,6 +62,7 @@ import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
 import soot.jimple.LtExpr;
 import soot.jimple.MethodHandle;
+import soot.jimple.MethodType;
 import soot.jimple.MulExpr;
 import soot.jimple.NeExpr;
 import soot.jimple.NegExpr;
@@ -198,6 +199,10 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
 
   public void caseMethodHandle(MethodHandle handle) {
     throw new UnsupportedOperationException("we have not yet determined how to print Java 7 method handles");
+  }
+  
+  public void caseMethodType(MethodType type) {
+    throw new UnsupportedOperationException("we have not yet determined how to print Java 8 method handles");
   }
 
   private void printBinaryExpr(BinopExpr v) {

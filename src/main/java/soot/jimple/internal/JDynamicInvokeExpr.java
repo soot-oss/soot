@@ -26,8 +26,6 @@ package soot.jimple.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.objectweb.asm.Opcodes;
-
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
@@ -41,6 +39,7 @@ import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.ExprSwitch;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
+import soot.jimple.MethodHandle;
 import soot.util.Switch;
 
 @SuppressWarnings("serial")
@@ -75,7 +74,7 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
     /*
      * Here the static-handle is chosen as default value, because this works for Java.
      */
-    this(bootstrapMethodRef, bootstrapArgs, methodRef, Opcodes.H_INVOKESTATIC, methodArgs);
+    this(bootstrapMethodRef, bootstrapArgs, methodRef, MethodHandle.Kind.REF_INVOKE_STATIC.getValue(), methodArgs);
   }
 
   public int getBootstrapArgCount() {

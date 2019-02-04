@@ -40,6 +40,7 @@ import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
 import soot.Singletons;
+import soot.SootClass;
 import soot.Unit;
 import soot.options.Options;
 
@@ -90,261 +91,18 @@ import soot.options.Options;
 public class ThrowableSet {
 
   private static final boolean INSTRUMENTING = false;
-
-  /**
-   * Singleton class for fields and initializers common to all ThrowableSet objects (i.e., these would be static fields and
-   * initializers, in the absence of soot's {@link G} and {@link Singletons} classes).
-   */
-  public static class Manager {
-
-    /**
-     * This map stores all referenced <code>ThrowableSet</code>s.
-     */
-    private final Map<ThrowableSet, ThrowableSet> registry
-        = CacheBuilder.newBuilder().weakValues().<ThrowableSet, ThrowableSet>build().asMap();
-
-    /**
-     * <code>ThrowableSet</code> containing no exception classes.
-     */
-    public final ThrowableSet EMPTY;
-
-    /**
-     * <code>ThrowableSet</code> representing all possible Throwables.
-     */
-    final ThrowableSet ALL_THROWABLES;
-
-    /**
-     * <code>ThrowableSet</code> containing all the asynchronous and virtual machine errors, which may be thrown by any
-     * bytecode instruction at any point in the computation.
-     */
-    final ThrowableSet VM_ERRORS;
-
-    /**
-     * <code>ThrowableSet</code> containing all the exceptions that may be thrown in the course of resolving a reference to
-     * another class, including the process of loading, preparing, and verifying the referenced class.
-     */
-    public final ThrowableSet RESOLVE_CLASS_ERRORS;
-
-    /**
-     * <code>ThrowableSet</code> containing all the exceptions that may be thrown in the course of resolving a reference to a
-     * field.
-     */
-    final ThrowableSet RESOLVE_FIELD_ERRORS;
-
-    /**
-     * <code>ThrowableSet</code> containing all the exceptions that may be thrown in the course of resolving a reference to a
-     * non-static method.
-     */
-    final ThrowableSet RESOLVE_METHOD_ERRORS;
-
-    /**
-     * <code>ThrowableSet</code> containing all the exceptions which may be thrown by instructions that have the potential to
-     * cause a new class to be loaded and initialized (including UnsatisfiedLinkError, which is raised at runtime rather than
-     * linking type).
-     */
-    final ThrowableSet INITIALIZATION_ERRORS;
-
-    public final RefType RUNTIME_EXCEPTION;
-    public final RefType ARITHMETIC_EXCEPTION;
-    public final RefType ARRAY_STORE_EXCEPTION;
-    public final RefType CLASS_CAST_EXCEPTION;
-    public final RefType ILLEGAL_MONITOR_STATE_EXCEPTION;
-    public final RefType INDEX_OUT_OF_BOUNDS_EXCEPTION;
-    public final RefType ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION;
-    public final RefType NEGATIVE_ARRAY_SIZE_EXCEPTION;
-    public final RefType NULL_POINTER_EXCEPTION;
-    public final RefType INSTANTIATION_ERROR;
-
-    // counts for instrumenting:
-    private int addsOfRefType = 0;
-    private int addsOfAnySubType = 0;
-    private int addsOfSet = 0;
-    private int addsInclusionFromMap = 0;
-    private int addsInclusionFromMemo = 0;
-    private int addsInclusionFromSearch = 0;
-    private int addsInclusionInterrupted = 0;
-    private int addsExclusionWithSearch = 0;
-    private int addsExclusionWithoutSearch = 0;
-    private int removesOfAnySubType = 0;
-    private final int removesFromMap = 0;
-    private final int removesFromMemo = 0;
-    private int removesFromSearch = 0;
-    private int registrationCalls = 0;
-    private int catchableAsQueries = 0;
-    private int catchableAsFromMap = 0;
-    private int catchableAsFromSearch = 0;
-
-    /**
-     * Constructs a <code>ThrowableSet.Manager</code> for inclusion in Soot's global variable manager, {@link G}.
-     *
-     * @param g
-     *          guarantees that the constructor may only be called from {@link Singletons}.
-     */
-    public Manager(Singletons.Global g) {
-      // First ensure the Exception classes are represented in Soot.
-
-      // Runtime errors:
-      RUNTIME_EXCEPTION = Scene.v().getRefType("java.lang.RuntimeException");
-      ARITHMETIC_EXCEPTION = Scene.v().getRefType("java.lang.ArithmeticException");
-      ARRAY_STORE_EXCEPTION = Scene.v().getRefType("java.lang.ArrayStoreException");
-      CLASS_CAST_EXCEPTION = Scene.v().getRefType("java.lang.ClassCastException");
-      ILLEGAL_MONITOR_STATE_EXCEPTION = Scene.v().getRefType("java.lang.IllegalMonitorStateException");
-      INDEX_OUT_OF_BOUNDS_EXCEPTION = Scene.v().getRefType("java.lang.IndexOutOfBoundsException");
-      ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION = Scene.v().getRefType("java.lang.ArrayIndexOutOfBoundsException");
-      NEGATIVE_ARRAY_SIZE_EXCEPTION = Scene.v().getRefType("java.lang.NegativeArraySizeException");
-      NULL_POINTER_EXCEPTION = Scene.v().getRefType("java.lang.NullPointerException");
-
-      INSTANTIATION_ERROR = Scene.v().getRefType("java.lang.InstantiationError");
-
-      EMPTY = registerSetIfNew(null, null);
-
-      Set<RefLikeType> allThrowablesSet = new HashSet<RefLikeType>();
-      allThrowablesSet.add(AnySubType.v(Scene.v().getRefType("java.lang.Throwable")));
-      ALL_THROWABLES = registerSetIfNew(allThrowablesSet, null);
-
-      Set<RefLikeType> vmErrorSet = new HashSet<RefLikeType>();
-      vmErrorSet.add(Scene.v().getRefType("java.lang.InternalError"));
-      vmErrorSet.add(Scene.v().getRefType("java.lang.OutOfMemoryError"));
-      vmErrorSet.add(Scene.v().getRefType("java.lang.StackOverflowError"));
-      vmErrorSet.add(Scene.v().getRefType("java.lang.UnknownError"));
-
-      // The Java library's deprecated Thread.stop(Throwable) method
-      // would actually allow _any_ Throwable to be delivered
-      // asynchronously, not just java.lang.ThreadDeath.
-      vmErrorSet.add(Scene.v().getRefType("java.lang.ThreadDeath"));
-
-      VM_ERRORS = registerSetIfNew(vmErrorSet, null);
-
-      Set<RefLikeType> resolveClassErrorSet = new HashSet<RefLikeType>();
-      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.ClassCircularityError"));
-      // We add AnySubType(ClassFormatError) so that we can
-      // avoid adding its subclass,
-      // UnsupportedClassVersionError, explicitly. This is a
-      // hack to allow Soot to analyze older class libraries
-      // (UnsupportedClassVersionError was added in JDK 1.2).
-      if (!Options.v().j2me()) {
-        resolveClassErrorSet.add(AnySubType.v(Scene.v().getRefType("java.lang.ClassFormatError")));
-      }
-
-      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.IllegalAccessError"));
-      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.IncompatibleClassChangeError"));
-      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.LinkageError"));
-      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.NoClassDefFoundError"));
-      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.VerifyError"));
-      RESOLVE_CLASS_ERRORS = registerSetIfNew(resolveClassErrorSet, null);
-
-      Set<RefLikeType> resolveFieldErrorSet = new HashSet<RefLikeType>(resolveClassErrorSet);
-      resolveFieldErrorSet.add(Scene.v().getRefType("java.lang.NoSuchFieldError"));
-      RESOLVE_FIELD_ERRORS = registerSetIfNew(resolveFieldErrorSet, null);
-
-      Set<RefLikeType> resolveMethodErrorSet = new HashSet<RefLikeType>(resolveClassErrorSet);
-      resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.AbstractMethodError"));
-      resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.NoSuchMethodError"));
-      resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.UnsatisfiedLinkError"));
-      RESOLVE_METHOD_ERRORS = registerSetIfNew(resolveMethodErrorSet, null);
-
-      // The static initializers of a newly loaded class might
-      // throw any Error (if they threw an Exception---even a
-      // RuntimeException---it would be replaced by an
-      // ExceptionInInitializerError):
-      //
-      Set<RefLikeType> initializationErrorSet = new HashSet<RefLikeType>();
-      initializationErrorSet.add(AnySubType.v(Scene.v().getRefType("java.lang.Error")));
-      INITIALIZATION_ERRORS = registerSetIfNew(initializationErrorSet, null);
-    }
-
-    /**
-     * Returns the single instance of <code>ThrowableSet.Manager</code>.
-     *
-     * @return Soot's <code>ThrowableSet.Manager</code>.
-     */
-    public static Manager v() {
-      return G.v().soot_toolkits_exceptions_ThrowableSet_Manager();
-    }
-
-    /**
-     * <p>
-     * Returns a <code>ThrowableSet</code> representing the set of exceptions included in <code>include</code> minus the set
-     * of exceptions included in <code>exclude</code>. Creates a new <code>ThrowableSet</code> only if there was not already
-     * one whose contents correspond to <code>include</code> - <code>exclude</code>.
-     * </p>
-     *
-     * @param include
-     *          A set of {@link RefLikeType} objects representing exception types included in the result; may be
-     *          <code>null</code> if there are no included types.
-     *
-     * @param exclude
-     *          A set of {@link AnySubType} objects representing exception types excluded from the result; may be
-     *          <code>null</code> if there are no excluded types.
-     *
-     * @return a <code>ThrowableSet</code> representing the set of exceptions corresponding to <code>include</code> -
-     *         <code>exclude</code>.
-     */
-    private ThrowableSet registerSetIfNew(Set<RefLikeType> include, Set<AnySubType> exclude) {
-      if (INSTRUMENTING) {
-        registrationCalls++;
-      }
-      ThrowableSet result = new ThrowableSet(include, exclude);
-      ThrowableSet ref = registry.get(result);
-      if (null != ref) {
-        return ref;
-      }
-      registry.put(result, result);
-      return result;
-    }
-
-    /**
-     * Report the counts collected by instrumentation (for now, at least, there is no need to provide access to the
-     * individual values as numbers).
-     *
-     * @return a string listing the counts.
-     */
-    public String reportInstrumentation() {
-      int setCount = registry.size();
-
-      StringBuffer buf = new StringBuffer("registeredSets: ").append(setCount).append("\naddsOfRefType: ")
-          .append(addsOfRefType).append("\naddsOfAnySubType: ").append(addsOfAnySubType).append("\naddsOfSet: ")
-          .append(addsOfSet).append("\naddsInclusionFromMap: ").append(addsInclusionFromMap)
-          .append("\naddsInclusionFromMemo: ").append(addsInclusionFromMemo).append("\naddsInclusionFromSearch: ")
-          .append(addsInclusionFromSearch).append("\naddsInclusionInterrupted: ").append(addsInclusionInterrupted)
-          .append("\naddsExclusionWithoutSearch: ").append(addsExclusionWithoutSearch).append("\naddsExclusionWithSearch: ")
-          .append(addsExclusionWithSearch).append("\nremovesOfAnySubType: ").append(removesOfAnySubType)
-          .append("\nremovesFromMap: ").append(removesFromMap).append("\nremovesFromMemo: ").append(removesFromMemo)
-          .append("\nremovesFromSearch: ").append(removesFromSearch).append("\nregistrationCalls: ")
-          .append(registrationCalls).append("\ncatchableAsQueries: ").append(catchableAsQueries)
-          .append("\ncatchableAsFromMap: ").append(catchableAsFromMap).append("\ncatchableAsFromSearch: ")
-          .append(catchableAsFromSearch).append('\n');
-      return buf.toString();
-    }
-
-    /**
-     * A package-private method to provide unit tests with access to the collection of ThrowableSets.
-     */
-    Set<ThrowableSet> getThrowableSets() {
-      return registry.keySet();
-    }
-  }
-
-  public static class AlreadyHasExclusionsException extends IllegalStateException {
-    private static final long serialVersionUID = 6785184160868722359L;
-
-    public AlreadyHasExclusionsException(String s) {
-      super(s);
-    }
-  }
+  private final static SootClass JAVA_LANG_OBJECT_CLASS = Scene.v().getObjectType().getSootClass();
 
   /**
    * Set of exception types included within the set.
    */
   protected final Set<RefLikeType> exceptionsIncluded;
-
   /**
    * Set of exception types which, though members of exceptionsIncluded, are to be excluded from the types represented by
    * this <code>ThrowableSet</code>. To simplify the implementation, once a <code>ThrowableSet</code> has any excluded types,
    * the various <code>add()</code> methods of this class must bar additions of subtypes of those excluded types.
    */
   protected final Set<AnySubType> exceptionsExcluded;
-
   /**
    * A map from ({@link RefLikeType} \\union <code>ThrowableSet</code>) to <code>ThrowableSet</code>. If the mapping (k,v) is
    * in <code>memoizedAdds</code> and k is a <code>ThrowableSet</code>, then v is the set that results from adding all
@@ -352,17 +110,6 @@ public class ThrowableSet {
    * the set that results from adding k to <code>this</code>.
    */
   protected Map<Object, ThrowableSet> memoizedAdds;
-
-  private ThrowableSet getMemoizedAdds(Object key) {
-    return memoizedAdds == null ? null : memoizedAdds.get(key);
-  }
-
-  private void addToMemoizedAdds(Object key, ThrowableSet value) {
-    if (memoizedAdds == null) {
-      memoizedAdds = new HashMap<Object, ThrowableSet>();
-    }
-    memoizedAdds.put(key, value);
-  }
 
   /**
    * Constructs a <code>ThrowableSet</code> which contains the exception types represented in <code>include</code>, except
@@ -392,6 +139,38 @@ public class ThrowableSet {
       return Collections.singleton(in.iterator().next());
     }
     return Collections.unmodifiableSet(in);
+  }
+
+  /**
+   * Returns an {@link Iterator} over a {@link Collection} of Throwable types which iterates over its elements in a
+   * consistent order (maintaining an ordering that is consistent across different runs makes it easier to compare sets
+   * generated by different implementations of the CFG classes).
+   *
+   * @param coll
+   *          The collection to iterate over.
+   *
+   * @return An iterator which presents the elements of <code>coll</code> in order.
+   */
+  private static <T extends RefLikeType> Iterator<T> sortedThrowableIterator(Collection<T> coll) {
+    if (coll.size() <= 1) {
+      return coll.iterator();
+    } else {
+      @SuppressWarnings("unchecked")
+      T[] array = (T[]) coll.toArray(new RefLikeType[coll.size()]);
+      Arrays.sort(array, new ThrowableComparator<T>());
+      return Arrays.asList(array).iterator();
+    }
+  }
+
+  private ThrowableSet getMemoizedAdds(Object key) {
+    return memoizedAdds == null ? null : memoizedAdds.get(key);
+  }
+
+  private void addToMemoizedAdds(Object key, ThrowableSet value) {
+    if (memoizedAdds == null) {
+      memoizedAdds = new HashMap<>();
+    }
+    memoizedAdds.put(key, value);
   }
 
   /**
@@ -455,12 +234,13 @@ public class ThrowableSet {
         Manager.v().addsExclusionWithSearch++;
       }
     }
+
     FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
+    boolean eHasNoHierarchy = hasNoHierarchy(e);
 
     for (AnySubType excludedType : exceptionsExcluded) {
       RefType exclusionBase = excludedType.getBase();
-      if ((e.getSootClass().isPhantom() && exclusionBase.equals(e))
-          || (!e.getSootClass().isPhantom() && hierarchy.canStoreType(e, exclusionBase))) {
+      if ((eHasNoHierarchy && exclusionBase.equals(e)) || (!eHasNoHierarchy && hierarchy.canStoreType(e, exclusionBase))) {
         throw new AlreadyHasExclusionsException("ThrowableSet.add(RefType): adding" + e.toString() + " to the set [ "
             + this.toString() + "] where " + exclusionBase.toString() + " is excluded.");
       }
@@ -468,7 +248,7 @@ public class ThrowableSet {
 
     // If this is a real class, we need to check whether we already have it
     // in the list through subtyping.
-    if (!e.getSootClass().isPhantom()) {
+    if (!eHasNoHierarchy) {
       for (RefLikeType incumbent : exceptionsIncluded) {
         if (incumbent instanceof AnySubType) {
           // Need to use incumbent.getBase() because
@@ -486,11 +266,16 @@ public class ThrowableSet {
         }
       }
     }
-    Set<RefLikeType> resultSet = new HashSet<RefLikeType>(this.exceptionsIncluded);
+    Set<RefLikeType> resultSet = new HashSet<>(this.exceptionsIncluded);
     resultSet.add(e);
     result = Manager.v().registerSetIfNew(resultSet, this.exceptionsExcluded);
     addToMemoizedAdds(e, result);
     return result;
+  }
+
+  private boolean hasNoHierarchy(RefType type) {
+    final SootClass sootClass = type.getSootClass();
+    return !(sootClass.hasSuperclass() || JAVA_LANG_OBJECT_CLASS == sootClass);
   }
 
   /**
@@ -540,9 +325,12 @@ public class ThrowableSet {
       }
       return result;
     }
+    // java.lang.Object is managed by the Scene -> guaranteed to only have one instance of the Object class
+    final SootClass objectClass = Scene.v().getObjectType().getSootClass();
 
     FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
     RefType newBase = e.getBase();
+    boolean newBaseHasNoHierarchy = hasNoHierarchy(newBase);
 
     if (INSTRUMENTING) {
       if (exceptionsExcluded.isEmpty()) {
@@ -553,9 +341,11 @@ public class ThrowableSet {
     }
     for (AnySubType excludedType : exceptionsExcluded) {
       RefType exclusionBase = excludedType.getBase();
+      boolean exclusionBaseHasNoHierarchy = !(exclusionBase.getSootClass().hasSuperclass() || //
+          exclusionBase.getSootClass() == objectClass);
 
-      boolean isExcluded = exclusionBase.getSootClass().isPhantom() && exclusionBase.equals(newBase);
-      isExcluded |= !exclusionBase.getSootClass().isPhantom()
+      boolean isExcluded = exclusionBaseHasNoHierarchy && exclusionBase.equals(newBase);
+      isExcluded |= !exclusionBaseHasNoHierarchy
           && (hierarchy.canStoreType(newBase, exclusionBase) || hierarchy.canStoreType(exclusionBase, newBase));
 
       if (isExcluded) {
@@ -581,7 +371,7 @@ public class ThrowableSet {
 
     int changes = 0;
     boolean addNewException = true;
-    Set<RefLikeType> resultSet = new HashSet<RefLikeType>();
+    Set<RefLikeType> resultSet = new HashSet<>();
 
     for (RefLikeType incumbent : this.exceptionsIncluded) {
       if (incumbent instanceof RefType) {
@@ -593,7 +383,7 @@ public class ThrowableSet {
         }
       } else if (incumbent instanceof AnySubType) {
         RefType incumbentBase = ((AnySubType) incumbent).getBase();
-        if (newBase.getSootClass().isPhantom()) {
+        if (newBaseHasNoHierarchy) {
           if (!incumbentBase.equals(newBase)) {
             resultSet.add(incumbent);
           }
@@ -678,7 +468,7 @@ public class ThrowableSet {
    * @return a set containing all the <code>addedExceptions</code> as well as the exceptions in this set.
    */
   private ThrowableSet add(Set<RefLikeType> addedExceptions) {
-    Set<RefLikeType> resultSet = new HashSet<RefLikeType>(this.exceptionsIncluded);
+    Set<RefLikeType> resultSet = new HashSet<>(this.exceptionsIncluded);
     int changes = 0;
     FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
 
@@ -772,7 +562,7 @@ public class ThrowableSet {
     }
 
     int changes = 0;
-    Set<RefLikeType> resultSet = new HashSet<RefLikeType>(this.exceptionsIncluded);
+    Set<RefLikeType> resultSet = new HashSet<>(this.exceptionsIncluded);
     for (RefLikeType tp : removedExceptions) {
       if (tp instanceof RefType) {
         if (resultSet.remove(tp)) {
@@ -830,13 +620,21 @@ public class ThrowableSet {
     }
 
     FastHierarchy h = Scene.v().getOrMakeFastHierarchy();
+    /**
+     * Originally this implementation had checked if the catcher.getSootClass() is a phantom class. However this makes
+     * problems in case the soot option no_bodies_for_excluded==true because certain library classes will be marked as
+     * phantom classes even if they have a hierarchy. The workaround for this problem is to check for the suerClass. As every
+     * class except java.lang.Object have a superClass (even interfaces have!) only real phantom classes can be identified
+     * using this method.
+     */
+    boolean catcherHasNoHierarchy = hasNoHierarchy(catcher);
 
     if (exceptionsExcluded.size() > 0) {
       if (INSTRUMENTING) {
         Manager.v().catchableAsFromSearch++;
       }
       for (AnySubType exclusion : exceptionsExcluded) {
-        if (catcher.getSootClass().isPhantom()) {
+        if (catcherHasNoHierarchy) {
           if (exclusion.getBase().equals(catcher)) {
             return false;
           }
@@ -867,12 +665,12 @@ public class ThrowableSet {
             // assertion failure.
             throw new IllegalStateException(
                 "ThrowableSet.catchableAs(RefType): exceptions.contains() failed to match contained RefType " + catcher);
-          } else if (!catcher.getSootClass().isPhantom() && h.canStoreType(thrownType, catcher)) {
+          } else if (!catcherHasNoHierarchy && h.canStoreType(thrownType, catcher)) {
             return true;
           }
         } else {
           RefType thrownBase = ((AnySubType) thrownType).getBase();
-          if (catcher.getSootClass().isPhantom()) {
+          if (catcherHasNoHierarchy) {
             if (thrownBase.equals(catcher) || thrownBase.getClassName().equals("java.lang.Throwable")) {
               return true;
             }
@@ -913,12 +711,13 @@ public class ThrowableSet {
     if (INSTRUMENTING) {
       Manager.v().removesFromSearch++;
     }
+    boolean catcherHasNoHierarchy = hasNoHierarchy(catcher);
 
     for (AnySubType exclusion : exceptionsExcluded) {
       RefType exclusionBase = exclusion.getBase();
 
       // Is the current type explicitly excluded?
-      if (catcher.getSootClass().isPhantom() && exclusionBase.equals(catcher)) {
+      if (catcherHasNoHierarchy && exclusionBase.equals(catcher)) {
         return new Pair(ThrowableSet.Manager.v().EMPTY, this);
       }
 
@@ -940,9 +739,9 @@ public class ThrowableSet {
 
     for (RefLikeType inclusion : exceptionsIncluded) {
       if (inclusion instanceof RefType) {
-        // If the current type is a phantom type, we catch it if and
+        // If the current type is has no hierarchy, we catch it if and
         // only if it is in the inclusion list and ignore any hierarchy.
-        if (catcher.getSootClass().isPhantom()) {
+        if (catcherHasNoHierarchy) {
           if (inclusion.equals(catcher)) {
             caughtIncluded = addExceptionToSet(inclusion, caughtIncluded);
           } else {
@@ -955,9 +754,9 @@ public class ThrowableSet {
         }
       } else {
         RefType base = ((AnySubType) inclusion).getBase();
-        // If the current type is a phantom type, we catch it if and
+        // If the current type is has no hierarchy, we catch it if and
         // only if it is in the inclusion list and ignore any hierarchy.
-        if (catcher.getSootClass().isPhantom()) {
+        if (catcherHasNoHierarchy) {
           if (base.equals(catcher)) {
             caughtIncluded = addExceptionToSet(inclusion, caughtIncluded);
           } else {
@@ -995,77 +794,6 @@ public class ThrowableSet {
   }
 
   /**
-   * The return type for {@link ThrowableSet#whichCatchableAs(RefType)}, consisting of a pair of ThrowableSets.
-   */
-  public static class Pair {
-    private ThrowableSet caught;
-    private ThrowableSet uncaught;
-
-    /**
-     * Constructs a <code>ThrowableSet.Pair</code>.
-     *
-     * @param caught
-     *          The set of exceptions to be returned when {@link #getCaught()} is called on the constructed
-     *          <code>ThrowableSet.Pair</code>.
-     *
-     * @param uncaught
-     *          The set of exceptions to be returned when {@link #getUncaught()} is called on the constructed
-     *          <code>ThrowableSet.Pair</code>.
-     */
-    protected Pair(ThrowableSet caught, ThrowableSet uncaught) {
-      this.caught = caught;
-      this.uncaught = uncaught;
-    }
-
-    /**
-     * @return the set of caught exceptions.
-     */
-    public ThrowableSet getCaught() {
-      return caught;
-    }
-
-    /**
-     * @return the set of uncaught exceptions.
-     */
-    public ThrowableSet getUncaught() {
-      return uncaught;
-    }
-
-    /**
-     * Indicates whether two {@link Object}s are <code>ThrowableSet.Pair</code>s representing the same set of caught and
-     * uncaught exception types.
-     *
-     * @param o
-     *          the <code>Object</code> to compare to this <code>ThrowableSet.Pair</code>.
-     *
-     * @return <code>true</code> if <code>o</code> is a <code>ThrowableSet.Pair</code> representing the same set of caught
-     *         and uncaught types as this <code>ThrowableSet.Pair</code>.
-     */
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (!(o instanceof Pair)) {
-        return false;
-      }
-      Pair tsp = (Pair) o;
-      if (this.caught.equals(tsp.caught) && this.uncaught.equals(tsp.uncaught)) {
-        return true;
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      int result = 31;
-      result = (37 * result) + caught.hashCode();
-      result = (37 * result) + uncaught.hashCode();
-      return result;
-    }
-  }
-
-  /**
    * Utility method for building sets of exceptional types for a {@link Pair}.
    *
    * @param e
@@ -1079,7 +807,7 @@ public class ThrowableSet {
    */
   private <T> Set<T> addExceptionToSet(T e, Set<T> set) {
     if (set == null) {
-      set = new HashSet<T>();
+      set = new HashSet<>();
     }
     set.add(e);
     return set;
@@ -1109,67 +837,6 @@ public class ThrowableSet {
    */
   public String toBriefString() {
     return super.toString();
-  }
-
-  /**
-   * Returns an {@link Iterator} over a {@link Collection} of Throwable types which iterates over its elements in a
-   * consistent order (maintaining an ordering that is consistent across different runs makes it easier to compare sets
-   * generated by different implementations of the CFG classes).
-   *
-   * @param coll
-   *          The collection to iterate over.
-   *
-   * @return An iterator which presents the elements of <code>coll</code> in order.
-   */
-  private static <T extends RefLikeType> Iterator<T> sortedThrowableIterator(Collection<T> coll) {
-    if (coll.size() <= 1) {
-      return coll.iterator();
-    } else {
-      @SuppressWarnings("unchecked")
-      T[] array = (T[]) coll.toArray(new RefLikeType[coll.size()]);
-      Arrays.sort(array, new ThrowableComparator<T>());
-      return Arrays.asList(array).iterator();
-    }
-  }
-
-  /**
-   * Comparator used to implement sortedThrowableIterator().
-   *
-   */
-  private static class ThrowableComparator<T extends RefLikeType> implements java.util.Comparator<T> {
-
-    private static RefType baseType(RefLikeType o) {
-      if (o instanceof AnySubType) {
-        return ((AnySubType) o).getBase();
-      } else {
-        return (RefType) o; // ClassCastException if o is not a RefType.
-      }
-    }
-
-    @Override
-    public int compare(T o1, T o2) {
-      RefType t1 = baseType(o1);
-      RefType t2 = baseType(o2);
-      if (t1.equals(t2)) {
-        // There should never be both AnySubType(t) and
-        // t in a ThrowableSet, but if it happens, put
-        // AnySubType(t) first:
-        if (o1 instanceof AnySubType) {
-          if (o2 instanceof AnySubType) {
-            return 0;
-          } else {
-            return -1;
-          }
-        } else if (o2 instanceof AnySubType) {
-          return 1;
-        } else {
-          return 0;
-        }
-      } else {
-        return t1.toString().compareTo(t2.toString());
-      }
-    }
-
   }
 
   /**
@@ -1310,5 +977,349 @@ public class ThrowableSet {
     ThrowableSet other = (ThrowableSet) obj;
 
     return exceptionsIncluded.equals(other.exceptionsIncluded) && exceptionsExcluded.equals(other.exceptionsExcluded);
+  }
+
+  /**
+   * Singleton class for fields and initializers common to all ThrowableSet objects (i.e., these would be static fields and
+   * initializers, in the absence of soot's {@link G} and {@link Singletons} classes).
+   */
+  public static class Manager {
+
+    /**
+     * <code>ThrowableSet</code> containing no exception classes.
+     */
+    public final ThrowableSet EMPTY;
+    /**
+     * <code>ThrowableSet</code> containing all the exceptions that may be thrown in the course of resolving a reference to
+     * another class, including the process of loading, preparing, and verifying the referenced class.
+     */
+    public final ThrowableSet RESOLVE_CLASS_ERRORS;
+    public final RefType RUNTIME_EXCEPTION;
+    public final RefType ARITHMETIC_EXCEPTION;
+    public final RefType ARRAY_STORE_EXCEPTION;
+    public final RefType CLASS_CAST_EXCEPTION;
+    public final RefType ILLEGAL_MONITOR_STATE_EXCEPTION;
+    public final RefType INDEX_OUT_OF_BOUNDS_EXCEPTION;
+    public final RefType ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION;
+    public final RefType NEGATIVE_ARRAY_SIZE_EXCEPTION;
+    public final RefType NULL_POINTER_EXCEPTION;
+    public final RefType INSTANTIATION_ERROR;
+    /**
+     * <code>ThrowableSet</code> representing all possible Throwables.
+     */
+    final ThrowableSet ALL_THROWABLES;
+    /**
+     * <code>ThrowableSet</code> containing all the asynchronous and virtual machine errors, which may be thrown by any
+     * bytecode instruction at any point in the computation.
+     */
+    final ThrowableSet VM_ERRORS;
+    /**
+     * <code>ThrowableSet</code> containing all the exceptions that may be thrown in the course of resolving a reference to a
+     * field.
+     */
+    final ThrowableSet RESOLVE_FIELD_ERRORS;
+    /**
+     * <code>ThrowableSet</code> containing all the exceptions that may be thrown in the course of resolving a reference to a
+     * non-static method.
+     */
+    final ThrowableSet RESOLVE_METHOD_ERRORS;
+    /**
+     * <code>ThrowableSet</code> containing all the exceptions which may be thrown by instructions that have the potential to
+     * cause a new class to be loaded and initialized (including UnsatisfiedLinkError, which is raised at runtime rather than
+     * linking type).
+     */
+    final ThrowableSet INITIALIZATION_ERRORS;
+    /**
+     * This map stores all referenced <code>ThrowableSet</code>s.
+     */
+    private final Map<ThrowableSet, ThrowableSet> registry
+        = CacheBuilder.newBuilder().weakValues().<ThrowableSet, ThrowableSet>build().asMap();
+    private final int removesFromMap = 0;
+    private final int removesFromMemo = 0;
+    // counts for instrumenting:
+    private int addsOfRefType = 0;
+    private int addsOfAnySubType = 0;
+    private int addsOfSet = 0;
+    private int addsInclusionFromMap = 0;
+    private int addsInclusionFromMemo = 0;
+    private int addsInclusionFromSearch = 0;
+    private int addsInclusionInterrupted = 0;
+    private int addsExclusionWithSearch = 0;
+    private int addsExclusionWithoutSearch = 0;
+    private int removesOfAnySubType = 0;
+    private int removesFromSearch = 0;
+    private int registrationCalls = 0;
+    private int catchableAsQueries = 0;
+    private int catchableAsFromMap = 0;
+    private int catchableAsFromSearch = 0;
+
+    /**
+     * Constructs a <code>ThrowableSet.Manager</code> for inclusion in Soot's global variable manager, {@link G}.
+     *
+     * @param g
+     *          guarantees that the constructor may only be called from {@link Singletons}.
+     */
+    public Manager(Singletons.Global g) {
+      // First ensure the Exception classes are represented in Soot.
+
+      // Runtime errors:
+      RUNTIME_EXCEPTION = Scene.v().getRefType("java.lang.RuntimeException");
+      ARITHMETIC_EXCEPTION = Scene.v().getRefType("java.lang.ArithmeticException");
+      ARRAY_STORE_EXCEPTION = Scene.v().getRefType("java.lang.ArrayStoreException");
+      CLASS_CAST_EXCEPTION = Scene.v().getRefType("java.lang.ClassCastException");
+      ILLEGAL_MONITOR_STATE_EXCEPTION = Scene.v().getRefType("java.lang.IllegalMonitorStateException");
+      INDEX_OUT_OF_BOUNDS_EXCEPTION = Scene.v().getRefType("java.lang.IndexOutOfBoundsException");
+      ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION = Scene.v().getRefType("java.lang.ArrayIndexOutOfBoundsException");
+      NEGATIVE_ARRAY_SIZE_EXCEPTION = Scene.v().getRefType("java.lang.NegativeArraySizeException");
+      NULL_POINTER_EXCEPTION = Scene.v().getRefType("java.lang.NullPointerException");
+
+      INSTANTIATION_ERROR = Scene.v().getRefType("java.lang.InstantiationError");
+
+      EMPTY = registerSetIfNew(null, null);
+
+      Set<RefLikeType> allThrowablesSet = new HashSet<>();
+      allThrowablesSet.add(AnySubType.v(Scene.v().getRefType("java.lang.Throwable")));
+      ALL_THROWABLES = registerSetIfNew(allThrowablesSet, null);
+
+      Set<RefLikeType> vmErrorSet = new HashSet<>();
+      vmErrorSet.add(Scene.v().getRefType("java.lang.InternalError"));
+      vmErrorSet.add(Scene.v().getRefType("java.lang.OutOfMemoryError"));
+      vmErrorSet.add(Scene.v().getRefType("java.lang.StackOverflowError"));
+      vmErrorSet.add(Scene.v().getRefType("java.lang.UnknownError"));
+
+      // The Java library's deprecated Thread.stop(Throwable) method
+      // would actually allow _any_ Throwable to be delivered
+      // asynchronously, not just java.lang.ThreadDeath.
+      vmErrorSet.add(Scene.v().getRefType("java.lang.ThreadDeath"));
+
+      VM_ERRORS = registerSetIfNew(vmErrorSet, null);
+
+      Set<RefLikeType> resolveClassErrorSet = new HashSet<>();
+      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.ClassCircularityError"));
+      // We add AnySubType(ClassFormatError) so that we can
+      // avoid adding its subclass,
+      // UnsupportedClassVersionError, explicitly. This is a
+      // hack to allow Soot to analyze older class libraries
+      // (UnsupportedClassVersionError was added in JDK 1.2).
+      if (!Options.v().j2me()) {
+        resolveClassErrorSet.add(AnySubType.v(Scene.v().getRefType("java.lang.ClassFormatError")));
+      }
+
+      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.IllegalAccessError"));
+      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.IncompatibleClassChangeError"));
+      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.LinkageError"));
+      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.NoClassDefFoundError"));
+      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.VerifyError"));
+      RESOLVE_CLASS_ERRORS = registerSetIfNew(resolveClassErrorSet, null);
+
+      Set<RefLikeType> resolveFieldErrorSet = new HashSet<>(resolveClassErrorSet);
+      resolveFieldErrorSet.add(Scene.v().getRefType("java.lang.NoSuchFieldError"));
+      RESOLVE_FIELD_ERRORS = registerSetIfNew(resolveFieldErrorSet, null);
+
+      Set<RefLikeType> resolveMethodErrorSet = new HashSet<>(resolveClassErrorSet);
+      resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.AbstractMethodError"));
+      resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.NoSuchMethodError"));
+      resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.UnsatisfiedLinkError"));
+      RESOLVE_METHOD_ERRORS = registerSetIfNew(resolveMethodErrorSet, null);
+
+      // The static initializers of a newly loaded class might
+      // throw any Error (if they threw an Exception---even a
+      // RuntimeException---it would be replaced by an
+      // ExceptionInInitializerError):
+      //
+      Set<RefLikeType> initializationErrorSet = new HashSet<>();
+      initializationErrorSet.add(AnySubType.v(Scene.v().getRefType("java.lang.Error")));
+      INITIALIZATION_ERRORS = registerSetIfNew(initializationErrorSet, null);
+    }
+
+    /**
+     * Returns the single instance of <code>ThrowableSet.Manager</code>.
+     *
+     * @return Soot's <code>ThrowableSet.Manager</code>.
+     */
+    public static Manager v() {
+      return G.v().soot_toolkits_exceptions_ThrowableSet_Manager();
+    }
+
+    /**
+     * <p>
+     * Returns a <code>ThrowableSet</code> representing the set of exceptions included in <code>include</code> minus the set
+     * of exceptions included in <code>exclude</code>. Creates a new <code>ThrowableSet</code> only if there was not already
+     * one whose contents correspond to <code>include</code> - <code>exclude</code>.
+     * </p>
+     *
+     * @param include
+     *          A set of {@link RefLikeType} objects representing exception types included in the result; may be
+     *          <code>null</code> if there are no included types.
+     *
+     * @param exclude
+     *          A set of {@link AnySubType} objects representing exception types excluded from the result; may be
+     *          <code>null</code> if there are no excluded types.
+     *
+     * @return a <code>ThrowableSet</code> representing the set of exceptions corresponding to <code>include</code> -
+     *         <code>exclude</code>.
+     */
+    private ThrowableSet registerSetIfNew(Set<RefLikeType> include, Set<AnySubType> exclude) {
+      if (INSTRUMENTING) {
+        registrationCalls++;
+      }
+      ThrowableSet result = new ThrowableSet(include, exclude);
+      ThrowableSet ref = registry.get(result);
+      if (null != ref) {
+        return ref;
+      }
+      registry.put(result, result);
+      return result;
+    }
+
+    /**
+     * Report the counts collected by instrumentation (for now, at least, there is no need to provide access to the
+     * individual values as numbers).
+     *
+     * @return a string listing the counts.
+     */
+    public String reportInstrumentation() {
+      int setCount = registry.size();
+
+      StringBuffer buf = new StringBuffer("registeredSets: ").append(setCount).append("\naddsOfRefType: ")
+          .append(addsOfRefType).append("\naddsOfAnySubType: ").append(addsOfAnySubType).append("\naddsOfSet: ")
+          .append(addsOfSet).append("\naddsInclusionFromMap: ").append(addsInclusionFromMap)
+          .append("\naddsInclusionFromMemo: ").append(addsInclusionFromMemo).append("\naddsInclusionFromSearch: ")
+          .append(addsInclusionFromSearch).append("\naddsInclusionInterrupted: ").append(addsInclusionInterrupted)
+          .append("\naddsExclusionWithoutSearch: ").append(addsExclusionWithoutSearch).append("\naddsExclusionWithSearch: ")
+          .append(addsExclusionWithSearch).append("\nremovesOfAnySubType: ").append(removesOfAnySubType)
+          .append("\nremovesFromMap: ").append(removesFromMap).append("\nremovesFromMemo: ").append(removesFromMemo)
+          .append("\nremovesFromSearch: ").append(removesFromSearch).append("\nregistrationCalls: ")
+          .append(registrationCalls).append("\ncatchableAsQueries: ").append(catchableAsQueries)
+          .append("\ncatchableAsFromMap: ").append(catchableAsFromMap).append("\ncatchableAsFromSearch: ")
+          .append(catchableAsFromSearch).append('\n');
+      return buf.toString();
+    }
+
+    /**
+     * A package-private method to provide unit tests with access to the collection of ThrowableSets.
+     */
+    Set<ThrowableSet> getThrowableSets() {
+      return registry.keySet();
+    }
+  }
+
+  public static class AlreadyHasExclusionsException extends IllegalStateException {
+    private static final long serialVersionUID = 6785184160868722359L;
+
+    public AlreadyHasExclusionsException(String s) {
+      super(s);
+    }
+  }
+
+  /**
+   * The return type for {@link ThrowableSet#whichCatchableAs(RefType)}, consisting of a pair of ThrowableSets.
+   */
+  public static class Pair {
+    private ThrowableSet caught;
+    private ThrowableSet uncaught;
+
+    /**
+     * Constructs a <code>ThrowableSet.Pair</code>.
+     *
+     * @param caught
+     *          The set of exceptions to be returned when {@link #getCaught()} is called on the constructed
+     *          <code>ThrowableSet.Pair</code>.
+     *
+     * @param uncaught
+     *          The set of exceptions to be returned when {@link #getUncaught()} is called on the constructed
+     *          <code>ThrowableSet.Pair</code>.
+     */
+    protected Pair(ThrowableSet caught, ThrowableSet uncaught) {
+      this.caught = caught;
+      this.uncaught = uncaught;
+    }
+
+    /**
+     * @return the set of caught exceptions.
+     */
+    public ThrowableSet getCaught() {
+      return caught;
+    }
+
+    /**
+     * @return the set of uncaught exceptions.
+     */
+    public ThrowableSet getUncaught() {
+      return uncaught;
+    }
+
+    /**
+     * Indicates whether two {@link Object}s are <code>ThrowableSet.Pair</code>s representing the same set of caught and
+     * uncaught exception types.
+     *
+     * @param o
+     *          the <code>Object</code> to compare to this <code>ThrowableSet.Pair</code>.
+     *
+     * @return <code>true</code> if <code>o</code> is a <code>ThrowableSet.Pair</code> representing the same set of caught
+     *         and uncaught types as this <code>ThrowableSet.Pair</code>.
+     */
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (!(o instanceof Pair)) {
+        return false;
+      }
+      Pair tsp = (Pair) o;
+      if (this.caught.equals(tsp.caught) && this.uncaught.equals(tsp.uncaught)) {
+        return true;
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int result = 31;
+      result = (37 * result) + caught.hashCode();
+      result = (37 * result) + uncaught.hashCode();
+      return result;
+    }
+  }
+
+  /**
+   * Comparator used to implement sortedThrowableIterator().
+   *
+   */
+  private static class ThrowableComparator<T extends RefLikeType> implements java.util.Comparator<T> {
+
+    private static RefType baseType(RefLikeType o) {
+      if (o instanceof AnySubType) {
+        return ((AnySubType) o).getBase();
+      } else {
+        return (RefType) o; // ClassCastException if o is not a RefType.
+      }
+    }
+
+    @Override
+    public int compare(T o1, T o2) {
+      RefType t1 = baseType(o1);
+      RefType t2 = baseType(o2);
+      if (t1.equals(t2)) {
+        // There should never be both AnySubType(t) and
+        // t in a ThrowableSet, but if it happens, put
+        // AnySubType(t) first:
+        if (o1 instanceof AnySubType) {
+          if (o2 instanceof AnySubType) {
+            return 0;
+          } else {
+            return -1;
+          }
+        } else if (o2 instanceof AnySubType) {
+          return 1;
+        } else {
+          return 0;
+        }
+      } else {
+        return t1.toString().compareTo(t2.toString());
+      }
+    }
+
   }
 }

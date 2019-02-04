@@ -147,7 +147,7 @@ public class TypeAssigner extends BodyTransformer {
    *
    * @param b
    */
-  private void replaceNullType(Body b) {
+  protected static void replaceNullType(Body b) {
     List<Local> localsToRemove = new ArrayList<Local>();
     boolean hasNullType = false;
 
