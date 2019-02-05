@@ -54,7 +54,7 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 
-public final class PropWorklist extends Propagator {
+public class PropWorklist extends Propagator {
   private static final Logger logger = LoggerFactory.getLogger(PropWorklist.class);
   protected final Set<VarNode> varNodeWorkList = new TreeSet<VarNode>();
 
