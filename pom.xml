@@ -46,7 +46,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <xml-maven-plugin.version>1.0.1</xml-maven-plugin.version>
+        <xml-maven-plugin.version>1.0.2</xml-maven-plugin.version>
         <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
@@ -493,17 +493,9 @@
     </dependencies>
     <repositories>
         <repository>
-            <id>soot-snapshot</id>
-            <name>Soot snapshot server</name>
-            <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/</url>
-        </repository>
-        <repository>
-            <id>soot-release</id>
-            <name>Soot release server</name>
-            <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+            <id>swt-upb</id>
+            <name>Maven repository of the Software Engineering Group at University of Paderborn</name>
+            <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/swt-upb/</url>
         </repository>
     </repositories>
     <distributionManagement>
