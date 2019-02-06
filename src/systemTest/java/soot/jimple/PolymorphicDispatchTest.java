@@ -22,11 +22,10 @@ package soot.jimple;
  * #L%
  */
 
-import android.graphics.Region;
 import org.junit.Assert;
 import org.junit.Test;
+
 import soot.PackManager;
-import soot.PhaseOptions;
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
@@ -38,38 +37,34 @@ import soot.testing.framework.AbstractTestingFramework;
  */
 public class PolymorphicDispatchTest extends AbstractTestingFramework {
 
-    private static final String TEST_TARGET_CLASS = "soot.jimple.PolymorphicDispatch";
+  private static final String TEST_TARGET_CLASS = "soot.jimple.PolymorphicDispatch";
 
+  @Override
+  protected void setupSoot() {
+    Options.v().set_allow_phantom_refs(false);
+    Options.v().set_no_bodies_for_excluded(false);
+    Options.v().set_prepend_classpath(true);
+  }
 
-    @Override
-    protected void setupSoot() {
-        Options.v().set_allow_phantom_refs(false);
-        Options.v().set_no_bodies_for_excluded(false);
-        Options.v().set_prepend_classpath(true);
+  @Override
+  protected void runSoot() {
+    PackManager.v().runBodyPacks();
+  }
 
-    }
-
-
-    @Override
-    protected void runSoot() {
-        PackManager.v().getPack("wjpp").apply();
-        PackManager.v().getPack("wjpp").apply();
-    }
-
-    @Test
-    public void findsTarget() {
-        final SootMethod sootMethod = prepareTarget("<" + TEST_TARGET_CLASS + ": void test()>", TEST_TARGET_CLASS);
-        Assert.assertNotNull("Could not find target method. System test setup seems to be incorrect.", sootMethod);
-        Assert.assertTrue(sootMethod.isConcrete());
-        Assert.assertNotNull(sootMethod.retrieveActiveBody());
-        for (Unit u : sootMethod.getActiveBody().getUnits()) {
-            if (u instanceof AssignStmt) {
-                Value right = ((AssignStmt) u).getRightOp();
-                if (right instanceof InvokeExpr) {
-                    SootMethod m = ((InvokeExpr) right).getMethodRef().resolve();
-                    System.out.println(m);
-                }
-            }
+  @Test
+  public void findsTarget() {
+    final SootMethod sootMethod = prepareTarget("<" + TEST_TARGET_CLASS + ": void test()>", TEST_TARGET_CLASS);
+    Assert.assertNotNull("Could not find target method. System test setup seems to be incorrect.", sootMethod);
+    Assert.assertTrue(sootMethod.isConcrete());
+    Assert.assertNotNull(sootMethod.retrieveActiveBody());
+    for (Unit u : sootMethod.getActiveBody().getUnits()) {
+      if (u instanceof AssignStmt) {
+        Value right = ((AssignStmt) u).getRightOp();
+        if (right instanceof InvokeExpr) {
+          // SootMethod m = ((InvokeExpr) right).getMethodRef().resolve();
+          // System.out.println(m);
         }
+      }
     }
+  }
 }
