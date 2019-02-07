@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -112,6 +113,7 @@ public abstract class AbstractTestingFramework {
     mockStatics();
     SootMethod sootTestMethod = createTestTarget(targetMethodSignature);
     runSoot();
+    Assert.assertNotNull("Could not find target method. System test setup seems to be incorrect.", sootTestMethod);
     return sootTestMethod;
   }
 
