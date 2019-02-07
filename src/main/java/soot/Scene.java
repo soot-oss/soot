@@ -1869,9 +1869,8 @@ public class Scene // extends AbstractHost
   /** Create an unresolved reference to a method. */
   public SootMethodRef makeMethodRef(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType,
       boolean isStatic) {
-    if (declaringClass.getName().equals(SootMethodRefHandleImpl.METHODHANDLE_SIGNATURE)
-        || declaringClass.getName().equals(SootMethodRefHandleImpl.VARHANDLE_SIGNATURE)) {
-      return new SootMethodRefHandleImpl(declaringClass, name, parameterTypes, returnType, isStatic);
+    if (PolymorphicMethodRef.handlesClass(declaringClass)) {
+      return new PolymorphicMethodRef(declaringClass, name, parameterTypes, returnType, isStatic);
     }
     return new SootMethodRefImpl(declaringClass, name, parameterTypes, returnType, isStatic);
   }
