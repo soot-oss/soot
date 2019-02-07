@@ -113,7 +113,7 @@ public abstract class AbstractTestingFramework {
     mockStatics();
     SootMethod sootTestMethod = createTestTarget(targetMethodSignature);
     runSoot();
-    Assert.assertNotNull("Could not find target method. System test setup seems to be incorrect.", sootTestMethod);
+    Assert.assertNotNull("Could not find target method. System test setup seems to be incorrect. Please try to re-run `mvn test-compile` to make sure that the target code is present for analysis.", sootTestMethod);
     return sootTestMethod;
   }
 
