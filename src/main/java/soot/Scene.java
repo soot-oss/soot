@@ -637,14 +637,14 @@ public class Scene // extends AbstractHost
 
     return jarPath;
   }
-  
+
   public static boolean isApk(String file) {
     // decide if a file is an APK by its magic number and whether it contains dex file.
     boolean r = false;
     // first check magic number
     File apk = new File(file);
-    MagicNumberFileFilter apkFilter = new MagicNumberFileFilter(new byte[] {(byte) 0x50, (byte) 0x4B,
-                                                                            (byte) 0x03, (byte) 0x04});
+    MagicNumberFileFilter apkFilter
+        = new MagicNumberFileFilter(new byte[] { (byte) 0x50, (byte) 0x4B, (byte) 0x03, (byte) 0x04 });
     if (!apkFilter.accept(apk)) {
       return r;
     }
@@ -672,7 +672,7 @@ public class Scene // extends AbstractHost
         }
       }
     }
-    
+
     return r;
   }
 
@@ -1869,6 +1869,10 @@ public class Scene // extends AbstractHost
   /** Create an unresolved reference to a method. */
   public SootMethodRef makeMethodRef(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType,
       boolean isStatic) {
+    if (declaringClass.getName().equals(SootMethodRefHandleImpl.METHODHANDLE_SIGNATURE)
+        || declaringClass.getName().equals(SootMethodRefHandleImpl.VARHANDLE_SIGNATURE)) {
+      return new SootMethodRefHandleImpl(declaringClass, name, parameterTypes, returnType, isStatic);
+    }
     return new SootMethodRefImpl(declaringClass, name, parameterTypes, returnType, isStatic);
   }
 
