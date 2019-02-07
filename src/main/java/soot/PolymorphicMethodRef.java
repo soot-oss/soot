@@ -36,13 +36,30 @@ import soot.tagkit.VisibilityAnnotationTag;
  * 
  * @author Andreas Dann created on 06.02.19
  */
-public class SootMethodRefHandleImpl extends SootMethodRefImpl {
+public class PolymorphicMethodRef extends SootMethodRefImpl {
 
   public static String METHODHANDLE_SIGNATURE = "java.lang.invoke.MethodHandle";
 
   public static String VARHANDLE_SIGNATURE = "java.lang.invoke.VarHandle";
 
   public static String POLYMORPHIC_SIGNATURE = "java/lang/invoke/MethodHandle$PolymorphicSignature";
+
+  /**
+   * Check if the declaring class "has the rights" to declare polymorphic methods
+   * {@see http://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.12.4.4}
+   * 
+   * @param declaringClass
+   *          the class to check
+   * @return if the class is allowed according to the JVM Spec
+   */
+  public static boolean handlesClass(SootClass declaringClass) {
+    return handlesClass(declaringClass.getName());
+  }
+
+  public static boolean handlesClass(String declaringClassName) {
+    return declaringClassName.equals(PolymorphicMethodRef.METHODHANDLE_SIGNATURE)
+        || declaringClassName.equals(PolymorphicMethodRef.VARHANDLE_SIGNATURE);
+  }
 
   /**
    * Constructor.
@@ -60,7 +77,7 @@ public class SootMethodRefHandleImpl extends SootMethodRefImpl {
    * @throws IllegalArgumentException
    *           is thrown when {@code declaringClass}, or {@code name}, or {@code returnType} is null
    */
-  public SootMethodRefHandleImpl(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType,
+  public PolymorphicMethodRef(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType,
       boolean isStatic) {
     super(declaringClass, name, parameterTypes, returnType, isStatic);
   }
@@ -85,7 +102,8 @@ public class SootMethodRefHandleImpl extends SootMethodRefImpl {
         for (AnnotationTag annotation : ((VisibilityAnnotationTag) visibilityAnnotationTag).getAnnotations()) {
           // check the annotation's type
           if (annotation.getType().equals("L" + POLYMORPHIC_SIGNATURE + ";")) {
-            // the method is polymorphic, add a fitting method to the MethodHandle or VarHandle class, as the JVM does on runtime
+            // the method is polymorphic, add a fitting method to the MethodHandle or VarHandle class, as the JVM does on
+            // runtime
             return addPolyMorphicMethod(method);
           }
         }
