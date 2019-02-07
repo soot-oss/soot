@@ -139,7 +139,7 @@ public class BafASMBackend extends AbstractASMBackend {
     }
 
     for (Unit u : body.getUnits()) {
-      if(minVersion == Options.java_version_1_9){
+      if (minVersion == Options.java_version_1_9) {
         return minVersion;
       }
       if (u instanceof DynamicInvokeInst) {
