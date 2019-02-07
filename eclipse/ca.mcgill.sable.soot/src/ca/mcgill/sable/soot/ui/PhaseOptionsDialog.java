@@ -9061,6 +9061,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 						"1.8 8",
 						"\nForce Java 1.8 as output version.",
 						false),
+				new OptionData("Java 1.9",
+						"1.9 9",
+						"\nForce Java 1.9 as output version. (Experimental)",
+						false),
 		};
 
 
