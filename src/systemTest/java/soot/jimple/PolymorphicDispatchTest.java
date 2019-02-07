@@ -53,16 +53,20 @@ public class PolymorphicDispatchTest extends AbstractTestingFramework {
 
   @Test
   public void findsTarget() {
-    final SootMethod sootMethod = prepareTarget("<" + TEST_TARGET_CLASS + ": void test()>", TEST_TARGET_CLASS);
-    Assert.assertNotNull("Could not find target method. System test setup seems to be incorrect.", sootMethod);
+    String methodSignature = methodSigFromComponents(TEST_TARGET_CLASS, "void", "test", "");
+    final SootMethod sootMethod = prepareTarget(methodSignature, TEST_TARGET_CLASS);
     Assert.assertTrue(sootMethod.isConcrete());
     Assert.assertNotNull(sootMethod.retrieveActiveBody());
     for (Unit u : sootMethod.getActiveBody().getUnits()) {
       if (u instanceof AssignStmt) {
         Value right = ((AssignStmt) u).getRightOp();
         if (right instanceof InvokeExpr) {
-          // SootMethod m = ((InvokeExpr) right).getMethodRef().resolve();
-          // System.out.println(m);
+          SootMethod m = ((InvokeExpr) right).getMethodRef().resolve();
+          Assert.assertFalse(m.isPhantom());
+          Assert.assertTrue(m.isDeclared());
+          if (m.getName().equals("invoke")) {
+            Assert.assertTrue(m.isNative());
+          }
         }
       }
     }
