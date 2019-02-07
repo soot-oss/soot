@@ -281,7 +281,7 @@ public class StmtVisitor implements StmtSwitch {
         if (nextStmt == null || (!isJumpTarget(nextStmt) && !trapReferences.contains(nextStmt))) {
           insns.remove(nextIndex);
 
-          if (nextStmt != null) {
+          if (nextStmt != null && insns.size() - 1 >= nextIndex + 1) {
             Insn nextInst = this.insns.get(nextIndex + 1);
             insnStmtMap.remove(nextInsn);
             insnStmtMap.put(nextInst, nextStmt);
