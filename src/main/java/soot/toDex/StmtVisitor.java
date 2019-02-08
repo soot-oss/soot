@@ -278,10 +278,11 @@ public class StmtVisitor implements StmtSwitch {
         // Remove the second instruction as it does not change any
         // state. We cannot remove the first instruction as other
         // instructions may depend on the register being set.
+        // fix for issue 1057, added condition to avoid ArrayIndexOutOfBound
         if (nextStmt == null || (!isJumpTarget(nextStmt) && !trapReferences.contains(nextStmt))) {
           insns.remove(nextIndex);
-
-          if (nextStmt != null) {
+        
+          if (nextStmt != null && nextIndex < insns.size()-1) {
             Insn nextInst = this.insns.get(nextIndex + 1);
             insnStmtMap.remove(nextInsn);
             insnStmtMap.put(nextInst, nextStmt);
