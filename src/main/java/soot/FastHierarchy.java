@@ -184,23 +184,35 @@ public class FastHierarchy {
 
   /**
    * For an interface parent (MUST be an interface), returns set of all implementers of it but NOT their subclasses.
+   * 
+   * This method can be used concurrently (is thread safe).
+   * 
+   * @param parent
+   *          the parent interface.
+   * @return an set, possibly empty
    */
   public Set<SootClass> getAllImplementersOfInterface(SootClass parent) {
     parent.checkLevel(SootClass.HIERARCHY);
-    if (!interfaceToAllImplementers.containsKey(parent)) {
-      for (SootClass subinterface : getAllSubinterfaces(parent)) {
-        if (subinterface == parent) {
-          continue;
-        }
-        interfaceToAllImplementers.putAll(parent, getAllImplementersOfInterface(subinterface));
-      }
-      interfaceToAllImplementers.putAll(parent, interfaceToImplementers.get(parent));
+    Set<SootClass> result = interfaceToAllImplementers.get(parent);
+    if (result.size() > 0) {
+      return result;
     }
-    return interfaceToAllImplementers.get(parent);
+    result = new HashSet<>();
+    for (SootClass subinterface : getAllSubinterfaces(parent)) {
+      if (subinterface == parent) {
+        continue;
+      }
+      result.addAll(getAllImplementersOfInterface(subinterface));
+    }
+    result.addAll(interfaceToImplementers.get(parent));
+    interfaceToAllImplementers.putAll(parent, result);
+    return result;
   }
 
   /**
-   * For an interface parent (MUST be an interface), returns set of all subinterfaces.
+   * For an interface parent (MUST be an interface), returns set of all subinterfaces including <code>parent</code>.
+   *
+   * This method can be used concurrently (is thread safe).
    *
    * @param parent
    *          the parent interface.
@@ -209,14 +221,19 @@ public class FastHierarchy {
   public Set<SootClass> getAllSubinterfaces(SootClass parent) {
     parent.checkLevel(SootClass.HIERARCHY);
     if (!parent.isInterface()) {
-      return Collections.<SootClass>emptySet();
+      return Collections.emptySet();
     }
-    if (interfaceToAllSubinterfaces.put(parent, parent)) {
-      for (SootClass si : interfaceToSubinterfaces.get(parent)) {
-        interfaceToAllSubinterfaces.putAll(parent, getAllSubinterfaces(si));
-      }
+    Set<SootClass> result = interfaceToAllSubinterfaces.get(parent);
+    if (result.size() > 0) {
+      return result;
     }
-    return interfaceToAllSubinterfaces.get(parent);
+    result = new HashSet<>();
+    result.add(parent);
+    for (SootClass si : interfaceToSubinterfaces.get(parent)) {
+      result.addAll(getAllSubinterfaces(si));
+    }
+    interfaceToAllSubinterfaces.putAll(parent, result);
+    return result;
   }
 
   /**

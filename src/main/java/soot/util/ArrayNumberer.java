@@ -23,6 +23,7 @@ package soot.util;
  */
 
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -36,6 +37,7 @@ import java.util.NoSuchElementException;
 public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> {
   protected E[] numberToObj;
   protected int lastNumber;
+  protected BitSet freeNumbers;
 
   @SuppressWarnings("unchecked")
   public ArrayNumberer() {
@@ -52,12 +54,24 @@ public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> 
     numberToObj = Arrays.copyOf(numberToObj, n);
   }
 
+  @Override
   public synchronized void add(E o) {
     if (o.getNumber() != 0) {
       return;
     }
 
-    ++lastNumber;
+    // In case we removed entries from the numberer, we want to re-use the free space
+    int chosenNumber = -1;
+    if (freeNumbers != null) {
+      int ns = freeNumbers.nextSetBit(0);
+      if (ns != -1) {
+        chosenNumber = ns;
+        freeNumbers.clear(ns);
+      }
+    }
+    if (chosenNumber == -1) {
+      chosenNumber = ++lastNumber;
+    }
     if (lastNumber >= numberToObj.length) {
       resize(numberToObj.length * 2);
     }
@@ -65,6 +79,7 @@ public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> 
     o.setNumber(lastNumber);
   }
 
+  @Override
   public long get(E o) {
     if (o == null) {
       return 0;
@@ -76,6 +91,7 @@ public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> 
     return ret;
   }
 
+  @Override
   public E get(long number) {
     if (number == 0) {
       return null;
@@ -87,18 +103,22 @@ public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> 
     return ret;
   }
 
+  @Override
   public int size() {
     return lastNumber;
   }
 
+  @Override
   public Iterator<E> iterator() {
     return new Iterator<E>() {
       int cur = 1;
 
+      @Override
       public final boolean hasNext() {
         return cur <= lastNumber && cur < numberToObj.length && numberToObj[cur] != null;
       }
 
+      @Override
       public final E next() {
         if (hasNext()) {
           return numberToObj[cur++];
@@ -106,9 +126,29 @@ public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> 
         throw new NoSuchElementException();
       }
 
+      @Override
       public final void remove() {
         throw new UnsupportedOperationException();
       }
     };
+  }
+
+  @Override
+  public boolean remove(E o) {
+    if (o == null) {
+      return false;
+    }
+
+    int num = o.getNumber();
+    if (num == 0) {
+      return false;
+    }
+    if (freeNumbers == null) {
+      freeNumbers = new BitSet(2 * num);
+    }
+    numberToObj[num] = null;
+    o.setNumber(0);
+    freeNumbers.set(num);
+    return true;
   }
 }

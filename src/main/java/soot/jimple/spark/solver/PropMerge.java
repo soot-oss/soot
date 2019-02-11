@@ -45,7 +45,7 @@ import soot.jimple.spark.sets.PointsToSetInternal;
  * @author Ondrej Lhotak
  */
 
-public final class PropMerge extends Propagator {
+public class PropMerge extends Propagator {
   private static final Logger logger = LoggerFactory.getLogger(PropMerge.class);
   protected final Set<Node> varNodeWorkList = new TreeSet<Node>();
 
@@ -54,7 +54,7 @@ public final class PropMerge extends Propagator {
   }
 
   /** Actually does the propagation. */
-  public final void propagate() {
+  public void propagate() {
     new TopoSorter(pag, false).sort();
     for (Object object : pag.allocSources()) {
       handleAllocNode((AllocNode) object);
@@ -111,7 +111,7 @@ public final class PropMerge extends Propagator {
   /**
    * Propagates new points-to information of node src to all its successors.
    */
-  protected final boolean handleAllocNode(AllocNode src) {
+  protected boolean handleAllocNode(AllocNode src) {
     boolean ret = false;
     Node[] targets = pag.allocLookup(src);
     for (Node element : targets) {
@@ -126,7 +126,7 @@ public final class PropMerge extends Propagator {
   /**
    * Propagates new points-to information of node src to all its successors.
    */
-  protected final boolean handleVarNode(final VarNode src) {
+  protected boolean handleVarNode(final VarNode src) {
     boolean ret = false;
 
     if (src.getReplacement() != src) {
