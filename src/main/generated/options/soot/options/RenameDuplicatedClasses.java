@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Rename duplicated classes. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2019-02-04T21:39:39.574+01:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class RenameDuplicatedClasses {
 
     private Map<String, String> options;

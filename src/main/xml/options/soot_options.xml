@@ -1141,6 +1141,15 @@
                     Force Java 1.8 as output version.
                 </long_desc>
             </value>
+            <value>
+                <name>Java 1.9</name>
+                <alias>1.9</alias>
+                <alias>9</alias>
+                <short_desc>Force Java 1.9 as output version (Experimental).</short_desc>
+                <long_desc>
+                    Force Java 1.9 as output version.  (Experimental)
+                </long_desc>
+            </value>
         </multiopt>
         <boolopt>
             <name>Output Jar File</name>

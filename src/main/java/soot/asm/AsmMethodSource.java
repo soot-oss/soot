@@ -139,12 +139,12 @@ import static org.objectweb.asm.Opcodes.T_BOOLEAN;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -322,7 +322,6 @@ final class AsmMethodSource implements MethodSource {
   private int lastLineNumber = -1;
   private Table<AbstractInsnNode, AbstractInsnNode, Edge> edges;
   private ArrayDeque<Edge> conversionWorklist;
-
 
   AsmMethodSource(int maxLocals, InsnList insns, List<LocalVariableNode> localVars, List<TryCatchBlockNode> tryCatchBlocks,
       String module) {
@@ -1233,7 +1232,8 @@ final class AsmMethodSource implements MethodSource {
     } else if (val instanceof org.objectweb.asm.Type) {
       org.objectweb.asm.Type t = (org.objectweb.asm.Type) val;
       if (t.getSort() == org.objectweb.asm.Type.METHOD) {
-        List<Type> paramTypes = AsmUtil.toJimpleDesc(((org.objectweb.asm.Type) val).getDescriptor(),Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+        List<Type> paramTypes = AsmUtil.toJimpleDesc(((org.objectweb.asm.Type) val).getDescriptor(),
+            Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
         Type returnType = paramTypes.remove(paramTypes.size() - 1);
         v = MethodType.v(paramTypes, returnType);
       } else {
@@ -1510,7 +1510,9 @@ final class AsmMethodSource implements MethodSource {
   private SootFieldRef toSootFieldRef(Handle methodHandle) {
     String bsmClsName = AsmUtil.toQualifiedName(methodHandle.getOwner());
     SootClass bsmCls = Scene.v().getSootClass(bsmClsName);
-    Type t = AsmUtil.toJimpleDesc(methodHandle.getDesc(),Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName)).get(0);
+    Type t = AsmUtil
+        .toJimpleDesc(methodHandle.getDesc(), Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName))
+        .get(0);
     int kind = methodHandle.getTag();
     return Scene.v().makeFieldRef(bsmCls, methodHandle.getName(), t,
         kind == MethodHandle.Kind.REF_GET_FIELD_STATIC.getValue()

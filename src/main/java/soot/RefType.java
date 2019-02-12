@@ -28,7 +28,6 @@ import java.util.ArrayDeque;
 
 import soot.util.Switch;
 
-
 /**
  * A class that models Java's reference types. RefTypes are parametrized by a class name. Two RefType are equal iff they are
  * parametrized by the same class name as a String.
@@ -48,9 +47,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     return G.v().soot_RefType();
   }
 
-  /**
-   * the class name that parameterizes this RefType
-   */
+  /** the class name that parameterizes this RefType */
   private String className;
 
   public String getClassName() {
@@ -165,13 +162,15 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     return Scene.v().quotedNameOf(className);
   }
 
+  public int hashCode() {
+    return className.hashCode();
+  }
+
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseRefType(this);
   }
 
-  /**
-   * Returns the least common superclass of this type and other.
-   */
+  /** Returns the least common superclass of this type and other. */
   public Type merge(Type other, Scene cm) {
     if (other.equals(UnknownType.v()) || this.equals(other)) {
       return this;
