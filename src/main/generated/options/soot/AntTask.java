@@ -360,6 +360,8 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "7" )
                 || arg.equals( "1.8" )
                 || arg.equals( "8" )
+                || arg.equals( "1.9" )
+                || arg.equals( "9" )
                 ) {
                 addArg("-java-version");
                 addArg(arg);
