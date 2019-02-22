@@ -396,7 +396,7 @@ public class ShimpleBodyBuilder {
 
     // If the name already exists, makeUniqueLocalNames() will
     // take care of it.
-    String name = oldLocal.getName() + "_" + subscript;
+    String name = oldLocal.getName() + freshSeparator + subscript;
 
     Local newLocal = newLocals.get(name);
 
@@ -463,9 +463,14 @@ public class ShimpleBodyBuilder {
     String newName = dupName;
 
     while (localNames.contains(newName)) {
-      newName = dupName + "_" + counter++;
+      newName = dupName + freshSeparator + counter++;
     }
 
     return newName;
+  }
+
+  static String freshSeparator = "_";
+  public static void setSeparator(String sep) {
+    freshSeparator = sep;
   }
 }

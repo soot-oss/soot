@@ -167,7 +167,7 @@ public final class LambdaMetaFactory {
     final boolean readableClassnames = true;
     if (readableClassnames) {
       // class names cannot contain <>
-      String implMethodName = implMethod.getMethodRef().name();
+      String implMethodName = implMethod.getMethodRef().getName();
       String dummyName = "<init>".equals(implMethodName) ? "init" : implMethodName;
       // XXX: $ causes confusion in inner class inference; remove for now
       dummyName = dummyName.replaceAll("\\$", "_");
@@ -175,7 +175,7 @@ public final class LambdaMetaFactory {
     } else {
       className = "soot.dummy.lambda" + uniqSupply();
     }
-    SootClass tclass = new SootClass(className);
+    SootClass tclass = Scene.v().makeSootClass(className);
     tclass.setModifiers(Modifier.PUBLIC | Modifier.FINAL);
     tclass.setSuperclass(Scene.v().getObjectType().getSootClass());
     tclass.addInterface(functionalInterfaceToImplement);
@@ -193,7 +193,7 @@ public final class LambdaMetaFactory {
     // It contains fields for all the captures in the lambda
     List<SootField> capFields = new ArrayList<SootField>(capTypes.size());
     for (int i = 0; i < capTypes.size(); i++) {
-      SootField f = new SootField("cap" + i, capTypes.get(i), 0);
+      SootField f = Scene.v().makeSootField("cap" + i, capTypes.get(i), 0);
       capFields.add(f);
       tclass.addField(f);
     }
@@ -201,9 +201,9 @@ public final class LambdaMetaFactory {
     // if the implMethod is a new private static in the enclosing class, make it public access so
     // it can be invoked from the thunk class
     if (MethodHandle.Kind.REF_INVOKE_STATIC.getValue() == implMethod.getKind()) {
-      if (implMethod.getMethodRef().declaringClass().getName().equals(enclosingClassname)) {
-        SootMethod method
-            = implMethod.getMethodRef().declaringClass().getMethod(implMethod.getMethodRef().getSubSignature());
+      SootClass declClass = implMethod.getMethodRef().getDeclaringClass();
+      if (declClass.getName().equals(enclosingClassname)) {
+        SootMethod method = declClass.getMethod(implMethod.getMethodRef().getSubSignature());
         int modifiers = method.getModifiers() & ~Modifier.PRIVATE;
         modifiers = modifiers | Modifier.PUBLIC;
         method.setModifiers(modifiers);
@@ -213,13 +213,13 @@ public final class LambdaMetaFactory {
     MethodSource ms = new ThunkMethodSource(capFields, samMethodType, implMethod, instantiatedMethodType);
 
     // Bootstrap method creates a new instance of this class
-    SootMethod tboot = new SootMethod("bootstrap$", capTypes, functionalInterfaceToImplement.getType(),
+    SootMethod tboot = Scene.v().makeSootMethod("bootstrap$", capTypes, functionalInterfaceToImplement.getType(),
         Modifier.PUBLIC | Modifier.STATIC);
     tclass.addMethod(tboot);
     tboot.setSource(ms);
 
     // Constructor just copies the captures
-    SootMethod tctor = new SootMethod("<init>", capTypes, VoidType.v(), Modifier.PUBLIC);
+    SootMethod tctor = Scene.v().makeSootMethod("<init>", capTypes, VoidType.v(), Modifier.PUBLIC);
     tclass.addMethod(tctor);
     tctor.setSource(ms);
 
@@ -255,7 +255,8 @@ public final class LambdaMetaFactory {
   private void addDispatch(String name, SootClass tclass, MethodType implMethodType, MethodType instantiatedMethodType,
       List<SootField> capFields, MethodHandle implMethod) {
     ThunkMethodSource ms = new ThunkMethodSource(capFields, implMethodType, implMethod, instantiatedMethodType);
-    SootMethod m = new SootMethod(name, implMethodType.getParameterTypes(), implMethodType.getReturnType(), Modifier.PUBLIC);
+    SootMethod m = Scene.v().makeSootMethod(name, implMethodType.getParameterTypes(), implMethodType.getReturnType(),
+        Modifier.PUBLIC);
     tclass.addMethod(m);
     m.setSource(ms);
   }
@@ -296,10 +297,6 @@ public final class LambdaMetaFactory {
       valueOf = Collections.unmodifiableMap(valueOf);
       primitiveValue = Collections.unmodifiableMap(primitiveValue);
 
-    }
-
-    private boolean isWrapper(Type t) {
-      return wrapperTypes.containsKey(t);
     }
 
   }
@@ -467,7 +464,7 @@ public final class LambdaMetaFactory {
       }
       Iterator<Local> iplItr = instParamLocals.iterator();
       if (capFields.size() == 0 && iplItr.hasNext() && needsReceiver) {
-        RefType receiverType = implMethod.getMethodRef().declaringClass().getType();
+        RefType receiverType = implMethod.getMethodRef().getDeclaringClass().getType();
         Local l = adapt(iplItr.next(), receiverType, jb, us, lc);
         args.add(l);
       }
@@ -480,7 +477,7 @@ public final class LambdaMetaFactory {
       while (iplItr.hasNext()) {
         Local pl = iplItr.next();
 
-        Type to = implMethod.getMethodRef().parameterType(j);
+        Type to = implMethod.getMethodRef().getParameterType(j);
 
         Local l = adapt(pl, to, jb, us, lc);
         args.add(l);
@@ -652,7 +649,7 @@ public final class LambdaMetaFactory {
     private void invokeImplMethod(JimpleBody jb, PatchingChain<Unit> us, LocalGenerator lc, List<Local> args) {
       Value value = _invokeImplMethod(jb, us, lc, args);
 
-      if (value instanceof InvokeExpr && soot.VoidType.v().equals(implMethod.getMethodRef().returnType())) {
+      if (value instanceof InvokeExpr && soot.VoidType.v().equals(implMethod.getMethodRef().getReturnType())) {
         // implementation method is void
         us.add(Jimple.v().newInvokeStmt(value));
         us.add(Jimple.v().newReturnVoidStmt());
@@ -706,7 +703,7 @@ public final class LambdaMetaFactory {
             return Jimple.v().newVirtualInvokeExpr(args.get(0), methodRef, rest(args));
           }
         case REF_INVOKE_CONSTRUCTOR:
-          RefType type = methodRef.declaringClass().getType();
+          RefType type = methodRef.getDeclaringClass().getType();
           NewExpr newRef = Jimple.v().newNewExpr(type);
           Local newLocal = lc.generateLocal(type);
           us.add(Jimple.v().newAssignStmt(newLocal, newRef));
