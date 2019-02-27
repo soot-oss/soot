@@ -24,20 +24,27 @@ package soot.jimple;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 
-
-
 /**
  * @author Andreas Dann created on 06.02.19
+ * @author Manuel Benz 27.2.19
  */
 
 public class PolymorphicDispatch {
 
+  public void unambiguousMethod() throws Throwable {
+    MethodHandle methodHandle = MethodHandles.lookup().findVirtual(PolymorphicDispatch.class, "someMethod", null);
+    Object ob = methodHandle.invoke();
+    System.out.println(ob);
+  }
 
-    public void test() throws Throwable {
+  public void ambiguousMethod() throws Throwable {
+    MethodHandle methodHandle = MethodHandles.lookup().findVirtual(PolymorphicDispatch.class, "someMethod", null);
+    // call on sig 1
+    Object ob = methodHandle.invoke();
+    System.out.println(ob);
 
-        MethodHandle methodHandle = MethodHandles.lookup().findVirtual(PolymorphicDispatch.class, "someMethod", null);
-        Object ob = methodHandle.invoke();
-        System.out.println(ob);
-
-    }
+    // call on sig 2
+    int res = (int) methodHandle.invoke(1);
+    System.out.println(res);
+  }
 }
