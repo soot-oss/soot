@@ -34,7 +34,7 @@ import java.util.*;
  * Soot ant task.
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-12-03T17:15:30.137+01:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class AntTask extends MatchingTask {
     public static final boolean DEBUG = true;
     private void debug(String s) {
@@ -365,6 +365,8 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "7" )
                 || arg.equals( "1.8" )
                 || arg.equals( "8" )
+                || arg.equals( "1.9" )
+                || arg.equals( "9" )
                 ) {
                 addArg("-java-version");
                 addArg(arg);
@@ -668,6 +670,12 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("jb");
             addArg("stabilize-local-names:"+(arg?"true":"false"));
+          }
+      
+          public void setmodel_lambdametafactory(boolean arg) {
+            addArg("-p");
+            addArg("jb");
+            addArg("model-lambdametafactory:"+(arg?"true":"false"));
           }
       
         }

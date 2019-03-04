@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for May Happen in Parallel Analyses. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-12-03T17:15:29.784+01:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class MhpTransformer {
 
     private Map<String, String> options;
