@@ -35,6 +35,7 @@ import soot.tagkit.VisibilityAnnotationTag;
  * special treatment
  * 
  * @author Andreas Dann created on 06.02.19
+ * @author Manuel Benz 27.2.19
  */
 public class PolymorphicMethodRef extends SootMethodRefImpl {
 
@@ -89,25 +90,26 @@ public class PolymorphicMethodRef extends SootMethodRefImpl {
     if (method != null) {
       return method;
     }
-    // no method with matching parametertypes or return types found
+
+    // no method with matching parameter types or return types found
     // for polymorphic methods, we don't care about the return or parameter types. We just check if a method with the name
-    // exists
+    // exists and has a polymorphic type signature
 
-    method = getDeclaringClass().getMethodByName(getName());
-
-    if (method != null) {
-      // the class declares a method with that name, check if the method is polymorphic
-      Tag visibilityAnnotationTag = method.getTag("VisibilityAnnotationTag");
-      if (visibilityAnnotationTag != null) {
-        for (AnnotationTag annotation : ((VisibilityAnnotationTag) visibilityAnnotationTag).getAnnotations()) {
-          // check the annotation's type
-          if (annotation.getType().equals("L" + POLYMORPHIC_SIGNATURE + ";")) {
-            // the method is polymorphic, add a fitting method to the MethodHandle or VarHandle class, as the JVM does on
-            // runtime
-            return addPolyMorphicMethod(method);
+    // Note(MB): We cannot use getMethodByName here since the method name is ambiguous after adding the first method with
+    // same name and refined signature
+    for (SootMethod candidateMethod : getDeclaringClass().getMethods()) {
+      if (candidateMethod.getName().equals(getName())) {
+        Tag annotationsTag = candidateMethod.getTag("VisibilityAnnotationTag");
+        if (annotationsTag != null) {
+          for (AnnotationTag annotation : ((VisibilityAnnotationTag) annotationsTag).getAnnotations()) {
+            // check the annotation's type
+            if (annotation.getType().equals("L" + POLYMORPHIC_SIGNATURE + ";")) {
+              // the method is polymorphic, add a fitting method to the MethodHandle or VarHandle class, as the JVM does on
+              // runtime
+              return addPolyMorphicMethod(candidateMethod);
+            }
           }
         }
-
       }
     }
 

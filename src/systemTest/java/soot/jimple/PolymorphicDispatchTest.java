@@ -25,6 +25,7 @@ package soot.jimple;
 import org.junit.Assert;
 import org.junit.Test;
 
+import soot.Body;
 import soot.PackManager;
 import soot.SootMethod;
 import soot.Unit;
@@ -34,6 +35,7 @@ import soot.testing.framework.AbstractTestingFramework;
 
 /**
  * @author Andreas Dann created on 06.02.19
+ * @author Manuel Benz 27.2.19
  */
 public class PolymorphicDispatchTest extends AbstractTestingFramework {
 
@@ -44,6 +46,9 @@ public class PolymorphicDispatchTest extends AbstractTestingFramework {
     Options.v().set_allow_phantom_refs(false);
     Options.v().set_no_bodies_for_excluded(false);
     Options.v().set_prepend_classpath(true);
+    // if we use validate globally, every test will fail due to validation of target methods of other tests. Even if the test
+    // would actually pass...
+    Options.v().set_validate(false);
   }
 
   @Override
@@ -53,11 +58,42 @@ public class PolymorphicDispatchTest extends AbstractTestingFramework {
 
   @Test
   public void findsTarget() {
-    String methodSignature = methodSigFromComponents(TEST_TARGET_CLASS, "void", "test", "");
+    String methodSignature = methodSigFromComponents(TEST_TARGET_CLASS, "void", "unambiguousMethod", "");
     final SootMethod sootMethod = prepareTarget(methodSignature, TEST_TARGET_CLASS);
     Assert.assertTrue(sootMethod.isConcrete());
-    Assert.assertNotNull(sootMethod.retrieveActiveBody());
-    for (Unit u : sootMethod.getActiveBody().getUnits()) {
+
+    Body body = sootMethod.retrieveActiveBody();
+    Assert.assertNotNull(body);
+    // validate individual method
+    body.validate();
+
+    for (Unit u : body.getUnits()) {
+      if (u instanceof AssignStmt) {
+        Value right = ((AssignStmt) u).getRightOp();
+        if (right instanceof InvokeExpr) {
+          SootMethod m = ((InvokeExpr) right).getMethodRef().resolve();
+          Assert.assertFalse(m.isPhantom());
+          Assert.assertTrue(m.isDeclared());
+          if (m.getName().equals("invoke")) {
+            Assert.assertTrue(m.isNative());
+          }
+        }
+      }
+    }
+  }
+
+  @Test
+  public void handlesAmbiguousMethod() {
+    String methodSignature = methodSigFromComponents(TEST_TARGET_CLASS, "void", "ambiguousMethod", "");
+    final SootMethod sootMethod = prepareTarget(methodSignature, TEST_TARGET_CLASS);
+    Assert.assertTrue(sootMethod.isConcrete());
+
+    Body body = sootMethod.retrieveActiveBody();
+    Assert.assertNotNull(body);
+    // validate individual method
+    body.validate();
+
+    for (Unit u : body.getUnits()) {
       if (u instanceof AssignStmt) {
         Value right = ((AssignStmt) u).getRightOp();
         if (right instanceof InvokeExpr) {
