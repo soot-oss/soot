@@ -422,7 +422,7 @@
         </dependency>
         <!-- Local dependencies -->
         <dependency>
-            <groupId>pxb.android</groupId>
+            <groupId>de.upb.ca.swt</groupId>
             <artifactId>axml</artifactId>
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
@@ -434,7 +434,7 @@
         <!-- Published from the github repo -->
         <!-- Built by http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/ -->
         <dependency>
-            <groupId>heros</groupId>
+            <groupId>de.upb.ca.swt</groupId>
             <artifactId>heros</artifactId>
             <version>1.1.0-SNAPSHOT</version>
         </dependency>
@@ -493,9 +493,14 @@
     </dependencies>
     <repositories>
         <repository>
-            <id>swt-upb</id>
-            <name>Maven repository of the Software Engineering Group at University of Paderborn</name>
-            <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/swt-upb/</url>
+            <id>sonatype-snapshot</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
     <distributionManagement>
