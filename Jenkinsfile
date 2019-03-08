@@ -134,32 +134,7 @@ pipeline {
 		}
 
 
-		/* 
-        stage('Report'){
-		     agent {
-                      docker {
-                        image 'maven:3-jdk-9-slim'
-                        args '-v $HOME/.m2:/root/.m2'
-                      }
-                    }
-          steps {
-                      unstash 'reports1'
-                      unstash 'reports2'
-                      unstash 'reports3'
 
-
-        	             jacoco(   execPattern: '**/target/coverage-reports/jacoco-ut.exec',
-                                      classPattern: '**/classes',
-                                      sourcePattern: 'src/main/java',
-                                      exclusionPattern: 'src/test*',
-                                      changeBuildStatus: true,
-                                      minimumMethodCoverage: "50",
-                                      maximumMethodCoverage: "70",
-                                      deltaMethodCoverage: "10"
-                                      )
-        	        }
-        		}
-            */
 
 
 		stage('Deploy'){
