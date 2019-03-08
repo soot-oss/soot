@@ -134,7 +134,8 @@ pipeline {
 		}
 
 
-		/* stage('Report'){
+		/* 
+        stage('Report'){
 		     agent {
                       docker {
                         image 'maven:3-jdk-9-slim'
@@ -157,7 +158,8 @@ pipeline {
                                       deltaMethodCoverage: "10"
                                       )
         	        }
-        		} */
+        		}
+            */
 
 
 		stage('Deploy'){
