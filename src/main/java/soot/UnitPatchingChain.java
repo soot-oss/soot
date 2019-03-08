@@ -94,7 +94,7 @@ public class UnitPatchingChain extends PatchingChain<Unit> {
 
     // Throw an exception if both source and target is null
     if (point_src == null && point_tgt == null) {
-      throw new RuntimeException("insertOnEdgUnit failed! Both sourcUnit and target points arUnit null.");
+      throw new RuntimeException("insertOnEdge failed! Both source unit and target points are null.");
     }
 
     // If target is right after the source in the Chain

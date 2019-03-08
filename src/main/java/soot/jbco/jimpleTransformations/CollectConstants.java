@@ -10,12 +10,12 @@ package soot.jbco.jimpleTransformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Body;
 import soot.Hierarchy;
@@ -61,57 +64,57 @@ import soot.util.Chain;
 
 /**
  * @author Michael Batchelder
- *         <p>
- *         Created on 31-May-2006
+ * @since 31-May-2006
  */
 public class CollectConstants extends SceneTransformer implements IJbcoTransform {
 
-  int updatedConstants = 0;
-  int constants = 0;
+  private static final Logger logger = LoggerFactory.getLogger(FieldRenamer.class);
 
-  public void outputSummary() {
-    out.println(constants + " constants found");
-    out.println(updatedConstants + " static fields created");
-  }
+  public static final String name = "wjtp.jbco_cc";
 
-  public static String dependancies[] = new String[] { "wjtp.jbco_cc" };
+  private final Map<Type, List<Constant>> typeToConstants = new HashMap<>();
+  public static HashMap<Constant, SootField> constantsToFields = new HashMap<>();
 
-  public String[] getDependencies() {
-    return dependancies;
-  }
+  private int constants = 0;
+  private int updatedConstants = 0;
 
-  public static String name = "wjtp.jbco_cc";
-
+  @Override
   public String getName() {
     return name;
   }
 
-  public static HashMap<Constant, SootField> constantsToFields = new HashMap<Constant, SootField>();
-  public static HashMap<Type, List<Constant>> typesToValues = new HashMap<Type, List<Constant>>();
+  @Override
+  public String[] getDependencies() {
+    return new String[] { name };
+  }
 
-  public static SootField field = null;
+  @Override
+  public void outputSummary() {
+    logger.info("Found {} constants, updated {} ones", constants, updatedConstants);
+  }
 
+  @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
-    if (output) {
-      out.println("Collecting Constant Data");
+    if (isVerbose()) {
+      logger.info("Collecting Constant Data");
     }
 
     BodyBuilder.retrieveAllNames();
 
-    Chain<SootClass> appClasses = Scene.v().getApplicationClasses();
+    final Chain<SootClass> applicationClasses = Scene.v().getApplicationClasses();
 
-    for (SootClass sc : appClasses) {
-      for (SootMethod m : sc.getMethods()) {
-        if (!m.hasActiveBody() || m.getName().contains(SootMethod.staticInitializerName)) {
+    for (SootClass applicationClass : applicationClasses) {
+      for (SootMethod method : applicationClass.getMethods()) {
+        if (!method.hasActiveBody() || method.getName().contains(SootMethod.staticInitializerName)) {
           continue;
         }
 
-        for (ValueBox useBox : m.getActiveBody().getUseBoxes()) {
-          Value v = useBox.getValue();
-          if (v instanceof Constant) {
-            Constant constant = (Constant) v;
+        for (ValueBox useBox : method.getActiveBody().getUseBoxes()) {
+          final Value value = useBox.getValue();
+          if (value instanceof Constant) {
+            final Constant constant = (Constant) value;
             Type type = constant.getType();
-            List<Constant> constants = typesToValues.computeIfAbsent(type, t -> new ArrayList<>());
+            List<Constant> constants = typeToConstants.computeIfAbsent(type, t -> new ArrayList<>());
 
             if (!constants.contains(constant)) {
               this.constants++;
@@ -124,25 +127,24 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
 
     int count = 0;
     String name = "newConstantJbcoName";
-    SootClass[] classes = appClasses.toArray(new SootClass[appClasses.size()]);
-    for (Type type : typesToValues.keySet()) {
+    SootClass[] classes = applicationClasses.toArray(new SootClass[applicationClasses.size()]);
+    for (Type type : typeToConstants.keySet()) {
       if (type instanceof NullType) {
         continue; // type = RefType.v("java.lang.Object");
       }
-      for (Constant constant : typesToValues.get(type)) {
+      for (Constant constant : typeToConstants.get(type)) {
         name += "_";
         SootClass randomClass;
         do {
           randomClass = classes[Rand.getInt(classes.length)];
         } while (!isSuitableClassToAddFieldConstant(randomClass, constant));
 
-        SootField newField = Scene.v().makeSootField(FieldRenamer.getNewName(), type, Modifier.STATIC ^ Modifier.PUBLIC);
+        final SootField newField
+            = Scene.v().makeSootField(FieldRenamer.v().getOrAddNewName(name), type, Modifier.STATIC ^ Modifier.PUBLIC);
         randomClass.addField(newField);
-        FieldRenamer.sootFieldsRenamed.add(newField);
-        FieldRenamer.addOldAndNewName(name, newField.getName());
         constantsToFields.put(constant, newField);
         addInitializingValue(randomClass, newField, constant);
-        FieldRenamer.addOldAndNewName("addedConstant" + count++, newField.getName());
+        count++;
       }
     }
 

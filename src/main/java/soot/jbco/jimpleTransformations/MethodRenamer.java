@@ -28,7 +28,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -137,7 +136,6 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
   private static final Logger logger = LoggerFactory.getLogger(MethodRenamer.class);
 
   public static final String name = "wjtp.jbco_mr";
-  public static final String dependencies[] = new String[] { MethodRenamer.name };
 
   private static final String MAIN_METHOD_SUB_SIGNATURE
       = SootMethod.getSubSignature("main", singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v());
@@ -180,7 +178,7 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 
   @Override
   public String[] getDependencies() {
-    return Arrays.copyOf(dependencies, dependencies.length);
+    return new String[] { name };
   }
 
   @Override
@@ -320,7 +318,7 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
             final InvokeExpr invokeExpr = (InvokeExpr) v;
             final SootMethodRef methodRef = invokeExpr.getMethodRef();
 
-            final Set<SootClass> parents = getParents(methodRef.declaringClass());
+            final Set<SootClass> parents = getParents(methodRef.getDeclaringClass());
 
             // 1. we check if method overrides one from library directly
             // Note: we cannot use getDeclaringClasses(applicationClass, method) as method can be renamed
@@ -333,15 +331,15 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
               continue;
             }
 
-            final String newName = getNewName(parents, methodRef.name());
+            final String newName = getNewName(parents, methodRef.getName());
             // 2. we indirectly check that method is not overrides one from library indirectly:
             // we will get new name only if no one from class tree do not overrides library method
             if (newName == null) {
               continue;
             }
 
-            final SootMethodRef newMethodRef = Scene.v().makeMethodRef(methodRef.declaringClass(), newName,
-                methodRef.parameterTypes(), methodRef.returnType(), methodRef.isStatic());
+            final SootMethodRef newMethodRef = Scene.v().makeMethodRef(methodRef.getDeclaringClass(), newName,
+                methodRef.getParameterTypes(), methodRef.getReturnType(), methodRef.isStatic());
             invokeExpr.setMethodRef(newMethodRef);
 
             if (isVerbose()) {
@@ -425,7 +423,7 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 
   private Optional<SootClass> findDeclaringLibraryClass(Collection<SootClass> classes, SootMethodRef methodRef) {
     return classes.stream().filter(SootClass::isLibraryClass)
-        .filter(sootClass -> isDeclared(sootClass, methodRef.name(), methodRef.parameterTypes())).findAny();
+        .filter(sootClass -> isDeclared(sootClass, methodRef.getName(), methodRef.getParameterTypes())).findAny();
   }
 
   private Set<SootClass> getDeclaringClasses(SootClass applicationClass, SootMethod method) {
@@ -465,6 +463,14 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
     // result contains of interfaces that implements passed applicationClass
     final List<SootClass> result = HierarchyUtils.getAllInterfacesOf(applicationClass);
 
+    // add implementing interfaces
+    result.addAll(applicationClass.getInterfaces());
+
+    // add extending class if any
+    if (!applicationClass.isInterface() && applicationClass.hasSuperclass()) {
+      result.add(applicationClass.getSuperclass());
+    }
+
     // and superclasses (superinterfaces) of passed applicationClass
     result.addAll(
         applicationClass.isInterface() ? Scene.v().getActiveHierarchy().getSuperinterfacesOfIncluding(applicationClass)
@@ -483,10 +489,23 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
   }
 
   private Set<SootClass> getParentsOfIncluding(Collection<SootClass> classes) {
-    return classes.stream()
-        .map(sootClass -> sootClass.isInterface() ? Scene.v().getActiveHierarchy().getSuperinterfacesOfIncluding(sootClass)
-            : Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(sootClass))
-        .flatMap(Collection::stream).collect(toSet());
+    final Set<SootClass> parents = new HashSet<>(classes);
+
+    for (SootClass clazz : classes) {
+      // add implementing interfaces
+      parents.addAll(clazz.getInterfaces());
+
+      // add extending class if any
+      if (!clazz.isInterface() && clazz.hasSuperclass()) {
+        parents.add(clazz.getSuperclass());
+      }
+
+      // and superclasses (superinterfaces) of passed applicationClass
+      parents.addAll(clazz.isInterface() ? Scene.v().getActiveHierarchy().getSuperinterfacesOfIncluding(clazz)
+          : Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(clazz));
+    }
+
+    return parents;
   }
 
   private String getNewName(Collection<SootClass> classes, String name) {

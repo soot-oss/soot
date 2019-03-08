@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ca.mcgill.sable</groupId>
     <artifactId>soot</artifactId>
-    <version>3.2.0</version>
+    <version>3.3.0</version>
     <name>Soot - a J*va Optimization Framework</name>
     <description>A Java Optimization Framework</description>
     <url>https://sable.github.io/soot/</url>
@@ -46,7 +46,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <xml-maven-plugin.version>1.0.1</xml-maven-plugin.version>
+        <xml-maven-plugin.version>1.0.2</xml-maven-plugin.version>
         <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
@@ -422,7 +422,7 @@
         </dependency>
         <!-- Local dependencies -->
         <dependency>
-            <groupId>pxb.android</groupId>
+            <groupId>de.upb.cs.swt</groupId>
             <artifactId>axml</artifactId>
             <version>2.0.0</version>
         </dependency>
@@ -431,15 +431,11 @@
             <artifactId>polyglot</artifactId>
             <version>2006</version>
         </dependency>
-        <!-- Published from the github repo -->
-        <!-- Built by http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/ -->
         <dependency>
-            <groupId>heros</groupId>
+            <groupId>de.upb.cs.swt</groupId>
             <artifactId>heros</artifactId>
             <version>1.1.0</version>
         </dependency>
-        <!-- Uploaded to http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/
-            from the nightly build server -->
         <dependency>
             <groupId>ca.mcgill.sable</groupId>
             <artifactId>jasmin</artifactId>
@@ -461,7 +457,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -473,13 +469,13 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.10.8</version>
+            <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-mockito-release-full</artifactId>
-            <version>1.6.1</version>
+            <version>1.6.4</version>
             <type>pom</type>
             <scope>test</scope>
         </dependency>
@@ -491,13 +487,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <id>swt-upb</id>
-            <name>Maven repository of the Software Engineering Group at University of Paderborn</name>
-            <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/swt-upb/</url>
-        </repository>
-    </repositories>
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>

@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Shimple Control. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-08-13T11:30:57.578+02:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class ShimpleOptions {
 
     private Map<String, String> options;

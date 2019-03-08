@@ -215,7 +215,11 @@ public abstract class AbstractASMBackend {
       }
     }
 
-    for (SootMethod sm : sc.getMethods()) {
+    // We need to clone the method list, because it may happen during writeout
+    // that we need to split methods, which are longer than the JVM spec allows.
+    // This feature is work in progress.
+    List<SootMethod> clonedList = new ArrayList<>(sc.getMethods());
+    for (SootMethod sm : clonedList) {
       if (minVersion >= Options.java_version_1_8) {
         break;
       }

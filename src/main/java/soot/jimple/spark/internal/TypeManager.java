@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import soot.AnySubType;
 import soot.ArrayType;
@@ -224,19 +225,19 @@ public final class TypeManager {
     } else if (dst instanceof AnySubType) {
       throw new RuntimeException("oops src=" + src + " dst=" + dst);
     } else {
-      return fh.canStoreType(src, dst);
+      return getFastHierarchy().canStoreType(src, dst);
     }
   }
 
-  public void setFastHierarchy(FastHierarchy fh) {
+  public void setFastHierarchy(Supplier<FastHierarchy> fh) {
     this.fh = fh;
   }
 
   public FastHierarchy getFastHierarchy() {
-    return fh;
+    return fh == null ? null : fh.get();
   }
 
-  protected FastHierarchy fh = null;
+  protected Supplier<FastHierarchy> fh = null;
   protected PAG pag;
   protected QueueReader<AllocNode> allocNodeListener = null;
 
@@ -286,7 +287,7 @@ public final class TypeManager {
       }
     }
 
-    Collection<SootClass> subclasses = fh.getSubclassesOf(clazz);
+    Collection<SootClass> subclasses = fh.get().getSubclassesOf(clazz);
     if (subclasses == Collections.EMPTY_LIST) {
       for (AllocNode an : anySubtypeAllocs) {
         mask.set(an.getNumber());
@@ -310,7 +311,7 @@ public final class TypeManager {
 
     BitVector ret = new BitVector(pag.getAllocNodeNumberer().size());
     typeMask.put(interf.getType(), ret);
-    Collection<SootClass> implementers = fh.getAllImplementersOfInterface(interf);
+    Collection<SootClass> implementers = getFastHierarchy().getAllImplementersOfInterface(interf);
 
     for (SootClass impl : implementers) {
       BitVector other = typeMask.get(impl.getType());
