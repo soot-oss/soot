@@ -77,7 +77,7 @@ pipeline {
             post {
               always {
                 junit 'target/surefire-reports/**/*.xml'
-                stash includes: '**/target/coverage-reports/*', name: 'reports1'
+               // stash includes: '**/target/coverage-reports/*', name: 'reports1'
 
               }
             }
@@ -99,7 +99,7 @@ pipeline {
             post {
               always {
                 junit 'target/surefire-reports/**/*.xml'
-                stash includes: '**/target/coverage-reports/*', name: 'reports2'
+             //   stash includes: '**/target/coverage-reports/*', name: 'reports2'
 
 
               }
@@ -122,7 +122,7 @@ pipeline {
             post {
               always {
                 junit 'target/surefire-reports/**/*.xml'
-                stash includes: '**/target/coverage-reports/*', name: 'reports3'
+               // stash includes: '**/target/coverage-reports/*', name: 'reports3'
 
 
               }
@@ -134,7 +134,7 @@ pipeline {
 		}
 
 
-		stage('Report'){
+		/* stage('Report'){
 		     agent {
                       docker {
                         image 'maven:3-jdk-9-slim'
@@ -157,7 +157,7 @@ pipeline {
                                       deltaMethodCoverage: "10"
                                       )
         	        }
-        		}
+        		} */
 
 
 		stage('Deploy'){
