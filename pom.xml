@@ -422,7 +422,7 @@
         </dependency>
         <!-- Local dependencies -->
         <dependency>
-            <groupId>de.upb.ca.swt</groupId>
+            <groupId>de.upb.cs.swt</groupId>
             <artifactId>axml</artifactId>
             <version>2.0.0-SNAPSHOT</version>
         </dependency>
@@ -434,7 +434,7 @@
         <!-- Published from the github repo -->
         <!-- Built by http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/ -->
         <dependency>
-            <groupId>de.upb.ca.swt</groupId>
+            <groupId>de.upb.cs.swt</groupId>
             <artifactId>heros</artifactId>
             <version>1.1.0-SNAPSHOT</version>
         </dependency>

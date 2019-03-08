@@ -47,16 +47,6 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 
 ```
 
-___Important___:
-If you are using a build tool other than Maven (Gradle, SBT, Ivy, etc.), you will also have to add the following repository to your build file:
-```.xml
-<repository>
-    <id>swt-upb</id>
-    <name>Maven repository of the Software Engineering Group at University of Paderborn</name>
-    <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/swt-upb/</url>
-</repository>
-``` 
-
 You can also obtain older builds of the `develop` branch. A complete listing of builds can be found in [Sonatype's SNAPSHOT repository](https://oss.sonatype.org/content/repositories/snapshots/ca/mcgill/sable/soot).
 
 # How do I obtain Soot without Maven?
