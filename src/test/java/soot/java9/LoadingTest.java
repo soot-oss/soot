@@ -29,6 +29,7 @@ import com.google.common.io.Files;
 import java.io.File;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import soot.G;
 import soot.Main;
@@ -36,6 +37,11 @@ import soot.Scene;
 import soot.SootClass;
 import soot.SootModuleResolver;
 import soot.options.Options;
+
+import categories.Java9Test;
+
+
+@Category(Java9Test.class)
 
 /**
  * Tests the loading of Java 9 Modules.

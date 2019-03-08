@@ -35,8 +35,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.AssertionFailedError;
-
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -48,6 +46,8 @@ import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
 import soot.toolkits.exceptions.ExceptionTestUtility.ExceptionHashSet;
+
+import junit.framework.AssertionFailedError;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ThrowableSetTest {

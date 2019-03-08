@@ -24,11 +24,9 @@ package soot.java10;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Optional;
-import com.google.common.io.Files;
-
-import java.io.File;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import soot.G;
 import soot.Main;
@@ -36,6 +34,12 @@ import soot.Scene;
 import soot.SootClass;
 import soot.SootModuleResolver;
 import soot.options.Options;
+
+import categories.Java11Test;
+
+
+@Category(Java11Test.class)
+
 
 /**
  * Tests the loading of Java 9 to 11 Modules.
