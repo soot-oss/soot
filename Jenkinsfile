@@ -116,7 +116,7 @@ pipeline {
             }
 
             steps {
-              sh 'mvn test -PJava9'
+              sh 'mvn test -PJava11'
 
             }
             post {
