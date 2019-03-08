@@ -31,10 +31,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import categories.Java8Test;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.DoubleType;
@@ -71,6 +73,7 @@ import soot.jimple.StringConstant;
 import soot.jimple.ThrowStmt;
 import soot.jimple.VirtualInvokeExpr;
 import soot.toolkits.exceptions.ExceptionTestUtility.ExceptionHashSet;
+@Category(Java8Test.class)
 
 public class UnitThrowAnalysisTest {
 
