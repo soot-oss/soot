@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Call Graph Constructor. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-08-13T11:30:57.578+02:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class CGOptions {
 
     private Map<String, String> options;
@@ -163,7 +163,7 @@ public class CGOptions {
      * Resolve Abstract Classes with No Children --
      * Causes methods invoked on abstract classes to be resolved even 
      * if there are no non-abstract children of the classes in the 
-     * Scene.
+     * Scene..
      *
      * Normally, if a method is invoked on a class that is abstract and 
      * said class does not have any children in the Scene, the method 

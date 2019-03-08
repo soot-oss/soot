@@ -771,6 +771,7 @@ public class SootClass extends AbstractHost implements Numberable {
     methodList.remove(m);
     m.setDeclared(false);
     m.setDeclaringClass(null);
+    Scene.v().getMethodNumberer().remove(m);
   }
 
   /**
@@ -1243,7 +1244,7 @@ public class SootClass extends AbstractHost implements Numberable {
     this.number = number;
   }
 
-  protected int number = 0;
+  protected volatile int number = 0;
 
   public void rename(String newName) {
     this.name = newName;

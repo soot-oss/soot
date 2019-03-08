@@ -10,12 +10,12 @@ package soot.testing.framework;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -41,7 +42,6 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.SootResolver;
 import soot.Type;
 import soot.VoidType;
 import soot.jimple.Jimple;
@@ -51,11 +51,30 @@ import soot.options.Options;
 
 /**
  * @author Manuel Benz created on 22.06.18
+ * @author Andreas Dann
  */
 @RunWith(PowerMockRunner.class)
 public abstract class AbstractTestingFramework {
 
   private static final String SYSTEMTEST_TARGET_CLASSES_DIR = "target/systemTest-target-classes";
+
+  public static String methodSigFromComponents(String clazz, String subsig) {
+    return String.format("<%s: %s>", clazz, subsig);
+  }
+
+  public static String methodSigFromComponents(String clazz, String returnType, String methodName, String... params) {
+    final String subsig
+        = String.format("%s %s(%s)", returnType, methodName, params.length > 0 ? String.join(",", params) : "");
+    return methodSigFromComponents(clazz, subsig);
+  }
+
+  public static void validateAllBodies(SootClass... classes) {
+    for (SootClass aClass : classes) {
+      for (SootMethod method : aClass.getMethods()) {
+        method.retrieveActiveBody().validate();
+      }
+    }
+  }
 
   /**
    * Sets up the Scene by analyzing all included classes and generating a call graph for the given target. This is done by
@@ -94,6 +113,7 @@ public abstract class AbstractTestingFramework {
     mockStatics();
     SootMethod sootTestMethod = createTestTarget(targetMethodSignature);
     runSoot();
+    Assert.assertNotNull("Could not find target method. System test setup seems to be incorrect. Please try to re-run `mvn test-compile` to make sure that the target code is present for analysis.", sootTestMethod);
     return sootTestMethod;
   }
 
@@ -106,14 +126,12 @@ public abstract class AbstractTestingFramework {
   }
 
   protected void runSoot() {
-    PackManager.v().getPack("wjpp").apply();
-    PackManager.v().getPack("cg").apply();
-    PackManager.v().getPack("wjpp").apply();
+    PackManager.v().runPacks();
   }
 
   /**
    * Sets common options for all test cases
-   * 
+   *
    * @param classesOrPackagesToAnalyze
    */
   private void setupSoot(Collection<String> classesOrPackagesToAnalyze) {
@@ -125,6 +143,7 @@ public abstract class AbstractTestingFramework {
     Options.v().set_exclude(getExcludes());
     Options.v().set_include(new ArrayList<>(classesOrPackagesToAnalyze));
     Options.v().set_process_dir(Collections.singletonList(SYSTEMTEST_TARGET_CLASSES_DIR));
+    Options.v().set_validate(true);
     setupSoot();
   }
 
@@ -142,7 +161,7 @@ public abstract class AbstractTestingFramework {
    * <p>
    * Note that it is good practice to exclude everything and include only the needed classes for the specific test case when
    * calling {@link AbstractTestingFramework#prepareTarget(String, String...)}
-   * 
+   *
    * @return A list of excluded packages and classes
    */
   protected List<String> getExcludes() {
@@ -173,24 +192,30 @@ public abstract class AbstractTestingFramework {
 
   private String makeDummyClass(SootMethod sootTestMethod) {
     SootClass sootClass = new SootClass("dummyClass");
-    SootMethod mainMethod
-        = new SootMethod("main", Arrays.asList(new Type[] { ArrayType.v(RefType.v("java.lang.String"), 1) }), VoidType.v(),
-            Modifier.PUBLIC | Modifier.STATIC);
+    ArrayType argsParamterType = ArrayType.v(RefType.v("java.lang.String"), 1);
+    SootMethod mainMethod = new SootMethod("main", Arrays.asList(new Type[] { argsParamterType }), VoidType.v(),
+        Modifier.PUBLIC | Modifier.STATIC);
     sootClass.addMethod(mainMethod);
 
     JimpleBody body = Jimple.v().newBody(mainMethod);
     mainMethod.setActiveBody(body);
+    Local argsParameter = Jimple.v().newLocal("args", argsParamterType);
+    body.getLocals().add(argsParameter);
+    body.getUnits().add(Jimple.v().newIdentityStmt(argsParameter, Jimple.v().newParameterRef(argsParamterType, 0)));
     RefType testCaseType = RefType.v(sootTestMethod.getDeclaringClass());
     Local allocatedTestObj = Jimple.v().newLocal("dummyObj", testCaseType);
     body.getLocals().add(allocatedTestObj);
     body.getUnits().add(Jimple.v().newAssignStmt(allocatedTestObj, Jimple.v().newNewExpr(testCaseType)));
+
+    body.getUnits().add(Jimple.v().newInvokeStmt(
+        Jimple.v().newSpecialInvokeExpr(allocatedTestObj, testCaseType.getSootClass().getMethodByName("<init>").makeRef())));
     ArrayList args = new ArrayList(sootTestMethod.getParameterCount());
     for (int i = 0; i < sootTestMethod.getParameterCount(); i++) {
       args.add(NullConstant.v());
     }
     body.getUnits()
         .add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(allocatedTestObj, sootTestMethod.makeRef(), args)));
-
+    body.getUnits().add(Jimple.v().newReturnVoidStmt());
     Scene.v().addClass(sootClass);
     return sootClass.toString();
   }

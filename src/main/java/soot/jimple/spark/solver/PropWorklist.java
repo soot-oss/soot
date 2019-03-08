@@ -54,7 +54,7 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 
-public final class PropWorklist extends Propagator {
+public class PropWorklist extends Propagator {
   private static final Logger logger = LoggerFactory.getLogger(PropWorklist.class);
   protected final Set<VarNode> varNodeWorkList = new TreeSet<VarNode>();
 
@@ -63,7 +63,7 @@ public final class PropWorklist extends Propagator {
   }
 
   /** Actually does the propagation. */
-  public final void propagate() {
+  public void propagate() {
     ofcg = pag.getOnFlyCallGraph();
     new TopoSorter(pag, false).sort();
     for (AllocNode object : pag.allocSources()) {
@@ -125,7 +125,7 @@ public final class PropWorklist extends Propagator {
   /**
    * Propagates new points-to information of node src to all its successors.
    */
-  protected final boolean handleAllocNode(AllocNode src) {
+  protected boolean handleAllocNode(AllocNode src) {
     boolean ret = false;
     Node[] targets = pag.allocLookup(src);
     for (Node element : targets) {
@@ -140,7 +140,7 @@ public final class PropWorklist extends Propagator {
   /**
    * Propagates new points-to information of node src to all its successors.
    */
-  protected final boolean handleVarNode(final VarNode src) {
+  protected boolean handleVarNode(final VarNode src) {
     boolean ret = false;
     boolean flush = true;
 

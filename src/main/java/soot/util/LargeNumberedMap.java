@@ -45,7 +45,8 @@ public final class LargeNumberedMap<K extends Numberable, V> {
   public boolean put(Numberable key, V value) {
     int number = key.getNumber();
     if (number == 0) {
-      throw new RuntimeException("oops, forgot to initialize");
+      throw new RuntimeException(String.format("oops, forgot to initialize. Object is of type %s, and looks like this: %s",
+          key.getClass().getName(), key.toString()));
     }
     if (number >= values.length) {
       Object[] oldValues = values;
