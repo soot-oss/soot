@@ -25,6 +25,7 @@ package soot.jimple;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import categories.Java8Test;
 import com.google.common.io.Files;
 
 import java.io.File;
@@ -35,6 +36,7 @@ import java.net.URLClassLoader;
 import java.util.Arrays;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.MethodVisitor;
@@ -47,6 +49,7 @@ import soot.Main;
 /**
  * @author Alex Betra,
  */
+@Category(Java8Test.class)
 
 public class MethodHandleTest {
 

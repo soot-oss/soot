@@ -27,9 +27,11 @@ import static soot.SootClass.HIERARCHY;
 
 import java.util.Collections;
 
+import categories.Java8Test;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runners.MethodSorters;
 
 import soot.ArrayType;
@@ -60,6 +62,9 @@ import soot.options.Options;
  * @author Manuel Benz
  *         created on 01.08.17
  */
+
+@Category(Java8Test.class)
+
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TypeBasedReflectionModelTest {
 
