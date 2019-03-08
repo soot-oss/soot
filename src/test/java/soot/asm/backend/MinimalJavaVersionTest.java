@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 
+import categories.Java8Test;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

@@ -22,6 +22,7 @@ package soot.asm.backend;
  * #L%
  */
 
+import categories.Java8Test;
 import org.junit.experimental.categories.Category;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.util.TraceClassVisitor;
