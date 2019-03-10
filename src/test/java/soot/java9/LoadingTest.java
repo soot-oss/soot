@@ -38,16 +38,13 @@ import soot.SootClass;
 import soot.SootModuleResolver;
 import soot.options.Options;
 
-import categories.Java9Test;
-
-
-@Category(Java9Test.class)
-
 /**
  * Tests the loading of Java 9 Modules.
  *
  * @author Andreas Dann
  */
+
+@Category(categories.Java9Test.class)
 public class LoadingTest {
   /**
    * load a JDK9 class by naming its module
@@ -75,7 +72,8 @@ public class LoadingTest {
     G.reset();
     File tempDir = Files.createTempDir();
 
-    Main.main(new String[] { "-soot-modulepath", tempDir.getAbsolutePath(), "-pp", "-src-prec", "only-class", "java.lang.invoke.VarHandle" });
+    Main.main(new String[] { "-soot-modulepath", tempDir.getAbsolutePath(), "-pp", "-src-prec", "only-class",
+        "java.lang.invoke.VarHandle" });
 
     SootClass klass = Scene.v().getSootClass("java.lang.invoke.VarHandle");
     assertTrue(klass.getName().equals("java.lang.invoke.VarHandle"));

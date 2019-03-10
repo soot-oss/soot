@@ -76,6 +76,7 @@
         <checkstyle.file.path>${checkstyle.dir.path}/soot_checkstyle_checks.xml</checkstyle.file.path>
         <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
         <licence-check.failOnMissingHeader>true</licence-check.failOnMissingHeader>
+        <testcase.groups>categories.Java8Test</testcase.groups>
     </properties>
     <build>
         <finalName>sootclasses_j9-trunk</finalName>
@@ -280,26 +281,23 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>3.0.0-M3</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
                     <reuseForks>false</reuseForks>
                     <forkCount>1</forkCount>
+                    <groups>${testcase.groups}</groups>
                 </configuration>
+
                 <executions>
                     <execution>
-                        <id>default-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <reuseForks>false</reuseForks>
-                            <forkCount>1</forkCount>
-                            <excludes>
-                                <exclude>java9/**</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-                    <execution>
+                        <id>System-tests</id>
                         <goals>
                             <goal>test
                             </goal>
@@ -313,21 +311,11 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>j9-tests</id>
+                        <id>default-test</id>
                         <phase>test</phase>
                         <goals>
                             <goal>test</goal>
                         </goals>
-                        <configuration>
-                            <reuseForks>false</reuseForks>
-                            <forkCount>1</forkCount>
-                            <additionalClasspathElements>
-                                <additionalClasspathElement>${jdk9.jrtjar}</additionalClasspathElement>
-                            </additionalClasspathElements>
-                            <includes>
-                                <include>java9/**</include>
-                            </includes>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
