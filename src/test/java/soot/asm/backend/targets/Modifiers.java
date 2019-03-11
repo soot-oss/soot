@@ -24,27 +24,27 @@ package soot.asm.backend.targets;
 
 public abstract strictfp class Modifiers {
 
-  private final int j = 213;
-  private volatile int i;
-  private transient int k;
+	private volatile int i;
+	private final int j = 213;
+	private transient int k;
 
-  public static void c() {
-  }
+	public final void a(){
+	}
 
-  public final void a() {
-  }
+	public synchronized void b(){
+	}
 
-  public synchronized void b() {
-  }
+	public static void c(){
+	}
 
-  void d() {
-  }
+	void d(){
+	}
 
-  protected void e() {
-  }
+	protected void e(){
+	}
 
-  abstract void f();
+	abstract void f();
 
-  private native void g();
+	private native void g();
 
 }
