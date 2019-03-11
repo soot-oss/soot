@@ -461,9 +461,9 @@
         </dependency>
         <!-- Local dependencies -->
         <dependency>
-            <groupId>pxb.android</groupId>
+            <groupId>de.upb.cs.swt</groupId>
             <artifactId>axml</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>ca.mcgill.sable</groupId>
