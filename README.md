@@ -13,6 +13,7 @@ For Soot details see http://www.sable.mcgill.ca/soot/.
 
 Nightly builds of Soot can be obtained from [nightly build](https://soot-build.cs.uni-paderborn.de/nightly/soot/). The "sootj9-trunk.jar" file is an all-in-one file that also contains all the required libraries. 
 
+We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki) and also a large range of [tutorials](http://www.sable.mcgill.ca/soot/tutorial/index.html) on Soot.
 
 
 
@@ -64,7 +65,6 @@ Options.v().set_soot_modulepath(modulePath);
     }
 
 ```
-
 ## Use from the Command Line
 To execute Soot using Java 1.9, but analyzing a classpath run:
 `java -cp soot-trunk-j9.jar soot.Main -cp VIRTUAL_FS_FOR_JDK:directoryToAnalyse --process-dir directoryToAnalyse`

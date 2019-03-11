@@ -196,7 +196,7 @@ public class SootMethodRefImpl implements SootMethodRef {
     }
   }
 
-  private SootMethod tryResolve(final StringBuilder trace) {
+  protected SootMethod tryResolve(final StringBuilder trace) {
     SootClass selectedClass = declaringClass;
     while (selectedClass != null) {
       if (trace != null) {
