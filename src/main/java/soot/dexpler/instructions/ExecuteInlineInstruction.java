@@ -35,8 +35,6 @@ import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction35mi;
 import org.jf.dexlib2.iface.instruction.formats.Instruction3rmi;
-import org.jf.dexlib2.iface.reference.MethodReference;
-
 import soot.dexpler.DexBody;
 
 public class ExecuteInlineInstruction extends MethodInvocationInstruction implements OdexInstruction {
@@ -57,11 +55,6 @@ public class ExecuteInlineInstruction extends MethodInvocationInstruction implem
     InlineMethodResolver inlineMethodResolver = InlineMethodResolver.createInlineMethodResolver(odexFile.getOdexVersion());
     MethodAnalyzer analyzer = new MethodAnalyzer(cp, method, inlineMethodResolver, false);
     targetMethod = inlineMethodResolver.resolveExecuteInline(new AnalyzedInstruction(analyzer, instruction, -1, -1));
-  }
-
-  @Override
-  protected MethodReference getTargetMethodReference() {
-    return targetMethod;
   }
 
   @Override

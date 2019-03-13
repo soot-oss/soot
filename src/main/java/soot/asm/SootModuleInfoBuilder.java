@@ -43,7 +43,7 @@ public class SootModuleInfoBuilder extends ModuleVisitor {
   private String name;
 
   public SootModuleInfoBuilder(String name, SootModuleInfo klass, SootClassBuilder scb) {
-    super(Opcodes.ASM6);
+    super(Opcodes.ASM7);
     this.klass = klass;
     this.name = name;
     this.scb = scb;

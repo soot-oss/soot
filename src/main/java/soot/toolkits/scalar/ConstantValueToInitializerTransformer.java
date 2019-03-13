@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import soot.Body;
 import soot.Scene;
 import soot.SceneTransformer;
 import soot.SootClass;
@@ -37,13 +38,16 @@ import soot.Type;
 import soot.Unit;
 import soot.ValueBox;
 import soot.VoidType;
+import soot.jimple.Constant;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FieldRef;
 import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.LongConstant;
 import soot.jimple.ReturnVoidStmt;
+import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.tagkit.DoubleConstantValueTag;
@@ -78,45 +82,76 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
     Set<SootField> alreadyInitialized = new HashSet<SootField>();
 
     for (SootField sf : sc.getFields()) {
-      // We can only create an initializer for static final fields that
-      // have a constant value. We ignore non-static final fields as
-      // different constructors might assign different values.
-      if (!sf.isStatic() || !sf.isFinal()) {
-        continue;
-      }
-
+      // We can only create an initializer for all fields that have the
+      // constant value tag. In case of non-static fields, this provides
+      // a default value
       // If there is already an initializer for this field, we do not
-      // generate a second one
+      // generate a second one (this does not concern overwriting in
+      // user code)
       if (alreadyInitialized.contains(sf)) {
         continue;
       }
 
       // Look for constant values
       for (Tag t : sf.getTags()) {
-        Stmt initStmt = null;
+        Constant constant = null;
         if (t instanceof DoubleConstantValueTag) {
           double value = ((DoubleConstantValueTag) t).getDoubleValue();
-          initStmt = Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(sf.makeRef()), DoubleConstant.v(value));
+          constant = DoubleConstant.v(value);
         } else if (t instanceof FloatConstantValueTag) {
           float value = ((FloatConstantValueTag) t).getFloatValue();
-          initStmt = Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(sf.makeRef()), FloatConstant.v(value));
+          constant = FloatConstant.v(value);
         } else if (t instanceof IntegerConstantValueTag) {
           int value = ((IntegerConstantValueTag) t).getIntValue();
-          initStmt = Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(sf.makeRef()), IntConstant.v(value));
+          constant = IntConstant.v(value);
         } else if (t instanceof LongConstantValueTag) {
           long value = ((LongConstantValueTag) t).getLongValue();
-          initStmt = Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(sf.makeRef()), LongConstant.v(value));
+          constant = LongConstant.v(value);
         } else if (t instanceof StringConstantValueTag) {
           String value = ((StringConstantValueTag) t).getStringValue();
-          initStmt = Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(sf.makeRef()), StringConstant.v(value));
+          constant = StringConstant.v(value);
         }
 
-        if (initStmt != null) {
-          if (smInit == null) {
-            smInit = getOrCreateInitializer(sc, alreadyInitialized);
-          }
-          if (smInit != null) {
-            smInit.getActiveBody().getUnits().addFirst(initStmt);
+        if (constant != null) {
+          if (sf.isStatic()) {
+            Stmt initStmt = Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(sf.makeRef()), constant);
+            if (smInit == null) {
+              smInit = getOrCreateInitializer(sc, alreadyInitialized);
+            }
+            if (smInit != null) {
+              smInit.getActiveBody().getUnits().addFirst(initStmt);
+            }
+          } else {
+            // We have a default value for a non-static field
+            // So we have to get it into all <init>s, which
+            // do not call other constructors of the same class.
+            // It has to be after the constructor call to the super class
+            // so that it can be potentially overwritten within the method,
+            // without the default value taking precedence.
+            for (SootMethod m : sc.getMethods()) {
+              if (m.isConstructor()) {
+                final Body body = m.retrieveActiveBody();
+                for (Unit u : body.getUnits()) {
+                  if (u instanceof Stmt) {
+                    final Stmt s = (Stmt) u;
+                    if (s.containsInvokeExpr()) {
+                      final InvokeExpr expr = s.getInvokeExpr();
+                      if (expr instanceof SpecialInvokeExpr) {
+                        if (expr.getMethod().getDeclaringClass() == sc) {
+                          // Calling another constructor in the same class
+                          break;
+                        }
+                        Stmt initStmt = Jimple.v()
+                            .newAssignStmt(Jimple.v().newInstanceFieldRef(body.getThisLocal(), sf.makeRef()), constant);
+
+                        body.getUnits().insertAfter(initStmt, s);
+                        break;
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }

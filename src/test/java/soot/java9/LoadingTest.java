@@ -29,6 +29,7 @@ import com.google.common.io.Files;
 import java.io.File;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import soot.G;
 import soot.Main;
@@ -42,6 +43,8 @@ import soot.options.Options;
  *
  * @author Andreas Dann
  */
+
+@Category(categories.Java9Test.class)
 public class LoadingTest {
   /**
    * load a JDK9 class by naming its module
@@ -70,7 +73,7 @@ public class LoadingTest {
     File tempDir = Files.createTempDir();
 
     Main.main(new String[] { "-soot-modulepath", tempDir.getAbsolutePath(), "-pp", "-src-prec", "only-class",
-        "-allow-phantom-refs", "java.lang.invoke.VarHandle" });
+        "java.lang.invoke.VarHandle" });
 
     SootClass klass = Scene.v().getSootClass("java.lang.invoke.VarHandle");
     assertTrue(klass.getName().equals("java.lang.invoke.VarHandle"));

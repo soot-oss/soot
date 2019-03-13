@@ -37,8 +37,6 @@ import soot.dava.toolkits.base.AST.traversals.AllDefinitionsFinder;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Stmt;
 
-
-
 //import soot.dava.internal.javaRep.*;
 //import soot.dava.internal.SET.*;
 

@@ -30,9 +30,7 @@ import java.util.Set;
 
 import soot.util.Chain;
 
-/**
- * Utility methods for dealing with traps.
- */
+/** Utility methods for dealing with traps. */
 public class TrapManager {
   /**
    * If exception e is caught at unit u in body b, return true; otherwise, return false.

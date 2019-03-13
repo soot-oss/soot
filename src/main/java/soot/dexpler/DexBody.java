@@ -48,6 +48,7 @@ import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.ExceptionHandler;
 import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.MethodImplementation;
+import org.jf.dexlib2.iface.MethodParameter;
 import org.jf.dexlib2.iface.TryBlock;
 import org.jf.dexlib2.iface.debug.DebugItem;
 import org.jf.dexlib2.iface.instruction.Instruction;
@@ -141,6 +142,7 @@ public class DexBody {
   protected int numRegisters;
   protected int numParameterRegisters;
   protected final List<Type> parameterTypes;
+  protected final List<String> parameterNames;
   protected boolean isStatic;
 
   protected JimpleBody jBody;
@@ -179,13 +181,16 @@ public class DexBody {
     this.declaringClassType = declaringClassType;
     tries = code.getTryBlocks();
 
-    List<? extends CharSequence> paramTypes = method.getParameterTypes();
-    if (paramTypes != null) {
+    List<? extends MethodParameter> parameters = method.getParameters();
+    if (parameters != null) {
+      parameterNames = new ArrayList<String>();
       parameterTypes = new ArrayList<Type>();
-      for (CharSequence type : paramTypes) {
-        parameterTypes.add(DexType.toSoot(type.toString()));
+      for (MethodParameter param : method.getParameters()) {
+        parameterNames.add(param.getName());
+        parameterTypes.add(DexType.toSoot(param.getType()));
       }
     } else {
+      parameterNames = Collections.emptyList();
       parameterTypes = Collections.emptyList();
     }
 
@@ -427,11 +432,31 @@ public class DexBody {
     }
     {
       int i = 0; // index of parameter type
+      int argIdx = 0;
       int parameterRegister = numRegisters - numParameterRegisters; // index of parameter register
       for (Type t : parameterTypes) {
-        // may only use UnknownType here because the local may be reused with a different 
-        // type later (before splitting)
-        Local gen = jimple.newLocal("$u" + parameterRegister, unknownType);
+
+        String localName = null;
+        Type localType = null;
+        if (jbOptions.use_original_names()) {
+          // Attempt to read original parameter name.
+          try {
+            localName = parameterNames.get(argIdx);
+            localType = parameterTypes.get(argIdx);
+          } catch (Exception ex) { 
+            logger.error("Exception while reading original parameter names.", ex);
+          }
+        }
+        if (localName == null) {
+          localName = "$u" + parameterRegister;
+        }
+        if (localType == null) {
+          // may only use UnknownType here because the local may be
+          // reused with a different type later (before splitting)
+          localType = unknownType;
+        }
+
+        Local gen = jimple.newLocal(localName, localType);
         jBody.getLocals().add(gen);
 
         registerLocals[parameterRegister] = gen;
@@ -457,6 +482,7 @@ public class DexBody {
         }
 
         parameterRegister++;
+        argIdx++;
       }
     }
 
@@ -530,6 +556,7 @@ public class DexBody {
     // instructionsToRetype = null;
     dangling = null;
     tries = null;
+    parameterNames.clear();
 
     /*
      * We eliminate dead code. Dead code has been shown to occur under the following circumstances.

@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Null Pointer Checker. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2019-02-04T16:25:15.605+01:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class NPCOptions {
 
     private Map<String, String> options;

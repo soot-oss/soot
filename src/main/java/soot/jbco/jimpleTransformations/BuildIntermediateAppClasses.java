@@ -141,7 +141,7 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
       }
 
       if (methodsToAdd.size() > 0) {
-        final String fullName = ClassRenamer.v().getNewName(ClassRenamer.getPackageName(sc.getName()), null);
+        final String fullName = ClassRenamer.v().getOrAddNewName(ClassRenamer.getPackageName(sc.getName()), null);
 
         if (output) {
           out.println("\tBuilding " + fullName);

@@ -79,7 +79,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
         @Override
         public Set<Unit> load(SootMethod m) throws Exception {
           return getCallsFromWithinMethod(m);
-        } 
+        }
       });
 
   public AbstractJimpleBasedICFG() {
@@ -228,6 +228,9 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   public List<Unit> getPredsOf(Unit u) {
     assert u != null;
     Body body = unitToOwner.get(u);
+    if (body == null) {
+      return Collections.emptyList();
+    }
     DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
     return unitGraph.getPredsOf(u);
   }

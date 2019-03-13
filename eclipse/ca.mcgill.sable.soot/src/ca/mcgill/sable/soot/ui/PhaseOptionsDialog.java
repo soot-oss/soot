@@ -230,10 +230,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("jb", getjbuse_original_names_widget(), "use-original-names");
 		addToEnableGroup("jb", getjbpreserve_source_annotations_widget(), "preserve-source-annotations");
 		addToEnableGroup("jb", getjbstabilize_local_names_widget(), "stabilize-local-names");
+		addToEnableGroup("jb", getjbmodel_lambdametafactory_widget(), "model-lambdametafactory");
 		getjbenabled_widget().getButton().addSelectionListener(this);
 		getjbuse_original_names_widget().getButton().addSelectionListener(this);
 		getjbpreserve_source_annotations_widget().getButton().addSelectionListener(this);
 		getjbstabilize_local_names_widget().getButton().addSelectionListener(this);
+		getjbmodel_lambdametafactory_widget().getButton().addSelectionListener(this);
 
 		makeNewEnableGroup("jb", "jb.dtr");
 		addToEnableGroup("jb", "jb.dtr", getjbjb_dtrenabled_widget(), "enabled");
@@ -1386,6 +1388,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbstabilize_local_names_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getjbmodel_lambdametafactory_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbmodel_lambdametafactory_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getjbjb_dtrenabled_widget().getButton().getSelection();
 		defBoolRes = true;
@@ -5133,6 +5141,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getjbstabilize_local_names_widget() {
 		return jbstabilize_local_names_widget;
+	}	
+	
+	private BooleanOptionWidget jbmodel_lambdametafactory_widget;
+	
+	private void setjbmodel_lambdametafactory_widget(BooleanOptionWidget widget) {
+		jbmodel_lambdametafactory_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbmodel_lambdametafactory_widget() {
+		return jbmodel_lambdametafactory_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_dtrenabled_widget;
@@ -9073,6 +9091,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 						"1.8 8",
 						"\nForce Java 1.8 as output version.",
 						false),
+				new OptionData("Java 1.9",
+						"1.9 9",
+						"\nForce Java 1.9 as output version. (Experimental)",
+						false),
 		};
 
 
@@ -9435,6 +9457,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setjbstabilize_local_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Stabilize local names", "p phase-option", "jb","stabilize-local-names", "\nMake sure that local names are stable between runs. This \nrequires re-normalizing all local names after the standard \ntransformations, sorting them, and padding all local names with \nleading zeros up to the maximum number of digits in the local \nwith the highest integer value. This can negatively impact \nperformance. This option automatically sets "sort-locals" in \n"jb.lns" during the second re-normalization pass.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb"+" "+"model-lambdametafactory";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setjbmodel_lambdametafactory_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Model LambdaMetafactory", "p phase-option", "jb","model-lambdametafactory", "\nWhen the asm bytecode frontend is used and this option is set to \ntrue, Soot creates an implementation of the LambdaMetafactory \nfor each dynamic invoke and replaces the original dynamic invoke \nby a static invocation of the factory's bootstrap method. This \nallows the call-graph generation to find the lambda body \nreachable, i.e., call-graphs contain paths from the invocation \nof a functional interface to the lambda body implementing this \ninterface. Note that this procedure is not reversed when \nwriting-out. Therefore, written-out code will contain the \ncreated LambdaMetafactories and instrumented calls to the \ncorresponding bootstrap methods.", defaultBool)));
 
 
 		return editGroupjb;

@@ -55,6 +55,8 @@ import org.jf.dexlib2.iface.value.MethodEncodedValue;
 import org.jf.dexlib2.iface.value.ShortEncodedValue;
 import org.jf.dexlib2.iface.value.StringEncodedValue;
 import org.jf.dexlib2.iface.value.TypeEncodedValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.RefType;
@@ -96,6 +98,8 @@ import soot.toDex.SootToDexUtils;
  *
  */
 public class DexAnnotation {
+  
+  private static final Logger logger = LoggerFactory.getLogger(DexAnnotation.class);
 
   public static final String JAVA_DEPRECATED = "java.lang.Deprecated";
   public static final String DALVIK_ANNOTATION_THROWS = "dalvik.annotation.Throws";
@@ -520,6 +524,10 @@ public class DexAnnotation {
         }
         AnnotationStringElem e = (AnnotationStringElem) getElements(a.getElements()).get(0);
         String[] split1 = e.getValue().split("\\ \\|");
+        if (split1.length < 4) {
+          logger.debug("Invalid or unsupported dalvik EnclosingMethod annotation value: \"{}\"", e.getValue());
+          break;
+        }
         String classString = split1[0];
         String methodString = split1[1];
         String parameters = split1[2];

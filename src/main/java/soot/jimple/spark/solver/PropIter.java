@@ -50,7 +50,7 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 
-public final class PropIter extends Propagator {
+public class PropIter extends Propagator {
   private static final Logger logger = LoggerFactory.getLogger(PropIter.class);
 
   public PropIter(PAG pag) {
@@ -58,7 +58,7 @@ public final class PropIter extends Propagator {
   }
 
   /** Actually does the propagation. */
-  public final void propagate() {
+  public void propagate() {
     final OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
     new TopoSorter(pag, false).sort();
     for (Object object : pag.allocSources()) {
@@ -117,7 +117,7 @@ public final class PropIter extends Propagator {
   /**
    * Propagates new points-to information of node src to all its successors.
    */
-  protected final boolean handleAllocNode(AllocNode src) {
+  protected boolean handleAllocNode(AllocNode src) {
     boolean ret = false;
     Node[] targets = pag.allocLookup(src);
     for (Node element : targets) {
@@ -126,7 +126,7 @@ public final class PropIter extends Propagator {
     return ret;
   }
 
-  protected final boolean handleSimples(VarNode src) {
+  protected boolean handleSimples(VarNode src) {
     boolean ret = false;
     PointsToSetInternal srcSet = src.getP2Set();
     if (srcSet.isEmpty()) {
@@ -145,7 +145,7 @@ public final class PropIter extends Propagator {
     return ret;
   }
 
-  protected final boolean handleStores(VarNode src) {
+  protected boolean handleStores(VarNode src) {
     boolean ret = false;
     final PointsToSetInternal srcSet = src.getP2Set();
     if (srcSet.isEmpty()) {
@@ -167,7 +167,7 @@ public final class PropIter extends Propagator {
     return ret;
   }
 
-  protected final boolean handleLoads(FieldRefNode src) {
+  protected boolean handleLoads(FieldRefNode src) {
     boolean ret = false;
     final Node[] loadTargets = pag.loadLookup(src);
     final SparkField f = src.getField();
@@ -192,7 +192,7 @@ public final class PropIter extends Propagator {
     return ret;
   }
 
-  protected final boolean handleNewInstances(final NewInstanceNode src) {
+  protected boolean handleNewInstances(final NewInstanceNode src) {
     boolean ret = false;
     final Node[] newInstances = pag.assignInstanceLookup(src);
     for (final Node instance : newInstances) {

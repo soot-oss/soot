@@ -27,12 +27,14 @@ package soot.util;
  */
 public class IntegerNumberer implements Numberer<Long> {
   /** Tells the numberer that a new object needs to be assigned a number. */
+  @Override
   public void add(Long o) {
   }
 
   /**
    * Should return the number that was assigned to object o that was previously passed as an argument to add().
    */
+  @Override
   public long get(Long o) {
     if (o == null) {
       return 0;
@@ -41,6 +43,7 @@ public class IntegerNumberer implements Numberer<Long> {
   }
 
   /** Should return the object that was assigned the number number. */
+  @Override
   public Long get(long number) {
     if (number == 0) {
       return null;
@@ -49,7 +52,13 @@ public class IntegerNumberer implements Numberer<Long> {
   }
 
   /** Should return the number of objects that have been assigned numbers. */
+  @Override
   public int size() {
     throw new RuntimeException("IntegerNumberer does not implement the size() method.");
+  }
+
+  @Override
+  public boolean remove(Long o) {
+    return false;
   }
 }

@@ -27,11 +27,11 @@ package soot.asm.backend.targets;
  */
 public class nullTypes {
 
-    Integer doStuff(Integer i) {
-        if (i == null) {
-            return null;
-        }
-        return 1;
+  Integer doStuff(Integer i) {
+    if (i == null) {
+      return null;
     }
+    return 1;
+  }
 
 }

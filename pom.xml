@@ -3,10 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>ca.mcgill.sable</groupId>
-	<artifactId>soot-j9</artifactId>
+    <artifactId>soot-j9</artifactId>
     <name>Soot - a J*va Optimization Framework</name>
-	<version>4.0.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <description>A Java Optimization Framework</description>
+    <url>https://sable.github.io/soot/</url>
     <organization>
         <name>Sable</name>
         <url>http://www.sable.mcgill.ca/</url>
@@ -18,33 +19,65 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    <developers>
+        <developer>
+            <name>Manuel Benz</name>
+            <email>manuel.benz@upb.de</email>
+            <organization>University of Paderborn</organization>
+            <organizationUrl>https://www.hni.uni-paderborn.de/en/software-engineering/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Eric Bodden</name>
+            <email>eric.bodden@uni-paderborn.de</email>
+            <organization>University of Paderborn</organization>
+            <organizationUrl>https://www.hni.uni-paderborn.de/en/software-engineering/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Andreas Dann</name>
+            <email>andreas.dann@uni-paderborn.de</email>
+            <organization>University of Paderborn</organization>
+            <organizationUrl>https://www.hni.uni-paderborn.de/en/software-engineering/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Steven Arzt</name>
+            <email>eric.bodden@uni-paderborn.de</email>
+            <organization>Frauenhofer SIT</organization>
+            <organizationUrl>https://www.sit.fraunhofer.de/en/</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:git@github.com:Sable/soot.git</connection>
+        <developerConnection>scm:git:git@github.com:Sable/soot.git</developerConnection>
+        <url>https://github.com/Sable/soot/tree/master</url>
+    </scm>
     <properties>
-		<!-- adann: officially the jrt filesystem used for modules in Java 9 requires at least java 8
+        <!-- adann: officially the jrt filesystem used for modules in Java 9 requires at least java 8
             there exists unoffical backport of rt.jar, but I've not tested them yet
             see http://openjdk.java.net/jeps/220 -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <xml-maven-plugin.version>1.0.1</xml-maven-plugin.version>
+        <xml-maven-plugin.version>1.0.2</xml-maven-plugin.version>
         <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
-        <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
-        <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
-        <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+        <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
+        <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.0.0</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+        <maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- Default value for my.variable can be defined here -->
-		<jdk9.jrtjar>/opt/jdk-9/jrt-fs.jar</jdk9.jrtjar>
         <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
         <checkstyle.version>8.9</checkstyle.version>
         <checkstyle.dir.path>${basedir}/codingstyle</checkstyle.dir.path>
         <checkstyle.file.path>${checkstyle.dir.path}/soot_checkstyle_checks.xml</checkstyle.file.path>
         <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
         <licence-check.failOnMissingHeader>true</licence-check.failOnMissingHeader>
+        <testcase.groups>categories.Java8Test</testcase.groups>
     </properties>
     <build>
-		<finalName>sootclasses_j9-trunk</finalName>
+        <finalName>sootclasses_j9-trunk</finalName>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -68,7 +101,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/singletons/make-singletons.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>Singletons.java</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -82,7 +116,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/options/make-soot-options.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>Options.java</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -95,7 +130,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/options/ant-task.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>AntTask.java</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -108,7 +144,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/options/phase_options_dialog.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>PhaseOptionsDialog.java</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -121,7 +158,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/options/soot_options.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>soot_options.htm</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -222,7 +260,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>compile system tests</id>
+                        <id>compile-system-tests</id>
                         <phase>test-compile</phase>
                         <goals>
                             <goal>testCompile</goal>
@@ -241,30 +279,25 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>3.0.0-M3</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
                     <reuseForks>false</reuseForks>
                     <forkCount>1</forkCount>
+                    <groups>${testcase.groups}</groups>
                 </configuration>
-				<executions>
-					<execution>
-						<id>default-test</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<reuseForks>false</reuseForks>
-							<forkCount>1</forkCount>
-							<excludes>
-								<exclude>java9/**</exclude>
-							</excludes>
-						</configuration>
-					</execution>
-					<execution>
-                        <id>Run system tests</id>
+
+                <executions>
+                    <execution>
+                        <id>System-tests</id>
                         <goals>
-                            <goal>
-                                test
+                            <goal>test
                             </goal>
                         </goals>
                         <configuration>
@@ -275,24 +308,14 @@
                             <forkCount>1</forkCount>
                         </configuration>
                     </execution>
-					<execution>
-						<id>j9-tests</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<reuseForks>false</reuseForks>
-							<forkCount>1</forkCount>
-							<additionalClasspathElements>
-								<additionalClasspathElement>${jdk9.jrtjar}</additionalClasspathElement>
-							</additionalClasspathElements>
-							<includes>
-								<include>java9/**</include>
-							</includes>
-						</configuration>
-					</execution>
-				</executions>
+                    <execution>
+                        <id>default-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -406,12 +429,18 @@
         <dependency>
             <groupId>org.smali</groupId>
             <artifactId>dexlib2</artifactId>
-            <version>2.2.2</version>
+            <version>2.2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-commons</artifactId>
+            <version>7.0</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-debug-all</artifactId>
-			<version>6.0_BETA</version>
+            <artifactId>asm-util</artifactId>
+            <version>7.0</version>
         </dependency>
         <dependency>
             <groupId>org.javassist</groupId>
@@ -432,9 +461,9 @@
         </dependency>
         <!-- Local dependencies -->
         <dependency>
-            <groupId>pxb.android</groupId>
+            <groupId>de.upb.cs.swt</groupId>
             <artifactId>axml</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>ca.mcgill.sable</groupId>
@@ -444,16 +473,16 @@
         <!-- Published from the github repo -->
         <!-- Built by http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/ -->
         <dependency>
-            <groupId>heros</groupId>
+            <groupId>de.upb.cs.swt</groupId>
             <artifactId>heros</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.1.0</version>
         </dependency>
         <!-- Uploaded to http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/
             from the nightly build server -->
         <dependency>
             <groupId>ca.mcgill.sable</groupId>
             <artifactId>jasmin</artifactId>
-            <version>3.0.1-SNAPSHOT</version>
+            <version>3.0.1</version>
         </dependency>
         <!-- Logging dependencies -->
         <dependency>
@@ -471,7 +500,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -483,35 +512,81 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.10.8</version>
+            <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-mockito-release-full</artifactId>
-            <version>1.6.1</version>
+            <version>1.6.4</version>
             <type>pom</type>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.android/android -->
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+            <version>4.1.1.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- add dependencies to javax.annotation to build soot on jdk 11 -->
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.4.0-b180725.0427</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.4.0-b180725.0644</version>
+        </dependency>
+
+
     </dependencies>
+
     <repositories>
         <repository>
-            <id>soot-snapshot</id>
-            <name>Soot snapshot server</name>
-            <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/</url>
-        </repository>
-        <repository>
-            <id>soot-release</id>
-            <name>Soot release server</name>
-            <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
-            <snapshots>
+            <id>sonatype-snapshot</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
                 <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
             </snapshots>
         </repository>
     </repositories>
-
-
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
     <profiles>
+        <profile>
+            <id>Java8</id>
+            <properties>
+                <testcase.groups>categories.Java8Test</testcase.groups>
+            </properties>
+        </profile>
+        <profile>
+            <id>Java9</id>
+            <properties>
+                <testcase.groups>categories.Java9Test</testcase.groups>
+            </properties>
+        </profile>
+        <profile>
+            <id>Java11</id>
+            <properties>
+                <testcase.groups>categories.Java11Test</testcase.groups>
+            </properties>
+        </profile>
         <profile>
             <id>deploy</id>
             <activation>
@@ -520,8 +595,44 @@
                     <value>true</value>
                 </property>
             </activation>
+            <properties>
+                <gpg.executable>gpg2</gpg.executable>
+                <gpg.keyname>BA6398DCF4E2C1B6C5C7BDFC364F80C21BCC61BB</gpg.keyname>
+            </properties>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>${maven-nexus-staging-plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven-gpg-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- This is necessary for gpg to not try to use the pinentry programs -->
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
