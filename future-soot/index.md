@@ -16,8 +16,8 @@ We are currently developing a brand-new version of Soot, currently still in a pr
 
 
 ## Principal investigators
-* Eric Bodden, Chair of Software Engineering at Paderborn University
-* Rüdiger Kabst, Chair of International Business at Paderborn University
+* [Eric Bodden](https://www.hni.uni-paderborn.de/en/software-engineering/), Chair of Software Engineering at Paderborn University
+* [Rüdiger Kabst](https://wiwi.uni-paderborn.de/en/dep1/international-business-prof-dr-kabst/), Chair of International Business at Paderborn University
 
 ## Project team
 * TODO fill out
