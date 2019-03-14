@@ -19,5 +19,13 @@ We are currently developing a brand-new version of Soot, currently still in a pr
 * [Eric Bodden](https://www.hni.uni-paderborn.de/en/software-engineering/), Chair of Software Engineering at Paderborn University
 * [Rüdiger Kabst](https://wiwi.uni-paderborn.de/en/dep1/international-business-prof-dr-kabst/), Chair of International Business at Paderborn University
 
-## Project team
-* TODO fill out
+## Project team (alphabetized by surname)
+* Manuel Benz, mbenz@uni-paderborn.de
+* Christian Brüggemann, cbruegg@mail.upb.de
+* Andreas Dann, andreas.dann@uni-paderborn.de
+* Julian Dolby, dolby@us.ibm.com 
+* Ben Hermann, ben.hermann@uni-paderborn.de
+* [Linghui Luo](https://linghuiluo.github.io/), linghui.luo@uni-paderborn.de
+* Jan Martin Persch, jmpersch@hni.upb.de
+* Markus Schmidt, smarkus@mail.upb.de
+
