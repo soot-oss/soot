@@ -20,4 +20,9 @@ We are currently developing a brand-new version of Soot, currently still in a pr
 * [Rüdiger Kabst](https://wiwi.uni-paderborn.de/en/dep1/international-business-prof-dr-kabst/), Chair of International Business at Paderborn University
 
 ## Project team
-* TODO fill out
+- Manuel Benz
+- Andreas Dann
+- Linghui Luo
+- Ben Hermann
+- Markus Schmidt
+- Christian Brüggerman
