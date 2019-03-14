@@ -1,8 +1,8 @@
-## The FutureSoot project
+# The FutureSoot project
 
 FutureSoot is a three-years project, which started in 2018, and is funded by the DFG's funding line on [Research Software Sustainability](http://www.dfg.de/en/research_funding/programmes/infrastructure/lis/funding_opportunities/call_proposal_software/). The project provides us funding to both give Soot a major architectural overhaul, and also to develop a sustainability plan that allows us to finance the further development and maintenance of Soot in the future.
 
-# What concrete goals do we have with FutureSoot?
+## What concrete goals do we have with FutureSoot?
 
 We are currently developing a brand-new version of Soot, currently still in a private branch. This new version will enable people to use Soot in a much more flexible manner. Particularly, we are implementing the following major, breaking changes:
 * We will get rid of most singletons, allowing for a much more decoupled, modular design.
@@ -15,9 +15,9 @@ We are currently developing a brand-new version of Soot, currently still in a pr
    * As a command-line tool: as a modular component, we will implement a command-line client which implements a default control thread to load into Soot certain code projects, have them analyzed/transformed, similarly to how Soot can be used today. All functionality will be implemented through calls into the library.
 
 
-# Principal investigators
+## Principal investigators
 * Eric Bodden, Chair of Software Engineering at Paderborn University
 * Rüdiger Kabst, Chair of International Business at Paderborn University
 
-# Project team
+## Project team
 * TODO fill out
