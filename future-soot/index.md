@@ -13,7 +13,7 @@ We are currently developing a brand-new version of Soot, currently still in a pr
 * End users will be able to use Soot in two ways:
    * As a library: by default, Soot will assume that it's embedded in a client application that owns the thread of control. This analysis client can use off Soot whatever is needed. This new mode eases integration of Soot, e.g. into IDEs, but also into rich client analyses.
    * As a command-line tool: as a modular component, we will implement a command-line client which implements a default control thread to load into Soot certain code projects, have them analyzed/transformed, similarly to how Soot can be used today. All functionality will be implemented through calls into the library.
-
+* FutureSoot will assist end users by integrating with the Language Server Protocols. This allows Soot's code-related messages to be directly displayed in various IDEs.
 
 ## Principal investigators
 * [Eric Bodden](https://www.hni.uni-paderborn.de/en/software-engineering/), Chair of Software Engineering at Paderborn University
