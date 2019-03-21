@@ -269,11 +269,12 @@ public class SootMethodRefImpl implements SootMethodRef {
     // non-existing methods;
     // we simply create the methods on the fly; the method body will throw
     // an appropriate error just in case the code *is* actually reached at runtime
-    boolean treatAsPhantomClass = Options.v().allow_phantom_refs() && !declaringClass.isInterface();
+    boolean treatAsPhantomClass = Options.v().allow_phantom_refs();
 
     // declaring class of dynamic invocations not known at compile time, treat as
     // phantom class regardless if phantom classes are enabled
-    treatAsPhantomClass = treatAsPhantomClass || declaringClass.getName().equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
+    if (declaringClass.getName().equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME))
+      treatAsPhantomClass = true;
 
     if (treatAsPhantomClass) {
       return createUnresolvedErrorMethod(declaringClass);
