@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -214,6 +215,17 @@ public class HashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   @Override
   public void clear() {
     m.clear();
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    for (Entry<K, Set<V>> entry : m.entrySet()) {
+      builder.append(entry.getKey()).append(":\n").append(entry.getValue().toString()).append("\n\n");
+    }
+    if (builder.length() > 2)
+      builder.delete(builder.length() - 2, builder.length());
+    return builder.toString();
   }
 
 }
