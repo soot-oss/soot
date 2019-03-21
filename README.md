@@ -47,21 +47,11 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 
 ```
 
-___Important___:
-If you are using a build tool other than Maven (Gradle, SBT, Ivy, etc.), you will also have to add the following repository to your build file:
-```.xml
-<repository>
-    <id>swt-upb</id>
-    <name>Maven repository of the Software Engineering Group at University of Paderborn</name>
-    <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/swt-upb/</url>
-</repository>
-``` 
-
 You can also obtain older builds of the `develop` branch. A complete listing of builds can be found in [Sonatype's SNAPSHOT repository](https://oss.sonatype.org/content/repositories/snapshots/ca/mcgill/sable/soot).
 
 # How do I obtain Soot without Maven?
 
-All of our Soot builds for the `develop` branch are also stored up to one month in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse/components:soot-snapshot) and can be obtained from there.
+All of our Soot builds for the `develop` branch are also stored up to one month in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse:soot-snapshot:ca%2Fmcgill%2Fsable%2Fsoot) and can be obtained from there.
 The latest snapshot build of Soot can also be obtained [directly](https://soot-build.cs.uni-paderborn.de/public/origin/develop/soot/soot-develop/build/). The "sootclasses-trunk-jar-with-dependencies.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
 
 # Building Soot yourself
