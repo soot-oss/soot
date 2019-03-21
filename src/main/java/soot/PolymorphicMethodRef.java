@@ -93,7 +93,7 @@ public class PolymorphicMethodRef extends SootMethodRefImpl {
     // for polymorphic methods, we don't care about the return or parameter types. We just check if a method with the name
     // exists
 
-    method = getDeclaringClass().getMethodByName(getName());
+    method = getDeclaringClass().getMethodByNameUnsafe(getName());
 
     if (method != null) {
       // the class declares a method with that name, check if the method is polymorphic
@@ -111,7 +111,7 @@ public class PolymorphicMethodRef extends SootMethodRefImpl {
       }
     }
 
-    return null;
+    return super.resolve();
   }
 
   private SootMethod addPolyMorphicMethod(SootMethod originalPolyMorphicMethod) {
