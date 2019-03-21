@@ -223,8 +223,9 @@ public class HashMultiMap<K, V> extends AbstractMultiMap<K, V> {
     for (Entry<K, Set<V>> entry : m.entrySet()) {
       builder.append(entry.getKey()).append(":\n").append(entry.getValue().toString()).append("\n\n");
     }
-    if (builder.length() > 2)
+    if (builder.length() > 2) {
       builder.delete(builder.length() - 2, builder.length());
+    }
     return builder.toString();
   }
 

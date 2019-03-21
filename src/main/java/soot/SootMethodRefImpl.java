@@ -273,8 +273,9 @@ public class SootMethodRefImpl implements SootMethodRef {
 
     // declaring class of dynamic invocations not known at compile time, treat as
     // phantom class regardless if phantom classes are enabled
-    if (declaringClass.getName().equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME))
+    if (declaringClass.getName().equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
       treatAsPhantomClass = true;
+    }
 
     if (treatAsPhantomClass) {
       return createUnresolvedErrorMethod(declaringClass);
