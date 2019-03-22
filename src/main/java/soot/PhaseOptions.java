@@ -80,9 +80,7 @@ public class PhaseOptions {
       String opt = st.nextToken();
       String key = getKey(opt);
       String value = getValue(opt);
-      if (!ret.containsKey(key)) {
-        ret.put(key, value);
-      }
+      ret.putIfAbsent(key, value);
     }
     return Collections.unmodifiableMap(ret);
   }
@@ -188,7 +186,7 @@ public class PhaseOptions {
         continue;
       }
       for (Iterator<Transform> tIt = p.iterator(); tIt.hasNext();) {
-        final Transform t = (Transform) tIt.next();
+        final Transform t = tIt.next();
         setPhaseOption(t.getPhaseName(), "enabled:false");
       }
     }
