@@ -274,7 +274,6 @@ public class StmtVisitor implements StmtSwitch {
       Register secondSource = nextInsn.getRegs().get(1);
       if (firstTarget.equals(secondSource) && secondTarget.equals(firstSource)) {
         Stmt nextStmt = insnStmtMap.get(nextInsn);
-
         // Remove the second instruction as it does not change any
         // state. We cannot remove the first instruction as other
         // instructions may depend on the register being set.
@@ -282,6 +281,9 @@ public class StmtVisitor implements StmtSwitch {
           insns.remove(nextIndex);
 
           if (nextStmt != null) {
+            if (nextIndex == this.insns.size() - 1)
+              // we ware now at the end of the list
+              continue;
             Insn nextInst = this.insns.get(nextIndex + 1);
             insnStmtMap.remove(nextInsn);
             insnStmtMap.put(nextInst, nextStmt);
