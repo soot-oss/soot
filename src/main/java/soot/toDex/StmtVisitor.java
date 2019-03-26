@@ -282,7 +282,7 @@ public class StmtVisitor implements StmtSwitch {
 
           if (nextStmt != null) {
             if (nextIndex == this.insns.size() - 1)
-              // we ware now at the end of the list
+              // we are now at the end of the list
               continue;
             Insn nextInst = this.insns.get(nextIndex + 1);
             insnStmtMap.remove(nextInsn);
