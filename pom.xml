@@ -544,7 +544,7 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>2.4.0-b180725.0644</version>
+            <version>2.4.0-b180830.0438</version>
         </dependency>
 
 
