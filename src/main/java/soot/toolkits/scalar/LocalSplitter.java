@@ -44,6 +44,7 @@ import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
 import soot.toolkits.exceptions.ThrowAnalysis;
+import soot.toolkits.graph.CompleteUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.LocalBitSetPacker;
 
@@ -113,8 +114,8 @@ public class LocalSplitter extends BodyTransformer {
     localPacker.pack();
 
     // Go through the definitions, building the webs
-    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
-
+    //ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
+    CompleteUnitGraph graph = new CompleteUnitGraph(body);
     // run in panic mode on first split (maybe change this depending on the input
     // source)
     final LocalDefs defs = LocalDefs.Factory.newLocalDefs(graph, true);
