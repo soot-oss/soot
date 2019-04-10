@@ -138,6 +138,9 @@ public final class OnFlyCallGraphBuilder {
       = Scene.v().getSubSigNumberer().findOrAdd("boolean post(java.lang.Runnable)");
   protected final NumberedString sigHandlerPostAtFrontOfQueue
       = Scene.v().getSubSigNumberer().findOrAdd("boolean postAtFrontOfQueue(java.lang.Runnable)");
+  // Method from android.app.Activity
+  protected final NumberedString sigRunOnUiThread
+      = Scene.v().getSubSigNumberer().findOrAdd("void runOnUiThread(java.lang.Runnable)");
 
   // type based reflection resolution state
   protected final NumberedString sigHandlerPostAtTime
@@ -327,7 +330,7 @@ public final class OnFlyCallGraphBuilder {
       }
     }
   }
-  
+
   private Set<Type> resolveToClasses(Set<Type> rawTypes) {
     Set<Type> toReturn = new HashSet<Type>();
     for (Type ty : rawTypes) {
@@ -771,8 +774,8 @@ public final class OnFlyCallGraphBuilder {
           if (subSig == sigStart) {
             addVirtualCallSite(s, m, receiver, iie, sigRun, Kind.THREAD);
           } else if (subSig == sigExecutorExecute || subSig == sigHandlerPost || subSig == sigHandlerPostAtFrontOfQueue
-              || subSig == sigHandlerPostAtTime || subSig == sigHandlerPostAtTimeWithToken
-              || subSig == sigHandlerPostDelayed) {
+              || subSig == sigHandlerPostAtTime || subSig == sigHandlerPostAtTimeWithToken || subSig == sigHandlerPostDelayed
+              || subSig == sigRunOnUiThread) {
             if (iie.getArgCount() > 0) {
               Value runnable = iie.getArg(0);
               if (runnable instanceof Local) {
