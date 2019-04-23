@@ -90,7 +90,6 @@ public abstract class AbstractInterproceduralAnalysis<S> {
       boolean verbose) {
     this.cg = cg;
 
-    System.out.println("this.cg = " + System.identityHashCode(this.cg));
     this.dg = new DirectedCallGraph(cg, filter, heads, verbose);
     this.data = new HashMap<SootMethod, S>();
     this.unanalysed = new HashMap<SootMethod, S>();
