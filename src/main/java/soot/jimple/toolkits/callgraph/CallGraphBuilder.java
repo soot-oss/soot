@@ -114,8 +114,9 @@ public class CallGraphBuilder {
         break;
       }
       final MethodOrMethodContext momc = worklist.next();
-      if (!process(momc))
+      if (!process(momc)) {
         break;
+      }
     }
   }
 
