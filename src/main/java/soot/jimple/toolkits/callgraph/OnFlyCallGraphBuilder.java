@@ -202,7 +202,7 @@ public class OnFlyCallGraphBuilder {
   private boolean appOnly;
   /** context-sensitive stuff */
   private ReachableMethods rm;
-  private QueueReader<MethodOrMethodContext> worklist;
+  protected QueueReader<MethodOrMethodContext> worklist;
   private ContextManager cm;
   private FastHierarchy fh;
   private NullnessAnalysis nullnessCache = null;
@@ -900,7 +900,7 @@ public class OnFlyCallGraphBuilder {
     }
   }
 
-  private void processNewMethodContext(MethodOrMethodContext momc) {
+  protected void processNewMethodContext(MethodOrMethodContext momc) {
     SootMethod m = momc.method();
     Iterator<Edge> it = cicg.edgesOutOf(m);
     while (it.hasNext()) {
