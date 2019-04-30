@@ -113,16 +113,25 @@ public class CallGraphBuilder {
       if (!worklist.hasNext()) {
         break;
       }
-      process(worklist);
+      final MethodOrMethodContext momc = worklist.next();
+      if (!process(momc))
+        break;
     }
   }
 
-  protected void process(QueueReader<MethodOrMethodContext> worklist) {
-    final MethodOrMethodContext momc = worklist.next();
+  /**
+   * Processes one item.
+   * 
+   * @param momc
+   *          the method or method context
+   * @return true if the next item should be processed.
+   */
+  protected boolean process(MethodOrMethodContext momc) {
     processReceivers(momc);
     processBases(momc);
     processArrays(momc);
     processStringConstants(momc);
+    return true;
   }
 
   protected void processStringConstants(final MethodOrMethodContext momc) {
