@@ -112,7 +112,7 @@ import soot.util.queue.QueueReader;
  *
  * @author Ondrej Lhotak
  */
-public final class OnFlyCallGraphBuilder {
+public class OnFlyCallGraphBuilder {
   private static final Logger logger = LoggerFactory.getLogger(OnFlyCallGraphBuilder.class);
   private static final PrimType[] CHAR_NARROWINGS = new PrimType[] { CharType.v() };
   private static final PrimType[] INT_NARROWINGS
@@ -202,12 +202,13 @@ public final class OnFlyCallGraphBuilder {
   private boolean appOnly;
   /** context-sensitive stuff */
   private ReachableMethods rm;
-  private QueueReader<MethodOrMethodContext> worklist;
+  protected QueueReader<MethodOrMethodContext> worklist;
   private ContextManager cm;
   private FastHierarchy fh;
   private NullnessAnalysis nullnessCache = null;
   private ConstantArrayAnalysis arrayCache = null;
   private SootMethod analysisKey = null;
+  protected VirtualCalls virtualCalls = VirtualCalls.v();
 
   public OnFlyCallGraphBuilder(ContextManager cm, ReachableMethods rm) {
     this.cm = cm;
@@ -215,7 +216,7 @@ public final class OnFlyCallGraphBuilder {
     worklist = rm.listener();
     options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
     if (!options.verbose()) {
-      logger.debug("" + "[Call Graph] For information on where the call graph may be incomplete,"
+      logger.debug("[Call Graph] For information on where the call graph may be incomplete,"
           + "use the verbose option to the cg phase.");
     }
 
@@ -327,7 +328,7 @@ public final class OnFlyCallGraphBuilder {
       }
     }
   }
-  
+
   private Set<Type> resolveToClasses(Set<Type> rawTypes) {
     Set<Type> toReturn = new HashSet<Type>();
     for (Type ty : rawTypes) {
@@ -560,23 +561,14 @@ public final class OnFlyCallGraphBuilder {
     if (receiverToSites.get(receiver) != null) {
       for (Iterator<VirtualCallSite> siteIt = receiverToSites.get(receiver).iterator(); siteIt.hasNext();) {
         final VirtualCallSite site = siteIt.next();
-        if (site.kind() == Kind.THREAD && !fh.canStoreType(type, clRunnable)) {
-          continue;
-        }
-        if (site.kind() == Kind.EXECUTOR && !fh.canStoreType(type, clRunnable)) {
-          continue;
-        }
-        if (site.kind() == Kind.ASYNCTASK && !fh.canStoreType(type, clAsyncTask)) {
-          continue;
-        }
-        if (site.kind() == Kind.HANDLER && !fh.canStoreType(type, clHandler)) {
+        if (skipSite(site, fh, type)) {
           continue;
         }
 
         if (site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD && site.kind != Kind.EXECUTOR
             && site.kind != Kind.ASYNCTASK) {
           SootMethod target
-              = VirtualCalls.v().resolveSpecial((SpecialInvokeExpr) site.iie(), site.subSig(), site.container(), appOnly);
+              = virtualCalls.resolveSpecial((SpecialInvokeExpr) site.iie(), site.subSig(), site.container(), appOnly);
           // if the call target resides in a phantom class then
           // "target" will be null;
           // simply do not add the target in that case
@@ -584,25 +576,23 @@ public final class OnFlyCallGraphBuilder {
             targetsQueue.add(target);
           }
         } else {
-          VirtualCalls.v().resolve(type, receiver.getType(), site.subSig(), site.container(), targetsQueue, appOnly);
+          virtualCalls.resolve(type, receiver.getType(), site.subSig(), site.container(), targetsQueue, appOnly);
           if (!targets.hasNext() && options.resolve_all_abstract_invokes()) {
-            /* In the situation where we find nothing to resolve an invoke to in the first call, this
-             * might be because the type for the invoking object is a abstract class and the method is
-             * declared in a parent class. In this situation, when the abstract class has no classes
-             * that extend it in the scene, resolve would not find any targets for the invoke, even
-             * if the parent contained a possible target. 
+            /*
+             * In the situation where we find nothing to resolve an invoke to in the first call, this might be because the
+             * type for the invoking object is a abstract class and the method is declared in a parent class. In this
+             * situation, when the abstract class has no classes that extend it in the scene, resolve would not find any
+             * targets for the invoke, even if the parent contained a possible target.
              * 
-             * This may have been by design since without a concrete class, we have no idea if the 
-             * method in the parent class is overridden. However, the same could be said for any non
-             * private method in the abstract class (and these all resolve fine inside the abstract
-             * class even though there are no sub classes of the abstract class). This makes this
-             * situation a corner case.
+             * This may have been by design since without a concrete class, we have no idea if the method in the parent class
+             * is overridden. However, the same could be said for any non private method in the abstract class (and these all
+             * resolve fine inside the abstract class even though there are no sub classes of the abstract class). This makes
+             * this situation a corner case.
              * 
-             * Where as, it used to not resolve any targets in this situation, I want to at least
-             * resolve the method in the parent class if there is one (as this is technically a
-             * possibility and the only information we have).
+             * Where as, it used to not resolve any targets in this situation, I want to at least resolve the method in the
+             * parent class if there is one (as this is technically a possibility and the only information we have).
              */
-            VirtualCalls.v().resolveSuperType(type, receiver.getType(), site.subSig(), targetsQueue, appOnly);
+            virtualCalls.resolveSuperType(type, receiver.getType(), site.subSig(), targetsQueue, appOnly);
           }
         }
         while (targets.hasNext()) {
@@ -614,6 +604,22 @@ public final class OnFlyCallGraphBuilder {
     if (baseToInvokeSite.get(receiver) != null) {
       addBaseType(receiver, srcContext, type);
     }
+  }
+
+  protected boolean skipSite(VirtualCallSite site, FastHierarchy fh, Type type) {
+    if (site.kind() == Kind.THREAD && !fh.canStoreType(type, clRunnable)) {
+      return true;
+    }
+    if (site.kind() == Kind.EXECUTOR && !fh.canStoreType(type, clRunnable)) {
+      return true;
+    }
+    if (site.kind() == Kind.ASYNCTASK && !fh.canStoreType(type, clAsyncTask)) {
+      return true;
+    }
+    if (site.kind() == Kind.HANDLER && !fh.canStoreType(type, clHandler)) {
+      return true;
+    }
+    return false;
   }
 
   public boolean wantStringConstants(Local stringConst) {
@@ -894,7 +900,7 @@ public final class OnFlyCallGraphBuilder {
     }
   }
 
-  private void processNewMethodContext(MethodOrMethodContext momc) {
+  protected void processNewMethodContext(MethodOrMethodContext momc) {
     SootMethod m = momc.method();
     Iterator<Edge> it = cicg.edgesOutOf(m);
     while (it.hasNext()) {
