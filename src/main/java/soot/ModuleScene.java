@@ -21,7 +21,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -53,6 +53,16 @@ import soot.util.HashChain;
 public class ModuleScene extends Scene // extends original Scene
 {
 
+  /*
+   * holds the references to SootClass 1: String the class name 2: Map<String, RefType>: The String represents the module
+   * that holds the corresponding RefType since multiple modules may contain the same class this is a map (for fast look ups)
+   * TODO: evaluate if Guava's multimap is faster
+   */
+  private final Map<String, Map<String, RefType>> nameToClass = new HashMap<>();
+  // instead of using a class path, java 9 uses a module path
+  private String modulePath = null;
+  private List<SootClass> dynamicClasses = null;
+
   public ModuleScene(Singletons.Global g) {
     super(g);
     String smp = System.getProperty("soot.module.path");
@@ -69,16 +79,6 @@ public class ModuleScene extends Scene // extends original Scene
   public static ModuleScene v() {
     return G.v().soot_ModuleScene();
   }
-
-  /*
-   * holds the references to SootClass 1: String the class name 2: Map<String, RefType>: The String represents the module
-   * that holds the corresponding RefType since multiple modules may contain the same class this is a map (for fast look ups)
-   * TODO: evaluate if Guava's multimap is faster
-   */
-  private final Map<String, Map<String, RefType>> nameToClass = new HashMap<>();
-
-  // instead of using a class path, java 9 uses a module path
-  private String modulePath = null;
 
   public SootMethod getMainMethod() {
     if (!hasMainClass()) {
@@ -105,19 +105,13 @@ public class ModuleScene extends Scene // extends original Scene
   }
 
   @Override
-  public void setSootClassPath(String p) {
-    this.setSootModulePath(p);
-  }
-
-  public void setSootModulePath(String p) {
-    ModulePathSourceLocator.v().invalidateClassPath();
-    modulePath = p;
-
+  public String getSootClassPath() {
+    return getSootModulePath();
   }
 
   @Override
-  public String getSootClassPath() {
-    return getSootModulePath();
+  public void setSootClassPath(String p) {
+    this.setSootModulePath(p);
   }
 
   public String getSootModulePath() {
@@ -152,6 +146,12 @@ public class ModuleScene extends Scene // extends original Scene
     }
 
     return modulePath;
+  }
+
+  public void setSootModulePath(String p) {
+    ModulePathSourceLocator.v().invalidateClassPath();
+    modulePath = p;
+
   }
 
   private String defaultJavaModulePath() {
@@ -406,6 +406,13 @@ public class ModuleScene extends Scene // extends original Scene
   }
 
   @Override
+  public RefType getRefTypeUnsafe(String className) {
+    ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
+
+    return getRefTypeUnsafe(wrapper.getClassName(), wrapper.getModuleNameOptional());
+  }
+
+  @Override
   public void addRefType(RefType type) {
 
     if (!nameToClass.containsKey(type.getClassName())) {
@@ -526,8 +533,6 @@ public class ModuleScene extends Scene // extends original Scene
     prepareClasses();
     setDoneResolving();
   }
-
-  private List<SootClass> dynamicClasses = null;
 
   public void loadDynamicClasses() {
     dynamicClasses = new ArrayList<>();
