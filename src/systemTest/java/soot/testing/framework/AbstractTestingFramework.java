@@ -22,16 +22,9 @@ package soot.testing.framework;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
-
 import soot.ArrayType;
 import soot.G;
 import soot.Local;
@@ -49,6 +42,12 @@ import soot.jimple.JimpleBody;
 import soot.jimple.NullConstant;
 import soot.options.Options;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author Manuel Benz created on 22.06.18
  * @author Andreas Dann
@@ -56,7 +55,7 @@ import soot.options.Options;
 @RunWith(PowerMockRunner.class)
 public abstract class AbstractTestingFramework {
 
-  private static final String SYSTEMTEST_TARGET_CLASSES_DIR = "target/systemTest-target-classes";
+  protected static final String SYSTEMTEST_TARGET_CLASSES_DIR = "target/systemTest-target-classes";
 
   public static String methodSigFromComponents(String clazz, String subsig) {
     return String.format("<%s: %s>", clazz, subsig);
