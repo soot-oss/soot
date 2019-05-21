@@ -52,7 +52,7 @@ import soot.util.queue.QueueReader;
  *
  * @author Ondrej Lhotak
  */
-public final class CallGraphBuilder {
+public class CallGraphBuilder {
   private static final Logger logger = LoggerFactory.getLogger(CallGraphBuilder.class);
   private PointsToAnalysis pa;
   private final ReachableMethods reachables;
