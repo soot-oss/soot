@@ -277,17 +277,17 @@ public final class LambdaMetaFactory {
       primitiveValue = new HashMap<>();
       for (PrimType primType : tmp) {
         RefType wrapperType = primType.boxedType();
-        String cn = wrapperType.getClassName();
 
         wrapperTypes.put(wrapperType, primType);
 
-        String valueOfMethodSignature = cn + " valueOf(" + primType.toString() + ")";
-        SootMethod valueOfMethod = wrapperType.getSootClass().getMethod(valueOfMethodSignature);
-        valueOf.put(primType, valueOfMethod);
+        SootMethodRef valueOfMethod
+            = Scene.v().makeMethodRef(wrapperType.getSootClass(), "valueOf", Arrays.asList(primType), wrapperType, true);
+        this.valueOf.put(primType, valueOfMethod.resolve());
 
-        String primitiveValueMethodSignature = primType.toString() + " " + primType.toString() + "Value()";
-        SootMethod primitiveValueMethod = wrapperType.getSootClass().getMethod(primitiveValueMethodSignature);
-        primitiveValue.put(wrapperType, primitiveValueMethod);
+        String primTypeValueMethodName = primType.toString() + "Value";
+        SootMethodRef primitiveValueMethod = Scene.v().makeMethodRef(wrapperType.getSootClass(), primTypeValueMethodName,
+            Collections.emptyList(), primType, false);
+        primitiveValue.put(wrapperType, primitiveValueMethod.resolve());
       }
       wrapperTypes = Collections.unmodifiableMap(wrapperTypes);
       valueOf = Collections.unmodifiableMap(valueOf);

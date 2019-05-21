@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ca.mcgill.sable</groupId>
     <artifactId>soot</artifactId>
-    <version>3.3.0-SNAPSHOT</version>
+    <version>3.3.1-SNAPSHOT</version>
     <name>Soot - a J*va Optimization Framework</name>
     <description>A Java Optimization Framework</description>
     <url>https://sable.github.io/soot/</url>
@@ -33,8 +33,8 @@
         </developer>
         <developer>
             <name>Steven Arzt</name>
-            <email>eric.bodden@uni-paderborn.de</email>
-            <organization>Frauenhofer SIT</organization>
+            <email>steven.arzt@sit.fraunhofer.de</email>
+            <organization>Fraunhofer SIT</organization>
             <organizationUrl>https://www.sit.fraunhofer.de/en/</organizationUrl>
         </developer>
     </developers>
@@ -59,7 +59,7 @@
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
-        <checkstyle.version>8.9</checkstyle.version>
+        <checkstyle.version>8.18</checkstyle.version>
         <checkstyle.dir.path>${basedir}/codingstyle</checkstyle.dir.path>
         <checkstyle.file.path>${checkstyle.dir.path}/soot_checkstyle_checks.xml</checkstyle.file.path>
         <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
