@@ -1,5 +1,7 @@
 package soot.toDex;
 
+import java.util.Iterator;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -175,7 +177,8 @@ public class TrapSplitter extends BodyTransformer {
     for (Trap t1 : b.getTraps()) {
       // Look whether one of our trapped statements is the begin
       // statement of another trap
-      for (Unit splitUnit = t1.getBeginUnit(); splitUnit != t1.getEndUnit(); splitUnit = b.getUnits().getSuccOf(splitUnit)) {
+      for (Iterator<Unit> splitIt = b.getUnits().iterator(t1.getBeginUnit(), t1.getEndUnit()); splitIt.hasNext();) {
+        Unit splitUnit = splitIt.next();
         for (Trap t2 : b.getTraps()) {
           if (t1 != t2 && (t1.getEndUnit() != t2.getEndUnit() || t1.getException() == t2.getException())
               && t2.getBeginUnit() == splitUnit) {
