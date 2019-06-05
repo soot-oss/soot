@@ -696,7 +696,12 @@ public final class LambdaMetaFactory {
               mod &= ~Modifier.PROTECTED;
               m.setModifiers(mod);
             }
-            return Jimple.v().newVirtualInvokeExpr(args.get(0), methodRef, rest(args));
+            // In some versions of the (Open)JDK, we seem to have an interface instead of a class for some reason
+            if (methodRef.getDeclaringClass().isInterface()) {
+              return Jimple.v().newInterfaceInvokeExpr(args.get(0), methodRef, rest(args));
+            } else {
+              return Jimple.v().newVirtualInvokeExpr(args.get(0), methodRef, rest(args));
+            }
           }
         case REF_INVOKE_CONSTRUCTOR:
           RefType type = methodRef.getDeclaringClass().getType();
