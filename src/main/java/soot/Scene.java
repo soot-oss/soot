@@ -1652,15 +1652,25 @@ public class Scene // extends AbstractHost
 
   /**
    * Load just the set of basic classes soot needs, ignoring those specified on the command-line. You don't need to use both
-   * this and loadNecessaryClasses, though it will only waste time.
+   * this and {@link #loadNecessaryClasses()}, though it will only waste time.
    */
   public void loadBasicClasses() {
     addReflectionTraceClasses();
 
+    int loadedClasses = 0;
     for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
       for (String name : basicclasses[i]) {
-        tryLoadClass(name, i);
+        SootClass basicClass = tryLoadClass(name, i);
+        if (basicClass != null && !basicClass.isPhantom()) {
+          loadedClasses++;
+        }
       }
+    }
+    if (loadedClasses == 0) {
+      // Missing basic classes means no Exceptions could be loaded and no Exception hierarchy can lead
+      // to non-deterministic Jimple code generation: catch blocks may be removed because of
+      // non-existing Exception hierarchy.
+      throw new RuntimeException("None of the basic classes could be loaded! Check your Soot class path!");
     }
   }
 

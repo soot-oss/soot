@@ -103,14 +103,13 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 
   @Override
   public SootMethod getMethodOf(Unit u) {
-    assert unitToOwner.containsKey(u) : "Statement " + u + " not in unit-to-owner mapping";
-    Body b = unitToOwner.get(u);
+    Body b = getBodyOf(u);
     return b == null ? null : b.getMethod();
   }
 
   @Override
   public List<Unit> getSuccsOf(Unit u) {
-    Body body = unitToOwner.get(u);
+    Body body = getBodyOf(u);
     if (body == null) {
       return Collections.emptyList();
     }
@@ -146,14 +145,14 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 
   @Override
   public boolean isExitStmt(Unit u) {
-    Body body = unitToOwner.get(u);
+    Body body = getBodyOf(u);
     DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
     return unitGraph.getTails().contains(u);
   }
 
   @Override
   public boolean isStartPoint(Unit u) {
-    Body body = unitToOwner.get(u);
+    Body body = getBodyOf(u);
     DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
     return unitGraph.getHeads().contains(u);
   }
@@ -164,7 +163,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
     if (!u.fallsThrough()) {
       return false;
     }
-    Body body = unitToOwner.get(u);
+    Body body = getBodyOf(u);
     return body.getUnits().getSuccOf(u) == succ;
   }
 
@@ -182,6 +181,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
     return false;
   }
 
+  @Override
   public List<Value> getParameterRefs(SootMethod m) {
     return methodToParameterRefs.getUnchecked(m);
   }
@@ -194,6 +194,10 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
       return unitGraph.getHeads();
     }
     return Collections.emptySet();
+  }
+
+  public boolean setOwnerStatement(Unit u, Body b) {
+    return unitToOwner.put(u, b) == null;
   }
 
   @Override
@@ -235,10 +239,20 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
     return methodToCallsFromWithin.getUnchecked(m);
   }
 
+  public void initializeUnitToOwner(SootMethod m) {
+    if (m.hasActiveBody()) {
+      Body b = m.getActiveBody();
+      PatchingChain<Unit> units = b.getUnits();
+      for (Unit unit : units) {
+        unitToOwner.put(unit, b);
+      }
+    }
+  }
+
   @Override
   public List<Unit> getPredsOf(Unit u) {
     assert u != null;
-    Body body = unitToOwner.get(u);
+    Body body = getBodyOf(u);
     if (body == null) {
       return Collections.emptyList();
     }

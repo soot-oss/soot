@@ -122,7 +122,7 @@ public class CallGraphBuilder {
 
   /**
    * Processes one item.
-   *
+   * 
    * @param momc
    *          the method or method context
    * @return true if the next item should be processed.
