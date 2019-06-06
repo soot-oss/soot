@@ -58,8 +58,6 @@ import soot.tagkit.SourceFileTag;
 import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.Tag;
 
-
-
 /**
  * Constructs a Soot class from a visited class.
  *

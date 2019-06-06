@@ -142,6 +142,7 @@ public class FoundFile {
             stream.close();
           } catch (IOException e) {
             // There's not much we can do here
+            logger.debug(e.getMessage(), e);
           }
         }
       }
@@ -155,7 +156,7 @@ public class FoundFile {
     try {
       close();
     } catch (Exception e) {
-      // There's not much we can do here
+      logger.debug(e.getMessage(), e);
     }
   }
 

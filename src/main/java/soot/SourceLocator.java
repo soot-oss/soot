@@ -50,8 +50,6 @@ import soot.asm.AsmJava9ClassProvider;
 import soot.dexpler.DexFileProvider;
 import soot.options.Options;
 
-
-
 /**
  * Provides utility methods to retrieve an input stream for a class name, given a classfile, or jimple or baf output files.
  */
@@ -362,7 +360,7 @@ public class SourceLocator {
             archive.close();
           }
         } catch (Throwable t) {
-          //there is not much we can do
+          logger.debug("" + t.getMessage());
         }
       }
 
@@ -374,6 +372,7 @@ public class SourceLocator {
       } catch (CompilationDeathException e) { // There might be cases where there is no dex file within a JAR or ZIP file...
       } catch (IOException e) {
         /* Ignore unreadable files */
+        logger.debug("" + e.getMessage());
       }
     } else if (cst == ClassSourceType.directory) {
       File file = new File(aPath);
@@ -404,7 +403,9 @@ public class SourceLocator {
               for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(element)) {
                 classes.addAll(DexClassProvider.classesOfDex(container.getBase()));
               }
-            } catch (IOException e) { /* Ignore unreadable files */
+            } catch (IOException e) {
+              /* Ignore unreadable files */
+              logger.debug("" + e.getMessage());
             }
           }
         }

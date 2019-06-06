@@ -405,9 +405,7 @@ public class Scene // extends AbstractHost
     // Do we have an explicit API version?
     if (Options.v().android_api_version() > 0) {
       androidAPIVersion = Options.v().android_api_version();
-    }
-    // Look into the manifest file
-    else if (apk != null) {
+    } else if (apk != null) {
       if (apk.toLowerCase().endsWith(".apk")) {
         androidAPIVersion = getTargetSDKVersion(apk, jars);
       }

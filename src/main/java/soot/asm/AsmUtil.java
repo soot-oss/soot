@@ -42,16 +42,14 @@ import soot.SootClass;
 import soot.Type;
 import soot.VoidType;
 
-
-
 /**
  * Contains static utility methods.
  *
  * @author Aaloan Miftah
  */
-
 /**
  * @author eric
+ *
  */
 public class AsmUtil {
 
