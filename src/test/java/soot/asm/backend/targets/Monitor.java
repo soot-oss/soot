@@ -23,15 +23,15 @@ package soot.asm.backend.targets;
  */
 
 public class Monitor {
-  Object o;
+	Object o;
 
-  public void doSth() {
+	public void doSth(){
 
-    synchronized (o) {
+		synchronized (o) {
 
-    }
+		}
 
-    System.out.println();
-  }
+		System.out.println();
+	}
 
 }
