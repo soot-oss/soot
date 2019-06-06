@@ -26,12 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ControlStructures {
-
+	
 	List<Integer> result;
 
 	protected List<Integer> get(int i){
 		result = new ArrayList<Integer>();
-
+		
 		switch(i){
 		case 1:
 			result.add(1);
@@ -44,7 +44,7 @@ public class ControlStructures {
 		default:
 			result.add(null);
 		}
-
+		
 		switch(i){
 		case 1:
 			result.add(1);
@@ -57,8 +57,8 @@ public class ControlStructures {
 		default:
 			result.add(null);
 		}
-
+		
 		return result;
 	}
-
+	
 }

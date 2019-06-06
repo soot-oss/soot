@@ -23,7 +23,7 @@ package soot.asm.backend.targets;
  */
 
 public class TryCatch {
-
+	
 	int doSth(Object o){
 		int i = 0;
 		try{
