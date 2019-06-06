@@ -35,7 +35,6 @@ import soot.util.Switch;
 
 @SuppressWarnings("serial")
 public class RefType extends RefLikeType implements Comparable<RefType> {
-
   public RefType(Singletons.Global g) {
     className = "";
   }

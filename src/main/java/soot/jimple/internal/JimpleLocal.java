@@ -136,9 +136,9 @@ public class JimpleLocal implements Local, ConvertToBaf {
   }
 
   @Override
-  public final void setNumber(int number) {
+  public void setNumber(int number) {
     this.number = number;
   }
 
-  private int number = 0;
+  private volatile int number = 0;
 }

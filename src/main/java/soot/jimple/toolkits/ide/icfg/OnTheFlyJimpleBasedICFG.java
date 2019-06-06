@@ -104,7 +104,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
               // virtual and interface
               InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
               Local base = (Local) iie.getBase();
-              RefType concreteType = bodyToLMNAA.getUnchecked(unitToOwner.get(u)).concreteType(base, stmt);
+              RefType concreteType = bodyToLMNAA.getUnchecked(getBodyOf(u)).concreteType(base, stmt);
               if (concreteType != null) {
                 // the base variable definitely points to a single concrete type
                 SootMethod singleTargetMethod
@@ -157,7 +157,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
       }
       if (b != null) {
         for (Unit u : b.getUnits()) {
-          if (unitToOwner.put(u, b) != null) {
+          if (!setOwnerStatement(u, b)) {
             // if the unit was registered already then so were all units;
             // simply skip the rest
             break;

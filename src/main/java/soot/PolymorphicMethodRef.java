@@ -113,7 +113,7 @@ public class PolymorphicMethodRef extends SootMethodRefImpl {
       }
     }
 
-    return null;
+    return super.resolve();
   }
 
   private SootMethod addPolyMorphicMethod(SootMethod originalPolyMorphicMethod) {

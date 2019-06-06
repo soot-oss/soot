@@ -44,24 +44,16 @@ import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
 
-/**
- * Loads symbols for SootClasses from either class files or jimple files.
- */
+/** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver {
   private static final Logger logger = LoggerFactory.getLogger(SootResolver.class);
-  /*
-   * Maps each resolved class to a list of all references in it.
-   */
+  /** Maps each resolved class to a list of all references in it. */
   protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<SootClass, Type>();
 
-  /**
-   * Maps each resolved class to a list of all references in it.
-   */
+  /** Maps each resolved class to a list of all references in it. */
   protected MultiMap<SootClass, Type> classToTypesHierarchy = new ConcurrentHashMultiMap<SootClass, Type>();
 
-  /**
-   * SootClasses waiting to be resolved.
-   */
+  /** SootClasses waiting to be resolved. */
   @SuppressWarnings("unchecked")
   private final Deque<SootClass>[] worklist = new Deque[4];
 
@@ -107,9 +99,7 @@ public class SootResolver {
     return G.v().soot_SootResolver();
   }
 
-  /**
-   * Returns true if we are resolving all class refs recursively.
-   */
+  /** Returns true if we are resolving all class refs recursively. */
   protected boolean resolveEverything() {
     if (Options.v().on_the_fly()) {
       return false;
@@ -161,9 +151,7 @@ public class SootResolver {
     }
   }
 
-  /**
-   * Resolve all classes on toResolveWorklist.
-   */
+  /** Resolve all classes on toResolveWorklist. */
   protected void processResolveWorklist() {
     for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
       while (!worklist[i].isEmpty()) {

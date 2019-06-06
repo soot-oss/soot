@@ -138,6 +138,22 @@ public class FastHierarchy {
     this.rtCloneable = RefType.v("java.lang.Cloneable");
 
     /* First build the inverse maps. */
+    buildInverseMaps();
+
+    /* Now do a dfs traversal to get the Interval numbers. */
+    dfsVisit(0, sc.getSootClass("java.lang.Object"));
+    /*
+     * also have to traverse for all phantom classes because they also can be roots of the type hierarchy
+     */
+    for (final Iterator<SootClass> phantomClassIt = sc.getPhantomClasses().snapshotIterator(); phantomClassIt.hasNext();) {
+      SootClass phantomClass = phantomClassIt.next();
+      if (!phantomClass.isInterface()) {
+        dfsVisit(0, phantomClass);
+      }
+    }
+  }
+
+  protected void buildInverseMaps() {
     for (SootClass cl : sc.getClasses().getElementsUnsorted()) {
       if (cl.resolvingLevel() < SootClass.HIERARCHY) {
         continue;
@@ -154,18 +170,6 @@ public class FastHierarchy {
         } else {
           interfaceToImplementers.put(supercl, cl);
         }
-      }
-    }
-
-    /* Now do a dfs traversal to get the Interval numbers. */
-    dfsVisit(0, sc.getSootClass("java.lang.Object"));
-    /*
-     * also have to traverse for all phantom classes because they also can be roots of the type hierarchy
-     */
-    for (final Iterator<SootClass> phantomClassIt = sc.getPhantomClasses().snapshotIterator(); phantomClassIt.hasNext();) {
-      SootClass phantomClass = phantomClassIt.next();
-      if (!phantomClass.isInterface()) {
-        dfsVisit(0, phantomClass);
       }
     }
   }
