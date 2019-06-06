@@ -162,8 +162,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * is not completed.
    *
    * @param level
-   *          the resolution level, one of DANGLING, HIERARCHY, SIGNATURES, the resolution level, one of DANGLING, HIERARCHY,
-   *          SIGNATURES, and BODIES
+   *          the resolution level, one of DANGLING, HIERARCHY, SIGNATURES, and BODIES
    * @throws java.lang.RuntimeException
    *           if the resolution is at an insufficient level
    */
@@ -185,8 +184,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * Checks if the class has at lease the resolving level specified. This check ignores the resolution completeness.
    *
    * @param level
-   *          the resolution level, one of DANGLING, HIERARCHY, SIGNATURES, the resolution level, one of DANGLING, HIERARCHY,
-   *          SIGNATURES, and BODIES
+   *          the resolution level, one of DANGLING, HIERARCHY, SIGNATURES, and BODIES
    * @throws java.lang.RuntimeException
    *           if the resolution is at an insufficient level
    */
@@ -213,9 +211,7 @@ public class SootClass extends AbstractHost implements Numberable {
     return isInScene;
   }
 
-  /**
-   * Tells this class if it is being managed by a Scene.
-   */
+  /** Tells this class if it is being managed by a Scene. */
   public void setInScene(boolean isInScene) {
     this.isInScene = isInScene;
 
@@ -266,7 +262,6 @@ public class SootClass extends AbstractHost implements Numberable {
     fields.add(f);
     f.setDeclared(true);
     f.setDeclaringClass(this);
-
   }
 
   /**
@@ -346,6 +341,17 @@ public class SootClass extends AbstractHost implements Numberable {
       }
     }
     return foundField;
+  }
+
+  /**
+   * Returns the field of this class with the given subsignature. If such a field does not exist, an exception is thrown.
+   */
+  public SootField getField(String subsignature) {
+    SootField sf = getFieldUnsafe(subsignature);
+    if (sf == null) {
+      throw new RuntimeException("No field " + subsignature + " in class " + getName());
+    }
+    return sf;
   }
 
   /**
@@ -665,8 +671,8 @@ public class SootClass extends AbstractHost implements Numberable {
           && method.getReturnType().equals(returnType)) {
         return true;
       }
-
     }
+
     return false;
   }
 
@@ -892,7 +898,7 @@ public class SootClass extends AbstractHost implements Numberable {
 
   /**
    * This method returns the superclass, or null if no superclass has been specified for this class.
-   * <p>
+   *
    * WARNING: interfaces are subclasses of the java.lang.Object class! Returns the superclass of this class. (see
    * hasSuperclass())
    */
@@ -1022,44 +1028,35 @@ public class SootClass extends AbstractHost implements Numberable {
     fixedPackageName = null;
   }
 
-  /**
-   * Convenience method; returns true if this class is an interface.
-   */
+  /** Convenience method; returns true if this class is an interface. */
   public boolean isInterface() {
     checkLevel(HIERARCHY);
     return Modifier.isInterface(this.getModifiers());
   }
 
-  /**
-   * Convenience method; returns true if this class is an enumeration.
-   */
+  /** Convenience method; returns true if this class is an enumeration. */
   public boolean isEnum() {
     checkLevel(HIERARCHY);
     return Modifier.isEnum(this.getModifiers());
   }
 
-  /**
-   * Convenience method; returns true if this class is synchronized.
-   */
+  /** Convenience method; returns true if this class is synchronized. */
   public boolean isSynchronized() {
     checkLevel(HIERARCHY);
     return Modifier.isSynchronized(this.getModifiers());
   }
 
+  /** Returns true if this class is not an interface and not abstract. */
   public boolean isConcrete() {
     return !isInterface() && !isAbstract();
   }
 
-  /**
-   * Convenience method; returns true if this class is public.
-   */
+  /** Convenience method; returns true if this class is public. */
   public boolean isPublic() {
     return Modifier.isPublic(this.getModifiers());
   }
 
-  /**
-   * Returns true if some method in this class has an active Baf body.
-   */
+  /** Returns true if some method in this class has an active Baf body. */
   public boolean containsBafBody() {
     Iterator<SootMethod> methodIt = methodIterator();
 
@@ -1085,16 +1082,12 @@ public class SootClass extends AbstractHost implements Numberable {
     return refType != null;
   }
 
-  /**
-   * Returns the RefType corresponding to this class.
-   */
+  /** Returns the RefType corresponding to this class. */
   public RefType getType() {
     return refType;
   }
 
-  /**
-   * Returns the name of this class.
-   */
+  /** Returns the name of this class. */
   @Override
   public String toString() {
     return getName();
@@ -1145,9 +1138,7 @@ public class SootClass extends AbstractHost implements Numberable {
     return Scene.v().getApplicationClasses().contains(this);
   }
 
-  /**
-   * Makes this class an application class.
-   */
+  /** Makes this class an application class. */
   public void setApplicationClass() {
     if (isApplicationClass()) {
       return;
@@ -1170,9 +1161,7 @@ public class SootClass extends AbstractHost implements Numberable {
     return Scene.v().getLibraryClasses().contains(this);
   }
 
-  /**
-   * Makes this class a library class.
-   */
+  /** Makes this class a library class. */
   public void setLibraryClass() {
     if (isLibraryClass()) {
       return;
@@ -1210,9 +1199,7 @@ public class SootClass extends AbstractHost implements Numberable {
     return Scene.v().getPhantomClasses().contains(this);
   }
 
-  /**
-   * Makes this class a phantom class.
-   */
+  /** Makes this class a phantom class. */
   public void setPhantomClass() {
     Chain<SootClass> c = Scene.v().getContainingChain(this);
     if (c != null) {
@@ -1222,9 +1209,7 @@ public class SootClass extends AbstractHost implements Numberable {
     isPhantom = true;
   }
 
-  /**
-   * Convenience method returning true if this class is phantom.
-   */
+  /** Convenience method returning true if this class is phantom. */
   public boolean isPhantom() {
     return isPhantom;
   }
@@ -1306,7 +1291,7 @@ public class SootClass extends AbstractHost implements Numberable {
       validators = new ClassValidator[] { OuterClassValidator.v(), MethodDeclarationValidator.v(), ClassFlagsValidator.v() };
     }
     return validators;
-  }
+  };
 
   /**
    * Validates this SootClass for logical errors. Note that this does not validate the method bodies, only the class
