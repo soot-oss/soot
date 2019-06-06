@@ -34,7 +34,9 @@ import java.util.NoSuchElementException;
  * @author Steven Arzt
  *
  */
-public class EmptyChain implements Chain {
+public class EmptyChain<T> implements Chain<T> {
+
+  private static final long serialVersionUID = 1675685752701192002L;
 
   private static final Iterator emptyIterator = new Iterator() {
 
@@ -57,7 +59,8 @@ public class EmptyChain implements Chain {
 
   private static EmptyChain instance = null;
 
-  public static EmptyChain v() {
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public static <T> EmptyChain<T> v() {
     if (instance == null) {
       instance = new EmptyChain();
     }
@@ -90,22 +93,22 @@ public class EmptyChain implements Chain {
   }
 
   @Override
-  public boolean containsAll(Collection c) {
+  public boolean containsAll(Collection<?> c) {
     return false;
   }
 
   @Override
-  public boolean addAll(Collection c) {
+  public boolean addAll(Collection<? extends T> c) {
     throw new RuntimeException("Cannot add elements to an unmodifiable chain");
   }
 
   @Override
-  public boolean removeAll(Collection c) {
+  public boolean removeAll(Collection<?> c) {
     throw new RuntimeException("Cannot remove elements from an unmodifiable chain");
   }
 
   @Override
-  public boolean retainAll(Collection c) {
+  public boolean retainAll(Collection<?> c) {
     throw new RuntimeException("Cannot add elements to an unmodifiable chain or remove ones from such chain");
   }
 
@@ -115,37 +118,37 @@ public class EmptyChain implements Chain {
   }
 
   @Override
-  public void insertBefore(List toInsert, Object point) {
+  public void insertBefore(List<T> toInsert, T point) {
     throw new RuntimeException("Cannot add elements to an unmodifiable chain");
   }
 
   @Override
-  public void insertAfter(List toInsert, Object point) {
+  public void insertAfter(List<T> toInsert, T point) {
     throw new RuntimeException("Cannot add elements to an unmodifiable chain");
   }
 
   @Override
-  public void insertAfter(Object toInsert, Object point) {
+  public void insertAfter(T toInsert, T point) {
     throw new RuntimeException("Cannot add elements to an unmodifiable chain");
   }
 
   @Override
-  public void insertBefore(Object toInsert, Object point) {
+  public void insertBefore(T toInsert, T point) {
     throw new RuntimeException("Cannot add elements to an unmodifiable chain");
   }
 
   @Override
-  public void insertBefore(Chain toInsert, Object point) {
+  public void insertBefore(Chain<T> toInsert, T point) {
     throw new RuntimeException("Cannot add elements to an unmodifiable chain");
   }
 
   @Override
-  public void insertAfter(Chain toInsert, Object point) {
+  public void insertAfter(Chain<T> toInsert, T point) {
     throw new RuntimeException("Cannot add elements to an unmodifiable chain");
   }
 
   @Override
-  public void swapWith(Object out, Object in) {
+  public void swapWith(T out, T in) {
     throw new RuntimeException("Cannot replace elements in an unmodifiable chain");
   }
 
@@ -155,12 +158,12 @@ public class EmptyChain implements Chain {
   }
 
   @Override
-  public void addFirst(Object u) {
+  public void addFirst(T u) {
     throw new RuntimeException("Cannot add elements to an unmodifiable chain");
   }
 
   @Override
-  public void addLast(Object u) {
+  public void addLast(T u) {
     throw new RuntimeException("Cannot add elements to an unmodifiable chain");
   }
 
@@ -175,47 +178,47 @@ public class EmptyChain implements Chain {
   }
 
   @Override
-  public boolean follows(Object someObject, Object someReferenceObject) {
+  public boolean follows(T someObject, T someReferenceObject) {
     return false;
   }
 
   @Override
-  public Object getFirst() {
+  public T getFirst() {
     throw new NoSuchElementException();
   }
 
   @Override
-  public Object getLast() {
+  public T getLast() {
     throw new NoSuchElementException();
   }
 
   @Override
-  public Object getSuccOf(Object point) {
+  public T getSuccOf(T point) {
     throw new NoSuchElementException();
   }
 
   @Override
-  public Object getPredOf(Object point) {
+  public T getPredOf(T point) {
     throw new NoSuchElementException();
   }
 
   @Override
-  public Iterator snapshotIterator() {
+  public Iterator<T> snapshotIterator() {
     return emptyIterator;
   }
 
   @Override
-  public Iterator iterator() {
+  public Iterator<T> iterator() {
     return emptyIterator;
   }
 
   @Override
-  public Iterator iterator(Object u) {
+  public Iterator<T> iterator(Object u) {
     return emptyIterator;
   }
 
   @Override
-  public Iterator iterator(Object head, Object tail) {
+  public Iterator<T> iterator(Object head, Object tail) {
     return emptyIterator;
   }
 
@@ -230,17 +233,17 @@ public class EmptyChain implements Chain {
   }
 
   @Override
-  public Collection getElementsUnsorted() {
+  public Collection<T> getElementsUnsorted() {
     return Collections.emptyList();
   }
 
   @Override
-  public void insertAfter(Collection toInsert, Object point) {
+  public void insertAfter(Collection<? extends T> toInsert, T point) {
     throw new RuntimeException("Cannot add elements to an unmodifiable chain");
   }
 
   @Override
-  public void insertBefore(Collection toInsert, Object point) {
+  public void insertBefore(Collection<? extends T> toInsert, T point) {
     throw new RuntimeException("Cannot add elements to an unmodifiable chain");
   }
 

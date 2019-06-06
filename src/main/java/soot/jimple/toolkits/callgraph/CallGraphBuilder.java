@@ -52,7 +52,7 @@ import soot.util.queue.QueueReader;
  *
  * @author Ondrej Lhotak
  */
-public final class CallGraphBuilder {
+public class CallGraphBuilder {
   private static final Logger logger = LoggerFactory.getLogger(CallGraphBuilder.class);
   private PointsToAnalysis pa;
   private final ReachableMethods reachables;
@@ -80,7 +80,11 @@ public final class CallGraphBuilder {
     Scene.v().setCallGraph(cg);
     reachables = Scene.v().getReachableMethods();
     ContextManager cm = makeContextManager(cg);
-    ofcgb = new OnFlyCallGraphBuilder(cm, reachables);
+    ofcgb = createCGBuilder(cm, reachables);
+  }
+
+  protected OnFlyCallGraphBuilder createCGBuilder(ContextManager cm, ReachableMethods reachables2) {
+    return new OnFlyCallGraphBuilder(cm, reachables);
   }
 
   /**
@@ -110,71 +114,101 @@ public final class CallGraphBuilder {
         break;
       }
       final MethodOrMethodContext momc = worklist.next();
-      List<Local> receivers = ofcgb.methodToReceivers().get(momc.method());
-      if (receivers != null) {
-        for (Iterator<Local> receiverIt = receivers.iterator(); receiverIt.hasNext();) {
-          final Local receiver = receiverIt.next();
-          final PointsToSet p2set = pa.reachingObjects(receiver);
-          for (Iterator<Type> typeIt = p2set.possibleTypes().iterator(); typeIt.hasNext();) {
-            final Type type = typeIt.next();
-            ofcgb.addType(receiver, momc.context(), type, null);
+      if (!process(momc)) {
+        break;
+      }
+    }
+  }
+
+  /**
+   * Processes one item.
+   *
+   * @param momc
+   *          the method or method context
+   * @return true if the next item should be processed.
+   */
+  protected boolean process(MethodOrMethodContext momc) {
+    processReceivers(momc);
+    processBases(momc);
+    processArrays(momc);
+    processStringConstants(momc);
+    return true;
+  }
+
+  protected void processStringConstants(final MethodOrMethodContext momc) {
+    List<Local> stringConstants = ofcgb.methodToStringConstants().get(momc.method());
+    if (stringConstants != null) {
+      for (Iterator<Local> stringConstantIt = stringConstants.iterator(); stringConstantIt.hasNext();) {
+        final Local stringConstant = stringConstantIt.next();
+        PointsToSet p2set = pa.reachingObjects(stringConstant);
+        Collection<String> possibleStringConstants = p2set.possibleStringConstants();
+        if (possibleStringConstants == null) {
+          ofcgb.addStringConstant(stringConstant, momc.context(), null);
+        } else {
+          for (Iterator<String> constantIt = possibleStringConstants.iterator(); constantIt.hasNext();) {
+            final String constant = constantIt.next();
+            ofcgb.addStringConstant(stringConstant, momc.context(), constant);
           }
         }
       }
-      List<Local> bases = ofcgb.methodToInvokeArgs().get(momc.method());
-      if (bases != null) {
-        for (Local base : bases) {
-          PointsToSet pts = pa.reachingObjects(base);
-          for (Type ty : pts.possibleTypes()) {
-            ofcgb.addBaseType(base, momc.context(), ty);
-          }
-        }
-      }
-      List<Local> argArrays = ofcgb.methodToInvokeBases().get(momc.method());
-      if (argArrays != null) {
-        for (final Local argArray : argArrays) {
-          PointsToSet pts = pa.reachingObjects(argArray);
-          if (pts instanceof PointsToSetInternal) {
-            PointsToSetInternal ptsi = (PointsToSetInternal) pts;
-            ptsi.forall(new P2SetVisitor() {
-              @Override
-              public void visit(Node n) {
-                assert n instanceof AllocNode;
-                AllocNode an = (AllocNode) n;
-                Object newExpr = an.getNewExpr();
-                ofcgb.addInvokeArgDotField(argArray, an.dot(ArrayElement.v()));
-                if (newExpr instanceof NewArrayExpr) {
-                  NewArrayExpr nae = (NewArrayExpr) newExpr;
-                  Value size = nae.getSize();
-                  if (size instanceof IntConstant) {
-                    IntConstant arrSize = (IntConstant) size;
-                    ofcgb.addPossibleArgArraySize(argArray, arrSize.value, momc.context());
-                  } else {
-                    ofcgb.setArgArrayNonDetSize(argArray, momc.context());
-                  }
+    }
+  }
+
+  protected void processArrays(final MethodOrMethodContext momc) {
+    List<Local> argArrays = ofcgb.methodToInvokeBases().get(momc.method());
+    if (argArrays != null) {
+      for (final Local argArray : argArrays) {
+        PointsToSet pts = pa.reachingObjects(argArray);
+        if (pts instanceof PointsToSetInternal) {
+          PointsToSetInternal ptsi = (PointsToSetInternal) pts;
+          ptsi.forall(new P2SetVisitor() {
+            @Override
+            public void visit(Node n) {
+              assert n instanceof AllocNode;
+              AllocNode an = (AllocNode) n;
+              Object newExpr = an.getNewExpr();
+              ofcgb.addInvokeArgDotField(argArray, an.dot(ArrayElement.v()));
+              if (newExpr instanceof NewArrayExpr) {
+                NewArrayExpr nae = (NewArrayExpr) newExpr;
+                Value size = nae.getSize();
+                if (size instanceof IntConstant) {
+                  IntConstant arrSize = (IntConstant) size;
+                  ofcgb.addPossibleArgArraySize(argArray, arrSize.value, momc.context());
+                } else {
+                  ofcgb.setArgArrayNonDetSize(argArray, momc.context());
                 }
               }
-            });
-          }
-          for (Type t : pa.reachingObjectsOfArrayElement(pts).possibleTypes()) {
-            ofcgb.addInvokeArgType(argArray, momc.context(), t);
-          }
+            }
+          });
+        }
+        for (Type t : pa.reachingObjectsOfArrayElement(pts).possibleTypes()) {
+          ofcgb.addInvokeArgType(argArray, momc.context(), t);
         }
       }
-      List<Local> stringConstants = ofcgb.methodToStringConstants().get(momc.method());
-      if (stringConstants != null) {
-        for (Iterator<Local> stringConstantIt = stringConstants.iterator(); stringConstantIt.hasNext();) {
-          final Local stringConstant = stringConstantIt.next();
-          PointsToSet p2set = pa.reachingObjects(stringConstant);
-          Collection<String> possibleStringConstants = p2set.possibleStringConstants();
-          if (possibleStringConstants == null) {
-            ofcgb.addStringConstant(stringConstant, momc.context(), null);
-          } else {
-            for (Iterator<String> constantIt = possibleStringConstants.iterator(); constantIt.hasNext();) {
-              final String constant = constantIt.next();
-              ofcgb.addStringConstant(stringConstant, momc.context(), constant);
-            }
-          }
+    }
+  }
+
+  protected void processBases(final MethodOrMethodContext momc) {
+    List<Local> bases = ofcgb.methodToInvokeArgs().get(momc.method());
+    if (bases != null) {
+      for (Local base : bases) {
+        PointsToSet pts = pa.reachingObjects(base);
+        for (Type ty : pts.possibleTypes()) {
+          ofcgb.addBaseType(base, momc.context(), ty);
+        }
+      }
+    }
+  }
+
+  protected void processReceivers(final MethodOrMethodContext momc) {
+    List<Local> receivers = ofcgb.methodToReceivers().get(momc.method());
+    if (receivers != null) {
+      for (Iterator<Local> receiverIt = receivers.iterator(); receiverIt.hasNext();) {
+        final Local receiver = receiverIt.next();
+        final PointsToSet p2set = pa.reachingObjects(receiver);
+        for (Iterator<Type> typeIt = p2set.possibleTypes().iterator(); typeIt.hasNext();) {
+          final Type type = typeIt.next();
+          ofcgb.addType(receiver, momc.context(), type, null);
         }
       }
     }

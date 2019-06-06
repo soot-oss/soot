@@ -67,6 +67,7 @@ public class PeepholeOptimizer extends BodyTransformer {
   /** The method that drives the optimizations. */
   /* This is the public interface to PeepholeOptimizer */
 
+  @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
     if (!peepholesLoaded) {
       synchronized (loaderLock) {
@@ -76,7 +77,8 @@ public class PeepholeOptimizer extends BodyTransformer {
           InputStream peepholeListingStream = null;
           peepholeListingStream = PeepholeOptimizer.class.getResourceAsStream("/peephole.dat");
           if (peepholeListingStream == null) {
-            throw new RuntimeException("could not open file peephole.dat!");
+            logger.warn("Could not find peephole.dat in the classpath");
+            return;
           }
           BufferedReader reader = new BufferedReader(new InputStreamReader(peepholeListingStream));
 

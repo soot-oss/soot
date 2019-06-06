@@ -949,7 +949,7 @@ public class PAG implements PointsToAnalysis {
   }
 
   /** Adds an edge to the graph, returning false if it was already there. */
-  public final boolean addEdge(Node from, Node to) {
+  public boolean addEdge(Node from, Node to) {
     from = from.getReplacement();
     to = to.getReplacement();
     if (from instanceof VarNode) {
@@ -1340,7 +1340,7 @@ public class PAG implements PointsToAnalysis {
    * Adds method target as a possible target of the invoke expression in s. If target is null, only creates the nodes for the
    * call site, without actually connecting them to any target method.
    **/
-  final public void addCallTarget(MethodPAG srcmpag, MethodPAG tgtmpag, Stmt s, Context srcContext, Context tgtContext,
+  public void addCallTarget(MethodPAG srcmpag, MethodPAG tgtmpag, Stmt s, Context srcContext, Context tgtContext,
       Edge e) {
     MethodNodeFactory srcnf = srcmpag.nodeFactory();
     MethodNodeFactory tgtnf = tgtmpag.nodeFactory();

@@ -84,7 +84,7 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 
     @SuppressWarnings("unchecked")
     Entry(D u, Entry<D, F> pred) {
-      in = (Entry<D, F>[]) new Entry[] { pred };
+      in = new Entry[] { pred };
       data = u;
       number = Integer.MIN_VALUE;
       isRealStronglyConnected = false;

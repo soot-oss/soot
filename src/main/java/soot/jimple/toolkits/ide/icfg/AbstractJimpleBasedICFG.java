@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 
 import soot.Body;
+import soot.PatchingChain;
 import soot.SootMethod;
 import soot.Unit;
 import soot.UnitBox;
@@ -53,7 +54,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   protected final boolean enableExceptions;
 
   @DontSynchronize("written by single thread; read afterwards")
-  protected final Map<Unit, Body> unitToOwner = new HashMap<Unit, Body>();
+  private final Map<Unit, Body> unitToOwner = createUnitToOwnerMap();
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
   protected LoadingCache<Body, DirectedGraph<Unit>> bodyToUnitGraph
@@ -86,8 +87,18 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
     this(true);
   }
 
+  protected Map<Unit, Body> createUnitToOwnerMap() {
+    return new HashMap<Unit, Body>();
+  }
+
   public AbstractJimpleBasedICFG(boolean enableExceptions) {
     this.enableExceptions = enableExceptions;
+  }
+
+  public Body getBodyOf(Unit u) {
+    assert unitToOwner.containsKey(u) : "Statement " + u + " not in unit-to-owner mapping";
+    Body b = unitToOwner.get(u);
+    return b;
   }
 
   @Override
