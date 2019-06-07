@@ -65,6 +65,45 @@ Options.v().set_soot_modulepath(modulePath);
     }
 
 ```
+
+
+### Example Configurations: Java 8, Java >=  9 Classpath, Java >= 9 Modules
+
+
+
+```
+
+
+if(java < 9 ) {
+
+    Options.v().set_prepend_classpath(true);
+    Options.v().set_process_dir(Arrays.asList(applicationClassPath().split(File.pathSeparator)));
+
+    Options.v().set_claspath(sootClassPath();
+}
+
+if(java >= 9 && USE_CLASSPATH){
+    Options.v().set_soot_classpath("VIRTUAL_FS_FOR_JDK" + File.pathSeparator + sootClassPath());
+    Options.v().set_process_dir(Arrays.asList(applicationClassPath().split(File.pathSeparator)));
+    
+}
+
+
+if(java>=9 && USE_MODULEPATH){
+    Options.v().set_prepend_classpath(true);
+    Options.v().set_soot_modulepath(ootClassPath());
+    Options.v().set_process_dir(Arrays.asList(applicationClassPath().split(File.pathSeparator)));
+}
+
+
+
+
+
+
+
+
+```
+
 ## Use from the Command Line
 To execute Soot using Java 1.9, but analyzing a classpath run:
 `java -cp soot-trunk-j9.jar soot.Main -cp VIRTUAL_FS_FOR_JDK:directoryToAnalyse --process-dir directoryToAnalyse`
