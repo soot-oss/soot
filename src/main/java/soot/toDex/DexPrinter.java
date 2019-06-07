@@ -220,13 +220,13 @@ public class DexPrinter {
    */
   protected MultiDexBuilder createDexBuilder() {
     // we have to create a dex file with the minimum sdk level set. If we build with the target sdk version,
-    // we break the backwards compatibility of the app
+    // we break the backwards compatibility of the app.
     Scene.AndroidVersionInfo androidSDKVersionInfo = Scene.v().getAndroidSDKVersionInfo();
 
-    int apiLevel = -1;
-    if(androidSDKVersionInfo == null){
+    int apiLevel;
+    if (androidSDKVersionInfo == null) {
       apiLevel = Scene.v().getAndroidAPIVersion();
-    }else{
+    } else {
       apiLevel = Math.min(androidSDKVersionInfo.minSdkVersion, androidSDKVersionInfo.sdkTargetVersion);
     }
 

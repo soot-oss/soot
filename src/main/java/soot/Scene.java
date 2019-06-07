@@ -471,7 +471,8 @@ public class Scene // extends AbstractHost
       if (androidSDKVersionInfo.sdkTargetVersion != -1) {
         if (androidSDKVersionInfo.sdkTargetVersion > maxAPI && androidSDKVersionInfo.minSdkVersion != -1
             && androidSDKVersionInfo.minSdkVersion <= maxAPI) {
-          logger.warn("Android API version '" + androidSDKVersionInfo.sdkTargetVersion + "' not available, using minApkVersion '"
+          logger.warn("Android API version '" + androidSDKVersionInfo.sdkTargetVersion
+                  + "' not available, using minApkVersion '"
               + androidSDKVersionInfo.minSdkVersion + "' instead");
           APIVersion = androidSDKVersionInfo.minSdkVersion;
         } else {
