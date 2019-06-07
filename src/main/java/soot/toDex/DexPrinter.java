@@ -219,8 +219,18 @@ public class DexPrinter {
    * @return The new {@link MultiDexBuilder}
    */
   protected MultiDexBuilder createDexBuilder() {
-    int api = Scene.v().getAndroidAPIVersion();
-    return new MultiDexBuilder(Opcodes.forApi(api));
+    // we have to create a dex file with the minimum sdk level set. If we build with the target sdk version,
+    // we break the backwards compatibility of the app
+    Scene.AndroidVersionInfo androidSDKVersionInfo = Scene.v().getAndroidSDKVersionInfo();
+
+    int apiLevel = -1;
+    if(androidSDKVersionInfo == null){
+      apiLevel = Scene.v().getAndroidAPIVersion();
+    }else{
+      apiLevel = Math.min(androidSDKVersionInfo.minSdkVersion, androidSDKVersionInfo.sdkTargetVersion);
+    }
+
+    return new MultiDexBuilder(Opcodes.forApi(apiLevel));
   }
 
   private static boolean isSignatureFile(String fileName) {
