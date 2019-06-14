@@ -24,7 +24,6 @@ package soot.dexpler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -82,9 +81,7 @@ public class TrapMinimizer extends TrapTransformer {
       // unit to the handler of the
       // current trap
       updateTrap = false;
-      for (Iterator<Unit> it = b.getUnits().iterator(tr.getBeginUnit(), tr.getEndUnit()); it.hasNext();) {
-        Unit u = it.next();
-
+      for (Unit u = tr.getBeginUnit(); u != tr.getEndUnit(); u = b.getUnits().getSuccOf(u)) {
         if (goesToHandler) {
           goesToHandler = false;
         } else {
