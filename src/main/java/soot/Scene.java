@@ -23,7 +23,6 @@ package soot;
  * #L%
  */
 
-import com.google.common.base.Preconditions;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -472,8 +471,7 @@ public class Scene // extends AbstractHost
         if (androidSDKVersionInfo.sdkTargetVersion > maxAPI && androidSDKVersionInfo.minSdkVersion != -1
             && androidSDKVersionInfo.minSdkVersion <= maxAPI) {
           logger.warn("Android API version '" + androidSDKVersionInfo.sdkTargetVersion
-                  + "' not available, using minApkVersion '"
-              + androidSDKVersionInfo.minSdkVersion + "' instead");
+              + "' not available, using minApkVersion '" + androidSDKVersionInfo.minSdkVersion + "' instead");
           APIVersion = androidSDKVersionInfo.minSdkVersion;
         } else {
           APIVersion = androidSDKVersionInfo.sdkTargetVersion;
@@ -1579,7 +1577,7 @@ public class Scene // extends AbstractHost
     rn.add("strictfp");
   }
 
-  private final Set<String>[] basicclasses = new Set[4];
+  protected final Set<String>[] basicclasses = new Set[4];
 
   private void addSootBasicClasses() {
     basicclasses[SootClass.HIERARCHY] = new HashSet<String>();
@@ -1689,7 +1687,7 @@ public class Scene // extends AbstractHost
     return all;
   }
 
-  private void addReflectionTraceClasses() {
+  protected void addReflectionTraceClasses() {
     CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
     String log = options.reflection_log();
 
