@@ -264,6 +264,7 @@ public final class LambdaMetaFactory {
   private static class Wrapper {
 
     private Map<RefType, PrimType> wrapperTypes;
+    private Map<PrimType, RefType> primitiveTypes;
     /** valueOf(primitive) method signature */
     private Map<PrimType, SootMethod> valueOf;
     /** primitiveValue() method signature */
@@ -273,12 +274,14 @@ public final class LambdaMetaFactory {
       PrimType[] tmp = { BooleanType.v(), ByteType.v(), CharType.v(), DoubleType.v(), FloatType.v(), IntType.v(),
           LongType.v(), ShortType.v() };
       wrapperTypes = new HashMap<>();
+      primitiveTypes = new HashMap<>();
       valueOf = new HashMap<>();
       primitiveValue = new HashMap<>();
       for (PrimType primType : tmp) {
         RefType wrapperType = primType.boxedType();
 
         wrapperTypes.put(wrapperType, primType);
+        primitiveTypes.put(primType, wrapperType);
 
         SootMethodRef valueOfMethod
             = Scene.v().makeMethodRef(wrapperType.getSootClass(), "valueOf", Arrays.asList(primType), wrapperType, true);
@@ -524,6 +527,21 @@ public final class LambdaMetaFactory {
         // to is PrimType
         if (!(to instanceof PrimType)) {
           throw new IllegalArgumentException("Expected 'to' to be a PrimType");
+        }
+
+        // In some cases, the wrapper type is "java.lang.Object" and we first need to cast it to a type that can be unboxed.
+        // Java, e.g., seems to accept filter predicates on boxed Boolean types specified through generics.
+        // Code Example:
+        // Map<String, Boolean> map = new HashMap<>();
+        // map.entrySet().stream().filter(Map.Entry::getValue)
+        // In the example, the map values are of type Object because of generic erasure, but we're still dealing with
+        // booleans semantically.
+        if (from == Scene.v().getObjectType()) {
+          // Insert the cast
+          RefType boxedType = wrapper.primitiveTypes.get(to);
+          Local castLocal = lc.generateLocal(boxedType);
+          us.add(Jimple.v().newAssignStmt(castLocal, Jimple.v().newCastExpr(fromLocal, boxedType)));
+          fromLocal = castLocal;
         }
 
         Local unboxed = unbox(fromLocal, jb, us, lc);
