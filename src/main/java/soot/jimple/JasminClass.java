@@ -2538,7 +2538,7 @@ public class JasminClass extends AbstractJasminClass {
       }
 
       public void caseClassConstant(ClassConstant v) {
-        emit("ldc_w " + v.getValue(), 1);
+        emit("ldc " + v.toInternalString(), 1);
       }
 
       public void caseSubExpr(SubExpr v) {
