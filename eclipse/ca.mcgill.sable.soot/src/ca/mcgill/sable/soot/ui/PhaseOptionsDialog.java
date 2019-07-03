@@ -1072,6 +1072,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsignore_resolving_levels_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getGeneral_Optionsweak_map_structures_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionsweak_map_structures_widget().getAlias(), new Boolean(boolRes));
+		}
 		stringRes = getGeneral_Optionsphase_help_widget().getText().getText();
 		defStringRes = "";
 
@@ -4567,6 +4573,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getGeneral_Optionsignore_resolving_levels_widget() {
 		return General_Optionsignore_resolving_levels_widget;
+	}	
+	
+	private BooleanOptionWidget General_Optionsweak_map_structures_widget;
+	
+	private void setGeneral_Optionsweak_map_structures_widget(BooleanOptionWidget widget) {
+		General_Optionsweak_map_structures_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionsweak_map_structures_widget() {
+		return General_Optionsweak_map_structures_widget;
 	}	
 	
 
@@ -8501,6 +8517,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setGeneral_Optionsignore_resolving_levels_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Ignore Resolving Levels", "", "","ignore-resolving-levels", "\nIf this option is set, Soot will not check whether the current \nclass' resolving level is sufficiently high for the operation \nattempted on the class. This allows you to perform any operation \non a class even if the class has not been fully loaded, which \ncan lead to inconsistencies between your Soot scene and the \noriginal classes you loaded. Use this option at your own risk.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"weak-map-structures";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setGeneral_Optionsweak_map_structures_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Weak Map Structures", "", "","weak-map-structures", "\nIf this option is set, Soot will use Maps with weak references \nto lower memory usage when performing many additions and \ndeletions of classes/methods/locals. Without this option, all \ncreated objects are kept in memory. This has a bit larger memory \nfootprint if only a small amount of deletions are conducted.", defaultBool)));
 
 		defKey = ""+" "+""+" "+"ph phase-help";
 		defKey = defKey.trim();
