@@ -33,7 +33,7 @@ import java.util.NoSuchElementException;
  */
 
 public final class LargeNumberedMap<K extends Numberable, V> {
-  public LargeNumberedMap(ArrayNumberer<K> universe) {
+  public LargeNumberedMap(IterableNumberer<K> universe) {
     this.universe = universe;
     int newsize = universe.size();
     if (newsize < 8) {
@@ -98,5 +98,5 @@ public final class LargeNumberedMap<K extends Numberable, V> {
   /* Private stuff. */
 
   private Object[] values;
-  private ArrayNumberer<K> universe;
+  private IterableNumberer<K> universe;
 }

@@ -73,9 +73,11 @@ import soot.toolkits.exceptions.UnitThrowAnalysis;
 import soot.util.ArrayNumberer;
 import soot.util.Chain;
 import soot.util.HashChain;
+import soot.util.IterableNumberer;
 import soot.util.MapNumberer;
 import soot.util.Numberer;
 import soot.util.StringNumberer;
+import soot.util.WeakMapNumberer;
 
 /** Manages the SootClasses of the application being analyzed. */
 public class Scene // extends AbstractHost
@@ -99,6 +101,13 @@ public class Scene // extends AbstractHost
     kindNumberer = new ArrayNumberer<Kind>(
         new Kind[] { Kind.INVALID, Kind.STATIC, Kind.VIRTUAL, Kind.INTERFACE, Kind.SPECIAL, Kind.CLINIT, Kind.THREAD,
             Kind.EXECUTOR, Kind.ASYNCTASK, Kind.FINALIZE, Kind.INVOKE_FINALIZE, Kind.PRIVILEGED, Kind.NEWINSTANCE });
+
+    if (Options.v().weak_map_structures()) {
+      methodNumberer = new WeakMapNumberer<SootMethod>();
+      fieldNumberer = new WeakMapNumberer<SparkField>();
+      classNumberer = new WeakMapNumberer<SootClass>();
+      localNumberer = new WeakMapNumberer<Local>();
+    }
 
     addSootBasicClasses();
 
@@ -139,14 +148,14 @@ public class Scene // extends AbstractHost
   private final Map<String, RefType> nameToClass = new HashMap<String, RefType>();
 
   protected final ArrayNumberer<Kind> kindNumberer;
-  protected ArrayNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
-  protected ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
+  protected IterableNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
+  protected IterableNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
   protected Numberer<Unit> unitNumberer = new MapNumberer<Unit>();
   protected Numberer<Context> contextNumberer = null;
   protected Numberer<SparkField> fieldNumberer = new ArrayNumberer<SparkField>();
-  protected ArrayNumberer<SootClass> classNumberer = new ArrayNumberer<SootClass>();
+  protected IterableNumberer<SootClass> classNumberer = new ArrayNumberer<SootClass>();
   protected StringNumberer subSigNumberer = new StringNumberer();
-  protected ArrayNumberer<Local> localNumberer = new ArrayNumberer<Local>();
+  protected IterableNumberer<Local> localNumberer = new ArrayNumberer<Local>();
 
   protected Hierarchy activeHierarchy;
   protected FastHierarchy activeFastHierarchy;
@@ -1436,11 +1445,11 @@ public class Scene // extends AbstractHost
     return kindNumberer;
   }
 
-  public ArrayNumberer<Type> getTypeNumberer() {
+  public IterableNumberer<Type> getTypeNumberer() {
     return typeNumberer;
   }
 
-  public ArrayNumberer<SootMethod> getMethodNumberer() {
+  public IterableNumberer<SootMethod> getMethodNumberer() {
     return methodNumberer;
   }
 
@@ -1456,7 +1465,7 @@ public class Scene // extends AbstractHost
     return fieldNumberer;
   }
 
-  public ArrayNumberer<SootClass> getClassNumberer() {
+  public IterableNumberer<SootClass> getClassNumberer() {
     return classNumberer;
   }
 
@@ -1464,7 +1473,7 @@ public class Scene // extends AbstractHost
     return subSigNumberer;
   }
 
-  public ArrayNumberer<Local> getLocalNumberer() {
+  public IterableNumberer<Local> getLocalNumberer() {
     return localNumberer;
   }
 
