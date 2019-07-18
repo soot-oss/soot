@@ -22,9 +22,10 @@ package soot.dexpler.instructions;
  * #L%
  */
 
+import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,9 @@ public class DexByteCodeInstrutionsTest extends AbstractTestingFramework {
   protected void setupSoot() {
     super.setupSoot();
     Options.v().set_src_prec(Options.src_prec_apk);
-    Options.v().set_process_dir(Collections.singletonList(targetDexPath()));
+    // to get the basic classes; java.lang.Object, java.lang.Throwable, ... we add the rt.jar to the classpath
+    File rtJar = new File(System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar");
+    Options.v().set_process_dir(Arrays.asList(targetDexPath(), rtJar.getPath()));
     Options.v().set_force_android_jar(androidJarPath());
     Options.v().set_android_api_version(26);
   }

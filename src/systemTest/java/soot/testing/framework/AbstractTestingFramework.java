@@ -22,9 +22,16 @@ package soot.testing.framework;
  * #L%
  */
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
+
 import soot.ArrayType;
 import soot.G;
 import soot.Local;
@@ -41,12 +48,6 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.NullConstant;
 import soot.options.Options;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Manuel Benz created on 22.06.18
@@ -109,10 +110,15 @@ public abstract class AbstractTestingFramework {
    */
   protected SootMethod prepareTarget(String targetMethodSignature, Collection<String> classesOrPackagesToAnalyze) {
     setupSoot(classesOrPackagesToAnalyze);
+    Scene.v().loadNecessaryClasses();
+
     mockStatics();
+
     SootMethod sootTestMethod = createTestTarget(targetMethodSignature);
     runSoot();
-    Assert.assertNotNull("Could not find target method. System test setup seems to be incorrect. Please try to re-run `mvn test-compile` to make sure that the target code is present for analysis.", sootTestMethod);
+    Assert.assertNotNull(
+        "Could not find target method. System test setup seems to be incorrect. Please try to re-run `mvn test-compile` to make sure that the target code is present for analysis.",
+        sootTestMethod);
     return sootTestMethod;
   }
 
@@ -180,16 +186,14 @@ public abstract class AbstractTestingFramework {
     if (sootTestMethod == null) {
       throw new RuntimeException("The method with name " + targetMethod + " was not found in the Soot Scene.");
     }
-    String targetClass = makeDummyClass(sootTestMethod);
-    Scene.v().addBasicClass(targetClass, SootClass.BODIES);
-    Scene.v().loadNecessaryClasses();
-    SootClass c = Scene.v().forceResolve(targetClass, SootClass.BODIES);
-    c.setApplicationClass();
-    Scene.v().setEntryPoints(Collections.singletonList(c.getMethodByName("main")));
+    SootClass targetClass = makeDummyClass(sootTestMethod);
+    Scene.v().addClass(targetClass);
+    targetClass.setApplicationClass();
+    Scene.v().setEntryPoints(Collections.singletonList(targetClass.getMethodByName("main")));
     return sootTestMethod;
   }
 
-  private String makeDummyClass(SootMethod sootTestMethod) {
+  private SootClass makeDummyClass(SootMethod sootTestMethod) {
     SootClass sootClass = new SootClass("dummyClass");
     ArrayType argsParamterType = ArrayType.v(RefType.v("java.lang.String"), 1);
     SootMethod mainMethod = new SootMethod("main", Arrays.asList(new Type[] { argsParamterType }), VoidType.v(),
@@ -215,8 +219,7 @@ public abstract class AbstractTestingFramework {
     body.getUnits()
         .add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(allocatedTestObj, sootTestMethod.makeRef(), args)));
     body.getUnits().add(Jimple.v().newReturnVoidStmt());
-    Scene.v().addClass(sootClass);
-    return sootClass.toString();
+    return sootClass;
   }
 
   private String classFromSignature(String targetMethod) {

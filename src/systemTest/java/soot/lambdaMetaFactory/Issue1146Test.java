@@ -54,11 +54,4 @@ public class Issue1146Test extends AbstractTestingFramework {
         testClass, "java.util.function.Function");
     // if no exception is thrown, everything is working as intended
   }
-
-  @Override
-  protected void setupSoot() {
-    super.setupSoot();
-    // set classpath to something so that the rt.jar is not loaded as it would be when using the default cp
-    Options.v().set_soot_classpath(SYSTEMTEST_TARGET_CLASSES_DIR);
-  }
 }
