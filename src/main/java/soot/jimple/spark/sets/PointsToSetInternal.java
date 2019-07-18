@@ -38,6 +38,7 @@ import soot.jimple.spark.pag.ClassConstantNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.StringConstantNode;
+import soot.jimple.toolkits.pointer.FullObjectSet;
 import soot.util.BitVector;
 
 /**
@@ -116,18 +117,26 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
   }
 
   public boolean hasNonEmptyIntersection(PointsToSet other) {
-    final PointsToSetInternal o = (PointsToSetInternal) other;
-    return forall(new P2SetVisitor() {
-      public void visit(Node n) {
-        if (o.contains(n)) {
-          returnValue = true;
+    if (other instanceof PointsToSetInternal) {
+      final PointsToSetInternal o = (PointsToSetInternal) other;
+      return forall(new P2SetVisitor() {
+        public void visit(Node n) {
+          if (o.contains(n)) {
+            returnValue = true;
+          }
         }
-      }
-    });
+      });
+    } else if (other instanceof FullObjectSet) {
+      final FullObjectSet fos = (FullObjectSet) other;
+      return fos.possibleTypes().contains(type);
+    } else {
+      // We don't really know
+      return false;
+    }
   }
 
   public Set<Type> possibleTypes() {
-    final HashSet<Type> ret = new HashSet<Type>();
+    final HashSet<Type> ret = new HashSet<>();
     forall(new P2SetVisitor() {
       public void visit(Node n) {
         Type t = n.getType();
