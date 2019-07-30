@@ -740,7 +740,7 @@ public class Scene // extends AbstractHost
     return this.stateCount;
   }
 
-  protected void modifyHierarchy() {
+  protected synchronized void modifyHierarchy() {
     stateCount++;
     activeHierarchy = null;
     activeFastHierarchy = null;
@@ -1280,7 +1280,7 @@ public class Scene // extends AbstractHost
   /**
    * Makes a new fast hierarchy is none is active, and returns the active fast hierarchy.
    */
-  public FastHierarchy getOrMakeFastHierarchy() {
+  public synchronized FastHierarchy getOrMakeFastHierarchy() {
     if (!hasFastHierarchy()) {
       setFastHierarchy(new FastHierarchy());
     }
@@ -1291,7 +1291,7 @@ public class Scene // extends AbstractHost
    * Retrieves the active fast hierarchy
    */
 
-  public FastHierarchy getFastHierarchy() {
+  public synchronized FastHierarchy getFastHierarchy() {
     if (!hasFastHierarchy()) {
       throw new RuntimeException("no active FastHierarchy present for scene");
     }
@@ -1303,15 +1303,15 @@ public class Scene // extends AbstractHost
    * Sets the active hierarchy
    */
 
-  public void setFastHierarchy(FastHierarchy hierarchy) {
+  public synchronized void setFastHierarchy(FastHierarchy hierarchy) {
     activeFastHierarchy = hierarchy;
   }
 
-  public boolean hasFastHierarchy() {
+  public synchronized boolean hasFastHierarchy() {
     return activeFastHierarchy != null;
   }
 
-  public void releaseFastHierarchy() {
+  public synchronized void releaseFastHierarchy() {
     activeFastHierarchy = null;
   }
 
@@ -1320,7 +1320,7 @@ public class Scene // extends AbstractHost
    * Retrieves the active hierarchy
    */
 
-  public Hierarchy getActiveHierarchy() {
+  public synchronized Hierarchy getActiveHierarchy() {
     if (!hasActiveHierarchy()) {
       // throw new RuntimeException("no active Hierarchy present for
       // scene");
@@ -1334,15 +1334,15 @@ public class Scene // extends AbstractHost
    * Sets the active hierarchy
    */
 
-  public void setActiveHierarchy(Hierarchy hierarchy) {
+  public synchronized void setActiveHierarchy(Hierarchy hierarchy) {
     activeHierarchy = hierarchy;
   }
 
-  public boolean hasActiveHierarchy() {
+  public synchronized boolean hasActiveHierarchy() {
     return activeHierarchy != null;
   }
 
-  public void releaseActiveHierarchy() {
+  public synchronized void releaseActiveHierarchy() {
     activeHierarchy = null;
   }
 

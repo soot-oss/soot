@@ -199,7 +199,7 @@ public final class LambdaMetaFactory {
     if (MethodHandle.Kind.REF_INVOKE_STATIC.getValue() == implMethod.getKind()) {
       SootClass declClass = implMethod.getMethodRef().getDeclaringClass();
       if (declClass.getName().equals(enclosingClassname)) {
-        SootMethod method = declClass.getMethod(implMethod.getMethodRef().getSubSignature());
+        SootMethod method = implMethod.getMethodRef().resolve();
         int modifiers = method.getModifiers() & ~Modifier.PRIVATE;
         modifiers = modifiers | Modifier.PUBLIC;
         method.setModifiers(modifiers);
