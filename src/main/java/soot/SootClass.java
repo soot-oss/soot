@@ -1253,10 +1253,8 @@ public class SootClass extends AbstractHost implements Numberable {
     if (this.refType != null) {
       refType.setClassName(name);
     } else {
-      refType = RefType.v(name);
+      refType = Scene.v().getOrAddRefType(name);
     }
-    Scene.v().addRefType(refType);
-
   }
 
   private static ClassValidator[] validators;

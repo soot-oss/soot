@@ -51,7 +51,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
   private volatile SootClass sootClass;
   private AnySubType anySubType;
 
-  private RefType(String className) {
+  protected RefType(String className) {
     if (className.startsWith("[")) {
       throw new RuntimeException("Attempt to create RefType whose name starts with [ --> " + className);
     }
@@ -72,12 +72,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
    * @return a RefType for the given class name.
    */
   public static RefType v(String className) {
-    RefType rt = Scene.v().getRefTypeUnsafe(className);
-    if (rt == null) {
-      rt = new RefType(className);
-      return Scene.v().getOrAddRefType(rt);
-    }
-    return rt;
+    return Scene.v().getOrAddRefType(className);
   }
 
   public int compareTo(RefType t) {
