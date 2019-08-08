@@ -780,14 +780,15 @@ public class Scene // extends AbstractHost
    *          The class to add
    */
   protected void addClassSilent(SootClass c) {
-    if (c.isInScene()) {
-      throw new RuntimeException("already managed: " + c.getName());
-    }
+    synchronized (c) {
+      if (c.isInScene()) {
+        throw new RuntimeException("already managed: " + c.getName());
+      }
 
-    if (containsClass(c.getName())) {
-      throw new RuntimeException("duplicate class: " + c.getName());
-    }
-    nameToClass.computeIfAbsent(c.getName(), k -> {
+      if (containsClass(c.getName())) {
+        throw new RuntimeException("duplicate class: " + c.getName());
+      }
+
       classes.add(c);
 
       c.getType().setSootClass(c);
@@ -798,9 +799,8 @@ public class Scene // extends AbstractHost
       if (!c.isPhantom) {
         modifyHierarchy();
       }
-      return c.getType();
-    });
-
+      nameToClass.computeIfAbsent(c.getName(), k -> c.getType());
+    }
   }
 
   public void removeClass(SootClass c) {
@@ -1124,10 +1124,11 @@ public class Scene // extends AbstractHost
     }
 
     if ((allowsPhantomRefs() && phantomNonExist) || className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
-      RefType refType = getOrAddRefType(className);
-      synchronized (refType) {
-        SootClass c = refType.getSootClass();
+      type = getOrAddRefType(className);
+      synchronized (type) {
+        SootClass c = new SootClass(className);
         c.isPhantom = true;
+        addClassSilent(c);
         c.setPhantomClass();
         return c;
       }
