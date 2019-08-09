@@ -30,9 +30,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.function.Function;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import soot.options.Options;
 import soot.tagkit.JimpleLineNumberTag;
 import soot.tagkit.Tag;
@@ -45,10 +42,8 @@ import soot.util.DeterministicHashMap;
  */
 public class Printer {
   public static final int USE_ABBREVIATIONS = 0x0001, ADD_JIMPLE_LN = 0x0010;
-  private static final Logger logger = LoggerFactory.getLogger(Printer.class);
-  final private static char fileSeparator = System.getProperty("file.separator").charAt(0);
-  int options = 0;
-  int jimpleLnNum = 0; // actual line number
+  private int options = 0;
+  private int jimpleLnNum = 0; // actual line number
   private Function<Body, LabeledUnitPrinter> customUnitPrinter;
 
   public Printer(Singletons.Global g) {
