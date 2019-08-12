@@ -405,6 +405,16 @@
                 and the original classes you loaded. Use this option at your own risk.
             </long_desc>
         </boolopt>
+        <boolopt>
+            <name>Weak Map Structures</name>
+            <alias>weak-map-structures</alias>
+            <short_desc>Use weak references in Scene to prevent memory leakage when removing many classes/methods/locals</short_desc>
+            <long_desc>
+                If this option is set, Soot will use Maps with weak references to lower memory usage when performing
+                many additions and deletions of classes/methods/locals. Without this option, all created objects
+                are kept in memory. This has a bit larger memory footprint if only a small amount of deletions are conducted.
+            </long_desc>
+        </boolopt>
     </section>
     <section>
         <name>Input Options</name>

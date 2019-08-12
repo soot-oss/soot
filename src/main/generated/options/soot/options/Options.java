@@ -221,6 +221,10 @@ public class Options extends OptionsBase {
             )
                 ignore_resolving_levels = true;
             else if (false
+                    || option.equals("weak-map-structures")
+            )
+                weak_map_structures = true;
+            else if (false
                     || option.equals("cp")
                     || option.equals("soot-class-path")
                     || option.equals("soot-classpath")
@@ -1379,6 +1383,10 @@ public class Options extends OptionsBase {
     private boolean ignore_resolving_levels = false;
     public void set_ignore_resolving_levels(boolean setting) { ignore_resolving_levels = setting; }
 
+    public boolean weak_map_structures() { return weak_map_structures; }
+    private boolean weak_map_structures = false;
+    public void set_weak_map_structures(boolean setting) { weak_map_structures = setting; }
+
     public String soot_classpath() { return soot_classpath; }
     public void set_soot_classpath(String setting) { soot_classpath = setting; }
     private String soot_classpath = "";
@@ -1665,6 +1673,7 @@ public class Options extends OptionsBase {
                 + padOpt("-debug", "Print various Soot debugging info")
                 + padOpt("-debug-resolver", "Print debugging info from SootResolver")
                 + padOpt("-ignore-resolving-levels", "Ignore mismatching resolving levels")
+                + padOpt("-weak-map-structures", "Use weak references in Scene to prevent memory leakage when removing many classes/methods/locals")
                 + "\nInput Options:\n"
                 + padOpt("-cp ARG -soot-class-path ARG -soot-classpath ARG", "Use ARG as the classpath for finding classes.")
                 + padOpt("-soot-modulepath ARG", "Use ARG as the modulepath for finding classes.")

@@ -203,7 +203,7 @@ public final class LambdaMetaFactory {
     if (MethodHandle.Kind.REF_INVOKE_STATIC.getValue() == implMethod.getKind()) {
       SootClass declClass = implMethod.getMethodRef().getDeclaringClass();
       if (declClass.getName().equals(enclosingClassname)) {
-        SootMethod method = declClass.getMethod(implMethod.getMethodRef().getSubSignature());
+        SootMethod method = implMethod.getMethodRef().resolve();
         int modifiers = method.getModifiers() & ~Modifier.PRIVATE;
         modifiers = modifiers | Modifier.PUBLIC;
         method.setModifiers(modifiers);
@@ -268,6 +268,7 @@ public final class LambdaMetaFactory {
   private static class Wrapper {
 
     private Map<RefType, PrimType> wrapperTypes;
+    private Map<PrimType, RefType> primitiveTypes;
     /** valueOf(primitive) method signature */
     private Map<PrimType, SootMethod> valueOf;
     /** primitiveValue() method signature */
@@ -277,21 +278,23 @@ public final class LambdaMetaFactory {
       PrimType[] tmp = { BooleanType.v(), ByteType.v(), CharType.v(), DoubleType.v(), FloatType.v(), IntType.v(),
           LongType.v(), ShortType.v() };
       wrapperTypes = new HashMap<>();
+      primitiveTypes = new HashMap<>();
       valueOf = new HashMap<>();
       primitiveValue = new HashMap<>();
       for (PrimType primType : tmp) {
         RefType wrapperType = primType.boxedType();
-        String cn = wrapperType.getClassName();
 
         wrapperTypes.put(wrapperType, primType);
+        primitiveTypes.put(primType, wrapperType);
 
-        String valueOfMethodSignature = cn + " valueOf(" + primType.toString() + ")";
-        SootMethod valueOfMethod = wrapperType.getSootClass().getMethod(valueOfMethodSignature);
-        valueOf.put(primType, valueOfMethod);
+        SootMethodRef valueOfMethod
+            = Scene.v().makeMethodRef(wrapperType.getSootClass(), "valueOf", Arrays.asList(primType), wrapperType, true);
+        this.valueOf.put(primType, valueOfMethod.resolve());
 
-        String primitiveValueMethodSignature = primType.toString() + " " + primType.toString() + "Value()";
-        SootMethod primitiveValueMethod = wrapperType.getSootClass().getMethod(primitiveValueMethodSignature);
-        primitiveValue.put(wrapperType, primitiveValueMethod);
+        String primTypeValueMethodName = primType.toString() + "Value";
+        SootMethodRef primitiveValueMethod = Scene.v().makeMethodRef(wrapperType.getSootClass(), primTypeValueMethodName,
+            Collections.emptyList(), primType, false);
+        primitiveValue.put(wrapperType, primitiveValueMethod.resolve());
       }
       wrapperTypes = Collections.unmodifiableMap(wrapperTypes);
       valueOf = Collections.unmodifiableMap(valueOf);
@@ -530,6 +533,21 @@ public final class LambdaMetaFactory {
           throw new IllegalArgumentException("Expected 'to' to be a PrimType");
         }
 
+        // In some cases, the wrapper type is "java.lang.Object" and we first need to cast it to a type that can be unboxed.
+        // Java, e.g., seems to accept filter predicates on boxed Boolean types specified through generics.
+        // Code Example:
+        // Map<String, Boolean> map = new HashMap<>();
+        // map.entrySet().stream().filter(Map.Entry::getValue)
+        // In the example, the map values are of type Object because of generic erasure, but we're still dealing with
+        // booleans semantically.
+        if (from == Scene.v().getObjectType()) {
+          // Insert the cast
+          RefType boxedType = wrapper.primitiveTypes.get(to);
+          Local castLocal = lc.generateLocal(boxedType);
+          us.add(Jimple.v().newAssignStmt(castLocal, Jimple.v().newCastExpr(fromLocal, boxedType)));
+          fromLocal = castLocal;
+        }
+
         Local unboxed = unbox(fromLocal, jb, us, lc);
         return wideningPrimitiveConversion(unboxed, to, jb, us, lc);
       }
@@ -700,7 +718,12 @@ public final class LambdaMetaFactory {
               mod &= ~Modifier.PROTECTED;
               m.setModifiers(mod);
             }
-            return Jimple.v().newVirtualInvokeExpr(args.get(0), methodRef, rest(args));
+            // In some versions of the (Open)JDK, we seem to have an interface instead of a class for some reason
+            if (methodRef.getDeclaringClass().isInterface()) {
+              return Jimple.v().newInterfaceInvokeExpr(args.get(0), methodRef, rest(args));
+            } else {
+              return Jimple.v().newVirtualInvokeExpr(args.get(0), methodRef, rest(args));
+            }
           }
         case REF_INVOKE_CONSTRUCTOR:
           RefType type = methodRef.getDeclaringClass().getType();

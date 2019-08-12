@@ -46,6 +46,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.annotation.Nullable;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.MagicNumberFileFilter;
 import org.slf4j.Logger;
@@ -72,9 +73,11 @@ import soot.toolkits.exceptions.UnitThrowAnalysis;
 import soot.util.ArrayNumberer;
 import soot.util.Chain;
 import soot.util.HashChain;
+import soot.util.IterableNumberer;
 import soot.util.MapNumberer;
 import soot.util.Numberer;
 import soot.util.StringNumberer;
+import soot.util.WeakMapNumberer;
 
 /** Manages the SootClasses of the application being analyzed. */
 public class Scene // extends AbstractHost
@@ -83,6 +86,7 @@ public class Scene // extends AbstractHost
 
   private final int defaultSdkVersion = 15;
   private final Map<String, Integer> maxAPIs = new HashMap<String, Integer>();
+  private AndroidVersionInfo androidSDKVersionInfo;
 
   public Scene(Singletons.Global g) {
     setReservedNames();
@@ -97,6 +101,13 @@ public class Scene // extends AbstractHost
     kindNumberer = new ArrayNumberer<Kind>(
         new Kind[] { Kind.INVALID, Kind.STATIC, Kind.VIRTUAL, Kind.INTERFACE, Kind.SPECIAL, Kind.CLINIT, Kind.THREAD,
             Kind.EXECUTOR, Kind.ASYNCTASK, Kind.FINALIZE, Kind.INVOKE_FINALIZE, Kind.PRIVILEGED, Kind.NEWINSTANCE });
+
+    if (Options.v().weak_map_structures()) {
+      methodNumberer = new WeakMapNumberer<SootMethod>();
+      fieldNumberer = new WeakMapNumberer<SparkField>();
+      classNumberer = new WeakMapNumberer<SootClass>();
+      localNumberer = new WeakMapNumberer<Local>();
+    }
 
     addSootBasicClasses();
 
@@ -140,14 +151,14 @@ public class Scene // extends AbstractHost
   private final Map<String, RefType> nameToClass = new HashMap<String, RefType>();
 
   protected final ArrayNumberer<Kind> kindNumberer;
-  protected ArrayNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
-  protected ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
+  protected IterableNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
+  protected IterableNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
   protected Numberer<Unit> unitNumberer = new MapNumberer<Unit>();
   protected Numberer<Context> contextNumberer = null;
   protected Numberer<SparkField> fieldNumberer = new ArrayNumberer<SparkField>();
-  protected ArrayNumberer<SootClass> classNumberer = new ArrayNumberer<SootClass>();
+  protected IterableNumberer<SootClass> classNumberer = new ArrayNumberer<SootClass>();
   protected StringNumberer subSigNumberer = new StringNumberer();
-  protected ArrayNumberer<Local> localNumberer = new ArrayNumberer<Local>();
+  protected IterableNumberer<Local> localNumberer = new ArrayNumberer<Local>();
 
   protected Hierarchy activeHierarchy;
   protected FastHierarchy activeFastHierarchy;
@@ -430,7 +441,7 @@ public class Scene // extends AbstractHost
     return androidAPIVersion;
   }
 
-  private static class AndroidVersionInfo {
+  public static class AndroidVersionInfo {
 
     public int sdkTargetVersion = -1;
     public int minSdkVersion = -1;
@@ -465,67 +476,29 @@ public class Scene // extends AbstractHost
 
       // process AndroidManifest.xml
       int maxAPI = getMaxAPIAvailable(platformJARs);
-      final AndroidVersionInfo versionInfo = new AndroidVersionInfo();
-      try {
-        AxmlReader xmlReader = new AxmlReader(IOUtils.toByteArray(manifestIS));
-        xmlReader.accept(new AxmlVisitor() {
-
-          private String nodeName = null;
-
-          @Override
-          public void attr(String ns, String name, int resourceId, int type, Object obj) {
-            super.attr(ns, name, resourceId, type, obj);
-
-            if (nodeName != null && name != null) {
-              if (nodeName.equals("manifest")) {
-                if (name.equals("platformBuildVersionCode")) {
-                  versionInfo.platformBuildVersionCode = Integer.valueOf("" + obj);
-                }
-              } else if (nodeName.equals("uses-sdk")) {
-                // Obfuscated APKs often remove the attribute names and use the resourceId instead
-                // Therefore it is better to check for both variants
-                if (name.equals("targetSdkVersion") || (name.equals("") && resourceId == 16843376)) {
-                  versionInfo.sdkTargetVersion = Integer.valueOf("" + obj);
-                } else if (name.equals("minSdkVersion") || (name.equals("") && resourceId == 16843276)) {
-                  versionInfo.minSdkVersion = Integer.valueOf("" + obj);
-                }
-              }
-            }
-          }
-
-          @Override
-          public NodeVisitor child(String ns, String name) {
-            nodeName = name;
-
-            return this;
-          }
-
-        });
-      } catch (Exception e) {
-        logger.error(e.getMessage(), e);
-      }
+      androidSDKVersionInfo = getAndroidVersionInfo(manifestIS);
 
       int APIVersion = -1;
-      if (versionInfo.sdkTargetVersion != -1) {
-        if (versionInfo.sdkTargetVersion > maxAPI && versionInfo.minSdkVersion != -1
-            && versionInfo.minSdkVersion <= maxAPI) {
-          logger.warn("Android API version '" + versionInfo.sdkTargetVersion + "' not available, using minApkVersion '"
-              + versionInfo.minSdkVersion + "' instead");
-          APIVersion = versionInfo.minSdkVersion;
+      if (androidSDKVersionInfo.sdkTargetVersion != -1) {
+        if (androidSDKVersionInfo.sdkTargetVersion > maxAPI && androidSDKVersionInfo.minSdkVersion != -1
+            && androidSDKVersionInfo.minSdkVersion <= maxAPI) {
+          logger.warn("Android API version '" + androidSDKVersionInfo.sdkTargetVersion
+              + "' not available, using minApkVersion '" + androidSDKVersionInfo.minSdkVersion + "' instead");
+          APIVersion = androidSDKVersionInfo.minSdkVersion;
         } else {
-          APIVersion = versionInfo.sdkTargetVersion;
+          APIVersion = androidSDKVersionInfo.sdkTargetVersion;
         }
-      } else if (versionInfo.platformBuildVersionCode != -1) {
-        if (versionInfo.platformBuildVersionCode > maxAPI && versionInfo.minSdkVersion != -1
-            && versionInfo.minSdkVersion <= maxAPI) {
-          logger.warn("Android API version '" + versionInfo.platformBuildVersionCode
-              + "' not available, using minApkVersion '" + versionInfo.minSdkVersion + "' instead");
-          APIVersion = versionInfo.minSdkVersion;
+      } else if (androidSDKVersionInfo.platformBuildVersionCode != -1) {
+        if (androidSDKVersionInfo.platformBuildVersionCode > maxAPI && androidSDKVersionInfo.minSdkVersion != -1
+            && androidSDKVersionInfo.minSdkVersion <= maxAPI) {
+          logger.warn("Android API version '" + androidSDKVersionInfo.platformBuildVersionCode
+              + "' not available, using minApkVersion '" + androidSDKVersionInfo.minSdkVersion + "' instead");
+          APIVersion = androidSDKVersionInfo.minSdkVersion;
         } else {
-          APIVersion = versionInfo.platformBuildVersionCode;
+          APIVersion = androidSDKVersionInfo.platformBuildVersionCode;
         }
-      } else if (versionInfo.minSdkVersion != -1) {
-        APIVersion = versionInfo.minSdkVersion;
+      } else if (androidSDKVersionInfo.minSdkVersion != -1) {
+        APIVersion = androidSDKVersionInfo.minSdkVersion;
       } else {
         logger.debug("Could not find sdk version in Android manifest! Using default: " + defaultSdkVersion);
         APIVersion = defaultSdkVersion;
@@ -544,6 +517,54 @@ public class Scene // extends AbstractHost
         }
       }
     }
+  }
+
+  @Nullable
+  public AndroidVersionInfo getAndroidSDKVersionInfo() {
+    return androidSDKVersionInfo;
+  }
+
+  private AndroidVersionInfo getAndroidVersionInfo(InputStream manifestIS) {
+    final AndroidVersionInfo versionInfo = new AndroidVersionInfo();
+    try {
+      AxmlReader xmlReader = new AxmlReader(IOUtils.toByteArray(manifestIS));
+      xmlReader.accept(new AxmlVisitor() {
+
+        private String nodeName = null;
+
+        @Override
+        public void attr(String ns, String name, int resourceId, int type, Object obj) {
+          super.attr(ns, name, resourceId, type, obj);
+
+          if (nodeName != null && name != null) {
+            if (nodeName.equals("manifest")) {
+              if (name.equals("platformBuildVersionCode")) {
+                versionInfo.platformBuildVersionCode = Integer.valueOf("" + obj);
+              }
+            } else if (nodeName.equals("uses-sdk")) {
+              // Obfuscated APKs often remove the attribute names and use the resourceId instead
+              // Therefore it is better to check for both variants
+              if (name.equals("targetSdkVersion") || (name.equals("") && resourceId == 16843376)) {
+                versionInfo.sdkTargetVersion = Integer.valueOf("" + obj);
+              } else if (name.equals("minSdkVersion") || (name.equals("") && resourceId == 16843276)) {
+                versionInfo.minSdkVersion = Integer.valueOf("" + obj);
+              }
+            }
+          }
+        }
+
+        @Override
+        public NodeVisitor child(String ns, String name) {
+          nodeName = name;
+
+          return this;
+        }
+
+      });
+    } catch (Exception e) {
+      logger.error(e.getMessage(), e);
+    }
+    return versionInfo;
   }
 
   public String defaultClassPath() {
@@ -732,7 +753,7 @@ public class Scene // extends AbstractHost
     return this.stateCount;
   }
 
-  protected void modifyHierarchy() {
+  protected synchronized void modifyHierarchy() {
     stateCount++;
     activeHierarchy = null;
     activeFastHierarchy = null;
@@ -1272,7 +1293,7 @@ public class Scene // extends AbstractHost
   /**
    * Makes a new fast hierarchy is none is active, and returns the active fast hierarchy.
    */
-  public FastHierarchy getOrMakeFastHierarchy() {
+  public synchronized FastHierarchy getOrMakeFastHierarchy() {
     if (!hasFastHierarchy()) {
       setFastHierarchy(new FastHierarchy());
     }
@@ -1283,7 +1304,7 @@ public class Scene // extends AbstractHost
    * Retrieves the active fast hierarchy
    */
 
-  public FastHierarchy getFastHierarchy() {
+  public synchronized FastHierarchy getFastHierarchy() {
     if (!hasFastHierarchy()) {
       throw new RuntimeException("no active FastHierarchy present for scene");
     }
@@ -1295,15 +1316,15 @@ public class Scene // extends AbstractHost
    * Sets the active hierarchy
    */
 
-  public void setFastHierarchy(FastHierarchy hierarchy) {
+  public synchronized void setFastHierarchy(FastHierarchy hierarchy) {
     activeFastHierarchy = hierarchy;
   }
 
-  public boolean hasFastHierarchy() {
+  public synchronized boolean hasFastHierarchy() {
     return activeFastHierarchy != null;
   }
 
-  public void releaseFastHierarchy() {
+  public synchronized void releaseFastHierarchy() {
     activeFastHierarchy = null;
   }
 
@@ -1312,11 +1333,10 @@ public class Scene // extends AbstractHost
    * Retrieves the active hierarchy
    */
 
-  public Hierarchy getActiveHierarchy() {
-    if (!hasActiveHierarchy())
+  public synchronized Hierarchy getActiveHierarchy() {
+    if (!hasActiveHierarchy()) {
       // throw new RuntimeException("no active Hierarchy present for
       // scene");
-    {
       setActiveHierarchy(new Hierarchy());
     }
 
@@ -1327,15 +1347,15 @@ public class Scene // extends AbstractHost
    * Sets the active hierarchy
    */
 
-  public void setActiveHierarchy(Hierarchy hierarchy) {
+  public synchronized void setActiveHierarchy(Hierarchy hierarchy) {
     activeHierarchy = hierarchy;
   }
 
-  public boolean hasActiveHierarchy() {
+  public synchronized boolean hasActiveHierarchy() {
     return activeHierarchy != null;
   }
 
-  public void releaseActiveHierarchy() {
+  public synchronized void releaseActiveHierarchy() {
     activeHierarchy = null;
   }
 
@@ -1429,11 +1449,11 @@ public class Scene // extends AbstractHost
     return kindNumberer;
   }
 
-  public ArrayNumberer<Type> getTypeNumberer() {
+  public IterableNumberer<Type> getTypeNumberer() {
     return typeNumberer;
   }
 
-  public ArrayNumberer<SootMethod> getMethodNumberer() {
+  public IterableNumberer<SootMethod> getMethodNumberer() {
     return methodNumberer;
   }
 
@@ -1449,7 +1469,7 @@ public class Scene // extends AbstractHost
     return fieldNumberer;
   }
 
-  public ArrayNumberer<SootClass> getClassNumberer() {
+  public IterableNumberer<SootClass> getClassNumberer() {
     return classNumberer;
   }
 
@@ -1457,7 +1477,7 @@ public class Scene // extends AbstractHost
     return subSigNumberer;
   }
 
-  public ArrayNumberer<Local> getLocalNumberer() {
+  public IterableNumberer<Local> getLocalNumberer() {
     return localNumberer;
   }
 
@@ -1570,7 +1590,7 @@ public class Scene // extends AbstractHost
     rn.add("strictfp");
   }
 
-  private final Set<String>[] basicclasses = new Set[4];
+  protected final Set<String>[] basicclasses = new Set[4];
 
   private void addSootBasicClasses() {
     basicclasses[SootClass.HIERARCHY] = new HashSet<String>();
