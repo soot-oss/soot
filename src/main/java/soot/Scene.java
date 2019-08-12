@@ -628,10 +628,9 @@ public class Scene // extends AbstractHost
           }
           targetApk = entry;
         }
-        if (entry.toLowerCase().endsWith(".dex")) // on Windows, file
+        if (entry.toLowerCase().endsWith(".dex")) {
           // names are
           // case-insensitive
-        {
           targetDexs.add(entry);
         }
       }

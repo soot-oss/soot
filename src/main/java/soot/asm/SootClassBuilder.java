@@ -64,11 +64,11 @@ import soot.tagkit.Tag;
  * @author Aaloan Miftah
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
-class SootClassBuilder extends ClassVisitor {
+public class SootClassBuilder extends ClassVisitor {
 
-  private TagBuilder tb;
-  private final SootClass klass;
-  final Set<soot.Type> deps;
+  protected TagBuilder tb;
+  protected final SootClass klass;
+  protected final Set<soot.Type> deps;
 
   /**
    * Constructs a new Soot class builder.
@@ -76,7 +76,7 @@ class SootClassBuilder extends ClassVisitor {
    * @param klass
    *          Soot class to build.
    */
-  SootClassBuilder(SootClass klass) {
+ protected SootClassBuilder(SootClass klass) {
     super(Opcodes.ASM7);
     this.klass = klass;
     this.deps = new HashSet();
