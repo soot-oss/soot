@@ -52,7 +52,7 @@ Options.v().set_soot_modulepath(modulePath);
     }
 
 
-    //this must be called after all classes are resolved
+    //this must be called after all classes are loaded
     Scene.v().loadNecessaryClasses();
 
 
