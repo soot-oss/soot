@@ -44,8 +44,9 @@ class InternalTypingException extends RuntimeException {
   }
 
   @Override
-  public String toString() {
-    return "Unexpected type " + this.unexpectedType;
+  public String getMessage() {
+    return String.format("Unexpected type %s (%s)", unexpectedType,
+        unexpectedType == null ? "-" : unexpectedType.getClass().getSimpleName());
   }
 
 }

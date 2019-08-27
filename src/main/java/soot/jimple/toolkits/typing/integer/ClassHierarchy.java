@@ -149,7 +149,7 @@ public class ClassHierarchy {
     TypeNode typeNode = typeNodeMap.get(type);
 
     if (typeNode == null) {
-      throw new InternalTypingException();
+      throw new InternalTypingException(type);
     }
 
     return typeNode;

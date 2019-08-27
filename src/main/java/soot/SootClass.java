@@ -548,7 +548,7 @@ public class SootClass extends AbstractHost implements Numberable {
       return null;
     }
 
-    for (SootMethod method : methodList) {
+    for (SootMethod method : new ArrayList<>(methodList)) {
       if (method.getName().equals(name) && parameterTypes.equals(method.getParameterTypes())
           && returnType.equals(method.getReturnType())) {
         return method;
