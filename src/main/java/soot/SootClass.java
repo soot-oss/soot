@@ -699,7 +699,7 @@ public class SootClass extends AbstractHost implements Numberable {
      */
 
     if (methodList == null) {
-      methodList = new ArrayList<>();
+      methodList = Collections.synchronizedList(new ArrayList<>());
       subSigToMethods = new SmallNumberedMap<>();
     }
 
@@ -720,7 +720,7 @@ public class SootClass extends AbstractHost implements Numberable {
     }
 
     if (methodList == null) {
-      methodList = new ArrayList<>();
+      methodList = Collections.synchronizedList(new ArrayList<>());
       subSigToMethods = new SmallNumberedMap<>();
     }
 
