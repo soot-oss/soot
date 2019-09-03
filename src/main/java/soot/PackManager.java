@@ -22,6 +22,9 @@ package soot;
  * #L%
  */
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
+
 import heros.solver.CountingThreadPoolExecutor;
 
 import java.io.File;
@@ -119,6 +122,7 @@ import soot.jimple.toolkits.thread.mhp.MhpTransformer;
 import soot.jimple.toolkits.thread.synchronization.LockAllocator;
 import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
+import soot.serialization.BinaryBackend;
 import soot.shimple.Shimple;
 import soot.shimple.ShimpleBody;
 import soot.shimple.ShimpleTransformer;
@@ -151,6 +155,8 @@ public class PackManager {
   private boolean onlyStandardPacks = false;
   private JarOutputStream jarFile = null;
   protected DexPrinter dexPrinter = null;
+
+  private Supplier<BinaryBackend> binaryBackend = Suppliers.memoize(() -> new BinaryBackend());
 
   public PackManager(Singletons.Global g) {
     PhaseOptions.v().setPackManager(this);
@@ -939,6 +945,8 @@ public class PackManager {
         produceGrimp = Options.v().via_grimp();
         produceBaf = !produceGrimp;
         break;
+      case Options.output_format_binary:
+        break;
       default:
         throw new RuntimeException();
     }
@@ -1169,6 +1177,9 @@ public class PackManager {
       case Options.output_format_asm:
         createASMBackend(c).generateTextualRepresentation(writerOut);
         break;
+      case Options.output_format_binary:
+        binaryBackend.get().write(c,streamOut);
+        break;
       default:
         throw new RuntimeException();
     }
@@ -1182,7 +1193,7 @@ public class PackManager {
         jarFile.closeEntry();
       }
     } catch (IOException e) {
-      throw new CompilationDeathException("Cannot close output file " + fileName);
+      throw new CompilationDeathException("Cannot close output file " + fileName, e);
     }
   }
 

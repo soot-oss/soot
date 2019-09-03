@@ -48,7 +48,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     return className;
   }
 
-  private volatile SootClass sootClass;
+  private volatile transient SootClass sootClass;
   private AnySubType anySubType;
 
   private RefType(String className) {

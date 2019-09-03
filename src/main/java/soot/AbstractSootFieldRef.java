@@ -39,7 +39,7 @@ public class AbstractSootFieldRef implements SootFieldRef {
   private static final Logger logger = LoggerFactory.getLogger(AbstractSootFieldRef.class);
 
   public AbstractSootFieldRef(SootClass declaringClass, String name, Type type, boolean isStatic) {
-    this.declaringClass = declaringClass;
+    this.declaringClass = declaringClass.getType();
     this.name = name;
     this.type = type;
     this.isStatic = isStatic;
@@ -54,14 +54,14 @@ public class AbstractSootFieldRef implements SootFieldRef {
     }
   }
 
-  private final SootClass declaringClass;
+  private final RefType declaringClass;
   private final String name;
   private final Type type;
   private final boolean isStatic;
 
   @Override
   public SootClass declaringClass() {
-    return declaringClass;
+    return declaringClass.getSootClass();
   }
 
   @Override
@@ -81,7 +81,7 @@ public class AbstractSootFieldRef implements SootFieldRef {
 
   @Override
   public String getSignature() {
-    return SootField.getSignature(declaringClass, name, type);
+    return SootField.getSignature(declaringClass.getSootClass(), name, type);
   }
 
   public class FieldResolutionFailedException extends ResolutionFailedException {
@@ -119,7 +119,7 @@ public class AbstractSootFieldRef implements SootFieldRef {
   }
 
   private SootField resolve(StringBuffer trace) {
-    SootClass cl = declaringClass;
+    SootClass cl = declaringClass.getSootClass();
     while (true) {
       if (trace != null) {
         trace.append("Looking in " + cl + " which has fields " + cl.getFields() + "\n");
@@ -190,7 +190,7 @@ public class AbstractSootFieldRef implements SootFieldRef {
       synchronized (declaringClass) {
         // Be careful: Another thread may have already created this
         // field in the meantime, so better check twice.
-        SootField clField = declaringClass.getFieldByNameUnsafe(name);
+        SootField clField = declaringClass.getSootClass().getFieldByNameUnsafe(name);
         if (clField != null) {
           if (clField.getType().equals(type)) {
             return checkStatic(clField);
@@ -199,7 +199,7 @@ public class AbstractSootFieldRef implements SootFieldRef {
           }
         } else {
           // Add the new phantom field
-          declaringClass.addField(sf);
+          declaringClass.getSootClass().addField(sf);
           return sf;
         }
       }

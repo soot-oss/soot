@@ -171,4 +171,5 @@
   <class>soot.jbco.jimpleTransformations.MethodRenamer</class>
   <class>soot.LambdaMetaFactory</class>
   <class>soot.jbco.jimpleTransformations.FieldRenamer</class>
+  <class>soot.serialization.SootSerializer</class>
 </singletons>

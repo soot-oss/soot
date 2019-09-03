@@ -705,6 +705,15 @@
                     file.
                 </long_desc>
             </value>
+            <value>
+                <name>Binary</name>
+                <alias>binary</alias>
+                <alias>bin</alias>
+                <short_desc>Favour binary serialization files as Soot source.</short_desc>
+                <long_desc>
+                   ...
+                </long_desc>
+            </value>
         </multiopt>
         <boolopt>
             <name>Force complete resolver</name>
@@ -1028,6 +1037,16 @@
                 </short_desc>
                 <long_desc>
                     Produce <tt>.asm</tt> files as textual bytecode representation generated with the ASM back end.
+                </long_desc>
+            </value>
+            <value>
+                <name>Binary</name>
+                <alias>bin</alias>
+                <alias>binary</alias>
+                <short_desc>Produce <tt>.bin</tt> files as binary serialized representation of the current Scene.
+                </short_desc>
+                <long_desc>
+                   ...
                 </long_desc>
             </value>
         </multiopt>

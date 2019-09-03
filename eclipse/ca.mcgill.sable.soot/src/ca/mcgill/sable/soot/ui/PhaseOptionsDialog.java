@@ -8751,6 +8751,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 						"apk-class-jimple apk-c-j",
 						"\nTry to resolve classes first from .apk (Android Package) files \nfound in the Soot classpath. Fall back to .class, or .jimple \nfiles only when unable to find a class in .apk files. Never load \na .java file.",
 						false),
+				new OptionData("Binary",
+						"binary bin",
+						"\n...",
+						false),
 		};
 
 
@@ -9035,6 +9039,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 				new OptionData("ASM File",
 						"a asm",
 						"\nProduce .asm files as textual bytecode representation generated \nwith the ASM back end.",
+						false),
+				new OptionData("Binary",
+						"bin binary",
+						"\n...",
 						false),
 		};
 

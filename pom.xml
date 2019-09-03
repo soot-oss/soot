@@ -66,6 +66,7 @@
         <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
         <licence-check.failOnMissingHeader>true</licence-check.failOnMissingHeader>
         <asm.version>7.1</asm.version>
+        <kryo.version>5.0.0-RC4</kryo.version>
     </properties>
     <build>
         <finalName>sootclasses-trunk</finalName>
@@ -420,7 +421,11 @@
             <artifactId>asm-commons</artifactId>
             <version>${asm.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>${kryo.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>

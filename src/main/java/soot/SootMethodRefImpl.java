@@ -51,7 +51,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   private static final Logger logger = LoggerFactory.getLogger(SootMethodRefImpl.class);
 
-  private final SootClass declaringClass;
+  private final RefType declaringClass;
   private final String name;
   protected List<Type> parameterTypes;
   private final Type returnType;
@@ -85,7 +85,7 @@ public class SootMethodRefImpl implements SootMethodRef {
       throw new IllegalArgumentException("Attempt to create SootMethodRef with null returnType");
     }
 
-    this.declaringClass = declaringClass;
+    this.declaringClass = declaringClass.getType();
     this.name = name;
     this.parameterTypes = (parameterTypes == null) // initialize with unmodifiable collection
         ? Collections.emptyList()
@@ -101,7 +101,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   @Override
   public SootClass getDeclaringClass() {
-    return declaringClass;
+    return declaringClass.getSootClass();
   }
 
   @Override
@@ -146,7 +146,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   @Override
   public String getSignature() {
-    return SootMethod.getSignature(declaringClass, name, parameterTypes, returnType);
+    return SootMethod.getSignature(declaringClass.getSootClass(), name, parameterTypes, returnType);
   }
 
   @Override
@@ -197,7 +197,7 @@ public class SootMethodRefImpl implements SootMethodRef {
   }
 
   protected SootMethod tryResolve(final StringBuilder trace) {
-    SootClass selectedClass = declaringClass;
+    SootClass selectedClass = declaringClass.getSootClass();
     while (selectedClass != null) {
       if (trace != null) {
         trace.append("Looking in ").append(selectedClass).append(" which has methods ").append(selectedClass.getMethods())
@@ -224,7 +224,7 @@ public class SootMethodRefImpl implements SootMethodRef {
       selectedClass = selectedClass.getSuperclassUnsafe();
     }
 
-    selectedClass = declaringClass;
+    selectedClass = declaringClass.getSootClass();
     while (selectedClass != null) {
       final Queue<SootClass> queue = new ArrayDeque<>(selectedClass.getInterfaces());
       while (!queue.isEmpty()) {
@@ -251,7 +251,7 @@ public class SootMethodRefImpl implements SootMethodRef {
     if (Scene.v().allowsPhantomRefs() && Options.v().ignore_resolution_errors()) {
       SootMethod method = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
       method.setPhantom(true);
-      method = declaringClass.getOrAddMethod(method);
+      method = declaringClass.getSootClass().getOrAddMethod(method);
       checkStatic(method);
       return method;
     }
@@ -273,12 +273,12 @@ public class SootMethodRefImpl implements SootMethodRef {
 
     // declaring class of dynamic invocations not known at compile time, treat as
     // phantom class regardless if phantom classes are enabled
-    if (declaringClass.getName().equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
+    if (declaringClass.getClassName().equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
       treatAsPhantomClass = true;
     }
 
     if (treatAsPhantomClass) {
-      return createUnresolvedErrorMethod(declaringClass);
+      return createUnresolvedErrorMethod(declaringClass.getSootClass());
     }
 
     if (trace == null) {

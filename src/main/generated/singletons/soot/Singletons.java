@@ -2427,4 +2427,18 @@ public class Singletons {
     protected void release_soot_jbco_jimpleTransformations_FieldRenamer() {
     	instance_soot_jbco_jimpleTransformations_FieldRenamer = null;
     }
+
+    private soot.serialization.SootSerializer instance_soot_serialization_SootSerializer;
+    public soot.serialization.SootSerializer soot_serialization_SootSerializer() {
+        if (instance_soot_serialization_SootSerializer == null) {
+	       	synchronized (this) {
+		        if (instance_soot_serialization_SootSerializer == null)
+	        		instance_soot_serialization_SootSerializer = new soot.serialization.SootSerializer(g);
+	       	}
+       	}
+        return instance_soot_serialization_SootSerializer;
+    }
+    protected void release_soot_serialization_SootSerializer() {
+    	instance_soot_serialization_SootSerializer = null;
+    }
 }

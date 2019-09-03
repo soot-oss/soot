@@ -23,9 +23,11 @@ package soot;
  */
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,11 +76,11 @@ public class SootClass extends AbstractHost implements Numberable {
   // methodList is just for keeping the methods in a consistent order. It
   // needs to be kept consistent with subSigToMethods.
   protected List<SootMethod> methodList;
-  protected Chain<SootClass> interfaces;
+  protected Chain<RefType> interfaces;
 
   protected boolean isInScene;
-  protected SootClass superClass;
-  protected SootClass outerClass;
+  protected RefType superClass;
+  protected RefType outerClass;
 
   protected boolean isPhantom;
 
@@ -87,7 +89,6 @@ public class SootClass extends AbstractHost implements Numberable {
   /**
    * Constructs an empty SootClass with the given name and modifiers.
    */
-
   public SootClass(String name, int modifiers) {
     if (name.charAt(0) == '[') {
       throw new RuntimeException("Attempt to make a class whose name starts with [");
@@ -808,7 +809,8 @@ public class SootClass extends AbstractHost implements Numberable {
   @SuppressWarnings("unchecked")
   public Chain<SootClass> getInterfaces() {
     checkLevel(HIERARCHY);
-    return interfaces == null ? EmptyChain.v() : interfaces;
+    return interfaces == null ? EmptyChain.v()
+        : interfaces.stream().map(RefType::getSootClass).collect(Collectors.toCollection(() -> new HashChain<>()));
   }
 
   /**
@@ -821,8 +823,8 @@ public class SootClass extends AbstractHost implements Numberable {
       return false;
     }
 
-    for (SootClass sc : interfaces) {
-      if (sc.getName().equals(name)) {
+    for (RefType sc : interfaces) {
+      if (sc.getClassName().equals(name)) {
         return true;
       }
     }
@@ -841,7 +843,7 @@ public class SootClass extends AbstractHost implements Numberable {
     if (interfaces == null) {
       interfaces = new HashChain<>();
     }
-    interfaces.add(interfaceClass);
+    interfaces.add(interfaceClass.getType());
   }
 
   /**
@@ -877,7 +879,7 @@ public class SootClass extends AbstractHost implements Numberable {
     if (superClass == null && !isPhantom()) {
       throw new RuntimeException("no superclass for " + getName());
     } else {
-      return superClass;
+      return superClass.getSootClass();
     }
   }
 
@@ -890,7 +892,7 @@ public class SootClass extends AbstractHost implements Numberable {
 
   public SootClass getSuperclassUnsafe() {
     checkLevel(HIERARCHY);
-    return superClass;
+    return superClass == null ? null : superClass.getSootClass();
   }
 
   /**
@@ -899,7 +901,7 @@ public class SootClass extends AbstractHost implements Numberable {
 
   public void setSuperclass(SootClass c) {
     checkLevel(HIERARCHY);
-    superClass = c;
+    superClass = c.getType();
   }
 
   public boolean hasOuterClass() {
@@ -912,7 +914,7 @@ public class SootClass extends AbstractHost implements Numberable {
     if (outerClass == null) {
       throw new RuntimeException("no outer class");
     } else {
-      return outerClass;
+      return outerClass.getSootClass();
     }
   }
 
@@ -921,12 +923,12 @@ public class SootClass extends AbstractHost implements Numberable {
    */
   public SootClass getOuterClassUnsafe() {
     checkLevel(HIERARCHY);
-    return outerClass;
+    return outerClass == null ? null : outerClass.getSootClass();
   }
 
   public void setOuterClass(SootClass c) {
     checkLevel(HIERARCHY);
-    outerClass = c;
+    outerClass = c.getType();
   }
 
   public boolean isInnerClass() {
@@ -1299,4 +1301,15 @@ public class SootClass extends AbstractHost implements Numberable {
     }
   }
 
+  public RefType getSuperType() {
+    return superClass;
+  }
+
+  public RefType getOuterType() {
+    return outerClass;
+  }
+
+  public Collection<RefType> getInterfaceTypes() {
+    return interfaces == null ? Collections.EMPTY_LIST : interfaces;
+  }
 }

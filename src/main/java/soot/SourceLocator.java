@@ -48,6 +48,7 @@ import soot.JavaClassProvider.JarException;
 import soot.asm.AsmClassProvider;
 import soot.dexpler.DexFileProvider;
 import soot.options.Options;
+import soot.serialization.BinaryClassProvider;
 
 /**
  * Provides utility methods to retrieve an input stream for a class name, given a classfile, or jimple or baf output files.
@@ -80,7 +81,10 @@ public class SourceLocator {
                   return ClassSourceType.apk;
                 } else if (path.endsWith(".dex")) {
                   return ClassSourceType.dex;
-                } else {
+                } else if (path.endsWith(".bin")){
+                  return ClassSourceType.bin;
+                }
+                else {
                   return ClassSourceType.unknown;
                 }
               }
@@ -260,6 +264,12 @@ public class SourceLocator {
         classProviders.add(classFileClassProvider);
         classProviders.add(new JimpleClassProvider());
         break;
+      case Options.src_prec_binary:
+        classProviders.add(new BinaryClassProvider());
+        classProviders.add(classFileClassProvider);
+        classProviders.add(new JimpleClassProvider());
+        classProviders.add(new JavaClassProvider());
+        break;
       default:
         throw new RuntimeException("Other source precedences are not currently supported.");
     }
@@ -412,7 +422,7 @@ public class SourceLocator {
     }
 
     if (rep != Options.output_format_dava) {
-      if (rep == Options.output_format_class) {
+      if (rep == Options.output_format_class || rep == Options.output_format_bin) {
         b.append(c.getName().replace('.', File.separatorChar));
       } else if (rep == Options.output_format_template) {
         b.append(c.getName().replace('.', '_'));
@@ -519,6 +529,8 @@ public class SourceLocator {
         return ".java";
       case Options.output_format_asm:
         return ".asm";
+      case Options.output_format_binary:
+        return ".bin";
       default:
         throw new RuntimeException();
     }
@@ -681,6 +693,6 @@ public class SourceLocator {
   }
 
   private enum ClassSourceType {
-    jar, zip, apk, dex, directory, unknown
+    jar, zip, apk, dex, directory, bin, unknown
   }
 }

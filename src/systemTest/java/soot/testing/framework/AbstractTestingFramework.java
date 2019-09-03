@@ -130,6 +130,18 @@ public abstract class AbstractTestingFramework {
 
   }
 
+  protected void appendToProcessDir(String... dirs) {
+    ArrayList<String> pd = new ArrayList<>(Options.v().process_dir());
+    pd.addAll(Arrays.asList(dirs));
+    Options.v().set_process_dir(pd);
+  }
+
+  protected void prependToProcessDir(String... dirs) {
+    ArrayList<String> pd = new ArrayList<>(Options.v().process_dir());
+    pd.addAll(0, Arrays.asList(dirs));
+    Options.v().set_process_dir(pd);
+  }
+
   protected void runSoot() {
     PackManager.v().runPacks();
   }

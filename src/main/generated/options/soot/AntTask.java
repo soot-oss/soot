@@ -253,6 +253,8 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "apk" )
                 || arg.equals( "apk-class-jimple" )
                 || arg.equals( "apk-c-j" )
+                || arg.equals( "binary" )
+                || arg.equals( "bin" )
                 ) {
                 addArg("-src-prec");
                 addArg(arg);
@@ -336,6 +338,8 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "template" )
                 || arg.equals( "a" )
                 || arg.equals( "asm" )
+                || arg.equals( "bin" )
+                || arg.equals( "binary" )
                 ) {
                 addArg("-output-format");
                 addArg(arg);

@@ -72,7 +72,7 @@ import soot.validation.ValueBoxesValidator;
 public abstract class Body extends AbstractHost implements Serializable {
   private static final Logger logger = LoggerFactory.getLogger(Body.class);
   /** The method associated with this Body. */
-  protected transient SootMethod method = null;
+  protected SootMethod method = null;
 
   /** The chain of locals for this Body. */
   protected Chain<Local> localChain = new HashChain<Local>();
