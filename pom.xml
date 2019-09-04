@@ -66,7 +66,8 @@
         <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
         <licence-check.failOnMissingHeader>true</licence-check.failOnMissingHeader>
         <asm.version>7.1</asm.version>
-        <kryo.version>5.0.0-RC4</kryo.version>
+        <kryo.version>5.0.0-RC5-SNAPSHOT</kryo.version>
+        <kryo-serializers.version>0.45</kryo-serializers.version>
     </properties>
     <build>
         <finalName>sootclasses-trunk</finalName>
@@ -425,6 +426,11 @@
             <groupId>com.esotericsoftware</groupId>
             <artifactId>kryo</artifactId>
             <version>${kryo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.javakaffee</groupId>
+            <artifactId>kryo-serializers</artifactId>
+            <version>${kryo-serializers.version}</version>
         </dependency>
         <dependency>
             <groupId>org.javassist</groupId>
