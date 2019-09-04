@@ -5,11 +5,9 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
-
 import soot.PackManager;
 import soot.SootMethod;
 import soot.options.Options;
@@ -23,8 +21,6 @@ public class SerializationTest extends AbstractTestingFramework {
   private static final String TEST_METHOD_NAME = "main";
   private static final String TEST_METHOD_RET = "void";
   public static final Path SERIALIZATION_OUT = Paths.get("./sootOutput");
-
-  boolean write = false;
 
   @Before
   public void setUp() throws Exception {
@@ -50,7 +46,6 @@ public class SerializationTest extends AbstractTestingFramework {
 
   @Test
   public void WriteOut() {
-    write = true;
     String testClass = "soot.lambdaMetaFactory.LambdaNoCaptures";
 
     final SootMethod target = prepareTarget(methodSigFromComponents(testClass, TEST_METHOD_RET, TEST_METHOD_NAME), testClass,
@@ -59,13 +54,10 @@ public class SerializationTest extends AbstractTestingFramework {
 
   @Test
   public void writeAndRead() {
-    write = true;
     String testClass = "soot.lambdaMetaFactory.LambdaNoCaptures";
 
     SootMethod target = prepareTarget(methodSigFromComponents(testClass, TEST_METHOD_RET, TEST_METHOD_NAME), testClass,
         "java.util.function.Function");
-
-    write = false;
 
     target = prepareTarget(methodSigFromComponents(testClass, TEST_METHOD_RET, TEST_METHOD_NAME), testClass,
         "java.util.function.Function");
