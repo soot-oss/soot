@@ -1,10 +1,14 @@
 package soot.serialization;
 
 import com.esotericsoftware.kryo.io.Input;
+
 import soot.ClassSource;
 import soot.FoundFile;
 import soot.SootClass;
+import soot.SootMethod;
 import soot.SourceLocator;
+import soot.Unit;
+import soot.ValueBox;
 import soot.javaToJimple.IInitialResolver;
 
 /**
@@ -31,7 +35,23 @@ public class BinaryClassProvider implements soot.ClassProvider {
     public IInitialResolver.Dependencies resolve(SootClass sc) {
       try (Input input = new Input(foundFile.inputStream())) {
         SootClass sootClass = SootSerializer.v().readObject(input, sc);
-        return new IInitialResolver.Dependencies();
+
+        IInitialResolver.Dependencies dependencies = new IInitialResolver.Dependencies();
+
+        DependencyCollector collector = new DependencyCollector();
+        // fixme put this into the write out process
+        for (SootMethod method : sootClass.getMethods()) {
+          if (method.isConcrete()) {
+            for (Unit unit : method.retrieveActiveBody().getUnits()) {
+              for (ValueBox box : unit.getUseAndDefBoxes()) {
+                box.getValue().apply(collector);
+                dependencies.typesToHierarchy.addAll(collector.getResult());
+              }
+            }
+          }
+        }
+
+        return dependencies;
       }
     }
 

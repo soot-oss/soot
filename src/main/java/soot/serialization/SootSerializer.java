@@ -8,11 +8,13 @@ import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.util.DefaultInstantiatorStrategy;
 
 import java.lang.reflect.InvocationHandler;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
 
-import org.objenesis.instantiator.ObjectInstantiator;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import soot.G;
@@ -20,7 +22,9 @@ import soot.Scene;
 import soot.Singletons;
 import soot.UnitPatchingChain;
 import soot.util.HashChain;
+import soot.util.Numberable;
 import soot.util.NumberedString;
+import soot.util.SmallNumberedMap;
 
 import de.javakaffee.kryoserializers.ArraysAsListSerializer;
 import de.javakaffee.kryoserializers.CollectionsEmptyListSerializer;
@@ -45,7 +49,6 @@ public class SootSerializer extends Kryo {
     this.setReferences(true);
     this.setRegistrationRequired(false);
     this.setInstantiatorStrategy(new DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
-    this.setGenerics(com.esotericsoftware.kryo.util.NoGenericsHandler.INSTANCE);
     registerSpecialSerializers();
     registerSpecialInstantiators();
   }
@@ -79,6 +82,38 @@ public class SootSerializer extends Kryo {
         return Scene.v().getSubSigNumberer().findOrAdd(input.readString());
       }
     });
+
+    this.register(SmallNumberedMap.class, new Serializer<SmallNumberedMap>() {
+      @Override
+      public void write(Kryo kryo, Output output, SmallNumberedMap object) {
+        ArrayList<Numberable> keys = new ArrayList<>();
+        ArrayList values = new ArrayList<>();
+
+        Iterator<Numberable> iterator = object.keyIterator();
+        while (iterator.hasNext()) {
+          Numberable key = iterator.next();
+          keys.add(key);
+          values.add(object.get(key));
+        }
+
+        writeObject(output, keys);
+        writeObject(output, values);
+      }
+
+      @Override
+      public SmallNumberedMap read(Kryo kryo, Input input, Class type) {
+        List<Numberable> keys = readObject(input, ArrayList.class);
+        List values = readObject(input, ArrayList.class);
+
+        SmallNumberedMap map = new SmallNumberedMap();
+
+        for (int i = 0; i < keys.size(); i++) {
+          map.put(keys.get(i), values.get(i));
+        }
+
+        return map;
+      }
+    });
   }
 
   public <T> T readObject(Input in, T instance) {
@@ -86,43 +121,19 @@ public class SootSerializer extends Kryo {
     Registration oldReg = this.register(instanceType);
 
     // make sure we take the given instance as the "created" one
-    oldReg.setInstantiator(new ExistingObjectInstantiator(instance));
+    oldReg.setInstantiator(() -> {
+      // reset registration so we do not keep the instantiator for all instances of instanceType.
+      // unregister does not work since the reg is not mapped to an int when we are running in
+      // no-registration-required-mode
+      // this just overwrites the registration and thereby resets the instantiator
+      getClassResolver().registerImplicit(instance.getClass());
+      return instance;
+    });
 
     return (T) this.readObject(in, instanceType);
   }
 
   public static SootSerializer v() {
     return G.v().soot_serialization_SootSerializer();
-  }
-
-  private class ExistingObjectInstantiator<T> implements ObjectInstantiator<T> {
-
-    private final T instance;
-
-    public ExistingObjectInstantiator(T instance) {
-      this.instance = instance;
-    }
-
-    @Override
-    public T newInstance() {
-      // reset registration so we do not keep the instantiator for all instances of instanceType.
-      // unregister does not work since the reg is not mapped to an int when we are running in no-registration-required-mode
-      // this just overwrites the registration and thereby resets the instantiator
-      getClassResolver().registerImplicit(instance.getClass());
-      return instance;
-    }
-  }
-
-  private class DelegateSerializer<T> extends Serializer<T> {
-
-    @Override
-    public void write(Kryo kryo, Output output, T object) {
-      getDefaultSerializer(object.getClass()).write(kryo, output, object);
-    }
-
-    @Override
-    public T read(Kryo kryo, Input input, Class<? extends T> type) {
-      return (T) getDefaultSerializer(type).read(kryo, input, type);
-    }
   }
 }
