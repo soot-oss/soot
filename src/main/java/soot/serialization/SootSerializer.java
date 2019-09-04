@@ -67,13 +67,16 @@ public class SootSerializer extends Kryo {
     UnmodifiableCollectionsSerializer.registerSerializers(this);
     SynchronizedCollectionsSerializer.registerSerializers(this);
 
-    this.register(NumberedString.class, new DelegateSerializer() {
+    this.register(NumberedString.class, new Serializer<NumberedString>() {
       @Override
-      public Object read(Kryo kryo, Input input, Class type) {
-        NumberedString read = (NumberedString) super.read(kryo, input, type);
-        String string = read.getString();
+      public void write(Kryo kryo, Output output, NumberedString object) {
+        output.writeString(object.getString());
+      }
+
+      @Override
+      public NumberedString read(Kryo kryo, Input input, Class type) {
         // we have to create a new one and register it to the scene
-        return Scene.v().getSubSigNumberer().findOrAdd(string);
+        return Scene.v().getSubSigNumberer().findOrAdd(input.readString());
       }
     });
   }

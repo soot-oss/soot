@@ -59,6 +59,8 @@ public class SerializationTest extends AbstractTestingFramework {
     SootMethod target = prepareTarget(methodSigFromComponents(testClass, TEST_METHOD_RET, TEST_METHOD_NAME), testClass,
         "java.util.function.Function");
 
+    System.out.println();
+
     target = prepareTarget(methodSigFromComponents(testClass, TEST_METHOD_RET, TEST_METHOD_NAME), testClass,
         "java.util.function.Function");
   }
