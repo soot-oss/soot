@@ -91,6 +91,14 @@ public class FastHierarchy {
     int lower;
     int upper;
 
+    public Interval() {
+    }
+
+    public Interval(int lower, int upper) {
+      this.lower = lower;
+      this.upper = upper;
+    }
+
     public boolean isSubrange(Interval potentialSubrange) {
       if (potentialSubrange == null) {
         return false;
@@ -141,14 +149,14 @@ public class FastHierarchy {
     buildInverseMaps();
 
     /* Now do a dfs traversal to get the Interval numbers. */
-    dfsVisit(0, sc.getSootClass("java.lang.Object"));
+    int r = dfsVisit(0, sc.getSootClass("java.lang.Object"));
     /*
      * also have to traverse for all phantom classes because they also can be roots of the type hierarchy
      */
     for (final Iterator<SootClass> phantomClassIt = sc.getPhantomClasses().snapshotIterator(); phantomClassIt.hasNext();) {
       SootClass phantomClass = phantomClassIt.next();
       if (!phantomClass.isInterface()) {
-        dfsVisit(0, phantomClass);
+        r = dfsVisit(r, phantomClass);
       }
     }
   }
