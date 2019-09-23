@@ -107,16 +107,43 @@ public class VirtualCalls {
     }
 
     SootMethod m = cls.getMethodUnsafe(subSig);
+    
     if (m != null) {
       if (!m.isAbstract()) {
         ret = m;
       }
     } else {
-      SootClass c = cls.getSuperclassUnsafe();
-      if (c != null) {
-        ret = resolveNonSpecial(c.getType(), subSig);
+      if(cls.getInterfaceCount() > 0)
+      {
+        List<SootMethod> interfaceMethods = cls.getInterfaces().getFirst().getMethods();
+        for(SootMethod im : interfaceMethods)
+        {
+        	SootMethod interfaceMethodCheck = cls.getMethodUnsafe(im.getSubSignature());
+        	if(interfaceMethodCheck == null)
+        	{
+        		ret = im;
+        		vtbl.put(subSig, ret);
+        	}    	
+        }
+        return ret;
+      }
+      else
+      {
+    	  SootClass c = cls.getSuperclassUnsafe();
+    	  if (c != null) {
+    		  ret = resolveNonSpecial(c.getType(), subSig);
+    	  }
       }
     }
+//    List<SootMethod> interfaceMethods = cls.getInterfaces().getFirst().getMethods();
+//    for(SootMethod im : interfaceMethods)
+//    {
+//    	SootMethod interfaceMethodCheck = cls.getMethodUnsafe(im.getSubSignature());
+//    	if(interfaceMethodCheck == null)
+//    	{
+//    		ret = im;
+//    	}    	
+//    }
     vtbl.put(subSig, ret);
     return ret;
   }
