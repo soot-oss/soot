@@ -185,7 +185,8 @@ public class TrapSplitter extends BodyTransformer {
         Set<Trap> existingTraps = trapsPerUnit.get(unit);
         for (Trap e : existingTraps) {
           if (e != t && (e.getEndUnit() != t.getEndUnit() || e.getException() == t.getException())) {
-            if ((e.getBeginUnit() == unit && t.getEndUnit() != unit) || (t.getBeginUnit() == unit && e.getEndUnit() != unit)) {
+            if ((e.getBeginUnit() == unit && t.getEndUnit() != unit) || 
+                (t.getBeginUnit() == unit && e.getEndUnit() != unit)) {
               return new TrapOverlap(t, e, e.getBeginUnit());
             }
           }
