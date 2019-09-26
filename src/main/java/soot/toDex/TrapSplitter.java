@@ -1,5 +1,7 @@
 package soot.toDex;
 
+import java.util.Iterator;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,6 +25,7 @@ package soot.toDex;
  */
 
 import java.util.Map;
+import java.util.Set;
 
 import soot.Body;
 import soot.BodyTransformer;
@@ -30,6 +33,8 @@ import soot.Singletons;
 import soot.Trap;
 import soot.Unit;
 import soot.jimple.Jimple;
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
 
 /**
  * Transformer that splits nested traps for Dalvik which does not support hierarchies of traps. If we have a trap (1-3) with
@@ -172,19 +177,23 @@ public class TrapSplitter extends BodyTransformer {
    * @return Two overlapping traps if they exist, otherwise null
    */
   private TrapOverlap getNextOverlap(Body b) {
-    for (Trap t1 : b.getTraps()) {
-      // Look whether one of our trapped statements is the begin
-      // statement of another trap
-      for (Unit splitUnit = t1.getBeginUnit(); splitUnit != t1.getEndUnit(); splitUnit = b.getUnits().getSuccOf(splitUnit)) {
-        for (Trap t2 : b.getTraps()) {
-          if (t1 != t2 && (t1.getEndUnit() != t2.getEndUnit() || t1.getException() == t2.getException())
-              && t2.getBeginUnit() == splitUnit) {
-            return new TrapOverlap(t1, t2, t2.getBeginUnit());
+    MultiMap<Unit, Trap> trapsPerUnit = new HashMultiMap<>();
+    for (Trap t : b.getTraps()) {
+      Iterator<Unit> itUnit = b.getUnits().iterator(t.getBeginUnit(), t.getEndUnit());
+      while (itUnit.hasNext()) {
+        Unit unit = itUnit.next();
+        Set<Trap> existingTraps = trapsPerUnit.get(unit);
+        for (Trap e : existingTraps) {
+          if (e != t && (e.getEndUnit() != t.getEndUnit() || e.getException() == t.getException())) {
+            if ((e.getBeginUnit() == unit && t.getEndUnit() != unit) || (t.getBeginUnit() == unit && e.getEndUnit() != unit)) {
+              return new TrapOverlap(t, e, e.getBeginUnit());
+            }
           }
         }
+        trapsPerUnit.put(unit, t);
       }
-
     }
+
     return null;
   }
 
