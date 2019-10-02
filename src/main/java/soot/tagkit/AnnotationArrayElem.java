@@ -74,18 +74,23 @@ public class AnnotationArrayElem extends AnnotationElem {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (!super.equals(obj))
+    }
+    if (!super.equals(obj)) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     AnnotationArrayElem other = (AnnotationArrayElem) obj;
     if (values == null) {
-      if (other.values != null)
+      if (other.values != null) {
         return false;
-    } else if (!values.equals(other.values))
+      }
+    } else if (!values.equals(other.values)) {
       return false;
+    }
     return true;
   }
 

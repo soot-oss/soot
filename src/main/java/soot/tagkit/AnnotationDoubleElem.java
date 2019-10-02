@@ -62,15 +62,19 @@ public class AnnotationDoubleElem extends AnnotationElem {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (!super.equals(obj))
+    }
+    if (!super.equals(obj)) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     AnnotationDoubleElem other = (AnnotationDoubleElem) obj;
-    if (Double.doubleToLongBits(value) != Double.doubleToLongBits(other.value))
+    if (Double.doubleToLongBits(value) != Double.doubleToLongBits(other.value)) {
       return false;
+    }
     return true;
   }
 

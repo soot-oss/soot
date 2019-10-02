@@ -60,15 +60,19 @@ public class AnnotationFloatElem extends AnnotationElem {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (!super.equals(obj))
+    }
+    if (!super.equals(obj)) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     AnnotationFloatElem other = (AnnotationFloatElem) obj;
-    if (Float.floatToIntBits(value) != Float.floatToIntBits(other.value))
+    if (Float.floatToIntBits(value) != Float.floatToIntBits(other.value)) {
       return false;
+    }
     return true;
   }
 

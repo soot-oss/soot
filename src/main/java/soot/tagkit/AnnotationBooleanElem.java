@@ -55,15 +55,19 @@ public class AnnotationBooleanElem extends AnnotationElem {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (!super.equals(obj))
+    }
+    if (!super.equals(obj)) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     AnnotationBooleanElem other = (AnnotationBooleanElem) obj;
-    if (value != other.value)
+    if (value != other.value) {
       return false;
+    }
     return true;
   }
 
