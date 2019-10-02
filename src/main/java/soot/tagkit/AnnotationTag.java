@@ -154,4 +154,36 @@ public class AnnotationTag implements Tag {
   public Collection<AnnotationElem> getElems() {
     return elems == null ? Collections.<AnnotationElem>emptyList() : Collections.unmodifiableCollection(elems);
   }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((elems == null) ? 0 : elems.hashCode());
+    result = prime * result + ((type == null) ? 0 : type.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    AnnotationTag other = (AnnotationTag) obj;
+    if (elems == null) {
+      if (other.elems != null)
+        return false;
+    } else if (!elems.equals(other.elems))
+      return false;
+    if (type == null) {
+      if (other.type != null)
+        return false;
+    } else if (!type.equals(other.type))
+      return false;
+    return true;
+  }
+
 }

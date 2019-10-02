@@ -49,4 +49,27 @@ public class AnnotationFloatElem extends AnnotationElem {
   public void apply(Switch sw) {
     ((IAnnotationElemTypeSwitch) sw).caseAnnotationFloatElem(this);
   }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + Float.floatToIntBits(value);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (!super.equals(obj))
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    AnnotationFloatElem other = (AnnotationFloatElem) obj;
+    if (Float.floatToIntBits(value) != Float.floatToIntBits(other.value))
+      return false;
+    return true;
+  }
+
 }

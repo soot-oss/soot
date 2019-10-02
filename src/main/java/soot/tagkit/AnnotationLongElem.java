@@ -49,4 +49,27 @@ public class AnnotationLongElem extends AnnotationElem {
   public void apply(Switch sw) {
     ((IAnnotationElemTypeSwitch) sw).caseAnnotationLongElem(this);
   }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + (int) (value ^ (value >>> 32));
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (!super.equals(obj))
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    AnnotationLongElem other = (AnnotationLongElem) obj;
+    if (value != other.value)
+      return false;
+    return true;
+  }
+
 }

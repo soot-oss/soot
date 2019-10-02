@@ -49,4 +49,30 @@ public class AnnotationClassElem extends AnnotationElem {
   public void apply(Switch sw) {
     ((IAnnotationElemTypeSwitch) sw).caseAnnotationClassElem(this);
   }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + ((desc == null) ? 0 : desc.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (!super.equals(obj))
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    AnnotationClassElem other = (AnnotationClassElem) obj;
+    if (desc == null) {
+      if (other.desc != null)
+        return false;
+    } else if (!desc.equals(other.desc))
+      return false;
+    return true;
+  }
+
 }
