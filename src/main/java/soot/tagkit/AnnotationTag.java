@@ -166,23 +166,30 @@ public class AnnotationTag implements Tag {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     AnnotationTag other = (AnnotationTag) obj;
     if (elems == null) {
-      if (other.elems != null)
+      if (other.elems != null) {
         return false;
-    } else if (!elems.equals(other.elems))
+      }
+    } else if (!elems.equals(other.elems)) {
       return false;
+    }
     if (type == null) {
-      if (other.type != null)
+      if (other.type != null) {
         return false;
-    } else if (!type.equals(other.type))
+      }
+    } else if (!type.equals(other.type)) {
       return false;
+    }
     return true;
   }
 
