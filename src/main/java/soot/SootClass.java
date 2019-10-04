@@ -321,7 +321,7 @@ public class SootClass extends AbstractHost implements Numberable {
         if (foundField == null) {
           foundField = field;
         } else {
-          throw new RuntimeException("ambiguous field: " + name);
+          throw new AmbiguousFieldException(name, this.name);
         }
       }
     }
@@ -575,7 +575,7 @@ public class SootClass extends AbstractHost implements Numberable {
         if (foundMethod == null) {
           foundMethod = method;
         } else {
-          throw new RuntimeException("ambiguous method");
+          throw new AmbiguousMethodException(name, this.name);
         }
       }
     }
@@ -603,7 +603,7 @@ public class SootClass extends AbstractHost implements Numberable {
         if (foundMethod == null) {
           foundMethod = method;
         } else {
-          throw new RuntimeException("ambiguous method: " + name + " in class " + this);
+          throw new AmbiguousMethodException(name, this.name);
         }
       }
     }
