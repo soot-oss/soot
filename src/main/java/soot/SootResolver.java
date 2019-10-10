@@ -41,7 +41,6 @@ import soot.JastAddJ.JavaParser;
 import soot.JastAddJ.Program;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
-import soot.util.Chain;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
 
@@ -331,24 +330,11 @@ public class SootResolver {
       return;
     }
     bringToSignatures(sc);
-    
     if (Options.v().debug_resolver()) {
       logger.debug("bringing to BODIES: " + sc);
     }
     sc.setResolvingLevel(SootClass.BODIES);
-    Chain<SootClass> interfaces = sc.getInterfaces();    
-    for(SootClass interfaceClass:interfaces)
-    {
-    	if((interfaceClass.methodList != null)) {
-    		for(SootMethod interfaceMethod: interfaceClass.methodList)
-    		{
-    			if(interfaceMethod.ms != null) {
-    				interfaceClass.setResolvingLevel(SootClass.BODIES);
-    				break;    			
-    			}    		
-    		}
-    	}
-    }
+
     bringToBodiesUnchecked(sc);
   }
 
