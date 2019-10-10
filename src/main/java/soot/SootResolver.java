@@ -29,7 +29,6 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -130,10 +129,6 @@ public class SootResolver {
    */
   public SootClass resolveClass(String className, int desiredLevel) {
     SootClass resolvedClass = null;
-    if(className.contains("TestMain"))
-    {
-    	System.out.println("Came to resolve class ");
-    }
     try {
       resolvedClass = makeClassRef(className);
       addToResolveWorklist(resolvedClass, desiredLevel);
@@ -153,10 +148,10 @@ public class SootResolver {
   protected void processResolveWorklist() {
     for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
       while (!worklist[i].isEmpty()) {
-        SootClass sc = worklist[i].pop();        
+        SootClass sc = worklist[i].pop();
         if (resolveEverything()) { // Whole program mode
           boolean onlySignatures = sc.isPhantom() || (Options.v().no_bodies_for_excluded() && Scene.v().isExcluded(sc)
-              && !Scene.v().getBasicClasses().contains(sc.getName()));          
+              && !Scene.v().getBasicClasses().contains(sc.getName()));
           if (onlySignatures) {
             bringToSignatures(sc);
             sc.setPhantomClass();
@@ -328,29 +323,20 @@ public class SootResolver {
       logger.debug("bringing to BODIES: " + sc);
     }
     sc.setResolvingLevel(SootClass.BODIES);
-    Chain<SootClass> interfaces = sc.getInterfaces(); 
-    boolean isDefaultInterface = false;
-    List<SootClass> defaultInterfaces = new LinkedList<SootClass>();
+    Chain<SootClass> interfaces = sc.getInterfaces();    
     for(SootClass interfaceClass:interfaces)
     {
     	if((interfaceClass.methodList != null)) {
     		for(SootMethod interfaceMethod: interfaceClass.methodList)
     		{
     			if(interfaceMethod.ms != null) {
-    				isDefaultInterface = true;
-    				defaultInterfaces.add(interfaceClass);   			
+    				interfaceClass.setResolvingLevel(SootClass.BODIES);
+    				break;    			
     			}    		
     		}
     	}
     }
     bringToBodiesUnchecked(sc);
-    if(isDefaultInterface) {
-    	for(SootClass defaultInterface: defaultInterfaces)
-    	{
-    		defaultInterface.setResolvingLevel(SootClass.BODIES);
-    		bringToBodiesUnchecked(defaultInterface);
-    	}
-    }
   }
 
   protected void bringToBodiesUnchecked(SootClass sc) {
