@@ -1,13 +1,13 @@
 package soot.interfaceTesting;
 
-public class TestClassInterfaceSameSignature implements helloWorld {
+public class TestClassPreferenceOverInterface implements helloWorld {
 	
 	public void print() {
 		System.out.println("Welcome to Java 8");
 	}
 	public void main() {	
-		TestClassInterfaceSameSignature main = new TestClassInterfaceSameSignature();
-		main.print();		
+		TestClassPreferenceOverInterface testClass = new TestClassPreferenceOverInterface();
+		testClass.print();		
 	}	
 }
 
