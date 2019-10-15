@@ -1,11 +1,11 @@
 package soot.interfaceTesting;
 
-public class TestMain implements Default {
+public class TestSimpleDefault implements Default {
 	public void main()
 	{
-		TestMain main = new TestMain();
-		main.target();
-		main.printMessage();
+		TestMain testClass = new TestMain();
+		testClass.target();
+		testClass.printMessage();
 	}
 	public void printMessage()
 	{
