@@ -206,28 +206,28 @@ public class OnFlyCallGraphBuilder {
   protected final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
 
   // end type based reflection resolution
-  protected final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites =
+  private final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites =
       new LargeNumberedMap<Local, List<VirtualCallSite>>(
           Scene.v().getLocalNumberer()); // Local -> List(VirtualCallSite)
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers =
+  private final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers =
       new LargeNumberedMap<SootMethod, List<Local>>(
           Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases =
+  private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases =
       new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs =
+  private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs =
       new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
-  protected final MultiMap<Local, InvokeCallSite> baseToInvokeSite = new HashMultiMap<>();
-  protected final MultiMap<Local, InvokeCallSite> invokeArgsToInvokeSite = new HashMultiMap<>();
-  protected final Map<Local, BitSet> invokeArgsToSize = new IdentityHashMap<>();
-  protected final MultiMap<AllocDotField, Local> allocDotFieldToLocal = new HashMultiMap<>();
-  protected final MultiMap<Local, Type> reachingArgTypes = new HashMultiMap<>();
-  protected final MultiMap<Local, Type> reachingBaseTypes = new HashMultiMap<>();
-  protected final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites =
+  private final MultiMap<Local, InvokeCallSite> baseToInvokeSite = new HashMultiMap<>();
+  private final MultiMap<Local, InvokeCallSite> invokeArgsToInvokeSite = new HashMultiMap<>();
+  private final Map<Local, BitSet> invokeArgsToSize = new IdentityHashMap<>();
+  private final MultiMap<AllocDotField, Local> allocDotFieldToLocal = new HashMultiMap<>();
+  private final MultiMap<Local, Type> reachingArgTypes = new HashMultiMap<>();
+  private final MultiMap<Local, Type> reachingBaseTypes = new HashMultiMap<>();
+  private final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites =
       new SmallNumberedMap<List<VirtualCallSite>>();
   // Local
   // ->
   // List(VirtualCallSite)
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants =
+  private final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants =
       new LargeNumberedMap<SootMethod, List<Local>>(
           Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
   protected final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
@@ -626,8 +626,7 @@ public class OnFlyCallGraphBuilder {
             && site.kind != Kind.EXECUTOR
             && site.kind != Kind.ASYNCTASK) {
           SootMethod target =
-              virtualCalls.resolveSpecial(
-                  (SpecialInvokeExpr) site.iie(), site.subSig(), site.container(), appOnly);
+              virtualCalls.resolveSpecial(site.iie().getMethod(), site.container(), appOnly);
           // if the call target resides in a phantom class then
           // "target" will be null;
           // simply do not add the target in that case
@@ -636,7 +635,12 @@ public class OnFlyCallGraphBuilder {
           }
         } else {
           virtualCalls.resolve(
-              type, receiver.getType(), site.subSig(), site.container(), targetsQueue, appOnly);
+              type,
+              receiver.getType(),
+              site.iie().getMethod(),
+              site.container(),
+              targetsQueue,
+              appOnly);
           if (!targets.hasNext() && options.resolve_all_abstract_invokes()) {
             /*
              * In the situation where we find nothing to resolve an invoke to in the first call, this might be because the
@@ -653,7 +657,7 @@ public class OnFlyCallGraphBuilder {
              * parent class if there is one (as this is technically a possibility and the only information we have).
              */
             virtualCalls.resolveSuperType(
-                type, receiver.getType(), site.subSig(), targetsQueue, appOnly);
+                type, receiver.getType(), site.iie().getMethod(), targetsQueue, appOnly);
           }
         }
         while (targets.hasNext()) {
