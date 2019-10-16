@@ -4,8 +4,7 @@ public class TestDerivedInterfaces implements interfaceTestOne, interfaceTestTwo
 	public void main() {
 		TestDerivedInterfaces testClass = new TestDerivedInterfaces();
 		testClass.print();
-	}
-	
+	}	
 }
 
 interface interfaceTestOne{
