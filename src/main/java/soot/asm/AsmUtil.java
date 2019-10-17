@@ -334,7 +334,7 @@ public class AsmUtil {
     return javaVersion;
   }
 
-  public static int byteCodeVersionToJavaVersion(int javaVersion) {
+  public static int javaToBytecodeVersion(int javaVersion) {
     int bytecodeVersion;
 
     switch (javaVersion) {

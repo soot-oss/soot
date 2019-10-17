@@ -25,8 +25,6 @@ package soot.asm.backend;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.util.TraceClassVisitor;
-import soot.asm.AsmUtil;
-import soot.options.Options;
 
 /**
  * Test for an annotation class
@@ -38,10 +36,10 @@ import soot.options.Options;
 
 public class AnnotationTest extends AbstractASMBackendTest {
 
-  @Override
-  protected void generate(TraceClassVisitor cw) {
-    MethodVisitor mv;
-    AnnotationVisitor av0;
+	@Override
+	protected void generate(TraceClassVisitor cw) {
+		MethodVisitor mv;
+		AnnotationVisitor av0;
 
     cw.visit(V1_5, ACC_PUBLIC + ACC_ANNOTATION + ACC_ABSTRACT + ACC_INTERFACE, "soot/asm/backend/targets/MyTestAnnotation",
         null, "java/lang/Object", new String[] { "java/lang/annotation/Annotation" });

@@ -26,8 +26,6 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.util.TraceClassVisitor;
-import soot.asm.AsmUtil;
-import soot.options.Options;
 
 /**
  * Test for enum classes
@@ -39,10 +37,12 @@ import soot.options.Options;
 
 public class EnumTest extends AbstractASMBackendTest {
 
-  @Override
-  protected void generate(TraceClassVisitor cw) {
-    FieldVisitor fv;
-    MethodVisitor mv;
+
+
+	@Override
+	protected void generate(TraceClassVisitor cw) {
+		FieldVisitor fv;
+		MethodVisitor mv;
 
     cw.visit(V1_5, ACC_PUBLIC + ACC_FINAL + ACC_SUPER + ACC_ENUM, "soot/asm/backend/targets/MyEnum",
         "Ljava/lang/Enum<Lsoot/asm/backend/targets/MyEnum;>;", "java/lang/Enum", null);
@@ -61,9 +61,10 @@ public class EnumTest extends AbstractASMBackendTest {
       if (targetCompiler == TargetCompiler.eclipse)
         fv = cw.visitField(ACC_PRIVATE + ACC_FINAL + ACC_STATIC + ACC_SYNTHETIC, "ENUM$VALUES",
             "[Lsoot/asm/backend/targets/MyEnum;", null, null);
-      else
-        fv = cw.visitField(ACC_PRIVATE + ACC_FINAL + ACC_STATIC + ACC_SYNTHETIC, "$VALUES",
-            "[Lsoot/asm/backend/targets/MyEnum;", null, null);
+			else
+        fv =
+                ACC_PRIVATE + ACC_FINAL + ACC_STATIC + ACC_SYNTHETIC,
+                "[Lsoot/asm/backend/targets/MyEnum;",
       fv.visitEnd();
     }
     {

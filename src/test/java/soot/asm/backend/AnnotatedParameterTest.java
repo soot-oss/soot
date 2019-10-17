@@ -26,8 +26,6 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.util.TraceClassVisitor;
-import soot.asm.AsmUtil;
-import soot.options.Options;
 
 /**
  * Test for annotations on parameters
