@@ -22,7 +22,6 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -81,8 +80,7 @@ public class VirtualCalls {
         && !callee.getName().equals(SootMethod.constructorName)
         && !callee.getName().equals(SootMethod.staticInitializerName)) {
 
-      return resolveNonSpecial(
-          container.getDeclaringClass().getSuperclass().getType(), callee, appOnly);
+      return resolveNonSpecial(container.getDeclaringClass().getType(), callee, appOnly);
     } else {
       return callee;
     }
@@ -96,7 +94,7 @@ public class VirtualCalls {
     SmallNumberedMap<SootMethod> vtbl = typeToVtbl.get(t);
 
     if (vtbl == null) {
-      typeToVtbl.put(t, vtbl = new SmallNumberedMap<SootMethod>());
+      typeToVtbl.put(t, vtbl = new SmallNumberedMap<>());
     }
 
     NumberedString calleeSubSig = callee.getNumberedSubSignature();
@@ -117,9 +115,8 @@ public class VirtualCalls {
   }
 
   protected MultiMap<Type, Type> baseToSubTypes = new HashMultiMap<Type, Type>();
-  protected MultiMap<Pair<Type, SootMethod>, Pair<Type, SootMethod>>
-      baseToPossibleSubTypes =
-          new HashMultiMap<>();
+  protected MultiMap<Pair<Type, SootMethod>, Pair<Type, SootMethod>> baseToPossibleSubTypes =
+      new HashMultiMap<>();
 
   public void resolve(
       Type t,
