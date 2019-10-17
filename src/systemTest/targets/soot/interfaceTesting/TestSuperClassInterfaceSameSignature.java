@@ -2,7 +2,7 @@ package soot.interfaceTesting;
 
 public class TestSuperClassInterfaceSameSignature extends TestSuperClassImplementsInterface implements printInterface {	
 	
-	public static void main() {	
+	public void main() {	
 		TestSuperClassInterfaceSameSignature main = new TestSuperClassInterfaceSameSignature();
 		main.print();
 	}	

@@ -13,7 +13,7 @@ interface interfaceTestOne{
 	}
 }
 
-interface interfaceTestTwo extends interfaceOne{
+interface interfaceTestTwo extends interfaceTestOne{
 	default void print() {
 		System.out.println("This is interface two");
 	}
