@@ -1,6 +1,6 @@
 package soot.interfaceTesting;
 
-public class TestSuperClassInterfaceSameSignature extends TestSuperClassImplementsInterface implements printInterface {	
+public class TestSuperClassInterfaceSameSignature extends TestSuperClassImplementsInterface implements PrintInterface {	
 	
 	public void main() {	
 		TestSuperClassInterfaceSameSignature main = new TestSuperClassInterfaceSameSignature();
@@ -8,7 +8,7 @@ public class TestSuperClassInterfaceSameSignature extends TestSuperClassImplemen
 	}	
 }
 
-interface printInterface{
+interface PrintInterface{
 	default void print() {
 		System.out.println("This is default Print Interface Print Method");
 	}

@@ -113,10 +113,10 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
-					  "soot.interfaceTesting.helloWorld");
+					  "soot.interfaceTesting.HelloWorld");
 
 	  SootMethod mainPrintMethod = Scene.v().getMethod("<soot.interfaceTesting.TestClassPreferenceOverInterface: void print()>");
-	  SootMethod defaultPrintMethod = Scene.v().getMethod("<soot.interfaceTesting.helloWorld: void print()>");
+	  SootMethod defaultPrintMethod = Scene.v().getMethod("<soot.interfaceTesting.HelloWorld: void print()>");
 
 	  final CallGraph cg = Scene.v().getCallGraph();
 	  
@@ -146,12 +146,12 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
-					  "soot.interfaceTesting.printInterface", "soot.interfaceTesting.TestSuperClassImplementsInterface");
+					  "soot.interfaceTesting.PrintInterface", "soot.interfaceTesting.TestSuperClassImplementsInterface");
 
 	  SootMethod defaultSuperMainMethod = Scene.v().getMethod("<soot.interfaceTesting.TestSuperClassImplementsInterface: void main()>");
 	  SootMethod mainMethod = Scene.v().getMethod("<soot.interfaceTesting.TestSuperClassImplementsInterface: void print()>");
-	  SootMethod defaultMethod = Scene.v().getMethod("<soot.interfaceTesting.printInterface: void print()>");
-	  SootMethod defaultSuperClassMethod = Scene.v().getMethod("<soot.interfaceTesting.defaultPrint: void print()>");
+	  SootMethod defaultMethod = Scene.v().getMethod("<soot.interfaceTesting.PrintInterface: void print()>");
+	  SootMethod defaultSuperClassMethod = Scene.v().getMethod("<soot.interfaceTesting.DefaultPrint: void print()>");
 
 	  final CallGraph cg = Scene.v().getCallGraph();
 	  
@@ -185,10 +185,10 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
-					  "soot.interfaceTesting.interfaceTestOne", "soot.interfaceTesting.interfaceTestTwo");	  
+					  "soot.interfaceTesting.InterfaceTestOne", "soot.interfaceTesting.InterfaceTestTwo");	  
 	  
-	  SootMethod interfaceOnePrint = Scene.v().getMethod("<soot.interfaceTesting.interfaceTestOne: void print()>");
-	  SootMethod interfaceTwoPrint = Scene.v().getMethod("<soot.interfaceTesting.interfaceTestTwo: void print()>");
+	  SootMethod interfaceOnePrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceTestOne: void print()>");
+	  SootMethod interfaceTwoPrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceTestTwo: void print()>");
 	  
 	  final CallGraph cg = Scene.v().getCallGraph();
 	  
@@ -216,9 +216,9 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
-					  "soot.interfaceTesting.interfaceTestA", "soot.interfaceTesting.interfaceTestB");	  
+					  "soot.interfaceTesting.InterfaceTestA", "soot.interfaceTesting.InterfaceTestB");	  
 	  
-	  SootMethod interfaceTestAPrint = Scene.v().getMethod("<soot.interfaceTesting.interfaceTestA: void print()>");
+	  SootMethod interfaceTestAPrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceTestA: void print()>");
 	  SootMethod mainPrintMessageMethod = Scene.v().getMethod("<soot.interfaceTesting.TestInterfaceInheritance: void printMessage()>");
 	  
 	  final CallGraph cg = Scene.v().getCallGraph();
@@ -247,9 +247,9 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
-					  "soot.interfaceTesting.interfaceA", "soot.interfaceTesting.interfaceB");
+					  "soot.interfaceTesting.InterfaceA", "soot.interfaceTesting.InterfaceB");
 	  
-	  SootMethod interfaceAPrint = Scene.v().getMethod("<soot.interfaceTesting.interfaceA: void print()>");
+	  SootMethod interfaceAPrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceA: void print()>");
 	  SootMethod mainMethodPrint = Scene.v().getMethod("<soot.interfaceTesting.TestInterfaceReAbstracting: void print()>");
 	  
 	  final CallGraph cg = Scene.v().getCallGraph();
@@ -276,10 +276,10 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
-					  "soot.interfaceTesting.interfaceOne", "soot.interfaceTesting.interfaceTwo", "soot.interfaceTesting.TestSuperClass");
+					  "soot.interfaceTesting.InterfaceOne", "soot.interfaceTesting.InterfaceTwo", "soot.interfaceTesting.TestSuperClass");
 	  
-	  SootMethod interfaceOnePrint = Scene.v().getMethod("<soot.interfaceTesting.interfaceOne: void print()>");
-	  SootMethod interfaceTwoPrint = Scene.v().getMethod("<soot.interfaceTesting.interfaceTwo: void print()>");
+	  SootMethod interfaceOnePrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceOne: void print()>");
+	  SootMethod interfaceTwoPrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceTwo: void print()>");
 	  SootMethod superClassPrint = Scene.v().getMethod("<soot.interfaceTesting.TestSuperClass: void print()>");
 	  
 	  final CallGraph cg = Scene.v().getCallGraph();

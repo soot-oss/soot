@@ -1,6 +1,6 @@
 package soot.interfaceTesting;
 
-public class TestClassPreferenceOverInterface implements helloWorld {
+public class TestClassPreferenceOverInterface implements HelloWorld {
 	
 	public void print() {
 		System.out.println("Welcome to Java 8");
@@ -11,7 +11,7 @@ public class TestClassPreferenceOverInterface implements helloWorld {
 	}	
 }
 
-interface helloWorld{
+interface HelloWorld{
 	default void print() {
 		System.out.println("Hello World !!");
 	}
