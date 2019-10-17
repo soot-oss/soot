@@ -1108,6 +1108,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionssearch_dex_in_archives_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getInput_Optionsderive_java_version_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsderive_java_version_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getInput_Optionsoaat_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -4635,6 +4641,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getInput_Optionssearch_dex_in_archives_widget() {
 		return Input_Optionssearch_dex_in_archives_widget;
+	}	
+	
+	private BooleanOptionWidget Input_Optionsderive_java_version_widget;
+	
+	private void setInput_Optionsderive_java_version_widget(BooleanOptionWidget widget) {
+		Input_Optionsderive_java_version_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsderive_java_version_widget() {
+		return Input_Optionsderive_java_version_widget;
 	}	
 	
 	private BooleanOptionWidget Input_Optionsoaat_widget;
@@ -8615,6 +8631,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		setInput_Optionssearch_dex_in_archives_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Search DEX files in Jar and Zip files", "", "","search-dex-in-archives", "\nBy default, Soot searches for DEX files in APKs and folders. \nThis option instructs Soot to also search for DEX files in Zip \nand Jar files on the classpath.", defaultBool)));
 
+		defKey = ""+" "+""+" "+"derive-java-version";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setInput_Optionsderive_java_version_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Derive Java version from input", "", "","derive-java-version", "\nIf this flag is set and the ASM frontend is uese, Soot will \nderive the Java bytecode version from the given Java class \ninput. It will asume the highest bycode version as the version \nto take. Writen-out files will then be written out with this \nbytecode version. Also, some optimizations depend on knowing the \nlanguage level, e.g., interfaces will only be considered for \ncomputing static dispatch for a languag level >=8. This option \nis ignored if the language level is enforced manually with the \noutput option java-version.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"oaat";
 		defKey = defKey.trim();
 
@@ -9091,6 +9118,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 				new OptionData("Java 1.9",
 						"1.9 9",
 						"\nForce Java 1.9 as output version. (Experimental)",
+						false),
+				new OptionData("Java 1.10",
+						"1.10 10",
+						"\nForce Java 1.10 as output version. (Experimental)",
+						false),
+				new OptionData("Java 1.11",
+						"1.11 11",
+						"\nForce Java 1.11 as output version. (Experimental)",
+						false),
+				new OptionData("Java 1.12",
+						"1.12 12",
+						"\nForce Java 1.12 as output version. (Experimental)",
 						false),
 		};
 

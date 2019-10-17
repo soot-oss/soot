@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -39,7 +39,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -47,7 +46,7 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
-
+import soot.asm.AsmUtil;
 import soot.baf.BafBody;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
@@ -79,11 +78,10 @@ import soot.tagkit.VisibilityParameterAnnotationTag;
 import soot.util.backend.SootASMClassWriter;
 
 /**
- * Abstract super-class for ASM-based back-ends. Generates byte-code for everything except the method bodies, as they are
- * dependent on the IR.
+ * Abstract super-class for ASM-based back-ends. Generates byte-code for everything except the
+ * method bodies, as they are dependent on the IR.
  *
  * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer
- *
  */
 public abstract class AbstractASMBackend {
 
@@ -99,11 +97,9 @@ public abstract class AbstractASMBackend {
   /**
    * Creates a new ASM backend
    *
-   * @param sc
-   *          The SootClass that is to be converted into bytecode
-   * @param javaVersion
-   *          A particular Java version enforced by the user, may be 0 for automatic detection, must not be lower than
-   *          necessary for all features used
+   * @param sc The SootClass that is to be converted into bytecode
+   * @param javaVersion A particular Java version enforced by the user, may be 0 for automatic
+   *     detection, must not be lower than necessary for all features used
    */
   public AbstractASMBackend(SootClass sc, int javaVersion) {
     this.sc = sc;
@@ -115,46 +111,25 @@ public abstract class AbstractASMBackend {
     }
 
     if (javaVersion != Options.java_version_default && javaVersion < minVersion) {
-      throw new IllegalArgumentException("Enforced Java version " + translateJavaVersion(javaVersion)
-          + " too low to support required features (" + translateJavaVersion(minVersion) + " required)");
+      throw new IllegalArgumentException(
+          "Enforced Java version "
+              + translateJavaVersion(javaVersion)
+              + " too low to support required features ("
+              + translateJavaVersion(minVersion)
+              + " required)");
     }
 
     javaVersion = Math.max(javaVersion, minVersion);
 
-    switch (javaVersion) {
-      case Options.java_version_1_1:
-        this.javaVersion = Opcodes.V1_1;
-        break;
-      case Options.java_version_1_2:
-        this.javaVersion = Opcodes.V1_2;
-        break;
-      case Options.java_version_1_3:
-        this.javaVersion = Opcodes.V1_3;
-        break;
-      case Options.java_version_1_4:
-        this.javaVersion = Opcodes.V1_4;
-        break;
-      case Options.java_version_1_5:
-        this.javaVersion = Opcodes.V1_5;
-        break;
-      case Options.java_version_1_6:
-        this.javaVersion = Opcodes.V1_6;
-        break;
-      case Options.java_version_1_7:
-        this.javaVersion = Opcodes.V1_7;
-        break;
-      case Options.java_version_1_8:
-        this.javaVersion = Opcodes.V1_8;
-        break;
-    }
+    this.javaVersion= AsmUtil.javaToBytecodeVersion(javaVersion);
   }
 
   /**
-   * Gets the baf body for the given SootMethod. This method will first check whether the method already has a baf body. If
-   * not, it will query the local cache. If this fails as well, it will construct a new baf body.
+   * Gets the baf body for the given SootMethod. This method will first check whether the method
+   * already has a baf body. If not, it will query the local cache. If this fails as well, it will
+   * construct a new baf body.
    *
-   * @param method
-   *          The method for which to obtain a baf body
+   * @param method The method for which to obtain a baf body
    * @return The baf body for the given method
    */
   protected BafBody getBafBody(SootMethod method) {
@@ -181,8 +156,7 @@ public abstract class AbstractASMBackend {
   /**
    * Determines the minimum Java version required for the bytecode of the given SootClass
    *
-   * @param sc
-   *          The SootClass the minimum Java version is to be determined for
+   * @param sc The SootClass the minimum Java version is to be determined for
    * @return The minimum Java version required for the given SootClass
    */
   private int getMinJavaVersion(SootClass sc) {
@@ -239,11 +213,11 @@ public abstract class AbstractASMBackend {
   }
 
   /**
-   * Determines the minimum Java version required for the bytecode of the given SootMethod Subclasses should override this
-   * method to suit their needs, otherwise Java 1.7 is assumed for compatibility with invokeDynamic
+   * Determines the minimum Java version required for the bytecode of the given SootMethod
+   * Subclasses should override this method to suit their needs, otherwise Java 1.7 is assumed for
+   * compatibility with invokeDynamic
    *
-   * @param sm
-   *          The SootMethod the minimum Java version is to be determined for
+   * @param sm The SootMethod the minimum Java version is to be determined for
    * @return The minimum Java version required for the given SootMethod
    */
   protected int getMinJavaVersion(SootMethod sm) {
@@ -253,8 +227,7 @@ public abstract class AbstractASMBackend {
   /**
    * Outputs the bytecode generated as a class file
    *
-   * @param os
-   *          The OutputStream the class file is written to
+   * @param os The OutputStream the class file is written to
    */
   public void generateClassFile(OutputStream os) {
     ClassWriter cw = new SootASMClassWriter(ClassWriter.COMPUTE_FRAMES);
@@ -270,17 +243,14 @@ public abstract class AbstractASMBackend {
   /**
    * Outputs the bytecode generated as a textual representation
    *
-   * @param pw
-   *          The PrintWriter the textual representation is written to
+   * @param pw The PrintWriter the textual representation is written to
    */
   public void generateTextualRepresentation(PrintWriter pw) {
     cv = new TraceClassVisitor(pw);
     generateByteCode();
   }
 
-  /**
-   * Emits the bytecode for the complete class
-   */
+  /** Emits the bytecode for the complete class */
   protected void generateByteCode() {
     generateClassHeader();
 
@@ -315,11 +285,10 @@ public abstract class AbstractASMBackend {
   }
 
   /**
-   * Comparatator that is used to sort the methods before they are written out. This is mainly used to enforce a
-   * deterministic output between runs which we need for testing.
+   * Comparatator that is used to sort the methods before they are written out. This is mainly used
+   * to enforce a deterministic output between runs which we need for testing.
    *
    * @author Steven Arzt
-   *
    */
   private class SootMethodComparator implements Comparator<SootMethod> {
 
@@ -327,12 +296,9 @@ public abstract class AbstractASMBackend {
     public int compare(SootMethod o1, SootMethod o2) {
       return o1.getName().compareTo(o2.getName());
     }
-
   }
 
-  /**
-   * Emits the bytecode for all methods of the class
-   */
+  /** Emits the bytecode for all methods of the class */
   protected void generateMethods() {
     List<SootMethod> sortedMethods = new ArrayList<SootMethod>(sc.getMethods());
     Collections.sort(sortedMethods, new SootMethodComparator());
@@ -383,8 +349,11 @@ public abstract class AbstractASMBackend {
                   continue;
                 }
                 for (AnnotationTag at : va.getAnnotations()) {
-                  AnnotationVisitor av = mv.visitParameterAnnotation(j, at.getType(),
-                      (va.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE));
+                  AnnotationVisitor av =
+                      mv.visitParameterAnnotation(
+                          j,
+                          at.getType(),
+                          (va.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE));
                   generateAnnotationElems(av, at.getElems(), true);
                 }
               }
@@ -408,9 +377,7 @@ public abstract class AbstractASMBackend {
     }
   }
 
-  /**
-   * Emits the bytecode for all fields of the class
-   */
+  /** Emits the bytecode for all fields of the class */
   protected void generateFields() {
     for (SootField f : sc.getFields()) {
       if (f.isPhantom()) {
@@ -435,11 +402,10 @@ public abstract class AbstractASMBackend {
   }
 
   /**
-   * Comparatator that is used to sort the inner class references before they are written out. This is mainly used to enforce
-   * a deterministic output between runs which we need for testing.
+   * Comparatator that is used to sort the inner class references before they are written out. This
+   * is mainly used to enforce a deterministic output between runs which we need for testing.
    *
    * @author Steven Arzt
-   *
    */
   private class SootInnerClassComparator implements Comparator<InnerClassTag> {
 
@@ -447,12 +413,9 @@ public abstract class AbstractASMBackend {
     public int compare(InnerClassTag o1, InnerClassTag o2) {
       return o1.getInnerClass() == null ? 0 : o1.getInnerClass().compareTo(o2.getInnerClass());
     }
-
   }
 
-  /**
-   * Emits the bytecode for all references to inner classes if present
-   */
+  /** Emits the bytecode for all references to inner classes if present */
   protected void generateInnerClassReferences() {
     if (sc.hasTag("InnerClassAttribute") && !Options.v().no_output_inner_classes_attribute()) {
       InnerClassAttribute ica = (InnerClassAttribute) sc.getTag("InnerClassAttribute");
@@ -468,9 +431,7 @@ public abstract class AbstractASMBackend {
     }
   }
 
-  /**
-   * Emits the bytecode for all attributes of the class
-   */
+  /** Emits the bytecode for all attributes of the class */
   protected void generateAttributes() {
     for (Tag t : sc.getTags()) {
       if (t instanceof Attribute) {
@@ -482,10 +443,8 @@ public abstract class AbstractASMBackend {
   /**
    * Emits the bytecode for all attributes of a field
    *
-   * @param fv
-   *          The FieldVisitor to emit the bytecode to
-   * @param f
-   *          The SootField the bytecode is to be emitted for
+   * @param fv The FieldVisitor to emit the bytecode to
+   * @param f The SootField the bytecode is to be emitted for
    */
   protected void generateAttributes(FieldVisitor fv, SootField f) {
     for (Tag t : f.getTags()) {
@@ -499,10 +458,8 @@ public abstract class AbstractASMBackend {
   /**
    * Emits the bytecode for all attributes of a method
    *
-   * @param mv
-   *          The MethodVisitor to emit the bytecode to
-   * @param m
-   *          The SootMethod the bytecode is to be emitted for
+   * @param mv The MethodVisitor to emit the bytecode to
+   * @param m The SootMethod the bytecode is to be emitted for
    */
   protected void generateAttributes(MethodVisitor mv, SootMethod m) {
     for (Tag t : m.getTags()) {
@@ -516,10 +473,9 @@ public abstract class AbstractASMBackend {
   /**
    * Emits the bytecode for all annotations of a class, field or method
    *
-   * @param visitor
-   *          A ClassVisitor, FieldVisitor or MethodVisitor to emit the bytecode to
-   * @param host
-   *          A Host (SootClass, SootField or SootMethod) the bytecode is to be emitted for, has to match the visitor
+   * @param visitor A ClassVisitor, FieldVisitor or MethodVisitor to emit the bytecode to
+   * @param host A Host (SootClass, SootField or SootMethod) the bytecode is to be emitted for, has
+   *     to match the visitor
    */
   protected void generateAnnotations(Object visitor, Host host) {
     for (Tag t : host.getTags()) {
@@ -551,21 +507,19 @@ public abstract class AbstractASMBackend {
         AnnotationVisitor av = ((MethodVisitor) visitor).visitAnnotationDefault();
         generateAnnotationElems(av, Collections.singleton(adt.getDefaultVal()), true);
       }
-
     }
   }
 
   /**
    * Emits the bytecode for the values of an annotation
    *
-   * @param av
-   *          The AnnotationVisitor to emit the bytecode to
-   * @param elements
-   *          A collection of AnnatiotionElem that are the values of the annotation
-   * @param addName
-   *          True, if the name of the annotation has to be added, false otherwise (should be false only in recursive calls!)
+   * @param av The AnnotationVisitor to emit the bytecode to
+   * @param elements A collection of AnnatiotionElem that are the values of the annotation
+   * @param addName True, if the name of the annotation has to be added, false otherwise (should be
+   *     false only in recursive calls!)
    */
-  protected void generateAnnotationElems(AnnotationVisitor av, Collection<AnnotationElem> elements, boolean addName) {
+  protected void generateAnnotationElems(
+      AnnotationVisitor av, Collection<AnnotationElem> elements, boolean addName) {
     if (av != null) {
       Iterator<AnnotationElem> it = elements.iterator();
       while (it.hasNext()) {
@@ -579,7 +533,8 @@ public abstract class AbstractASMBackend {
           generateAnnotationElems(arrayVisitor, arrayElem.getValues(), false);
         } else if (elem instanceof AnnotationAnnotationElem) {
           AnnotationAnnotationElem aElem = (AnnotationAnnotationElem) elem;
-          AnnotationVisitor aVisitor = av.visitAnnotation(aElem.getName(), aElem.getValue().getType());
+          AnnotationVisitor aVisitor =
+              av.visitAnnotation(aElem.getName(), aElem.getValue().getType());
           generateAnnotationElems(aVisitor, aElem.getValue().getElems(), true);
         } else {
           Object val = null;
@@ -624,16 +579,13 @@ public abstract class AbstractASMBackend {
           } else {
             av.visit(null, val);
           }
-
         }
       }
       av.visitEnd();
     }
   }
 
-  /**
-   * Emits the bytecode for a reference to an outer class if necessary
-   */
+  /** Emits the bytecode for a reference to an outer class if necessary */
   protected void generateOuterClassReference() {
     SootClass outerClass = sc.getOuterClass();
     String outerClassName = slashify(outerClass.getName());
@@ -653,9 +605,7 @@ public abstract class AbstractASMBackend {
     cv.visitOuterClass(outerClassName, enclosingMethod, enclosingMethodSig);
   }
 
-  /**
-   * Emits the bytecode for the class itself, including its signature
-   */
+  /** Emits the bytecode for the class itself, including its signature */
   protected void generateClassHeader() {
     /*
      * Retrieve all modifiers
@@ -696,10 +646,9 @@ public abstract class AbstractASMBackend {
   /**
    * Utility method to get the access modifiers of a Host
    *
-   * @param modVal
-   *          The bitset representation of the Host's modifiers
-   * @param host
-   *          The Host (SootClass, SootField or SootMethod) the modifiers are to be retrieved from
+   * @param modVal The bitset representation of the Host's modifiers
+   * @param host The Host (SootClass, SootField or SootMethod) the modifiers are to be retrieved
+   *     from
    * @return A bitset representation of the Host's modifiers in ASM's internal representation
    */
   protected static int getModifiers(int modVal, Host host) {
@@ -713,7 +662,8 @@ public abstract class AbstractASMBackend {
       modifier |= Opcodes.ACC_PROTECTED;
     }
     // Retrieve static-modifier
-    if (Modifier.isStatic(modVal) && ((host instanceof SootField) || (host instanceof SootMethod))) {
+    if (Modifier.isStatic(modVal)
+        && ((host instanceof SootField) || (host instanceof SootMethod))) {
       modifier |= Opcodes.ACC_STATIC;
     }
     // Retrieve final-modifier
@@ -772,13 +722,11 @@ public abstract class AbstractASMBackend {
   }
 
   /**
-   * Emits the bytecode for the body of a single method Has to be implemented by subclasses to suit their needs
+   * Emits the bytecode for the body of a single method Has to be implemented by subclasses to suit
+   * their needs
    *
-   * @param mv
-   *          The MethodVisitor to emit the bytecode to
-   * @param method
-   *          The SootMethod the bytecode is to be emitted for
+   * @param mv The MethodVisitor to emit the bytecode to
+   * @param method The SootMethod the bytecode is to be emitted for
    */
-  abstract protected void generateMethodBody(MethodVisitor mv, SootMethod method);
-
+  protected abstract void generateMethodBody(MethodVisitor mv, SootMethod method);
 }

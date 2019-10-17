@@ -223,6 +223,10 @@ public class AntTask extends MatchingTask {
             return process_dir.createPath();
         }
   
+        public void setderive_java_version(boolean arg) {
+            if(arg) addArg("-derive-java-version");
+        }
+  
         public void setoaat(boolean arg) {
             if(arg) addArg("-oaat");
         }
@@ -366,6 +370,12 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "8" )
                 || arg.equals( "1.9" )
                 || arg.equals( "9" )
+                || arg.equals( "1.10" )
+                || arg.equals( "10" )
+                || arg.equals( "1.11" )
+                || arg.equals( "11" )
+                || arg.equals( "1.12" )
+                || arg.equals( "12" )
                 ) {
                 addArg("-java-version");
                 addArg(arg);

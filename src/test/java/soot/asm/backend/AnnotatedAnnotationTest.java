@@ -24,8 +24,6 @@ package soot.asm.backend;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.util.TraceClassVisitor;
-import soot.asm.AsmUtil;
-import soot.options.Options;
 
 /**
  * Test for annotation class that contains an annotation
@@ -40,7 +38,7 @@ public class AnnotatedAnnotationTest extends AbstractASMBackendTest {
     MethodVisitor mv;
 
     cw.visit(
-        AsmUtil.byteCodeVersionToJavaVersion(Options.v().java_version()),
+        V1_5,
         ACC_PUBLIC + ACC_ANNOTATION + ACC_ABSTRACT + ACC_INTERFACE,
         "soot/asm/backend/targets/MyAnnotatedAnnotation",
         null,

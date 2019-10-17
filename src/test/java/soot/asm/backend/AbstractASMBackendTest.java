@@ -75,7 +75,7 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 
 		// Run Soot and print output to .asm-files.
 		Main.main(new String[] { "-cp", classpath, "-src-prec", "only-class", "-output-format", "asm",
-				"-allow-phantom-refs", "-java-version", getRequiredJavaVersion(), getTargetClass() });
+				"-allow-phantom-refs", "-java-version", getRequiredJavaVersion(), "-no-derive-java-version", getTargetClass() });
 	}
 
 	/**

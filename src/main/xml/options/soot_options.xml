@@ -408,11 +408,14 @@
         <boolopt>
             <name>Weak Map Structures</name>
             <alias>weak-map-structures</alias>
-            <short_desc>Use weak references in Scene to prevent memory leakage when removing many classes/methods/locals</short_desc>
+            <short_desc>Use weak references in Scene to prevent memory leakage when removing many
+                classes/methods/locals
+            </short_desc>
             <long_desc>
                 If this option is set, Soot will use Maps with weak references to lower memory usage when performing
                 many additions and deletions of classes/methods/locals. Without this option, all created objects
-                are kept in memory. This has a bit larger memory footprint if only a small amount of deletions are conducted.
+                are kept in memory. This has a bit larger memory footprint if only a small amount of deletions are
+                conducted.
             </long_desc>
         </boolopt>
     </section>
@@ -542,6 +545,23 @@
                 </p>
             </long_desc>
         </listopt>
+        <boolopt>
+            <name>Derive Java version from input</name>
+            <alias>derive-java-version</alias>
+            <default>true</default>
+            <short_desc>Java version for output and internal processing will be derived from the given input classes
+            </short_desc>
+            <long_desc>
+                If this flag is set and the ASM frontend is uese, Soot will derive the Java bytecode version from the
+                given Java class input. It will asume the highest bycode version as the version to take.
+                Writen-out files will then be written out with this bytecode version. Also, some optimizations depend on
+                knowing the language level, e.g., interfaces will only be considered for computing static dispatch for a
+                languag level >=8.
+                <p/>
+                This option is ignored if the language level is enforced manually with the output option <t>
+                java-version</t>.
+            </long_desc>
+        </boolopt>
         <boolopt>
             <name>One at a time</name>
             <alias>oaat</alias>
@@ -1134,7 +1154,34 @@
                 <alias>9</alias>
                 <short_desc>Force Java 1.9 as output version (Experimental).</short_desc>
                 <long_desc>
-                    Force Java 1.9 as output version.  (Experimental)
+                    Force Java 1.9 as output version. (Experimental)
+                </long_desc>
+            </value>
+            <value>
+                <name>Java 1.10</name>
+                <alias>1.10</alias>
+                <alias>10</alias>
+                <short_desc>Force Java 1.10 as output version (Experimental).</short_desc>
+                <long_desc>
+                    Force Java 1.10 as output version. (Experimental)
+                </long_desc>
+            </value>
+            <value>
+                <name>Java 1.11</name>
+                <alias>1.11</alias>
+                <alias>11</alias>
+                <short_desc>Force Java 1.11 as output version (Experimental).</short_desc>
+                <long_desc>
+                    Force Java 1.11 as output version. (Experimental)
+                </long_desc>
+            </value>
+            <value>
+                <name>Java 1.12</name>
+                <alias>1.12</alias>
+                <alias>12</alias>
+                <short_desc>Force Java 1.12 as output version (Experimental).</short_desc>
+                <long_desc>
+                    Force Java 1.12 as output version. (Experimental)
                 </long_desc>
             </value>
         </multiopt>

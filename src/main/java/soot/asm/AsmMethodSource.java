@@ -129,27 +129,6 @@ import static org.objectweb.asm.Opcodes.SASTORE;
 import static org.objectweb.asm.Opcodes.SIPUSH;
 import static org.objectweb.asm.Opcodes.SWAP;
 import static org.objectweb.asm.Opcodes.T_BOOLEAN;
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
 import static org.objectweb.asm.Opcodes.T_BYTE;
 import static org.objectweb.asm.Opcodes.T_CHAR;
 import static org.objectweb.asm.Opcodes.T_DOUBLE;
@@ -178,7 +157,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -191,7 +169,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
@@ -212,7 +189,6 @@ import org.objectweb.asm.tree.TableSwitchInsnNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -283,6 +259,28 @@ import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
 import soot.util.Chain;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
 
 /**
  * Generates Jimple bodies from bytecode.

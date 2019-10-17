@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -25,7 +25,6 @@ package soot;
 import static java.net.URLEncoder.encode;
 
 import com.google.common.base.Joiner;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,15 +34,13 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
-
 import soot.options.CGOptions;
 import soot.options.Options;
 import soot.toolkits.astmetrics.ClassData;
 
 /** Main class for Soot; provides Soot's command-line user interface. */
 public class Main {
-  public Main(Singletons.Global g) {
-  }
+  public Main(Singletons.Global g) {}
 
   public static Main v() {
     return G.v().soot_Main();
@@ -52,8 +49,10 @@ public class Main {
   // TODO: the following string should be updated by the source control
   // No it shouldn't. Prcs is horribly broken in this respect, and causes
   // the code to not compile all the time.
-  public static final String versionString = Main.class.getPackage().getImplementationVersion() == null ? "trunk"
-      : Main.class.getPackage().getImplementationVersion();
+  public static final String versionString =
+      Main.class.getPackage().getImplementationVersion() == null
+          ? "trunk"
+          : Main.class.getPackage().getImplementationVersion();
 
   private Date start;
   private long startNano;
@@ -64,7 +63,8 @@ public class Main {
     System.out.println("Copyright (C) 1997-2010 Raja Vallee-Rai and others.");
     System.out.println("All rights reserved.");
     System.out.println();
-    System.out.println("Contributions are copyright (C) 1997-2010 by their respective contributors.");
+    System.out.println(
+        "Contributions are copyright (C) 1997-2010 by their respective contributors.");
     System.out.println("See the file 'credits' for a list of contributors.");
     System.out.println("See individual source files for details.");
     System.out.println();
@@ -127,15 +127,14 @@ public class Main {
 
   private void postCmdLineCheck() {
     if (Options.v().classes().isEmpty() && Options.v().process_dir().isEmpty()) {
-      throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED, "No input classes specified!");
+      throw new CompilationDeathException(
+          CompilationDeathException.COMPILATION_ABORTED, "No input classes specified!");
     }
   }
 
   public String[] cmdLineArgs = new String[0];
 
-  /**
-   * Entry point for cmd line invocation of soot.
-   */
+  /** Entry point for cmd line invocation of soot. */
   public static void main(String[] args) {
     try {
       Main.v().run(args);
@@ -143,7 +142,8 @@ public class Main {
       // error message has already been printed
     } catch (StackOverflowError e) {
       System.err.println("" + "Soot has run out of stack memory.");
-      System.err.println("" + "To allocate more stack memory to Soot, use the -Xss switch to Java.");
+      System.err.println(
+          "" + "To allocate more stack memory to Soot, use the -Xss switch to Java.");
       System.err.println("" + "For example (for 2MB): java -Xss2m soot.Main ...");
       throw e;
     } catch (OutOfMemoryError e) {
@@ -160,10 +160,27 @@ public class Main {
       try {
         final String TRACKER_URL = "https://github.com/Sable/soot/issues/new?";
         String commandLineArgs = Joiner.on(" ").join(args);
-        String body = "Steps to reproduce:\n1.) ...\n\n" + "Files used to reproduce: \n...\n\n" + "Soot version: " + "<pre>"
-            + escape(versionString) + "</pre>" + "\n\n" + "Command line:\n" + "<pre>" + escape(commandLineArgs)
-            + "</pre>\n\n" + "Max Memory:\n" + "<pre>" + escape((Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB")
-            + "</pre>" + "\n\n" + "Stack trace:\n" + "<pre>" + escape(stackStraceString) + "</pre>";
+        String body =
+            "Steps to reproduce:\n1.) ...\n\n"
+                + "Files used to reproduce: \n...\n\n"
+                + "Soot version: "
+                + "<pre>"
+                + escape(versionString)
+                + "</pre>"
+                + "\n\n"
+                + "Command line:\n"
+                + "<pre>"
+                + escape(commandLineArgs)
+                + "</pre>\n\n"
+                + "Max Memory:\n"
+                + "<pre>"
+                + escape((Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB")
+                + "</pre>"
+                + "\n\n"
+                + "Stack trace:\n"
+                + "<pre>"
+                + escape(stackStraceString)
+                + "</pre>";
 
         String title = e.getClass().getName() + " when ...";
 
@@ -179,7 +196,14 @@ public class Main {
         sb.append("    https://github.com/Sable/soot/wiki/Getting-help\n");
         sb.append("\n");
         sb.append("3.) Sure it's a bug? Click this link to report it.\n");
-        sb.append("    " + TRACKER_URL + "title=" + encode(title, "UTF-8") + "&body=" + encode(body, "UTF-8") + "\n");
+        sb.append(
+            "    "
+                + TRACKER_URL
+                + "title="
+                + encode(title, "UTF-8")
+                + "&body="
+                + encode(body, "UTF-8")
+                + "\n");
         sb.append("    Please be as precise as possible when giving us\n");
         sb.append("    information on how to reproduce the problem. Thanks!");
 
@@ -220,9 +244,7 @@ public class Main {
     return sb.append(s, start, end);
   }
 
-  /**
-   * Entry point to the soot's compilation process.
-   */
+  /** Entry point to the soot's compilation process. */
   public void run(String[] args) {
     cmdLineArgs = args;
 
@@ -291,8 +313,13 @@ public class Main {
 
     System.out.println("Soot finished on " + new Date());
     long runtime = (finishNano - startNano) / 1000000l;
-    System.out.println("" + "Soot has run for " + (runtime / 60000) + " min. " + ((runtime % 60000) / 1000) + " sec.");
-
+    System.out.println(
+        ""
+            + "Soot has run for "
+            + (runtime / 60000)
+            + " min. "
+            + ((runtime % 60000) / 1000)
+            + " sec.");
   }
 
   public void autoSetOptions() {
@@ -311,6 +338,10 @@ public class Main {
     // if phantom refs enabled, ignore wrong staticness in type assigner
     if (Options.v().allow_phantom_refs()) {
       Options.v().set_wrong_staticness(Options.wrong_staticness_fix);
+    }
+
+    if (Options.v().java_version() != Options.java_version_default) {
+      Options.v().set_derive_java_version(false);
     }
   }
 }

@@ -24,9 +24,7 @@ package soot.asm;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.objectweb.asm.ClassReader;
-
 import soot.ClassSource;
 import soot.FoundFile;
 import soot.SootClass;
@@ -46,8 +44,8 @@ public class AsmClassSource extends ClassSource {
    * 
    * @param cls
    *          fully qualified name of the class.
-   * @param data
-   *          stream containing data for class.
+   * @param foundFile
+   *          foundfile pointing to the data for class.
    */
   protected AsmClassSource(String cls, FoundFile foundFile) {
     super(cls);

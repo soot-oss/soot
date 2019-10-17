@@ -130,9 +130,11 @@ public class SootClassBuilder extends ClassVisitor {
   }
 
   private void setJavaVersion(int version) {
-    Options.v()
-        .set_java_version(
-            Math.max(Options.v().java_version(), AsmUtil.byteCodeToJavaVersion(version)));
+    if (Options.v().derive_java_version()) {
+      Options.v()
+          .set_java_version(
+              Math.max(Options.v().java_version(), AsmUtil.byteCodeToJavaVersion(version)));
+    }
   }
 
   @Override
