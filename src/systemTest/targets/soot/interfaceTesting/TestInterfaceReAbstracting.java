@@ -1,6 +1,6 @@
 package soot.interfaceTesting;
 
-public class TestInterfaceReAbstracting implements interfaceA, interfaceB{
+public class TestInterfaceReAbstracting implements InterfaceA, InterfaceB{
 	public void main() {
 		TestInterfaceReAbstracting testClass = new TestInterfaceReAbstracting();
 		testClass.print();
@@ -12,12 +12,12 @@ public class TestInterfaceReAbstracting implements interfaceA, interfaceB{
 	
 }
 
-interface interfaceA{
+interface InterfaceA{
 	default void print() {
 		System.out.println("This is interface A");
 	}
 }
 
-interface interfaceB extends interfaceA{
+interface InterfaceB extends InterfaceA{
 	void print();
 }

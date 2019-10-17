@@ -1,19 +1,19 @@
 package soot.interfaceTesting;
 
-public class TestDerivedInterfaces implements interfaceTestOne, interfaceTestTwo{
+public class TestDerivedInterfaces implements InterfaceTestOne, InterfaceTestTwo{
 	public void main() {
 		TestDerivedInterfaces testClass = new TestDerivedInterfaces();
 		testClass.print();
 	}	
 }
 
-interface interfaceTestOne{
+interface InterfaceTestOne{
 	default void print() {
 		System.out.println("This is interface one");
 	}
 }
 
-interface interfaceTestTwo extends interfaceTestOne{
+interface InterfaceTestTwo extends InterfaceTestOne{
 	default void print() {
 		System.out.println("This is interface two");
 	}

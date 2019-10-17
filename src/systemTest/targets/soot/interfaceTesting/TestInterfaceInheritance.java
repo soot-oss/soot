@@ -1,6 +1,6 @@
 package soot.interfaceTesting;
 
-public class TestInterfaceInheritance implements interfaceTestB{
+public class TestInterfaceInheritance implements InterfaceTestB{
 	public void main() {
 		TestInterfaceInheritance testClass = new TestInterfaceInheritance();
 		testClass.print();
@@ -11,12 +11,12 @@ public class TestInterfaceInheritance implements interfaceTestB{
 	}	
 }
 
-interface interfaceTestA{
+interface InterfaceTestA{
 	default void print() {
 		System.out.println("This is interface A");
 	}
 }
 
-interface interfaceTestB extends interfaceTestA{
+interface InterfaceTestB extends InterfaceTestA{
 	void printMessage();
 }
