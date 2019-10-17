@@ -116,7 +116,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 					  "soot.interfaceTesting.HelloWorld");
 
 	  SootMethod mainPrintMethod = Scene.v().getMethod("<soot.interfaceTesting.TestClassPreferenceOverInterface: void print()>");
-	  SootMethod defaultPrintMethod = Scene.v().getMethod("<soot.interfaceTesting.HelloWorld: void print()>");
+	  SootMethod defaultPrintMethod = Scene.v().getMethod("<soot.interfaceTesting.InterfaceOne: void print()>");
 
 	  final CallGraph cg = Scene.v().getCallGraph();
 	  

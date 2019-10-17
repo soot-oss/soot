@@ -41,6 +41,7 @@ import soot.ShortType;
 import soot.SootClass;
 import soot.Type;
 import soot.VoidType;
+import soot.options.Options;
 
 /**
  * Contains static utility methods.
@@ -302,34 +303,69 @@ public class AsmUtil {
 
     switch (bytecodeVersion) {
       case (Opcodes.V1_5):
-        javaVersion = 5;
+        javaVersion = Options.java_version_5;
         break;
       case (Opcodes.V1_6):
-        javaVersion = 6;
+        javaVersion = Options.java_version_6;
         break;
       case (Opcodes.V1_7):
-        javaVersion = 7;
+        javaVersion = Options.java_version_7;
         break;
       case (Opcodes.V1_8):
-        javaVersion = 8;
+        javaVersion = Options.java_version_8;
         break;
       case (Opcodes.V9):
-        javaVersion = 9;
+        javaVersion = Options.java_version_9;
         break;
       case (Opcodes.V10):
-        javaVersion = 10;
+        javaVersion = Options.java_version_10;
         break;
       case (Opcodes.V11):
-        javaVersion = 11;
+        javaVersion = Options.java_version_11;
         break;
       case (Opcodes.V12):
-        javaVersion = 12;
+        javaVersion = Options.java_version_12;
         break;
       default:
         // we return 0 if we cannot determine the version to indicate that
-        javaVersion = 0;
+        javaVersion = Options.java_version_default;
     }
 
     return javaVersion;
+  }
+
+  public static int byteCodeVersionToJavaVersion(int javaVersion) {
+    int bytecodeVersion;
+
+    switch (javaVersion) {
+      case (Options.java_version_5):
+        bytecodeVersion = Opcodes.V1_5;
+        break;
+      case (Options.java_version_6):
+        bytecodeVersion = Opcodes.V1_6;
+        break;
+      case (Options.java_version_7):
+        bytecodeVersion = Opcodes.V1_7;
+        break;
+      case (Options.java_version_8):
+        bytecodeVersion = Opcodes.V1_8;
+        break;
+      case (Options.java_version_9):
+        bytecodeVersion = Opcodes.V9;
+        break;
+      case (Options.java_version_10):
+        bytecodeVersion = Opcodes.V10;
+        break;
+      case (Options.java_version_11):
+        bytecodeVersion = Opcodes.V11;
+        break;
+      case (Options.java_version_12):
+        bytecodeVersion = Opcodes.V12;
+        break;
+      default:
+        bytecodeVersion = Opcodes.V1_7;
+    }
+
+    return bytecodeVersion;
   }
 }
