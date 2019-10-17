@@ -1,9 +1,9 @@
 package soot.interfaceTesting;
 
-public class TestSuperClass implements defaultPrint{
+public class TestSuperClassImplementsInterface implements defaultPrint{
 	
 	public void main() {
-		TestSuperClass main = new TestSuperClass();
+		TestSuperClassImplementsInterface main = new TestSuperClassImplementsInterface();
 		main.print();	
 	}
 	
