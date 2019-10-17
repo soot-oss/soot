@@ -2,13 +2,7 @@ package soot.testing.framework;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -41,10 +35,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  boolean edgePresent = checkInEdges(cg, defaultMethod, target);
 	  	  
-	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
-	  
-	  List<SootMethod> methodsInScene = new ArrayList<SootMethod>();
-	  methodsInScene.add(defaultMethod);
+	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods(); 
 	  
 	  Assert.assertEquals(defaultMethod.getName(), "target");
 	  Assert.assertNotNull(defaultMethod);
@@ -62,8 +53,6 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
 					  "soot.interfaceTesting.Read", "soot.interfaceTesting.Write");
-	  
-	  List<String> sceneMethods = Arrays.asList("<soot.interfaceTesting.TestInterfaceSameSignature: void print()>","<soot.interfaceTesting.Read: void print()>","<soot.interfaceTesting.Write: void print()>","<soot.interfaceTesting.Read: void read()>","<soot.interfaceTesting.Write: void write()>");
 
 	  SootMethod mainPrintMethod = Scene.v().getMethod("<soot.interfaceTesting.TestInterfaceSameSignature: void print()>");
 	  SootMethod readInterfacePrint = Scene.v().getMethod("<soot.interfaceTesting.Read: void print()>");
@@ -74,30 +63,25 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  final CallGraph cg = Scene.v().getCallGraph();
 	  
 	  /* Edges should be present */
-	  boolean edgeMainPrintToReadPrint = checkInEdges(cg, getSootMethod("<soot.interfaceTesting.Read: void print()>"), getSootMethod("<soot.interfaceTesting.TestInterfaceSameSignature: void print()>"));
-	  boolean edgeMainPrintToWritePrint = checkInEdges(cg, getSootMethod("<soot.interfaceTesting.Write: void print()>"), getSootMethod("<soot.interfaceTesting.TestInterfaceSameSignature: void print()>"));
-	  boolean edgeMainMethodToPrint = checkInEdges(cg, getSootMethod("<soot.interfaceTesting.TestInterfaceSameSignature: void print()>"), target);
+	  boolean edgeMainPrintToReadPrint = checkInEdges(cg, readInterfacePrint, mainPrintMethod);
+	  boolean edgeMainPrintToWritePrint = checkInEdges(cg, writeInterfacePrint, mainPrintMethod);
+	  boolean edgeMainMethodToPrint = checkInEdges(cg, mainPrintMethod, target);
 	  
 	  /* Edges should not be present */
-	  boolean edgeMainMethodToReadPrint = checkInEdges(cg, getSootMethod("<soot.interfaceTesting.Read: void print()>"), target);
-	  boolean edgeMainMethodToWritePrint = checkInEdges(cg, getSootMethod("<soot.interfaceTesting.Write: void print()>"), target);
+	  boolean edgeMainMethodToReadPrint = checkInEdges(cg, readInterfacePrint, target);
+	  boolean edgeMainMethodToWritePrint = checkInEdges(cg, writeInterfacePrint, target);
 	  
 	  /* Edges should be present */
-	  boolean edgeMainMethodToReadMethod = checkInEdges(cg, getSootMethod("<soot.interfaceTesting.Read: void read()>"), target);
-	  boolean edgeMainMethodToWriteMethod = checkInEdges(cg, getSootMethod("<soot.interfaceTesting.Write: void write()>"), target);
+	  boolean edgeMainMethodToReadMethod = checkInEdges(cg, defaultRead, target);
+	  boolean edgeMainMethodToWriteMethod = checkInEdges(cg, defaultWrite, target);
 
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
-	  List<String> assertNotNullMethods = Arrays.asList("<soot.interfaceTesting.TestInterfaceSameSignature: void print()>","<soot.interfaceTesting.Read: void print()>","<soot.interfaceTesting.Write: void print()>","<soot.interfaceTesting.Read: void read()>","<soot.interfaceTesting.Write: void write()>");
-	  
-	  assertSceneMethod(assertNotNullMethods, Collections.<String>emptyList());
-	  
-//	  Assert.assertNotNull(mainPrintMethod);
-//	  Assert.assertNotNull(readInterfacePrint);
-//	  Assert.assertNotNull(writeInterfacePrint);
-//	  Assert.assertNotNull(defaultRead);
-//	  Assert.assertNotNull(defaultWrite);  
-	  
+	  Assert.assertNotNull(mainPrintMethod);
+	  Assert.assertNotNull(readInterfacePrint);
+	  Assert.assertNotNull(writeInterfacePrint);
+	  Assert.assertNotNull(defaultRead);
+	  Assert.assertNotNull(defaultWrite);
 	  
 	  Assert.assertEquals(mainPrintMethod.getName(), "print");
 	  Assert.assertEquals(readInterfacePrint.getName(), "print");
@@ -335,21 +319,6 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 		  }
 	  }
 	  return isPresent;
-  }	 
-  
-  private void assertSceneMethod(List<String> assertNotNull, List<String> assertNull) {
-	  for(String methodSig: assertNotNull) {
-		  SootMethod sceneMethod = getSootMethod(methodSig);
-		  Assert.assertNotNull(sceneMethod);
-	  }
-	  for(String methodSig: assertNull) {
-		  SootMethod sceneMethod = getSootMethod(methodSig);
-		  Assert.assertNull(sceneMethod);
-	  }
-  }
-  
-  private SootMethod getSootMethod(String methodSignature) {
-	 return Scene.v().getMethod(methodSignature);
-  } 
+  }	  
 }
   
