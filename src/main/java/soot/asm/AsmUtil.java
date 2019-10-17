@@ -10,12 +10,12 @@ package soot.asm;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -24,7 +24,7 @@ package soot.asm;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import org.objectweb.asm.Opcodes;
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -42,20 +42,16 @@ import soot.VoidType;
 
 /**
  * Contains static utility methods.
- * 
+ *
  * @author Aaloan Miftah
  */
-/**
- * @author eric
- *
- */
+/** @author eric */
 public class AsmUtil {
 
   /**
    * Determines if a type is a dword type.
-   * 
-   * @param type
-   *          the type to check.
+   *
+   * @param type the type to check.
    * @return {@code true} if its a dword type.
    */
   public static boolean isDWord(Type type) {
@@ -64,9 +60,8 @@ public class AsmUtil {
 
   /**
    * Converts an internal class name to a Type.
-   * 
-   * @param internal
-   *          internal name.
+   *
+   * @param internal internal name.
    * @return type
    */
   public static Type toBaseType(String internal) {
@@ -113,9 +108,8 @@ public class AsmUtil {
 
   /**
    * Converts an internal class name to a fully qualified name.
-   * 
-   * @param internal
-   *          internal name.
+   *
+   * @param internal internal name.
    * @return fully qualified name.
    */
   public static String toQualifiedName(String internal) {
@@ -124,9 +118,8 @@ public class AsmUtil {
 
   /**
    * Converts a fully qualified class name to an internal name.
-   * 
-   * @param qual
-   *          fully qualified class name.
+   *
+   * @param qual fully qualified class name.
    * @return internal name.
    */
   public static String toInternalName(String qual) {
@@ -135,9 +128,8 @@ public class AsmUtil {
 
   /**
    * Determines and returns the internal name of a class.
-   * 
-   * @param cls
-   *          the class.
+   *
+   * @param cls the class.
    * @return corresponding internal name.
    */
   public static String toInternalName(SootClass cls) {
@@ -146,9 +138,8 @@ public class AsmUtil {
 
   /**
    * Converts a type descriptor to a Jimple reference type.
-   * 
-   * @param desc
-   *          the descriptor.
+   *
+   * @param desc the descriptor.
    * @return the reference type.
    */
   public static Type toJimpleRefType(String desc) {
@@ -157,9 +148,8 @@ public class AsmUtil {
 
   /**
    * Converts a type descriptor to a Jimple type.
-   * 
-   * @param desc
-   *          the descriptor.
+   *
+   * @param desc the descriptor.
    * @return equivalent Jimple type.
    */
   public static Type toJimpleType(String desc) {
@@ -215,20 +205,22 @@ public class AsmUtil {
   }
 
   /**
-   * Converts a method signature to a list of types, with the last entry in the returned list denoting the return type.
-   * 
-   * @param desc
-   *          method signature.
+   * Converts a method signature to a list of types, with the last entry in the returned list
+   * denoting the return type.
+   *
+   * @param desc method signature.
    * @return list of types.
    */
   public static List<Type> toJimpleDesc(String desc) {
     ArrayList<Type> types = new ArrayList<Type>(2);
     int len = desc.length();
     int idx = 0;
-    all: while (idx != len) {
+    all:
+    while (idx != len) {
       int nrDims = 0;
       Type baseType = null;
-      this_type: while (idx != len) {
+      this_type:
+      while (idx != len) {
         char c = desc.charAt(idx++);
         switch (c) {
           case '(':
@@ -266,8 +258,7 @@ public class AsmUtil {
             break this_type;
           case 'L':
             int begin = idx;
-            while (desc.charAt(++idx) != ';') {
-              ;
+            while (desc.charAt(++idx) != ';') {;
             }
             String cls = desc.substring(begin, idx++);
             baseType = RefType.v(toQualifiedName(cls));
@@ -285,9 +276,7 @@ public class AsmUtil {
     return types;
   }
 
-  /**
-   * strips suffix for indicating an array type
-   */
+  /** strips suffix for indicating an array type */
   public static String baseTypeName(String s) {
     int index = s.indexOf("[");
     if (index < 0) {
@@ -297,7 +286,41 @@ public class AsmUtil {
     }
   }
 
-  private AsmUtil() {
-  }
+  private AsmUtil() {}
 
+  public static int byteCodeToJavaVersion(int bytecodeVersion) {
+    int javaVersion;
+
+    switch (bytecodeVersion) {
+      case (Opcodes.V1_5):
+        javaVersion = 5;
+        break;
+      case (Opcodes.V1_6):
+        javaVersion = 6;
+        break;
+      case (Opcodes.V1_7):
+        javaVersion = 7;
+        break;
+      case (Opcodes.V1_8):
+        javaVersion = 8;
+        break;
+      case (Opcodes.V9):
+        javaVersion = 9;
+        break;
+      case (Opcodes.V10):
+        javaVersion = 10;
+        break;
+      case (Opcodes.V11):
+        javaVersion = 11;
+        break;
+      case (Opcodes.V12):
+        javaVersion = 12;
+        break;
+      default:
+        // we return 0 if we cannot determine the version to indicate that
+        javaVersion = 0;
+    }
+
+    return javaVersion;
+  }
 }

@@ -607,11 +607,11 @@ public class FastHierarchy {
       if (concreteType.isInterface()) {
         worklist.addAll(getAllImplementersOfInterface(concreteType));
         // since java 8 we can have default methods in interfaces
-        if (Options.v().java_version() < 8) {
-          break;
-        } else {
+        if (isHandleDefaultMethods()) {
           // we need to thus search in all subinterfaces and in the current interface
           worklist.addAll(getAllSubinterfaces(concreteType));
+        } else {
+          break;
         }
       } else {
         Collection<SootClass> c = classToSubclasses.get(concreteType);
@@ -703,7 +703,7 @@ public class FastHierarchy {
     // for java > 7 we have to go through the interface hierarchy after the superclass hierarchy to
     // look for default methods:
     // https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-5.html#jvms-5.4.3.3
-    if (Options.v().java_version() > 7) {
+    if (isHandleDefaultMethods()) {
       concreteType = baseType;
 
       while (concreteType != null) {
@@ -727,7 +727,7 @@ public class FastHierarchy {
           }
         }
 
-        if(candidate != null){
+        if (candidate != null) {
           // we found the most specific interface in this class
           return candidate;
         }
@@ -741,6 +741,11 @@ public class FastHierarchy {
     // the caller decide what to do
     LOGGER.error("Could not resolve dispatch!\nBase Type: " + baseType + "\nMethod: " + m);
     return null;
+  }
+
+  private boolean isHandleDefaultMethods() {
+    int version = Options.v().java_version();
+    return version == 0 || version > 7;
   }
 
   /** Returns the target for the given SpecialInvokeExpr. */
