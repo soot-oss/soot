@@ -106,7 +106,7 @@ public class VirtualCalls {
       return null;
     }
 
-    SootMethod m = cls.getMethodUnsafe(subSig);    
+    SootMethod m = cls.getMethodUnsafe(subSig);
     if (m != null) {
       if (!m.isAbstract()) {
         ret = m;
@@ -115,14 +115,6 @@ public class VirtualCalls {
       SootClass c = cls.getSuperclassUnsafe();
       if (c != null) {
         ret = resolveNonSpecial(c.getType(), subSig);
-      }
-      if(ret == null) {
-    	  for(SootClass i: cls.getInterfaces()) {
-    		  ret = resolveNonSpecial(i.getType(), subSig);
-    		  if(ret != null) {
-    			  break;
-    		  }   		  
-    	  }
       }
     }
     vtbl.put(subSig, ret);
