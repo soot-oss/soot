@@ -3,7 +3,7 @@ package soot.interfaceTesting;
 public class TestSimpleDefault implements Default {
 	public void main()
 	{
-		TestMain testClass = new TestMain();
+		TestSimpleDefault testClass = new TestSimpleDefault();
 		testClass.target();
 		testClass.printMessage();
 	}
