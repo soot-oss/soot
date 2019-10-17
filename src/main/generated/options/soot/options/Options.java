@@ -100,6 +100,12 @@ public class Options extends OptionsBase {
     public static final int java_version_8 = 9;
     public static final int java_version_1_9 = 10;
     public static final int java_version_9 = 10;
+    public static final int java_version_1_10 = 11;
+    public static final int java_version_10 = 11;
+    public static final int java_version_1_11 = 12;
+    public static final int java_version_11 = 12;
+    public static final int java_version_1_12 = 13;
+    public static final int java_version_12 = 13;
     public static final int wrong_staticness_fail = 1;
     public static final int wrong_staticness_ignore = 2;
     public static final int wrong_staticness_fix = 3;
