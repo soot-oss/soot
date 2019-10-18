@@ -733,13 +733,13 @@ public class FastHierarchy {
         }
 
         // otherwise, we have to search upwards the class hierarchy again
-        concreteType = concreteType.getSuperclass();
+        concreteType = concreteType.getSuperclassUnsafe();
       }
     }
 
     // When there is no proper dispatch found, we simply return null to let
     // the caller decide what to do
-    LOGGER.error("Could not resolve dispatch!\nBase Type: " + baseType + "\nMethod: " + m);
+    LOGGER.warn("Could not resolve dispatch!\nBase Type: " + baseType + "\nMethod: " + m);
     return null;
   }
 
