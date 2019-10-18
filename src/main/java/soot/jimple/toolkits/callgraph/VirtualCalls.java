@@ -108,7 +108,9 @@ public class VirtualCalls {
       return null;
     }
 
-    ret = Scene.v().getOrMakeFastHierarchy().resolveConcreteDispatch(cls, callee);
+    if (!cls.isInterface()) {
+      ret = Scene.v().getOrMakeFastHierarchy().resolveConcreteDispatch(cls, callee);
+    }
 
     vtbl.put(calleeSubSig, ret);
     return ret;

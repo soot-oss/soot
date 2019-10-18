@@ -624,7 +624,7 @@ public class OnFlyCallGraphBuilder {
           virtualCalls.resolve(
               type,
               receiver.getType(),
-              site.iie().getMethod(),
+              site.stmt().getInvokeExpr().getMethod(),
               site.container(),
               targetsQueue,
               appOnly);
