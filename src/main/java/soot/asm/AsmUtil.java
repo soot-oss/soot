@@ -329,6 +329,18 @@ public class AsmUtil {
     int bytecodeVersion;
 
     switch (javaVersion) {
+      case (Options.java_version_1):
+        bytecodeVersion = Opcodes.V1_1;
+        break;
+      case (Options.java_version_2):
+        bytecodeVersion = Opcodes.V1_2;
+        break;
+      case (Options.java_version_3):
+        bytecodeVersion = Opcodes.V1_3;
+        break;
+      case (Options.java_version_4):
+        bytecodeVersion = Opcodes.V1_4;
+        break;
       case (Options.java_version_5):
         bytecodeVersion = Opcodes.V1_5;
         break;
