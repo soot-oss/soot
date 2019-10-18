@@ -600,7 +600,7 @@ public class FastHierarchy {
     worklist.add(baseType);
     while (true) {
       SootClass concreteType = worklist.poll();
-      if (concreteType == null) {
+      if (concreteType == null || resolved.contains(concreteType)) {
         break;
       }
 
@@ -679,7 +679,7 @@ public class FastHierarchy {
       SootClass baseType, SootMethod m, Set<SootClass> ignoreList) {
     SootClass concreteType = baseType;
 
-    while (!ignoreList.contains(concreteType)) {
+    while (concreteType != null && !ignoreList.contains(concreteType)) {
       ignoreList.add(concreteType);
 
       SootMethod method = getSignaturePolymorphicMethod(concreteType, m);
@@ -692,12 +692,7 @@ public class FastHierarchy {
         }
       }
 
-      SootClass superClass = concreteType.getSuperclassUnsafe();
-      if (superClass == null) {
-        break;
-      }
-
-      concreteType = superClass;
+      concreteType = concreteType.getSuperclassUnsafe();
     }
 
     // for java > 7 we have to go through the interface hierarchy after the superclass hierarchy to
@@ -711,6 +706,11 @@ public class FastHierarchy {
 
         // we have to determine the "most specific interface"
         for (SootClass iFace : concreteType.getInterfaces()) {
+          if (ignoreList.contains(iFace)) {
+            continue;
+          }
+          ignoreList.add(iFace);
+
           SootMethod method = getSignaturePolymorphicMethod(iFace, m);
           if (method != null) {
             if (isVisible(iFace, m)) {
@@ -739,7 +739,6 @@ public class FastHierarchy {
 
     // When there is no proper dispatch found, we simply return null to let
     // the caller decide what to do
-    LOGGER.warn("Could not resolve dispatch!\nBase Type: " + baseType + "\nMethod: " + m);
     return null;
   }
 

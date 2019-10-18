@@ -43,7 +43,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  SootMethod targetMethod = getSootMethodRef(body.getUnits(), "void target()");
 	  
-	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultMethod.getNumberedSubSignature(), false);
+	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultMethod, false);
 	  
 	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), defaultMethod);
 	  
@@ -91,11 +91,11 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  SootMethod refDefaultRead = getSootMethodRef(mainBody.getUnits(), "void read()");
 	  SootMethod refDefaultWrite = getSootMethodRef(mainBody.getUnits(), "void write()");
 	  
-	  SootMethod resolvedMainMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), mainPrintMethod.getNumberedSubSignature(), false);
-	  SootMethod resolvedWritePrintMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), writeInterfacePrint.getNumberedSubSignature(), false);
-	  SootMethod resolvedReadPrintMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), readInterfacePrint.getNumberedSubSignature(), false);
-	  SootMethod resolvedDefaultReadMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultRead.getNumberedSubSignature(), false);
-	  SootMethod resolvedDefaultWriteMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultWrite.getNumberedSubSignature(), false);
+	  SootMethod resolvedMainMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), mainPrintMethod, false);
+	  SootMethod resolvedWritePrintMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), writeInterfacePrint, false);
+	  SootMethod resolvedReadPrintMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), readInterfacePrint, false);
+	  SootMethod resolvedDefaultReadMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultRead, false);
+	  SootMethod resolvedDefaultWriteMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultWrite, false);
 	  
 	  SootMethod concreteImplMainPrint = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), mainPrintMethod);
 	  SootMethod concreteImplWritePrint = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), refWritePrintMethod);
@@ -192,7 +192,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
 	  
-	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultPrintMethod.getNumberedSubSignature(), false);
+	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultPrintMethod, false);
 	  
 	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), defaultPrintMethod);
 	  
@@ -241,8 +241,8 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  Body mainBody = target.retrieveActiveBody();
 	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
 	  
-	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultMethod.getNumberedSubSignature(), false);
-	  SootMethod resolvedSuperClassDefaultMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultSuperClassMethod.getNumberedSubSignature(), false);
+	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultMethod, false);
+	  SootMethod resolvedSuperClassDefaultMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultSuperClassMethod, false);
 	  
 	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), defaultMethod);
 	  
@@ -299,8 +299,8 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  Body mainBody = target.retrieveActiveBody();
 	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
 	  
-	  SootMethod interfaceOneResolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceOnePrint.getNumberedSubSignature(), false);
-	  SootMethod interfaceTwoResolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTwoPrint.getNumberedSubSignature(), false);
+	  SootMethod interfaceOneResolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceOnePrint, false);
+	  SootMethod interfaceTwoResolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTwoPrint, false);
 	  
 	  SootMethod concreteImplInterfaceOne = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceOnePrint);
 	  SootMethod concreteImplInterfaceTwo = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceTwoPrint);
@@ -354,7 +354,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  Body mainBody = target.retrieveActiveBody();
 	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
 	  
-	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTestAPrint.getNumberedSubSignature(), false);
+	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTestAPrint, false);
 	  
 	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceTestAPrint);
 	  
@@ -401,7 +401,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  Body mainBody = target.retrieveActiveBody();
 	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
 	  
-	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceAPrint.getNumberedSubSignature(), false);
+	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceAPrint, false);
 	  
 	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceAPrint);
 	  
@@ -450,8 +450,8 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  Body mainBody = target.retrieveActiveBody();
 	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
 	  
-	  SootMethod resolvedInterfaceOneDefaultMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceOnePrint.getNumberedSubSignature(), false);
-	  SootMethod resolvedInterfaceTwoDefaultMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTwoPrint.getNumberedSubSignature(), false);
+	  SootMethod resolvedInterfaceOneDefaultMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceOnePrint, false);
+	  SootMethod resolvedInterfaceTwoDefaultMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTwoPrint, false);
 	  
 	  SootMethod concreteImplInterfaceOne = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceOnePrint);
 	  SootMethod concreteImplInterfaceTwo = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceTwoPrint);
