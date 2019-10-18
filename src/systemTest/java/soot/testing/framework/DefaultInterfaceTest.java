@@ -7,11 +7,19 @@ import java.util.Set;
 
 import org.junit.Assert;
 import soot.Body;
+import soot.G;
+import soot.G.Global;
 import soot.MethodOrMethodContext;
+import soot.RefType;
 import soot.SootClass;
 import soot.Scene;
 import soot.SootMethod;
+import soot.SootMethodRefImpl;
+import soot.Unit;
+import soot.UnitPatchingChain;
+import soot.jimple.internal.JInvokeStmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.VirtualCalls;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 
@@ -19,7 +27,9 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 
   @Test
   public void interfaceTest() {
+	  
 	  String testClass = "soot.interfaceTesting.TestSimpleDefault";
+	  String defaultClass = "soot.interfaceTesting.Default";
 
 	  final SootMethod target =
 			  prepareTarget(
@@ -27,9 +37,17 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 					  testClass,
 					  "soot.interfaceTesting.Default");
 
-	  SootMethod defaultMethod = Scene.v().getMethod("<soot.interfaceTesting.Default: void target()>");
+	  SootMethod defaultMethod = Scene.v().getMethod("<soot.interfaceTesting.Default: void target()>"); 	  
 
-	  Body body = defaultMethod.retrieveActiveBody();
+	  Body body = target.retrieveActiveBody();
+	  
+	  SootMethod targetMethod = getSootMethodRef(body.getUnits(), "void target()");
+	  
+	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultMethod.getNumberedSubSignature(), false);
+	  
+	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), defaultMethod);
+	  
+	  Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), defaultMethod);  
 
 	  final CallGraph cg = Scene.v().getCallGraph(); 
 	  
@@ -37,16 +55,20 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  	  
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods(); 
 	  
+	  Assert.assertEquals(defaultMethod, resolvedMethod);
+	  Assert.assertEquals(defaultMethod, targetMethod);
 	  Assert.assertEquals(defaultMethod.getName(), "target");
 	  Assert.assertNotNull(defaultMethod);
 	  Assert.assertTrue(reachableMethods.contains(defaultMethod));
 	  Assert.assertTrue(edgePresent);
-    
+	  Assert.assertEquals(defaultMethod, concreteImpl);    
   }
   
   @Test
   public void interfaceWithSameSignatureTest() {
 	  String testClass = "soot.interfaceTesting.TestInterfaceSameSignature";
+	  String interfaceReadClass = "soot.interfaceTesting.Read";
+	  String interfaceWriteClass = "soot.interfaceTesting.Write";
 
 	  final SootMethod target =
 			  prepareTarget(
@@ -59,7 +81,34 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  SootMethod writeInterfacePrint = Scene.v().getMethod("<soot.interfaceTesting.Write: void print()>");
 	  SootMethod defaultRead = Scene.v().getMethod("<soot.interfaceTesting.Read: void read()>");
 	  SootMethod defaultWrite = Scene.v().getMethod("<soot.interfaceTesting.Write: void write()>");
-
+	  
+	  Body mainBody = target.retrieveActiveBody();
+	  Body mainPrintBody = mainPrintMethod.retrieveActiveBody();
+	  
+	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
+	  SootMethod refWritePrintMethod = getSootMethodRef(mainPrintBody.getUnits(), "soot.interfaceTesting.Write: void print()");
+	  SootMethod refReadPrintMethod = getSootMethodRef(mainPrintBody.getUnits(), "soot.interfaceTesting.Read: void print()");
+	  SootMethod refDefaultRead = getSootMethodRef(mainBody.getUnits(), "void read()");
+	  SootMethod refDefaultWrite = getSootMethodRef(mainBody.getUnits(), "void write()");
+	  
+	  SootMethod resolvedMainMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), mainPrintMethod.getNumberedSubSignature(), false);
+	  SootMethod resolvedWritePrintMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), writeInterfacePrint.getNumberedSubSignature(), false);
+	  SootMethod resolvedReadPrintMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), readInterfacePrint.getNumberedSubSignature(), false);
+	  SootMethod resolvedDefaultReadMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultRead.getNumberedSubSignature(), false);
+	  SootMethod resolvedDefaultWriteMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultWrite.getNumberedSubSignature(), false);
+	  
+	  SootMethod concreteImplMainPrint = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), mainPrintMethod);
+	  SootMethod concreteImplWritePrint = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), refWritePrintMethod);
+	  SootMethod concreteImplReadPrint = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), refReadPrintMethod);
+	  SootMethod concreteImplDefaultRead = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), refDefaultRead);
+	  SootMethod concreteImplDefaultWrite = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), refDefaultWrite);
+	  
+	  Set<SootMethod> abstractImplDefaultRead = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(interfaceReadClass), refDefaultRead); 
+	  Set<SootMethod> abstractImplDefaultWrite = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(interfaceWriteClass), refDefaultWrite); 
+	  Set<SootMethod> abstractImplReadDefaultPrint = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(interfaceReadClass), refReadPrintMethod);
+	  Set<SootMethod> abstractImplWriteDefaultPrint = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(interfaceWriteClass), refWritePrintMethod);  
+	  
+	  
 	  final CallGraph cg = Scene.v().getCallGraph();
 	  
 	  /* Edges should be present */
@@ -103,11 +152,30 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  Assert.assertTrue(edgeMainMethodToReadMethod);
 	  Assert.assertTrue(edgeMainMethodToWriteMethod);
 	  
+	  Assert.assertEquals(mainPrintMethod, resolvedMainMethod);
+	  Assert.assertEquals(readInterfacePrint, resolvedReadPrintMethod);
+	  Assert.assertEquals(writeInterfacePrint, resolvedWritePrintMethod);
+	  Assert.assertEquals(defaultRead, resolvedDefaultReadMethod);
+	  Assert.assertEquals(defaultWrite, resolvedDefaultWriteMethod);
+	  
+	  Assert.assertEquals(mainPrintMethod, refMainMethod);
+	  Assert.assertEquals(readInterfacePrint, refReadPrintMethod);
+	  Assert.assertEquals(writeInterfacePrint, refWritePrintMethod);
+	  Assert.assertEquals(defaultRead, refDefaultRead);
+	  Assert.assertEquals(defaultWrite, refDefaultWrite);
+	  
+	  Assert.assertEquals(mainPrintMethod, concreteImplMainPrint);
+	  Assert.assertEquals(refWritePrintMethod, concreteImplWritePrint);
+	  Assert.assertEquals(refReadPrintMethod, concreteImplReadPrint);
+	  Assert.assertEquals(refDefaultRead, concreteImplDefaultRead);
+	  Assert.assertEquals(refDefaultWrite, concreteImplDefaultWrite);
+	  
   }
   
   @Test
   public void classInterfaceWithSameSignatureTest() {
 	  String testClass = "soot.interfaceTesting.TestClassPreferenceOverInterface";
+	  String defaultClass = "soot.interfaceTesting.HelloWorld";
 
 	  final SootMethod target =
 			  prepareTarget(
@@ -120,13 +188,23 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 
 	  final CallGraph cg = Scene.v().getCallGraph();
 	  
+	  Body mainBody = target.retrieveActiveBody();
+	  
+	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
+	  
+	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultPrintMethod.getNumberedSubSignature(), false);
+	  
+	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), defaultPrintMethod);
+	  
+	  Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), defaultPrintMethod);
+	  
 	  boolean edgeMainMethodToMainPrint = checkInEdges(cg, mainPrintMethod, target);
 	  boolean edgeMainPrintToDefaultPrint = checkInEdges(cg, defaultPrintMethod, target);
 
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
 	  Assert.assertNotNull(mainPrintMethod);
-	  Assert.assertNull(defaultPrintMethod);
+	  Assert.assertNotNull(defaultPrintMethod);
 	  
 	  Assert.assertEquals(mainPrintMethod.getName(), "print");
 	  
@@ -134,13 +212,20 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  Assert.assertFalse(edgeMainPrintToDefaultPrint);
 	  
 	  Assert.assertTrue(reachableMethods.contains(mainPrintMethod));
-	  Assert.assertFalse(reachableMethods.contains(defaultPrintMethod));	  
+	  Assert.assertFalse(reachableMethods.contains(defaultPrintMethod));
+	  
+	  Assert.assertEquals(mainPrintMethod, refMainMethod);
+	  Assert.assertEquals(mainPrintMethod, resolvedMethod);
+	  
+	  Assert.assertEquals(mainPrintMethod, concreteImpl);
 	  
   }
   
   @Test
   public void superClassInterfaceWithSameSignatureTest() {
 	  String testClass = "soot.interfaceTesting.TestSuperClassInterfaceSameSignature";
+	  String defaultClass = "soot.interfaceTesting.PrintInterface";
+	  String defaultSuperClass = "soot.interfaceTesting.DefaultPrint";
 
 	  final SootMethod target =
 			  prepareTarget(
@@ -152,6 +237,17 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  SootMethod mainMethod = Scene.v().getMethod("<soot.interfaceTesting.TestSuperClassImplementsInterface: void print()>");
 	  SootMethod defaultMethod = Scene.v().getMethod("<soot.interfaceTesting.PrintInterface: void print()>");
 	  SootMethod defaultSuperClassMethod = Scene.v().getMethod("<soot.interfaceTesting.DefaultPrint: void print()>");
+	  
+	  Body mainBody = target.retrieveActiveBody();
+	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
+	  
+	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultMethod.getNumberedSubSignature(), false);
+	  SootMethod resolvedSuperClassDefaultMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultSuperClassMethod.getNumberedSubSignature(), false);
+	  
+	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), defaultMethod);
+	  
+	  Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), defaultMethod);
+	  Set<SootMethod> abstractImplSuperClass = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultSuperClass), defaultSuperClassMethod);
 
 	  final CallGraph cg = Scene.v().getCallGraph();
 	  
@@ -163,8 +259,8 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
 	  Assert.assertNotNull(mainMethod);
-	  Assert.assertNull(defaultMethod);
-	  Assert.assertNull(defaultSuperClassMethod);
+	  Assert.assertNotNull(defaultMethod);
+	  Assert.assertNotNull(defaultSuperClassMethod);
 	  
 	  Assert.assertEquals(mainMethod.getName(), "print");  
 	  
@@ -175,12 +271,22 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  Assert.assertTrue(reachableMethods.contains(mainMethod));
 	  Assert.assertFalse(reachableMethods.contains(defaultSuperClassMethod));
-	  Assert.assertFalse(reachableMethods.contains(defaultMethod));	  
+	  Assert.assertFalse(reachableMethods.contains(defaultMethod));	 
+	  
+	  Assert.assertEquals(mainMethod, refMainMethod);
+	  Assert.assertEquals(mainMethod, resolvedMethod);
+	  Assert.assertEquals(resolvedSuperClassDefaultMethod, resolvedMethod);
+	  
+	  Assert.assertEquals(mainMethod, concreteImpl);
+	  Assert.assertNotEquals(defaultMethod, concreteImpl);
   }  
 
   @Test
   public void derivedInterfacesTest() {
 	  String testClass = "soot.interfaceTesting.TestDerivedInterfaces";
+	  String defaultInterfaceOne = "soot.interfaceTesting.InterfaceTestOne";
+	  String defaultInterfaceTwo = "soot.interfaceTesting.InterfaceTestTwo";
+	  
 	  final SootMethod target =
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
@@ -189,6 +295,18 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  SootMethod interfaceOnePrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceTestOne: void print()>");
 	  SootMethod interfaceTwoPrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceTestTwo: void print()>");
+	  
+	  Body mainBody = target.retrieveActiveBody();
+	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
+	  
+	  SootMethod interfaceOneResolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceOnePrint.getNumberedSubSignature(), false);
+	  SootMethod interfaceTwoResolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTwoPrint.getNumberedSubSignature(), false);
+	  
+	  SootMethod concreteImplInterfaceOne = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceOnePrint);
+	  SootMethod concreteImplInterfaceTwo = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceTwoPrint);
+	  
+	  Set<SootMethod> abstractImplInterfaceOne = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultInterfaceOne), interfaceOnePrint);
+	  Set<SootMethod> abstractImplInterfaceTwo = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultInterfaceTwo), interfaceTwoPrint);
 	  
 	  final CallGraph cg = Scene.v().getCallGraph();
 	  
@@ -199,7 +317,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  Assert.assertEquals(interfaceTwoPrint.getName(), "print");  
 	  Assert.assertNotNull(interfaceTwoPrint);
-	  Assert.assertNull(interfaceOnePrint);
+	  Assert.assertNotNull(interfaceOnePrint);
 	  
 	  Assert.assertFalse(edgeMainToInterfaceOnePrint);
 	  Assert.assertTrue(edgeMainToInterfaceTwoPrint);
@@ -207,11 +325,23 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  Assert.assertTrue(reachableMethods.contains(interfaceTwoPrint));
 	  Assert.assertFalse(reachableMethods.contains(interfaceOnePrint));
 	  
+	  Assert.assertEquals(interfaceTwoPrint, refMainMethod);
+	  
+	  Assert.assertEquals(interfaceTwoPrint, interfaceOneResolvedMethod);
+	  Assert.assertEquals(interfaceTwoPrint, interfaceTwoResolvedMethod);
+	  
+	  Assert.assertEquals(interfaceTwoPrint, concreteImplInterfaceOne);
+	  Assert.assertNotEquals(interfaceOnePrint, concreteImplInterfaceOne);
+	  Assert.assertEquals(interfaceTwoPrint, concreteImplInterfaceTwo);
+	  Assert.assertNotEquals(interfaceOnePrint, concreteImplInterfaceTwo);
+	  
   }
   
   @Test
   public void interfaceInheritanceTest() {
 	  String testClass = "soot.interfaceTesting.TestInterfaceInheritance";
+	  String defaultClass = "soot.interfaceTesting.InterfaceTestA";
+	  
 	  final SootMethod target =
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
@@ -220,6 +350,15 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  SootMethod interfaceTestAPrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceTestA: void print()>");
 	  SootMethod mainPrintMessageMethod = Scene.v().getMethod("<soot.interfaceTesting.TestInterfaceInheritance: void printMessage()>");
+	  
+	  Body mainBody = target.retrieveActiveBody();
+	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
+	  
+	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTestAPrint.getNumberedSubSignature(), false);
+	  
+	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceTestAPrint);
+	  
+	  Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), interfaceTestAPrint);
 	  
 	  final CallGraph cg = Scene.v().getCallGraph();
 	  
@@ -230,7 +369,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  Assert.assertEquals(interfaceTestAPrint.getName(), "print");
 	  Assert.assertNotNull(interfaceTestAPrint);
-	  Assert.assertNull(mainPrintMessageMethod);
+	  Assert.assertNotNull(mainPrintMessageMethod);
 	  
 	  Assert.assertTrue(edgeMainToInterfaceTestAPrint);
 	  Assert.assertFalse(edgeMainToMainPrintMessage);
@@ -238,11 +377,18 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  Assert.assertTrue(reachableMethods.contains(interfaceTestAPrint));
 	  Assert.assertFalse(reachableMethods.contains(mainPrintMessageMethod));
 	  
+	  Assert.assertEquals(interfaceTestAPrint, refMainMethod);
+	  Assert.assertEquals(interfaceTestAPrint, resolvedMethod);
+	  
+	  Assert.assertEquals(interfaceTestAPrint, concreteImpl);
+	  
   }
   
   @Test
   public void interfaceReAbstractionTest() {
 	  String testClass = "soot.interfaceTesting.TestInterfaceReAbstracting";
+	  String defaultClass = "soot.interfaceTesting.InterfaceA";
+	  
 	  final SootMethod target =
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
@@ -251,6 +397,15 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  SootMethod interfaceAPrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceA: void print()>");
 	  SootMethod mainMethodPrint = Scene.v().getMethod("<soot.interfaceTesting.TestInterfaceReAbstracting: void print()>");
+	  
+	  Body mainBody = target.retrieveActiveBody();
+	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
+	  
+	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceAPrint.getNumberedSubSignature(), false);
+	  
+	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceAPrint);
+	  
+	  Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), interfaceAPrint);
 	  
 	  final CallGraph cg = Scene.v().getCallGraph();
 	  
@@ -261,17 +416,27 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  Assert.assertEquals(mainMethodPrint.getName(), "print");
 	  Assert.assertNotNull(mainMethodPrint);
-	  Assert.assertNull(interfaceAPrint);
+	  Assert.assertNotNull(interfaceAPrint);
 	  
 	  Assert.assertTrue(edgeMainMethodToMainPrint);
 	  Assert.assertFalse(edgeMainMethodToInterfaceAPrint);
 	  
 	  Assert.assertTrue(reachableMethods.contains(mainMethodPrint));
 	  Assert.assertFalse(reachableMethods.contains(interfaceAPrint));
+	  
+	  Assert.assertEquals(mainMethodPrint, refMainMethod);
+	  Assert.assertEquals(mainMethodPrint, resolvedMethod);
+	  
+	  Assert.assertEquals(mainMethodPrint, concreteImpl);
+	  Assert.assertNotEquals(interfaceAPrint, concreteImpl);
   }
   
+  @Test
   public void SuperClassPreferenceOverDefaultMethodTest() {
 	  String testClass = "soot.interfaceTesting.TestSuperClassPreferenceOverInterface";
+	  String defaultInterfaceOne = "soot.interfaceTesting.InterfaceOne";
+	  String defaultInterfaceTwo = "soot.interfaceTesting.InterfaceTwo";
+	  
 	  final SootMethod target =
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
@@ -282,6 +447,18 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  SootMethod interfaceTwoPrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceTwo: void print()>");
 	  SootMethod superClassPrint = Scene.v().getMethod("<soot.interfaceTesting.TestSuperClass: void print()>");
 	  
+	  Body mainBody = target.retrieveActiveBody();
+	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
+	  
+	  SootMethod resolvedInterfaceOneDefaultMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceOnePrint.getNumberedSubSignature(), false);
+	  SootMethod resolvedInterfaceTwoDefaultMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTwoPrint.getNumberedSubSignature(), false);
+	  
+	  SootMethod concreteImplInterfaceOne = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceOnePrint);
+	  SootMethod concreteImplInterfaceTwo = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceTwoPrint);
+	  
+	  Set<SootMethod> abstractImplInterfaceOne = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultInterfaceOne), interfaceOnePrint);
+	  Set<SootMethod> abstractImplInterfaceTwo = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultInterfaceTwo), interfaceTwoPrint);
+	  
 	  final CallGraph cg = Scene.v().getCallGraph();
 	  
 	  boolean edgeMainToInterfaceOnePrint = checkInEdges(cg, interfaceOnePrint, target);
@@ -291,8 +468,8 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
 	  Assert.assertNotNull(superClassPrint);
-	  Assert.assertNull(interfaceOnePrint);
-	  Assert.assertNull(interfaceTwoPrint);
+	  Assert.assertNotNull(interfaceOnePrint);
+	  Assert.assertNotNull(interfaceTwoPrint);
 	  
 	  Assert.assertEquals(superClassPrint.getName(), "print");
 	  
@@ -304,9 +481,15 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  Assert.assertFalse(reachableMethods.contains(interfaceOnePrint));
 	  Assert.assertFalse(reachableMethods.contains(interfaceTwoPrint));
 	  
+	  Assert.assertEquals(superClassPrint, refMainMethod);
+	  Assert.assertEquals(superClassPrint, resolvedInterfaceOneDefaultMethod);
+	  Assert.assertEquals(superClassPrint, resolvedInterfaceTwoDefaultMethod);
 	  
+	  Assert.assertEquals(superClassPrint, concreteImplInterfaceOne);
+	  Assert.assertNotEquals(interfaceOnePrint, concreteImplInterfaceOne);
+	  Assert.assertEquals(superClassPrint, concreteImplInterfaceTwo);
+	  Assert.assertNotEquals(interfaceTwoPrint, concreteImplInterfaceTwo);
   }
-  
   
   private boolean checkInEdges(CallGraph callGraph, SootMethod defaultMethod, SootMethod targetMethod) {
 
@@ -319,6 +502,17 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 		  }
 	  }
 	  return isPresent;
-  }	  
+  }
+  
+  private SootMethod getSootMethodRef(UnitPatchingChain units, String targetMethod) {
+	  
+	  SootMethod method = null;
+	  for(Unit unit: units) {
+		  if(unit instanceof JInvokeStmt && unit.toString().contains(targetMethod) ) {
+			  method = ((JInvokeStmt) unit).getInvokeExpr().getMethodRef().tryResolve();			 
+		  }
+	  }
+	  return method;
+  }
 }
   
