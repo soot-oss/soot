@@ -12,6 +12,7 @@ import soot.Body;
 import soot.G;
 import soot.G.Global;
 import soot.MethodOrMethodContext;
+import soot.PhaseOptions;
 import soot.RefType;
 import soot.SootClass;
 import soot.Scene;
@@ -26,6 +27,12 @@ import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 
 public class DefaultInterfaceTest extends AbstractTestingFramework {
+	@Override
+	protected void setupSoot() {
+		super.setupSoot();
+		PhaseOptions.v().setPhaseOption("cg.cha", "on");
+	}
+
 
   @Test
   public void interfaceTest() {

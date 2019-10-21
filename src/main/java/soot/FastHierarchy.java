@@ -29,8 +29,10 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
@@ -772,8 +774,11 @@ public class FastHierarchy {
       while (concreteType != null) {
         SootMethod candidate = null;
 
+        Queue<SootClass> worklist = new LinkedList<>(concreteType.getInterfaces());
         // we have to determine the "most specific interface"
-        for (SootClass iFace : concreteType.getInterfaces()) {
+        while (!worklist.isEmpty()) {
+          SootClass iFace = worklist.poll();
+
           if (ignoreList.contains(iFace)) {
             continue;
           }
@@ -781,6 +786,7 @@ public class FastHierarchy {
 
           SootMethod method =
               getSignaturePolymorphicMethod(iFace, name, parameterTypes, returnType);
+
           if (method != null) {
             if (isVisible(iFace, declaringClass, modifier)) {
               if (allowAbstract && method.isAbstract()) {
@@ -794,6 +800,9 @@ public class FastHierarchy {
               }
             }
           }
+
+          // go up the interface hierarchy
+          worklist.addAll(iFace.getInterfaces());
         }
 
         if (candidate != null) {

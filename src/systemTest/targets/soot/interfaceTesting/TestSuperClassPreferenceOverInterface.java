@@ -2,7 +2,7 @@ package soot.interfaceTesting;
 
 public class TestSuperClassPreferenceOverInterface extends TestSuperClass implements InterfaceOne, InterfaceTwo{
 	public void main() {
-		TestClassPreferenceOverInterface testClass = new TestClassPreferenceOverInterface();
+		TestSuperClassPreferenceOverInterface testClass = new TestSuperClassPreferenceOverInterface();
 		testClass.print();
 	}
 }
