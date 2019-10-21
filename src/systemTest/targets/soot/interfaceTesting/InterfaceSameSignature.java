@@ -1,13 +1,13 @@
-package soot.interfaceTesting;
+package soot.defaultInterfaceMethods;
 
-public class TestInterfaceSameSignature implements Read, Write {
+public class InterfaceSameSignature implements Read, Write {
 	
 	public void print() {
 		Write.super.print();
 		Read.super.print();
 	}
 	public void main() {	
-		TestInterfaceSameSignature testClass = new TestInterfaceSameSignature();
+		InterfaceSameSignature testClass = new InterfaceSameSignature();
 		testClass.read();
 		testClass.write();
 		testClass.print();		

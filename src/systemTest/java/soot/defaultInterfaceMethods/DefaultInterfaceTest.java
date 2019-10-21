@@ -1,7 +1,6 @@
-package soot.testing.framework;
+package soot.defaultInterfaceMethods;
 
 import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,24 +23,25 @@ import soot.UnitPatchingChain;
 import soot.jimple.internal.JInvokeStmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
+import soot.testing.framework.AbstractTestingFramework;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 
 public class DefaultInterfaceTest extends AbstractTestingFramework {
 
   @Test
-  public void interfaceTest() {
+  public void simpleDefaultInterfaceTest() {
 	  
-	  String testClass = "soot.interfaceTesting.TestSimpleDefault";
-	  String defaultClass = "soot.interfaceTesting.Default";
+	  String testClass = "soot.defaultInterfaceMethods.SimpleDefaultInterface";
+	  String defaultClass = "soot.defaultInterfaceMethods.Default";
 
 	  final SootMethod target =
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
-					  "soot.interfaceTesting.Default");
+					  "soot.defaultInterfaceMethods.Default");
 
-	  SootMethod defaultMethod = Scene.v().getMethod("<soot.interfaceTesting.Default: void target()>"); 
+	  SootMethod defaultMethod = Scene.v().getMethod("<soot.defaultInterfaceMethods.Default: void target()>"); 
 	  Body body = target.retrieveActiveBody();	  
 	  SootMethod targetMethod = getSootMethodRef(body.getUnits(), "void target()");	  
 	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultMethod.getNumberedSubSignature(), false);	  
@@ -56,28 +56,28 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
   
   @Test
   public void interfaceWithSameSignatureTest() {
-	  String testClass = "soot.interfaceTesting.TestInterfaceSameSignature";
-	  String interfaceReadClass = "soot.interfaceTesting.Read";
-	  String interfaceWriteClass = "soot.interfaceTesting.Write";
+	  String testClass = "soot.defaultInterfaceMethods.InterfaceSameSignature";
+	  String interfaceReadClass = "soot.defaultInterfaceMethods.Read";
+	  String interfaceWriteClass = "soot.defaultInterfaceMethods.Write";
 
 	  final SootMethod target =
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
-					  "soot.interfaceTesting.Read", "soot.interfaceTesting.Write");
+					  "soot.defaultInterfaceMethods.Read", "soot.defaultInterfaceMethods.Write");
 
-	  SootMethod mainPrintMethod = Scene.v().getMethod("<soot.interfaceTesting.TestInterfaceSameSignature: void print()>");
-	  SootMethod readInterfacePrint = Scene.v().getMethod("<soot.interfaceTesting.Read: void print()>");
-	  SootMethod writeInterfacePrint = Scene.v().getMethod("<soot.interfaceTesting.Write: void print()>");
-	  SootMethod defaultRead = Scene.v().getMethod("<soot.interfaceTesting.Read: void read()>");
-	  SootMethod defaultWrite = Scene.v().getMethod("<soot.interfaceTesting.Write: void write()>");
+	  SootMethod mainPrintMethod = Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceSameSignature: void print()>");
+	  SootMethod readInterfacePrint = Scene.v().getMethod("<soot.defaultInterfaceMethods.Read: void print()>");
+	  SootMethod writeInterfacePrint = Scene.v().getMethod("<soot.defaultInterfaceMethods.Write: void print()>");
+	  SootMethod defaultRead = Scene.v().getMethod("<soot.defaultInterfaceMethods.Read: void read()>");
+	  SootMethod defaultWrite = Scene.v().getMethod("<soot.defaultInterfaceMethods.Write: void write()>");
 	  
 	  Body mainBody = target.retrieveActiveBody();
 	  Body mainPrintBody = mainPrintMethod.retrieveActiveBody();
 	  
 	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
-	  SootMethod refWritePrintMethod = getSootMethodRef(mainPrintBody.getUnits(), "soot.interfaceTesting.Write: void print()");
-	  SootMethod refReadPrintMethod = getSootMethodRef(mainPrintBody.getUnits(), "soot.interfaceTesting.Read: void print()");
+	  SootMethod refWritePrintMethod = getSootMethodRef(mainPrintBody.getUnits(), "soot.defaultInterfaceMethods.Write: void print()");
+	  SootMethod refReadPrintMethod = getSootMethodRef(mainPrintBody.getUnits(), "soot.defaultInterfaceMethods.Read: void print()");
 	  SootMethod refDefaultRead = getSootMethodRef(mainBody.getUnits(), "void read()");
 	  SootMethod refDefaultWrite = getSootMethodRef(mainBody.getUnits(), "void write()");
 	  
@@ -167,17 +167,17 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
   
   @Test
   public void classInterfaceWithSameSignatureTest() {
-	  String testClass = "soot.interfaceTesting.TestClassPreferenceOverInterface";
-	  String defaultClass = "soot.interfaceTesting.HelloWorld";
+	  String testClass = "soot.defaultInterfaceMethods.ClassInterfaceSameSignature";
+	  String defaultClass = "soot.defaultInterfaceMethods.HelloWorld";
 
 	  final SootMethod target =
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
-					  "soot.interfaceTesting.HelloWorld");
+					  "soot.defaultInterfaceMethods.HelloWorld");
 
-	  SootMethod mainPrintMethod = Scene.v().getMethod("<soot.interfaceTesting.TestClassPreferenceOverInterface: void print()>");
-	  SootMethod defaultPrintMethod = Scene.v().getMethod("<soot.interfaceTesting.HelloWorld: void print()>");
+	  SootMethod mainPrintMethod = Scene.v().getMethod("<soot.defaultInterfaceMethods.ClassInterfaceSameSignature: void print()>");
+	  SootMethod defaultPrintMethod = Scene.v().getMethod("<soot.defaultInterfaceMethods.HelloWorld: void print()>");
 	  final CallGraph cg = Scene.v().getCallGraph();	  
 	  Body mainBody = target.retrieveActiveBody();	  
 	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");	  
@@ -203,20 +203,20 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
   
   @Test
   public void superClassInterfaceWithSameSignatureTest() {
-	  String testClass = "soot.interfaceTesting.TestSuperClassInterfaceSameSignature";
-	  String defaultClass = "soot.interfaceTesting.PrintInterface";
-	  String defaultSuperClass = "soot.interfaceTesting.DefaultPrint";
+	  String testClass = "soot.defaultInterfaceMethods.SuperClassInterfaceSameSignature";
+	  String defaultClass = "soot.defaultInterfaceMethods.PrintInterface";
+	  String defaultSuperClass = "soot.defaultInterfaceMethods.DefaultPrint";
 
 	  final SootMethod target =
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
-					  "soot.interfaceTesting.PrintInterface", "soot.interfaceTesting.TestSuperClassImplementsInterface");
+					  "soot.defaultInterfaceMethods.PrintInterface", "soot.defaultInterfaceMethods.SuperClassImplementsInterface");
 
-	  SootMethod defaultSuperMainMethod = Scene.v().getMethod("<soot.interfaceTesting.TestSuperClassImplementsInterface: void main()>");
-	  SootMethod mainMethod = Scene.v().getMethod("<soot.interfaceTesting.TestSuperClassImplementsInterface: void print()>");
-	  SootMethod defaultMethod = Scene.v().getMethod("<soot.interfaceTesting.PrintInterface: void print()>");
-	  SootMethod defaultSuperClassMethod = Scene.v().getMethod("<soot.interfaceTesting.DefaultPrint: void print()>");
+	  SootMethod defaultSuperMainMethod = Scene.v().getMethod("<soot.defaultInterfaceMethods.SuperClassImplementsInterface: void main()>");
+	  SootMethod mainMethod = Scene.v().getMethod("<soot.defaultInterfaceMethods.SuperClassImplementsInterface: void print()>");
+	  SootMethod defaultMethod = Scene.v().getMethod("<soot.defaultInterfaceMethods.PrintInterface: void print()>");
+	  SootMethod defaultSuperClassMethod = Scene.v().getMethod("<soot.defaultInterfaceMethods.DefaultPrint: void print()>");
 	  
 	  Body mainBody = target.retrieveActiveBody();
 	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
@@ -260,18 +260,18 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 
   @Test
   public void derivedInterfacesTest() {
-	  String testClass = "soot.interfaceTesting.TestDerivedInterfaces";
-	  String defaultInterfaceOne = "soot.interfaceTesting.InterfaceTestOne";
-	  String defaultInterfaceTwo = "soot.interfaceTesting.InterfaceTestTwo";
+	  String testClass = "soot.defaultInterfaceMethods.DerivedInterfaces";
+	  String defaultInterfaceOne = "soot.defaultInterfaceMethods.InterfaceTestOne";
+	  String defaultInterfaceTwo = "soot.defaultInterfaceMethods.InterfaceTestTwo";
 	  
 	  final SootMethod target =
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
-					  "soot.interfaceTesting.InterfaceTestOne", "soot.interfaceTesting.InterfaceTestTwo");	  
+					  "soot.defaultInterfaceMethods.InterfaceTestOne", "soot.defaultInterfaceMethods.InterfaceTestTwo");	  
 	  
-	  SootMethod interfaceOnePrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceTestOne: void print()>");
-	  SootMethod interfaceTwoPrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceTestTwo: void print()>");
+	  SootMethod interfaceOnePrint = Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceTestOne: void print()>");
+	  SootMethod interfaceTwoPrint = Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceTestTwo: void print()>");
 	  
 	  Body mainBody = target.retrieveActiveBody();
 	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
@@ -317,22 +317,22 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
   
   @Test
   public void interfaceInheritanceTest() {
-	  String testClass = "soot.interfaceTesting.TestInterfaceInheritance";
-	  String defaultClass = "soot.interfaceTesting.InterfaceTestA";
+	  String testClass = "soot.defaultInterfaceMethods.InterfaceInheritance";
+	  String defaultClass = "soot.defaultInterfaceMethods.InterfaceTestA";
 	  
 	  final SootMethod target =
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
-					  "soot.interfaceTesting.InterfaceTestA", "soot.interfaceTesting.InterfaceTestB");	  
+					  "soot.defaultInterfaceMethods.InterfaceTestA", "soot.defaultInterfaceMethods.InterfaceTestB");	  
 	  
-	  SootMethod interfaceTestAPrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceTestA: void print()>");
-	  SootMethod mainPrintMessageMethod = Scene.v().getMethod("<soot.interfaceTesting.TestInterfaceInheritance: void printMessage()>");	  
+	  SootMethod interfaceTestAPrint = Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceTestA: void print()>");
+	  SootMethod mainPrintMessageMethod = Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceInheritance: void printMessage()>");	  
 	  Body mainBody = target.retrieveActiveBody();
 	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");	  
 	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTestAPrint.getNumberedSubSignature(), false);	  
 	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceTestAPrint);	  
-	  //Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), interfaceTestAPrint);	  
+	  Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), interfaceTestAPrint);	  
 	  final CallGraph cg = Scene.v().getCallGraph();	  
 	  boolean edgeMainToInterfaceTestAPrint = checkInEdges(cg, interfaceTestAPrint, target);
 	  boolean edgeMainToMainPrintMessage = checkInEdges(cg, mainPrintMessageMethod, target);	  
@@ -348,17 +348,17 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
   
   @Test
   public void interfaceReAbstractionTest() {
-	  String testClass = "soot.interfaceTesting.TestInterfaceReAbstracting";
-	  String defaultClass = "soot.interfaceTesting.InterfaceA";
+	  String testClass = "soot.defaultInterfaceMethods.InterfaceReAbstracting";
+	  String defaultClass = "soot.defaultInterfaceMethods.InterfaceA";
 	  
 	  final SootMethod target =
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
-					  "soot.interfaceTesting.InterfaceA", "soot.interfaceTesting.InterfaceB");
+					  "soot.defaultInterfaceMethods.InterfaceA", "soot.defaultInterfaceMethods.InterfaceB");
 	  
-	  SootMethod interfaceAPrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceA: void print()>");
-	  SootMethod mainMethodPrint = Scene.v().getMethod("<soot.interfaceTesting.TestInterfaceReAbstracting: void print()>");
+	  SootMethod interfaceAPrint = Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceA: void print()>");
+	  SootMethod mainMethodPrint = Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceReAbstracting: void print()>");
 	  
 	  Body mainBody = target.retrieveActiveBody();
 	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");	  
@@ -380,19 +380,19 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
   
   @Test
   public void superClassPreferenceOverDefaultMethodTest() {
-	  String testClass = "soot.interfaceTesting.TestSuperClassPreferenceOverInterface";
-	  String defaultInterfaceOne = "soot.interfaceTesting.InterfaceOne";
-	  String defaultInterfaceTwo = "soot.interfaceTesting.InterfaceTwo";
+	  String testClass = "soot.defaultInterfaceMethods.SuperClassPreferenceOverDefaultMethod";
+	  String defaultInterfaceOne = "soot.defaultInterfaceMethods.InterfaceOne";
+	  String defaultInterfaceTwo = "soot.defaultInterfaceMethods.InterfaceTwo";
 	  
 	  final SootMethod target =
 			  prepareTarget(
 					  methodSigFromComponents(testClass, "void", "main"),
 					  testClass,
-					  "soot.interfaceTesting.InterfaceOne", "soot.interfaceTesting.InterfaceTwo", "soot.interfaceTesting.TestSuperClass");
+					  "soot.defaultInterfaceMethods.InterfaceOne", "soot.defaultInterfaceMethods.InterfaceTwo", "soot.defaultInterfaceMethods.SuperClass");
 	  
-	  SootMethod interfaceOnePrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceOne: void print()>");
-	  SootMethod interfaceTwoPrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceTwo: void print()>");
-	  SootMethod superClassPrint = Scene.v().getMethod("<soot.interfaceTesting.TestSuperClass: void print()>");
+	  SootMethod interfaceOnePrint = Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceOne: void print()>");
+	  SootMethod interfaceTwoPrint = Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceTwo: void print()>");
+	  SootMethod superClassPrint = Scene.v().getMethod("<soot.defaultInterfaceMethods.SuperClass: void print()>");
 	  
 	  Body mainBody = target.retrieveActiveBody();
 	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");

@@ -1,8 +1,8 @@
-package soot.interfaceTesting;
+package soot.defaultInterfaceMethods;
 
-public class TestInterfaceReAbstracting implements InterfaceA, InterfaceB{
+public class InterfaceReAbstracting implements InterfaceA, InterfaceB{
 	public void main() {
-		TestInterfaceReAbstracting testClass = new TestInterfaceReAbstracting();
+		InterfaceReAbstracting testClass = new InterfaceReAbstracting();
 		testClass.print();
 	}
 	

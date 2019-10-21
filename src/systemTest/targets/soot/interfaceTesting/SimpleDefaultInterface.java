@@ -1,9 +1,9 @@
-package soot.interfaceTesting;
+package soot.defaultInterfaceMethods;
 
-public class TestSimpleDefault implements Default {
+public class SimpleDefaultInterface implements Default {
 	public void main()
 	{
-		TestSimpleDefault testClass = new TestSimpleDefault();
+		SimpleDefaultInterface testClass = new SimpleDefaultInterface();
 		testClass.target();
 		testClass.printMessage();
 	}

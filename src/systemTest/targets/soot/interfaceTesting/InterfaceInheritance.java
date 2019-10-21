@@ -1,8 +1,8 @@
-package soot.interfaceTesting;
+package soot.defaultInterfaceMethods;
 
-public class TestInterfaceInheritance implements InterfaceTestB{
+public class InterfaceInheritance implements InterfaceTestB{
 	public void main() {
-		TestInterfaceInheritance testClass = new TestInterfaceInheritance();
+		InterfaceInheritance testClass = new InterfaceInheritance();
 		testClass.print();
 	}
 	
