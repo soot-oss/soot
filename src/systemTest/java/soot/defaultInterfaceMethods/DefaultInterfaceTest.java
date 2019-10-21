@@ -51,7 +51,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  boolean edgePresent = checkInEdges(cg, defaultMethod, target);	  	  
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods(); 	  
 	  /* Arguments for assert function */	  
-	  assertdefaultInterfaceTest(defaultMethod, reachableMethods, resolvedMethod, edgePresent, targetMethod, concreteImpl);
+	  assertdefaultInterfaceTest(defaultMethod, reachableMethods, resolvedMethod, edgePresent, targetMethod, concreteImpl, abstractImpl);
   }
   
   @Test
@@ -162,7 +162,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 		  add(edgeMainMethodToWriteMethod);
 	  }};
 	  
-	  assertInterfaceWithSameSignature(targetMethods, reachableMethods, resolvedMethods, edgePresent, edgeNotPresent, methodRef, concreteImpl);
+	  assertInterfaceWithSameSignature(targetMethods, reachableMethods, resolvedMethods, edgePresent, edgeNotPresent, methodRef, concreteImpl, abstractImplDefaultRead, abstractImplDefaultWrite, abstractImplReadDefaultPrint, abstractImplWriteDefaultPrint);
   }
   
   @Test
@@ -198,7 +198,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 		  add(edgeMainPrintToDefaultPrint);		  		  
 	  }};
 	  
-	  assertClassInterfaceWithSameSignature(mainPrintMethod, targetMethods, resolvedMethod, refMainMethod, reachableMethods, edgePresent, concreteImpl);	  
+	  assertClassInterfaceWithSameSignature(mainPrintMethod, targetMethods, resolvedMethod, refMainMethod, reachableMethods, edgePresent, concreteImpl, abstractImpl);	  
   }
   
   @Test
@@ -255,7 +255,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 		  put(resolvedSuperClassDefaultMethod, resolvedMethod);		  		  
 	  }};
 	  
-	  assertSuperClassInterfaceWithSameSignature(targetMethods, resolvedMethods, refMainMethod, reachableMethods, edgeMainToSuperClassPrint, edgeNotPresent, concreteImpl);  
+	  assertSuperClassInterfaceWithSameSignature(targetMethods, resolvedMethods, refMainMethod, reachableMethods, edgeMainToSuperClassPrint, edgeNotPresent, concreteImpl, abstractImpl, abstractImplSuperClass);  
   }  
 
   @Test
@@ -312,7 +312,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 		  put(interfaceOnePrint, concreteImplInterfaceTwo);		  		  
 	  }};
 	  
-	  assertDerivedInterface(targetMethods, resolvedMethods, refMainMethod, reachableMethods, edgeMainToInterfaceTwoPrint, edgeMainToInterfaceOnePrint, concreteImplTrue, concreteImplNotTrue);
+	  assertDerivedInterface(targetMethods, resolvedMethods, refMainMethod, reachableMethods, edgeMainToInterfaceTwoPrint, edgeMainToInterfaceOnePrint, concreteImplTrue, concreteImplNotTrue, abstractImplInterfaceOne, abstractImplInterfaceTwo);
   }
   
   @Test
@@ -343,7 +343,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 		  add(mainPrintMessageMethod);		  
 	  }};
 	  
-	  assertInterfaceInheritanceTest(targetMethods, edgeMainToInterfaceTestAPrint, edgeMainToMainPrintMessage, reachableMethods, refMainMethod, resolvedMethod, concreteImpl);
+	  assertInterfaceInheritanceTest(targetMethods, edgeMainToInterfaceTestAPrint, edgeMainToMainPrintMessage, reachableMethods, refMainMethod, resolvedMethod, concreteImpl, abstractImpl);
   }
   
   @Test
@@ -365,7 +365,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceAPrint.getNumberedSubSignature(), false);	  
 	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceAPrint);	  
 	  Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), interfaceAPrint);	  
-	  final CallGraph cg = Scene.v().getCallGraph();	  
+	  final CallGraph cg = Scene.v().getCallGraph();
 	  boolean edgeMainMethodToMainPrint = checkInEdges(cg, mainMethodPrint, target);
 	  boolean edgeMainMethodToInterfaceAPrint = checkInEdges(cg, interfaceAPrint, target);	  
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
@@ -375,7 +375,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 		  add(interfaceAPrint);		  
 	  }};
 	  
-	  assertInterfaceReAbstraction(targetMethods, edgeMainMethodToMainPrint, edgeMainMethodToInterfaceAPrint, reachableMethods, resolvedMethod, refMainMethod, concreteImpl); 
+	  assertInterfaceReAbstraction(targetMethods, edgeMainMethodToMainPrint, edgeMainMethodToInterfaceAPrint, reachableMethods, resolvedMethod, refMainMethod, concreteImpl, abstractImpl); 
   }
   
   @Test
@@ -440,7 +440,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 		  put(interfaceOnePrint, concreteImplInterfaceTwo);		  		  
 	  }};
 	  
-	  assertSuperClassPreferenceOverDefaultMethod(targetMethods, refMainMethod, edgeMainToSuperClassPrint, edgeNotPresent, reachableMethods, resolvedMethods, concreteImplTrue, concreteImplNotTrue); 
+	  assertSuperClassPreferenceOverDefaultMethod(targetMethods, refMainMethod, edgeMainToSuperClassPrint, edgeNotPresent, reachableMethods, resolvedMethods, concreteImplTrue, concreteImplNotTrue, abstractImplInterfaceOne, abstractImplInterfaceTwo); 
   }
   
   private boolean checkInEdges(CallGraph callGraph, SootMethod defaultMethod, SootMethod targetMethod) {
@@ -467,19 +467,19 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  return method;
   }
   
-  private void assertdefaultInterfaceTest(SootMethod defaultTargetMethod, ReachableMethods reachableMethods, SootMethod virtualResolvedMethod, boolean edgePresent, SootMethod methodRef, SootMethod concreteImpl) {
+  private void assertdefaultInterfaceTest(SootMethod defaultTargetMethod, ReachableMethods reachableMethods, SootMethod virtualResolvedMethod, boolean edgePresent, SootMethod methodRef, SootMethod concreteImpl, Set<SootMethod> abstractImpl) {
 	  
-	  Assert.assertEquals(defaultTargetMethod, virtualResolvedMethod);
-	  Assert.assertEquals(defaultTargetMethod, methodRef);
-	  Assert.assertEquals(defaultTargetMethod.getName(), "target");
-	  Assert.assertNotNull(defaultTargetMethod);
-	  Assert.assertTrue(reachableMethods.contains(defaultTargetMethod));
-	  Assert.assertTrue(edgePresent);
-	  Assert.assertEquals(defaultTargetMethod, concreteImpl);
-	  
+	  assertEquals(defaultTargetMethod, virtualResolvedMethod);
+	  assertEquals(defaultTargetMethod, methodRef);
+	  assertEquals(defaultTargetMethod.getName(), "target");
+	  assertNotNull(defaultTargetMethod);
+	  assertTrue(reachableMethods.contains(defaultTargetMethod));
+	  assertTrue(edgePresent);
+	  assertEquals(defaultTargetMethod, concreteImpl);
+	  assertTrue(abstractImpl.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.SimpleDefaultInterface: void target()>")));	
   }
   
-  private void assertInterfaceWithSameSignature(Map<SootMethod, String> targetMethods, ReachableMethods reachableMethods, Map<SootMethod, SootMethod> virtualResolvedMethods, List<Boolean> edgePresent, List<Boolean> edgeNotPresent, Map<SootMethod, SootMethod> methodRefs, Map<SootMethod, SootMethod> concreteImpls) {
+  private void assertInterfaceWithSameSignature(Map<SootMethod, String> targetMethods, ReachableMethods reachableMethods, Map<SootMethod, SootMethod> virtualResolvedMethods, List<Boolean> edgePresent, List<Boolean> edgeNotPresent, Map<SootMethod, SootMethod> methodRefs, Map<SootMethod, SootMethod> concreteImpls, Set<SootMethod> abstractImplDefaultRead, Set<SootMethod>abstractImplDefaultWrite, Set<SootMethod> abstractImplReadDefaultPrint, Set<SootMethod>abstractImplWriteDefaultPrint) {
 	  
 	  for(Map.Entry<SootMethod, String> targetMethod:targetMethods.entrySet()) {
 		  assertNotNull(targetMethod.getKey());
@@ -505,9 +505,13 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  for(Map.Entry<SootMethod, SootMethod> concreteImpl:concreteImpls.entrySet()) {
 		  assertEquals(concreteImpl.getKey(), concreteImpl.getValue());
 	  }
+	  assertTrue(abstractImplDefaultRead.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceSameSignature: void read()>")));
+	  assertTrue(abstractImplDefaultWrite.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceSameSignature: void write()>")));
+	  assertTrue(abstractImplReadDefaultPrint.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceSameSignature: void print()>")));
+	  assertTrue(abstractImplWriteDefaultPrint.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceSameSignature: void print()>")));
   }
   
-  private void assertClassInterfaceWithSameSignature(SootMethod defaultMethod, Map<SootMethod, String> targetMethods, SootMethod virtualResolvedMethod, SootMethod methodRef, ReachableMethods reachableMethods, List<Boolean> edgePresent, SootMethod concreteImpl) {
+  private void assertClassInterfaceWithSameSignature(SootMethod defaultMethod, Map<SootMethod, String> targetMethods, SootMethod virtualResolvedMethod, SootMethod methodRef, ReachableMethods reachableMethods, List<Boolean> edgePresent, SootMethod concreteImpl, Set<SootMethod> abstractImpl) {
 	  
 	  for(Map.Entry<SootMethod, String> targetMethod:targetMethods.entrySet()) {
 		  assertNotNull(targetMethod.getKey());
@@ -524,9 +528,10 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 		  assertTrue(isPresent);
 	  }	  
 	  assertEquals(defaultMethod, concreteImpl);
+	  assertTrue(abstractImpl.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.ClassInterfaceSameSignature: void print()>")));
   }
   
-  private void assertSuperClassInterfaceWithSameSignature(List<SootMethod> targetMethods, Map<SootMethod, SootMethod> virtualResolvedMethods, SootMethod methodRef, ReachableMethods reachableMethods, boolean edgePresent, List<Boolean> edgeNotPresent, SootMethod concreteImpl) {
+  private void assertSuperClassInterfaceWithSameSignature(List<SootMethod> targetMethods, Map<SootMethod, SootMethod> virtualResolvedMethods, SootMethod methodRef, ReachableMethods reachableMethods, boolean edgePresent, List<Boolean> edgeNotPresent, SootMethod concreteImpl, Set<SootMethod> abstractImpl, Set<SootMethod> abstractImplSuperClass) {
 	  for(SootMethod targetMethod: targetMethods) {
 		  assertNotNull(targetMethod);
 	  }	  
@@ -537,11 +542,13 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 		  assertFalse(notPresent);
 	  }
 	  assertEquals(targetMethods.get(0), concreteImpl);	  
-	  assertNotEquals(targetMethods.get(1), concreteImpl);  
+	  assertNotEquals(targetMethods.get(1), concreteImpl); 
+	  assertTrue(abstractImpl.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.SuperClassImplementsInterface: void print()>")));
+	  assertTrue(abstractImplSuperClass.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.SuperClassImplementsInterface: void print()>")));
 	  
   }
   
-  private void assertDerivedInterface(List<SootMethod> targetMethods, Map<SootMethod, SootMethod> virtualResolvedMethods, SootMethod methodRef, ReachableMethods reachableMethods, boolean edgePresent, boolean edgeNotPresent, Map<SootMethod, SootMethod> concreteImplsTrue, Map<SootMethod, SootMethod> concreteImplsNotTrue) {
+  private void assertDerivedInterface(List<SootMethod> targetMethods, Map<SootMethod, SootMethod> virtualResolvedMethods, SootMethod methodRef, ReachableMethods reachableMethods, boolean edgePresent, boolean edgeNotPresent, Map<SootMethod, SootMethod> concreteImplsTrue, Map<SootMethod, SootMethod> concreteImplsNotTrue, Set<SootMethod> abstractImplInterfaceOne, Set<SootMethod> abstractImplInterfaceTwo) {
 	  
 	  for(SootMethod targetMethod: targetMethods) {
 		  Assert.assertNotNull(targetMethod);
@@ -561,9 +568,12 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  for(Map.Entry<SootMethod, SootMethod> concreteImpl:concreteImplsNotTrue.entrySet()) {
 		  assertNotEquals(concreteImpl.getKey(), concreteImpl.getValue());
 	  } 
+	  assertTrue(abstractImplInterfaceOne.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.DerivedInterfaces: void print()>")));
+	  assertTrue(abstractImplInterfaceOne.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceTestTwo: void print()>")));
+	  assertTrue(abstractImplInterfaceTwo.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.DerivedInterfaces: void print()>")));
   }
   
-  private void assertInterfaceInheritanceTest(List<SootMethod> targetMethods, boolean edgePresent, boolean edgeNotPresent, ReachableMethods reachableMethods, SootMethod methodRef, SootMethod resolvedMethod, SootMethod concreteImpl) {
+  private void assertInterfaceInheritanceTest(List<SootMethod> targetMethods, boolean edgePresent, boolean edgeNotPresent, ReachableMethods reachableMethods, SootMethod methodRef, SootMethod resolvedMethod, SootMethod concreteImpl, Set<SootMethod> abstractImpl) {
 	  
 	  for(SootMethod targetMethod: targetMethods) {
 		  Assert.assertNotNull(targetMethod);
@@ -576,10 +586,11 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  assertFalse(reachableMethods.contains(targetMethods.get(1)));
 	  assertEquals(targetMethods.get(0), resolvedMethod);	  
 	  assertEquals(targetMethods.get(0), concreteImpl);
-	  
+	  assertTrue(abstractImpl.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceInheritance: void print()>")));
+	  assertTrue(abstractImpl.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceTestB: void print()>")));
   }
   
-  private void assertInterfaceReAbstraction(List<SootMethod> targetMethods, boolean edgePresent, boolean edgeNotPresent, ReachableMethods reachableMethods, SootMethod resolvedMethod, SootMethod methodRef, SootMethod concreteImpl) {
+  private void assertInterfaceReAbstraction(List<SootMethod> targetMethods, boolean edgePresent, boolean edgeNotPresent, ReachableMethods reachableMethods, SootMethod resolvedMethod, SootMethod methodRef, SootMethod concreteImpl, Set<SootMethod> abstractImpl) {
 	  
 	  for(SootMethod targetMethod: targetMethods) {
 		  Assert.assertNotNull(targetMethod);
@@ -593,10 +604,12 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  assertEquals(targetMethods.get(0), resolvedMethod);
 	  assertEquals(targetMethods.get(0), concreteImpl);
 	  assertNotEquals(targetMethods.get(1), concreteImpl);
+	  assertTrue(abstractImpl.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceB: void print()>")));
+	  assertTrue(abstractImpl.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.InterfaceReAbstracting: void print()>")));
 	  
   }
   
-  private void assertSuperClassPreferenceOverDefaultMethod(List<SootMethod> targetMethods, SootMethod methodRef, boolean edgePresent, List<Boolean> edgeNotPresent, ReachableMethods reachableMethods, Map<SootMethod, SootMethod> virtualResolvedMethods, Map<SootMethod, SootMethod> concreteImplsTrue, Map<SootMethod, SootMethod> concreteImplsNotTrue) {
+  private void assertSuperClassPreferenceOverDefaultMethod(List<SootMethod> targetMethods, SootMethod methodRef, boolean edgePresent, List<Boolean> edgeNotPresent, ReachableMethods reachableMethods, Map<SootMethod, SootMethod> virtualResolvedMethods, Map<SootMethod, SootMethod> concreteImplsTrue, Map<SootMethod, SootMethod> concreteImplsNotTrue, Set<SootMethod> abstractImplInterfaceOne, Set<SootMethod> abstractImplInterfaceTwo) {
 	  
 	  for(SootMethod targetMethod: targetMethods) {
 		  assertNotNull(targetMethod);
@@ -619,6 +632,8 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  for(Map.Entry<SootMethod, SootMethod> concreteImpl:concreteImplsNotTrue.entrySet()) {
 		  assertNotEquals(concreteImpl.getKey(), concreteImpl.getValue());
 	  }
+	  assertTrue(abstractImplInterfaceOne.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.SuperClass: void print()>")));
+	  assertTrue(abstractImplInterfaceTwo.contains(Scene.v().getMethod("<soot.defaultInterfaceMethods.SuperClass: void print()>")));
   }
 }
   
