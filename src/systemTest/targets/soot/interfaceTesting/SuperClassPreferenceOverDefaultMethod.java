@@ -1,8 +1,8 @@
-package soot.interfaceTesting;
+package soot.defaultInterfaceMethods;
 
-public class TestSuperClassPreferenceOverInterface extends TestSuperClass implements InterfaceOne, InterfaceTwo{
+public class SuperClassPreferenceOverDefaultMethod extends SuperClass implements InterfaceOne, InterfaceTwo{
 	public void main() {
-		TestSuperClassPreferenceOverInterface testClass = new TestSuperClassPreferenceOverInterface();
+		SuperClassPreferenceOverDefaultMethod testClass = new SuperClassPreferenceOverDefaultMethod();
 		testClass.print();
 	}
 }
