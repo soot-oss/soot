@@ -1,5 +1,7 @@
 package soot.testing.framework;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -55,13 +57,13 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  	  
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods(); 
 	  
-	  Assert.assertEquals(defaultMethod, resolvedMethod);
-	  Assert.assertEquals(defaultMethod, targetMethod);
-	  Assert.assertEquals(defaultMethod.getName(), "target");
-	  Assert.assertNotNull(defaultMethod);
-	  Assert.assertTrue(reachableMethods.contains(defaultMethod));
-	  Assert.assertTrue(edgePresent);
-	  Assert.assertEquals(defaultMethod, concreteImpl);    
+	  assertEquals(defaultMethod, resolvedMethod);
+	  assertEquals(defaultMethod, targetMethod);
+	  assertEquals(defaultMethod.getName(), "target");
+	  assertNotNull(defaultMethod);
+	  assertTrue(reachableMethods.contains(defaultMethod));
+	  assertTrue(edgePresent);
+	  assertEquals(defaultMethod, concreteImpl);
   }
   
   @Test
@@ -98,7 +100,6 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  SootMethod resolvedDefaultWriteMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultWrite, false);
 	  
 	  SootMethod concreteImplMainPrint = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), mainPrintMethod);
-	  SootMethod concreteImplWritePrint = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), refWritePrintMethod);
 	  SootMethod concreteImplReadPrint = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), refReadPrintMethod);
 	  SootMethod concreteImplDefaultRead = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), refDefaultRead);
 	  SootMethod concreteImplDefaultWrite = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), refDefaultWrite);
@@ -126,49 +127,49 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
-	  Assert.assertNotNull(mainPrintMethod);
-	  Assert.assertNotNull(readInterfacePrint);
-	  Assert.assertNotNull(writeInterfacePrint);
-	  Assert.assertNotNull(defaultRead);
-	  Assert.assertNotNull(defaultWrite);
+	  assertNotNull(mainPrintMethod);
+	  assertNotNull(readInterfacePrint);
+	  assertNotNull(writeInterfacePrint);
+	  assertNotNull(defaultRead);
+	  assertNotNull(defaultWrite);
 	  
-	  Assert.assertEquals(mainPrintMethod.getName(), "print");
-	  Assert.assertEquals(readInterfacePrint.getName(), "print");
-	  Assert.assertEquals(writeInterfacePrint.getName(), "print");
-	  Assert.assertEquals(defaultRead.getName(), "read");
-	  Assert.assertEquals(defaultWrite.getName(), "write");
+	  assertEquals(mainPrintMethod.getName(), "print");
+	  assertEquals(readInterfacePrint.getName(), "print");
+	  assertEquals(writeInterfacePrint.getName(), "print");
+	  assertEquals(defaultRead.getName(), "read");
+	  assertEquals(defaultWrite.getName(), "write");
 	  
-	  Assert.assertTrue(reachableMethods.contains(mainPrintMethod));
-	  Assert.assertTrue(reachableMethods.contains(readInterfacePrint));
-	  Assert.assertTrue(reachableMethods.contains(writeInterfacePrint));
-	  Assert.assertTrue(reachableMethods.contains(defaultRead));
-	  Assert.assertTrue(reachableMethods.contains(defaultWrite));
+	  assertTrue(reachableMethods.contains(mainPrintMethod));
+	  assertTrue(reachableMethods.contains(readInterfacePrint));
+	  assertTrue(reachableMethods.contains(writeInterfacePrint));
+	  assertTrue(reachableMethods.contains(defaultRead));
+	  assertTrue(reachableMethods.contains(defaultWrite));
 	  
-	  Assert.assertTrue(edgeMainPrintToReadPrint);
-	  Assert.assertTrue(edgeMainPrintToWritePrint);
-	  Assert.assertTrue(edgeMainMethodToPrint);
-	  Assert.assertFalse(edgeMainMethodToReadPrint);
-	  Assert.assertFalse(edgeMainMethodToWritePrint);
-	  Assert.assertTrue(edgeMainMethodToReadMethod);
-	  Assert.assertTrue(edgeMainMethodToWriteMethod);
+	  assertTrue(edgeMainPrintToReadPrint);
+	  assertTrue(edgeMainPrintToWritePrint);
+	  assertTrue(edgeMainMethodToPrint);
+	  assertFalse(edgeMainMethodToReadPrint);
+	  assertFalse(edgeMainMethodToWritePrint);
+	  assertTrue(edgeMainMethodToReadMethod);
+	  assertTrue(edgeMainMethodToWriteMethod);
 	  
-	  Assert.assertEquals(mainPrintMethod, resolvedMainMethod);
-	  Assert.assertEquals(readInterfacePrint, resolvedReadPrintMethod);
-	  Assert.assertEquals(writeInterfacePrint, resolvedWritePrintMethod);
-	  Assert.assertEquals(defaultRead, resolvedDefaultReadMethod);
-	  Assert.assertEquals(defaultWrite, resolvedDefaultWriteMethod);
+	  assertEquals(mainPrintMethod, resolvedMainMethod);
+	  assertEquals(mainPrintMethod, resolvedReadPrintMethod);
+	  assertEquals(mainPrintMethod, resolvedWritePrintMethod);
+	  assertEquals(defaultRead, resolvedDefaultReadMethod);
+	  assertEquals(defaultWrite, resolvedDefaultWriteMethod);
 	  
-	  Assert.assertEquals(mainPrintMethod, refMainMethod);
-	  Assert.assertEquals(readInterfacePrint, refReadPrintMethod);
-	  Assert.assertEquals(writeInterfacePrint, refWritePrintMethod);
-	  Assert.assertEquals(defaultRead, refDefaultRead);
-	  Assert.assertEquals(defaultWrite, refDefaultWrite);
+	  assertEquals(mainPrintMethod, refMainMethod);
+	  assertEquals(readInterfacePrint, refReadPrintMethod);
+	  assertEquals(writeInterfacePrint, refWritePrintMethod);
+	  assertEquals(defaultRead, refDefaultRead);
+	  assertEquals(defaultWrite, refDefaultWrite);
 	  
-	  Assert.assertEquals(mainPrintMethod, concreteImplMainPrint);
-	  Assert.assertEquals(refWritePrintMethod, concreteImplWritePrint);
-	  Assert.assertEquals(refReadPrintMethod, concreteImplReadPrint);
-	  Assert.assertEquals(refDefaultRead, concreteImplDefaultRead);
-	  Assert.assertEquals(refDefaultWrite, concreteImplDefaultWrite);
+	  assertEquals(mainPrintMethod, concreteImplMainPrint);
+	  assertEquals(mainPrintMethod, Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), refWritePrintMethod));
+	  assertEquals(mainPrintMethod, concreteImplReadPrint);
+	  assertEquals(refDefaultRead, concreteImplDefaultRead);
+	  assertEquals(refDefaultWrite, concreteImplDefaultWrite);
 	  
   }
   
@@ -203,21 +204,21 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
-	  Assert.assertNotNull(mainPrintMethod);
-	  Assert.assertNotNull(defaultPrintMethod);
+	  assertNotNull(mainPrintMethod);
+	  assertNotNull(defaultPrintMethod);
 	  
-	  Assert.assertEquals(mainPrintMethod.getName(), "print");
+	  assertEquals(mainPrintMethod.getName(), "print");
 	  
-	  Assert.assertTrue(edgeMainMethodToMainPrint);
-	  Assert.assertFalse(edgeMainPrintToDefaultPrint);
+	  assertTrue(edgeMainMethodToMainPrint);
+	  assertFalse(edgeMainPrintToDefaultPrint);
 	  
-	  Assert.assertTrue(reachableMethods.contains(mainPrintMethod));
-	  Assert.assertFalse(reachableMethods.contains(defaultPrintMethod));
+	  assertTrue(reachableMethods.contains(mainPrintMethod));
+	  assertFalse(reachableMethods.contains(defaultPrintMethod));
 	  
-	  Assert.assertEquals(mainPrintMethod, refMainMethod);
-	  Assert.assertEquals(mainPrintMethod, resolvedMethod);
+	  assertEquals(mainPrintMethod, refMainMethod);
+	  assertEquals(mainPrintMethod, resolvedMethod);
 	  
-	  Assert.assertEquals(mainPrintMethod, concreteImpl);
+	  assertEquals(mainPrintMethod, concreteImpl);
 	  
   }
   
@@ -258,27 +259,27 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
-	  Assert.assertNotNull(mainMethod);
-	  Assert.assertNotNull(defaultMethod);
-	  Assert.assertNotNull(defaultSuperClassMethod);
+	  assertNotNull(mainMethod);
+	  assertNotNull(defaultMethod);
+	  assertNotNull(defaultSuperClassMethod);
 	  
-	  Assert.assertEquals(mainMethod.getName(), "print");  
+	  assertEquals(mainMethod.getName(), "print");
 	  
-	  Assert.assertTrue(edgeMainToSuperClassPrint);
-	  Assert.assertFalse(edgeMainToDefaultPrint);
-	  Assert.assertFalse(edgeMainToSuperDefaultPrint);
-	  Assert.assertFalse(edgeSuperMainToSuperPrint);
+	  assertTrue(edgeMainToSuperClassPrint);
+	  assertFalse(edgeMainToDefaultPrint);
+	  assertFalse(edgeMainToSuperDefaultPrint);
+	  assertFalse(edgeSuperMainToSuperPrint);
 	  
-	  Assert.assertTrue(reachableMethods.contains(mainMethod));
-	  Assert.assertFalse(reachableMethods.contains(defaultSuperClassMethod));
-	  Assert.assertFalse(reachableMethods.contains(defaultMethod));	 
+	  assertTrue(reachableMethods.contains(mainMethod));
+	  assertFalse(reachableMethods.contains(defaultSuperClassMethod));
+	  assertFalse(reachableMethods.contains(defaultMethod));
 	  
-	  Assert.assertEquals(mainMethod, refMainMethod);
-	  Assert.assertEquals(mainMethod, resolvedMethod);
-	  Assert.assertEquals(resolvedSuperClassDefaultMethod, resolvedMethod);
+	  assertEquals(mainMethod, refMainMethod);
+	  assertEquals(mainMethod, resolvedMethod);
+	  assertEquals(resolvedSuperClassDefaultMethod, resolvedMethod);
 	  
-	  Assert.assertEquals(mainMethod, concreteImpl);
-	  Assert.assertNotEquals(defaultMethod, concreteImpl);
+	  assertEquals(mainMethod, concreteImpl);
+	  assertNotEquals(defaultMethod, concreteImpl);
   }  
 
   @Test
@@ -315,25 +316,25 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
-	  Assert.assertEquals(interfaceTwoPrint.getName(), "print");  
-	  Assert.assertNotNull(interfaceTwoPrint);
-	  Assert.assertNotNull(interfaceOnePrint);
+	  assertEquals(interfaceTwoPrint.getName(), "print");
+	  assertNotNull(interfaceTwoPrint);
+	  assertNotNull(interfaceOnePrint);
 	  
-	  Assert.assertFalse(edgeMainToInterfaceOnePrint);
-	  Assert.assertTrue(edgeMainToInterfaceTwoPrint);
+	  assertFalse(edgeMainToInterfaceOnePrint);
+	  assertTrue(edgeMainToInterfaceTwoPrint);
 	  
-	  Assert.assertTrue(reachableMethods.contains(interfaceTwoPrint));
-	  Assert.assertFalse(reachableMethods.contains(interfaceOnePrint));
+	  assertTrue(reachableMethods.contains(interfaceTwoPrint));
+	  assertFalse(reachableMethods.contains(interfaceOnePrint));
 	  
-	  Assert.assertEquals(interfaceTwoPrint, refMainMethod);
+	  assertEquals(interfaceTwoPrint, refMainMethod);
 	  
-	  Assert.assertEquals(interfaceTwoPrint, interfaceOneResolvedMethod);
-	  Assert.assertEquals(interfaceTwoPrint, interfaceTwoResolvedMethod);
+	  assertEquals(interfaceTwoPrint, interfaceOneResolvedMethod);
+	  assertEquals(interfaceTwoPrint, interfaceTwoResolvedMethod);
 	  
-	  Assert.assertEquals(interfaceTwoPrint, concreteImplInterfaceOne);
-	  Assert.assertNotEquals(interfaceOnePrint, concreteImplInterfaceOne);
-	  Assert.assertEquals(interfaceTwoPrint, concreteImplInterfaceTwo);
-	  Assert.assertNotEquals(interfaceOnePrint, concreteImplInterfaceTwo);
+	  assertEquals(interfaceTwoPrint, concreteImplInterfaceOne);
+	  assertNotEquals(interfaceOnePrint, concreteImplInterfaceOne);
+	  assertEquals(interfaceTwoPrint, concreteImplInterfaceTwo);
+	  assertNotEquals(interfaceOnePrint, concreteImplInterfaceTwo);
 	  
   }
   
@@ -367,20 +368,20 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
-	  Assert.assertEquals(interfaceTestAPrint.getName(), "print");
-	  Assert.assertNotNull(interfaceTestAPrint);
-	  Assert.assertNotNull(mainPrintMessageMethod);
+	  assertEquals(interfaceTestAPrint.getName(), "print");
+	  assertNotNull(interfaceTestAPrint);
+	  assertNotNull(mainPrintMessageMethod);
 	  
-	  Assert.assertTrue(edgeMainToInterfaceTestAPrint);
-	  Assert.assertFalse(edgeMainToMainPrintMessage);
+	  assertTrue(edgeMainToInterfaceTestAPrint);
+	  assertFalse(edgeMainToMainPrintMessage);
 	  
-	  Assert.assertTrue(reachableMethods.contains(interfaceTestAPrint));
-	  Assert.assertFalse(reachableMethods.contains(mainPrintMessageMethod));
+	  assertTrue(reachableMethods.contains(interfaceTestAPrint));
+	  assertFalse(reachableMethods.contains(mainPrintMessageMethod));
 	  
-	  Assert.assertEquals(interfaceTestAPrint, refMainMethod);
-	  Assert.assertEquals(interfaceTestAPrint, resolvedMethod);
+	  assertEquals(interfaceTestAPrint, refMainMethod);
+	  assertEquals(interfaceTestAPrint, resolvedMethod);
 	  
-	  Assert.assertEquals(interfaceTestAPrint, concreteImpl);
+	  assertEquals(interfaceTestAPrint, concreteImpl);
 	  
   }
   
@@ -414,21 +415,21 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
-	  Assert.assertEquals(mainMethodPrint.getName(), "print");
-	  Assert.assertNotNull(mainMethodPrint);
-	  Assert.assertNotNull(interfaceAPrint);
+	  assertEquals(mainMethodPrint.getName(), "print");
+	  assertNotNull(mainMethodPrint);
+	  assertNotNull(interfaceAPrint);
 	  
-	  Assert.assertTrue(edgeMainMethodToMainPrint);
-	  Assert.assertFalse(edgeMainMethodToInterfaceAPrint);
+	  assertTrue(edgeMainMethodToMainPrint);
+	  assertFalse(edgeMainMethodToInterfaceAPrint);
 	  
-	  Assert.assertTrue(reachableMethods.contains(mainMethodPrint));
-	  Assert.assertFalse(reachableMethods.contains(interfaceAPrint));
+	  assertTrue(reachableMethods.contains(mainMethodPrint));
+	  assertFalse(reachableMethods.contains(interfaceAPrint));
 	  
-	  Assert.assertEquals(mainMethodPrint, refMainMethod);
-	  Assert.assertEquals(mainMethodPrint, resolvedMethod);
+	  assertEquals(mainMethodPrint, refMainMethod);
+	  assertEquals(mainMethodPrint, resolvedMethod);
 	  
-	  Assert.assertEquals(mainMethodPrint, concreteImpl);
-	  Assert.assertNotEquals(interfaceAPrint, concreteImpl);
+	  assertEquals(mainMethodPrint, concreteImpl);
+	  assertNotEquals(interfaceAPrint, concreteImpl);
   }
   
   @Test
@@ -467,28 +468,28 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
-	  Assert.assertNotNull(superClassPrint);
-	  Assert.assertNotNull(interfaceOnePrint);
-	  Assert.assertNotNull(interfaceTwoPrint);
+	  assertNotNull(superClassPrint);
+	  assertNotNull(interfaceOnePrint);
+	  assertNotNull(interfaceTwoPrint);
 	  
-	  Assert.assertEquals(superClassPrint.getName(), "print");
+	  assertEquals(superClassPrint.getName(), "print");
 	  
-	  Assert.assertTrue(edgeMainToSuperClassPrint);
-	  Assert.assertFalse(edgeMainToInterfaceOnePrint);
-	  Assert.assertFalse(edgeMainToInterfaceTwoPrint);
+	  assertTrue(edgeMainToSuperClassPrint);
+	  assertFalse(edgeMainToInterfaceOnePrint);
+	  assertFalse(edgeMainToInterfaceTwoPrint);
 	  
-	  Assert.assertTrue(reachableMethods.contains(superClassPrint));
-	  Assert.assertFalse(reachableMethods.contains(interfaceOnePrint));
-	  Assert.assertFalse(reachableMethods.contains(interfaceTwoPrint));
+	  assertTrue(reachableMethods.contains(superClassPrint));
+	  assertFalse(reachableMethods.contains(interfaceOnePrint));
+	  assertFalse(reachableMethods.contains(interfaceTwoPrint));
 	  
-	  Assert.assertEquals(superClassPrint, refMainMethod);
-	  Assert.assertEquals(superClassPrint, resolvedInterfaceOneDefaultMethod);
-	  Assert.assertEquals(superClassPrint, resolvedInterfaceTwoDefaultMethod);
+	  assertEquals(superClassPrint, refMainMethod);
+	  assertEquals(superClassPrint, resolvedInterfaceOneDefaultMethod);
+	  assertEquals(superClassPrint, resolvedInterfaceTwoDefaultMethod);
 	  
-	  Assert.assertEquals(superClassPrint, concreteImplInterfaceOne);
-	  Assert.assertNotEquals(interfaceOnePrint, concreteImplInterfaceOne);
-	  Assert.assertEquals(superClassPrint, concreteImplInterfaceTwo);
-	  Assert.assertNotEquals(interfaceTwoPrint, concreteImplInterfaceTwo);
+	  assertEquals(superClassPrint, concreteImplInterfaceOne);
+	  assertNotEquals(interfaceOnePrint, concreteImplInterfaceOne);
+	  assertEquals(superClassPrint, concreteImplInterfaceTwo);
+	  assertNotEquals(interfaceTwoPrint, concreteImplInterfaceTwo);
   }
   
   private boolean checkInEdges(CallGraph callGraph, SootMethod defaultMethod, SootMethod targetMethod) {
