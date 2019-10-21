@@ -5,7 +5,8 @@ public class TestInterfaceInheritance implements InterfaceTestB{
 		TestInterfaceInheritance testClass = new TestInterfaceInheritance();
 		testClass.print();
 	}
-	
+
+	@Override
 	public void printMessage() {
 		System.out.println("This is print method of main class");
 	}	

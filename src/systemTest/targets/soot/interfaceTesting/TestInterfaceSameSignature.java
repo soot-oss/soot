@@ -10,7 +10,7 @@ public class TestInterfaceSameSignature implements Read, Write {
 		TestInterfaceSameSignature testClass = new TestInterfaceSameSignature();
 		testClass.read();
 		testClass.write();
-		testClass.print();		
+		testClass.print();
 	}	
 }
 
