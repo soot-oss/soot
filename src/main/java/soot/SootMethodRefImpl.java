@@ -22,15 +22,11 @@ package soot;
  * #L%
  */
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Queue;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeStmt;
@@ -43,9 +39,10 @@ import soot.options.Options;
 import soot.util.NumberedString;
 
 /**
- * Representation of a reference to a method as it appears in a class file. Note that the method directly referred to may not
- * actually exist; the actual target of the reference is determined according to the resolution procedure in the Java Virtual
- * Machine Specification, 2nd ed, section 5.4.3.3.
+ * Representation of a reference to a method as it appears in a class file. Note that the method
+ * directly referred to may not actually exist; the actual target of the reference is determined
+ * according to the resolution procedure in the Java Virtual Machine Specification, 2nd ed, section
+ * 5.4.3.3.
  */
 public class SootMethodRefImpl implements SootMethodRef {
 
@@ -59,21 +56,20 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   /**
    * Constructor.
-   * 
-   * @param declaringClass
-   *          the declaring class. Must not be {@code null}
-   * @param name
-   *          the method name. Must not be {@code null}
-   * @param parameterTypes
-   *          the types of parameters. May be {@code null}
-   * @param returnType
-   *          the type of return value. Must not be {@code null}
-   * @param isStatic
-   *          the static modifier value
-   * @throws IllegalArgumentException
-   *           is thrown when {@code declaringClass}, or {@code name}, or {@code returnType} is null
+   *
+   * @param declaringClass the declaring class. Must not be {@code null}
+   * @param name the method name. Must not be {@code null}
+   * @param parameterTypes the types of parameters. May be {@code null}
+   * @param returnType the type of return value. Must not be {@code null}
+   * @param isStatic the static modifier value
+   * @throws IllegalArgumentException is thrown when {@code declaringClass}, or {@code name}, or
+   *     {@code returnType} is null
    */
-  public SootMethodRefImpl(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType,
+  public SootMethodRefImpl(
+      SootClass declaringClass,
+      String name,
+      List<Type> parameterTypes,
+      Type returnType,
       boolean isStatic) {
     if (declaringClass == null) {
       throw new IllegalArgumentException("Attempt to create SootMethodRef with null class");
@@ -87,9 +83,10 @@ public class SootMethodRefImpl implements SootMethodRef {
 
     this.declaringClass = declaringClass;
     this.name = name;
-    this.parameterTypes = (parameterTypes == null) // initialize with unmodifiable collection
-        ? Collections.emptyList()
-        : Collections.unmodifiableList(new ArrayList<>(parameterTypes));
+    this.parameterTypes =
+        (parameterTypes == null) // initialize with unmodifiable collection
+            ? Collections.emptyList()
+            : Collections.unmodifiableList(new ArrayList<>(parameterTypes));
     this.returnType = returnType;
     this.isStatic = isStatic;
   }
@@ -141,7 +138,9 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   @Override
   public NumberedString getSubSignature() {
-    return Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
+    return Scene.v()
+        .getSubSigNumberer()
+        .findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
   }
 
   @Override
@@ -160,14 +159,21 @@ public class SootMethodRefImpl implements SootMethodRef {
   }
 
   public class ClassResolutionFailedException extends ResolutionFailedException {
-    /**
-     *
-     */
+    /** */
     private static final long serialVersionUID = 5430199603403917938L;
 
     public ClassResolutionFailedException() {
-      super("Class " + declaringClass + " doesn't have method " + name + "(" + (parameterTypes == null ? "" : parameterTypes)
-          + ")" + " : " + returnType + "; failed to resolve in superclasses and interfaces");
+      super(
+          "Class "
+              + declaringClass
+              + " doesn't have method "
+              + name
+              + "("
+              + (parameterTypes == null ? "" : parameterTypes)
+              + ")"
+              + " : "
+              + returnType
+              + "; failed to resolve in superclasses and interfaces");
     }
 
     @Override
@@ -190,66 +196,40 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   private void checkStatic(SootMethod method) {
     if ((Options.v().wrong_staticness() == Options.wrong_staticness_fail
-        || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) && method.isStatic() != isStatic()
+            || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict)
+        && method.isStatic() != isStatic()
         && !method.isPhantom()) {
-      throw new ResolutionFailedException("Resolved " + this + " to " + method + " which has wrong static-ness");
+      throw new ResolutionFailedException(
+          "Resolved " + this + " to " + method + " which has wrong static-ness");
     }
   }
 
   protected SootMethod tryResolve(final StringBuilder trace) {
-    SootClass selectedClass = declaringClass;
-    while (selectedClass != null) {
-      if (trace != null) {
-        trace.append("Looking in ").append(selectedClass).append(" which has methods ").append(selectedClass.getMethods())
-            .append("\n");
-      }
 
-      // using soot.SootClass.getMethodUnsafe(java.lang.String, java.util.List<soot.Type>, soot.Type)
-      // instead of soot.SootClass.getMethodUnsafe(soot.util.NumberedString)
-      // to avoid false positive on method/class renaming
-      final SootMethod method = selectedClass.getMethodUnsafe(name, parameterTypes, returnType);
-      if (method != null) {
-        checkStatic(method);
-        return method;
-      }
+    // let's do a dispatch and allow abstract method for resolution
+    // we do not have a base object for call so we just take the type of the declaring class
+    SootMethod resolved =
+        Scene.v()
+            .getOrMakeFastHierarchy()
+            .resolveMethod(
+                declaringClass,
+                declaringClass,
+                name,
+                parameterTypes,
+                returnType,
+                isStatic() ? Modifier.STATIC : 0,
+                true);
 
-      if (Scene.v().allowsPhantomRefs() && selectedClass.isPhantom()) {
-        SootMethod phantomMethod
-            = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
-        phantomMethod.setPhantom(true);
-        phantomMethod = selectedClass.getOrAddMethod(phantomMethod);
-        checkStatic(phantomMethod);
-        return phantomMethod;
-      }
-      selectedClass = selectedClass.getSuperclassUnsafe();
-    }
-
-    selectedClass = declaringClass;
-    while (selectedClass != null) {
-      final Queue<SootClass> queue = new ArrayDeque<>(selectedClass.getInterfaces());
-      while (!queue.isEmpty()) {
-        final SootClass iface = queue.poll();
-        if (trace != null) {
-          trace.append("Looking in ").append(iface).append(" which has methods ").append(iface.getMethods()).append("\n");
-        }
-
-        // using soot.SootClass.getMethodUnsafe(java.lang.String, java.util.List<soot.Type>, soot.Type)
-        // instead of soot.SootClass.getMethodUnsafe(soot.util.NumberedString)
-        // to avoid false positive on method/class renaming
-        final SootMethod method = iface.getMethodUnsafe(name, parameterTypes, returnType);
-        if (method != null) {
-          checkStatic(method);
-          return method;
-        }
-
-        queue.addAll(iface.getInterfaces());
-      }
-      selectedClass = selectedClass.getSuperclassUnsafe();
+    if (resolved != null) {
+      checkStatic(resolved);
+      return resolved;
     }
 
     // If we don't have a method yet, we try to fix it on the fly
     if (Scene.v().allowsPhantomRefs() && Options.v().ignore_resolution_errors()) {
-      SootMethod method = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
+      SootMethod method =
+          Scene.v()
+              .makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
       method.setPhantom(true);
       method = declaringClass.getOrAddMethod(method);
       checkStatic(method);
@@ -296,12 +276,13 @@ public class SootMethodRefImpl implements SootMethodRef {
   /**
    * Creates a method body that throws an "unresolved compilation error" message
    *
-   * @param declaringClass
-   *          The class that was supposed to contain the method
+   * @param declaringClass The class that was supposed to contain the method
    * @return The created SootMethod
    */
   private SootMethod createUnresolvedErrorMethod(SootClass declaringClass) {
-    SootMethod m = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
+    SootMethod m =
+        Scene.v()
+            .makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
     int modifiers = Modifier.PUBLIC; // we don't know who will be calling us
     if (isStatic()) {
       modifiers |= Modifier.STATIC;
@@ -324,10 +305,18 @@ public class SootMethodRefImpl implements SootMethodRef {
     body.getUnits().add(assignStmt);
 
     // exc.<init>(message)
-    SootMethodRef cref = Scene.v().makeConstructorRef(runtimeExceptionType.getSootClass(),
-        Collections.<Type>singletonList(RefType.v("java.lang.String")));
-    SpecialInvokeExpr constructorInvokeExpr = Jimple.v().newSpecialInvokeExpr(exceptionLocal, cref,
-        StringConstant.v("Unresolved compilation error: Method " + getSignature() + " does not exist!"));
+    SootMethodRef cref =
+        Scene.v()
+            .makeConstructorRef(
+                runtimeExceptionType.getSootClass(),
+                Collections.<Type>singletonList(RefType.v("java.lang.String")));
+    SpecialInvokeExpr constructorInvokeExpr =
+        Jimple.v()
+            .newSpecialInvokeExpr(
+                exceptionLocal,
+                cref,
+                StringConstant.v(
+                    "Unresolved compilation error: Method " + getSignature() + " does not exist!"));
     InvokeStmt initStmt = Jimple.v().newInvokeStmt(constructorInvokeExpr);
     body.getUnits().insertAfter(initStmt, assignStmt);
 
@@ -410,5 +399,4 @@ public class SootMethodRefImpl implements SootMethodRef {
     }
     return true;
   }
-
 }

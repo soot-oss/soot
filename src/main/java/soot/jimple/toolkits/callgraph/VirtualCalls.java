@@ -84,7 +84,6 @@ public class VirtualCalls {
         // method with a specialinvoke instruction (i.e. do not dispatch to an
         // overwritten version of that method)
         && !callee.getDeclaringClass().isInterface()) {
-
       return resolveNonSpecial(container.getDeclaringClass().getType(), callee, appOnly);
     } else {
       return callee;
