@@ -1,12 +1,14 @@
 package soot.testing.framework;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
+import static org.junit.Assert.*;
 import org.junit.Assert;
 import soot.Body;
 import soot.G;
@@ -39,31 +41,17 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 					  testClass,
 					  "soot.interfaceTesting.Default");
 
-	  SootMethod defaultMethod = Scene.v().getMethod("<soot.interfaceTesting.Default: void target()>"); 	  
-
-	  Body body = target.retrieveActiveBody();
-	  
-	  SootMethod targetMethod = getSootMethodRef(body.getUnits(), "void target()");
-	  
-	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultMethod, false);
-	  
-	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), defaultMethod);
-	  
-	  Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), defaultMethod);  
-
-	  final CallGraph cg = Scene.v().getCallGraph(); 
-	  
-	  boolean edgePresent = checkInEdges(cg, defaultMethod, target);
-	  	  
-	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods(); 
-	  
-	  assertEquals(defaultMethod, resolvedMethod);
-	  assertEquals(defaultMethod, targetMethod);
-	  assertEquals(defaultMethod.getName(), "target");
-	  assertNotNull(defaultMethod);
-	  assertTrue(reachableMethods.contains(defaultMethod));
-	  assertTrue(edgePresent);
-	  assertEquals(defaultMethod, concreteImpl);
+	  SootMethod defaultMethod = Scene.v().getMethod("<soot.interfaceTesting.Default: void target()>"); 
+	  Body body = target.retrieveActiveBody();	  
+	  SootMethod targetMethod = getSootMethodRef(body.getUnits(), "void target()");	  
+	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultMethod.getNumberedSubSignature(), false);	  
+	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), defaultMethod);	  
+	  Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), defaultMethod);
+	  final CallGraph cg = Scene.v().getCallGraph(); 	  
+	  boolean edgePresent = checkInEdges(cg, defaultMethod, target);	  	  
+	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods(); 	  
+	  /* Arguments for assert function */	  
+	  assertdefaultInterfaceTest(defaultMethod, reachableMethods, resolvedMethod, edgePresent, targetMethod, concreteImpl);
   }
   
   @Test
@@ -127,50 +115,53 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
-	  assertNotNull(mainPrintMethod);
-	  assertNotNull(readInterfacePrint);
-	  assertNotNull(writeInterfacePrint);
-	  assertNotNull(defaultRead);
-	  assertNotNull(defaultWrite);
+	  /* Arguments for assert function */
+	  Map<SootMethod, String> targetMethods = new HashMap<SootMethod, String>() {{
+		  put(mainPrintMethod, "print");
+		  put(readInterfacePrint, "print");
+		  put(writeInterfacePrint, "print");
+		  put(defaultRead, "read");
+		  put(defaultWrite, "write");
+	  }};
 	  
-	  assertEquals(mainPrintMethod.getName(), "print");
-	  assertEquals(readInterfacePrint.getName(), "print");
-	  assertEquals(writeInterfacePrint.getName(), "print");
-	  assertEquals(defaultRead.getName(), "read");
-	  assertEquals(defaultWrite.getName(), "write");
+	  Map<SootMethod, SootMethod> resolvedMethods = new HashMap<SootMethod, SootMethod>() {{
+		  put(mainPrintMethod, resolvedMainMethod);
+		  put(mainPrintMethod, resolvedWritePrintMethod);
+		  put(mainPrintMethod, resolvedReadPrintMethod);
+		  put(defaultRead, resolvedDefaultReadMethod);
+		  put(defaultWrite, resolvedDefaultWriteMethod);		  
+	  }};
 	  
-	  assertTrue(reachableMethods.contains(mainPrintMethod));
-	  assertTrue(reachableMethods.contains(readInterfacePrint));
-	  assertTrue(reachableMethods.contains(writeInterfacePrint));
-	  assertTrue(reachableMethods.contains(defaultRead));
-	  assertTrue(reachableMethods.contains(defaultWrite));
+	  Map<SootMethod, SootMethod> methodRef = new HashMap<SootMethod, SootMethod>() {{
+		  put(mainPrintMethod, refMainMethod);
+		  put(writeInterfacePrint, refWritePrintMethod);
+		  put(readInterfacePrint, refReadPrintMethod);
+		  put(defaultRead, refDefaultRead);
+		  put(defaultWrite, refDefaultWrite);		  
+	  }};
 	  
-	  assertTrue(edgeMainPrintToReadPrint);
-	  assertTrue(edgeMainPrintToWritePrint);
-	  assertTrue(edgeMainMethodToPrint);
-	  assertFalse(edgeMainMethodToReadPrint);
-	  assertFalse(edgeMainMethodToWritePrint);
-	  assertTrue(edgeMainMethodToReadMethod);
-	  assertTrue(edgeMainMethodToWriteMethod);
+	  Map<SootMethod, SootMethod> concreteImpl = new HashMap<SootMethod, SootMethod>() {{
+		  put(mainPrintMethod, concreteImplMainPrint);
+		  put(writeInterfacePrint, concreteImplWritePrint);
+		  put(readInterfacePrint, concreteImplReadPrint);
+		  put(defaultRead, concreteImplDefaultRead);
+		  put(defaultWrite, concreteImplDefaultWrite);		  
+	  }};
 	  
-	  assertEquals(mainPrintMethod, resolvedMainMethod);
-	  assertEquals(mainPrintMethod, resolvedReadPrintMethod);
-	  assertEquals(mainPrintMethod, resolvedWritePrintMethod);
-	  assertEquals(defaultRead, resolvedDefaultReadMethod);
-	  assertEquals(defaultWrite, resolvedDefaultWriteMethod);
+	  ArrayList<Boolean> edgePresent = new ArrayList<Boolean>() {{
+		  add(edgeMainPrintToReadPrint);
+		  add(edgeMainPrintToWritePrint);
+		  add(edgeMainMethodToPrint);		  
+	  }};
 	  
-	  assertEquals(mainPrintMethod, refMainMethod);
-	  assertEquals(readInterfacePrint, refReadPrintMethod);
-	  assertEquals(writeInterfacePrint, refWritePrintMethod);
-	  assertEquals(defaultRead, refDefaultRead);
-	  assertEquals(defaultWrite, refDefaultWrite);
+	  ArrayList<Boolean> edgeNotPresent = new ArrayList<Boolean>() {{
+		  add(edgeMainMethodToReadPrint);
+		  add(edgeMainMethodToWritePrint);
+		  add(edgeMainMethodToReadMethod);	
+		  add(edgeMainMethodToWriteMethod);
+	  }};
 	  
-	  assertEquals(mainPrintMethod, concreteImplMainPrint);
-	  assertEquals(mainPrintMethod, Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), refWritePrintMethod));
-	  assertEquals(mainPrintMethod, concreteImplReadPrint);
-	  assertEquals(refDefaultRead, concreteImplDefaultRead);
-	  assertEquals(refDefaultWrite, concreteImplDefaultWrite);
-	  
+	  assertInterfaceWithSameSignature(targetMethods, reachableMethods, resolvedMethods, edgePresent, edgeNotPresent, methodRef, concreteImpl);
   }
   
   @Test
@@ -185,41 +176,28 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 					  "soot.interfaceTesting.HelloWorld");
 
 	  SootMethod mainPrintMethod = Scene.v().getMethod("<soot.interfaceTesting.TestClassPreferenceOverInterface: void print()>");
-	  SootMethod defaultPrintMethod = Scene.v().getMethod("<soot.interfaceTesting.InterfaceOne: void print()>");
-
-	  final CallGraph cg = Scene.v().getCallGraph();
-	  
-	  Body mainBody = target.retrieveActiveBody();
-	  
-	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
-	  
-	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultPrintMethod, false);
-	  
-	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), defaultPrintMethod);
-	  
-	  Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), defaultPrintMethod);
-	  
+	  SootMethod defaultPrintMethod = Scene.v().getMethod("<soot.interfaceTesting.HelloWorld: void print()>");
+	  final CallGraph cg = Scene.v().getCallGraph();	  
+	  Body mainBody = target.retrieveActiveBody();	  
+	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");	  
+	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), defaultPrintMethod.getNumberedSubSignature(), false);	  
+	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), defaultPrintMethod);	  
+	  Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), defaultPrintMethod);	  
 	  boolean edgeMainMethodToMainPrint = checkInEdges(cg, mainPrintMethod, target);
 	  boolean edgeMainPrintToDefaultPrint = checkInEdges(cg, defaultPrintMethod, target);
-
-	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
+	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods(); 
 	  
-	  assertNotNull(mainPrintMethod);
-	  assertNotNull(defaultPrintMethod);
+	  Map<SootMethod, String> targetMethods = new HashMap<SootMethod, String>() {{
+		  put(mainPrintMethod, "print");
+		  put(defaultPrintMethod, "print");		  
+	  }};
 	  
-	  assertEquals(mainPrintMethod.getName(), "print");
+	  ArrayList<Boolean> edgePresent = new ArrayList<Boolean>() {{
+		  add(edgeMainMethodToMainPrint);
+		  add(edgeMainPrintToDefaultPrint);		  		  
+	  }};
 	  
-	  assertTrue(edgeMainMethodToMainPrint);
-	  assertFalse(edgeMainPrintToDefaultPrint);
-	  
-	  assertTrue(reachableMethods.contains(mainPrintMethod));
-	  assertFalse(reachableMethods.contains(defaultPrintMethod));
-	  
-	  assertEquals(mainPrintMethod, refMainMethod);
-	  assertEquals(mainPrintMethod, resolvedMethod);
-	  
-	  assertEquals(mainPrintMethod, concreteImpl);
-	  
+	  assertClassInterfaceWithSameSignature(mainPrintMethod, targetMethods, resolvedMethod, refMainMethod, reachableMethods, edgePresent, concreteImpl);	  
   }
   
   @Test
@@ -259,27 +237,24 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
-	  assertNotNull(mainMethod);
-	  assertNotNull(defaultMethod);
-	  assertNotNull(defaultSuperClassMethod);
+	  List<SootMethod> targetMethods = new ArrayList<SootMethod>() {{
+		  add(mainMethod);
+		  add(defaultMethod);
+		  add(defaultSuperClassMethod);
+	  }};
 	  
-	  assertEquals(mainMethod.getName(), "print");
+	  ArrayList<Boolean> edgeNotPresent = new ArrayList<Boolean>() {{
+		  add(edgeMainToDefaultPrint);
+		  add(edgeMainToSuperDefaultPrint);
+		  add(edgeSuperMainToSuperPrint);
+	  }};
 	  
-	  assertTrue(edgeMainToSuperClassPrint);
-	  assertFalse(edgeMainToDefaultPrint);
-	  assertFalse(edgeMainToSuperDefaultPrint);
-	  assertFalse(edgeSuperMainToSuperPrint);
+	  Map<SootMethod, SootMethod> resolvedMethods = new HashMap<SootMethod, SootMethod>() {{
+		  put(mainMethod, resolvedMethod);
+		  put(resolvedSuperClassDefaultMethod, resolvedMethod);		  		  
+	  }};
 	  
-	  assertTrue(reachableMethods.contains(mainMethod));
-	  assertFalse(reachableMethods.contains(defaultSuperClassMethod));
-	  assertFalse(reachableMethods.contains(defaultMethod));
-	  
-	  assertEquals(mainMethod, refMainMethod);
-	  assertEquals(mainMethod, resolvedMethod);
-	  assertEquals(resolvedSuperClassDefaultMethod, resolvedMethod);
-	  
-	  assertEquals(mainMethod, concreteImpl);
-	  assertNotEquals(defaultMethod, concreteImpl);
+	  assertSuperClassInterfaceWithSameSignature(targetMethods, resolvedMethods, refMainMethod, reachableMethods, edgeMainToSuperClassPrint, edgeNotPresent, concreteImpl);  
   }  
 
   @Test
@@ -316,26 +291,27 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
-	  assertEquals(interfaceTwoPrint.getName(), "print");
-	  assertNotNull(interfaceTwoPrint);
-	  assertNotNull(interfaceOnePrint);
+	  List<SootMethod> targetMethods = new ArrayList<SootMethod>() {{
+		  add(interfaceOnePrint);
+		  add(interfaceTwoPrint);		  
+	  }};
 	  
-	  assertFalse(edgeMainToInterfaceOnePrint);
-	  assertTrue(edgeMainToInterfaceTwoPrint);
+	  Map<SootMethod, SootMethod> resolvedMethods = new HashMap<SootMethod, SootMethod>() {{
+		  put(interfaceTwoPrint, interfaceOneResolvedMethod);
+		  put(interfaceTwoPrint, interfaceTwoResolvedMethod);		  		  
+	  }};
 	  
-	  assertTrue(reachableMethods.contains(interfaceTwoPrint));
-	  assertFalse(reachableMethods.contains(interfaceOnePrint));
+	  Map<SootMethod, SootMethod> concreteImplTrue = new HashMap<SootMethod, SootMethod>() {{
+		  put(interfaceTwoPrint, concreteImplInterfaceOne);
+		  put(interfaceTwoPrint, concreteImplInterfaceTwo);		  		  
+	  }};
 	  
-	  assertEquals(interfaceTwoPrint, refMainMethod);
+	  Map<SootMethod, SootMethod> concreteImplNotTrue = new HashMap<SootMethod, SootMethod>() {{
+		  put(interfaceOnePrint, concreteImplInterfaceOne);
+		  put(interfaceOnePrint, concreteImplInterfaceTwo);		  		  
+	  }};
 	  
-	  assertEquals(interfaceTwoPrint, interfaceOneResolvedMethod);
-	  assertEquals(interfaceTwoPrint, interfaceTwoResolvedMethod);
-	  
-	  assertEquals(interfaceTwoPrint, concreteImplInterfaceOne);
-	  assertNotEquals(interfaceOnePrint, concreteImplInterfaceOne);
-	  assertEquals(interfaceTwoPrint, concreteImplInterfaceTwo);
-	  assertNotEquals(interfaceOnePrint, concreteImplInterfaceTwo);
-	  
+	  assertDerivedInterface(targetMethods, resolvedMethods, refMainMethod, reachableMethods, edgeMainToInterfaceTwoPrint, edgeMainToInterfaceOnePrint, concreteImplTrue, concreteImplNotTrue);
   }
   
   @Test
@@ -350,39 +326,29 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 					  "soot.interfaceTesting.InterfaceTestA", "soot.interfaceTesting.InterfaceTestB");	  
 	  
 	  SootMethod interfaceTestAPrint = Scene.v().getMethod("<soot.interfaceTesting.InterfaceTestA: void print()>");
-	  SootMethod mainPrintMessageMethod = Scene.v().getMethod("<soot.interfaceTesting.TestInterfaceInheritance: void printMessage()>");
-	  
+	  SootMethod mainPrintMessageMethod = Scene.v().getMethod("<soot.interfaceTesting.TestInterfaceInheritance: void printMessage()>");	  
 	  Body mainBody = target.retrieveActiveBody();
-	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
-	  
-	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTestAPrint, false);
-	  
-	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceTestAPrint);
-	  
-	  Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), interfaceTestAPrint);
-	  
-	  final CallGraph cg = Scene.v().getCallGraph();
-	  
+	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");	  
+	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTestAPrint.getNumberedSubSignature(), false);	  
+	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceTestAPrint);	  
+	  //Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), interfaceTestAPrint);	  
+	  final CallGraph cg = Scene.v().getCallGraph();	  
 	  boolean edgeMainToInterfaceTestAPrint = checkInEdges(cg, interfaceTestAPrint, target);
-	  boolean edgeMainToMainPrintMessage = checkInEdges(cg, mainPrintMessageMethod, target);
-	  
+	  boolean edgeMainToMainPrintMessage = checkInEdges(cg, mainPrintMessageMethod, target);	  
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
-	  assertEquals(interfaceTestAPrint.getName(), "print");
-	  assertNotNull(interfaceTestAPrint);
-	  assertNotNull(mainPrintMessageMethod);
+	  List<SootMethod> targetMethods = new ArrayList<SootMethod>() {{
+	  Assert.assertNotNull(interfaceTestAPrint);
+	  Assert.assertNotNull(mainPrintMessageMethod);
+	  }};
+	  Assert.assertTrue(edgeMainToInterfaceTestAPrint);
+	  Assert.assertFalse(edgeMainToMainPrintMessage);
 	  
-	  assertTrue(edgeMainToInterfaceTestAPrint);
-	  assertFalse(edgeMainToMainPrintMessage);
-	  
-	  assertTrue(reachableMethods.contains(interfaceTestAPrint));
-	  assertFalse(reachableMethods.contains(mainPrintMessageMethod));
-	  
-	  assertEquals(interfaceTestAPrint, refMainMethod);
-	  assertEquals(interfaceTestAPrint, resolvedMethod);
-	  
-	  assertEquals(interfaceTestAPrint, concreteImpl);
-	  
+	  Assert.assertTrue(reachableMethods.contains(interfaceTestAPrint));
+	  Assert.assertFalse(reachableMethods.contains(mainPrintMessageMethod));
+	  Assert.assertEquals(interfaceTestAPrint, refMainMethod);
+	  Assert.assertEquals(interfaceTestAPrint, resolvedMethod);
+	  Assert.assertEquals(interfaceTestAPrint, concreteImpl);
   }
   
   @Test
@@ -400,40 +366,25 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  SootMethod mainMethodPrint = Scene.v().getMethod("<soot.interfaceTesting.TestInterfaceReAbstracting: void print()>");
 	  
 	  Body mainBody = target.retrieveActiveBody();
-	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");
-	  
-	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceAPrint, false);
-	  
-	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceAPrint);
-	  
-	  Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), interfaceAPrint);
-	  
-	  final CallGraph cg = Scene.v().getCallGraph();
-	  
+	  SootMethod refMainMethod = getSootMethodRef(mainBody.getUnits(), "void print()");	  
+	  SootMethod resolvedMethod = G.v().soot_jimple_toolkits_callgraph_VirtualCalls().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceAPrint.getNumberedSubSignature(), false);	  
+	  SootMethod concreteImpl = Scene.v().getFastHierarchy().resolveConcreteDispatch(Scene.v().getSootClass(testClass), interfaceAPrint);	  
+	  Set<SootMethod> abstractImpl = Scene.v().getFastHierarchy().resolveAbstractDispatch(Scene.v().getSootClass(defaultClass), interfaceAPrint);	  
+	  final CallGraph cg = Scene.v().getCallGraph();	  
 	  boolean edgeMainMethodToMainPrint = checkInEdges(cg, mainMethodPrint, target);
-	  boolean edgeMainMethodToInterfaceAPrint = checkInEdges(cg, interfaceAPrint, target);
-	  
+	  boolean edgeMainMethodToInterfaceAPrint = checkInEdges(cg, interfaceAPrint, target);	  
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
-	  assertEquals(mainMethodPrint.getName(), "print");
-	  assertNotNull(mainMethodPrint);
-	  assertNotNull(interfaceAPrint);
+	  List<SootMethod> targetMethods = new ArrayList<SootMethod>() {{
+		  add(mainMethodPrint);
+		  add(interfaceAPrint);		  
+	  }};
 	  
-	  assertTrue(edgeMainMethodToMainPrint);
-	  assertFalse(edgeMainMethodToInterfaceAPrint);
-	  
-	  assertTrue(reachableMethods.contains(mainMethodPrint));
-	  assertFalse(reachableMethods.contains(interfaceAPrint));
-	  
-	  assertEquals(mainMethodPrint, refMainMethod);
-	  assertEquals(mainMethodPrint, resolvedMethod);
-	  
-	  assertEquals(mainMethodPrint, concreteImpl);
-	  assertNotEquals(interfaceAPrint, concreteImpl);
+	  assertInterfaceReAbstraction(targetMethods, edgeMainMethodToMainPrint, edgeMainMethodToInterfaceAPrint, reachableMethods, resolvedMethod, refMainMethod, concreteImpl); 
   }
   
   @Test
-  public void SuperClassPreferenceOverDefaultMethodTest() {
+  public void superClassPreferenceOverDefaultMethodTest() {
 	  String testClass = "soot.interfaceTesting.TestSuperClassPreferenceOverInterface";
 	  String defaultInterfaceOne = "soot.interfaceTesting.InterfaceOne";
 	  String defaultInterfaceTwo = "soot.interfaceTesting.InterfaceTwo";
@@ -468,28 +419,33 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 	  
 	  final ReachableMethods reachableMethods = Scene.v().getReachableMethods();
 	  
-	  assertNotNull(superClassPrint);
-	  assertNotNull(interfaceOnePrint);
-	  assertNotNull(interfaceTwoPrint);
+	  List<SootMethod> targetMethods = new ArrayList<SootMethod>() {{
+		  add(superClassPrint);
+		  add(interfaceOnePrint);	
+		  add(interfaceTwoPrint);	
+	  }};
 	  
-	  assertEquals(superClassPrint.getName(), "print");
+	  ArrayList<Boolean> edgeNotPresent = new ArrayList<Boolean>() {{
+		  add(edgeMainToInterfaceOnePrint);
+		  add(edgeMainToInterfaceTwoPrint);		  
+	  }};
 	  
-	  assertTrue(edgeMainToSuperClassPrint);
-	  assertFalse(edgeMainToInterfaceOnePrint);
-	  assertFalse(edgeMainToInterfaceTwoPrint);
+	  Map<SootMethod, SootMethod> resolvedMethods = new HashMap<SootMethod, SootMethod>() {{
+		  put(superClassPrint, resolvedInterfaceOneDefaultMethod);
+		  put(superClassPrint, resolvedInterfaceTwoDefaultMethod);		  		  
+	  }};
 	  
-	  assertTrue(reachableMethods.contains(superClassPrint));
-	  assertFalse(reachableMethods.contains(interfaceOnePrint));
-	  assertFalse(reachableMethods.contains(interfaceTwoPrint));
+	  Map<SootMethod, SootMethod> concreteImplTrue = new HashMap<SootMethod, SootMethod>() {{
+		  put(superClassPrint, concreteImplInterfaceOne);
+		  put(superClassPrint, concreteImplInterfaceTwo);		  		  
+	  }};
 	  
-	  assertEquals(superClassPrint, refMainMethod);
-	  assertEquals(superClassPrint, resolvedInterfaceOneDefaultMethod);
-	  assertEquals(superClassPrint, resolvedInterfaceTwoDefaultMethod);
+	  Map<SootMethod, SootMethod> concreteImplNotTrue = new HashMap<SootMethod, SootMethod>() {{
+		  put(interfaceOnePrint, concreteImplInterfaceOne);
+		  put(interfaceOnePrint, concreteImplInterfaceTwo);		  		  
+	  }};
 	  
-	  assertEquals(superClassPrint, concreteImplInterfaceOne);
-	  assertNotEquals(interfaceOnePrint, concreteImplInterfaceOne);
-	  assertEquals(superClassPrint, concreteImplInterfaceTwo);
-	  assertNotEquals(interfaceTwoPrint, concreteImplInterfaceTwo);
+	  assertSuperClassPreferenceOverDefaultMethod(targetMethods, refMainMethod, edgeMainToSuperClassPrint, edgeNotPresent, reachableMethods, resolvedMethods, concreteImplTrue, concreteImplNotTrue); 
   }
   
   private boolean checkInEdges(CallGraph callGraph, SootMethod defaultMethod, SootMethod targetMethod) {
@@ -514,6 +470,160 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 		  }
 	  }
 	  return method;
+  }
+  
+  private void assertdefaultInterfaceTest(SootMethod defaultTargetMethod, ReachableMethods reachableMethods, SootMethod virtualResolvedMethod, boolean edgePresent, SootMethod methodRef, SootMethod concreteImpl) {
+	  
+	  Assert.assertEquals(defaultTargetMethod, virtualResolvedMethod);
+	  Assert.assertEquals(defaultTargetMethod, methodRef);
+	  Assert.assertEquals(defaultTargetMethod.getName(), "target");
+	  Assert.assertNotNull(defaultTargetMethod);
+	  Assert.assertTrue(reachableMethods.contains(defaultTargetMethod));
+	  Assert.assertTrue(edgePresent);
+	  Assert.assertEquals(defaultTargetMethod, concreteImpl);
+	  
+  }
+  
+  private void assertInterfaceWithSameSignature(Map<SootMethod, String> targetMethods, ReachableMethods reachableMethods, Map<SootMethod, SootMethod> virtualResolvedMethods, List<Boolean> edgePresent, List<Boolean> edgeNotPresent, Map<SootMethod, SootMethod> methodRefs, Map<SootMethod, SootMethod> concreteImpls) {
+	  
+	  for(Map.Entry<SootMethod, String> targetMethod:targetMethods.entrySet()) {
+		  assertNotNull(targetMethod.getKey());
+	  }	  
+	  for(Map.Entry<SootMethod, SootMethod> virtualResolvedMethod:virtualResolvedMethods.entrySet()) {
+		  assertEquals(virtualResolvedMethod.getKey(), virtualResolvedMethod.getValue());
+	  }	  
+	  for(Map.Entry<SootMethod, SootMethod> methodRef:methodRefs.entrySet()) {
+		  assertEquals(methodRef.getKey(), methodRef.getValue());
+	  }	  
+	  for(Map.Entry<SootMethod, String> targetMethod:targetMethods.entrySet()) {
+		  assertEquals(targetMethod.getKey().getName(), targetMethod.getValue());
+	  }	  
+	  for(Map.Entry<SootMethod, String> targetMethod:targetMethods.entrySet()) {
+		  assertTrue(reachableMethods.contains(targetMethod.getKey()));
+	  }	  
+	  for(boolean isPresent:edgePresent) {
+		  assertTrue(isPresent);
+	  }	  
+	  for(boolean notPresent:edgeNotPresent) {
+		  assertFalse(notPresent);
+	  }	  
+	  for(Map.Entry<SootMethod, SootMethod> concreteImpl:concreteImpls.entrySet()) {
+		  assertEquals(concreteImpl.getKey(), concreteImpl.getValue());
+	  }
+  }
+  
+  private void assertClassInterfaceWithSameSignature(SootMethod defaultMethod, Map<SootMethod, String> targetMethods, SootMethod virtualResolvedMethod, SootMethod methodRef, ReachableMethods reachableMethods, List<Boolean> edgePresent, SootMethod concreteImpl) {
+	  
+	  for(Map.Entry<SootMethod, String> targetMethod:targetMethods.entrySet()) {
+		  assertNotNull(targetMethod.getKey());
+	  }	  
+	  assertEquals(defaultMethod, virtualResolvedMethod);
+	  assertEquals(defaultMethod, methodRef);	  
+	  for(Map.Entry<SootMethod, String> targetMethod:targetMethods.entrySet()) {
+		  assertEquals(targetMethod.getKey().getName(), targetMethod.getValue());
+	  }	  
+	  for(Map.Entry<SootMethod, String> targetMethod:targetMethods.entrySet()) {
+		  assertTrue(reachableMethods.contains(targetMethod.getKey()));
+	  }	  
+	  for(boolean isPresent:edgePresent) {
+		  assertTrue(isPresent);
+	  }	  
+	  assertEquals(defaultMethod, concreteImpl);
+  }
+  
+  private void assertSuperClassInterfaceWithSameSignature(List<SootMethod> targetMethods, Map<SootMethod, SootMethod> virtualResolvedMethods, SootMethod methodRef, ReachableMethods reachableMethods, boolean edgePresent, List<Boolean> edgeNotPresent, SootMethod concreteImpl) {
+	  for(SootMethod targetMethod: targetMethods) {
+		  assertNotNull(targetMethod);
+	  }	  
+	  assertEquals(targetMethods.get(0), methodRef);
+	  assertEquals(targetMethods.get(0).getName(), "print");
+	  assertTrue(edgePresent);	  
+	  for(boolean notPresent:edgeNotPresent) {
+		  assertFalse(notPresent);
+	  }
+	  assertEquals(targetMethods.get(0), concreteImpl);	  
+	  assertNotEquals(targetMethods.get(1), concreteImpl);  
+	  
+  }
+  
+  private void assertDerivedInterface(List<SootMethod> targetMethods, Map<SootMethod, SootMethod> virtualResolvedMethods, SootMethod methodRef, ReachableMethods reachableMethods, boolean edgePresent, boolean edgeNotPresent, Map<SootMethod, SootMethod> concreteImplsTrue, Map<SootMethod, SootMethod> concreteImplsNotTrue) {
+	  
+	  for(SootMethod targetMethod: targetMethods) {
+		  Assert.assertNotNull(targetMethod);
+	  }	  
+	  assertEquals(targetMethods.get(0), methodRef);
+	  assertEquals(targetMethods.get(1).getName(), "print"); 	  
+	  assertFalse(edgeNotPresent);
+	  assertTrue(edgePresent);
+	  assertTrue(reachableMethods.contains(targetMethods.get(1)));
+	  assertFalse(reachableMethods.contains(targetMethods.get(0)));
+	  for(Map.Entry<SootMethod, SootMethod> virtualResolvedMethod:virtualResolvedMethods.entrySet()) {
+		  assertEquals(virtualResolvedMethod.getKey(), virtualResolvedMethod.getValue());
+	  }
+	  for(Map.Entry<SootMethod, SootMethod> concreteImpl:concreteImplsTrue.entrySet()) {
+		  assertEquals(concreteImpl.getKey(), concreteImpl.getValue());
+	  }
+	  for(Map.Entry<SootMethod, SootMethod> concreteImpl:concreteImplsNotTrue.entrySet()) {
+		  assertNotEquals(concreteImpl.getKey(), concreteImpl.getValue());
+	  } 
+  }
+  
+  private void assertInterfaceInheritanceTest(List<SootMethod> targetMethods, boolean edgePresent, boolean edgeNotPresent, ReachableMethods reachableMethods, SootMethod methodRef, SootMethod resolvedMethod, SootMethod concreteImpl) {
+	  
+	  for(SootMethod targetMethod: targetMethods) {
+		  Assert.assertNotNull(targetMethod);
+	  }	  
+	  assertEquals(targetMethods.get(0), methodRef);
+	  assertEquals(targetMethods.get(0).getName(), "print");	  
+	  assertTrue(edgePresent);
+	  assertFalse(edgeNotPresent);	  
+	  assertTrue(reachableMethods.contains(targetMethods.get(0)));
+	  assertFalse(reachableMethods.contains(targetMethods.get(1)));
+	  assertEquals(targetMethods.get(0), resolvedMethod);	  
+	  assertEquals(targetMethods.get(0), concreteImpl);
+	  
+  }
+  
+  private void assertInterfaceReAbstraction(List<SootMethod> targetMethods, boolean edgePresent, boolean edgeNotPresent, ReachableMethods reachableMethods, SootMethod resolvedMethod, SootMethod methodRef, SootMethod concreteImpl) {
+	  
+	  for(SootMethod targetMethod: targetMethods) {
+		  Assert.assertNotNull(targetMethod);
+	  }
+	  assertEquals(targetMethods.get(0), methodRef);
+	  assertEquals(targetMethods.get(0).getName(), "print"); 
+	  assertTrue(edgePresent);
+	  assertFalse(edgeNotPresent);	  
+	  assertTrue(reachableMethods.contains(targetMethods.get(0)));
+	  assertFalse(reachableMethods.contains(targetMethods.get(1)));
+	  assertEquals(targetMethods.get(0), resolvedMethod);
+	  assertEquals(targetMethods.get(0), concreteImpl);
+	  assertNotEquals(targetMethods.get(1), concreteImpl);
+	  
+  }
+  
+  private void assertSuperClassPreferenceOverDefaultMethod(List<SootMethod> targetMethods, SootMethod methodRef, boolean edgePresent, List<Boolean> edgeNotPresent, ReachableMethods reachableMethods, Map<SootMethod, SootMethod> virtualResolvedMethods, Map<SootMethod, SootMethod> concreteImplsTrue, Map<SootMethod, SootMethod> concreteImplsNotTrue) {
+	  
+	  for(SootMethod targetMethod: targetMethods) {
+		  assertNotNull(targetMethod);
+	  }
+	  assertEquals(targetMethods.get(0), methodRef);
+	  assertEquals(targetMethods.get(0).getName(), "print");	  
+	  assertTrue(edgePresent);
+	  for(boolean notPresent:edgeNotPresent) {
+		  assertFalse(notPresent);
+	  }	  
+	  assertTrue(reachableMethods.contains(targetMethods.get(0)));
+	  assertFalse(reachableMethods.contains(targetMethods.get(1)));
+	  assertFalse(reachableMethods.contains(targetMethods.get(2)));	  
+	  for(Map.Entry<SootMethod, SootMethod> virtualResolvedMethod:virtualResolvedMethods.entrySet()) {
+		  assertEquals(virtualResolvedMethod.getKey(), virtualResolvedMethod.getValue());
+	  }	  
+	  for(Map.Entry<SootMethod, SootMethod> concreteImpl:concreteImplsTrue.entrySet()) {
+		  assertEquals(concreteImpl.getKey(), concreteImpl.getValue());
+	  }
+	  for(Map.Entry<SootMethod, SootMethod> concreteImpl:concreteImplsNotTrue.entrySet()) {
+		  assertNotEquals(concreteImpl.getKey(), concreteImpl.getValue());
+	  }
   }
 }
   
