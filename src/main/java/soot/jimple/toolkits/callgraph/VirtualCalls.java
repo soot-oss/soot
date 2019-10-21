@@ -70,6 +70,7 @@ public class VirtualCalls {
     return resolveSpecial(callee, container, false);
   }
 
+
   public SootMethod resolveSpecial(SootMethod callee, SootMethod container, boolean appOnly) {
     /* cf. JVM spec, invokespecial instruction */
     if (container.getDeclaringClass().getType() != callee.getDeclaringClass().getType()
@@ -78,7 +79,11 @@ public class VirtualCalls {
             .canStoreType(
                 container.getDeclaringClass().getType(), callee.getDeclaringClass().getType())
         && !callee.getName().equals(SootMethod.constructorName)
-        && !callee.getName().equals(SootMethod.staticInitializerName)) {
+        && !callee.getName().equals(SootMethod.staticInitializerName)
+        // default interface methods are explicitly dispatched to the default
+        // method with a specialinvoke instruction (i.e. do not dispatch to an
+        // overwritten version of that method)
+        && !callee.getDeclaringClass().isInterface()) {
 
       return resolveNonSpecial(container.getDeclaringClass().getType(), callee, appOnly);
     } else {
