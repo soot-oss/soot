@@ -23,8 +23,6 @@ package soot.jimple.toolkits.callgraph;
  */
 
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import soot.AnySubType;
@@ -53,6 +51,8 @@ import soot.util.queue.ChunkedQueue;
  * Resolves virtual calls.
  *
  * @author Ondrej Lhotak
+ * @author Manuel Benz 22.10.19 - Delegate dispatch behavior to FastHierarchy to have one common
+ *     place for extension
  */
 public class VirtualCalls {
   private CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
@@ -69,7 +69,6 @@ public class VirtualCalls {
   public SootMethod resolveSpecial(SootMethod callee, SootMethod container) {
     return resolveSpecial(callee, container, false);
   }
-
 
   public SootMethod resolveSpecial(SootMethod callee, SootMethod container, boolean appOnly) {
     /* cf. JVM spec, invokespecial instruction */
@@ -120,7 +119,6 @@ public class VirtualCalls {
     return ret;
   }
 
-  protected MultiMap<Type, Type> baseToSubTypes = new HashMultiMap<Type, Type>();
   protected MultiMap<Pair<Type, SootMethod>, Pair<Type, SootMethod>> baseToPossibleSubTypes =
       new HashMultiMap<>();
 
@@ -200,7 +198,12 @@ public class VirtualCalls {
           && base.getSootClass().isInterface()) {
         resolveLibrarySignature(declaredType, sigType, callee, container, targets, appOnly, base);
       } else {
-        resolveAnySubType(declaredType, sigType, callee, container, targets, appOnly, base);
+        for (SootMethod dispatch :
+            Scene.v()
+                .getOrMakeFastHierarchy()
+                .resolveAbstractDispatch(base.getSootClass(), callee)) {
+          targets.add(dispatch);
+        }
       }
     } else if (t instanceof NullType) {
     } else {
@@ -249,64 +252,7 @@ public class VirtualCalls {
     }
   }
 
-  protected void resolveAnySubType(
-      Type declaredType,
-      Type sigType,
-      SootMethod callee,
-      SootMethod container,
-      ChunkedQueue<SootMethod> targets,
-      boolean appOnly,
-      RefType base) {
-    FastHierarchy fastHierachy = Scene.v().getOrMakeFastHierarchy();
-
-    {
-      Set<Type> subTypes = baseToSubTypes.get(base);
-      if (subTypes != null && !subTypes.isEmpty()) {
-        for (final Type st : subTypes) {
-          resolve(st, declaredType, sigType, callee, container, targets, appOnly);
-        }
-        return;
-      }
-    }
-
-    Set<Type> newSubTypes = new HashSet<>();
-    newSubTypes.add(base);
-
-    LinkedList<SootClass> worklist = new LinkedList<SootClass>();
-    HashSet<SootClass> workset = new HashSet<SootClass>();
-    FastHierarchy fh = fastHierachy;
-    SootClass cl = base.getSootClass();
-
-    if (workset.add(cl)) {
-      worklist.add(cl);
-    }
-    while (!worklist.isEmpty()) {
-      cl = worklist.removeFirst();
-      if (cl.isInterface()) {
-        for (Iterator<SootClass> cIt = fh.getAllImplementersOfInterface(cl).iterator();
-            cIt.hasNext(); ) {
-          final SootClass c = cIt.next();
-          if (workset.add(c)) {
-            worklist.add(c);
-          }
-        }
-      } else {
-        if (cl.isConcrete()) {
-          resolve(cl.getType(), declaredType, sigType, callee, container, targets, appOnly);
-          newSubTypes.add(cl.getType());
-        }
-        for (Iterator<SootClass> cIt = fh.getSubclassesOf(cl).iterator(); cIt.hasNext(); ) {
-          final SootClass c = cIt.next();
-          if (workset.add(c)) {
-            worklist.add(c);
-          }
-        }
-      }
-    }
-
-    baseToSubTypes.putAll(base, newSubTypes);
-  }
-
+  @Deprecated
   protected void resolveLibrarySignature(
       Type declaredType,
       Type sigType,
@@ -315,6 +261,13 @@ public class VirtualCalls {
       ChunkedQueue<SootMethod> targets,
       boolean appOnly,
       RefType base) {
+    // This is an old piece of code from before the refactoring of dispatch behavior to
+    // FastHierarchy
+    // This cannot handle default interfaces and it's questionable if the logic makes sense. The
+    // author states that Java allows for co-variant parameters which is not true (it will introduce
+    // overloading in this case) and co-variance for return values is already managed by the
+    // FastHierarchy
+
     FastHierarchy fastHierachy = Scene.v().getOrMakeFastHierarchy();
 
     assert (declaredType instanceof RefType);
