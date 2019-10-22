@@ -18,6 +18,7 @@ import org.junit.Test;
 import soot.Body;
 import soot.FastHierarchy;
 import soot.MethodOrMethodContext;
+import soot.PhaseOptions;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
@@ -31,6 +32,12 @@ import soot.testing.framework.AbstractTestingFramework;
 
 /** */
 public class DefaultInterfaceTest extends AbstractTestingFramework {
+
+  @Override
+  protected void setupSoot() {
+    super.setupSoot();
+    PhaseOptions.v().setPhaseOption("cg.cha", "on");
+  }
 
   @Test
   public void simpleDefaultInterfaceTest() {
