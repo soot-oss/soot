@@ -48,6 +48,8 @@ import soot.util.MultiMap;
  * <p>This version supercedes the old soot.Hierarchy class.
  *
  * @author Ondrej Lhotak
+ * @author Manuel Benz 22.10.19 - Fixed concrete/abstract dispatch methods to car for default
+ *     interface methods and account for overwritten return types
  */
 public class FastHierarchy {
   private static final Logger LOGGER = LoggerFactory.getLogger(FastHierarchy.class);
@@ -603,19 +605,15 @@ public class FastHierarchy {
     worklist.add(baseType);
     while (true) {
       SootClass concreteType = worklist.poll();
-      if (concreteType == null || resolved.contains(concreteType)) {
+      if (concreteType == null) {
         break;
+      } else if (resolved.contains(concreteType)) {
+        continue;
       }
 
       if (concreteType.isInterface()) {
         worklist.addAll(getAllImplementersOfInterface(concreteType));
-        // since java 8 we can have default methods in interfaces
-        if (isHandleDefaultMethods()) {
-          // we need to thus search in all subinterfaces and in the current interface
-          worklist.addAll(getAllSubinterfaces(concreteType));
-        } else {
-          break;
-        }
+        continue;
       } else {
         Collection<SootClass> c = classToSubclasses.get(concreteType);
         if (c != null) {
@@ -623,7 +621,7 @@ public class FastHierarchy {
         }
       }
 
-      SootMethod resolvedMethod = resolveMethod(baseType, m, false, resolved);
+      SootMethod resolvedMethod = resolveMethod(concreteType, m, false, resolved);
       if (resolvedMethod != null) {
         ret.add(resolvedMethod);
       }
@@ -707,10 +705,8 @@ public class FastHierarchy {
    * object of actual type C (o = new C()), returns the method which will be called on an o.f()
    * invocation.
    *
-   * <p>*
-   *
    * <p>If abstract methods are allowed, it will just resolve to the first method found according to
-   * * javas method resolution process: *
+   * javas method resolution process:
    * https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-5.html#jvms-5.4.3.3
    *
    * @param baseType The type C
@@ -737,6 +733,25 @@ public class FastHierarchy {
         new HashSet<>());
   }
 
+  /**
+   * Conducts the actual dispatch by searching up the baseType's superclass hierarchy and interface
+   * hierarchy if the sourcecode level is beyond Java 7 (due to default interface methods.) Given an
+   * object of actual type C (o = new C()), returns the method which will be called on an o.f()
+   * invocation.
+   *
+   * <p>If abstract methods are allowed, it will just resolve to the first method found according to
+   * javas method resolution process:
+   * https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-5.html#jvms-5.4.3.3
+   *
+   * @param baseType The type C
+   * @param declaringClass declaring class of the method to resolve
+   * @param name Name of the method to resolve
+   * @param ignoreList A set of classes that should be ignored during dispatch. This set will also
+   *     be modified since every traversed class/interface will be added. This is required for the
+   *     abstract dispatch to not do additional resolving effort by resolving the same classes
+   *     multiple times.
+   * @return The concrete method o.f() to call
+   */
   private SootMethod resolveMethod(
       SootClass baseType,
       SootClass declaringClass,
@@ -748,17 +763,20 @@ public class FastHierarchy {
       Set<SootClass> ignoreList) {
     SootClass concreteType = baseType;
 
+    // When there is no proper dispatch found, we simply return null to let
+    // the caller decide what to do
+    SootMethod candidate = null;
+
     while (concreteType != null && !ignoreList.contains(concreteType)) {
       ignoreList.add(concreteType);
 
-      SootMethod method =
-          getSignaturePolymorphicMethod(concreteType, name, parameterTypes, returnType);
-      if (method != null) {
+      candidate = getSignaturePolymorphicMethod(concreteType, name, parameterTypes, returnType);
+      if (candidate != null) {
         if (isVisible(concreteType, declaringClass, modifier)) {
-          if (!allowAbstract && method.isAbstract()) {
+          if (!allowAbstract && candidate.isAbstract()) {
             break;
           }
-          return method;
+          return candidate;
         }
       }
 
@@ -770,54 +788,49 @@ public class FastHierarchy {
     // https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-5.html#jvms-5.4.3.3
     if (isHandleDefaultMethods()) {
       concreteType = baseType;
+      // keep our own ignorelist here so we are not restricted to already hit suinterfaces when
+      // determining the most specific super interface
+      HashSet<SootClass> interfaceIgnoreList = new HashSet<>();
 
       while (concreteType != null) {
-        SootMethod candidate = null;
-
         Queue<SootClass> worklist = new LinkedList<>(concreteType.getInterfaces());
-        // we have to determine the "most specific interface"
+        // we have to determine the "most specific super interface"
         while (!worklist.isEmpty()) {
           SootClass iFace = worklist.poll();
 
-          if (ignoreList.contains(iFace)) {
+          if (interfaceIgnoreList.contains(iFace)) {
             continue;
           }
-          ignoreList.add(iFace);
+          interfaceIgnoreList.add(iFace);
 
           SootMethod method =
               getSignaturePolymorphicMethod(iFace, name, parameterTypes, returnType);
 
-          if (method != null) {
-            if (isVisible(iFace, declaringClass, modifier)) {
-              if (allowAbstract && method.isAbstract()) {
-                // abstract method cannot be dispatched
-                continue;
-              }
-              // check if the found method is more specific than our current candidate
-              else if (candidate == null
-                  || canStoreClass(method.getDeclaringClass(), candidate.getDeclaringClass())) {
-                candidate = method;
-              }
+          if (method != null && isVisible(iFace, declaringClass, modifier)) {
+            if (!allowAbstract && method.isAbstract()) {
+              // abstract method cannot be dispatched
+              continue;
             }
+            // check if the found method is more specific than our current candidate
+            else if (candidate == null
+                || canStoreClass(method.getDeclaringClass(), candidate.getDeclaringClass())) {
+              candidate = method;
+            }
+          } else {
+            // go up the interface hierarchy
+            worklist.addAll(iFace.getInterfaces());
           }
-
-          // go up the interface hierarchy
-          worklist.addAll(iFace.getInterfaces());
         }
 
-        if (candidate != null) {
-          // we found the most specific interface in this class
-          return candidate;
-        }
-
-        // otherwise, we have to search upwards the class hierarchy again
+        // we also have to search upwards the class hierarchy again to find the most specific
+        // super interface
         concreteType = concreteType.getSuperclassUnsafe();
       }
+
+      ignoreList.addAll(interfaceIgnoreList);
     }
 
-    // When there is no proper dispatch found, we simply return null to let
-    // the caller decide what to do
-    return null;
+    return candidate;
   }
 
   private boolean isHandleDefaultMethods() {
