@@ -303,7 +303,7 @@ public class SourceLocator {
     return getClassesUnder(aPath, "");
   }
 
-  private List<String> getClassesUnder(String aPath, String prefix) {
+  public List<String> getClassesUnder(String aPath, String prefix) {
     List<String> classes = new ArrayList<String>();
     ClassSourceType cst = getClassSourceType(aPath);
 

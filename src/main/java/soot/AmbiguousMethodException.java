@@ -1,10 +1,10 @@
-package soot.jimple.toolkits.typing.integer;
+package soot;
 
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 1997 - 2000 Etienne Gagnon.  All rights reserved.
+ * Copyright (C) 1997 - 1999 Raja Vallee-Rai
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,31 +22,18 @@ package soot.jimple.toolkits.typing.integer;
  * #L%
  */
 
-import soot.Type;
+/**
+ * Exception that is thrown when a method is accessed through an ambiguous name
+ * 
+ * @author Steven Arzt
+ *
+ */
+public class AmbiguousMethodException extends RuntimeException {
 
-class InternalTypingException extends RuntimeException {
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 1874994601632508834L;
-  private final Type unexpectedType;
+  private static final long serialVersionUID = -3200937620978653123L;
 
-  public InternalTypingException() {
-    this.unexpectedType = null;
-  }
-
-  public InternalTypingException(Type unexpectedType) {
-    this.unexpectedType = unexpectedType;
-  }
-
-  public Type getUnexpectedType() {
-    return this.unexpectedType;
-  }
-
-  @Override
-  public String getMessage() {
-    return String.format("Unexpected type %s (%s)", unexpectedType,
-        unexpectedType == null ? "-" : unexpectedType.getClass().getSimpleName());
+  public AmbiguousMethodException(String methodName, String className) {
+    super(String.format("Ambiguous method name %s in class %s", methodName, className));
   }
 
 }

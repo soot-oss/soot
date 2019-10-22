@@ -41,12 +41,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.annotation.Nullable;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.MagicNumberFileFilter;
 import org.slf4j.Logger;
@@ -145,7 +147,7 @@ public class Scene // extends AbstractHost
   Chain<SootClass> libraryClasses = new HashChain<SootClass>();
   Chain<SootClass> phantomClasses = new HashChain<SootClass>();
 
-  private final Map<String, RefType> nameToClass = new HashMap<String, RefType>();
+  protected final Map<String, RefType> nameToClass = new ConcurrentHashMap<>();
 
   protected final ArrayNumberer<Kind> kindNumberer;
   protected IterableNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
@@ -778,23 +780,26 @@ public class Scene // extends AbstractHost
    *          The class to add
    */
   protected void addClassSilent(SootClass c) {
-    if (c.isInScene()) {
-      throw new RuntimeException("already managed: " + c.getName());
-    }
+    synchronized (c) {
+      if (c.isInScene()) {
+        throw new RuntimeException("already managed: " + c.getName());
+      }
 
-    if (containsClass(c.getName())) {
-      throw new RuntimeException("duplicate class: " + c.getName());
-    }
+      if (containsClass(c.getName())) {
+        throw new RuntimeException("duplicate class: " + c.getName());
+      }
 
-    classes.add(c);
-    nameToClass.put(c.getName(), c.getType());
-    c.getType().setSootClass(c);
-    c.setInScene(true);
+      classes.add(c);
 
-    // Phantom classes are not really part of the hierarchy anyway, so
-    // we can keep the old one
-    if (!c.isPhantom) {
-      modifyHierarchy();
+      c.getType().setSootClass(c);
+      c.setInScene(true);
+
+      // Phantom classes are not really part of the hierarchy anyway, so
+      // we can keep the old one
+      if (!c.isPhantom) {
+        modifyHierarchy();
+      }
+      nameToClass.computeIfAbsent(c.getName(), k -> c.getType());
     }
   }
 
@@ -1087,13 +1092,6 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Returns the RefType with the given className.
-   */
-  public void addRefType(RefType type) {
-    nameToClass.put(type.getClassName(), type);
-  }
-
-  /**
    * Returns the SootClass with the given className. If no class with the given name exists, null is returned unless phantom
    * refs are allowed. In this case, a new phantom class is created.
    *
@@ -1126,15 +1124,8 @@ public class Scene // extends AbstractHost
     }
 
     if ((allowsPhantomRefs() && phantomNonExist) || className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
-      synchronized (this) {
-        // Double check the class has not been created already between last check an synchronize
-        type = nameToClass.get(className);
-        if (type != null) {
-          SootClass tsc = type.getSootClass();
-          if (tsc != null) {
-            return tsc;
-          }
-        }
+      type = getOrAddRefType(className);
+      synchronized (type) {
         SootClass c = new SootClass(className);
         c.isPhantom = true;
         addClassSilent(c);
@@ -2035,13 +2026,8 @@ public class Scene // extends AbstractHost
     return new SootField(name, type);
   }
 
-  public RefType getOrAddRefType(RefType tp) {
-    RefType existing = nameToClass.get(tp.getClassName());
-    if (existing != null) {
-      return existing;
-    }
-    nameToClass.put(tp.getClassName(), tp);
-    return tp;
+  public RefType getOrAddRefType(String refTypeName) {
+    return nameToClass.computeIfAbsent(refTypeName, k -> new RefType(k));
   }
 
   /**

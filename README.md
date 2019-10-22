@@ -32,7 +32,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
   <dependency>
     <groupId>ca.mcgill.sable</groupId>
     <artifactId>soot</artifactId>
-    <version>3.3.1-SNAPSHOT</version>
+    <version>3.4.0-SNAPSHOT</version>
   </dependency>
 </dependencies>
 <repositories>

@@ -321,7 +321,7 @@ public class SootClass extends AbstractHost implements Numberable {
         if (foundField == null) {
           foundField = field;
         } else {
-          throw new RuntimeException("ambiguous field: " + name);
+          throw new AmbiguousFieldException(name, this.name);
         }
       }
     }
@@ -548,7 +548,7 @@ public class SootClass extends AbstractHost implements Numberable {
       return null;
     }
 
-    for (SootMethod method : methodList) {
+    for (SootMethod method : new ArrayList<>(methodList)) {
       if (method.getName().equals(name) && parameterTypes.equals(method.getParameterTypes())
           && returnType.equals(method.getReturnType())) {
         return method;
@@ -575,7 +575,7 @@ public class SootClass extends AbstractHost implements Numberable {
         if (foundMethod == null) {
           foundMethod = method;
         } else {
-          throw new RuntimeException("ambiguous method");
+          throw new AmbiguousMethodException(name, this.name);
         }
       }
     }
@@ -603,7 +603,7 @@ public class SootClass extends AbstractHost implements Numberable {
         if (foundMethod == null) {
           foundMethod = method;
         } else {
-          throw new RuntimeException("ambiguous method: " + name + " in class " + this);
+          throw new AmbiguousMethodException(name, this.name);
         }
       }
     }
@@ -699,7 +699,7 @@ public class SootClass extends AbstractHost implements Numberable {
      */
 
     if (methodList == null) {
-      methodList = new ArrayList<>();
+      methodList = Collections.synchronizedList(new ArrayList<>());
       subSigToMethods = new SmallNumberedMap<>();
     }
 
@@ -720,7 +720,7 @@ public class SootClass extends AbstractHost implements Numberable {
     }
 
     if (methodList == null) {
-      methodList = new ArrayList<>();
+      methodList = Collections.synchronizedList(new ArrayList<>());
       subSigToMethods = new SmallNumberedMap<>();
     }
 
@@ -1253,10 +1253,8 @@ public class SootClass extends AbstractHost implements Numberable {
     if (this.refType != null) {
       refType.setClassName(name);
     } else {
-      refType = RefType.v(name);
+      refType = Scene.v().getOrAddRefType(name);
     }
-    Scene.v().addRefType(refType);
-
   }
 
   private static ClassValidator[] validators;

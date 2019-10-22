@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ca.mcgill.sable</groupId>
     <artifactId>soot</artifactId>
-    <version>3.3.1-SNAPSHOT</version>
+    <version>3.4.0-SNAPSHOT</version>
     <name>Soot - a J*va Optimization Framework</name>
     <description>A Java Optimization Framework</description>
     <url>https://sable.github.io/soot/</url>
@@ -454,14 +454,14 @@
         <dependency>
             <groupId>de.upb.cs.swt</groupId>
             <artifactId>heros</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>1.2.0-SNAPSHOT</version>
         </dependency>
         <!-- Uploaded to http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/
             from the nightly build server -->
         <dependency>
             <groupId>ca.mcgill.sable</groupId>
             <artifactId>jasmin</artifactId>
-            <version>3.0.1-SNAPSHOT</version>
+            <version>3.0.2-SNAPSHOT</version>
         </dependency>
         <!-- Logging dependencies -->
         <dependency>
