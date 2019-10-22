@@ -43,6 +43,9 @@ import soot.util.NumberedString;
  * directly referred to may not actually exist; the actual target of the reference is determined
  * according to the resolution procedure in the Java Virtual Machine Specification, 2nd ed, section
  * 5.4.3.3.
+ *
+ * @author Manuel Benz 22.10.19 - Delegate method resolution behavior to FastHierarchy to have one
+ *     common place for extension
  */
 public class SootMethodRefImpl implements SootMethodRef {
 
@@ -227,11 +230,22 @@ public class SootMethodRefImpl implements SootMethodRef {
 
     // If we don't have a method yet, we try to fix it on the fly
     if (Scene.v().allowsPhantomRefs() && Options.v().ignore_resolution_errors()) {
+      // if we have a phantom class in the hierarchy, we add the method to it.
+      SootClass classToAddTo = declaringClass;
+      while (classToAddTo != null && !classToAddTo.isPhantom()) {
+        classToAddTo = classToAddTo.getSuperclassUnsafe();
+      }
+
+      // We just take the declared class, otherwise.
+      if (classToAddTo == null) {
+        classToAddTo = declaringClass;
+      }
+
       SootMethod method =
           Scene.v()
               .makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
       method.setPhantom(true);
-      method = declaringClass.getOrAddMethod(method);
+      method = classToAddTo.getOrAddMethod(method);
       checkStatic(method);
       return method;
     }
