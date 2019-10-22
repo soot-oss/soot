@@ -268,8 +268,7 @@ public class AsmUtil {
             break this_type;
           case 'L':
             int begin = idx;
-            while (desc.charAt(++idx) != ';') {;
-            }
+            while (desc.charAt(++idx) != ';') { }
             String cls = desc.substring(begin, idx++);
             baseType = makeRefType(toQualifiedName(cls), moduleName);
             break this_type;
