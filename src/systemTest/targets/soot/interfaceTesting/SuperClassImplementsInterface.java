@@ -1,9 +1,9 @@
-package soot.interfaceTesting;
+package soot.defaultInterfaceMethods;
 
-public class TestSuperClassImplementsInterface implements DefaultPrint{
+public class SuperClassImplementsInterface implements DefaultPrint{
 	
 	public void main() {
-		TestSuperClassImplementsInterface main = new TestSuperClassImplementsInterface();
+		SuperClassImplementsInterface main = new SuperClassImplementsInterface();
 		main.print();	
 	}
 	

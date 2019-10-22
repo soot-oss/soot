@@ -1,8 +1,8 @@
-package soot.interfaceTesting;
+package soot.defaultInterfaceMethods;
 
-public class TestDerivedInterfaces implements InterfaceTestOne, InterfaceTestTwo{
+public class DerivedInterfaces implements InterfaceTestOne, InterfaceTestTwo{
 	public void main() {
-		TestDerivedInterfaces testClass = new TestDerivedInterfaces();
+		DerivedInterfaces testClass = new DerivedInterfaces();
 		testClass.print();
 	}	
 }
