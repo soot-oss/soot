@@ -1,4 +1,4 @@
-package soot.interfaceTesting;
+package soot.defaultInterfaceMethods;
 
 /** @author Manuel Benz at 21.10.19 */
 public class MaximallySpecificSuperInterface extends B implements D {

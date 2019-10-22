@@ -2,7 +2,7 @@ package soot.defaultInterfaceMethods;
 
 public class SuperClassPreferenceOverDefaultMethod extends SuperClass implements InterfaceOne, InterfaceTwo{
 	public void main() {
-		TestSuperClassPreferenceOverInterface testClass = new TestSuperClassPreferenceOverInterface();
+		SuperClassPreferenceOverDefaultMethod testClass = new SuperClassPreferenceOverDefaultMethod();
 		testClass.print();
 	}
 }
