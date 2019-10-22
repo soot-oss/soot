@@ -25,6 +25,8 @@ package soot.jimple.toolkits.callgraph;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
@@ -55,6 +57,8 @@ import soot.util.queue.ChunkedQueue;
  *     place for extension
  */
 public class VirtualCalls {
+  private static final Logger LOGGER = LoggerFactory.getLogger(VirtualCalls.class);
+
   private CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
 
   public VirtualCalls(Singletons.Global g) {}
@@ -196,6 +200,7 @@ public class VirtualCalls {
        */
       if (options.library() == CGOptions.library_signature_resolution
           && base.getSootClass().isInterface()) {
+        LOGGER.warn("Deprecated library dispatch is conducted. The results might be unsound...");
         resolveLibrarySignature(declaredType, sigType, callee, container, targets, appOnly, base);
       } else {
         for (SootMethod dispatch :

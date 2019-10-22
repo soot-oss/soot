@@ -121,7 +121,7 @@ public abstract class AbstractASMBackend {
 
     javaVersion = Math.max(javaVersion, minVersion);
 
-    this.javaVersion= AsmUtil.javaToBytecodeVersion(javaVersion);
+    this.javaVersion = AsmUtil.javaToBytecodeVersion(javaVersion);
   }
 
   /**
@@ -257,8 +257,7 @@ public abstract class AbstractASMBackend {
     // Retrieve information about the source of the class
     if (sc.hasTag("SourceFileTag") && !Options.v().no_output_source_file_attribute()) {
       String srcName = ((SourceFileTag) sc.getTag("SourceFileTag")).getSourceFile();
-      cv.visitSource(srcName, null); // TODO Correct value for the debug
-      // argument
+      cv.visitSource(srcName, null); // TODO Correct value for the debug argument
     }
 
     // Retrieve information about outer class if present
