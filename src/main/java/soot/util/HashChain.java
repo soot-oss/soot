@@ -116,6 +116,12 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
   @Override
   public boolean follows(E someObject, E someReferenceObject) {
+    // The implementation does not actually check whether
+    // someReferenceObject and then someObject is in the chain.
+    // Instead, it is checked that the reverse is not true:
+    // It returns false in case someReferenceObject comes after someObject and true otherwise.
+    // If someReferenceObject == someObject, the implementation returns false,
+    // because the iterator includes someObject.
     Iterator<E> it = iterator(someObject);
     while (it.hasNext()) {
       if (it.next() == someReferenceObject) {
@@ -145,7 +151,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
   @Override
   public void insertAfter(E toInsert, E point) {
     if (toInsert == null) {
-      throw new RuntimeException("Bad idea! You tried to insert " + " a null object into a Chain!");
+      throw new RuntimeException("Bad idea! You tried to insert a null object into a Chain!");
     }
 
     if (map.containsKey(toInsert)) {
