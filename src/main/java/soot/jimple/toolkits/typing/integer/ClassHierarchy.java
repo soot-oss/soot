@@ -136,18 +136,24 @@ public class ClassHierarchy {
 
   /** Get the type node for the given type. **/
   public TypeNode typeNode(Type type) {
-    if (type instanceof IntType)
+    if (type instanceof IntType) {
       return INT;
-    else if (type instanceof BooleanType)
+    }
+    else if (type instanceof BooleanType) {
       return BOOLEAN;
-    else if (type instanceof ByteType)
+    }
+    else if (type instanceof ByteType) {
       return BYTE;
-    else if (type instanceof ShortType)
+    }
+    else if (type instanceof ShortType) {
       return SHORT;
-    else if (type instanceof CharType)
+    }
+    else if (type instanceof CharType) {
       return CHAR;
-    else
+    }
+    else {
       throw new InternalTypingException(type);
+    }
   }
 
   public boolean hasAncestor_1(int t1, int t2) {

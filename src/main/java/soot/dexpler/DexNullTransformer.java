@@ -117,7 +117,8 @@ public class DexNullTransformer extends AbstractNullTransformer {
           }
           doBreak = true;
           return;
-        } else if (r instanceof StringConstant || r instanceof NewExpr || r instanceof NewArrayExpr || r instanceof ClassConstant) {
+        } else if (r instanceof StringConstant || r instanceof NewExpr || 
+            r instanceof NewArrayExpr || r instanceof ClassConstant) {
           usedAsObject = true;
           doBreak = true;
           return;
