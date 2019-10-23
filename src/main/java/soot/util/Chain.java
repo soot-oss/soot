@@ -89,13 +89,6 @@ public interface Chain<E> extends Collection<E>, Serializable {
   /** 
    * Returns true if object <code>someObject</code> follows object <code>someReferenceObject</code> in the Chain, 
    * i.e. someReferenceObject comes first and then someObject. 
-   *  
-   * Caution: Note that the implementation (in HashChain, which is the usually used implementation at the moment) 
-   * does not actually check whether someReferenceObject and then someObject is in the chain.
-   * Instead, it is checked that the reverse is not true. It returns false in case someReferenceObject comes after
-   * someObject and true otherwise.
-   * If someReferenceObject is not in the chain at all, the implementation returns true nonetheless.
-   * However, if someReferenceObject == someObject, the implementation returns false.
    */
   public boolean follows(E someObject, E someReferenceObject);
 

@@ -44,13 +44,6 @@ import soot.Type;
  **/
 public class ClassHierarchy {
 
-  public ClassHierarchy(Singletons.Global g) {
-    typeNodeMap.put(BooleanType.v(), BOOLEAN);
-    typeNodeMap.put(ByteType.v(), BYTE);
-    typeNodeMap.put(ShortType.v(), SHORT);
-    typeNodeMap.put(CharType.v(), CHAR);
-    typeNodeMap.put(IntType.v(), INT);
-  }
 
   public static ClassHierarchy v() {
     return G.v().soot_jimple_toolkits_typing_integer_ClassHierarchy();
@@ -137,22 +130,20 @@ public class ClassHierarchy {
       { BOOLEAN, R0_127, R0_127, R0_127, R0_127, null, null, R0_127, R0_127, },
       { BOOLEAN, R0_127, R0_32767, R0_32767, R0_32767, null, null, R0_127, R0_32767, }, };
 
-  /** Map: Type -> TypeNode **/
-  private final Map<Type, TypeNode> typeNodeMap = new HashMap<Type, TypeNode>();
-
   /** Get the type node for the given type. **/
   public TypeNode typeNode(Type type) {
-    if (type == null || !(type instanceof PrimType || type instanceof RefType)) {
+    if (type instanceof IntType)
+      return INT;
+    else if (type instanceof BooleanType)
+      return BOOLEAN;
+    else if (type instanceof ByteType)
+      return BYTE;
+    else if (type instanceof ShortType)
+      return SHORT;
+    else if (type instanceof CharType)
+      return CHAR;
+    else
       throw new InternalTypingException(type);
-    }
-
-    TypeNode typeNode = typeNodeMap.get(type);
-
-    if (typeNode == null) {
-      throw new InternalTypingException(type);
-    }
-
-    return typeNode;
   }
 
   public boolean hasAncestor_1(int t1, int t2) {
