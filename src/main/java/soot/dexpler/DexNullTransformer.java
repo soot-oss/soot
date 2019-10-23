@@ -47,6 +47,7 @@ import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
+import soot.jimple.ClassConstant;
 import soot.jimple.ConditionExpr;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.EnterMonitorStmt;
@@ -116,7 +117,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
           }
           doBreak = true;
           return;
-        } else if (r instanceof StringConstant || r instanceof NewExpr || r instanceof NewArrayExpr) {
+        } else if (r instanceof StringConstant || r instanceof NewExpr || r instanceof NewArrayExpr || r instanceof ClassConstant) {
           usedAsObject = true;
           doBreak = true;
           return;
