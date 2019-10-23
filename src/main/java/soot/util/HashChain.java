@@ -116,19 +116,19 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
   @Override
   public synchronized boolean follows(E someObject, E someReferenceObject) {
-    // The implementation does not actually check whether
-    // someReferenceObject and then someObject is in the chain.
-    // Instead, it is checked that the reverse is not true:
-    // It returns false in case someReferenceObject comes after someObject and true otherwise.
-    // If someReferenceObject == someObject, the implementation returns false,
-    // because the iterator includes someObject.
-    Iterator<E> it = iterator(someObject);
+    Iterator<E> it;
+    try {
+      it = iterator(someReferenceObject);
+    } catch (NoSuchElementException e) {
+      //someReferenceObject not in chain. 
+      return false;
+    }
     while (it.hasNext()) {
-      if (it.next() == someReferenceObject) {
-        return false;
+      if (it.next() == someObject) {
+        return true;
       }
     }
-    return true;
+    return false;
   }
 
   @Override
