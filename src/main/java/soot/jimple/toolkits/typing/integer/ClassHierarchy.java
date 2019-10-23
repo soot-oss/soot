@@ -34,6 +34,7 @@ import soot.PrimType;
 import soot.RefType;
 import soot.ShortType;
 import soot.Singletons;
+import soot.Singletons.Global;
 import soot.Type;
 
 /**
@@ -44,6 +45,9 @@ import soot.Type;
  **/
 public class ClassHierarchy {
 
+
+  public ClassHierarchy(Global g) {
+  }
 
   public static ClassHierarchy v() {
     return G.v().soot_jimple_toolkits_typing_integer_ClassHierarchy();
