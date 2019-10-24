@@ -116,13 +116,19 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
   @Override
   public synchronized boolean follows(E someObject, E someReferenceObject) {
-    Iterator<E> it = iterator(someObject);
+    Iterator<E> it;
+    try {
+      it = iterator(someReferenceObject);
+    } catch (NoSuchElementException e) {
+      //someReferenceObject not in chain. 
+      return false;
+    }
     while (it.hasNext()) {
-      if (it.next() == someReferenceObject) {
-        return false;
+      if (it.next() == someObject) {
+        return true;
       }
     }
-    return true;
+    return false;
   }
 
   @Override
@@ -145,7 +151,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
   @Override
   public synchronized void insertAfter(E toInsert, E point) {
     if (toInsert == null) {
-      throw new RuntimeException("Bad idea! You tried to insert " + " a null object into a Chain!");
+      throw new RuntimeException("Bad idea! You tried to insert a null object into a Chain!");
     }
 
     if (map.containsKey(toInsert)) {
