@@ -23,11 +23,13 @@ package soot.asm;
  */
 
 import com.google.common.base.Optional;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
@@ -35,6 +37,7 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.ModuleVisitor;
 import org.objectweb.asm.Opcodes;
+
 import soot.Modifier;
 import soot.ModuleRefType;
 import soot.ModuleUtil;
@@ -76,7 +79,7 @@ public class SootClassBuilder extends ClassVisitor {
    * @param klass
    *          Soot class to build.
    */
- protected SootClassBuilder(SootClass klass) {
+  protected SootClassBuilder(SootClass klass) {
     super(Opcodes.ASM7);
     this.klass = klass;
     this.deps = new HashSet();
