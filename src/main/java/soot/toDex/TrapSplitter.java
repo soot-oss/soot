@@ -1,7 +1,6 @@
 package soot.toDex;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 /*-
  * #%L
@@ -181,9 +180,7 @@ public class TrapSplitter extends BodyTransformer {
     Map<Unit, Integer> unitMap = createUnitNumbers(b);
     MultiMap<Unit, Trap> trapsPerUnit = new HashMultiMap<>();
     for (Trap t : b.getTraps()) {
-      Iterator<Unit> itUnit = b.getUnits().iterator(t.getBeginUnit(), t.getEndUnit());
-      while (itUnit.hasNext()) {
-        Unit unit = itUnit.next();
+      for (Unit unit = t.getBeginUnit(); unit != t.getEndUnit(); unit = b.getUnits().getSuccOf(unit)) {
         Set<Trap> existingTraps = trapsPerUnit.get(unit);
         for (Trap e : existingTraps) {
           if (e != t && (e.getEndUnit() != t.getEndUnit() || e.getException() == t.getException())) {
@@ -208,9 +205,10 @@ public class TrapSplitter extends BodyTransformer {
   }
 
   /**
-   * Create a map of units to integer, denoting
-   * the index of an unit
-   * @param b the body
+   * Create a map of units to integer, denoting the index of an unit
+   * 
+   * @param b
+   *          the body
    * @return the map
    */
   protected Map<Unit, Integer> createUnitNumbers(Body b) {
@@ -224,7 +222,9 @@ public class TrapSplitter extends BodyTransformer {
 
   /**
    * Returns true when a comes before b according to the unit map
-   * @param unitMap the unit map
+   * 
+   * @param unitMap
+   *          the unit map
    * @param a
    * @param b
    * @return true when a comes before b according to the unit map
