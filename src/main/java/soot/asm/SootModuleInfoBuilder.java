@@ -51,7 +51,6 @@ public class SootModuleInfoBuilder extends ModuleVisitor {
 
   @Override
   public void visitRequire(String module, int access, String version) {
-    // SootClass moduleInfo = SootResolver.v().resolveClass("module-info", SootClass.SIGNATURES, Optional.of(module));
     SootClass moduleInfo = SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.of(module));
     klass.getRequiredModules().put((SootModuleInfo) moduleInfo, access);
     scb.addDep(RefType.v(moduleInfo));
