@@ -645,14 +645,15 @@ public final class LambdaMetaFactory {
     private void invokeImplMethod(JimpleBody jb, PatchingChain<Unit> us, LocalGenerator lc, List<Local> args) {
       Value value = _invokeImplMethod(jb, us, lc, args);
 
-      if (value instanceof InvokeExpr && soot.VoidType.v().equals(implMethod.getMethodRef().getReturnType())) {
-        // implementation method is void
-        us.add(Jimple.v().newInvokeStmt(value));
-        us.add(Jimple.v().newReturnVoidStmt());
-      } else if (soot.VoidType.v().equals(implMethodType.getReturnType())) {
-        // dispatch method is void
-        us.add(Jimple.v().newInvokeStmt(value));
-        us.add(Jimple.v().newReturnVoidStmt());
+      if ( soot.VoidType.v().equals(implMethodType.getReturnType()) || soot.VoidType.v().equals(implMethod.getMethodRef().getReturnType())) {
+          // implementation method is void
+      	if(value instanceof Local) {
+      		Local ret = lc.generateLocal(value.getType());
+              us.add(Jimple.v().newAssignStmt(ret, value));
+      	} else {
+      		us.add(Jimple.v().newInvokeStmt(value));
+      	}
+      	us.add(Jimple.v().newReturnVoidStmt());
       } else {
         // neither is void, must pass through return value
 
