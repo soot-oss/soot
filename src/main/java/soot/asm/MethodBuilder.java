@@ -1,5 +1,9 @@
 package soot.asm;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,6 +31,7 @@ import org.objectweb.asm.Attribute;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.TypePath;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
 
 import soot.ArrayType;
@@ -37,6 +42,7 @@ import soot.tagkit.AnnotationConstants;
 import soot.tagkit.AnnotationDefaultTag;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.VisibilityAnnotationTag;
+import soot.tagkit.VisibilityLocalVariableAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
 
 /**
@@ -49,6 +55,8 @@ class MethodBuilder extends JSRInlinerAdapter {
   private TagBuilder tb;
   private VisibilityAnnotationTag[] visibleParamAnnotations;
   private VisibilityAnnotationTag[] invisibleParamAnnotations;
+  private List<VisibilityAnnotationTag> visibleLocalVarAnnotations;
+  private List<VisibilityAnnotationTag> invisibleLocalVarAnnotations;
   private final SootMethod method;
   private final SootClassBuilder scb;
 
@@ -86,6 +94,56 @@ class MethodBuilder extends JSRInlinerAdapter {
     getTagBuilder().visitAttribute(attr);
   }
 
+  private static Field lineNumberField;
+  static {
+	try {
+		lineNumberField = Label.class.getDeclaredField("lineNumber");
+	} catch (Exception e) {
+			// Ingore the exception
+	}
+  }
+  
+  @Override
+  public AnnotationVisitor visitLocalVariableAnnotation(final int typeRef, final TypePath typePath,
+			final Label[] start, final Label[] end, final int[] index, final String descriptor, final boolean visible) {
+	final VisibilityAnnotationTag vat;
+	if (start != null && index != null && start.length == index.length && start.length == 1) {
+		short line = 0;
+		if (lineNumberField != null) {
+			lineNumberField.setAccessible(true);
+			try {
+				line = lineNumberField.getShort(start[0]);
+			} catch (Exception e) {
+				line = 0;
+			}
+			lineNumberField.setAccessible(false);
+		}
+		vat = new VisibilityAnnotationTag(
+					visible ? AnnotationConstants.RUNTIME_VISIBLE : AnnotationConstants.RUNTIME_INVISIBLE, line,
+					index[0]);
+	} else {
+		vat = null;
+	}
+	if (visible) {
+		if (visibleLocalVarAnnotations == null) {
+			visibleLocalVarAnnotations = new ArrayList<VisibilityAnnotationTag>(5);
+		}
+		visibleLocalVarAnnotations.add(vat);
+	} else {
+		if (invisibleLocalVarAnnotations == null) {
+			invisibleLocalVarAnnotations = new ArrayList<VisibilityAnnotationTag>(5);
+		}
+		invisibleLocalVarAnnotations.add(vat);
+	}
+	return new AnnotationElemBuilder() {
+		@Override
+		public void visitEnd() {
+			AnnotationTag annotTag = new AnnotationTag(desc, elems);
+			vat.addAnnotation(annotTag);
+		}
+	};
+  }
+	
   @Override
   public AnnotationVisitor visitParameterAnnotation(int parameter, final String desc, boolean visible) {
     VisibilityAnnotationTag vat, vats[];
@@ -201,6 +259,22 @@ class MethodBuilder extends JSRInlinerAdapter {
       }
       method.addTag(tag);
     }
+    if (visibleLocalVarAnnotations != null) { 
+      VisibilityLocalVariableAnnotationTag tag 
+          = new VisibilityLocalVariableAnnotationTag(AnnotationConstants.RUNTIME_VISIBLE);
+	  for (VisibilityAnnotationTag vat : visibleLocalVarAnnotations) {
+			tag.addVisibilityAnnotation(vat);
+	  }
+	  method.addTag(tag);
+	}
+	if (invisibleLocalVarAnnotations != null) {
+	  VisibilityLocalVariableAnnotationTag tag 
+	      = new VisibilityLocalVariableAnnotationTag(AnnotationConstants.RUNTIME_INVISIBLE);
+	  for (VisibilityAnnotationTag vat : invisibleLocalVarAnnotations) {
+			tag.addVisibilityAnnotation(vat);
+	  }
+	  method.addTag(tag);
+	}
     if (method.isConcrete()) {
       method.setSource(new AsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks));
     }

@@ -33,7 +33,15 @@ public class VisibilityAnnotationTag implements Tag {
 
   private int visibility;
   private ArrayList<AnnotationTag> annotations = null;
+  private short lineNumber = -1;
+  private int localIndex = -1;
 
+  public VisibilityAnnotationTag(int vis, short lineNumber, int localIndex) {
+	this(vis);
+	this.lineNumber = lineNumber;
+	this.localIndex = localIndex;
+  }
+  
   public VisibilityAnnotationTag(int vis) {
     this.visibility = vis;
   }
@@ -52,6 +60,12 @@ public class VisibilityAnnotationTag implements Tag {
         sb.append("SOURCE");
         break;
     }
+    if (lineNumber >= 0) {
+		sb.append(" Line:" + lineNumber);
+	}
+	if (localIndex >= 0) {
+		sb.append(" Line var index:" + localIndex);
+	}
     sb.append("\n Annotations:");
     if (annotations != null) {
       for (AnnotationTag tag : annotations) {
