@@ -81,7 +81,7 @@ public class AsmUtil {
   public static Type toBaseType(String internal, Optional<String> moduleName) {
     if (internal.charAt(0) == '[') {
       /* [Ljava/lang/Object; */
-      internal = internal.substring(internal.lastIndexOf('[') + 1, internal.length());
+      internal = internal.substring(internal.lastIndexOf('[') + 1);
       /* Ljava/lang/Object */
     }
     if (internal.charAt(internal.length() - 1) == ';') {
@@ -92,7 +92,7 @@ public class AsmUtil {
       // followed by a ; per
       // http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html
       if (internal.charAt(0) == 'L') {
-        internal = internal.substring(1, internal.length());
+        internal = internal.substring(1);
       }
       internal = toQualifiedName(internal);
       return makeRefType(internal, moduleName);
@@ -276,7 +276,6 @@ public class AsmUtil {
           case 'L':
             int begin = idx;
             while (desc.charAt(++idx) != ';') {
-              ;
             }
             String cls = desc.substring(begin, idx++);
             baseType = makeRefType(toQualifiedName(cls), moduleName);

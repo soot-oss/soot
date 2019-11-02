@@ -1010,14 +1010,14 @@ final class AsmMethodSource implements MethodSource {
         popImmediate();
       }
     } else if (op >= DUP && op <= DUP2_X2) {
-      convertDupInsn((InsnNode) insn);
+      convertDupInsn(insn);
     } else if (op == SWAP) {
       Operand o1 = popImmediate();
       Operand o2 = popImmediate();
       push(o1);
       push(o2);
     } else if ((op >= IADD && op <= DREM) || (op >= ISHL && op <= LXOR) || (op >= LCMP && op <= DCMPG)) {
-      convertBinopInsn((InsnNode) insn);
+      convertBinopInsn(insn);
     } else if ((op >= INEG && op <= DNEG) || op == ARRAYLENGTH) {
       convertUnopInsn(insn);
     } else if (op >= I2L && op <= I2S) {
@@ -2026,7 +2026,7 @@ final class AsmMethodSource implements MethodSource {
   }
 
   private IdentityStmt getIdentityRefFromContrainer(UnitContainer u) {
-    for (Unit uu : ((UnitContainer) u).units) {
+    for (Unit uu : u.units) {
       if (uu instanceof IdentityStmt) {
         return (IdentityStmt) uu;
       } else if (uu instanceof UnitContainer) {

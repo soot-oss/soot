@@ -90,7 +90,8 @@ class MethodBuilder extends JSRInlinerAdapter {
 
   @Override
   public AnnotationVisitor visitParameterAnnotation(int parameter, final String desc, boolean visible) {
-    VisibilityAnnotationTag vat, vats[];
+    VisibilityAnnotationTag vat;
+    VisibilityAnnotationTag[] vats;
     if (visible) {
       vats = visibleParamAnnotations;
       if (vats == null) {
