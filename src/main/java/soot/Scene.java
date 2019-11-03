@@ -47,6 +47,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.annotation.Nullable;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.MagicNumberFileFilter;
 import org.slf4j.Logger;
@@ -700,6 +701,22 @@ public class Scene // extends AbstractHost
     return r;
   }
 
+  private static boolean isJavaGEQ9(String version) {
+    String[] elements = version.split(".");
+    // string has the form 9.x.x....
+    if (Integer.valueOf(elements[0]) >= 9) {
+      return true;
+    }
+    if (Integer.valueOf(elements[0]) == 1 && elements.length > 1) {
+      // string has the form 1.9.x.xxx
+      return Integer.valueOf(elements[1]) >= 9;
+
+    } else {
+      throw new IllegalArgumentException("Unknown Version number schema!");
+    }
+
+  }
+
   private String defaultJavaClassPath() {
     StringBuilder sb = new StringBuilder();
     if (System.getProperty("os.name").equals("Mac OS X")) {
@@ -716,23 +733,29 @@ public class Scene // extends AbstractHost
         sb.append(uiJar.getAbsolutePath() + File.pathSeparator);
       }
     }
+    // behavior for Java versions >=9, which do not have a rt.jar file
+    if (isJavaGEQ9(System.getProperty("java.version"))) {
+      sb.append(ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS);
 
-    File rtJar = new File(System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar");
-    if (rtJar.exists() && rtJar.isFile()) {
-      // logger.debug("Using JRE runtime: " +
-      // rtJar.getAbsolutePath());
-      sb.append(rtJar.getAbsolutePath());
     } else {
-      // in case we're not in JRE environment, try JDK
-      rtJar = new File(
-          System.getProperty("java.home") + File.separator + "jre" + File.separator + "lib" + File.separator + "rt.jar");
+
+      File rtJar = new File(System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar");
       if (rtJar.exists() && rtJar.isFile()) {
-        // logger.debug("Using JDK runtime: " +
+        // logger.debug("Using JRE runtime: " +
         // rtJar.getAbsolutePath());
         sb.append(rtJar.getAbsolutePath());
       } else {
-        // not in JDK either
-        throw new RuntimeException("Error: cannot find rt.jar.");
+        // in case we're not in JRE environment, try JDK
+        rtJar = new File(
+            System.getProperty("java.home") + File.separator + "jre" + File.separator + "lib" + File.separator + "rt.jar");
+        if (rtJar.exists() && rtJar.isFile()) {
+          // logger.debug("Using JDK runtime: " +
+          // rtJar.getAbsolutePath());
+          sb.append(rtJar.getAbsolutePath());
+        } else {
+          // not in JDK either
+          throw new RuntimeException("Error: cannot find rt.jar.");
+        }
       }
     }
 
