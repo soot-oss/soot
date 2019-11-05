@@ -39,6 +39,8 @@ import org.objectweb.asm.util.TraceClassVisitor;
 
 import soot.G;
 import soot.Main;
+import soot.ModulePathSourceLocator;
+import soot.Scene;
 
 import categories.Java8Test;
 
@@ -66,7 +68,13 @@ public abstract class AbstractASMBackendTest implements Opcodes {
   protected void runSoot() {
     G.reset();
     // Location of the rt.jar
-    String rtJar = System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar";
+    String rtJar = "";
+    if (Scene.isJavaGEQ9(System.getProperty("java.version"))) {
+      rtJar = ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS;
+    } else {
+      rtJar = System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar";
+
+    }
     String classpath = getClassPathFolder() + File.pathSeparator + rtJar;
     System.out.println("Class path: " + classpath);
 

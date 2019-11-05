@@ -701,8 +701,14 @@ public class Scene // extends AbstractHost
     return r;
   }
 
-  private static boolean isJavaGEQ9(String version) {
-    String[] elements = version.split(".");
+  /**
+   * Checks if the version number indicates a Java version >= 9 in order to handle the new virtual filesystem jrt:/
+   * 
+   * @param version
+   * @return
+   */
+  public static boolean isJavaGEQ9(String version) {
+    String[] elements = version.split("\\.");
     // string has the form 9.x.x....
     if (Integer.valueOf(elements[0]) >= 9) {
       return true;
@@ -734,7 +740,8 @@ public class Scene // extends AbstractHost
       }
     }
     // behavior for Java versions >=9, which do not have a rt.jar file
-    if (isJavaGEQ9(System.getProperty("java.version"))) {
+    boolean javaGEQ9 = isJavaGEQ9(System.getProperty("java.version"));
+    if (javaGEQ9) {
       sb.append(ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS);
 
     } else {
@@ -759,7 +766,7 @@ public class Scene // extends AbstractHost
       }
     }
 
-    if (Options.v().whole_program() || Options.v().output_format() == Options.output_format_dava) {
+    if ((Options.v().whole_program() || Options.v().output_format() == Options.output_format_dava) && !javaGEQ9) {
       // add jce.jar, which is necessary for whole program mode
       // (java.security.Signature from rt.jar import javax.crypto.Cipher
       // from jce.jar

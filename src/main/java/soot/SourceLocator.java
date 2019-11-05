@@ -242,22 +242,18 @@ public class SourceLocator {
   protected void setupClassProviders() {
     classProviders = new LinkedList<ClassProvider>();
     ClassProvider classFileClassProvider = Options.v().coffi() ? new CoffiClassProvider() : new AsmClassProvider();
+    if (this.java9Mode) {
+      // FIXME: improve code here
+      classProviders.add(new AsmJava9ClassProvider());
+    }
     switch (Options.v().src_prec()) {
       case Options.src_prec_class:
         classProviders.add(classFileClassProvider);
         classProviders.add(new JimpleClassProvider());
         classProviders.add(new JavaClassProvider());
-        if (this.java9Mode) {
-          classProviders.add(new AsmJava9ClassProvider());
-        }
-
         break;
       case Options.src_prec_only_class:
         classProviders.add(classFileClassProvider);
-        if (this.java9Mode) {
-          // FIXME: improve code here
-          classProviders.add(new AsmJava9ClassProvider());
-        }
         break;
       case Options.src_prec_java:
         classProviders.add(new JavaClassProvider());

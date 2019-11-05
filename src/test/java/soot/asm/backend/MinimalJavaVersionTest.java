@@ -26,7 +26,6 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 
-import categories.Java8Test;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -34,6 +33,10 @@ import org.junit.rules.ExpectedException;
 
 import soot.G;
 import soot.Main;
+import soot.ModulePathSourceLocator;
+import soot.Scene;
+
+import categories.Java8Test;
 
 /**
  * Test for the correct determination of the required Java version
@@ -79,7 +82,15 @@ public class MinimalJavaVersionTest {
   protected void runSoot(String className, String version) {
     G.reset();
     // Location of the rt.jar
-    String rtJar = System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar";
+
+    String rtJar = "";
+    if (Scene.isJavaGEQ9(System.getProperty("java.version"))) {
+      rtJar = ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS;
+    } else {
+      // java version >= 9 do not have an rt.jar
+      rtJar = System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar";
+
+    }
 
     // Run Soot and print output to .asm-files.
     Main.v().run(new String[] { "-cp", getClassPathFolder() + File.pathSeparator + rtJar, "-src-prec", "only-class",
