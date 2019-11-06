@@ -79,8 +79,7 @@ public final class LambdaMetaFactory {
    * @param name
    * @return
    */
-  // FIXME: synchronized to work around concurrency errors; possibly covering up actual problems
-  public synchronized SootMethodRef makeLambdaHelper(List<? extends Value> bootstrapArgs, int tag, String name,
+  public SootMethodRef makeLambdaHelper(List<? extends Value> bootstrapArgs, int tag, String name,
       Type[] invokedType, SootClass enclosingClass) {
     if (bootstrapArgs.size() < 3 || !(bootstrapArgs.get(0) instanceof MethodType)
         || !(bootstrapArgs.get(1) instanceof MethodHandle) || !(bootstrapArgs.get(2) instanceof MethodType)

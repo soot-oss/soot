@@ -499,9 +499,9 @@ public abstract class AbstractASMBackend {
   /**
    * Emits the bytecode for all attributes of a method
    *
-   * @param fv
+   * @param mv
    *          The MethodVisitor to emit the bytecode to
-   * @param f
+   * @param m
    *          The SootMethod the bytecode is to be emitted for
    */
   protected void generateAttributes(MethodVisitor mv, SootMethod m) {
@@ -671,9 +671,10 @@ public abstract class AbstractASMBackend {
       signature = ((SignatureTag) sc.getTag("SignatureTag")).getSignature();
     }
     /*
-     * Retrieve super-class If no super-class is explicitly given, the default is java.lang.Object.
+     * Retrieve super-class. If no super-class is explicitly given, the default is java.lang.Object,
+     * except for the class java.lang.Object itself, which does not have any super classes.
      */
-    String superClass = "java/lang/Object";
+    String superClass = className.equals("java/lang/Object") ? null : "java/lang/Object";
     SootClass csuperClass = sc.getSuperclassUnsafe();
     if (csuperClass != null) {
       superClass = slashify(csuperClass.getName());

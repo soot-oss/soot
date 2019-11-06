@@ -129,12 +129,11 @@ public class SootClassBuilder extends ClassVisitor {
       }
     }
 
-    // FIXME: the name for module-info files is different
     name = AsmUtil.toQualifiedName(name);
-    // FIXME: look if this works
     if (!name.equals(klass.getName()) && Options.v().verbose()) {
       System.err.println("Class names not equal! " + name + " != " + klass.getName());
     }
+    // FIXME: ad -- throw excpetion again
     // throw new RuntimeException("Class names not equal! "+name+" != "+klass.getName());
     klass.setModifiers(access & ~Opcodes.ACC_SUPER);
     if (superName != null) {

@@ -412,7 +412,6 @@ public class ModuleScene extends Scene // extends original Scene
     return getRefTypeUnsafe(wrapper.getClassName(), wrapper.getModuleNameOptional());
   }
 
-  @Override
   public void addRefType(RefType type) {
 
     if (!nameToClass.containsKey(type.getClassName())) {
@@ -685,6 +684,16 @@ public class ModuleScene extends Scene // extends original Scene
     if (existing != null) {
       return existing;
     }
+    this.addRefType(tp);
+    return tp;
+  }
+
+  public RefType getOrAddRefType(String className, Optional<String> moduleName) {
+    RefType existing = getRefType(className, moduleName);
+    if (existing != null) {
+      return existing;
+    }
+    RefType tp = ModuleRefType.v(className, moduleName);
     this.addRefType(tp);
     return tp;
   }

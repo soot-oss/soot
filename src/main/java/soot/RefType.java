@@ -53,7 +53,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     return className;
   }
 
-  protected volatile SootClass sootClass;
+  private volatile SootClass sootClass;
   private AnySubType anySubType;
 
   protected RefType(String className) {

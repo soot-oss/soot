@@ -243,7 +243,6 @@ public class SourceLocator {
     classProviders = new LinkedList<ClassProvider>();
     ClassProvider classFileClassProvider = Options.v().coffi() ? new CoffiClassProvider() : new AsmClassProvider();
     if (this.java9Mode) {
-      // FIXME: improve code here
       classProviders.add(new AsmJava9ClassProvider());
     }
     switch (Options.v().src_prec()) {
@@ -319,7 +318,7 @@ public class SourceLocator {
     return getClassesUnder(aPath, "");
   }
 
-  private List<String> getClassesUnder(String aPath, String prefix) {
+  public List<String> getClassesUnder(String aPath, String prefix) {
     List<String> classes = new ArrayList<String>();
     ClassSourceType cst = getClassSourceType(aPath);
 

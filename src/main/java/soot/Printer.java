@@ -28,9 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.function.Function;
 
 import soot.options.Options;
 import soot.tagkit.JimpleLineNumberTag;
@@ -43,7 +41,10 @@ import soot.util.DeterministicHashMap;
  * Prints out a class and all its methods.
  */
 public class Printer {
-  private static final Logger logger = LoggerFactory.getLogger(Printer.class);
+  public static final int USE_ABBREVIATIONS = 0x0001, ADD_JIMPLE_LN = 0x0010;
+  private int options = 0;
+  private int jimpleLnNum = 0; // actual line number
+  private Function<Body, LabeledUnitPrinter> customUnitPrinter;
 
   public Printer(Singletons.Global g) {
   }
@@ -51,10 +52,6 @@ public class Printer {
   public static Printer v() {
     return G.v().soot_Printer();
   }
-
-  final private static char fileSeparator = System.getProperty("file.separator").charAt(0);
-
-  public static final int USE_ABBREVIATIONS = 0x0001, ADD_JIMPLE_LN = 0x0010;
 
   public boolean useAbbreviations() {
     return (options & USE_ABBREVIATIONS) != 0;
@@ -64,8 +61,6 @@ public class Printer {
     return (options & ADD_JIMPLE_LN) != 0;
   }
 
-  int options = 0;
-
   public void setOption(int opt) {
     options |= opt;
   }
@@ -73,8 +68,6 @@ public class Printer {
   public void clearOption(int opt) {
     options &= ~opt;
   }
-
-  int jimpleLnNum = 0; // actual line number
 
   public int getJimpleLnNum() {
     return jimpleLnNum;
@@ -262,8 +255,6 @@ public class Printer {
   public void printTo(Body b, PrintWriter out) {
     // b.validate();
 
-    boolean isPrecise = !useAbbreviations();
-
     String decl = b.getMethod().getDeclaration();
 
     out.println("    " + decl);
@@ -290,12 +281,7 @@ public class Printer {
 
     UnitGraph unitGraph = new soot.toolkits.graph.BriefUnitGraph(b);
 
-    LabeledUnitPrinter up;
-    if (isPrecise) {
-      up = new NormalUnitPrinter(b);
-    } else {
-      up = new BriefUnitPrinter(b);
-    }
+    LabeledUnitPrinter up = getUnitPrinter(b);
 
     if (addJimpleLn()) {
       up.setPositionTagger(new AttributesUnitPrinter(getJimpleLnNum()));
@@ -307,6 +293,24 @@ public class Printer {
 
     out.println("    }");
     incJimpleLnNum();
+
+  }
+
+  public void setCustomUnitPrinter(Function<Body, LabeledUnitPrinter> customUnitPrinter) {
+    this.customUnitPrinter = customUnitPrinter;
+  }
+
+  private LabeledUnitPrinter getUnitPrinter(Body b) {
+    if (customUnitPrinter != null) {
+      return customUnitPrinter.apply(b);
+    }
+
+    boolean isPrecise = !useAbbreviations();
+    if (isPrecise) {
+      return new NormalUnitPrinter(b);
+    } else {
+      return new BriefUnitPrinter(b);
+    }
 
   }
 
