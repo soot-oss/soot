@@ -167,28 +167,41 @@ public class TrapSplitter extends BodyTransformer {
       }
     }
     
-    if (potentiallyUselessTrapHandlers != null) {
-      for (Trap t : b.getTraps()) {
-        //Trap is used by another trap handler, so it is not useless
-        potentiallyUselessTrapHandlers.remove(t.getHandlerUnit());
-      }
-      boolean removedUselessTrap = false;
-      for (Unit uselessTrapHandler : potentiallyUselessTrapHandlers) {
-        if (uselessTrapHandler instanceof IdentityStmt) {
-          IdentityStmt assign = (IdentityStmt) uselessTrapHandler;
-          if (assign.getRightOp() instanceof CaughtExceptionRef) {
-            //Make sure that the useless trap handler, which is not used
-            //anywhere else still gets a valid value.
-            Unit newStmt = Jimple.v().newAssignStmt(assign.getLeftOp(), NullConstant.v());
-            b.getUnits().swapWith(assign, newStmt);
-            removedUselessTrap = true;
-          }
+    removePotentiallyUselassTraps(b, potentiallyUselessTrapHandlers);
+  }
+
+  /**
+   * Changes the given body so that trap handlers, which are contained in the
+   * given set, are removed in case they are not referenced by any trap.
+   * The list is changed so that it contains the unreferenced trap handlers.
+   * @param b the body
+   * @param potentiallyUselessTrapHandlers potentially useless trap handlers
+   */
+  public static void removePotentiallyUselassTraps(Body b, Set<Unit> potentiallyUselessTrapHandlers) {
+    if (potentiallyUselessTrapHandlers == null) {
+      return;
+    }
+    
+    for (Trap t : b.getTraps()) {
+      //Trap is used by another trap handler, so it is not useless
+      potentiallyUselessTrapHandlers.remove(t.getHandlerUnit());
+    }
+    boolean removedUselessTrap = false;
+    for (Unit uselessTrapHandler : potentiallyUselessTrapHandlers) {
+      if (uselessTrapHandler instanceof IdentityStmt) {
+        IdentityStmt assign = (IdentityStmt) uselessTrapHandler;
+        if (assign.getRightOp() instanceof CaughtExceptionRef) {
+          //Make sure that the useless trap handler, which is not used
+          //anywhere else still gets a valid value.
+          Unit newStmt = Jimple.v().newAssignStmt(assign.getLeftOp(), NullConstant.v());
+          b.getUnits().swapWith(assign, newStmt);
+          removedUselessTrap = true;
         }
       }
-      if (removedUselessTrap) {
-        //We cleaned up the useless trap, it hopefully is unreachable
-        UnreachableCodeEliminator.v().transform(b);
-      }
+    }
+    if (removedUselessTrap) {
+      //We cleaned up the useless trap, it hopefully is unreachable
+      UnreachableCodeEliminator.v().transform(b);
     }
   }
 
