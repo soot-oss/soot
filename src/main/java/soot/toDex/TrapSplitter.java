@@ -1,5 +1,9 @@
 package soot.toDex;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,13 +27,20 @@ package soot.toDex;
  */
 
 import java.util.Map;
+import java.util.Set;
 
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Singletons;
 import soot.Trap;
 import soot.Unit;
+import soot.jimple.AssignStmt;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
+import soot.jimple.NullConstant;
+import soot.jimple.Stmt;
+import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 
 /**
  * Transformer that splits nested traps for Dalvik which does not support hierarchies of traps. If we have a trap (1-3) with
@@ -64,6 +75,8 @@ public class TrapSplitter extends BodyTransformer {
     if (b.getTraps().size() < 2) {
       return;
     }
+    
+    Set<Unit> potentiallyUselessTrapHandlers = null;
 
     // Look for overlapping traps
     TrapOverlap to;
@@ -71,10 +84,18 @@ public class TrapSplitter extends BodyTransformer {
       // If one of the two traps is empty, we remove it
       if (to.t1.getBeginUnit() == to.t1.getEndUnit()) {
         b.getTraps().remove(to.t1);
+        if (potentiallyUselessTrapHandlers == null) {
+          potentiallyUselessTrapHandlers = new HashSet<>();
+        }
+        potentiallyUselessTrapHandlers.add(to.t1.getHandlerUnit());
         continue;
       }
       if (to.t2.getBeginUnit() == to.t2.getEndUnit()) {
         b.getTraps().remove(to.t2);
+        if (potentiallyUselessTrapHandlers == null) {
+          potentiallyUselessTrapHandlers = new HashSet<>();
+        }
+        potentiallyUselessTrapHandlers.add(to.t2.getHandlerUnit());
         continue;
       }
 
@@ -135,10 +156,38 @@ public class TrapSplitter extends BodyTransformer {
           } else if (to.t1.getHandlerUnit() != to.t2.getHandlerUnit()) {
             // If t2 ends first, t2 is useless.
             b.getTraps().remove(to.t2);
+            if (potentiallyUselessTrapHandlers == null) {
+              potentiallyUselessTrapHandlers = new HashSet<>();
+            }
+            potentiallyUselessTrapHandlers.add(to.t2.getHandlerUnit());
           } else {
             to.t1.setBeginUnit(firstEndUnit);
           }
         }
+      }
+    }
+    
+    if (potentiallyUselessTrapHandlers != null) {
+      for (Trap t : b.getTraps()) {
+        //Trap is used by another trap handler, so it is not useless
+        potentiallyUselessTrapHandlers.remove(t.getHandlerUnit());
+      }
+      boolean removedUselessTrap = false;
+      for (Unit uselessTrapHandler : potentiallyUselessTrapHandlers) {
+        if (uselessTrapHandler instanceof IdentityStmt) {
+          IdentityStmt assign = (IdentityStmt) uselessTrapHandler;
+          if (assign.getRightOp() instanceof CaughtExceptionRef) {
+            //Make sure that the useless trap handler, which is not used
+            //anywhere else still gets a valid value.
+            Unit newStmt = Jimple.v().newAssignStmt(assign.getLeftOp(), NullConstant.v());
+            b.getUnits().swapWith(assign, newStmt);
+            removedUselessTrap = true;
+          }
+        }
+      }
+      if (removedUselessTrap) {
+        //We cleaned up the useless trap, it hopefully is unreachable
+        UnreachableCodeEliminator.v().transform(b);
       }
     }
   }
