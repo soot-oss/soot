@@ -170,6 +170,13 @@ public class TrapSplitter extends BodyTransformer {
     removePotentiallyUselassTraps(b, potentiallyUselessTrapHandlers);
   }
 
+  /**
+   * Changes the given body so that trap handlers, which are contained in the
+   * given set, are removed in case they are not referenced by any trap.
+   * The list is changed so that it contains the unreferenced trap handlers.
+   * @param b the body
+   * @param potentiallyUselessTrapHandlers potentially useless trap handlers
+   */
   public static void removePotentiallyUselassTraps(Body b, Set<Unit> potentiallyUselessTrapHandlers) {
     if (potentiallyUselessTrapHandlers == null) {
       return;
