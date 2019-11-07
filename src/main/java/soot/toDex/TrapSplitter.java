@@ -167,28 +167,34 @@ public class TrapSplitter extends BodyTransformer {
       }
     }
     
-    if (potentiallyUselessTrapHandlers != null) {
-      for (Trap t : b.getTraps()) {
-        //Trap is used by another trap handler, so it is not useless
-        potentiallyUselessTrapHandlers.remove(t.getHandlerUnit());
-      }
-      boolean removedUselessTrap = false;
-      for (Unit uselessTrapHandler : potentiallyUselessTrapHandlers) {
-        if (uselessTrapHandler instanceof IdentityStmt) {
-          IdentityStmt assign = (IdentityStmt) uselessTrapHandler;
-          if (assign.getRightOp() instanceof CaughtExceptionRef) {
-            //Make sure that the useless trap handler, which is not used
-            //anywhere else still gets a valid value.
-            Unit newStmt = Jimple.v().newAssignStmt(assign.getLeftOp(), NullConstant.v());
-            b.getUnits().swapWith(assign, newStmt);
-            removedUselessTrap = true;
-          }
+    removePotentiallyUselassTraps(b, potentiallyUselessTrapHandlers);
+  }
+
+  public static void removePotentiallyUselassTraps(Body b, Set<Unit> potentiallyUselessTrapHandlers) {
+    if (potentiallyUselessTrapHandlers == null) {
+      return;
+    }
+    
+    for (Trap t : b.getTraps()) {
+      //Trap is used by another trap handler, so it is not useless
+      potentiallyUselessTrapHandlers.remove(t.getHandlerUnit());
+    }
+    boolean removedUselessTrap = false;
+    for (Unit uselessTrapHandler : potentiallyUselessTrapHandlers) {
+      if (uselessTrapHandler instanceof IdentityStmt) {
+        IdentityStmt assign = (IdentityStmt) uselessTrapHandler;
+        if (assign.getRightOp() instanceof CaughtExceptionRef) {
+          //Make sure that the useless trap handler, which is not used
+          //anywhere else still gets a valid value.
+          Unit newStmt = Jimple.v().newAssignStmt(assign.getLeftOp(), NullConstant.v());
+          b.getUnits().swapWith(assign, newStmt);
+          removedUselessTrap = true;
         }
       }
-      if (removedUselessTrap) {
-        //We cleaned up the useless trap, it hopefully is unreachable
-        UnreachableCodeEliminator.v().transform(b);
-      }
+    }
+    if (removedUselessTrap) {
+      //We cleaned up the useless trap, it hopefully is unreachable
+      UnreachableCodeEliminator.v().transform(b);
     }
   }
 
