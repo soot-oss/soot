@@ -381,7 +381,7 @@ public class SootResolver {
      */
     private static final long serialVersionUID = 1563461446590293827L;
 
-    private SootClassNotFoundException(String s) {
+    public SootClassNotFoundException(String s) {
       super(s);
     }
   }
