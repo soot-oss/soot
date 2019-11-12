@@ -83,8 +83,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     }
     RefType rt = Scene.v().getRefTypeUnsafe(className);
     if (rt == null) {
-      rt = new RefType(className);
-      return Scene.v().getOrAddRefType(rt);
+      return Scene.v().getOrAddRefType(className);
     }
     return rt;
 

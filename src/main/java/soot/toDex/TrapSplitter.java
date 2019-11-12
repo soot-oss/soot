@@ -1,5 +1,7 @@
 package soot.toDex;
 
+import java.util.HashMap;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
