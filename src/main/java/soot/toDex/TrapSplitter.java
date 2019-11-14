@@ -73,7 +73,7 @@ public class TrapSplitter extends BodyTransformer {
     if (b.getTraps().size() < 2) {
       return;
     }
-    
+
     Set<Unit> potentiallyUselessTrapHandlers = null;
 
     // Look for overlapping traps
@@ -164,24 +164,26 @@ public class TrapSplitter extends BodyTransformer {
         }
       }
     }
-    
+
     removePotentiallyUselassTraps(b, potentiallyUselessTrapHandlers);
   }
 
   /**
-   * Changes the given body so that trap handlers, which are contained in the
-   * given set, are removed in case they are not referenced by any trap.
-   * The list is changed so that it contains the unreferenced trap handlers.
-   * @param b the body
-   * @param potentiallyUselessTrapHandlers potentially useless trap handlers
+   * Changes the given body so that trap handlers, which are contained in the given set, are removed in case they are not
+   * referenced by any trap. The list is changed so that it contains the unreferenced trap handlers.
+   * 
+   * @param b
+   *          the body
+   * @param potentiallyUselessTrapHandlers
+   *          potentially useless trap handlers
    */
   public static void removePotentiallyUselassTraps(Body b, Set<Unit> potentiallyUselessTrapHandlers) {
     if (potentiallyUselessTrapHandlers == null) {
       return;
     }
-    
+
     for (Trap t : b.getTraps()) {
-      //Trap is used by another trap handler, so it is not useless
+      // Trap is used by another trap handler, so it is not useless
       potentiallyUselessTrapHandlers.remove(t.getHandlerUnit());
     }
     boolean removedUselessTrap = false;
@@ -189,8 +191,8 @@ public class TrapSplitter extends BodyTransformer {
       if (uselessTrapHandler instanceof IdentityStmt) {
         IdentityStmt assign = (IdentityStmt) uselessTrapHandler;
         if (assign.getRightOp() instanceof CaughtExceptionRef) {
-          //Make sure that the useless trap handler, which is not used
-          //anywhere else still gets a valid value.
+          // Make sure that the useless trap handler, which is not used
+          // anywhere else still gets a valid value.
           Unit newStmt = Jimple.v().newAssignStmt(assign.getLeftOp(), NullConstant.v());
           b.getUnits().swapWith(assign, newStmt);
           removedUselessTrap = true;
@@ -198,7 +200,7 @@ public class TrapSplitter extends BodyTransformer {
       }
     }
     if (removedUselessTrap) {
-      //We cleaned up the useless trap, it hopefully is unreachable
+      // We cleaned up the useless trap, it hopefully is unreachable
       UnreachableCodeEliminator.v().transform(b);
     }
   }
@@ -225,9 +227,8 @@ public class TrapSplitter extends BodyTransformer {
   }
 
   /**
-   * Gets two arbitrary overlapping traps t1, t2 in the given method body. The
-   * begin unit of the t2 should be equal to or occurring after the begin unit of
-   * t1.
+   * Gets two arbitrary overlapping traps t1, t2 in the given method body. The begin unit of the t2 should be equal to or
+   * occurring after the begin unit of t1.
    *
    * @param b
    *          The body in which to look for overlapping traps
@@ -247,10 +248,11 @@ public class TrapSplitter extends BodyTransformer {
             if (t2.getEndUnit() != t1.getEndUnit() || t2.getException() == t1.getException()) {
 
               // this restores the old function behavior
-              if (splitUnit == t1.getBeginUnit())
+              if (splitUnit == t1.getBeginUnit()) {
                 return new TrapOverlap(t2, t1, splitUnit);
-              else
+              } else {
                 return new TrapOverlap(t1, t2, splitUnit);
+              }
             }
           }
           otherTrapsContainingUnit.add(t1);
