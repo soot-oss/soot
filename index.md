@@ -118,6 +118,10 @@ That way you can help us in two ways:
 * By stating your name and affiliation you help us showcasing Soot’s large user base.
 Thanks!
 
-# Acknowledgements
+# Supporters
 
-We would like to thank the team of [YourKit](https://www.yourkit.com/) for providing us with free licenses of their profiler to improve the performance of Soot.
+The further development of Soot is financed by generous support from the German Research Foundation, the Heinz Nixdorf Institute and Amazon Web Services.
+
+<img align="left" src="images/dfg_logo_englisch_blau_en.jpg" height="50">
+<img align="right" src="images/200px-Amazon_Web_Services_Logo.svg.png" height="50">
+
