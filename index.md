@@ -123,5 +123,5 @@ Thanks!
 The further development of Soot is financed by generous support from the German Research Foundation, the Heinz Nixdorf Institute and Amazon Web Services.
 
 <img align="left" src="images/dfg_logo_englisch_blau_en.jpg" height="50">
+<img align="middle" src="images/Heinz_Nixdorf_Institut_Logo_CMYK.jpg" height="50">
 <img align="right" src="images/200px-Amazon_Web_Services_Logo.svg.png" height="50">
-
