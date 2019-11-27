@@ -82,7 +82,7 @@ public class ModuleRefType extends RefType {
   @Override
   public SootClass getSootClass() {
     if (super.getSootClass() == null) {
-      super.setSootClass( SootModuleResolver.v().makeClassRef(getClassName(), Optional.fromNullable(this.moduleName)));
+      super.setSootClass(SootModuleResolver.v().makeClassRef(getClassName(), Optional.fromNullable(this.moduleName)));
     }
     return super.getSootClass();
   }
