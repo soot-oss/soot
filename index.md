@@ -41,8 +41,9 @@ The current maintenance is driven by Eric Bodden's [Software Engineering Group](
 * Points-to analysis
 * Def/use chains
 * Template-driven Intra-procedural data-flow analysis
-* Template-driven Inter-procedural data-flow analysis, in combination with [heros](https://github.com/Sable/heros)
-* Taint analysis in combination with [FlowDroid](https://blogs.uni-paderborn.de/sse/tools/flowdroid/)
+* Template-driven Inter-procedural data-flow analysis, in combination with [heros](https://github.com/Sable/heros) (uses IFDS/IDE) or [Weighted Pushdown Systems](https://github.com/CROSSINGTUD/WPDS)
+* Aliasing can be resolved using the flow-, field-, context-sensitive demand-driven pointer analysis [Boomerang](https://github.com/CROSSINGTUD/WPDS)
+* Taint analysis in combination with [FlowDroid](https://blogs.uni-paderborn.de/sse/tools/flowdroid/) or [IDEal](https://github.com/CROSSINGTUD/WPDS)
 
 # What extensions exist to Soot?
 
