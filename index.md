@@ -142,6 +142,6 @@ Thanks!
 
 The further development of Soot is financed by generous support from the German Research Foundation, the Heinz Nixdorf Institute and Amazon Web Services.
 
-<a href="http://www.dfg.de/"><img src="images/dfg_logo_englisch_blau_en.jpg" height="30"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="https://www.hni.uni-paderborn.de/en/"><img src="images/Heinz_Nixdorf_Institut_Logo_CMYK.jpg" height="30"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="https://aws.amazon.com/"><img src="images/200px-Amazon_Web_Services_Logo.svg.png" height="30"></a>
+<a href="http://www.dfg.de/"><img src="images/dfg_logo_englisch_blau_en.jpg" height="40"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="https://www.hni.uni-paderborn.de/en/"><img src="images/Heinz_Nixdorf_Institut_Logo_CMYK.jpg" height="40"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="https://aws.amazon.com/"><img src="images/200px-Amazon_Web_Services_Logo.svg.png" height="40"></a>
