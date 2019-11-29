@@ -66,7 +66,7 @@ We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/w
 
 # Including Soot in your Project
 
-## Bleeding Edge
+### Bleeding Edge
 
 A Soot snapshot release is currently built for each commit to the `develop` branch. You can include Soot as 
 a dependency via Maven, Gradle, SBT, etc using the following coordinates:
@@ -94,7 +94,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 
 You can also obtain older builds of the `develop` branch. A complete listing of builds can be found in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse/components:soot-snapshot).
 
-## Releases
+### Stable Releases
 
 For each commit to the `master` branch, a new release is pushed to MavenCentral. You can include Soot as 
 a dependency via Maven, Gradle, SBT, etc using the following coordinates:
