@@ -66,6 +66,8 @@ We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/w
 
 # Including Soot in your Project
 
+## Bleeding Edge
+
 A Soot snapshot release is currently built for each commit to the `develop` branch. You can include Soot as 
 a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 
@@ -91,6 +93,24 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 **Please make sure that your Java version is up to date to avoid problems with our SSL certificate**
 
 You can also obtain older builds of the `develop` branch. A complete listing of builds can be found in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse/components:soot-snapshot).
+
+## Releases
+
+For each commit to the `master` branch, a new release is pushed to MavenCentral. You can include Soot as 
+a dependency via Maven, Gradle, SBT, etc using the following coordinates:
+
+
+```.xml
+<dependencies>
+  <dependency>
+    <groupId>ca.mcgill.sable</groupId>
+    <artifactId>soot</artifactId>
+    <version>3.3.0</version>
+  </dependency>
+</dependencies>
+```
+
+You can also obtain older builds of the `master` branch. A complete listing of builds can be found on [Maven Central](https://repo.maven.apache.org/maven2/ca/mcgill/sable/soot/).
 
 # How do I obtain Soot without Maven?
 
