@@ -158,7 +158,7 @@ To execute Soot using Java 1.9, but analyzing a classpath run, just as before:
 `java -cp soot-trunk-j9.jar soot.Main --process-dir directoryToAnalyse`
 
 
-if you want to specify the classpath explicity run:
+if you want to specify the classpath explicitly run:
 `java -cp soot-trunk-j9.jar soot.Main -cp VIRTUAL_FS_FOR_JDK --process-dir directoryToAnalyse`
 
 the value `VIRTUAL_FS_FOR_JDK` indicates that Soot should search Java's (>9) virtual filesystem `jrt:/` for classes, too, although Soot is not executed in module mode.
