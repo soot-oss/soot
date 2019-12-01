@@ -54,7 +54,9 @@ import soot.options.Options;
  * @author Andreas Dann
  */
 @RunWith(PowerMockRunner.class)
-
+@PowerMockIgnore({"javax.management.", "com.sun.org.apache.xerces.",
+        "javax.xml.", "org.xml.", "org.w3c.dom.",
+        "com.sun.org.apache.xalan.", "javax.activation.*"})
 
 public abstract class AbstractTestingFramework {
 

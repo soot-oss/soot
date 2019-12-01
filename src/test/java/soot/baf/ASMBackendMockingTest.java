@@ -35,6 +35,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -56,7 +57,9 @@ import soot.util.backend.ASMBackendUtils;
 
 @PrepareForTest(ASMBackendUtils.class)
 @RunWith(PowerMockRunner.class)
-
+@PowerMockIgnore({"javax.management.", "com.sun.org.apache.xerces.",
+		"javax.xml.", "org.xml.", "org.w3c.dom.",
+		"com.sun.org.apache.xalan.", "javax.activation.*"})
 public class ASMBackendMockingTest {
 
 	private MethodVisitor mv;
