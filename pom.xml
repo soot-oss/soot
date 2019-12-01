@@ -57,7 +57,7 @@
         <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
         <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
@@ -272,12 +272,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
-
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.maven.surefire</groupId>
                         <artifactId>surefire-junit47</artifactId>
-                        <version>3.0.0-M3</version>
+                        <version>${maven-surefire-plugin.version}</version>
                     </dependency>
                 </dependencies>
                 <configuration>
@@ -576,13 +575,13 @@
         <profile>
             <id>Java9</id>
             <properties>
-                <testcase.groups>categories.Java9Test</testcase.groups>
+                <testcase.groups>categories.Java8Test,categories.Java9Test</testcase.groups>
             </properties>
         </profile>
         <profile>
             <id>Java11</id>
             <properties>
-                <testcase.groups>categories.Java11Test</testcase.groups>
+                <testcase.groups>categories.Java8Test,categories.Java9Test,categories.Java11Test</testcase.groups>
             </properties>
         </profile>
         <profile>

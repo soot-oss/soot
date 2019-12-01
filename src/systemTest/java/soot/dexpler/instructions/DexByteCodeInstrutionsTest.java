@@ -29,9 +29,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import categories.Java8Test;
 import org.junit.Assert;
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
@@ -46,6 +48,7 @@ import soot.testing.framework.AbstractTestingFramework;
 /**
  * @author Manuel Benz created on 22.10.18
  */
+@Category(Java8Test.class)
 public class DexByteCodeInstrutionsTest extends AbstractTestingFramework {
 
   private static final String METHOD_HANDLE_CLASS = "java.lang.invoke.MethodHandle";

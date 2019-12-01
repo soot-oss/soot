@@ -27,9 +27,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import categories.Java8Test;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
 import soot.Kind;
 import soot.Scene;
 import soot.SootMethod;
@@ -41,6 +43,7 @@ import soot.testing.framework.AbstractTestingFramework;
  * @author Manuel Benz created on 2018-12-17
  */
 @Ignore
+@Category(Java8Test.class)
 public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFramework {
 
   private static final String TEST_METHOD_NAME = "main";

@@ -22,9 +22,11 @@ package soot.jimple;
  * #L%
  */
 
+import categories.Java8Test;
 import org.junit.Assert;
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
 import soot.Body;
 import soot.PackManager;
 import soot.SootMethod;
@@ -37,6 +39,8 @@ import soot.testing.framework.AbstractTestingFramework;
  * @author Andreas Dann created on 06.02.19
  * @author Manuel Benz 27.2.19
  */
+@Category(Java8Test.class)
+
 public class PolymorphicDispatchTest extends AbstractTestingFramework {
 
   private static final String TEST_TARGET_CLASS = "soot.jimple.PolymorphicDispatch";
