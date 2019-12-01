@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -317,6 +318,17 @@ public class SourceLocator {
 
   public List<String> getClassesUnder(String aPath, String prefix) {
     List<String> classes = new ArrayList<String>();
+
+    //FIXME: AD the dummy_classpath_variable should be replaced with a more stable concept
+    if(aPath.equals(ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS)) {
+      Collection<List<String>> values = ModulePathSourceLocator.v().getClassUnderModulePath("jrt:/").values();
+      ArrayList<String> foundClasses = new ArrayList<>();
+      for(List<String> classesInModule : values){
+        foundClasses.addAll(classesInModule);
+      }
+      return foundClasses;
+    }
+
     ClassSourceType cst = getClassSourceType(aPath);
 
     // Get the dex file from an apk
