@@ -74,13 +74,6 @@ pipeline {
 
             }
 
-            post {
-              always {
-                junit 'target/surefire-reports/**/*.xml'
-               // stash includes: '**/target/coverage-reports/*', name: 'reports1'
-
-              }
-            }
           }
 
 	        stage('Test JDK9'){
@@ -96,14 +89,7 @@ pipeline {
               sh 'mvn test -PJava9'
 
             }
-            post {
-              always {
-                junit 'target/surefire-reports/**/*.xml'
-             //   stash includes: '**/target/coverage-reports/*', name: 'reports2'
 
-
-              }
-            }
           }
 
             stage('Test JDK11'){
@@ -119,14 +105,7 @@ pipeline {
               sh 'mvn test -PJava11'
 
             }
-            post {
-              always {
-                junit 'target/surefire-reports/**/*.xml'
-               // stash includes: '**/target/coverage-reports/*', name: 'reports3'
 
-
-              }
-            }
           }
 
 
