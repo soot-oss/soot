@@ -30,11 +30,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import categories.Java8Test;
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.junit.experimental.categories.Category;
 import soot.Kind;
 import soot.RefType;
 import soot.Scene;

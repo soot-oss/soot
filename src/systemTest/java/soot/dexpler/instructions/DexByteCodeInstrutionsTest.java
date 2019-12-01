@@ -29,11 +29,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import categories.Java8Test;
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.junit.experimental.categories.Category;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootMethodRef;

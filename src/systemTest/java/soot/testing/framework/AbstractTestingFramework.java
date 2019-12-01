@@ -28,9 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import categories.Java8Test;
 import org.junit.Assert;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 

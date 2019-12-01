@@ -22,11 +22,9 @@ package soot.testing.framework;
  * #L%
  */
 
-import categories.Java8Test;
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.junit.experimental.categories.Category;
 import soot.SootMethod;
 
 /**
