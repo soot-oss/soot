@@ -48,6 +48,7 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.NullConstant;
 import soot.options.Options;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 
 /**
  * @author Manuel Benz created on 22.06.18
