@@ -33,7 +33,6 @@ import java.util.Scanner;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
 
@@ -42,9 +41,6 @@ import soot.Main;
 import soot.ModulePathSourceLocator;
 import soot.Scene;
 
-import categories.Java8Test;
-
-@Category(Java8Test.class)
 
 /**
  * Abstract base class for tests for the ASM backend that work with source code files

@@ -22,8 +22,6 @@ package soot.asm.backend;
  * #L%
  */
 
-import categories.Java8Test;
-import org.junit.experimental.categories.Category;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.util.TraceClassVisitor;
@@ -34,7 +32,7 @@ import org.objectweb.asm.util.TraceClassVisitor;
  * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer
  *
  */
-@Category(Java8Test.class)
+
 
 public class InnerClass2Test extends AbstractASMBackendTest {
 

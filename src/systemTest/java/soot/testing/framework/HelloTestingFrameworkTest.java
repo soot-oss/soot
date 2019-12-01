@@ -32,7 +32,7 @@ import soot.SootMethod;
 /**
  * @author Manuel Benz created on 22.06.18
  */
-@Category(Java8Test.class)
+
 
 public class HelloTestingFrameworkTest extends AbstractTestingFramework {
 

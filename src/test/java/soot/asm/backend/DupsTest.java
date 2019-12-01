@@ -22,11 +22,8 @@ package soot.asm.backend;
  * #L%
  */
 
-import org.junit.experimental.categories.Category;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.util.TraceClassVisitor;
-
-import categories.Java8Test;
 
 /**
  * Test for dup bytecode instructions
@@ -34,7 +31,7 @@ import categories.Java8Test;
  * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer
  *
  */
-@Category(Java8Test.class)
+
 
 public class DupsTest extends AbstractASMBackendTest {
 

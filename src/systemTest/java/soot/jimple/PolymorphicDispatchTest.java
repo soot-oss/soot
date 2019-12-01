@@ -39,7 +39,7 @@ import soot.testing.framework.AbstractTestingFramework;
  * @author Andreas Dann created on 06.02.19
  * @author Manuel Benz 27.2.19
  */
-@Category(Java8Test.class)
+
 
 public class PolymorphicDispatchTest extends AbstractTestingFramework {
 

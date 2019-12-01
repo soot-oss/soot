@@ -44,7 +44,7 @@ import soot.jimple.Stmt;
 import soot.jimple.spark.internal.CompleteAccessibility;
 import soot.options.Options;
 import soot.testing.framework.AbstractTestingFramework;
-@Category(Java8Test.class)
+
 
 public class TypeBasedReflectionModelAnySubTypeTest extends AbstractTestingFramework {
   private static final String[] INTERFACE_INVOKEES = new String[] {

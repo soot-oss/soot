@@ -67,6 +67,7 @@ import soot.util.backend.ASMBackendUtils;
 
 @PrepareForTest(ASMBackendUtils.class)
 @RunWith(PowerMockRunner.class)
+
 public class ASMBackendMockingTest {
 
 	private MethodVisitor mv;

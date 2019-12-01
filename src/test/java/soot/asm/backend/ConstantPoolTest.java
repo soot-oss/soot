@@ -31,7 +31,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.util.TraceClassVisitor;
@@ -41,15 +40,13 @@ import org.slf4j.LoggerFactory;
 import soot.G;
 import soot.Main;
 
-import categories.Java8Test;
-
 /**
  * Test for fields that contain constant values
  *
  * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer
  *
  */
-@Category(Java8Test.class)
+
 
 public class ConstantPoolTest extends AbstractASMBackendTest {
   private static final Logger logger = LoggerFactory.getLogger(ConstantPoolTest.class);

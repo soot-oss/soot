@@ -22,14 +22,11 @@ package soot.asm.backend;
  * #L%
  */
 
-import org.junit.experimental.categories.Category;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.util.TraceClassVisitor;
-
-import categories.Java8Test;
 
 /**
  * Test for annotations on fields
@@ -38,7 +35,7 @@ import categories.Java8Test;
  *
  */
 
-@Category(Java8Test.class)
+
 
 public class AnnotatedFieldTest extends AbstractASMBackendTest {
 

@@ -56,7 +56,7 @@ import soot.options.Options;
  * @author Andreas Dann
  */
 @RunWith(PowerMockRunner.class)
-@Category(Java8Test.class)
+
 
 public abstract class AbstractTestingFramework {
 

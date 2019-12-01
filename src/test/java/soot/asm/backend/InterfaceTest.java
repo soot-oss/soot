@@ -22,11 +22,8 @@ package soot.asm.backend;
  * #L%
  */
 
-import org.junit.experimental.categories.Category;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
-
-import categories.Java8Test;
 
 /**
  * Test for an interface class and accessibility modifiers
@@ -34,7 +31,7 @@ import categories.Java8Test;
  * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer
  *
  */
-@Category(Java8Test.class)
+
 
 public class InterfaceTest extends AbstractASMBackendTest {
 

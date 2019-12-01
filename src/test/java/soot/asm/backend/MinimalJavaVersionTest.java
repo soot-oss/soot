@@ -28,7 +28,6 @@ import java.io.File;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.rules.ExpectedException;
 
 import soot.G;
@@ -36,15 +35,13 @@ import soot.Main;
 import soot.ModulePathSourceLocator;
 import soot.Scene;
 
-import categories.Java8Test;
-
 /**
  * Test for the correct determination of the required Java version
  *
  * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer
  *
  */
-@Category(Java8Test.class)
+
 
 public class MinimalJavaVersionTest {
 

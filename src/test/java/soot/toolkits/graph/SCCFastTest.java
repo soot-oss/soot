@@ -24,12 +24,9 @@ package soot.toolkits.graph;
 
 import java.util.List;
 
-import categories.Java8Test;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
-@Category(Java8Test.class)
 
 public class SCCFastTest {
 

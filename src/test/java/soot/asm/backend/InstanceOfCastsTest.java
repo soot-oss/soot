@@ -22,12 +22,9 @@ package soot.asm.backend;
  * #L%
  */
 
-import categories.Java8Test;
-import org.junit.experimental.categories.Category;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.util.TraceClassVisitor;
-import soot.Scene;
 
 /**
  * Test for instanceof and cast bytecode instructions
@@ -35,7 +32,7 @@ import soot.Scene;
  * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer
  *
  */
-@Category(Java8Test.class)
+
 
 public class InstanceOfCastsTest extends AbstractASMBackendTest {
 

@@ -35,11 +35,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import categories.Java8Test;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runners.MethodSorters;
 
 import soot.AnySubType;
@@ -50,7 +48,7 @@ import soot.Scene;
 import soot.toolkits.exceptions.ExceptionTestUtility.ExceptionHashSet;
 
 import junit.framework.AssertionFailedError;
-@Category(Java8Test.class)
+
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ThrowableSetTest {

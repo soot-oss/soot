@@ -54,6 +54,8 @@ import soot.options.Options;
  * 
  * @author Fabian Brenner, Jan Peter Stotz
  */
+
+
 public class TypingMinimizeTest {
 
   /******************************************************

@@ -49,7 +49,7 @@ import soot.Main;
 /**
  * @author Alex Betra,
  */
-@Category(Java8Test.class)
+
 
 public class MethodHandleTest {
 

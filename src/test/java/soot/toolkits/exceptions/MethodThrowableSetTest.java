@@ -30,13 +30,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import categories.Java8Test;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import org.junit.experimental.categories.Category;
 import soot.AnySubType;
 import soot.G;
 import soot.PackManager;
@@ -44,7 +42,7 @@ import soot.RefLikeType;
 import soot.Scene;
 import soot.SootMethod;
 import soot.options.Options;
-@Category(Java8Test.class)
+
 
 public class MethodThrowableSetTest {
 
