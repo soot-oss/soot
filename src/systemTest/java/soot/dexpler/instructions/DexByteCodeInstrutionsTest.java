@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
 import org.junit.Assert;
 import org.junit.Test;
 
+import soot.ModulePathSourceLocator;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
@@ -59,8 +61,15 @@ public class DexByteCodeInstrutionsTest extends AbstractTestingFramework {
     super.setupSoot();
     Options.v().set_src_prec(Options.src_prec_apk);
     // to get the basic classes; java.lang.Object, java.lang.Throwable, ... we add the rt.jar to the classpath
-    File rtJar = new File(System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar");
-    Options.v().set_process_dir(Arrays.asList(targetDexPath(), rtJar.getPath()));
+    String rtJar = "";
+    if (Scene.isJavaGEQ9(System.getProperty("java.version"))) {
+      rtJar = ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS;
+    } else {
+      rtJar = System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar";
+
+    }
+
+    Options.v().set_process_dir(Arrays.asList(targetDexPath(), rtJar));
     Options.v().set_force_android_jar(androidJarPath());
     Options.v().set_android_api_version(26);
   }
