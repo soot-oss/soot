@@ -157,9 +157,6 @@ public class SourceLocator {
     for (String originalDir : classPath.split(regex)) {
       try {
         String canonicalDir = new File(originalDir).getCanonicalPath();
-        // FIXME: make this nice in the future
-        // currently, we do not add it to NOT break backward compatibility
-        // instead, we add the AsmJava9ClassProvider in setupClassProvider()
         if (originalDir.equals(ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS)) {
           SourceLocator.v().java9Mode = true;
           continue;
