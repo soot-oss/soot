@@ -23,6 +23,10 @@ package soot.jimple;
  */
 
 import soot.IdentityUnit;
+import soot.Value;
 
 public interface IdentityStmt extends DefinitionStmt, IdentityUnit {
+  public void setLeftOp(Value local);
+
+  public void setRightOp(Value identityRef);
 }

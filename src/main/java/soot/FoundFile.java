@@ -93,6 +93,10 @@ public class FoundFile {
     return entryName != null;
   }
 
+  public ZipFile getZipFile() {
+    return zipFile;
+  }
+
   public File getFile() {
     return file;
   }
