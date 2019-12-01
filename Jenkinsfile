@@ -136,25 +136,20 @@ pipeline {
 
 
 
+        stage ('Deploy') {
+            when {
+                anyOf {
+                       branch 'java9'
+                      }
+                }
 
-		stage('Deploy'){
-		    when {
-			    branch 'master'
-			}
-	        steps {
-	            echo 'WHEN - Master Branch!'
-                withCredentials([
-                    [$class: 'StringBinding', credentialsId: 'nexusUsername', variable: 'MVN_SETTINGS_nexusUsername'],
-                    [$class: 'StringBinding', credentialsId: 'nexusPassword', variable: 'MVN_SETTINGS_nexusPassword']
-                  ]) {
-                    withEnv([
-                      'nexusPublic=https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-releases/'
-                    ]) {
-                      sh 'mvn -s settings.xml clean build'
-                    }
-                  }
-	        }
-		}
+            steps {
+                configFileProvider(
+                    [configFile(fileId: '1b5a647e-aeee-4f0b-8870-3f4bb152395f', variable: 'MAVEN_SETTINGS')]) {
+                    sh 'mvn -s $MAVEN_SETTINGS deploy -P ci -DskipTests'
+                }
+            }
+        }
 
     }
 }
