@@ -487,11 +487,22 @@ public class ModuleScene extends Scene // extends original Scene
   public void loadBasicClasses() {
     addReflectionTraceClasses();
     Set<String>[] basicclasses = getBasicClassesIncludingResolveLevel();
+    int loadedClasses = 0;
+
     for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
       for (String name : basicclasses[i]) {
         ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(name);
-        tryLoadClass(wrapper.getClassName(), i, wrapper.getModuleNameOptional());
+        SootClass sootClass = tryLoadClass(wrapper.getClassName(), i, wrapper.getModuleNameOptional());
+        if (sootClass != null && !sootClass.isPhantom()) {
+          loadedClasses++;
+        }
       }
+    }
+    if (loadedClasses == 0) {
+      // Missing basic classes means no Exceptions could be loaded and no Exception hierarchy can lead
+      // to non-deterministic Jimple code generation: catch blocks may be removed because of
+      // non-existing Exception hierarchy.
+      throw new RuntimeException("None of the basic classes could be loaded! Check your Soot class path!");
     }
   }
 
