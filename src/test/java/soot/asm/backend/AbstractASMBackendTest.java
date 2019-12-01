@@ -60,7 +60,7 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 
   private final TraceClassVisitor visitor = new TraceClassVisitor(pw);
 
-  protected TargetCompiler targetCompiler = TargetCompiler.javac;
+  protected TargetCompiler targetCompiler = Scene.isJavaGEQ9(System.getProperty("java.version")) ? TargetCompiler.javac9 : TargetCompiler.javac;
 
   /**
    * Runs Soot with the arguments needed for running one test
@@ -191,7 +191,7 @@ public abstract class AbstractASMBackendTest implements Opcodes {
    * Enumeration containing the supported Java compilers
    */
   enum TargetCompiler {
-    eclipse, javac
+    eclipse, javac, javac9
   }
 
 }

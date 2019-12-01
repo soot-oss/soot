@@ -27,6 +27,7 @@ import org.junit.experimental.categories.Category;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.util.TraceClassVisitor;
+import soot.Scene;
 
 /**
  * Test for instanceof and cast bytecode instructions
@@ -64,7 +65,8 @@ public class InstanceOfCastsTest extends AbstractASMBackendTest {
       mv.visitJumpInsn(IFEQ, l0);
       mv.visitVarInsn(ALOAD, 1);
       mv.visitTypeInsn(CHECKCAST, "[Lsoot/asm/backend/targets/Measurable;");
-      if (targetCompiler != TargetCompiler.eclipse)
+      // the eclipse compiler and javac >= version 1.9 produce different bytecode @see https://github.com/Sable/soot/pull/1155
+      if (targetCompiler != TargetCompiler.eclipse  && targetCompiler != TargetCompiler.javac9)
         mv.visitTypeInsn(CHECKCAST, "[Lsoot/asm/backend/targets/Measurable;");
       mv.visitInsn(ARETURN);
       mv.visitLabel(l0);
