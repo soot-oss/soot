@@ -875,7 +875,7 @@ public class FastHierarchy {
 				  && method.getParameterTypes().equals(parameterTypes)
 				  && canStoreType(method.getReturnType(), returnType)) {
 			  candidate = method;
-			  returnType= method.getReturnType();
+			  returnType = method.getReturnType();
 		  }
 	  }
 	  return candidate;
