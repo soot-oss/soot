@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
 
     stages {
 
@@ -20,6 +20,7 @@ pipeline {
 
             }
 
+/*
 
             stage('Build with JDK9'){
 
@@ -50,7 +51,7 @@ pipeline {
               }
 
             }
-
+*/
 
 
           }
