@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>ca.mcgill.sable</groupId>
-    <artifactId>soot-j9</artifactId>
+    <artifactId>soot</artifactId>
     <name>Soot - a J*va Optimization Framework</name>
     <version>4.0.0-SNAPSHOT</version>
     <description>A Java Optimization Framework</description>
@@ -625,7 +625,6 @@
                                 <configuration>
                                     <!-- This is necessary for gpg to not try to use the pinentry programs -->
                                     <gpgArguments>
-                                        <arg>--batch</arg>
                                         <arg>--pinentry-mode</arg>
                                         <arg>loopback</arg>
                                     </gpgArguments>
