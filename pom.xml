@@ -75,7 +75,7 @@
         <asm.version>7.1</asm.version>
     </properties>
     <build>
-        <finalName>sootclasses_j9-trunk</finalName>
+        <finalName>sootclasses-trunk</finalName>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

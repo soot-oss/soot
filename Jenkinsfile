@@ -55,7 +55,7 @@ pipeline {
 
           }
         }
-
+/*
 	    stage('Test') {
         parallel {
 
@@ -110,7 +110,7 @@ pipeline {
 
 
 	       }
-		}
+		}*/
 
 
 
@@ -118,15 +118,22 @@ pipeline {
         stage ('Deploy') {
             when {
                 anyOf {
-                       branch 'java9'
+                       branch 'master'
+                       branch 'develop'
                       }
                 }
 
             steps {
-                configFileProvider(
-                    [configFile(fileId: '1b5a647e-aeee-4f0b-8870-3f4bb152395f', variable: 'MAVEN_SETTINGS')]) {
-                    sh 'mvn -s $MAVEN_SETTINGS deploy -P ci -DskipTests'
-                }
+              sh('printenv | sort')
+
+               withCredentials([usernamePassword(
+                   credentialsId: 'artifact-signing-key-password',
+                   passwordVariable: 'SIGN_KEY')]) {
+                        configFileProvider(
+                            [configFile(fileId: '10647dc3-5621-463b-a290-85290f0ad119', variable: 'MAVEN_SETTINGS')]) {
+                            sh 'mvn -s $MAVEN_SETTINGS deploy -P deploy -DskipTests'
+                        }
+                  }
             }
         }
 
