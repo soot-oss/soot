@@ -123,6 +123,7 @@ pipeline {
                 anyOf {
                        branch 'master'
                        branch 'develop'
+                       branch 'mergeJ9'
                       }
                 }
 
