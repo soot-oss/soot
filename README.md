@@ -1,4 +1,4 @@
-[![Build Status](http://soot-build.cs.uni-paderborn.de/jenkins/buildStatus/icon?job=soot/soot-develop)](http://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-develop/)
+[![Build Status](https://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-pipeline/job/develop/badge/icon)](https://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-pipeline/job/develop/)
 
 # Using Soot? Let us know about it!
 We are regularly applying for funding to help us maintain Soot. You can help us immensely by letting us know about [**projects that use Soot**](https://github.com/Sable/soot/wiki/Users-of-Soot), both commercially or in the form of research tools.
@@ -30,7 +30,9 @@ See http://www.sable.mcgill.ca/soot/ for details.
 
 # How do I get started with Soot?
 
-We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki) and also a large range of [tutorials](http://www.sable.mcgill.ca/soot/tutorial/index.html) on Soot.
+We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki) and also a large range of [tutorials](http://www.sable.mcgill.ca/soot/tutorial/index.html) on Soot. 
+
+For detailed information please also consider the Soot's [JavaDoc and Options](https://github.com/Sable/soot/wiki/Options-and-JavaDoc) Documentations.
 
 # Including Soot in your Project
 
@@ -43,7 +45,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
   <dependency>
     <groupId>ca.mcgill.sable</groupId>
     <artifactId>soot</artifactId>
-    <version>3.4.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
   </dependency>
 </dependencies>
 <repositories>
@@ -95,53 +97,50 @@ If you want to execute Soot with Java 8 but analyze Java >8 Projects or vice ver
 
 ## Use from Source Code
 To load modules in Soot's `ModuleScene` from java:
-```
+```.java
 // configure Soot's options
 Options.v().set_soot_modulepath(modulePath);
 
 
 // load classes from modules into Soot
-  	Map<String, List<String>> map = ModulePathSourceLocator.v().getClassUnderModulePath(modulePath);
-        for (String module : map.keySet()) {
-            for (String klass : map.get(module)) {
-                logger.info("Loaded Class: " + klass + "\n");
-                loadClass(klass, false, module);
+Map<String, List<String>> map = ModulePathSourceLocator.v().getClassUnderModulePath(modulePath);
+for (String module : map.keySet()) {
+   for (String klass : map.get(module)) {
+       logger.info("Loaded Class: " + klass + "\n");
+       loadClass(klass, false, module);
 
-            }
-    }
-
-
-    //this must be called after all classes are loaded
-    Scene.v().loadNecessaryClasses();
+   }
+}
 
 
-  public static SootClass loadClass(String name, boolean main, String module) {
-        SootClass c = ModuleScene.v().loadClassAndSupport(name, Optional.of(module));
-        c.setApplicationClass();
-        if (main)
-            Scene.v().setMainClass(c);
-        return c;
-    }
+//this must be called after all classes are loaded
+Scene.v().loadNecessaryClasses();
+
+
+public static SootClass loadClass(String name, boolean main, String module) {
+     SootClass c = ModuleScene.v().loadClassAndSupport(name, Optional.of(module));
+     c.setApplicationClass();
+     if (main)
+         Scene.v().setMainClass(c);
+     return c;
+}
 
 ```
 
 
 ### Example Configurations: Java 8, Java >= 9 Classpath, Java >= 9 Modulepath
 
-```
+```.java
 
 if(java < 9 ) {
-
     Options.v().set_prepend_classpath(true);
     Options.v().set_process_dir(Arrays.asList(applicationClassPath().split(File.pathSeparator)));
-
     Options.v().set_claspath(sootClassPath();
 }
 
 if(java >= 9 && USE_CLASSPATH){
     Options.v().set_soot_classpath("VIRTUAL_FS_FOR_JDK" + File.pathSeparator + sootClassPath());
     Options.v().set_process_dir(Arrays.asList(applicationClassPath().split(File.pathSeparator)));
-    
 }
 
 
