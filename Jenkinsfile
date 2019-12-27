@@ -127,11 +127,9 @@ pipeline {
                 }
 
             steps {
-              sh('printenv | sort')
-
-               withCredentials([usernamePassword(
+               withCredentials([string(
                    credentialsId: 'artifact-signing-key-password',
-                   passwordVariable: 'SIGN_KEY')]) {
+                   variable: 'SIGN_KEY')]) {
                         configFileProvider(
                             [configFile(fileId: '10647dc3-5621-463b-a290-85290f0ad119', variable: 'MAVEN_SETTINGS')]) {
                             sh 'mvn -s $MAVEN_SETTINGS deploy -P deploy -DskipTests'
