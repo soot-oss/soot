@@ -3,6 +3,7 @@ pipeline {
 
     stages {
 
+/*
         stage('Build') {
           parallel{
             stage('Build with JDK8'){
@@ -20,7 +21,7 @@ pipeline {
 
             }
 
-/*
+
 
             stage('Build with JDK9'){
 
@@ -51,11 +52,12 @@ pipeline {
               }
 
             }
-*/
 
 
           }
         }
+        */
+
 /*
 	    stage('Test') {
         parallel {
