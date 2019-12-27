@@ -3,7 +3,6 @@ pipeline {
 
     stages {
 
-
         stage('Stylecheck') {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
@@ -127,8 +126,7 @@ pipeline {
             }
 
           }
-
-
+        }
          }
 
 
