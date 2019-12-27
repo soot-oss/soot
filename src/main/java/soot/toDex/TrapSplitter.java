@@ -1,8 +1,8 @@
 package soot.toDex;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.LinkedHashSet;
 
 /*-
  * #%L
@@ -34,12 +34,10 @@ import soot.BodyTransformer;
 import soot.Singletons;
 import soot.Trap;
 import soot.Unit;
-import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
 import soot.jimple.NullConstant;
-import soot.jimple.Stmt;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 
 /**
@@ -75,7 +73,7 @@ public class TrapSplitter extends BodyTransformer {
     if (b.getTraps().size() < 2) {
       return;
     }
-    
+
     Set<Unit> potentiallyUselessTrapHandlers = null;
 
     // Look for overlapping traps
@@ -166,24 +164,26 @@ public class TrapSplitter extends BodyTransformer {
         }
       }
     }
-    
+
     removePotentiallyUselassTraps(b, potentiallyUselessTrapHandlers);
   }
 
   /**
-   * Changes the given body so that trap handlers, which are contained in the
-   * given set, are removed in case they are not referenced by any trap.
-   * The list is changed so that it contains the unreferenced trap handlers.
-   * @param b the body
-   * @param potentiallyUselessTrapHandlers potentially useless trap handlers
+   * Changes the given body so that trap handlers, which are contained in the given set, are removed in case they are not
+   * referenced by any trap. The list is changed so that it contains the unreferenced trap handlers.
+   * 
+   * @param b
+   *          the body
+   * @param potentiallyUselessTrapHandlers
+   *          potentially useless trap handlers
    */
   public static void removePotentiallyUselassTraps(Body b, Set<Unit> potentiallyUselessTrapHandlers) {
     if (potentiallyUselessTrapHandlers == null) {
       return;
     }
-    
+
     for (Trap t : b.getTraps()) {
-      //Trap is used by another trap handler, so it is not useless
+      // Trap is used by another trap handler, so it is not useless
       potentiallyUselessTrapHandlers.remove(t.getHandlerUnit());
     }
     boolean removedUselessTrap = false;
@@ -191,8 +191,8 @@ public class TrapSplitter extends BodyTransformer {
       if (uselessTrapHandler instanceof IdentityStmt) {
         IdentityStmt assign = (IdentityStmt) uselessTrapHandler;
         if (assign.getRightOp() instanceof CaughtExceptionRef) {
-          //Make sure that the useless trap handler, which is not used
-          //anywhere else still gets a valid value.
+          // Make sure that the useless trap handler, which is not used
+          // anywhere else still gets a valid value.
           Unit newStmt = Jimple.v().newAssignStmt(assign.getLeftOp(), NullConstant.v());
           b.getUnits().swapWith(assign, newStmt);
           removedUselessTrap = true;
@@ -200,7 +200,7 @@ public class TrapSplitter extends BodyTransformer {
       }
     }
     if (removedUselessTrap) {
-      //We cleaned up the useless trap, it hopefully is unreachable
+      // We cleaned up the useless trap, it hopefully is unreachable
       UnreachableCodeEliminator.v().transform(b);
     }
   }
@@ -227,26 +227,44 @@ public class TrapSplitter extends BodyTransformer {
   }
 
   /**
-   * Gets two arbitrary overlapping traps in the given method body
+   * Gets two arbitrary overlapping traps t1, t2 in the given method body. The begin unit of the t2 should be equal to or
+   * occurring after the begin unit of t1.
    *
    * @param b
    *          The body in which to look for overlapping traps
    * @return Two overlapping traps if they exist, otherwise null
    */
   private TrapOverlap getNextOverlap(Body b) {
+    Map<Unit, LinkedHashSet<Trap>> trapsContainingThisUnit = new HashMap<>();
     for (Trap t1 : b.getTraps()) {
       // Look whether one of our trapped statements is the begin
       // statement of another trap
       for (Unit splitUnit = t1.getBeginUnit(); splitUnit != t1.getEndUnit(); splitUnit = b.getUnits().getSuccOf(splitUnit)) {
-        for (Trap t2 : b.getTraps()) {
-          if (t1 != t2 && (t1.getEndUnit() != t2.getEndUnit() || t1.getException() == t2.getException())
-              && t2.getBeginUnit() == splitUnit) {
-            return new TrapOverlap(t1, t2, t2.getBeginUnit());
-          }
-        }
-      }
+        LinkedHashSet<Trap> otherTrapsContainingUnit = trapsContainingThisUnit.get(splitUnit);
+        if (otherTrapsContainingUnit != null) {
+          for (Trap t2 : otherTrapsContainingUnit) {
+            // if we got here, this unit is already contained inside another trap.
+            // the other traps were added earlier
+            if (t2.getEndUnit() != t1.getEndUnit() || t2.getException() == t1.getException()) {
 
+              // this restores the old function behavior
+              if (splitUnit == t1.getBeginUnit()) {
+                return new TrapOverlap(t2, t1, splitUnit);
+              } else {
+                return new TrapOverlap(t1, t2, splitUnit);
+              }
+            }
+          }
+          otherTrapsContainingUnit.add(t1);
+        } else {
+          LinkedHashSet<Trap> newSet = new LinkedHashSet<>();
+          newSet.add(t1);
+          trapsContainingThisUnit.put(splitUnit, newSet);
+        }
+
+      }
     }
+
     return null;
   }
 
