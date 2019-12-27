@@ -163,7 +163,6 @@ pipeline {
             when {
                 anyOf {
                       branch 'develop'
-                      branch 'mergeJ9'
                 }
             }
             steps {
@@ -189,7 +188,6 @@ pipeline {
                 anyOf {
                        branch 'master'
                        branch 'develop'
-                       branch 'mergeJ9'
                       }
                 }
 
