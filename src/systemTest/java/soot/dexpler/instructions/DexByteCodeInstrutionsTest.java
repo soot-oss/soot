@@ -22,15 +22,18 @@ package soot.dexpler.instructions;
  * #L%
  */
 
+import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import soot.ModulePathSourceLocator;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
@@ -45,6 +48,7 @@ import soot.testing.framework.AbstractTestingFramework;
 /**
  * @author Manuel Benz created on 22.10.18
  */
+
 public class DexByteCodeInstrutionsTest extends AbstractTestingFramework {
 
   private static final String METHOD_HANDLE_CLASS = "java.lang.invoke.MethodHandle";
@@ -56,7 +60,16 @@ public class DexByteCodeInstrutionsTest extends AbstractTestingFramework {
   protected void setupSoot() {
     super.setupSoot();
     Options.v().set_src_prec(Options.src_prec_apk);
-    Options.v().set_process_dir(Collections.singletonList(targetDexPath()));
+    // to get the basic classes; java.lang.Object, java.lang.Throwable, ... we add the rt.jar to the classpath
+    String rtJar = "";
+    if (Scene.isJavaGEQ9(System.getProperty("java.version"))) {
+      rtJar = ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS;
+    } else {
+      rtJar = System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar";
+
+    }
+
+    Options.v().set_process_dir(Arrays.asList(targetDexPath(), rtJar));
     Options.v().set_force_android_jar(androidJarPath());
     Options.v().set_android_api_version(26);
   }

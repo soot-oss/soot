@@ -31,7 +31,7 @@ import java.util.Iterator;
  */
 
 public final class NumberedSet<N extends Numberable> {
-  public NumberedSet(ArrayNumberer<N> universe) {
+  public NumberedSet(IterableNumberer<N> universe) {
     this.universe = universe;
   }
 
@@ -195,6 +195,6 @@ public final class NumberedSet<N extends Numberable> {
   private Numberable[] array = new Numberable[8];
   private BitVector bits;
   private int size = 0;
-  private ArrayNumberer<N> universe;
+  private IterableNumberer<N> universe;
 
 }

@@ -22,9 +22,9 @@ package soot.asm;
  * #L%
  */
 
+import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.List;
-
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -33,6 +33,8 @@ import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
 import soot.LongType;
+import soot.ModuleRefType;
+import soot.ModuleUtil;
 import soot.RefLikeType;
 import soot.RefType;
 import soot.ShortType;
@@ -42,7 +44,7 @@ import soot.VoidType;
 
 /**
  * Contains static utility methods.
- * 
+ *
  * @author Aaloan Miftah
  */
 /**
@@ -51,9 +53,16 @@ import soot.VoidType;
  */
 public class AsmUtil {
 
+  private static RefType makeRefType(String className, Optional<String> moduleName) {
+    if (ModuleUtil.module_mode()) {
+      return ModuleRefType.v(className, moduleName);
+    }
+    return RefType.v(className);
+  }
+
   /**
    * Determines if a type is a dword type.
-   * 
+   *
    * @param type
    *          the type to check.
    * @return {@code true} if its a dword type.
@@ -64,15 +73,15 @@ public class AsmUtil {
 
   /**
    * Converts an internal class name to a Type.
-   * 
+   *
    * @param internal
    *          internal name.
    * @return type
    */
-  public static Type toBaseType(String internal) {
+  public static Type toBaseType(String internal, Optional<String> moduleName) {
     if (internal.charAt(0) == '[') {
       /* [Ljava/lang/Object; */
-      internal = internal.substring(internal.lastIndexOf('[') + 1, internal.length());
+      internal = internal.substring(internal.lastIndexOf('[') + 1);
       /* Ljava/lang/Object */
     }
     if (internal.charAt(internal.length() - 1) == ';') {
@@ -83,10 +92,10 @@ public class AsmUtil {
       // followed by a ; per
       // http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html
       if (internal.charAt(0) == 'L') {
-        internal = internal.substring(1, internal.length());
+        internal = internal.substring(1);
       }
       internal = toQualifiedName(internal);
-      return RefType.v(internal);
+      return makeRefType(internal, moduleName);
     }
     switch (internal.charAt(0)) {
       case 'Z':
@@ -107,13 +116,13 @@ public class AsmUtil {
         return DoubleType.v();
       default:
         internal = toQualifiedName(internal);
-        return RefType.v(internal);
+        return makeRefType(internal, moduleName);
     }
   }
 
   /**
    * Converts an internal class name to a fully qualified name.
-   * 
+   *
    * @param internal
    *          internal name.
    * @return fully qualified name.
@@ -124,7 +133,7 @@ public class AsmUtil {
 
   /**
    * Converts a fully qualified class name to an internal name.
-   * 
+   *
    * @param qual
    *          fully qualified class name.
    * @return internal name.
@@ -135,7 +144,7 @@ public class AsmUtil {
 
   /**
    * Determines and returns the internal name of a class.
-   * 
+   *
    * @param cls
    *          the class.
    * @return corresponding internal name.
@@ -146,23 +155,23 @@ public class AsmUtil {
 
   /**
    * Converts a type descriptor to a Jimple reference type.
-   * 
+   *
    * @param desc
    *          the descriptor.
    * @return the reference type.
    */
-  public static Type toJimpleRefType(String desc) {
-    return desc.charAt(0) == '[' ? toJimpleType(desc) : RefType.v(toQualifiedName(desc));
+  public static Type toJimpleRefType(String desc, Optional<String> moduleName) {
+    return desc.charAt(0) == '[' ? toJimpleType(desc, moduleName) : makeRefType(toQualifiedName(desc), moduleName);
   }
 
   /**
    * Converts a type descriptor to a Jimple type.
-   * 
+   *
    * @param desc
    *          the descriptor.
    * @return equivalent Jimple type.
    */
-  public static Type toJimpleType(String desc) {
+  public static Type toJimpleType(String desc, Optional<String> moduleName) {
     int idx = desc.lastIndexOf('[');
     int nrDims = idx + 1;
     if (nrDims > 0) {
@@ -203,7 +212,7 @@ public class AsmUtil {
         }
         String name = desc.substring(1, desc.length() - 1);
         name = toQualifiedName(name);
-        baseType = RefType.v(name);
+        baseType = makeRefType(name, moduleName);
         break;
       default:
         throw new AssertionError("Unknown descriptor: " + desc);
@@ -216,12 +225,12 @@ public class AsmUtil {
 
   /**
    * Converts a method signature to a list of types, with the last entry in the returned list denoting the return type.
-   * 
+   *
    * @param desc
    *          method signature.
    * @return list of types.
    */
-  public static List<Type> toJimpleDesc(String desc) {
+  public static List<Type> toJimpleDesc(String desc, Optional<String> moduleName) {
     ArrayList<Type> types = new ArrayList<Type>(2);
     int len = desc.length();
     int idx = 0;
@@ -267,10 +276,9 @@ public class AsmUtil {
           case 'L':
             int begin = idx;
             while (desc.charAt(++idx) != ';') {
-              ;
             }
             String cls = desc.substring(begin, idx++);
-            baseType = RefType.v(toQualifiedName(cls));
+            baseType = makeRefType(toQualifiedName(cls), moduleName);
             break this_type;
           default:
             throw new AssertionError("Unknown type: " + c);

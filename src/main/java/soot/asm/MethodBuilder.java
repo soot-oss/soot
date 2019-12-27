@@ -10,17 +10,19 @@ package soot.asm;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
+import com.google.common.base.Optional;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
@@ -53,7 +55,7 @@ class MethodBuilder extends JSRInlinerAdapter {
   private final SootClassBuilder scb;
 
   MethodBuilder(SootMethod method, SootClassBuilder scb, String desc, String[] ex) {
-    super(Opcodes.ASM5, null, method.getModifiers(), method.getName(), desc, null, ex);
+    super(Opcodes.ASM6, null, method.getModifiers(), method.getName(), desc, null, ex);
     this.method = method;
     this.scb = scb;
   }
@@ -88,7 +90,8 @@ class MethodBuilder extends JSRInlinerAdapter {
 
   @Override
   public AnnotationVisitor visitParameterAnnotation(int parameter, final String desc, boolean visible) {
-    VisibilityAnnotationTag vat, vats[];
+    VisibilityAnnotationTag vat;
+    VisibilityAnnotationTag[] vats;
     if (visible) {
       vats = visibleParamAnnotations;
       if (vats == null) {
@@ -125,7 +128,7 @@ class MethodBuilder extends JSRInlinerAdapter {
   @Override
   public void visitTypeInsn(int op, String t) {
     super.visitTypeInsn(op, t);
-    Type rt = AsmUtil.toJimpleRefType(t);
+    Type rt = AsmUtil.toJimpleRefType(t, Optional.fromNullable(this.scb.getKlass().moduleName));
     if (rt instanceof ArrayType) {
       scb.addDep(((ArrayType) rt).baseType);
     } else {
@@ -136,7 +139,7 @@ class MethodBuilder extends JSRInlinerAdapter {
   @Override
   public void visitFieldInsn(int opcode, String owner, String name, String desc) {
     super.visitFieldInsn(opcode, owner, name, desc);
-    for (Type t : AsmUtil.toJimpleDesc(desc)) {
+    for (Type t : AsmUtil.toJimpleDesc(desc, Optional.fromNullable(this.scb.getKlass().moduleName))) {
       if (t instanceof RefType) {
         scb.addDep(t);
       }
@@ -148,11 +151,11 @@ class MethodBuilder extends JSRInlinerAdapter {
   @Override
   public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean isInterf) {
     super.visitMethodInsn(opcode, owner, name, desc, isInterf);
-    for (Type t : AsmUtil.toJimpleDesc(desc)) {
+    for (Type t : AsmUtil.toJimpleDesc(desc, Optional.fromNullable(this.scb.getKlass().moduleName))) {
       addDeps(t);
     }
 
-    scb.addDep(AsmUtil.toBaseType(owner));
+    scb.addDep(AsmUtil.toBaseType(owner, Optional.fromNullable(this.scb.getKlass().moduleName)));
   }
 
   @Override
@@ -161,7 +164,7 @@ class MethodBuilder extends JSRInlinerAdapter {
 
     if (cst instanceof Handle) {
       Handle methodHandle = (Handle) cst;
-      scb.addDep(AsmUtil.toBaseType(methodHandle.getOwner()));
+      scb.addDep(AsmUtil.toBaseType(methodHandle.getOwner(), Optional.fromNullable(this.scb.getKlass().moduleName)));
     }
   }
 
@@ -202,7 +205,8 @@ class MethodBuilder extends JSRInlinerAdapter {
       method.addTag(tag);
     }
     if (method.isConcrete()) {
-      method.setSource(new AsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks));
+      method.setSource(
+          new AsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks, scb.getKlass().moduleName));
     }
   }
 }

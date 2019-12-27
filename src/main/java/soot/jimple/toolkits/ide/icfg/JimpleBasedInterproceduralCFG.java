@@ -39,9 +39,7 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.Body;
 import soot.MethodOrMethodContext;
-import soot.PatchingChain;
 import soot.Scene;
 import soot.SootMethod;
 import soot.Unit;
@@ -153,16 +151,6 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
     for (Iterator<MethodOrMethodContext> iter = Scene.v().getReachableMethods().listener(); iter.hasNext();) {
       SootMethod m = iter.next().method();
       initializeUnitToOwner(m);
-    }
-  }
-
-  public void initializeUnitToOwner(SootMethod m) {
-    if (m.hasActiveBody()) {
-      Body b = m.getActiveBody();
-      PatchingChain<Unit> units = b.getUnits();
-      for (Unit unit : units) {
-        unitToOwner.put(unit, b);
-      }
     }
   }
 

@@ -43,6 +43,7 @@ import soot.Scene;
 import soot.SootMethod;
 import soot.options.Options;
 
+
 public class MethodThrowableSetTest {
 
 	private static String TARGET_CLASS = "soot.toolkits.exceptions.targets.MethodThrowableSetClass";

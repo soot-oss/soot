@@ -59,14 +59,18 @@ abstract public class AbstractInvokeExpr implements InvokeExpr {
   public abstract Object clone();
 
   public Value getArg(int index) {
-    return argBoxes[index].getValue();
+    if (argBoxes == null) {
+      return null;
+    }
+    ValueBox vb = argBoxes[index];
+    return vb == null ? null : vb.getValue();
   }
 
   public List<Value> getArgs() {
     List<Value> l = new ArrayList<>();
     if (argBoxes != null) {
       for (ValueBox element : argBoxes) {
-        l.add(element.getValue());
+        l.add(element == null ? null : element.getValue());
       }
     }
     return l;

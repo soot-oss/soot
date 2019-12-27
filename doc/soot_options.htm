@@ -508,6 +508,10 @@
             <td><tt>-ignore-resolving-levels </tt><br></td>
             <td colspan="2">Ignore mismatching resolving levels</td>
          </tr>
+         <tr>
+            <td><tt>-weak-map-structures </tt><br></td>
+            <td colspan="2">Use weak references in Scene to prevent memory leakage when removing many classes/methods/locals</td>
+         </tr>
       </table>
       <H2><A name="section_2">Input Options</A></H2>
       <table border="3">
@@ -517,6 +521,11 @@
                <var>path</var>
                as the classpath for finding classes.
                
+            </td>
+         </tr>
+         <tr>
+            <td><tt>-soot-modulepath <var>modulepath</var></tt><br></td>
+            <td colspan="2">Use <var>modulepath</var> as the modulepath for finding classes.
             </td>
          </tr>
          <tr>

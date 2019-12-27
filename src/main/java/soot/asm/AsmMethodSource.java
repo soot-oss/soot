@@ -139,12 +139,12 @@ import static org.objectweb.asm.Opcodes.T_BOOLEAN;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -174,6 +174,7 @@ import static org.objectweb.asm.tree.AbstractInsnNode.TABLESWITCH_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.TYPE_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Multimap;
@@ -225,6 +226,8 @@ import soot.LambdaMetaFactory;
 import soot.Local;
 import soot.LongType;
 import soot.MethodSource;
+import soot.ModuleScene;
+import soot.ModuleUtil;
 import soot.PackManager;
 import soot.PhaseOptions;
 import soot.RefType;
@@ -292,6 +295,7 @@ import soot.util.Chain;
 final class AsmMethodSource implements MethodSource {
 
   private static final Operand DWORD_DUMMY = new Operand(null, null);
+  private final String module;
   private static final String METAFACTORY_SIGNATURE = "<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite "
       + "metafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType," + ""
       + "java.lang.invoke.MethodType,java.lang.invoke.MethodHandle,java.lang.invoke.MethodType)>";
@@ -319,11 +323,13 @@ final class AsmMethodSource implements MethodSource {
   private Table<AbstractInsnNode, AbstractInsnNode, Edge> edges;
   private ArrayDeque<Edge> conversionWorklist;
 
-  AsmMethodSource(int maxLocals, InsnList insns, List<LocalVariableNode> localVars, List<TryCatchBlockNode> tryCatchBlocks) {
+  AsmMethodSource(int maxLocals, InsnList insns, List<LocalVariableNode> localVars, List<TryCatchBlockNode> tryCatchBlocks,
+      String module) {
     this.maxLocals = maxLocals;
     this.instructions = insns;
     this.localVars = localVars;
     this.tryCatchBlocks = tryCatchBlocks;
+    this.module = module;
   }
 
   private StackFrame getFrame(AbstractInsnNode insn) {
@@ -333,6 +339,14 @@ final class AsmMethodSource implements MethodSource {
       frames.put(insn, frame);
     }
     return frame;
+  }
+
+  private SootClass getClassFromScene(String className) {
+    if (ModuleUtil.module_mode()) {
+      return ModuleScene.v().getSootClassUnsafe(className, Optional.fromNullable(this.module));
+    }
+
+    return Scene.v().getSootClass(className);
   }
 
   private Local getLocal(int idx) {
@@ -553,8 +567,8 @@ final class AsmMethodSource implements MethodSource {
     Operand opr;
     Type type;
     if (out == null) {
-      SootClass declClass = Scene.v().getSootClass(AsmUtil.toQualifiedName(insn.owner));
-      type = AsmUtil.toJimpleType(insn.desc);
+      SootClass declClass = this.getClassFromScene(AsmUtil.toQualifiedName(insn.owner));
+      type = AsmUtil.toJimpleType(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
       Value val;
       SootFieldRef ref;
       if (insn.getOpcode() == GETSTATIC) {
@@ -588,8 +602,8 @@ final class AsmMethodSource implements MethodSource {
     Operand opr, rvalue;
     Type type;
     if (out == null) {
-      SootClass declClass = Scene.v().getSootClass(AsmUtil.toQualifiedName(insn.owner));
-      type = AsmUtil.toJimpleType(insn.desc);
+      SootClass declClass = this.getClassFromScene(AsmUtil.toQualifiedName(insn.owner));
+      type = AsmUtil.toJimpleType(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
       Value val;
       SootFieldRef ref;
       rvalue = popImmediate(type);
@@ -996,14 +1010,14 @@ final class AsmMethodSource implements MethodSource {
         popImmediate();
       }
     } else if (op >= DUP && op <= DUP2_X2) {
-      convertDupInsn((InsnNode) insn);
+      convertDupInsn(insn);
     } else if (op == SWAP) {
       Operand o1 = popImmediate();
       Operand o2 = popImmediate();
       push(o1);
       push(o2);
     } else if ((op >= IADD && op <= DREM) || (op >= ISHL && op <= LXOR) || (op >= LCMP && op <= DCMPG)) {
-      convertBinopInsn((InsnNode) insn);
+      convertBinopInsn(insn);
     } else if ((op >= INEG && op <= DNEG) || op == ARRAYLENGTH) {
       convertUnopInsn(insn);
     } else if (op >= I2L && op <= I2S) {
@@ -1218,7 +1232,8 @@ final class AsmMethodSource implements MethodSource {
     } else if (val instanceof org.objectweb.asm.Type) {
       org.objectweb.asm.Type t = (org.objectweb.asm.Type) val;
       if (t.getSort() == org.objectweb.asm.Type.METHOD) {
-        List<Type> paramTypes = AsmUtil.toJimpleDesc(((org.objectweb.asm.Type) val).getDescriptor());
+        List<Type> paramTypes = AsmUtil.toJimpleDesc(((org.objectweb.asm.Type) val).getDescriptor(),
+            Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
         Type returnType = paramTypes.remove(paramTypes.size() - 1);
         v = MethodType.v(paramTypes, returnType);
       } else {
@@ -1278,8 +1293,10 @@ final class AsmMethodSource implements MethodSource {
       if (clsName.charAt(0) == '[') {
         clsName = "java.lang.Object";
       }
-      SootClass cls = Scene.v().getSootClass(clsName);
-      List<Type> sigTypes = AsmUtil.toJimpleDesc(insn.desc);
+      SootClass cls = this.getClassFromScene(clsName);
+
+      List<Type> sigTypes
+          = AsmUtil.toJimpleDesc(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
       returnType = sigTypes.remove(sigTypes.size() - 1);
       SootMethodRef ref = Scene.v().makeMethodRef(cls, insn.name, sigTypes, returnType, !instance);
       int nrArgs = sigTypes.size();
@@ -1482,8 +1499,9 @@ final class AsmMethodSource implements MethodSource {
 
   private SootMethodRef toSootMethodRef(Handle methodHandle) {
     String bsmClsName = AsmUtil.toQualifiedName(methodHandle.getOwner());
-    SootClass bsmCls = Scene.v().getSootClass(bsmClsName);
-    List<Type> bsmSigTypes = AsmUtil.toJimpleDesc(methodHandle.getDesc());
+    SootClass bsmCls = this.getClassFromScene(bsmClsName);
+    List<Type> bsmSigTypes = AsmUtil.toJimpleDesc(methodHandle.getDesc(),
+        Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
     Type returnType = bsmSigTypes.remove(bsmSigTypes.size() - 1);
     return Scene.v().makeMethodRef(bsmCls, methodHandle.getName(), bsmSigTypes, returnType,
         methodHandle.getTag() == MethodHandle.Kind.REF_INVOKE_STATIC.getValue());
@@ -1492,7 +1510,9 @@ final class AsmMethodSource implements MethodSource {
   private SootFieldRef toSootFieldRef(Handle methodHandle) {
     String bsmClsName = AsmUtil.toQualifiedName(methodHandle.getOwner());
     SootClass bsmCls = Scene.v().getSootClass(bsmClsName);
-    Type t = AsmUtil.toJimpleDesc(methodHandle.getDesc()).get(0);
+    Type t = AsmUtil
+        .toJimpleDesc(methodHandle.getDesc(), Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName))
+        .get(0);
     int kind = methodHandle.getTag();
     return Scene.v().makeFieldRef(bsmCls, methodHandle.getName(), t,
         kind == MethodHandle.Kind.REF_GET_FIELD_STATIC.getValue()
@@ -1504,7 +1524,8 @@ final class AsmMethodSource implements MethodSource {
     Operand[] out = frame.out();
     Operand opr;
     if (out == null) {
-      ArrayType t = (ArrayType) AsmUtil.toJimpleType(insn.desc);
+      ArrayType t = (ArrayType) AsmUtil.toJimpleType(insn.desc,
+          Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
       int dims = insn.dims;
       Operand[] sizes = new Operand[dims];
       Value[] sizeVals = new Value[dims];
@@ -1563,7 +1584,8 @@ final class AsmMethodSource implements MethodSource {
     Operand[] out = frame.out();
     Operand opr;
     if (out == null) {
-      Type t = AsmUtil.toJimpleRefType(insn.desc);
+      Type t
+          = AsmUtil.toJimpleRefType(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
       Value val;
       if (op == NEW) {
         val = Jimple.v().newNewExpr((RefType) t);
@@ -1902,7 +1924,7 @@ final class AsmMethodSource implements MethodSource {
         handlers.put(tc.handler, hitr);
       }
       UnitBox handler = hitr.next();
-      SootClass cls = tc.type == null ? throwable : Scene.v().getSootClass(AsmUtil.toQualifiedName(tc.type));
+      SootClass cls = tc.type == null ? throwable : getClassFromScene(AsmUtil.toQualifiedName(tc.type));
       Trap trap = Jimple.v().newTrap(cls, start, end, handler);
       traps.add(trap);
       labels.put(tc.start, start);
@@ -2004,7 +2026,7 @@ final class AsmMethodSource implements MethodSource {
   }
 
   private IdentityStmt getIdentityRefFromContrainer(UnitContainer u) {
-    for (Unit uu : ((UnitContainer) u).units) {
+    for (Unit uu : u.units) {
       if (uu instanceof IdentityStmt) {
         return (IdentityStmt) uu;
       } else if (uu instanceof UnitContainer) {

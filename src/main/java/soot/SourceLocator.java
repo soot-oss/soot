@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -46,6 +47,7 @@ import org.slf4j.LoggerFactory;
 
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmClassProvider;
+import soot.asm.AsmJava9ClassProvider;
 import soot.dexpler.DexFileProvider;
 import soot.options.Options;
 
@@ -58,6 +60,7 @@ public class SourceLocator {
   protected List<ClassProvider> classProviders;
   protected List<String> classPath;
   private List<String> sourcePath;
+  private boolean java9Mode = false;
 
   private LoadingCache<String, ClassSourceType> pathToSourceType
       = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(500).softValues()
@@ -123,6 +126,9 @@ public class SourceLocator {
   }
 
   public static SourceLocator v() {
+    if (ModuleUtil.module_mode()) {
+      return G.v().soot_ModulePathSourceLocator();
+    }
     return G.v().soot_SourceLocator();
   }
 
@@ -152,6 +158,10 @@ public class SourceLocator {
     for (String originalDir : classPath.split(regex)) {
       try {
         String canonicalDir = new File(originalDir).getCanonicalPath();
+        if (originalDir.equals(ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS)) {
+          SourceLocator.v().java9Mode = true;
+          continue;
+        }
         ret.add(canonicalDir);
       } catch (IOException e) {
         throw new CompilationDeathException("Couldn't resolve classpath entry " + originalDir + ": " + e);
@@ -230,6 +240,9 @@ public class SourceLocator {
   protected void setupClassProviders() {
     classProviders = new LinkedList<ClassProvider>();
     ClassProvider classFileClassProvider = Options.v().coffi() ? new CoffiClassProvider() : new AsmClassProvider();
+    if (this.java9Mode) {
+      classProviders.add(new AsmJava9ClassProvider());
+    }
     switch (Options.v().src_prec()) {
       case Options.src_prec_class:
         classProviders.add(classFileClassProvider);
@@ -291,7 +304,7 @@ public class SourceLocator {
     return sourcePath;
   }
 
-  private ClassSourceType getClassSourceType(String path) {
+  protected ClassSourceType getClassSourceType(String path) {
     try {
       return pathToSourceType.get(path);
     } catch (Exception e) {
@@ -303,8 +316,19 @@ public class SourceLocator {
     return getClassesUnder(aPath, "");
   }
 
-  private List<String> getClassesUnder(String aPath, String prefix) {
+  public List<String> getClassesUnder(String aPath, String prefix) {
     List<String> classes = new ArrayList<String>();
+
+    // FIXME: AD the dummy_classpath_variable should be replaced with a more stable concept
+    if (aPath.equals(ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS)) {
+      Collection<List<String>> values = ModulePathSourceLocator.v().getClassUnderModulePath("jrt:/").values();
+      ArrayList<String> foundClasses = new ArrayList<>();
+      for (List<String> classesInModule : values) {
+        foundClasses.addAll(classesInModule);
+      }
+      return foundClasses;
+    }
+
     ClassSourceType cst = getClassSourceType(aPath);
 
     // Get the dex file from an apk
@@ -680,7 +704,7 @@ public class SourceLocator {
     this.dexClassPathExtensions = null;
   }
 
-  private enum ClassSourceType {
-    jar, zip, apk, dex, directory, unknown
+  protected enum ClassSourceType {
+    jar, zip, apk, dex, directory, jrt, unknown
   }
 }

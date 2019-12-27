@@ -186,8 +186,17 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-ignore-resolving-levels");
         }
   
+        public void setweak_map_structures(boolean arg) {
+            if(arg) addArg("-weak-map-structures");
+        }
+  
         public void setsoot_classpath(String arg) {
             addArg("-soot-classpath");
+            addArg(arg);
+        }
+  
+        public void setsoot_modulepath(String arg) {
+            addArg("-soot-modulepath");
             addArg(arg);
         }
   

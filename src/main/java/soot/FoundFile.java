@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -41,6 +43,7 @@ import org.slf4j.LoggerFactory;
 public class FoundFile {
   private static final Logger logger = LoggerFactory.getLogger(FoundFile.class);
   protected File file;
+  private Path path;
   protected String entryName;
   protected ZipFile zipFile;
   protected ZipEntry zipEntry;
@@ -73,6 +76,11 @@ public class FoundFile {
     this.entryName = null;
   }
 
+  FoundFile(Path path) {
+    this();
+    this.path = path;
+  }
+
   private FoundFile() {
     this.openedInputStreams = new ArrayList<InputStream>();
   }
@@ -85,13 +93,24 @@ public class FoundFile {
     return entryName != null;
   }
 
+  public ZipFile getZipFile() {
+    return zipFile;
+  }
+
   public File getFile() {
     return file;
   }
 
   public InputStream inputStream() {
     InputStream ret = null;
-    if (!isZipFile()) {
+    if (path != null) {
+      try {
+        ret = Files.newInputStream(path);
+      } catch (IOException e) {
+        throw new RuntimeException(
+            "Error: Failed to open a InputStream for the file at path '" + path.toAbsolutePath().toString() + "'.", e);
+      }
+    } else if (!isZipFile()) {
       try {
         ret = new FileInputStream(file);
       } catch (Exception e) {

@@ -109,9 +109,11 @@ public class DexArrayInitReducer extends BodyTransformer {
           }
 
           // Remove the unnecessary assignments
-          Unit checkU = u;
+          Iterator<Unit> checkIt = b.getUnits().iterator(u);
           boolean foundU1 = false, foundU2 = false, doneU1 = false, doneU2 = false;
-          while (!(doneU1 && doneU2) && !(foundU1 && foundU2) && checkU != null) {
+          while (!(doneU1 && doneU2) && !(foundU1 && foundU2) && checkIt.hasNext()) {
+            Unit checkU = checkIt.next();
+
             // Does the current statement use the value?
             for (ValueBox vb : checkU.getUseBoxes()) {
               if (!doneU1 && vb.getValue() == u1val) {
@@ -137,9 +139,6 @@ public class DexArrayInitReducer extends BodyTransformer {
               foundU2 = true;
               break;
             }
-
-            // Get the next statement
-            checkU = b.getUnits().getSuccOf(checkU);
           }
           if (!foundU1) {
             // only remove constant assignment if the left value is Local
