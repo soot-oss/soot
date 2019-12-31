@@ -75,7 +75,8 @@ public enum FieldRefValidator implements BodyValidator {
                 .add(new UnitValidationException(unit, body, "Trying to get a static field which is non-static: " + v));
           }
         } catch (ResolutionFailedException e) {
-          exceptions.add(new UnitValidationException(unit, body, "Trying to get a static field which is non-static: " + v));
+	  exceptions.add(new UnitValidationException(unit, body, "Processing field ref: " +
+						       v + ", encountered ResolutionFailedException: " + e.getMessage()));
         }
       } else if (fr instanceof InstanceFieldRef) {
         InstanceFieldRef v = (InstanceFieldRef) fr;
@@ -88,7 +89,8 @@ public enum FieldRefValidator implements BodyValidator {
             exceptions.add(new UnitValidationException(unit, body, "Trying to get an instance field which is static: " + v));
           }
         } catch (ResolutionFailedException e) {
-          exceptions.add(new UnitValidationException(unit, body, "Trying to get an instance field which is static: " + v));
+	  exceptions.add(new UnitValidationException(unit, body, "Processing field ref: " +
+						       v + ", encountered ResolutionFailedException: " + e.getMessage()));
         }
       } else {
         throw new RuntimeException("unknown field ref");
