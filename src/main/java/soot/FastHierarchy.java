@@ -868,15 +868,17 @@ public class FastHierarchy {
    * @return
    */
   private SootMethod getSignaturePolymorphicMethod(
-      SootClass concreteType, String name, List<Type> parameterTypes, Type returnType) {
-    for (SootMethod method : concreteType.getMethods()) {
-      if (method.getName().equals(name)
-          && method.getParameterTypes().equals(parameterTypes)
-          && canStoreType(method.getReturnType(), returnType)) {
-        return method;
-      }
-    }
-    return null;
+		  SootClass concreteType, String name, List<Type> parameterTypes, Type returnType) {
+	  SootMethod candidate = null;
+	  for (SootMethod method : concreteType.getMethods()) {
+		  if (method.getName().equals(name)
+				  && method.getParameterTypes().equals(parameterTypes)
+				  && canStoreType(method.getReturnType(), returnType)) {
+			  candidate = method;
+			  returnType = method.getReturnType();
+		  }
+	  }
+	  return candidate;
   }
 
   /**
