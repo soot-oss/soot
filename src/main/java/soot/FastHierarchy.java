@@ -39,7 +39,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
+import soot.util.LargeNumberedMap;
 import soot.util.MultiMap;
+import soot.util.SmallNumberedMap;
 
 /**
  * Represents the class hierarchy. It is closely linked to a Scene, and must be recreated if the
@@ -53,6 +55,8 @@ import soot.util.MultiMap;
  */
 public class FastHierarchy {
   private static final Logger LOGGER = LoggerFactory.getLogger(FastHierarchy.class);
+  private final LargeNumberedMap<Type, SmallNumberedMap<SootMethod>> typeToVtbl =
+	      new LargeNumberedMap<Type, SmallNumberedMap<SootMethod>>(Scene.v().getTypeNumberer());
 
   /**
    * This map holds all key,value pairs such that value.getSuperclass() == key. This is one of the
@@ -690,6 +694,7 @@ public class FastHierarchy {
       SootClass baseType, SootMethod m, boolean allowAbstract, Set<SootClass> ignoreList) {
     return resolveMethod(
         baseType,
+        m,
         m.getDeclaringClass(),
         m.getName(),
         m.getParameterTypes(),
@@ -724,6 +729,7 @@ public class FastHierarchy {
       boolean allowAbstract) {
     return resolveMethod(
         baseType,
+        null,
         declaringClass,
         name,
         parameterTypes,
@@ -754,6 +760,7 @@ public class FastHierarchy {
    */
   private SootMethod resolveMethod(
       SootClass baseType,
+      SootMethod methodName,
       SootClass declaringClass,
       String name,
       List<Type> parameterTypes,
@@ -763,10 +770,21 @@ public class FastHierarchy {
       Set<SootClass> ignoreList) {
     SootClass concreteType = baseType;
 
+    
+    SootMethod candidate = null;
+    SmallNumberedMap<SootMethod> vtbl = typeToVtbl.get(baseType.getType());
+    if(vtbl == null) {
+    	typeToVtbl.put(baseType.getType(), vtbl = new SmallNumberedMap<SootMethod>());
+    }
+    if(methodName != null) {
+    	candidate = vtbl.get(methodName.getNumberedSubSignature());
+    	if(candidate != null) {
+    		return candidate;
+    	}
+    }
+    
     // When there is no proper dispatch found, we simply return null to let
     // the caller decide what to do
-    SootMethod candidate = null;
-
     while (concreteType != null && !ignoreList.contains(concreteType)) {
       ignoreList.add(concreteType);
 
