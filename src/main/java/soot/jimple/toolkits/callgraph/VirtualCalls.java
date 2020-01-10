@@ -66,10 +66,7 @@ public class VirtualCalls {
   public static VirtualCalls v() {
     return G.v().soot_jimple_toolkits_callgraph_VirtualCalls();
   }
-
-  private final LargeNumberedMap<Type, SmallNumberedMap<SootMethod>> typeToVtbl =
-      new LargeNumberedMap<Type, SmallNumberedMap<SootMethod>>(Scene.v().getTypeNumberer());
-
+  
   public SootMethod resolveSpecial(SootMethod callee, SootMethod container) {
     return resolveSpecial(callee, container, false);
   }
@@ -97,19 +94,8 @@ public class VirtualCalls {
     return resolveNonSpecial(t, callee, false);
   }
 
-  public SootMethod resolveNonSpecial(RefType t, SootMethod callee, boolean appOnly) {
-    SmallNumberedMap<SootMethod> vtbl = typeToVtbl.get(t);
-
-    if (vtbl == null) {
-      typeToVtbl.put(t, vtbl = new SmallNumberedMap<>());
-    }
-
-    NumberedString calleeSubSig = callee.getNumberedSubSignature();
-    SootMethod ret = vtbl.get(calleeSubSig);
-    if (ret != null) {
-      return ret;
-    }
-
+  public SootMethod resolveNonSpecial(RefType t, SootMethod callee, boolean appOnly) { 
+    SootMethod ret = null; 
     SootClass cls = t.getSootClass();
     if (appOnly && cls.isLibraryClass()) {
       return null;
@@ -117,9 +103,7 @@ public class VirtualCalls {
 
     if (!cls.isInterface()) {
       ret = Scene.v().getOrMakeFastHierarchy().resolveConcreteDispatch(cls, callee);
-    }
-
-    vtbl.put(calleeSubSig, ret);
+    }    
     return ret;
   }
 
