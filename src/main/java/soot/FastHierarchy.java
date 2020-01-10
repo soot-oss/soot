@@ -55,8 +55,8 @@ import soot.util.SmallNumberedMap;
  */
 public class FastHierarchy {
   private static final Logger LOGGER = LoggerFactory.getLogger(FastHierarchy.class);
-  private final LargeNumberedMap<Type, SmallNumberedMap<SootMethod>> typeToVtbl =
-	      new LargeNumberedMap<Type, SmallNumberedMap<SootMethod>>(Scene.v().getTypeNumberer());
+  private final Map<SootClass, HashMap<String, SootMethod>> typeToVtbl =
+	      new HashMap<SootClass, HashMap<String,SootMethod>>();
 
   /**
    * This map holds all key,value pairs such that value.getSuperclass() == key. This is one of the
@@ -772,15 +772,14 @@ public class FastHierarchy {
 
     
     SootMethod candidate = null;
-    SmallNumberedMap<SootMethod> vtbl = typeToVtbl.get(baseType.getType());
-    if(vtbl == null) {
-    	typeToVtbl.put(baseType.getType(), vtbl = new SmallNumberedMap<SootMethod>());
+    SootMethod resolvedMethod = null;
+    String methodSignature = SootMethod.getSubSignature(name, parameterTypes, returnType);
+    HashMap<String, SootMethod> vtblMap = typeToVtbl.get(declaringClass);
+    if(vtblMap != null) {
+    	resolvedMethod = vtblMap.get(methodSignature);
     }
-    if(methodName != null) {
-    	candidate = vtbl.get(methodName.getNumberedSubSignature());
-    	if(candidate != null) {
-    		return candidate;
-    	}
+    if(resolvedMethod != null) {
+    	return resolvedMethod;
     }
     
     // When there is no proper dispatch found, we simply return null to let
@@ -789,11 +788,13 @@ public class FastHierarchy {
       ignoreList.add(concreteType);
 
       candidate = getSignaturePolymorphicMethod(concreteType, name, parameterTypes, returnType);
+      SootMethod resolvedCandidate = candidate;
       if (candidate != null) {
         if (isVisible(concreteType, declaringClass, modifier)) {
           if (!allowAbstract && candidate.isAbstract()) {
             break;
           }
+          typeToVtbl.put(declaringClass, new HashMap<String, SootMethod>(){{put(methodSignature, resolvedCandidate);}});
           return candidate;
         }
       }
@@ -847,7 +848,8 @@ public class FastHierarchy {
 
       ignoreList.addAll(interfaceIgnoreList);
     }
-
+    SootMethod resolvedCandidate = candidate;
+    typeToVtbl.put(declaringClass, new HashMap<String, SootMethod>(){{put(methodSignature, resolvedCandidate);}});
     return candidate;
   }
 
