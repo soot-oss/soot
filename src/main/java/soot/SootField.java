@@ -71,9 +71,9 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
     }
     return sig;
   }
-  
+
   public static String getSignature(SootClass cl, String name, Type type) {
-    return getSignature(cl,getSubSignature(name,type));
+    return getSignature(cl, getSubSignature(name, type));
   }
 
   public static String getSignature(SootClass cl, String subSignature) {
@@ -96,8 +96,8 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
     }
     return subSig;
   }
-  
-  private static String getSubSignature(String name, Type type) {
+
+  protected static String getSubSignature(String name, Type type) {
     StringBuilder buffer = new StringBuilder();
     buffer.append(type.toQuotedString() + " " + Scene.v().quotedNameOf(name));
     return buffer.toString();
@@ -110,7 +110,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
     return declaringClass;
   }
-  
+
   public synchronized void setDeclaringClass(SootClass sc) {
     if (sc != null && type instanceof RefLikeType) {
       Scene.v().getFieldNumberer().add(this);
@@ -144,7 +144,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
   public void setDeclared(boolean isDeclared) {
     this.isDeclared = isDeclared;
   }
-  
+
   public String getName() {
     return name;
   }
