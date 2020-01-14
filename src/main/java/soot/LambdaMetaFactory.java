@@ -79,8 +79,8 @@ public final class LambdaMetaFactory {
    * @param name
    * @return
    */
-  public SootMethodRef makeLambdaHelper(List<? extends Value> bootstrapArgs, int tag, String name, Type[] invokedType,
-      SootClass enclosingClass) {
+  public SootMethodRef makeLambdaHelper(List<? extends Value> bootstrapArgs, int tag, String name,
+      Type[] invokedType, SootClass enclosingClass) {
     if (bootstrapArgs.size() < 3 || !(bootstrapArgs.get(0) instanceof MethodType)
         || !(bootstrapArgs.get(1) instanceof MethodHandle) || !(bootstrapArgs.get(2) instanceof MethodType)
         || (bootstrapArgs.size() > 3 && !(bootstrapArgs.get(3) instanceof IntConstant))) {
@@ -175,7 +175,6 @@ public final class LambdaMetaFactory {
       className = "soot.dummy.lambda" + uniqSupply();
     }
     SootClass tclass = Scene.v().makeSootClass(className);
-    Scene.v().addClass(tclass);
     tclass.setModifiers(Modifier.PUBLIC | Modifier.FINAL);
     tclass.setSuperclass(Scene.v().getObjectType().getSootClass());
     tclass.addInterface(functionalInterfaceToImplement);
