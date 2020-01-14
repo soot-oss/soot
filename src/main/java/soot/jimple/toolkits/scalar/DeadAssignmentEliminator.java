@@ -165,7 +165,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
             CastExpr ce = (CastExpr) rhs;
             Type t = ce.getCastType();
             Value v = ce.getOp();
-            isEssential = !(v instanceof NullConstant && t instanceof RefType);
+            isEssential = !(v instanceof NullConstant) && t instanceof RefType;
           } else if (rhs instanceof InvokeExpr || rhs instanceof ArrayRef || rhs instanceof NewExpr
               || rhs instanceof NewArrayExpr || rhs instanceof NewMultiArrayExpr) {
             // ArrayRef : can have side effects (like throwing a null pointer exception)
