@@ -36,8 +36,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
@@ -142,7 +144,8 @@ public final class ModuleUtil {
         modulePackageCache.put(modInfo.getModuleName() + "/" + packageName, modInf.getModuleName());
         return modInf.getModuleName();
       } else {
-     	String tModuleName = checkTransitiveChain(modInf, packageName, toModuleName);
+    	Set<String> hasCheckedModule = new HashSet<String>();
+     	String tModuleName = checkTransitiveChain(modInf, packageName, toModuleName, hasCheckedModule);
     	if(tModuleName != null) {
     		modulePackageCache.put(modInfo.getModuleName() + "/" + packageName, tModuleName);
     		return tModuleName;
@@ -162,13 +165,18 @@ public final class ModuleUtil {
    * @param toModuleName defined moduleName
    * 
    */
-  private String checkTransitiveChain(SootModuleInfo modInfo, String packageName, String toModuleName) {
+  private String checkTransitiveChain(SootModuleInfo modInfo, String packageName, String toModuleName, Set<String> hasCheckedModule) {
 	  for (Map.Entry<SootModuleInfo, Integer> entry : modInfo.retrieveRequiredModules().entrySet()) {
           if ((entry.getValue() & Modifier.REQUIRES_TRANSITIVE) != 0) {// check if module is exported via "requires public"
+        	if(hasCheckedModule.contains(entry.getKey().getModuleName())) {
+        		continue;
+        	} else {
+        		hasCheckedModule.add(entry.getKey().getModuleName());
+        	}
             if (entry.getKey().exportsPackage(packageName, toModuleName)) {
               return entry.getKey().getModuleName();
             } else {
-              return checkTransitiveChain(entry.getKey(), packageName, toModuleName);
+              return checkTransitiveChain(entry.getKey(), packageName, toModuleName, hasCheckedModule);
             }
           }
        }
