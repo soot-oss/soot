@@ -146,9 +146,9 @@ public final class ModuleUtil {
       } else {
     	Set<String> hasCheckedModule = new HashSet<String>();
      	String tModuleName = checkTransitiveChain(modInf, packageName, toModuleName, hasCheckedModule);
-    	if(tModuleName != null) {
-    		modulePackageCache.put(modInfo.getModuleName() + "/" + packageName, tModuleName);
-    		return tModuleName;
+    	if (tModuleName != null) {
+          modulePackageCache.put(modInfo.getModuleName() + "/" + packageName, tModuleName);
+          return tModuleName;
     	} 
 
       }
@@ -165,22 +165,23 @@ public final class ModuleUtil {
    * @param toModuleName defined moduleName
    * 
    */
-  private String checkTransitiveChain(SootModuleInfo modInfo, String packageName, String toModuleName, Set<String> hasCheckedModule) {
-	  for (Map.Entry<SootModuleInfo, Integer> entry : modInfo.retrieveRequiredModules().entrySet()) {
-          if ((entry.getValue() & Modifier.REQUIRES_TRANSITIVE) != 0) {// check if module is exported via "requires public"
-        	if(hasCheckedModule.contains(entry.getKey().getModuleName())) {
-        		continue;
-        	} else {
-        		hasCheckedModule.add(entry.getKey().getModuleName());
-        	}
-            if (entry.getKey().exportsPackage(packageName, toModuleName)) {
-              return entry.getKey().getModuleName();
-            } else {
-              return checkTransitiveChain(entry.getKey(), packageName, toModuleName, hasCheckedModule);
-            }
-          }
-       }
-	  return null;
+  private String checkTransitiveChain(SootModuleInfo modInfo, String packageName, String toModuleName,
+          Set<String> hasCheckedModule) {
+    for (Map.Entry<SootModuleInfo, Integer> entry : modInfo.retrieveRequiredModules().entrySet()) {
+      if ((entry.getValue() & Modifier.REQUIRES_TRANSITIVE) != 0) { // check if module is exported via "requires public"
+    	if (hasCheckedModule.contains(entry.getKey().getModuleName())) {
+          continue;
+    	} else {
+          hasCheckedModule.add(entry.getKey().getModuleName());
+    	}
+        if (entry.getKey().exportsPackage(packageName, toModuleName)) {
+          return entry.getKey().getModuleName();
+        } else {
+          return checkTransitiveChain(entry.getKey(), packageName, toModuleName, hasCheckedModule);
+        }
+      }
+    }
+    return null;
   }
 
 
