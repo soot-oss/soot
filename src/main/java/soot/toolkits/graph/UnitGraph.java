@@ -24,8 +24,8 @@ package soot.toolkits.graph;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -195,7 +195,7 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
    */
   protected Map<Unit, List<Unit>> combineMapValues(Map<Unit, List<Unit>> mapA, Map<Unit, List<Unit>> mapB) {
     // The duplicate screen
-    Map<Unit, List<Unit>> result = new HashMap<Unit, List<Unit>>(mapA.size() * 2 + 1, 0.7f);
+    Map<Unit, List<Unit>> result = new LinkedHashMap<Unit, List<Unit>>(mapA.size() * 2 + 1, 0.7f);
     for (Unit unit : unitChain) {
       List<Unit> listA = mapA.get(unit);
       if (listA == null) {
