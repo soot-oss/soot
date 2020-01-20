@@ -125,12 +125,12 @@ public class AbstractHost implements Host {
   public int getJavaSourceStartLineNumber() {
     if (line <= 0) {
       // get line from source
-      SourceLnPosTag tag = (SourceLnPosTag) getTag("SourceLnPosTag");
+      SourceLnPosTag tag = (SourceLnPosTag) getTag(SourceLnPosTag.IDENTIFIER);
       if (tag != null) {
         line = tag.startLn();
       } else {
         // get line from bytecode
-        LineNumberTag tag2 = (LineNumberTag) getTag("LineNumberTag");
+        LineNumberTag tag2 = (LineNumberTag) getTag(LineNumberTag.IDENTIFIER);
         if (tag2 != null) {
           line = tag2.getLineNumber();
         } else {
