@@ -5,7 +5,7 @@ pipeline {
 
     stages {
 
-      stage('Style'){
+    
   
             stage('Stylecheck') {
                 steps {
@@ -24,10 +24,10 @@ pipeline {
                 }
             }
         
-      }
+  
 
 
-        stage('Build') {
+    
       
             stage('Build with JDK8'){
 
@@ -81,11 +81,10 @@ pipeline {
 
 
           
-        }
+        
         
 
-      stage('Test') {
-        
+ 
 
           stage('Test JDK8'){
 
@@ -135,7 +134,7 @@ pipeline {
 
           }
         
-         }
+         
 
 
         stage ('Deploy to Maven Central') {
