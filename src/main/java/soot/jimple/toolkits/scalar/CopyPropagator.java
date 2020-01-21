@@ -50,6 +50,7 @@ import soot.jimple.Stmt;
 import soot.jimple.StmtBody;
 import soot.options.CPOptions;
 import soot.options.Options;
+import soot.tagkit.Host;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLnPosTag;
 import soot.tagkit.Tag;
@@ -298,14 +299,36 @@ public class CopyPropagator extends BodyTransformer {
   }
 
   private void copyLineTags(ValueBox useBox, DefinitionStmt def) {
-    Tag tag = def.getTag(SourceLnPosTag.IDENTIFIER);
+    // we might have a def statement which contains a propagated constant itself as right-op. we
+    // want to propagate the tags of this constant and not the def statement itself in this case.
+    if (!copyLineTags(useBox, def.getRightOpBox())) {
+      copyLineTags(useBox, (Host) def);
+    }
+  }
+
+  /**
+   * Copies the {@link SourceLnPosTag} and {@link LineNumberTag}s from the given host to the given
+   * valuebox
+   *
+   * @param useBox The box to which the position tags should be copied
+   * @param host The host from which the position tags should be copied
+   * @return True if a copy was conducted, false otherwise
+   */
+  private boolean copyLineTags(ValueBox useBox, Host host) {
+    boolean res = false;
+
+    Tag tag = host.getTag(SourceLnPosTag.IDENTIFIER);
     if (tag != null) {
       useBox.addTag(tag);
+      res = true;
     }
 
-    tag = def.getTag(LineNumberTag.IDENTIFIER);
+    tag = host.getTag(LineNumberTag.IDENTIFIER);
     if (tag != null) {
       useBox.addTag(tag);
+      res = true;
     }
+
+    return res;
   }
 }
