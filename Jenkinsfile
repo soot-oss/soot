@@ -6,7 +6,7 @@ pipeline {
     stages {
 
       stage('Style'){
-        parallel{
+  
             stage('Stylecheck') {
                 steps {
                     catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
@@ -23,12 +23,12 @@ pipeline {
                     }
                 }
             }
-        }
+        
       }
 
 
         stage('Build') {
-          parallel{
+      
             stage('Build with JDK8'){
 
               agent {
@@ -80,12 +80,12 @@ pipeline {
             }
 
 
-          }
+          
         }
         
 
       stage('Test') {
-        parallel {
+        
 
           stage('Test JDK8'){
 
@@ -134,7 +134,7 @@ pipeline {
             }
 
           }
-        }
+        
          }
 
 
