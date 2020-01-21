@@ -585,7 +585,11 @@ public class Scene // extends AbstractHost
     if (Options.v().src_prec() == Options.src_prec_apk) {
       return defaultAndroidClassPath();
     } else {
-      return defaultJavaClassPath();
+      String path = defaultJavaClassPath();
+      if (path == null) {
+        throw new RuntimeException("Error: cannot find rt.jar.");
+      }
+      return path;
     }
   }
 
@@ -725,7 +729,11 @@ public class Scene // extends AbstractHost
 
   }
 
-  private String defaultJavaClassPath() {
+  /**
+   * Returns the default class path used for this JVM.
+   * @return the default class path (or null if none could be found)
+   */
+  public static String defaultJavaClassPath() {
     StringBuilder sb = new StringBuilder();
     if (System.getProperty("os.name").equals("Mac OS X")) {
       // in older Mac OS X versions, rt.jar was split into classes.jar and
@@ -763,7 +771,7 @@ public class Scene // extends AbstractHost
           sb.append(rtJar.getAbsolutePath());
         } else {
           // not in JDK either
-          throw new RuntimeException("Error: cannot find rt.jar.");
+          return null;
         }
       }
     }
