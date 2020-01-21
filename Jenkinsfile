@@ -35,6 +35,7 @@ pipeline {
                 docker {
                   image 'maven:3-jdk-8-alpine'
                   args '-v $HOME/.m2:/root/.m2'
+                  reuseNode true
                 }
               }
 
@@ -52,6 +53,7 @@ pipeline {
                 docker {
                   image 'maven:3-jdk-9-slim'
                   args '-v $HOME/.m2:/root/.m2'
+                  reuseNode true
                 }
               }
 
@@ -67,6 +69,7 @@ pipeline {
                 docker {
                   image 'maven:3-jdk-11-slim'
                   args '-v $HOME/.m2:/root/.m2'
+                  reuseNode true
                 }
               }
 
@@ -90,13 +93,12 @@ pipeline {
               docker {
                 image 'maven:3-jdk-8-alpine'
                 args '-v $HOME/.m2:/root/.m2'
-
+                reuseNode true
               }
             }
 
             steps {
               sh 'mvn test -PJava8'
-
             }
 
           }
@@ -107,14 +109,13 @@ pipeline {
               docker {
                 image 'maven:3-jdk-9-slim'
                 args '-v $HOME/.m2:/root/.m2'
+                reuseNode true
               }
             }
 
             steps {
               sh 'mvn test -PJava9'
-
             }
-
           }
 
             stage('Test JDK11'){
@@ -123,6 +124,7 @@ pipeline {
               docker {
                 image 'maven:3-jdk-11-slim'
                 args '-v $HOME/.m2:/root/.m2'
+                reuseNode true
               }
             }
 
