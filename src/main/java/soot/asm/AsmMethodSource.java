@@ -248,7 +248,6 @@ import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
-import soot.JastAddJ.Frontend;
 import soot.coffi.Util;
 import soot.jimple.AddExpr;
 import soot.jimple.ArrayRef;
