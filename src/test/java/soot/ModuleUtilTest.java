@@ -3,13 +3,14 @@ package soot;
 import org.junit.Test;
 import org.junit.Assert;
 
+
+/**
+ * Tests traversing the module graph.
+ *
+ * @author Andreas Dann
+ */
+
 public class ModuleUtilTest {
-
-
-    public void buildModuleScene() {
-
-
-    }
 
 
     @Test
@@ -21,7 +22,7 @@ public class ModuleUtilTest {
     }
 
     @Test
-    public void simpleExport(){
+    public void simpleExport() {
         G.reset();
         ModuleScene moduleScene = ModuleScene.v();
 
@@ -29,8 +30,8 @@ public class ModuleUtilTest {
         moduleA.addExportedPackage("de.upb");
         moduleScene.addClassSilent(moduleA);
 
-        SootModuleInfo moduleB = new SootModuleInfo(SootModuleInfo.MODULE_INFO,"moduleB");
-        moduleB.getRequiredModules().put(moduleA,Modifier.REQUIRES_STATIC);
+        SootModuleInfo moduleB = new SootModuleInfo(SootModuleInfo.MODULE_INFO, "moduleB");
+        moduleB.getRequiredModules().put(moduleA, Modifier.REQUIRES_STATIC);
         moduleScene.addClassSilent(moduleB);
 
         ModuleUtil moduleUtil = ModuleUtil.v();
@@ -41,7 +42,7 @@ public class ModuleUtilTest {
 
 
     @Test
-    public void simpleRequiresTransitiveExport(){
+    public void simpleRequiresTransitiveExport() {
         G.reset();
         ModuleScene moduleScene = ModuleScene.v();
 
@@ -49,13 +50,13 @@ public class ModuleUtilTest {
         moduleA.addExportedPackage("de.upb");
         moduleScene.addClassSilent(moduleA);
 
-        SootModuleInfo moduleB = new SootModuleInfo(SootModuleInfo.MODULE_INFO,"moduleB");
-        moduleB.getRequiredModules().put(moduleA,Modifier.REQUIRES_TRANSITIVE);
+        SootModuleInfo moduleB = new SootModuleInfo(SootModuleInfo.MODULE_INFO, "moduleB");
+        moduleB.getRequiredModules().put(moduleA, Modifier.REQUIRES_TRANSITIVE);
         moduleScene.addClassSilent(moduleB);
 
 
-        SootModuleInfo moduleC = new SootModuleInfo(SootModuleInfo.MODULE_INFO,"moduleC");
-        moduleC.getRequiredModules().put(moduleB,Modifier.REQUIRES_STATIC);
+        SootModuleInfo moduleC = new SootModuleInfo(SootModuleInfo.MODULE_INFO, "moduleC");
+        moduleC.getRequiredModules().put(moduleB, Modifier.REQUIRES_STATIC);
         moduleScene.addClassSilent(moduleC);
 
         ModuleUtil moduleUtil = ModuleUtil.v();
@@ -66,7 +67,7 @@ public class ModuleUtilTest {
 
 
     @Test
-    public void TwoLevelRequiresTransitiveExport(){
+    public void TwoLevelRequiresTransitiveExport() {
         G.reset();
         ModuleScene moduleScene = ModuleScene.v();
 
@@ -74,18 +75,18 @@ public class ModuleUtilTest {
         moduleA.addExportedPackage("de.upb");
         moduleScene.addClassSilent(moduleA);
 
-        SootModuleInfo moduleB = new SootModuleInfo(SootModuleInfo.MODULE_INFO,"moduleB");
-        moduleB.getRequiredModules().put(moduleA,Modifier.REQUIRES_TRANSITIVE);
+        SootModuleInfo moduleB = new SootModuleInfo(SootModuleInfo.MODULE_INFO, "moduleB");
+        moduleB.getRequiredModules().put(moduleA, Modifier.REQUIRES_TRANSITIVE);
         moduleScene.addClassSilent(moduleB);
 
 
-        SootModuleInfo moduleC = new SootModuleInfo(SootModuleInfo.MODULE_INFO,"moduleC");
-        moduleC.getRequiredModules().put(moduleB,Modifier.REQUIRES_TRANSITIVE);
+        SootModuleInfo moduleC = new SootModuleInfo(SootModuleInfo.MODULE_INFO, "moduleC");
+        moduleC.getRequiredModules().put(moduleB, Modifier.REQUIRES_TRANSITIVE);
         moduleScene.addClassSilent(moduleC);
 
 
-        SootModuleInfo moduleD = new SootModuleInfo(SootModuleInfo.MODULE_INFO,"moduleD");
-        moduleD.getRequiredModules().put(moduleC,Modifier.REQUIRES_STATIC);
+        SootModuleInfo moduleD = new SootModuleInfo(SootModuleInfo.MODULE_INFO, "moduleD");
+        moduleD.getRequiredModules().put(moduleC, Modifier.REQUIRES_STATIC);
         moduleScene.addClassSilent(moduleD);
 
         ModuleUtil moduleUtil = ModuleUtil.v();
@@ -97,7 +98,7 @@ public class ModuleUtilTest {
 
     //the test should fail, as the requires transitive relations are not set in the module graph
     @Test
-    public void TwoLevelRequiresTransitiveExportFailing(){
+    public void TwoLevelRequiresTransitiveExportFailing() {
         G.reset();
         ModuleScene moduleScene = ModuleScene.v();
 
@@ -105,18 +106,18 @@ public class ModuleUtilTest {
         moduleA.addExportedPackage("de.upb");
         moduleScene.addClassSilent(moduleA);
 
-        SootModuleInfo moduleB = new SootModuleInfo(SootModuleInfo.MODULE_INFO,"moduleB");
-        moduleB.getRequiredModules().put(moduleA,Modifier.REQUIRES_TRANSITIVE);
+        SootModuleInfo moduleB = new SootModuleInfo(SootModuleInfo.MODULE_INFO, "moduleB");
+        moduleB.getRequiredModules().put(moduleA, Modifier.REQUIRES_TRANSITIVE);
         moduleScene.addClassSilent(moduleB);
 
 
-        SootModuleInfo moduleC = new SootModuleInfo(SootModuleInfo.MODULE_INFO,"moduleC");
-        moduleC.getRequiredModules().put(moduleB,Modifier.REQUIRES_STATIC);
+        SootModuleInfo moduleC = new SootModuleInfo(SootModuleInfo.MODULE_INFO, "moduleC");
+        moduleC.getRequiredModules().put(moduleB, Modifier.REQUIRES_STATIC);
         moduleScene.addClassSilent(moduleC);
 
 
-        SootModuleInfo moduleD = new SootModuleInfo(SootModuleInfo.MODULE_INFO,"moduleD");
-        moduleD.getRequiredModules().put(moduleC,Modifier.REQUIRES_STATIC);
+        SootModuleInfo moduleD = new SootModuleInfo(SootModuleInfo.MODULE_INFO, "moduleD");
+        moduleD.getRequiredModules().put(moduleC, Modifier.REQUIRES_STATIC);
         moduleScene.addClassSilent(moduleD);
 
         ModuleUtil moduleUtil = ModuleUtil.v();
