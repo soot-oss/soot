@@ -22,9 +22,9 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,12 +43,12 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 public class CallGraph implements Iterable<Edge> {
-  protected Set<Edge> edges = new HashSet<Edge>();
+  protected Set<Edge> edges = new LinkedHashSet<Edge>();
   protected ChunkedQueue<Edge> stream = new ChunkedQueue<Edge>();
   protected QueueReader<Edge> reader = stream.reader();
-  protected Map<MethodOrMethodContext, Edge> srcMethodToEdge = new HashMap<MethodOrMethodContext, Edge>();
-  protected Map<Unit, Edge> srcUnitToEdge = new HashMap<Unit, Edge>();
-  protected Map<MethodOrMethodContext, Edge> tgtToEdge = new HashMap<MethodOrMethodContext, Edge>();
+  protected Map<MethodOrMethodContext, Edge> srcMethodToEdge = new LinkedHashMap<MethodOrMethodContext, Edge>();
+  protected Map<Unit, Edge> srcUnitToEdge = new LinkedHashMap<Unit, Edge>();
+  protected Map<MethodOrMethodContext, Edge> tgtToEdge = new LinkedHashMap<MethodOrMethodContext, Edge>();
   protected Edge dummy = new Edge(null, null, null, Kind.INVALID);
 
   /**
