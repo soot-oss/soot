@@ -213,6 +213,8 @@ import org.objectweb.asm.tree.TableSwitchInsnNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.Body;
@@ -226,6 +228,7 @@ import soot.LambdaMetaFactory;
 import soot.Local;
 import soot.LongType;
 import soot.MethodSource;
+import soot.Modifier;
 import soot.ModuleScene;
 import soot.ModuleUtil;
 import soot.PackManager;
@@ -293,6 +296,7 @@ import soot.util.Chain;
  * @author Aaloan Miftah
  */
 final class AsmMethodSource implements MethodSource {
+  private static final Logger logger = LoggerFactory.getLogger(AsmMethodSource.class);
 
   private static final Operand DWORD_DUMMY = new Operand(null, null);
   private final String module;
@@ -342,11 +346,31 @@ final class AsmMethodSource implements MethodSource {
   }
 
   private SootClass getClassFromScene(String className) {
+    SootClass result;
     if (ModuleUtil.module_mode()) {
-      return ModuleScene.v().getSootClassUnsafe(className, Optional.fromNullable(this.module));
+      result = ModuleScene.v().getSootClassUnsafe(className, Optional.fromNullable(this.module));
+    } else {
+      result = Scene.v().getSootClassUnsafe(className);
     }
 
-    return Scene.v().getSootClass(className);
+    if (result == null) {
+      String msg = String.format("%s was not found on classpath.", className);
+      if (Options.v().allow_phantom_refs())
+      {
+        RefType ref = RefType.v(className);
+        //make sure nobody else creates the same class
+        synchronized (ref) {
+          logger.warn(msg);
+          result = Scene.v().makeSootClass(className, Modifier.PUBLIC);
+          Scene.v().addClass(result);
+          result.setPhantomClass();
+          return ref.getSootClass();
+        }
+      } else {
+        throw new RuntimeException(msg);
+      }
+    }
+    return result;
   }
 
   private Local getLocal(int idx) {
