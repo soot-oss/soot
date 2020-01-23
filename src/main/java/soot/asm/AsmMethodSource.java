@@ -175,8 +175,8 @@ import static org.objectweb.asm.tree.AbstractInsnNode.TYPE_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 
@@ -185,9 +185,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -311,8 +311,8 @@ final class AsmMethodSource implements MethodSource {
   private final InsnList instructions;
   private final List<LocalVariableNode> localVars;
   private final List<TryCatchBlockNode> tryCatchBlocks;
-  private final Set<LabelNode> inlineExceptionLabels = new HashSet<LabelNode>();
-  private final Map<LabelNode, Unit> inlineExceptionHandlers = new HashMap<LabelNode, Unit>();
+  private final Set<LabelNode> inlineExceptionLabels = new LinkedHashSet<LabelNode>();
+  private final Map<LabelNode, Unit> inlineExceptionHandlers = new LinkedHashMap<LabelNode, Unit>();
   private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
   /* -state fields- */
   private int nextLocal;
@@ -1938,7 +1938,7 @@ final class AsmMethodSource implements MethodSource {
   private void emitTraps() {
     Chain<Trap> traps = body.getTraps();
     SootClass throwable = Scene.v().getSootClass("java.lang.Throwable");
-    Map<LabelNode, Iterator<UnitBox>> handlers = new HashMap<LabelNode, Iterator<UnitBox>>(tryCatchBlocks.size());
+    Map<LabelNode, Iterator<UnitBox>> handlers = new LinkedHashMap<LabelNode, Iterator<UnitBox>>(tryCatchBlocks.size());
     for (TryCatchBlockNode tc : tryCatchBlocks) {
       UnitBox start = Jimple.v().newStmtBox(null);
       UnitBox end = Jimple.v().newStmtBox(null);
@@ -2069,11 +2069,11 @@ final class AsmMethodSource implements MethodSource {
     /* initialize */
     int nrInsn = instructions.size();
     nextLocal = maxLocals;
-    locals = new HashMap<Integer, Local>(maxLocals + (maxLocals / 2));
-    labels = ArrayListMultimap.create(4, 1);
-    units = new HashMap<AbstractInsnNode, Unit>(nrInsn);
-    frames = new HashMap<AbstractInsnNode, StackFrame>(nrInsn);
-    trapHandlers = ArrayListMultimap.create(tryCatchBlocks.size(), 1);
+    locals = new LinkedHashMap<Integer, Local>(maxLocals + (maxLocals / 2));
+    labels = LinkedListMultimap.create(4);
+    units = new LinkedHashMap<AbstractInsnNode, Unit>(nrInsn);
+    frames = new LinkedHashMap<AbstractInsnNode, StackFrame>(nrInsn);
+    trapHandlers = LinkedListMultimap.create(tryCatchBlocks.size());
     body = jb;
     /* retrieve all trap handlers */
     for (TryCatchBlockNode tc : tryCatchBlocks) {
