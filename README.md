@@ -54,9 +54,13 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 You can also obtain older builds of the `master` branch. A complete listing of builds can be found on [Maven Central](https://repo.maven.apache.org/maven2/ca/mcgill/sable/soot/).
 
 # How do I obtain Soot without Maven?
+**We recommend using Soot with Maven**
 
-All of our Soot builds for the `master` branch are also stored up to one month in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse:soot-release:ca%2Fmcgill%2Fsable%2Fsoot) and can be obtained from there.
-The latest realease build of Soot can also be obtained [directly](https://soot-build.cs.uni-paderborn.de/public/origin/master/soot/soot-master/). The "sootclasses-trunk-jar-with-dependencies.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
+You can obtain the latest realease build of Soot [directly](https://repo1.maven.org/maven2/ca/mcgill/sable/soot/).
+
+The `soot-RELEASE-jar-with-dependencies.jar` file is an all-in-one file that also contains all the required libraries. 
+
+The `soot-RELEASE.jar`  file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
 
 # Building Soot yourself
 
