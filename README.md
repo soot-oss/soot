@@ -63,9 +63,11 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 You can also obtain older builds of the `develop` branch. A complete listing of builds can be found in [Sonatype's SNAPSHOT repository](https://oss.sonatype.org/content/repositories/snapshots/ca/mcgill/sable/soot).
 
 # How do I obtain Soot without Maven?
+You can obtain the latest realease build of Soot [directly](https://oss.sonatype.org/content/repositories/snapshots/ca/mcgill/sable/soot/).
 
-All of our Soot builds for the `develop` branch are also stored up to one month in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse:soot-snapshot:ca%2Fmcgill%2Fsable%2Fsoot) and can be obtained from there.
-The latest snapshot build of Soot can also be obtained [directly](https://soot-build.cs.uni-paderborn.de/public/origin/develop/soot/soot-develop/build/). The "sootclasses-trunk-jar-with-dependencies.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
+The `soot-RELEASE-jar-with-dependencies.jar` file is an all-in-one file that also contains all the required libraries. 
+
+The `soot-RELEASE.jar`  file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
 
 # Building Soot yourself
 
@@ -154,18 +156,18 @@ if(java>=9 && USE_MODULEPATH){
 
 ## Use from the Command Line
 To execute Soot using Java 1.9, but analyzing a classpath run, just as before:
-`java -cp soot-trunk-j9.jar soot.Main --process-dir directoryToAnalyse`
+`java -cp soot-trunk.jar soot.Main --process-dir directoryToAnalyse`
 
 
 if you want to specify the classpath explicitly run:
-`java -cp soot-trunk-j9.jar soot.Main -cp VIRTUAL_FS_FOR_JDK --process-dir directoryToAnalyse`
+`java -cp soot-trunk.jar soot.Main -cp VIRTUAL_FS_FOR_JDK --process-dir directoryToAnalyse`
 
 the value `VIRTUAL_FS_FOR_JDK` indicates that Soot should search Java's (>9) virtual filesystem `jrt:/` for classes, too, although Soot is not executed in module mode.
 
 
 To load modules and classes in Soot using java 1.8 run:
 
-` java -cp PATH_TO_JAVA9/jrt-fs.jar:soot-trunk-j9.jar soot.Main -pp -soot-modulepath modules/  `
+` java -cp PATH_TO_JAVA9/jrt-fs.jar:soot-trunk.jar soot.Main -pp -soot-modulepath modules/  `
 
 
 Please replace `PATH_TO_JAVA9` with the path to your local installation of java 9.
