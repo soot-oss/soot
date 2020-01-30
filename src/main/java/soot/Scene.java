@@ -571,8 +571,7 @@ public class Scene // extends AbstractHost
 
   public String defaultClassPath() {
     // If we have an apk file on the process dir and do not have a src-prec
-    // option
-    // that loads APK files, we give a warning
+    // option that loads APK files, we give a warning
     if (Options.v().src_prec() != Options.src_prec_apk) {
       for (String entry : Options.v().process_dir()) {
         if (entry.toLowerCase().endsWith(".apk")) {
@@ -731,6 +730,7 @@ public class Scene // extends AbstractHost
 
   /**
    * Returns the default class path used for this JVM.
+   * 
    * @return the default class path (or null if none could be found)
    */
   public static String defaultJavaClassPath() {

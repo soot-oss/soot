@@ -49,6 +49,7 @@ import org.jf.dexlib2.iface.ExceptionHandler;
 import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.MethodImplementation;
 import org.jf.dexlib2.iface.MethodParameter;
+import org.jf.dexlib2.iface.MultiDexContainer.DexEntry;
 import org.jf.dexlib2.iface.TryBlock;
 import org.jf.dexlib2.iface.debug.DebugItem;
 import org.jf.dexlib2.iface.instruction.Instruction;
@@ -150,7 +151,7 @@ public class DexBody {
 
   protected RefType declaringClassType;
 
-  protected final DexFile dexFile;
+  protected final DexEntry<? extends DexFile> dexEntry;
   protected final Method method;
 
   // detect array/instructions overlapping obfuscation
@@ -173,7 +174,7 @@ public class DexBody {
    * @param method
    *          the method that is associated with this body
    */
-  protected DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
+  protected DexBody(DexEntry<? extends DexFile> dexFile, Method method, RefType declaringClassType) {
     MethodImplementation code = method.getImplementation();
     if (code == null) {
       throw new RuntimeException("error: no code for method " + method.getName());
@@ -226,7 +227,7 @@ public class DexBody {
       }
     }
 
-    this.dexFile = dexFile;
+    this.dexEntry = dexFile;
     this.method = method;
   }
 
@@ -400,7 +401,7 @@ public class DexBody {
     jBody = (JimpleBody) b;
     deferredInstructions = new ArrayList<DeferableInstruction>();
     instructionsToRetype = new HashSet<RetypeableInstruction>();
-    
+
     if (jbOptions.use_original_names()) {
       PhaseOptions.v().setPhaseOptionIfUnset("jb.lns", "only-stack-locals");
     }
@@ -443,7 +444,7 @@ public class DexBody {
           try {
             localName = parameterNames.get(argIdx);
             localType = parameterTypes.get(argIdx);
-          } catch (Exception ex) { 
+          } catch (Exception ex) {
             logger.error("Exception while reading original parameter names.", ex);
           }
         }
@@ -474,7 +475,7 @@ public class DexBody {
         // could be used later in the Dalvik bytecode
         if (t instanceof LongType || t instanceof DoubleType) {
           parameterRegister++;
-          // may only use UnknownType here because the local may be reused with a different 
+          // may only use UnknownType here because the local may be reused with a different
           // type later (before splitting)
           Local g = jimple.newLocal("$u" + parameterRegister, unknownType);
           jBody.getLocals().add(g);
@@ -496,7 +497,9 @@ public class DexBody {
     jBody.getLocals().add(storeResultLocal);
 
     // process bytecode instructions
-    final boolean isOdex = dexFile instanceof DexBackedDexFile ? ((DexBackedDexFile) dexFile).isOdexFile() : false;
+    final DexFile dexFile = dexEntry.getDexFile();
+    final boolean isOdex
+        = dexFile instanceof DexBackedDexFile ? ((DexBackedDexFile) dexFile).supportsOptimizedOpcodes() : false;
 
     ClassPath cp = null;
     if (isOdex) {
@@ -506,7 +509,7 @@ public class DexBody {
         classpathList.add(str);
       }
       try {
-        ClassPathResolver resolver = new ClassPathResolver(classpathList, classpathList, classpathList, dexFile);
+        ClassPathResolver resolver = new ClassPathResolver(classpathList, classpathList, classpathList, dexEntry);
         cp = new ClassPath(resolver.getResolvedClassProviders().toArray(new ClassProvider[0]));
       } catch (IOException e) {
         throw new RuntimeException(e);
@@ -765,7 +768,7 @@ public class DexBody {
     // Some apps reference static fields as instance fields. We fix this
     // on the fly.
     if (Options.v().wrong_staticness() == Options.wrong_staticness_fix
-          || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) {
+        || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) {
       FieldStaticnessCorrector.v().transform(jBody);
       MethodStaticnessCorrector.v().transform(jBody);
     }
@@ -856,8 +859,8 @@ public class DexBody {
         l.setType(objectType);
       }
     }
-    
-    //Must be last to ensure local ordering does not change
+
+    // Must be last to ensure local ordering does not change
     PackManager.v().getTransform("jb.lns").apply(jBody);
 
     // t_whole_jimplification.end();
