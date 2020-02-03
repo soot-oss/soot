@@ -32,6 +32,7 @@ import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,7 +54,10 @@ import org.jf.dexlib2.iface.MultiDexContainer.DexEntry;
 import org.jf.dexlib2.iface.TryBlock;
 import org.jf.dexlib2.iface.debug.DebugItem;
 import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.immutable.debug.ImmutableEndLocal;
 import org.jf.dexlib2.immutable.debug.ImmutableLineNumber;
+import org.jf.dexlib2.immutable.debug.ImmutableRestartLocal;
+import org.jf.dexlib2.immutable.debug.ImmutableStartLocal;
 import org.jf.dexlib2.util.MethodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,6 +158,31 @@ public class DexBody {
   protected final DexEntry<? extends DexFile> dexEntry;
   protected final Method method;
 
+  /**
+   * An entry of debug information for a register from the dex file.
+   *
+   * @author Zhenghao Hu
+   */
+  protected class RegDbgEntry {
+    public int startAddress;
+    public int endAddress;
+    public int register;
+    public String name;
+    public Type type;
+    public String signature;
+
+    public RegDbgEntry(int sa, int ea, int reg, String nam, String ty, String sig) {
+      this.startAddress = sa;
+      this.endAddress = ea;
+      this.register = reg;
+      this.name = nam;
+      this.type = DexType.toSoot(ty);
+      this.signature = sig;
+    }
+  }
+
+  private final Map<Integer, LinkedList<RegDbgEntry>> localDebugs;
+
   // detect array/instructions overlapping obfuscation
   protected List<PseudoInstruction> pseudoInstructionData = new ArrayList<PseudoInstruction>();
 
@@ -204,6 +233,8 @@ public class DexBody {
 
     instructions = new ArrayList<DexlibAbstractInstruction>();
     instructionAtAddress = new HashMap<Integer, DexlibAbstractInstruction>();
+    localDebugs = new HashMap<Integer, LinkedList<RegDbgEntry>>();
+
     registerLocals = new Local[numRegisters];
 
     extractDexInstructions(code);
@@ -224,6 +255,43 @@ public class DexBody {
           continue;
         }
         ins.setLineNumber(ln.getLineNumber());
+      } else if (di instanceof ImmutableStartLocal
+              || di instanceof ImmutableRestartLocal) {
+        LinkedList<RegDbgEntry> lds;
+        int reg, codeAddr;
+        String type, signature, name;
+        if (di instanceof ImmutableStartLocal) {
+          ImmutableStartLocal sl = (ImmutableStartLocal) di;
+          reg = sl.getRegister();
+          codeAddr = sl.getCodeAddress();
+          name = sl.getName();
+          type = sl.getType();
+          signature = sl.getSignature();
+        } else {
+          ImmutableRestartLocal sl = (ImmutableRestartLocal) di;
+          reg = sl.getRegister();
+          codeAddr = sl.getCodeAddress();
+          name = sl.getName();
+          type = sl.getType();
+          signature = sl.getSignature();
+        }
+        lds = localDebugs.get(reg);
+        RegDbgEntry dbgEntry = new RegDbgEntry(codeAddr, -1/* endAddress */, reg, name, type, signature);
+        if (lds == null) {
+          localDebugs.put(reg,
+              new LinkedList<RegDbgEntry>(Collections.singletonList(dbgEntry)));
+        } else {
+          lds.add(dbgEntry);
+        }
+      } else if (di instanceof ImmutableEndLocal) {
+        ImmutableEndLocal el = (ImmutableEndLocal) di;
+        LinkedList<RegDbgEntry> lds = localDebugs.get(el.getRegister());
+        if (lds == null || lds.isEmpty()) {
+          // Invalid debug info 
+          continue;
+        } else {
+          lds.getLast().endAddress = el.getCodeAddress();
+        }
       }
     }
 
@@ -420,6 +488,10 @@ public class DexBody {
       int thisRegister = numRegisters - numParameterRegisters - 1;
 
       Local thisLocal = jimple.newLocal("$u" + thisRegister, unknownType); // generateLocal(UnknownType.v());
+      //thisLocal.setType(jBody.getMethod().getDeclaringClass().getType());
+      if (localDebugs.containsKey(thisRegister)) {
+        thisLocal.setName("this");
+      }
       jBody.getLocals().add(thisLocal);
 
       registerLocals[thisRegister] = thisLocal;
@@ -458,6 +530,9 @@ public class DexBody {
         }
 
         Local gen = jimple.newLocal(localName, localType);
+        if (localDebugs.containsKey(parameterRegister)) {
+          gen.setName(localDebugs.get(parameterRegister).getFirst().name);
+        }
         jBody.getLocals().add(gen);
 
         registerLocals[parameterRegister] = gen;
@@ -478,6 +553,9 @@ public class DexBody {
           // may only use UnknownType here because the local may be reused with a different
           // type later (before splitting)
           Local g = jimple.newLocal("$u" + parameterRegister, unknownType);
+          if (localDebugs.containsKey(parameterRegister)) {
+            g.setName(localDebugs.get(parameterRegister).getFirst().name);
+          }
           jBody.getLocals().add(g);
           registerLocals[parameterRegister] = g;
         }
@@ -489,6 +567,9 @@ public class DexBody {
 
     for (int i = 0; i < (numRegisters - numParameterRegisters - (isStatic ? 0 : 1)); i++) {
       registerLocals[i] = jimple.newLocal("$u" + i, unknownType);
+      if (localDebugs.containsKey(i)) {
+        registerLocals[i].setName(localDebugs.get(i).getFirst().name);
+      }
       jBody.getLocals().add(registerLocals[i]);
     }
 
