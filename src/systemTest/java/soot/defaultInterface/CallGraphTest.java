@@ -1,5 +1,8 @@
 package soot.defaultInterface;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -24,31 +27,27 @@ public class CallGraphTest {
 		Options.v().set_allow_phantom_refs(true);
 		Options.v().set_no_bodies_for_excluded(true);
 		
-		Options.v().set_process_dir(Collections.singletonList("D:\\Java_8_Programs\\Jar_Executables\\Sample.jar"));		
+		String pathToJar = "D:\\Java_8_Programs\\Jar_Executables\\Sample.jar";
+		Options.v().set_process_dir(Collections.singletonList(pathToJar));		
 		PhaseOptions.v().setPhaseOption("cg.cha", "on");
 		
 		Scene.v().loadNecessaryClasses();
 		
 		PackManager.v().runPacks();
 		
-		WriteCallGraph();
+		ArrayList<Edge> edge = WriteCallGraph();
+		
+		assertEquals(edge.get(0).getTgt(), Scene.v().getMethod("<com.pubbycrawl.tools.checkstyle.api.AbstractCheck: void log(java.lang.String,java.lang.String)>"));		
 		
 	}
 	
-	private static void WriteCallGraph() throws FileNotFoundException, UnsupportedEncodingException {	
-
-		System.out.println("Writing call graph to a file....!!!");		
-		PrintWriter writer = new PrintWriter("D:\\JarFiles\\Develop_Edges.txt", "UTF-8");
+	private static ArrayList<Edge> WriteCallGraph() {
+		
 		CallGraph cg = Scene.v().getCallGraph();
 		Iterator<Edge> mainMethodEdges = cg.edgesOutOf(Scene.v().getMethod("<com.pubbycrawl.tools.checkstyle.checks.metrics.JavaNCSSCheck: void finishTree()>"));
+		ArrayList<Edge> edgeList = Lists.newArrayList(mainMethodEdges);
+		return edgeList;
 		
-		//Iterator<Edge> edgeToSort = cg.iterator();
-		ArrayList<Edge> edgeList = Lists.newArrayList(mainMethodEdges);	
-		for(Edge edge: edgeList) {
-			writer.println(edge);
-		}
-		writer.close();
-		System.out.println("Finished writing to a text file!!!");
 	}
 
 }
