@@ -138,7 +138,8 @@ public class LocalGenerator {
       }
     } else {
       localNames = null;
-      throw new RuntimeException("Unhandled Type of Local variable to Generate - Not Implemented");
+      throw new RuntimeException(
+          String.format("Unhandled Type %s of Local variable to Generate - Not Implemented", type.getClass().getName()));
     }
 
     localNames = null;
