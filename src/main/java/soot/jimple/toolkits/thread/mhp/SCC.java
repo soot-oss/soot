@@ -49,11 +49,9 @@ import soot.toolkits.graph.DirectedGraph;
 public class SCC<T> {
 
   private Set<T> gray;
-  // private int time;
   private final LinkedList<T> finishedOrder;
   private final List<List<T>> sccList;
 
-  // public SCC(Chain chain, DirectedGraph g){
   public SCC(Iterator<T> it, DirectedGraph<T> g) {
 
     gray = new HashSet<T>();
@@ -96,16 +94,10 @@ public class SCC<T> {
   }
 
   private void visitNode(DirectedGraph<T> g, T s) {
-    // System.out.println("visit "+s);
     gray.add(s);
-    // time++; // begin visit time
-    // System.out.println("succs are: "+g.getSuccsOf(s));
     Stack<Pair<T, Iterator<T>>> stack = new Stack<>();
     stack.push(new Pair<>(s, g.getSuccsOf(s).iterator()));
-    next: while (true) {
-      if (stack.isEmpty()) {
-        break;
-      }
+    next: while (!stack.isEmpty()) {
 
       Pair<T, Iterator<T>> p = stack.peek();
       Iterator<T> it = p.getO2();
@@ -120,10 +112,6 @@ public class SCC<T> {
       stack.pop();
       finishedOrder.addFirst(p.getO1());
     }
-
-    // time++;//end time
-    // System.out.println("add "+s+ " to finished order ");
-
   }
 
   private void visitRevNode(DirectedGraph<T> g, T s, List<T> scc) {
@@ -134,10 +122,7 @@ public class SCC<T> {
     Stack<Iterator<T>> stack = new Stack<>();
     stack.push(g.getPredsOf(s).iterator());
 
-    next: while (true) {
-      if (stack.isEmpty()) {
-        break;
-      }
+    next: while (!stack.isEmpty()) {
 
       Iterator<T> predsIt = stack.peek();
       while (predsIt.hasNext()) {
