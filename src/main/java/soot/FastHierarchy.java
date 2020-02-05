@@ -39,9 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
-import soot.util.LargeNumberedMap;
 import soot.util.MultiMap;
-import soot.util.SmallNumberedMap;
 
 /**
  * Represents the class hierarchy. It is closely linked to a Scene, and must be recreated if the
@@ -56,7 +54,7 @@ import soot.util.SmallNumberedMap;
 public class FastHierarchy {
   private static final Logger LOGGER = LoggerFactory.getLogger(FastHierarchy.class);
   private final Map<SootClass, HashMap<String, SootMethod>> typeToVtbl =
-	      new HashMap<SootClass, HashMap<String,SootMethod>>();
+      new HashMap<SootClass, HashMap<String, SootMethod>>();
 
   /**
    * This map holds all key,value pairs such that value.getSuperclass() == key. This is one of the
@@ -694,12 +692,10 @@ public class FastHierarchy {
       SootClass baseType, SootMethod m, boolean allowAbstract, Set<SootClass> ignoreList) {
     return resolveMethod(
         baseType,
-        m,
         m.getDeclaringClass(),
         m.getName(),
         m.getParameterTypes(),
         m.getReturnType(),
-        m.getModifiers(),
         allowAbstract,
         ignoreList);
   }
@@ -725,18 +721,9 @@ public class FastHierarchy {
       String name,
       List<Type> parameterTypes,
       Type returnType,
-      int modifier,
       boolean allowAbstract) {
     return resolveMethod(
-        baseType,
-        null,
-        declaringClass,
-        name,
-        parameterTypes,
-        returnType,
-        modifier,
-        allowAbstract,
-        new HashSet<>());
+        baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>());
   }
 
   /**
@@ -760,28 +747,25 @@ public class FastHierarchy {
    */
   private SootMethod resolveMethod(
       SootClass baseType,
-      SootMethod methodName,
       SootClass declaringClass,
       String name,
       List<Type> parameterTypes,
       Type returnType,
-      int modifier,
       boolean allowAbstract,
       Set<SootClass> ignoreList) {
     SootClass concreteType = baseType;
 
-    
     SootMethod candidate = null;
     SootMethod resolvedMethod = null;
     String methodSignature = SootMethod.getSubSignature(name, parameterTypes, returnType);
     HashMap<String, SootMethod> vtblMap = typeToVtbl.get(declaringClass);
-    if(vtblMap != null) {
-    	resolvedMethod = vtblMap.get(methodSignature);
+    if (vtblMap != null) {
+      resolvedMethod = vtblMap.get(methodSignature);
     }
-    if(resolvedMethod != null) {
-    	return resolvedMethod;
+    if (resolvedMethod != null) {
+      return resolvedMethod;
     }
-    
+
     // When there is no proper dispatch found, we simply return null to let
     // the caller decide what to do
     while (concreteType != null && !ignoreList.contains(concreteType)) {
@@ -790,11 +774,17 @@ public class FastHierarchy {
       candidate = getSignaturePolymorphicMethod(concreteType, name, parameterTypes, returnType);
       SootMethod resolvedCandidate = candidate;
       if (candidate != null) {
-        if (isVisible(concreteType, declaringClass, modifier)) {
+        if (isVisible(declaringClass, concreteType, candidate.getModifiers())) {
           if (!allowAbstract && candidate.isAbstract()) {
             break;
           }
-          typeToVtbl.put(declaringClass, new HashMap<String, SootMethod>(){{put(methodSignature, resolvedCandidate);}});
+          typeToVtbl.put(
+              declaringClass,
+              new HashMap<String, SootMethod>() {
+                {
+                  put(methodSignature, resolvedCandidate);
+                }
+              });
           return candidate;
         }
       }
@@ -825,7 +815,7 @@ public class FastHierarchy {
           SootMethod method =
               getSignaturePolymorphicMethod(iFace, name, parameterTypes, returnType);
 
-          if (method != null && isVisible(iFace, declaringClass, modifier)) {
+          if (method != null && isVisible(declaringClass, iFace, method.getModifiers())) {
             if (!allowAbstract && method.isAbstract()) {
               // abstract method cannot be dispatched
               continue;
@@ -849,7 +839,13 @@ public class FastHierarchy {
       ignoreList.addAll(interfaceIgnoreList);
     }
     SootMethod resolvedCandidate = candidate;
-    typeToVtbl.put(declaringClass, new HashMap<String, SootMethod>(){{put(methodSignature, resolvedCandidate);}});
+    typeToVtbl.put(
+        declaringClass,
+        new HashMap<String, SootMethod>() {
+          {
+            put(methodSignature, resolvedCandidate);
+          }
+        });
     return candidate;
   }
 
@@ -888,17 +884,17 @@ public class FastHierarchy {
    * @return
    */
   private SootMethod getSignaturePolymorphicMethod(
-		  SootClass concreteType, String name, List<Type> parameterTypes, Type returnType) {
-	  SootMethod candidate = null;
-	  for (SootMethod method : concreteType.getMethods()) {
-		  if (method.getName().equals(name)
-				  && method.getParameterTypes().equals(parameterTypes)
-				  && canStoreType(method.getReturnType(), returnType)) {
-			  candidate = method;
-			  returnType = method.getReturnType();
-		  }
-	  }
-	  return candidate;
+      SootClass concreteType, String name, List<Type> parameterTypes, Type returnType) {
+    SootMethod candidate = null;
+    for (SootMethod method : concreteType.getMethods()) {
+      if (method.getName().equals(name)
+          && method.getParameterTypes().equals(parameterTypes)
+          && canStoreType(method.getReturnType(), returnType)) {
+        candidate = method;
+        returnType = method.getReturnType();
+      }
+    }
+    return candidate;
   }
 
   /**
