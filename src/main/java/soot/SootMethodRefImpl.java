@@ -214,14 +214,7 @@ public class SootMethodRefImpl implements SootMethodRef {
     SootMethod resolved =
         Scene.v()
             .getOrMakeFastHierarchy()
-            .resolveMethod(
-                declaringClass,
-                declaringClass,
-                name,
-                parameterTypes,
-                returnType,
-                isStatic() ? Modifier.STATIC : 0,
-                true);
+            .resolveMethod(declaringClass, declaringClass, name, parameterTypes, returnType, true);
 
     if (resolved != null) {
       checkStatic(resolved);
