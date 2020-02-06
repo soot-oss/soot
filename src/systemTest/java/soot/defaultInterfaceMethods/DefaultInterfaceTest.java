@@ -10,12 +10,12 @@ package soot.defaultInterfaceMethods;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -78,7 +78,8 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
     Body body = target.retrieveActiveBody();
     SootMethod targetMethod = resolveMethodRefInBody(body.getUnits(), "void target()");
     SootMethod resolvedMethod =
-        VirtualCalls.v().resolveNonSpecial(Scene.v().getRefType(testClass), defaultMethod, false);
+        VirtualCalls.v()
+            .resolveNonSpecial(Scene.v().getRefType(testClass), defaultMethod.makeRef(), false);
     SootMethod concreteImpl =
         Scene.v()
             .getFastHierarchy()
@@ -147,19 +148,24 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 
     SootMethod resolvedMainMethod =
         VirtualCalls.v()
-            .resolveNonSpecial(Scene.v().getRefType(testClassSig), mainPrintMethod, false);
+            .resolveNonSpecial(
+                Scene.v().getRefType(testClassSig), mainPrintMethod.makeRef(), false);
     SootMethod resolvedWritePrintMethod =
         VirtualCalls.v()
-            .resolveNonSpecial(Scene.v().getRefType(testClassSig), writeInterfacePrint, false);
+            .resolveNonSpecial(
+                Scene.v().getRefType(testClassSig), writeInterfacePrint.makeRef(), false);
     SootMethod resolvedReadPrintMethod =
         VirtualCalls.v()
-            .resolveNonSpecial(Scene.v().getRefType(testClassSig), readInterfacePrint, false);
+            .resolveNonSpecial(
+                Scene.v().getRefType(testClassSig), readInterfacePrint.makeRef(), false);
     SootMethod resolvedDefaultReadMethod =
         VirtualCalls.v()
-            .resolveNonSpecial(Scene.v().getRefType(testClassSig), readInterfaceRead, false);
+            .resolveNonSpecial(
+                Scene.v().getRefType(testClassSig), readInterfaceRead.makeRef(), false);
     SootMethod resolvedDefaultWriteMethod =
         VirtualCalls.v()
-            .resolveNonSpecial(Scene.v().getRefType(testClassSig), writeInterfaceWrite, false);
+            .resolveNonSpecial(
+                Scene.v().getRefType(testClassSig), writeInterfaceWrite.makeRef(), false);
 
     FastHierarchy fh = Scene.v().getFastHierarchy();
     SootMethod concreteImplMainPrint = fh.resolveConcreteDispatch(testClass, mainPrintMethod);
@@ -305,7 +311,8 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
     SootMethod refMainMethod = resolveMethodRefInBody(mainBody.getUnits(), "void print()");
     SootMethod resolvedMethod =
         VirtualCalls.v()
-            .resolveNonSpecial(Scene.v().getRefType(testClass), defaultPrintMethod, false);
+            .resolveNonSpecial(
+                Scene.v().getRefType(testClass), defaultPrintMethod.makeRef(), false);
     SootMethod concreteImpl =
         Scene.v()
             .getFastHierarchy()
@@ -384,10 +391,12 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
     SootMethod refMainMethod = resolveMethodRefInBody(mainBody.getUnits(), "void print()");
 
     SootMethod resolvedMethod =
-        VirtualCalls.v().resolveNonSpecial(Scene.v().getRefType(testClass), defaultMethod, false);
+        VirtualCalls.v()
+            .resolveNonSpecial(Scene.v().getRefType(testClass), defaultMethod.makeRef(), false);
     SootMethod resolvedSuperClassDefaultMethod =
         VirtualCalls.v()
-            .resolveNonSpecial(Scene.v().getRefType(testClass), defaultSuperClassMethod, false);
+            .resolveNonSpecial(
+                Scene.v().getRefType(testClass), defaultSuperClassMethod.makeRef(), false);
 
     SootMethod concreteImpl =
         Scene.v()
@@ -488,9 +497,9 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
         resolveMethodRefInBody(target.retrieveActiveBody().getUnits(), "void print()");
 
     SootMethod interfaceOneResolvedMethod =
-        VirtualCalls.v().resolveNonSpecial(testClass.getType(), interfaceOnePrint, false);
+        VirtualCalls.v().resolveNonSpecial(testClass.getType(), interfaceOnePrint.makeRef(), false);
     SootMethod interfaceTwoResolvedMethod =
-        VirtualCalls.v().resolveNonSpecial(testClass.getType(), interfaceTwoPrint, false);
+        VirtualCalls.v().resolveNonSpecial(testClass.getType(), interfaceTwoPrint.makeRef(), false);
 
     SootMethod concreteImplInterfaceOne = fh.resolveConcreteDispatch(testClass, interfaceOnePrint);
     SootMethod concreteImplInterfaceTwo = fh.resolveConcreteDispatch(testClass, interfaceTwoPrint);
@@ -581,7 +590,8 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
     SootMethod refMainMethod = resolveMethodRefInBody(mainBody.getUnits(), "void print()");
     SootMethod resolvedMethod =
         VirtualCalls.v()
-            .resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTestAPrint, false);
+            .resolveNonSpecial(
+                Scene.v().getRefType(testClass), interfaceTestAPrint.makeRef(), false);
     SootMethod concreteImpl =
         Scene.v()
             .getFastHierarchy()
@@ -637,7 +647,8 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
     Body mainBody = target.retrieveActiveBody();
     SootMethod refMainMethod = resolveMethodRefInBody(mainBody.getUnits(), "void print()");
     SootMethod resolvedMethod =
-        VirtualCalls.v().resolveNonSpecial(Scene.v().getRefType(testClass), interfaceAPrint, false);
+        VirtualCalls.v()
+            .resolveNonSpecial(Scene.v().getRefType(testClass), interfaceAPrint.makeRef(), false);
     SootMethod concreteImpl =
         Scene.v()
             .getFastHierarchy()
@@ -704,10 +715,10 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
 
     SootMethod resolvedInterfaceOneDefaultMethod =
         VirtualCalls.v()
-            .resolveNonSpecial(Scene.v().getRefType(testClass), interfaceOnePrint, false);
+            .resolveNonSpecial(Scene.v().getRefType(testClass), interfaceOnePrint.makeRef(), false);
     SootMethod resolvedInterfaceTwoDefaultMethod =
         VirtualCalls.v()
-            .resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTwoPrint, false);
+            .resolveNonSpecial(Scene.v().getRefType(testClass), interfaceTwoPrint.makeRef(), false);
 
     SootMethod concreteImplInterfaceOne =
         Scene.v()
@@ -866,7 +877,8 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
     assertEquals(subInterfacePrint, methodRefResolved);
 
     SootMethod virtualCallsResolved =
-        VirtualCalls.v().resolveNonSpecial(testClass.getType(), superInterfacePrint, false);
+        VirtualCalls.v()
+            .resolveNonSpecial(testClass.getType(), superInterfacePrint.makeRef(), false);
     assertEquals(subInterfacePrint, virtualCallsResolved);
 
     SootMethod concreteImplI1 =

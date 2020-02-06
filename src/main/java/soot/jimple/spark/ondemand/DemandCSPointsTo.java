@@ -1176,7 +1176,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     }
     RefType refType = (RefType) type;
     SootMethod targetMethod = null;
-    targetMethod = VirtualCalls.v().resolveNonSpecial(refType, callee);
+    targetMethod = VirtualCalls.v().resolveNonSpecial(refType, callee.makeRef());
     return Collections.<SootMethod>singleton(targetMethod);
 
   }

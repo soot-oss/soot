@@ -186,7 +186,7 @@ public interface AllocationSiteHandler {
       }
       RefType refType = (RefType) type;
       SootMethod targetMethod = null;
-      targetMethod = VirtualCalls.v().resolveNonSpecial(refType, callee);
+      targetMethod = VirtualCalls.v().resolveNonSpecial(refType, callee.makeRef());
       if (!possibleMethods.contains(targetMethod)) {
         possibleMethods.add(targetMethod);
         if (possibleMethods.size() > 1) {

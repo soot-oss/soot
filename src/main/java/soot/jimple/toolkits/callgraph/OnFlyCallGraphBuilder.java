@@ -613,7 +613,7 @@ public class OnFlyCallGraphBuilder {
             && site.kind != Kind.EXECUTOR
             && site.kind != Kind.ASYNCTASK) {
           SootMethod target =
-              virtualCalls.resolveSpecial(site.iie().getMethod(), site.container(), appOnly);
+              virtualCalls.resolveSpecial(site.iie().getMethodRef(), site.container(), appOnly);
           // if the call target resides in a phantom class then
           // "target" will be null;
           // simply do not add the target in that case
@@ -624,7 +624,7 @@ public class OnFlyCallGraphBuilder {
           virtualCalls.resolve(
               type,
               receiver.getType(),
-              site.stmt().getInvokeExpr().getMethod(),
+              site.stmt().getInvokeExpr().getMethodRef(),
               site.container(),
               targetsQueue,
               appOnly);
@@ -644,7 +644,7 @@ public class OnFlyCallGraphBuilder {
              * parent class if there is one (as this is technically a possibility and the only information we have).
              */
             virtualCalls.resolveSuperType(
-                type, receiver.getType(), site.iie().getMethod(), targetsQueue, appOnly);
+                type, receiver.getType(), site.iie().getMethodRef(), targetsQueue, appOnly);
           }
         }
         while (targets.hasNext()) {
