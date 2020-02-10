@@ -44,10 +44,8 @@ import soot.options.CGOptions;
 import soot.toolkits.scalar.Pair;
 import soot.util.Chain;
 import soot.util.HashMultiMap;
-import soot.util.LargeNumberedMap;
 import soot.util.MultiMap;
 import soot.util.NumberedString;
-import soot.util.SmallNumberedMap;
 import soot.util.queue.ChunkedQueue;
 
 /**
@@ -67,7 +65,7 @@ public class VirtualCalls {
   public static VirtualCalls v() {
     return G.v().soot_jimple_toolkits_callgraph_VirtualCalls();
   }
-  
+
   public SootMethod resolveSpecial(SootMethodRef calleeRef, SootMethod container) {
     return resolveSpecial(calleeRef, container, false);
   }
@@ -97,7 +95,7 @@ public class VirtualCalls {
   }
 
   public SootMethod resolveNonSpecial(RefType t, SootMethodRef callee, boolean appOnly) {
-    SootMethod ret = null; 
+    SootMethod ret = null;
     NumberedString calleeSubSig = callee.getSubSignature();
     SootClass cls = t.getSootClass();
     if (appOnly && cls.isLibraryClass()) {
@@ -106,7 +104,7 @@ public class VirtualCalls {
 
     if (!cls.isInterface()) {
       ret = Scene.v().getOrMakeFastHierarchy().resolveConcreteDispatch(cls, callee);
-    }    
+    }
     return ret;
   }
 
@@ -245,7 +243,6 @@ public class VirtualCalls {
   }
 
   @Deprecated
-      SootMethodRef callee,
   protected void resolveLibrarySignature(
       Type declaredType,
       Type sigType,
