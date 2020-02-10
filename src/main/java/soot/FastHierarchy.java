@@ -648,8 +648,7 @@ public class FastHierarchy {
    *
    * @param baseType The actual type C
    */
-  @Nullable
-  public SootMethod resolveConcreteDispatch(SootClass baseType, SootMethod m) {
+  public @Nullable SootMethod resolveConcreteDispatch(SootClass baseType, SootMethod m) {
     return resolveConcreteDispatch(baseType, m.makeRef());
   }
 
@@ -659,8 +658,7 @@ public class FastHierarchy {
    *
    * @param baseType The actual type C
    */
-  @Nullable
-  public SootMethod resolveConcreteDispatch(SootClass baseType, SootMethodRef m) {
+  public @Nullable SootMethod resolveConcreteDispatch(SootClass baseType, SootMethodRef m) {
     baseType.checkLevel(SootClass.HIERARCHY);
     if (baseType.isInterface()) {
       throw new RuntimeException("A concrete type cannot be an interface: " + baseType);
@@ -685,7 +683,8 @@ public class FastHierarchy {
    * @param m The method f to resolve
    * @return The concrete method o.f() to call
    */
-  public SootMethod resolveMethod(SootClass baseType, SootMethod m, boolean allowAbstract) {
+  public @Nullable SootMethod resolveMethod(
+      SootClass baseType, SootMethod m, boolean allowAbstract) {
     return resolveMethod(baseType, m, allowAbstract);
   }
 
@@ -703,7 +702,8 @@ public class FastHierarchy {
    * @param m The method f to resolve
    * @return The concrete method o.f() to call
    */
-  public SootMethod resolveMethod(SootClass baseType, SootMethodRef m, boolean allowAbstract) {
+  public @Nullable SootMethod resolveMethod(
+      SootClass baseType, SootMethodRef m, boolean allowAbstract) {
     return resolveMethod(baseType, m, allowAbstract, new HashSet<>());
   }
 
@@ -727,7 +727,7 @@ public class FastHierarchy {
    *     multiple times.
    * @return The concrete method o.f() to call
    */
-  private SootMethod resolveMethod(
+  private @Nullable SootMethod resolveMethod(
       SootClass baseType, SootMethodRef m, boolean allowAbstract, Set<SootClass> ignoreList) {
     return resolveMethod(
         baseType,
@@ -754,7 +754,7 @@ public class FastHierarchy {
    * @param name Name of the method to resolve
    * @return The concrete method o.f() to call
    */
-  public SootMethod resolveMethod(
+  public @Nullable SootMethod resolveMethod(
       SootClass baseType,
       SootClass declaringClass,
       String name,
@@ -784,7 +784,7 @@ public class FastHierarchy {
    *     multiple times.
    * @return The concrete method o.f() to call
    */
-  private SootMethod resolveMethod(
+  private @Nullable SootMethod resolveMethod(
       SootClass baseType,
       SootClass declaringClass,
       String name,
@@ -797,10 +797,15 @@ public class FastHierarchy {
     SootMethod candidate = null;
     SootMethod resolvedMethod = null;
     String methodSignature = SootMethod.getSubSignature(name, parameterTypes, returnType);
-    HashMap<String, SootMethod> vtblMap = typeToVtbl.get(declaringClass);
+
+    HashMap<String, SootMethod> vtblMap = typeToVtbl.get(baseType);
     if (vtblMap != null) {
       resolvedMethod = vtblMap.get(methodSignature);
+    } else {
+      vtblMap = new HashMap<>();
+      typeToVtbl.put(baseType, vtblMap);
     }
+
     if (resolvedMethod != null) {
       return resolvedMethod;
     }
@@ -811,19 +816,13 @@ public class FastHierarchy {
       ignoreList.add(concreteType);
 
       candidate = getSignaturePolymorphicMethod(concreteType, name, parameterTypes, returnType);
-      SootMethod resolvedCandidate = candidate;
+
       if (candidate != null) {
         if (isVisible(declaringClass, concreteType, candidate.getModifiers())) {
           if (!allowAbstract && candidate.isAbstract()) {
             break;
           }
-          typeToVtbl.put(
-              declaringClass,
-              new HashMap<String, SootMethod>() {
-                {
-                  put(methodSignature, resolvedCandidate);
-                }
-              });
+          vtblMap.put(methodSignature, candidate);
           return candidate;
         }
       }
@@ -877,14 +876,11 @@ public class FastHierarchy {
 
       ignoreList.addAll(interfaceIgnoreList);
     }
-    SootMethod resolvedCandidate = candidate;
-    typeToVtbl.put(
-        declaringClass,
-        new HashMap<String, SootMethod>() {
-          {
-            put(methodSignature, resolvedCandidate);
-          }
-        });
+
+    if (candidate != null) {
+      vtblMap.put(methodSignature, candidate);
+    }
+
     return candidate;
   }
 
