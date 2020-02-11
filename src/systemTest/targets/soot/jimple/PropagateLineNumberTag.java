@@ -34,6 +34,14 @@ public class PropagateLineNumberTag {
     A z = foo(a);
   }
 
+  public void transitiveNullAssignment() {
+    PropagateLineNumberTag.A b = new PropagateLineNumberTag.A();
+    PropagateLineNumberTag.A a = null;
+    PropagateLineNumberTag.A c = a;
+    A z = foo(a);
+    A y = foo(c);
+  }
+
   private static A foo(A param) {
     return param;
   }
