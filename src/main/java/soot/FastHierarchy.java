@@ -56,7 +56,7 @@ import soot.util.SmallNumberedMap;
 public class FastHierarchy {
   private static final Logger LOGGER = LoggerFactory.getLogger(FastHierarchy.class);
   private final Map<SootClass, HashMap<String, SootMethod>> typeToVtbl =
-	      new HashMap<SootClass, HashMap<String,SootMethod>>();
+      new HashMap<SootClass, HashMap<String, SootMethod>>();
 
   /**
    * This map holds all key,value pairs such that value.getSuperclass() == key. This is one of the
@@ -602,6 +602,16 @@ public class FastHierarchy {
    * @param baseType The declared type C
    */
   public Set<SootMethod> resolveAbstractDispatch(SootClass baseType, SootMethod m) {
+    return resolveAbstractDispatch(baseType, m.makeRef());
+  }
+
+  /**
+   * Given an object of declared type C, returns the methods which could be called on an o.f()
+   * invocation.
+   *
+   * @param baseType The declared type C
+   */
+  public Set<SootMethod> resolveAbstractDispatch(SootClass baseType, SootMethodRef m) {
     HashSet<SootClass> resolved = new HashSet<>();
     HashSet<SootMethod> ret = new HashSet<>();
     ArrayDeque<SootClass> worklist = new ArrayDeque<>();
@@ -642,8 +652,17 @@ public class FastHierarchy {
    *
    * @param baseType The actual type C
    */
-  @Nullable
-  public SootMethod resolveConcreteDispatch(SootClass baseType, SootMethod m) {
+  public @Nullable SootMethod resolveConcreteDispatch(SootClass baseType, SootMethod m) {
+    return resolveConcreteDispatch(baseType, m.makeRef());
+  }
+
+  /**
+   * Given an object of actual type C (o = new C()), returns the method which will be called on an
+   * o.f() invocation.
+   *
+   * @param baseType The actual type C
+   */
+  public @Nullable SootMethod resolveConcreteDispatch(SootClass baseType, SootMethodRef m) {
     baseType.checkLevel(SootClass.HIERARCHY);
     if (baseType.isInterface()) {
       throw new RuntimeException("A concrete type cannot be an interface: " + baseType);
@@ -668,7 +687,27 @@ public class FastHierarchy {
    * @param m The method f to resolve
    * @return The concrete method o.f() to call
    */
-  public SootMethod resolveMethod(SootClass baseType, SootMethod m, boolean allowAbstract) {
+  public @Nullable SootMethod resolveMethod(
+      SootClass baseType, SootMethod m, boolean allowAbstract) {
+    return resolveMethod(baseType, m, allowAbstract);
+  }
+
+  /**
+   * Conducts the actual dispatch by searching up the baseType's superclass hierarchy and interface
+   * hierarchy if the sourcecode level is beyond Java 7 (due to default interface methods.) Given an
+   * object of actual type C (o = new C()), returns the method which will be called on an o.f()
+   * invocation.
+   *
+   * <p>If abstract methods are allowed, it will just resolve to the first method found according to
+   * javas method resolution process:
+   * https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-5.html#jvms-5.4.3.3
+   *
+   * @param baseType The type C
+   * @param m The method f to resolve
+   * @return The concrete method o.f() to call
+   */
+  public @Nullable SootMethod resolveMethod(
+      SootClass baseType, SootMethodRef m, boolean allowAbstract) {
     return resolveMethod(baseType, m, allowAbstract, new HashSet<>());
   }
 
@@ -692,8 +731,8 @@ public class FastHierarchy {
    *     multiple times.
    * @return The concrete method o.f() to call
    */
-  private SootMethod resolveMethod(
-      SootClass baseType, SootMethod m, boolean allowAbstract, Set<SootClass> ignoreList) {
+  private @Nullable SootMethod resolveMethod(
+      SootClass baseType, SootMethodRef m, boolean allowAbstract, Set<SootClass> ignoreList) {
     return resolveMethod(
         baseType,
         m,
@@ -701,7 +740,6 @@ public class FastHierarchy {
         m.getName(),
         m.getParameterTypes(),
         m.getReturnType(),
-        m.getModifiers(),
         allowAbstract,
         ignoreList);
   }
@@ -721,24 +759,15 @@ public class FastHierarchy {
    * @param name Name of the method to resolve
    * @return The concrete method o.f() to call
    */
-  public SootMethod resolveMethod(
+  public @Nullable SootMethod resolveMethod(
       SootClass baseType,
       SootClass declaringClass,
       String name,
       List<Type> parameterTypes,
       Type returnType,
-      int modifier,
       boolean allowAbstract) {
     return resolveMethod(
-        baseType,
-        null,
-        declaringClass,
-        name,
-        parameterTypes,
-        returnType,
-        modifier,
-        allowAbstract,
-        new HashSet<>());
+        baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>());
   }
 
   /**
@@ -760,43 +789,45 @@ public class FastHierarchy {
    *     multiple times.
    * @return The concrete method o.f() to call
    */
-  private SootMethod resolveMethod(
+  private @Nullable SootMethod resolveMethod(
       SootClass baseType,
-      SootMethod methodName,
       SootClass declaringClass,
       String name,
       List<Type> parameterTypes,
       Type returnType,
-      int modifier,
       boolean allowAbstract,
       Set<SootClass> ignoreList) {
     SootClass concreteType = baseType;
 
-    
     SootMethod candidate = null;
     SootMethod resolvedMethod = null;
     String methodSignature = SootMethod.getSubSignature(name, parameterTypes, returnType);
-    HashMap<String, SootMethod> vtblMap = typeToVtbl.get(declaringClass);
-    if(vtblMap != null) {
-    	resolvedMethod = vtblMap.get(methodSignature);
+
+    HashMap<String, SootMethod> vtblMap = typeToVtbl.get(baseType);
+    if (vtblMap != null) {
+      resolvedMethod = vtblMap.get(methodSignature);
+    } else {
+      vtblMap = new HashMap<>();
+      typeToVtbl.put(baseType, vtblMap);
     }
-    if(resolvedMethod != null) {
-    	return resolvedMethod;
+
+    if (resolvedMethod != null) {
+      return resolvedMethod;
     }
-    
+
     // When there is no proper dispatch found, we simply return null to let
     // the caller decide what to do
     while (concreteType != null && !ignoreList.contains(concreteType)) {
       ignoreList.add(concreteType);
 
       candidate = getSignaturePolymorphicMethod(concreteType, name, parameterTypes, returnType);
-      SootMethod resolvedCandidate = candidate;
+
       if (candidate != null) {
-        if (isVisible(concreteType, declaringClass, modifier)) {
+        if (isVisible(declaringClass, concreteType, candidate.getModifiers())) {
           if (!allowAbstract && candidate.isAbstract()) {
             break;
           }
-          typeToVtbl.put(declaringClass, new HashMap<String, SootMethod>(){{put(methodSignature, resolvedCandidate);}});
+          vtblMap.put(methodSignature, candidate);
           return candidate;
         }
       }
@@ -827,7 +858,7 @@ public class FastHierarchy {
           SootMethod method =
               getSignaturePolymorphicMethod(iFace, name, parameterTypes, returnType);
 
-          if (method != null && isVisible(iFace, declaringClass, modifier)) {
+          if (method != null && isVisible(declaringClass, iFace, method.getModifiers())) {
             if (!allowAbstract && method.isAbstract()) {
               // abstract method cannot be dispatched
               continue;
@@ -850,8 +881,11 @@ public class FastHierarchy {
 
       ignoreList.addAll(interfaceIgnoreList);
     }
-    SootMethod resolvedCandidate = candidate;
-    typeToVtbl.put(declaringClass, new HashMap<String, SootMethod>(){{put(methodSignature, resolvedCandidate);}});
+
+    if (candidate != null) {
+      vtblMap.put(methodSignature, candidate);
+    }
+
     return candidate;
   }
 
@@ -890,17 +924,17 @@ public class FastHierarchy {
    * @return
    */
   private SootMethod getSignaturePolymorphicMethod(
-		  SootClass concreteType, String name, List<Type> parameterTypes, Type returnType) {
-	  SootMethod candidate = null;
-	  for (SootMethod method : concreteType.getMethods()) {
-		  if (method.getName().equals(name)
-				  && method.getParameterTypes().equals(parameterTypes)
-				  && canStoreType(method.getReturnType(), returnType)) {
-			  candidate = method;
-			  returnType = method.getReturnType();
-		  }
-	  }
-	  return candidate;
+      SootClass concreteType, String name, List<Type> parameterTypes, Type returnType) {
+    SootMethod candidate = null;
+    for (SootMethod method : concreteType.getMethods()) {
+      if (method.getName().equals(name)
+          && method.getParameterTypes().equals(parameterTypes)
+          && canStoreType(method.getReturnType(), returnType)) {
+        candidate = method;
+        returnType = method.getReturnType();
+      }
+    }
+    return candidate;
   }
 
   /**
