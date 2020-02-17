@@ -619,7 +619,7 @@ public class FastHierarchy {
       SootClass concreteType = worklist.poll();
       if (concreteType == null) {
         break;
-      } else if (resolved.contains(concreteType)) {
+      } else if (resolved.contains(concreteType) && classToSubclasses.get(concreteType).isEmpty()) {
         continue;
       }
 
