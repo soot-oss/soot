@@ -735,7 +735,6 @@ public class FastHierarchy {
       SootClass baseType, SootMethodRef m, boolean allowAbstract, Set<SootClass> ignoreList) {
     return resolveMethod(
         baseType,
-        m,
         m.getDeclaringClass(),
         m.getName(),
         m.getParameterTypes(),
