@@ -619,7 +619,7 @@ public class FastHierarchy {
       SootClass concreteType = worklist.poll();
       if (concreteType == null) {
         break;
-      } else if (resolved.contains(concreteType)) {
+      } else if (resolved.contains(concreteType) && classToSubclasses.get(concreteType).isEmpty()) {
         continue;
       }
 
@@ -632,10 +632,12 @@ public class FastHierarchy {
           worklist.addAll(c);
         }
       }
-
-      SootMethod resolvedMethod = resolveMethod(concreteType, m, false, resolved);
-      if (resolvedMethod != null) {
-        ret.add(resolvedMethod);
+      
+      if(!resolved.contains(concreteType)) {
+    	  SootMethod resolvedMethod = resolveMethod(concreteType, m, false, resolved);
+    	  if (resolvedMethod != null) {
+    		  ret.add(resolvedMethod);
+    	  }
       }
     }
 
