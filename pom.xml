@@ -190,6 +190,22 @@
                             </resources>
                         </configuration>
                     </execution>
+		    <execution>
+                        <id>add target test classes</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/systemTest-target-classes</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/systemTest/targets-classes</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+
                     <execution>
                         <id>add system test resources</id>
                         <phase>generate-test-resources</phase>
@@ -205,7 +221,7 @@
                             </resources>
                         </configuration>
                     </execution>
-                </executions>
+		                    </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
