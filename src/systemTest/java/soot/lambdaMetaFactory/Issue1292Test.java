@@ -22,23 +22,22 @@ package soot.lambdaMetaFactory;
  */
 
 import org.junit.Test;
-
-import soot.SootMethod;
 import soot.testing.framework.AbstractTestingFramework;
 
 /**
  * Reproduces issue 1292: https://github.com/Sable/soot/issues/1292
- * @author raintung.li
  *
+ * @author raintung.li
  */
-public class Issue1292Test extends AbstractTestingFramework{
+public class Issue1292Test extends AbstractTestingFramework {
 
-	@Test
-	public void testNewTest() {
-	    String testClass = "soot.lambdaMetaFactory.Issue1292";
-	    final SootMethod target = prepareTarget(
-	        methodSigFromComponents(testClass, "void", "testNew", "java.util.List"),
-	        testClass, "java.util.function.Function");
-	    // if no exception is thrown, everything is working as intended
-	}
+  @Test
+  public void testNewTest() {
+    String testClass = "soot.lambdaMetaFactory.Issue1292";
+    prepareTarget(
+        methodSigFromComponents(testClass, "void", "testNew", "java.util.List"),
+        testClass,
+        "java.util.function.Function");
+    // if no exception is thrown, everything is working as intended
+  }
 }
