@@ -125,14 +125,15 @@ public class AugEvalFunction implements IEvalFunction {
       } else if (expr instanceof GeExpr || expr instanceof GtExpr || expr instanceof LeExpr || expr instanceof LtExpr
           || expr instanceof EqExpr || expr instanceof NeExpr) {
         return BooleanType.v();
-      } else if (expr instanceof ShlExpr) {
+      } else if (expr instanceof ShlExpr || expr instanceof ShrExpr || expr instanceof UshrExpr) {
+        // In the JVM, there are op codes for integer and long only:
+        // In Java, the code
+        // short s = 2; s = s << s; does not compile, since s << s is an integer.
         if (tl instanceof IntegerType) {
           return IntType.v();
         } else {
           return tl;
         }
-      } else if (expr instanceof ShrExpr || expr instanceof UshrExpr) {
-        return tl;
       } else if (expr instanceof AddExpr || expr instanceof SubExpr || expr instanceof MulExpr || expr instanceof DivExpr
           || expr instanceof RemExpr) {
         if (tl instanceof IntegerType) {
@@ -154,7 +155,14 @@ public class AugEvalFunction implements IEvalFunction {
             Collection<Type> rs = AugHierarchy.lcas_(tl, tr);
             // AugHierarchy.lcas_ is single-valued
             for (Type r : rs) {
-              return r;
+              if (r instanceof BooleanType) {
+                return r;
+              }
+              if (r instanceof IntegerType) {
+                return IntType.v();
+              } else {
+                return r;
+              }
             }
             throw new RuntimeException();
           }
@@ -284,6 +292,7 @@ public class AugEvalFunction implements IEvalFunction {
     }
   }
 
+  @Override
   public Collection<Type> eval(Typing tg, Value expr, Stmt stmt) {
     return Collections.<Type>singletonList(eval_(tg, expr, stmt, this.jb));
   }
