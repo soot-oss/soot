@@ -44,7 +44,7 @@ public class SootModuleInfo extends SootClass {
   public static final String MODULE_INFO = "module-info";
   private HashSet<String> modulePackages = new HashSet<>();
 
-  private static final String EVERYONE_MODULE = "EVERYONE_MODULE";
+  private static final String ALL_MODULES = "EVERYONE_MODULE";
 
   public boolean isAutomaticModule() {
     return isAutomaticModule;
@@ -88,7 +88,7 @@ public class SootModuleInfo extends SootClass {
   public Set<String> getPublicExportedPackages() {
     Set<String> publicExportedPackages = new HashSet<>();
     for (String packaze : modulePackages) {
-      if (this.exportsPackage(packaze, EVERYONE_MODULE)) {
+      if (this.exportsPackage(packaze, ALL_MODULES)) {
         publicExportedPackages.add(packaze);
       }
     }
@@ -98,7 +98,7 @@ public class SootModuleInfo extends SootClass {
   public Set<String> getPublicOpenedPackages() {
     Set<String> publicOpenedPackages = new HashSet<>();
     for (String packaze : modulePackages) {
-      if (this.opensPackage(packaze, EVERYONE_MODULE)) {
+      if (this.opensPackage(packaze, ALL_MODULES)) {
         publicOpenedPackages.add(packaze);
       }
     }
@@ -131,8 +131,8 @@ public class SootModuleInfo extends SootClass {
 
   public void addExportedPackage(String packaze, String... exportedToModules) {
     String packageName = PackageNamer.v().get_FixedPackageName(packaze).replace("/", ".");
-    List<String> qualifiedExports = Collections.singletonList(SootModuleInfo.EVERYONE_MODULE);
-    if (exportedToModules != null) {
+    List<String> qualifiedExports = Collections.singletonList(SootModuleInfo.ALL_MODULES);
+    if (exportedToModules != null && exportedToModules.length > 0) {
       qualifiedExports = Arrays.asList(exportedToModules);
     }
     exportedPackages.put(packageName, qualifiedExports);
@@ -141,8 +141,8 @@ public class SootModuleInfo extends SootClass {
 
   public void addOpenedPackage(String packaze, String... openedToModules) {
     String packageName = PackageNamer.v().get_FixedPackageName(packaze).replace("/", ".");
-    List<String> qualifiedOpens = Collections.singletonList(SootModuleInfo.EVERYONE_MODULE);
-    if (openedToModules != null) {
+    List<String> qualifiedOpens = Collections.singletonList(SootModuleInfo.ALL_MODULES);
+    if (openedToModules != null && openedToModules.length > 0) {
       qualifiedOpens = Arrays.asList(openedToModules);
     }
     openedPackages.put(packageName, qualifiedOpens);
@@ -174,11 +174,11 @@ public class SootModuleInfo extends SootClass {
   }
 
   public boolean exportsPackagePublic(String packaze) {
-    return exportsPackage(packaze, EVERYONE_MODULE);
+    return exportsPackage(packaze, ALL_MODULES);
   }
 
   public boolean openPackagePublic(String packaze) {
-    return opensPackage(packaze, EVERYONE_MODULE);
+    return opensPackage(packaze, ALL_MODULES);
   }
 
   public boolean opensPackage(String packaze, String toModule) {
@@ -202,10 +202,10 @@ public class SootModuleInfo extends SootClass {
       return false; // if qualifiedExport is null, the package is not exported
     }
 
-    if (qualifiedOpens.contains(EVERYONE_MODULE)) {
+    if (qualifiedOpens.contains(ALL_MODULES)) {
       return true;
     }
-    if (toModule != EVERYONE_MODULE && qualifiedOpens.contains(toModule)) {
+    if (toModule != ALL_MODULES && qualifiedOpens.contains(toModule)) {
       return true;
     }
 
@@ -233,10 +233,10 @@ public class SootModuleInfo extends SootClass {
       return false;
     }
 
-    if (qualifiedExport.contains(EVERYONE_MODULE)) {
+    if (qualifiedExport.contains(ALL_MODULES)) {
       return true;
     }
-    if (toModule != EVERYONE_MODULE && qualifiedExport.contains(toModule)) {
+    if (toModule != ALL_MODULES && qualifiedExport.contains(toModule)) {
       return true;
     }
 

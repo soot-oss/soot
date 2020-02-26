@@ -1,6 +1,8 @@
 
 package soot.jimple.toolkits.thread.mhp;
 
+import heros.solver.Pair;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -29,6 +31,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 import soot.toolkits.graph.DirectedGraph;
 
@@ -43,25 +46,23 @@ import soot.toolkits.graph.DirectedGraph;
 //
 // -Richard L. Halpert, 2006-11-30
 
-public class SCC {
+public class SCC<T> {
 
-  private Set<Object> gray;
-  // private int time;
-  private final LinkedList<Object> finishedOrder;
-  private final List<List<Object>> sccList;
+  private Set<T> gray;
+  private final LinkedList<T> finishedOrder;
+  private final List<List<T>> sccList;
 
-  // public SCC(Chain chain, DirectedGraph g){
-  public SCC(Iterator it, DirectedGraph g) {
+  public SCC(Iterator<T> it, DirectedGraph<T> g) {
 
-    gray = new HashSet<Object>();
-    finishedOrder = new LinkedList<Object>();
-    sccList = new ArrayList<List<Object>>();
+    gray = new HashSet<T>();
+    finishedOrder = new LinkedList<T>();
+    sccList = new ArrayList<List<T>>();
 
     // Visit each node
     {
 
       while (it.hasNext()) {
-        Object s = it.next();
+        T s = it.next();
         if (!gray.contains(s)) {
 
           visitNode(g, s);
@@ -71,18 +72,18 @@ public class SCC {
     }
 
     // Re-color all nodes white
-    gray = new HashSet<Object>();
+    gray = new HashSet<T>();
 
     // visit nodes via tranpose edges according decreasing order of finish time of nodes
 
     {
 
-      Iterator<Object> revNodeIt = finishedOrder.iterator();
+      Iterator<T> revNodeIt = finishedOrder.iterator();
       while (revNodeIt.hasNext()) {
-        Object s = revNodeIt.next();
+        T s = revNodeIt.next();
         if (!gray.contains(s)) {
 
-          List<Object> scc = new ArrayList<Object>();
+          List<T> scc = new ArrayList<T>();
 
           visitRevNode(g, s, scc);
           sccList.add(scc);
@@ -92,52 +93,56 @@ public class SCC {
     }
   }
 
-  private void visitNode(DirectedGraph g, Object s) {
-    // System.out.println("visit "+s);
+  private void visitNode(DirectedGraph<T> g, T s) {
     gray.add(s);
-    // time++; // begin visit time
-    Iterator it = g.getSuccsOf(s).iterator();
-    // System.out.println("succs are: "+g.getSuccsOf(s));
-    if (g.getSuccsOf(s).size() > 0) {
-      while (it.hasNext()) {
-        Object succ = it.next();
-        if (!gray.contains(succ)) {
+    Stack<Pair<T, Iterator<T>>> stack = new Stack<>();
+    stack.push(new Pair<>(s, g.getSuccsOf(s).iterator()));
+    next: while (!stack.isEmpty()) {
 
-          visitNode(g, succ);
+      Pair<T, Iterator<T>> p = stack.peek();
+      Iterator<T> it = p.getO2();
+      while (it.hasNext()) {
+        T succ = it.next();
+        if (!gray.contains(succ)) {
+          gray.add(succ);
+          stack.push(new Pair<T, Iterator<T>>(succ, g.getSuccsOf(succ).iterator()));
+          continue next;
         }
       }
+      stack.pop();
+      finishedOrder.addFirst(p.getO1());
     }
-    // time++;//end time
-    finishedOrder.addFirst(s);
-    // System.out.println("add "+s+ " to finished order ");
-
   }
 
-  private void visitRevNode(DirectedGraph g, Object s, List<Object> scc) {
+  private void visitRevNode(DirectedGraph<T> g, T s, List<T> scc) {
 
     scc.add(s);
     gray.add(s);
 
-    if (g.getPredsOf(s) != null) {
-      Iterator predsIt = g.getPredsOf(s).iterator();
-      if (g.getPredsOf(s).size() > 0) {
-        while (predsIt.hasNext()) {
-          Object pred = predsIt.next();
-          if (!gray.contains(pred)) {
-            visitRevNode(g, pred, scc);
+    Stack<Iterator<T>> stack = new Stack<>();
+    stack.push(g.getPredsOf(s).iterator());
 
-          }
+    next: while (!stack.isEmpty()) {
+
+      Iterator<T> predsIt = stack.peek();
+      while (predsIt.hasNext()) {
+        T pred = predsIt.next();
+        if (!gray.contains(pred)) {
+          scc.add(pred);
+          gray.add(pred);
+          stack.push(g.getPredsOf(pred).iterator());
+          continue next;
         }
-
       }
+      stack.pop();
     }
   }
 
-  public List<List<Object>> getSccList() {
+  public List<List<T>> getSccList() {
     return sccList;
   }
 
-  public LinkedList<Object> getFinishedOrder() {
+  public LinkedList<T> getFinishedOrder() {
     return finishedOrder;
   }
 }

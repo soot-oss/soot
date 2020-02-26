@@ -36,8 +36,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
@@ -142,19 +144,12 @@ public final class ModuleUtil {
         modulePackageCache.put(modInfo.getModuleName() + "/" + packageName, modInf.getModuleName());
         return modInf.getModuleName();
       } else {
-        // check if exported packages is "requires public"
-        for (Map.Entry<SootModuleInfo, Integer> entry : modInf.retrieveRequiredModules().entrySet()) {
-          if ((entry.getValue() & Modifier.REQUIRES_TRANSITIVE) != 0) // check if module is reexported via "requires public"
-          {
-
-            if (entry.getKey().exportsPackage(packageName, toModuleName)) {
-              modulePackageCache.put(modInfo.getModuleName() + "/" + packageName, entry.getKey().getModuleName());
-              return entry.getKey().getModuleName();
-            }
-
-          }
-
-        }
+    	Set<String> hasCheckedModule = new HashSet<String>();
+     	String tModuleName = checkTransitiveChain(modInf, packageName, toModuleName, hasCheckedModule);
+    	if (tModuleName != null) {
+          modulePackageCache.put(modInfo.getModuleName() + "/" + packageName, tModuleName);
+          return tModuleName;
+    	} 
 
       }
 
@@ -162,6 +157,34 @@ public final class ModuleUtil {
     // if the class is not exported by any package, it has to internal to this module
     return toModuleName;
   }
+  /**
+   * recycle check if exported packages is "requires transitive" case.
+   * "requires transitive" module will transmit, need chain check until transitive finished.
+   * @param modInfo moudleinfo 
+   * @param packageName package name
+   * @param toModuleName defined moduleName
+   * 
+   */
+  private String checkTransitiveChain(SootModuleInfo modInfo, String packageName, String toModuleName,
+          Set<String> hasCheckedModule) {
+    for (Map.Entry<SootModuleInfo, Integer> entry : modInfo.retrieveRequiredModules().entrySet()) {
+      if ((entry.getValue() & Modifier.REQUIRES_TRANSITIVE) != 0) { // check if module is exported via "requires public"
+    	if (hasCheckedModule.contains(entry.getKey().getModuleName())) {
+          continue;
+    	} else {
+          hasCheckedModule.add(entry.getKey().getModuleName());
+    	}
+        if (entry.getKey().exportsPackage(packageName, toModuleName)) {
+          return entry.getKey().getModuleName();
+        } else {
+          return checkTransitiveChain(entry.getKey(), packageName, toModuleName, hasCheckedModule);
+        }
+      }
+    }
+    return null;
+  }
+
+
 
   /**
    * The returns the package name of a full qualified class name

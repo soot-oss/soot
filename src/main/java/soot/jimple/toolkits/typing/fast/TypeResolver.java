@@ -45,6 +45,7 @@ import soot.ShortType;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
+import soot.javaToJimple.LocalGenerator;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
@@ -77,12 +78,14 @@ public class TypeResolver {
 
   private final List<DefinitionStmt> assignments;
   private final HashMap<Local, BitSet> depends;
+  private final LocalGenerator localGenerator;
 
   public TypeResolver(JimpleBody jb) {
     this.jb = jb;
 
     this.assignments = new ArrayList<DefinitionStmt>();
     this.depends = new HashMap<Local, BitSet>(jb.getLocalCount());
+    this.localGenerator = new LocalGenerator(jb);
     for (Local v : this.jb.getLocals()) {
       this.addLocal(v);
     }
@@ -231,10 +234,8 @@ public class TypeResolver {
            * By the time we have countOnly == false, all variables must by typed with concrete Jimple types, and never
            * [0..1], [0..127] or [0..32767].
            */
-          vold = jimple.newLocal("tmp", t);
-          vold.setName("tmp$" + System.identityHashCode(vold));
+          vold = localGenerator.generateLocal(t);
           this.tg.set(vold, t);
-          this.jb.getLocals().add(vold);
           Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
           this.jb.getUnits().insertBefore(jimple.newAssignStmt(vold, op), u);
         } else {
@@ -259,10 +260,8 @@ public class TypeResolver {
      */
     protected Local createCast(Type useType, Stmt stmt, Local old) {
       Jimple jimple = Jimple.v();
-      Local vnew = jimple.newLocal("tmp", useType);
-      vnew.setName("tmp$" + System.identityHashCode(vnew));
+      Local vnew = localGenerator.generateLocal(useType);
       this.tg.set(vnew, useType);
-      this.jb.getLocals().add(vnew);
       Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
       this.jb.getUnits().insertBefore(jimple.newAssignStmt(vnew, jimple.newCastExpr(old, useType)), u);
       return vnew;
@@ -585,9 +584,8 @@ public class TypeResolver {
                   deflist = defs.getDefsOfAt((Local) assign.getRightOp(), assign);
                   continue;
                 } else if (assign.getRightOp() instanceof NewExpr) {
-                  Local newlocal = jimple.newLocal("tmp", null);
-                  newlocal.setName("tmp$" + System.identityHashCode(newlocal));
-                  this.jb.getLocals().add(newlocal);
+                  Type type = assign.getLeftOp().getType();
+                  Local newlocal = localGenerator.generateLocal(type);
 
                   special.setBase(newlocal);
 

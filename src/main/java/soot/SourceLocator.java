@@ -42,6 +42,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.jf.dexlib2.iface.DexFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -334,8 +335,8 @@ public class SourceLocator {
     // Get the dex file from an apk
     if (cst == ClassSourceType.apk || cst == ClassSourceType.dex) {
       try {
-        for (DexFileProvider.DexContainer dex : DexFileProvider.v().getDexFromSource(new File(aPath))) {
-          classes.addAll(DexClassProvider.classesOfDex(dex.getBase()));
+        for (DexFileProvider.DexContainer<? extends DexFile> dex : DexFileProvider.v().getDexFromSource(new File(aPath))) {
+          classes.addAll(DexClassProvider.classesOfDex(dex.getBase().getDexFile()));
         }
       } catch (IOException e) {
         throw new CompilationDeathException("Error reading dex source", e);
@@ -370,8 +371,9 @@ public class SourceLocator {
 
       // we might have dex files inside the archive
       try {
-        for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(new File(aPath))) {
-          classes.addAll(DexClassProvider.classesOfDex(container.getBase()));
+        for (DexFileProvider.DexContainer<? extends DexFile> container : DexFileProvider.v()
+            .getDexFromSource(new File(aPath))) {
+          classes.addAll(DexClassProvider.classesOfDex(container.getBase().getDexFile()));
         }
       } catch (CompilationDeathException e) { // There might be cases where there is no dex file within a JAR or ZIP file...
       } catch (IOException e) {
@@ -404,8 +406,9 @@ public class SourceLocator {
             classes.add(prefix + fileName.substring(0, index));
           } else if (fileName.endsWith(".dex")) {
             try {
-              for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(element)) {
-                classes.addAll(DexClassProvider.classesOfDex(container.getBase()));
+              for (DexFileProvider.DexContainer<? extends DexFile> container : DexFileProvider.v()
+                  .getDexFromSource(element)) {
+                classes.addAll(DexClassProvider.classesOfDex(container.getBase().getDexFile()));
               }
             } catch (IOException e) {
               /* Ignore unreadable files */

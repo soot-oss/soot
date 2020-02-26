@@ -34,6 +34,7 @@ import org.jf.dexlib2.iface.Annotation;
 import org.jf.dexlib2.iface.AnnotationElement;
 import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Method;
+import org.jf.dexlib2.iface.MultiDexContainer.DexEntry;
 import org.jf.dexlib2.iface.value.ArrayEncodedValue;
 import org.jf.dexlib2.iface.value.EncodedValue;
 import org.jf.dexlib2.iface.value.TypeEncodedValue;
@@ -60,11 +61,11 @@ import soot.options.Options;
 public class DexMethod {
   private static final Logger logger = LoggerFactory.getLogger(DexMethod.class);
 
-  protected final DexFile dexFile;
+  protected final DexEntry<? extends DexFile> dexEntry;
   protected final SootClass declaringClass;
 
-  public DexMethod(final DexFile dexFile, final SootClass declaringClass) {
-    this.dexFile = dexFile;
+  public DexMethod(final DexEntry<? extends DexFile> dexFile, final SootClass declaringClass) {
+    this.dexEntry = dexFile;
     this.declaringClass = declaringClass;
   }
 
@@ -115,7 +116,7 @@ public class DexMethod {
         Body b = Jimple.v().newBody(m);
         try {
           // add the body of this code item
-          DexBody dexBody = new DexBody(dexFile, method, declaringClass.getType());
+          DexBody dexBody = new DexBody(dexEntry, method, declaringClass.getType());
           dexBody.jimplify(b, m);
         } catch (InvalidDalvikBytecodeException e) {
           String msg = "Warning: Invalid bytecode in method " + m + ": " + e;

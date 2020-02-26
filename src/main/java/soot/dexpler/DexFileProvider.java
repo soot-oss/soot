@@ -40,7 +40,9 @@ import java.util.Set;
 import org.jf.dexlib2.DexFileFactory;
 import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
+import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.MultiDexContainer;
+import org.jf.dexlib2.iface.MultiDexContainer.DexEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,37 +60,39 @@ import soot.options.Options;
 public class DexFileProvider {
   private static final Logger logger = LoggerFactory.getLogger(DexFileProvider.class);
 
-  private final static Comparator<DexContainer> DEFAULT_PRIORITIZER = new Comparator<DexContainer>() {
+  private final static Comparator<DexContainer<? extends DexFile>> DEFAULT_PRIORITIZER
+      = new Comparator<DexContainer<? extends DexFile>>() {
 
-    @Override
-    public int compare(DexContainer o1, DexContainer o2) {
-      String s1 = o1.getDexName(), s2 = o2.getDexName();
+        @Override
+        public int compare(DexContainer<? extends DexFile> o1, DexContainer<? extends DexFile> o2) {
+          String s1 = o1.getDexName(), s2 = o2.getDexName();
 
-      // "classes.dex" has highest priority
-      if (s1.equals("classes.dex")) {
-        return 1;
-      } else if (s2.equals("classes.dex")) {
-        return -1;
-      }
+          // "classes.dex" has highest priority
+          if (s1.equals("classes.dex")) {
+            return 1;
+          } else if (s2.equals("classes.dex")) {
+            return -1;
+          }
 
-      // if one of the strings starts with "classes", we give it the edge right here
-      boolean s1StartsClasses = s1.startsWith("classes");
-      boolean s2StartsClasses = s2.startsWith("classes");
+          // if one of the strings starts with "classes", we give it the edge right here
+          boolean s1StartsClasses = s1.startsWith("classes");
+          boolean s2StartsClasses = s2.startsWith("classes");
 
-      if (s1StartsClasses && !s2StartsClasses) {
-        return 1;
-      } else if (s2StartsClasses && !s1StartsClasses) {
-        return -1;
-      }
+          if (s1StartsClasses && !s2StartsClasses) {
+            return 1;
+          } else if (s2StartsClasses && !s1StartsClasses) {
+            return -1;
+          }
 
-      // otherwise, use natural string ordering
-      return s1.compareTo(s2);
-    }
-  };
+          // otherwise, use natural string ordering
+          return s1.compareTo(s2);
+        }
+      };
+
   /**
    * Mapping of filesystem file (apk, dex, etc.) to mapping of dex name to dex file
    */
-  private final Map<String, Map<String, DexContainer>> dexMap = new HashMap<>();
+  private final Map<String, Map<String, DexContainer<? extends DexFile>>> dexMap = new HashMap<>();
 
   public DexFileProvider(Singletons.Global g) {
   }
@@ -104,7 +108,7 @@ public class DexFileProvider {
    *          Path to a jar, apk, dex, odex or a directory containing multiple dex files
    * @return List of dex files derived from source
    */
-  public List<DexContainer> getDexFromSource(File dexSource) throws IOException {
+  public List<DexContainer<? extends DexFile>> getDexFromSource(File dexSource) throws IOException {
     return getDexFromSource(dexSource, DEFAULT_PRIORITIZER);
   }
 
@@ -117,8 +121,9 @@ public class DexFileProvider {
    *          A comparator that defines the ordering of dex files in the result list
    * @return List of dex files derived from source
    */
-  public List<DexContainer> getDexFromSource(File dexSource, Comparator<DexContainer> prioritizer) throws IOException {
-    ArrayList<DexContainer> resultList = new ArrayList<>();
+  public List<DexContainer<? extends DexFile>> getDexFromSource(File dexSource,
+      Comparator<DexContainer<? extends DexFile>> prioritizer) throws IOException {
+    ArrayList<DexContainer<? extends DexFile>> resultList = new ArrayList<>();
     List<File> allSources = allSourcesFromFile(dexSource);
     updateIndex(allSources);
 
@@ -141,13 +146,13 @@ public class DexFileProvider {
    * @throws CompilationDeathException
    *           If no dex file with the given name exists
    */
-  public DexContainer getDexFromSource(File dexSource, String dexName) throws IOException {
+  public DexContainer<? extends DexFile> getDexFromSource(File dexSource, String dexName) throws IOException {
     List<File> allSources = allSourcesFromFile(dexSource);
     updateIndex(allSources);
 
     // we take the first dex we find with the given name
     for (File theSource : allSources) {
-      DexContainer dexFile = dexMap.get(theSource.getCanonicalPath()).get(dexName);
+      DexContainer<? extends DexFile> dexFile = dexMap.get(theSource.getCanonicalPath()).get(dexName);
       if (dexFile != null) {
         return dexFile;
       }
@@ -170,7 +175,7 @@ public class DexFileProvider {
     } else {
       String ext = com.google.common.io.Files.getFileExtension(dexSource.getName()).toLowerCase();
       if ((ext.equals("jar") || ext.equals("zip")) && !Options.v().search_dex_in_archives()) {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
       } else {
         return Collections.singletonList(dexSource);
       }
@@ -180,7 +185,7 @@ public class DexFileProvider {
   private void updateIndex(List<File> dexSources) throws IOException {
     for (File theSource : dexSources) {
       String key = theSource.getCanonicalPath();
-      Map<String, DexContainer> dexFiles = dexMap.get(key);
+      Map<String, DexContainer<? extends DexFile>> dexFiles = dexMap.get(key);
       if (dexFiles == null) {
         try {
           dexFiles = mappingForFile(theSource);
@@ -198,7 +203,7 @@ public class DexFileProvider {
    * @return
    * @throws IOException
    */
-  private Map<String, DexContainer> mappingForFile(File dexSourceFile) throws IOException {
+  private Map<String, DexContainer<? extends DexFile>> mappingForFile(File dexSourceFile) throws IOException {
     int api = Scene.v().getAndroidAPIVersion();
     boolean multiple_dex = Options.v().process_multiple_dex();
 
@@ -216,7 +221,7 @@ public class DexFileProvider {
       return Collections.emptyMap();
     }
 
-    Map<String, DexContainer> dexMap = new HashMap<>(dexFileCount);
+    Map<String, DexContainer<? extends DexFile>> dexMap = new HashMap<>(dexFileCount);
 
     // report found dex files and add to list.
     // We do this in reverse order to make sure that we add the first entry if there is no classes.dex file in single dex
@@ -224,17 +229,17 @@ public class DexFileProvider {
     ListIterator<String> entryNameIterator = dexEntryNameList.listIterator(dexFileCount);
     while (entryNameIterator.hasPrevious()) {
       String entryName = entryNameIterator.previous();
-      DexBackedDexFile entry = dexContainer.getEntry(entryName);
+      DexEntry<? extends DexFile> entry = dexContainer.getEntry(entryName);
       entryName = deriveDexName(entryName);
-      logger.debug("" + String.format("Found dex file '%s' with %d classes in '%s'", entryName, entry.getClasses().size(),
-          dexSourceFile.getCanonicalPath()));
+      logger.debug("" + String.format("Found dex file '%s' with %d classes in '%s'", entryName,
+          entry.getDexFile().getClasses().size(), dexSourceFile.getCanonicalPath()));
 
       if (multiple_dex) {
-        dexMap.put(entryName, new DexContainer(entry, entryName, dexSourceFile));
+        dexMap.put(entryName, new DexContainer<>(entry, entryName, dexSourceFile));
       } else if (dexMap.isEmpty() && (entryName.equals("classes.dex") || !entryNameIterator.hasPrevious())) {
         // We prefer to have classes.dex in single dex mode.
         // If we haven't found a classes.dex until the last element, take the last!
-        dexMap = Collections.singletonMap(entryName, new DexContainer(entry, entryName, dexSourceFile));
+        dexMap = Collections.singletonMap(entryName, new DexContainer<>(entry, entryName, dexSourceFile));
         if (dexFileCount > 1) {
           logger.warn("Multiple dex files detected, only processing '" + entryName
               + "'. Use '-process-multiple-dex' option to process them all.");
@@ -268,18 +273,18 @@ public class DexFileProvider {
     return ret;
   }
 
-  public static final class DexContainer {
-    private final DexBackedDexFile base;
+  public static final class DexContainer<T extends DexFile> {
+    private final DexEntry<T> base;
     private final String name;
     private final File filePath;
 
-    public DexContainer(DexBackedDexFile base, String name, File filePath) {
+    public DexContainer(DexEntry<T> base, String name, File filePath) {
       this.base = base;
       this.name = name;
       this.filePath = filePath;
     }
 
-    public DexBackedDexFile getBase() {
+    public DexEntry<T> getBase() {
       return base;
     }
 
