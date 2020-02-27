@@ -1,4 +1,5 @@
 package soot.tagkit;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -21,62 +22,61 @@ package soot.tagkit;
  * #L%
  */
 /**
- * Represents the visibility of an annotation attribute attached to method local variable.
- * Only mark the local variable tag different with{@link soot.tagkit.VisibilityParameterAnnotationTag}
+ * Represents the visibility of an annotation attribute attached to method local variable. Only mark the local variable tag
+ * different with{@link soot.tagkit.VisibilityParameterAnnotationTag}
  * 
  * @author raintung.li
  *
  */
 
 public class VisibilityLocalVariableAnnotationTag extends VisibilityParameterAnnotationTag {
-	
-	public VisibilityLocalVariableAnnotationTag(int num, int kind) {
-		super(num, kind);
-	}
 
-	// should also print here number of annotations and perhaps the annotations themselves
-	public String toString() {
-		int num_var = getVisibilityAnnotations()!=null ? getVisibilityAnnotations().size(): 0;
-		StringBuffer sb = new StringBuffer(
-				"Visibility LocalVariable Annotation: num Annotation: " + num_var + " kind: " + getKind());
-		if (num_var > 0) {
-			for (VisibilityAnnotationTag tag : getVisibilityAnnotations()) {
-				sb.append("\n");
-				if (tag != null) {
-					sb.append(tag.toString());
-				}
-			}
-		}
-		sb.append("\n");
-		return sb.toString();
-	}
-	
+  public VisibilityLocalVariableAnnotationTag(int num, int kind) {
+    super(num, kind);
+  }
 
-	/**
-	 * Returns Local Variable tag name
-	 * 
-	 * @return string
-	 */
-	public String getName() {
-		return "VisibilityLocalVariableAnnotationTag";
-	}
-	
-	/**
-	 * Returns Local Variable tag info
-	 * 
-	 * @return string
-	 */
-	public String getInfo() {
-		return "VisibilityLocalVariableAnnotation";
-	}
-	
-	/**
-	 * VisibilityLocalVariableAnnotationTag not support
-	 * 
-	 * @return 
-	 */
-	public byte[] getValue() {
-		throw new RuntimeException("VisibilityLocalVariableAnnotationTag has no value for bytecode");
-	}
+  // should also print here number of annotations and perhaps the annotations themselves
+  public String toString() {
+    int num_var = getVisibilityAnnotations() != null ? getVisibilityAnnotations().size() : 0;
+    StringBuffer sb
+        = new StringBuffer("Visibility LocalVariable Annotation: num Annotation: " + num_var + " kind: " + getKind());
+    if (num_var > 0) {
+      for (VisibilityAnnotationTag tag : getVisibilityAnnotations()) {
+        sb.append("\n");
+        if (tag != null) {
+          sb.append(tag.toString());
+        }
+      }
+    }
+    sb.append("\n");
+    return sb.toString();
+  }
+
+  /**
+   * Returns Local Variable tag name
+   * 
+   * @return string
+   */
+  public String getName() {
+    return "VisibilityLocalVariableAnnotationTag";
+  }
+
+  /**
+   * Returns Local Variable tag info
+   * 
+   * @return string
+   */
+  public String getInfo() {
+    return "VisibilityLocalVariableAnnotation";
+  }
+
+  /**
+   * VisibilityLocalVariableAnnotationTag not support
+   * 
+   * @return
+   */
+  public byte[] getValue() {
+    throw new RuntimeException("VisibilityLocalVariableAnnotationTag has no value for bytecode");
+  }
 
 }
