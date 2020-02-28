@@ -1,3 +1,5 @@
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/Sable/soot) 
+
 [![Build Status](https://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-pipeline/job/develop/badge/icon)](https://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-pipeline/job/develop/)
 
 # Using Soot? Let us know about it!
