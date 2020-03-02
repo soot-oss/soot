@@ -47,7 +47,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
   <dependency>
     <groupId>ca.mcgill.sable</groupId>
     <artifactId>soot</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.1.0</version>
   </dependency>
 </dependencies>
 <repositories>
@@ -62,10 +62,12 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 
 ```
 
-You can also obtain older builds of the `develop` branch. A complete listing of builds can be found in [Sonatype's SNAPSHOT repository](https://oss.sonatype.org/content/repositories/snapshots/ca/mcgill/sable/soot).
+You can also obtain older builds of the `master` branch. A complete listing of builds can be found in [Sonatype's SNAPSHOT repository](https://oss.sonatype.org/content/repositories/snapshots/ca/mcgill/sable/soot).
 
 # How do I obtain Soot without Maven?
-You can obtain the latest realease build of Soot [directly](https://oss.sonatype.org/content/repositories/snapshots/ca/mcgill/sable/soot/).
+**We recommend using Soot with Maven**
+
+You can obtain the latest realease build of Soot [directly](https://repo1.maven.org/maven2/ca/mcgill/sable/soot/).
 
 The `soot-RELEASE-jar-with-dependencies.jar` file is an all-in-one file that also contains all the required libraries. 
 
