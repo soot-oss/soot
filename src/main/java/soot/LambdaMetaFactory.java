@@ -48,6 +48,7 @@ import soot.jimple.NewExpr;
 import soot.jimple.ParameterRef;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
+import soot.tagkit.ArtificialEntityTag;
 import soot.util.Chain;
 import soot.util.HashChain;
 
@@ -191,6 +192,7 @@ public final class LambdaMetaFactory {
     tclass.setModifiers(Modifier.PUBLIC | Modifier.FINAL);
     tclass.setSuperclass(Scene.v().getObjectType().getSootClass());
     tclass.addInterface(functionalInterfaceToImplement);
+    tclass.addTag(new ArtificialEntityTag());
 
     // additions from altMetafactory
     if (serializable) {
