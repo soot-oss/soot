@@ -1,6 +1,6 @@
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/Sable/soot) 
 
-[![Build Status](https://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-pipeline/job/develop/badge/icon)](https://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-pipeline/job/develop/)
+[![Build Status](https://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-pipeline/job/master/badge/icon)](https://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-pipeline/job/master/)
 
 # Using Soot? Let us know about it!
 We are regularly applying for funding to help us maintain Soot. You can help us immensely by letting us know about [**projects that use Soot**](https://github.com/Sable/soot/wiki/Users-of-Soot), both commercially or in the form of research tools.
@@ -38,7 +38,7 @@ For detailed information please also consider the Soot's [JavaDoc and Options](h
 
 # Including Soot in your Project
 
-A Soot SNAPSHOT is currently built for each commit to the `develop` branch. You can include Soot as 
+A Soot release is currently built for each commit to the `master` branch. You can include Soot as 
 a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 
 
@@ -50,24 +50,14 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
     <version>4.1.0</version>
   </dependency>
 </dependencies>
-<repositories>
-  <repository>
-      <id>sonatype-snapshots</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <releases>
-          <enabled>false</enabled>
-      </releases>
-  </repository>
-</repositories>	
-
 ```
 
-You can also obtain older builds of the `master` branch. A complete listing of builds can be found in [Sonatype's SNAPSHOT repository](https://oss.sonatype.org/content/repositories/snapshots/ca/mcgill/sable/soot).
+You can also obtain older builds of the `master` branch. A complete listing of builds can be found on [Maven Central](https://repo.maven.apache.org/maven2/ca/mcgill/sable/soot/).
 
 # How do I obtain Soot without Maven?
 **We recommend using Soot with Maven**
 
-You can obtain the latest realease build of Soot [directly](https://repo1.maven.org/maven2/ca/mcgill/sable/soot/).
+You can obtain the latest release build of Soot [directly](https://repo1.maven.org/maven2/ca/mcgill/sable/soot/).
 
 The `soot-RELEASE-jar-with-dependencies.jar` file is an all-in-one file that also contains all the required libraries. 
 
