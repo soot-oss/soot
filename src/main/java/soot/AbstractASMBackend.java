@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
@@ -454,17 +455,36 @@ public abstract class AbstractASMBackend {
    * Emits the bytecode for all references to inner classes if present
    */
   protected void generateInnerClassReferences() {
-    if (sc.hasTag("InnerClassAttribute") && !Options.v().no_output_inner_classes_attribute()) {
-      InnerClassAttribute ica = (InnerClassAttribute) sc.getTag("InnerClassAttribute");
-      List<InnerClassTag> sortedTags = new ArrayList<InnerClassTag>(ica.getSpecs());
-      Collections.sort(sortedTags, new SootInnerClassComparator());
-      for (InnerClassTag ict : sortedTags) {
-        String name = slashify(ict.getInnerClass());
-        String outerClassName = slashify(ict.getOuterClass());
-        String innerName = slashify(ict.getShortName());
-        int access = ict.getAccessFlags();
-        cv.visitInnerClass(name, outerClassName, innerName, access);
+    if (!Options.v().no_output_inner_classes_attribute()) {
+      if (sc.hasTag("InnerClassAttribute")) {
+        InnerClassAttribute ica = (InnerClassAttribute) sc.getTag("InnerClassAttribute");
+        List<InnerClassTag> sortedTags = new ArrayList<InnerClassTag>(ica.getSpecs());
+        Collections.sort(sortedTags, new SootInnerClassComparator());
+        writeInnerClassTags(sortedTags);
+      } else {
+        // If we have a flat list of inner class tags, we collect them as well. That's how the ASM frontend actually gives us
+        // the tags. We may need to make the representation more homogeneous in the future, but for now, let's just make sure
+        // we can correctly write out the class either way.
+        List<InnerClassTag> sortedTags = sc.getTags().stream().filter(t -> t instanceof InnerClassTag)
+            .map(t -> (InnerClassTag) t).sorted(new SootInnerClassComparator()).collect(Collectors.toList());
+        writeInnerClassTags(sortedTags);
       }
+    }
+  }
+
+  /**
+   * Write out the given sorted list of inner class tags
+   * 
+   * @param sortedTags
+   *          The sorted list of inner class tags
+   */
+  protected void writeInnerClassTags(List<InnerClassTag> sortedTags) {
+    for (InnerClassTag ict : sortedTags) {
+      String name = slashify(ict.getInnerClass());
+      String outerClassName = slashify(ict.getOuterClass());
+      String innerName = slashify(ict.getShortName());
+      int access = ict.getAccessFlags();
+      cv.visitInnerClass(name, outerClassName, innerName, access);
     }
   }
 
@@ -671,8 +691,8 @@ public abstract class AbstractASMBackend {
       signature = ((SignatureTag) sc.getTag("SignatureTag")).getSignature();
     }
     /*
-     * Retrieve super-class. If no super-class is explicitly given, the default is java.lang.Object,
-     * except for the class java.lang.Object itself, which does not have any super classes.
+     * Retrieve super-class. If no super-class is explicitly given, the default is java.lang.Object, except for the class
+     * java.lang.Object itself, which does not have any super classes.
      */
     String superClass = className.equals("java/lang/Object") ? null : "java/lang/Object";
     SootClass csuperClass = sc.getSuperclassUnsafe();

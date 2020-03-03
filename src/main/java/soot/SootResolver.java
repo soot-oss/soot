@@ -121,7 +121,6 @@ public class SootResolver {
     if (className.endsWith(SootModuleInfo.MODULE_INFO)) {
       newClass = new SootModuleInfo(className, null);
     } else {
-
       newClass = new SootClass(className);
     }
     newClass.setResolvingLevel(SootClass.DANGLING);

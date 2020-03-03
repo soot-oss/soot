@@ -29,6 +29,7 @@ package soot.dexpler;
 
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
+import com.google.common.collect.ArrayListMultimap;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,10 +50,14 @@ import org.jf.dexlib2.iface.ExceptionHandler;
 import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.MethodImplementation;
 import org.jf.dexlib2.iface.MethodParameter;
+import org.jf.dexlib2.iface.MultiDexContainer.DexEntry;
 import org.jf.dexlib2.iface.TryBlock;
 import org.jf.dexlib2.iface.debug.DebugItem;
 import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.immutable.debug.ImmutableEndLocal;
 import org.jf.dexlib2.immutable.debug.ImmutableLineNumber;
+import org.jf.dexlib2.immutable.debug.ImmutableRestartLocal;
+import org.jf.dexlib2.immutable.debug.ImmutableStartLocal;
 import org.jf.dexlib2.util.MethodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,8 +155,33 @@ public class DexBody {
 
   protected RefType declaringClassType;
 
-  protected final DexFile dexFile;
+  protected final DexEntry<? extends DexFile> dexEntry;
   protected final Method method;
+
+  /**
+   * An entry of debug information for a register from the dex file.
+   *
+   * @author Zhenghao Hu
+   */
+  protected class RegDbgEntry {
+    public int startAddress;
+    public int endAddress;
+    public int register;
+    public String name;
+    public Type type;
+    public String signature;
+
+    public RegDbgEntry(int sa, int ea, int reg, String nam, String ty, String sig) {
+      this.startAddress = sa;
+      this.endAddress = ea;
+      this.register = reg;
+      this.name = nam;
+      this.type = DexType.toSoot(ty);
+      this.signature = sig;
+    }
+  }
+
+  private final ArrayListMultimap<Integer, RegDbgEntry> localDebugs;
 
   // detect array/instructions overlapping obfuscation
   protected List<PseudoInstruction> pseudoInstructionData = new ArrayList<PseudoInstruction>();
@@ -167,13 +197,41 @@ public class DexBody {
     return null;
   }
 
+  // the set of names used by Jimple locals
+  protected Set<String> takenLocalNames;
+
+  /**
+   * Allocate a fresh name for Jimple local
+   * @param hint
+   *          A name that the fresh name will look like
+   * @author Zhixuan Yang (yangzhixuan@sbrella.com)
+   */
+  protected String freshLocalName(String hint) {
+    if (hint == null || hint.equals("")) {
+      hint = "$local";
+    }
+    String fresh;
+    if (!takenLocalNames.contains(hint)) {
+      fresh = hint;
+    } else {
+      for (int i = 1; ; i++) {
+        fresh = hint + Integer.toString(i);
+        if (!takenLocalNames.contains(fresh)) {
+          break;
+        }
+      }
+    }
+    takenLocalNames.add(fresh);
+    return fresh;
+  }
+
   /**
    * @param code
    *          the codeitem that is contained in this body
    * @param method
    *          the method that is associated with this body
    */
-  protected DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
+  protected DexBody(DexEntry<? extends DexFile> dexFile, Method method, RefType declaringClassType) {
     MethodImplementation code = method.getImplementation();
     if (code == null) {
       throw new RuntimeException("error: no code for method " + method.getName());
@@ -203,6 +261,9 @@ public class DexBody {
 
     instructions = new ArrayList<DexlibAbstractInstruction>();
     instructionAtAddress = new HashMap<Integer, DexlibAbstractInstruction>();
+    localDebugs = ArrayListMultimap.create();
+    takenLocalNames = new HashSet<String>();
+
     registerLocals = new Local[numRegisters];
 
     extractDexInstructions(code);
@@ -223,10 +284,41 @@ public class DexBody {
           continue;
         }
         ins.setLineNumber(ln.getLineNumber());
+      } else if (di instanceof ImmutableStartLocal
+              || di instanceof ImmutableRestartLocal) {
+        int reg, codeAddr;
+        String type, signature, name;
+        if (di instanceof ImmutableStartLocal) {
+          ImmutableStartLocal sl = (ImmutableStartLocal) di;
+          reg = sl.getRegister();
+          codeAddr = sl.getCodeAddress();
+          name = sl.getName();
+          type = sl.getType();
+          signature = sl.getSignature();
+        } else {
+          ImmutableRestartLocal sl = (ImmutableRestartLocal) di;
+          // ImmutableRestartLocal and ImmutableStartLocal share the same members but
+          // don't share a base. So we have to write some duplicated code.
+          reg = sl.getRegister();
+          codeAddr = sl.getCodeAddress();
+          name = sl.getName();
+          type = sl.getType();
+          signature = sl.getSignature();
+        }
+        localDebugs.put(reg, new RegDbgEntry(codeAddr, -1/* endAddress */, reg, name, type, signature));
+      } else if (di instanceof ImmutableEndLocal) {
+        ImmutableEndLocal el = (ImmutableEndLocal) di;
+        List<RegDbgEntry> lds = localDebugs.get(el.getRegister());
+        if (lds == null || lds.isEmpty()) {
+          // Invalid debug info
+          continue;
+        } else {
+          lds.get(lds.size() - 1).endAddress = el.getCodeAddress();
+        }
       }
     }
 
-    this.dexFile = dexFile;
+    this.dexEntry = dexFile;
     this.method = method;
   }
 
@@ -400,7 +492,7 @@ public class DexBody {
     jBody = (JimpleBody) b;
     deferredInstructions = new ArrayList<DeferableInstruction>();
     instructionsToRetype = new HashSet<RetypeableInstruction>();
-    
+
     if (jbOptions.use_original_names()) {
       PhaseOptions.v().setPhaseOptionIfUnset("jb.lns", "only-stack-locals");
     }
@@ -418,7 +510,7 @@ public class DexBody {
     if (!isStatic) {
       int thisRegister = numRegisters - numParameterRegisters - 1;
 
-      Local thisLocal = jimple.newLocal("$u" + thisRegister, unknownType); // generateLocal(UnknownType.v());
+      Local thisLocal = jimple.newLocal(freshLocalName("this"), unknownType); // generateLocal(UnknownType.v());
       jBody.getLocals().add(thisLocal);
 
       registerLocals[thisRegister] = thisLocal;
@@ -443,11 +535,13 @@ public class DexBody {
           try {
             localName = parameterNames.get(argIdx);
             localType = parameterTypes.get(argIdx);
-          } catch (Exception ex) { 
+          } catch (Exception ex) {
             logger.error("Exception while reading original parameter names.", ex);
           }
         }
-        if (localName == null) {
+        if (localName == null && localDebugs.containsKey(parameterRegister)) {
+          localName = localDebugs.get(parameterRegister).get(0).name;
+        } else {
           localName = "$u" + parameterRegister;
         }
         if (localType == null) {
@@ -456,10 +550,10 @@ public class DexBody {
           localType = unknownType;
         }
 
-        Local gen = jimple.newLocal(localName, localType);
+        Local gen = jimple.newLocal(freshLocalName(localName), localType);
         jBody.getLocals().add(gen);
-
         registerLocals[parameterRegister] = gen;
+
         JIdentityStmt idStmt = (JIdentityStmt) jimple.newIdentityStmt(gen, jimple.newParameterRef(t, i++));
         add(idStmt);
         paramLocals.add(gen);
@@ -474,9 +568,15 @@ public class DexBody {
         // could be used later in the Dalvik bytecode
         if (t instanceof LongType || t instanceof DoubleType) {
           parameterRegister++;
-          // may only use UnknownType here because the local may be reused with a different 
+          // may only use UnknownType here because the local may be reused with a different
           // type later (before splitting)
-          Local g = jimple.newLocal("$u" + parameterRegister, unknownType);
+          String name;
+          if (localDebugs.containsKey(parameterRegister)) {
+            name = localDebugs.get(parameterRegister).get(0).name;
+          } else {
+            name = "$u" + parameterRegister;
+          }
+          Local g = jimple.newLocal(freshLocalName(name), unknownType);
           jBody.getLocals().add(g);
           registerLocals[parameterRegister] = g;
         }
@@ -487,16 +587,24 @@ public class DexBody {
     }
 
     for (int i = 0; i < (numRegisters - numParameterRegisters - (isStatic ? 0 : 1)); i++) {
-      registerLocals[i] = jimple.newLocal("$u" + i, unknownType);
+      String name;
+      if (localDebugs.containsKey(i)) {
+        name = localDebugs.get(i).get(0).name;
+      } else {
+        name = "$u" + i;
+      }
+      registerLocals[i] = jimple.newLocal(freshLocalName(name), unknownType);
       jBody.getLocals().add(registerLocals[i]);
     }
 
     // add local to store intermediate results
-    storeResultLocal = jimple.newLocal("$u-1", unknownType);
+    storeResultLocal = jimple.newLocal(freshLocalName("$u-1"), unknownType);
     jBody.getLocals().add(storeResultLocal);
 
     // process bytecode instructions
-    final boolean isOdex = dexFile instanceof DexBackedDexFile ? ((DexBackedDexFile) dexFile).isOdexFile() : false;
+    final DexFile dexFile = dexEntry.getDexFile();
+    final boolean isOdex
+        = dexFile instanceof DexBackedDexFile ? ((DexBackedDexFile) dexFile).supportsOptimizedOpcodes() : false;
 
     ClassPath cp = null;
     if (isOdex) {
@@ -506,7 +614,7 @@ public class DexBody {
         classpathList.add(str);
       }
       try {
-        ClassPathResolver resolver = new ClassPathResolver(classpathList, classpathList, classpathList, dexFile);
+        ClassPathResolver resolver = new ClassPathResolver(classpathList, classpathList, classpathList, dexEntry);
         cp = new ClassPath(resolver.getResolvedClassProviders().toArray(new ClassProvider[0]));
       } catch (IOException e) {
         throw new RuntimeException(e);
@@ -765,7 +873,7 @@ public class DexBody {
     // Some apps reference static fields as instance fields. We fix this
     // on the fly.
     if (Options.v().wrong_staticness() == Options.wrong_staticness_fix
-          || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) {
+        || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) {
       FieldStaticnessCorrector.v().transform(jBody);
       MethodStaticnessCorrector.v().transform(jBody);
     }
@@ -856,8 +964,8 @@ public class DexBody {
         l.setType(objectType);
       }
     }
-    
-    //Must be last to ensure local ordering does not change
+
+    // Must be last to ensure local ordering does not change
     PackManager.v().getTransform("jb.lns").apply(jBody);
 
     // t_whole_jimplification.end();

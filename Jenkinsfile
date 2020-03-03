@@ -1,14 +1,16 @@
 pipeline {
     agent any
 
+    options { buildDiscarder(logRotator(numToKeepStr: '1')) }
+
     stages {
 
-      stage('Style'){
-        parallel{
+    
+  
             stage('Stylecheck') {
                 steps {
                     catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                        sh "mvn checkstyle:check -Dcheckstyle.failOnViolation=true"
+                        sh "mvn clean checkstyle:check -Dcheckstyle.failOnViolation=true"
                     }
                 }
             }
@@ -17,121 +19,61 @@ pipeline {
             stage('Licensecheck') {
                 steps {
                     catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                        sh "mvn license:check-file-header -Dlicence-check.failOnMissingHeader=true"
+                        sh "mvn clean license:check-file-header -Dlicence-check.failOnMissingHeader=true"
                     }
                 }
             }
-        }
-      }
-
-
-        stage('Build') {
-          parallel{
-            stage('Build with JDK8'){
-
-              agent {
-                docker {
-                  image 'maven:3-jdk-8-alpine'
-                  args '-v $HOME/.m2:/root/.m2'
-                }
-              }
-
-              steps {
-                sh 'mvn clean compile'
-              }
-
-            }
-
-
-
-            stage('Build with JDK9'){
-
-              agent {
-                docker {
-                  image 'maven:3-jdk-9-slim'
-                  args '-v $HOME/.m2:/root/.m2'
-                }
-              }
-
-              steps {
-                sh 'mvn clean compile'
-              }
-
-            }
-
-            stage('Build with JDK11'){
-
-              agent {
-                docker {
-                  image 'maven:3-jdk-11-slim'
-                  args '-v $HOME/.m2:/root/.m2'
-                }
-              }
-
-              steps {
-                sh 'mvn clean compile'
-              }
-
-            }
-
-
-          }
-        }
         
 
-      stage('Test') {
-        parallel {
-
-          stage('Test JDK8'){
+          stage('Build and Test JDK8'){
 
             agent {
               docker {
                 image 'maven:3-jdk-8-alpine'
                 args '-v $HOME/.m2:/root/.m2'
-
+                reuseNode true
               }
             }
 
             steps {
-              sh 'mvn test -PJava8'
-
+              sh 'mvn clean test -PJava8'
             }
 
           }
 
-          stage('Test JDK9'){
+          stage('Build and Test JDK9'){
 
             agent {
               docker {
                 image 'maven:3-jdk-9-slim'
                 args '-v $HOME/.m2:/root/.m2'
+                reuseNode true
               }
             }
 
             steps {
-              sh 'mvn test -PJava9'
-
+              sh 'mvn clean test -PJava9'
             }
-
           }
 
-            stage('Test JDK11'){
+            stage('Build and Test JDK11'){
 
             agent {
               docker {
                 image 'maven:3-jdk-11-slim'
                 args '-v $HOME/.m2:/root/.m2'
+                reuseNode true
               }
             }
 
             steps {
-              sh 'mvn test -PJava11'
+              sh 'mvn clean test -PJava11'
 
             }
 
           }
-        }
-         }
+        
+         
 
 
         stage ('Deploy to Maven Central') {
@@ -148,7 +90,7 @@ pipeline {
                    variable: 'SIGN_KEY')]) {
                         configFileProvider(
                             [configFile(fileId: '10647dc3-5621-463b-a290-85290f0ad119', variable: 'MAVEN_SETTINGS')]) {
-                            sh 'mvn -s $MAVEN_SETTINGS deploy -P deploy -DskipTests -Dcheckstyle.failOnViolation=true -Dgpg.passphrase=$SIGN_KEY'
+                            sh 'mvn -s $MAVEN_SETTINGS clean deploy -P deploy -DskipTests -Dcheckstyle.failOnViolation=true -Dgpg.passphrase=$SIGN_KEY'
                         }
                   }            
             }
