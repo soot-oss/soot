@@ -305,13 +305,11 @@ public class ModulePathSourceLocator extends SourceLocator {
   private Map<String, List<String>> buildModuleForJar(Path jar) {
     Map<String, List<String>> moduleClassMap = new HashMap<>();
 
-    try (FileSystem zipFileSystem = FileSystems.newFileSystem(jar, null)) {
+    try (FileSystem zipFileSystem = FileSystems.newFileSystem(jar, this.getClass().getClassLoader())) {
       Path mi = zipFileSystem.getPath(SootModuleInfo.MODULE_INFO_FILE);
       if (Files.exists(mi)) {
         FoundFile foundFile = new FoundFile(mi);
 
-        // we hava a modular jar
-        // try (InputStream in = Files.newInputStream(mi)) {
         for (ClassProvider cp : classProviders) {
           if (cp instanceof AsmModuleClassProvider) {
             String moduleName = ((AsmModuleClassProvider) cp).getModuleName(foundFile);
@@ -330,9 +328,6 @@ public class ModulePathSourceLocator extends SourceLocator {
 
           }
         }
-        /*
-         * } catch (IOException e) { e.printStackTrace(); }
-         */
       } else {
         // no module-info treat as automatic module
         // create module name from jar
@@ -604,7 +599,7 @@ public class ModulePathSourceLocator extends SourceLocator {
    */
   protected FoundFile lookupInArchive(String archivePath, String fileName) {
     Path archive = Paths.get(archivePath);
-    try (FileSystem zipFileSystem = FileSystems.newFileSystem(archive, null)) {
+    try (FileSystem zipFileSystem = FileSystems.newFileSystem(archive, this.getClass().getClassLoader())) {
       Path entry = zipFileSystem.getPath(fileName);
       if (entry == null || !Files.isRegularFile(entry)) {
         return null;
