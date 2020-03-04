@@ -8,16 +8,16 @@ We are regularly applying for funding to help us maintain Soot. You can help us 
 # Soot supports Java 9 modules now!
 Try and get involved in Soot's Java 9 bleeding edge developement.
 ## What works and is tested?
-    * Automatic modules (modules automatically created from jars in the module-path)
-    * Named modules
-    * Exploded modules
-    * Modular jar files
-    * Resolving modules in Soot's `ModuleScene`
-    * Spark
+* Automatic modules (modules automatically created from jars in the module-path)
+* Named modules
+* Exploded modules
+* Modular jar files
+* Resolving modules in Soot's `ModuleScene`
+* Spark
    
  ## What does not work yet?
-    * Anonymous modules (mixing module- and class-path)
-    * Multi-module jar files
+ * Anonymous modules (mixing module- and class-path)
+ * Multi-module jar files
 
 # What is Soot?
 
@@ -47,7 +47,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
   <dependency>
     <groupId>ca.mcgill.sable</groupId>
     <artifactId>soot</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.1.0-SNAPSHOT</version>
   </dependency>
 </dependencies>
 <repositories>
