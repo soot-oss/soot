@@ -45,6 +45,8 @@ public class Printer {
   private int options = 0;
   private int jimpleLnNum = 0; // actual line number
   private Function<Body, LabeledUnitPrinter> customUnitPrinter;
+  private Function<SootClass,String> customClassSignaturePrinter;
+  private Function<SootMethod,String> customMethodSignaturePrinter;
 
   public Printer(Singletons.Global g) {
   }
@@ -104,13 +106,13 @@ public class Printer {
         classPrefix = classPrefix.trim();
       }
 
-      out.print(classPrefix + " " + Scene.v().quotedNameOf(cl.getName()) + "");
+      out.print(classPrefix + " " + printSignature(cl) + "");
     }
 
     // Print extension
     {
       if (cl.hasSuperclass()) {
-        out.print(" extends " + Scene.v().quotedNameOf(cl.getSuperclass().getName()) + "");
+        out.print(" extends " + printSignature(cl.getSuperclass()) + "");
       }
     }
 
@@ -121,11 +123,11 @@ public class Printer {
       if (interfaceIt.hasNext()) {
         out.print(" implements ");
 
-        out.print("" + Scene.v().quotedNameOf(interfaceIt.next().getName()) + "");
+        out.print("" + printSignature(interfaceIt.next()) + "");
 
         while (interfaceIt.hasNext()) {
           out.print(",");
-          out.print(" " + Scene.v().quotedNameOf(interfaceIt.next().getName()) + "");
+          out.print(" " + printSignature(interfaceIt.next()) + "");
         }
       }
     }
@@ -255,7 +257,7 @@ public class Printer {
   public void printTo(Body b, PrintWriter out) {
     // b.validate();
 
-    String decl = b.getMethod().getDeclaration();
+    String decl = printSignature(b.getMethod());
 
     out.println("    " + decl);
     // incJimpleLnNum();
@@ -300,6 +302,14 @@ public class Printer {
     this.customUnitPrinter = customUnitPrinter;
   }
 
+  public void setCustomClassSignaturePrinter(Function<SootClass, String> customPrinter) {
+    this.customClassSignaturePrinter = customPrinter;
+  }
+
+  public void setCustomMethodSignaturePrinter(Function<SootMethod, String> customPrinter) {
+    this.customMethodSignaturePrinter = customPrinter;
+  }
+
   private LabeledUnitPrinter getUnitPrinter(Body b) {
     if (customUnitPrinter != null) {
       return customUnitPrinter.apply(b);
@@ -312,6 +322,20 @@ public class Printer {
       return new BriefUnitPrinter(b);
     }
 
+  }
+
+  private String printSignature(SootClass sootClass){
+    if(customClassSignaturePrinter != null){
+      return customClassSignaturePrinter.apply(sootClass);
+    }
+    return Scene.v().quotedNameOf(sootClass.getName());
+  }
+
+  private String printSignature(SootMethod sootMethod){
+    if(customMethodSignaturePrinter != null){
+      return customMethodSignaturePrinter.apply(sootMethod);
+    }
+    return sootMethod.getDeclaration();
   }
 
   /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
@@ -399,7 +423,7 @@ public class Printer {
       while (trapIt.hasNext()) {
         Trap trap = trapIt.next();
 
-        out.println("        catch " + Scene.v().quotedNameOf(trap.getException().getName()) + " from "
+        out.println("        catch " + printSignature(trap.getException()) + " from "
             + up.labels().get(trap.getBeginUnit()) + " to " + up.labels().get(trap.getEndUnit()) + " with "
             + up.labels().get(trap.getHandlerUnit()) + ";");
 
