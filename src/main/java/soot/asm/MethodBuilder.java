@@ -252,7 +252,9 @@ class MethodBuilder extends JSRInlinerAdapter {
       }
       method.addTag(tag);
     }
-    if (method.isConcrete()) {
+    if (instructions == null || instructions.size() == 0) {
+      method.setPhantom(true);
+    } else if (method.isConcrete()) {
       method.setSource(
           new AsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks, scb.getKlass().moduleName));
     }
