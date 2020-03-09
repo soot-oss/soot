@@ -276,6 +276,7 @@ public class SootClassBuilder extends ClassVisitor {
   @Override
   public void visitEnd() {
     super.visitEnd();
+    // Only one class contain methods and all methods is phantom, set the phantom class.
     boolean isPhantom = false;
     for (SootMethod m : klass.getMethods()) {
       if (!m.isPhantom()) {
@@ -287,7 +288,6 @@ public class SootClassBuilder extends ClassVisitor {
       }
     }
     if (isPhantom) {
-      System.out.println("Set the phantom class"+klass.getName());
       klass.setPhantomClass();
     }
   }
