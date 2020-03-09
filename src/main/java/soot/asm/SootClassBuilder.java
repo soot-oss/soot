@@ -273,4 +273,22 @@ public class SootClassBuilder extends ClassVisitor {
     return RefType.v(className);
   }
 
+  @Override
+  public void visitEnd() {
+    super.visitEnd();
+    boolean isPhantom = false;
+    for (SootMethod m : klass.getMethods()) {
+      if (!m.isPhantom()) {
+        isPhantom = false;
+        break;
+      } else {
+        isPhantom = true;
+        continue;
+      }
+    }
+    if (isPhantom) {
+      System.out.println("Set the phantom class"+klass.getName());
+      klass.setPhantomClass();
+    }
+  }
 }
