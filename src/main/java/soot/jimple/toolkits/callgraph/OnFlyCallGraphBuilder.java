@@ -384,6 +384,10 @@ public class OnFlyCallGraphBuilder {
           && (!invokeArgsToSize.containsKey(ics.argArray()) || !reachingArgTypes.containsKey(ics.argArray())))) {
         for (Type bType : resolveToClasses(s)) {
           assert bType instanceof RefType;
+          // do not handle array reflection
+          if (bType instanceof ArrayType) {
+        	  continue;
+          }
           SootClass baseClass = ((RefType) bType).getSootClass();
           assert !baseClass.isInterface();
           Iterator<SootMethod> mIt = getPublicNullaryMethodIterator(baseClass);
@@ -433,6 +437,10 @@ public class OnFlyCallGraphBuilder {
   private void resolveStaticTypes(Set<Type> s, InvokeCallSite ics) {
     ArrayTypes at = ics.reachingTypes();
     for (Type bType : resolveToClasses(s)) {
+      // do not handle array reflection
+      if (bType instanceof ArrayType) {
+    	  continue;
+      }
       SootClass baseClass = ((RefType) bType).getSootClass();
       Iterator<SootMethod> mIt = getPublicMethodIterator(baseClass, at);
       while (mIt.hasNext()) {
