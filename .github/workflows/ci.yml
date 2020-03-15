@@ -1,0 +1,29 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Soot CI with Maven
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  buildAndTest:
+    name: Build and Test with java ${{ matrix.java_version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java_version: ['8', '9', '11']
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Java ${{ matrix.java_version }}
+      uses: actions/setup-node@v1
+      with:
+        java-version: ${{ matrix.java_version }}
+
+    - name: Build and test Java ${{ matrix.java_version }}
+      run: |
+        mvn clean test -PJava${{ matrix.java_version }}
