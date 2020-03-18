@@ -175,32 +175,33 @@ public class OnFlyCallGraphBuilder {
   protected final RefType clHandler = RefType.v("android.os.Handler");
   /** context-insensitive stuff */
   private final CallGraph cicg = Scene.v().internalMakeCallGraph();
-  private final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
+  protected final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
 
   // end type based reflection resolution
-  private final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites
+  protected final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites
       = new LargeNumberedMap<Local, List<VirtualCallSite>>(Scene.v().getLocalNumberer()); // Local -> List(VirtualCallSite)
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers
+  protected final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers
       = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases
+  protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases
       = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs
+  protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs
       = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
-  private final MultiMap<Local, InvokeCallSite> baseToInvokeSite = new HashMultiMap<>();
-  private final MultiMap<Local, InvokeCallSite> invokeArgsToInvokeSite = new HashMultiMap<>();
-  private final Map<Local, BitSet> invokeArgsToSize = new IdentityHashMap<>();
-  private final MultiMap<AllocDotField, Local> allocDotFieldToLocal = new HashMultiMap<>();
-  private final MultiMap<Local, Type> reachingArgTypes = new HashMultiMap<>();
-  private final MultiMap<Local, Type> reachingBaseTypes = new HashMultiMap<>();
-  private final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites = new SmallNumberedMap<List<VirtualCallSite>>();
+  protected final MultiMap<Local, InvokeCallSite> baseToInvokeSite = new HashMultiMap<>();
+  protected final MultiMap<Local, InvokeCallSite> invokeArgsToInvokeSite = new HashMultiMap<>();
+  protected final Map<Local, BitSet> invokeArgsToSize = new IdentityHashMap<>();
+  protected final MultiMap<AllocDotField, Local> allocDotFieldToLocal = new HashMultiMap<>();
+  protected final MultiMap<Local, Type> reachingArgTypes = new HashMultiMap<>();
+  protected final MultiMap<Local, Type> reachingBaseTypes = new HashMultiMap<>();
+  protected final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites = new SmallNumberedMap<List<VirtualCallSite>>();
   // Local
   // ->
   // List(VirtualCallSite)
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants
+  protected final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants
       = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
-  private final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
-  private final QueueReader<SootMethod> targets = targetsQueue.reader();
-  ReflectionModel reflectionModel;
+  protected final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
+  protected final QueueReader<SootMethod> targets = targetsQueue.reader();
+  protected ReflectionModel reflectionModel;
+
   private CGOptions options;
   private boolean appOnly;
   /** context-sensitive stuff */
@@ -842,7 +843,7 @@ public class OnFlyCallGraphBuilder {
       if (s.containsInvokeExpr()) {
         InvokeExpr ie = s.getInvokeExpr();
         SootMethodRef methodRef = ie.getMethodRef();
-        switch (methodRef.declaringClass().getName()) {
+        switch (methodRef.getDeclaringClass().getName()) {
           case "java.lang.reflect.Method":
             if (methodRef.getSubSignature().getString()
                 .equals("java.lang.Object invoke(java.lang.Object,java.lang.Object[])")) {
@@ -864,7 +865,7 @@ public class OnFlyCallGraphBuilder {
           reflectionModel.classForName(source, s);
         }
         if (ie instanceof StaticInvokeExpr) {
-          SootClass cl = ie.getMethodRef().declaringClass();
+          SootClass cl = ie.getMethodRef().getDeclaringClass();
           for (SootMethod clinit : EntryPoints.v().clinitsOf(cl)) {
             addEdge(source, s, clinit, Kind.CLINIT);
           }
