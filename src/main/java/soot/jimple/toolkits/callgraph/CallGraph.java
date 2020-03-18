@@ -58,6 +58,7 @@ public class CallGraph implements Iterable<Edge> {
     if (!edges.add(e)) {
       return false;
     }
+    
     stream.add(e);
     Edge position = null;
 
@@ -174,7 +175,7 @@ public class CallGraph implements Iterable<Edge> {
     }
     // This is an linear operation, so we want to avoid it if possible.
     if (removeInEdgeList) {
-      listener().remove(e);
+      reader.remove(e);
     }
     return true;
   }
