@@ -138,7 +138,7 @@ public class CallGraph implements Iterable<Edge> {
       if (e.nextByUnit().srcUnit() == e.srcUnit()) {
         srcUnitToEdge.put(e.srcUnit(), e.nextByUnit());
       } else {
-        srcUnitToEdge.put(e.srcUnit(), null);
+        srcUnitToEdge.remove(e.srcUnit());
       }
     }
 
@@ -146,7 +146,7 @@ public class CallGraph implements Iterable<Edge> {
       if (e.nextBySrc().getSrc() == e.getSrc()) {
         srcMethodToEdge.put(e.getSrc(), e.nextBySrc());
       } else {
-        srcMethodToEdge.put(e.getSrc(), null);
+        srcMethodToEdge.remove(e.getSrc());
       }
     }
 
@@ -154,7 +154,7 @@ public class CallGraph implements Iterable<Edge> {
       if (e.nextByTgt().getTgt() == e.getTgt()) {
         tgtToEdge.put(e.getTgt(), e.nextByTgt());
       } else {
-        tgtToEdge.put(e.getTgt(), null);
+        tgtToEdge.remove(e.getTgt());
       }
     }
 
@@ -218,6 +218,7 @@ public class CallGraph implements Iterable<Edge> {
       }
     }
 
+    @Override
     public boolean hasNext() {
       if (position.srcUnit() != u) {
         return false;
@@ -228,12 +229,14 @@ public class CallGraph implements Iterable<Edge> {
       return true;
     }
 
+    @Override
     public Edge next() {
       Edge ret = position;
       position = position.nextByUnit();
       return ret;
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
@@ -259,6 +262,7 @@ public class CallGraph implements Iterable<Edge> {
       }
     }
 
+    @Override
     public boolean hasNext() {
       if (position.getSrc() != m) {
         return false;
@@ -269,12 +273,14 @@ public class CallGraph implements Iterable<Edge> {
       return true;
     }
 
+    @Override
     public Edge next() {
       Edge ret = position;
       position = position.nextBySrc();
       return ret;
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
@@ -300,6 +306,7 @@ public class CallGraph implements Iterable<Edge> {
       }
     }
 
+    @Override
     public boolean hasNext() {
       if (position.getTgt() != m) {
         return false;
@@ -310,12 +317,14 @@ public class CallGraph implements Iterable<Edge> {
       return true;
     }
 
+    @Override
     public Edge next() {
       Edge ret = position;
       position = position.nextByTgt();
       return ret;
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
@@ -336,11 +345,12 @@ public class CallGraph implements Iterable<Edge> {
     return stream.reader();
   }
 
+  @Override
   public String toString() {
     QueueReader<Edge> reader = listener();
     StringBuffer out = new StringBuffer();
     while (reader.hasNext()) {
-      Edge e = (Edge) reader.next();
+      Edge e = reader.next();
       out.append(e.toString() + "\n");
     }
     return out.toString();
