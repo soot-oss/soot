@@ -8,8 +8,8 @@ on:
   pull_request:
 
 jobs:
-  Codequality:
-    name: Check LGPL V2.1 headers´
+  StyleAndLicense:
+    name: Check style´and license conformity
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
