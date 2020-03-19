@@ -173,6 +173,7 @@ public final class Edge {
     return kind.passesParameters();
   }
 
+  @Override
   public int hashCode() {
     int ret = (tgt.hashCode() + 20) + kind.getNumber();
     if (src != null) {
@@ -184,7 +185,11 @@ public final class Edge {
     return ret;
   }
 
+  @Override
   public boolean equals(Object other) {
+    if (!(other instanceof Edge)) {
+      return false;
+    }
     Edge o = (Edge) other;
     if (o == null) {
       return false;
@@ -204,6 +209,7 @@ public final class Edge {
     return true;
   }
 
+  @Override
   public String toString() {
     return kind.toString() + " edge: " + srcUnit + " in " + src + " ==> " + tgt;
   }

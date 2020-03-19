@@ -30,12 +30,12 @@ import java.util.Iterator;
  * @author Ondrej Lhotak
  */
 
-public final class SmallNumberedMap<T> {
+public final class SmallNumberedMap<T> implements INumberedMap<Numberable, T> {
   public SmallNumberedMap() {
     //
   }
 
-  /** Associates a value with a key. */
+  @Override
   public boolean put(Numberable key, T value) {
     int pos = findPosition(key);
     if (array[pos] == key) {
@@ -55,7 +55,7 @@ public final class SmallNumberedMap<T> {
     return true;
   }
 
-  /** Returns the value associated with a given key. */
+  @Override
   public T get(Numberable key) {
     return (T) values[findPosition(key)];
   }
@@ -71,7 +71,7 @@ public final class SmallNumberedMap<T> {
     return ret;
   }
 
-  /** Returns an iterator over the keys with non-null values. */
+  @Override
   public Iterator<Numberable> keyIterator() {
     return new KeyIterator(this);
   }
