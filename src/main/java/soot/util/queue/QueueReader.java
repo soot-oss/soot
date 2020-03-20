@@ -1,5 +1,8 @@
 package soot.util.queue;
 
+import java.util.Collection;
+import java.util.Collections;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -97,8 +100,19 @@ public class QueueReader<E> implements java.util.Iterator<E> {
    * @param o
    *          The element to remove
    */
-  @SuppressWarnings("unchecked")
   public void remove(E o) {
+    remove(Collections.singleton(o));
+  }
+
+  /**
+   * Removes elements from the underlying queue. This operation can only delete elements that have not yet been consumed by
+   * this reader.
+   *
+   * @param toRemove
+   *          The elements to remove
+   */
+  @SuppressWarnings("unchecked")
+  public void remove(Collection<E> toRemove) {
     int idx = 0;
     Object[] curQ = q;
     while (curQ[idx] != null) {
@@ -109,7 +123,7 @@ public class QueueReader<E> implements java.util.Iterator<E> {
       }
 
       // Is this the element to delete?
-      if (o.equals(curQ[idx])) {
+      if (toRemove.contains(curQ[idx])) {
         curQ[idx] = ChunkedQueue.DELETED_CONST;
       }
 
