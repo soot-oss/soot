@@ -71,8 +71,9 @@ public final class LargeNumberedMap<K extends Numberable, V> implements INumbere
   @Override
   public void remove(K key) {
     int i = key.getNumber();
-    if (i < values.length)
+    if (i < values.length) {
       values[i] = null;
+    }
   }
 
   @Override
