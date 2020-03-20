@@ -60,12 +60,19 @@ public final class LargeNumberedMap<K extends Numberable, V> implements INumbere
   }
 
   @SuppressWarnings("unchecked")
-  public V get(Numberable key) {
+  public V get(K key) {
     int i = key.getNumber();
     if (i >= values.length) {
       return null;
     }
     return (V) values[i];
+  }
+
+  @Override
+  public void remove(K key) {
+    int i = key.getNumber();
+    if (i < values.length)
+      values[i] = null;
   }
 
   @Override
@@ -92,7 +99,7 @@ public final class LargeNumberedMap<K extends Numberable, V> implements INumbere
       }
 
       public void remove() {
-        throw new UnsupportedOperationException();
+        values[cur - 1] = null;
       }
     };
   }

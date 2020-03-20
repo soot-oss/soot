@@ -63,4 +63,12 @@ public interface INumberedMap<K extends Numberable, V> {
    */
   public Iterator<K> keyIterator();
 
+  /**
+   * Removes the given key from the map
+   * 
+   * @param key
+   *          The key to be removed
+   */
+  public void remove(K key);
+
 }
