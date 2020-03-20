@@ -1,6 +1,6 @@
 package soot.jimple.toolkits.callgraph;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 /*-
  * #%L
@@ -25,8 +25,8 @@ import java.util.HashSet;
  */
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import soot.Body;
 import soot.BodyTransformer;
@@ -46,7 +46,7 @@ public class ClinitElimTransformer extends BodyTransformer {
 
     Iterator edgeIt = cg.edgesOutOf(m);
 
-    Set<Edge> edges = new HashSet<>();
+    List<Edge> edges = new ArrayList<>();
     while (edgeIt.hasNext()) {
       Edge e = (Edge) edgeIt.next();
       if (e.srcStmt() == null) {
