@@ -1,5 +1,7 @@
 package soot.jimple.toolkits.callgraph;
 
+import java.util.Collection;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -58,7 +60,7 @@ public class CallGraph implements Iterable<Edge> {
     if (!edges.add(e)) {
       return false;
     }
-    
+
     stream.add(e);
     Edge position = null;
 
@@ -178,6 +180,26 @@ public class CallGraph implements Iterable<Edge> {
       reader.remove(e);
     }
     return true;
+  }
+
+  /**
+   * Removes the edges e from the call graph. Returns true iff one edge was originally present in the call graph.
+   * 
+   * @param e
+   *          the edge
+   * @return
+   * @return whether the removal was successful.
+   */
+  public boolean removeEdges(Collection<Edge> edges) {
+    if (!edges.removeAll(edges)) {
+      return false;
+    }
+    for (Edge e : edges) {
+      removeEdge(e, false);
+    }
+    reader.remove(edges);
+    return true;
+
   }
 
   /**
@@ -384,4 +406,5 @@ public class CallGraph implements Iterable<Edge> {
   public Iterator<Edge> iterator() {
     return edges.iterator();
   }
+
 }
