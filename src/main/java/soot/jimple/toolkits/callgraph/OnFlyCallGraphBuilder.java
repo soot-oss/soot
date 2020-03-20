@@ -202,16 +202,16 @@ public class OnFlyCallGraphBuilder {
   protected final QueueReader<SootMethod> targets = targetsQueue.reader();
   protected ReflectionModel reflectionModel;
 
-  private CGOptions options;
-  private boolean appOnly;
+  protected CGOptions options;
+  protected boolean appOnly;
   /** context-sensitive stuff */
-  private ReachableMethods rm;
+  protected ReachableMethods rm;
   protected QueueReader<MethodOrMethodContext> worklist;
-  private ContextManager cm;
-  private FastHierarchy fh;
-  private NullnessAnalysis nullnessCache = null;
-  private ConstantArrayAnalysis arrayCache = null;
-  private SootMethod analysisKey = null;
+  protected ContextManager cm;
+  protected FastHierarchy fh;
+  protected NullnessAnalysis nullnessCache = null;
+  protected ConstantArrayAnalysis arrayCache = null;
+  protected SootMethod analysisKey = null;
   protected VirtualCalls virtualCalls = VirtualCalls.v();
 
   public OnFlyCallGraphBuilder(ContextManager cm, ReachableMethods rm) {
@@ -239,6 +239,10 @@ public class OnFlyCallGraphBuilder {
   public OnFlyCallGraphBuilder(ContextManager cm, ReachableMethods rm, boolean appOnly) {
     this(cm, rm);
     this.appOnly = appOnly;
+  }
+
+  public ContextManager getContextManager() {
+    return cm;
   }
 
   public LargeNumberedMap<SootMethod, List<Local>> methodToReceivers() {

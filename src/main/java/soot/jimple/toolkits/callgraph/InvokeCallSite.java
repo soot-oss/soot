@@ -28,14 +28,12 @@ import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.ConstantArrayAnalysis.ArrayTypes;
 
-public class InvokeCallSite {
+public class InvokeCallSite extends AbstractCallSite {
   public static final int MUST_BE_NULL = 0;
   public static final int MUST_NOT_BE_NULL = 1;
   public static final int MAY_BE_NULL = -1;
 
   private InstanceInvokeExpr iie;
-  private Stmt stmt;
-  private SootMethod container;
   private Local argArray;
   private Local base;
   private int nullnessCode;
@@ -47,8 +45,7 @@ public class InvokeCallSite {
 
   public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, Local argArray,
       int nullnessCode) {
-    this.stmt = stmt;
-    this.container = container;
+    super(stmt, container);
     this.iie = iie;
     this.base = base;
     this.argArray = argArray;
@@ -57,8 +54,7 @@ public class InvokeCallSite {
 
   public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, ArrayTypes reachingArgTypes,
       int nullnessCode) {
-    this.stmt = stmt;
-    this.container = container;
+    super(stmt, container);
     this.iie = iie;
     this.base = base;
     this.nullnessCode = nullnessCode;

@@ -31,6 +31,7 @@ import java.util.Iterator;
  */
 
 public final class SmallNumberedMap<T> implements INumberedMap<Numberable, T> {
+
   public SmallNumberedMap() {
     //
   }
@@ -58,6 +59,16 @@ public final class SmallNumberedMap<T> implements INumberedMap<Numberable, T> {
   @Override
   public T get(Numberable key) {
     return (T) values[findPosition(key)];
+  }
+
+  @Override
+  public void remove(Numberable key) {
+    int pos = findPosition(key);
+    if (array[pos] == key) {
+      array[pos] = null;
+      values[pos] = null;
+      size--;
+    }
   }
 
   /** Returns the number of non-null values in this map. */
@@ -105,10 +116,6 @@ public final class SmallNumberedMap<T> implements INumberedMap<Numberable, T> {
     }
 
     public abstract C next();
-
-    public void remove() {
-      throw new RuntimeException("Not implemented.");
-    }
   }
 
   class KeyIterator extends SmallNumberedMapIterator<Numberable> {
@@ -122,6 +129,12 @@ public final class SmallNumberedMap<T> implements INumberedMap<Numberable, T> {
       seekNext();
       return ret;
     }
+
+    @Override
+    public void remove() {
+      array[cur - 1] = null;
+      values[cur - 1] = null;
+    }
   }
 
   class ValueIterator extends SmallNumberedMapIterator<T> {
@@ -134,6 +147,12 @@ public final class SmallNumberedMap<T> implements INumberedMap<Numberable, T> {
       cur++;
       seekNext();
       return (T) ret;
+    }
+
+    @Override
+    public void remove() {
+      array[cur - 1] = null;
+      values[cur - 1] = null;
     }
   }
 
@@ -175,4 +194,5 @@ public final class SmallNumberedMap<T> implements INumberedMap<Numberable, T> {
   private Numberable[] array = new Numberable[8];
   private Object[] values = new Object[8];
   private int size = 0;
+
 }

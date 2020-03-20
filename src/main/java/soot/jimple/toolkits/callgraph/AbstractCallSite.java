@@ -22,46 +22,31 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
-import soot.Kind;
 import soot.SootMethod;
-import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
-import soot.util.NumberedString;
 
 /**
- * Holds relevant information about a particular virtual call site.
+ * Abstract base class for call sites
  * 
- * @author Ondrej Lhotak
+ * @author Steven Arzt
+ *
  */
-public class VirtualCallSite extends AbstractCallSite {
-  private InstanceInvokeExpr iie;
-  private NumberedString subSig;
-  Kind kind;
+public class AbstractCallSite {
 
-  public VirtualCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, NumberedString subSig, Kind kind) {
-    super(stmt, container);
-    this.iie = iie;
-    this.subSig = subSig;
-    this.kind = kind;
+  protected Stmt stmt;
+  protected SootMethod container;
+
+  public AbstractCallSite(Stmt stmt, SootMethod container) {
+    this.stmt = stmt;
+    this.container = container;
   }
 
-  public Stmt stmt() {
+  public Stmt getStmt() {
     return stmt;
   }
 
-  public SootMethod container() {
+  public SootMethod getContainer() {
     return container;
   }
 
-  public InstanceInvokeExpr iie() {
-    return iie;
-  }
-
-  public NumberedString subSig() {
-    return subSig;
-  }
-
-  public Kind kind() {
-    return kind;
-  }
 }
