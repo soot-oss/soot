@@ -33,18 +33,21 @@ import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
+import soot.util.Invalidable;
 
 /**
  * Represents a single edge in a call graph.
  *
  * @author Ondrej Lhotak
  */
-public final class Edge {
+public final class Edge implements Invalidable {
   /**
    * The method in which the call occurs; may be null for calls not occurring in a specific method (eg. implicit calls by the
    * VM)
    */
   private MethodOrMethodContext src;
+
+  private boolean invalid = false;
 
   public SootMethod src() {
     if (src == null) {
@@ -294,5 +297,15 @@ public final class Edge {
 
   Edge prevByTgt() {
     return prevByTgt;
+  }
+
+  @Override
+  public boolean isInvalid() {
+    return invalid;
+  }
+
+  @Override
+  public void invalidate() {
+    invalid = true;
   }
 }

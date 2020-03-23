@@ -1,7 +1,5 @@
 package soot.jimple.toolkits.callgraph;
 
-import java.util.HashSet;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -26,7 +24,6 @@ import java.util.HashSet;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import soot.Body;
 import soot.BodyTransformer;
@@ -46,7 +43,6 @@ public class ClinitElimTransformer extends BodyTransformer {
 
     Iterator edgeIt = cg.edgesOutOf(m);
 
-    Set<Edge> edges = new HashSet<>();
     while (edgeIt.hasNext()) {
       Edge e = (Edge) edgeIt.next();
       if (e.srcStmt() == null) {
@@ -57,9 +53,8 @@ public class ClinitElimTransformer extends BodyTransformer {
       }
       FlowSet methods = (FlowSet) a.getFlowBefore(e.srcStmt());
       if (methods.contains(e.tgt())) {
-        edges.add(e);
+        cg.removeEdge(e);
       }
     }
-    cg.removeEdges(edges);
   }
 }

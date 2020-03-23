@@ -27,6 +27,8 @@ import java.util.Collections;
 
 import java.util.NoSuchElementException;
 
+import soot.util.Invalidable;
+
 /**
  * A queue of Object's. One can add objects to the queue, and they are later read by a QueueReader. One can create arbitrary
  * numbers of QueueReader's for a queue, and each one receives all the Object's that are added. Only objects that have not
@@ -66,6 +68,13 @@ public class QueueReader<E> implements java.util.Iterator<E> {
         ret = null;
       }
       index++;
+      if (ret instanceof Invalidable) {
+        final Invalidable invalidable = (Invalidable) ret;
+        if (invalidable.isInvalid()) {
+          // skip invalid elements
+          continue;
+        }
+      }
     } while (ret == ChunkedQueue.DELETED_CONST);
     return (E) ret;
   }
@@ -101,6 +110,10 @@ public class QueueReader<E> implements java.util.Iterator<E> {
    *          The element to remove
    */
   public void remove(E o) {
+    if (o instanceof Invalidable) {
+      ((Invalidable) o).invalidate();
+      return;
+    }
     remove(Collections.singleton(o));
   }
 
@@ -113,6 +126,18 @@ public class QueueReader<E> implements java.util.Iterator<E> {
    */
   @SuppressWarnings("unchecked")
   public void remove(Collection<E> toRemove) {
+    boolean allInvalidable = true;
+    for (E o : toRemove) {
+      if (!(o instanceof Invalidable)) {
+        allInvalidable = false;
+        continue;
+      }
+
+      ((Invalidable) o).invalidate();
+    }
+    if (allInvalidable) {
+      return;
+    }
     int idx = 0;
     Object[] curQ = q;
     while (curQ[idx] != null) {
