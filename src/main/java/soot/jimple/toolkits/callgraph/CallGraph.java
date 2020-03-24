@@ -122,9 +122,11 @@ public class CallGraph implements Iterable<Edge> {
     boolean hasSwapped = false;
     for (Iterator<Edge> edgeRdr = edgesOutOf(out); edgeRdr.hasNext();) {
       Edge e = edgeRdr.next();
+      MethodOrMethodContext src = e.getSrc();
+      MethodOrMethodContext tgt = e.getTgt();
       removeEdge(e);
       e.remove();
-      addEdge(new Edge(e.getSrc(), in, e.getTgt()));
+      addEdge(new Edge(src, in, tgt));
       hasSwapped = true;
     }
     return hasSwapped;
