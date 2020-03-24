@@ -267,6 +267,7 @@ public final class Edge implements Invalidable {
   }
 
   void remove() {
+    invalid = true;
     nextByUnit.prevByUnit = prevByUnit;
     prevByUnit.nextByUnit = nextByUnit;
     nextBySrc.prevBySrc = prevBySrc;
@@ -306,6 +307,10 @@ public final class Edge implements Invalidable {
 
   @Override
   public void invalidate() {
+    // Since the edge remains in the QueueReaders for a while, the GC could not claim old units.
+    src = null;
+    srcUnit = null;
+    tgt = null;
     invalid = true;
   }
 }
