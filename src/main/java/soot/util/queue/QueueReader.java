@@ -68,38 +68,41 @@ public class QueueReader<E> implements java.util.Iterator<E> {
         ret = null;
       }
       index++;
-      if (ret instanceof Invalidable) {
-        final Invalidable invalidable = (Invalidable) ret;
-        if (invalidable.isInvalid()) {
-          // skip invalid elements
-          continue;
-        }
-      }
-    } while (ret == ChunkedQueue.DELETED_CONST);
+    } while (skip(ret));
     return (E) ret;
+  }
+
+  private boolean skip(Object ret) {
+    if (ret instanceof Invalidable) {
+      final Invalidable invalidable = (Invalidable) ret;
+      if (invalidable.isInvalid()) {
+        return true;
+      }
+    }
+    return ret == ChunkedQueue.DELETED_CONST;
   }
 
   /** Returns true iff there is currently another object in the queue. */
   @SuppressWarnings("unchecked")
   public boolean hasNext() {
     do {
-      if (q[index] == null) {
+      E ret = q[index];
+      if (ret == null) {
         return false;
       }
       if (index == q.length - 1) {
-        q = (E[]) q[index];
+        q = (E[]) ret;
         index = 0;
         if (q[index] == null) {
           return false;
         }
       }
-      if (q[index] == ChunkedQueue.DELETED_CONST) {
+      if (skip(ret)) {
         index++;
       } else {
-        break;
+        return true;
       }
     } while (true);
-    return true;
   }
 
   /**
