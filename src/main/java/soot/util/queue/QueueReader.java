@@ -27,6 +27,8 @@ import java.util.Collections;
 
 import java.util.NoSuchElementException;
 
+import soot.util.Invalidable;
+
 /**
  * A queue of Object's. One can add objects to the queue, and they are later read by a QueueReader. One can create arbitrary
  * numbers of QueueReader's for a queue, and each one receives all the Object's that are added. Only objects that have not
@@ -66,31 +68,41 @@ public class QueueReader<E> implements java.util.Iterator<E> {
         ret = null;
       }
       index++;
-    } while (ret == ChunkedQueue.DELETED_CONST);
+    } while (skip(ret));
     return (E) ret;
+  }
+
+  private boolean skip(Object ret) {
+    if (ret instanceof Invalidable) {
+      final Invalidable invalidable = (Invalidable) ret;
+      if (invalidable.isInvalid()) {
+        return true;
+      }
+    }
+    return ret == ChunkedQueue.DELETED_CONST;
   }
 
   /** Returns true iff there is currently another object in the queue. */
   @SuppressWarnings("unchecked")
   public boolean hasNext() {
     do {
-      if (q[index] == null) {
+      E ret = q[index];
+      if (ret == null) {
         return false;
       }
       if (index == q.length - 1) {
-        q = (E[]) q[index];
+        q = (E[]) ret;
         index = 0;
         if (q[index] == null) {
           return false;
         }
       }
-      if (q[index] == ChunkedQueue.DELETED_CONST) {
+      if (skip(ret)) {
         index++;
       } else {
-        break;
+        return true;
       }
     } while (true);
-    return true;
   }
 
   /**
@@ -101,6 +113,10 @@ public class QueueReader<E> implements java.util.Iterator<E> {
    *          The element to remove
    */
   public void remove(E o) {
+    if (o instanceof Invalidable) {
+      ((Invalidable) o).invalidate();
+      return;
+    }
     remove(Collections.singleton(o));
   }
 
@@ -113,6 +129,18 @@ public class QueueReader<E> implements java.util.Iterator<E> {
    */
   @SuppressWarnings("unchecked")
   public void remove(Collection<E> toRemove) {
+    boolean allInvalidable = true;
+    for (E o : toRemove) {
+      if (!(o instanceof Invalidable)) {
+        allInvalidable = false;
+        continue;
+      }
+
+      ((Invalidable) o).invalidate();
+    }
+    if (allInvalidable) {
+      return;
+    }
     int idx = 0;
     Object[] curQ = q;
     while (curQ[idx] != null) {
