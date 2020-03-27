@@ -99,7 +99,7 @@ public class HybridPointsToSet extends PointsToSetInternal {
   /**
    * Adds contents of other into this set, returns true if this set changed.
    */
-  public final boolean addAll(final PointsToSetInternal other, final PointsToSetInternal exclude) {
+  public boolean addAll(final PointsToSetInternal other, final PointsToSetInternal exclude) {
     if (other != null && !(other instanceof HybridPointsToSet)) {
       return superAddAll(other, exclude);
     }
@@ -110,7 +110,7 @@ public class HybridPointsToSet extends PointsToSetInternal {
   }
 
   /** Calls v's visit method on all nodes in this set. */
-  public final boolean forall(P2SetVisitor v) {
+  public boolean forall(P2SetVisitor v) {
     if (bits == null) {
       for (Node node : nodes) {
         if (node == null) {
@@ -127,7 +127,7 @@ public class HybridPointsToSet extends PointsToSetInternal {
   }
 
   /** Adds n to this set, returns true if n was not already in this set. */
-  public final boolean add(Node n) {
+  public boolean add(Node n) {
     if (pag.getTypeManager().castNeverFails(n.getType(), type)) {
       return fastAdd(n);
     }
@@ -135,7 +135,7 @@ public class HybridPointsToSet extends PointsToSetInternal {
   }
 
   /** Returns true iff the set contains n. */
-  public final boolean contains(Node n) {
+  public boolean contains(Node n) {
     if (bits == null) {
       for (Node node : nodes) {
         if (node == n) {
@@ -178,7 +178,7 @@ public class HybridPointsToSet extends PointsToSetInternal {
     return ret;
   }
 
-  protected final void convertToBits() {
+  protected void convertToBits() {
     if (bits != null) {
       return;
     }
