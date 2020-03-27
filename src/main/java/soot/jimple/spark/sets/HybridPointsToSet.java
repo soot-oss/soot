@@ -35,7 +35,7 @@ import soot.util.BitVector;
  * 
  * @author Ondrej Lhotak
  */
-public final class HybridPointsToSet extends PointsToSetInternal {
+public class HybridPointsToSet extends PointsToSetInternal {
   private static P2SetFactory<HybridPointsToSet> HYBRID_PTS_FACTORY = new P2SetFactory<HybridPointsToSet>() {
     @Override
     public final HybridPointsToSet newSet(Type type, PAG pag) {
