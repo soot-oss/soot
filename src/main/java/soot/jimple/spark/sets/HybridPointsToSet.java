@@ -192,10 +192,10 @@ public class HybridPointsToSet extends PointsToSetInternal {
   }
 
   // public static int numBitVectors = 0;
-  private Node[] nodes = new Node[16];
-  private BitVector bits = null;
-  private PAG pag;
-  private boolean empty = true;
+  protected Node[] nodes = new Node[16];
+  protected BitVector bits = null;
+  protected PAG pag;
+  protected boolean empty = true;
 
   public static HybridPointsToSet intersection(final HybridPointsToSet set1, final HybridPointsToSet set2, PAG pag) {
     final HybridPointsToSet ret = HybridPointsToSet.getFactory().newSet(Scene.v().getObjectType(), pag);
