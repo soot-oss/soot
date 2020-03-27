@@ -36,9 +36,20 @@ import soot.util.BitVector;
  * @author Ondrej Lhotak
  */
 public final class HybridPointsToSet extends PointsToSetInternal {
+  private static P2SetFactory<HybridPointsToSet> HYBRID_PTS_FACTORY = new P2SetFactory<HybridPointsToSet>() {
+    @Override
+    public final HybridPointsToSet newSet(Type type, PAG pag) {
+      return new HybridPointsToSet(type, pag);
+    }
+  };
+
   public HybridPointsToSet(Type type, PAG pag) {
     super(type);
     this.pag = pag;
+  }
+
+  public static void setPointsToSetFactory(P2SetFactory<HybridPointsToSet> factory) {
+    HYBRID_PTS_FACTORY = factory;
   }
 
   /** Returns true if this set contains no run-time objects. */
@@ -140,18 +151,14 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     }
   }
 
-  public static P2SetFactory getFactory() {
-    return new P2SetFactory() {
-      public final PointsToSetInternal newSet(Type type, PAG pag) {
-        return new HybridPointsToSet(type, pag);
-      }
-    };
+  public static P2SetFactory<HybridPointsToSet> getFactory() {
+    return HYBRID_PTS_FACTORY;
   }
 
   /* End of public methods. */
   /* End of package methods. */
 
-  protected final boolean fastAdd(Node n) {
+  protected boolean fastAdd(Node n) {
     if (bits == null) {
       for (int i = 0; i < nodes.length; i++) {
         if (nodes[i] == null) {
@@ -191,7 +198,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
   private boolean empty = true;
 
   public static HybridPointsToSet intersection(final HybridPointsToSet set1, final HybridPointsToSet set2, PAG pag) {
-    final HybridPointsToSet ret = new HybridPointsToSet(Scene.v().getObjectType(), pag);
+    final HybridPointsToSet ret = HybridPointsToSet.getFactory().newSet(Scene.v().getObjectType(), pag);
     BitVector s1Bits = set1.bits;
     BitVector s2Bits = set2.bits;
     if (s1Bits == null || s2Bits == null) {
