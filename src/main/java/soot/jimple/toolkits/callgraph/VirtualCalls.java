@@ -82,7 +82,20 @@ public class VirtualCalls {
         && container.getDeclaringClass().getType() != target.getDeclaringClass().getType()
         && !target.getName().equals("<init>") && subSig != sigClinit) {
 
-      return resolveNonSpecial(container.getDeclaringClass().getSuperclass().getType(), subSig, appOnly);
+      SootMethod ret = resolveNonSpecial(container.getDeclaringClass().getSuperclass().getType(), subSig, appOnly);
+
+      // BEGIN: Umbrella hotfix/callgraph-default-methods
+      if (ret == null) {
+        for (SootClass i : container.getDeclaringClass().getInterfaces()) {
+          ret = resolveNonSpecial(i.getType(), subSig, appOnly);
+          if (ret != null) {
+            break;
+          }
+        }
+      }
+      // END: Umbrella hotfix/callgraph-default-methods
+
+      return ret;
     } else {
       return target;
     }
@@ -115,6 +128,18 @@ public class VirtualCalls {
       SootClass c = cls.getSuperclassUnsafe();
       if (c != null) {
         ret = resolveNonSpecial(c.getType(), subSig);
+
+        // BEGIN: Umbrella hotfix/callgraph-default-methods
+        if (ret == null) {
+          for (SootClass i : cls.getInterfaces()) {
+            ret = resolveNonSpecial(i.getType(), subSig);
+            if (ret != null) {
+              break;
+            }
+          }
+        }
+        // END: Umbrella hotfix/callgraph-default-methods
+
       }
     }
     vtbl.put(subSig, ret);

@@ -30,7 +30,7 @@ import soot.jimple.spark.pag.PAG;
  * 
  * @author Ondrej Lhotak
  */
-public abstract class P2SetFactory {
+public abstract class P2SetFactory<T extends PointsToSetInternal> {
   /** Returns a newly-created set. */
-  public abstract PointsToSetInternal newSet(Type type, PAG pag);
+  public abstract T newSet(Type type, PAG pag);
 }
