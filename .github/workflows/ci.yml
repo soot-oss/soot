@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Use Java 8
         uses: actions/setup-java@v1
         with:
@@ -36,7 +36,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
     - name: Use Java ${{ matrix.java_version }}
       uses: actions/setup-java@v1
       with:
@@ -44,3 +44,23 @@ jobs:
     - name: Build and test Java ${{ matrix.java_version }}
       run: |
         mvn clean test -PJava${{ matrix.java_version }}
+        
+  Deploy:
+    name: Deploy artifacts to Maven Central
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Java 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+      - name: Deploy artifacts
+        uses: samuelmeuli/action-maven-publish@v1
+        with:
+          gpg_private_key: ${{ secrets.gpg_private_key }}
+          gpg_passphrase: ${{ secrets.gpg_passphrase }}
+          nexus_username: ${{ secrets.nexus_username }}
+          nexus_password: ${{ secrets.nexus_password }}
+          maven_args: "-DskipTests -Dcheckstyle.failOnViolation=true -Dgpg.passphrase=$gpg_passphrase'"      
+        
