@@ -1,5 +1,4 @@
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/Sable/soot) 
-
 ![Build Status](https://github.com/Sable/soot/workflows/Soot%20CI%20with%20Maven/badge.svg?branch=develop)
 
 # Using Soot? Let us know about it!
