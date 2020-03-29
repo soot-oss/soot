@@ -79,13 +79,7 @@ jobs:
           port: ${{ secrets.remote_deploy_port }}
           debug: true
           script: |
-            rm -r /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/jdoc || true
-            mkdir -p /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/jdoc
-            unzip ./target/sootclasses-trunk-javadoc.jar -d /data/out/origin${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/jdoc/
-            
-            rm -r /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/options || true
-            mkdir -p /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/options
-            cp doc/soot_options.htm /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/options
+            whoami
             
       - name: Deploy Release documentation
         if: github.ref == 'refs/heads/master'
