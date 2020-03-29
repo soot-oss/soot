@@ -64,6 +64,11 @@ jobs:
           nexus_username: ${{ secrets.nexus_username }}
           nexus_password: ${{ secrets.nexus_password }}
           maven_args: "-DskipTests -Dcheckstyle.failOnViolation=true"
+        
+      - name: Get Version
+        id: version
+        run: echo ::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        
       - name: Deploy SNAPSHOT documentation
         if: github.ref == 'refs/heads/develop'
         uses: appleboy/ssh-action@master
@@ -72,6 +77,7 @@ jobs:
           username: ${{ secrets.remote_deploy_username }}
           key: ${{ secrets.remote_deploy_key }}
           port: ${{ secrets.remote_deploy_port }}
+          debug: true
           script: |
             rm -r /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/jdoc || true
             mkdir -p /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/jdoc
@@ -80,3 +86,21 @@ jobs:
             rm -r /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/options || true
             mkdir -p /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/options
             cp doc/soot_options.htm /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/options
+            
+      - name: Deploy Release documentation
+        if: github.ref == 'refs/heads/master'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.remote_deploy_host }}
+          username: ${{ secrets.remote_deploy_username }}
+          key: ${{ secrets.remote_deploy_key }}
+          port: ${{ secrets.remote_deploy_port }}
+          script: |
+            rm -r /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/${{ steps.version.outputs.version }}/jdoc || true
+            mkdir -p /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/${{ steps.version.outputs.version }}/jdoc
+            unzip ./target/sootclasses-trunk-javadoc.jar -d /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/${{ steps.version.outputs.version }}/jdoc/
+            
+            rm -r /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/${{ steps.version.outputs.version }}/options || true
+            mkdir -p /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/${{ steps.version.outputs.version }}/options
+            cp doc/soot_options.htm /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/${{ steps.version.outputs.version }}/options
+      
