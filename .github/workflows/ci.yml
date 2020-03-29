@@ -46,6 +46,7 @@ jobs:
         
   Deploy:
     name: Deploy artifacts to Maven Central
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/umbrella'
     needs: [BuildAndTest]
     runs-on: ubuntu-latest
     steps:
