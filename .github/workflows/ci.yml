@@ -75,7 +75,7 @@ jobs:
         with:
           host: ${{ secrets.remote_deploy_host }}
           username: ${{ secrets.remote_deploy_username }}
-          key: ${{ secrets.remote_deploy_key }}
+          password: ${{ secrets.remote_deploy_userpasswd }}
           port: ${{ secrets.remote_deploy_port }}
           debug: true
           script: |
@@ -87,7 +87,7 @@ jobs:
         with:
           host: ${{ secrets.remote_deploy_host }}
           username: ${{ secrets.remote_deploy_username }}
-          key: ${{ secrets.remote_deploy_key }}
+          password: ${{ secrets.remote_deploy_userpasswd }}
           port: ${{ secrets.remote_deploy_port }}
           script: |
             rm -r /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/${{ steps.version.outputs.version }}/jdoc || true
