@@ -63,5 +63,20 @@ jobs:
           gpg_passphrase: ${{ secrets.gpg_passphrase }}
           nexus_username: ${{ secrets.nexus_username }}
           nexus_password: ${{ secrets.nexus_password }}
-          maven_args: "-DskipTests -Dcheckstyle.failOnViolation=true"      
-        
+          maven_args: "-DskipTests -Dcheckstyle.failOnViolation=true"
+      - name: Deploy SNAPSHOT documentation
+        if: github.ref == 'refs/heads/develop'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.remote_deploy_host }}
+          username: ${{ secrets.remote_deploy_username }}
+          key: ${{ secrets.remote_deploy_key }}
+          port: ${{ secrets.remote_deploy_port }}
+          script: |
+            rm -r /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/jdoc || true
+            mkdir -p /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/jdoc
+            unzip ./target/sootclasses-trunk-javadoc.jar -d /data/out/origin${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/jdoc/
+            
+            rm -r /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/options || true
+            mkdir -p /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/options
+            cp doc/soot_options.htm /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/options
