@@ -1,0 +1,46 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Soot CI with Maven
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  StyleAndLicense:
+    name: Check style´and license conformity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Use Java 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+      - name: Stylecheck
+        if: always()
+        run: |
+          mvn clean checkstyle:check -Dcheckstyle.failOnViolation=true
+      - name: Licensecheck
+        if: always()
+        run: |
+          mvn clean license:check-file-header -Dlicence-check.failOnMissingHeader=true
+    
+  BuildAndTest:
+    name: Build and Test with java ${{ matrix.java_version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java_version: ['8', '9', '11']
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Use Java ${{ matrix.java_version }}
+      uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.java_version }}
+    - name: Build and test Java ${{ matrix.java_version }}
+      run: |
+        mvn clean test -PJava${{ matrix.java_version }}

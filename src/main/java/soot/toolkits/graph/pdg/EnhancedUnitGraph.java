@@ -74,6 +74,13 @@ public class EnhancedUnitGraph extends UnitGraph {
     unitToSuccs = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
     unitToPreds = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
 
+    // Initialize all units in the unitToSuccs and unitsToPreds
+
+    for (Unit u : body.getUnits()) {
+      unitToSuccs.put(u,new ArrayList<>());
+      unitToPreds.put(u,new ArrayList<>());
+    }
+
     /*
      * Compute the head and tails at each phase because other phases might rely on them.
      */

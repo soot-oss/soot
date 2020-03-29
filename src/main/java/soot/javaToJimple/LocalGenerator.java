@@ -10,12 +10,12 @@ package soot.javaToJimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -24,9 +24,11 @@ package soot.javaToJimple;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import soot.Body;
 import soot.Local;
+import soot.jimple.toolkits.typing.fast.Integer127Type;
+import soot.jimple.toolkits.typing.fast.Integer1Type;
+import soot.jimple.toolkits.typing.fast.Integer32767Type;
 
 public class LocalGenerator {
 
@@ -49,16 +51,17 @@ public class LocalGenerator {
     }
   }
 
-  /**
-   * generates a new soot local given the type
-   */
+  /** generates a new soot local given the type */
   public soot.Local generateLocal(soot.Type type) {
 
     // store local names for enhanced performance
     initLocalNames();
 
     String name = "v";
-    if (type instanceof soot.IntType) {
+    if (type instanceof soot.IntType
+        || type instanceof Integer1Type
+        || type instanceof Integer127Type
+        || type instanceof Integer32767Type) {
       while (true) {
         name = nextIntName();
         if (!bodyContainsLocal(name)) {
@@ -138,7 +141,8 @@ public class LocalGenerator {
       }
     } else {
       localNames = null;
-      throw new RuntimeException("Unhandled Type of Local variable to Generate - Not Implemented");
+      throw new RuntimeException(
+          String.format("Unhandled Type %s of Local variable to Generate - Not Implemented", type.getClass().getName()));
     }
 
     localNames = null;

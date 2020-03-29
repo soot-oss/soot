@@ -24,11 +24,15 @@ package soot.asm;
 
 import com.google.common.base.Optional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.TypePath;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
 
 import soot.ArrayType;
@@ -39,6 +43,7 @@ import soot.tagkit.AnnotationConstants;
 import soot.tagkit.AnnotationDefaultTag;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.VisibilityAnnotationTag;
+import soot.tagkit.VisibilityLocalVariableAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
 
 /**
@@ -51,6 +56,8 @@ class MethodBuilder extends JSRInlinerAdapter {
   private TagBuilder tb;
   private VisibilityAnnotationTag[] visibleParamAnnotations;
   private VisibilityAnnotationTag[] invisibleParamAnnotations;
+  private List<VisibilityAnnotationTag> visibleLocalVarAnnotations;
+  private List<VisibilityAnnotationTag> invisibleLocalVarAnnotations;
   private final SootMethod method;
   private final SootClassBuilder scb;
 
@@ -86,6 +93,31 @@ class MethodBuilder extends JSRInlinerAdapter {
   @Override
   public void visitAttribute(Attribute attr) {
     getTagBuilder().visitAttribute(attr);
+  }
+
+  @Override
+  public AnnotationVisitor visitLocalVariableAnnotation(final int typeRef, final TypePath typePath, final Label[] start,
+      final Label[] end, final int[] index, final String descriptor, final boolean visible) {
+    final VisibilityAnnotationTag vat
+        = new VisibilityAnnotationTag(visible ? AnnotationConstants.RUNTIME_VISIBLE : AnnotationConstants.RUNTIME_INVISIBLE);
+    if (visible) {
+      if (visibleLocalVarAnnotations == null) {
+        visibleLocalVarAnnotations = new ArrayList<VisibilityAnnotationTag>(2);
+      }
+      visibleLocalVarAnnotations.add(vat);
+    } else {
+      if (invisibleLocalVarAnnotations == null) {
+        invisibleLocalVarAnnotations = new ArrayList<VisibilityAnnotationTag>(2);
+      }
+      invisibleLocalVarAnnotations.add(vat);
+    }
+    return new AnnotationElemBuilder() {
+      @Override
+      public void visitEnd() {
+        AnnotationTag annotTag = new AnnotationTag(desc, elems);
+        vat.addAnnotation(annotTag);
+      }
+    };
   }
 
   @Override
@@ -200,6 +232,22 @@ class MethodBuilder extends JSRInlinerAdapter {
       VisibilityParameterAnnotationTag tag
           = new VisibilityParameterAnnotationTag(invisibleParamAnnotations.length, AnnotationConstants.RUNTIME_INVISIBLE);
       for (VisibilityAnnotationTag vat : invisibleParamAnnotations) {
+        tag.addVisibilityAnnotation(vat);
+      }
+      method.addTag(tag);
+    }
+    if (visibleLocalVarAnnotations != null) {
+      VisibilityLocalVariableAnnotationTag tag
+          = new VisibilityLocalVariableAnnotationTag(visibleLocalVarAnnotations.size(), AnnotationConstants.RUNTIME_VISIBLE);
+      for (VisibilityAnnotationTag vat : visibleLocalVarAnnotations) {
+        tag.addVisibilityAnnotation(vat);
+      }
+      method.addTag(tag);
+    }
+    if (invisibleLocalVarAnnotations != null) {
+      VisibilityLocalVariableAnnotationTag tag = new VisibilityLocalVariableAnnotationTag(visibleLocalVarAnnotations.size(),
+          AnnotationConstants.RUNTIME_INVISIBLE);
+      for (VisibilityAnnotationTag vat : invisibleLocalVarAnnotations) {
         tag.addVisibilityAnnotation(vat);
       }
       method.addTag(tag);

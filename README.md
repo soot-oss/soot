@@ -1,3 +1,5 @@
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/Sable/soot) 
+
 [![Build Status](https://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-pipeline/job/develop/badge/icon)](https://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-pipeline/job/develop/)
 
 # Using Soot? Let us know about it!
@@ -6,16 +8,16 @@ We are regularly applying for funding to help us maintain Soot. You can help us 
 # Soot supports Java 9 modules now!
 Try and get involved in Soot's Java 9 bleeding edge developement.
 ## What works and is tested?
-    * Automatic modules (modules automatically created from jars in the module-path)
-    * Named modules
-    * Exploded modules
-    * Modular jar files
-    * Resolving modules in Soot's `ModuleScene`
-    * Spark
+* Automatic modules (modules automatically created from jars in the module-path)
+* Named modules
+* Exploded modules
+* Modular jar files
+* Resolving modules in Soot's `ModuleScene`
+* Spark
    
  ## What does not work yet?
-    * Anonymous modules (mixing module- and class-path)
-    * Multi-module jar files
+ * Anonymous modules (mixing module- and class-path)
+ * Multi-module jar files
 
 # What is Soot?
 
@@ -45,7 +47,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
   <dependency>
     <groupId>ca.mcgill.sable</groupId>
     <artifactId>soot</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.1.0-SNAPSHOT</version>
   </dependency>
 </dependencies>
 <repositories>
@@ -63,9 +65,11 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 You can also obtain older builds of the `develop` branch. A complete listing of builds can be found in [Sonatype's SNAPSHOT repository](https://oss.sonatype.org/content/repositories/snapshots/ca/mcgill/sable/soot).
 
 # How do I obtain Soot without Maven?
+You can obtain the latest realease build of Soot [directly](https://oss.sonatype.org/content/repositories/snapshots/ca/mcgill/sable/soot/).
 
-All of our Soot builds for the `develop` branch are also stored up to one month in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse:soot-snapshot:ca%2Fmcgill%2Fsable%2Fsoot) and can be obtained from there.
-The latest snapshot build of Soot can also be obtained [directly](https://soot-build.cs.uni-paderborn.de/public/origin/develop/soot/soot-develop/build/). The "sootclasses-trunk-jar-with-dependencies.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
+The `soot-RELEASE-jar-with-dependencies.jar` file is an all-in-one file that also contains all the required libraries. 
+
+The `soot-RELEASE.jar`  file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
 
 # Building Soot yourself
 
@@ -154,18 +158,18 @@ if(java>=9 && USE_MODULEPATH){
 
 ## Use from the Command Line
 To execute Soot using Java 1.9, but analyzing a classpath run, just as before:
-`java -cp soot-trunk-j9.jar soot.Main --process-dir directoryToAnalyse`
+`java -cp soot-trunk.jar soot.Main --process-dir directoryToAnalyse`
 
 
 if you want to specify the classpath explicitly run:
-`java -cp soot-trunk-j9.jar soot.Main -cp VIRTUAL_FS_FOR_JDK --process-dir directoryToAnalyse`
+`java -cp soot-trunk.jar soot.Main -cp VIRTUAL_FS_FOR_JDK --process-dir directoryToAnalyse`
 
 the value `VIRTUAL_FS_FOR_JDK` indicates that Soot should search Java's (>9) virtual filesystem `jrt:/` for classes, too, although Soot is not executed in module mode.
 
 
 To load modules and classes in Soot using java 1.8 run:
 
-` java -cp PATH_TO_JAVA9/jrt-fs.jar:soot-trunk-j9.jar soot.Main -pp -soot-modulepath modules/  `
+` java -cp PATH_TO_JAVA9/jrt-fs.jar:soot-trunk.jar soot.Main -pp -soot-modulepath modules/  `
 
 
 Please replace `PATH_TO_JAVA9` with the path to your local installation of java 9.

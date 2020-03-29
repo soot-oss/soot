@@ -1,5 +1,8 @@
 package soot.util.queue;
 
+import java.util.Collection;
+import java.util.Collections;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,6 +26,8 @@ package soot.util.queue;
  */
 
 import java.util.NoSuchElementException;
+
+import soot.util.Invalidable;
 
 /**
  * A queue of Object's. One can add objects to the queue, and they are later read by a QueueReader. One can create arbitrary
@@ -63,31 +68,41 @@ public class QueueReader<E> implements java.util.Iterator<E> {
         ret = null;
       }
       index++;
-    } while (ret == ChunkedQueue.DELETED_CONST);
+    } while (skip(ret));
     return (E) ret;
+  }
+
+  private boolean skip(Object ret) {
+    if (ret instanceof Invalidable) {
+      final Invalidable invalidable = (Invalidable) ret;
+      if (invalidable.isInvalid()) {
+        return true;
+      }
+    }
+    return ret == ChunkedQueue.DELETED_CONST;
   }
 
   /** Returns true iff there is currently another object in the queue. */
   @SuppressWarnings("unchecked")
   public boolean hasNext() {
     do {
-      if (q[index] == null) {
+      E ret = q[index];
+      if (ret == null) {
         return false;
       }
       if (index == q.length - 1) {
-        q = (E[]) q[index];
+        q = (E[]) ret;
         index = 0;
         if (q[index] == null) {
           return false;
         }
       }
-      if (q[index] == ChunkedQueue.DELETED_CONST) {
+      if (skip(ret)) {
         index++;
       } else {
-        break;
+        return true;
       }
     } while (true);
-    return true;
   }
 
   /**
@@ -97,8 +112,35 @@ public class QueueReader<E> implements java.util.Iterator<E> {
    * @param o
    *          The element to remove
    */
-  @SuppressWarnings("unchecked")
   public void remove(E o) {
+    if (o instanceof Invalidable) {
+      ((Invalidable) o).invalidate();
+      return;
+    }
+    remove(Collections.singleton(o));
+  }
+
+  /**
+   * Removes elements from the underlying queue. This operation can only delete elements that have not yet been consumed by
+   * this reader.
+   *
+   * @param toRemove
+   *          The elements to remove
+   */
+  @SuppressWarnings("unchecked")
+  public void remove(Collection<E> toRemove) {
+    boolean allInvalidable = true;
+    for (E o : toRemove) {
+      if (!(o instanceof Invalidable)) {
+        allInvalidable = false;
+        continue;
+      }
+
+      ((Invalidable) o).invalidate();
+    }
+    if (allInvalidable) {
+      return;
+    }
     int idx = 0;
     Object[] curQ = q;
     while (curQ[idx] != null) {
@@ -109,7 +151,7 @@ public class QueueReader<E> implements java.util.Iterator<E> {
       }
 
       // Is this the element to delete?
-      if (o.equals(curQ[idx])) {
+      if (toRemove.contains(curQ[idx])) {
         curQ[idx] = ChunkedQueue.DELETED_CONST;
       }
 

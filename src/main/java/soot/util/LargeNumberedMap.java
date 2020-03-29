@@ -32,7 +32,7 @@ import java.util.NoSuchElementException;
  * @author Ondrej Lhotak
  */
 
-public final class LargeNumberedMap<K extends Numberable, V> {
+public final class LargeNumberedMap<K extends Numberable, V> implements INumberedMap<K, V> {
   public LargeNumberedMap(IterableNumberer<K> universe) {
     this.universe = universe;
     int newsize = universe.size();
@@ -42,7 +42,8 @@ public final class LargeNumberedMap<K extends Numberable, V> {
     values = new Object[newsize];
   }
 
-  public boolean put(Numberable key, V value) {
+  @Override
+  public boolean put(K key, V value) {
     int number = key.getNumber();
     if (number == 0) {
       throw new RuntimeException(String.format("oops, forgot to initialize. Object is of type %s, and looks like this: %s",
@@ -59,7 +60,7 @@ public final class LargeNumberedMap<K extends Numberable, V> {
   }
 
   @SuppressWarnings("unchecked")
-  public V get(Numberable key) {
+  public V get(K key) {
     int i = key.getNumber();
     if (i >= values.length) {
       return null;
@@ -67,6 +68,15 @@ public final class LargeNumberedMap<K extends Numberable, V> {
     return (V) values[i];
   }
 
+  @Override
+  public void remove(K key) {
+    int i = key.getNumber();
+    if (i < values.length) {
+      values[i] = null;
+    }
+  }
+
+  @Override
   public Iterator<K> keyIterator() {
     return new Iterator<K>() {
       int cur = 0;
@@ -90,7 +100,7 @@ public final class LargeNumberedMap<K extends Numberable, V> {
       }
 
       public void remove() {
-        throw new UnsupportedOperationException();
+        values[cur - 1] = null;
       }
     };
   }

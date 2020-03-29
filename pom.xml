@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>ca.mcgill.sable</groupId>
     <artifactId>soot</artifactId>
     <name>Soot - a J*va Optimization Framework</name>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.1.0-SNAPSHOT</version>
     <description>A Java Optimization Framework</description>
     <url>https://sable.github.io/soot/</url>
     <organization>
@@ -99,7 +100,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/singletons/make-singletons.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>Singletons.java</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -113,7 +115,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/options/make-soot-options.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>Options.java</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -126,7 +129,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/options/ant-task.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>AntTask.java</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -139,7 +143,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/options/phase_options_dialog.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>PhaseOptionsDialog.java</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -152,7 +157,8 @@
                             </includes>
                             <stylesheet>${basedir}/src/main/xml/options/soot_options.xsl</stylesheet>
                             <fileMappers>
-                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                                <fileMapper
+                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
                                     <targetName>soot_options.htm</targetName>
                                 </fileMapper>
                             </fileMappers>
@@ -186,6 +192,21 @@
                                     <includes>
                                         <include>soot_options.css</include>
                                     </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add system-test target resources</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/systemTest-target-classes</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/systemTest/targets-resources</directory>
                                 </resource>
                             </resources>
                         </configuration>
@@ -420,7 +441,7 @@
         <dependency>
             <groupId>org.smali</groupId>
             <artifactId>dexlib2</artifactId>
-            <version>2.2.7</version>
+            <version>2.4.0</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
@@ -512,17 +533,20 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.2.0</version> <!-- or higher, correspondning to powermock-version -->
+            <version>3.2.4</version> <!-- or higher, correspondning to powermock-version -->
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito2</artifactId>
             <version>2.0.4</version> <!-- or higher -->
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
             <version>2.0.4</version> <!-- or higher -->
+            <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.android/android -->
         <dependency>

@@ -42,7 +42,7 @@ import soot.Local;
 import soot.LongType;
 import soot.NullType;
 import soot.PhaseOptions;
-import soot.RefType;
+import soot.RefLikeType;
 import soot.Scene;
 import soot.Singletons;
 import soot.Timers;
@@ -165,7 +165,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
             CastExpr ce = (CastExpr) rhs;
             Type t = ce.getCastType();
             Value v = ce.getOp();
-            isEssential = !(v instanceof NullConstant && t instanceof RefType);
+            isEssential = !(v instanceof NullConstant) && t instanceof RefLikeType;
           } else if (rhs instanceof InvokeExpr || rhs instanceof ArrayRef || rhs instanceof NewExpr
               || rhs instanceof NewArrayExpr || rhs instanceof NewMultiArrayExpr) {
             // ArrayRef : can have side effects (like throwing a null pointer exception)

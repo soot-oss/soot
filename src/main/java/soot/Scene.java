@@ -11,12 +11,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -46,18 +46,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import javax.annotation.Nullable;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.MagicNumberFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
-
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
@@ -82,8 +77,7 @@ import soot.util.StringNumberer;
 import soot.util.WeakMapNumberer;
 
 /** Manages the SootClasses of the application being analyzed. */
-public class Scene // extends AbstractHost
-{
+public class Scene {
   private static final Logger logger = LoggerFactory.getLogger(Scene.class);
 
   private final int defaultSdkVersion = 15;
@@ -100,9 +94,23 @@ public class Scene // extends AbstractHost
       setSootClassPath(scp);
     }
 
-    kindNumberer = new ArrayNumberer<Kind>(
-        new Kind[] { Kind.INVALID, Kind.STATIC, Kind.VIRTUAL, Kind.INTERFACE, Kind.SPECIAL, Kind.CLINIT, Kind.THREAD,
-            Kind.EXECUTOR, Kind.ASYNCTASK, Kind.FINALIZE, Kind.INVOKE_FINALIZE, Kind.PRIVILEGED, Kind.NEWINSTANCE });
+    kindNumberer =
+        new ArrayNumberer<Kind>(
+            new Kind[] {
+              Kind.INVALID,
+              Kind.STATIC,
+              Kind.VIRTUAL,
+              Kind.INTERFACE,
+              Kind.SPECIAL,
+              Kind.CLINIT,
+              Kind.THREAD,
+              Kind.EXECUTOR,
+              Kind.ASYNCTASK,
+              Kind.FINALIZE,
+              Kind.INVOKE_FINALIZE,
+              Kind.PRIVILEGED,
+              Kind.NEWINSTANCE
+            });
 
     if (Options.v().weak_map_structures()) {
       methodNumberer = new WeakMapNumberer<SootMethod>();
@@ -124,7 +132,8 @@ public class Scene // extends AbstractHost
 
     // do not kill contents of the APK if we want a working new APK
     // afterwards
-    if (!Options.v().include_all() && Options.v().output_format() != Options.output_format_dex
+    if (!Options.v().include_all()
+        && Options.v().output_format() != Options.output_format_dex
         && Options.v().output_format() != Options.output_format_force_dex) {
       excludedPackages.add("java.*");
       excludedPackages.add("sun.*");
@@ -191,16 +200,17 @@ public class Scene // extends AbstractHost
   Set<String> reservedNames = new HashSet<String>();
 
   /**
-   * Returns a set of tokens which are reserved. Any field, class, method, or local variable with such a name will be quoted.
+   * Returns a set of tokens which are reserved. Any field, class, method, or local variable with
+   * such a name will be quoted.
    */
-
   public Set<String> getReservedNames() {
     return reservedNames;
   }
 
   /**
-   * If this name is in the set of reserved names, then return a quoted version of it. Else pass it through. If the name
-   * consists of multiple parts separated by dots, the individual names are checked as well.
+   * If this name is in the set of reserved names, then return a quoted version of it. Else pass it
+   * through. If the name consists of multiple parts separated by dots, the individual names are
+   * checked as well.
    */
   public String quotedNameOf(String s) {
     // Pre-check: Is there a chance that we need to escape something?
@@ -233,11 +243,10 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * This method is the inverse of quotedNameOf(). It takes a possible escaped class and reconstructs the original version of
-   * it.
+   * This method is the inverse of quotedNameOf(). It takes a possible escaped class and
+   * reconstructs the original version of it.
    *
-   * @param s
-   *          The possibly escaped name
+   * @param s The possibly escaped name
    * @return The original, non-escaped name
    */
   public String unescapeName(String s) {
@@ -280,8 +289,11 @@ public class Scene // extends AbstractHost
       throw new RuntimeException("There is no main class set!");
     }
 
-    SootMethod mainMethod = mainClass.getMethodUnsafe("main",
-        Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v());
+    SootMethod mainMethod =
+        mainClass.getMethodUnsafe(
+            "main",
+            Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
+            VoidType.v());
     if (mainMethod == null) {
       throw new RuntimeException("Main class declares no main method!");
     }
@@ -347,7 +359,9 @@ public class Scene // extends AbstractHost
     File d = new File(dir);
     if (!d.exists()) {
       throw new AndroidPlatformException(
-          String.format("The Android platform directory you have specified (%s) does not exist. Please check.", dir));
+          String.format(
+              "The Android platform directory you have specified (%s) does not exist. Please check.",
+              dir));
     }
 
     File[] files = d.listFiles();
@@ -377,20 +391,25 @@ public class Scene // extends AbstractHost
   public String getAndroidJarPath(String jars, String apk) {
     int APIVersion = getAndroidAPIVersion(jars, apk);
 
-    String jarPath = jars + File.separator + "android-" + APIVersion + File.separator + "android.jar";
+    String jarPath =
+        jars + File.separator + "android-" + APIVersion + File.separator + "android.jar";
 
     // check that jar exists
     File f = new File(jarPath);
     if (!f.isFile()) {
-      throw new AndroidPlatformException(String.format("error: target android.jar %s does not exist.", jarPath));
+      throw new AndroidPlatformException(
+          String.format("error: target android.jar %s does not exist.", jarPath));
     }
 
     return jarPath;
   }
 
   public int getAndroidAPIVersion() {
-    return androidAPIVersion > 0 ? androidAPIVersion
-        : (Options.v().android_api_version() > 0 ? Options.v().android_api_version() : defaultSdkVersion);
+    return androidAPIVersion > 0
+        ? androidAPIVersion
+        : (Options.v().android_api_version() > 0
+            ? Options.v().android_api_version()
+            : defaultSdkVersion);
   }
 
   private int getAndroidAPIVersion(String jars, String apk) {
@@ -405,7 +424,8 @@ public class Scene // extends AbstractHost
 
     if (!jarsF.exists()) {
       throw new AndroidPlatformException(
-          String.format("Android platform directory '%s' does not exist!", jarsF.getAbsolutePath()));
+          String.format(
+              "Android platform directory '%s' does not exist!", jarsF.getAbsolutePath()));
     }
 
     if (apkF != null && !apkF.exists()) {
@@ -433,7 +453,8 @@ public class Scene // extends AbstractHost
 
     // If the platform version is missing in the middle, we take the next one
     while (androidAPIVersion < maxAPI) {
-      String jarPath = jars + File.separator + "android-" + androidAPIVersion + File.separator + "android.jar";
+      String jarPath =
+          jars + File.separator + "android-" + androidAPIVersion + File.separator + "android.jar";
       if (new File(jarPath).exists()) {
         break;
       }
@@ -448,7 +469,6 @@ public class Scene // extends AbstractHost
     public int sdkTargetVersion = -1;
     public int minSdkVersion = -1;
     public int platformBuildVersionCode = -1;
-
   }
 
   private int getTargetSDKVersion(String apkFile, String platformJARs) {
@@ -458,7 +478,8 @@ public class Scene // extends AbstractHost
     try {
       try {
         archive = new ZipFile(apkFile);
-        for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
+        for (Enumeration<? extends ZipEntry> entries = archive.entries();
+            entries.hasMoreElements(); ) {
           ZipEntry entry = entries.nextElement();
           String entryName = entry.getName();
           // We are dealing with the Android manifest
@@ -472,7 +493,8 @@ public class Scene // extends AbstractHost
       }
 
       if (manifestIS == null) {
-        logger.debug("Could not find sdk version in Android manifest! Using default: " + defaultSdkVersion);
+        logger.debug(
+            "Could not find sdk version in Android manifest! Using default: " + defaultSdkVersion);
         return defaultSdkVersion;
       }
 
@@ -482,19 +504,29 @@ public class Scene // extends AbstractHost
 
       int APIVersion = -1;
       if (androidSDKVersionInfo.sdkTargetVersion != -1) {
-        if (androidSDKVersionInfo.sdkTargetVersion > maxAPI && androidSDKVersionInfo.minSdkVersion != -1
+        if (androidSDKVersionInfo.sdkTargetVersion > maxAPI
+            && androidSDKVersionInfo.minSdkVersion != -1
             && androidSDKVersionInfo.minSdkVersion <= maxAPI) {
-          logger.warn("Android API version '" + androidSDKVersionInfo.sdkTargetVersion
-              + "' not available, using minApkVersion '" + androidSDKVersionInfo.minSdkVersion + "' instead");
+          logger.warn(
+              "Android API version '"
+                  + androidSDKVersionInfo.sdkTargetVersion
+                  + "' not available, using minApkVersion '"
+                  + androidSDKVersionInfo.minSdkVersion
+                  + "' instead");
           APIVersion = androidSDKVersionInfo.minSdkVersion;
         } else {
           APIVersion = androidSDKVersionInfo.sdkTargetVersion;
         }
       } else if (androidSDKVersionInfo.platformBuildVersionCode != -1) {
-        if (androidSDKVersionInfo.platformBuildVersionCode > maxAPI && androidSDKVersionInfo.minSdkVersion != -1
+        if (androidSDKVersionInfo.platformBuildVersionCode > maxAPI
+            && androidSDKVersionInfo.minSdkVersion != -1
             && androidSDKVersionInfo.minSdkVersion <= maxAPI) {
-          logger.warn("Android API version '" + androidSDKVersionInfo.platformBuildVersionCode
-              + "' not available, using minApkVersion '" + androidSDKVersionInfo.minSdkVersion + "' instead");
+          logger.warn(
+              "Android API version '"
+                  + androidSDKVersionInfo.platformBuildVersionCode
+                  + "' not available, using minApkVersion '"
+                  + androidSDKVersionInfo.minSdkVersion
+                  + "' instead");
           APIVersion = androidSDKVersionInfo.minSdkVersion;
         } else {
           APIVersion = androidSDKVersionInfo.platformBuildVersionCode;
@@ -502,7 +534,8 @@ public class Scene // extends AbstractHost
       } else if (androidSDKVersionInfo.minSdkVersion != -1) {
         APIVersion = androidSDKVersionInfo.minSdkVersion;
       } else {
-        logger.debug("Could not find sdk version in Android manifest! Using default: " + defaultSdkVersion);
+        logger.debug(
+            "Could not find sdk version in Android manifest! Using default: " + defaultSdkVersion);
         APIVersion = defaultSdkVersion;
       }
 
@@ -521,7 +554,6 @@ public class Scene // extends AbstractHost
     }
   }
 
-  @Nullable
   public AndroidVersionInfo getAndroidSDKVersionInfo() {
     return androidSDKVersionInfo;
   }
@@ -530,39 +562,41 @@ public class Scene // extends AbstractHost
     final AndroidVersionInfo versionInfo = new AndroidVersionInfo();
     try {
       AxmlReader xmlReader = new AxmlReader(IOUtils.toByteArray(manifestIS));
-      xmlReader.accept(new AxmlVisitor() {
+      xmlReader.accept(
+          new AxmlVisitor() {
 
-        private String nodeName = null;
+            private String nodeName = null;
 
-        @Override
-        public void attr(String ns, String name, int resourceId, int type, Object obj) {
-          super.attr(ns, name, resourceId, type, obj);
+            @Override
+            public void attr(String ns, String name, int resourceId, int type, Object obj) {
+              super.attr(ns, name, resourceId, type, obj);
 
-          if (nodeName != null && name != null) {
-            if (nodeName.equals("manifest")) {
-              if (name.equals("platformBuildVersionCode")) {
-                versionInfo.platformBuildVersionCode = Integer.valueOf("" + obj);
-              }
-            } else if (nodeName.equals("uses-sdk")) {
-              // Obfuscated APKs often remove the attribute names and use the resourceId instead
-              // Therefore it is better to check for both variants
-              if (name.equals("targetSdkVersion") || (name.equals("") && resourceId == 16843376)) {
-                versionInfo.sdkTargetVersion = Integer.valueOf("" + obj);
-              } else if (name.equals("minSdkVersion") || (name.equals("") && resourceId == 16843276)) {
-                versionInfo.minSdkVersion = Integer.valueOf("" + obj);
+              if (nodeName != null && name != null) {
+                if (nodeName.equals("manifest")) {
+                  if (name.equals("platformBuildVersionCode")) {
+                    versionInfo.platformBuildVersionCode = Integer.valueOf("" + obj);
+                  }
+                } else if (nodeName.equals("uses-sdk")) {
+                  // Obfuscated APKs often remove the attribute names and use the resourceId instead
+                  // Therefore it is better to check for both variants
+                  if (name.equals("targetSdkVersion")
+                      || (name.equals("") && resourceId == 16843376)) {
+                    versionInfo.sdkTargetVersion = Integer.valueOf("" + obj);
+                  } else if (name.equals("minSdkVersion")
+                      || (name.equals("") && resourceId == 16843276)) {
+                    versionInfo.minSdkVersion = Integer.valueOf("" + obj);
+                  }
+                }
               }
             }
-          }
-        }
 
-        @Override
-        public NodeVisitor child(String ns, String name) {
-          nodeName = name;
+            @Override
+            public NodeVisitor child(String ns, String name) {
+              nodeName = name;
 
-          return this;
-        }
-
-      });
+              return this;
+            }
+          });
     } catch (Exception e) {
       logger.error(e.getMessage(), e);
     }
@@ -571,12 +605,12 @@ public class Scene // extends AbstractHost
 
   public String defaultClassPath() {
     // If we have an apk file on the process dir and do not have a src-prec
-    // option
-    // that loads APK files, we give a warning
+    // option that loads APK files, we give a warning
     if (Options.v().src_prec() != Options.src_prec_apk) {
       for (String entry : Options.v().process_dir()) {
         if (entry.toLowerCase().endsWith(".apk")) {
-          System.err.println("APK file on process dir, but chosen src-prec does not support loading APKs");
+          System.err.println(
+              "APK file on process dir, but chosen src-prec does not support loading APKs");
           break;
         }
       }
@@ -585,7 +619,11 @@ public class Scene // extends AbstractHost
     if (Options.v().src_prec() == Options.src_prec_apk) {
       return defaultAndroidClassPath();
     } else {
-      return defaultJavaClassPath();
+      String path = defaultJavaClassPath();
+      if (path == null) {
+        throw new RuntimeException("Error: cannot find rt.jar.");
+      }
+      return path;
     }
   }
 
@@ -593,9 +631,11 @@ public class Scene // extends AbstractHost
     // check that android.jar is not in classpath
     String androidJars = Options.v().android_jars();
     String forceAndroidJar = Options.v().force_android_jar();
-    if ((androidJars == null || androidJars.equals("")) && (forceAndroidJar == null || forceAndroidJar.equals(""))) {
-      throw new RuntimeException("You are analyzing an Android application but did "
-          + "not define android.jar. Options -android-jars or -force-android-jar should be used.");
+    if ((androidJars == null || androidJars.equals(""))
+        && (forceAndroidJar == null || forceAndroidJar.equals(""))) {
+      throw new RuntimeException(
+          "You are analyzing an Android application but did "
+              + "not define android.jar. Options -android-jars or -force-android-jar should be used.");
     }
 
     // Get the platform JAR file. It either directly specified, or
@@ -608,7 +648,9 @@ public class Scene // extends AbstractHost
       if (Options.v().android_api_version() > 0) {
         androidAPIVersion = Options.v().android_api_version();
       } else if (forceAndroidJar.contains("android-")) {
-        Pattern pt = Pattern.compile("\\" + File.separatorChar + "android-(\\d+)" + "\\" + File.separatorChar);
+        Pattern pt =
+            Pattern.compile(
+                "\\" + File.separatorChar + "android-(\\d+)" + "\\" + File.separatorChar);
         Matcher m = pt.matcher(forceAndroidJar);
         if (m.find()) {
           androidAPIVersion = Integer.valueOf(m.group(1));
@@ -617,8 +659,9 @@ public class Scene // extends AbstractHost
         androidAPIVersion = defaultSdkVersion;
       }
     } else if (androidJars != null && !androidJars.isEmpty()) {
-      List<String> classPathEntries
-          = new LinkedList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
+      List<String> classPathEntries =
+          new LinkedList<String>(
+              Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
       classPathEntries.addAll(Options.v().process_dir());
 
       String targetApk = "";
@@ -626,7 +669,8 @@ public class Scene // extends AbstractHost
       for (String entry : classPathEntries) {
         if (isApk(entry)) {
           if (targetApk != null && !targetApk.isEmpty()) {
-            throw new RuntimeException("only one Android application can be analyzed when using option -android-jars.");
+            throw new RuntimeException(
+                "only one Android application can be analyzed when using option -android-jars.");
           }
           targetApk = entry;
         }
@@ -669,8 +713,8 @@ public class Scene // extends AbstractHost
     boolean r = false;
     // first check magic number
     File apk = new File(file);
-    MagicNumberFileFilter apkFilter
-        = new MagicNumberFileFilter(new byte[] { (byte) 0x50, (byte) 0x4B, (byte) 0x03, (byte) 0x04 });
+    MagicNumberFileFilter apkFilter =
+        new MagicNumberFileFilter(new byte[] {(byte) 0x50, (byte) 0x4B, (byte) 0x03, (byte) 0x04});
     if (!apkFilter.accept(apk)) {
       return r;
     }
@@ -703,8 +747,9 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Checks if the version number indicates a Java version >= 9 in order to handle the new virtual filesystem jrt:/
-   * 
+   * Checks if the version number indicates a Java version >= 9 in order to handle the new virtual
+   * filesystem jrt:/
+   *
    * @param version
    * @return
    */
@@ -722,15 +767,25 @@ public class Scene // extends AbstractHost
     } else {
       throw new IllegalArgumentException("Unknown Version number schema!");
     }
-
   }
 
-  private String defaultJavaClassPath() {
+  /**
+   * Returns the default class path used for this JVM.
+   *
+   * @return the default class path (or null if none could be found)
+   */
+  public static String defaultJavaClassPath() {
     StringBuilder sb = new StringBuilder();
     if (System.getProperty("os.name").equals("Mac OS X")) {
       // in older Mac OS X versions, rt.jar was split into classes.jar and
       // ui.jar
-      String prefix = System.getProperty("java.home") + File.separator + ".." + File.separator + "Classes" + File.separator;
+      String prefix =
+          System.getProperty("java.home")
+              + File.separator
+              + ".."
+              + File.separator
+              + "Classes"
+              + File.separator;
       File classesJar = new File(prefix + "classes.jar");
       if (classesJar.exists()) {
         sb.append(classesJar.getAbsolutePath() + File.pathSeparator);
@@ -748,31 +803,47 @@ public class Scene // extends AbstractHost
 
     } else {
 
-      File rtJar = new File(System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar");
+      File rtJar =
+          new File(
+              System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar");
       if (rtJar.exists() && rtJar.isFile()) {
         // logger.debug("Using JRE runtime: " +
         // rtJar.getAbsolutePath());
         sb.append(rtJar.getAbsolutePath());
       } else {
         // in case we're not in JRE environment, try JDK
-        rtJar = new File(
-            System.getProperty("java.home") + File.separator + "jre" + File.separator + "lib" + File.separator + "rt.jar");
+        rtJar =
+            new File(
+                System.getProperty("java.home")
+                    + File.separator
+                    + "jre"
+                    + File.separator
+                    + "lib"
+                    + File.separator
+                    + "rt.jar");
         if (rtJar.exists() && rtJar.isFile()) {
           // logger.debug("Using JDK runtime: " +
           // rtJar.getAbsolutePath());
           sb.append(rtJar.getAbsolutePath());
         } else {
           // not in JDK either
-          throw new RuntimeException("Error: cannot find rt.jar.");
+          return null;
         }
       }
     }
 
-    if ((Options.v().whole_program() || Options.v().output_format() == Options.output_format_dava) && !javaGEQ9) {
+    if ((Options.v().whole_program() || Options.v().output_format() == Options.output_format_dava)
+        && !javaGEQ9) {
       // add jce.jar, which is necessary for whole program mode
       // (java.security.Signature from rt.jar import javax.crypto.Cipher
       // from jce.jar
-      sb.append(File.pathSeparator + System.getProperty("java.home") + File.separator + "lib" + File.separator + "jce.jar");
+      sb.append(
+          File.pathSeparator
+              + System.getProperty("java.home")
+              + File.separator
+              + "lib"
+              + File.separator
+              + "jce.jar");
     }
 
     return sb.toString();
@@ -793,11 +864,10 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Adds the given class to the Scene. This method marks the given class as a library class and invalidates the class
-   * hierarchy.
+   * Adds the given class to the Scene. This method marks the given class as a library class and
+   * invalidates the class hierarchy.
    *
-   * @param c
-   *          The class to add
+   * @param c The class to add
    */
   public void addClass(SootClass c) {
     addClassSilent(c);
@@ -806,11 +876,11 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Adds the given class to the Scene. This method does not handle any dependencies such as invalidating the hierarchy. The
-   * class is neither marked as application class, nor library class.
+   * Adds the given class to the Scene. This method does not handle any dependencies such as
+   * invalidating the hierarchy. The class is neither marked as application class, nor library
+   * class.
    *
-   * @param c
-   *          The class to add
+   * @param c The class to add
    */
   protected void addClassSilent(SootClass c) {
     synchronized (c) {
@@ -946,10 +1016,9 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Attempts to load the given class and all of the required support classes. Returns the original class if it was loaded,
-   * or null otherwise.
+   * Attempts to load the given class and all of the required support classes. Returns the original
+   * class if it was loaded, or null otherwise.
    */
-
   public SootClass tryLoadClass(String className, int desiredLevel) {
     /*
      * if(Options.v().time()) Main.v().resolveTimer.start();
@@ -978,10 +1047,7 @@ public class Scene // extends AbstractHost
      */
   }
 
-  /**
-   * Loads the given class and all of the required support classes. Returns the first class.
-   */
-
+  /** Loads the given class and all of the required support classes. Returns the first class. */
   public SootClass loadClassAndSupport(String className) {
     SootClass ret = loadClass(className, SootClass.SIGNATURES);
     if (!ret.isPhantom()) {
@@ -1011,12 +1077,13 @@ public class Scene // extends AbstractHost
   /**
    * Returns the RefType with the given class name or primitive type.
    *
-   * @throws RuntimeException
-   *           if the Type for this name cannot be found. Use {@link #getRefTypeUnsafe(String)} to check if type is an
-   *           registered RefType.
+   * @throws RuntimeException if the Type for this name cannot be found. Use {@link
+   *     #getRefTypeUnsafe(String)} to check if type is an registered RefType.
    */
   public Type getType(String arg) {
-    Type t = getTypeUnsafe(arg, false);// Set to false to preserve the original functionality just in case
+    Type t =
+        getTypeUnsafe(
+            arg, false); // Set to false to preserve the original functionality just in case
     if (t == null) {
       throw new RuntimeException("Unknown Type: '" + t + "'");
     }
@@ -1024,15 +1091,15 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Returns a Type object representing the given type string. It will first attempt to resolve the type as a reference type
-   * that currently exists in the Scene. If this fails it will attempt to resolve the type as a java primitive type. Lastly,
-   * if phantom refs are allowed it will construct a phantom class for the given type and return a reference type based on
-   * the phantom class. Otherwise, this method will return null. Note, if the resolved base type is not null and the string
-   * representation of the type is an array, the returned type will be an ArrayType with the base type resolved as described
-   * above.
-   * 
-   * @param arg
-   *          A string description of the type
+   * Returns a Type object representing the given type string. It will first attempt to resolve the
+   * type as a reference type that currently exists in the Scene. If this fails it will attempt to
+   * resolve the type as a java primitive type. Lastly, if phantom refs are allowed it will
+   * construct a phantom class for the given type and return a reference type based on the phantom
+   * class. Otherwise, this method will return null. Note, if the resolved base type is not null and
+   * the string representation of the type is an array, the returned type will be an ArrayType with
+   * the base type resolved as described above.
+   *
+   * @param arg A string description of the type
    * @return The Type if it can be resolved and null otherwise
    */
   public Type getTypeUnsafe(String arg) {
@@ -1040,19 +1107,18 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Returns a Type object representing the given type string. It will first attempt to resolve the type as a reference type
-   * that currently exists in the Scene. If this fails it will attempt to resolve the type as a java primitive type. Lastly,
-   * if phantom refs are allowed and phantomNonExist=true it will construct a phantom class for the given type and return a
-   * reference type based on the phantom class. Otherwise, this method will return null. Note, if the resolved base type is
-   * not null and the string representation of the type is an array, the returned type will be an ArrayType with the base
-   * type resolved as described above.
-   * 
-   * @param arg
-   *          A string description of the type
-   * @param phantomNonExist
-   *          Indicates that a phantom class should be created for the given type string and a Type object should be created
-   *          based on the phantom class if a class matching the type name does not exists in the scene and phantom refs are
-   *          allowed
+   * Returns a Type object representing the given type string. It will first attempt to resolve the
+   * type as a reference type that currently exists in the Scene. If this fails it will attempt to
+   * resolve the type as a java primitive type. Lastly, if phantom refs are allowed and
+   * phantomNonExist=true it will construct a phantom class for the given type and return a
+   * reference type based on the phantom class. Otherwise, this method will return null. Note, if
+   * the resolved base type is not null and the string representation of the type is an array, the
+   * returned type will be an ArrayType with the base type resolved as described above.
+   *
+   * @param arg A string description of the type
+   * @param phantomNonExist Indicates that a phantom class should be created for the given type
+   *     string and a Type object should be created based on the phantom class if a class matching
+   *     the type name does not exists in the scene and phantom refs are allowed
    * @return The Type if it can be resolved and null otherwise
    */
   public Type getTypeUnsafe(String arg, boolean phantomNonExist) {
@@ -1095,41 +1161,41 @@ public class Scene // extends AbstractHost
   /**
    * Returns the RefType with the given className.
    *
-   * @throws IllegalStateException
-   *           if the RefType for this class cannot be found. Use {@link #containsType(String)} to check if type is
-   *           registered
+   * @throws IllegalStateException if the RefType for this class cannot be found. Use {@link
+   *     #containsType(String)} to check if type is registered
    */
   public RefType getRefType(String className) {
     RefType refType = getRefTypeUnsafe(className);
     if (refType == null) {
-      throw new IllegalStateException("RefType " + className + " not loaded. "
-          + "If you tried to get the RefType of a library class, did you call loadNecessaryClasses()? "
-          + "Otherwise please check Soot's classpath.");
+      throw new IllegalStateException(
+          "RefType "
+              + className
+              + " not loaded. "
+              + "If you tried to get the RefType of a library class, did you call loadNecessaryClasses()? "
+              + "Otherwise please check Soot's classpath.");
     }
     return refType;
   }
 
   /**
-   * Returns the RefType with the given className. Returns null if no type with the given name can be found.
+   * Returns the RefType with the given className. Returns null if no type with the given name can
+   * be found.
    */
   public RefType getRefTypeUnsafe(String className) {
     RefType refType = nameToClass.get(className);
     return refType;
   }
 
-  /**
-   * Returns the {@link RefType} for {@link Object}.
-   */
+  /** Returns the {@link RefType} for {@link Object}. */
   public RefType getObjectType() {
     return getRefType("java.lang.Object");
   }
 
   /**
-   * Returns the SootClass with the given className. If no class with the given name exists, null is returned unless phantom
-   * refs are allowed. In this case, a new phantom class is created.
+   * Returns the SootClass with the given className. If no class with the given name exists, null is
+   * returned unless phantom refs are allowed. In this case, a new phantom class is created.
    *
-   * @param className
-   *          The name of the class to get
+   * @param className The name of the class to get
    * @return The class if it exists, otherwise null
    */
   public SootClass getSootClassUnsafe(String className) {
@@ -1137,14 +1203,13 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Returns the SootClass with the given className. If no class with the given name exists, null is returned unless
-   * phantomNonExist=true and phantom refs are allowed. In this case, a new phantom class is created and returned.
-   * 
-   * @param className
-   *          The name of the class to get
-   * @param phantomNonExist
-   *          Indicates that a phantom class should be created if a class with the given name does not exist and phantom refs
-   *          are allowed
+   * Returns the SootClass with the given className. If no class with the given name exists, null is
+   * returned unless phantomNonExist=true and phantom refs are allowed. In this case, a new phantom
+   * class is created and returned.
+   *
+   * @param className The name of the class to get
+   * @param phantomNonExist Indicates that a phantom class should be created if a class with the
+   *     given name does not exist and phantom refs are allowed
    * @return The class if it exists, otherwise null
    */
   public SootClass getSootClassUnsafe(String className, boolean phantomNonExist) {
@@ -1156,7 +1221,8 @@ public class Scene // extends AbstractHost
       }
     }
 
-    if ((allowsPhantomRefs() && phantomNonExist) || className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
+    if ((allowsPhantomRefs() && phantomNonExist)
+        || className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
       type = getOrAddRefType(className);
       synchronized (type) {
         SootClass c = new SootClass(className);
@@ -1170,22 +1236,18 @@ public class Scene // extends AbstractHost
     return null;
   }
 
-  /**
-   * Returns the SootClass with the given className.
-   */
+  /** Returns the SootClass with the given className. */
   public SootClass getSootClass(String className) {
     SootClass sc = getSootClassUnsafe(className);
     if (sc != null) {
       return sc;
     }
 
-    throw new RuntimeException(System.getProperty("line.separator") + "Aborting: can't find classfile " + className);
+    throw new RuntimeException(
+        System.getProperty("line.separator") + "Aborting: can't find classfile " + className);
   }
 
-  /**
-   * Returns an backed chain of the classes in this manager.
-   */
-
+  /** Returns an backed chain of the classes in this manager. */
   public Chain<SootClass> getClasses() {
     return classes;
   }
@@ -1193,23 +1255,24 @@ public class Scene // extends AbstractHost
   /* The four following chains are mutually disjoint. */
 
   /**
-   * Returns a chain of the application classes in this scene. These classes are the ones which can be freely analysed &
-   * modified.
+   * Returns a chain of the application classes in this scene. These classes are the ones which can
+   * be freely analysed & modified.
    */
   public Chain<SootClass> getApplicationClasses() {
     return applicationClasses;
   }
 
   /**
-   * Returns a chain of the library classes in this scene. These classes can be analysed but not modified.
+   * Returns a chain of the library classes in this scene. These classes can be analysed but not
+   * modified.
    */
   public Chain<SootClass> getLibraryClasses() {
     return libraryClasses;
   }
 
   /**
-   * Returns a chain of the phantom classes in this scene. These classes are referred to by other classes, but cannot be
-   * loaded.
+   * Returns a chain of the phantom classes in this scene. These classes are referred to by other
+   * classes, but cannot be loaded.
    */
   public Chain<SootClass> getPhantomClasses() {
     return phantomClasses;
@@ -1227,11 +1290,8 @@ public class Scene // extends AbstractHost
     return null;
   }
 
-  /****************************************************************************/
-  /**
-   * Retrieves the active side-effect analysis
-   */
-
+  /** ************************************************************************* */
+  /** Retrieves the active side-effect analysis */
   public SideEffectAnalysis getSideEffectAnalysis() {
     if (!hasSideEffectAnalysis()) {
       setSideEffectAnalysis(new SideEffectAnalysis(getPointsToAnalysis(), getCallGraph()));
@@ -1240,10 +1300,7 @@ public class Scene // extends AbstractHost
     return activeSideEffectAnalysis;
   }
 
-  /**
-   * Sets the active side-effect analysis
-   */
-
+  /** Sets the active side-effect analysis */
   public void setSideEffectAnalysis(SideEffectAnalysis sea) {
     activeSideEffectAnalysis = sea;
   }
@@ -1256,11 +1313,8 @@ public class Scene // extends AbstractHost
     activeSideEffectAnalysis = null;
   }
 
-  /****************************************************************************/
-  /**
-   * Retrieves the active pointer analysis
-   */
-
+  /** ************************************************************************* */
+  /** Retrieves the active pointer analysis */
   public PointsToAnalysis getPointsToAnalysis() {
     if (!hasPointsToAnalysis()) {
       return DumbPointerAnalysis.v();
@@ -1269,10 +1323,7 @@ public class Scene // extends AbstractHost
     return activePointsToAnalysis;
   }
 
-  /**
-   * Sets the active pointer analysis
-   */
-
+  /** Sets the active pointer analysis */
   public void setPointsToAnalysis(PointsToAnalysis pa) {
     activePointsToAnalysis = pa;
   }
@@ -1285,10 +1336,8 @@ public class Scene // extends AbstractHost
     activePointsToAnalysis = null;
   }
 
-  /****************************************************************************/
-  /**
-   * Retrieves the active client accessibility oracle
-   */
+  /** ************************************************************************* */
+  /** Retrieves the active client accessibility oracle */
   public ClientAccessibilityOracle getClientAccessibilityOracle() {
     if (!hasClientAccessibilityOracle()) {
       return PublicAndProtectedAccessibility.v();
@@ -1309,10 +1358,8 @@ public class Scene // extends AbstractHost
     accessibilityOracle = null;
   }
 
-  /****************************************************************************/
-  /**
-   * Makes a new fast hierarchy is none is active, and returns the active fast hierarchy.
-   */
+  /** ************************************************************************* */
+  /** Makes a new fast hierarchy is none is active, and returns the active fast hierarchy. */
   public synchronized FastHierarchy getOrMakeFastHierarchy() {
     if (!hasFastHierarchy()) {
       setFastHierarchy(new FastHierarchy());
@@ -1320,10 +1367,7 @@ public class Scene // extends AbstractHost
     return getFastHierarchy();
   }
 
-  /**
-   * Retrieves the active fast hierarchy
-   */
-
+  /** Retrieves the active fast hierarchy */
   public synchronized FastHierarchy getFastHierarchy() {
     if (!hasFastHierarchy()) {
       throw new RuntimeException("no active FastHierarchy present for scene");
@@ -1332,10 +1376,7 @@ public class Scene // extends AbstractHost
     return activeFastHierarchy;
   }
 
-  /**
-   * Sets the active hierarchy
-   */
-
+  /** Sets the active hierarchy */
   public synchronized void setFastHierarchy(FastHierarchy hierarchy) {
     activeFastHierarchy = hierarchy;
   }
@@ -1348,11 +1389,8 @@ public class Scene // extends AbstractHost
     activeFastHierarchy = null;
   }
 
-  /****************************************************************************/
-  /**
-   * Retrieves the active hierarchy
-   */
-
+  /** ************************************************************************* */
+  /** Retrieves the active hierarchy */
   public synchronized Hierarchy getActiveHierarchy() {
     if (!hasActiveHierarchy()) {
       // throw new RuntimeException("no active Hierarchy present for
@@ -1363,10 +1401,7 @@ public class Scene // extends AbstractHost
     return activeHierarchy;
   }
 
-  /**
-   * Sets the active hierarchy
-   */
-
+  /** Sets the active hierarchy */
   public synchronized void setActiveHierarchy(Hierarchy hierarchy) {
     activeHierarchy = hierarchy;
   }
@@ -1400,7 +1435,8 @@ public class Scene // extends AbstractHost
 
   public ContextSensitiveCallGraph getContextSensitiveCallGraph() {
     if (cscg == null) {
-      throw new RuntimeException("No context-sensitive call graph present in Scene. You can bulid one with Paddle.");
+      throw new RuntimeException(
+          "No context-sensitive call graph present in Scene. You can bulid one with Paddle.");
     }
     return cscg;
   }
@@ -1411,7 +1447,8 @@ public class Scene // extends AbstractHost
 
   public CallGraph getCallGraph() {
     if (!hasCallGraph()) {
-      throw new RuntimeException("No call graph present in Scene. Maybe you want Whole Program mode (-w).");
+      throw new RuntimeException(
+          "No call graph present in Scene. Maybe you want Whole Program mode (-w).");
     }
 
     return activeCallGraph;
@@ -1433,7 +1470,9 @@ public class Scene // extends AbstractHost
 
   public ReachableMethods getReachableMethods() {
     if (reachableMethods == null) {
-      reachableMethods = new ReachableMethods(getCallGraph(), new ArrayList<MethodOrMethodContext>(getEntryPoints()));
+      reachableMethods =
+          new ReachableMethods(
+              getCallGraph(), new ArrayList<MethodOrMethodContext>(getEntryPoints()));
     }
     reachableMethods.update();
     return reachableMethods;
@@ -1509,7 +1548,8 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Returns the {@link ThrowAnalysis} to be used by default when constructing CFGs which include exceptional control flow.
+   * Returns the {@link ThrowAnalysis} to be used by default when constructing CFGs which include
+   * exceptional control flow.
    *
    * @return the default {@link ThrowAnalysis}
    */
@@ -1527,17 +1567,18 @@ public class Scene // extends AbstractHost
           defaultThrowAnalysis = DalvikThrowAnalysis.v();
           break;
         default:
-          throw new IllegalStateException("Options.v().throw_analysi() == " + Options.v().throw_analysis());
+          throw new IllegalStateException(
+              "Options.v().throw_analysi() == " + Options.v().throw_analysis());
       }
     }
     return defaultThrowAnalysis;
   }
 
   /**
-   * Sets the {@link ThrowAnalysis} to be used by default when constructing CFGs which include exceptional control flow.
+   * Sets the {@link ThrowAnalysis} to be used by default when constructing CFGs which include
+   * exceptional control flow.
    *
-   * @param ta
-   *          the default {@link ThrowAnalysis}.
+   * @param ta the default {@link ThrowAnalysis}.
    */
   public void setDefaultThrowAnalysis(ThrowAnalysis ta) {
     defaultThrowAnalysis = ta;
@@ -1688,8 +1729,9 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Load just the set of basic classes soot needs, ignoring those specified on the command-line. You don't need to use both
-   * this and {@link #loadNecessaryClasses()}, though it will only waste time.
+   * Load just the set of basic classes soot needs, ignoring those specified on the command-line.
+   * You don't need to use both this and {@link #loadNecessaryClasses()}, though it will only waste
+   * time.
    */
   public void loadBasicClasses() {
     addReflectionTraceClasses();
@@ -1704,10 +1746,12 @@ public class Scene // extends AbstractHost
       }
     }
     if (loadedClasses == 0) {
-      // Missing basic classes means no Exceptions could be loaded and no Exception hierarchy can lead
+      // Missing basic classes means no Exceptions could be loaded and no Exception hierarchy can
+      // lead
       // to non-deterministic Jimple code generation: catch blocks may be removed because of
       // non-existing Exception hierarchy.
-      throw new RuntimeException("None of the basic classes could be loaded! Check your Soot class path!");
+      throw new RuntimeException(
+          "None of the basic classes could be loaded! Check your Soot class path!");
     }
   }
 
@@ -1792,8 +1836,8 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * Load the set of classes that soot needs, including those specified on the command-line. This is the standard way of
-   * initialising the list of classes soot should use.
+   * Load the set of classes that soot needs, including those specified on the command-line. This is
+   * the standard way of initialising the list of classes soot should use.
    */
   public void loadNecessaryClasses() {
     loadBasicClasses();
@@ -1806,7 +1850,8 @@ public class Scene // extends AbstractHost
 
     if (Options.v().oaat()) {
       if (Options.v().process_dir().isEmpty()) {
-        throw new IllegalArgumentException("If switch -oaat is used, then also -process-dir must be given.");
+        throw new IllegalArgumentException(
+            "If switch -oaat is used, then also -process-dir must be given.");
       }
     } else {
       for (final String path : Options.v().process_dir()) {
@@ -1828,13 +1873,13 @@ public class Scene // extends AbstractHost
     HashSet<String> dynClasses = new HashSet<String>();
     dynClasses.addAll(Options.v().dynamic_class());
 
-    for (Iterator<String> pathIt = Options.v().dynamic_dir().iterator(); pathIt.hasNext();) {
+    for (Iterator<String> pathIt = Options.v().dynamic_dir().iterator(); pathIt.hasNext(); ) {
 
       final String path = pathIt.next();
       dynClasses.addAll(SourceLocator.v().getClassesUnder(path));
     }
 
-    for (Iterator<String> pkgIt = Options.v().dynamic_package().iterator(); pkgIt.hasNext();) {
+    for (Iterator<String> pkgIt = Options.v().dynamic_package().iterator(); pkgIt.hasNext(); ) {
 
       final String pkg = pkgIt.next();
       dynClasses.addAll(SourceLocator.v().classesInDynamicPackage(pkg));
@@ -1846,11 +1891,14 @@ public class Scene // extends AbstractHost
     }
 
     // remove non-concrete classes that may accidentally have been loaded
-    for (Iterator<SootClass> iterator = dynamicClasses.iterator(); iterator.hasNext();) {
+    for (Iterator<SootClass> iterator = dynamicClasses.iterator(); iterator.hasNext(); ) {
       SootClass c = iterator.next();
       if (!c.isConcrete()) {
         if (Options.v().verbose()) {
-          logger.warn("dynamic class " + c.getName() + " is abstract or an interface, and it will not be considered.");
+          logger.warn(
+              "dynamic class "
+                  + c.getName()
+                  + " is abstract or an interface, and it will not be considered.");
         }
         iterator.remove();
       }
@@ -1899,7 +1947,8 @@ public class Scene // extends AbstractHost
     String name = sc.getName();
     for (String pkg : excludedPackages) {
       if (name.equals(pkg)
-          || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && name.startsWith(pkg.substring(0, pkg.length() - 1)))) {
+          || ((pkg.endsWith(".*") || pkg.endsWith("$*"))
+              && name.startsWith(pkg.substring(0, pkg.length() - 1)))) {
         return !isIncluded(sc);
       }
     }
@@ -1910,7 +1959,8 @@ public class Scene // extends AbstractHost
     String name = sc.getName();
     for (String inc : Options.v().include()) {
       if (name.equals(inc)
-          || ((inc.endsWith(".*") || inc.endsWith("$*")) && name.startsWith(inc.substring(0, inc.length() - 1)))) {
+          || ((inc.endsWith(".*") || inc.endsWith("$*"))
+              && name.startsWith(inc.substring(0, inc.length() - 1)))) {
         return true;
       }
     }
@@ -1928,7 +1978,11 @@ public class Scene // extends AbstractHost
   }
 
   /** Create an unresolved reference to a method. */
-  public SootMethodRef makeMethodRef(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType,
+  public SootMethodRef makeMethodRef(
+      SootClass declaringClass,
+      String name,
+      List<Type> parameterTypes,
+      Type returnType,
       boolean isStatic) {
     if (PolymorphicMethodRef.handlesClass(declaringClass)) {
       return new PolymorphicMethodRef(declaringClass, name, parameterTypes, returnType, isStatic);
@@ -1938,20 +1992,20 @@ public class Scene // extends AbstractHost
 
   /** Create an unresolved reference to a constructor. */
   public SootMethodRef makeConstructorRef(SootClass declaringClass, List<Type> parameterTypes) {
-    return makeMethodRef(declaringClass, SootMethod.constructorName, parameterTypes, VoidType.v(), false);
+    return makeMethodRef(
+        declaringClass, SootMethod.constructorName, parameterTypes, VoidType.v(), false);
   }
 
   /** Create an unresolved reference to a field. */
-  public SootFieldRef makeFieldRef(SootClass declaringClass, String name, Type type, boolean isStatic) {
+  public SootFieldRef makeFieldRef(
+      SootClass declaringClass, String name, Type type, boolean isStatic) {
     return new AbstractSootFieldRef(declaringClass, name, type, isStatic);
   }
 
-  /**
-   * Returns the list of SootClasses that have been resolved at least to the level specified.
-   */
+  /** Returns the list of SootClasses that have been resolved at least to the level specified. */
   public List<SootClass> getClasses(int desiredLevel) {
     List<SootClass> ret = new ArrayList<SootClass>();
-    for (Iterator<SootClass> clIt = getClasses().iterator(); clIt.hasNext();) {
+    for (Iterator<SootClass> clIt = getClasses().iterator(); clIt.hasNext(); ) {
       final SootClass cl = clIt.next();
       if (cl.resolvingLevel() >= desiredLevel) {
         ret.add(cl);
@@ -1984,9 +2038,11 @@ public class Scene // extends AbstractHost
       setMainClass(getSootClass(Options.v().main_class()));
     } else {
       // try to infer a main class from the command line if none is given
-      for (Iterator<String> classIter = Options.v().classes().iterator(); classIter.hasNext();) {
+      for (Iterator<String> classIter = Options.v().classes().iterator(); classIter.hasNext(); ) {
         SootClass c = getSootClass(classIter.next());
-        if (c.declaresMethod("main", Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
+        if (c.declaresMethod(
+            "main",
+            Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
             VoidType.v())) {
           logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
           setMainClass(c);
@@ -1996,9 +2052,12 @@ public class Scene // extends AbstractHost
 
       // try to infer a main class from the usual classpath if none is
       // given
-      for (Iterator<SootClass> classIter = getApplicationClasses().iterator(); classIter.hasNext();) {
+      for (Iterator<SootClass> classIter = getApplicationClasses().iterator();
+          classIter.hasNext(); ) {
         SootClass c = classIter.next();
-        if (c.declaresMethod("main", Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
+        if (c.declaresMethod(
+            "main",
+            Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
             VoidType.v())) {
           logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
           setMainClass(c);
@@ -2009,8 +2068,8 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * This method returns true when in incremental build mode. Other classes can query this flag and change the way in which
-   * they use the Scene, depending on the flag's value.
+   * This method returns true when in incremental build mode. Other classes can query this flag and
+   * change the way in which they use the Scene, depending on the flag's value.
    */
   public boolean isIncrementalBuild() {
     return incrementalBuild;
@@ -2052,11 +2111,16 @@ public class Scene // extends AbstractHost
     return new SootMethod(name, parameterTypes, returnType);
   }
 
-  public SootMethod makeSootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers) {
+  public SootMethod makeSootMethod(
+      String name, List<Type> parameterTypes, Type returnType, int modifiers) {
     return new SootMethod(name, parameterTypes, returnType, modifiers);
   }
 
-  public SootMethod makeSootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers,
+  public SootMethod makeSootMethod(
+      String name,
+      List<Type> parameterTypes,
+      Type returnType,
+      int modifiers,
       List<SootClass> thrownExceptions) {
     return new SootMethod(name, parameterTypes, returnType, modifiers, thrownExceptions);
   }
@@ -2074,19 +2138,14 @@ public class Scene // extends AbstractHost
   }
 
   /**
-   * <p>
    * <b>SOOT USERS: DO NOT CALL THIS METHOD!</b>
-   * </p>
    *
-   * <p>
-   * This method is a Soot-internal factory method for generating callgraph objects. It creates non-initialized object that
-   * must then be initialized by a callgraph algorithm
-   * </p>
+   * <p>This method is a Soot-internal factory method for generating callgraph objects. It creates
+   * non-initialized object that must then be initialized by a callgraph algorithm
    *
    * @return A new callgraph empty object
    */
   public CallGraph internalMakeCallGraph() {
     return new CallGraph();
   }
-
 }
