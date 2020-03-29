@@ -260,7 +260,8 @@ public class VirtualCalls {
           }
         }
       } else {
-        if (cl.isConcrete()) {
+    	  // check concrete type is concrete, abstract or phantom
+        if (cl.isConcrete() || cl.isAbstract() || cl.isPhantom()) {
           resolve(cl.getType(), declaredType, sigType, subSig, container, targets, appOnly);
           newSubTypes.add(cl.getType());
         }
