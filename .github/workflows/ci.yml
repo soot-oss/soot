@@ -21,11 +21,11 @@ jobs:
       - name: Stylecheck
         if: always()
         run: |
-          mvn clean checkstyle:check -Dcheckstyle.failOnViolation=true
+          mvn -B clean checkstyle:check -Dcheckstyle.failOnViolation=true
       - name: Licensecheck
         if: always()
         run: |
-          mvn clean license:check-file-header -Dlicence-check.failOnMissingHeader=true
+          mvn -B clean license:check-file-header -Dlicence-check.failOnMissingHeader=true
     
   BuildAndTest:
     name: Build and Test with java ${{ matrix.java_version }}
@@ -43,7 +43,7 @@ jobs:
         java-version: ${{ matrix.java_version }}
     - name: Build and test Java ${{ matrix.java_version }}
       run: |
-        mvn clean test -PJava${{ matrix.java_version }}
+        mvn -B clean test -PJava${{ matrix.java_version }}
         
   Deploy:
     name: Deploy artifacts to Maven Central
@@ -62,5 +62,5 @@ jobs:
           gpg_passphrase: ${{ secrets.gpg_passphrase }}
           nexus_username: ${{ secrets.nexus_username }}
           nexus_password: ${{ secrets.nexus_password }}
-          maven_args: "-DskipTests -Dcheckstyle.failOnViolation=true -Dgpg.passphrase=$gpg_passphrase'"      
+          maven_args: "-DskipTests -Dcheckstyle.failOnViolation=true"      
         
