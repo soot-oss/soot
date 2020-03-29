@@ -70,7 +70,7 @@ jobs:
         run: echo ::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
         
       - name: Deploy SNAPSHOT documentation
-        if: github.ref == 'refs/heads/develop'
+        if: false && github.ref == 'refs/heads/develop'
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.remote_deploy_host }}
@@ -87,7 +87,7 @@ jobs:
             cp doc/soot_options.htm /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/options
             
       - name: Deploy Release documentation
-        if: github.ref == 'refs/heads/master'
+        if: false && github.ref == 'refs/heads/master'
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.remote_deploy_host }}
