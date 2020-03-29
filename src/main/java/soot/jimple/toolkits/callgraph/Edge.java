@@ -33,18 +33,21 @@ import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
+import soot.util.Invalidable;
 
 /**
  * Represents a single edge in a call graph.
  *
  * @author Ondrej Lhotak
  */
-public final class Edge {
+public final class Edge implements Invalidable {
   /**
    * The method in which the call occurs; may be null for calls not occurring in a specific method (eg. implicit calls by the
    * VM)
    */
   private MethodOrMethodContext src;
+
+  private boolean invalid = false;
 
   public SootMethod src() {
     if (src == null) {
@@ -173,6 +176,7 @@ public final class Edge {
     return kind.passesParameters();
   }
 
+  @Override
   public int hashCode() {
     int ret = (tgt.hashCode() + 20) + kind.getNumber();
     if (src != null) {
@@ -184,7 +188,11 @@ public final class Edge {
     return ret;
   }
 
+  @Override
   public boolean equals(Object other) {
+    if (!(other instanceof Edge)) {
+      return false;
+    }
     Edge o = (Edge) other;
     if (o == null) {
       return false;
@@ -204,6 +212,7 @@ public final class Edge {
     return true;
   }
 
+  @Override
   public String toString() {
     return kind.toString() + " edge: " + srcUnit + " in " + src + " ==> " + tgt;
   }
@@ -258,6 +267,7 @@ public final class Edge {
   }
 
   void remove() {
+    invalid = true;
     nextByUnit.prevByUnit = prevByUnit;
     prevByUnit.nextByUnit = nextByUnit;
     nextBySrc.prevBySrc = prevBySrc;
@@ -288,5 +298,19 @@ public final class Edge {
 
   Edge prevByTgt() {
     return prevByTgt;
+  }
+
+  @Override
+  public boolean isInvalid() {
+    return invalid;
+  }
+
+  @Override
+  public void invalidate() {
+    // Since the edge remains in the QueueReaders for a while, the GC could not claim old units.
+    src = null;
+    srcUnit = null;
+    tgt = null;
+    invalid = true;
   }
 }

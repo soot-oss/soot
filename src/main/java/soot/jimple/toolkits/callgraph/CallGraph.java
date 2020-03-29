@@ -1,5 +1,7 @@
 package soot.jimple.toolkits.callgraph;
 
+import java.util.Collection;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -58,6 +60,7 @@ public class CallGraph implements Iterable<Edge> {
     if (!edges.add(e)) {
       return false;
     }
+
     stream.add(e);
     Edge position = null;
 
@@ -96,7 +99,8 @@ public class CallGraph implements Iterable<Edge> {
     for (QueueReader<Edge> edgeRdr = listener(); edgeRdr.hasNext();) {
       Edge e = edgeRdr.next();
       if (e.srcUnit() == u) {
-        removeEdge(e);
+        e.remove();
+        removeEdge(e, false);
         hasRemoved = true;
       }
     }
@@ -118,8 +122,11 @@ public class CallGraph implements Iterable<Edge> {
     boolean hasSwapped = false;
     for (Iterator<Edge> edgeRdr = edgesOutOf(out); edgeRdr.hasNext();) {
       Edge e = edgeRdr.next();
+      MethodOrMethodContext src = e.getSrc();
+      MethodOrMethodContext tgt = e.getTgt();
       removeEdge(e);
-      addEdge(new Edge(e.getSrc(), in, e.getTgt()));
+      e.remove();
+      addEdge(new Edge(src, in, tgt));
       hasSwapped = true;
     }
     return hasSwapped;
@@ -129,6 +136,19 @@ public class CallGraph implements Iterable<Edge> {
    * Removes the edge e from the call graph. Returns true iff the edge was originally present in the call graph.
    */
   public boolean removeEdge(Edge e) {
+    return removeEdge(e, true);
+  }
+
+  /**
+   * Removes the edge e from the call graph. Returns true iff the edge was originally present in the call graph.
+   * 
+   * @param e
+   *          the edge
+   * @param removeInEdgeList
+   *          when true (recommended), it is ensured that the edge reader is informed about the removal
+   * @return whether the removal was successful.
+   */
+  public boolean removeEdge(Edge e, boolean removeInEdgeList) {
     if (!edges.remove(e)) {
       return false;
     }
@@ -157,8 +177,31 @@ public class CallGraph implements Iterable<Edge> {
         tgtToEdge.remove(e.getTgt());
       }
     }
-
+    // This is an linear operation, so we want to avoid it if possible.
+    if (removeInEdgeList) {
+      reader.remove(e);
+    }
     return true;
+  }
+
+  /**
+   * Removes the edges e from the call graph. Returns true iff one edge was originally present in the call graph.
+   * 
+   * @param e
+   *          the edge
+   * @return
+   * @return whether the removal was successful.
+   */
+  public boolean removeEdges(Collection<Edge> edges) {
+    if (!edges.removeAll(edges)) {
+      return false;
+    }
+    for (Edge e : edges) {
+      removeEdge(e, false);
+    }
+    reader.remove(edges);
+    return true;
+
   }
 
   /**
@@ -365,4 +408,5 @@ public class CallGraph implements Iterable<Edge> {
   public Iterator<Edge> iterator() {
     return edges.iterator();
   }
+
 }

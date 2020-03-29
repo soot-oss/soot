@@ -1,4 +1,4 @@
-[![Build Status](https://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-pipeline/job/master/badge/icon)](https://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-pipeline/job/master/)
+[![Build Status](https://github.com/Sable/soot/workflows/Soot%20CI%20with%20Maven/badge.svg?branch=develop)](https://github.com/Sable/soot/actions)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/Sable/soot) 
 
 # Using Soot? Let us know about it!
@@ -17,8 +17,8 @@ Try and get involved in Soot's Java 9 bleeding edge developement.
 * Spark
    
 ## What does not work yet?
-* Anonymous modules (mixing module- and class-path)
-* Multi-module jar files
+ * Anonymous modules (mixing module- and class-path)
+ * Multi-module jar files
 
 # What is Soot?
 
@@ -60,9 +60,9 @@ You can also obtain older builds of the `master` branch. A complete listing of b
 
 You can obtain the latest release build of Soot [directly](https://repo1.maven.org/maven2/ca/mcgill/sable/soot/).
 
-The `soot-RELEASE-jar-with-dependencies.jar` file is an all-in-one file that also contains all the required libraries. 
+The `soot-<RELEASE>-jar-with-dependencies.jar` file is an all-in-one file that also contains all the required libraries. 
 
-The `soot-RELEASE.jar`  file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
+The `soot-<RELEASE>.jar`  file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
 
 # Building Soot yourself
 

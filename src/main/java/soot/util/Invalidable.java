@@ -1,10 +1,10 @@
-package soot.jimple.spark.sets;
+package soot.util;
 
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 2002 Ondrej Lhotak
+ * Copyright (C) 2005 Ondrej Lhotak
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,15 +22,21 @@ package soot.jimple.spark.sets;
  * #L%
  */
 
-import soot.Type;
-import soot.jimple.spark.pag.PAG;
-
 /**
- * Abstract base class for points-to set factory.
+ * A class implementing this interface can be invalidated. The invalidation state can be retrieved by other classes.
  * 
- * @author Ondrej Lhotak
+ * @author Marc Miltenberger
  */
-public abstract class P2SetFactory<T extends PointsToSetInternal> {
-  /** Returns a newly-created set. */
-  public abstract T newSet(Type type, PAG pag);
+public interface Invalidable {
+  /**
+   * Return true if the object is invalid.
+   * 
+   * @return true if the object is invalid.
+   */
+  public boolean isInvalid();
+
+  /**
+   * Invalidates the object. Does nothing if the object is already invalid.
+   */
+  public void invalidate();
 }

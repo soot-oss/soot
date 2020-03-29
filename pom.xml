@@ -441,7 +441,7 @@
         <dependency>
             <groupId>org.smali</groupId>
             <artifactId>dexlib2</artifactId>
-            <version>2.3.4</version>
+            <version>2.4.0</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
@@ -606,10 +606,6 @@
                     <value>true</value>
                 </property>
             </activation>
-            <properties>
-                <gpg.executable>gpg2</gpg.executable>
-                <gpg.keyname>BA6398DCF4E2C1B6C5C7BDFC364F80C21BCC61BB</gpg.keyname>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
