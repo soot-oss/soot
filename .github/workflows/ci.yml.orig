@@ -1,6 +1,18 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
+<<<<<<< HEAD
+name: Soot CI with Maven
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  buildAndTest:
+=======
 name: Soot CI
 on:
   push:
@@ -27,6 +39,7 @@ jobs:
           mvn -B clean license:check-file-header -Dlicence-check.failOnMissingHeader=true
     
   BuildAndTest:
+>>>>>>> develop
     name: Build and Test with java ${{ matrix.java_version }}
     runs-on: ubuntu-latest
     strategy:
@@ -34,6 +47,17 @@ jobs:
         java_version: ['8', '9', '11']
 
     steps:
+<<<<<<< HEAD
+    - uses: actions/checkout@v1
+    - name: Use Java ${{ matrix.java_version }}
+      uses: actions/setup-node@v1
+      with:
+        java-version: ${{ matrix.java_version }}
+
+    - name: Build and test Java ${{ matrix.java_version }}
+      run: |
+        mvn clean test -PJava${{ matrix.java_version }}
+=======
     - name: Checkout
       uses: actions/checkout@v2
     - name: Use Java ${{ matrix.java_version }}
@@ -103,3 +127,4 @@ jobs:
             mkdir -p /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/${{ steps.version.outputs.version }}/options
             cp doc/soot_options.htm /data/out/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/${{ steps.version.outputs.version }}/options
       
+>>>>>>> develop
