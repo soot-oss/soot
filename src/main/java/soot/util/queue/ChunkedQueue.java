@@ -33,8 +33,8 @@ package soot.util.queue;
 @SuppressWarnings("unchecked")
 public class ChunkedQueue<E> {
 
-  static final Object NULL_CONST = new Object();
-  static final Object DELETED_CONST = new Object();
+  protected static final Object NULL_CONST = new Object();
+  protected static final Object DELETED_CONST = new Object();
 
   protected static final int LENGTH = 60;
   protected Object[] q;
