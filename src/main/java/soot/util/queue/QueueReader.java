@@ -72,7 +72,7 @@ public class QueueReader<E> implements java.util.Iterator<E> {
     return (E) ret;
   }
 
-  private boolean skip(Object ret) {
+  protected boolean skip(Object ret) {
     if (ret instanceof Invalidable) {
       final Invalidable invalidable = (Invalidable) ret;
       if (invalidable.isInvalid()) {
