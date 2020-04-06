@@ -108,6 +108,7 @@ public class VirtualCalls {
 
     SootMethod m = cls.getMethodUnsafe(subSig);
     if (m != null) {
+    	// Why are we not adding to targets for abstract methods
       if (!m.isAbstract()) {
         ret = m;
       }
