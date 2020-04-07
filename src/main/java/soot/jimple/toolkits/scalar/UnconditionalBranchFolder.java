@@ -52,9 +52,6 @@ public class UnconditionalBranchFolder extends BodyTransformer {
   }
 
   static final int JUMPOPT_TYPES = 6;
-  int numFound[], numFixed[];
-
-  HashMap<Stmt, Stmt> stmtMap;
 
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     StmtBody body = (StmtBody) b;
@@ -63,19 +60,11 @@ public class UnconditionalBranchFolder extends BodyTransformer {
       logger.debug("[" + body.getMethod().getName() + "] Folding unconditional branches...");
     }
 
-    // allocate counters once only
-    if (numFound == null) {
-      numFound = new int[JUMPOPT_TYPES + 1];
-      numFixed = new int[JUMPOPT_TYPES + 1];
-    }
-
-    for (int i = 0; i <= JUMPOPT_TYPES; i++) {
-      numFound[i] = 0;
-      numFixed[i] = 0;
-    }
+    int[] numFound = new int[JUMPOPT_TYPES + 1];
+    int[] numFixed = new int[JUMPOPT_TYPES + 1];
 
     Chain<Unit> units = body.getUnits();
-    stmtMap = new HashMap<Stmt, Stmt>();
+    Map<Stmt, Stmt> stmtMap = new HashMap<Stmt, Stmt>();
 
     // find goto and if-goto statements
     Iterator<Unit> stmtIt = units.iterator();
@@ -90,32 +79,32 @@ public class UnconditionalBranchFolder extends BodyTransformer {
           // check for goto -> next statement
           if (units.getSuccOf(stmt) == target) {
             stmtIt.remove();
-            updateCounters(6, true);
+            updateCounters(6, true, numFound, numFixed);
           }
         }
 
         if (target instanceof GotoStmt) {
-          newTarget = getFinalTarget(target);
+          newTarget = getFinalTarget(stmtMap, target);
           if (newTarget == null) {
             newTarget = stmt;
           }
           ((GotoStmt) stmt).setTarget(newTarget);
-          updateCounters(1, true);
+          updateCounters(1, true, numFound, numFixed);
         } else if (target instanceof IfStmt) {
-          updateCounters(3, false);
+          updateCounters(3, false, numFound, numFixed);
         }
       } else if (stmt instanceof IfStmt) {
         target = ((IfStmt) stmt).getTarget();
 
         if (target instanceof GotoStmt) {
-          newTarget = getFinalTarget(target);
+          newTarget = getFinalTarget(stmtMap, target);
           if (newTarget == null) {
             newTarget = stmt;
           }
           ((IfStmt) stmt).setTarget(newTarget);
-          updateCounters(2, true);
+          updateCounters(2, true, numFound, numFixed);
         } else if (target instanceof IfStmt) {
-          updateCounters(4, false);
+          updateCounters(4, false, numFound, numFixed);
         }
       }
     }
@@ -125,7 +114,8 @@ public class UnconditionalBranchFolder extends BodyTransformer {
 
   } // optimizeJumps
 
-  private void updateCounters(int type, boolean fixed) {
+  private void updateCounters(int type, boolean fixed, int[] numFound,
+      int[] numFixed) {
 
     if ((type < 0) || (type > JUMPOPT_TYPES)) {
       return;
@@ -139,7 +129,7 @@ public class UnconditionalBranchFolder extends BodyTransformer {
     }
   }
 
-  private Stmt getFinalTarget(Stmt stmt) {
+  private Stmt getFinalTarget(Map<Stmt, Stmt> stmtMap, Stmt stmt) {
     Stmt finalTarget = null, target;
 
     // if not a goto, this is the final target
@@ -161,7 +151,7 @@ public class UnconditionalBranchFolder extends BodyTransformer {
         finalTarget = null;
       }
     } else {
-      finalTarget = getFinalTarget(target);
+      finalTarget = getFinalTarget(stmtMap, target);
     }
 
     stmtMap.put(stmt, finalTarget);
