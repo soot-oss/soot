@@ -6,7 +6,7 @@
     <groupId>ca.mcgill.sable</groupId>
     <artifactId>soot-umbrella</artifactId>
     <name>Soot - a J*va Optimization Framework</name>
-    <version>4.1.0</version>
+    <version>4.1.1</version>
     <description>A Java Optimization Framework</description>
     <url>https://sable.github.io/soot/</url>
     <organization>
