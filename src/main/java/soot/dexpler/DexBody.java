@@ -30,6 +30,7 @@ package soot.dexpler;
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
 import com.google.common.collect.ArrayListMultimap;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -202,6 +203,7 @@ public class DexBody {
 
   /**
    * Allocate a fresh name for Jimple local
+   * 
    * @param hint
    *          A name that the fresh name will look like
    * @author Zhixuan Yang (yangzhixuan@sbrella.com)
@@ -214,7 +216,7 @@ public class DexBody {
     if (!takenLocalNames.contains(hint)) {
       fresh = hint;
     } else {
-      for (int i = 1; ; i++) {
+      for (int i = 1;; i++) {
         fresh = hint + Integer.toString(i);
         if (!takenLocalNames.contains(fresh)) {
           break;
@@ -284,8 +286,7 @@ public class DexBody {
           continue;
         }
         ins.setLineNumber(ln.getLineNumber());
-      } else if (di instanceof ImmutableStartLocal
-              || di instanceof ImmutableRestartLocal) {
+      } else if (di instanceof ImmutableStartLocal || di instanceof ImmutableRestartLocal) {
         int reg, codeAddr;
         String type, signature, name;
         if (di instanceof ImmutableStartLocal) {
@@ -305,7 +306,8 @@ public class DexBody {
           type = sl.getType();
           signature = sl.getSignature();
         }
-        localDebugs.put(reg, new RegDbgEntry(codeAddr, -1/* endAddress */, reg, name, type, signature));
+        if (name != null && type != null)
+          localDebugs.put(reg, new RegDbgEntry(codeAddr, -1/* endAddress */, reg, name, type, signature));
       } else if (di instanceof ImmutableEndLocal) {
         ImmutableEndLocal el = (ImmutableEndLocal) di;
         List<RegDbgEntry> lds = localDebugs.get(el.getRegister());
