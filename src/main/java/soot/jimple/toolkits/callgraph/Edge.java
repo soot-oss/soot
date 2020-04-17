@@ -87,7 +87,7 @@ public final class Edge implements Invalidable {
   private MethodOrMethodContext tgt;
 
   public SootMethod tgt() {
-    return tgt.method();
+    return tgt == null ? null : tgt.method();
   }
 
   public Context tgtCtxt() {
