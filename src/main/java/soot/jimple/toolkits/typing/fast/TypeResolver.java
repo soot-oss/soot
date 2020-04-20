@@ -514,7 +514,7 @@ public class TypeResolver {
             if (!typesEqual(t, told)) {
               Typing tg_;
               BitSet wl_;
-              if (/* (eval.size() == 1 && lcas.size() == 1) || */ isFirstType) {
+              if (/* (eval.size() == 1 && lcas.size() == 1) || */isFirstType) {
                 // The types agree, we have a type we can directly use
                 tg_ = tg;
                 wl_ = wl;
@@ -538,7 +538,6 @@ public class TypeResolver {
         } // end for
       }
     }
-
     Typing.minimize(r, h);
     return r;
   }
@@ -571,7 +570,7 @@ public class TypeResolver {
         if (invoke.getInvokeExpr() instanceof SpecialInvokeExpr) {
           SpecialInvokeExpr special = (SpecialInvokeExpr) invoke.getInvokeExpr();
 
-          if (special.getMethodRef().name().equals("<init>")) {
+          if (special.getMethodRef().getName().equals("<init>")) {
             List<Unit> deflist = defs.getDefsOfAt((Local) special.getBase(), invoke);
 
             while (deflist.size() == 1) {

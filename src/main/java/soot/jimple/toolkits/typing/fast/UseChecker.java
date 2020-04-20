@@ -133,11 +133,11 @@ public class UseChecker extends AbstractStmtSwitch {
 
     if (ie instanceof InstanceInvokeExpr) {
       InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
-      iie.setBase(this.uv.visit(iie.getBase(), m.declaringClass().getType(), stmt));
+      iie.setBase(this.uv.visit(iie.getBase(), m.getDeclaringClass().getType(), stmt));
     }
 
     for (int i = 0; i < ie.getArgCount(); i++) {
-      ie.setArg(i, this.uv.visit(ie.getArg(i), m.parameterType(i), stmt));
+      ie.setArg(i, this.uv.visit(ie.getArg(i), m.getParameterType(i), stmt));
     }
   }
 
@@ -311,7 +311,8 @@ public class UseChecker extends AbstractStmtSwitch {
                 // For binary expressions, we can look for type information in the
                 // other operands
                 AssignStmt useAssignStmt = (AssignStmt) useStmt;
-                if (useAssignStmt.getRightOp() instanceof BinopExpr) {
+                Value rop = useAssignStmt.getRightOp();
+                if (rop instanceof BinopExpr) {
                   BinopExpr binOp = (BinopExpr) useAssignStmt.getRightOp();
                   final Value other;
                   if (binOp.getOp1() == usePair.getValueBox().getValue()) {
@@ -324,6 +325,8 @@ public class UseChecker extends AbstractStmtSwitch {
                   if (newEt != null) {
                     et = newEt;
                   }
+                } else if (rop instanceof CastExpr) {
+                  et = ((CastExpr) rop).getCastType();
                 }
               } else if (useStmt instanceof ReturnStmt) {
                 et = jb.getMethod().getReturnType();
