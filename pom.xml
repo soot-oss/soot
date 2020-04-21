@@ -618,10 +618,6 @@
                     <value>true</value>
                 </property>
             </activation>
-            <properties>
-                <gpg.executable>gpg2</gpg.executable>
-                <gpg.keyname>BA6398DCF4E2C1B6C5C7BDFC364F80C21BCC61BB</gpg.keyname>
-            </properties>
             <build>
                 <plugins>
                     <plugin>

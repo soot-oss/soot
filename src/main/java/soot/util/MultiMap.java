@@ -50,6 +50,8 @@ public interface MultiMap<K, V> extends Iterable<Pair<K, V>> {
 
   public boolean putAll(Map<K, Set<V>> m);
 
+  public boolean putMap(Map<K, V> m);
+
   public boolean putAll(MultiMap<K, V> m);
 
   public boolean remove(K key, V value);
