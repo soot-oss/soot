@@ -10,12 +10,12 @@ package soot.asm;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -69,9 +69,9 @@ import soot.tagkit.Tag;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class SootClassBuilder extends ClassVisitor {
 
-  protected TagBuilder tb;
   protected final SootClass klass;
   protected final Set<soot.Type> deps;
+  protected TagBuilder tb;
 
   /**
    * Constructs a new Soot class builder.
@@ -220,15 +220,26 @@ public class SootClassBuilder extends ClassVisitor {
 
   @Override
   public void visitInnerClass(String name, String outerName, String innerName, int access) {
-    klass.addTag(new InnerClassTag(name, outerName, innerName, access));
+    boolean anonymous = false;
+    String asmName = AsmUtil.toQualifiedName(name);
+    if (asmName.equals(this.klass.getName())) {
+      // we are looking at inner classes of the class, we are actually visiting
+      anonymous = innerName == null;
+      klass.addTag(new InnerClassTag(name, outerName, innerName, access));
+    }
 
     // soot does not resolve all inner classes, e.g., java.util.stream.FindOps$FindSink$... is not resolved
-
     if (!(this.klass instanceof SootModuleInfo)) {
       String innerClassname = AsmUtil.toQualifiedName(name);
       deps.add(makeRefType(innerClassname));
+      if (outerName != null && name != null) {
+        String outerClassName = AsmUtil.toQualifiedName(outerName);
+        deps.add(makeRefType(outerClassName));
+        SootClass outerClass = makeClassRef(outerClassName);
+        SootClass innerSootClass = makeClassRef(innerClassname);
+        innerSootClass.setOuterClass(outerClass);
+      }
     }
-
   }
 
   @Override
