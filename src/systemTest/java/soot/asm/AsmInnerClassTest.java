@@ -1,0 +1,92 @@
+package soot.asm;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2020 Manuel Benz
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import org.junit.Test;
+
+import soot.Modifier;
+import soot.Scene;
+import soot.SootMethod;
+import soot.options.Options;
+import soot.tagkit.InnerClassTag;
+import soot.testing.framework.AbstractTestingFramework;
+
+public class AsmInnerClassTest extends AbstractTestingFramework {
+
+  private static final String TEST_TARGET_CLASS = "soot.asm.ScopeFinderTarget";
+
+  @Override
+  protected void setupSoot() {
+    Options.v().setPhaseOption("jb", "use-original-names:true");
+    Options.v().setPhaseOption("jb.tr", "ignore-nullpointer-dereferences:true");
+    Options.v().set_keep_line_number(true);
+    Options.v().setPhaseOption("cg.cha", "on");
+  }
+
+  @Test
+  public void nonInner() {
+    // statements at the beginning of a for loop should have the line number as for the branching
+    // statement and not the last line number after the branch that leads outside the loop
+    SootMethod target = prepareTarget(methodSigFromComponents(TEST_TARGET_CLASS, "void", "method"), TEST_TARGET_CLASS);
+    assertEquals(2, Scene.v().getApplicationClasses().size());
+    assertFalse(target.getDeclaringClass().hasOuterClass());
+    assertFalse(target.getDeclaringClass().isInnerClass());
+    InnerClassTag tag = (InnerClassTag) target.getDeclaringClass().getTag("InnerClassTag");
+    assertNull(tag);
+  }
+
+  @Test
+  public void InnerStatic() {
+    SootMethod target2 = prepareTarget(methodSigFromComponents(TEST_TARGET_CLASS + "$Inner", "void", "<init>"),
+        TEST_TARGET_CLASS + "$Inner");
+    assertEquals(2, Scene.v().getApplicationClasses().size());
+    assertTrue(target2.getDeclaringClass().hasOuterClass());
+    assertTrue(target2.getDeclaringClass().isInnerClass());
+    InnerClassTag tag2 = (InnerClassTag) target2.getDeclaringClass().getTag("InnerClassTag");
+    assertNotNull(tag2);
+    assertEquals("soot/asm/ScopeFinderTarget$Inner", tag2.getInnerClass());
+    assertEquals("soot/asm/ScopeFinderTarget", tag2.getOuterClass());
+    assertTrue(Modifier.isStatic(tag2.getAccessFlags()));
+  }
+
+  @Test
+  public void InnerStaticInner() {
+    SootMethod target3 = prepareTarget(methodSigFromComponents(TEST_TARGET_CLASS + "$Inner$InnerInner", "void", "method"),
+        TEST_TARGET_CLASS + "$Inner$InnerInner");
+    // one dummy
+    assertEquals(2, Scene.v().getApplicationClasses().size());
+    assertTrue(target3.getDeclaringClass().hasOuterClass());
+    assertTrue(target3.getDeclaringClass().isInnerClass());
+    InnerClassTag tag3 = (InnerClassTag) target3.getDeclaringClass().getTag("InnerClassTag");
+    assertNotNull(tag3);
+    assertEquals("soot/asm/ScopeFinderTarget$Inner$InnerInner", tag3.getInnerClass());
+    assertEquals("soot/asm/ScopeFinderTarget$Inner", tag3.getOuterClass());
+    assertFalse(Modifier.isStatic(tag3.getAccessFlags()));
+  }
+}
