@@ -30,6 +30,7 @@ import org.objectweb.asm.ClassReader;
 import soot.ClassSource;
 import soot.FoundFile;
 import soot.SootClass;
+import soot.SootResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 
 /**
@@ -67,6 +68,22 @@ public class AsmClassSource extends ClassSource {
       clsr.accept(scb, ClassReader.SKIP_FRAMES);
       Dependencies deps = new Dependencies();
       deps.typesToSignature.addAll(scb.deps);
+      // add the outer class information, could not be called in the builder, since sc needs to be resolved - before calling setOuterClass()
+      String outerClassName = null;
+      if (!sc.hasOuterClass() && className.contains("$")) {
+        if (className.contains("$-")) {
+          /*
+           * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may
+           * contain '$' which do not indicate an inner/outer class separator if the '$' occurs after a inner class with a
+           * name starting with '-'. Thus we search for '$-' and anything after it including '-' is the inner classes name
+           * and anything before it is the outer classes name.
+           */
+          outerClassName = className.substring(0, className.indexOf("$-"));
+        } else {
+          outerClassName = className.substring(0, className.lastIndexOf('$'));
+        }
+        sc.setOuterClass(SootResolver.v().makeClassRef(outerClassName));
+      }
       return deps;
     } catch (IOException e) {
       throw new RuntimeException("Error: Failed to create class reader from class source.", e);

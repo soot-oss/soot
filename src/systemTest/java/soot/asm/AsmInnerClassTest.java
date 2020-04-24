@@ -35,6 +35,7 @@ import soot.Scene;
 import soot.SootMethod;
 import soot.options.Options;
 import soot.tagkit.InnerClassTag;
+import soot.tagkit.Tag;
 import soot.testing.framework.AbstractTestingFramework;
 
 public class AsmInnerClassTest extends AbstractTestingFramework {
@@ -58,7 +59,8 @@ public class AsmInnerClassTest extends AbstractTestingFramework {
     assertFalse(target.getDeclaringClass().hasOuterClass());
     assertFalse(target.getDeclaringClass().isInnerClass());
     InnerClassTag tag = (InnerClassTag) target.getDeclaringClass().getTag("InnerClassTag");
-    assertNull(tag);
+    //the class has inner classes
+    assertNotNull(tag);
   }
 
   @Test
@@ -83,10 +85,23 @@ public class AsmInnerClassTest extends AbstractTestingFramework {
     assertEquals(2, Scene.v().getApplicationClasses().size());
     assertTrue(target3.getDeclaringClass().hasOuterClass());
     assertTrue(target3.getDeclaringClass().isInnerClass());
-    InnerClassTag tag3 = (InnerClassTag) target3.getDeclaringClass().getTag("InnerClassTag");
-    assertNotNull(tag3);
-    assertEquals("soot/asm/ScopeFinderTarget$Inner$InnerInner", tag3.getInnerClass());
-    assertEquals("soot/asm/ScopeFinderTarget$Inner", tag3.getOuterClass());
-    assertFalse(Modifier.isStatic(tag3.getAccessFlags()));
+    InnerClassTag innerClassTag = null;
+    for(Tag tag : target3.getDeclaringClass().getTags()){
+      //FIXME: we have multiple innerclasstags? for a parent it makes sense but for a child class?
+      if(tag instanceof InnerClassTag){
+        boolean inner=((InnerClassTag) tag).getInnerClass().equals(TEST_TARGET_CLASS + "$Inner$InnerInner");
+        if(inner){
+          innerClassTag = (InnerClassTag) tag;
+          break;
+        }
+      }
+
+
+    }
+    assertNotNull(innerClassTag);
+    assertEquals("soot/asm/ScopeFinderTarget$Inner$InnerInner", innerClassTag.getInnerClass());
+    assertEquals("soot/asm/ScopeFinderTarget$Inner", innerClassTag.getOuterClass());
+    assertFalse(Modifier.isStatic(innerClassTag.getAccessFlags()));
+
   }
 }

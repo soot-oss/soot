@@ -27,12 +27,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Scanner;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
 
@@ -40,7 +42,6 @@ import soot.G;
 import soot.Main;
 import soot.ModulePathSourceLocator;
 import soot.Scene;
-
 
 /**
  * Abstract base class for tests for the ASM backend that work with compiled class files
@@ -56,7 +57,8 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 
   private final TraceClassVisitor visitor = new TraceClassVisitor(pw);
 
-  protected TargetCompiler targetCompiler = Scene.isJavaGEQ9(System.getProperty("java.version")) ? TargetCompiler.javac9 : TargetCompiler.javac;
+  protected TargetCompiler targetCompiler
+      = Scene.isJavaGEQ9(System.getProperty("java.version")) ? TargetCompiler.javac9 : TargetCompiler.javac;
 
   /**
    * Runs Soot with the arguments needed for running one test
@@ -82,9 +84,16 @@ public abstract class AbstractASMBackendTest implements Opcodes {
   /**
    * Generates the textual output and saves it for later for comparison
    */
-  private String createComparison() {
+  private String createComparison() throws IOException {
     generate(visitor);
     return sw.toString();
+
+  /*   ClassReader classReader = new ClassReader(getTargetClass()); StringWriter stringWriter = new StringWriter();
+      PrintWriter printWriter = new PrintWriter(stringWriter); TraceClassVisitor traceClassVisitor = new
+      TraceClassVisitor(null, printWriter); classReader.accept(traceClassVisitor, ClassReader.SKIP_DEBUG);
+
+      return (stringWriter.toString());
+*/
   }
 
   /**
@@ -94,7 +103,7 @@ public abstract class AbstractASMBackendTest implements Opcodes {
    *           if either the file for comparison could not be created or the soot output could not be opened
    */
   @Test
-  public void runTestAndCompareOutput() throws FileNotFoundException {
+  public void runTestAndCompareOutput() throws IOException {
     runSoot();
     String comparisonOutput = createComparison();
 
@@ -123,6 +132,7 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 
         // Get both lines
         String compare = compareOutput.nextLine();
+
         String output = sootOutput.nextLine();
 
         // Compare lines
