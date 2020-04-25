@@ -22,7 +22,10 @@ package soot.asm;
  * #L%
  */
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -55,7 +58,7 @@ public class AsmInnerClassTest extends AbstractTestingFramework {
     assertFalse(target.getDeclaringClass().hasOuterClass());
     assertFalse(target.getDeclaringClass().isInnerClass());
     InnerClassTag tag = (InnerClassTag) target.getDeclaringClass().getTag("InnerClassTag");
-    // the class has inner classes
+    //the class has inner classes
     assertNotNull(tag);
   }
 
@@ -82,16 +85,16 @@ public class AsmInnerClassTest extends AbstractTestingFramework {
     assertTrue(target3.getDeclaringClass().hasOuterClass());
     assertTrue(target3.getDeclaringClass().isInnerClass());
     InnerClassTag innerClassTag = null;
-    for (Tag tag : target3.getDeclaringClass().getTags()) {
-      // FIXME: we have multiple innerclasstags? for a parent it makes sense but for a child class?
-      if (tag instanceof InnerClassTag) {
-        String className = "soot/asm/ScopeFinderTarget$Inner$InnerInner";
-        boolean inner = ((InnerClassTag) tag).getInnerClass().equals(className);
-        if (inner) {
+    for(Tag tag : target3.getDeclaringClass().getTags()){
+      //FIXME: we have multiple innerclasstags? for a parent it makes sense but for a child class?
+      if(tag instanceof InnerClassTag){
+        boolean inner=((InnerClassTag) tag).getInnerClass().equals(TEST_TARGET_CLASS + "$Inner$InnerInner");
+        if(inner){
           innerClassTag = (InnerClassTag) tag;
           break;
         }
       }
+
 
     }
     assertNotNull(innerClassTag);
