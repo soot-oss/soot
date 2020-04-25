@@ -15,12 +15,12 @@ package soot.dexpler;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -40,7 +40,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.jf.dexlib2.analysis.ClassPath;
 import org.jf.dexlib2.analysis.ClassPathResolver;
 import org.jf.dexlib2.analysis.ClassProvider;
@@ -61,7 +60,6 @@ import org.jf.dexlib2.immutable.debug.ImmutableStartLocal;
 import org.jf.dexlib2.util.MethodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import soot.Body;
 import soot.DoubleType;
 import soot.Local;
@@ -126,7 +124,8 @@ import soot.toolkits.scalar.LocalSplitter;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
 /**
- * A DexBody contains the code of a DexMethod and is used as a wrapper around JimpleBody in the jimplification process.
+ * A DexBody contains the code of a DexMethod and is used as a wrapper around JimpleBody in the
+ * jimplification process.
  *
  * @author Michael Markert
  * @author Frank Hartmann
@@ -202,8 +201,8 @@ public class DexBody {
 
   /**
    * Allocate a fresh name for Jimple local
-   * @param hint
-   *          A name that the fresh name will look like
+   *
+   * @param hint A name that the fresh name will look like
    * @author Zhixuan Yang (yangzhixuan@sbrella.com)
    */
   protected String freshLocalName(String hint) {
@@ -226,12 +225,11 @@ public class DexBody {
   }
 
   /**
-   * @param code
-   *          the codeitem that is contained in this body
-   * @param method
-   *          the method that is associated with this body
+   * @param code the codeitem that is contained in this body
+   * @param method the method that is associated with this body
    */
-  protected DexBody(DexEntry<? extends DexFile> dexFile, Method method, RefType declaringClassType) {
+  protected DexBody(
+      DexEntry<? extends DexFile> dexFile, Method method, RefType declaringClassType) {
     MethodImplementation code = method.getImplementation();
     if (code == null) {
       throw new RuntimeException("error: no code for method " + method.getName());
@@ -271,7 +269,11 @@ public class DexBody {
     // Check taken from Android's dalvik/libdex/DexSwapVerify.cpp
     if (numParameterRegisters > numRegisters) {
       throw new RuntimeException(
-          "Malformed dex file: insSize (" + numParameterRegisters + ") > registersSize (" + numRegisters + ")");
+          "Malformed dex file: insSize ("
+              + numParameterRegisters
+              + ") > registersSize ("
+              + numRegisters
+              + ")");
     }
 
     for (DebugItem di : code.getDebugItems()) {
@@ -284,8 +286,7 @@ public class DexBody {
           continue;
         }
         ins.setLineNumber(ln.getLineNumber());
-      } else if (di instanceof ImmutableStartLocal
-              || di instanceof ImmutableRestartLocal) {
+      } else if (di instanceof ImmutableStartLocal || di instanceof ImmutableRestartLocal) {
         int reg, codeAddr;
         String type, signature, name;
         if (di instanceof ImmutableStartLocal) {
@@ -305,7 +306,10 @@ public class DexBody {
           type = sl.getType();
           signature = sl.getSignature();
         }
-        localDebugs.put(reg, new RegDbgEntry(codeAddr, -1/* endAddress */, reg, name, type, signature));
+        if (name != null && type != null) {
+          localDebugs.put(
+              reg, new RegDbgEntry(codeAddr, -1 /* endAddress */, reg, name, type, signature));
+        }
       } else if (di instanceof ImmutableEndLocal) {
         ImmutableEndLocal el = (ImmutableEndLocal) di;
         List<RegDbgEntry> lds = localDebugs.get(el.getRegister());
@@ -323,10 +327,10 @@ public class DexBody {
   }
 
   /**
-   * Extracts the list of dalvik instructions from dexlib and converts them into our own instruction data model
-   * 
-   * @param code
-   *          The dexlib method implementation
+   * Extracts the list of dalvik instructions from dexlib and converts them into our own instruction
+   * data model
+   *
+   * @param code The dexlib method implementation
    */
   protected void extractDexInstructions(MethodImplementation code) {
     int address = 0;
@@ -338,9 +342,7 @@ public class DexBody {
     }
   }
 
-  /**
-   * Return the types that are used in this body.
-   */
+  /** Return the types that are used in this body. */
   public Set<Type> usedTypes() {
     Set<Type> types = new HashSet<Type>();
     for (DexlibAbstractInstruction i : instructions) {
@@ -367,8 +369,7 @@ public class DexBody {
   /**
    * Add unit to this body.
    *
-   * @param u
-   *          Unit to add.
+   * @param u Unit to add.
    */
   public void add(Unit u) {
     getBody().getUnits().add(u);
@@ -377,8 +378,7 @@ public class DexBody {
   /**
    * Add a deferred instruction to this body.
    *
-   * @param i
-   *          the deferred instruction.
+   * @param i the deferred instruction.
    */
   public void addDeferredJimplification(DeferableInstruction i) {
     deferredInstructions.add(i);
@@ -387,8 +387,7 @@ public class DexBody {
   /**
    * Add a retypeable instruction to this body.
    *
-   * @param i
-   *          the retypeable instruction.
+   * @param i the retypeable instruction.
    */
   public void addRetype(RetypeableInstruction i) {
     instructionsToRetype.add(i);
@@ -397,8 +396,7 @@ public class DexBody {
   /**
    * Return the associated JimpleBody.
    *
-   * @throws RuntimeException
-   *           if no jimplification happened yet.
+   * @throws RuntimeException if no jimplification happened yet.
    */
   public Body getBody() {
     if (jBody == null) {
@@ -407,10 +405,7 @@ public class DexBody {
     return jBody;
   }
 
-  /**
-   * Return the Locals that are associated with the current register state.
-   *
-   */
+  /** Return the Locals that are associated with the current register state. */
   public Local[] getRegisterLocals() {
     return registerLocals;
   }
@@ -418,17 +413,20 @@ public class DexBody {
   /**
    * Return the Local that are associated with the number in the current register state.
    *
-   * Handles if the register number actually points to a method parameter.
+   * <p>Handles if the register number actually points to a method parameter.
    *
-   * @param num
-   *          the register number
+   * @param num the register number
    * @throws InvalidDalvikBytecodeException
    */
   public Local getRegisterLocal(int num) throws InvalidDalvikBytecodeException {
     int totalRegisters = registerLocals.length;
     if (num > totalRegisters) {
       throw new InvalidDalvikBytecodeException(
-          "Trying to access register " + num + " but only " + totalRegisters + " is/are available.");
+          "Trying to access register "
+              + num
+              + " but only "
+              + totalRegisters
+              + " is/are available.");
     }
     return registerLocals[num];
   }
@@ -440,10 +438,8 @@ public class DexBody {
   /**
    * Return the instruction that is present at the byte code address.
    *
-   * @param address
-   *          the byte code address.
-   * @throws RuntimeException
-   *           if address is not part of this body.
+   * @param address the byte code address.
+   * @throws RuntimeException if address is not part of this body.
    */
   public DexlibAbstractInstruction instructionAtAddress(int address) {
     DexlibAbstractInstruction i = null;
@@ -472,8 +468,7 @@ public class DexBody {
   /**
    * Return the jimple equivalent of this body.
    *
-   * @param m
-   *          the SootMethod that contains this body
+   * @param m the SootMethod that contains this body
    */
   public Body jimplify(Body b, SootMethod m) {
 
@@ -510,17 +505,19 @@ public class DexBody {
     if (!isStatic) {
       int thisRegister = numRegisters - numParameterRegisters - 1;
 
-      Local thisLocal = jimple.newLocal(freshLocalName("this"), unknownType); // generateLocal(UnknownType.v());
+      Local thisLocal =
+          jimple.newLocal(freshLocalName("this"), unknownType); // generateLocal(UnknownType.v());
       jBody.getLocals().add(thisLocal);
 
       registerLocals[thisRegister] = thisLocal;
-      JIdentityStmt idStmt = (JIdentityStmt) jimple.newIdentityStmt(thisLocal, jimple.newThisRef(declaringClassType));
+      JIdentityStmt idStmt =
+          (JIdentityStmt) jimple.newIdentityStmt(thisLocal, jimple.newThisRef(declaringClassType));
       add(idStmt);
       paramLocals.add(thisLocal);
       if (IDalvikTyper.ENABLE_DVKTYPER) {
-        DalvikTyper.v().setType(idStmt.leftBox, jBody.getMethod().getDeclaringClass().getType(), false);
+        DalvikTyper.v()
+            .setType(idStmt.leftBox, jBody.getMethod().getDeclaringClass().getType(), false);
       }
-
     }
     {
       int i = 0; // index of parameter type
@@ -554,7 +551,8 @@ public class DexBody {
         jBody.getLocals().add(gen);
         registerLocals[parameterRegister] = gen;
 
-        JIdentityStmt idStmt = (JIdentityStmt) jimple.newIdentityStmt(gen, jimple.newParameterRef(t, i++));
+        JIdentityStmt idStmt =
+            (JIdentityStmt) jimple.newIdentityStmt(gen, jimple.newParameterRef(t, i++));
         add(idStmt);
         paramLocals.add(gen);
         if (IDalvikTyper.ENABLE_DVKTYPER) {
@@ -603,8 +601,10 @@ public class DexBody {
 
     // process bytecode instructions
     final DexFile dexFile = dexEntry.getDexFile();
-    final boolean isOdex
-        = dexFile instanceof DexBackedDexFile ? ((DexBackedDexFile) dexFile).supportsOptimizedOpcodes() : false;
+    final boolean isOdex =
+        dexFile instanceof DexBackedDexFile
+            ? ((DexBackedDexFile) dexFile).supportsOptimizedOpcodes()
+            : false;
 
     ClassPath cp = null;
     if (isOdex) {
@@ -614,7 +614,8 @@ public class DexBody {
         classpathList.add(str);
       }
       try {
-        ClassPathResolver resolver = new ClassPathResolver(classpathList, classpathList, classpathList, dexEntry);
+        ClassPathResolver resolver =
+            new ClassPathResolver(classpathList, classpathList, classpathList, dexEntry);
         cp = new ClassPath(resolver.getResolvedClassProviders().toArray(new ClassProvider[0]));
       } catch (IOException e) {
         throw new RuntimeException(e);
@@ -831,7 +832,6 @@ public class DexBody {
             } else {
               throw new RuntimeException("error: do not handle if: " + u);
             }
-
           }
         }
       }
@@ -861,7 +861,6 @@ public class DexBody {
         System.out.println("removing null_type local " + l);
         l.setType(objectType);
       }
-
     }
 
     // We pack locals that are not used in overlapping regions. This may
@@ -940,7 +939,8 @@ public class DexBody {
           Type t = def.getLeftOp().getType();
           if (t instanceof RefType) {
             RefType rt = (RefType) t;
-            if (rt.getSootClass().isPhantom() && !rt.getSootClass().hasSuperclass()
+            if (rt.getSootClass().isPhantom()
+                && !rt.getSootClass().hasSuperclass()
                 && !rt.getSootClass().getName().equals("java.lang.Throwable")) {
               rt.getSootClass().setSuperclass(Scene.v().getSootClass("java.lang.Throwable"));
             }
@@ -974,8 +974,8 @@ public class DexBody {
   }
 
   /**
-   * Fixes the line numbers. If there is a unit without a line number, it gets the line number of the last (transitive)
-   * predecessor that has a line number.
+   * Fixes the line numbers. If there is a unit without a line number, it gets the line number of
+   * the last (transitive) predecessor that has a line number.
    */
   protected void fixLineNumbers() {
     int prevLn = -1;
@@ -1020,10 +1020,7 @@ public class DexBody {
     return this.copyPropagator;
   }
 
-  /**
-   * Set a dangling instruction for this body.
-   *
-   */
+  /** Set a dangling instruction for this body. */
   public void setDanglingInstruction(DanglingInstruction i) {
     dangling = i;
   }
@@ -1031,8 +1028,7 @@ public class DexBody {
   /**
    * Return the instructions that appear (lexically) after the given instruction.
    *
-   * @param instruction
-   *          the instruction which successors will be returned.
+   * @param instruction the instruction which successors will be returned.
    */
   public List<DexlibAbstractInstruction> instructionsAfter(DexlibAbstractInstruction instruction) {
     int i = instructions.indexOf(instruction);
@@ -1046,10 +1042,9 @@ public class DexBody {
   /**
    * Return the instructions that appear (lexically) before the given instruction.
    *
-   * The instruction immediately before the given is the first instruction and so on.
+   * <p>The instruction immediately before the given is the first instruction and so on.
    *
-   * @param instruction
-   *          the instruction which successors will be returned.
+   * @param instruction the instruction which successors will be returned.
    */
   public List<DexlibAbstractInstruction> instructionsBefore(DexlibAbstractInstruction instruction) {
     int i = instructions.indexOf(instruction);
@@ -1066,14 +1061,14 @@ public class DexBody {
   /**
    * Add the traps of this body.
    *
-   * Should only be called at the end jimplify.
+   * <p>Should only be called at the end jimplify.
    */
   private void addTraps() {
     final Jimple jimple = Jimple.v();
     for (TryBlock<? extends ExceptionHandler> tryItem : tries) {
       int startAddress = tryItem.getStartCodeAddress();
-      int length = tryItem.getCodeUnitCount();// .getTryLength();
-      int endAddress = startAddress + length;// - 1;
+      int length = tryItem.getCodeUnitCount(); // .getTryLength();
+      int endAddress = startAddress + length; // - 1;
       Unit beginStmt = instructionAtAddress(startAddress).getUnit();
       // (startAddress + length) typically points to the first byte of the
       // first instruction after the try block
@@ -1087,7 +1082,8 @@ public class DexBody {
       // if the try block ends on the last instruction of the body, add a
       // nop instruction so Soot can include
       // the last instruction in the try block.
-      if (jBody.getUnits().getLast() == endStmt && instructionAtAddress(endAddress - 1).getUnit() == endStmt) {
+      if (jBody.getUnits().getLast() == endStmt
+          && instructionAtAddress(endAddress - 1).getUnit() == endStmt) {
         Unit nop = jimple.newNopStmt();
         jBody.getUnits().insertAfter(nop, endStmt);
         endStmt = nop;
@@ -1103,10 +1099,14 @@ public class DexBody {
         // exceptions can only be of RefType
         if (t instanceof RefType) {
           SootClass exception = ((RefType) t).getSootClass();
-          DexlibAbstractInstruction instruction = instructionAtAddress(handler.getHandlerCodeAddress());
+          DexlibAbstractInstruction instruction =
+              instructionAtAddress(handler.getHandlerCodeAddress());
           if (!(instruction instanceof MoveExceptionInstruction)) {
-            logger.debug("" + String.format("First instruction of trap handler unit not MoveException but %s",
-                instruction.getClass().getName()));
+            logger.debug(
+                ""
+                    + String.format(
+                        "First instruction of trap handler unit not MoveException but %s",
+                        instruction.getClass().getName()));
           } else {
             ((MoveExceptionInstruction) instruction).setRealType(this, exception.getType());
           }
@@ -1117,5 +1117,4 @@ public class DexBody {
       }
     }
   }
-
 }
