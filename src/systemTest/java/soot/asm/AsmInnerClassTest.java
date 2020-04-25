@@ -88,7 +88,7 @@ public class AsmInnerClassTest extends AbstractTestingFramework {
     for(Tag tag : target3.getDeclaringClass().getTags()){
       //FIXME: we have multiple innerclasstags? for a parent it makes sense but for a child class?
       if(tag instanceof InnerClassTag){
-        boolean inner=((InnerClassTag) tag).getInnerClass().equals(TEST_TARGET_CLASS + "$Inner$InnerInner");
+        boolean inner=((InnerClassTag) tag).getInnerClass().equals("soot/asm/ScopeFinderTarget$Inner$InnerInner");
         if(inner){
           innerClassTag = (InnerClassTag) tag;
           break;
