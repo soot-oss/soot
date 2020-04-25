@@ -1,4 +1,4 @@
-![Build Status](https://github.com/Sable/soot/workflows/Soot%20CI/badge.svg?branch=develop)](https://github.com/Sable/soot/actions)
+[![Build Status](https://github.com/Sable/soot/workflows/Soot%20CI/badge.svg?branch=develop)](https://github.com/Sable/soot/actions)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/Sable/soot) 
 
 
