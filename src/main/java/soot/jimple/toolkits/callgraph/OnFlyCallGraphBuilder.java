@@ -439,7 +439,7 @@ public class OnFlyCallGraphBuilder {
     for (Type bType : resolveToClasses(s)) {
 	  // do not handle array reflection
       if (bType instanceof ArrayType) {
-  	    continue;
+        continue;
       }
       SootClass baseClass = ((RefType) bType).getSootClass();
       Iterator<SootMethod> mIt = getPublicMethodIterator(baseClass, at);
