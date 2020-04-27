@@ -502,7 +502,7 @@ public class OnFlyCallGraphBuilder {
     }
     if (paramType instanceof RefLikeType) {
       for (Type rType : reachingTypes) {
-        if (fh.canStoreType(paramType, rType)) {
+        if (fh.canStoreType(rType, paramType)) {
           return true;
         }
       }
