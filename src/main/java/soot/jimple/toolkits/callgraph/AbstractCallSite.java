@@ -1,4 +1,4 @@
-package soot.jimple.spark.sets;
+package soot.jimple.toolkits.callgraph;
 
 /*-
  * #%L
@@ -22,15 +22,31 @@ package soot.jimple.spark.sets;
  * #L%
  */
 
-import soot.Type;
-import soot.jimple.spark.pag.PAG;
+import soot.SootMethod;
+import soot.jimple.Stmt;
 
 /**
- * Abstract base class for points-to set factory.
+ * Abstract base class for call sites
  * 
- * @author Ondrej Lhotak
+ * @author Steven Arzt
+ *
  */
-public abstract class P2SetFactory<T extends PointsToSetInternal> {
-  /** Returns a newly-created set. */
-  public abstract T newSet(Type type, PAG pag);
+public class AbstractCallSite {
+
+  protected Stmt stmt;
+  protected SootMethod container;
+
+  public AbstractCallSite(Stmt stmt, SootMethod container) {
+    this.stmt = stmt;
+    this.container = container;
+  }
+
+  public Stmt getStmt() {
+    return stmt;
+  }
+
+  public SootMethod getContainer() {
+    return container;
+  }
+
 }

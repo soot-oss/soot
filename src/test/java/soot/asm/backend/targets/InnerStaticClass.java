@@ -1,10 +1,10 @@
-package soot.jimple.spark.sets;
+package soot.asm.backend.targets;
 
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 2002 Ondrej Lhotak
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,15 +22,20 @@ package soot.jimple.spark.sets;
  * #L%
  */
 
-import soot.Type;
-import soot.jimple.spark.pag.PAG;
+public class InnerStaticClass {
 
-/**
- * Abstract base class for points-to set factory.
- * 
- * @author Ondrej Lhotak
- */
-public abstract class P2SetFactory<T extends PointsToSetInternal> {
-  /** Returns a newly-created set. */
-  public abstract T newSet(Type type, PAG pag);
+  public static class Inner {
+    static final int a = 3;
+  }
+
+  public int getA() {
+    return Inner.a;
+  }
+
+  public void doInner() {
+    new Measurable() {
+    };
+
+  }
+
 }

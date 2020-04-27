@@ -271,11 +271,11 @@ public class DexPrinter {
 
   protected static MethodReference toMethodReference(SootMethodRef m) {
     List<String> parameters = new ArrayList<String>();
-    for (Type t : m.parameterTypes()) {
+    for (Type t : m.getParameterTypes()) {
       parameters.add(SootToDexUtils.getDexTypeDescriptor(t));
     }
-    MethodReference methodRef = new ImmutableMethodReference(SootToDexUtils.getDexClassName(m.declaringClass().getName()),
-        m.name(), parameters, SootToDexUtils.getDexTypeDescriptor(m.returnType()));
+    MethodReference methodRef = new ImmutableMethodReference(SootToDexUtils.getDexClassName(m.getDeclaringClass().getName()),
+        m.getName(), parameters, SootToDexUtils.getDexTypeDescriptor(m.getReturnType()));
     return methodRef;
   }
 
@@ -658,7 +658,7 @@ public class DexPrinter {
         Set<Annotation> fieldAnnotations = buildFieldAnnotations(f);
 
         ImmutableField field = new ImmutableField(classType, f.getName(), SootToDexUtils.getDexTypeDescriptor(f.getType()),
-            f.getModifiers(), staticInit, fieldAnnotations);
+            f.getModifiers(), staticInit, fieldAnnotations, null);
         fields.add(field);
       }
     }
@@ -1113,7 +1113,7 @@ public class DexPrinter {
 
       int accessFlags = SootToDexUtils.getDexAccessFlags(sm);
       ImmutableMethod meth = new ImmutableMethod(classType, sm.getName(), parameters, returnType, accessFlags,
-          buildMethodAnnotations(sm), impl);
+          buildMethodAnnotations(sm), null, impl);
       methods.add(meth);
     }
     return methods;
