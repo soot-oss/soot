@@ -411,4 +411,9 @@ public class SootMethodRefImpl implements SootMethodRef {
     return true;
   }
 
+  @Override
+  public boolean isConstructor() {
+    return returnType == VoidType.v() && name.equals("<init>");
+  }
+
 }

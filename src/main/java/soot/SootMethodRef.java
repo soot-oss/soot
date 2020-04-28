@@ -57,6 +57,13 @@ public interface SootMethodRef extends SootMethodInterface {
 
   public boolean isStatic();
 
+  /**
+   * Gets whether this method reference points to a constructor
+   * 
+   * @return True if this reference points to a constructor, false otherwise
+   */
+  public boolean isConstructor();
+
   public NumberedString getSubSignature();
 
   public String getSignature();
