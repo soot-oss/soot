@@ -101,15 +101,15 @@ jobs:
           proxy_host: ${{ secrets.ssh_proxy_host }}
           proxy_key: ${{ secrets.ssh_proxy_key }}
           script: |
-            rm -r ${{ basedir }}/jdoc || true
-            mkdir -p ${{ basedir }}/jdoc
-            unzip ${{ file_prefix }}-javadoc.jar -d ${{ basedir }}/jdoc/
-            rm ${{ file_prefix }}-javadoc.jar
+            rm -r ${basedir}/jdoc || true
+            mkdir -p ${basedir}/jdoc
+            unzip ${file_prefix }-javadoc.jar -d ${basedir}/jdoc/
+            rm ${file_prefix}-javadoc.jar
             
-            rm -r ${{ basedir }}/options || true
-            mkdir -p ${{ basedir }}/options
-            cp ${{ file_prefix }}-soot_options.htm ${{ basedir }}/options
-            rm ${{ file_prefix }}-soot_options.htm
+            rm -r ${basedir}/options || true
+            mkdir -p ${basedir}/options
+            cp ${file_prefix}-soot_options.htm ${basedir}/options
+            rm ${file_prefix}-soot_options.htm
             
       - name: Deploy Release documentation
         if: false && github.ref == 'refs/heads/master'
@@ -122,13 +122,13 @@ jobs:
           proxy_host: ${{ secrets.ssh_proxy_host }}
           proxy_key: ${{ secrets.ssh_proxy_key }}
           script: |
-            rm -r ${{ basedir }}/jdoc || true
-            mkdir -p ${{ basedir }}/jdoc
-            unzip ${{ file_prefix }}-javadoc.jar -d ${{ basedir }}/jdoc/
-            rm ${{ file_prefix }}-javadoc.jar
+            rm -r ${basedir}/jdoc || true
+            mkdir -p ${basedir}/jdoc
+            unzip ${file_prefix}-javadoc.jar -d ${basedir}/jdoc/
+            rm ${file_prefix}-javadoc.jar
             
-            rm -r ${{ basedir }}/options || true
-            mkdir -p ${{ basedir }}/options
-            cp ${{ file_prefix }}-soot_options.htm ${{ basedir }}/options
-            rm ${{ file_prefix }}-soot_options.htm
+            rm -r ${basedir}/options || true
+            mkdir -p ${basedir}/options
+            cp ${file_prefix}-soot_options.htm ${basedir}/options
+            rm ${file_prefix}-soot_options.htm
       
