@@ -62,7 +62,9 @@ public interface SootMethodRef extends SootMethodInterface {
    * 
    * @return True if this reference points to a constructor, false otherwise
    */
-  public boolean isConstructor();
+  public default boolean isConstructor() {
+    return getReturnType() == VoidType.v() && getName().equals("<init>");
+  }
 
   public NumberedString getSubSignature();
 
