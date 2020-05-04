@@ -827,7 +827,7 @@ public class FastHierarchy {
         		candidate = null;
         		break;
         	}
-          vtblMap.put(methodSignature, candidate);
+          addToVtable(candidate, methodSignature, vtblMap);
           return candidate;
         }
       }
@@ -884,10 +884,19 @@ public class FastHierarchy {
     }
 
     if (candidate != null) {
-      vtblMap.put(methodSignature, candidate);
+      addToVtable(candidate, methodSignature, vtblMap);
     }
 
     return candidate;
+  }
+
+  private void addToVtable(
+      SootMethod candidate, String methodSignature, HashMap<String, SootMethod> vtblMap) {
+    // do not cache abstract methods. this would resolve to an incorrect method when using the
+    // cache during concrete dispatch!
+    if (!candidate.isAbstract()) {
+      vtblMap.put(methodSignature, candidate);
+    }
   }
 
   private boolean isHandleDefaultMethods() {
