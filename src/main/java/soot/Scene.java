@@ -1225,12 +1225,21 @@ public class Scene {
         || className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
       type = getOrAddRefType(className);
       synchronized (type) {
-        SootClass c = new SootClass(className);
-        c.isPhantom = true;
-        addClassSilent(c);
-        c.setPhantomClass();
-        return c;
+        if (!type.hasSootClass()) {
+          SootClass c = new SootClass(className);
+          c.isPhantom = true;
+          addClassSilent(c);
+          c.setPhantomClass();
+          return c;
+        }
       }
+      /*
+       * A SootClass has been created in between. We cannot
+       * call this under the lock because it could potentially
+       * result in a deadlock (for instance, if a potential subclass
+       * removes the type from the nameToClass map (which is protected)).
+       */
+      return type.getSootClass();
     }
 
     return null;
