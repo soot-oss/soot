@@ -31,14 +31,14 @@ package soot.util.queue;
  * @author Ondrej Lhotak
  */
 @SuppressWarnings("unchecked")
-public final class ChunkedQueue<E> {
+public class ChunkedQueue<E> {
 
-  static final Object NULL_CONST = new Object();
-  static final Object DELETED_CONST = new Object();
+  protected static final Object NULL_CONST = new Object();
+  protected static final Object DELETED_CONST = new Object();
 
-  private static final int LENGTH = 60;
-  private Object[] q;
-  private int index;
+  protected static final int LENGTH = 60;
+  protected Object[] q;
+  protected int index;
 
   public ChunkedQueue() {
     q = new Object[LENGTH];

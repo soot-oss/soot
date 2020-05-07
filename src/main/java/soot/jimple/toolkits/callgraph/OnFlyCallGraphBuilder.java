@@ -337,8 +337,8 @@ public class OnFlyCallGraphBuilder {
     }
   }
 
-  private Set<Type> resolveToClasses(Set<Type> rawTypes) {
-    Set<Type> toReturn = new HashSet<Type>();
+  private Set<RefLikeType> resolveToClasses(Set<Type> rawTypes) {
+    Set<RefLikeType> toReturn = new HashSet<>();
     for (Type ty : rawTypes) {
       if (ty instanceof AnySubType) {
         AnySubType anySubType = (AnySubType) ty;
@@ -350,16 +350,16 @@ public class OnFlyCallGraphBuilder {
           classRoots = Collections.singleton(base.getSootClass());
         }
         toReturn.addAll(getTransitiveSubClasses(classRoots));
-      } else if (ty instanceof ArrayType || ty instanceof RefType) {
-        toReturn.add(ty);
+      } else if (ty instanceof RefType) {
+        toReturn.add((RefType) ty);
       }
     }
     return toReturn;
   }
 
-  private Collection<Type> getTransitiveSubClasses(Set<SootClass> classRoots) {
+  private Collection<RefLikeType> getTransitiveSubClasses(Set<SootClass> classRoots) {
     LinkedList<SootClass> worklist = new LinkedList<>(classRoots);
-    Set<Type> resolved = new HashSet<>();
+    Set<RefLikeType> resolved = new HashSet<>();
     while (!worklist.isEmpty()) {
       SootClass cls = worklist.removeFirst();
       if (!resolved.add(cls.getType())) {
