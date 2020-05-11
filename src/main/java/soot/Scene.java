@@ -1225,6 +1225,9 @@ public class Scene {
         || className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
       type = getOrAddRefType(className);
       synchronized (type) {
+        if (type.hasSootClass()) {
+          return type.getSootClass();
+        }
         SootClass c = new SootClass(className);
         c.isPhantom = true;
         addClassSilent(c);

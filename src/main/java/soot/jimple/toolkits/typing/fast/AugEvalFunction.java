@@ -38,6 +38,7 @@ import soot.IntegerType;
 import soot.Local;
 import soot.LongType;
 import soot.NullType;
+import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
 import soot.ShortType;
@@ -167,7 +168,10 @@ public class AugEvalFunction implements IEvalFunction {
             throw new RuntimeException();
           }
         } else {
-          return tl;
+          if (tl instanceof RefLikeType)
+            return tr;
+          else
+            return tl;
         }
       } else {
         throw new RuntimeException("Unhandled binary expression: " + expr);
