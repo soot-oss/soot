@@ -240,13 +240,19 @@ public class VirtualCalls {
       }
     }
 
-    Set<Type> newSubTypes = new HashSet<>();
-    newSubTypes.add(base);
+    Set<Type> newSubTypes = new HashSet<>();    
+    
 
     LinkedList<SootClass> worklist = new LinkedList<SootClass>();
     HashSet<SootClass> workset = new HashSet<SootClass>();
     FastHierarchy fh = fastHierachy;
     SootClass cl = base.getSootClass();
+    
+    //Do not add abstract classes and interfaces as they do not contain implementations
+    if(!cl.isAbstract() && !cl.isInterface())
+    {
+    	newSubTypes.add(base);
+    }
 
     if (workset.add(cl)) {
       worklist.add(cl);
@@ -261,8 +267,8 @@ public class VirtualCalls {
           }
         }
       } else {
-    	  // check concrete type is concrete, abstract or phantom
-        if (cl.isConcrete() || cl.isAbstract() || cl.isPhantom()) {
+    	  // check concrete type is concrete, abstract or phantom - check for abstract and interfaces
+        if (cl.isConcrete() || cl.isPhantom()) {
           resolve(cl.getType(), declaredType, sigType, subSig, container, targets, appOnly);
           newSubTypes.add(cl.getType());
         }
