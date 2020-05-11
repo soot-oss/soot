@@ -63,7 +63,7 @@ jobs:
           gpg_passphrase: ${{ secrets.gpg_passphrase }}
           nexus_username: ${{ secrets.nexus_username }}
           nexus_password: ${{ secrets.nexus_password }}
-          maven_args: "-DskipTests -Dcheckstyle.failOnViolation=true"
+          maven_args: "-DskipTests -Dcheckstyle.failOnViolation=false"
         
       - name: Get Version
         id: version
