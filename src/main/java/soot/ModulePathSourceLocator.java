@@ -262,8 +262,9 @@ public class ModulePathSourceLocator extends SourceLocator {
 
   public static Path getRootModulesPathOfJDK() {
     Path p = Paths.get(URI.create("jrt:/"));
-    if(p.endsWith("modules"))
+    if (p.endsWith("modules")) {
       return p;
+    }
     //Due to a bug in some JDKs, p not necessarily points to modules directly: https://bugs.openjdk.java.net/browse/JDK-8227076
     return p.resolve("modules");
   }
