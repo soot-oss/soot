@@ -45,7 +45,7 @@ public class PolymorphicDispatchTest extends AbstractTestingFramework {
 
   @Override
   protected void setupSoot() {
-    Options.v().set_allow_phantom_refs(false);
+    Options.v().set_allow_phantom_refs(true);
     Options.v().set_no_bodies_for_excluded(false);
     Options.v().set_prepend_classpath(true);
     // if we use validate globally, every test will fail due to validation of target methods of other tests. Even if the test
