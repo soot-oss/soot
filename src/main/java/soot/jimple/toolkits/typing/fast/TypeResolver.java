@@ -142,9 +142,10 @@ public class TypeResolver {
   }
 
   public void inferTypes() {
+    ITypingStrategy typingStrategy = getTypingStrategy();
     AugEvalFunction ef = new AugEvalFunction(this.jb);
     BytecodeHierarchy bh = new BytecodeHierarchy();
-    Collection<Typing> sigma = this.applyAssignmentConstraints(new Typing(this.jb.getLocals()), ef, bh);
+    Collection<Typing> sigma = this.applyAssignmentConstraints(typingStrategy.createTyping(this.jb.getLocals()), ef, bh);
 
     // If there is nothing to type, we can quit
     if (sigma.isEmpty()) {
@@ -155,7 +156,7 @@ public class TypeResolver {
     Typing tg = this.minCasts(sigma, bh, castCount);
     if (castCount[0] != 0) {
       this.split_new();
-      sigma = this.applyAssignmentConstraints(new Typing(this.jb.getLocals()), ef, bh);
+      sigma = this.applyAssignmentConstraints(typingStrategy.createTyping(this.jb.getLocals()), ef, bh);
       tg = this.minCasts(sigma, bh, castCount);
     }
     this.insertCasts(tg, bh, false);
@@ -180,6 +181,10 @@ public class TypeResolver {
         v.setType(tg.get(v));
       }
     }
+  }
+
+  protected ITypingStrategy getTypingStrategy() {
+    return DefaultTypingStrategy.INSTANCE;
   }
 
   public class CastInsertionUseVisitor implements IUseVisitor {
@@ -453,6 +458,7 @@ public class TypeResolver {
       return sigma;
     }
 
+    final ITypingStrategy typingStrategy = getTypingStrategy();
     HashMap<Typing, BitSet> worklists = new HashMap<Typing, BitSet>();
 
     sigma.add(tg);
@@ -520,7 +526,7 @@ public class TypeResolver {
                 wl_ = wl;
               } else {
                 // The types do not agree, add all supertype candidates
-                tg_ = new Typing(tg);
+                tg_ = typingStrategy.createTyping(tg);
                 wl_ = new BitSet(numAssignments - 1);
                 wl_.or(wl);
                 sigma.add(tg_);
@@ -538,7 +544,7 @@ public class TypeResolver {
         } // end for
       }
     }
-    Typing.minimize(r, h);
+    getTypingStrategy().minimize(r, h);
     return r;
   }
 
