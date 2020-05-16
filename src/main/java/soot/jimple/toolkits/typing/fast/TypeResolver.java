@@ -544,7 +544,7 @@ public class TypeResolver {
         } // end for
       }
     }
-    getTypingStrategy().minimize(r, h);
+    typingStrategy.minimize(r, h);
     return r;
   }
 
