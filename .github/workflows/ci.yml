@@ -71,7 +71,6 @@ jobs:
         run: echo ::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
       
       - name: Copy JavaDoc to remote
-        if: "false"
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.remote_host }}
@@ -81,7 +80,6 @@ jobs:
           target: "${{ secrets.remote_dir }}/{{ steps.version.outputs.version }}-javadoc.jar"
           
       - name: Copy Options to remote
-        if: "false"
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.remote_host }}
@@ -91,7 +89,7 @@ jobs:
           target: "${{ secrets.remote_dir }}/{{ steps.version.outputs.version }}-soot_options.htm"
         
       - name: Deploy SNAPSHOT documentation
-        if: false && github.ref == 'refs/heads/develop'
+        if: github.ref == 'refs/heads/develop'
         uses: appleboy/ssh-action@master
         env:
           basedir: ${{ secrets.remote_dir }}/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}
@@ -112,7 +110,7 @@ jobs:
             rm ${file_prefix}-soot_options.htm
             
       - name: Deploy Release documentation
-        if: false && github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master'
         uses: appleboy/ssh-action@master
         env:
           basedir: ${{ secrets.remote_dir }}/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/${{ steps.version.outputs.version }}
