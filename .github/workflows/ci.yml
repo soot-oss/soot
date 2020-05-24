@@ -74,6 +74,7 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.remote_host }}
+          key: ${{ secrets.ssh_proxy_key }}
           proxy_host: ${{ secrets.ssh_proxy_host }}
           proxy_key: ${{ secrets.ssh_proxy_key }}
           source: "./target/sootclasses-trunk-javadoc.jar"
@@ -83,6 +84,7 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.remote_host }}
+          key: ${{ secrets.ssh_proxy_key }}
           proxy_host: ${{ secrets.ssh_proxy_host }}
           proxy_key: ${{ secrets.ssh_proxy_key }}
           source: "./doc/soot_options.htm"
@@ -96,6 +98,7 @@ jobs:
           file_prefix: ${{ secrets.remote_dir }}/{{ steps.version.outputs.version }}
         with:
           host: ${{ secrets.remote_host }}
+          key: ${{ secrets.ssh_proxy_key }}
           proxy_host: ${{ secrets.ssh_proxy_host }}
           proxy_key: ${{ secrets.ssh_proxy_key }}
           script: |
@@ -117,6 +120,7 @@ jobs:
           file_prefix: ${{ secrets.remote_dir }}/{{ steps.version.outputs.version }}
         with:
           host: ${{ secrets.remote_host }}
+          key: ${{ secrets.ssh_proxy_key }} 
           proxy_host: ${{ secrets.ssh_proxy_host }}
           proxy_key: ${{ secrets.ssh_proxy_key }}
           script: |
