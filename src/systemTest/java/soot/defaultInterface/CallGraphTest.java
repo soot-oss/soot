@@ -29,7 +29,7 @@ public class CallGraphTest {
 		Options.v().set_allow_phantom_refs(true);
 		Options.v().set_no_bodies_for_excluded(true);
 		
-		String pathToJar = "D:\\Java_8_Programs\\Jar_Executables\\Sample.jar";
+		String pathToJar = "./target/test-classes";
 		Options.v().set_process_dir(Collections.singletonList(pathToJar));	
 		PhaseOptions.v().setPhaseOption("cg.cha", "on");
 		
@@ -37,14 +37,13 @@ public class CallGraphTest {
 		
 		PackManager.v().runPacks();
 		
-		ArrayList<Edge> edges = WriteCallGraph();
+		ArrayList<Edge> edges = GetCallGraph();
 		
-		assertEquals(edges.get(0).getTgt(), Scene.v().getMethod("<com.pubbycrawl.tools.checkstyle.checks.metrics.JavaNCSSCheck: void log(java.lang.String,java.lang.String)>"));
-		//assertNotEquals(edges.get(0).getTgt(), Scene.v().getMethod(""));
+		assertEquals(edges.get(0).getTgt(), Scene.v().getMethod("<com.pubbycrawl.tools.checkstyle.api.AbstractCheck: void log(java.lang.String,java.lang.String)>"));		
 		
 	}
 	
-	private static ArrayList<Edge> WriteCallGraph() {			
+	private static ArrayList<Edge> GetCallGraph() {			
 		CallGraph cg = Scene.v().getCallGraph();
 		Iterator<Edge> mainMethodEdges = cg.edgesOutOf(Scene.v().getMethod("<com.pubbycrawl.tools.checkstyle.checks.metrics.JavaNCSSCheck: void finishTree()>"));
 		ArrayList<Edge> edgeList = Lists.newArrayList(mainMethodEdges);
