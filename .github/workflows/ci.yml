@@ -71,7 +71,7 @@ jobs:
         run: echo ::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
       
       - name: Copy JavaDoc to remote
-        uses: appleboy/scp-acton@master
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.remote_host }}
           key: ${{ secrets.ssh_proxy_key }}
