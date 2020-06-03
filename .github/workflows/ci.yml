@@ -72,6 +72,7 @@ jobs:
       
       - name: Copy JavaDoc to remote
         uses: appleboy/scp-action@master
+        if: "false"
         with:
           host: ${{ secrets.remote_host }}
           key: ${{ secrets.ssh_proxy_key }}
