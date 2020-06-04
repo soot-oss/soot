@@ -82,7 +82,7 @@ public class ReachableMethods {
   public void update() {
     while (edgeSource.hasNext()) {
       Edge e = edgeSource.next();
-      if (set.contains(e.getSrc())) {
+      if (!e.isInvalid() && set.contains(e.getSrc())) {
         addMethod(e.getTgt());
       }
     }
