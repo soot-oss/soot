@@ -78,7 +78,7 @@ jobs:
           host: ${{ secrets.remote_host }}
           key: ${{ secrets.ssh_proxy_key }}
           proxy_host: ${{ secrets.ssh_proxy_host }}
-          proxy_user: ${{ secrets.ssh_proxy_user }}
+          proxy_username: ${{ secrets.ssh_proxy_user }}
           proxy_password: ${{ secrets.ssh_proxy_pw }}
           source: "./target/sootclasses-trunk-javadoc.jar"
           target: "${{ secrets.remote_dir }}/{{ steps.version.outputs.version }}-javadoc.jar"
