@@ -75,7 +75,7 @@ jobs:
       - name: Copy JavaDoc to remote
         uses: garygrossgarten/github-action-scp@release
         with:
-          host: ${{ secrets.ssh_proxy_host }}
+          host: sshgate2.cs.upb.de
           username: ${{ secrets.ssh_proxy_user }}
           password: ${{ secrets.ssh_proxy_pw }}
           local: "./target/sootclasses-trunk-javadoc.jar"
