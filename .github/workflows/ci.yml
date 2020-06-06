@@ -75,13 +75,11 @@ jobs:
       - name: Copy JavaDoc to remote
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.remote_host }}
-          key: ${{ secrets.remote_ssh_key }}
-          proxy_host: ${{ secrets.ssh_proxy_host }}
-          proxy_username: ${{ secrets.ssh_proxy_user }}
-          proxy_password: ${{ secrets.ssh_proxy_pw }}
+          host: ${{ secrets.ssh_proxy_host }}
+          username: ${{ secrets.ssh_proxy_user }}
+          password: ${{ secrets.ssh_proxy_pw }}
           source: "./target/sootclasses-trunk-javadoc.jar"
-          target: "${{ secrets.remote_dir }}/{{ steps.version.outputs.version }}-javadoc.jar"
+          target: "/upb/users/s/swtbt/profiles/unix/cs/public/https"
           
       - name: Copy Options to remote
         uses: appleboy/scp-action@master
