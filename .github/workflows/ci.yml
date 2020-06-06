@@ -112,7 +112,7 @@ jobs:
             
             rm -r ${basedir}/options || true
             mkdir -p ${basedir}/options
-            cp ${file_prefix}-soot_options.htm ${basedir}/options
+            cp ${file_prefix}-soot_options.htm ${basedir}/options/soot-options.htm
             rm ${file_prefix}-soot_options.htm
             
       - name: Deploy Release documentation
@@ -134,6 +134,6 @@ jobs:
             
             rm -r ${basedir}/options || true
             mkdir -p ${basedir}/options
-            cp ${file_prefix}-soot_options.htm ${basedir}/options
+            cp ${file_prefix}-soot_options.htm ${basedir}/options/soot-options.htm
             rm ${file_prefix}-soot_options.htm
       
