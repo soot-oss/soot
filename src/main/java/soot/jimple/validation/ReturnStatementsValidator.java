@@ -79,9 +79,9 @@ public enum ReturnStatementsValidator implements BodyValidator {
     }
 
     exceptions.add(new ValidationException(body.getMethod(), "The method does not contain a return statement," +
-            "or the return statement is not of the appropriate type",
+            " or the return statement is not of the appropriate type",
         "Body of method " + body.getMethod().getSignature() + " does not contain a return statement," +
-                "or the return statement is not of the appropriate type"));
+                " or the return statement is not of the appropriate type"));
   }
 
   @Override
