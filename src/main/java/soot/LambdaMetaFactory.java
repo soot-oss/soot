@@ -773,18 +773,20 @@ public final class LambdaMetaFactory {
         JimpleBody jb, PatchingChain<Unit> us, LocalGenerator lc, List<Local> args) {
       Value value = _invokeImplMethod(jb, us, lc, args);
 
-      if (soot.VoidType.v().equals(implMethodType.getReturnType())
-          || soot.VoidType.v().equals(implMethod.getMethodRef().getReturnType())) {
-        // implementation or dispatch method is void
+      if (soot.VoidType.v().equals(implMethod.getMethodRef().getReturnType())) {
+        // dispatch method is void
         if (value instanceof InvokeExpr) {
           us.add(Jimple.v().newInvokeStmt(value));
         }
 
-        // in case of a constructor method-ref where the created object is not returned, the value
-        // will be the local for the newly created object. since we do not return it, we just
-        // do nothing (see src/systemTest/targets-resources/soot/lambdaMetaFactory/Issue1292.java)
-
-        us.add(Jimple.v().newReturnVoidStmt());
+        // Handle special case of a constructor method-ref.  The dispatch method is void <init>(),
+        // but the created object should still be returned.
+        // See (src/systemTest/targets/soot/lambdaMetaFactory/Issue1367.java)
+        if (!soot.VoidType.v().equals(implMethodType.getReturnType())) {
+          us.add(Jimple.v().newReturnStmt(value));
+        } else {
+          us.add(Jimple.v().newReturnVoidStmt());
+        }
       } else {
         // neither is void, must pass through return value
         Local ret = lc.generateLocal(value.getType());
