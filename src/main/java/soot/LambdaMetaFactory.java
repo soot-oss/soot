@@ -773,28 +773,31 @@ public final class LambdaMetaFactory {
         JimpleBody jb, PatchingChain<Unit> us, LocalGenerator lc, List<Local> args) {
       Value value = _invokeImplMethod(jb, us, lc, args);
 
-      if (soot.VoidType.v().equals(implMethod.getMethodRef().getReturnType())) {
+      if (soot.VoidType.v().equals(implMethodType.getReturnType())) {
         // dispatch method is void
         if (value instanceof InvokeExpr) {
           us.add(Jimple.v().newInvokeStmt(value));
         }
 
+        us.add(Jimple.v().newReturnVoidStmt());
+
+      } else {
+
         // Handle special case of a constructor method-ref.  The dispatch method is void <init>(),
         // but the created object should still be returned.
         // See (src/systemTest/targets/soot/lambdaMetaFactory/Issue1367.java)
-        if (!soot.VoidType.v().equals(implMethodType.getReturnType())) {
+        if (soot.VoidType.v().equals(implMethod.getMethodRef().getReturnType())) {
           us.add(Jimple.v().newReturnStmt(value));
         } else {
-          us.add(Jimple.v().newReturnVoidStmt());
-        }
-      } else {
-        // neither is void, must pass through return value
-        Local ret = lc.generateLocal(value.getType());
-        us.add(Jimple.v().newAssignStmt(ret, value));
 
-        // adapt return value
-        Local retAdapted = adapt(ret, implMethodType.getReturnType(), jb, us, lc);
-        us.add(Jimple.v().newReturnStmt(retAdapted));
+          // neither is void, must pass through return value
+          Local ret = lc.generateLocal(value.getType());
+          us.add(Jimple.v().newAssignStmt(ret, value));
+
+          // adapt return value
+          Local retAdapted = adapt(ret, implMethodType.getReturnType(), jb, us, lc);
+          us.add(Jimple.v().newReturnStmt(retAdapted));
+        }
       }
     }
 
