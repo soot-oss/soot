@@ -1,5 +1,3 @@
-<a class="twitter-timeline" data-width="220" data-dnt="true" data-theme="light" href="https://twitter.com/sootAnalyzer?ref_src=twsrc%5Etfw">Tweets by sootAnalyzer</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
 # What is Soot?
 
 <img align="right" src="/soot/logo/soot-logo.png" width="150">
