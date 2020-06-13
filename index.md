@@ -47,7 +47,7 @@ The current maintenance is driven by Eric Bodden's [Software Engineering Group](
 
 # What extensions exist to Soot?
 
-* We maintain a [list of extensions that can be used in combination with Soot](https://github.com/Sable/soot/wiki/Extensions-to-Soot). Feel free to add your own!
+* We maintain a [list of extensions that can be used in combination with Soot](https://github.com/soot-oss/soot/wiki/Extensions-to-Soot). Feel free to add your own!
 
 # How does Soot work internally?
 
@@ -63,7 +63,7 @@ Jimple is Soot's primary IR and most analyses are implemented on the Jimple leve
 
 # How do I get started with Soot?
 
-We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki), including a large range of [tutorials](https://github.com/Sable/soot/wiki/Tutorials) on Soot. We also have a [JavaDoc documentation and a reference on the command line options](https://github.com/Sable/soot/wiki/Options-and-JavaDoc).
+We have some documentation on Soot in the [wiki](https://github.com/soot-oss/soot/wiki), including a large range of [tutorials](https://github.com/soot-oss/soot/wiki/Tutorials) on Soot. We also have a [JavaDoc documentation and a reference on the command line options](https://github.com/soot-oss/soot/wiki/Options-and-JavaDoc).
 
 # Including Soot in your Project
 
@@ -122,7 +122,7 @@ The latest snapshot build of Soot can also be obtained [directly](https://soot-b
 
 # Building Soot yourself
 
-If you cannot work with the prebuild versions and need to build Soot on your own, please consider the [wiki](https://github.com/Sable/soot/wiki/Building-Soot-from-the-Command-Line-(Recommended)) for further steps.
+If you cannot work with the prebuild versions and need to build Soot on your own, please consider the [wiki](https://github.com/soot-oss/soot/wiki/Building-Soot-from-the-Command-Line-(Recommended)) for further steps.
 
 # About Soot's source code
 
