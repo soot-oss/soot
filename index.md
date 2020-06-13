@@ -152,3 +152,4 @@ The further development of Soot is financed by generous support from the German 
 
 Also many thanks to [![JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)](https://www.ej-technologies.com/products/jprofiler/overview.html) for supporting Soot with a free-to-use open source license!
 
+<a class="twitter-timeline tw-align-center" data-width="220" data-dnt="true" data-theme="light" href="https://twitter.com/sootAnalyzer?ref_src=twsrc%5Etfw">Tweets by sootAnalyzer</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
