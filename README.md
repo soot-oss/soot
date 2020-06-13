@@ -1,6 +1,5 @@
 [![Build Status](https://github.com/soot-oss/soot/workflows/Soot%20CI/badge.svg?branch=master)](https://github.com/soot-oss/soot/actions)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/soot-oss/soot) 
-<a href="https://twitter.com/sootAnalyzer?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @sootAnalyzer</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 # Using Soot? Let us know about it!
 We are regularly applying for funding to help us maintain Soot. You can help us immensely by letting us know about [**projects that use Soot**](https://github.com/soot-oss/soot/wiki/Users-of-Soot), both commercially or in the form of research tools.
