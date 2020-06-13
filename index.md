@@ -4,10 +4,6 @@
 
 Originally, Soot started off as a Java optimization framework. By now, researchers and practitioners from around the world use Soot to analyze, instrument, optimize and visualize Java and Android applications.
 
-# Job Opening: Software Developer for Soot
-
-The Software Engineering Group at Paderborn University is currently looking for a full-time software engineer for the exciting task of leading Soot to a new major release with lots of great improvements. [Click here for more information.](https://www.hni.uni-paderborn.de/fileadmin/Fachgruppen/Softwaretechnik/Stellenangebote/Kennziffer3997Englisch.pdf)
-
 # What input formats does Soot provide?
 
 Currently, Soot can process code from the following sources:
