@@ -158,7 +158,7 @@ public class Main {
       e.printStackTrace(new PrintStream(bos));
       String stackStraceString = bos.toString();
       try {
-        final String TRACKER_URL = "https://github.com/Sable/soot/issues/new?";
+        final String TRACKER_URL = "https://github.com/soot-oss/soot/issues/new?";
         String commandLineArgs = Joiner.on(" ").join(args);
         String body = "Steps to reproduce:\n1.) ...\n\n" + "Files used to reproduce: \n...\n\n" + "Soot version: " + "<pre>"
             + escape(versionString) + "</pre>" + "\n\n" + "Command line:\n" + "<pre>" + escape(commandLineArgs)
@@ -172,11 +172,11 @@ public class Main {
         sb.append("Follow these steps to fix the problem:\n");
         sb.append("1.) Are you sure you used the right command line?\n");
         sb.append("    Click here to double-check:\n");
-        sb.append("    https://github.com/Sable/soot/wiki/Options-and-JavaDoc\n");
+        sb.append("    https://github.com/soot-oss/soot/wiki/Options-and-JavaDoc\n");
         sb.append("\n");
         sb.append("2.) Not sure whether it's a bug? Feel free to discuss\n");
         sb.append("    the issue on the Soot mailing list:\n");
-        sb.append("    https://github.com/Sable/soot/wiki/Getting-help\n");
+        sb.append("    https://github.com/soot-oss/soot/wiki/Getting-help\n");
         sb.append("\n");
         sb.append("3.) Sure it's a bug? Click this link to report it.\n");
         sb.append("    " + TRACKER_URL + "title=" + encode(title, "UTF-8") + "&body=" + encode(body, "UTF-8") + "\n");

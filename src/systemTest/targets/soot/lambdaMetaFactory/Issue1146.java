@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Code according to issue 1146: https://github.com/Sable/soot/issues/1146
+ * Code according to issue 1146: https://github.com/soot-oss/soot/issues/1146
  *
  * @author Manuel Benz at 2019-05-14
  */
