@@ -3,15 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>ca.mcgill.sable</groupId>
+    <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
     <name>Soot - a J*va Optimization Framework</name>
     <version>4.1.0</version>
     <description>A Java Optimization Framework</description>
-    <url>https://sable.github.io/soot/</url>
+    <url>https://soot-oss.github.io/soot</url>
     <organization>
-        <name>Sable</name>
-        <url>http://www.sable.mcgill.ca/</url>
+        <name>Soot OSS</name>
+        <url>https://soot-oss.org/</url>
     </organization>
     <licenses>
         <license>
@@ -23,9 +23,9 @@
     <developers>
         <developer>
             <name>Manuel Benz</name>
-            <email>manuel.benz@upb.de</email>
-            <organization>University of Paderborn</organization>
-            <organizationUrl>https://www.hni.uni-paderborn.de/en/software-engineering/</organizationUrl>
+            <email>manuel.benz@codeshield.de</email>
+            <organization>CodeShield GmbH</organization>
+            <organizationUrl>https://codeshield.de/</organizationUrl>
         </developer>
         <developer>
             <name>Eric Bodden</name>
@@ -35,9 +35,9 @@
         </developer>
         <developer>
             <name>Andreas Dann</name>
-            <email>andreas.dann@uni-paderborn.de</email>
-            <organization>University of Paderborn</organization>
-            <organizationUrl>https://www.hni.uni-paderborn.de/en/software-engineering/</organizationUrl>
+            <email>andreas.dann@codeshield.de</email>
+            <organization>CodeShield GmbH</organization>
+            <organizationUrl>https://codeshield.de/</organizationUrl>
         </developer>
         <developer>
             <name>Steven Arzt</name>
@@ -47,9 +47,9 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:git@github.com:Sable/soot.git</connection>
-        <developerConnection>scm:git:git@github.com:Sable/soot.git</developerConnection>
-        <url>https://github.com/Sable/soot/tree/master</url>
+        <connection>scm:git:git@github.com:soot-oss/soot.git</connection>
+        <developerConnection>scm:git:git@github.com:soot-oss/soot.git</developerConnection>
+        <url>https://github.com/soot-oss/soot</url>
     </scm>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
