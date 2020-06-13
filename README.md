@@ -28,11 +28,11 @@ Soot is a Java optimization framework. It provides four intermediate representat
 * Shimple: an SSA variation of Jimple.
 * Grimp: an aggregated version of Jimple suitable for decompilation and code inspection.
 
-See http://www.sable.mcgill.ca/soot/ for details.
+See https://soot-oss.github.io/soot for details.
 
 # How do I get started with Soot?
 
-We have some documentation on Soot in the [wiki](https://github.com/soot-oss/soot/wiki) and also a large range of [tutorials](http://www.sable.mcgill.ca/soot/tutorial/index.html) on Soot. 
+We have some documentation on Soot in the [wiki](https://github.com/soot-oss/soot/wiki) and also a large range of [tutorials](https://github.com/soot-oss/soot/wiki/Tutorials) on Soot. 
 
 For detailed information please also consider the Soot's [JavaDoc and Options](https://github.com/soot-oss/soot/wiki/Options-and-JavaDoc) Documentations.
 
@@ -45,7 +45,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 ```.xml
 <dependencies>
   <dependency>
-    <groupId>ca.mcgill.sable</groupId>
+    <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
     <version>4.1.0-SNAPSHOT</version>
   </dependency>
@@ -62,10 +62,12 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 
 ```
 
-You can also obtain older builds of the `develop` branch. A complete listing of builds can be found in [Sonatype's SNAPSHOT repository](https://oss.sonatype.org/content/repositories/snapshots/ca/mcgill/sable/soot/).
+You can also obtain older builds of the `develop` branch. A complete listing of builds can be found in [Sonatype's SNAPSHOT repository](https://oss.sonatype.org/content/repositories/snapshots/org/soot-oss/soot/).
 
 # How do I obtain Soot without Maven?
-You can obtain the latest realease build of Soot [directly](https://oss.sonatype.org/content/repositories/snapshots/ca/mcgill/sable/soot/).
+**We recommend using Soot with Maven**
+
+You can obtain the latest realease build of Soot [directly](https://oss.sonatype.org/content/repositories/snapshots/org/soot-oss/soot/).
 
 The `soot-<RELEASE>-jar-with-dependencies.jar` file is an all-in-one file that also contains all the required libraries. 
 
@@ -84,7 +86,7 @@ mailing list at: http://www.sable.mcgill.ca/mailman/listinfo/soot-list/
 
 # How do I contribute to Soot?
 
-We are happy to accept arbitrary improvements to Soot in form of GitHub pull requests. Please read our [contribution guidelines](https://github.com/soot-oss/soot/wiki/Contributing-to-Soot) before setting up a pull request.
+We are happy to accept arbitrary improvements to Soot in form of GitHub pull requests. Please read our [contribution guidelines](https://github.com/soot-oss/soot/blob/master/CONTRIBUTING.md) before setting up a pull request.
 
 # Please help us improve Soot!
 You are using Soot and would like to help us support it in the future? Then please support us by filling out [this little web form](https://goo.gl/forms/rk1oSxFIxAH0xaf52).
