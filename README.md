@@ -45,7 +45,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 ```.xml
 <dependencies>
   <dependency>
-    <groupId>org.soot-oss</groupId>
+    <groupId>ca.mcgill.sable</groupId>
     <artifactId>soot</artifactId>
     <version>4.1.0-SNAPSHOT</version>
   </dependency>
