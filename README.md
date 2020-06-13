@@ -1,9 +1,9 @@
-[![Build Status](https://github.com/Sable/soot/workflows/Soot%20CI/badge.svg?branch=develop)](https://github.com/Sable/soot/actions)
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/Sable/soot) 
+[![Build Status](https://github.com/soot-oss/soot/workflows/Soot%20CI/badge.svg?branch=develop)](https://github.com/soot-oss/soot/actions)
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/soot-oss/soot) 
 
 
 # Using Soot? Let us know about it!
-We are regularly applying for funding to help us maintain Soot. You can help us immensely by letting us know about [**projects that use Soot**](https://github.com/Sable/soot/wiki/Users-of-Soot), both commercially or in the form of research tools.
+We are regularly applying for funding to help us maintain Soot. You can help us immensely by letting us know about [**projects that use Soot**](https://github.com/soot-oss/soot/wiki/Users-of-Soot), both commercially or in the form of research tools.
 
 # Soot supports Java 9 modules now!
 Try and get involved in Soot's Java 9 bleeding edge developement.
@@ -32,9 +32,9 @@ See http://www.sable.mcgill.ca/soot/ for details.
 
 # How do I get started with Soot?
 
-We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki) and also a large range of [tutorials](http://www.sable.mcgill.ca/soot/tutorial/index.html) on Soot. 
+We have some documentation on Soot in the [wiki](https://github.com/soot-oss/soot/wiki) and also a large range of [tutorials](http://www.sable.mcgill.ca/soot/tutorial/index.html) on Soot. 
 
-For detailed information please also consider the Soot's [JavaDoc and Options](https://github.com/Sable/soot/wiki/Options-and-JavaDoc) Documentations.
+For detailed information please also consider the Soot's [JavaDoc and Options](https://github.com/soot-oss/soot/wiki/Options-and-JavaDoc) Documentations.
 
 # Including Soot in your Project
 
@@ -73,7 +73,7 @@ The `soot-<RELEASE>.jar`  file contains only Soot, allowing you to manually pick
 
 # Building Soot yourself
 
-If you cannot work with the prebuild versions and need to build Soot on your own, please consider the [wiki](https://github.com/Sable/soot/wiki/Building-Soot-from-the-Command-Line-(Recommended)) for further steps.
+If you cannot work with the prebuild versions and need to build Soot on your own, please consider the [wiki](https://github.com/soot-oss/soot/wiki/Building-Soot-from-the-Command-Line-(Recommended)) for further steps.
 
 # About Soot's source code
 
@@ -84,7 +84,7 @@ mailing list at: http://www.sable.mcgill.ca/mailman/listinfo/soot-list/
 
 # How do I contribute to Soot?
 
-We are happy to accept arbitrary improvements to Soot in form of GitHub pull requests. Please read our [contribution guidelines](https://github.com/Sable/soot/wiki/Contributing-to-Soot) before setting up a pull request.
+We are happy to accept arbitrary improvements to Soot in form of GitHub pull requests. Please read our [contribution guidelines](https://github.com/soot-oss/soot/wiki/Contributing-to-Soot) before setting up a pull request.
 
 # Please help us improve Soot!
 You are using Soot and would like to help us support it in the future? Then please support us by filling out [this little web form](https://goo.gl/forms/rk1oSxFIxAH0xaf52).

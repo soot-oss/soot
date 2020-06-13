@@ -3,7 +3,7 @@ package soot.lambdaMetaFactory;
 import java.util.List;
 /**
  * Please check the issue for detail:
- * https://github.com/Sable/soot/issues/1292 
+ * https://github.com/soot-oss/soot/issues/1292 
  * 
  * @author raintung.li
  *
