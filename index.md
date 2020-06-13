@@ -76,49 +76,52 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 ```.xml
 <dependencies>
   <dependency>
-    <groupId>ca.mcgill.sable</groupId>
+    <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
-    <version>3.4.0-SNAPSHOT</version>
+    <version>4.1.0-SNAPSHOT</version>
   </dependency>
 </dependencies>
 <repositories>
   <repository>
-    <id>soot-snapshot</id>
-    <name>soot snapshots</name>
-    <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/</url>
+      <id>sonatype-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+          <enabled>false</enabled>
+      </releases>
   </repository>
-</repositories>	
+</repositories> 
 
 ```
 
-**Please make sure that your Java version is up to date to avoid problems with our SSL certificate**
 
-You can also obtain older builds of the `develop` branch. A complete listing of builds can be found in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse/components:soot-snapshot).
+You can also obtain older builds of the `develop` branch. A complete listing of builds can be found in [Sonatype's SNAPSHOT repository](https://oss.sonatype.org/content/repositories/snapshots/org/soot-oss/soot/).
 
 ### Stable Releases
 
-For each commit to the `master` branch, a new release is pushed to MavenCentral. You can include Soot as 
+For each commit to the `master` branch, a new release is pushed to Maven Central. You can include Soot as 
 a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 
 
 ```.xml
 <dependencies>
   <dependency>
-    <groupId>ca.mcgill.sable</groupId>
+    <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
-    <version>3.3.0</version>
+    <version>4.1.0</version>
   </dependency>
 </dependencies>
 ```
 
-You can also obtain older builds of the `master` branch. A complete listing of builds can be found on [Maven Central](https://repo.maven.apache.org/maven2/ca/mcgill/sable/soot/).
+You can also obtain older builds of the `master` branch. A complete listing of builds can be found on [Maven Central](https://repo.maven.apache.org/maven2/org/soot-oss/soot/).
 
 # How do I obtain Soot without Maven?
+**We recommend using Soot with Maven**
 
-**Note that the nightly build server has moved**
+You can obtain the latest release build of Soot [directly](https://repo1.maven.org/maven2/org/soot-oss/soot/).
 
-All of our Soot builds for the `develop` branch are stored up to one month in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse/components:soot-snapshot) and can be obtained from there.
-The latest snapshot build of Soot can also be obtained [directly](https://soot-build.cs.uni-paderborn.de/public/origin/develop/soot/soot-develop/build/). The "sootclasses-trunk-jar-with-dependencies.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
+The `soot-<RELEASE>-jar-with-dependencies.jar` file is an all-in-one file that also contains all the required libraries. 
+
+The `soot-<RELEASE>.jar`  file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
 
 # Building Soot yourself
 
@@ -146,3 +149,6 @@ The further development of Soot is financed by generous support from the German 
 <a href="http://www.dfg.de/"><img src="images/dfg_logo_englisch_blau_en.jpg" height="40"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="https://www.hni.uni-paderborn.de/en/"><img src="images/Heinz_Nixdorf_Institut_Logo_CMYK.jpg" height="40"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="https://aws.amazon.com/"><img src="images/200px-Amazon_Web_Services_Logo.svg.png" height="40"></a>
+
+Also many thanks to [![JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)](https://www.ej-technologies.com/products/jprofiler/overview.html) for supporting Soot with a free-to-use open source license!
+
