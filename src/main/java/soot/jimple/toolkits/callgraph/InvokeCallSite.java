@@ -89,4 +89,10 @@ public class InvokeCallSite extends AbstractCallSite {
   public ArrayTypes reachingTypes() {
     return reachingTypes;
   }
+
+  @Override
+  public String toString() {
+    return stmt.toString();
+  }
+
 }

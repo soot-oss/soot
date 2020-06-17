@@ -38,8 +38,8 @@ import soot.util.Invalidable;
  * @author Ondrej Lhotak
  */
 public class QueueReader<E> implements java.util.Iterator<E> {
-  private E[] q;
-  private int index;
+  protected E[] q;
+  protected int index;
 
   protected QueueReader(E[] q, int index) {
     this.q = q;
@@ -72,7 +72,7 @@ public class QueueReader<E> implements java.util.Iterator<E> {
     return (E) ret;
   }
 
-  private boolean skip(Object ret) {
+  protected boolean skip(Object ret) {
     if (ret instanceof Invalidable) {
       final Invalidable invalidable = (Invalidable) ret;
       if (invalidable.isInvalid()) {
