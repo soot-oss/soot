@@ -26,6 +26,7 @@ import java.util.List;
 
 import soot.Body;
 import soot.Unit;
+import soot.VoidType;
 import soot.jimple.GotoStmt;
 import soot.jimple.RetStmt;
 import soot.jimple.ReturnStmt;
@@ -52,9 +53,14 @@ public enum ReturnStatementsValidator implements BodyValidator {
    */
   @Override
   public void validate(Body body, List<ValidationException> exceptions) {
-    // Checks that this Jimple body actually contains a return statement
+    // Checks that this Jimple body actually contains a return statement, and that the return statement
+    // is of the appropriate type (i.e. void/non-void)
     for (Unit u : body.getUnits()) {
-      if ((u instanceof ReturnStmt) || (u instanceof ReturnVoidStmt) || (u instanceof RetStmt) || (u instanceof ThrowStmt)) {
+      if ((u instanceof RetStmt) || (u instanceof ThrowStmt)) {
+        return;
+      } else if (u instanceof ReturnStmt && !(body.getMethod().getReturnType() instanceof VoidType)) {
+        return;
+      } else if (u instanceof ReturnVoidStmt && body.getMethod().getReturnType() instanceof VoidType) {
         return;
       }
     }
@@ -72,8 +78,10 @@ public enum ReturnStatementsValidator implements BodyValidator {
       return;
     }
 
-    exceptions.add(new ValidationException(body.getMethod(), "The method does not contain a return statement",
-        "Body of method " + body.getMethod().getSignature() + " does not contain a return statement"));
+    exceptions.add(new ValidationException(body.getMethod(), "The method does not contain a return statement," +
+            " or the return statement is not of the appropriate type",
+        "Body of method " + body.getMethod().getSignature() + " does not contain a return statement," +
+                " or the return statement is not of the appropriate type"));
   }
 
   @Override
