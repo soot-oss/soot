@@ -39,7 +39,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
+import soot.util.LargeNumberedMap;
 import soot.util.MultiMap;
+import soot.util.SmallNumberedMap;
 
 /**
  * Represents the class hierarchy. It is closely linked to a Scene, and must be recreated if the

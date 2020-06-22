@@ -65,7 +65,7 @@ public class VirtualCalls {
   public static VirtualCalls v() {
     return G.v().soot_jimple_toolkits_callgraph_VirtualCalls();
   }
-
+  
   public SootMethod resolveSpecial(SootMethodRef calleeRef, SootMethod container) {
     return resolveSpecial(calleeRef, container, false);
   }
@@ -105,7 +105,6 @@ public class VirtualCalls {
 
     if (!cls.isInterface()) {
       ret = Scene.v().getOrMakeFastHierarchy().resolveConcreteDispatch(cls, callee);
-    }
     return ret;
   }
 
