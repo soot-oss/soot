@@ -45,6 +45,7 @@ import soot.ShortType;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
+import soot.javaToJimple.LocalGenerator;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
@@ -77,12 +78,14 @@ public class TypeResolver {
 
   private final List<DefinitionStmt> assignments;
   private final HashMap<Local, BitSet> depends;
+  private final LocalGenerator localGenerator;
 
   public TypeResolver(JimpleBody jb) {
     this.jb = jb;
 
     this.assignments = new ArrayList<DefinitionStmt>();
     this.depends = new HashMap<Local, BitSet>(jb.getLocalCount());
+    this.localGenerator = new LocalGenerator(jb);
     for (Local v : this.jb.getLocals()) {
       this.addLocal(v);
     }
@@ -139,9 +142,10 @@ public class TypeResolver {
   }
 
   public void inferTypes() {
+    ITypingStrategy typingStrategy = getTypingStrategy();
     AugEvalFunction ef = new AugEvalFunction(this.jb);
     BytecodeHierarchy bh = new BytecodeHierarchy();
-    Collection<Typing> sigma = this.applyAssignmentConstraints(new Typing(this.jb.getLocals()), ef, bh);
+    Collection<Typing> sigma = this.applyAssignmentConstraints(typingStrategy.createTyping(this.jb.getLocals()), ef, bh);
 
     // If there is nothing to type, we can quit
     if (sigma.isEmpty()) {
@@ -152,7 +156,7 @@ public class TypeResolver {
     Typing tg = this.minCasts(sigma, bh, castCount);
     if (castCount[0] != 0) {
       this.split_new();
-      sigma = this.applyAssignmentConstraints(new Typing(this.jb.getLocals()), ef, bh);
+      sigma = this.applyAssignmentConstraints(typingStrategy.createTyping(this.jb.getLocals()), ef, bh);
       tg = this.minCasts(sigma, bh, castCount);
     }
     this.insertCasts(tg, bh, false);
@@ -177,6 +181,10 @@ public class TypeResolver {
         v.setType(tg.get(v));
       }
     }
+  }
+
+  protected ITypingStrategy getTypingStrategy() {
+    return DefaultTypingStrategy.INSTANCE;
   }
 
   public class CastInsertionUseVisitor implements IUseVisitor {
@@ -231,10 +239,8 @@ public class TypeResolver {
            * By the time we have countOnly == false, all variables must by typed with concrete Jimple types, and never
            * [0..1], [0..127] or [0..32767].
            */
-          vold = jimple.newLocal("tmp", t);
-          vold.setName("tmp$" + System.identityHashCode(vold));
+          vold = localGenerator.generateLocal(t);
           this.tg.set(vold, t);
-          this.jb.getLocals().add(vold);
           Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
           this.jb.getUnits().insertBefore(jimple.newAssignStmt(vold, op), u);
         } else {
@@ -259,10 +265,8 @@ public class TypeResolver {
      */
     protected Local createCast(Type useType, Stmt stmt, Local old) {
       Jimple jimple = Jimple.v();
-      Local vnew = jimple.newLocal("tmp", useType);
-      vnew.setName("tmp$" + System.identityHashCode(vnew));
+      Local vnew = localGenerator.generateLocal(useType);
       this.tg.set(vnew, useType);
-      this.jb.getLocals().add(vnew);
       Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
       this.jb.getUnits().insertBefore(jimple.newAssignStmt(vnew, jimple.newCastExpr(old, useType)), u);
       return vnew;
@@ -454,6 +458,7 @@ public class TypeResolver {
       return sigma;
     }
 
+    final ITypingStrategy typingStrategy = getTypingStrategy();
     HashMap<Typing, BitSet> worklists = new HashMap<Typing, BitSet>();
 
     sigma.add(tg);
@@ -515,13 +520,13 @@ public class TypeResolver {
             if (!typesEqual(t, told)) {
               Typing tg_;
               BitSet wl_;
-              if (/* (eval.size() == 1 && lcas.size() == 1) || */ isFirstType) {
+              if (/* (eval.size() == 1 && lcas.size() == 1) || */isFirstType) {
                 // The types agree, we have a type we can directly use
                 tg_ = tg;
                 wl_ = wl;
               } else {
                 // The types do not agree, add all supertype candidates
-                tg_ = new Typing(tg);
+                tg_ = typingStrategy.createTyping(tg);
                 wl_ = new BitSet(numAssignments - 1);
                 wl_.or(wl);
                 sigma.add(tg_);
@@ -539,8 +544,7 @@ public class TypeResolver {
         } // end for
       }
     }
-
-    Typing.minimize(r, h);
+    typingStrategy.minimize(r, h);
     return r;
   }
 
@@ -572,7 +576,7 @@ public class TypeResolver {
         if (invoke.getInvokeExpr() instanceof SpecialInvokeExpr) {
           SpecialInvokeExpr special = (SpecialInvokeExpr) invoke.getInvokeExpr();
 
-          if (special.getMethodRef().name().equals("<init>")) {
+          if (special.getMethodRef().getName().equals("<init>")) {
             List<Unit> deflist = defs.getDefsOfAt((Local) special.getBase(), invoke);
 
             while (deflist.size() == 1) {
@@ -585,9 +589,8 @@ public class TypeResolver {
                   deflist = defs.getDefsOfAt((Local) assign.getRightOp(), assign);
                   continue;
                 } else if (assign.getRightOp() instanceof NewExpr) {
-                  Local newlocal = jimple.newLocal("tmp", null);
-                  newlocal.setName("tmp$" + System.identityHashCode(newlocal));
-                  this.jb.getLocals().add(newlocal);
+                  Type type = assign.getLeftOp().getType();
+                  Local newlocal = localGenerator.generateLocal(type);
 
                   special.setBase(newlocal);
 

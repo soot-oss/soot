@@ -26,8 +26,6 @@ package soot.jimple.toolkits.typing.fast;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
 
 import soot.Local;
 import soot.Type;
@@ -36,7 +34,7 @@ import soot.Type;
  * @author Ben Bellamy
  */
 public class Typing {
-  private HashMap<Local, Type> map;
+  protected HashMap<Local, Type> map;
 
   public Typing(Collection<Local> vs) {
     map = new HashMap<Local, Type>(vs.size());
@@ -72,47 +70,4 @@ public class Typing {
     return sb.toString();
   }
 
-  public static void minimize(List<Typing> tgs, IHierarchy h) {
-    outer: for (ListIterator<Typing> i = tgs.listIterator(); i.hasNext();) {
-      Typing tgi = i.next();
-
-      // Throw out duplicate typings
-      for (Typing tgj : tgs) {
-        // if compare = 1, then tgi is the more general typing
-        // We shouldn't pick that one as we would then end up
-        // with lots of locals typed to Serializable etc.
-        if (tgi != tgj && compare(tgi, tgj, h) == 1) {
-          i.remove();
-          continue outer;
-        }
-      }
-    }
-
-  }
-
-  public static int compare(Typing a, Typing b, IHierarchy h) {
-    int r = 0;
-    for (Local v : a.map.keySet()) {
-      Type ta = a.get(v), tb = b.get(v);
-
-      int cmp;
-      if (TypeResolver.typesEqual(ta, tb)) {
-        cmp = 0;
-      } else if (h.ancestor(ta, tb)) {
-        cmp = 1;
-      } else if (h.ancestor(tb, ta)) {
-        cmp = -1;
-      } else {
-        return -2;
-      }
-
-      if ((cmp == 1 && r == -1) || (cmp == -1 && r == 1)) {
-        return 2;
-      }
-      if (r == 0) {
-        r = cmp;
-      }
-    }
-    return r;
-  }
 }

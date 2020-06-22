@@ -203,47 +203,48 @@ public class OnFlyCallGraphBuilder {
   /** context-insensitive stuff */
   private final CallGraph cicg = Scene.v().internalMakeCallGraph();
 
-  private final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
+  protected final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
 
   // end type based reflection resolution
-  private final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites =
+  protected final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites =
       new LargeNumberedMap<Local, List<VirtualCallSite>>(
           Scene.v().getLocalNumberer()); // Local -> List(VirtualCallSite)
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers =
+  protected final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers =
       new LargeNumberedMap<SootMethod, List<Local>>(
           Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases =
+  protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases =
       new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs =
+  protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs =
       new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
-  private final MultiMap<Local, InvokeCallSite> baseToInvokeSite = new HashMultiMap<>();
-  private final MultiMap<Local, InvokeCallSite> invokeArgsToInvokeSite = new HashMultiMap<>();
-  private final Map<Local, BitSet> invokeArgsToSize = new IdentityHashMap<>();
-  private final MultiMap<AllocDotField, Local> allocDotFieldToLocal = new HashMultiMap<>();
-  private final MultiMap<Local, Type> reachingArgTypes = new HashMultiMap<>();
-  private final MultiMap<Local, Type> reachingBaseTypes = new HashMultiMap<>();
-  private final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites =
+  protected final MultiMap<Local, InvokeCallSite> baseToInvokeSite = new HashMultiMap<>();
+  protected final MultiMap<Local, InvokeCallSite> invokeArgsToInvokeSite = new HashMultiMap<>();
+  protected final Map<Local, BitSet> invokeArgsToSize = new IdentityHashMap<>();
+  protected final MultiMap<AllocDotField, Local> allocDotFieldToLocal = new HashMultiMap<>();
+  protected final MultiMap<Local, Type> reachingArgTypes = new HashMultiMap<>();
+  protected final MultiMap<Local, Type> reachingBaseTypes = new HashMultiMap<>();
+  protected final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites =
       new SmallNumberedMap<List<VirtualCallSite>>();
   // Local
   // ->
   // List(VirtualCallSite)
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants =
+  protected final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants =
       new LargeNumberedMap<SootMethod, List<Local>>(
           Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
-  private final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
-  private final QueueReader<SootMethod> targets = targetsQueue.reader();
-  ReflectionModel reflectionModel;
-  private CGOptions options;
-  private boolean appOnly;
+  protected final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
+  protected final QueueReader<SootMethod> targets = targetsQueue.reader();
+  protected ReflectionModel reflectionModel;
+
+  protected CGOptions options;
+  protected boolean appOnly;
   /** context-sensitive stuff */
-  private ReachableMethods rm;
+  protected ReachableMethods rm;
 
   protected QueueReader<MethodOrMethodContext> worklist;
-  private ContextManager cm;
-  private FastHierarchy fh;
-  private NullnessAnalysis nullnessCache = null;
-  private ConstantArrayAnalysis arrayCache = null;
-  private SootMethod analysisKey = null;
+  protected ContextManager cm;
+  protected FastHierarchy fh;
+  protected NullnessAnalysis nullnessCache = null;
+  protected ConstantArrayAnalysis arrayCache = null;
+  protected SootMethod analysisKey = null;
   protected VirtualCalls virtualCalls = VirtualCalls.v();
 
   public OnFlyCallGraphBuilder(ContextManager cm, ReachableMethods rm) {
@@ -273,6 +274,10 @@ public class OnFlyCallGraphBuilder {
   public OnFlyCallGraphBuilder(ContextManager cm, ReachableMethods rm, boolean appOnly) {
     this(cm, rm);
     this.appOnly = appOnly;
+  }
+
+  public ContextManager getContextManager() {
+    return cm;
   }
 
   public LargeNumberedMap<SootMethod, List<Local>> methodToReceivers() {
@@ -367,8 +372,8 @@ public class OnFlyCallGraphBuilder {
     }
   }
 
-  private Set<Type> resolveToClasses(Set<Type> rawTypes) {
-    Set<Type> toReturn = new HashSet<Type>();
+  private Set<RefLikeType> resolveToClasses(Set<Type> rawTypes) {
+    Set<RefLikeType> toReturn = new HashSet<>();
     for (Type ty : rawTypes) {
       if (ty instanceof AnySubType) {
         AnySubType anySubType = (AnySubType) ty;
@@ -380,16 +385,16 @@ public class OnFlyCallGraphBuilder {
           classRoots = Collections.singleton(base.getSootClass());
         }
         toReturn.addAll(getTransitiveSubClasses(classRoots));
-      } else if (ty instanceof ArrayType || ty instanceof RefType) {
-        toReturn.add(ty);
+      } else if (ty instanceof RefType) {
+        toReturn.add((RefType) ty);
       }
     }
     return toReturn;
   }
 
-  private Collection<Type> getTransitiveSubClasses(Set<SootClass> classRoots) {
+  private Collection<RefLikeType> getTransitiveSubClasses(Set<SootClass> classRoots) {
     LinkedList<SootClass> worklist = new LinkedList<>(classRoots);
-    Set<Type> resolved = new HashSet<>();
+    Set<RefLikeType> resolved = new HashSet<>();
     while (!worklist.isEmpty()) {
       SootClass cls = worklist.removeFirst();
       if (!resolved.add(cls.getType())) {
@@ -421,6 +426,10 @@ public class OnFlyCallGraphBuilder {
                   || !reachingArgTypes.containsKey(ics.argArray())))) {
         for (Type bType : resolveToClasses(s)) {
           assert bType instanceof RefType;
+          // do not handle array reflection
+          if (bType instanceof ArrayType) {
+            continue;
+          }
           SootClass baseClass = ((RefType) bType).getSootClass();
           assert !baseClass.isInterface();
           Iterator<SootMethod> mIt = getPublicNullaryMethodIterator(baseClass);
@@ -471,6 +480,10 @@ public class OnFlyCallGraphBuilder {
   private void resolveStaticTypes(Set<Type> s, InvokeCallSite ics) {
     ArrayTypes at = ics.reachingTypes();
     for (Type bType : resolveToClasses(s)) {
+      // do not handle array reflection
+      if (bType instanceof ArrayType) {
+        continue;
+      }
       SootClass baseClass = ((RefType) bType).getSootClass();
       Iterator<SootMethod> mIt = getPublicMethodIterator(baseClass, at);
       while (mIt.hasNext()) {
@@ -531,7 +544,7 @@ public class OnFlyCallGraphBuilder {
     }
     if (paramType instanceof RefLikeType) {
       for (Type rType : reachingTypes) {
-        if (fh.canStoreType(paramType, rType)) {
+        if (fh.canStoreType(rType, paramType)) {
           return true;
         }
       }
@@ -931,7 +944,7 @@ public class OnFlyCallGraphBuilder {
       if (s.containsInvokeExpr()) {
         InvokeExpr ie = s.getInvokeExpr();
         SootMethodRef methodRef = ie.getMethodRef();
-        switch (methodRef.declaringClass().getName()) {
+        switch (methodRef.getDeclaringClass().getName()) {
           case "java.lang.reflect.Method":
             if (methodRef
                 .getSubSignature()
@@ -958,7 +971,7 @@ public class OnFlyCallGraphBuilder {
           reflectionModel.classForName(source, s);
         }
         if (ie instanceof StaticInvokeExpr) {
-          SootClass cl = ie.getMethodRef().declaringClass();
+          SootClass cl = ie.getMethodRef().getDeclaringClass();
           for (SootMethod clinit : EntryPoints.v().clinitsOf(cl)) {
             addEdge(source, s, clinit, Kind.CLINIT);
           }

@@ -244,6 +244,20 @@ public class Singletons {
     	instance_soot_SourceLocator = null;
     }
 
+    private soot.ModulePathSourceLocator instance_soot_ModulePathSourceLocator;
+    public soot.ModulePathSourceLocator soot_ModulePathSourceLocator() {
+        if (instance_soot_ModulePathSourceLocator == null) {
+	       	synchronized (this) {
+		        if (instance_soot_ModulePathSourceLocator == null)
+	        		instance_soot_ModulePathSourceLocator = new soot.ModulePathSourceLocator(g);
+	       	}
+       	}
+        return instance_soot_ModulePathSourceLocator;
+    }
+    protected void release_soot_ModulePathSourceLocator() {
+    	instance_soot_ModulePathSourceLocator = null;
+    }
+
     private soot.coffi.CONSTANT_Utf8_collector instance_soot_coffi_CONSTANT_Utf8_collector;
     public soot.coffi.CONSTANT_Utf8_collector soot_coffi_CONSTANT_Utf8_collector() {
         if (instance_soot_coffi_CONSTANT_Utf8_collector == null) {
@@ -1140,6 +1154,20 @@ public class Singletons {
     	instance_soot_RefType = null;
     }
 
+    private soot.ModuleRefType instance_soot_ModuleRefType;
+    public soot.ModuleRefType soot_ModuleRefType() {
+        if (instance_soot_ModuleRefType == null) {
+	       	synchronized (this) {
+		        if (instance_soot_ModuleRefType == null)
+	        		instance_soot_ModuleRefType = new soot.ModuleRefType(g);
+	       	}
+       	}
+        return instance_soot_ModuleRefType;
+    }
+    protected void release_soot_ModuleRefType() {
+    	instance_soot_ModuleRefType = null;
+    }
+
     private soot.Scene instance_soot_Scene;
     public soot.Scene soot_Scene() {
         if (instance_soot_Scene == null) {
@@ -1152,6 +1180,34 @@ public class Singletons {
     }
     protected void release_soot_Scene() {
     	instance_soot_Scene = null;
+    }
+
+    private soot.ModuleScene instance_soot_ModuleScene;
+    public soot.ModuleScene soot_ModuleScene() {
+        if (instance_soot_ModuleScene == null) {
+	       	synchronized (this) {
+		        if (instance_soot_ModuleScene == null)
+	        		instance_soot_ModuleScene = new soot.ModuleScene(g);
+	       	}
+       	}
+        return instance_soot_ModuleScene;
+    }
+    protected void release_soot_ModuleScene() {
+    	instance_soot_ModuleScene = null;
+    }
+
+    private soot.ModuleUtil instance_soot_ModuleUtil;
+    public soot.ModuleUtil soot_ModuleUtil() {
+        if (instance_soot_ModuleUtil == null) {
+	       	synchronized (this) {
+		        if (instance_soot_ModuleUtil == null)
+	        		instance_soot_ModuleUtil = new soot.ModuleUtil(g);
+	       	}
+       	}
+        return instance_soot_ModuleUtil;
+    }
+    protected void release_soot_ModuleUtil() {
+    	instance_soot_ModuleUtil = null;
     }
 
     private soot.dava.toolkits.base.finders.SequenceFinder instance_soot_dava_toolkits_base_finders_SequenceFinder;
@@ -1950,6 +2006,20 @@ public class Singletons {
     }
     protected void release_soot_SootResolver() {
     	instance_soot_SootResolver = null;
+    }
+
+    private soot.SootModuleResolver instance_soot_SootModuleResolver;
+    public soot.SootModuleResolver soot_SootModuleResolver() {
+        if (instance_soot_SootModuleResolver == null) {
+	       	synchronized (this) {
+		        if (instance_soot_SootModuleResolver == null)
+	        		instance_soot_SootModuleResolver = new soot.SootModuleResolver(g);
+	       	}
+       	}
+        return instance_soot_SootModuleResolver;
+    }
+    protected void release_soot_SootModuleResolver() {
+    	instance_soot_SootModuleResolver = null;
     }
 
     private soot.javaToJimple.InitialResolver instance_soot_javaToJimple_InitialResolver;

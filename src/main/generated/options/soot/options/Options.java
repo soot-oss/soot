@@ -249,6 +249,22 @@ public class Options extends OptionsBase {
                 }
             }
             else if (false
+                    || option.equals("soot-modulepath")
+            ) {
+                if (!hasMoreOptions()) {
+                    G.v().out.println("No value given for option -" + option);
+                    return false;
+                }
+
+                String value = nextOption();
+                if (soot_modulepath.isEmpty())
+                    soot_modulepath = value;
+                else {
+                    G.v().out.println("Duplicate values " + soot_modulepath + " and " + value + " for option -" + option);
+                    return false;
+                }
+            }
+            else if (false
                     || option.equals("pp")
                     || option.equals("prepend-classpath")
             )
@@ -1415,6 +1431,10 @@ public class Options extends OptionsBase {
     public void set_soot_classpath(String setting) { soot_classpath = setting; }
     private String soot_classpath = "";
 
+    public String soot_modulepath() { return soot_modulepath; }
+    public void set_soot_modulepath(String setting) { soot_modulepath = setting; }
+    private String soot_modulepath = "";
+
     public boolean prepend_classpath() { return prepend_classpath; }
     private boolean prepend_classpath = false;
     public void set_prepend_classpath(boolean setting) { prepend_classpath = setting; }
@@ -1700,6 +1720,7 @@ public class Options extends OptionsBase {
                 + padOpt("-weak-map-structures", "Use weak references in Scene to prevent memory leakage when removing many classes/methods/locals")
                 + "\nInput Options:\n"
                 + padOpt("-cp ARG -soot-class-path ARG -soot-classpath ARG", "Use ARG as the classpath for finding classes.")
+                + padOpt("-soot-modulepath ARG", "Use ARG as the modulepath for finding classes.")
                 + padOpt("-pp, -prepend-classpath", "Prepend the given soot classpath to the default classpath.")
                 + padOpt("-ice, -ignore-classpath-errors", "Ignores invalid entries on the Soot classpath.")
                 + padOpt("-process-multiple-dex", "Process all DEX files found in APK.")

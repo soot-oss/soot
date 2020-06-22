@@ -22,8 +22,8 @@ package soot.util.queue;
  * #L%
  */
 
+import org.junit.Assert;
 import org.junit.Test;
-import org.testng.Assert;
 
 public class ChunkedQueueTest {
 

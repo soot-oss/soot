@@ -74,9 +74,26 @@ public class OnFlyCallGraph {
     Scene.v().setCallGraph(callGraph);
     ContextManager cm = CallGraphBuilder.makeContextManager(callGraph);
     reachableMethods = Scene.v().getReachableMethods();
-    ofcgb = new OnFlyCallGraphBuilder(cm, reachableMethods, appOnly);
+    ofcgb = createOnFlyCallGraphBuilder(cm, reachableMethods, appOnly);
     reachablesReader = reachableMethods.listener();
     callEdges = cm.callGraph().listener();
+  }
+
+  /**
+   * Factory method for creating a new on-fly callgraph builder. Custom implementations can override this method for
+   * injecting own callgraph builders without having to modify Soot.
+   * 
+   * @param cm
+   *          The context manager
+   * @param reachableMethods
+   *          The reachable method set
+   * @param appOnly
+   *          True to only consider application code
+   * @return The new on-fly callgraph builder
+   */
+  protected OnFlyCallGraphBuilder createOnFlyCallGraphBuilder(ContextManager cm, ReachableMethods reachableMethods,
+      boolean appOnly) {
+    return new OnFlyCallGraphBuilder(cm, reachableMethods, appOnly);
   }
 
   public void build() {

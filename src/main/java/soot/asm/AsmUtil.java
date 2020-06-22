@@ -22,9 +22,9 @@ package soot.asm;
  * #L%
  */
 
+import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.List;
-import org.objectweb.asm.Opcodes;
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -33,6 +33,8 @@ import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
 import soot.LongType;
+import soot.ModuleRefType;
+import soot.ModuleUtil;
 import soot.RefLikeType;
 import soot.RefType;
 import soot.ShortType;
@@ -48,6 +50,13 @@ import soot.options.Options;
  */
 /** @author eric */
 public class AsmUtil {
+
+  private static RefType makeRefType(String className, Optional<String> moduleName) {
+    if (ModuleUtil.module_mode()) {
+      return ModuleRefType.v(className, moduleName);
+    }
+    return RefType.v(className);
+  }
 
   /**
    * Determines if a type is a dword type.
@@ -65,10 +74,10 @@ public class AsmUtil {
    * @param internal internal name.
    * @return type
    */
-  public static Type toBaseType(String internal) {
+  public static Type toBaseType(String internal, Optional<String> moduleName) {
     if (internal.charAt(0) == '[') {
       /* [Ljava/lang/Object; */
-      internal = internal.substring(internal.lastIndexOf('[') + 1, internal.length());
+      internal = internal.substring(internal.lastIndexOf('[') + 1);
       /* Ljava/lang/Object */
     }
     if (internal.charAt(internal.length() - 1) == ';') {
@@ -79,10 +88,10 @@ public class AsmUtil {
       // followed by a ; per
       // http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html
       if (internal.charAt(0) == 'L') {
-        internal = internal.substring(1, internal.length());
+        internal = internal.substring(1);
       }
       internal = toQualifiedName(internal);
-      return RefType.v(internal);
+      return makeRefType(internal, moduleName);
     }
     switch (internal.charAt(0)) {
       case 'Z':
@@ -103,7 +112,7 @@ public class AsmUtil {
         return DoubleType.v();
       default:
         internal = toQualifiedName(internal);
-        return RefType.v(internal);
+        return makeRefType(internal, moduleName);
     }
   }
 
@@ -143,8 +152,8 @@ public class AsmUtil {
    * @param desc the descriptor.
    * @return the reference type.
    */
-  public static Type toJimpleRefType(String desc) {
-    return desc.charAt(0) == '[' ? toJimpleType(desc) : RefType.v(toQualifiedName(desc));
+  public static Type toJimpleRefType(String desc, Optional<String> moduleName) {
+    return desc.charAt(0) == '[' ? toJimpleType(desc, moduleName) : makeRefType(toQualifiedName(desc), moduleName);
   }
 
   /**
@@ -153,7 +162,7 @@ public class AsmUtil {
    * @param desc the descriptor.
    * @return equivalent Jimple type.
    */
-  public static Type toJimpleType(String desc) {
+  public static Type toJimpleType(String desc, Optional<String> moduleName) {
     int idx = desc.lastIndexOf('[');
     int nrDims = idx + 1;
     if (nrDims > 0) {
@@ -194,7 +203,7 @@ public class AsmUtil {
         }
         String name = desc.substring(1, desc.length() - 1);
         name = toQualifiedName(name);
-        baseType = RefType.v(name);
+        baseType = makeRefType(name, moduleName);
         break;
       default:
         throw new AssertionError("Unknown descriptor: " + desc);
@@ -212,7 +221,7 @@ public class AsmUtil {
    * @param desc method signature.
    * @return list of types.
    */
-  public static List<Type> toJimpleDesc(String desc) {
+  public static List<Type> toJimpleDesc(String desc, Optional<String> moduleName) {
     ArrayList<Type> types = new ArrayList<Type>(2);
     int len = desc.length();
     int idx = 0;
@@ -259,9 +268,10 @@ public class AsmUtil {
             break this_type;
           case 'L':
             int begin = idx;
-            while (desc.charAt(++idx) != ';') { }
+            while (desc.charAt(++idx) != ';') {
+            }
             String cls = desc.substring(begin, idx++);
-            baseType = RefType.v(toQualifiedName(cls));
+            baseType = makeRefType(toQualifiedName(cls), moduleName);
             break this_type;
           default:
             throw new AssertionError("Unknown type: " + c);
