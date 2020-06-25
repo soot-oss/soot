@@ -10,12 +10,12 @@ package soot.asm.backend;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -37,12 +37,10 @@ import org.objectweb.asm.util.TraceClassVisitor;
 
 public class EnumTest extends AbstractASMBackendTest {
 
-
-
-	@Override
-	protected void generate(TraceClassVisitor cw) {
-		FieldVisitor fv;
-		MethodVisitor mv;
+  @Override
+  protected void generate(TraceClassVisitor cw) {
+    FieldVisitor fv;
+    MethodVisitor mv;
 
     cw.visit(V1_5, ACC_PUBLIC + ACC_FINAL + ACC_SUPER + ACC_ENUM, "soot/asm/backend/targets/MyEnum",
         "Ljava/lang/Enum<Lsoot/asm/backend/targets/MyEnum;>;", "java/lang/Enum", null);
@@ -61,10 +59,9 @@ public class EnumTest extends AbstractASMBackendTest {
       if (targetCompiler == TargetCompiler.eclipse)
         fv = cw.visitField(ACC_PRIVATE + ACC_FINAL + ACC_STATIC + ACC_SYNTHETIC, "ENUM$VALUES",
             "[Lsoot/asm/backend/targets/MyEnum;", null, null);
-			else
-        fv =
-                ACC_PRIVATE + ACC_FINAL + ACC_STATIC + ACC_SYNTHETIC,
-                "[Lsoot/asm/backend/targets/MyEnum;",
+      else
+        fv = cw.visitField(ACC_PRIVATE + ACC_FINAL + ACC_STATIC + ACC_SYNTHETIC, "$VALUES",
+            "[Lsoot/asm/backend/targets/MyEnum;", null, null);
       fv.visitEnd();
     }
     {
@@ -159,10 +156,12 @@ public class EnumTest extends AbstractASMBackendTest {
       mv.visitEnd();
     }
     cw.visitEnd();
+
   }
 
   @Override
   protected String getTargetClass() {
     return "soot.asm.backend.targets.MyEnum";
   }
+
 }

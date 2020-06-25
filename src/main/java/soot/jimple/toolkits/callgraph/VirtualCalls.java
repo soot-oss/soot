@@ -105,6 +105,7 @@ public class VirtualCalls {
 
     if (!cls.isInterface()) {
       ret = Scene.v().getOrMakeFastHierarchy().resolveConcreteDispatch(cls, callee);
+    }
     return ret;
   }
 

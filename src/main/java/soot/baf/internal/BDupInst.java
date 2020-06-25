@@ -23,6 +23,7 @@ package soot.baf.internal;
  */
 
 import java.util.Iterator;
+
 import soot.AbstractJasminClass;
 import soot.Type;
 import soot.baf.DupInst;
