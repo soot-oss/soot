@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/soot-oss/soot/workflows/Soot%20CI/badge.svg?branch=master)](https://github.com/soot-oss/soot/actions)
+[![Build Status](https://github.com/soot-oss/soot/workflows/Soot%20CI/badge.svg?branch=develop)](https://github.com/soot-oss/soot/actions)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/soot-oss/soot) 
 
 # Using Soot? Let us know about it!
@@ -39,7 +39,7 @@ For detailed information please also consider the Soot's [JavaDoc and Options](h
 
 # Including Soot in your Project
 
-A Soot release is currently built for each commit to the `master` branch. You can include Soot as 
+A Soot SNAPSHOT is currently built for each commit to the `develop` branch. You can include Soot as 
 a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 
 
@@ -48,17 +48,26 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
   <dependency>
     <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
-    <version>4.2.0</version>
+    <version>4.3.0</version>
   </dependency>
 </dependencies>
+<repositories>
+  <repository>
+      <id>sonatype-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+          <enabled>false</enabled>
+      </releases>
+  </repository>
+</repositories>	
 ```
 
-You can also obtain older builds of the `master` branch. A complete listing of builds can be found on [Maven Central](https://repo.maven.apache.org/maven2/org/soot-oss/soot/).
+You can also obtain older builds of the `develop` branch. A complete listing of builds can be found on [Maven Central](https://oss.sonatype.org/content/repositories/snapshots/org/soot-oss/soot/).
 
 # How do I obtain Soot without Maven?
 **We recommend using Soot with Maven**
 
-You can obtain the latest release build of Soot [directly](https://repo1.maven.org/maven2/org/soot-oss/soot/).
+You can obtain the latest SNAPSHOT build of Soot [directly](https://oss.sonatype.org/content/repositories/snapshots/org/soot-oss/soot/).
 
 The `soot-<RELEASE>-jar-with-dependencies.jar` file is an all-in-one file that also contains all the required libraries. 
 
