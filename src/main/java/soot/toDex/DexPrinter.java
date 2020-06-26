@@ -635,7 +635,7 @@ public class DexPrinter {
       fields = new ArrayList<Field>();
       for (SootField f : c.getFields()) {
         // We do not want to write out phantom fields
-        if (f.isPhantom()) {
+        if (isIgnored(f)) {
           continue;
         }
 
@@ -1077,7 +1077,7 @@ public class DexPrinter {
     return anns;
   }
 
-  private Collection<Method> toMethods(SootClass clazz) {
+  protected Collection<Method> toMethods(SootClass clazz) {
     if (clazz.getMethods().isEmpty()) {
       return null;
     }
@@ -1085,7 +1085,7 @@ public class DexPrinter {
     String classType = SootToDexUtils.getDexTypeDescriptor(clazz.getType());
     List<Method> methods = new ArrayList<Method>();
     for (SootMethod sm : clazz.getMethods()) {
-      if (sm.isPhantom()) {
+      if (isIgnored(sm)) {
         // Do not print method bodies for inherited methods
         continue;
       }
@@ -1119,7 +1119,29 @@ public class DexPrinter {
     return methods;
   }
 
-  private MethodImplementation toMethodImplementation(SootMethod m) {
+  /**
+   * Checks whether the given method shall be ignored, i.e., not written out to dex
+   * 
+   * @param sm
+   *          The method to check
+   * @return True to ignore the method while writing the dex file, false to write it out as normal
+   */
+  protected boolean isIgnored(SootMethod sm) {
+    return sm.isPhantom();
+  }
+
+  /**
+   * Checks whether the given field shall be ignored, i.e., not written out to dex
+   * 
+   * @param sf
+   *          The field to check
+   * @return True to ignore the field while writing the dex file, false to write it out as normal
+   */
+  protected boolean isIgnored(SootField sf) {
+    return sf.isPhantom();
+  }
+
+  protected MethodImplementation toMethodImplementation(SootMethod m) {
     if (m.isAbstract() || m.isNative()) {
       return null;
     }
@@ -1257,7 +1279,7 @@ public class DexPrinter {
       builder.addEndLocal(registersLeft);
     }
 
-    toTries(activeBody.getTraps(), stmtV, builder, labelAssinger);
+    toTries(activeBody.getTraps(), builder, labelAssinger);
 
     // Make sure that all labels have been placed by now
     for (Label lbl : labelAssinger.getAllLabels()) {
@@ -1497,7 +1519,7 @@ public class DexPrinter {
     seenRegisters.put(local, register);
   }
 
-  private void toInstructions(Collection<Unit> units, StmtVisitor stmtV, Set<Unit> trapReferences) {
+  protected void toInstructions(Collection<Unit> units, StmtVisitor stmtV, Set<Unit> trapReferences) {
     // Collect all constant arguments to monitor instructions and
     // pre-alloocate their registers
     Set<ClassConstant> monitorConsts = new HashSet<ClassConstant>();
@@ -1523,8 +1545,7 @@ public class DexPrinter {
     stmtV.finalizeInstructions(trapReferences);
   }
 
-  private void toTries(Collection<Trap> traps, StmtVisitor stmtV, MethodImplementationBuilder builder,
-      LabelAssigner labelAssigner) {
+  protected void toTries(Collection<Trap> traps, MethodImplementationBuilder builder, LabelAssigner labelAssigner) {
     // Original code: assume that the mapping startCodeAddress -> TryItem is
     // enough for
     // a "code range", ignore different end Units / try lengths

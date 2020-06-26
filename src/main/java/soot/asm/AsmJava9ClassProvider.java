@@ -46,7 +46,7 @@ public class AsmJava9ClassProvider implements ClassProvider {
     FoundFile file = null;
     // here we go through all modules, since we are in classpath mode
 
-    Path p = Paths.get(URI.create("jrt:/modules"));
+    Path p = ModulePathSourceLocator.getRootModulesPathOfJDK();
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(p)) {
       for (Path entry : stream) {
         // check each module folder for the class

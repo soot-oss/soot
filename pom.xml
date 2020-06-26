@@ -6,7 +6,7 @@
     <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
     <name>Soot - a J*va Optimization Framework</name>
-    <version>4.1.0</version>
+    <version>4.2.0</version>
     <description>A Java Optimization Framework</description>
     <url>https://soot-oss.github.io/soot</url>
     <organization>
@@ -73,7 +73,7 @@
         <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
         <licence-check.failOnMissingHeader>true</licence-check.failOnMissingHeader>
         <testcase.groups.excluded>categories.Java9Test,categories.Java11Test</testcase.groups.excluded>
-        <asm.version>7.1</asm.version>
+        <asm.version>8.0.1</asm.version>
     </properties>
     <build>
         <finalName>sootclasses-trunk</finalName>
@@ -496,7 +496,7 @@
         <dependency>
             <groupId>de.upb.cs.swt</groupId>
             <artifactId>heros</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.1</version>
         </dependency>
         <!-- Uploaded to http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/
             from the nightly build server -->

@@ -245,7 +245,8 @@ class MethodBuilder extends JSRInlinerAdapter {
       method.addTag(tag);
     }
     if (invisibleLocalVarAnnotations != null) {
-      VisibilityLocalVariableAnnotationTag tag = new VisibilityLocalVariableAnnotationTag(visibleLocalVarAnnotations.size(),
+      VisibilityLocalVariableAnnotationTag tag
+          = new VisibilityLocalVariableAnnotationTag(invisibleLocalVarAnnotations.size(),
           AnnotationConstants.RUNTIME_INVISIBLE);
       for (VisibilityAnnotationTag vat : invisibleLocalVarAnnotations) {
         tag.addVisibilityAnnotation(vat);

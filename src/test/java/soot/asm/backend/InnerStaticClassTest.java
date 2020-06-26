@@ -33,37 +33,31 @@ import org.objectweb.asm.util.TraceClassVisitor;
  *
  */
 
-public class InnerClassTest extends AbstractASMBackendTest {
+public class InnerStaticClassTest extends AbstractASMBackendTest {
 
   @Override
   protected void generate(TraceClassVisitor visitor) {
+
     MethodVisitor mv;
     FieldVisitor fv;
 
-    visitor.visit(V1_1, ACC_SUPER , "soot/asm/backend/targets/InnerClass$Inner", null, "java/lang/Object", null);
+    visitor.visit(V1_1, ACC_PUBLIC +ACC_SUPER, "soot/asm/backend/targets/InnerStaticClass$Inner", null, "java/lang/Object", null);
 
-    visitor.visitSource("InnerClass.java", null);
+    visitor.visitSource("InnerStaticClass.java", null);
 
-    visitor.visitOuterClass("soot/asm/backend/targets/InnerClass", null, null);
+    visitor.visitOuterClass("soot/asm/backend/targets/InnerStaticClass", null, null);
 
-    visitor.visitInnerClass("soot/asm/backend/targets/InnerClass$Inner", "soot/asm/backend/targets/InnerClass", "Inner",
-        ACC_PRIVATE);
+    visitor.visitInnerClass("soot/asm/backend/targets/InnerStaticClass$Inner", "soot/asm/backend/targets/InnerStaticClass", "Inner",
+            ACC_PUBLIC + ACC_STATIC);
 
     {
       fv = visitor.visitField(ACC_FINAL + ACC_STATIC, "a", "I", null, new Integer(3));
       fv.visitEnd();
     }
+
     {
-      fv = visitor.visitField(ACC_FINAL + ACC_SYNTHETIC, "this$0", "Lsoot/asm/backend/targets/InnerClass;", null, null);
-      fv.visitEnd();
-    }
-    {
-      mv = visitor.visitMethod(ACC_PRIVATE, "<init>", "(Lsoot/asm/backend/targets/InnerClass;)V", null, null);
+      mv = visitor.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
       mv.visitCode();
-      mv.visitVarInsn(ALOAD, 0);
-      mv.visitVarInsn(ALOAD, 1);
-      mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/InnerClass$Inner", "this$0",
-          "Lsoot/asm/backend/targets/InnerClass;");
       mv.visitVarInsn(ALOAD, 0);
       mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
       mv.visitInsn(RETURN);
@@ -71,12 +65,11 @@ public class InnerClassTest extends AbstractASMBackendTest {
       mv.visitEnd();
     }
     visitor.visitEnd();
-
   }
 
   @Override
   protected String getTargetClass() {
-    return "soot.asm.backend.targets.InnerClass$Inner";
+    return "soot.asm.backend.targets.InnerStaticClass$Inner";
   }
 
 }

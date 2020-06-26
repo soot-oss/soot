@@ -48,7 +48,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
   <dependency>
     <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
-    <version>4.1.0</version>
+    <version>4.2.0</version>
   </dependency>
 </dependencies>
 ```

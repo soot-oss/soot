@@ -800,6 +800,8 @@ public class Scene {
     boolean javaGEQ9 = isJavaGEQ9(System.getProperty("java.version"));
     if (javaGEQ9) {
       sb.append(ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS);
+      //this is a new basic class in java >= 9 that needs to be laoded
+      Scene.v().addBasicClass("java.lang.invoke.StringConcatFactory");
 
     } else {
 
