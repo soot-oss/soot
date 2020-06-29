@@ -632,10 +632,12 @@ public class FastHierarchy {
           worklist.addAll(c);
         }
       }
-
-      SootMethod resolvedMethod = resolveMethod(concreteType, m, false, resolved);
-      if (resolvedMethod != null) {
-        ret.add(resolvedMethod);
+      
+      if (!resolved.contains(concreteType)) {
+        SootMethod resolvedMethod = resolveMethod(concreteType, m, false, resolved);
+        if (resolvedMethod != null) {
+          ret.add(resolvedMethod);
+        }
       }
     }
 
@@ -819,10 +821,11 @@ public class FastHierarchy {
 
       if (candidate != null) {
         if (isVisible(declaringClass, concreteType, candidate.getModifiers())) {
-        	if (!allowAbstract && candidate.isAbstract()) {
-        		candidate = null;
-        		break;
-        	}
+          if (!allowAbstract && candidate.isAbstract()) {
+            candidate = null;
+            break;
+          }
+             
           addToVtable(candidate, methodSignature, vtblMap);
           return candidate;
         }
@@ -855,11 +858,12 @@ public class FastHierarchy {
               getSignaturePolymorphicMethod(iFace, name, parameterTypes, returnType);
 
           if (method != null && isVisible(declaringClass, iFace, method.getModifiers())) {
-        	  if (!allowAbstract && method.isAbstract()) {
-        		  // abstract method cannot be dispatched
-        		  method = null;
-        		  continue;
-        	  }
+            if (!allowAbstract && method.isAbstract()) {
+              // abstract method cannot be dispatched
+              method = null;
+              continue;
+            }
+ 
             // check if the found method is more specific than our current candidate
             else if (candidate == null
                 || canStoreClass(method.getDeclaringClass(), candidate.getDeclaringClass())) {

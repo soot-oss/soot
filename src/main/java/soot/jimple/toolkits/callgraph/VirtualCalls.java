@@ -84,7 +84,9 @@ public class VirtualCalls {
         // method with a specialinvoke instruction (i.e. do not dispatch to an
         // overwritten version of that method)
         && !callee.getDeclaringClass().isInterface()) {
-      return resolveNonSpecial(container.getDeclaringClass().getType(), calleeRef, appOnly);
+      //The invokespecial instruction is used to invoke instance initialization methods as well 
+      //as private methods and methods of a superclass of the current class.
+      return resolveNonSpecial(container.getDeclaringClass().getSuperclass().getType(), calleeRef, appOnly);
     } else {
       return callee;
     }
