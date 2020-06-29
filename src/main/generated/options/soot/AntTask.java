@@ -371,6 +371,12 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "8" )
                 || arg.equals( "1.9" )
                 || arg.equals( "9" )
+                || arg.equals( "1.10" )
+                || arg.equals( "10" )
+                || arg.equals( "1.11" )
+                || arg.equals( "11" )
+                || arg.equals( "1.12" )
+                || arg.equals( "12" )
                 ) {
                 addArg("-java-version");
                 addArg(arg);
