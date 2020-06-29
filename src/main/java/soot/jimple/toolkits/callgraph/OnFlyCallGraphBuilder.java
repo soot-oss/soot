@@ -206,23 +206,23 @@ public class OnFlyCallGraphBuilder {
   protected final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
 
   // end type based reflection resolution
-  private final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites =
+  protected final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites =
       new LargeNumberedMap<Local, List<VirtualCallSite>>(
           Scene.v().getLocalNumberer()); // Local -> List(VirtualCallSite)
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers =
+  protected final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers =
       new LargeNumberedMap<SootMethod, List<Local>>(
           Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases =
+  protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases =
       new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
-  private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs =
+  protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs =
       new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
-  private final MultiMap<Local, InvokeCallSite> baseToInvokeSite = new HashMultiMap<>();
-  private final MultiMap<Local, InvokeCallSite> invokeArgsToInvokeSite = new HashMultiMap<>();
-  private final Map<Local, BitSet> invokeArgsToSize = new IdentityHashMap<>();
-  private final MultiMap<AllocDotField, Local> allocDotFieldToLocal = new HashMultiMap<>();
-  private final MultiMap<Local, Type> reachingArgTypes = new HashMultiMap<>();
-  private final MultiMap<Local, Type> reachingBaseTypes = new HashMultiMap<>();
-  private final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites =
+  protected final MultiMap<Local, InvokeCallSite> baseToInvokeSite = new HashMultiMap<>();
+  protected final MultiMap<Local, InvokeCallSite> invokeArgsToInvokeSite = new HashMultiMap<>();
+  protected final Map<Local, BitSet> invokeArgsToSize = new IdentityHashMap<>();
+  protected final MultiMap<AllocDotField, Local> allocDotFieldToLocal = new HashMultiMap<>();
+  protected final MultiMap<Local, Type> reachingArgTypes = new HashMultiMap<>();
+  protected final MultiMap<Local, Type> reachingBaseTypes = new HashMultiMap<>();
+  protected final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites =
       new SmallNumberedMap<List<VirtualCallSite>>();
   // Local
   // ->
