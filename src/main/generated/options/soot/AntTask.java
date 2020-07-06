@@ -227,6 +227,10 @@ public class AntTask extends MatchingTask {
                 process_dir = new Path(getProject());
             return process_dir.createPath();
         }
+        
+        public void setderive_java_version(boolean arg) {
+            if(arg) addArg("-derive-java-version");
+        }
   
         public void setoaat(boolean arg) {
             if(arg) addArg("-oaat");
