@@ -28,8 +28,13 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +45,7 @@ import org.junit.Test;
 import soot.Body;
 import soot.FastHierarchy;
 import soot.MethodOrMethodContext;
+import soot.PackManager;
 import soot.PhaseOptions;
 import soot.Scene;
 import soot.SootClass;
@@ -47,9 +53,11 @@ import soot.SootMethod;
 import soot.Unit;
 import soot.UnitPatchingChain;
 import soot.jimple.Stmt;
+import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
+import soot.options.Options;
 import soot.testing.framework.AbstractTestingFramework;
 
 /** */
@@ -60,6 +68,23 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
     super.setupSoot();
     PhaseOptions.v().setPhaseOption("cg.cha", "on");
   }
+  
+  @Test
+  public void SubClassTest() throws FileNotFoundException, UnsupportedEncodingException {		
+	  
+	  String testClass = "soot.defaultInterfaceMethods.JavaNCSSCheck";
+	  String abstractClass = "soot.defaultInterfaceDifferentPackage.AbstractCheck";
+	  final SootMethod target =
+		        prepareTarget(
+		            methodSigFromComponents(testClass, "void", "main"),
+		            testClass,
+		            "soot.defaultInterfaceDifferentPackage.AbstractCheck");
+		
+		ArrayList<Edge> edges = GetCallGraph();
+		
+		assertEquals(edges.get(0).getTgt(), Scene.v().getMethod("<soot.defaultInterfaceDifferentPackage.AbstractCheck: void log(java.lang.String,java.lang.String)>"));		
+		
+	}
 
   @Test
   public void simpleDefaultInterfaceTest() {
@@ -894,4 +919,11 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
     assertTrue(checkInEdges(subInterfacePrint, mainMethod));
     assertTrue(Scene.v().getReachableMethods().contains(subInterfacePrint));
   }
+  
+  private static ArrayList<Edge> GetCallGraph() {			
+		CallGraph cg = Scene.v().getCallGraph();
+		Iterator<Edge> mainMethodEdges = cg.edgesOutOf(Scene.v().getMethod("<soot.defaultInterfaceMethods.JavaNCSSCheck: void finishTree()>"));
+		ArrayList<Edge> edgeList = Lists.newArrayList(mainMethodEdges);
+		return edgeList;		
+	}
 }
