@@ -160,10 +160,6 @@ public class TypeResolver {
       tg = this.minCasts(sigma, bh, castCount);
     }
 
-    if (jb.getMethod().toString().equals(
-        "<com.itextpdf.text.pdf.codec.TIFFDirectory: void initialize(com.itextpdf.text.pdf.RandomAccessFileOrArray)>"))
-      System.out.println("x");
-
     this.insertCasts(tg, bh, false);
 
     final IntType inttype = IntType.v();
@@ -211,10 +207,6 @@ public class TypeResolver {
 
     @Override
     public Value visit(Value op, Type useType, Stmt stmt) {
-      if (!countOnly && op.toString().equals("$u14#51") && jb.getMethod().toString().equals(
-          "<com.itextpdf.text.pdf.codec.TIFFDirectory: void initialize(com.itextpdf.text.pdf.RandomAccessFileOrArray)>"))
-        System.out.println("x");
-
       final Jimple jimple = Jimple.v();
       Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
 
