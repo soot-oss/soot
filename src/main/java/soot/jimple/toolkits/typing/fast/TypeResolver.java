@@ -289,10 +289,11 @@ public class TypeResolver {
       this.tg.set(vnew, useType);
       Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
       AssignStmt newStmt = jimple.newAssignStmt(vnew, jimple.newCastExpr(old, useType));
-      if (after)
+      if (after) {
         this.jb.getUnits().insertAfter(newStmt, u);
-      else
+      } else {
         this.jb.getUnits().insertBefore(newStmt, u);
+      }
       return vnew;
     }
 
