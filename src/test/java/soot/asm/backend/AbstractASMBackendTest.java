@@ -60,7 +60,7 @@ public abstract class AbstractASMBackendTest implements Opcodes {
   protected TargetCompiler getJavaCompiler() {
     final String version = System.getProperty("java.version");
     if (Scene.isJavaGEQ9(version)) {
-      return version.equals("14-ea") ? TargetCompiler.javac14 : TargetCompiler.javac9;
+      return TargetCompiler.javac9;
     }
     return TargetCompiler.javac;
   }
@@ -188,6 +188,6 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 
   /** Enumeration containing the supported Java compilers */
   enum TargetCompiler {
-    eclipse, javac, javac9, javac14
+    eclipse, javac, javac9
   }
 }
