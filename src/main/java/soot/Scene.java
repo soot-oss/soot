@@ -707,8 +707,9 @@ public class Scene {
     try {
       // We may have versions such as "14-ea"
       int idx = version.indexOf("-");
-      if (idx > 0)
+      if (idx > 0) {
         version = version.substring(0, idx);
+      }
 
       String[] elements = version.split("\\.");
       // string has the form 9.x.x....
