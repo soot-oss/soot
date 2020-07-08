@@ -704,21 +704,21 @@ public class Scene {
    * @return
    */
   public static boolean isJavaGEQ9(String version) {
-    String[] elements = version.split("\\.");
-    // string has the form 9.x.x....
-    Integer firstVersionDigest = Integer.valueOf(elements[0]);
-    if (firstVersionDigest >= 9) {
-      return true;
-    }
-    if (firstVersionDigest == 1 && elements.length > 1) {
-      try {
+    try {
+      String[] elements = version.split("\\.");
+      // string has the form 9.x.x....
+      Integer firstVersionDigest = Integer.valueOf(elements[0]);
+      if (firstVersionDigest >= 9) {
+        return true;
+      }
+      if (firstVersionDigest == 1 && elements.length > 1) {
         // string has the form 1.9.x.xxx
         return Integer.valueOf(elements[1]) >= 9;
-      } catch (NumberFormatException ex) {
-        throw new IllegalArgumentException(String.format("Unknown Version number schema %s", version), ex);
+      } else {
+        throw new IllegalArgumentException(String.format("Unknown Version number schema %s", version));
       }
-    } else {
-      throw new IllegalArgumentException(String.format("Unknown Version number schema %s", version));
+    } catch (NumberFormatException ex) {
+      throw new IllegalArgumentException(String.format("Unknown Version number schema %s", version), ex);
     }
   }
 
