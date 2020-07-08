@@ -1,5 +1,25 @@
 package soot;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import org.jf.dexlib2.iface.DexFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -26,26 +46,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
-import org.jf.dexlib2.iface.DexFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmClassProvider;
 import soot.asm.AsmJava9ClassProvider;
@@ -63,7 +63,7 @@ public class SourceLocator {
   private List<String> sourcePath;
   private boolean java9Mode = false;
 
-  private LoadingCache<String, ClassSourceType> pathToSourceType
+  protected final LoadingCache<String, ClassSourceType> pathToSourceType
       = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(500).softValues()
           .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(new CacheLoader<String, ClassSourceType>() {
             @Override
@@ -91,7 +91,7 @@ public class SourceLocator {
               return ClassSourceType.directory;
             }
           });
-  private LoadingCache<String, Set<String>> archivePathsToEntriesCache
+  protected final LoadingCache<String, Set<String>> archivePathsToEntriesCache
       = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(500).softValues()
           .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(new CacheLoader<String, Set<String>>() {
             @Override
