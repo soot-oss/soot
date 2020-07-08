@@ -1,18 +1,5 @@
 package soot.asm;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.Attribute;
-import org.objectweb.asm.Handle;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.TypePath;
-import org.objectweb.asm.commons.JSRInlinerAdapter;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -36,6 +23,19 @@ import org.objectweb.asm.commons.JSRInlinerAdapter;
  */
 
 import com.google.common.base.Optional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Attribute;
+import org.objectweb.asm.Handle;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.TypePath;
+import org.objectweb.asm.commons.JSRInlinerAdapter;
 
 import soot.ArrayType;
 import soot.RefType;
@@ -81,8 +81,9 @@ class MethodBuilder extends JSRInlinerAdapter {
     for (int i = 0; i < paramCount; i++) {
       slotMap.put(curSlot, i);
       curSlot++;
-      if (AsmUtil.isDWord(method.getParameterType(i)))
+      if (AsmUtil.isDWord(method.getParameterType(i))) {
         curSlot++;
+      }
     }
     return slotMap;
   }
@@ -121,8 +122,9 @@ class MethodBuilder extends JSRInlinerAdapter {
 
     if (name != null && !name.isEmpty() && index > 0) {
       Integer paramIdx = slotToParameter.get(index);
-      if (paramIdx != null)
+      if (paramIdx != null) {
         parameterNames[paramIdx] = name;
+      }
     }
   }
 

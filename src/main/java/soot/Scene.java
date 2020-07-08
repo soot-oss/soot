@@ -711,9 +711,12 @@ public class Scene {
       return true;
     }
     if (firstVersionDigest == 1 && elements.length > 1) {
-      // string has the form 1.9.x.xxx
-      return Integer.valueOf(elements[1]) >= 9;
-
+      try {
+        // string has the form 1.9.x.xxx
+        return Integer.valueOf(elements[1]) >= 9;
+      } catch (NumberFormatException ex) {
+        throw new IllegalArgumentException(String.format("Unknown Version number schema %s", version), ex);
+      }
     } else {
       throw new IllegalArgumentException(String.format("Unknown Version number schema %s", version));
     }
