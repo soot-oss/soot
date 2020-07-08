@@ -705,6 +705,11 @@ public class Scene {
    */
   public static boolean isJavaGEQ9(String version) {
     try {
+      // We may have versions such as "14-ea"
+      int idx = version.indexOf("-");
+      if (idx > 0)
+        version = version.substring(0, idx);
+
       String[] elements = version.split("\\.");
       // string has the form 9.x.x....
       Integer firstVersionDigest = Integer.valueOf(elements[0]);
