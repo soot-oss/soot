@@ -159,6 +159,7 @@ public class TypeResolver {
       sigma = this.applyAssignmentConstraints(typingStrategy.createTyping(this.jb.getLocals()), ef, bh);
       tg = this.minCasts(sigma, bh, castCount);
     }
+
     this.insertCasts(tg, bh, false);
 
     final IntType inttype = IntType.v();
@@ -228,7 +229,8 @@ public class TypeResolver {
             final String name = rt.getSootClass().getName();
             if (name.equals("java.lang.Object") || name.equals("java.io.Serializable")
                 || name.equals("java.lang.Cloneable")) {
-              tg.set((Local) ((DefinitionStmt) stmt).getLeftOp(), ((ArrayType) useType).getElementType());
+              Local lop = (Local) ((DefinitionStmt) stmt).getLeftOp();
+              tg.set(lop, ((ArrayType) useType).getElementType());
             }
           }
         }
@@ -247,6 +249,7 @@ public class TypeResolver {
           vold = (Local) op;
         }
 
+        // Cast from the original type to the type that we use in the code
         Local vnew = createCast(useType, stmt, vold);
         return vnew;
       }
@@ -264,11 +267,33 @@ public class TypeResolver {
      * @return the new local
      */
     protected Local createCast(Type useType, Stmt stmt, Local old) {
+      return createCast(useType, stmt, old, false);
+    }
+
+    /**
+     * Creates a cast at stmt of vold to the given type.
+     * 
+     * @param useType
+     *          the new type
+     * @param stmt
+     *          stmt
+     * @param old
+     *          the old local
+     * @param after
+     *          True to insert the cast after the statement, false to insert it before
+     * @return the new local
+     */
+    protected Local createCast(Type useType, Stmt stmt, Local old, boolean after) {
       Jimple jimple = Jimple.v();
       Local vnew = localGenerator.generateLocal(useType);
       this.tg.set(vnew, useType);
       Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
-      this.jb.getUnits().insertBefore(jimple.newAssignStmt(vnew, jimple.newCastExpr(old, useType)), u);
+      AssignStmt newStmt = jimple.newAssignStmt(vnew, jimple.newCastExpr(old, useType));
+      if (after) {
+        this.jb.getUnits().insertAfter(newStmt, u);
+      } else {
+        this.jb.getUnits().insertBefore(newStmt, u);
+      }
       return vnew;
     }
 
@@ -402,6 +427,9 @@ public class TypeResolver {
         } else if (t instanceof Integer32767Type) {
           tg.set(v, shortType);
           conversionDone = true;
+        } else if (t instanceof WeakObjectType) {
+          tg.set(v, RefType.v(((WeakObjectType) t).getClassName()));
+          conversionDone = true;
         }
       }
     } while (conversionDone);
@@ -499,7 +527,7 @@ public class TypeResolver {
              * We only need to consider array references on the LHS of assignments where there is supertyping between array
              * types, which is only for arrays of reference types and multidimensional arrays.
              */
-            if (!(t_ instanceof RefType || t_ instanceof ArrayType)) {
+            if (!(t_ instanceof RefType || t_ instanceof ArrayType || told instanceof WeakObjectType)) {
               continue;
             }
 

@@ -98,6 +98,10 @@ public class BytecodeHierarchy implements IHierarchy {
       return Collections.<Type>singletonList(b);
     } else if (b instanceof BottomType) {
       return Collections.<Type>singletonList(a);
+    } else if (a instanceof WeakObjectType) {
+      return Collections.<Type>singletonList(b);
+    } else if (b instanceof WeakObjectType) {
+      return Collections.<Type>singletonList(a);
     } else if (a instanceof IntegerType && b instanceof IntegerType) {
       return Collections.<Type>singletonList(IntType.v());
     } else if (a instanceof IntegerType && b instanceof FloatType) {
