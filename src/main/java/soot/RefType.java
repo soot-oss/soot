@@ -1,5 +1,7 @@
 package soot;
 
+import java.util.ArrayDeque;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,8 +25,6 @@ package soot;
  */
 
 import com.google.common.base.Optional;
-
-import java.util.ArrayDeque;
 
 import soot.util.Switch;
 
@@ -81,12 +81,8 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     if (ModuleUtil.module_mode()) {
       return ModuleRefType.v(className);
     }
-    RefType rt = Scene.v().getRefTypeUnsafe(className);
-    if (rt == null) {
-      return Scene.v().getOrAddRefType(className);
-    }
-    return rt;
 
+    return Scene.v().getOrAddRefType(className);
   }
 
   public int compareTo(RefType t) {
