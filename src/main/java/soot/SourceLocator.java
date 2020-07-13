@@ -1,25 +1,5 @@
 package soot;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
-import org.jf.dexlib2.iface.DexFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -45,6 +25,26 @@ import org.slf4j.LoggerFactory;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import org.jf.dexlib2.iface.DexFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmClassProvider;
