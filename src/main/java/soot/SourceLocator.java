@@ -61,7 +61,7 @@ public class SourceLocator {
   protected List<ClassProvider> classProviders;
   protected List<String> classPath;
   private List<String> sourcePath;
-  private boolean java9Mode = false;
+  protected boolean java9Mode = false;
 
   protected final LoadingCache<String, ClassSourceType> pathToSourceType
       = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(500).softValues()
