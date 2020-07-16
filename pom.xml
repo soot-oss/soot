@@ -496,7 +496,7 @@
         <dependency>
             <groupId>de.upb.cs.swt</groupId>
             <artifactId>heros</artifactId>
-            <version>1.2.2-SNAPSHOT</version>
+            <version>1.2.3-SNAPSHOT</version>
         </dependency>
         <!-- Uploaded to http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/
             from the nightly build server -->
