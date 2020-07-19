@@ -1360,7 +1360,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			getConfig().put(getProcessing_Optionsfield_type_mismatches_widget().getAlias(), stringRes);
 		}
 		stringRes = getProcessing_Optionsthrow_analysis_widget().getSelectedAlias();
-		defStringRes = "unit";
+		defStringRes = "auto-select";
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getProcessing_Optionsthrow_analysis_widget().getAlias(), stringRes);
@@ -9348,11 +9348,15 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 				new OptionData("Unit",
 						"unit",
 						"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program.",
-						true),
+						false),
 				new OptionData("Dalvik",
 						"dalvik",
 						"\nSpecialized throw analysis implementation that covers the \nsemantics of the Dalvik IR used for Android apps",
 						false),
+				new OptionData("AutoSelect",
+						"auto-select",
+						"\nWhen processing DEX or APK files, choose the Dalvik throw \nanalysis. Otherwise, choose the unit throw analysis.",
+						true),
 		};
 
 

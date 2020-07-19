@@ -502,6 +502,7 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "pedantic" )
                 || arg.equals( "unit" )
                 || arg.equals( "dalvik" )
+                || arg.equals( "auto-select" )
                 ) {
                 addArg("-throw-analysis");
                 addArg(arg);

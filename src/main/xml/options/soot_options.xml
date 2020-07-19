@@ -6905,7 +6905,6 @@ This locking scheme aims to achieve simple fine-grained locking.
                 <name>Unit</name>
                 <alias>unit</alias>
                 <short_desc>Unit Throw Analysis</short_desc>
-                <default/>
                 <long_desc>
                     Says that each statement in the intermediate representation
                     may throw those exception types associated with the corresponding
@@ -6921,6 +6920,16 @@ This locking scheme aims to achieve simple fine-grained locking.
                 <long_desc>
                     Specialized throw analysis implementation that covers the semantics of the Dalvik
                     IR used for Android apps
+                </long_desc>
+            </value>
+            <value>
+                <name>AutoSelect</name>
+                <alias>auto-select</alias>
+                <default/>
+                <short_desc>Automatically Select Throw Analysis</short_desc>
+                <long_desc>
+                    When processing DEX or APK files, choose the Dalvik throw analysis. Otherwise,
+                    choose the unit throw analysis.
                 </long_desc>
             </value>
         </multiopt>

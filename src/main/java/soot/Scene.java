@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
+
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
@@ -1497,8 +1498,15 @@ public class Scene {
         case Options.throw_analysis_dalvik:
           defaultThrowAnalysis = DalvikThrowAnalysis.v();
           break;
+        case Options.throw_analysis_auto_select:
+          if (Options.v().src_prec() == Options.src_prec_apk) {
+            defaultThrowAnalysis = DalvikThrowAnalysis.v();
+          } else {
+            defaultThrowAnalysis = UnitThrowAnalysis.v();
+          }
+          break;
         default:
-          throw new IllegalStateException("Options.v().throw_analysi() == " + Options.v().throw_analysis());
+          throw new IllegalStateException("Options.v().throw_analysis() == " + Options.v().throw_analysis());
       }
     }
     return defaultThrowAnalysis;

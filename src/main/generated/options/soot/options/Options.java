@@ -110,6 +110,7 @@ public class Options extends OptionsBase {
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
     public static final int throw_analysis_dalvik = 3;
+    public static final int throw_analysis_auto_select = 4;
     public static final int check_init_throw_analysis_auto = 1;
     public static final int check_init_throw_analysis_pedantic = 2;
     public static final int check_init_throw_analysis_unit = 3;
@@ -1059,6 +1060,15 @@ public class Options extends OptionsBase {
                     }
                     throw_analysis = throw_analysis_dalvik;
                 }
+                else if (false
+                        || value.equals("auto-select")
+                ) {
+                    if (throw_analysis != 0 && throw_analysis != throw_analysis_auto_select) {
+                        G.v().out.println("Multiple values given for option " + option);
+                        return false;
+                    }
+                    throw_analysis = throw_analysis_auto_select;
+                }
                 else {
                     G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
                     return false;
@@ -1574,7 +1584,7 @@ public class Options extends OptionsBase {
     public void set_via_shimple(boolean setting) { via_shimple = setting; }
 
     public int throw_analysis() {
-        if (throw_analysis == 0) return throw_analysis_unit;
+        if (throw_analysis == 0) return throw_analysis_auto_select;
         return throw_analysis; 
     }
     public void set_throw_analysis(int setting) { throw_analysis = setting; }
@@ -1762,8 +1772,9 @@ public class Options extends OptionsBase {
                 + padOpt("-via-shimple", "Enable Shimple SSA representation")
                 + padOpt("-throw-analysis ARG", "")
                     + padVal("pedantic", "Pedantically conservative throw analysis")
-                    + padVal("unit (default)", "Unit Throw Analysis")
+                    + padVal("unit", "Unit Throw Analysis")
                     + padVal("dalvik", "Dalvik Throw Analysis")
+                    + padVal("auto-select (default)", "Automatically Select Throw Analysis")
                 + padOpt("-check-init-ta ARG -check-init-throw-analysis ARG", "")
                     + padVal("auto (default)", "Automatically select a throw analysis")
                     + padVal("pedantic", "Pedantically conservative throw analysis")
