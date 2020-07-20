@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.ClassDef;
+import org.jf.dexlib2.iface.DexFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +46,7 @@ import soot.options.Options;
 public class DexClassProvider implements ClassProvider {
   private static final Logger logger = LoggerFactory.getLogger(DexClassProvider.class);
 
-  public static Set<String> classesOfDex(DexBackedDexFile dexFile) {
+  public static Set<String> classesOfDex(DexFile dexFile) {
     Set<String> classes = new HashSet<String>();
     for (ClassDef c : dexFile.getClasses()) {
       String name = Util.dottedClassName(c.getType());
@@ -105,8 +105,8 @@ public class DexClassProvider implements ClassProvider {
       try {
         File dexFile = new File(path);
         if (dexFile.exists()) {
-          for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(dexFile)) {
-            for (String className : classesOfDex(container.getBase())) {
+          for (DexFileProvider.DexContainer<? extends DexFile> container : DexFileProvider.v().getDexFromSource(dexFile)) {
+            for (String className : classesOfDex(container.getBase().getDexFile())) {
               if (!index.containsKey(className)) {
                 index.put(className, container.getFilePath());
               } else if (Options.v().verbose()) {

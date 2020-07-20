@@ -72,6 +72,7 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.VirtualInvokeExpr;
 import soot.toolkits.exceptions.ExceptionTestUtility.ExceptionHashSet;
 
+
 public class UnitThrowAnalysisTest {
 
 	static {

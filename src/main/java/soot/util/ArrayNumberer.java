@@ -98,7 +98,7 @@ public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> 
     }
     E ret = numberToObj[(int) number];
     if (ret == null) {
-      throw new RuntimeException("no object with number " + number);
+      return null;
     }
     return ret;
   }
@@ -128,7 +128,7 @@ public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> 
 
       @Override
       public final void remove() {
-        throw new UnsupportedOperationException();
+        ArrayNumberer.this.remove(numberToObj[cur - 1]);
       }
     };
   }

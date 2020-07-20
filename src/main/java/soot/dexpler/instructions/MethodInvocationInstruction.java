@@ -43,6 +43,7 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction45cc;
 import org.jf.dexlib2.iface.instruction.formats.Instruction4rcc;
 import org.jf.dexlib2.iface.reference.FieldReference;
 import org.jf.dexlib2.iface.reference.MethodReference;
+
 import soot.Local;
 import soot.Modifier;
 import soot.RefType;
@@ -99,12 +100,12 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
       // Debug.printDbg(IDalvikTyper.DEBUG, "constraint special invoke: "+ assign);
 
       if (invocation instanceof InstanceInvokeExpr) {
-        Type t = invocation.getMethodRef().declaringClass().getType();
+        Type t = invocation.getMethodRef().getDeclaringClass().getType();
         DalvikTyper.v().setType(((InstanceInvokeExpr) invocation).getBaseBox(), t, true);
         // DalvikTyper.v().setObjectType(assign.getLeftOpBox());
       }
       int i = 0;
-      for (Type pt : invocation.getMethodRef().parameterTypes()) {
+      for (Type pt : invocation.getMethodRef().getParameterTypes()) {
         DalvikTyper.v().setType(invocation.getArgBox(i++), pt, true);
       }
       if (assign != null) {
@@ -137,7 +138,8 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     return isUsedAsFloatingPoint(body, register, false);
   }
 
-  /** Determine if register is used as floating point.
+  /**
+   * Determine if register is used as floating point.
    *
    * Abstraction for static and non-static methods. Non-static methods need to ignore the first parameter (this)
    *
@@ -168,7 +170,8 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     return false;
   }
 
-  /** Determine if register is used as object.
+  /**
+   * Determine if register is used as object.
    *
    * Abstraction for static and non-static methods. Non-static methods need to ignore the first parameter (this)
    *
@@ -205,87 +208,111 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     return false;
   }
 
-  /** Return the virtual SootMethodRef for the invoked method.
+  /**
+   * Return the virtual SootMethodRef for the invoked method.
    *
    */
   protected SootMethodRef getVirtualSootMethodRef() {
     return getNormalSootMethodRef(Kind.REF_INVOKE_VIRTUAL);
   }
 
-  /** Return the static SootMethodRef for the invoked method.
+  /**
+   * Return the static SootMethodRef for the invoked method.
    *
    */
   protected SootMethodRef getStaticSootMethodRef() {
     return getNormalSootMethodRef(Kind.REF_INVOKE_STATIC);
   }
-  
-  /** Return the static SootMethodRef for the invoked method.
+
+  /**
+   * Return the static SootMethodRef for the invoked method.
    *
    */
   protected SootMethodRef getInterfaceSootMethodRef() {
     return getNormalSootMethodRef(Kind.REF_INVOKE_INTERFACE);
   }
-  
-  /** Return the SootMethodRef for the invoked method.
+
+  /**
+   * Return the SootMethodRef for the invoked method.
    *
-   * @param kind The type of the invocation in terms of MethodHandle.Kind
+   * @param kind
+   *          The type of the invocation in terms of MethodHandle.Kind
    */
   protected SootMethodRef getNormalSootMethodRef(Kind kind) {
     return getSootMethodRef((MethodReference) ((ReferenceInstruction) instruction).getReference(), kind);
   }
-  
-  /** Return a SootMethodRef for the given MethodReference dependent on the InvocationType passed in.
+
+  /**
+   * Return a SootMethodRef for the given MethodReference dependent on the InvocationType passed in.
    * 
-   * @param mItem The MethodReference included in the invoke instruction
-   * @param kind The type of the invocation in terms of MethodHandle.Kind
+   * @param mItem
+   *          The MethodReference included in the invoke instruction
+   * @param kind
+   *          The type of the invocation in terms of MethodHandle.Kind
    * @return A SootMethodRef
    */
   protected SootMethodRef getSootMethodRef(MethodReference mItem, Kind kind) {
-    return getSootMethodRef(convertClassName(mItem.getDefiningClass(), kind), 
-        mItem.getName(), mItem.getReturnType(), mItem.getParameterTypes(), kind);
+    return getSootMethodRef(convertClassName(mItem.getDefiningClass(), kind), mItem.getName(), mItem.getReturnType(),
+        mItem.getParameterTypes(), kind);
   }
-  
-  /** Return a SootMethodRef for the given data.
+
+  /**
+   * Return a SootMethodRef for the given data.
    * 
-   * @param sc The SootClass that the method is declared in
-   * @param name The name of the method being invoked
-   * @param returnType The return type of the method being invoked
-   * @param paramTypes The parameter types of the method being invoked
-   * @param kind The type of the invocation in terms of MethodHandle.Kind
+   * @param sc
+   *          The SootClass that the method is declared in
+   * @param name
+   *          The name of the method being invoked
+   * @param returnType
+   *          The return type of the method being invoked
+   * @param paramTypes
+   *          The parameter types of the method being invoked
+   * @param kind
+   *          The type of the invocation in terms of MethodHandle.Kind
    * @return A SootMethodRef
    */
-  protected SootMethodRef getSootMethodRef(SootClass sc, String name, String returnType, 
+  protected SootMethodRef getSootMethodRef(SootClass sc, String name, String returnType,
       List<? extends CharSequence> paramTypes, Kind kind) {
-    return Scene.v().makeMethodRef(sc, name, convertParameterTypes(paramTypes), DexType.toSoot(returnType), 
+    return Scene.v().makeMethodRef(sc, name, convertParameterTypes(paramTypes), DexType.toSoot(returnType),
         kind == Kind.REF_INVOKE_STATIC);
   }
-  
-  /** Return a SootFieldRef for the given data.
+
+  /**
+   * Return a SootFieldRef for the given data.
    * 
-   * @param mItem The FieldReference included in the invoke instruction
-   * @param kind The type of the field access in terms of MethodHandle.Kind
+   * @param mItem
+   *          The FieldReference included in the invoke instruction
+   * @param kind
+   *          The type of the field access in terms of MethodHandle.Kind
    * @return A SootFieldRef
    */
   protected SootFieldRef getSootFieldRef(FieldReference mItem, Kind kind) {
     return getSootFieldRef(convertClassName(mItem.getDefiningClass(), kind), mItem.getName(), mItem.getType(), kind);
   }
-  
-  /** Return a SootFieldRef for the given data.
+
+  /**
+   * Return a SootFieldRef for the given data.
    * 
-   * @param sc The SootClass that the field is declared in
-   * @param name The name of the field
-   * @param type The type of the field
-   * @param kind The type of the field access in terms of MethodHandle.Kind
+   * @param sc
+   *          The SootClass that the field is declared in
+   * @param name
+   *          The name of the field
+   * @param type
+   *          The type of the field
+   * @param kind
+   *          The type of the field access in terms of MethodHandle.Kind
    * @return A SootFieldRef
    */
   protected SootFieldRef getSootFieldRef(SootClass sc, String name, String type, Kind kind) {
-    return Scene.v().makeFieldRef(sc, name, DexType.toSoot(type), kind == Kind.REF_GET_FIELD_STATIC 
-        || kind == Kind.REF_PUT_FIELD_STATIC);
+    return Scene.v().makeFieldRef(sc, name, DexType.toSoot(type),
+        kind == Kind.REF_GET_FIELD_STATIC || kind == Kind.REF_PUT_FIELD_STATIC);
   }
-  
-  /** Converts a list of dex string parameter types to soot types.
+
+  /**
+   * Converts a list of dex string parameter types to soot types.
    * 
-   * @param paramTypes The dex parameter types
+   * @param paramTypes
+   *          The dex parameter types
    * @return The soot parameter types
    */
   protected List<Type> convertParameterTypes(List<? extends CharSequence> paramTypes) {
@@ -297,11 +324,14 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     }
     return parameterTypes;
   }
-  
-  /** Converts a given string class name into a SootClass.
+
+  /**
+   * Converts a given string class name into a SootClass.
    * 
-   * @param name The dex string representation of the class
-   * @param kind The MethodHandle.Kind of the MethodHandle this class is coming from
+   * @param name
+   *          The dex string representation of the class
+   * @param kind
+   *          The MethodHandle.Kind of the MethodHandle this class is coming from
    * @return
    */
   protected SootClass convertClassName(String name, Kind kind) {
@@ -310,21 +340,24 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     } else {
       name = dottedClassName(name);
     }
-    
+
     SootClass sc = SootResolver.v().makeClassRef(name);
     if (kind == Kind.REF_INVOKE_INTERFACE && sc.isPhantom()) {
       sc.setModifiers(sc.getModifiers() | Modifier.INTERFACE);
     }
     return sc;
   }
-  
-  /** Build the local parameters of the invocation. If a method is not static then its 
-   * first register value is the invoking object and will be skipped when constructing
-   * the local parameters.
+
+  /**
+   * Build the local parameters of the invocation. If a method is not static then its first register value is the invoking
+   * object and will be skipped when constructing the local parameters.
    * 
-   * @param body the body to build for and into
-   * @param paramTypes the parameter types as strings
-   * @param isStatic if the method is static
+   * @param body
+   *          the body to build for and into
+   * @param paramTypes
+   *          the parameter types as strings
+   * @param isStatic
+   *          if the method is static
    * @return the converted parameters
    */
   protected List<Local> buildParameters(DexBody body, List<? extends CharSequence> paramTypes, boolean isStatic) {
@@ -369,13 +402,14 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     throw new RuntimeException("Instruction is neither a InvokeInstruction nor a InvokeRangeInstruction");
   }
 
-  /** Executes the "jimplify" operation for a virtual invocation
+  /**
+   * Executes the "jimplify" operation for a virtual invocation
    */
   protected void jimplifyVirtual(DexBody body) {
     // In some applications, InterfaceInvokes are disguised as VirtualInvokes.
     // We fix this silently
     SootMethodRef ref = getVirtualSootMethodRef();
-    if (ref.declaringClass().isInterface()) {
+    if (ref.getDeclaringClass().isInterface()) {
       jimplifyInterface(body);
       return;
     }
@@ -387,40 +421,42 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     body.setDanglingInstruction(this);
   }
 
-  /** Executes the "jimplify" operation for an interface invocation
+  /**
+   * Executes the "jimplify" operation for an interface invocation
    */
   protected void jimplifyInterface(DexBody body) {
     // In some applications, VirtualInvokes are disguised as InterfaceInvokes.
     // We fix this silently
     SootMethodRef ref = getInterfaceSootMethodRef();
-    if (!ref.declaringClass().isInterface()) {
+    if (!ref.getDeclaringClass().isInterface()) {
       jimplifyVirtual(body);
       return;
     }
 
     MethodReference item = (MethodReference) ((ReferenceInstruction) instruction).getReference();
     List<Local> parameters = buildParameters(body, item.getParameterTypes(), false);
-    invocation = Jimple.v().newInterfaceInvokeExpr(parameters.get(0), ref,
-        parameters.subList(1, parameters.size()));
+    invocation = Jimple.v().newInterfaceInvokeExpr(parameters.get(0), ref, parameters.subList(1, parameters.size()));
     body.setDanglingInstruction(this);
   }
 
-  /** Executes the "jimplify" operation for a special invocation
+  /**
+   * Executes the "jimplify" operation for a special invocation
    */
   protected void jimplifySpecial(DexBody body) {
     MethodReference item = (MethodReference) ((ReferenceInstruction) instruction).getReference();
     List<Local> parameters = buildParameters(body, item.getParameterTypes(), false);
-    invocation = Jimple.v().newSpecialInvokeExpr(parameters.get(0), getVirtualSootMethodRef(), 
+    invocation = Jimple.v().newSpecialInvokeExpr(parameters.get(0), getVirtualSootMethodRef(),
         parameters.subList(1, parameters.size()));
     body.setDanglingInstruction(this);
   }
 
-  /** Executes the "jimplify" operation for a static invocation
+  /**
+   * Executes the "jimplify" operation for a static invocation
    */
   protected void jimplifyStatic(DexBody body) {
     MethodReference item = (MethodReference) ((ReferenceInstruction) instruction).getReference();
-    invocation = Jimple.v().newStaticInvokeExpr(getStaticSootMethodRef(), 
-        buildParameters(body, item.getParameterTypes(), true));
+    invocation
+        = Jimple.v().newStaticInvokeExpr(getStaticSootMethodRef(), buildParameters(body, item.getParameterTypes(), true));
     body.setDanglingInstruction(this);
   }
 

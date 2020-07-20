@@ -51,7 +51,8 @@ public abstract class ConditionalJumpInstruction extends JumpInstruction impleme
 
   public void jimplify(DexBody body) {
     // check if target instruction has been jimplified
-    if (getTargetInstruction(body).getUnit() != null) {
+    DexlibAbstractInstruction ins = getTargetInstruction(body);
+    if (ins != null && ins.getUnit() != null) {
       IfStmt s = ifStatement(body);
       body.add(s);
       setUnit(s);

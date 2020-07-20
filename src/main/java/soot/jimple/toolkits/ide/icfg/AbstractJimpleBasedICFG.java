@@ -31,8 +31,8 @@ import heros.solver.IDESolver;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +88,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   }
 
   protected Map<Unit, Body> createUnitToOwnerMap() {
-    return new HashMap<Unit, Body>();
+    return new LinkedHashMap<Unit, Body>();
   }
 
   public AbstractJimpleBasedICFG(boolean enableExceptions) {

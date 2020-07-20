@@ -1014,7 +1014,7 @@ public class PAG implements PointsToAnalysis {
     return nodeToTag;
   }
 
-  private final ArrayNumberer<AllocNode> allocNodeNumberer = new ArrayNumberer<AllocNode>();
+  protected final ArrayNumberer<AllocNode> allocNodeNumberer = new ArrayNumberer<AllocNode>();
 
   public ArrayNumberer<AllocNode> getAllocNodeNumberer() {
     return allocNodeNumberer;
@@ -1340,8 +1340,7 @@ public class PAG implements PointsToAnalysis {
    * Adds method target as a possible target of the invoke expression in s. If target is null, only creates the nodes for the
    * call site, without actually connecting them to any target method.
    **/
-  public void addCallTarget(MethodPAG srcmpag, MethodPAG tgtmpag, Stmt s, Context srcContext, Context tgtContext,
-      Edge e) {
+  public void addCallTarget(MethodPAG srcmpag, MethodPAG tgtmpag, Stmt s, Context srcContext, Context tgtContext, Edge e) {
     MethodNodeFactory srcnf = srcmpag.nodeFactory();
     MethodNodeFactory tgtnf = tgtmpag.nodeFactory();
     InvokeExpr ie = s.getInvokeExpr();

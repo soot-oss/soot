@@ -3,6 +3,6 @@
 <provider id="org.eclipse.egit.core.GitProvider">
 <project reference="1.0,https://github.com/Sable/heros.git,develop,."/>
 <project reference="1.0,https://github.com/Sable/jasmin.git,develop,."/>
-<project reference="1.0,https://github.com/Sable/soot.git,develop,."/>
+<project reference="1.0,https://github.com/soot-oss/soot.git,develop,."/>
 </provider>
 </psf>

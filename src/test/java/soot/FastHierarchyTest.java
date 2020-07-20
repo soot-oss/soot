@@ -36,6 +36,7 @@ import java.util.concurrent.Future;
 
 import org.junit.Test;
 
+
 public class FastHierarchyTest {
 
   @Test
