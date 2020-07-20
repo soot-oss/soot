@@ -220,6 +220,24 @@ public class SootMethodRefImpl implements SootMethodRef {
       checkStatic(resolved);
       return resolved;
     }
+    
+    else if (Scene.v().allowsPhantomRefs()) {
+      //Try to resolve in the current class and the interface, 
+      //if not found check for phantom class in the superclass.
+      SootClass selectedClass = declaringClass;
+      while (selectedClass != null) {
+        if (selectedClass.isPhantom()) {
+          SootMethod phantomMethod
+              = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() 
+                          ? Modifier.STATIC : 0);
+          phantomMethod.setPhantom(true);
+          phantomMethod = selectedClass.getOrAddMethod(phantomMethod);
+          checkStatic(phantomMethod);
+          return phantomMethod;
+        }
+        selectedClass = selectedClass.getSuperclassUnsafe();
+      }
+    }
 
     // If we don't have a method yet, we try to fix it on the fly
     if (Scene.v().allowsPhantomRefs() && Options.v().ignore_resolution_errors()) {
