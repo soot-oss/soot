@@ -27,6 +27,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.util.TraceClassVisitor;
 
+
 /**
  * Test for annotations of annotations
  *
@@ -40,19 +41,13 @@ public class AnnotatedAnnotatedClassTest extends AbstractASMBackendTest {
     MethodVisitor mv;
     AnnotationVisitor av0;
 
-    cw.visit(
-        V1_5,
-        ACC_PUBLIC + ACC_SUPER,
-        "soot/asm/backend/targets/AnnotatedAnnotatedClass",
-        null,
-        "java/lang/Object",
+    cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/AnnotatedAnnotatedClass", null, "java/lang/Object",
         null);
     cw.visitSource("AnnotatedAnnotatedClass.java", null);
     {
       av0 = cw.visitAnnotation("Lsoot/asm/backend/targets/MyAnnotatedAnnotation;", false);
       {
-        AnnotationVisitor av1 =
-            av0.visitAnnotation("value", "Lsoot/asm/backend/targets/MyTestAnnotation;");
+        AnnotationVisitor av1 = av0.visitAnnotation("value", "Lsoot/asm/backend/targets/MyTestAnnotation;");
         av1.visit("iVal", new Integer(1));
         av1.visit("fVal", new Float("1.0"));
         av1.visit("lVal", new Long(1L));
@@ -62,7 +57,7 @@ public class AnnotatedAnnotatedClassTest extends AbstractASMBackendTest {
         av1.visit("sVal", new Short((short) 1));
         av1.visit("strVal", "1");
         av1.visit("rVal", Type.getType("Lsoot/asm/backend/targets/AnnotatedClass;"));
-        av1.visit("iAVal", new int[] {1, 2, 3, 4});
+        av1.visit("iAVal", new int[] { 1, 2, 3, 4 });
         {
           AnnotationVisitor av2 = av1.visitArray("sAVal");
           av2.visit(null, "A");

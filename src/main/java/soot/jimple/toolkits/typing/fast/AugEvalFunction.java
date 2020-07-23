@@ -12,12 +12,12 @@ package soot.jimple.toolkits.typing.fast;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -38,6 +38,7 @@ import soot.IntegerType;
 import soot.Local;
 import soot.LongType;
 import soot.NullType;
+import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
 import soot.ShortType;
@@ -90,9 +91,7 @@ import soot.jimple.ThisRef;
 import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
 
-/**
- * @author Ben Bellamy
- */
+/** @author Ben Bellamy */
 public class AugEvalFunction implements IEvalFunction {
   private JimpleBody jb;
 
@@ -107,7 +106,8 @@ public class AugEvalFunction implements IEvalFunction {
       return ((ParameterRef) expr).getType();
     } else if (expr instanceof Local) {
       Local ex = (Local) expr;
-      // changed to prevent null pointer exception in case of phantom classes where a null typing is encountered
+      // changed to prevent null pointer exception in case of phantom classes where a null typing is
+      // encountered
       // syed
       if (tg == null) {
         return null;
@@ -125,14 +125,15 @@ public class AugEvalFunction implements IEvalFunction {
       } else if (expr instanceof GeExpr || expr instanceof GtExpr || expr instanceof LeExpr || expr instanceof LtExpr
           || expr instanceof EqExpr || expr instanceof NeExpr) {
         return BooleanType.v();
-      } else if (expr instanceof ShlExpr) {
+      } else if (expr instanceof ShlExpr || expr instanceof ShrExpr || expr instanceof UshrExpr) {
+        // In the JVM, there are op codes for integer and long only:
+        // In Java, the code
+        // short s = 2; s = s << s; does not compile, since s << s is an integer.
         if (tl instanceof IntegerType) {
           return IntType.v();
         } else {
           return tl;
         }
-      } else if (expr instanceof ShrExpr || expr instanceof UshrExpr) {
-        return tl;
       } else if (expr instanceof AddExpr || expr instanceof SubExpr || expr instanceof MulExpr || expr instanceof DivExpr
           || expr instanceof RemExpr) {
         if (tl instanceof IntegerType) {
@@ -154,12 +155,23 @@ public class AugEvalFunction implements IEvalFunction {
             Collection<Type> rs = AugHierarchy.lcas_(tl, tr);
             // AugHierarchy.lcas_ is single-valued
             for (Type r : rs) {
-              return r;
+              if (r instanceof BooleanType) {
+                return r;
+              }
+              if (r instanceof IntegerType) {
+                return IntType.v();
+              } else {
+                return r;
+              }
             }
             throw new RuntimeException();
           }
         } else {
-          return tl;
+          if (tl instanceof RefLikeType) {
+            return tr;
+          } else {
+            return tl;
+          }
         }
       } else {
         throw new RuntimeException("Unhandled binary expression: " + expr);
@@ -222,7 +234,7 @@ public class AugEvalFunction implements IEvalFunction {
         if (ref.getSootClass().getName().equals("java.lang.Object")
             || ref.getSootClass().getName().equals("java.io.Serializable")
             || ref.getSootClass().getName().equals("java.lang.Cloneable")) {
-          return ref;
+          return new WeakObjectType(ref.getSootClass().getName());
         } else {
           return BottomType.v();
         }
@@ -240,7 +252,7 @@ public class AugEvalFunction implements IEvalFunction {
     } else if (expr instanceof LengthExpr) {
       return IntType.v();
     } else if (expr instanceof InvokeExpr) {
-      return ((InvokeExpr) expr).getMethodRef().returnType();
+      return ((InvokeExpr) expr).getMethodRef().getReturnType();
     } else if (expr instanceof NewExpr) {
       return ((NewExpr) expr).getBaseType();
     } else if (expr instanceof FieldRef) {
@@ -284,6 +296,7 @@ public class AugEvalFunction implements IEvalFunction {
     }
   }
 
+  @Override
   public Collection<Type> eval(Typing tg, Value expr, Stmt stmt) {
     return Collections.<Type>singletonList(eval_(tg, expr, stmt, this.jb));
   }

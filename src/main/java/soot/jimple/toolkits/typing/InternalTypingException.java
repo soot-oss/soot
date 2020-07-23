@@ -22,7 +22,7 @@ package soot.jimple.toolkits.typing;
  * #L%
  */
 
-class InternalTypingException extends RuntimeException {
+public class InternalTypingException extends RuntimeException {
 
   /**
    * 

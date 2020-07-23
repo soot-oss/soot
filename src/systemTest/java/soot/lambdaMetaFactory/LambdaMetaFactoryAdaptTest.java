@@ -22,8 +22,12 @@ package soot.lambdaMetaFactory;
  * #L%
  */
 
+import org.junit.Rule;
 import org.junit.Test;
 
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 import soot.SootMethod;
 import soot.testing.framework.AbstractTestingFramework;
 

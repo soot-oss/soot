@@ -36,6 +36,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+
 public class ClassRenamerTest {
 
   @Test

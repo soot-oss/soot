@@ -30,12 +30,13 @@ import java.util.Iterator;
  * @author Ondrej Lhotak
  */
 
-public final class SmallNumberedMap<T> {
+public final class SmallNumberedMap<T> implements INumberedMap<Numberable, T> {
+
   public SmallNumberedMap() {
     //
   }
 
-  /** Associates a value with a key. */
+  @Override
   public boolean put(Numberable key, T value) {
     int pos = findPosition(key);
     if (array[pos] == key) {
@@ -55,9 +56,19 @@ public final class SmallNumberedMap<T> {
     return true;
   }
 
-  /** Returns the value associated with a given key. */
+  @Override
   public T get(Numberable key) {
     return (T) values[findPosition(key)];
+  }
+
+  @Override
+  public void remove(Numberable key) {
+    int pos = findPosition(key);
+    if (array[pos] == key) {
+      array[pos] = null;
+      values[pos] = null;
+      size--;
+    }
   }
 
   /** Returns the number of non-null values in this map. */
@@ -71,7 +82,7 @@ public final class SmallNumberedMap<T> {
     return ret;
   }
 
-  /** Returns an iterator over the keys with non-null values. */
+  @Override
   public Iterator<Numberable> keyIterator() {
     return new KeyIterator(this);
   }
@@ -105,10 +116,6 @@ public final class SmallNumberedMap<T> {
     }
 
     public abstract C next();
-
-    public void remove() {
-      throw new RuntimeException("Not implemented.");
-    }
   }
 
   class KeyIterator extends SmallNumberedMapIterator<Numberable> {
@@ -122,6 +129,12 @@ public final class SmallNumberedMap<T> {
       seekNext();
       return ret;
     }
+
+    @Override
+    public void remove() {
+      array[cur - 1] = null;
+      values[cur - 1] = null;
+    }
   }
 
   class ValueIterator extends SmallNumberedMapIterator<T> {
@@ -134,6 +147,12 @@ public final class SmallNumberedMap<T> {
       cur++;
       seekNext();
       return (T) ret;
+    }
+
+    @Override
+    public void remove() {
+      array[cur - 1] = null;
+      values[cur - 1] = null;
     }
   }
 
@@ -175,4 +194,5 @@ public final class SmallNumberedMap<T> {
   private Numberable[] array = new Numberable[8];
   private Object[] values = new Object[8];
   private int size = 0;
+
 }

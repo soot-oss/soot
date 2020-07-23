@@ -73,7 +73,7 @@ public class ClassConstant extends Constant {
       } else if (tp instanceof FloatType) {
         return "F";
       } else if (tp instanceof LongType) {
-        return "L";
+        return "J";
       } else if (tp instanceof ShortType) {
         return "S";
       } else if (tp instanceof BooleanType) {
@@ -121,7 +121,7 @@ public class ClassConstant extends Constant {
       baseType = DoubleType.v();
     } else if (tmp.equals("F")) {
       baseType = FloatType.v();
-    } else if (tmp.equals("L")) {
+    } else if (tmp.equals("J")) {
       baseType = LongType.v();
     } else if (tmp.equals("S")) {
       baseType = ShortType.v();
