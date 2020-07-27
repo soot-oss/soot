@@ -262,24 +262,31 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     return mgr.VM_ERRORS;
   }
 
-  protected UnitSwitch unitSwitch() {
-    return new UnitSwitch();
+  protected UnitSwitch unitSwitch(SootMethod sm) {
+    return new UnitSwitch(sm);
   }
 
   protected ValueSwitch valueSwitch() {
     return new ValueSwitch();
   }
 
+  @Override
   public ThrowableSet mightThrow(Unit u) {
-    UnitSwitch sw = unitSwitch();
+    return mightThrow(u, null);
+  }
+
+  public ThrowableSet mightThrow(Unit u, SootMethod sm) {
+    UnitSwitch sw = unitSwitch(sm);
     u.apply(sw);
     return sw.getResult();
   }
 
+  @Override
   public ThrowableSet mightThrowImplicitly(ThrowInst t) {
     return implicitThrowExceptions;
   }
 
+  @Override
   public ThrowableSet mightThrowImplicitly(ThrowStmt t) {
     return implicitThrowExceptions;
   }
@@ -371,12 +378,13 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
       for (Unit u : methodBody.getUnits()) {
         if (u instanceof Stmt) {
           Stmt stmt = (Stmt) u;
+
           ThrowableSet curStmtSet;
           if (stmt.containsInvokeExpr()) {
             InvokeExpr inv = stmt.getInvokeExpr();
             curStmtSet = mightThrow(inv.getMethod(), doneSet);
           } else {
-            curStmtSet = mightThrow(u);
+            curStmtSet = mightThrow(u, sm);
           }
 
           // The exception might be caught along the way
@@ -394,6 +402,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
         }
       }
     }
+
     return methodSet;
   }
 
@@ -404,6 +413,11 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     // Asynchronous errors are always possible:
     protected ThrowableSet result = defaultResult();
+    protected SootMethod sm;
+
+    public UnitSwitch(SootMethod sm) {
+      this.sm = sm;
+    }
 
     ThrowableSet getResult() {
       return result;
@@ -822,7 +836,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     @Override
     public void caseThrowStmt(ThrowStmt s) {
       result = mightThrowImplicitly(s);
-      result = result.add(mightThrowExplicitly(s));
+      result = result.add(mightThrowExplicitly(s, sm));
     }
 
     @Override
@@ -864,10 +878,10 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     public void caseMethodHandle(MethodHandle handle) {
     }
-    
+
     public void caseMethodType(MethodType type) {
     }
-    
+
     // Declared by ExprSwitch interface:
 
     public void caseAddExpr(AddExpr expr) {
