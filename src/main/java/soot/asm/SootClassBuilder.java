@@ -112,7 +112,7 @@ public class SootClassBuilder extends ClassVisitor {
 
   @Override
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-	setJavaVersion(version);
+    setJavaVersion(version);
     /*
      * check if class is a module-info, if not add the module information to it
      */
@@ -161,7 +161,7 @@ public class SootClassBuilder extends ClassVisitor {
   @Override
   public FieldVisitor visitField(
       int access, String name, String desc, String signature, Object value) {
-    soot.Type type = AsmUtil.toJimpleType(desc);
+    soot.Type type = AsmUtil.toJimpleType(desc, Optional.fromNullable(this.klass.moduleName));
     addDep(type);
     SootField field = Scene.v().makeSootField(name, type, access);
     Tag tag;
