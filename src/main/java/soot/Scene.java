@@ -1155,15 +1155,23 @@ public class Scene {
   public SootClass getSootClassUnsafe(String className, boolean phantomNonExist) {
     RefType type = nameToClass.get(className);
     if (type != null) {
-      SootClass tsc = type.getSootClass();
-      if (tsc != null) {
-        return tsc;
+      synchronized (type) {
+        if (type.hasSootClass()
+            || !SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME.equals(className)) {
+          SootClass tsc = type.getSootClass();
+          if (tsc != null) {
+            return tsc;
+          }
+        }
       }
     }
 
     if ((allowsPhantomRefs() && phantomNonExist) || className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
       type = getOrAddRefType(className);
       synchronized (type) {
+        if (type.hasSootClass()) {
+          return type.getSootClass();
+        }
         SootClass c = new SootClass(className);
         c.isPhantom = true;
         addClassSilent(c);
