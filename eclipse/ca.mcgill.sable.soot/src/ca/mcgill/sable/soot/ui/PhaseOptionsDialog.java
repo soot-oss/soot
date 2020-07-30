@@ -1347,6 +1347,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getProcessing_Optionsplugin_widget().getAlias(), stringRes);
 		}
+		stringRes = getProcessing_Optionsnum_threads_widget().getText().getText();
+		defStringRes = "";
+
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getProcessing_Optionsnum_threads_widget().getAlias(), stringRes);
+		}
 		stringRes = getProcessing_Optionswrong_staticness_widget().getSelectedAlias();
 		defStringRes = "fixstrict";
 
@@ -5069,6 +5075,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	public ListOptionWidget getProcessing_Optionsplugin_widget() {
 		return Processing_Optionsplugin_widget;
 	}	
+	
+	
+	
+	private StringOptionWidget Processing_Optionsnum_threads_widget;
+	
+	private void setProcessing_Optionsnum_threads_widget(StringOptionWidget widget) {
+		Processing_Optionsnum_threads_widget = widget;
+	}
+	
+	public StringOptionWidget getProcessing_Optionsnum_threads_widget() {
+		return Processing_Optionsnum_threads_widget;
+	}
 	
 	
 	
@@ -9413,6 +9431,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setProcessing_Optionsplugin_widget(new ListOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Plugin Configuration",  "", "","plugin", "\nLoads the plugin configuration FILE and registers all plugins. \nMake sure that the option is specified before you try to pass \noptions to the loaded plugins.", defaultString)));
+		
+
+		defKey = ""+" "+""+" "+"t num-threads";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		} else {
+			defaultString = "";
+		}
+
+		setProcessing_Optionsnum_threads_widget(new StringOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Class transformation parallelism",  "", "","t num-threads", "\nForce Soot to use NUM threads to transform classes in parallel. \nThe default behavior is to use one thread per processor.", defaultString)));
 		
 
 
