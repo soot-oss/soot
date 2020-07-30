@@ -23,7 +23,6 @@ package soot.asm;
  */
 
 import java.util.ArrayList;
-
 import soot.Local;
 import soot.Unit;
 import soot.ValueBox;
