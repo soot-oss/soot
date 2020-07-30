@@ -1159,7 +1159,7 @@ public class ThrowableSet {
      * @return a <code>ThrowableSet</code> representing the set of exceptions corresponding to <code>include</code> -
      *         <code>exclude</code>.
      */
-    private ThrowableSet registerSetIfNew(Set<RefLikeType> include, Set<AnySubType> exclude) {
+    protected ThrowableSet registerSetIfNew(Set<RefLikeType> include, Set<AnySubType> exclude) {
       if (INSTRUMENTING) {
         registrationCalls++;
       }

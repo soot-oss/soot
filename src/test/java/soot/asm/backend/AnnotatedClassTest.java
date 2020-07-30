@@ -31,7 +31,11 @@ import org.objectweb.asm.util.TraceClassVisitor;
  * Test for annotations on a class
  *
  * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer
+ *
  */
+
+
+
 public class AnnotatedClassTest extends AbstractASMBackendTest {
 
   @Override
@@ -39,13 +43,7 @@ public class AnnotatedClassTest extends AbstractASMBackendTest {
     MethodVisitor mv;
     AnnotationVisitor av0;
 
-    cw.visit(
-        V1_5,
-        ACC_PUBLIC + ACC_SUPER,
-        "soot/asm/backend/targets/AnnotatedClass",
-        null,
-        "java/lang/Object",
-        null);
+    cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/AnnotatedClass", null, "java/lang/Object", null);
 
     cw.visitSource("AnnotatedClass.java", null);
 
@@ -60,7 +58,7 @@ public class AnnotatedClassTest extends AbstractASMBackendTest {
       av0.visit("sVal", new Short((short) 1));
       av0.visit("strVal", "1");
       av0.visit("rVal", Type.getType("Lsoot/asm/backend/targets/AnnotatedClass;"));
-      av0.visit("iAVal", new int[] {1, 2, 3, 4});
+      av0.visit("iAVal", new int[] { 1, 2, 3, 4 });
       {
         AnnotationVisitor av1 = av0.visitArray("sAVal");
         av1.visit(null, "A");

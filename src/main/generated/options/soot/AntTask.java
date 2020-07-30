@@ -195,6 +195,11 @@ public class AntTask extends MatchingTask {
             addArg(arg);
         }
   
+        public void setsoot_modulepath(String arg) {
+            addArg("-soot-modulepath");
+            addArg(arg);
+        }
+  
         public void setprepend_classpath(boolean arg) {
             if(arg) addArg("-prepend-classpath");
         }
@@ -507,6 +512,7 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "pedantic" )
                 || arg.equals( "unit" )
                 || arg.equals( "dalvik" )
+                || arg.equals( "auto-select" )
                 ) {
                 addArg("-throw-analysis");
                 addArg(arg);

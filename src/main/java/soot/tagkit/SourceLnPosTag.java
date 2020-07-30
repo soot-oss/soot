@@ -24,6 +24,7 @@ package soot.tagkit;
 
 public class SourceLnPosTag implements Tag {
 
+  public static final String IDENTIFIER = "SourceLnPosTag";
   private final int startLn;
   private final int endLn;
   private final int startPos;
@@ -53,7 +54,7 @@ public class SourceLnPosTag implements Tag {
   }
 
   public String getName() {
-    return "SourceLnPosTag";
+    return IDENTIFIER;
   }
 
   public byte[] getValue() {

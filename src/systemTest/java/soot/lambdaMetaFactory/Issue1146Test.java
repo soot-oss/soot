@@ -29,7 +29,7 @@ import soot.options.Options;
 import soot.testing.framework.AbstractTestingFramework;
 
 /**
- * Reproduces issue 1146: https://github.com/Sable/soot/issues/1146
+ * Reproduces issue 1146: https://github.com/soot-oss/soot/issues/1146
  *
  * @author Manuel Benz at 2019-05-14
  */

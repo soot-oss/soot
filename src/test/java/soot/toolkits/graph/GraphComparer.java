@@ -26,8 +26,6 @@ package soot.toolkits.graph;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -38,16 +36,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.BriefUnitPrinter;
 import soot.CompilationDeathException;
-import soot.G;
 import soot.LabeledUnitPrinter;
 import soot.Trap;
 import soot.Unit;
 import soot.options.Options;
 import soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest;
 import soot.util.Chain;
+
 
 public class GraphComparer {
     private static final Logger logger = LoggerFactory.getLogger(GraphComparer.class);

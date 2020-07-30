@@ -116,6 +116,7 @@ public class Options extends OptionsBase {
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
     public static final int throw_analysis_dalvik = 3;
+    public static final int throw_analysis_auto_select = 4;
     public static final int check_init_throw_analysis_auto = 1;
     public static final int check_init_throw_analysis_pedantic = 2;
     public static final int check_init_throw_analysis_unit = 3;
@@ -245,6 +246,22 @@ public class Options extends OptionsBase {
                     soot_classpath = value;
                 else {
                     G.v().out.println("Duplicate values " + soot_classpath + " and " + value + " for option -" + option);
+                    return false;
+                }
+            }
+            else if (false
+                    || option.equals("soot-modulepath")
+            ) {
+                if (!hasMoreOptions()) {
+                    G.v().out.println("No value given for option -" + option);
+                    return false;
+                }
+
+                String value = nextOption();
+                if (soot_modulepath.isEmpty())
+                    soot_modulepath = value;
+                else {
+                    G.v().out.println("Duplicate values " + soot_modulepath + " and " + value + " for option -" + option);
                     return false;
                 }
             }
@@ -1083,6 +1100,15 @@ public class Options extends OptionsBase {
                     }
                     throw_analysis = throw_analysis_dalvik;
                 }
+                else if (false
+                        || value.equals("auto-select")
+                ) {
+                    if (throw_analysis != 0 && throw_analysis != throw_analysis_auto_select) {
+                        G.v().out.println("Multiple values given for option " + option);
+                        return false;
+                    }
+                    throw_analysis = throw_analysis_auto_select;
+                }
                 else {
                     G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
                     return false;
@@ -1415,6 +1441,10 @@ public class Options extends OptionsBase {
     public void set_soot_classpath(String setting) { soot_classpath = setting; }
     private String soot_classpath = "";
 
+    public String soot_modulepath() { return soot_modulepath; }
+    public void set_soot_modulepath(String setting) { soot_modulepath = setting; }
+    private String soot_modulepath = "";
+
     public boolean prepend_classpath() { return prepend_classpath; }
     private boolean prepend_classpath = false;
     public void set_prepend_classpath(boolean setting) { prepend_classpath = setting; }
@@ -1598,7 +1628,7 @@ public class Options extends OptionsBase {
     public void set_via_shimple(boolean setting) { via_shimple = setting; }
 
     public int throw_analysis() {
-        if (throw_analysis == 0) return throw_analysis_unit;
+        if (throw_analysis == 0) return throw_analysis_auto_select;
         return throw_analysis; 
     }
     public void set_throw_analysis(int setting) { throw_analysis = setting; }
@@ -1700,6 +1730,7 @@ public class Options extends OptionsBase {
                 + padOpt("-weak-map-structures", "Use weak references in Scene to prevent memory leakage when removing many classes/methods/locals")
                 + "\nInput Options:\n"
                 + padOpt("-cp ARG -soot-class-path ARG -soot-classpath ARG", "Use ARG as the classpath for finding classes.")
+                + padOpt("-soot-modulepath ARG", "Use ARG as the modulepath for finding classes.")
                 + padOpt("-pp, -prepend-classpath", "Prepend the given soot classpath to the default classpath.")
                 + padOpt("-ice, -ignore-classpath-errors", "Ignores invalid entries on the Soot classpath.")
                 + padOpt("-process-multiple-dex", "Process all DEX files found in APK.")
@@ -1789,8 +1820,9 @@ public class Options extends OptionsBase {
                 + padOpt("-via-shimple", "Enable Shimple SSA representation")
                 + padOpt("-throw-analysis ARG", "")
                     + padVal("pedantic", "Pedantically conservative throw analysis")
-                    + padVal("unit (default)", "Unit Throw Analysis")
+                    + padVal("unit", "Unit Throw Analysis")
                     + padVal("dalvik", "Dalvik Throw Analysis")
+                    + padVal("auto-select (default)", "Automatically Select Throw Analysis")
                 + padOpt("-check-init-ta ARG -check-init-throw-analysis ARG", "")
                     + padVal("auto (default)", "Automatically select a throw analysis")
                     + padVal("pedantic", "Pedantically conservative throw analysis")
