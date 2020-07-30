@@ -42,9 +42,11 @@ public class AsmClassSource extends ClassSource {
 
   /**
    * Constructs a new ASM class source.
-   *
-   * @param cls fully qualified name of the class.
-   * @param data stream containing data for class.
+   * 
+   * @param cls
+   *          fully qualified name of the class.
+   * @param foundFile
+   *          foundfile pointing to the data for class.
    */
   protected AsmClassSource(String cls, FoundFile foundFile) {
     super(cls);

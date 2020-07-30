@@ -36,7 +36,6 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.TypePath;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
-
 import soot.ArrayType;
 import soot.RefType;
 import soot.SootMethod;
