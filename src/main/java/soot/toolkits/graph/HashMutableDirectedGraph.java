@@ -38,8 +38,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * HashMap based implementation of a MutableBlockGraph.
+ * 
+ * @param <N>
  */
-
 public class HashMutableDirectedGraph<N> implements MutableDirectedGraph<N> {
   private static final Logger logger = LoggerFactory.getLogger(HashMutableDirectedGraph.class);
 
@@ -68,6 +69,7 @@ public class HashMutableDirectedGraph<N> implements MutableDirectedGraph<N> {
     tails.clear();
   }
 
+  @Override
   public Object clone() {
     HashMutableDirectedGraph<N> g = new HashMutableDirectedGraph<N>();
     g.nodeToPreds.putAll(nodeToPreds);
@@ -264,5 +266,4 @@ public class HashMutableDirectedGraph<N> implements MutableDirectedGraph<N> {
       }
     }
   }
-
 }

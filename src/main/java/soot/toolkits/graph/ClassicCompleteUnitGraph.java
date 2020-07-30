@@ -23,7 +23,6 @@ package soot.toolkits.graph;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -59,11 +58,11 @@ import soot.toolkits.exceptions.ThrowAnalysis;
  * <li>When <tt>ExceptionalUnitGraph</tt> creates edges for a trapped <tt>Unit</tt> that may throw a caught exception, it
  * adds edges from each predecessor of the excepting <tt>Unit</tt> to the handler. If the excepting <tt>Unit</tt> itself has
  * no potential side effects, <tt>ExceptionalUnitGraph</tt> may omit an edge from it to the handler, depending on the
- * parameters passed to the <tt>ExceptionalUnitGraph<tt> constructor.
- *  <tt>ClassicCompleteUnitGraph</tt>, on the other hand, always adds an edge from the excepting <tt>Unit</tt> itself to the
- * handler, and adds edges from the predecessor only of the first <tt>Unit</tt> covered by a <tt>Trap</tt> (in this one
- * aspect <tt>ClassicCompleteUnitGraph</tt> is less conservative than <tt>ExceptionalUnitGraph</tt>, since it ignores the
- * possibility of a branch into the middle of a protected area).</li>
+ * parameters passed to the <tt>ExceptionalUnitGraph</tt> constructor. <tt>ClassicCompleteUnitGraph</tt>, on the other hand,
+ * always adds an edge from the excepting <tt>Unit</tt> itself to the handler, and adds edges from the predecessor only of
+ * the first <tt>Unit</tt> covered by a <tt>Trap</tt> (in this one aspect <tt>ClassicCompleteUnitGraph</tt> is less
+ * conservative than <tt>ExceptionalUnitGraph</tt>, since it ignores the possibility of a branch into the middle of a
+ * protected area).</li>
  *
  * </ol>
  * </p>
@@ -72,8 +71,8 @@ public class ClassicCompleteUnitGraph extends TrapUnitGraph {
   /**
    * Constructs the graph from a given Body instance.
    *
-   * @param the
-   *          Body instance from which the graph is built.
+   * @param body
+   *          the Body instance from which the graph is built.
    */
   public ClassicCompleteUnitGraph(Body body) {
     // The TrapUnitGraph constructor will use our buildExceptionalEdges:
@@ -93,14 +92,13 @@ public class ClassicCompleteUnitGraph extends TrapUnitGraph {
    *          <tt>buildExceptionalEdges</tt> will add a mapping for every {@link Trap} handler to all the <tt>Unit</tt>s
    *          within the scope of that <tt>Trap</tt>.
    */
+  @Override
   protected void buildExceptionalEdges(Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds) {
     // First, add the same edges as TrapUnitGraph.
     super.buildExceptionalEdges(unitToSuccs, unitToPreds);
     // Then add edges from the predecessors of the first
     // trapped Unit for each Trap.
-    for (Iterator<Trap> trapIt = body.getTraps().iterator(); trapIt.hasNext();) {
-      Trap trap = trapIt.next();
-      Unit firstTrapped = trap.getBeginUnit();
+    for (Trap trap : body.getTraps()) {
       Unit catcher = trap.getHandlerUnit();
       // Make a copy of firstTrapped's predecessors to iterate over,
       // just in case we're about to add new predecessors to this
@@ -109,9 +107,7 @@ public class ClassicCompleteUnitGraph extends TrapUnitGraph {
       // possibility, we should iterate here until we reach a fixed
       // point; but the old UnitGraph that we are attempting to
       // duplicate did not do that, so we won't either.
-      List<Unit> origPredsOfTrapped = new ArrayList<Unit>(getPredsOf(firstTrapped));
-      for (Iterator<Unit> unitIt = origPredsOfTrapped.iterator(); unitIt.hasNext();) {
-        Unit pred = unitIt.next();
+      for (Unit pred : new ArrayList<Unit>(getPredsOf(trap.getBeginUnit()))) {
         addEdge(unitToSuccs, unitToPreds, pred, catcher);
       }
     }

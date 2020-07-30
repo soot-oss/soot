@@ -205,7 +205,6 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
    */
   protected void initialize(ThrowAnalysis throwAnalysis, boolean omitExceptingUnitEdges) {
     int size = unitChain.size();
-    Set<Unit> trapUnitsThatAreHeads = Collections.emptySet();
 
     if (Options.v().time()) {
       Timers.v().graphTimer.start();
@@ -216,15 +215,15 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     buildUnexceptionalEdges(unitToUnexceptionalSuccs, unitToUnexceptionalPreds);
     this.throwAnalysis = throwAnalysis;
 
-    if (body.getTraps().size() == 0) {
-      // No handlers, so all exceptional control flow exits the
-      // method.
+    Set<Unit> trapUnitsThatAreHeads;
+    if (body.getTraps().isEmpty()) {
+      // No handlers, so all exceptional control flow exits the method.
       unitToExceptionDests = Collections.emptyMap();
       unitToExceptionalSuccs = Collections.emptyMap();
       unitToExceptionalPreds = Collections.emptyMap();
+      trapUnitsThatAreHeads = Collections.emptySet();
       unitToSuccs = unitToUnexceptionalSuccs;
       unitToPreds = unitToUnexceptionalPreds;
-
     } else {
       unitToExceptionDests = buildExceptionDests(throwAnalysis);
       unitToExceptionalSuccs = new LinkedHashMap<Unit, List<Unit>>(unitToExceptionDests.size() * 2 + 1, 0.7f);
@@ -237,7 +236,6 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
       unitToSuccs = combineMapValues(unitToUnexceptionalSuccs, unitToExceptionalSuccs);
       unitToPreds = combineMapValues(unitToUnexceptionalPreds, unitToExceptionalPreds);
     }
-
     buildHeadsAndTails(trapUnitsThatAreHeads);
 
     if (Options.v().time()) {
@@ -308,10 +306,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
         result = addDestToMap(result, unit, null, escaping);
       }
     }
-    if (result == null) {
-      result = Collections.emptyMap();
-    }
-    return result;
+    return result == null ? Collections.emptyMap() : result;
   }
 
   /**
@@ -386,6 +381,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
   protected Set<Unit> buildExceptionalEdges(ThrowAnalysis throwAnalysis,
       Map<Unit, Collection<ExceptionDest>> unitToExceptionDests, Map<Unit, List<Unit>> unitToSuccs,
       Map<Unit, List<Unit>> unitToPreds, boolean omitExceptingUnitEdges) {
+
     Set<Unit> trapsThatAreHeads = new ArraySet<Unit>();
     Unit entryPoint = unitChain.getFirst();
     for (Entry<Unit, Collection<ExceptionDest>> entry : unitToExceptionDests.entrySet()) {
@@ -595,8 +591,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
    * @return whether or not <code>u</code> may throw an exception which may be caught by a <code>Trap</code> in this method,
    */
   private boolean mightThrowToIntraproceduralCatcher(Unit u) {
-    Collection<ExceptionDest> dests = getExceptionDests(u);
-    for (ExceptionDest dest : dests) {
+    for (ExceptionDest dest : getExceptionDests(u)) {
       if (dest.getTrap() != null) {
         return true;
       }
@@ -650,9 +645,8 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
           || u instanceof soot.baf.ReturnVoidInst) {
         tails.add(u);
       } else if (u instanceof soot.jimple.ThrowStmt || u instanceof soot.baf.ThrowInst) {
-        Collection<ExceptionDest> dests = getExceptionDests(u);
         int escapeMethodCount = 0;
-        for (ExceptionDest dest : dests) {
+        for (ExceptionDest dest : getExceptionDests(u)) {
           if (dest.getTrap() == null) {
             escapeMethodCount++;
           }
@@ -784,18 +778,17 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 
   @Override
   public String toString() {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     for (Unit u : unitChain) {
-      buf.append("  preds: " + getPredsOf(u) + "\n");
-      buf.append("  unexceptional preds: " + getUnexceptionalPredsOf(u) + "\n");
-      buf.append("  exceptional preds: " + getExceptionalPredsOf(u) + "\n");
-      buf.append(u.toString() + '\n');
-      buf.append("  exception destinations: " + getExceptionDests(u) + "\n");
-      buf.append("  unexceptional succs: " + getUnexceptionalSuccsOf(u) + "\n");
-      buf.append("  exceptional succs: " + getExceptionalSuccsOf(u) + "\n");
-      buf.append("  succs " + getSuccsOf(u) + "\n\n");
+      buf.append("  preds: ").append(getPredsOf(u)).append('\n');
+      buf.append("  unexceptional preds: ").append(getUnexceptionalPredsOf(u)).append('\n');
+      buf.append("  exceptional preds: ").append(getExceptionalPredsOf(u)).append('\n');
+      buf.append(u.toString()).append('\n');
+      buf.append("  exception destinations: ").append(getExceptionDests(u)).append('\n');
+      buf.append("  unexceptional succs: ").append(getUnexceptionalSuccsOf(u)).append('\n');
+      buf.append("  exceptional succs: ").append(getExceptionalSuccsOf(u)).append('\n');
+      buf.append("  succs ").append(getSuccsOf(u)).append("\n\n");
     }
-
     return buf.toString();
   }
 }
