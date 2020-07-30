@@ -74,7 +74,6 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
     if (Options.v().verbose()) {
       logger.debug("[" + method.getName() + "]     Constructing " + this.getClass().getName() + "...");
     }
-
   }
 
   /**
@@ -91,14 +90,13 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
    *          body to a list of its unexceptional predecessors.
    */
   protected void buildUnexceptionalEdges(Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds) {
-    Iterator<Unit> unitIt = unitChain.iterator();
     Unit currentUnit, nextUnit;
 
-    nextUnit = unitIt.hasNext() ? (Unit) unitIt.next() : null;
-
+    Iterator<Unit> unitIt = unitChain.iterator();
+    nextUnit = unitIt.hasNext() ? unitIt.next() : null;
     while (nextUnit != null) {
       currentUnit = nextUnit;
-      nextUnit = unitIt.hasNext() ? (Unit) unitIt.next() : null;
+      nextUnit = unitIt.hasNext() ? unitIt.next() : null;
 
       ArrayList<Unit> successors = new ArrayList<Unit>();
 
@@ -170,15 +168,13 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
       }
     }
 
-    // Add the first Unit, even if it is the target of
-    // a branch.
+    // Add the first Unit, even if it is the target of a branch.
     if (!unitChain.isEmpty()) {
       Unit entryPoint = unitChain.getFirst();
       if (!heads.contains(entryPoint)) {
         heads.add(entryPoint);
       }
     }
-
   }
 
   /**
@@ -211,7 +207,7 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
         result.put(unit, Collections.<Unit>emptyList());
       } else {
         List<Unit> resultList = new ArrayList<Unit>(resultSize);
-        List<Unit> list = null;
+        List<Unit> list;
         // As a minor optimization of the duplicate screening,
         // copy the longer list first.
         if (listA.size() >= listB.size()) {
@@ -305,14 +301,14 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
     LinkedList<Integer> pathStackIndex = new LinkedList<Integer>();
 
     pathStack.add(from);
-    pathStackIndex.add(new Integer(0));
+    pathStackIndex.add(0);
 
-    int psiMax = (g.getSuccsOf(pathStack.get(0))).size();
+    final int psiMax = g.getSuccsOf(from).size();
     int level = 0;
-    while (pathStackIndex.get(0).intValue() != psiMax) {
-      int p = (pathStackIndex.get(level)).intValue();
+    while (pathStackIndex.get(0) != psiMax) {
+      int p = pathStackIndex.get(level);
 
-      List<Unit> succs = g.getSuccsOf((pathStack.get(level)));
+      List<Unit> succs = g.getSuccsOf(pathStack.get(level));
       if (p >= succs.size()) {
         // no more succs - backtrack to previous level.
 
@@ -320,12 +316,12 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
         pathStackIndex.remove(level);
 
         level--;
-        int q = pathStackIndex.get(level).intValue();
-        pathStackIndex.set(level, new Integer(q + 1));
+        int q = pathStackIndex.get(level);
+        pathStackIndex.set(level, q + 1);
         continue;
       }
 
-      Unit betweenUnit = (Unit) (succs.get(p));
+      Unit betweenUnit = succs.get(p);
 
       // we win!
       if (betweenUnit == to) {
@@ -335,53 +331,52 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
 
       // check preds of betweenUnit to see if we should visit its kids.
       if (g.getPredsOf(betweenUnit).size() > 1) {
-        pathStackIndex.set(level, new Integer(p + 1));
+        pathStackIndex.set(level, p + 1);
         continue;
       }
 
       // visit kids of betweenUnit.
       level++;
-      pathStackIndex.add(new Integer(0));
+      pathStackIndex.add(0);
       pathStack.add(betweenUnit);
     }
     return null;
   }
 
   /* DirectedGraph implementation */
+  @Override
   public List<Unit> getHeads() {
     return heads;
   }
 
+  @Override
   public List<Unit> getTails() {
     return tails;
   }
 
+  @Override
   public List<Unit> getPredsOf(Unit u) {
     List<Unit> l = unitToPreds.get(u);
-    if (l == null) {
-      return Collections.emptyList();
-    }
-
-    return l;
+    return l == null ? Collections.emptyList() : l;
   }
 
+  @Override
   public List<Unit> getSuccsOf(Unit u) {
     List<Unit> l = unitToSuccs.get(u);
-    if (l == null) {
-      return Collections.emptyList();
-    }
-
-    return l;
+    return l == null ? Collections.emptyList() : l;
   }
 
+  @Override
   public int size() {
     return unitChain.size();
   }
 
+  @Override
   public Iterator<Unit> iterator() {
     return unitChain.iterator();
   }
 
+  @Override
   public String toString() {
     StringBuilder buf = new StringBuilder();
     for (Unit u : unitChain) {
