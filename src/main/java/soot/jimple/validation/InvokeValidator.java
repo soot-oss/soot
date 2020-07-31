@@ -47,9 +47,6 @@ public enum InvokeValidator implements BodyValidator {
 
   @Override
   public void validate(Body body, List<ValidationException> exceptions) {
-    if (true) {
-      return;
-    }
     SootClass bodyDeclaredClass = body.getMethod().getDeclaringClass();
     for (Unit unit : body.getUnits()) {
       if (unit instanceof Stmt) {
