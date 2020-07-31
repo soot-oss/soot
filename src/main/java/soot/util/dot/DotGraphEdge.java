@@ -24,7 +24,6 @@ package soot.util.dot;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -115,25 +114,22 @@ public class DotGraphEdge implements Renderable {
     this.attributes.add(attr);
   }
 
+  @Override
   public void render(OutputStream out, int indent) throws IOException {
-    StringBuffer line = new StringBuffer(start.getName());
-    line.append((this.isDirected) ? "->" : "--");
-    line.append(end.getName());
+    StringBuilder line = new StringBuilder();
+    line.append(this.start.getName());
+    line.append(this.isDirected ? "->" : "--");
+    line.append(this.end.getName());
 
     if (this.attributes != null) {
-
       line.append(" [");
-      Iterator<DotGraphAttribute> attrIt = this.attributes.iterator();
-      while (attrIt.hasNext()) {
-        DotGraphAttribute attr = attrIt.next();
-        line.append(attr.toString());
-        line.append(",");
+      for (DotGraphAttribute attr : this.attributes) {
+        line.append(attr.toString()).append(',');
       }
-      line.append("]");
+      line.append(']');
     }
+    line.append(';');
 
-    line.append(";");
-
-    DotGraphUtility.renderLine(out, new String(line), indent);
+    DotGraphUtility.renderLine(out, line.toString(), indent);
   }
 }

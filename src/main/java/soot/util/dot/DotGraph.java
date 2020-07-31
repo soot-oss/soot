@@ -27,7 +27,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -76,13 +75,10 @@ public class DotGraph implements Renderable {
    *          the name for the output file. By convention, it should end with DOT_EXTENSION, but this is not enforced.
    */
   public void plot(String filename) {
-    try {
-      BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(filename));
-
+    try (BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(filename))) {
       render(out, 0);
-      out.close();
     } catch (IOException ioe) {
-      logger.debug("" + ioe.getMessage());
+      logger.debug(ioe.getMessage());
     }
   }
 
@@ -153,10 +149,10 @@ public class DotGraph implements Renderable {
    *          the node shape
    */
   public void setNodeShape(String shape) {
-    StringBuffer command = new StringBuffer("node [shape=");
+    StringBuilder command = new StringBuilder("node [shape=");
     command.append(shape);
     command.append("];");
-    this.drawElements.add(new DotGraphCommand(new String(command)));
+    this.drawElements.add(new DotGraphCommand(command.toString()));
   }
 
   /**
@@ -166,10 +162,10 @@ public class DotGraph implements Renderable {
    *          the node style
    */
   public void setNodeStyle(String style) {
-    StringBuffer command = new StringBuffer("node [style=");
+    StringBuilder command = new StringBuilder("node [style=");
     command.append(style);
     command.append("];");
-    this.drawElements.add(new DotGraphCommand(new String(command)));
+    this.drawElements.add(new DotGraphCommand(command.toString()));
   }
 
   /**
@@ -260,25 +256,19 @@ public class DotGraph implements Renderable {
   /* implements renderable interface. */
   public void render(OutputStream out, int indent) throws IOException {
     // header
-    String graphname = this.graphname;
-
     if (!isSubGraph) {
-      DotGraphUtility.renderLine(out, "digraph \"" + graphname + "\" {", indent);
+      DotGraphUtility.renderLine(out, "digraph \"" + this.graphname + "\" {", indent);
     } else {
-      DotGraphUtility.renderLine(out, "subgraph \"" + graphname + "\" {", indent);
+      DotGraphUtility.renderLine(out, "subgraph \"" + this.graphname + "\" {", indent);
     }
 
     /* render graph attributes */
-    Iterator<DotGraphAttribute> attrIt = this.attributes.iterator();
-    while (attrIt.hasNext()) {
-      DotGraphAttribute attr = attrIt.next();
+    for (DotGraphAttribute attr : this.attributes) {
       DotGraphUtility.renderLine(out, attr.toString() + ";", indent + 4);
     }
 
     /* render elements */
-    Iterator<Renderable> elmntsIt = this.drawElements.iterator();
-    while (elmntsIt.hasNext()) {
-      Renderable element = elmntsIt.next();
+    for (Renderable element : this.drawElements) {
       element.render(out, indent + 4);
     }
 

@@ -48,6 +48,7 @@ public class DotGraphCommand implements Renderable {
    *          the number of indent space
    * @see Renderable
    */
+  @Override
   public void render(OutputStream out, int indent) throws IOException {
     DotGraphUtility.renderLine(out, command, indent);
   }

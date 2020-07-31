@@ -50,7 +50,6 @@ public class Block implements Iterable<Unit> {
   /**
    * Constructs a Block in the context of a BlockGraph, and enclosing Body instances.
    *
-   *
    * @param aHead
    *          The first unit ir this Block.
    * @param aTail
@@ -97,13 +96,9 @@ public class Block implements Iterable<Unit> {
    * @see Chain
    * @see Unit
    */
+  @Override
   public Iterator<Unit> iterator() {
-    if (mBody != null) {
-      Chain<Unit> units = mBody.getUnits();
-      return units.iterator(mHead, mTail);
-    } else {
-      return null;
-    }
+    return mBody == null ? null : mBody.getUnits().iterator(mHead, mTail);
   }
 
   /**
@@ -121,9 +116,7 @@ public class Block implements Iterable<Unit> {
     if (point == mHead) {
       mHead = toInsert;
     }
-
-    Chain<Unit> methodBody = mBody.getUnits();
-    methodBody.insertBefore(toInsert, point);
+    mBody.getUnits().insertBefore(toInsert, point);
   }
 
   /**
@@ -139,9 +132,7 @@ public class Block implements Iterable<Unit> {
     if (point == mTail) {
       mTail = toInsert;
     }
-
-    Chain<Unit> methodBody = mBody.getUnits();
-    methodBody.insertAfter(toInsert, point);
+    mBody.getUnits().insertAfter(toInsert, point);
   }
 
   /**
@@ -173,12 +164,7 @@ public class Block implements Iterable<Unit> {
    *
    */
   public Unit getSuccOf(Unit aItem) {
-    Chain<Unit> methodBody = mBody.getUnits();
-    if (aItem != mTail) {
-      return methodBody.getSuccOf(aItem);
-    } else {
-      return null;
-    }
+    return aItem == mTail ? null : mBody.getUnits().getSuccOf(aItem);
   }
 
   /**
@@ -189,12 +175,7 @@ public class Block implements Iterable<Unit> {
    * @return The predecessor or null if <code>aItem</code> is the head for this Block.
    */
   public Unit getPredOf(Unit aItem) {
-    Chain<Unit> methodBody = mBody.getUnits();
-    if (aItem != mHead) {
-      return methodBody.getPredOf(aItem);
-    } else {
-      return null;
-    }
+    return aItem == mHead ? null : mBody.getUnits().getPredOf(aItem);
   }
 
   /**
@@ -244,7 +225,6 @@ public class Block implements Iterable<Unit> {
    */
   public void setPreds(List<Block> preds) {
     mPreds = preds;
-    return;
   }
 
   /**
@@ -283,54 +263,44 @@ public class Block implements Iterable<Unit> {
     return "Block #" + mIndexInMethod;
   }
 
+  @Override
   public String toString() {
-    StringBuffer strBuf = new StringBuffer();
+    StringBuilder strBuf = new StringBuilder();
+    strBuf.append("Block ").append(mIndexInMethod).append(':').append(System.lineSeparator());
 
-    // print out predecessors.
-
-    strBuf.append("Block " + mIndexInMethod + ":" + System.getProperty("line.separator"));
+    // print out predecessors and successors.
     strBuf.append("[preds: ");
     if (mPreds != null) {
-      Iterator<Block> it = mPreds.iterator();
-      while (it.hasNext()) {
-
-        strBuf.append(it.next().getIndexInMethod() + " ");
+      for (Block b : mPreds) {
+        strBuf.append(b.getIndexInMethod()).append(' ');
       }
     }
     strBuf.append("] [succs: ");
     if (mSuccessors != null) {
-      Iterator<Block> it = mSuccessors.iterator();
-      while (it.hasNext()) {
-
-        strBuf.append(it.next().getIndexInMethod() + " ");
+      for (Block b : mSuccessors) {
+        strBuf.append(b.getIndexInMethod()).append(' ');
       }
-
     }
+    strBuf.append(']').append(System.lineSeparator());
 
-    strBuf.append("]" + System.getProperty("line.separator"));
-
-    // strBuf.append(" block" + mIndexInMethod + ":" + System.getProperty("line.separator"));
-
-    Chain<Unit> methodUnits = mBody.getUnits();
-    Iterator<Unit> basicBlockIt = methodUnits.iterator(mHead, mTail);
-
+    // print out Units in the Block
+    final Unit tail = mTail;
+    Iterator<Unit> basicBlockIt = mBody.getUnits().iterator(mHead, tail);
     if (basicBlockIt.hasNext()) {
-      Unit someUnit = (Unit) basicBlockIt.next();
-      strBuf.append(someUnit.toString() + ";" + System.getProperty("line.separator"));
+      Unit someUnit = basicBlockIt.next();
+      strBuf.append(someUnit.toString()).append(';').append(System.lineSeparator());
       while (basicBlockIt.hasNext()) {
-        someUnit = (Unit) basicBlockIt.next();
-        if (someUnit == mTail) {
+        someUnit = basicBlockIt.next();
+        if (someUnit == tail) {
           break;
         }
-        strBuf.append(someUnit.toString() + ";" + System.getProperty("line.separator"));
+        strBuf.append(someUnit.toString()).append(';').append(System.lineSeparator());
       }
-      someUnit = mTail;
-      if (mTail == null) {
-        strBuf.append("error: null tail found; block length: " + mBlockLength + "" + System.getProperty("line.separator"));
-      } else if (mHead != mTail) {
-        strBuf.append(someUnit.toString() + ";" + System.getProperty("line.separator"));
+      if (tail == null) {
+        strBuf.append("error: null tail found; block length: ").append(mBlockLength).append(System.lineSeparator());
+      } else if (tail != mHead) {
+        strBuf.append(tail.toString()).append(';').append(System.lineSeparator());
       }
-
     }
     // Or, it could be an empty block (e.g. Start or Stop Block) --NU
     // else
@@ -338,5 +308,4 @@ public class Block implements Iterable<Unit> {
 
     return strBuf.toString();
   }
-
 }

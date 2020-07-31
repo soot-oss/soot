@@ -79,15 +79,15 @@ public class DotGraphNode implements Renderable {
   }
 
   public void render(OutputStream out, int indent) throws IOException {
-    StringBuffer line = new StringBuffer(this.getName());
+    StringBuilder line = new StringBuilder();
+    line.append(this.getName());
     if (this.attributes != null) {
       line.append(" [");
       for (DotGraphAttribute attr : this.attributes) {
-        line.append(attr.toString());
-        line.append(",");
+        line.append(attr.toString()).append(',');
       }
       line.append("];");
     }
-    DotGraphUtility.renderLine(out, new String(line), indent);
+    DotGraphUtility.renderLine(out, line.toString(), indent);
   }
 }
