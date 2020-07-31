@@ -62,7 +62,7 @@ public enum CheckTypesValidator implements BodyValidator {
           Type leftType = Type.toMachineType(astmt.getLeftOp().getType());
           Type rightType = Type.toMachineType(astmt.getRightOp().getType());
 
-          checkCopy(astmt, body, exception, leftType, rightType, errorSuffix);
+          checkCopy(astmt, exception, leftType, rightType, errorSuffix);
         }
       }
 
@@ -74,17 +74,17 @@ public enum CheckTypesValidator implements BodyValidator {
 
           if (iexpr instanceof InstanceInvokeExpr) {
             InstanceInvokeExpr iiexpr = (InstanceInvokeExpr) iexpr;
-            checkCopy(stmt, body, exception, called.declaringClass().getType(), iiexpr.getBase().getType(),
+            checkCopy(stmt, exception, called.declaringClass().getType(), iiexpr.getBase().getType(),
                 " in receiver of call" + errorSuffix);
           }
 
-          if (called.parameterTypes().size() != iexpr.getArgCount()) {
+          final int argCount = iexpr.getArgCount();
+          if (called.parameterTypes().size() != argCount) {
             exception.add(new ValidationException(stmt, "Argument count does not match the signature of the called function",
-                "Warning: Argument count doesn't match up with signature in call" + errorSuffix + " in "
-                    + body.getMethod()));
+                "Warning: Argument count doesn't match up with signature in call" + errorSuffix));
           } else {
-            for (int i = 0; i < iexpr.getArgCount(); i++) {
-              checkCopy(stmt, body, exception, Type.toMachineType(called.parameterType(i)),
+            for (int i = 0; i < argCount; i++) {
+              checkCopy(stmt, exception, Type.toMachineType(called.parameterType(i)),
                   Type.toMachineType(iexpr.getArg(i).getType()),
                   " in argument " + i + " of call" + errorSuffix + " (Note: Parameters are zero-indexed)");
             }
@@ -94,8 +94,7 @@ public enum CheckTypesValidator implements BodyValidator {
     }
   }
 
-  private void checkCopy(Unit stmt, Body body, List<ValidationException> exception, Type leftType, Type rightType,
-      String errorSuffix) {
+  private void checkCopy(Unit stmt, List<ValidationException> exception, Type leftType, Type rightType, String errorSuffix) {
     if (leftType instanceof PrimType || rightType instanceof PrimType) {
       if (leftType instanceof IntType && rightType instanceof IntType) {
         return;
@@ -109,14 +108,13 @@ public enum CheckTypesValidator implements BodyValidator {
       if (leftType instanceof DoubleType && rightType instanceof DoubleType) {
         return;
       }
-      exception.add(
-          new ValidationException(stmt, "", "Warning: Bad use of primitive type" + errorSuffix + " in " + body.getMethod()));
+      exception.add(new ValidationException(stmt, "", "Warning: Bad use of primitive type" + errorSuffix));
     }
 
     if (rightType instanceof NullType) {
       return;
     }
-    if (leftType instanceof RefType && ((RefType) leftType).getClassName().equals("java.lang.Object")) {
+    if (leftType instanceof RefType && "java.lang.Object".equals(((RefType) leftType).getClassName())) {
       return;
     }
 
@@ -124,8 +122,7 @@ public enum CheckTypesValidator implements BodyValidator {
       if (leftType instanceof ArrayType && rightType instanceof ArrayType) {
         return;
       }
-      // it is legal to assign arrays to variables of type Serializable,
-      // Cloneable or Object
+      // it is legal to assign arrays to variables of type Serializable, Cloneable or Object
       if (rightType instanceof ArrayType) {
         if (leftType.equals(RefType.v("java.io.Serializable")) || leftType.equals(RefType.v("java.lang.Cloneable"))
             || leftType.equals(RefType.v("java.lang.Object"))) {
@@ -133,8 +130,7 @@ public enum CheckTypesValidator implements BodyValidator {
         }
       }
 
-      exception
-          .add(new ValidationException(stmt, "Warning: Bad use of array type" + errorSuffix + " in " + body.getMethod()));
+      exception.add(new ValidationException(stmt, "Warning: Bad use of array type" + errorSuffix));
     }
 
     if (leftType instanceof RefType && rightType instanceof RefType) {
@@ -148,26 +144,20 @@ public enum CheckTypesValidator implements BodyValidator {
         if (rightClass.isInterface()) {
           if (!(leftClass.getName().equals(rightClass.getName())
               || Scene.v().getActiveHierarchy().isInterfaceSubinterfaceOf(rightClass, leftClass))) {
-            exception.add(new ValidationException(stmt,
-                "Warning: Bad use of interface type" + errorSuffix + " in " + body.getMethod()));
+            exception.add(new ValidationException(stmt, "Warning: Bad use of interface type" + errorSuffix));
           }
         } else {
           // No quick way to check this for now.
         }
-      } else {
-        if (rightClass.isInterface()) {
-          exception.add(new ValidationException(stmt, "Warning: trying to use interface type where non-Object class expected"
-              + errorSuffix + " in " + body.getMethod()));
-        } else {
-          if (!Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(rightClass, leftClass)) {
-            exception.add(
-                new ValidationException(stmt, "Warning: Bad use of class type" + errorSuffix + " in " + body.getMethod()));
-          }
-        }
+      } else if (rightClass.isInterface()) {
+        exception.add(new ValidationException(stmt,
+            "Warning: trying to use interface type where non-Object class expected" + errorSuffix));
+      } else if (!Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(rightClass, leftClass)) {
+        exception.add(new ValidationException(stmt, "Warning: Bad use of class type" + errorSuffix));
       }
       return;
     }
-    exception.add(new ValidationException(stmt, "Warning: Bad types" + errorSuffix + " in " + body.getMethod()));
+    exception.add(new ValidationException(stmt, "Warning: Bad types" + errorSuffix));
   }
 
   @Override
