@@ -29,7 +29,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +70,7 @@ import soot.validation.ValueBoxesValidator;
 @SuppressWarnings("serial")
 public abstract class Body extends AbstractHost implements Serializable {
   private static final Logger logger = LoggerFactory.getLogger(Body.class);
+  
   /** The method associated with this Body. */
   protected transient SootMethod method = null;
 
@@ -148,73 +148,64 @@ public abstract class Body extends AbstractHost implements Serializable {
   public Map<Object, Object> importBodyContentsFrom(Body b) {
     HashMap<Object, Object> bindings = new HashMap<Object, Object>();
 
-    {
-      // Clone units in body's statement list
-      for (Unit original : b.getUnits()) {
-        Unit copy = (Unit) original.clone();
+    // Clone units in body's statement list
+    for (Unit original : b.getUnits()) {
+      Unit copy = (Unit) original.clone();
 
-        copy.addAllTagsOf(original);
+      copy.addAllTagsOf(original);
 
-        // Add cloned unit to our unitChain.
-        unitChain.addLast(copy);
+      // Add cloned unit to our unitChain.
+      unitChain.addLast(copy);
 
-        // Build old <-> new map to be able to patch up references to other units
-        // within the cloned units. (these are still refering to the original
-        // unit objects).
-        bindings.put(original, copy);
-      }
+      // Build old <-> new map to be able to patch up references to other units
+      // within the cloned units. (these are still refering to the original
+      // unit objects).
+      bindings.put(original, copy);
     }
 
-    {
-      // Clone trap units.
-      for (Trap original : b.getTraps()) {
-        Trap copy = (Trap) original.clone();
+    // Clone trap units.
+    for (Trap original : b.getTraps()) {
+      Trap copy = (Trap) original.clone();
 
-        // Add cloned unit to our trap list.
-        trapChain.addLast(copy);
+      // Add cloned unit to our trap list.
+      trapChain.addLast(copy);
 
-        // Store old <-> new mapping.
-        bindings.put(original, copy);
-      }
+      // Store old <-> new mapping.
+      bindings.put(original, copy);
     }
 
-    {
-      // Clone local units.
-      for (Local original : b.getLocals()) {
-        Local copy = (Local) original.clone();
+    // Clone local units.
+    for (Local original : b.getLocals()) {
+      Local copy = (Local) original.clone();
 
-        // Add cloned unit to our trap list.
-        localChain.addLast(copy);
+      // Add cloned unit to our trap list.
+      localChain.addLast(copy);
 
-        // Build old <-> new mapping.
-        bindings.put(original, copy);
-      }
+      // Build old <-> new mapping.
+      bindings.put(original, copy);
     }
 
-    {
-      // Patch up references within units using our (old <-> new) map.
-      for (UnitBox box : getAllUnitBoxes()) {
-        Unit newObject, oldObject = box.getUnit();
-
-        // if we have a reference to an old object, replace it
-        // it's clone.
-        if ((newObject = (Unit) bindings.get(oldObject)) != null) {
-          box.setUnit(newObject);
-        }
-
+    // Patch up references within units using our (old <-> new) map.
+    for (UnitBox box : getAllUnitBoxes()) {
+      Unit newObject = (Unit) bindings.get(box.getUnit());
+      // if we have a reference to an old object, replace it with its clone.
+      if (newObject != null) {
+        box.setUnit(newObject);
       }
     }
 
     {
       // backpatching all local variables.
       for (ValueBox vb : getUseBoxes()) {
-        if (vb.getValue() instanceof Local) {
-          vb.setValue((Value) bindings.get(vb.getValue()));
+        Value val = vb.getValue();
+        if (val instanceof Local) {
+          vb.setValue((Value) bindings.get(val));
         }
       }
       for (ValueBox vb : getDefBoxes()) {
-        if (vb.getValue() instanceof Local) {
-          vb.setValue((Value) bindings.get(vb.getValue()));
+        Value val = vb.getValue();
+        if (val instanceof Local) {
+          vb.setValue((Value) bindings.get(val));
         }
       }
     }
@@ -277,6 +268,10 @@ public abstract class Body extends AbstractHost implements Serializable {
   /** Verifies that each use in this Body has a def. */
   public void validateUses() {
     runValidation(UsesValidator.v());
+  }
+
+  public void checkInit() {
+    runValidation(CheckInitValidator.v());
   }
 
   /** Returns a backed chain of the locals declared in this Body. */
@@ -397,29 +392,16 @@ public abstract class Body extends AbstractHost implements Serializable {
    **/
   public List<UnitBox> getAllUnitBoxes() {
     ArrayList<UnitBox> unitBoxList = new ArrayList<UnitBox>();
-    {
-      Iterator<Unit> it = unitChain.iterator();
-      while (it.hasNext()) {
-        Unit item = it.next();
-        unitBoxList.addAll(item.getUnitBoxes());
-      }
-    }
 
-    {
-      Iterator<Trap> it = trapChain.iterator();
-      while (it.hasNext()) {
-        Trap item = it.next();
-        unitBoxList.addAll(item.getUnitBoxes());
-      }
+    for (Unit item : unitChain) {
+      unitBoxList.addAll(item.getUnitBoxes());
     }
-
-    {
-      Iterator<Tag> it = getTags().iterator();
-      while (it.hasNext()) {
-        Tag t = it.next();
-        if (t instanceof CodeAttribute) {
-          unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
-        }
+    for (Trap item : trapChain) {
+      unitBoxList.addAll(item.getUnitBoxes());
+    }
+    for (Tag t : getTags()) {
+      if (t instanceof CodeAttribute) {
+        unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
       }
     }
 
@@ -444,37 +426,18 @@ public abstract class Body extends AbstractHost implements Serializable {
    **/
   public List<UnitBox> getUnitBoxes(boolean branchTarget) {
     ArrayList<UnitBox> unitBoxList = new ArrayList<UnitBox>();
-    {
-      Iterator<Unit> it = unitChain.iterator();
-      while (it.hasNext()) {
-        Unit item = it.next();
-        if (branchTarget) {
-          if (item.branches()) {
-            unitBoxList.addAll(item.getUnitBoxes());
-          }
-        } else {
-          if (!item.branches()) {
-            unitBoxList.addAll(item.getUnitBoxes());
-          }
-        }
-      }
-    }
 
-    {
-      Iterator<Trap> it = trapChain.iterator();
-      while (it.hasNext()) {
-        Trap item = it.next();
+    for (Unit item : unitChain) {
+      if (item.branches() == branchTarget) {
         unitBoxList.addAll(item.getUnitBoxes());
       }
     }
-
-    {
-      Iterator<Tag> it = getTags().iterator();
-      while (it.hasNext()) {
-        Tag t = it.next();
-        if (t instanceof CodeAttribute) {
-          unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
-        }
+    for (Trap item : trapChain) {
+      unitBoxList.addAll(item.getUnitBoxes());
+    }
+    for (Tag t : getTags()) {
+      if (t instanceof CodeAttribute) {
+        unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
       }
     }
 
@@ -495,10 +458,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    */
   public List<ValueBox> getUseBoxes() {
     ArrayList<ValueBox> useBoxList = new ArrayList<ValueBox>();
-
-    Iterator<Unit> it = unitChain.iterator();
-    while (it.hasNext()) {
-      Unit item = it.next();
+    for (Unit item : unitChain) {
       useBoxList.addAll(item.getUseBoxes());
     }
     return useBoxList;
@@ -517,10 +477,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    */
   public List<ValueBox> getDefBoxes() {
     ArrayList<ValueBox> defBoxList = new ArrayList<ValueBox>();
-
-    Iterator<Unit> it = unitChain.iterator();
-    while (it.hasNext()) {
-      Unit item = it.next();
+    for (Unit item : unitChain) {
       defBoxList.addAll(item.getDefBoxes());
     }
     return defBoxList;
@@ -538,18 +495,11 @@ public abstract class Body extends AbstractHost implements Serializable {
    */
   public List<ValueBox> getUseAndDefBoxes() {
     ArrayList<ValueBox> useAndDefBoxList = new ArrayList<ValueBox>();
-
-    Iterator<Unit> it = unitChain.iterator();
-    while (it.hasNext()) {
-      Unit item = it.next();
+    for (Unit item : unitChain) {
       useAndDefBoxList.addAll(item.getUseBoxes());
       useAndDefBoxList.addAll(item.getDefBoxes());
     }
     return useAndDefBoxList;
-  }
-
-  public void checkInit() {
-    runValidation(CheckInitValidator.v());
   }
 
   /**
@@ -558,19 +508,16 @@ public abstract class Body extends AbstractHost implements Serializable {
   @Override
   public String toString() {
     ByteArrayOutputStream streamOut = new ByteArrayOutputStream();
-    PrintWriter writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
-    try {
+    try (PrintWriter writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)))) {
       Printer.v().printTo(this, writerOut);
+      writerOut.flush();
     } catch (RuntimeException e) {
       logger.error(e.getMessage(), e);
     }
-    writerOut.flush();
-    writerOut.close();
     return streamOut.toString();
   }
 
   public long getModificationCount() {
     return localChain.getModificationCount() + unitChain.getModificationCount() + trapChain.getModificationCount();
   }
-
 }

@@ -24,7 +24,6 @@ package soot.tagkit;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 // extended by SootClass, SootField, SootMethod, Scene
@@ -50,26 +49,22 @@ public class AbstractHost implements Host {
   /** remove the tag named <code>aName</code> */
   @Override
   public void removeTag(String aName) {
-    int tagIndex;
-    if ((tagIndex = searchForTag(aName)) != -1) {
+    int tagIndex = searchForTag(aName);
+    if (tagIndex != -1) {
       mTagList.remove(tagIndex);
     }
   }
 
   /** search for tag named <code>aName</code> */
   private int searchForTag(String aName) {
-    if (mTagList == null) {
-      return -1;
-    }
-
-    int i = 0;
-    Iterator<Tag> it = mTagList.iterator();
-    while (it.hasNext()) {
-      Tag tag = it.next();
-      if (tag != null && tag.getName().equals(aName)) {
-        return i;
+    if (mTagList != null) {
+      int i = 0;
+      for (Tag tag : mTagList) {
+        if (tag != null && tag.getName().equals(aName)) {
+          return i;
+        }
+        i++;
       }
-      i++;
     }
     return -1;
   }
@@ -77,12 +72,8 @@ public class AbstractHost implements Host {
   /** get the Tag object named <code>aName</code> */
   @Override
   public Tag getTag(String aName) {
-    int tagIndex;
-    if ((tagIndex = searchForTag(aName)) != -1) {
-      return mTagList.get(tagIndex);
-    }
-
-    return null;
+    int tagIndex = searchForTag(aName);
+    return (tagIndex == -1) ? null : mTagList.get(tagIndex);
   }
 
   /** look if this host has a tag named <code>aName</code> */
@@ -110,15 +101,12 @@ public class AbstractHost implements Host {
   @Override
   public void addAllTagsOf(Host h) {
     List<Tag> tags = h.getTags();
-    if (tags.isEmpty()) {
-      return;
+    if (!tags.isEmpty()) {
+      if (mTagList == null) {
+        mTagList = new ArrayList<Tag>(tags.size());
+      }
+      mTagList.addAll(tags);
     }
-
-    if (mTagList == null) {
-      mTagList = new ArrayList<Tag>(tags.size());
-    }
-
-    mTagList.addAll(tags);
   }
 
   @Override

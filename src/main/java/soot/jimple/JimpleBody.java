@@ -23,7 +23,6 @@ package soot.jimple;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import soot.Body;
@@ -50,6 +49,7 @@ import soot.validation.ValidationException;
 
 /** Implementation of the Body class for the Jimple IR. */
 public class JimpleBody extends StmtBody {
+
   private static BodyValidator[] validators;
 
   /**
@@ -112,10 +112,9 @@ public class JimpleBody extends StmtBody {
     super.validate(exceptionList);
     final boolean runAllValidators = Options.v().debug() || Options.v().validate();
     for (BodyValidator validator : getValidators()) {
-      if (!validator.isBasicValidator() && !runAllValidators) {
-        continue;
+      if (runAllValidators || validator.isBasicValidator()) {
+        validator.validate(this, exceptionList);
       }
-      validator.validate(this, exceptionList);
     }
   }
 
@@ -173,16 +172,16 @@ public class JimpleBody extends StmtBody {
 
   /** Returns the first non-identity stmt in this body. */
   public Stmt getFirstNonIdentityStmt() {
-    Iterator<Unit> it = getUnits().iterator();
-    Object o = null;
-    while (it.hasNext()) {
-      if (!((o = it.next()) instanceof IdentityStmt)) {
+    Unit r = null;
+    for (Unit u : getUnits()) {
+      r = u;
+      if (!(r instanceof IdentityStmt)) {
         break;
       }
     }
-    if (o == null) {
+    if (r == null) {
       throw new RuntimeException("no non-id statements!");
     }
-    return (Stmt) o;
+    return (Stmt) r;
   }
 }
