@@ -55,9 +55,7 @@ public enum FieldRefValidator implements BodyValidator {
       return;
     }
 
-    Chain<Unit> units = body.getUnits().getNonPatchingChain();
-
-    for (Unit unit : units) {
+    for (Unit unit : body.getUnits().getNonPatchingChain()) {
       Stmt s = (Stmt) unit;
       if (!s.containsFieldRef()) {
         continue;
@@ -91,7 +89,7 @@ public enum FieldRefValidator implements BodyValidator {
           exceptions.add(new UnitValidationException(unit, body, "Trying to get an instance field which is static: " + v));
         }
       } else {
-        throw new RuntimeException("unknown field ref");
+        throw new AssertionError("unknown field ref: " + fr);
       }
     }
   }
