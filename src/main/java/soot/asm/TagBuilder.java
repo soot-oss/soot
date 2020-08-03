@@ -23,13 +23,11 @@ package soot.asm;
  */
 
 import java.lang.reflect.Field;
-
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
-
 import soot.tagkit.AnnotationConstants;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.GenericAttribute;

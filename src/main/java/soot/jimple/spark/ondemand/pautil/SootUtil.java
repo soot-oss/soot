@@ -416,7 +416,7 @@ public class SootUtil {
     Type receiverType = invokedMethod.getDeclaringClass().getType();
     ChunkedQueue chunkedQueue = new ChunkedQueue();
     Iterator iter = chunkedQueue.reader();
-    VirtualCalls.v().resolve(type, receiverType, invokedMethod.getNumberedSubSignature(), null, chunkedQueue);
+    VirtualCalls.v().resolve(type, receiverType, invokedMethod.makeRef(), null, chunkedQueue);
     Set<SootMethod> ret = new ArraySet<SootMethod>();
     for (; iter.hasNext();) {
       SootMethod target = (SootMethod) iter.next();

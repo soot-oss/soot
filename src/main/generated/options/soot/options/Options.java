@@ -100,6 +100,12 @@ public class Options extends OptionsBase {
     public static final int java_version_8 = 9;
     public static final int java_version_1_9 = 10;
     public static final int java_version_9 = 10;
+    public static final int java_version_1_10 = 11;
+    public static final int java_version_10 = 11;
+    public static final int java_version_1_11 = 12;
+    public static final int java_version_11 = 12;
+    public static final int java_version_1_12 = 13;
+    public static final int java_version_12 = 13;
     public static final int wrong_staticness_fail = 1;
     public static final int wrong_staticness_ignore = 2;
     public static final int wrong_staticness_fix = 3;
@@ -291,6 +297,10 @@ public class Options extends OptionsBase {
                     process_dir = new LinkedList<>();
                 process_dir.add(value);
             }
+            else if (false
+                    || option.equals("no-derive-java-version")
+            )
+                derive_java_version = false;
             else if (false
                     || option.equals("oaat")
             )
@@ -777,6 +787,36 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     java_version = java_version_9;
+                }
+                else if (false
+                        || value.equals("1.10")
+                        || value.equals("10")
+                ) {
+                    if (java_version != 0 && java_version != java_version_10) {
+                        G.v().out.println("Multiple values given for option " + option);
+                        return false;
+                    }
+                    java_version = java_version_10;
+                }
+                else if (false
+                        || value.equals("1.11")
+                        || value.equals("11")
+                ) {
+                    if (java_version != 0 && java_version != java_version_11) {
+                        G.v().out.println("Multiple values given for option " + option);
+                        return false;
+                    }
+                    java_version = java_version_11;
+                }
+                else if (false
+                        || value.equals("1.12")
+                        || value.equals("12")
+                ) {
+                    if (java_version != 0 && java_version != java_version_12) {
+                        G.v().out.println("Multiple values given for option " + option);
+                        return false;
+                    }
+                    java_version = java_version_12;
                 }
                 else {
                     G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
@@ -1444,6 +1484,10 @@ public class Options extends OptionsBase {
     public void set_process_dir(List<String> setting) { process_dir = setting; }
     private List<String> process_dir = null;
 
+    public boolean derive_java_version() { return derive_java_version; }
+    private boolean derive_java_version = true;
+    public void set_derive_java_version(boolean setting) { derive_java_version = setting; }
+
     public boolean oaat() { return oaat; }
     private boolean oaat = false;
     public void set_oaat(boolean setting) { oaat = setting; }
@@ -1713,6 +1757,7 @@ public class Options extends OptionsBase {
                 + padOpt("-process-multiple-dex", "Process all DEX files found in APK.")
                 + padOpt("-search-dex-in-archives", "Also includes Jar and Zip files when searching for DEX files under the provided classpath.")
                 + padOpt("-process-path ARG -process-dir ARG", "Process all classes found in ARG")
+                + padOpt("-derive-java-version", "Java version for output and internal processing will be derived from the given input classes")
                 + padOpt("-oaat", "From the process-dir, processes one class at a time.")
                 + padOpt("-android-jars ARG", "Use ARG as the path for finding the android.jar file")
                 + padOpt("-force-android-jar ARG", "Force Soot to use ARG as the path for the android.jar file.")
@@ -1764,6 +1809,9 @@ public class Options extends OptionsBase {
                     + padVal("1.7 7", "Force Java 1.7 as output version.")
                     + padVal("1.8 8", "Force Java 1.8 as output version.")
                     + padVal("1.9 9", "Force Java 1.9 as output version (Experimental).")
+                    + padVal("1.10 10", "Force Java 1.10 as output version (Experimental).")
+                    + padVal("1.11 11", "Force Java 1.11 as output version (Experimental).")
+                    + padVal("1.12 12", "Force Java 1.12 as output version (Experimental).")
                 + padOpt("-outjar, -output-jar", "Make output dir a Jar file instead of dir")
                 + padOpt("-hierarchy-dirs", "Generate class hierarchy directories for Jimple/Shimple")
                 + padOpt("-xml-attributes", "Save tags to XML attributes for Eclipse")
