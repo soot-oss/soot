@@ -92,6 +92,7 @@ public class ArrayType extends RefLikeType {
    *          object to test for equality
    * @return true if t is an ArrayType and is parametrized identically to this.
    */
+  @Override
   public boolean equals(Object t) {
     return t == this;
     /*
@@ -109,15 +110,13 @@ public class ArrayType extends RefLikeType {
     }
   }
 
+  @Override
   public String toString() {
-    StringBuffer buffer = new StringBuffer();
-
+    StringBuilder buffer = new StringBuilder();
     buffer.append(baseType.toString());
-
     for (int i = 0; i < numDimensions; i++) {
       buffer.append("[]");
     }
-
     return buffer.toString();
   }
 
@@ -125,20 +124,19 @@ public class ArrayType extends RefLikeType {
   @Override
   public String toQuotedString() {
     StringBuilder buffer = new StringBuilder();
-
     buffer.append(baseType.toQuotedString());
-
     for (int i = 0; i < numDimensions; i++) {
       buffer.append("[]");
     }
-
     return buffer.toString();
   }
 
+  @Override
   public int hashCode() {
     return baseType.hashCode() + 0x432E0341 * numDimensions;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseArrayType(this);
   }
@@ -149,6 +147,7 @@ public class ArrayType extends RefLikeType {
    * RefLikeType. If t is an array, then the answer is the same as getElementType(). But t could also be Object,
    * Serializable, or Cloneable, which can all hold any array, so then the answer is Object.
    */
+  @Override
   public Type getArrayElementType() {
     return getElementType();
   }
@@ -165,12 +164,13 @@ public class ArrayType extends RefLikeType {
     }
   }
 
+  @Override
   public ArrayType makeArrayType() {
     return ArrayType.v(baseType, numDimensions + 1);
   }
 
+  @Override
   public boolean isAllowedInFinalCode() {
     return true;
   }
-
 }

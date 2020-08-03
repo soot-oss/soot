@@ -35,18 +35,22 @@ public class DoubleWordType extends Type {
     return G.v().soot_baf_DoubleWordType();
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public int hashCode() {
     return 0xA247839F;
   }
 
+  @Override
   public String toString() {
     return "dword";
   }
 
+  @Override
   public void apply(Switch sw) {
     throw new RuntimeException("invalid switch case");
   }

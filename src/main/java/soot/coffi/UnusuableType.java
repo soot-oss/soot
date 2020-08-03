@@ -38,6 +38,7 @@ public class UnusuableType extends Type {
     return otherType instanceof UnusuableType;
   }
 
+  @Override
   public String toString() {
     return "unusuable";
   }

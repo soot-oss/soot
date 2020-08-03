@@ -36,6 +36,7 @@ public abstract class Type implements Switchable, Serializable, Numberable {
   }
 
   /** Returns a textual representation of this type. */
+  @Override
   public abstract String toString();
 
   /** Returns a textual (and quoted as needed) representation of this type for serialization, e.g. to .jimple format */
@@ -68,6 +69,7 @@ public abstract class Type implements Switchable, Serializable, Numberable {
   }
 
   /** Method required for use of Switchable. */
+  @Override
   public void apply(Switch sw) {
   }
 
@@ -92,10 +94,12 @@ public abstract class Type implements Switchable, Serializable, Numberable {
     return false;
   }
 
+  @Override
   public final int getNumber() {
     return number;
   }
 
+  @Override
   public final void setNumber(int number) {
     this.number = number;
   }

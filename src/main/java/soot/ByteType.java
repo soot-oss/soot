@@ -36,18 +36,22 @@ public class ByteType extends PrimType implements IntegerType {
     return G.v().soot_ByteType();
   }
 
+  @Override
   public int hashCode() {
     return 0x813D1329;
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public String toString() {
     return "byte";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseByteType(this);
   }

@@ -36,18 +36,22 @@ public class DoubleType extends PrimType {
     return G.v().soot_DoubleType();
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public int hashCode() {
     return 0x4B9D7242;
   }
 
+  @Override
   public String toString() {
     return "double";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseDoubleType(this);
   }

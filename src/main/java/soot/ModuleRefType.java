@@ -34,15 +34,12 @@ import soot.options.Options;
  * @author Andreas Dann
  */
 public class ModuleRefType extends RefType {
+
+  private String moduleName;
+
   public ModuleRefType(Singletons.Global g) {
     super(g);
   }
-
-  public String getModuleName() {
-    return moduleName;
-  }
-
-  private String moduleName;
 
   protected ModuleRefType(String className, String moduleName) {
     super(className);
@@ -55,23 +52,22 @@ public class ModuleRefType extends RefType {
   }
 
   public static RefType v(String className, Optional<String> moduleName) {
-    String module = null;
-    if (moduleName.isPresent()) {
-      module = ModuleUtil.v().findModuleThatExports(className, moduleName.get());
-    }
-    if (!moduleName.isPresent() && Options.v().verbose()) {
+    final boolean isPresent = moduleName.isPresent();
+    String module = isPresent ? ModuleUtil.v().findModuleThatExports(className, moduleName.get()) : null;
+
+    if (!isPresent && Options.v().verbose()) {
       G.v().out.println("[WARN] ModuleRefType called with empty module for: " + className);
     }
     RefType rt = ModuleScene.v().getRefTypeUnsafe(className, Optional.fromNullable(module));
     if (rt == null) {
-      if (!moduleName.isPresent()) {
-        rt = new ModuleRefType(className, null);
-      } else {
-        rt = new ModuleRefType(className, module);
-      }
+      rt = new ModuleRefType(className, isPresent ? module : null);
       ModuleScene.v().addRefType(rt);
     }
     return rt;
+  }
+
+  public String getModuleName() {
+    return moduleName;
   }
 
   /**
@@ -102,63 +98,39 @@ public class ModuleRefType extends RefType {
 
     {
       // Return least common superclass
+      final ModuleScene cmMod = (ModuleScene) cm;
 
-      SootClass thisClass = ((ModuleScene) cm).getSootClass(getClassName(), Optional.fromNullable(this.moduleName));
-      SootClass otherClass
-          = ((ModuleScene) cm).getSootClass(((RefType) other).getClassName(), Optional.fromNullable(this.moduleName));
-      SootClass javalangObject = cm.getObjectType().getSootClass();
+      final SootClass javalangObject = cm.getObjectType().getSootClass();
 
       LinkedList<SootClass> thisHierarchy = new LinkedList<>();
       LinkedList<SootClass> otherHierarchy = new LinkedList<>();
 
       // Build thisHierarchy
-      {
-        SootClass SootClass = thisClass;
-
-        for (;;) {
-          thisHierarchy.addFirst(SootClass);
-
-          if (SootClass == javalangObject) {
-            break;
-          }
-
-          if (SootClass.hasSuperclass()) {
-            SootClass = SootClass.getSuperclass();
-          } else {
-            SootClass = javalangObject;
-          }
+      for (SootClass sc = cmMod.getSootClass(getClassName(), Optional.fromNullable(this.moduleName));;) {
+        thisHierarchy.addFirst(sc);
+        if (sc == javalangObject) {
+          break;
         }
+        sc = sc.hasSuperclass() ? sc.getSuperclass() : javalangObject;
       }
 
       // Build otherHierarchy
-      {
-        SootClass SootClass = otherClass;
-
-        for (;;) {
-          otherHierarchy.addFirst(SootClass);
-
-          if (SootClass == javalangObject) {
-            break;
-          }
-
-          if (SootClass.hasSuperclass()) {
-            SootClass = SootClass.getSuperclass();
-          } else {
-            SootClass = javalangObject;
-          }
+      for (SootClass sc = cmMod.getSootClass(((RefType) other).getClassName(), Optional.fromNullable(this.moduleName));;) {
+        otherHierarchy.addFirst(sc);
+        if (sc == javalangObject) {
+          break;
         }
+        sc = sc.hasSuperclass() ? sc.getSuperclass() : javalangObject;
       }
 
       // Find least common superclass
       {
         SootClass commonClass = null;
-
         while (!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty()
             && otherHierarchy.getFirst() == thisHierarchy.getFirst()) {
           commonClass = otherHierarchy.removeFirst();
           thisHierarchy.removeFirst();
         }
-
         if (commonClass == null) {
           throw new RuntimeException("Could not find a common superclass for " + this + " and " + other);
         }
@@ -177,5 +149,4 @@ public class ModuleRefType extends RefType {
     }
     throw new RuntimeException("Attempt to get array base type of a non-array");
   }
-
 }
