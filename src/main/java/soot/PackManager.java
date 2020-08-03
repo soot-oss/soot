@@ -135,7 +135,6 @@ import soot.toolkits.scalar.ConstantValueToInitializerTransformer;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
 import soot.toolkits.scalar.UnusedLocalEliminator;
-import soot.util.Chain;
 import soot.util.EscapedWriter;
 import soot.util.JasminOutputStream;
 import soot.util.PhaseDumper;
@@ -393,7 +392,7 @@ public class PackManager {
   }
 
   public HasPhaseOptions getPhase(String phaseName) {
-    int index = phaseName.indexOf(".");
+    int index = phaseName.indexOf('.');
     if (index < 0) {
       return getPack(phaseName);
     }
@@ -422,15 +421,18 @@ public class PackManager {
 
   private void runPacksForOneClassAtATime() {
     if (Options.v().src_prec() == Options.src_prec_class && Options.v().keep_line_number()) {
-      LineNumberAdder lineNumAdder = LineNumberAdder.v();
-      lineNumAdder.internalTransform("", null);
+      LineNumberAdder.v().internalTransform("", null);
     }
 
     setupJAR();
+
+    final boolean validate = Options.v().validate();
+    final SourceLocator srcLoc = SourceLocator.v();
+    final Scene scene = Scene.v();
     for (String path : Options.v().process_dir()) {
       // hack1: resolve to signatures only
-      for (String cl : SourceLocator.v().getClassesUnder(path)) {
-        SootClass clazz = Scene.v().forceResolve(cl, SootClass.SIGNATURES);
+      for (String cl : srcLoc.getClassesUnder(path)) {
+        SootClass clazz = scene.forceResolve(cl, SootClass.SIGNATURES);
         clazz.setApplicationClass();
       }
       // hack2: for each class one after another:
@@ -438,14 +440,14 @@ public class PackManager {
       // b) run packs
       // c) write class
       // d) remove bodies
-      for (String cl : SourceLocator.v().getClassesUnder(path)) {
+      for (String cl : srcLoc.getClassesUnder(path)) {
         SootClass clazz = null;
-        ClassSource source = SourceLocator.v().getClassSource(cl);
+        ClassSource source = srcLoc.getClassSource(cl);
         try {
           if (source == null) {
             throw new RuntimeException("Could not locate class source");
           }
-          clazz = Scene.v().getSootClass(cl);
+          clazz = scene.getSootClass(cl);
           clazz.setResolvingLevel(SootClass.BODIES);
           source.resolve(clazz);
         } finally {
@@ -456,8 +458,8 @@ public class PackManager {
 
         // Create tags from all values we only have in code assingments
         // now
-        for (SootClass sc : Scene.v().getApplicationClasses()) {
-          if (Options.v().validate()) {
+        for (SootClass sc : scene.getApplicationClasses()) {
+          if (validate) {
             sc.validate();
           }
           if (!sc.isPhantom) {
@@ -487,8 +489,7 @@ public class PackManager {
 
   private void runPacksNormally() {
     if (Options.v().src_prec() == Options.src_prec_class && Options.v().keep_line_number()) {
-      LineNumberAdder lineNumAdder = LineNumberAdder.v();
-      lineNumAdder.internalTransform("", null);
+      LineNumberAdder.v().internalTransform("", null);
     }
 
     if (Options.v().whole_program() || Options.v().whole_shimple()) {
@@ -497,8 +498,9 @@ public class PackManager {
     retrieveAllBodies();
 
     // Create tags from all values we only have in code assignments now
+    final boolean validate = Options.v().validate();
     for (SootClass sc : Scene.v().getApplicationClasses()) {
-      if (Options.v().validate()) {
+      if (validate) {
         sc.validate();
       }
       if (!sc.isPhantom) {
@@ -529,9 +531,7 @@ public class PackManager {
     int tV = 0, tE = 0, hM = 0;
     double aM = 0;
     HashMap<SootMethod, int[]> hashVem = soot.coffi.CFG.methodsToVEM;
-    Iterator<SootMethod> it = hashVem.keySet().iterator();
-    while (it.hasNext()) {
-      int vem[] = hashVem.get(it.next());
+    for (int[] vem : hashVem.values()) {
       tV += vem[0];
       tE += vem[1];
       aM += vem[2];
@@ -559,15 +559,19 @@ public class PackManager {
     if (Options.v().verbose()) {
       PhaseDumper.v().dumpBefore("output");
     }
-    if (Options.v().output_format() == Options.output_format_dava) {
-      postProcessDAVA();
-      outputDava();
-    } else if (Options.v().output_format() == Options.output_format_dex
-        || Options.v().output_format() == Options.output_format_force_dex) {
-      writeDexOutput();
-    } else {
-      writeOutput(reachableClasses());
-      tearDownJAR();
+    switch (Options.v().output_format()) {
+      case Options.output_format_dava:
+        postProcessDAVA();
+        outputDava();
+        break;
+      case Options.output_format_dex:
+      case Options.output_format_force_dex:
+        writeDexOutput();
+        break;
+      default:
+        writeOutput(reachableClasses());
+        tearDownJAR();
+        break;
     }
     postProcessXML(reachableClasses());
 
@@ -619,10 +623,8 @@ public class PackManager {
   /* preprocess classes for DAVA */
   private void preProcessDAVA() {
     if (Options.v().output_format() == Options.output_format_dava) {
-
       Map<String, String> options = PhaseOptions.v().getPhaseOptions("db");
-      boolean isSourceJavac = PhaseOptions.getBoolean(options, "source-is-javac");
-      if (!isSourceJavac) {
+      if (!PhaseOptions.getBoolean(options, "source-is-javac")) {
         /*
          * It turns out that the exception attributes of a method i.e. those exceptions that a method can throw are only
          * checked by the Java compiler and not the JVM
@@ -646,14 +648,13 @@ public class PackManager {
       }
 
       PackageNamer.v().fixNames();
-
     }
   }
 
   private void runBodyPacks(final Iterator<SootClass> classes) {
     int threadNum = Runtime.getRuntime().availableProcessors();
-    CountingThreadPoolExecutor executor
-        = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+    CountingThreadPoolExecutor executor =
+        new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     while (classes.hasNext()) {
       final SootClass c = classes.next();
@@ -670,11 +671,12 @@ public class PackManager {
     }
 
     // If something went wrong, we tell the world
-    if (executor.getException() != null) {
-      if (executor.getException() instanceof RuntimeException) {
-        throw (RuntimeException) executor.getException();
+    Throwable exception = executor.getException();
+    if (exception != null) {
+      if (exception instanceof RuntimeException) {
+        throw (RuntimeException) exception;
       } else {
-        throw new RuntimeException(executor.getException());
+        throw new RuntimeException(exception);
       }
     }
   }
@@ -689,10 +691,9 @@ public class PackManager {
     // concurrently. Otherwise, we need to synchronize for not destroying
     // the shared output stream.
     int threadNum = Options.v().output_format() == Options.output_format_class && jarFile == null
-        ? Runtime.getRuntime().availableProcessors()
-        : 1;
-    CountingThreadPoolExecutor executor
-        = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        ? Runtime.getRuntime().availableProcessors() : 1;
+    CountingThreadPoolExecutor executor =
+        new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     while (classes.hasNext()) {
       final SootClass c = classes.next();
@@ -709,11 +710,12 @@ public class PackManager {
     }
 
     // If something went wrong, we tell the world
-    if (executor.getException() != null) {
-      if (executor.getException() instanceof RuntimeException) {
-        throw (RuntimeException) executor.getException();
+    Throwable exception = executor.getException();
+    if (exception != null) {
+      if (exception instanceof RuntimeException) {
+        throw (RuntimeException) exception;
       } else {
-        throw new RuntimeException(executor.getException());
+        throw new RuntimeException(exception);
       }
     }
   }
@@ -740,15 +742,12 @@ public class PackManager {
 
   /* post process for DAVA */
   private void postProcessDAVA() {
-
-    Chain<SootClass> appClasses = Scene.v().getApplicationClasses();
-
     Map<String, String> options = PhaseOptions.v().getPhaseOptions("db.transformations");
     boolean transformations = PhaseOptions.getBoolean(options, "enabled");
     /*
      * apply analyses etc
      */
-    for (SootClass s : appClasses) {
+    for (SootClass s : Scene.v().getApplicationClasses()) {
       String fileName = SourceLocator.v().getFileNameFor(s, Options.v().output_format());
 
       /*
@@ -789,8 +788,6 @@ public class PackManager {
           else {
             body.applyBugFixes();
           }
-        } else {
-          continue;
         }
       }
 
@@ -809,17 +806,12 @@ public class PackManager {
   }
 
   private void outputDava() {
-    Chain<SootClass> appClasses = Scene.v().getApplicationClasses();
-
     /*
      * Generate decompiled code
      */
     String pathForBuild = null;
     ArrayList<String> decompiledClasses = new ArrayList<String>();
-    Iterator<SootClass> classIt = appClasses.iterator();
-    while (classIt.hasNext()) {
-      SootClass s = classIt.next();
-
+    for (SootClass s : Scene.v().getApplicationClasses()) {
       OutputStream streamOut = null;
       PrintWriter writerOut = null;
       String fileName = SourceLocator.v().getFileNameFor(s, Options.v().output_format());
@@ -856,15 +848,13 @@ public class PackManager {
 
       G.v().out.flush();
 
-      {
-        try {
-          writerOut.flush();
-          if (jarFile == null) {
-            streamOut.close();
-          }
-        } catch (IOException e) {
-          throw new CompilationDeathException("Cannot close output file " + fileName);
+      try {
+        writerOut.flush();
+        if (jarFile == null) {
+          streamOut.close();
         }
+      } catch (IOException e) {
+        throw new CompilationDeathException("Cannot close output file " + fileName);
       }
     } // going through all classes
 
@@ -879,13 +869,10 @@ public class PackManager {
       }
 
       String fileName = pathForBuild + "build.xml";
-
-      try {
-        OutputStream streamOut = new FileOutputStream(fileName);
+      try (OutputStream streamOut = new FileOutputStream(fileName)) {
         PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
         DavaBuildFile.generate(writerOut, decompiledClasses);
         writerOut.flush();
-        streamOut.close();
       } catch (IOException e) {
         throw new CompilationDeathException("Cannot output file " + fileName, e);
       }
@@ -955,10 +942,9 @@ public class PackManager {
     // such adding of methods happens in rare occasions: for instance when
     // resolving a method reference to a non-existing method, then this
     // method is created as a phantom method when phantom-refs are enabled
-    ArrayList<SootMethod> methodsCopy = new ArrayList<SootMethod>(c.getMethods());
-    for (SootMethod m : methodsCopy) {
+    for (SootMethod m : new ArrayList<SootMethod>(c.getMethods())) {
       if (DEBUG) {
-        if (m.getExceptions().size() != 0) {
+        if (!m.getExceptions().isEmpty()) {
           System.out.println("PackManager printing out jimple body exceptions for method " + m.toString() + " "
               + m.getExceptions().toString());
         }
@@ -969,12 +955,11 @@ public class PackManager {
       }
 
       if (produceShimple || wholeShimple) {
-        ShimpleBody sBody = null;
+        ShimpleBody sBody;
 
         // whole shimple or not?
         {
           Body body = m.retrieveActiveBody();
-
           if (body instanceof ShimpleBody) {
             sBody = (ShimpleBody) body;
             if (!sBody.isSSA()) {
@@ -1008,7 +993,7 @@ public class PackManager {
         }
         PackManager.v().getPack("jop").apply(body);
         PackManager.v().getPack("jap").apply(body);
-        if (Options.v().xml_attributes() && Options.v().output_format() != Options.output_format_jimple) {
+        if (Options.v().xml_attributes() && format != Options.output_format_jimple) {
           // System.out.println("collecting body tags");
           tc.collectBodyTags(body);
         }
@@ -1024,7 +1009,7 @@ public class PackManager {
       }
     }
 
-    if (Options.v().xml_attributes() && Options.v().output_format() != Options.output_format_jimple) {
+    if (Options.v().xml_attributes() && format != Options.output_format_jimple) {
       processXMLForClass(c, tc);
       // System.out.println("processed xml for class");
     }
@@ -1046,15 +1031,12 @@ public class PackManager {
       if (G.v().SootMethodAddedByDava) {
         // System.out.println("PACKMANAGER SAYS:----------------Have to
         // add the new method(s)");
-        ArrayList<SootMethod> sootMethodsAdded = G.v().SootMethodsAdded;
-        Iterator<SootMethod> it = sootMethodsAdded.iterator();
-        while (it.hasNext()) {
-          c.addMethod(it.next());
+        for (SootMethod m : G.v().SootMethodsAdded) {
+          c.addMethod(m);
         }
         G.v().SootMethodsAdded = new ArrayList<SootMethod>();
         G.v().SootMethodAddedByDava = false;
       }
-
     } // end if produceDava
   }
 
@@ -1075,36 +1057,35 @@ public class PackManager {
   }
 
   protected void writeClass(SootClass c) {
-    // Create code assignments for those values we only have in code
-    // assignments
-    if (Options.v().output_format() == Options.output_format_jimple) {
-      if (!c.isPhantom) {
-        ConstantValueToInitializerTransformer.v().transformClass(c);
-      }
-    }
-
     final int format = Options.v().output_format();
-    if (format == Options.output_format_none) {
-      return;
-    }
-    if (format == Options.output_format_dava) {
-      return;
-    }
-    if (format == Options.output_format_dex || format == Options.output_format_force_dex) {
-      // just add the class to the dex printer, writing is done after
-      // adding all classes
-      dexPrinter.add(c);
-      return;
-    }
 
-    OutputStream streamOut = null;
-    PrintWriter writerOut = null;
+    switch (format) {
+      case Options.output_format_none:
+      case Options.output_format_dava:
+        return;
+      case Options.output_format_dex:
+      case Options.output_format_force_dex:
+        // just add the class to the dex printer, writing is done after
+        // adding all classes
+        dexPrinter.add(c);
+        return;
+      case Options.output_format_jimple:
+        // Create code assignments for those values we only have in code assignments
+        if (!c.isPhantom) {
+          ConstantValueToInitializerTransformer.v().transformClass(c);
+        }
+        break;
+      default:
+        break;
+    }
 
     String fileName = SourceLocator.v().getFileNameFor(c, format);
     if (Options.v().gzip()) {
       fileName = fileName + ".gz";
     }
 
+    OutputStream streamOut = null;
+    PrintWriter writerOut = null;
     try {
       if (jarFile != null) {
         // Fix path delimiters according to ZIP specification
@@ -1210,8 +1191,7 @@ public class PackManager {
    * @return The ASM backend for writing the class into bytecode
    */
   protected BafASMBackend createASMBackend(SootClass c) {
-    int java_version = Options.v().java_version();
-    return new BafASMBackend(c, java_version);
+    return new BafASMBackend(c, Options.v().java_version());
   }
 
   private void postProcessXML(Iterator<SootClass> classes) {
@@ -1246,10 +1226,8 @@ public class PackManager {
   }
 
   private void releaseBodies(SootClass cl) {
-    Iterator<SootMethod> methodIt = cl.methodIterator();
-    while (methodIt.hasNext()) {
+    for (Iterator<SootMethod> methodIt = cl.methodIterator(); methodIt.hasNext();) {
       SootMethod m = methodIt.next();
-
       if (m.hasActiveBody()) {
         m.releaseActiveBody();
       }
@@ -1259,26 +1237,21 @@ public class PackManager {
   private void retrieveAllBodies() {
     // The old coffi front-end is not thread-safe
     int threadNum = Options.v().coffi() ? 1 : Runtime.getRuntime().availableProcessors();
-    CountingThreadPoolExecutor executor
-        = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+    CountingThreadPoolExecutor executor =
+        new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
-    Iterator<SootClass> clIt = reachableClasses();
-    while (clIt.hasNext()) {
+    for (Iterator<SootClass> clIt = reachableClasses(); clIt.hasNext();) {
       SootClass cl = clIt.next();
       // note: the following is a snapshot iterator;
       // this is necessary because it can happen that phantom methods
       // are added during resolution
-      Iterator<SootMethod> methodIt = new ArrayList<SootMethod>(cl.getMethods()).iterator();
-      while (methodIt.hasNext()) {
-        final SootMethod m = methodIt.next();
+      for (SootMethod m : new ArrayList<SootMethod>(cl.getMethods())) {
         if (m.isConcrete()) {
           executor.execute(new Runnable() {
-
             @Override
             public void run() {
               m.retrieveActiveBody();
             }
-
           });
         }
       }
@@ -1294,13 +1267,13 @@ public class PackManager {
     }
 
     // If something went wrong, we tell the world
-    if (executor.getException() != null) {
-      if (executor.getException() instanceof RuntimeException) {
-        throw (RuntimeException) executor.getException();
+    Throwable exception = executor.getException();
+    if (exception != null) {
+      if (exception instanceof RuntimeException) {
+        throw (RuntimeException) exception;
       } else {
-        throw new RuntimeException(executor.getException());
+        throw new RuntimeException(exception);
       }
     }
   }
-
 }
