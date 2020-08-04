@@ -74,12 +74,14 @@ public class ChunkedQueue<E> {
     Object[] curArray = q;
     while (idx < curArray.length) {
       Object curObj = curArray[idx];
-      if (curObj == null)
+      if (curObj == null) {
         break;
-      if (isFirst)
+      }
+      if (isFirst) {
         isFirst = false;
-      else
+      } else {
         sb.append(", ");
+      }
       if (curObj instanceof Object[]) {
         curArray = (Object[]) curObj;
         idx = 0;
