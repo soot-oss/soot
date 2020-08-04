@@ -656,8 +656,6 @@ public class FastHierarchy {
     }
 
     return resolveMethod(baseType, m, false);
-    // throw new RuntimeException("could not resolve concrete
-    // dispatch!\nType: "+baseType+"\nMethod: "+m);
   }
 
   /**
