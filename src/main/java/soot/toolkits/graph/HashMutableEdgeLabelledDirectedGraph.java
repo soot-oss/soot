@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLabelledDirectedGraph<N, L> {
   private static final Logger logger = LoggerFactory.getLogger(HashMutableEdgeLabelledDirectedGraph.class);
 
-  private static class DGEdge<N> {
+  protected static class DGEdge<N> {
 
     N from;
     N to;
