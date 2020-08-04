@@ -41,6 +41,8 @@ import soot.jimple.ThisRef;
  * UnitPrinter implementation for Dava.
  */
 public class DavaUnitPrinter extends AbstractUnitPrinter {
+
+  private boolean eatSpace = false;
   DavaBody body;
 
   /*
@@ -50,16 +52,19 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
     this.body = body;
   }
 
+  @Override
   public void methodRef(SootMethodRef m) {
     handleIndent();
     output.append(m.name());
   }
 
+  @Override
   public void fieldRef(SootFieldRef f) {
     handleIndent();
     output.append(f.name());
   }
 
+  @Override
   public void identityRef(IdentityRef r) {
     handleIndent();
     if (r instanceof ThisRef) {
@@ -69,22 +74,22 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
     }
   }
 
-  private boolean eatSpace = false;
-
+  @Override
   public void literal(String s) {
     handleIndent();
-    if (eatSpace && s.equals(" ")) {
+    if (eatSpace && " ".equals(s)) {
       eatSpace = false;
       return;
     }
     eatSpace = false;
-    if (false || s.equals(Jimple.STATICINVOKE) || s.equals(Jimple.VIRTUALINVOKE) || s.equals(Jimple.INTERFACEINVOKE)) {
+    if (Jimple.STATICINVOKE.equals(s) || Jimple.VIRTUALINVOKE.equals(s) || Jimple.INTERFACEINVOKE.equals(s)) {
       eatSpace = true;
       return;
     }
     output.append(s);
   }
 
+  @Override
   public void type(Type t) {
     handleIndent();
     if (t instanceof RefType) {
@@ -109,6 +114,7 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
     }
   }
 
+  @Override
   public void unitRef(Unit u, boolean branchTarget) {
     throw new RuntimeException("Dava doesn't have unit references!");
   }
@@ -117,8 +123,8 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
   public void constant(Constant c) {
     if (c instanceof ClassConstant) {
       handleIndent();
-      String fullClassName = ((ClassConstant) c).value.replaceAll("/", ".");
-      output.append(fullClassName + ".class");
+      String fullClassName = ((ClassConstant) c).value.replace('/', '.');
+      output.append(fullClassName).append(".class");
     } else {
       super.constant(c);
     }
@@ -147,5 +153,4 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
   public void printString(String s) {
     output.append(s);
   }
-
 }

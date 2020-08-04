@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import soot.jimple.IdentityRef;
 import soot.util.Chain;
 
 /**
@@ -53,16 +52,7 @@ public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
     return references;
   }
 
-  public abstract void literal(String s);
-
-  public abstract void methodRef(SootMethodRef m);
-
-  public abstract void fieldRef(SootFieldRef f);
-
-  public abstract void identityRef(IdentityRef r);
-
-  public abstract void type(Type t);
-
+  @Override
   public void unitRef(Unit u, boolean branchTarget) {
     String oldIndent = getIndent();
 
@@ -76,14 +66,11 @@ public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
         label = "[?= " + u + "]";
       }
       output.append(label);
-    }
-    // refs to control flow predecessors (for Shimple)
-    else {
+    } else {
+      // refs to control flow predecessors (for Shimple)
       String ref = references.get(u);
-
       if (startOfLine) {
         String newIndent = "(" + ref + ")" + indent.substring(ref.length() + 2);
-
         setIndent(newIndent);
         handleIndent();
         setIndent(oldIndent);
@@ -106,7 +93,6 @@ public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
     // Build labelStmts and refStmts
     for (UnitBox box : body.getAllUnitBoxes()) {
       Unit stmt = box.getUnit();
-
       if (box.isBranchTarget()) {
         labelStmts.add(stmt);
       } else {

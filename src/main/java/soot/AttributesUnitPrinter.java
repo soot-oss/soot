@@ -22,7 +22,6 @@ package soot;
  * #L%
  */
 
-import java.util.Iterator;
 import java.util.Stack;
 
 import org.slf4j.Logger;
@@ -73,29 +72,25 @@ public class AttributesUnitPrinter {
     if (startOffsets == null) {
       startOffsets = new Stack<Integer>();
     }
-    startOffsets.push(new Integer(output().length() - lastNewline));
+    startOffsets.push(output().length() - lastNewline);
   }
 
   public void endValueBox(ValueBox u) {
     endOffset = output().length() - lastNewline;
     if (hasColorTag(u)) {
-      u.addTag(new PositionTag(startOffsets.pop().intValue(), endOffset));
+      u.addTag(new PositionTag(startOffsets.pop(), endOffset));
     }
   }
 
   private boolean hasTag(Host h) {
     if (h instanceof Unit) {
-      Iterator<ValueBox> usesAndDefsIt = ((Unit) h).getUseAndDefBoxes().iterator();
-      while (usesAndDefsIt.hasNext()) {
-        if (hasTag(usesAndDefsIt.next())) {
+      for (ValueBox box : ((Unit) h).getUseAndDefBoxes()) {
+        if (hasTag(box)) {
           return true;
         }
       }
     }
-    if (h.getTags().isEmpty()) {
-      return false;
-    }
-    return true;
+    return !h.getTags().isEmpty();
   }
 
   private boolean hasColorTag(Host h) {
