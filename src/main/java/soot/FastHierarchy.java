@@ -580,14 +580,16 @@ public class FastHierarchy {
       SootClass curDecl = declaringClass;
       while (curDecl.hasOuterClass()) {
         curDecl = curDecl.getOuterClass();
-        if (curDecl.equals(from))
+        if (curDecl.equals(from)) {
           return true;
+        }
 
         SootClass curFrom = from;
         while (curFrom.hasOuterClass()) {
           curFrom = curFrom.getOuterClass();
-          if (curDecl.equals(curFrom))
+          if (curDecl.equals(curFrom)) {
             return true;
+          }
         }
       }
     }
