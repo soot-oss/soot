@@ -214,7 +214,7 @@ public class HashMutableDirectedGraph<N> implements MutableDirectedGraph<N> {
   }
 
   @Override
-  public boolean containsNode(Object node) {
+  public boolean containsNode(N node) {
     return nodeToPreds.keySet().contains(node);
   }
 
