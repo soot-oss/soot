@@ -572,6 +572,26 @@ public class FastHierarchy {
     if (Modifier.isPublic(modifier)) {
       return true;
     }
+
+    // If two inner classes are (transitively) inside the same outer class, such as A$B$C and A$D$E they can override methods
+    // from one another, even if all methods are private. In the example, it's perfectly fine for private class A$D$E to
+    // extend private class A$B$C and override a method in it.
+    {
+      SootClass curDecl = declaringClass;
+      while (curDecl.hasOuterClass()) {
+        curDecl = curDecl.getOuterClass();
+        if (curDecl.equals(from))
+          return true;
+
+        SootClass curFrom = from;
+        while (curFrom.hasOuterClass()) {
+          curFrom = curFrom.getOuterClass();
+          if (curDecl.equals(curFrom))
+            return true;
+        }
+      }
+    }
+
     if (Modifier.isPrivate(modifier)) {
       return from.equals(declaringClass);
     }
