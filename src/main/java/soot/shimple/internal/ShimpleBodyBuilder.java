@@ -402,7 +402,7 @@ public class ShimpleBodyBuilder {
   /**
    * Given a set of Strings, return a new name for dupName that is not currently in the set.
    **/
-  public String makeUniqueLocalName(String dupName, Set<String> localNames) {
+  public static String makeUniqueLocalName(String dupName, Set<String> localNames) {
     int counter = 1;
     String newName = dupName;
 
