@@ -23,9 +23,9 @@ package soot.shimple.internal;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,7 +50,6 @@ import soot.shimple.Shimple;
 import soot.shimple.ShimpleBody;
 import soot.shimple.ShimpleFactory;
 import soot.toolkits.graph.Block;
-import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.graph.DominatorNode;
 import soot.toolkits.graph.DominatorTree;
 import soot.toolkits.scalar.UnusedLocalEliminator;
@@ -79,20 +78,17 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  *      the Control Dependence Graph</a>
  **/
 public class ShimpleBodyBuilder {
-  protected ShimpleBody body;
-  protected ShimpleFactory sf;
-  protected DominatorTree<Block> dt;
-  protected BlockGraph cfg;
+  protected final ShimpleBody body;
+  protected final ShimpleOptions options;
+  protected final ShimpleFactory sf;
 
   /**
    * A fixed list of all original Locals.
    **/
   protected List<Local> origLocals;
 
-  public PhiNodeManager phi;
-  public PiNodeManager pi;
-
-  ShimpleOptions options;
+  public final PhiNodeManager phi;
+  public final PiNodeManager pi;
 
   /**
    * Transforms the provided body to pure SSA form.
@@ -106,27 +102,28 @@ public class ShimpleBodyBuilder {
     // their removal.
     NopEliminator.v().transform(body);
     this.body = body;
-    sf = new DefaultShimpleFactory(body);
+    this.options = body.getOptions();
+    this.sf = new DefaultShimpleFactory(body);
     sf.clearCache();
-    phi = new PhiNodeManager(body, sf);
-    pi = new PiNodeManager(body, false, sf);
-    options = body.getOptions();
+    this.phi = new PhiNodeManager(body, sf);
+    this.pi = new PiNodeManager(body, false, sf);
     makeUniqueLocalNames();
   }
 
   public void update() {
-    cfg = sf.getBlockGraph();
-    dt = sf.getDominatorTree();
-    origLocals = new ArrayList<Local>(body.getLocals());
+    origLocals = Collections.unmodifiableList(new ArrayList<Local>(body.getLocals()));
   }
 
   public void transform() {
+    // Must clear cached graph, etc. in case of rebuilding Shimple
+    // after Body modifications that may introduce new blocks.
+    sf.clearCache();
+    update();
+
     phi.insertTrivialPhiNodes();
 
-    boolean change = false;
     if (options.extended()) {
-      change = pi.insertTrivialPiNodes();
-
+      boolean change = pi.insertTrivialPiNodes();
       while (change) {
         if (phi.insertTrivialPhiNodes()) {
           change = pi.insertTrivialPiNodes();
@@ -150,9 +147,7 @@ public class ShimpleBodyBuilder {
   }
 
   public void postElimOpt() {
-    boolean optElim = options.node_elim_opt();
-
-    if (optElim) {
+    if (options.node_elim_opt()) {
       DeadAssignmentEliminator.v().transform(body);
       UnreachableCodeEliminator.v().transform(body);
       UnconditionalBranchFolder.v().transform(body);
@@ -174,7 +169,6 @@ public class ShimpleBodyBuilder {
     if (phi.doEliminatePhiNodes()) {
       makeUniqueLocalNames();
     }
-
   }
 
   public void eliminatePiNodes() {
@@ -201,28 +195,26 @@ public class ShimpleBodyBuilder {
    **/
   public void renameLocals() {
     update();
-    newLocals = new HashMap<String, Local>();
-    newLocalsToOldLocal = new HashMap<Local, Local>();
 
-    assignmentCounters = new int[origLocals.size()];
-    namingStacks = new Stack[origLocals.size()];
+    this.newLocals = new HashMap<String, Local>();
+    this.newLocalsToOldLocal = new HashMap<Local, Local>();
 
-    for (int i = 0; i < namingStacks.length; i++) {
+    final int size = origLocals.size();
+    this.assignmentCounters = new int[size];
+    this.namingStacks = new Stack[size];
+
+    for (int i = 0; i < size; i++) {
       namingStacks[i] = new Stack<Integer>();
     }
 
-    List<Block> heads = cfg.getHeads();
-
+    List<Block> heads = sf.getBlockGraph().getHeads();
     if (heads.isEmpty()) {
       return;
     }
-
     if (heads.size() != 1) {
       throw new RuntimeException("Assertion failed:  Only one head expected.");
     }
-
-    Block entry = heads.get(0);
-    renameLocalsSearch(entry);
+    renameLocalsSearch(heads.get(0));
   }
 
   /**
@@ -236,52 +228,38 @@ public class ShimpleBodyBuilder {
     {
       // accumulated and re-processed in a later loop
       for (Unit unit : block) {
-        // Step 1/2 of 1
-        {
-          List<ValueBox> useBoxes = new ArrayList<ValueBox>();
-
-          if (!Shimple.isPhiNode(unit)) {
-            useBoxes.addAll(unit.getUseBoxes());
-          }
-
-          for (ValueBox useBox : useBoxes) {
+        // Step 1A
+        if (!Shimple.isPhiNode(unit)) {
+          for (ValueBox useBox : unit.getUseBoxes()) {
             Value use = useBox.getValue();
+
             int localIndex = indexOfLocal(use);
 
             // not one of our locals
             if (localIndex == -1) {
               continue;
             }
-
-            Local localUse = (Local) use;
-
-            if (namingStacks[localIndex].empty()) {
+            Stack<Integer> namingStack = namingStacks[localIndex];
+            if (namingStack.empty()) {
               continue;
             }
-
-            Integer subscript = namingStacks[localIndex].peek();
-
-            Local renamedLocal = fetchNewLocal(localUse, subscript);
+            Integer subscript = namingStack.peek();
+            Local renamedLocal = fetchNewLocal((Local) use, subscript);
             useBox.setValue(renamedLocal);
           }
         }
 
-        // Step 1 of 1
-        {
-          if (!(unit instanceof DefinitionStmt)) {
-            continue;
-          }
-
+        // Step 1B
+        if (unit instanceof DefinitionStmt) {
           DefinitionStmt defStmt = (DefinitionStmt) unit;
-
-          Value lhsValue = defStmt.getLeftOp();
+          ValueBox lhsLocalBox = defStmt.getLeftOpBox();
+          Value lhsValue = lhsLocalBox.getValue();
 
           // not something we're interested in
           if (!origLocals.contains(lhsValue)) {
             continue;
           }
 
-          ValueBox lhsLocalBox = defStmt.getLeftOpBox();
           Local lhsLocal = (Local) lhsValue;
 
           // re-processed in Step 4
@@ -293,53 +271,46 @@ public class ShimpleBodyBuilder {
           }
 
           Integer subscript = assignmentCounters[localIndex];
-
           Local newLhsLocal = fetchNewLocal(lhsLocal, subscript);
           lhsLocalBox.setValue(newLhsLocal);
 
           namingStacks[localIndex].push(subscript);
           assignmentCounters[localIndex]++;
-
         }
       }
     }
 
     // Step 2 of 4 -- Rename Phi node uses in Successors
-    {
-      for (Block succ : cfg.getSuccsOf(block)) {
-        // Ignore dummy blocks
-        if (block.getHead() == null && block.getTail() == null) {
+    for (Block succ : sf.getBlockGraph().getSuccsOf(block)) {
+      // Ignore dummy blocks
+      if (block.getHead() == null && block.getTail() == null) {
+        continue;
+      }
+
+      for (Unit unit : succ) {
+        PhiExpr phiExpr = Shimple.getPhiExpr(unit);
+        if (phiExpr == null) {
           continue;
         }
 
-        for (Unit unit : succ) {
-          PhiExpr phiExpr = Shimple.getPhiExpr(unit);
+        // simulate whichPred
+        int argIndex = phiExpr.getArgIndex(block);
+        if (argIndex == -1) {
+          throw new RuntimeException("Assertion failed.");
+        }
 
-          if (phiExpr == null) {
-            continue;
-          }
+        ValueBox phiArgBox = phiExpr.getArgBox(argIndex);
 
-          // simulate whichPred
-          int argIndex = phiExpr.getArgIndex(block);
-          if (argIndex == -1) {
-            throw new RuntimeException("Assertion failed.");
-          }
+        Local phiArg = (Local) phiArgBox.getValue();
 
-          ValueBox phiArgBox = phiExpr.getArgBox(argIndex);
+        int localIndex = indexOfLocal(phiArg);
+        if (localIndex == -1) {
+          throw new RuntimeException("Assertion failed.");
+        }
 
-          Local phiArg = (Local) phiArgBox.getValue();
-
-          int localIndex = indexOfLocal(phiArg);
-          if (localIndex == -1) {
-            throw new RuntimeException("Assertion failed.");
-          }
-
-          if (namingStacks[localIndex].empty()) {
-            continue;
-          }
-
-          Integer subscript = namingStacks[localIndex].peek();
-
+        Stack<Integer> namingStack = namingStacks[localIndex];
+        if (!namingStack.empty()) {
+          Integer subscript = namingStack.peek();
           Local newPhiArg = fetchNewLocal(phiArg, subscript);
           phiArgBox.setValue(newPhiArg);
         }
@@ -348,33 +319,19 @@ public class ShimpleBodyBuilder {
 
     // Step 3 of 4 -- Recurse over children.
     {
-      DominatorNode<Block> node = dt.getDode(block);
-
-      // now we recurse over children
-
-      Iterator<DominatorNode<Block>> childrenIt = dt.getChildrenOf(node).iterator();
-
-      while (childrenIt.hasNext()) {
-        DominatorNode<Block> childNode = childrenIt.next();
-
+      DominatorTree<Block> dt = sf.getDominatorTree();
+      for (DominatorNode<Block> childNode : dt.getChildrenOf(dt.getDode(block))) {
         renameLocalsSearch(childNode.getGode());
       }
     }
 
     // Step 4 of 4 -- Tricky name stack updates.
-    {
-      Iterator<Local> lhsLocalsIt = lhsLocals.iterator();
-
-      while (lhsLocalsIt.hasNext()) {
-        Local lhsLocal = lhsLocalsIt.next();
-
-        int lhsLocalIndex = indexOfLocal(lhsLocal);
-        if (lhsLocalIndex == -1) {
-          throw new RuntimeException("Assertion failed.");
-        }
-
-        namingStacks[lhsLocalIndex].pop();
+    for (Local lhsLocal : lhsLocals) {
+      int lhsLocalIndex = indexOfLocal(lhsLocal);
+      if (lhsLocalIndex == -1) {
+        throw new RuntimeException("Assertion failed.");
       }
+      namingStacks[lhsLocalIndex].pop();
     }
 
     /* And we're done. The renaming process is complete. */
@@ -384,22 +341,14 @@ public class ShimpleBodyBuilder {
    * Clever convenience function to fetch or create new Local's given a Local and the desired subscript.
    **/
   protected Local fetchNewLocal(Local local, Integer subscript) {
-    Local oldLocal = local;
-
-    if (!origLocals.contains(local)) {
-      oldLocal = newLocalsToOldLocal.get(local);
-    }
-
-    if (subscript.intValue() == 0) {
+    Local oldLocal = origLocals.contains(local) ? local : newLocalsToOldLocal.get(local);
+    if (subscript == 0) {
       return oldLocal;
     }
 
-    // If the name already exists, makeUniqueLocalNames() will
-    // take care of it.
+    // If the name already exists, makeUniqueLocalNames() will take care of it.
     String name = oldLocal.getName() + freshSeparator + subscript;
-
     Local newLocal = newLocals.get(name);
-
     if (newLocal == null) {
       newLocal = new JimpleLocal(name, oldLocal.getType());
       newLocals.put(name, newLocal);
@@ -422,7 +371,6 @@ public class ShimpleBodyBuilder {
     if (localIndex == -1) {
       // might be null
       Local oldLocal = newLocalsToOldLocal.get(local);
-
       localIndex = origLocals.indexOf(oldLocal);
     }
 
@@ -439,12 +387,8 @@ public class ShimpleBodyBuilder {
     }
 
     Set<String> localNames = new HashSet<String>();
-    Iterator<Local> localsIt = body.getLocals().iterator();
-
-    while (localsIt.hasNext()) {
-      Local local = localsIt.next();
+    for (Local local : body.getLocals()) {
       String localName = local.getName();
-
       if (localNames.contains(localName)) {
         String uniqueName = makeUniqueLocalName(localName, localNames);
         local.setName(uniqueName);
@@ -470,6 +414,7 @@ public class ShimpleBodyBuilder {
   }
 
   static String freshSeparator = "_";
+
   public static void setSeparator(String sep) {
     freshSeparator = sep;
   }

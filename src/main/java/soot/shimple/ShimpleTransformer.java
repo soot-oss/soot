@@ -22,7 +22,6 @@ package soot.shimple;
  * #L%
  */
 
-import java.util.Iterator;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -30,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import soot.Body;
 import soot.G;
-import soot.MethodSource;
 import soot.Scene;
 import soot.SceneTransformer;
 import soot.Singletons;
@@ -54,33 +52,29 @@ public class ShimpleTransformer extends SceneTransformer {
     return G.v().soot_shimple_ShimpleTransformer();
   }
 
+  @Override
   protected void internalTransform(String phaseName, Map options) {
     if (Options.v().verbose()) {
       logger.debug("Transforming all classes in the Scene to Shimple...");
     }
-
     // *** FIXME: Add debug output to indicate which class/method is being shimplified.
     // *** FIXME: Is ShimpleTransformer the right solution? The call graph may deem
     // some classes unreachable.
 
-    Iterator classesIt = Scene.v().getClasses().iterator();
-    while (classesIt.hasNext()) {
-      SootClass sClass = (SootClass) classesIt.next();
+    for (SootClass sClass : Scene.v().getClasses()) {
       if (sClass.isPhantom()) {
         continue;
       }
 
-      Iterator methodsIt = sClass.getMethods().iterator();
-      while (methodsIt.hasNext()) {
-        SootMethod method = (SootMethod) methodsIt.next();
+      for (SootMethod method : sClass.getMethods()) {
         if (!method.isConcrete()) {
           continue;
         }
 
         if (method.hasActiveBody()) {
           Body body = method.getActiveBody();
-          ShimpleBody sBody = null;
 
+          ShimpleBody sBody;
           if (body instanceof ShimpleBody) {
             sBody = (ShimpleBody) body;
             if (!sBody.isSSA()) {
@@ -92,8 +86,7 @@ public class ShimpleTransformer extends SceneTransformer {
 
           method.setActiveBody(sBody);
         } else {
-          MethodSource ms = new ShimpleMethodSource(method.getSource());
-          method.setSource(ms);
+          method.setSource(new ShimpleMethodSource(method.getSource()));
         }
       }
     }

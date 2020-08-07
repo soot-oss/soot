@@ -48,141 +48,147 @@ import soot.toolkits.graph.UnitGraph;
  **/
 public class DefaultShimpleFactory implements ShimpleFactory {
   protected final Body body;
-  protected BlockGraph bg;
+
   protected UnitGraph ug;
+  protected BlockGraph bg;
+
   protected DominatorsFinder<Block> dFinder;
   protected DominatorTree<Block> dTree;
   protected DominanceFrontier<Block> dFrontier;
-  protected PointsToAnalysis pta;
-  protected CallGraph cg;
-  protected SideEffectAnalysis sea;
   protected GlobalValueNumberer gvn;
 
   protected ReversibleGraph<Block> rbg;
+  protected DominatorsFinder<Block> rdFinder;
   protected DominatorTree<Block> rdTree;
   protected DominanceFrontier<Block> rdFrontier;
-  protected DominatorsFinder<Block> rdFinder;
 
   public DefaultShimpleFactory(Body body) {
     this.body = body;
   }
 
+  @Override
   public void clearCache() {
-    bg = null;
-    ug = null;
-    dFinder = null;
-    dTree = null;
-    dFrontier = null;
-    pta = null;
-    cg = null;
-    sea = null;
-    gvn = null;
-    rbg = null;
-    rdTree = null;
-    rdFinder = null;
-    rdFrontier = null;
+    this.ug = null;
+    this.bg = null;
+    this.dFinder = null;
+    this.dTree = null;
+    this.dFrontier = null;
+    this.gvn = null;
+    this.rbg = null;
+    this.rdFinder = null;
+    this.rdTree = null;
+    this.rdFrontier = null;
   }
 
   public Body getBody() {
+    Body body = this.body;
     if (body == null) {
       throw new RuntimeException("Assertion failed: Call setBody() first.");
     }
-
     return body;
   }
 
+  @Override
   public ReversibleGraph<Block> getReverseBlockGraph() {
-    if (rbg != null) {
-      return rbg;
+    ReversibleGraph<Block> rbg = this.rbg;
+    if (rbg == null) {
+      rbg = new HashReversibleGraph<Block>(getBlockGraph());
+      rbg.reverse();
+      this.rbg = rbg;
     }
-
-    BlockGraph bg = getBlockGraph();
-    rbg = new HashReversibleGraph<Block>(bg);
-    rbg.reverse();
     return rbg;
   }
 
+  @Override
   public DominatorsFinder<Block> getReverseDominatorsFinder() {
-    if (rdFinder != null) {
-      return rdFinder;
+    DominatorsFinder<Block> rdFinder = this.rdFinder;
+    if (rdFinder == null) {
+      rdFinder = new SimpleDominatorsFinder<Block>(getReverseBlockGraph());
+      this.rdFinder = rdFinder;
     }
-
-    rdFinder = new SimpleDominatorsFinder<Block>(getReverseBlockGraph());
     return rdFinder;
   }
 
+  @Override
   public DominatorTree<Block> getReverseDominatorTree() {
-    if (rdTree != null) {
-      return rdTree;
+    DominatorTree<Block> rdTree = this.rdTree;
+    if (rdTree == null) {
+      rdTree = new DominatorTree<Block>(getReverseDominatorsFinder());
+      this.rdTree = rdTree;
     }
-
-    rdTree = new DominatorTree<Block>(getReverseDominatorsFinder());
     return rdTree;
   }
 
+  @Override
   public DominanceFrontier<Block> getReverseDominanceFrontier() {
-    if (rdFrontier != null) {
-      return rdFrontier;
+    DominanceFrontier<Block> rdFrontier = this.rdFrontier;
+    if (rdFrontier == null) {
+      rdFrontier = new CytronDominanceFrontier<Block>(getReverseDominatorTree());
+      this.rdFrontier = rdFrontier;
     }
-
-    rdFrontier = new CytronDominanceFrontier<Block>(getReverseDominatorTree());
     return rdFrontier;
   }
 
+  @Override
   public BlockGraph getBlockGraph() {
-    if (bg != null) {
-      return bg;
+    BlockGraph bg = this.bg;
+    if (bg == null) {
+      bg = new ExceptionalBlockGraph((ExceptionalUnitGraph) getUnitGraph());
+      BlockGraphConverter.addStartStopNodesTo(bg);
+      this.bg = bg;
     }
-
-    bg = new ExceptionalBlockGraph((ExceptionalUnitGraph) getUnitGraph());
-    BlockGraphConverter.addStartStopNodesTo(bg);
     return bg;
   }
 
+  @Override
   public UnitGraph getUnitGraph() {
-    if (ug != null) {
-      return ug;
+    UnitGraph ug = this.ug;
+    if (ug == null) {
+      Body body = getBody();
+      UnreachableCodeEliminator.v().transform(body);
+      ug = new ExceptionalUnitGraph(body);
+      this.ug = ug;
     }
-
-    UnreachableCodeEliminator.v().transform(getBody());
-
-    ug = new ExceptionalUnitGraph(getBody());
     return ug;
   }
 
+  @Override
   public DominatorsFinder<Block> getDominatorsFinder() {
-    if (dFinder != null) {
-      return dFinder;
+    DominatorsFinder<Block> dFinder = this.dFinder;
+    if (dFinder == null) {
+      dFinder = new SimpleDominatorsFinder<Block>(getBlockGraph());
+      this.dFinder = dFinder;
     }
-
-    dFinder = new SimpleDominatorsFinder<Block>(getBlockGraph());
     return dFinder;
   }
 
+  @Override
   public DominatorTree<Block> getDominatorTree() {
-    if (dTree != null) {
-      return dTree;
+    DominatorTree<Block> dTree = this.dTree;
+    if (dTree == null) {
+      dTree = new DominatorTree<Block>(getDominatorsFinder());
+      this.dTree = dTree;
     }
-
-    dTree = new DominatorTree<Block>(getDominatorsFinder());
     return dTree;
   }
 
+  @Override
   public DominanceFrontier<Block> getDominanceFrontier() {
-    if (dFrontier != null) {
-      return dFrontier;
+    DominanceFrontier<Block> dFrontier = this.dFrontier;
+    if (dFrontier == null) {
+      dFrontier = new CytronDominanceFrontier<Block>(getDominatorTree());
+      this.dFrontier = dFrontier;
     }
-
-    dFrontier = new CytronDominanceFrontier<Block>(getDominatorTree());
     return dFrontier;
   }
 
+  @Override
   public GlobalValueNumberer getGlobalValueNumberer() {
-    if (gvn != null) {
-      return gvn;
+    GlobalValueNumberer gvn = this.gvn;
+    if (gvn == null) {
+      gvn = new SimpleGlobalValueNumberer(getBlockGraph());
+      this.gvn = gvn;
     }
-
-    gvn = new SimpleGlobalValueNumberer(getBlockGraph());
     return gvn;
   }
 }

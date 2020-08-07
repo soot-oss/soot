@@ -80,12 +80,12 @@ import soot.util.MultiMap;
  *      the Control Dependence Graph</a>
  **/
 public class PiNodeManager {
-  protected ShimpleBody body;
-  protected ShimpleFactory sf;
-  protected DominatorTree<Block> dt;
-  protected DominanceFrontier<Block> df;
+  protected final ShimpleBody body;
+  protected final ShimpleFactory sf;
+  protected final boolean trimmed;
+
   protected ReversibleGraph<Block> cfg;
-  protected boolean trimmed;
+  protected MultiMap<Local, Block> varToBlocks;
 
   /**
    * Transforms the provided body to pure SSA form.
@@ -97,25 +97,25 @@ public class PiNodeManager {
   }
 
   public void update() {
-    cfg = sf.getReverseBlockGraph();
-    dt = sf.getReverseDominatorTree();
-    df = sf.getReverseDominanceFrontier();
+    ReversibleGraph<Block> oldCfg = this.cfg;
+    this.cfg = sf.getReverseBlockGraph();
+    if (oldCfg != this.cfg) {
+      // If the CFG was rebuilt, clear the map because Blocks are stale
+      this.varToBlocks = null;
+    }
   }
-
-  protected MultiMap<Local, Block> varToBlocks;
 
   public boolean insertTrivialPiNodes() {
     update();
-    boolean change = false;
-    MultiMap<Local, Block> localsToUsePoints = new SHashMultiMap<Local, Block>();
-    varToBlocks = new HashMultiMap<Local, Block>();
+
+    this.varToBlocks = new HashMultiMap<Local, Block>();
+    final MultiMap<Local, Block> localsToUsePoints = new SHashMultiMap<Local, Block>();
 
     // compute localsToUsePoints and varToBlocks
     for (Block block : cfg) {
       for (Unit unit : block) {
-        List<ValueBox> useBoxes = unit.getUseBoxes();
-        for (Iterator<ValueBox> useBoxesIt = useBoxes.iterator(); useBoxesIt.hasNext();) {
-          Value use = useBoxesIt.next().getValue();
+        for (ValueBox next : unit.getUseBoxes()) {
+          Value use = next.getValue();
           if (use instanceof Local) {
             localsToUsePoints.put((Local) use, block);
           }
@@ -127,41 +127,37 @@ public class PiNodeManager {
       }
     }
 
-    /* Routine initialisations. */
-
-    int[] workFlags = new int[cfg.size()];
-    int[] hasAlreadyFlags = new int[cfg.size()];
-
-    int iterCount = 0;
-    Stack<Block> workList = new Stack<Block>();
-
-    /* Main Cytron algorithm. */
-
+    boolean change = false;
     {
+      DominatorTree<Block> dt = sf.getReverseDominatorTree();
+      DominanceFrontier<Block> df = sf.getReverseDominanceFrontier();
+
+      /* Routine initialisations. */
+      int iterCount = 0;
+      int[] workFlags = new int[cfg.size()];
+      int[] hasAlreadyFlags = new int[cfg.size()];
+      Stack<Block> workList = new Stack<Block>();
+
+      /* Main Cytron algorithm. */
       for (Local local : localsToUsePoints.keySet()) {
         iterCount++;
 
         // initialise worklist
-        {
-          for (Block block : localsToUsePoints.get(local)) {
-            workFlags[block.getIndexInMethod()] = iterCount;
-            workList.push(block);
-          }
+        for (Block block : localsToUsePoints.get(local)) {
+          workFlags[block.getIndexInMethod()] = iterCount;
+          workList.push(block);
         }
 
         while (!workList.empty()) {
           Block block = workList.pop();
-          DominatorNode<Block> node = dt.getDode(block);
-
-          for (DominatorNode<Block> frontierNode : df.getDominanceFrontierOf(node)) {
+          for (DominatorNode<Block> frontierNode : df.getDominanceFrontierOf(dt.getDode(block))) {
             Block frontierBlock = frontierNode.getGode();
-            int fBIndex = frontierBlock.getIndexInMethod();
 
+            int fBIndex = frontierBlock.getIndexInMethod();
             if (hasAlreadyFlags[fBIndex] < iterCount) {
+              hasAlreadyFlags[fBIndex] = iterCount;
               insertPiNodes(local, frontierBlock);
               change = true;
-
-              hasAlreadyFlags[fBIndex] = iterCount;
 
               if (workFlags[fBIndex] < iterCount) {
                 workFlags[fBIndex] = iterCount;
@@ -228,7 +224,7 @@ public class PiNodeManager {
     // handle immediate predecessor if it falls through
     // *** FIXME: Does SPatchingChain do the right thing?
     PREDFALLSTHROUGH: {
-      Unit predOfTarget = null;
+      Unit predOfTarget;
       try {
         predOfTarget = units.getPredOf(target);
       } catch (NoSuchElementException e) {
@@ -273,7 +269,7 @@ public class PiNodeManager {
         targetBoxes.add(tss.getTargetBox(i));
       }
       for (int i = low; i <= hi; i++) {
-        targetKeys.add(new Integer(i));
+        targetKeys.add(i);
       }
     } else {
       throw new RuntimeException("Assertion failed.");
@@ -296,7 +292,7 @@ public class PiNodeManager {
       // handle immediate predecessor if it falls through
       // *** FIXME: Does SPatchingChain do the right thing?
       PREDFALLSTHROUGH: {
-        Unit predOfTarget = null;
+        Unit predOfTarget;
         try {
           predOfTarget = (Unit) units.getPredOf(target);
         } catch (NoSuchElementException e) {
@@ -321,7 +317,7 @@ public class PiNodeManager {
 
   public void eliminatePiNodes(boolean smart) {
     if (smart) {
-      Map<Local, Value> newToOld = new HashMap<Local, Value>();
+      Map<Value, Value> newToOld = new HashMap<Value, Value>();
       List<ValueBox> boxes = new ArrayList<ValueBox>();
 
       for (Iterator<Unit> unitsIt = body.getUnits().iterator(); unitsIt.hasNext();) {
@@ -335,8 +331,7 @@ public class PiNodeManager {
         }
       }
 
-      for (Iterator<ValueBox> boxesIt = boxes.iterator(); boxesIt.hasNext();) {
-        ValueBox box = boxesIt.next();
+      for (ValueBox box : boxes) {
         Value value = box.getValue();
         Value old = newToOld.get(value);
         if (old != null) {
@@ -358,14 +353,10 @@ public class PiNodeManager {
   }
 
   public static List<ValueBox> getUseBoxesFromBlock(Block block) {
-    Iterator<Unit> unitsIt = block.iterator();
-
     List<ValueBox> useBoxesList = new ArrayList<ValueBox>();
-
-    while (unitsIt.hasNext()) {
-      useBoxesList.addAll(unitsIt.next().getUseBoxes());
+    for (Unit next : block) {
+      useBoxesList.addAll(next.getUseBoxes());
     }
-
     return useBoxesList;
   }
 }

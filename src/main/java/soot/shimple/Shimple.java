@@ -22,6 +22,7 @@ package soot.shimple;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -66,6 +67,7 @@ import soot.util.Chain;
  **/
 public class Shimple {
   private static final Logger logger = LoggerFactory.getLogger(Shimple.class);
+
   public static final String IFALIAS = "IfAlias";
   public static final String MAYMODIFY = "MayModify";
   public static final String PHI = "Phi";
@@ -149,23 +151,19 @@ public class Shimple {
    * Returns true if the unit is a Phi node, false otherwise.
    **/
   public static boolean isPhiNode(Unit unit) {
-    return getPhiExpr(unit) == null ? false : true;
+    return getPhiExpr(unit) != null;
   }
 
   /**
    * Returns the corresponding PhiExpr if the unit is a Phi node, null otherwise.
    **/
   public static PhiExpr getPhiExpr(Unit unit) {
-    if (!(unit instanceof AssignStmt)) {
-      return null;
+    if (unit instanceof AssignStmt) {
+      Value right = ((AssignStmt) unit).getRightOp();
+      if (isPhiExpr(right)) {
+        return (PhiExpr) right;
+      }
     }
-
-    Value right = ((AssignStmt) unit).getRightOp();
-
-    if (isPhiExpr(right)) {
-      return (PhiExpr) right;
-    }
-
     return null;
   }
 
@@ -174,20 +172,16 @@ public class Shimple {
   }
 
   public static boolean isPiNode(Unit unit) {
-    return getPiExpr(unit) == null ? false : true;
+    return getPiExpr(unit) != null;
   }
 
   public static PiExpr getPiExpr(Unit unit) {
-    if (!(unit instanceof AssignStmt)) {
-      return null;
+    if (unit instanceof AssignStmt) {
+      Value right = ((AssignStmt) unit).getRightOp();
+      if (isPiExpr(right)) {
+        return (PiExpr) right;
+      }
     }
-
-    Value right = ((AssignStmt) unit).getRightOp();
-
-    if (isPiExpr(right)) {
-      return (PiExpr) right;
-    }
-
     return null;
   }
 
@@ -195,17 +189,12 @@ public class Shimple {
    * Returns the corresponding left Local if the unit is a Shimple node, null otherwise.
    **/
   public static Local getLhsLocal(Unit unit) {
-    if (!(unit instanceof AssignStmt)) {
-      return null;
+    if (unit instanceof AssignStmt) {
+      AssignStmt assign = (AssignStmt) unit;
+      if (assign.getRightOp() instanceof ShimpleExpr) {
+        return (Local) assign.getLeftOp();
+      }
     }
-
-    Value right = ((AssignStmt) unit).getRightOp();
-
-    if (right instanceof ShimpleExpr) {
-      Value left = ((AssignStmt) unit).getLeftOp();
-      return (Local) left;
-    }
-
     return null;
   }
 
@@ -224,14 +213,11 @@ public class Shimple {
       debug |= ((ShimpleBody) body).getOptions().debug();
     }
 
-    Chain<Unit> units = body.getUnits();
-
     /* Determine whether we should continue processing or not. */
     List<UnitBox> boxesPointingToThis = remove.getBoxesPointingToThis();
     if (boxesPointingToThis.isEmpty()) {
       return;
     }
-
     for (UnitBox pointer : boxesPointingToThis) {
       // a PhiExpr may be involved, hence continue processing.
       // note that we will use the value of "pointer" and
@@ -243,12 +229,13 @@ public class Shimple {
 
     /* Ok, continuing... */
 
+    Chain<Unit> units = body.getUnits();
     Set<Unit> preds = new HashSet<Unit>();
     Set<PhiExpr> phis = new HashSet<PhiExpr>();
 
     // find fall-through pred
     if (!remove.equals(units.getFirst())) {
-      Unit possiblePred = (Unit) units.getPredOf(remove);
+      Unit possiblePred = units.getPredOf(remove);
       if (possiblePred.fallsThrough()) {
         preds.add(possiblePred);
       }
@@ -272,27 +259,27 @@ public class Shimple {
 
     /* sanity check */
 
-    if (phis.size() == 0) {
+    if (phis.isEmpty()) {
       if (debug) {
         logger.warn("Orphaned UnitBoxes to " + remove + "? Shimple.redirectToPreds is giving up.");
       }
       return;
     }
 
-    if (preds.size() == 0) {
+    if (preds.isEmpty()) {
       if (debug) {
         logger
             .warn("Shimple.redirectToPreds couldn't find any predecessors for " + remove + " in " + body.getMethod() + ".");
       }
 
       if (!remove.equals(units.getFirst())) {
-        Unit pred = (Unit) units.getPredOf(remove);
+        Unit pred = units.getPredOf(remove);
         if (debug) {
           logger.warn("Falling back to immediate chain predecessor: " + pred + ".");
         }
         preds.add(pred);
       } else if (!remove.equals(units.getLast())) {
-        Unit succ = (Unit) units.getSuccOf(remove);
+        Unit succ = units.getSuccOf(remove);
         if (debug) {
           logger.warn("Falling back to immediate chain successor: " + succ + ".");
         }
@@ -303,13 +290,9 @@ public class Shimple {
     }
 
     /* At this point we have found all the preds and relevant Phi's */
-
     /* Each Phi needs an argument for each pred. */
-    Iterator<PhiExpr> phiIt = phis.iterator();
-    while (phiIt.hasNext()) {
-      PhiExpr phiExpr = phiIt.next();
+    for (PhiExpr phiExpr : phis) {
       ValueUnitPair argBox = phiExpr.getArgBox(remove);
-
       if (argBox == null) {
         throw new RuntimeException("Assertion failed.");
       }
@@ -319,9 +302,7 @@ public class Shimple {
       phiExpr.removeArg(argBox);
 
       // add new arguments to Phi
-      Iterator<Unit> predsIt = preds.iterator();
-      while (predsIt.hasNext()) {
-        Unit pred = predsIt.next();
+      for (Unit pred : preds) {
         phiExpr.addArg(arg, pred);
       }
     }
@@ -335,15 +316,11 @@ public class Shimple {
    * implementation of PatchingChain.
    **/
   public static void redirectPointers(Unit oldLocation, Unit newLocation) {
-    List<UnitBox> boxesPointing = oldLocation.getBoxesPointingToThis();
-
-    // important to change this to an array to have a static copy
-    UnitBox[] boxes = boxesPointing.toArray(new UnitBox[boxesPointing.size()]);
-    for (UnitBox box : boxes) {
+    // important to make a copy to avoid concurrent modification
+    for (UnitBox box : new ArrayList<>(oldLocation.getBoxesPointingToThis())) {
       if (box.getUnit() != oldLocation) {
         throw new RuntimeException("Something weird's happening");
       }
-
       if (!box.isBranchTarget()) {
         box.setUnit(newLocation);
       }
