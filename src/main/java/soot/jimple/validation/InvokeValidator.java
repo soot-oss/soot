@@ -27,7 +27,6 @@ import java.util.List;
 import soot.Body;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.SootMethodRef;
 import soot.Unit;
 import soot.jimple.InterfaceInvokeExpr;
 import soot.jimple.InvokeExpr;
@@ -47,58 +46,43 @@ public enum InvokeValidator implements BodyValidator {
 
   @Override
   public void validate(Body body, List<ValidationException> exceptions) {
-    SootClass bodyDeclaredClass = body.getMethod().getDeclaringClass();
     for (Unit unit : body.getUnits()) {
       if (unit instanceof Stmt) {
         Stmt statement = (Stmt) unit;
         if (statement.containsInvokeExpr()) {
-          InvokeExpr invokeExpr = statement.getInvokeExpr();
-          SootMethodRef referencedMethod = invokeExpr.getMethodRef();
-          boolean shouldBeVirtual = true;
-
-          if (referencedMethod.isStatic()) {
-            shouldBeVirtual = false;
-            if (!(invokeExpr instanceof StaticInvokeExpr)) {
-              exceptions.add(new ValidationException(unit, "staticinvoke should be used."));
-            }
-          }
-
+          InvokeExpr ie = statement.getInvokeExpr();
           try {
-            SootMethod method = referencedMethod.resolve();
-            SootClass clazzDeclaring = method.getDeclaringClass();
-            boolean superClassMethod = false;
-            SootClass clazzSearch = bodyDeclaredClass;
-            while (clazzSearch.hasSuperclass()) {
-              clazzSearch = clazzSearch.getSuperclass();
-              // specialinvoke is also used at methods of superclasses.
-              if (clazzSearch.getName().equals(clazzDeclaring.getName())) {
-                superClassMethod = true;
-                break;
+            SootMethod method = ie.getMethodRef().resolve();
+            if (method.isStaticInitializer()) {
+              exceptions.add(new ValidationException(unit, "Calling <clinit> methods is not allowed."));
+            } else if (method.isStatic()) {
+              if (!(ie instanceof StaticInvokeExpr)) {
+                exceptions.add(new ValidationException(unit, "Should use staticinvoke for static methods."));
               }
-            }
-
-            if (clazzDeclaring.isInterface()) {
-              shouldBeVirtual = false;
-              if (!(invokeExpr instanceof InterfaceInvokeExpr)) {
-                exceptions
-                    .add(new ValidationException(unit, "Invokes a interface method. Should be interfaceinvoke instead."));
-              }
-            }
-            if (method.isEntryMethod()) {
-              shouldBeVirtual = false;
-              exceptions.add(new ValidationException(unit, "Call to <clinit> methods not allowed."));
-            }
-
-            if (method.isPrivate() || method.isConstructor() || superClassMethod) {
-              shouldBeVirtual = false;
-              if (!(invokeExpr instanceof SpecialInvokeExpr)) {
-                exceptions.add(new ValidationException(unit,
-                    "specialinvoke should be used on private or constructor methods. Should be specialinvoke instead."));
-              }
-            }
-            if (shouldBeVirtual) {
-              if (!(invokeExpr instanceof VirtualInvokeExpr)) {
-                exceptions.add(new ValidationException(unit, "virtualinvoke should be used."));
+            } else {
+              SootClass clazzDeclaring = method.getDeclaringClass();
+              if (clazzDeclaring.isInterface()) {
+                if (!(ie instanceof InterfaceInvokeExpr)) {
+                  exceptions.add(new ValidationException(unit, "Should use interfaceinvoke for interface methods."));
+                }
+              } else if (method.isPrivate() || method.isConstructor()) {
+                if (!(ie instanceof SpecialInvokeExpr)) {
+                  String type = method.isPrivate() ? "private methods" : "constructors";
+                  exceptions.add(new ValidationException(unit, "Should use specialinvoke for " + type + "."));
+                }
+              } else {
+                // NOTE: beyond constructors, there's not a rule to separate
+                // super.X from this.X because there exist scenarios where it
+                // is valid to use the exact same references with either a
+                // specialinvoke or a virtualinvoke. Consider classes A and B
+                // where B extends A. Both classes define a method "void m()".
+                // It is legal for a method in B to have either of the these:
+                // - virtualinvoke this.<A: void m()>() //i.e. ((A)this).m()
+                // - specialinvoke this.<A: void m()>() //i.e. super.m()
+                // Both are valid bytecode (although their behavior differs).
+                if (!(ie instanceof VirtualInvokeExpr || ie instanceof SpecialInvokeExpr)) {
+                  exceptions.add(new ValidationException(unit, "Should use virtualinvoke or specialinvoke."));
+                }
               }
             }
           } catch (Exception e) {
@@ -113,5 +97,4 @@ public enum InvokeValidator implements BodyValidator {
   public boolean isBasicValidator() {
     return false;
   }
-
 }
