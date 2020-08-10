@@ -43,7 +43,7 @@ import soot.tagkit.AnnotationStringElem;
  * @author Florian Kuebler
  *
  */
-public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
+public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch<AnnotationElemSwitch.AnnotationElemResult<?>> {
 
   /**
    *
@@ -54,10 +54,10 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
    * @param <V>
    *          the result type.
    */
-  public class AnnotationElemResult<V> {
+  public static class AnnotationElemResult<V> {
 
-    private String name;
-    private V value;
+    private final String name;
+    private final V value;
 
     public AnnotationElemResult(String name, V value) {
       this.name = name;
@@ -84,7 +84,6 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
 
   @Override
   public void caseAnnotationArrayElem(AnnotationArrayElem v) {
-
     /*
      * for arrays, apply a new AnnotationElemSwitch to every array element and collect the results. Note that the component
      * type of the result is unknown here, s.t. object has to be used.
@@ -95,19 +94,16 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
     for (AnnotationElem elem : v.getValues()) {
       AnnotationElemSwitch sw = new AnnotationElemSwitch();
       elem.apply(sw);
-      result[i] = ((AnnotationElemResult<?>) sw.getResult()).getValue();
-
+      result[i] = sw.getResult().getValue();
       i++;
     }
 
     setResult(new AnnotationElemResult<Object[]>(v.getName(), result));
-
   }
 
   @Override
   public void caseAnnotationBooleanElem(AnnotationBooleanElem v) {
     setResult(new AnnotationElemResult<Boolean>(v.getName(), v.getValue()));
-
   }
 
   @Override
@@ -118,7 +114,6 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
     } catch (ClassNotFoundException e) {
       throw new RuntimeException("Could not load class: " + v.getDesc());
     }
-
   }
 
   @Override
@@ -154,7 +149,6 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
     } catch (ClassNotFoundException e) {
       throw new RuntimeException("Could not load class: " + v.getTypeName());
     }
-
   }
 
   @Override
@@ -181,5 +175,4 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
   public void defaultCase(Object object) {
     throw new RuntimeException("Unexpected AnnotationElem");
   }
-
 }
