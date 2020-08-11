@@ -1,10 +1,10 @@
-package soot.grimp;
+package soot.defaultInterfaceMethods;
 
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * Copyright (C) 1997 - 2019 Raja Vallée-Rai and others
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,11 +22,24 @@ package soot.grimp;
  * #L%
  */
 
-import soot.jimple.AbstractJimpleValueSwitch;
-
-public abstract class AbstractGrimpValueSwitch<T> extends AbstractJimpleValueSwitch<T> implements GrimpValueSwitch {
-  @Override
-  public void caseNewInvokeExpr(NewInvokeExpr e) {
-    defaultCase(e);
-  }
+public class SimpleDefaultInterface implements Default {
+	public void main()
+	{
+		SimpleDefaultInterface testClass = new SimpleDefaultInterface();
+		testClass.target();
+		testClass.printMessage();
+	}
+	public void printMessage()
+	{
+		System.out.println("Hello World!");
+	}
 }
+
+
+interface Default{
+	default void target() {
+		System.out.println("Hello!");
+	}
+	void printMessage();
+}
+

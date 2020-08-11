@@ -586,7 +586,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    * @return yes, if this is a class initializer or main function.
    */
   public boolean isEntryMethod() {
-    if (isStatic() && subsignature.equals(VirtualCalls.v().sigClinit)) {
+    if (isStatic() && subsignature.equals(SootMethod.staticInitializerName)) {
       return true;
     }
 

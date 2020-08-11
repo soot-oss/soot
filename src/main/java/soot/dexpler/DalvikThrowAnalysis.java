@@ -50,6 +50,7 @@ import soot.PrimType;
 import soot.RefLikeType;
 import soot.Scene;
 import soot.Singletons;
+import soot.SootMethod;
 import soot.Type;
 import soot.UnknownType;
 import soot.baf.EnterMonitorInst;
@@ -191,8 +192,8 @@ public class DalvikThrowAnalysis extends UnitThrowAnalysis {
   }
 
   @Override
-  protected UnitSwitch unitSwitch() {
-    return new UnitThrowAnalysis.UnitSwitch() {
+  protected UnitSwitch unitSwitch(SootMethod sm) {
+    return new UnitThrowAnalysis.UnitSwitch(sm) {
 
       // Dalvik does not throw an exception for this instruction
       @Override

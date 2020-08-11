@@ -1,10 +1,10 @@
-package soot.grimp;
+package soot.defaultInterfaceMethods;
 
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * Copyright (C) 1997 - 2019 Raja Vallée-Rai and others
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,11 +22,35 @@ package soot.grimp;
  * #L%
  */
 
-import soot.jimple.AbstractJimpleValueSwitch;
+public class InterfaceSameSignature implements Read, Write {
+	
+	public void print() {
+		Write.super.print();
+		Read.super.print();
+	}
+	public void main() {	
+		InterfaceSameSignature testClass = new InterfaceSameSignature();
+		testClass.read();
+		testClass.write();
+		testClass.print();
+	}	
+}
 
-public abstract class AbstractGrimpValueSwitch<T> extends AbstractJimpleValueSwitch<T> implements GrimpValueSwitch {
-  @Override
-  public void caseNewInvokeExpr(NewInvokeExpr e) {
-    defaultCase(e);
-  }
+interface Read{
+	default void read() {
+		System.out.println("Reading the console input..");
+	}
+	default void print() {
+		System.out.println("This is a read method");
+	}
+}
+
+interface Write{
+	default void write() {
+		System.out.println("Writing to console output..");
+	}
+	default void print()
+	{
+		System.out.println("This is a write method");
+	}
 }
