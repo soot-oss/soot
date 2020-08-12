@@ -208,7 +208,7 @@ public class PhiNodeManager {
       handlerUnits.add(trap.getHandlerUnit());
     }
 
-    for (Block block : sf.getBlockGraph()) {
+    for (Block block : cfg) {
       // trim relevant Phi expressions
       if (handlerUnits.contains(block.getHead())) {
         for (Unit unit : block) {
@@ -283,9 +283,10 @@ public class PhiNodeManager {
         if (retry) {
           if (champs.isEmpty()) {
             break;
+          } else {
+            champ = champs.remove(0);
+            champU = champ.getUnit();
           }
-          champ = champs.remove(0);
-          champU = champ.getUnit();
         }
       }
     }
@@ -321,7 +322,7 @@ public class PhiNodeManager {
 
     Map<Unit, Block> unitToBlock = this.unitToBlock;
     if (unitToBlock == null) {
-      unitToBlock = getUnitToBlockMap(sf.getBlockGraph());
+      unitToBlock = getUnitToBlockMap(cfg);
       this.unitToBlock = unitToBlock;
     }
 
@@ -371,23 +372,20 @@ public class PhiNodeManager {
     // pointers when SPatchingChain moves them.
     List<ValueUnitPair> predBoxes = new ArrayList<ValueUnitPair>();
 
+    final Jimple jimp = Jimple.v();
     final Chain<Unit> units = body.getUnits();
     for (Unit unit : units) {
       PhiExpr phi = Shimple.getPhiExpr(unit);
-      if (phi == null) {
-        continue;
+      if (phi != null) {
+        Local lhsLocal = Shimple.getLhsLocal(unit);
+        for (int i = 0; i < phi.getArgCount(); i++) {
+          Value phiValue = phi.getValue(i);
+          equivStmts.add(jimp.newAssignStmt(lhsLocal, phiValue));
+          predBoxes.add(phi.getArgBox(i));
+        }
+
+        phiNodes.add(unit);
       }
-
-      Local lhsLocal = Shimple.getLhsLocal(unit);
-      for (int i = 0; i < phi.getArgCount(); i++) {
-        Value phiValue = phi.getValue(i);
-        AssignStmt convertedPhi = Jimple.v().newAssignStmt(lhsLocal, phiValue);
-
-        equivStmts.add(convertedPhi);
-        predBoxes.add(phi.getArgBox(i));
-      }
-
-      phiNodes.add(unit);
     }
 
     if (equivStmts.size() != predBoxes.size()) {
@@ -409,7 +407,7 @@ public class PhiNodeManager {
       if (pred.branches()) {
         boolean needPriming = false;
         Local lhsLocal = (Local) stmt.getLeftOp();
-        Local savedLocal = Jimple.v().newLocal(lhsLocal.getName() + "_", lhsLocal.getType());
+        Local savedLocal = jimp.newLocal(lhsLocal.getName() + "_", lhsLocal.getType());
 
         for (ValueBox useBox : pred.getUseBoxes()) {
           if (lhsLocal.equals(useBox.getValue())) {
@@ -421,7 +419,7 @@ public class PhiNodeManager {
 
         if (needPriming) {
           body.getLocals().add(savedLocal);
-          AssignStmt copyStmt = Jimple.v().newAssignStmt(savedLocal, lhsLocal);
+          AssignStmt copyStmt = jimp.newAssignStmt(savedLocal, lhsLocal);
           units.insertBefore(copyStmt, pred);
         }
 

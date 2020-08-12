@@ -157,7 +157,7 @@ public class ShimpleBodyBuilder {
   }
 
   /**
-   * Remove Phi nodes from current body, high probablity this destroys SSA form.
+   * Remove Phi nodes from current body, high probability this destroys SSA form.
    *
    * <p>
    * Dead code elimination + register aggregation are performed as recommended by Cytron. The Aggregator looks like it could
@@ -208,13 +208,15 @@ public class ShimpleBodyBuilder {
     }
 
     List<Block> heads = sf.getBlockGraph().getHeads();
-    if (heads.isEmpty()) {
-      return;
+    switch (heads.size()) {
+      case 0:
+        return;
+      case 1:
+        renameLocalsSearch(heads.get(0));
+        return;
+      default:
+        throw new RuntimeException("Assertion failed:  Only one head expected.");
     }
-    if (heads.size() != 1) {
-      throw new RuntimeException("Assertion failed:  Only one head expected.");
-    }
-    renameLocalsSearch(heads.get(0));
   }
 
   /**
