@@ -54,6 +54,7 @@ import soot.util.HashChain;
  **/
 public class ShimpleBody extends StmtBody {
   private static final Logger logger = LoggerFactory.getLogger(ShimpleBody.class);
+
   /**
    * Holds our options map...
    **/
@@ -89,7 +90,7 @@ public class ShimpleBody extends StmtBody {
     super(body.getMethod());
 
     if (!(body instanceof JimpleBody || body instanceof ShimpleBody)) {
-      throw new RuntimeException("Cannot construct ShimpleBody from given Body type.");
+      throw new RuntimeException("Cannot construct ShimpleBody from given Body type: " + body.getClass());
     }
 
     if (Options.v().verbose()) {
