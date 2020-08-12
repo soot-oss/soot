@@ -24,7 +24,6 @@ package soot.shimple;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -214,17 +213,8 @@ public class Shimple {
     }
 
     /* Determine whether we should continue processing or not. */
-    List<UnitBox> boxesPointingToThis = remove.getBoxesPointingToThis();
-    if (boxesPointingToThis.isEmpty()) {
+    if (remove.getBoxesPointingToThis().isEmpty()) {
       return;
-    }
-    for (UnitBox pointer : boxesPointingToThis) {
-      // a PhiExpr may be involved, hence continue processing.
-      // note that we will use the value of "pointer" and
-      // continue iteration from where we left off.
-      if (!pointer.isBranchTarget()) {
-        break;
-      }
     }
 
     /* Ok, continuing... */
@@ -261,7 +251,14 @@ public class Shimple {
 
     if (phis.isEmpty()) {
       if (debug) {
-        logger.warn("Orphaned UnitBoxes to " + remove + "? Shimple.redirectToPreds is giving up.");
+        //Only print the warning if there exists a UnitBox referencing 'remove' that is not
+        //  a branch target (i.e. otherwise, we shouldn't expect to find a PHI node anyway).
+        for (UnitBox u : remove.getBoxesPointingToThis()) {
+          if (!u.isBranchTarget()) {
+            logger.warn("Orphaned UnitBoxes to " + remove + "? Shimple.redirectToPreds is giving up.");
+            break;
+          }
+        }
       }
       return;
     }
@@ -303,7 +300,10 @@ public class Shimple {
 
       // add new arguments to Phi
       for (Unit pred : preds) {
-        phiExpr.addArg(arg, pred);
+        boolean added = phiExpr.addArg(arg, pred);
+        if (!added) {
+          logger.warn("Failed to add " + arg + " to " + phiExpr + ".");
+        }
       }
     }
   }
