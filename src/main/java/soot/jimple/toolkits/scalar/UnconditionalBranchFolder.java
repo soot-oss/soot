@@ -34,10 +34,15 @@ import soot.BodyTransformer;
 import soot.G;
 import soot.Singletons;
 import soot.Unit;
+import soot.UnitBox;
+import soot.Value;
+import soot.jimple.ConditionExpr;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
+import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 import soot.jimple.StmtBody;
+import soot.jimple.SwitchStmt;
 import soot.options.Options;
 import soot.util.Chain;
 
@@ -51,87 +56,240 @@ public class UnconditionalBranchFolder extends BodyTransformer {
     return G.v().soot_jimple_toolkits_scalar_UnconditionalBranchFolder();
   }
 
-  static final int JUMPOPT_TYPES = 6;
-
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     StmtBody body = (StmtBody) b;
 
     if (Options.v().verbose()) {
       logger.debug("[" + body.getMethod().getName() + "] Folding unconditional branches...");
     }
-
-    int[] numFound = new int[JUMPOPT_TYPES + 1];
-    int[] numFixed = new int[JUMPOPT_TYPES + 1];
-
-    Chain<Unit> units = body.getUnits();
-    Map<Stmt, Stmt> stmtMap = new HashMap<Stmt, Stmt>();
-
-    // find goto and if-goto statements
-    Iterator<Unit> stmtIt = units.iterator();
-    Stmt stmt, target, newTarget;
-    while (stmtIt.hasNext()) {
-      stmt = (Stmt) stmtIt.next();
-      if (stmt instanceof GotoStmt) {
-
-        target = (Stmt) ((GotoStmt) stmt).getTarget();
-
-        if (stmtIt.hasNext()) {
-          // check for goto -> next statement
-          if (units.getSuccOf(stmt) == target) {
-            stmtIt.remove();
-            updateCounters(6, true, numFound, numFixed);
-          }
-        }
-
-        if (target instanceof GotoStmt) {
-          newTarget = getFinalTarget(stmtMap, target);
-          if (newTarget == null) {
-            newTarget = stmt;
-          }
-          ((GotoStmt) stmt).setTarget(newTarget);
-          updateCounters(1, true, numFound, numFixed);
-        } else if (target instanceof IfStmt) {
-          updateCounters(3, false, numFound, numFixed);
-        }
-      } else if (stmt instanceof IfStmt) {
-        target = ((IfStmt) stmt).getTarget();
-
-        if (target instanceof GotoStmt) {
-          newTarget = getFinalTarget(stmtMap, target);
-          if (newTarget == null) {
-            newTarget = stmt;
-          }
-          ((IfStmt) stmt).setTarget(newTarget);
-          updateCounters(2, true, numFound, numFixed);
-        } else if (target instanceof IfStmt) {
-          updateCounters(4, false, numFound, numFixed);
-        }
+    int iter = 0;
+    Result res;
+    do {
+      res = transform(body);
+      if (Options.v().verbose()) {
+        iter++;
+        logger.debug("[" + body.getMethod().getName() + "]     " + res.getNumFixed(BranchType.TOTAL_COUNT) + " of "
+            + res.getNumFound(BranchType.TOTAL_COUNT) + " branches folded in iteration " + iter + ".");
       }
-    }
-    if (Options.v().verbose()) {
-      logger.debug("[" + body.getMethod().getName() + "]     " + numFixed[0] + " of " + numFound[0] + " branches folded.");
-    }
+    } while (res.modified);
+  }
 
-  } // optimizeJumps
+  private static enum BranchType {
+    TOTAL_COUNT,
+    GOTO_GOTO,
+    IF_TO_GOTO,
+    GOTO_IF,
+    IF_TO_IF,
+    IF_SAME_TARGET,
+    GOTO_SUCCESSOR;
+  } // BranchType
 
-  private void updateCounters(int type, boolean fixed, int[] numFound,
-      int[] numFixed) {
+  private static class HandleRes {
 
-    if ((type < 0) || (type > JUMPOPT_TYPES)) {
-      return;
-    }
+    final BranchType type;
+    final boolean fixed;
 
-    numFound[0]++;
-    numFound[type]++;
-    if (fixed) {
-      numFixed[0]++;
-      numFixed[type]++;
+    public HandleRes(BranchType type, boolean fixed) {
+      this.type = type;
+      this.fixed = fixed;
     }
   }
 
-  private Stmt getFinalTarget(Map<Stmt, Stmt> stmtMap, Stmt stmt) {
-    Stmt finalTarget = null, target;
+  private static class Result {
 
+    private final int[] numFound = new int[BranchType.values().length];
+    private final int[] numFixed = new int[BranchType.values().length];
+    private boolean modified;
+
+    public void updateCounters(HandleRes r) {
+      updateCounters(r.type, r.fixed);
+    }
+
+    public void updateCounters(BranchType type, boolean fixed) {
+      final int indexTotal = BranchType.TOTAL_COUNT.ordinal();
+      final int indexUpdate = type.ordinal();
+      final boolean updatingTotal = indexUpdate == indexTotal;
+
+      if (updatingTotal && fixed) {
+        throw new IllegalArgumentException("Cannot mark TOTAL as fixed!");
+      }
+
+      numFound[indexTotal]++;
+      if (!updatingTotal) {
+        numFound[indexUpdate]++;
+      }
+      if (fixed) {
+        modified = true;
+        numFixed[indexTotal]++;
+        numFixed[indexUpdate]++;
+      }
+    }
+
+    public int getNumFound(BranchType type) {
+      final int indexCurrType = type.ordinal();
+      return numFound[indexCurrType];
+    }
+
+    public int getNumFixed(BranchType type) {
+      final int indexCurrType = type.ordinal();
+      return numFixed[indexCurrType];
+    }
+  } // Result
+
+  private static Result transform(StmtBody body) {
+    Result res = new Result();
+    Map<Stmt, Stmt> stmtMap = new HashMap<Stmt, Stmt>();
+    Chain<Unit> units = body.getUnits();
+
+    NextUnit: for (Iterator<Unit> stmtIt = units.iterator(); stmtIt.hasNext();) {
+      Unit stmt = stmtIt.next();
+      if (stmt instanceof GotoStmt) {
+        final GotoStmt stmtAsGotoStmt = (GotoStmt) stmt;
+        final Stmt gotoTarget = (Stmt) stmtAsGotoStmt.getTarget();
+
+        // Handle special successor case
+        if (stmtIt.hasNext()) {
+          Unit successor = units.getSuccOf(stmt);
+          // "goto [successor]" -> remove the statement
+          if (successor == gotoTarget) {
+            stmtIt.remove();
+            res.updateCounters(BranchType.GOTO_SUCCESSOR, true);
+            continue NextUnit;
+          }
+        }
+
+        // Main handling for GotoStmt
+        res.updateCounters(handle(stmtAsGotoStmt, gotoTarget, stmtMap));
+      } else if (stmt instanceof IfStmt) {
+        final IfStmt stmtAsIfStmt = (IfStmt) stmt;
+        Stmt ifTarget = stmtAsIfStmt.getTarget();
+
+        // Handle special successor cases
+        if (stmtIt.hasNext()) {
+          final Unit successor = units.getSuccOf(stmt);
+          if (successor == ifTarget) {
+            // "if C goto [successor]" -> remove the IfStmt
+            stmtIt.remove();
+            res.updateCounters(BranchType.IF_SAME_TARGET, true);
+            continue NextUnit;
+          } else if (successor instanceof GotoStmt) {
+            final GotoStmt succAsGoto = (GotoStmt) successor;
+            final Stmt gotoTarget = (Stmt) succAsGoto.getTarget();
+            if (gotoTarget == ifTarget) {
+              // "if C goto X";"goto X" -> remove the IfStmt
+              stmtIt.remove();
+              res.updateCounters(BranchType.IF_SAME_TARGET, true);
+              continue NextUnit;
+            } else {
+              final Unit afterSuccessor = units.getSuccOf(successor);
+              if (afterSuccessor == ifTarget) {
+                // "if C goto Y";"goto X";"Y" -> "if !C goto X";"goto Y";"Y"
+                Value oldCondition = stmtAsIfStmt.getCondition();
+                assert (oldCondition instanceof ConditionExpr);// JIfStmt forces this
+                stmtAsIfStmt.setCondition(reverseCondition((ConditionExpr) oldCondition));
+                succAsGoto.setTarget(ifTarget);
+                stmtAsIfStmt.setTarget(gotoTarget);
+                ifTarget = gotoTarget;
+                // NOTE: No need to remove the goto [successor] because it
+                // is processed by the next iteration of the main loop.
+                // NOTE: Nothing is removed here, it is a simple refactoring.
+                // Thus, it can fall through to the main handler below where
+                // the condition (and possible removal) will be counted.
+              }
+            }
+          }
+        }
+
+        // Main handling for IfStmt
+        res.updateCounters(handle(stmtAsIfStmt, ifTarget, stmtMap));
+      } else if (stmt instanceof SwitchStmt) {
+        final SwitchStmt stmtAsSwitchStmt = (SwitchStmt) stmt;
+        for (UnitBox ub : stmtAsSwitchStmt.getUnitBoxes()) { // includes all cases and default
+          Stmt caseTarget = (Stmt) ub.getUnit();
+          if (caseTarget instanceof GotoStmt) {
+            // "goto [goto X]" -> "goto X"
+            Stmt newTarget = getFinalTarget(caseTarget, stmtMap);
+            if (newTarget == null) {
+              res.updateCounters(BranchType.GOTO_GOTO, false);
+            } else {
+              ub.setUnit(newTarget);
+              res.updateCounters(BranchType.GOTO_GOTO, true);
+            }
+          }
+        }
+      }
+    }
+    return res;
+  } // transform
+
+  // NOTE: factored out to ensure all cases return a result and thus are counted
+  private static HandleRes handle(GotoStmt gotoStmt, Stmt target, Map<Stmt, Stmt> stmtMap) {
+    assert (gotoStmt.getTarget() == target);// pre-conditions
+    if (target instanceof GotoStmt) {
+      // "goto [goto X]" -> "goto X"
+      Stmt newTarget = getFinalTarget(target, stmtMap);
+      if (newTarget == null) {
+        newTarget = gotoStmt;
+      }
+      if (newTarget == target) {
+        return new HandleRes(BranchType.GOTO_GOTO, false);
+      } else {
+        gotoStmt.setTarget(newTarget);
+        return new HandleRes(BranchType.GOTO_GOTO, true);
+      }
+    } else if (target instanceof IfStmt) {
+      // "goto [if ...]" -> no change
+      return new HandleRes(BranchType.GOTO_IF, false);
+    } else {
+      return new HandleRes(BranchType.TOTAL_COUNT, false);
+    }
+  }
+
+  // NOTE: factored out to ensure all cases return a result and thus are counted
+  private static HandleRes handle(IfStmt ifStmt, Stmt target, Map<Stmt, Stmt> stmtMap) {
+    assert (ifStmt.getTarget() == target);// pre-conditions
+    if (target instanceof GotoStmt) {
+      // "if C goto [goto X]" -> "if C goto X"
+      Stmt newTarget = getFinalTarget(target, stmtMap);
+      if (newTarget == null) {
+        newTarget = ifStmt;
+      }
+      if (newTarget == target) {
+        return new HandleRes(BranchType.IF_TO_GOTO, false);
+      } else {
+        ifStmt.setTarget(newTarget);
+        return new HandleRes(BranchType.IF_TO_GOTO, true);
+      }
+    } else if (target instanceof IfStmt) {
+      // "if C goto [if C goto X]" -> "if C goto X"
+      final IfStmt targetAsIfStmt = (IfStmt) target;
+      // Perform "jump threading" optimization. If the target IfStmt
+      // has the same condition as the first IfStmt, then the first
+      // should jump directly to the target of the target IfStmt.
+      // TODO: This could also be done when the first condition
+      // implies the second but that's obviously more complicated
+      // to check. Could even do something if the first implies
+      // the negation of the second.
+      if (ifStmt.getCondition().equivTo(targetAsIfStmt.getCondition())) {
+        ifStmt.setTarget(targetAsIfStmt.getTarget());
+        return new HandleRes(BranchType.IF_TO_IF, true);
+      } else {
+        return new HandleRes(BranchType.IF_TO_IF, false);
+      }
+    } else {
+      return new HandleRes(BranchType.TOTAL_COUNT, false);
+    }
+  }
+
+  /**
+   * @param stmt
+   * @param stmtMap
+   *
+   * @return the given {@link Stmt} if not a {@link GotoStmt}, otherwise, the final transitive target of the {@link GotoStmt}
+   *         or {@code null} if that target is itselfF
+   */
+  private static Stmt getFinalTarget(Stmt stmt, Map<Stmt, Stmt> stmtMap) {
     // if not a goto, this is the final target
     if (!(stmt instanceof GotoStmt)) {
       return stmt;
@@ -140,22 +298,45 @@ public class UnconditionalBranchFolder extends BodyTransformer {
     // first map this statement to itself, so we can detect cycles
     stmtMap.put(stmt, stmt);
 
-    target = (Stmt) ((GotoStmt) stmt).getTarget();
+    Stmt target = (Stmt) ((GotoStmt) stmt).getTarget();
 
     // check if target is in statement map
+    Stmt finalTarget;
     if (stmtMap.containsKey(target)) {
       // see if it maps to itself
       finalTarget = stmtMap.get(target);
-      if (finalTarget == target) {
-        // this is part of a cycle
+      if (finalTarget == target) { // this is part of a cycle
         finalTarget = null;
       }
     } else {
-      finalTarget = getFinalTarget(stmtMap, target);
+      finalTarget = getFinalTarget(target, stmtMap);
     }
 
     stmtMap.put(stmt, finalTarget);
     return finalTarget;
   } // getFinalTarget
 
+  public static ConditionExpr reverseCondition(ConditionExpr cond) {
+    // NOTE: Adapted from the private reverseCondition(..) method in JimpleBodyBuilder.
+    ConditionExpr newExpr;
+    if (cond instanceof soot.jimple.EqExpr) {
+      newExpr = Jimple.v().newNeExpr(cond.getOp1(), cond.getOp2());
+    } else if (cond instanceof soot.jimple.NeExpr) {
+      newExpr = Jimple.v().newEqExpr(cond.getOp1(), cond.getOp2());
+    } else if (cond instanceof soot.jimple.GtExpr) {
+      newExpr = Jimple.v().newLeExpr(cond.getOp1(), cond.getOp2());
+    } else if (cond instanceof soot.jimple.GeExpr) {
+      newExpr = Jimple.v().newLtExpr(cond.getOp1(), cond.getOp2());
+    } else if (cond instanceof soot.jimple.LtExpr) {
+      newExpr = Jimple.v().newGeExpr(cond.getOp1(), cond.getOp2());
+    } else if (cond instanceof soot.jimple.LeExpr) {
+      newExpr = Jimple.v().newGtExpr(cond.getOp1(), cond.getOp2());
+    } else {
+      throw new RuntimeException("Unknown ConditionExpr");
+    }
+
+    newExpr.getOp1Box().addAllTagsOf(cond.getOp1Box());
+    newExpr.getOp2Box().addAllTagsOf(cond.getOp2Box());
+    return newExpr;
+  }
 } // JumpOptimizer
