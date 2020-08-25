@@ -95,12 +95,28 @@ public class DotGraph extends AbstractDotGraphElement implements Renderable {
    *          the source node
    * @param to,
    *          the end node
-   * @return a graph edge
+   * @return a directed graph edge connecting {@code from} with {@code to}
    */
   public DotGraphEdge drawEdge(String from, String to) {
+    return drawEdge(from, to, true);
+  }
+
+  /**
+   * Draws a undirected edge (including the nodes, if they have not already been drawn).
+   *
+   * @param node1
+   * @param node2
+   *
+   * @return an undirected graph edge connecting {@code node1} with {@code node2}
+   */
+  public DotGraphEdge drawUndirectedEdge(String node1, String node2) {
+    return drawEdge(node1, node2, false);
+  }
+
+  private DotGraphEdge drawEdge(String from, String to, boolean directed) {
     DotGraphNode src = drawNode(from);
     DotGraphNode dst = drawNode(to);
-    DotGraphEdge edge = new DotGraphEdge(src, dst);
+    DotGraphEdge edge = new DotGraphEdge(src, dst, directed);
 
     this.drawElements.add(edge);
 
@@ -146,6 +162,29 @@ public class DotGraph extends AbstractDotGraphElement implements Renderable {
       nodes.put(name, node);
     }
     return node;
+  }
+
+  /**
+   * Checks if the graph already contains the node with the specified name.
+   *
+   * @param name,
+   *          unique name of the node.
+   *
+   * @return true if the node with the specified name is already in the graph, false otherwise
+   */
+  public boolean containsNode(String name) {
+    return name != null && nodes.containsKey(name);
+  }
+
+  /**
+   * Checks if the graph already contains the given {@link DotGraphNode}.
+   *
+   * @param node
+   *
+   * @return true if the node is already in the graph, false otherwise
+   */
+  public boolean containsNode(DotGraphNode node) {
+    return this.drawElements.contains(node);
   }
 
   /**
@@ -231,15 +270,6 @@ public class DotGraph extends AbstractDotGraphElement implements Renderable {
    */
   public void setGraphAttribute(DotGraphAttribute attr) {
     this.setAttribute(attr);
-  }
-
-  /**
-   * draws an undirected edge
-   *
-   * @param label1,
-   *          label2
-   */
-  public void drawUndirectedEdge(String label1, String label2) {
   }
 
   /**
