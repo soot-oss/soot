@@ -27,7 +27,6 @@ package soot.util;
  *
  * @author Ondrej Lhotak
  */
-
 @Deprecated
 public class SingletonList<E> extends java.util.AbstractList<E> {
   private E o;
@@ -36,14 +35,17 @@ public class SingletonList<E> extends java.util.AbstractList<E> {
     this.o = o;
   }
 
+  @Override
   public int size() {
     return 1;
   }
 
+  @Override
   public boolean contains(Object other) {
     return other.equals(o);
   }
 
+  @Override
   public E get(int index) {
     if (index != 0) {
       throw new IndexOutOfBoundsException("Singleton list; index = " + index);

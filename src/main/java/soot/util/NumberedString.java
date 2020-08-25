@@ -27,12 +27,26 @@ package soot.util;
  *
  * @author Ondrej Lhotak
  */
-
 public final class NumberedString implements Numberable {
+
+  private final String s;
+  private volatile int number;
+
   public NumberedString(String s) {
     this.s = s;
   }
 
+  @Override
+  public final void setNumber(int number) {
+    this.number = number;
+  }
+
+  @Override
+  public final int getNumber() {
+    return number;
+  }
+
+  @Override
   public final String toString() {
     return getString();
   }
@@ -43,17 +57,6 @@ public final class NumberedString implements Numberable {
     }
     return s;
   }
-
-  public final void setNumber(int number) {
-    this.number = number;
-  }
-
-  public final int getNumber() {
-    return number;
-  }
-
-  final private String s;
-  private volatile int number;
 
   @Override
   public int hashCode() {
@@ -69,23 +72,17 @@ public final class NumberedString implements Numberable {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (obj == null || this.getClass() != obj.getClass()) {
       return false;
     }
     NumberedString other = (NumberedString) obj;
-    if (number != other.number) {
+    if (this.number != other.number) {
       return false;
     }
-    if (s == null) {
-      if (other.s != null) {
-        return false;
-      }
-    } else if (!s.equals(other.s)) {
-      return false;
+    if (this.s == null) {
+      return other.s == null;
+    } else {
+      return this.s.equals(other.s);
     }
-    return true;
   }
 }
