@@ -24,16 +24,14 @@ package soot.util.dot;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * A Dot graph node with various attributes.
  */
-public class DotGraphNode implements Renderable {
+public class DotGraphNode extends AbstractDotGraphElement implements Renderable {
 
   private final String name;
-  private List<DotGraphAttribute> attributes;
 
   public DotGraphNode(String name) {
     // make any illegal name to be legal
@@ -42,12 +40,6 @@ public class DotGraphNode implements Renderable {
 
   public String getName() {
     return this.name;
-  }
-
-  public void setLabel(String label) {
-    label = DotGraphUtility.replaceQuotes(label);
-    label = DotGraphUtility.replaceReturns(label);
-    this.setAttribute("label", "\"" + label + "\"");
   }
 
   public void setHTMLLabel(String label) {
@@ -63,25 +55,15 @@ public class DotGraphNode implements Renderable {
     this.setAttribute("style", style);
   }
 
-  public void setAttribute(String id, String value) {
-    this.setAttribute(new DotGraphAttribute(id, value));
-  }
-
-  public void setAttribute(DotGraphAttribute attr) {
-    List<DotGraphAttribute> attrs = this.attributes;
-    if (attrs == null) {
-      this.attributes = attrs = new LinkedList<DotGraphAttribute>();
-    }
-    attrs.add(attr);
-  }
-
   @Override
   public void render(OutputStream out, int indent) throws IOException {
     StringBuilder line = new StringBuilder();
     line.append(this.getName());
-    if (this.attributes != null) {
+
+    Collection<DotGraphAttribute> attrs = this.getAttributes();
+    if (!attrs.isEmpty()) {
       line.append(" [");
-      for (DotGraphAttribute attr : this.attributes) {
+      for (DotGraphAttribute attr : attrs) {
         line.append(attr.toString()).append(',');
       }
       line.append(']');

@@ -41,4 +41,12 @@ public class DotGraphAttribute {
   public String toString() {
     return this.id + '=' + this.value;
   }
+
+  public String getID() {
+    return this.id;
+  }
+
+  public String getValue() {
+    return this.value;
+  }
 }

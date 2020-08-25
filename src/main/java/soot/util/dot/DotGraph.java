@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * <li>plot</li>
  * </ol>
  */
-public class DotGraph implements Renderable {
+public class DotGraph extends AbstractDotGraphElement implements Renderable {
   private static final Logger logger = LoggerFactory.getLogger(DotGraph.class);
 
   /**
@@ -53,8 +53,6 @@ public class DotGraph implements Renderable {
   /* draw elements are sub graphs, edges, commands */
   private final List<Renderable> drawElements;
 
-  private final List<DotGraphAttribute> attributes;
-
   private final boolean isSubGraph;
 
   private String graphname;
@@ -64,7 +62,6 @@ public class DotGraph implements Renderable {
     this.isSubGraph = isSubGraph;
     this.nodes = new HashMap<String, DotGraphNode>(100);
     this.drawElements = new LinkedList<Renderable>();
-    this.attributes = new LinkedList<DotGraphAttribute>();
   }
 
   /**
@@ -178,7 +175,7 @@ public class DotGraph implements Renderable {
    */
   public void setGraphSize(double width, double height) {
     String size = "\"" + width + "," + height + "\"";
-    this.setGraphAttribute("size", size);
+    this.setAttribute("size", size);
   }
 
   /**
@@ -186,14 +183,14 @@ public class DotGraph implements Renderable {
    */
   public void setPageSize(double width, double height) {
     String size = "\"" + width + ", " + height + "\"";
-    this.setGraphAttribute("page", size);
+    this.setAttribute("page", size);
   }
 
   /**
    * sets the graph rotation angles
    */
   public void setOrientation(String orientation) {
-    this.setGraphAttribute("orientation", orientation);
+    this.setAttribute("orientation", orientation);
   }
 
   /**
@@ -204,16 +201,16 @@ public class DotGraph implements Renderable {
   }
 
   /**
-   * sets the graph label
+   * NOTE: Alias for {@link #setLabel(java.lang.String)}.
    */
   public void setGraphLabel(String label) {
-    label = DotGraphUtility.replaceQuotes(label);
-    label = DotGraphUtility.replaceReturns(label);
-    this.setGraphAttribute("label", "\"" + label + "\"");
+    this.setLabel(label);
   }
 
   /**
    * sets any general attributes
+   * 
+   * NOTE: Alias for {@link #setAttribute(java.lang.String, java.lang.String)}.
    *
    * @param id
    *          is the attribute name.
@@ -221,17 +218,19 @@ public class DotGraph implements Renderable {
    *          is the attribute value.
    */
   public void setGraphAttribute(String id, String value) {
-    this.setGraphAttribute(new DotGraphAttribute(id, value));
+    this.setAttribute(id, value);
   }
 
   /**
    * sets any general attributes
+   * 
+   * NOTE: Alias for {@link #setAttribute(soot.util.dot.DotGraphAttribute)}.
    *
    * @param attr
    *          a {@link DotGraphAttribute} specifying the attribute name and value.
    */
   public void setGraphAttribute(DotGraphAttribute attr) {
-    this.attributes.add(attr);
+    this.setAttribute(attr);
   }
 
   /**
@@ -268,7 +267,7 @@ public class DotGraph implements Renderable {
     }
 
     /* render graph attributes */
-    for (DotGraphAttribute attr : this.attributes) {
+    for (DotGraphAttribute attr : this.getAttributes()) {
       DotGraphUtility.renderLine(out, attr.toString() + ';', indent + 4);
     }
 
