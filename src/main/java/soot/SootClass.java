@@ -72,7 +72,7 @@ public class SootClass extends AbstractHost implements Numberable {
   protected String name, shortName, fixedShortName, packageName, fixedPackageName;
   protected int modifiers;
   protected Chain<SootField> fields;
-  protected SmallNumberedMap<SootMethod> subSigToMethods;
+  protected SmallNumberedMap<NumberedString, SootMethod> subSigToMethods;
   // methodList is just for keeping the methods in a consistent order. It
   // needs to be kept consistent with subSigToMethods.
   protected List<SootMethod> methodList;

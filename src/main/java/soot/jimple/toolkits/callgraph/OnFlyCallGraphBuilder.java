@@ -186,9 +186,9 @@ public class OnFlyCallGraphBuilder {
 
   // end type based reflection resolution
   protected final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites
-      = new LargeNumberedMap<Local, List<VirtualCallSite>>(Scene.v().getLocalNumberer()); // Local -> List(VirtualCallSite)
+      = new LargeNumberedMap<Local, List<VirtualCallSite>>(Scene.v().getLocalNumberer());
   protected final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers
-      = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
+      = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
   protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases
       = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
   protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs
@@ -199,12 +199,10 @@ public class OnFlyCallGraphBuilder {
   protected final MultiMap<AllocDotField, Local> allocDotFieldToLocal = new HashMultiMap<>();
   protected final MultiMap<Local, Type> reachingArgTypes = new HashMultiMap<>();
   protected final MultiMap<Local, Type> reachingBaseTypes = new HashMultiMap<>();
-  protected final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites = new SmallNumberedMap<List<VirtualCallSite>>();
-  // Local
-  // ->
-  // List(VirtualCallSite)
+  protected final SmallNumberedMap<Local, List<VirtualCallSite>> stringConstToSites
+      = new SmallNumberedMap<Local, List<VirtualCallSite>>();
   protected final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants
-      = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
+      = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
   protected final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
   protected final QueueReader<SootMethod> targets = targetsQueue.reader();
   protected ReflectionModel reflectionModel;
