@@ -274,6 +274,8 @@ public class DotGraph extends AbstractDotGraphElement implements Renderable {
 
   /**
    * creates a sub graph.
+   * 
+   * NOTE: Some renderers require subgraph labels to start with "cluster".
    *
    * @return the newly created sub graph.
    */
