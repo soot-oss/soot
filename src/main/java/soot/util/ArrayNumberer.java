@@ -35,6 +35,7 @@ import java.util.NoSuchElementException;
  */
 
 public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> {
+
   protected E[] numberToObj;
   protected int lastNumber;
   protected BitSet freeNumbers;
@@ -72,11 +73,11 @@ public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> 
     if (chosenNumber == -1) {
       chosenNumber = ++lastNumber;
     }
-    if (lastNumber >= numberToObj.length) {
+    if (chosenNumber >= numberToObj.length) {
       resize(numberToObj.length * 2);
     }
-    numberToObj[lastNumber] = o;
-    o.setNumber(lastNumber);
+    numberToObj[chosenNumber] = o;
+    o.setNumber(chosenNumber);
   }
 
   @Override
