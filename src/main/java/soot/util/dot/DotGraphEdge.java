@@ -27,12 +27,16 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-/* Graph edges are the major elements of a graph
- * @author Feng Qian 
+/**
+ * Graph edges are the major elements of a graph
+ * 
+ * @author Feng Qian
  */
 public class DotGraphEdge implements Renderable {
-  private boolean isDirected;
-  private DotGraphNode start, end;
+
+  private final DotGraphNode start;
+  private final DotGraphNode end;
+  private final boolean isDirected;
   private List<DotGraphAttribute> attributes;
 
   /**
@@ -107,11 +111,11 @@ public class DotGraphEdge implements Renderable {
    *          a {@link DotGraphAttribute} specifying the attribute name and value.
    */
   public void setAttribute(DotGraphAttribute attr) {
-    if (this.attributes == null) {
-      this.attributes = new LinkedList<DotGraphAttribute>();
+    List<DotGraphAttribute> attrs = this.attributes;
+    if (attrs == null) {
+      this.attributes = attrs = new LinkedList<DotGraphAttribute>();
     }
-
-    this.attributes.add(attr);
+    attrs.add(attr);
   }
 
   @Override

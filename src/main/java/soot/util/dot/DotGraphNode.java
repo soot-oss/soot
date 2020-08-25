@@ -31,14 +31,15 @@ import java.util.List;
  * A Dot graph node with various attributes.
  */
 public class DotGraphNode implements Renderable {
-  private String name;
+
+  private final String name;
   private List<DotGraphAttribute> attributes;
 
   public DotGraphNode(String name) {
+    // make any illegal name to be legal
     this.name = "\"" + DotGraphUtility.replaceQuotes(name) + "\"";
   }
 
-  // make any illegal name to be legal
   public String getName() {
     return this.name;
   }
@@ -63,21 +64,18 @@ public class DotGraphNode implements Renderable {
   }
 
   public void setAttribute(String id, String value) {
-    if (this.attributes == null) {
-      this.attributes = new LinkedList<DotGraphAttribute>();
-    }
-
     this.setAttribute(new DotGraphAttribute(id, value));
   }
 
   public void setAttribute(DotGraphAttribute attr) {
-    if (this.attributes == null) {
-      this.attributes = new LinkedList<DotGraphAttribute>();
+    List<DotGraphAttribute> attrs = this.attributes;
+    if (attrs == null) {
+      this.attributes = attrs = new LinkedList<DotGraphAttribute>();
     }
-
-    this.attributes.add(attr);
+    attrs.add(attr);
   }
 
+  @Override
   public void render(OutputStream out, int indent) throws IOException {
     StringBuilder line = new StringBuilder();
     line.append(this.getName());
@@ -86,8 +84,10 @@ public class DotGraphNode implements Renderable {
       for (DotGraphAttribute attr : this.attributes) {
         line.append(attr.toString()).append(',');
       }
-      line.append("];");
+      line.append(']');
     }
+    line.append(';');
+
     DotGraphUtility.renderLine(out, line.toString(), indent);
   }
 }

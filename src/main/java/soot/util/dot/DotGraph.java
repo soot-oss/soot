@@ -33,26 +33,39 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Allow a serialized drawing, following steps:
+ * <ol>
+ * <li>new DotGraph</li>
+ * <li>draw(Directed/Undirected)Edge, attachAttributes, addNode</li>
+ * <li>plot</li>
+ * </ol>
+ */
 public class DotGraph implements Renderable {
   private static final Logger logger = LoggerFactory.getLogger(DotGraph.class);
-
-  /*
-   * allow a serialized drawing, following steps: 1. new DotGraph 2. draw(Directed)Edge / drawUndirectedEdge
-   * attachAttributes, addNode 3. plot
-   */
-  private String graphname;
-  private boolean isSubGraph;
-
-  private HashMap<String, DotGraphNode> nodes;
-  /* draw elements are sub graphs, edges, commands */
-  private List<Renderable> drawElements;
-
-  private List<DotGraphAttribute> attributes;
 
   /**
    * The extension added to output files, exported so that clients can search for the filenames.
    */
-  public final static String DOT_EXTENSION = ".dot";
+  public static final String DOT_EXTENSION = ".dot";
+
+  private final HashMap<String, DotGraphNode> nodes;
+  /* draw elements are sub graphs, edges, commands */
+  private final List<Renderable> drawElements;
+
+  private final List<DotGraphAttribute> attributes;
+
+  private final boolean isSubGraph;
+
+  private String graphname;
+
+  private DotGraph(String graphname, boolean isSubGraph) {
+    this.graphname = graphname;
+    this.isSubGraph = isSubGraph;
+    this.nodes = new HashMap<String, DotGraphNode>(100);
+    this.drawElements = new LinkedList<Renderable>();
+    this.attributes = new LinkedList<DotGraphAttribute>();
+  }
 
   /**
    * Creates a new graph for drawing.
@@ -61,11 +74,7 @@ public class DotGraph implements Renderable {
    *          the name used to identify the graph in the dot source.
    */
   public DotGraph(String graphname) {
-    this.graphname = graphname;
-    this.isSubGraph = false;
-    this.nodes = new HashMap<String, DotGraphNode>(100);
-    this.drawElements = new LinkedList<Renderable>();
-    this.attributes = new LinkedList<DotGraphAttribute>();
+    this(graphname, false);
   }
 
   /**
@@ -149,10 +158,8 @@ public class DotGraph implements Renderable {
    *          the node shape
    */
   public void setNodeShape(String shape) {
-    StringBuilder command = new StringBuilder("node [shape=");
-    command.append(shape);
-    command.append("];");
-    this.drawElements.add(new DotGraphCommand(command.toString()));
+    String command = "node [shape=" + shape + "];";
+    this.drawElements.add(new DotGraphCommand(command));
   }
 
   /**
@@ -162,10 +169,8 @@ public class DotGraph implements Renderable {
    *          the node style
    */
   public void setNodeStyle(String style) {
-    StringBuilder command = new StringBuilder("node [style=");
-    command.append(style);
-    command.append("];");
-    this.drawElements.add(new DotGraphCommand(command.toString()));
+    String command = "node [style=" + style + "];";
+    this.drawElements.add(new DotGraphCommand(command));
   }
 
   /**
@@ -245,8 +250,7 @@ public class DotGraph implements Renderable {
    */
   public DotGraph createSubGraph(String label) {
     // file name is used as label of sub graph.
-    DotGraph subgraph = new DotGraph(label);
-    subgraph.isSubGraph = true;
+    DotGraph subgraph = new DotGraph(label, true);
 
     this.drawElements.add(subgraph);
 
@@ -254,6 +258,7 @@ public class DotGraph implements Renderable {
   }
 
   /* implements renderable interface. */
+  @Override
   public void render(OutputStream out, int indent) throws IOException {
     // header
     if (!isSubGraph) {
@@ -264,7 +269,7 @@ public class DotGraph implements Renderable {
 
     /* render graph attributes */
     for (DotGraphAttribute attr : this.attributes) {
-      DotGraphUtility.renderLine(out, attr.toString() + ";", indent + 4);
+      DotGraphUtility.renderLine(out, attr.toString() + ';', indent + 4);
     }
 
     /* render elements */

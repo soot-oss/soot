@@ -29,7 +29,8 @@ import java.io.OutputStream;
  * Encodes general Dot commands.
  */
 public class DotGraphCommand implements Renderable {
-  String command;
+
+  private final String command;
 
   /**
    * @param cmd

@@ -28,8 +28,9 @@ package soot.util.dot;
  * @author Feng Qian
  */
 public class DotGraphAttribute {
-  String id;
-  String value;
+
+  private final String id;
+  private final String value;
 
   public DotGraphAttribute(String id, String v) {
     this.id = id;
@@ -38,10 +39,6 @@ public class DotGraphAttribute {
 
   @Override
   public String toString() {
-    StringBuilder line = new StringBuilder();
-    line.append(this.id);
-    line.append('=');
-    line.append(this.value);
-    return line.toString();
+    return this.id + '=' + this.value;
   }
 }
