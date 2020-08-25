@@ -283,16 +283,14 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
     if (item == null) {
       throw new RuntimeException("Cannot insert a null object into a Chain!");
     }
-
     stateCount++;
-    Link<E> newLink, temp;
-
     if (map.containsKey(item)) {
       throw new RuntimeException("Chain already contains object.");
     }
 
+    Link<E> newLink;
     if (firstItem != null) {
-      temp = map.get(firstItem);
+      Link<E> temp = map.get(firstItem);
       newLink = temp.insertBefore(item);
     } else {
       newLink = new Link<E>(item);
@@ -306,15 +304,14 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
     if (item == null) {
       throw new RuntimeException("Cannot insert a null object into a Chain!");
     }
-
     stateCount++;
-    Link<E> newLink, temp;
     if (map.containsKey(item)) {
       throw new RuntimeException("Chain already contains object: " + item);
     }
 
+    Link<E> newLink;
     if (lastItem != null) {
-      temp = map.get(lastItem);
+      Link<E> temp = map.get(lastItem);
       newLink = temp.insertAfter(item);
     } else {
       newLink = new Link<E>(item);
@@ -326,16 +323,16 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
   @Override
   public synchronized void removeFirst() {
     stateCount++;
-    Object item = firstItem;
-    map.get(firstItem).unlinkSelf();
+    E item = firstItem;
+    map.get(item).unlinkSelf();
     map.remove(item);
   }
 
   @Override
   public synchronized void removeLast() {
     stateCount++;
-    Object item = lastItem;
-    map.get(lastItem).unlinkSelf();
+    E item = lastItem;
+    map.get(item).unlinkSelf();
     map.remove(item);
   }
 
@@ -467,7 +464,8 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
     public Link(X item) {
       this.item = item;
-      nextLink = previousLink = null;
+      this.nextLink = null;
+      this.previousLink = null;
     }
 
     public Link<X> getNext() {
@@ -529,38 +527,36 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
       if (item != null) {
         return item.toString();
       } else {
-        return "Link item is null" + super.toString();
+        return "Link item is null: " + super.toString();
       }
     }
   }
 
   protected class LinkIterator<X extends E> implements Iterator<E> {
+    private final X destination;
     private Link<E> currentLink;
-    boolean state; // only when this is true can remove() be called
-    // (in accordance w/ iterator semantics)
-
-    private X destination;
     private int iteratorStateCount;
+    // only when this is true can remove() be called (in accordance w/ iterator semantics)
+    private boolean state;
 
-    public LinkIterator(X item) {
-      if (item == null) {
-        throw new RuntimeException("Chain cannot contain null objects!");
-      }
-      Link<E> nextLink = map.get(item);
-      if (nextLink == null) {
-        throw new NoSuchElementException(
-            "HashChain.LinkIterator(obj) with obj that is not in the chain: " + item.toString());
-      }
-      currentLink = new Link<E>(null);
-      currentLink.setNext(nextLink);
-      state = false;
-      destination = null;
-      iteratorStateCount = stateCount;
+    public LinkIterator(X from) {
+      this(from, null);
     }
 
     public LinkIterator(X from, X to) {
-      this(from);
-      destination = to;
+      if (from == null) {// NOTE: 'to' is allowed to be 'null' to traverse entire chain
+        throw new RuntimeException("Chain cannot contain null objects!");
+      }
+      Link<E> nextLink = map.get(from);
+      if (nextLink == null) {
+        throw new NoSuchElementException(
+            "HashChain.LinkIterator(obj) with obj that is not in the chain: " + from.toString());
+      }
+      this.destination = to;
+      this.currentLink = new Link<E>(null);
+      this.currentLink.setNext(nextLink);
+      this.iteratorStateCount = stateCount;
+      this.state = false;
     }
 
     @Override
