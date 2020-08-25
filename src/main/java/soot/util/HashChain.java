@@ -544,7 +544,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
     }
 
     public LinkIterator(X from, X to) {
-      if (from == null) {// NOTE: 'to' is allowed to be 'null' to traverse entire chain
+      if (from == null) { // NOTE: 'to' is allowed to be 'null' to traverse entire chain
         throw new RuntimeException("Chain cannot contain null objects!");
       }
       Link<E> nextLink = map.get(from);
