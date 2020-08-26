@@ -34,6 +34,10 @@ import soot.SootMethod;
  * @author xiao, extend it with more functions
  */
 public class Pair<T, U> {
+
+  protected T o1;
+  protected U o2;
+
   public Pair() {
     o1 = null;
     o2 = null;
@@ -87,19 +91,17 @@ public class Pair<T, U> {
    * Decide if this pair represents a method parameter.
    */
   public boolean isParameter() {
-    if (o1 instanceof SootMethod && o2 instanceof Integer) {
-      return true;
-    }
-    return false;
+    return o1 instanceof SootMethod && o2 instanceof Integer;
   }
 
   /**
    * Decide if this pair stores the THIS parameter for a method.
    */
   public boolean isThisParameter() {
-    return (o1 instanceof SootMethod && o2.equals(PointsToAnalysis.THIS_NODE)) ? true : false;
+    return o1 instanceof SootMethod && PointsToAnalysis.THIS_NODE.equals(o2);
   }
 
+  @Override
   public String toString() {
     return "Pair " + o1 + "," + o2;
   }
@@ -124,7 +126,4 @@ public class Pair<T, U> {
     o1 = no1;
     o2 = no2;
   }
-
-  protected T o1;
-  protected U o2;
 }
