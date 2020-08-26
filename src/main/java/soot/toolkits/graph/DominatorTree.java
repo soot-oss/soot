@@ -59,7 +59,7 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
    **/
   protected Map<N, DominatorNode<N>> godeToDode;
 
-  public DominatorTree(DominatorsFinder dominators) {
+  public DominatorTree(DominatorsFinder<N> dominators) {
     // if(Options.v().verbose())
     // logger.debug("[" + graph.getBody().getMethod().getName() +
     // "] Constructing DominatorTree...");
@@ -67,9 +67,9 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
     this.dominators = dominators;
     this.graph = dominators.getGraph();
 
-    heads = new ArrayList<DominatorNode<N>>();
-    tails = new ArrayList<DominatorNode<N>>();
-    godeToDode = new HashMap<N, DominatorNode<N>>();
+    this.heads = new ArrayList<DominatorNode<N>>();
+    this.tails = new ArrayList<DominatorNode<N>>();
+    this.godeToDode = new HashMap<N, DominatorNode<N>>();
 
     buildTree();
   }
@@ -123,9 +123,8 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
    * @return list of the DominatorNodes corresponding to the predecessors of {@code node} in the original DirectedGraph
    **/
   public List<DominatorNode<N>> getPredsOf(DominatorNode<N> node) {
-    List<N> preds = graph.getPredsOf(node.getGode());
     List<DominatorNode<N>> predNodes = new ArrayList<DominatorNode<N>>();
-    for (N pred : preds) {
+    for (N pred : graph.getPredsOf(node.getGode())) {
       predNodes.add(getDode(pred));
     }
     return predNodes;
@@ -135,9 +134,8 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
    * @return list of the DominatorNodes corresponding to the successors of {@code node} in the original DirectedGraph
    **/
   public List<DominatorNode<N>> getSuccsOf(DominatorNode<N> node) {
-    List<N> succs = graph.getSuccsOf(node.getGode());
     List<DominatorNode<N>> succNodes = new ArrayList<DominatorNode<N>>();
-    for (N succ : succs) {
+    for (N succ : graph.getSuccsOf(node.getGode())) {
       succNodes.add(getDode(succ));
     }
     return succNodes;
@@ -175,6 +173,7 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
   /**
    * @return iterator over the nodes in the tree. No ordering is implied.
    **/
+  @Override
   public Iterator<DominatorNode<N>> iterator() {
     return godeToDode.values().iterator();
   }
@@ -204,7 +203,7 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
     }
 
     // identify the tail nodes
-    for (DominatorNode dode : this) {
+    for (DominatorNode<N> dode : this) {
       if (dode.isTail()) {
         tails.add(dode);
       }
@@ -215,25 +214,16 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
    * Convenience method, ensures we don't create more than one DominatorNode for a given block.
    **/
   protected DominatorNode<N> fetchDode(N gode) {
-    DominatorNode<N> dode;
-
-    if (godeToDode.containsKey(gode)) {
-      dode = godeToDode.get(gode);
-    } else {
-      dode = new DominatorNode(gode);
+    DominatorNode<N> dode = godeToDode.get(gode);
+    if (dode == null) {
+      dode = new DominatorNode<N>(gode);
       godeToDode.put(gode, dode);
     }
-
     return dode;
   }
 
   protected DominatorNode<N> fetchParent(N gode) {
     N immediateDominator = dominators.getImmediateDominator(gode);
-
-    if (immediateDominator == null) {
-      return null;
-    }
-
-    return fetchDode(immediateDominator);
+    return (immediateDominator == null) ? null : fetchDode(immediateDominator);
   }
 }

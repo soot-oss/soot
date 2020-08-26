@@ -24,7 +24,6 @@ package soot.toolkits.graph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,12 +35,13 @@ import java.util.Map;
  *      the Control Dependence Graph</a>
  **/
 public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
+
   protected DominatorTree<N> dt;
   protected Map<DominatorNode<N>, List<DominatorNode<N>>> nodeToFrontier;
 
   public CytronDominanceFrontier(DominatorTree<N> dt) {
     this.dt = dt;
-    nodeToFrontier = new HashMap<DominatorNode<N>, List<DominatorNode<N>>>();
+    this.nodeToFrontier = new HashMap<DominatorNode<N>, List<DominatorNode<N>>>();
     for (DominatorNode<N> head : dt.getHeads()) {
       bottomUpDispatch(head);
     }
@@ -50,10 +50,7 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
       if (dode == null) {
         throw new RuntimeException("dode == null");
       } else if (!isFrontierKnown(dode)) {
-        System.out.print("'");
-        System.out.print(dode);
-        System.out.println("'");
-        throw new RuntimeException("frontier did not have dode> ");
+        throw new RuntimeException("Frontier not defined for node: " + dode);
       }
     }
   }
@@ -115,25 +112,17 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
     List<DominatorNode<N>> dominanceFrontier = new ArrayList<DominatorNode<N>>();
 
     // local
-    {
-      Iterator<DominatorNode<N>> succsIt = dt.getSuccsOf(node).iterator();
-
-      while (succsIt.hasNext()) {
-        DominatorNode<N> succ = succsIt.next();
-
-        if (!dt.isImmediateDominatorOf(node, succ)) {
-          dominanceFrontier.add(succ);
-        }
+    for (DominatorNode<N> succ : dt.getSuccsOf(node)) {
+      if (!dt.isImmediateDominatorOf(node, succ)) {
+        dominanceFrontier.add(succ);
       }
     }
 
     // up
-    {
-      for (DominatorNode<N> child : dt.getChildrenOf(node)) {
-        for (DominatorNode<N> childFront : getDominanceFrontierOf(child)) {
-          if (!dt.isImmediateDominatorOf(node, childFront)) {
-            dominanceFrontier.add(childFront);
-          }
+    for (DominatorNode<N> child : dt.getChildrenOf(node)) {
+      for (DominatorNode<N> childFront : getDominanceFrontierOf(child)) {
+        if (!dt.isImmediateDominatorOf(node, childFront)) {
+          dominanceFrontier.add(childFront);
         }
       }
     }
