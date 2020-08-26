@@ -50,8 +50,9 @@ import soot.util.Chain;
  * <code>BlockGraph</code>'s definition of {@link computeLeaders()}.
  */
 public abstract class BlockGraph implements DirectedGraph<Block> {
-  protected Body mBody;
-  protected Chain<Unit> mUnits;
+
+  protected final Body mBody;
+  protected final Chain<Unit> mUnits;
   protected List<Block> mBlocks;
   protected List<Block> mHeads = new ArrayList<Block>();
   protected List<Block> mTails = new ArrayList<Block>();
@@ -64,10 +65,9 @@ public abstract class BlockGraph implements DirectedGraph<Block> {
    *          A representation of the control flow at the level of individual {@link Unit}s.
    */
   protected BlockGraph(UnitGraph unitGraph) {
-    mBody = unitGraph.getBody();
-    mUnits = mBody.getUnits();
-    Set<Unit> leaders = computeLeaders(unitGraph);
-    buildBlocks(leaders, unitGraph);
+    this.mBody = unitGraph.getBody();
+    this.mUnits = mBody.getUnits();
+    buildBlocks(computeLeaders(unitGraph), unitGraph);
   }
 
   /**
@@ -121,10 +121,9 @@ public abstract class BlockGraph implements DirectedGraph<Block> {
     }
 
     for (Unit u : body.getUnits()) {
-      List<Unit> predecessors = unitGraph.getPredsOf(u);
       // If predCount == 1 but the predecessor is a branch, u will get added
       // by that branch's successor test.
-      if (predecessors.size() != 1) {
+      if (unitGraph.getPredsOf(u).size() != 1) {
         leaders.add(u);
       }
       List<Unit> successors = unitGraph.getSuccsOf(u);
@@ -270,13 +269,9 @@ public abstract class BlockGraph implements DirectedGraph<Block> {
         block.setSuccs(Collections.unmodifiableList(succBlocks));
       }
     }
-    mBlocks = Collections.unmodifiableList(blockList);
-    mHeads = Collections.unmodifiableList(mHeads);
-    if (mTails.isEmpty()) {
-      mTails = Collections.emptyList();
-    } else {
-      mTails = Collections.unmodifiableList(mTails);
-    }
+    this.mBlocks = Collections.unmodifiableList(blockList);
+    this.mHeads = Collections.unmodifiableList(mHeads);
+    this.mTails = mTails.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(mTails);
     return unitToBlock;
   }
 
