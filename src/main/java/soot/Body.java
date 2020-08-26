@@ -70,7 +70,7 @@ import soot.validation.ValueBoxesValidator;
 @SuppressWarnings("serial")
 public abstract class Body extends AbstractHost implements Serializable {
   private static final Logger logger = LoggerFactory.getLogger(Body.class);
-  
+
   /** The method associated with this Body. */
   protected transient SootMethod method = null;
 
@@ -303,16 +303,18 @@ public abstract class Body extends AbstractHost implements Serializable {
   /** Return LHS of the first identity stmt assigning from \@parameter i. **/
   public Local getParameterLocal(int i) {
     for (Unit s : getUnits()) {
-      if (s instanceof IdentityStmt && ((IdentityStmt) s).getRightOp() instanceof ParameterRef) {
+      if (s instanceof IdentityStmt) {
         IdentityStmt is = (IdentityStmt) s;
-        ParameterRef pr = (ParameterRef) is.getRightOp();
-        if (pr.getIndex() == i) {
-          return (Local) is.getLeftOp();
+        Value rightOp = is.getRightOp();
+        if (rightOp instanceof ParameterRef) {
+          ParameterRef pr = (ParameterRef) rightOp;
+          if (pr.getIndex() == i) {
+            return (Local) is.getLeftOp();
+          }
         }
       }
     }
-
-    throw new RuntimeException("couldn't find parameterref" + i + "! in " + getMethod());
+    throw new RuntimeException("couldn't find parameterref" + i + " in " + getMethod());
   }
 
   /**
@@ -325,22 +327,34 @@ public abstract class Body extends AbstractHost implements Serializable {
    */
   public List<Local> getParameterLocals() {
     final int numParams = getMethod().getParameterCount();
-    final List<Local> retVal = new ArrayList<Local>(numParams);
-
-    // Parameters are zero-indexed, so the keeping of the index is safe
+    Local[] res = new Local[numParams];
+    int numFound = 0;
     for (Unit u : getUnits()) {
       if (u instanceof IdentityStmt) {
-        IdentityStmt is = ((IdentityStmt) u);
-        if (is.getRightOp() instanceof ParameterRef) {
-          ParameterRef pr = (ParameterRef) is.getRightOp();
-          retVal.add(pr.getIndex(), (Local) is.getLeftOp());
+        IdentityStmt is = (IdentityStmt) u;
+        Value rightOp = is.getRightOp();
+        if (rightOp instanceof ParameterRef) {
+          int idx = ((ParameterRef) rightOp).getIndex();
+          if (res[idx] != null) {
+            throw new RuntimeException("duplicate parameterref" + idx + " in " + getMethod());
+          }
+          res[idx] = (Local) is.getLeftOp();
+          numFound++;
+          if (numFound >= numParams) {
+            break;
+          }
         }
       }
     }
-    if (retVal.size() != numParams) {
-      throw new RuntimeException("couldn't find parameterref! in " + getMethod());
+    if (numFound != numParams) {
+      for (int i = 0; i < numParams; i++) {
+        if (res[i] == null) {
+          throw new RuntimeException("couldn't find parameterref" + i + " in " + getMethod());
+        }
+      }
+      throw new RuntimeException("couldn't find parameterref? in " + getMethod());
     }
-    return retVal;
+    return Arrays.asList(res);
   }
 
   /**
@@ -349,13 +363,23 @@ public abstract class Body extends AbstractHost implements Serializable {
    * body. The returned list is of fixed size.
    */
   public List<Value> getParameterRefs() {
-    Value[] res = new Value[getMethod().getParameterCount()];
-    for (Unit s : getUnits()) {
-      if (s instanceof IdentityStmt) {
-        Value rightOp = ((IdentityStmt) s).getRightOp();
+    final int numParams = getMethod().getParameterCount();
+    Value[] res = new Value[numParams];
+    int numFound = 0;
+    for (Unit u : getUnits()) {
+      if (u instanceof IdentityStmt) {
+        Value rightOp = ((IdentityStmt) u).getRightOp();
         if (rightOp instanceof ParameterRef) {
-          ParameterRef parameterRef = (ParameterRef) rightOp;
-          res[parameterRef.getIndex()] = parameterRef;
+          ParameterRef pr = (ParameterRef) rightOp;
+          int idx = pr.getIndex();
+          if (res[idx] != null) {
+            throw new RuntimeException("duplicate parameterref" + idx + " in " + getMethod());
+          }
+          res[idx] = pr;
+          numFound++;
+          if (numFound >= numParams) {
+            break;
+          }
         }
       }
     }
