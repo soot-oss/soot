@@ -52,14 +52,16 @@ import soot.util.Chain;
  */
 public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
   private static final Logger logger = LoggerFactory.getLogger(UnitGraph.class);
+  
+  protected final Body body;
+  protected final Chain<Unit> unitChain;
+  protected final SootMethod method;
+  
   protected List<Unit> heads;
   protected List<Unit> tails;
 
   protected Map<Unit, List<Unit>> unitToSuccs;
   protected Map<Unit, List<Unit>> unitToPreds;
-  protected SootMethod method;
-  protected Body body;
-  protected Chain<Unit> unitChain;
 
   /**
    * Performs the work that is required to construct any sort of <tt>UnitGraph</tt>.
@@ -69,8 +71,8 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
    */
   protected UnitGraph(Body body) {
     this.body = body;
-    unitChain = body.getUnits();
-    method = body.getMethod();
+    this.unitChain = body.getUnits();
+    this.method = body.getMethod();
     if (Options.v().verbose()) {
       logger.debug("[" + method.getName() + "]     Constructing " + this.getClass().getName() + "...");
     }
@@ -90,12 +92,10 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
    *          body to a list of its unexceptional predecessors.
    */
   protected void buildUnexceptionalEdges(Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds) {
-    Unit currentUnit, nextUnit;
-
     Iterator<Unit> unitIt = unitChain.iterator();
-    nextUnit = unitIt.hasNext() ? unitIt.next() : null;
+    Unit nextUnit = unitIt.hasNext() ? unitIt.next() : null;
     while (nextUnit != null) {
-      currentUnit = nextUnit;
+      Unit currentUnit = nextUnit;
       nextUnit = unitIt.hasNext() ? unitIt.next() : null;
 
       ArrayList<Unit> successors = new ArrayList<Unit>();
@@ -289,10 +289,8 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
    * @return null if there is no such path.
    */
   public List<Unit> getExtendedBasicBlockPathBetween(Unit from, Unit to) {
-    UnitGraph g = this;
-
     // if this holds, we're doomed to failure!!!
-    if (g.getPredsOf(to).size() > 1) {
+    if (this.getPredsOf(to).size() > 1) {
       return null;
     }
 
@@ -304,12 +302,12 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
     pathStack.add(from);
     pathStackIndex.add(0);
 
-    final int psiMax = g.getSuccsOf(from).size();
+    final int psiMax = this.getSuccsOf(from).size();
     int level = 0;
     while (pathStackIndex.get(0) != psiMax) {
       int p = pathStackIndex.get(level);
 
-      List<Unit> succs = g.getSuccsOf(pathStack.get(level));
+      List<Unit> succs = this.getSuccsOf(pathStack.get(level));
       if (p >= succs.size()) {
         // no more succs - backtrack to previous level.
 
@@ -331,7 +329,7 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
       }
 
       // check preds of betweenUnit to see if we should visit its kids.
-      if (g.getPredsOf(betweenUnit).size() > 1) {
+      if (this.getPredsOf(betweenUnit).size() > 1) {
         pathStackIndex.set(level, p + 1);
         continue;
       }
