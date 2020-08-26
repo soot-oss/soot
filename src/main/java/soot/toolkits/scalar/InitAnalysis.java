@@ -36,13 +36,15 @@ import soot.toolkits.graph.UnitGraph;
  * @author Eric Bodden
  */
 public class InitAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Local>> {
-  FlowSet<Local> allLocals;
+
+  protected final FlowSet<Local> allLocals = new ArraySparseSet<Local>();
 
   public InitAnalysis(UnitGraph g) {
     super(g);
-    allLocals = new ArraySparseSet<Local>();
+
+    FlowSet<Local> allLocalsRef = this.allLocals;
     for (Local loc : g.getBody().getLocals()) {
-      allLocals.add(loc);
+      allLocalsRef.add(loc);
     }
 
     doAnalysis();
@@ -81,5 +83,4 @@ public class InitAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Local>> {
   protected void copy(FlowSet<Local> source, FlowSet<Local> dest) {
     source.copy(dest);
   }
-
 }
