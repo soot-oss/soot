@@ -26,7 +26,7 @@ import java.util.ArrayDeque;
 import java.util.BitSet;
 import java.util.Deque;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -115,88 +115,92 @@ public class LocalSplitter extends BodyTransformer {
       Timers.v().splitPhase2Timer.start();
     }
 
-    // Collect the set of locals that we need to split^
-    BitSet localsToSplit = new BitSet(localPacker.getLocalCount());
+    // Collect the set of locals that we need to split
+    final BitSet localsToSplit;
     {
-      BitSet localsVisited = new BitSet(localPacker.getLocalCount());
+      int localCount = localPacker.getLocalCount();
+      BitSet localsVisited = new BitSet(localCount);
+      localsToSplit = new BitSet(localCount);
       for (Unit s : body.getUnits()) {
-        List<ValueBox> defBoxes = s.getDefBoxes();
-        if (defBoxes.isEmpty()) {
-          continue;
-        }
-        Value value = defBoxes.get(0).getValue();
-        if (value instanceof Local) {
-          // If we see a local the second time, we know that we must split it
-          int localNumber = ((Local) value).getNumber();
-          if (localsVisited.get(localNumber)) {
-            localsToSplit.set(localNumber);
+        Iterator<ValueBox> defsInUnitItr = s.getDefBoxes().iterator();
+        if (defsInUnitItr.hasNext()) {
+          Value value = defsInUnitItr.next().getValue();
+          if (value instanceof Local) {
+            // If we see a local the second time, we know that we must split it
+            int localNumber = ((Local) value).getNumber();
+            if (localsVisited.get(localNumber)) {
+              localsToSplit.set(localNumber);
+            } else {
+              localsVisited.set(localNumber);
+            }
           }
-          localsVisited.set(localNumber);
         }
       }
     }
 
-    int w = 0;
-    Set<Unit> visited = new HashSet<Unit>();
-    for (Unit s : body.getUnits()) {
-      List<ValueBox> defBoxes = s.getDefBoxes();
-      if (defBoxes.isEmpty()) {
-        continue;
-      } else if (defBoxes.size() > 1) {
-        throw new RuntimeException("stmt with more than 1 defbox!");
-      }
-
-      Value def = defBoxes.get(0).getValue();
-      if (!(def instanceof Local)) {
-        continue;
-      }
-
-      // we don't want to visit a node twice
-      if (visited.remove(s)) {
-        continue;
-      }
-
-      // always reassign locals to avoid "use before definition" bugs!
-      // unfortunately this creates a lot of new locals, so it's important
-      // to remove them afterwards
-      Local oldLocal = (Local) def;
-      if (!localsToSplit.get(oldLocal.getNumber())) {
-        continue;
-      }
-
-      Local newLocal = (Local) oldLocal.clone();
-      newLocal.setName(newLocal.getName() + '#' + ++w); // renaming should not be done here
-      body.getLocals().add(newLocal);
-
-      Deque<Unit> queue = new ArrayDeque<Unit>();
-      queue.addFirst(s);
-      do {
-        final Unit head = queue.removeFirst();
-        if (visited.add(head)) {
-          for (UnitValueBoxPair use : uses.getUsesOf(head)) {
-            ValueBox vb = use.valueBox;
-            Value v = vb.getValue();
-            if (v == newLocal) {
-              continue;
-            }
-            // should always be true - but who knows ...
-            if (v instanceof Local) {
-              queue.addAll(defs.getDefsOfAt((Local) v, use.unit));
-              vb.setValue(newLocal);
-            }
-          }
-
-          for (ValueBox vb : head.getDefBoxes()) {
-            Value v = vb.getValue();
-            if (v instanceof Local) {
-              vb.setValue(newLocal);
-            }
-          }
+    {
+      int w = 0;
+      Set<Unit> visited = new HashSet<Unit>();
+      for (Unit s : body.getUnits()) {
+        Iterator<ValueBox> defsInUnitItr = s.getDefBoxes().iterator();
+        if (!defsInUnitItr.hasNext()) {
+          continue;
         }
-      } while (!queue.isEmpty());
+        Value singleDef = defsInUnitItr.next().getValue();
+        if (defsInUnitItr.hasNext()) {
+          throw new RuntimeException("stmt with more than 1 defbox!");
+        }
+        if (!(singleDef instanceof Local)) {
+          continue;
+        }
 
-      // keep the set small
-      visited.remove(s);
+        // we don't want to visit a node twice
+        if (visited.remove(s)) {
+          continue;
+        }
+
+        // always reassign locals to avoid "use before definition" bugs!
+        // unfortunately this creates a lot of new locals, so it's important
+        // to remove them afterwards
+        Local oldLocal = (Local) singleDef;
+        if (!localsToSplit.get(oldLocal.getNumber())) {
+          continue;
+        }
+
+        Local newLocal = (Local) oldLocal.clone();
+        newLocal.setName(newLocal.getName() + '#' + (++w)); // renaming should not be done here
+        body.getLocals().add(newLocal);
+
+        Deque<Unit> queue = new ArrayDeque<Unit>();
+        queue.addFirst(s);
+        do {
+          final Unit head = queue.removeFirst();
+          if (visited.add(head)) {
+            for (UnitValueBoxPair use : uses.getUsesOf(head)) {
+              ValueBox vb = use.valueBox;
+              Value v = vb.getValue();
+              if (v == newLocal) {
+                continue;
+              }
+              // should always be true - but who knows ...
+              if (v instanceof Local) {
+                queue.addAll(defs.getDefsOfAt((Local) v, use.unit));
+                vb.setValue(newLocal);
+              }
+            }
+
+            for (ValueBox vb : head.getDefBoxes()) {
+              Value v = vb.getValue();
+              if (v instanceof Local) {
+                vb.setValue(newLocal);
+              }
+            }
+          }
+        } while (!queue.isEmpty());
+
+        // keep the set small
+        visited.remove(s);
+      }
     }
 
     // Restore the original local numbering

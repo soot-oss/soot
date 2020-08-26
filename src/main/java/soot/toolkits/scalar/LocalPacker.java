@@ -101,8 +101,7 @@ public class LocalPacker extends BodyTransformer {
           Local l = (Local) leftOp;
 
           Type group = localToGroup.get(l);
-          int count = groupToColorCount.get(group);
-
+          Integer count = groupToColorCount.get(group);
           localToColor.put(l, count);
           groupToColorCount.put(group, count + 1);
         }
@@ -126,35 +125,30 @@ public class LocalPacker extends BodyTransformer {
       Set<String> usedLocalNames = new HashSet<>();
       for (Local original : originalLocals) {
         Type group = localToGroup.get(original);
-        int color = localToColor.get(original);
-        GroupIntPair pair = new GroupIntPair(group, color);
+        GroupIntPair pair = new GroupIntPair(group, localToColor.get(original));
 
-        Local newLocal;
-        if (groupIntToLocal.containsKey(pair)) {
-          newLocal = groupIntToLocal.get(pair);
-        } else {
+        Local newLocal = groupIntToLocal.get(pair);
+        if (newLocal == null) {
           newLocal = (Local) original.clone();
           newLocal.setType(group);
 
+          // Added 'usedLocalNames' for distinct naming.
           // Icky fix. But I guess it works. -PL
           // It is no substitute for really understanding the
           // problem, though. I'll leave that to someone
           // who really understands the local naming stuff.
           // Does such a person exist?
-
+          //
           // I'll just leave this comment as folklore for future
           // generations. The problem with it is that you can end up
           // with different locals that share the same name which can
           // lead to all sorts of funny results. (SA, 2017-03-02)
-
-          // int signIndex = newLocal.getName().indexOf("#");
-          // if (signIndex != -1)
-          // newLocal.setName(newLocal.getName().substring(0, signIndex));
-
+          //
           // If we have a split local, let's find a better name for it
-          int signIndex = newLocal.getName().indexOf('#');
-          if (signIndex != -1) {
-            String newName = newLocal.getName().substring(0, signIndex);
+          String name = newLocal.getName();
+          int signIndex = name.indexOf('#');
+          if (signIndex >= 0) {
+            String newName = name.substring(0, signIndex);
             if (usedLocalNames.add(newName)) {
               newLocal.setName(newName);
             } else {

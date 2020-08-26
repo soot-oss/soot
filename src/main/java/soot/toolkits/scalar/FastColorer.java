@@ -47,6 +47,10 @@ import soot.util.ArraySet;
  * Provides methods for register coloring. Jimple uses these methods to assign the local slots appropriately.
  */
 public class FastColorer {
+
+  private FastColorer() {
+  }
+
   /**
    * Provides a coloring for the locals of <code>unitBody</code>, attempting to not split locals assigned the same name in
    * the original Jimple.
@@ -65,16 +69,16 @@ public class FastColorer {
 
     // Map each local variable to its original name
     for (Local local : intGraph.getLocals()) {
-      int signIndex = local.getName().indexOf('#');
-      if (signIndex != -1) {
-        localToOriginalName.put(local, local.getName().substring(0, signIndex));
-      } else {
-        localToOriginalName.put(local, local.getName());
+      String name = local.getName();
+      int signIndex = name.indexOf('#');
+      if (signIndex >= 0) {
+        name = name.substring(0, signIndex);
       }
+      localToOriginalName.put(local, name);
     }
 
-    Map<StringGroupPair, List<Integer>> originalNameAndGroupToColors = new HashMap<StringGroupPair, List<Integer>>();
     // maps an original name to the colors being used for it
+    Map<StringGroupPair, List<Integer>> originalNameAndGroupToColors = new HashMap<StringGroupPair, List<Integer>>();
 
     // Assign a color for each local.
     {
@@ -118,7 +122,7 @@ public class FastColorer {
           }
 
           boolean found = false;
-          int assignedColor = 0;
+          Integer assignedColor = 0;
 
           // Check if the colors assigned to this original name is already free
           for (Integer color : originalNameColors) {
@@ -160,9 +164,7 @@ public class FastColorer {
     Collections.sort(sortedLocals, new Comparator<Local>() {
       @Override
       public int compare(Local o1, Local o2) {
-        int interferences1 = intGraph.getInterferenceCount(o1);
-        int interferences2 = intGraph.getInterferenceCount(o2);
-        return interferences2 - interferences1;
+        return intGraph.getInterferenceCount(o2) - intGraph.getInterferenceCount(o1);
       }
     });
 
@@ -183,8 +185,7 @@ public class FastColorer {
         if (interferences != null) {
           for (Local element : interferences) {
             if (localToColor.containsKey(element)) {
-              int usedColor = localToColor.get(element);
-              blockedColors.set(usedColor);
+              blockedColors.set(localToColor.get(element));
             }
           }
         }
@@ -212,8 +213,10 @@ public class FastColorer {
 
   /** Implementation of a unit interference graph. */
   private static class UnitInterferenceGraph {
-    Map<Local, Set<Local>> localToLocals;// Maps a local to its interfering locals.
-    List<Local> locals;
+
+    // Maps a local to its interfering locals.
+    final Map<Local, Set<Local>> localToLocals;
+    final List<Local> locals;
 
     public UnitInterferenceGraph(Body body, Map<Local, ? extends Object> localToGroup, LiveLocals liveLocals,
         ExceptionalUnitGraph unitGraph) {
@@ -228,7 +231,7 @@ public class FastColorer {
         // Note interferences if this stmt is a definition
         if (!defBoxes.isEmpty()) {
           // Only one def box is supported
-          if (!(defBoxes.size() == 1)) {
+          if (defBoxes.size() != 1) {
             throw new RuntimeException("invalid number of def boxes");
           }
 
@@ -237,7 +240,7 @@ public class FastColorer {
           // a = 42
           // b = foo()
           // catch -> print(a)
-          // we can transform it to
+          // we can transform it to:
           // a = 42
           // a = foo()
           // catch -> print(a)
@@ -255,14 +258,15 @@ public class FastColorer {
           // throw the exception). We may want to have a more complex
           // reasoning here some day, but I'll leave it as is for now.
 
-          Set<Local> liveLocalsAtUnit = new HashSet<Local>();
-          for (Unit succ : unitGraph.getSuccsOf(unit)) {
-            liveLocalsAtUnit.addAll(liveLocals.getLiveLocalsBefore(succ));
-          }
-
           Value defValue = defBoxes.get(0).getValue();
           if (defValue instanceof Local) {
             Local defLocal = (Local) defValue;
+
+            Set<Local> liveLocalsAtUnit = new HashSet<Local>();
+            for (Unit succ : unitGraph.getSuccsOf(unit)) {
+              liveLocalsAtUnit.addAll(liveLocals.getLiveLocalsBefore(succ));
+            }
+
             for (Local otherLocal : liveLocalsAtUnit) {
               if (localToGroup.get(otherLocal).equals(localToGroup.get(defLocal))) {
                 setInterference(defLocal, otherLocal);
@@ -296,38 +300,39 @@ public class FastColorer {
       locals.add(l1);
     }
 
-    int getInterferenceCount(Local l) {
+    public int getInterferenceCount(Local l) {
       Set<Local> localSet = localToLocals.get(l);
       return localSet == null ? 0 : localSet.size();
     }
 
-    Local[] getInterferencesOf(Local l) {
+    public Local[] getInterferencesOf(Local l) {
       Set<Local> localSet = localToLocals.get(l);
       if (localSet == null) {
         return null;
+      } else {
+        return localSet.toArray(new Local[localSet.size()]);
       }
-
-      return localSet.toArray(new Local[localSet.size()]);
     }
   }
 
   /** Binds together a String and a Group. */
   private static class StringGroupPair {
-    String string;
-    Object group;
+    private final String string;
+    private final Object group;
 
     public StringGroupPair(String s, Object g) {
-      string = s;
-      group = g;
+      this.string = s;
+      this.group = g;
     }
 
     @Override
     public boolean equals(Object p) {
       if (p instanceof StringGroupPair) {
-        return ((StringGroupPair) p).string.equals(this.string) && ((StringGroupPair) p).group.equals(this.group);
+        StringGroupPair temp = (StringGroupPair) p;
+        return this.string.equals(temp.string) && this.group.equals(temp.group);
+      } else {
+        return false;
       }
-
-      return false;
     }
 
     @Override
