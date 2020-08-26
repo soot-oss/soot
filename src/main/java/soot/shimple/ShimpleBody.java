@@ -72,11 +72,11 @@ public class ShimpleBody extends StmtBody {
 
     // must happen before SPatchingChain gets created
     this.options = new ShimpleOptions(options);
+    
     setSSA(true);
-    isExtendedSSA = this.options.extended();
-
-    unitChain = new SPatchingChain(this, new HashChain<Unit>());
-    sbb = new ShimpleBodyBuilder(this);
+    this.isExtendedSSA = this.options.extended();
+    this.unitChain = new SPatchingChain(this, new HashChain<Unit>());
+    this.sbb = new ShimpleBodyBuilder(this);
   }
 
   /**
@@ -100,12 +100,11 @@ public class ShimpleBody extends StmtBody {
     // must happen before SPatchingChain gets created
     this.options = new ShimpleOptions(options);
 
-    unitChain = new SPatchingChain(this, new HashChain<Unit>());
+    this.unitChain = new SPatchingChain(this, new HashChain<Unit>());
     importBodyContentsFrom(body);
 
     /* Shimplise body */
-    sbb = new ShimpleBodyBuilder(this);
-
+    this.sbb = new ShimpleBodyBuilder(this);
     rebuild(body instanceof ShimpleBody);
   }
 
