@@ -83,26 +83,19 @@ public abstract class Body extends AbstractHost implements Serializable {
   /** The chain of units for this Body. */
   protected UnitPatchingChain unitChain = new UnitPatchingChain(new HashChain<Unit>());
 
-  private static BodyValidator[] validators;
+  /** Lazy initialized array containing some validators in order to validate the Body. */
+  private static class LazyValidatorsSingleton {
+    static final BodyValidator[] V = new BodyValidator[] { LocalsValidator.v(), TrapsValidator.v(), UnitBoxesValidator.v(),
+        UsesValidator.v(), ValueBoxesValidator.v(), /* CheckInitValidator.v(), */ CheckTypesValidator.v(),
+        CheckVoidLocalesValidator.v(), CheckEscapingValidator.v() };
+
+    private LazyValidatorsSingleton() {
+    }
+  }
 
   /** Creates a deep copy of this Body. */
   @Override
   abstract public Object clone();
-
-  /**
-   * Returns an array containing some validators in order to validate the JimpleBody
-   *
-   * @return the array containing validators
-   */
-  private synchronized static BodyValidator[] getValidators() {
-    if (validators == null) {
-      validators = new BodyValidator[] { LocalsValidator.v(), TrapsValidator.v(), UnitBoxesValidator.v(), UsesValidator.v(),
-          ValueBoxesValidator.v(),
-          // CheckInitValidator.v(),
-          CheckTypesValidator.v(), CheckVoidLocalesValidator.v(), CheckEscapingValidator.v() };
-    }
-    return validators;
-  };
 
   /**
    * Creates a Body associated to the given method. Used by subclasses during initialization. Creation of a Body is triggered
@@ -237,7 +230,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    */
   public void validate(List<ValidationException> exceptionList) {
     final boolean runAllValidators = Options.v().debug() || Options.v().validate();
-    for (BodyValidator validator : getValidators()) {
+    for (BodyValidator validator : LazyValidatorsSingleton.V) {
       if (!validator.isBasicValidator() && !runAllValidators) {
         continue;
       }

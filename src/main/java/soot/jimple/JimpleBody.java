@@ -53,22 +53,14 @@ import soot.validation.ValidationException;
 public class JimpleBody extends StmtBody {
   private static final Logger logger = LoggerFactory.getLogger(JimpleBody.class);
 
-  private static BodyValidator[] validators;
+  /** Lazy initialized array containing some validators in order to validate the JimpleBody. */
+  private static class LazyValidatorsSingleton {
+    static final BodyValidator[] V = new BodyValidator[] { IdentityStatementsValidator.v(), TypesValidator.v(),
+        ReturnStatementsValidator.v(), InvokeArgumentValidator.v(), FieldRefValidator.v(), NewValidator.v(),
+        JimpleTrapValidator.v(), IdentityValidator.v(), MethodValidator.v() /* InvokeValidator.v() */ };
 
-  /**
-   * Returns an array containing some validators in order to validate the JimpleBody
-   *
-   * @return the array containing validators
-   */
-  private synchronized static BodyValidator[] getValidators() {
-    if (validators == null) {
-      validators = new BodyValidator[] { IdentityStatementsValidator.v(), TypesValidator.v(), ReturnStatementsValidator.v(),
-          InvokeArgumentValidator.v(), FieldRefValidator.v(), NewValidator.v(), JimpleTrapValidator.v(),
-          IdentityValidator.v(), MethodValidator.v()
-          // InvokeValidator.v()
-      };
+    private LazyValidatorsSingleton() {
     }
-    return validators;
   }
 
   /**
@@ -117,7 +109,7 @@ public class JimpleBody extends StmtBody {
   public void validate(List<ValidationException> exceptionList) {
     super.validate(exceptionList);
     final boolean runAllValidators = Options.v().debug() || Options.v().validate();
-    for (BodyValidator validator : getValidators()) {
+    for (BodyValidator validator : LazyValidatorsSingleton.V) {
       if (runAllValidators || validator.isBasicValidator()) {
         validator.validate(this, exceptionList);
       }
