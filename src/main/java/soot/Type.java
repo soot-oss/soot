@@ -31,6 +31,10 @@ import soot.util.Switchable;
 /** Represents types within Soot, eg <code>int</code>, <code>java.lang.String</code>. */
 @SuppressWarnings("serial")
 public abstract class Type implements Switchable, Serializable, Numberable {
+
+  protected ArrayType arrayType;
+  private int number = 0;
+
   public Type() {
     Scene.v().getTypeNumberer().add(this);
   }
@@ -103,7 +107,4 @@ public abstract class Type implements Switchable, Serializable, Numberable {
   public final void setNumber(int number) {
     this.number = number;
   }
-
-  protected ArrayType arrayType;
-  private int number = 0;
 }

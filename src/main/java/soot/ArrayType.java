@@ -25,11 +25,8 @@ package soot;
 import soot.util.Switch;
 
 /**
- * A class that models Java's array types. ArrayTypes are parametrized by a Type and and an integer representing the array's
- * dimension count.. Two ArrayType are 'equal' if they are parametrized equally.
- *
- *
- *
+ * A class that models Java's array types. ArrayTypes are parameterized by a Type and and an integer representing the array's
+ * dimension count. Two ArrayType are 'equal' if they are parameterized equally.
  */
 @SuppressWarnings("serial")
 public class ArrayType extends RefLikeType {
@@ -47,7 +44,7 @@ public class ArrayType extends RefLikeType {
 
   private ArrayType(Type baseType, int numDimensions) {
     if (!(baseType instanceof PrimType || baseType instanceof RefType || baseType instanceof NullType)) {
-      throw new RuntimeException("oops,  base type must be PrimType or RefType but not '" + baseType + "'");
+      throw new RuntimeException("oops, base type must be PrimType or RefType but not '" + baseType + "'");
     }
     if (numDimensions < 1) {
       throw new RuntimeException("attempt to create array with " + numDimensions + " dimensions");
@@ -57,20 +54,20 @@ public class ArrayType extends RefLikeType {
   }
 
   /**
-   * Creates an ArrayType parametrized by a given Type and dimension count.
+   * Creates an ArrayType parameterized by a given Type and dimension count.
    *
    * @param baseType
-   *          a Type to parametrize the ArrayType
+   *          a Type to parameterize the ArrayType
    * @param numDimensions
-   *          the dimension count to parametrize the ArrayType.
-   * @return an ArrayType parametrized accrodingly.
+   *          the dimension count to parameterize the ArrayType.
+   * @return an ArrayType parameterized accordingly.
    */
   public static ArrayType v(Type baseType, int numDimensions) {
     if (numDimensions < 0) {
       throw new RuntimeException("Invalid number of array dimensions: " + numDimensions);
     }
 
-    int orgDimensions = numDimensions;
+    final int orgDimensions = numDimensions;
     Type elementType = baseType;
     while (numDimensions > 0) {
       ArrayType ret = elementType.getArrayType();
@@ -86,20 +83,15 @@ public class ArrayType extends RefLikeType {
   }
 
   /**
-   * Two ArrayType are 'equal' if they are parametrized identically. (ie have same Type and dimension count.
+   * Two ArrayType are 'equal' if they are parameterized identically. (ie have same Type and dimension count.
    *
    * @param t
    *          object to test for equality
-   * @return true if t is an ArrayType and is parametrized identically to this.
+   * @return true if t is an ArrayType and is parameterized identically to this.
    */
   @Override
   public boolean equals(Object t) {
     return t == this;
-    /*
-     * if(t instanceof ArrayType) { ArrayType arrayType = (ArrayType) t;
-     *
-     * return this.numDimensions == arrayType.numDimensions && this.baseType.equals(arrayType.baseType); } else return false;
-     */
   }
 
   public void toString(UnitPrinter up) {
