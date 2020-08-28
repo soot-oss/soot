@@ -33,8 +33,20 @@ import soot.jimple.Expr;
 
 @SuppressWarnings("serial")
 public abstract class AbstractBinopExpr implements Expr {
-  protected ValueBox op1Box;
-  protected ValueBox op2Box;
+
+  protected final ValueBox op1Box;
+  protected final ValueBox op2Box;
+
+  protected AbstractBinopExpr(ValueBox op1Box, ValueBox op2Box) {
+    this.op1Box = op1Box;
+    this.op2Box = op2Box;
+  }
+
+  /** Returns the unique symbol for an operator. */
+  protected abstract String getSymbol();
+
+  @Override
+  public abstract Object clone();
 
   public Value getOp1() {
     return op1Box.getValue();
@@ -66,58 +78,58 @@ public abstract class AbstractBinopExpr implements Expr {
 
     list.addAll(op1Box.getValue().getUseBoxes());
     list.add(op1Box);
+
     list.addAll(op2Box.getValue().getUseBoxes());
     list.add(op2Box);
 
     return list;
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractBinopExpr) {
       AbstractBinopExpr abe = (AbstractBinopExpr) o;
-      return op1Box.getValue().equivTo(abe.op1Box.getValue()) && op2Box.getValue().equivTo(abe.op2Box.getValue())
-          && getSymbol().equals(abe.getSymbol());
+      return this.op1Box.getValue().equivTo(abe.op1Box.getValue()) && this.op2Box.getValue().equivTo(abe.op2Box.getValue())
+          && this.getSymbol().equals(abe.getSymbol());
     }
     return false;
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return op1Box.getValue().equivHashCode() * 101 + op2Box.getValue().equivHashCode() + 17 ^ getSymbol().hashCode();
   }
 
-  /** Returns the unique symbol for an operator. */
-  abstract protected String getSymbol();
-
-  abstract public Object clone();
-
+  @Override
   public String toString() {
-    Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
-    String leftOp = op1.toString(), rightOp = op2.toString();
-
-    return leftOp + getSymbol() + rightOp;
+    return op1Box.getValue().toString() + getSymbol() + op2Box.getValue().toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    // Value val1 = op1Box.getValue();
-    // Value val2 = op2Box.getValue();
-
-    if (PrecedenceTest.needsBrackets(op1Box, this)) {
-      up.literal("(");
-    }
-    op1Box.toString(up);
-    if (PrecedenceTest.needsBrackets(op1Box, this)) {
-      up.literal(")");
+    {
+      final boolean needsBrackets = PrecedenceTest.needsBrackets(op1Box, this);
+      if (needsBrackets) {
+        up.literal("(");
+      }
+      op1Box.toString(up);
+      if (needsBrackets) {
+        up.literal(")");
+      }
     }
 
     up.literal(getSymbol());
 
-    if (PrecedenceTest.needsBracketsRight(op2Box, this)) {
-      up.literal("(");
-    }
-    op2Box.toString(up);
-    if (PrecedenceTest.needsBracketsRight(op2Box, this)) {
-      up.literal(")");
+    {
+      final boolean needsBrackets = PrecedenceTest.needsBracketsRight(op2Box, this);
+      if (needsBrackets) {
+        up.literal("(");
+      }
+      op2Box.toString(up);
+      if (needsBrackets) {
+        up.literal(")");
+      }
     }
   }
 }

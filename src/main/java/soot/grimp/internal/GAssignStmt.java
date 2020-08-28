@@ -27,10 +27,12 @@ import soot.grimp.Grimp;
 import soot.jimple.internal.JAssignStmt;
 
 public class GAssignStmt extends JAssignStmt {
+
   public GAssignStmt(Value variable, Value rvalue) {
     super(Grimp.v().newVariableBox(variable), Grimp.v().newRValueBox(rvalue));
   }
 
+  @Override
   public Object clone() {
     return new GAssignStmt(Grimp.cloneIfNecessary(getLeftOp()), Grimp.cloneIfNecessary(getRightOp()));
   }

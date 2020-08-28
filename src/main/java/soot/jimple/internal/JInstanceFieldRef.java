@@ -28,10 +28,12 @@ import soot.Value;
 import soot.jimple.Jimple;
 
 public class JInstanceFieldRef extends AbstractInstanceFieldRef {
+
   public JInstanceFieldRef(Value base, SootFieldRef fieldRef) {
     super(Jimple.v().newLocalBox(base), fieldRef);
   }
 
+  @Override
   public Object clone() {
     return new JInstanceFieldRef(Jimple.cloneIfNecessary(getBase()), fieldRef);
   }

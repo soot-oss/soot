@@ -29,31 +29,37 @@ import soot.jimple.StmtSwitch;
 import soot.util.Switch;
 
 public class JBreakpointStmt extends AbstractStmt implements BreakpointStmt {
+
   public JBreakpointStmt() {
   }
 
+  @Override
   public String toString() {
     return Jimple.BREAKPOINT;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Jimple.BREAKPOINT);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((StmtSwitch) sw).caseBreakpointStmt(this);
   }
 
+  @Override
   public Object clone() {
     return new JBreakpointStmt();
   }
 
+  @Override
   public boolean fallsThrough() {
     return true;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }
-
 }
