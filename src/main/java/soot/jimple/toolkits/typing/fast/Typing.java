@@ -26,6 +26,7 @@ package soot.jimple.toolkits.typing.fast;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import soot.Local;
 import soot.Type;
@@ -34,10 +35,11 @@ import soot.Type;
  * @author Ben Bellamy
  */
 public class Typing {
+
   protected HashMap<Local, Type> map;
 
   public Typing(Collection<Local> vs) {
-    map = new HashMap<Local, Type>(vs.size());
+    this.map = new HashMap<Local, Type>(vs.size());
     final BottomType bottomType = BottomType.v();
     for (Local v : vs) {
       this.map.put(v, bottomType);
@@ -58,16 +60,15 @@ public class Typing {
 
   @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append('{');
-    for (Local v : this.map.keySet()) {
-      sb.append(v);
+    for (Map.Entry<Local, Type> e : this.map.entrySet()) {
+      sb.append(e.getKey());
       sb.append(':');
-      sb.append(this.get(v));
+      sb.append(e.getValue());
       sb.append(',');
     }
     sb.append('}');
     return sb.toString();
   }
-
 }

@@ -101,7 +101,8 @@ import soot.toolkits.scalar.UnitValueBoxPair;
  * @author Ben Bellamy
  */
 public class UseChecker extends AbstractStmtSwitch {
-  private JimpleBody jb;
+
+  private final JimpleBody jb;
 
   private Typing tg;
   private IUseVisitor uv;
@@ -114,12 +115,12 @@ public class UseChecker extends AbstractStmtSwitch {
   }
 
   public void check(Typing tg, IUseVisitor uv) {
-    this.tg = tg;
-    this.uv = uv;
-    if (this.tg == null) {
+    if (tg == null) {
       throw new RuntimeException("null typing passed to useChecker");
     }
 
+    this.tg = tg;
+    this.uv = uv;
     for (Iterator<Unit> i = this.jb.getUnits().snapshotIterator(); i.hasNext();) {
       if (uv.finish()) {
         return;
@@ -143,7 +144,8 @@ public class UseChecker extends AbstractStmtSwitch {
 
   private void handleBinopExpr(BinopExpr be, Stmt stmt, Type tlhs) {
     Value opl = be.getOp1(), opr = be.getOp2();
-    Type tl = AugEvalFunction.eval_(this.tg, opl, stmt, this.jb), tr = AugEvalFunction.eval_(this.tg, opr, stmt, this.jb);
+    Type tl = AugEvalFunction.eval_(this.tg, opl, stmt, this.jb);
+    Type tr = AugEvalFunction.eval_(this.tg, opr, stmt, this.jb);
 
     if (be instanceof AddExpr || be instanceof SubExpr || be instanceof MulExpr || be instanceof DivExpr
         || be instanceof RemExpr || be instanceof GeExpr || be instanceof GtExpr || be instanceof LeExpr
@@ -175,13 +177,16 @@ public class UseChecker extends AbstractStmtSwitch {
     ifr.setBase(this.uv.visit(ifr.getBase(), ifr.getFieldRef().declaringClass().getType(), stmt));
   }
 
+  @Override
   public void caseBreakpointStmt(BreakpointStmt stmt) {
   }
 
+  @Override
   public void caseInvokeStmt(InvokeStmt stmt) {
     this.handleInvokeExpr(stmt.getInvokeExpr(), stmt);
   }
 
+  @Override
   public void caseAssignStmt(AssignStmt stmt) {
     Value lhs = stmt.getLeftOp();
     Value rhs = stmt.getRightOp();
@@ -272,42 +277,35 @@ public class UseChecker extends AbstractStmtSwitch {
         // this could lead to any kind of object, so we have to look at the uses.
         // For some fixed type T, we assume that we can fix the array to T[].
         if (bt instanceof RefType || bt instanceof NullType) {
-          RefType rt = bt instanceof NullType ? null : (RefType) bt;
-          if (rt == null || rt.getSootClass().getName().equals("java.lang.Object")
-              || rt.getSootClass().getName().equals("java.io.Serializable")
-              || rt.getSootClass().getName().equals("java.lang.Cloneable")) {
+          String btName = bt instanceof NullType ? null : ((RefType) bt).getSootClass().getName();
+          if (btName == null || "java.lang.Object".equals(btName) || "java.io.Serializable".equals(btName)
+              || "java.lang.Cloneable".equals(btName)) {
             if (defs == null) {
               defs = LocalDefs.Factory.newLocalDefs(jb);
               uses = LocalUses.Factory.newLocalUses(jb, defs);
             }
 
-            outer: for (UnitValueBoxPair usePair : uses.getUsesOf(stmt)) {
+            OUTER: for (UnitValueBoxPair usePair : uses.getUsesOf(stmt)) {
               Stmt useStmt = (Stmt) usePair.getUnit();
               // Is the array element used in an invocation for which we have a type
               // from the callee's signature=
               if (useStmt.containsInvokeExpr()) {
-                for (int i = 0; i < useStmt.getInvokeExpr().getArgCount(); i++) {
-                  if (useStmt.getInvokeExpr().getArg(i) == usePair.getValueBox().getValue()) {
-                    et = useStmt.getInvokeExpr().getMethod().getParameterType(i);
+                InvokeExpr invokeExpr = useStmt.getInvokeExpr();
+                for (int i = 0; i < invokeExpr.getArgCount(); i++) {
+                  if (invokeExpr.getArg(i) == usePair.getValueBox().getValue()) {
+                    et = invokeExpr.getMethod().getParameterType(i);
                     at = et.makeArrayType();
-                    break outer;
+                    break OUTER;
                   }
                 }
-              }
-              // If we have a comparison, we look at the other value. Using the type
-              // of the value is at least closer to the truth than java.lang.Object
-              // if the other value is a primitive.
-              else if (useStmt instanceof IfStmt) {
-                IfStmt ifStmt = (IfStmt) useStmt;
-                if (ifStmt.getCondition() instanceof EqExpr) {
-                  EqExpr expr = (EqExpr) ifStmt.getCondition();
-                  final Value other;
-                  if (expr.getOp1() == usePair.getValueBox().getValue()) {
-                    other = expr.getOp2();
-                  } else {
-                    other = expr.getOp1();
-                  }
-
+              } else if (useStmt instanceof IfStmt) {
+                // If we have a comparison, we look at the other value. Using the type
+                // of the value is at least closer to the truth than java.lang.Object
+                // if the other value is a primitive.
+                Value condition = ((IfStmt) useStmt).getCondition();
+                if (condition instanceof EqExpr) {
+                  EqExpr expr = (EqExpr) condition;
+                  Value other = (expr.getOp1() == usePair.getValueBox().getValue()) ? expr.getOp2() : expr.getOp1();
                   Type newEt = getTargetType(other);
                   if (newEt != null) {
                     et = newEt;
@@ -316,17 +314,10 @@ public class UseChecker extends AbstractStmtSwitch {
               } else if (useStmt instanceof AssignStmt) {
                 // For binary expressions, we can look for type information in the
                 // other operands
-                AssignStmt useAssignStmt = (AssignStmt) useStmt;
-                Value rop = useAssignStmt.getRightOp();
+                Value rop = ((AssignStmt) useStmt).getRightOp();
                 if (rop instanceof BinopExpr) {
-                  BinopExpr binOp = (BinopExpr) useAssignStmt.getRightOp();
-                  final Value other;
-                  if (binOp.getOp1() == usePair.getValueBox().getValue()) {
-                    other = binOp.getOp2();
-                  } else {
-                    other = binOp.getOp1();
-                  }
-
+                  BinopExpr binOp = (BinopExpr) rop;
+                  Value other = (binOp.getOp1() == usePair.getValueBox().getValue()) ? binOp.getOp2() : binOp.getOp1();
                   Type newEt = getTargetType(other);
                   if (newEt != null) {
                     et = newEt;
@@ -400,42 +391,53 @@ public class UseChecker extends AbstractStmtSwitch {
     return null;
   }
 
+  @Override
   public void caseIdentityStmt(IdentityStmt stmt) {
   }
 
+  @Override
   public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
     stmt.setOp(this.uv.visit(stmt.getOp(), RefType.v("java.lang.Object"), stmt));
   }
 
+  @Override
   public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
     stmt.setOp(this.uv.visit(stmt.getOp(), RefType.v("java.lang.Object"), stmt));
   }
 
+  @Override
   public void caseGotoStmt(GotoStmt stmt) {
   }
 
+  @Override
   public void caseIfStmt(IfStmt stmt) {
     this.handleBinopExpr((BinopExpr) stmt.getCondition(), stmt, BooleanType.v());
   }
 
+  @Override
   public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
     stmt.setKey(this.uv.visit(stmt.getKey(), IntType.v(), stmt));
   }
 
+  @Override
   public void caseNopStmt(NopStmt stmt) {
   }
 
+  @Override
   public void caseReturnStmt(ReturnStmt stmt) {
     stmt.setOp(this.uv.visit(stmt.getOp(), this.jb.getMethod().getReturnType(), stmt));
   }
 
+  @Override
   public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
   }
 
+  @Override
   public void caseTableSwitchStmt(TableSwitchStmt stmt) {
     stmt.setKey(this.uv.visit(stmt.getKey(), IntType.v(), stmt));
   }
 
+  @Override
   public void caseThrowStmt(ThrowStmt stmt) {
     stmt.setOp(this.uv.visit(stmt.getOp(), RefType.v("java.lang.Throwable"), stmt));
   }

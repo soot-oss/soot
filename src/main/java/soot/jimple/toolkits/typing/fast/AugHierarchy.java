@@ -39,9 +39,6 @@ import soot.Type;
  * @author Ben Bellamy
  */
 public class AugHierarchy implements IHierarchy {
-  public Collection<Type> lcas(Type a, Type b) {
-    return lcas_(a, b);
-  }
 
   public static Collection<Type> lcas_(Type a, Type b) {
     if (TypeResolver.typesEqual(a, b)) {
@@ -79,63 +76,41 @@ public class AugHierarchy implements IHierarchy {
     }
   }
 
-  public boolean ancestor(Type ancestor, Type child) {
-    return ancestor_(ancestor, child);
-  }
-
   public static boolean ancestor_(Type ancestor, Type child) {
     if (TypeResolver.typesEqual(ancestor, child)) {
       return true;
     } else if (ancestor instanceof Integer1Type) {
-      if (child instanceof BottomType) {
-        return true;
-      } else {
-        return false;
-      }
+      return child instanceof BottomType;
     } else if (ancestor instanceof BooleanType) {
-      if (child instanceof BottomType || child instanceof Integer1Type) {
-        return true;
-      } else {
-        return false;
-      }
+      return child instanceof BottomType || child instanceof Integer1Type;
     } else if (ancestor instanceof Integer127Type) {
-      if (child instanceof BottomType || child instanceof Integer1Type) {
-        return true;
-      } else {
-        return false;
-      }
+      return child instanceof BottomType || child instanceof Integer1Type;
     } else if (ancestor instanceof ByteType || ancestor instanceof Integer32767Type) {
-      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type) {
-        return true;
-      } else {
-        return false;
-      }
+      return child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type;
     } else if (ancestor instanceof CharType) {
-      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type
-          || child instanceof Integer32767Type) {
-        return true;
-      } else {
-        return false;
-      }
+      return child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type
+          || child instanceof Integer32767Type;
     } else if (ancestor instanceof ShortType) {
-      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type
-          || child instanceof Integer32767Type || child instanceof ByteType) {
-        return true;
-      } else {
-        return false;
-      }
+      return child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type
+          || child instanceof Integer32767Type || child instanceof ByteType;
     } else if (ancestor instanceof IntType) {
-      if (child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type
+      return child instanceof BottomType || child instanceof Integer1Type || child instanceof Integer127Type
           || child instanceof Integer32767Type || child instanceof ByteType || child instanceof CharType
-          || child instanceof ShortType) {
-        return true;
-      } else {
-        return false;
-      }
+          || child instanceof ShortType;
     } else if (child instanceof IntegerType) {
       return false;
     } else {
       return BytecodeHierarchy.ancestor_(ancestor, child);
     }
+  }
+
+  @Override
+  public Collection<Type> lcas(Type a, Type b) {
+    return lcas_(a, b);
+  }
+
+  @Override
+  public boolean ancestor(Type ancestor, Type child) {
+    return ancestor_(ancestor, child);
   }
 }
