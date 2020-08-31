@@ -22,6 +22,7 @@ package soot.jimple.toolkits.scalar;
  * #L%
  */
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -60,7 +61,8 @@ public class ConditionalBranchFolder extends BodyTransformer {
 
     int numTrue = 0, numFalse = 0;
     Chain<Unit> units = stmtBody.getUnits();
-    for (Unit stmt : units.toArray(new Unit[units.size()])) {
+    for (Iterator<Unit> it = units.snapshotIterator(); it.hasNext();) {
+      Unit stmt = it.next();
       if (stmt instanceof IfStmt) {
         IfStmt ifs = (IfStmt) stmt;
         // check for constant-valued conditions
