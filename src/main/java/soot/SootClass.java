@@ -786,7 +786,11 @@ public class SootClass extends AbstractHost implements Numberable {
     methodList.remove(m);
     m.setDeclared(false);
     m.setDeclaringClass(null);
-    Scene.v().getMethodNumberer().remove(m);
+    Scene scene = Scene.v();
+    scene.getMethodNumberer().remove(m);
+
+    // We have caches for resolving default methods in the FastHierarchy, which are no longer valid
+    scene.modifyHierarchy();
   }
 
   /**
