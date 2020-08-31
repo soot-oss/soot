@@ -33,19 +33,21 @@ import soot.options.Options;
  * is a specific one for the very messy jb phase.
  */
 public class JimpleBodyPack extends BodyPack {
+
   public JimpleBodyPack() {
     super("jb");
   }
 
   /** Applies the transformations corresponding to the given options. */
   private void applyPhaseOptions(JimpleBody b, Map<String, String> opts) {
-    JBOptions options = new JBOptions(opts);
+    final boolean time = Options.v().time();
+    final JBOptions options = new JBOptions(opts);
 
     if (options.use_original_names()) {
       PhaseOptions.v().setPhaseOptionIfUnset("jb.lns", "only-stack-locals");
     }
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().splitTimer.start();
     }
 
@@ -60,20 +62,20 @@ public class JimpleBodyPack extends BodyPack {
 
     pacMan.getTransform("jb.ls").apply(b);
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().splitTimer.end();
     }
 
     pacMan.getTransform("jb.a").apply(b);
     pacMan.getTransform("jb.ule").apply(b);
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().assignTimer.start();
     }
 
     pacMan.getTransform("jb.tr").apply(b);
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().assignTimer.end();
     }
 
@@ -97,7 +99,7 @@ public class JimpleBodyPack extends BodyPack {
       pacMan.getTransform("jb.lns").apply(b);
     }
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().stmtCount += b.getUnits().size();
     }
   }

@@ -135,7 +135,7 @@ public class Modifier {
    * @return a textual representation of the modifiers.
    */
   public static String toString(int m) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
 
     if (isPublic(m)) {
       buffer.append("public ");
@@ -189,7 +189,6 @@ public class Modifier {
       buffer.append("interface ");
     }
 
-    return (buffer.toString()).trim();
+    return buffer.toString().trim();
   }
-
 }

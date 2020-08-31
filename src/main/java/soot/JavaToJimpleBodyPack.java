@@ -33,26 +33,28 @@ import soot.options.Options;
  * is a specific one for the very messy jb phase.
  */
 public class JavaToJimpleBodyPack extends BodyPack {
+
   public JavaToJimpleBodyPack() {
     super("jj");
   }
 
   /** Applies the transformations corresponding to the given options. */
   private void applyPhaseOptions(JimpleBody b, Map<String, String> opts) {
-    JJOptions options = new JJOptions(opts);
+    final boolean time = Options.v().time();
+    final JJOptions options = new JJOptions(opts);
 
     if (options.use_original_names()) {
       PhaseOptions.v().setPhaseOptionIfUnset("jj.lns", "only-stack-locals");
     }
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().splitTimer.start();
     }
 
     final PackManager pacMan = PackManager.v();
     pacMan.getTransform("jj.ls").apply(b);
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().splitTimer.end();
     }
 
@@ -60,13 +62,13 @@ public class JavaToJimpleBodyPack extends BodyPack {
     pacMan.getTransform("jj.ule").apply(b);
     pacMan.getTransform("jj.ne").apply(b);
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().assignTimer.start();
     }
 
     pacMan.getTransform("jj.tr").apply(b);
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().assignTimer.end();
     }
 
@@ -78,10 +80,10 @@ public class JavaToJimpleBodyPack extends BodyPack {
     pacMan.getTransform("jj.dae").apply(b);
     pacMan.getTransform("jj.cp-ule").apply(b);
     pacMan.getTransform("jj.lp").apply(b);
-    // PackManager.v().getTransform( "jj.ct" ).apply( b );
+    // pacMan.getTransform( "jj.ct" ).apply( b );
     pacMan.getTransform("jj.uce").apply(b);
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().stmtCount += b.getUnits().size();
     }
   }

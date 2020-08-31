@@ -35,6 +35,7 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class AbstractTrap implements Trap, Serializable {
+
   /** The exception being caught. */
   protected transient SootClass exception;
 
@@ -69,60 +70,74 @@ public class AbstractTrap implements Trap, Serializable {
     this.unitBoxes = Collections.unmodifiableList(Arrays.asList(beginUnitBox, endUnitBox, handlerUnitBox));
   }
 
+  @Override
   public Unit getBeginUnit() {
     return beginUnitBox.getUnit();
   }
 
+  @Override
   public Unit getEndUnit() {
     return endUnitBox.getUnit();
   }
 
+  @Override
   public Unit getHandlerUnit() {
     return handlerUnitBox.getUnit();
   }
 
+  @Override
   public UnitBox getHandlerUnitBox() {
     return handlerUnitBox;
   }
 
+  @Override
   public UnitBox getBeginUnitBox() {
     return beginUnitBox;
   }
 
+  @Override
   public UnitBox getEndUnitBox() {
     return endUnitBox;
   }
 
+  @Override
   public List<UnitBox> getUnitBoxes() {
     return unitBoxes;
   }
 
+  @Override
   public void clearUnitBoxes() {
     for (UnitBox box : getUnitBoxes()) {
       box.setUnit(null);
     }
   }
 
+  @Override
   public SootClass getException() {
     return exception;
   }
 
+  @Override
   public void setBeginUnit(Unit beginUnit) {
     beginUnitBox.setUnit(beginUnit);
   }
 
+  @Override
   public void setEndUnit(Unit endUnit) {
     endUnitBox.setUnit(endUnit);
   }
 
+  @Override
   public void setHandlerUnit(Unit handlerUnit) {
     handlerUnitBox.setUnit(handlerUnit);
   }
 
+  @Override
   public void setException(SootClass exception) {
     this.exception = exception;
   }
 
+  @Override
   public Object clone() {
     throw new RuntimeException();
   }
