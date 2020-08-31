@@ -31,6 +31,7 @@ import java.util.StringTokenizer;
 import java.util.function.Function;
 
 import soot.options.Options;
+import soot.tagkit.Host;
 import soot.tagkit.JimpleLineNumberTag;
 import soot.tagkit.Tag;
 import soot.toolkits.graph.UnitGraph;
@@ -81,7 +82,7 @@ public class Printer {
 
   public void incJimpleLnNum() {
     jimpleLnNum++;
-    // logger.debug("jimple Ln Num: "+jimpleLnNum);
+    // logger.debug("jimple Ln Num: " + jimpleLnNum);
   }
 
   public void printTo(SootClass cl, PrintWriter out) {
@@ -93,7 +94,7 @@ public class Printer {
       StringBuilder sb = new StringBuilder();
       for (StringTokenizer st = new StringTokenizer(Modifier.toString(cl.getModifiers())); st.hasMoreTokens();) {
         String tok = st.nextToken();
-        if (!cl.isInterface() || !tok.equals("abstract")) {
+        if (!cl.isInterface() || !"abstract".equals(tok)) {
           sb.append(tok).append(' ');
         }
       }
@@ -119,11 +120,12 @@ public class Printer {
 
     out.println();
     incJimpleLnNum();
-    /*
-     * if (!addJimpleLn()) { Iterator clTagsIt = cl.getTags().iterator(); while (clTagsIt.hasNext()) { final Tag t =
-     * (Tag)clTagsIt.next(); out.println(t); } }
-     */
-    out.println("{");
+    // if (!addJimpleLn()) {
+    // for (Tag t : cl.getTags()) {
+    // out.println(t);
+    // }
+    // }
+    out.println('{');
     incJimpleLnNum();
     final boolean printTagsInOutput = Options.v().print_tags_in_output();
     if (printTagsInOutput) {
@@ -157,7 +159,7 @@ public class Printer {
           incJimpleLnNum();
         }
 
-        while (methodIt.hasNext()) {
+        do { // condition already checked
           SootMethod method = methodIt.next();
 
           if (method.isPhantom()) {
@@ -175,11 +177,6 @@ public class Printer {
               }
             }
             printTo(body, out);
-
-            if (methodIt.hasNext()) {
-              out.println();
-              incJimpleLnNum();
-            }
           } else {
             if (printTagsInOutput) {
               for (Tag t : method.getTags()) {
@@ -188,12 +185,12 @@ public class Printer {
             }
             out.println("    " + method.getDeclaration() + ";");
             incJimpleLnNum();
-            if (methodIt.hasNext()) {
-              out.println();
-              incJimpleLnNum();
-            }
           }
-        }
+          if (methodIt.hasNext()) {
+            out.println();
+            incJimpleLnNum();
+          }
+        } while (methodIt.hasNext());
       }
     }
     out.println("}");
@@ -201,9 +198,11 @@ public class Printer {
   }
 
   /**
-   * Prints out the method corresponding to b Body, (declaration and body), in the textual format corresponding to the IR
-   * used to encode b body.
+   * Prints out the method corresponding to the {@link Body}, (declaration and body) in the textual format corresponding to
+   * the IR used to encode the {@link Body}.
    *
+   * @param b
+   *          the Body instance to print.
    * @param out
    *          a PrintWriter instance to print to.
    */
@@ -214,8 +213,8 @@ public class Printer {
 
     if (addJimpleLn()) {
       setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), b.getMethod()));
-      // logger.debug("added jimple ln tag for method: "+b.getMethod().toString()+"
-      // "+b.getMethod().getDeclaringClass().getName());
+      // logger.debug("added jimple ln tag for method: " + b.getMethod().toString() + " " +
+      // b.getMethod().getDeclaringClass().getName());
     } else {
       // only print tags if not printing attributes in a file
       // for (Tag t : b.getMethod().getTags()) {
@@ -232,7 +231,6 @@ public class Printer {
       up.setPositionTagger(new AttributesUnitPrinter(getJimpleLnNum()));
     }
     printLocalsInBody(b, up);
-
     printStatementsInBody(b, out, up, new soot.toolkits.graph.BriefUnitGraph(b));
 
     out.println("    }");
@@ -324,11 +322,13 @@ public class Printer {
           up.literal("*/");
           up.newline();
         }
-        /*
-         * Iterator udIt = currentStmt.getUseAndDefBoxes().iterator(); while (udIt.hasNext()) { ValueBox temp =
-         * (ValueBox)udIt.next(); Iterator vbtags = temp.getTags().iterator(); while (vbtags.hasNext()) { Tag t = (Tag)
-         * vbtags.next(); up.noIndent(); up.literal("VB Tag: "+t.toString()); up.newline(); } }
-         */
+        // for (ValueBox temp : currentStmt.getUseAndDefBoxes()) {
+        // for (Tag t : temp.getTags()) {
+        // up.noIndent();
+        // up.literal("VB Tag: " + t.toString());
+        // up.newline();
+        // }
+        // }
       }
     }
 
@@ -343,30 +343,24 @@ public class Printer {
       if (trapIt.hasNext()) {
         out.println();
         incJimpleLnNum();
-        while (trapIt.hasNext()) {
+        do { // condition already checked
           Trap trap = trapIt.next();
           Map<Unit, String> lbls = up.labels();
           out.println("        catch " + printSignature(trap.getException()) + " from " + lbls.get(trap.getBeginUnit())
               + " to " + lbls.get(trap.getEndUnit()) + " with " + lbls.get(trap.getHandlerUnit()) + ";");
           incJimpleLnNum();
-        }
+        } while (trapIt.hasNext());
       }
     }
   }
 
-  private int addJimpleLnTags(int lnNum, SootMethod meth) {
-    meth.addTag(new JimpleLineNumberTag(lnNum));
+  private int addJimpleLnTags(int lnNum, Host h) {
+    h.addTag(new JimpleLineNumberTag(lnNum));
     return lnNum + 1;
   }
 
-  private int addJimpleLnTags(int lnNum, SootField f) {
-    f.addTag(new JimpleLineNumberTag(lnNum));
-    return lnNum + 1;
-  }
-
-  /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
+  /** Prints the Locals in the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
   private void printLocalsInBody(Body body, UnitPrinter up) {
-    // Print out local variables
     Map<Type, List<Local>> typeToLocals = new DeterministicHashMap<Type, List<Local>>(body.getLocalCount() * 2 + 1, 0.7f);
 
     // Collect locals
@@ -376,7 +370,6 @@ public class Printer {
       if (localList == null) {
         typeToLocals.put(t, localList = new ArrayList<Local>());
       }
-
       localList.add(local);
     }
 
