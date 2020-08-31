@@ -339,4 +339,4 @@ public class UnconditionalBranchFolder extends BodyTransformer {
     newExpr.getOp2Box().addAllTagsOf(cond.getOp2Box());
     return newExpr;
   }
-} // JumpOptimizer
+}
