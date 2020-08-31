@@ -647,12 +647,9 @@ public class PackManager {
   }
 
   private void runBodyPacks(final Iterator<SootClass> classes) {
-    int threadNum = Options.v().num_threads();
-    if (threadNum < 1) {
-      threadNum = Runtime.getRuntime().availableProcessors();
-    }
-    CountingThreadPoolExecutor executor
-        = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+    int threadNum = Runtime.getRuntime().availableProcessors();
+    CountingThreadPoolExecutor executor =
+        new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     while (classes.hasNext()) {
       final SootClass c = classes.next();
