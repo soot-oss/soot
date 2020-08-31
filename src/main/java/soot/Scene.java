@@ -55,7 +55,6 @@ import org.slf4j.LoggerFactory;
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
-
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
@@ -620,7 +619,7 @@ public class Scene {
       String targetApk = "";
       Set<String> targetDexs = new HashSet<String>();
       for (String entry : classPathEntries) {
-        if (isApk(entry)) {
+        if (isApk(new File(entry))) {
           if (targetApk != null && !targetApk.isEmpty()) {
             throw new RuntimeException("only one Android application can be analyzed when using option -android-jars.");
           }
@@ -660,42 +659,27 @@ public class Scene {
     return jarPath;
   }
 
-  public static boolean isApk(String file) {
-    // decide if a file is an APK by its magic number and whether it contains dex file.
-    boolean r = false;
+  public static boolean isApk(File apk) {
     // first check magic number
-    File apk = new File(file);
     MagicNumberFileFilter apkFilter
         = new MagicNumberFileFilter(new byte[] { (byte) 0x50, (byte) 0x4B, (byte) 0x03, (byte) 0x04 });
     if (!apkFilter.accept(apk)) {
-      return r;
+      return false;
     }
     // second check if contains dex file.
-    ZipFile zf = null;
-    try {
-      zf = new ZipFile(file);
+    try (ZipFile zf = new ZipFile(apk)) {
       Enumeration<?> en = zf.entries();
       while (en.hasMoreElements()) {
         ZipEntry z = (ZipEntry) en.nextElement();
         String name = z.getName();
         if (name.equals("classes.dex")) {
-          r = true;
-          break;
+          return true;
         }
       }
     } catch (IOException e) {
       e.printStackTrace();
-    } finally {
-      if (zf != null) {
-        try {
-          zf.close();
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-      }
     }
-
-    return r;
+    return false;
   }
 
   /**
@@ -1156,8 +1140,7 @@ public class Scene {
     RefType type = nameToClass.get(className);
     if (type != null) {
       synchronized (type) {
-        if (type.hasSootClass()
-            || !SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME.equals(className)) {
+        if (type.hasSootClass() || !SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME.equals(className)) {
           SootClass tsc = type.getSootClass();
           if (tsc != null) {
             return tsc;
