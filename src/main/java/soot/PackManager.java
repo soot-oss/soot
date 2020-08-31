@@ -145,6 +145,7 @@ import soot.xml.XMLPrinter;
 public class PackManager {
   private static final Logger logger = LoggerFactory.getLogger(PackManager.class);
   public static boolean DEBUG = false;
+
   private final Map<String, Pack> packNameToPack = new HashMap<String, Pack>();
   private final List<Pack> packList = new LinkedList<Pack>();
   private boolean onlyStandardPacks = false;
@@ -316,9 +317,10 @@ public class PackManager {
     }
 
     // CFG Viewer
-    /*
-     * addPack(p = new BodyPack("cfg")); { p.add(new Transform("cfg.output", CFGPrinter.v())); }
-     */
+    // addPack(p = new BodyPack("cfg"));
+    // {
+    // p.add(new Transform("cfg.output", CFGPrinter.v()));
+    // }
 
     // Grimp body creation
     addPack(p = new BodyPack("gb"));
@@ -397,10 +399,7 @@ public class PackManager {
       return getPack(phaseName);
     }
     String packName = phaseName.substring(0, index);
-    if (!hasPack(packName)) {
-      return null;
-    }
-    return getPack(packName).get(phaseName);
+    return hasPack(packName) ? getPack(packName).get(phaseName) : null;
   }
 
   public Transform getTransform(String phaseName) {
@@ -454,8 +453,7 @@ public class PackManager {
           source.close();
         }
 
-        // Create tags from all values we only have in code assingments
-        // now
+        // Create tags from all values we only have in code assingments now
         for (SootClass sc : scene.getApplicationClasses()) {
           if (validate) {
             sc.validate();
@@ -621,8 +619,7 @@ public class PackManager {
   /* preprocess classes for DAVA */
   private void preProcessDAVA() {
     if (Options.v().output_format() == Options.output_format_dava) {
-      Map<String, String> options = PhaseOptions.v().getPhaseOptions("db");
-      if (!PhaseOptions.getBoolean(options, "source-is-javac")) {
+      if (!PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("db"), "source-is-javac")) {
         /*
          * It turns out that the exception attributes of a method i.e. those exceptions that a method can throw are only
          * checked by the Java compiler and not the JVM
@@ -650,9 +647,12 @@ public class PackManager {
   }
 
   private void runBodyPacks(final Iterator<SootClass> classes) {
-    int threadNum = Runtime.getRuntime().availableProcessors();
-    CountingThreadPoolExecutor executor =
-        new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+    int threadNum = Options.v().num_threads();
+    if (threadNum < 1) {
+      threadNum = Runtime.getRuntime().availableProcessors();
+    }
+    CountingThreadPoolExecutor executor
+        = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     while (classes.hasNext()) {
       final SootClass c = classes.next();
@@ -739,14 +739,13 @@ public class PackManager {
 
   /* post process for DAVA */
   private void postProcessDAVA() {
-    Map<String, String> options = PhaseOptions.v().getPhaseOptions("db.transformations");
-    boolean transformations = PhaseOptions.getBoolean(options, "enabled");
+    final boolean transformations =
+        PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("db.transformations"), "enabled");
+
     /*
      * apply analyses etc
      */
     for (SootClass s : Scene.v().getApplicationClasses()) {
-      String fileName = SourceLocator.v().getFileNameFor(s, Options.v().output_format());
-
       /*
        * Nomair A. Naeem 5-Jun-2005 Added to remove the *final* bug in Dava (often seen in AspectJ programs)
        */
@@ -764,8 +763,7 @@ public class PackManager {
        */
 
       // debug("analyzeAST","Advanced Analyses ALL DISABLED");
-
-      logger.debug("Analyzing " + fileName + "... ");
+      logger.debug("Analyzing " + SourceLocator.v().getFileNameFor(s, Options.v().output_format()) + "... ");
 
       /*
        * Nomair A. Naeem 29th Jan 2006 Added hook into going through each decompiled method again Need it for all the
@@ -774,15 +772,13 @@ public class PackManager {
       for (SootMethod m : s.getMethods()) {
         /*
          * 3rd April 2006 Fixing RuntimeException caused when you retrieve an active body when one is not present
-         *
          */
         if (m.hasActiveBody()) {
           DavaBody body = (DavaBody) m.getActiveBody();
           // System.out.println("body"+body.toString());
           if (transformations) {
             body.analyzeAST();
-          } // if tansformations are enabled
-          else {
+          } else {
             body.applyBugFixes();
           }
         }
@@ -809,8 +805,6 @@ public class PackManager {
     String pathForBuild = null;
     ArrayList<String> decompiledClasses = new ArrayList<String>();
     for (SootClass s : Scene.v().getApplicationClasses()) {
-      OutputStream streamOut = null;
-      PrintWriter writerOut = null;
       String fileName = SourceLocator.v().getFileNameFor(s, Options.v().output_format());
       decompiledClasses.add(fileName.substring(fileName.lastIndexOf('/') + 1));
       if (pathForBuild == null) {
@@ -821,10 +815,11 @@ public class PackManager {
         fileName = fileName + ".gz";
       }
 
+      PrintWriter writerOut = null;
       try {
+        OutputStream streamOut;
         if (jarFile != null) {
-          JarEntry entry = new JarEntry(fileName.replace('\\', '/'));
-          jarFile.putNextEntry(entry);
+          jarFile.putNextEntry(new JarEntry(fileName.replace('\\', '/')));
           streamOut = jarFile;
         } else {
           streamOut = new FileOutputStream(fileName);
@@ -839,16 +834,14 @@ public class PackManager {
 
       logger.debug("Generating " + fileName + "... ");
 
-      G.v().out.flush();
-
       DavaPrinter.v().printTo(s, writerOut);
-
-      G.v().out.flush();
 
       try {
         writerOut.flush();
         if (jarFile == null) {
-          streamOut.close();
+          writerOut.close();
+        } else {
+          jarFile.closeEntry();
         }
       } catch (IOException e) {
         throw new CompilationDeathException("Cannot close output file " + fileName);
@@ -871,7 +864,7 @@ public class PackManager {
         DavaBuildFile.generate(writerOut, decompiledClasses);
         writerOut.flush();
       } catch (IOException e) {
-        throw new CompilationDeathException("Cannot output file " + fileName, e);
+        throw new CompilationDeathException("Cannot open output file " + fileName, e);
       }
     }
   }
@@ -968,8 +961,8 @@ public class PackManager {
         }
 
         m.setActiveBody(sBody);
-        PackManager.v().getPack("stp").apply(sBody);
-        PackManager.v().getPack("sop").apply(sBody);
+        getPack("stp").apply(sBody);
+        getPack("sop").apply(sBody);
 
         if (produceJimple || (wholeShimple && !produceShimple)) {
           m.setActiveBody(sBody.toJimpleBody());
@@ -984,23 +977,23 @@ public class PackManager {
         UnreachableCodeEliminator.v().transform(body);
         DeadAssignmentEliminator.v().transform(body);
         UnusedLocalEliminator.v().transform(body);
-        PackManager.v().getPack("jtp").apply(body);
+        getPack("jtp").apply(body);
         if (Options.v().validate()) {
           body.validate();
         }
-        PackManager.v().getPack("jop").apply(body);
-        PackManager.v().getPack("jap").apply(body);
+        getPack("jop").apply(body);
+        getPack("jap").apply(body);
         if (Options.v().xml_attributes() && format != Options.output_format_jimple) {
           // System.out.println("collecting body tags");
           tc.collectBodyTags(body);
         }
       }
 
-      // PackManager.v().getPack("cfg").apply(m.retrieveActiveBody());
+      // getPack("cfg").apply(m.retrieveActiveBody());
 
       if (produceGrimp) {
         m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
-        PackManager.v().getPack("gop").apply(m.getActiveBody());
+        getPack("gop").apply(m.getActiveBody());
       } else if (produceBaf) {
         m.setActiveBody(convertJimpleBodyToBaf(m));
       }
@@ -1045,8 +1038,8 @@ public class PackManager {
     // DeadAssignmentEliminator.v().transform(body);
     // UnusedLocalEliminator.v().transform(body);
     BafBody bafBody = Baf.v().newBody(body);
-    PackManager.v().getPack("bop").apply(bafBody);
-    PackManager.v().getPack("tag").apply(bafBody);
+    getPack("bop").apply(bafBody);
+    getPack("tag").apply(bafBody);
     if (Options.v().validate()) {
       bafBody.validate();
     }
@@ -1055,7 +1048,6 @@ public class PackManager {
 
   protected void writeClass(SootClass c) {
     final int format = Options.v().output_format();
-
     switch (format) {
       case Options.output_format_none:
       case Options.output_format_dava:
