@@ -33,7 +33,6 @@ import soot.jimple.FieldRef;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
-import soot.util.Chain;
 import soot.validation.BodyValidator;
 import soot.validation.UnitValidationException;
 import soot.validation.ValidationException;
@@ -98,5 +97,4 @@ public enum FieldRefValidator implements BodyValidator {
   public boolean isBasicValidator() {
     return true;
   }
-
 }

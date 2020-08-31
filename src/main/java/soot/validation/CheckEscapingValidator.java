@@ -63,5 +63,4 @@ public enum CheckEscapingValidator implements BodyValidator {
   public boolean isBasicValidator() {
     return false;
   }
-
 }
