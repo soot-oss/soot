@@ -23,6 +23,7 @@ package soot.shimple.internal;
  */
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -72,8 +73,8 @@ public class SPatchingChain extends UnitPatchingChain {
   protected Set<Unit> phiNodeSet = new HashSet<Unit>();
 
   /**
-   * Flag that indicates whether control flow falls through from the box to the Phi node. null indicates we probably need a
-   * call to computeInternal().
+   * Flag that indicates whether control flow falls through from the unit referenced in the SUnitBox to the Phi node that
+   * owns the SUnitBox.
    **/
   protected Map<SUnitBox, Boolean> boxToNeedsPatching = new HashMap<SUnitBox, Boolean>();
 
@@ -191,6 +192,28 @@ public class SPatchingChain extends UnitPatchingChain {
   }
 
   @Override
+  public void insertAfter(Chain<Unit> toInsert, Unit point) {
+    for (Unit unit : toInsert) {
+      processPhiNode(unit);
+    }
+    super.insertAfter(toInsert, point);
+  }
+
+  @Override
+  public void insertAfter(Collection<? extends Unit> toInsert, Unit point) {
+    for (Unit unit : toInsert) {
+      processPhiNode(unit);
+    }
+    super.insertAfter(toInsert, point);
+  }
+
+  @Override
+  public void insertBefore(Unit toInsert, Unit point) {
+    processPhiNode(toInsert);
+    super.insertBefore(toInsert, point);
+  }
+
+  @Override
   public void insertBefore(List<Unit> toInsert, Unit point) {
     for (Unit unit : toInsert) {
       processPhiNode(unit);
@@ -199,8 +222,18 @@ public class SPatchingChain extends UnitPatchingChain {
   }
 
   @Override
-  public void insertBefore(Unit toInsert, Unit point) {
-    processPhiNode(toInsert);
+  public void insertBefore(Chain<Unit> toInsert, Unit point) {
+    for (Unit unit : toInsert) {
+      processPhiNode(unit);
+    }
+    super.insertBefore(toInsert, point);
+  }
+
+  @Override
+  public void insertBefore(Collection<? extends Unit> toInsert, Unit point) {
+    for (Unit unit : toInsert) {
+      processPhiNode(unit);
+    }
     super.insertBefore(toInsert, point);
   }
 
@@ -277,18 +310,21 @@ public class SPatchingChain extends UnitPatchingChain {
   }
 
   /**
+   * Computes {@link #boxToNeedsPatching} which maps each UnitBox from a PhiExpr to true if the referenced Unit falls-through
+   * to the statement containing the PhiExpr, false otherwise.
+   *
    * NOTE: This will *miss* all the Phi nodes outside a chain. So make sure you know what you are doing if you remove a Phi
    * node from a chain and don't put it back or call clearUnitBoxes() on it.
    **/
   protected void computeNeedsPatching() {
-    if (boxToPhiNode.keySet().isEmpty()) {
+    if (boxToPhiNode.isEmpty()) {
       return;
     }
 
     // we track the fallthrough control flow from boxes to the
     // corresponding Phi statements. trackedPhi provides a
     // mapping from the Phi being tracked to its relevant boxes.
-    MultiMap<Unit, UnitBox> trackedPhiToBoxes = new HashMultiMap<Unit, UnitBox>();
+    final MultiMap<Unit, UnitBox> trackedPhiToBoxes = new HashMultiMap<Unit, UnitBox>();
 
     // consider:
     //
@@ -298,7 +334,7 @@ public class SPatchingChain extends UnitPatchingChain {
     // Here control flow both fallsthrough and branches to label1.
     // If such an if statement is encountered, we do not want to
     // move any UnitBox pointers beyond the if statement.
-    Set<Unit> trackedBranchTargets = new HashSet<Unit>();
+    final Set<Unit> trackedBranchTargets = new HashSet<Unit>();
     for (Unit u : this) {
       // update trackedPhiToBoxes
       List<UnitBox> boxesToTrack = u.getBoxesPointingToThis();

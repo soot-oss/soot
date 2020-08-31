@@ -23,6 +23,7 @@ package soot;
  */
 
 import java.util.AbstractCollection;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -37,7 +38,7 @@ import soot.util.Chain;
 @SuppressWarnings("serial")
 public class PatchingChain<E extends Unit> extends AbstractCollection<E> implements Chain<E> {
 
-  protected Chain<E> innerChain;
+  protected final Chain<E> innerChain;
 
   /** Constructs a PatchingChain from the given Chain. */
   public PatchingChain(Chain<E> aChain) {
@@ -83,6 +84,11 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
     innerChain.insertAfter(toInsert, point);
   }
 
+  @Override
+  public void insertAfter(Collection<? extends E> toInsert, E point) {
+    innerChain.insertAfter(toInsert, point);
+  }
+
   /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
   @Override
   public void insertBefore(List<E> toInsert, E point) {
@@ -117,6 +123,21 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
   public void insertBefore(E toInsert, E point) {
     point.redirectJumpsToThisTo(toInsert);
     innerChain.insertBefore(toInsert, point);
+  }
+
+  @Override
+  public void insertBefore(Collection<? extends E> toInsert, E point) {
+    if (toInsert instanceof Chain) {
+      @SuppressWarnings("unchecked")
+      final Chain<E> temp = (Chain<E>) toInsert;
+      insertBefore(temp, point);
+    } else if (toInsert instanceof List) {
+      @SuppressWarnings("unchecked")
+      final List<E> temp = (List<E>) toInsert;
+      insertBefore(temp, point);
+    } else {
+      insertBefore(new ArrayList<>(toInsert), point);
+    }
   }
 
   /** Inserts <code>toInsert</code> in the Chain before <code>point</code> WITHOUT redirecting jumps. */
@@ -215,50 +236,21 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
     return innerChain.getPredOf(point);
   }
 
-  protected class PatchingIterator implements Iterator<E> {
+  /** Returns the size of this Chain. */
+  @Override
+  public int size() {
+    return innerChain.size();
+  }
 
-    protected final Chain<E> innerChain;
-    protected Iterator<E> innerIterator = null;
-    protected E lastObject;
-    protected boolean state = false;
+  /** Returns the number of times this chain has been modified. */
+  @Override
+  public long getModificationCount() {
+    return innerChain.getModificationCount();
+  }
 
-    protected PatchingIterator(Chain<E> innerChain) {
-      this.innerChain = innerChain;
-      innerIterator = innerChain.iterator();
-    }
-
-    protected PatchingIterator(Chain<E> innerChain, E u) {
-      this.innerChain = innerChain;
-      innerIterator = innerChain.iterator(u);
-    }
-
-    protected PatchingIterator(Chain<E> innerChain, E head, E tail) {
-      this.innerChain = innerChain;
-      innerIterator = innerChain.iterator(head, tail);
-    }
-
-    @Override
-    public boolean hasNext() {
-      return innerIterator.hasNext();
-    }
-
-    @Override
-    public E next() {
-      lastObject = innerIterator.next();
-      state = true;
-      return lastObject;
-    }
-
-    @Override
-    public void remove() {
-      if (!state) {
-        throw new IllegalStateException("remove called before first next() call");
-      } else {
-        state = false;
-        patchBeforeRemoval(innerChain, lastObject);
-        innerIterator.remove();
-      }
-    }
+  @Override
+  public Collection<E> getElementsUnsorted() {
+    return innerChain.getElementsUnsorted();
   }
 
   /**
@@ -288,30 +280,49 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
     return new PatchingIterator(innerChain, head, tail);
   }
 
-  /** Returns the size of this Chain. */
-  @Override
-  public int size() {
-    return innerChain.size();
-  }
+  protected class PatchingIterator implements Iterator<E> {
 
-  @Override
-  /** Returns the number of times this chain has been modified. */
-  public long getModificationCount() {
-    return innerChain.getModificationCount();
-  }
+    protected final Chain<E> innerChain;
+    protected final Iterator<E> innerIterator;
+    protected E lastObject;
+    protected boolean state = false;
 
-  @Override
-  public Collection<E> getElementsUnsorted() {
-    return innerChain.getElementsUnsorted();
-  }
+    protected PatchingIterator(Chain<E> innerChain) {
+      this.innerChain = innerChain;
+      this.innerIterator = innerChain.iterator();
+    }
 
-  @Override
-  public void insertAfter(Collection<? extends E> toInsert, E point) {
-    innerChain.insertAfter(toInsert, point);
-  }
+    protected PatchingIterator(Chain<E> innerChain, E u) {
+      this.innerChain = innerChain;
+      this.innerIterator = innerChain.iterator(u);
+    }
 
-  @Override
-  public void insertBefore(Collection<? extends E> toInsert, E point) {
-    innerChain.insertBefore(toInsert, point);
+    protected PatchingIterator(Chain<E> innerChain, E head, E tail) {
+      this.innerChain = innerChain;
+      this.innerIterator = innerChain.iterator(head, tail);
+    }
+
+    @Override
+    public boolean hasNext() {
+      return innerIterator.hasNext();
+    }
+
+    @Override
+    public E next() {
+      lastObject = innerIterator.next();
+      state = true;
+      return lastObject;
+    }
+
+    @Override
+    public void remove() {
+      if (!state) {
+        throw new IllegalStateException("remove called before first next() call");
+      } else {
+        state = false;
+        patchBeforeRemoval(innerChain, lastObject);
+        innerIterator.remove();
+      }
+    }
   }
 }
