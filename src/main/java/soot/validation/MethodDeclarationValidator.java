@@ -65,5 +65,4 @@ public enum MethodDeclarationValidator implements ClassValidator {
   public boolean isBasicValidator() {
     return true;
   }
-
 }
