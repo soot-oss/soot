@@ -29,8 +29,9 @@ import soot.EquivalentValue;
  */
 @Deprecated
 public class RefIntPair {
-  private EquivalentValue _ref;
-  private int _val;
+
+  private final EquivalentValue _ref;
+  private final int _val;
 
   // constructor is not public so that people go throught the ref pair constants factory on the analysis
   RefIntPair(EquivalentValue r, int v, BranchedRefVarsAnalysis brva) {
@@ -46,18 +47,20 @@ public class RefIntPair {
     return this._val;
   }
 
+  @Override
   public String toString() {
     String prefix = "(" + _ref + ", ";
-    if (_val == BranchedRefVarsAnalysis.kNull) {
-      return prefix + "null)";
-    } else if (_val == BranchedRefVarsAnalysis.kNonNull) {
-      return prefix + "non-null)";
-    } else if (_val == BranchedRefVarsAnalysis.kTop) {
-      return prefix + "top)";
-    } else if (_val == BranchedRefVarsAnalysis.kBottom) {
-      return prefix + "bottom)";
-    } else {
-      return prefix + _val + ")";
+    switch (_val) {
+      case BranchedRefVarsAnalysis.kNull:
+        return prefix + "null)";
+      case BranchedRefVarsAnalysis.kNonNull:
+        return prefix + "non-null)";
+      case BranchedRefVarsAnalysis.kTop:
+        return prefix + "top)";
+      case BranchedRefVarsAnalysis.kBottom:
+        return prefix + "bottom)";
+      default:
+        return prefix + _val + ")";
     }
   }
-} // end class RefIntPair
+}
