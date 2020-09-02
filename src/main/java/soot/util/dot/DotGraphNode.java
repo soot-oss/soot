@@ -35,7 +35,11 @@ public class DotGraphNode extends AbstractDotGraphElement implements Renderable 
 
   public DotGraphNode(String name) {
     // make any illegal name to be legal
-    this.name = "\"" + DotGraphUtility.replaceQuotes(name) + "\"";
+    this.name = '"' + DotGraphUtility.replaceQuotes(name) + '"';
+  }
+
+  public DotGraphNode(String name, boolean dontQuoteName) {
+    this.name = dontQuoteName ? DotGraphUtility.replaceQuotes(name) : '"' + DotGraphUtility.replaceQuotes(name) + '"';
   }
 
   public String getName() {

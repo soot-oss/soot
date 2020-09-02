@@ -55,6 +55,8 @@ public class DotGraph extends AbstractDotGraphElement implements Renderable {
 
   private final boolean isSubGraph;
 
+  private boolean dontQuoteNodeNames;
+
   private String graphname;
 
   private DotGraph(String graphname, boolean isSubGraph) {
@@ -62,6 +64,7 @@ public class DotGraph extends AbstractDotGraphElement implements Renderable {
     this.isSubGraph = isSubGraph;
     this.nodes = new HashMap<String, DotGraphNode>(100);
     this.drawElements = new LinkedList<Renderable>();
+    this.dontQuoteNodeNames = false;
   }
 
   /**
@@ -158,7 +161,7 @@ public class DotGraph extends AbstractDotGraphElement implements Renderable {
 
     DotGraphNode node = nodes.get(name);
     if (node == null) {
-      node = new DotGraphNode(name);
+      node = new DotGraphNode(name, dontQuoteNodeNames);
       nodes.put(name, node);
     }
     return node;
@@ -185,6 +188,15 @@ public class DotGraph extends AbstractDotGraphElement implements Renderable {
    */
   public boolean containsNode(DotGraphNode node) {
     return this.drawElements.contains(node);
+  }
+
+  /**
+   * NOTE: default is true
+   *
+   * @param value
+   */
+  public void quoteNodeNames(boolean value) {
+    this.dontQuoteNodeNames = !value;
   }
 
   /**
