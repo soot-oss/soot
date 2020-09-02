@@ -53,7 +53,7 @@ import soot.util.Switch;
  *
  * @author Navindra Umanee
  * @see soot.shimple.PhiExpr
- **/
+ */
 public class SPhiExpr implements PhiExpr {
   private static final Logger logger = LoggerFactory.getLogger(SPhiExpr.class);
 
@@ -65,10 +65,9 @@ public class SPhiExpr implements PhiExpr {
   /**
    * Create a trivial Phi expression for leftLocal. preds is an ordered list of the control flow predecessor Blocks of the
    * PhiExpr.
-   **/
+   */
   public SPhiExpr(Local leftLocal, List<Block> preds) {
-    type = leftLocal.getType();
-
+    this.type = leftLocal.getType();
     for (Block pred : preds) {
       addArg(leftLocal, pred);
     }
@@ -76,7 +75,7 @@ public class SPhiExpr implements PhiExpr {
 
   /**
    * Create a Phi expression from the given list of Values and Blocks.
-   **/
+   */
   public SPhiExpr(List<Value> args, List<Unit> preds) {
     if (args.isEmpty()) {
       throw new RuntimeException("Arg list may not be empty");
@@ -85,17 +84,15 @@ public class SPhiExpr implements PhiExpr {
       throw new RuntimeException("Arg list does not match Pred list");
     }
 
-    type = args.get(0).getType();
+    this.type = args.get(0).getType();
 
     Iterator<Unit> predsIt = preds.iterator();
     for (Value arg : args) {
-      Object pred = predsIt.next();
+      Unit pred = predsIt.next();
       if (pred instanceof Block) {
         addArg(arg, (Block) pred);
-      } else if (pred instanceof Unit) {
-        addArg(arg, (Unit) pred);
       } else {
-        throw new RuntimeException("Must be a CFG block or tail unit.");
+        addArg(arg, pred);
       }
     }
   }
@@ -364,7 +361,7 @@ public class SPhiExpr implements PhiExpr {
 
   /**
    * Update predToPair cache map which could be out-of-sync due to external setUnit or clone operations on the UnitBoxes.
-   **/
+   */
   protected void updateCache() {
     // Always attempt to allocate the next power of 2 sized map
     int needed = argPairs.size();
@@ -378,18 +375,17 @@ public class SPhiExpr implements PhiExpr {
   public boolean equivTo(Object o) {
     if (o instanceof SPhiExpr) {
       SPhiExpr pe = (SPhiExpr) o;
-      if (this.getArgCount() != pe.getArgCount()) {
-        return false;
-      }
-      for (int i = 0; i < this.getArgCount(); i++) {
-        if (!this.argPairs.get(i).equivTo(pe.argPairs.get(i))) {
-          return false;
+      int argCount = this.getArgCount();
+      if (argCount == pe.getArgCount()) {
+        for (int i = 0; i < argCount; i++) {
+          if (!this.argPairs.get(i).equivTo(pe.argPairs.get(i))) {
+            return false;
+          }
         }
+        return true;
       }
-      return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   @Override

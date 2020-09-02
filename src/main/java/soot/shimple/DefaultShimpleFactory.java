@@ -23,9 +23,6 @@ package soot.shimple;
  */
 
 import soot.Body;
-import soot.PointsToAnalysis;
-import soot.jimple.toolkits.callgraph.CallGraph;
-import soot.jimple.toolkits.pointer.SideEffectAnalysis;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.shimple.toolkits.graph.GlobalValueNumberer;
 import soot.shimple.toolkits.graph.SimpleGlobalValueNumberer;
@@ -45,8 +42,9 @@ import soot.toolkits.graph.UnitGraph;
 
 /**
  * @author Navindra Umanee
- **/
+ */
 public class DefaultShimpleFactory implements ShimpleFactory {
+
   protected final Body body;
 
   protected UnitGraph ug;

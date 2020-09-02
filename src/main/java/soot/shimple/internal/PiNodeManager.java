@@ -78,8 +78,9 @@ import soot.util.MultiMap;
  * @see soot.shimple.ShimpleBody
  * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
  *      the Control Dependence Graph</a>
- **/
+ */
 public class PiNodeManager {
+
   protected final ShimpleBody body;
   protected final ShimpleFactory sf;
   protected final boolean trimmed;
@@ -89,7 +90,7 @@ public class PiNodeManager {
 
   /**
    * Transforms the provided body to pure SSA form.
-   **/
+   */
   public PiNodeManager(ShimpleBody body, boolean trimmed, ShimpleFactory sf) {
     this.body = body;
     this.trimmed = trimmed;
@@ -129,8 +130,8 @@ public class PiNodeManager {
 
     boolean change = false;
     {
-      DominatorTree<Block> dt = sf.getReverseDominatorTree();
-      DominanceFrontier<Block> df = sf.getReverseDominanceFrontier();
+      final DominatorTree<Block> dt = sf.getReverseDominatorTree();
+      final DominanceFrontier<Block> df = sf.getReverseDominanceFrontier();
 
       /* Routine initialisations. */
       int iterCount = 0;
@@ -203,14 +204,11 @@ public class PiNodeManager {
   }
 
   public void piHandleIfStmt(Local local, IfStmt u) {
+    final PatchingChain<Unit> units = body.getUnits();
+
     Unit target = u.getTarget();
-
-    PiExpr pit = Shimple.v().newPiExpr(local, u, Boolean.TRUE);
-    PiExpr pif = Shimple.v().newPiExpr(local, u, Boolean.FALSE);
-    Unit addt = Jimple.v().newAssignStmt(local, pit);
-    Unit addf = Jimple.v().newAssignStmt(local, pif);
-
-    PatchingChain<Unit> units = body.getUnits();
+    Unit addt = Jimple.v().newAssignStmt(local, Shimple.v().newPiExpr(local, u, Boolean.TRUE));
+    Unit addf = Jimple.v().newAssignStmt(local, Shimple.v().newPiExpr(local, u, Boolean.FALSE));
 
     // insert after should be safe; a new block should result if
     // the Unit originally after the IfStmt had another predecessor.
@@ -223,21 +221,15 @@ public class PiNodeManager {
 
     // handle immediate predecessor if it falls through
     // *** FIXME: Does SPatchingChain do the right thing?
-    PREDFALLSTHROUGH: {
+    {
       Unit predOfTarget;
       try {
         predOfTarget = units.getPredOf(target);
       } catch (NoSuchElementException e) {
         predOfTarget = null;
       }
-
-      if (predOfTarget == null) {
-        break PREDFALLSTHROUGH;
-      }
-
-      if (predOfTarget.fallsThrough()) {
-        GotoStmt gotoStmt = Jimple.v().newGotoStmt(target);
-        units.insertAfter(gotoStmt, predOfTarget);
+      if (predOfTarget != null && predOfTarget.fallsThrough()) {
+        units.insertAfter(Jimple.v().newGotoStmt(target), predOfTarget);
       }
     }
 
@@ -254,7 +246,7 @@ public class PiNodeManager {
       LookupSwitchStmt lss = (LookupSwitchStmt) u;
       targetBoxes.add(lss.getDefaultTargetBox());
       targetKeys.add("default");
-      for (int i = 0; i < lss.getTargetCount(); i++) {
+      for (int i = 0, e = lss.getTargetCount(); i < e; i++) {
         targetBoxes.add(lss.getTargetBox(i));
       }
       targetKeys.addAll(lss.getLookupValues());
@@ -265,7 +257,7 @@ public class PiNodeManager {
 
       targetBoxes.add(tss.getDefaultTargetBox());
       targetKeys.add("default");
-      for (int i = 0; i <= (hi - low); i++) {
+      for (int i = 0, e = (hi - low); i <= e; i++) {
         targetBoxes.add(tss.getTargetBox(i));
       }
       for (int i = low; i <= hi; i++) {
@@ -275,13 +267,9 @@ public class PiNodeManager {
       throw new RuntimeException("Assertion failed.");
     }
 
-    for (int count = 0; count < targetBoxes.size(); count++) {
+    for (int count = 0, e = targetBoxes.size(); count < e; count++) {
       UnitBox targetBox = targetBoxes.get(count);
       Unit target = targetBox.getUnit();
-      Object targetKey = targetKeys.get(count);
-
-      PiExpr pi1 = Shimple.v().newPiExpr(local, u, targetKey);
-      Unit add1 = Jimple.v().newAssignStmt(local, pi1);
 
       PatchingChain<Unit> units = body.getUnits();
 
@@ -291,25 +279,20 @@ public class PiNodeManager {
 
       // handle immediate predecessor if it falls through
       // *** FIXME: Does SPatchingChain do the right thing?
-      PREDFALLSTHROUGH: {
+      {
         Unit predOfTarget;
         try {
           predOfTarget = (Unit) units.getPredOf(target);
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException ex) {
           predOfTarget = null;
         }
-
-        if (predOfTarget == null) {
-          break PREDFALLSTHROUGH;
-        }
-
-        if (predOfTarget.fallsThrough()) {
-          GotoStmt gotoStmt = Jimple.v().newGotoStmt(target);
-          units.insertAfter(gotoStmt, predOfTarget);
+        if (predOfTarget != null && predOfTarget.fallsThrough()) {
+          units.insertAfter(Jimple.v().newGotoStmt(target), predOfTarget);
         }
       }
 
       // we do not want to move the pointers for other branching statements
+      Unit add1 = Jimple.v().newAssignStmt(local, Shimple.v().newPiExpr(local, u, targetKeys.get(count)));
       units.getNonPatchingChain().insertBefore(add1, target);
       targetBox.setUnit(add1);
     }

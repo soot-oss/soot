@@ -31,7 +31,7 @@ import soot.toolkits.scalar.ValueUnitPair;
  * value.
  *
  * @author Navindra Umanee
- **/
+ */
 public class SValueUnitPair extends ValueUnitPair implements SUnitBox {
 
   protected boolean unitChanged;
@@ -54,7 +54,7 @@ public class SValueUnitPair extends ValueUnitPair implements SUnitBox {
 
   /**
    * @see SUnitBox#isUnitChanged()
-   **/
+   */
   @Override
   public boolean isUnitChanged() {
     return unitChanged;
@@ -62,7 +62,7 @@ public class SValueUnitPair extends ValueUnitPair implements SUnitBox {
 
   /**
    * @see SUnitBox#setUnitChanged(boolean)
-   **/
+   */
   @Override
   public void setUnitChanged(boolean unitChanged) {
     this.unitChanged = unitChanged;

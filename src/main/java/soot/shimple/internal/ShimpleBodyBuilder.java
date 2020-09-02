@@ -76,23 +76,32 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  * @see soot.shimple.ShimpleBody
  * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
  *      the Control Dependence Graph</a>
- **/
+ */
 public class ShimpleBodyBuilder {
+
+  private static String freshSeparator = "_";
+
   protected final ShimpleBody body;
   protected final ShimpleOptions options;
   protected final ShimpleFactory sf;
 
-  /**
-   * A fixed list of all original Locals.
-   **/
+  // A fixed list of all original Locals.
   protected List<Local> origLocals;
+
+  // Maps new name Strings to Locals.
+  protected Map<String, Local> newLocals;
+  // Maps renamed Locals to original Locals.
+  protected Map<Local, Local> newLocalsToOldLocal;
+
+  protected int[] assignmentCounters;
+  protected Stack<Integer>[] namingStacks;
 
   public final PhiNodeManager phi;
   public final PiNodeManager pi;
 
   /**
    * Transforms the provided body to pure SSA form.
-   **/
+   */
   public ShimpleBodyBuilder(ShimpleBody body) {
     // Must remove nops prior to building the CFG because NopStmt appearing
     // before the IdentityStmt in a trap handler that is itself protected
@@ -164,7 +173,7 @@ public class ShimpleBodyBuilder {
    * use some improvements.
    *
    * @see soot.options.ShimpleOptions
-   **/
+   */
   public void eliminatePhiNodes() {
     if (phi.doEliminatePhiNodes()) {
       makeUniqueLocalNames();
@@ -177,31 +186,19 @@ public class ShimpleBodyBuilder {
   }
 
   /**
-   * Maps new name Strings to Locals.
-   **/
-  protected Map<String, Local> newLocals;
-
-  /**
-   * Maps renamed Locals to original Locals.
-   **/
-  protected Map<Local, Local> newLocalsToOldLocal;
-
-  protected int[] assignmentCounters;
-  protected Stack<Integer>[] namingStacks;
-
-  /**
    * Variable Renaming Algorithm from Cytron et al 91, P26-8, implemented in various bits and pieces by the next functions.
    * Must be called after trivial nodes have been added.
-   **/
+   */
   public void renameLocals() {
     update();
 
     this.newLocals = new HashMap<String, Local>();
     this.newLocalsToOldLocal = new HashMap<Local, Local>();
-
     final int size = origLocals.size();
     this.assignmentCounters = new int[size];
-    this.namingStacks = new Stack[size];
+    @SuppressWarnings("unchecked")
+    Stack<Integer>[] temp = new Stack[size];
+    this.namingStacks = temp;
 
     for (int i = 0; i < size; i++) {
       namingStacks[i] = new Stack<Integer>();
@@ -215,70 +212,66 @@ public class ShimpleBodyBuilder {
         renameLocalsSearch(heads.get(0));
         return;
       default:
-        throw new RuntimeException("Assertion failed:  Only one head expected.");
+        throw new RuntimeException("Assertion failed: Only one head expected.");
     }
   }
 
   /**
    * Driven by renameLocals().
-   **/
+   */
   public void renameLocalsSearch(Block block) {
     // accumulated in Step 1 to be re-processed in Step 4
     List<Local> lhsLocals = new ArrayList<Local>();
 
     // Step 1 of 4 -- Rename block's uses (ordinary) and defs
-    {
-      // accumulated and re-processed in a later loop
-      for (Unit unit : block) {
-        // Step 1A
-        if (!Shimple.isPhiNode(unit)) {
-          for (ValueBox useBox : unit.getUseBoxes()) {
-            Value use = useBox.getValue();
+    // accumulated and re-processed in a later loop
+    for (Unit unit : block) {
+      // Step 1A
+      if (!Shimple.isPhiNode(unit)) {
+        for (ValueBox useBox : unit.getUseBoxes()) {
+          Value use = useBox.getValue();
+          int localIndex = indexOfLocal(use);
 
-            int localIndex = indexOfLocal(use);
-
-            // not one of our locals
-            if (localIndex == -1) {
-              continue;
-            }
-            Stack<Integer> namingStack = namingStacks[localIndex];
-            if (namingStack.empty()) {
-              continue;
-            }
-            Integer subscript = namingStack.peek();
-            Local renamedLocal = fetchNewLocal((Local) use, subscript);
-            useBox.setValue(renamedLocal);
-          }
-        }
-
-        // Step 1B
-        if (unit instanceof DefinitionStmt) {
-          DefinitionStmt defStmt = (DefinitionStmt) unit;
-          ValueBox lhsLocalBox = defStmt.getLeftOpBox();
-          Value lhsValue = lhsLocalBox.getValue();
-
-          // not something we're interested in
-          if (!origLocals.contains(lhsValue)) {
+          // not one of our locals
+          if (localIndex == -1) {
             continue;
           }
-
-          Local lhsLocal = (Local) lhsValue;
-
-          // re-processed in Step 4
-          lhsLocals.add(lhsLocal);
-
-          int localIndex = indexOfLocal(lhsLocal);
-          if (localIndex == -1) {
-            throw new RuntimeException("Assertion failed.");
+          Stack<Integer> namingStack = namingStacks[localIndex];
+          if (namingStack.empty()) {
+            continue;
           }
-
-          Integer subscript = assignmentCounters[localIndex];
-          Local newLhsLocal = fetchNewLocal(lhsLocal, subscript);
-          lhsLocalBox.setValue(newLhsLocal);
-
-          namingStacks[localIndex].push(subscript);
-          assignmentCounters[localIndex]++;
+          Integer subscript = namingStack.peek();
+          Local renamedLocal = fetchNewLocal((Local) use, subscript);
+          useBox.setValue(renamedLocal);
         }
+      }
+      // Step 1B
+      if (unit instanceof DefinitionStmt) {
+        DefinitionStmt defStmt = (DefinitionStmt) unit;
+        ValueBox lhsLocalBox = defStmt.getLeftOpBox();
+        Value lhsValue = lhsLocalBox.getValue();
+
+        // not something we're interested in
+        if (!origLocals.contains(lhsValue)) {
+          continue;
+        }
+
+        Local lhsLocal = (Local) lhsValue;
+
+        // re-processed in Step 4
+        lhsLocals.add(lhsLocal);
+
+        int localIndex = indexOfLocal(lhsLocal);
+        if (localIndex == -1) {
+          throw new RuntimeException("Assertion failed.");
+        }
+
+        Integer subscript = assignmentCounters[localIndex];
+        Local newLhsLocal = fetchNewLocal(lhsLocal, subscript);
+        lhsLocalBox.setValue(newLhsLocal);
+
+        namingStacks[localIndex].push(subscript);
+        assignmentCounters[localIndex]++;
       }
     }
 
@@ -291,30 +284,26 @@ public class ShimpleBodyBuilder {
 
       for (Unit unit : succ) {
         PhiExpr phiExpr = Shimple.getPhiExpr(unit);
-        if (phiExpr == null) {
-          continue;
-        }
+        if (phiExpr != null) {
+          // simulate whichPred
+          ValueBox phiArgBox = phiExpr.getArgBox(block);
+          if (phiArgBox == null) {
+            throw new RuntimeException("Assertion failed. Cannot find " + block + " in " + phiExpr);
+          }
 
-        // simulate whichPred
-        int argIndex = phiExpr.getArgIndex(block);
-        if (argIndex == -1) {
-          throw new RuntimeException("Assertion failed.");
-        }
+          Local phiArg = (Local) phiArgBox.getValue();
 
-        ValueBox phiArgBox = phiExpr.getArgBox(argIndex);
+          int localIndex = indexOfLocal(phiArg);
+          if (localIndex == -1) {
+            throw new RuntimeException("Assertion failed.");
+          }
 
-        Local phiArg = (Local) phiArgBox.getValue();
-
-        int localIndex = indexOfLocal(phiArg);
-        if (localIndex == -1) {
-          throw new RuntimeException("Assertion failed.");
-        }
-
-        Stack<Integer> namingStack = namingStacks[localIndex];
-        if (!namingStack.empty()) {
-          Integer subscript = namingStack.peek();
-          Local newPhiArg = fetchNewLocal(phiArg, subscript);
-          phiArgBox.setValue(newPhiArg);
+          Stack<Integer> namingStack = namingStacks[localIndex];
+          if (!namingStack.empty()) {
+            Integer subscript = namingStack.peek();
+            Local newPhiArg = fetchNewLocal(phiArg, subscript);
+            phiArgBox.setValue(newPhiArg);
+          }
         }
       }
     }
@@ -336,12 +325,12 @@ public class ShimpleBodyBuilder {
       namingStacks[lhsLocalIndex].pop();
     }
 
-    /* And we're done. The renaming process is complete. */
+    // And we're done. The renaming process is complete.
   }
 
   /**
    * Clever convenience function to fetch or create new Local's given a Local and the desired subscript.
-   **/
+   */
   protected Local fetchNewLocal(Local local, Integer subscript) {
     Local oldLocal = origLocals.contains(local) ? local : newLocalsToOldLocal.get(local);
     if (subscript == 0) {
@@ -366,22 +355,20 @@ public class ShimpleBodyBuilder {
   /**
    * Convenient function that maps new Locals to the originating Local, and finds the appropriate array index into the naming
    * structures.
-   **/
+   */
   protected int indexOfLocal(Value local) {
     int localIndex = origLocals.indexOf(local);
-
     if (localIndex == -1) {
       // might be null
       Local oldLocal = newLocalsToOldLocal.get(local);
       localIndex = origLocals.indexOf(oldLocal);
     }
-
     return localIndex;
   }
 
   /**
    * Make sure the locals in the given body all have unique String names. Renaming is done if necessary.
-   **/
+   */
   public void makeUniqueLocalNames() {
     if (options.standard_local_names()) {
       LocalNameStandardizer.v().transform(body);
@@ -403,19 +390,15 @@ public class ShimpleBodyBuilder {
 
   /**
    * Given a set of Strings, return a new name for dupName that is not currently in the set.
-   **/
+   */
   public static String makeUniqueLocalName(String dupName, Set<String> localNames) {
     int counter = 1;
     String newName = dupName;
-
     while (localNames.contains(newName)) {
       newName = dupName + freshSeparator + counter++;
     }
-
     return newName;
   }
-
-  static String freshSeparator = "_";
 
   public static void setSeparator(String sep) {
     freshSeparator = sep;

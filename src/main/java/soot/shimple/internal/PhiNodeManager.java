@@ -60,8 +60,9 @@ import soot.util.MultiMap;
  * @see soot.shimple.ShimpleBody
  * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
  *      the Control Dependence Graph</a>
- **/
+ */
 public class PhiNodeManager {
+
   protected final ShimpleBody body;
   protected final ShimpleFactory sf;
 
@@ -90,7 +91,7 @@ public class PhiNodeManager {
    * <p>
    * Special Java case: If a variable is not defined along all paths of entry to a node, a Phi node is not needed.
    * </p>
-   **/
+   */
   public boolean insertTrivialPhiNodes() {
     update();
 
@@ -121,8 +122,8 @@ public class PhiNodeManager {
 
     boolean change = false;
     {
-      DominatorTree<Block> dt = sf.getDominatorTree();
-      DominanceFrontier<Block> df = sf.getDominanceFrontier();
+      final DominatorTree<Block> dt = sf.getDominatorTree();
+      final DominanceFrontier<Block> df = sf.getDominanceFrontier();
 
       /* Routine initialisations. */
       int iterCount = 0;
@@ -139,6 +140,7 @@ public class PhiNodeManager {
 
         // initialise worklist
         {
+          assert workList.isEmpty();
           List<Block> def_points = e.getValue();
           // if the local is only defined once, no need for phi nodes
           if (def_points.size() == 1) {
@@ -181,17 +183,18 @@ public class PhiNodeManager {
 
   /**
    * Inserts a trivial Phi node with the appropriate number of arguments.
-   **/
+   */
   public void prependTrivialPhiNode(Local local, Block frontierBlock) {
     PhiExpr pe = Shimple.v().newPhiExpr(local, frontierBlock.getPreds());
     pe.setBlockId(frontierBlock.getIndexInMethod());
     Unit trivialPhi = Jimple.v().newAssignStmt(local, pe);
 
     // is it a catch block?
-    if (frontierBlock.getHead() instanceof IdentityUnit) {
-      frontierBlock.insertAfter(trivialPhi, frontierBlock.getHead());
+    Unit head = frontierBlock.getHead();
+    if (head instanceof IdentityUnit) {
+      frontierBlock.insertAfter(trivialPhi, head);
     } else {
-      frontierBlock.insertBefore(trivialPhi, frontierBlock.getHead());
+      frontierBlock.insertBefore(trivialPhi, head);
     }
 
     varToBlocks.put(local, frontierBlock);
@@ -201,7 +204,7 @@ public class PhiNodeManager {
    * Exceptional Phi nodes have a huge number of arguments and control flow predecessors by default. Since it is useless
    * trying to keep the number of arguments and control flow predecessors in synch, we might as well trim out all redundant
    * arguments and eliminate a huge number of copy statements when we get out of SSA form in the process.
-   **/
+   */
   public void trimExceptionalPhiNodes() {
     Set<Unit> handlerUnits = new HashSet<Unit>();
     for (Trap trap : body.getTraps()) {
@@ -224,7 +227,7 @@ public class PhiNodeManager {
 
   /**
    * @see #trimExceptionalPhiNodes()
-   **/
+   */
   public void trimPhiNode(PhiExpr phiExpr) {
     /*
      * A value may appear many times in an exceptional Phi. Hence, the same value may be associated with many UnitBoxes. We
@@ -260,8 +263,8 @@ public class PhiNodeManager {
 
         // go through each challenger and see if we dominate them
         // if not, the challenger becomes the new champ
-        for (Iterator<ValueUnitPair> iterator = challengers.iterator(); iterator.hasNext();) {
-          ValueUnitPair challenger = iterator.next();
+        for (Iterator<ValueUnitPair> itr = challengers.iterator(); itr.hasNext();) {
+          ValueUnitPair challenger = itr.next();
           if (challenger.equals(champ)) {
             continue;
           }
@@ -269,13 +272,17 @@ public class PhiNodeManager {
           if (dominates(champU, challengerU)) {
             // kill the challenger
             phiExpr.removeArg(challenger);
-            iterator.remove();
+            itr.remove();
           } else if (dominates(challengerU, champU)) {
             // we die, find a new champ
             phiExpr.removeArg(champ);
             champ = challenger;
             champU = champ.getUnit();
           } else {
+            // neither wins, oops! we'll have to try the next available champ
+            // at the next pass. It may very well be inevitable that we will
+            // have two identical value args in an exceptional PhiExpr, but the
+            // more we can trim the better.
             retry = true;
           }
         }
@@ -309,7 +316,7 @@ public class PhiNodeManager {
 
   /**
    * Returns true if champ dominates challenger. Note that false doesn't necessarily mean that challenger dominates champ.
-   **/
+   */
   public boolean dominates(Unit champ, Unit challenger) {
     if (champ == null || challenger == null) {
       throw new RuntimeException("Assertion failed.");
@@ -351,7 +358,7 @@ public class PhiNodeManager {
   /**
    * Eliminate Phi nodes in block by naively replacing them with shimple assignment statements in the control flow
    * predecessors. Returns true if new locals were added to the body during the process, false otherwise.
-   **/
+   */
   public boolean doEliminatePhiNodes() {
     // flag that indicates whether we created new locals during the elimination process
     boolean addedNewLocals = false;
@@ -378,7 +385,7 @@ public class PhiNodeManager {
       PhiExpr phi = Shimple.getPhiExpr(unit);
       if (phi != null) {
         Local lhsLocal = Shimple.getLhsLocal(unit);
-        for (int i = 0; i < phi.getArgCount(); i++) {
+        for (int i = 0, e = phi.getArgCount(); i < e; i++) {
           Value phiValue = phi.getValue(i);
           equivStmts.add(jimp.newAssignStmt(lhsLocal, phiValue));
           predBoxes.add(phi.getArgBox(i));
@@ -393,7 +400,7 @@ public class PhiNodeManager {
     }
 
     /* Avoid Concurrent Modification exceptions. */
-    for (int i = 0; i < equivStmts.size(); i++) {
+    for (int i = 0, e = equivStmts.size(); i < e; i++) {
       AssignStmt stmt = equivStmts.get(i);
       Unit pred = predBoxes.get(i).getUnit();
       if (pred == null) {
@@ -440,7 +447,7 @@ public class PhiNodeManager {
 
   /**
    * Convenience function that maps units to blocks. Should probably be in BlockGraph.
-   **/
+   */
   public static Map<Unit, Block> getUnitToBlockMap(BlockGraph blocks) {
     Map<Unit, Block> unitToBlock = new HashMap<Unit, Block>();
     for (Block block : blocks) {

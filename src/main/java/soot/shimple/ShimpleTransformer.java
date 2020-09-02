@@ -41,7 +41,7 @@ import soot.options.Options;
  * analysis on Shimple.
  *
  * @author Navindra Umanee
- **/
+ */
 public class ShimpleTransformer extends SceneTransformer {
   private static final Logger logger = LoggerFactory.getLogger(ShimpleTransformer.class);
 
@@ -62,31 +62,27 @@ public class ShimpleTransformer extends SceneTransformer {
     // some classes unreachable.
 
     for (SootClass sClass : Scene.v().getClasses()) {
-      if (sClass.isPhantom()) {
-        continue;
-      }
+      if (!sClass.isPhantom()) {
+        for (SootMethod method : sClass.getMethods()) {
+          if (method.isConcrete()) {
+            if (method.hasActiveBody()) {
+              Body body = method.getActiveBody();
 
-      for (SootMethod method : sClass.getMethods()) {
-        if (!method.isConcrete()) {
-          continue;
-        }
+              ShimpleBody sBody;
+              if (body instanceof ShimpleBody) {
+                sBody = (ShimpleBody) body;
+                if (!sBody.isSSA()) {
+                  sBody.rebuild();
+                }
+              } else {
+                sBody = Shimple.v().newBody(body);
+              }
 
-        if (method.hasActiveBody()) {
-          Body body = method.getActiveBody();
-
-          ShimpleBody sBody;
-          if (body instanceof ShimpleBody) {
-            sBody = (ShimpleBody) body;
-            if (!sBody.isSSA()) {
-              sBody.rebuild();
+              method.setActiveBody(sBody);
+            } else {
+              method.setSource(new ShimpleMethodSource(method.getSource()));
             }
-          } else {
-            sBody = Shimple.v().newBody(body);
           }
-
-          method.setActiveBody(sBody);
-        } else {
-          method.setSource(new ShimpleMethodSource(method.getSource()));
         }
       }
     }
