@@ -148,6 +148,9 @@ public class OnFlyCallGraphBuilder {
     DOUBLE_NARROWINGS = new PrimType[] { DoubleType.v(), fT, lT, iT, cT, sT, bT, sT };
   }
 
+  // NOTE: this field must be static to avoid adding the transformation again if the call graph is rebuilt.
+  static boolean registeredGuardsTransformation = false;
+
   protected final NumberedString sigFinalize;
   protected final NumberedString sigInit;
   protected final NumberedString sigStart;
@@ -1134,7 +1137,6 @@ public class OnFlyCallGraphBuilder {
 
     protected final Set<Guard> guards;
     protected final ReflectionTraceInfo reflectionInfo;
-    private boolean registeredTransformation = false;
 
     private TraceBasedReflectionModel() {
       this.guards = new HashSet<Guard>();
@@ -1250,8 +1252,8 @@ public class OnFlyCallGraphBuilder {
           }
         }
       }
-      if (!registeredTransformation) {
-        registeredTransformation = true;
+      if (!registeredGuardsTransformation) {
+        registeredGuardsTransformation = true;
         PackManager.v().getPack("wjap").add(new Transform("wjap.guards", new SceneTransformer() {
           @Override
           protected void internalTransform(String phaseName, Map<String, String> options) {
