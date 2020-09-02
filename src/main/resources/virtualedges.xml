@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+
+<virtualedges>
+	<!-- Thread.start()  -->
+	<edge type="THREAD">
+		<source invoketype="instance" subsignature="void start()" />
+		<targets>
+			<method subsignature="void run()" target="base"/>
+		</targets>
+	</edge>
+	
+	<!-- execute and post methods -->
+	<edge type="EXECUTOR">
+		<source invoketype="instance" subsignature="void execute(java.lang.Runnable)" />
+		<targets>
+			<method subsignature="void run()" target="argument" position="0"/>
+		</targets>
+	</edge>
+	<edge type="EXECUTOR">
+		<source invoketype="instance" subsignature="boolean post(java.lang.Runnable)" />
+		<targets>
+			<method subsignature="void run()" target="argument" position="0"/>
+		</targets>
+	</edge>
+	<edge type="EXECUTOR">
+		<source invoketype="instance" subsignature="boolean postAtFrontOfQueue(java.lang.Runnable)" />
+		<targets>
+			<method subsignature="void run()" target="argument" position="0"/>
+		</targets>
+	</edge>
+	<edge type="EXECUTOR">
+		<source invoketype="instance" subsignature="boolean postAtTime(java.lang.Runnable,long)" />
+		<targets>
+			<method subsignature="void run()" target="argument" position="0"/>
+		</targets>
+	</edge>
+	<edge type="EXECUTOR">
+		<source invoketype="instance" subsignature="boolean postAtTime(java.lang.Runnable,java.lang.Object,long)" />
+		<targets>
+			<method subsignature="void run()" target="argument" position="0"/>
+		</targets>
+	</edge>
+	<edge type="EXECUTOR">
+		<source invoketype="instance" subsignature="boolean postDelayed(java.lang.Runnable,long)" />
+		<targets>
+			<method subsignature="void run()" target="argument" position="0"/>
+		</targets>
+	</edge>
+	
+	<!-- Android runOnUIThread -->
+	<edge type="EXECUTOR">
+		<source invoketype="instance" subsignature="void runOnUiThread(java.lang.Runnable)" />
+		<targets>
+			<method subsignature="void run()" target="argument" position="0"/>
+		</targets>
+	</edge>
+	
+	<!-- Handlers -->
+	<edge type="HANDLER">
+		<source invoketype="instance" subsignature="boolean sendEmptyMessage(int)" />
+		<targets>
+			<method subsignature="void handleMessage(android.os.Message)" target="base"/>
+		</targets>
+	</edge>
+	<edge type="HANDLER">
+		<source invoketype="instance" subsignature="boolean sendEmptyMessageAtTime(int,long)" />
+		<targets>
+			<method subsignature="void handleMessage(android.os.Message)" target="base"/>
+		</targets>
+	</edge>
+	<edge type="HANDLER">
+		<source invoketype="instance" subsignature="boolean sendEmptyMessageDelayed(int,long)" />
+		<targets>
+			<method subsignature="void handleMessage(android.os.Message)" target="base"/>
+		</targets>
+	</edge>
+	<edge type="HANDLER">
+		<source invoketype="instance" subsignature="boolean postAtTime(java.lang.Runnable,long)" />
+		<targets>
+			<method subsignature="void handleMessage(android.os.Message)" target="base"/>
+		</targets>
+	</edge>
+	<edge type="HANDLER">
+		<source invoketype="instance" subsignature="boolean sendMessageAtFrontOfQueue(android.os.Message)" />
+		<targets>
+			<method subsignature="void handleMessage(android.os.Message)" target="base"/>
+		</targets>
+	</edge>
+	<edge type="HANDLER">
+		<source invoketype="instance" subsignature="boolean sendMessageAtTime(android.os.Message,long)" />
+		<targets>
+			<method subsignature="void handleMessage(android.os.Message)" target="base"/>
+		</targets>
+	</edge>
+	<edge type="HANDLER">
+		<source invoketype="instance" subsignature="boolean sendMessageDelayed(android.os.Message,long)" />
+		<targets>
+			<method subsignature="void handleMessage(android.os.Message)" target="base"/>
+		</targets>
+	</edge>
+	
+	
+	<!-- Android AsyncTask -->
+	<edge type="ASYNCTASK">
+		<source invoketype="instance" subsignature="android.os.AsyncTask execute(java.lang.Object[])" />
+		<targets>
+			<method subsignature="java.lang.Object doInBackground(java.lang.Object[])" target="base"/>
+		</targets>
+	</edge>
+	
+	<!-- doPriviledged -->
+	<edge type="PRIVILEDGED">
+		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)&gt;" />
+		<targets>
+			<method subsignature="java.lang.Object run()" target="base"/>
+		</targets>
+	</edge>
+	<edge type="PRIVILEDGED">
+		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)&gt;" />
+		<targets>
+			<method subsignature="java.lang.Object run()" target="base"/>
+		</targets>
+	</edge>
+	<edge type="PRIVILEDGED">
+		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)&gt;" />
+		<targets>
+			<method subsignature="java.lang.Object run()" target="base"/>
+		</targets>
+	</edge>
+	<edge type="PRIVILEDGED">
+		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)&gt;" />
+		<targets>
+			<method subsignature="java.lang.Object run()" target="base"/>
+		</targets>
+	</edge>
+	
+	
+	
+</virtualedges>
