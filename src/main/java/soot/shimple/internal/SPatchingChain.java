@@ -52,30 +52,31 @@ import soot.util.MultiMap;
  *
  * @author Navindra Umanee
  * @see soot.PatchingChain
- **/
+ */
 public class SPatchingChain extends UnitPatchingChain {
   private static final Logger logger = LoggerFactory.getLogger(SPatchingChain.class);
 
   /**
    * Needed to find non-trapped Units of the body.
-   **/
+   */
   protected final Body body;
 
   protected final boolean debug;
 
   /**
    * Map from UnitBox to the Phi node owning it.
-   **/
+   */
   protected Map<UnitBox, Unit> boxToPhiNode = new HashMap<UnitBox, Unit>();
+
   /**
    * Set of the values of boxToPhiNode. Used to allow O(1) contains() on the values.
-   **/
+   */
   protected Set<Unit> phiNodeSet = new HashSet<Unit>();
 
   /**
    * Flag that indicates whether control flow falls through from the unit referenced in the SUnitBox to the Phi node that
    * owns the SUnitBox.
-   **/
+   */
   protected Map<SUnitBox, Boolean> boxToNeedsPatching = new HashMap<SUnitBox, Boolean>();
 
   public SPatchingChain(Body aBody, Chain<Unit> aChain) {
@@ -300,9 +301,9 @@ public class SPatchingChain extends UnitPatchingChain {
 
   protected void reprocessPhiNodes() {
     Set<Unit> phiNodes = new HashSet<Unit>(boxToPhiNode.values());
-    boxToPhiNode = new HashMap<UnitBox, Unit>();
-    phiNodeSet = new HashSet<Unit>();
-    boxToNeedsPatching = new HashMap<SUnitBox, Boolean>();
+    this.boxToPhiNode = new HashMap<UnitBox, Unit>();
+    this.phiNodeSet = new HashSet<Unit>();
+    this.boxToNeedsPatching = new HashMap<SUnitBox, Boolean>();
 
     for (Unit next : phiNodes) {
       processPhiNode(next);
@@ -315,7 +316,7 @@ public class SPatchingChain extends UnitPatchingChain {
    *
    * NOTE: This will *miss* all the Phi nodes outside a chain. So make sure you know what you are doing if you remove a Phi
    * node from a chain and don't put it back or call clearUnitBoxes() on it.
-   **/
+   */
   protected void computeNeedsPatching() {
     if (boxToPhiNode.isEmpty()) {
       return;
