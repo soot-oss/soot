@@ -41,6 +41,7 @@ import soot.SootMethod;
 import soot.Type;
 import soot.Value;
 import soot.ValueBox;
+import soot.SceneTransformer;
 import soot.jimple.ArrayRef;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
