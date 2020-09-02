@@ -136,4 +136,19 @@
 	
 	
 	
+	
+	<edge type="HANDLER">
+		<source invoketype="instance" subsignature="add(com.android.volley.Request)" />
+		<targets>
+			<wrapper target="argument" position="0" >
+				<registration subsignature="init(java.lang.String,com.Android.volley.Response.Listener)">
+					<targets>
+						<method subsignature="void onResponse(java.lang.Bitmap)" target="argument" position="1" />
+					</targets>
+				</registration>
+			</wrapper>
+		</targets>
+		
+	</edge>
+	
 </virtualedges>
