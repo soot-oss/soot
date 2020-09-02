@@ -31,17 +31,16 @@ import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.Body;
-import soot.BodyTransformer;
 import soot.G;
 import soot.Local;
 import soot.Scene;
+import soot.SceneTransformer;
 import soot.Singletons;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
 import soot.Value;
 import soot.ValueBox;
-import soot.SceneTransformer;
 import soot.jimple.ArrayRef;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
