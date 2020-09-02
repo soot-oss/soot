@@ -45,6 +45,7 @@ public class SHashMultiMap<K, V> extends HashMultiMap<K, V> {
     super(m);
   }
 
+  @Override
   protected Set<V> newSet() {
     return new LinkedHashSet<V>(4);
   }
