@@ -22,6 +22,7 @@ package soot;
  * #L%
  */
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -42,12 +43,16 @@ import org.slf4j.LoggerFactory;
 
 public class FoundFile {
   private static final Logger logger = LoggerFactory.getLogger(FoundFile.class);
+
+  protected final List<InputStream> openedInputStreams;
+
+  protected Path path;
+
   protected File file;
-  private Path path;
   protected String entryName;
+
   protected ZipFile zipFile;
   protected ZipEntry zipEntry;
-  protected List<InputStream> openedInputStreams;
 
   public FoundFile(ZipFile file, ZipEntry entry) {
     this();
@@ -76,7 +81,7 @@ public class FoundFile {
     this.entryName = null;
   }
 
-  FoundFile(Path path) {
+  public FoundFile(Path path) {
     this();
     this.path = path;
   }
@@ -132,26 +137,15 @@ public class FoundFile {
               "Error: Failed to open the archive file at path '" + file.getPath() + "' for entry '" + entryName + "'.", e);
         }
       }
-
-      InputStream stream = null;
-      try {
-        stream = zipFile.getInputStream(zipEntry);
+      try (InputStream stream = zipFile.getInputStream(zipEntry)) {
         ret = doJDKBugWorkaround(stream, zipEntry.getSize());
       } catch (Exception e) {
         throw new RuntimeException("Error: Failed to open a InputStream for the entry '" + zipEntry.getName()
             + "' of the archive at path '" + zipFile.getName() + "'.", e);
-      } finally {
-        if (stream != null) {
-          try {
-            stream.close();
-          } catch (IOException e) {
-            // There's not much we can do here
-            logger.debug(e.getMessage(), e);
-          }
-        }
       }
     }
 
+    ret = new BufferedInputStream(ret);
     openedInputStreams.add(ret);
     return ret;
   }
@@ -181,9 +175,7 @@ public class FoundFile {
     if (!errs.isEmpty()) {
       String msg = null;
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      PrintStream ps = null;
-      try {
-        ps = new PrintStream(baos, true, "utf-8");
+      try (PrintStream ps = new PrintStream(baos, true, "utf-8")) {
         ps.println("Error: Failed to close all opened resources. The following exceptions were thrown in the process: ");
         int i = 0;
         for (Throwable t : errs) {
@@ -195,8 +187,6 @@ public class FoundFile {
         msg = new String(baos.toByteArray(), StandardCharsets.UTF_8);
       } catch (Exception e) {
         // Do nothing as this will never occur
-      } finally {
-        ps.close();
       }
       throw new RuntimeException(msg);
     }
@@ -217,13 +207,11 @@ public class FoundFile {
     }
   }
 
-  private InputStream doJDKBugWorkaround(InputStream is, long size) throws IOException {
+  private static InputStream doJDKBugWorkaround(InputStream is, long size) throws IOException {
     int sz = (int) size;
-    byte[] buf = new byte[sz];
+    final byte[] buf = new byte[sz];
     final int N = 1024;
-    int ln = 0;
-    int count = 0;
-    while (sz > 0 && (ln = is.read(buf, count, Math.min(N, sz))) != -1) {
+    for (int ln = 0, count = 0; sz > 0 && (ln = is.read(buf, count, Math.min(N, sz))) != -1;) {
       count += ln;
       sz -= ln;
     }
