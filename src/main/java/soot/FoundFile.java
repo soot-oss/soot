@@ -44,12 +44,15 @@ import org.slf4j.LoggerFactory;
 public class FoundFile {
   private static final Logger logger = LoggerFactory.getLogger(FoundFile.class);
 
+  protected final List<InputStream> openedInputStreams;
+
+  protected Path path;
+
   protected File file;
-  private Path path;
   protected String entryName;
+
   protected ZipFile zipFile;
   protected ZipEntry zipEntry;
-  protected List<InputStream> openedInputStreams;
 
   public FoundFile(ZipFile file, ZipEntry entry) {
     this();
@@ -78,7 +81,7 @@ public class FoundFile {
     this.entryName = null;
   }
 
-  FoundFile(Path path) {
+  public FoundFile(Path path) {
     this();
     this.path = path;
   }
@@ -204,7 +207,7 @@ public class FoundFile {
     }
   }
 
-  private InputStream doJDKBugWorkaround(InputStream is, long size) throws IOException {
+  private static InputStream doJDKBugWorkaround(InputStream is, long size) throws IOException {
     int sz = (int) size;
     final byte[] buf = new byte[sz];
     final int N = 1024;

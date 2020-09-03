@@ -64,7 +64,6 @@ public class ModulePathSourceLocator extends SourceLocator {
   public static final String DUMMY_CLASSPATH_JDK9_FS = "VIRTUAL_FS_FOR_JDK";
 
   private final HashMap<String, Path> moduleNameToPath = new HashMap<>();
-  private List<String> sourcePath;
   private Set<String> classesToLoad;
   private List<String> modulePath;
   private int next = 0;
@@ -89,11 +88,14 @@ public class ModulePathSourceLocator extends SourceLocator {
   public ClassSource getClassSource(String className, Optional<String> moduleName) {
     String appendToPath = moduleName.isPresent() ? moduleName.get() + ":" : "";
 
-    if (classesToLoad == null) {
-      classesToLoad = new HashSet<>();
-      classesToLoad.addAll(ModuleScene.v().getBasicClasses());
-      for (SootClass c : ModuleScene.v().getApplicationClasses()) {
-        classesToLoad.add(c.getName());
+    {
+      Set<String> classesToLoad = this.classesToLoad;
+      if (classesToLoad == null) {
+        classesToLoad = new HashSet<>(ModuleScene.v().getBasicClasses());
+        for (SootClass c : ModuleScene.v().getApplicationClasses()) {
+          classesToLoad.add(c.getName());
+        }
+        this.classesToLoad = classesToLoad;
       }
     }
 
@@ -162,6 +164,7 @@ public class ModulePathSourceLocator extends SourceLocator {
 
   @Override
   public List<String> sourcePath() {
+    List<String> sourcePath = this.sourcePath;
     if (sourcePath == null) {
       sourcePath = new ArrayList<>();
       for (String dir : modulePath) {
@@ -170,6 +173,7 @@ public class ModulePathSourceLocator extends SourceLocator {
           sourcePath.add(dir);
         }
       }
+      this.sourcePath = sourcePath;
     }
     return sourcePath;
   }
@@ -186,7 +190,7 @@ public class ModulePathSourceLocator extends SourceLocator {
     List<String> classes = new ArrayList<>();
     for (Map.Entry<String, List<String>> entry : getClassUnderModulePath(aPath).entrySet()) {
       for (String className : entry.getValue()) {
-        classes.add(entry.getKey() + ":" + className);
+        classes.add(entry.getKey() + ':' + className);
       }
     }
     return classes;
@@ -327,10 +331,9 @@ public class ModulePathSourceLocator extends SourceLocator {
         // create module name from jar
         //
         // make module base on the filname of the jar
-        String moduleName = createModuleNameForAutomaticModule(jar.getFileName().toString());
-        boolean containsClass = ModuleScene.v().containsClass(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
         SootModuleInfo moduleInfo;
-        if (!containsClass) {
+        String moduleName = createModuleNameForAutomaticModule(jar.getFileName().toString());
+        if (!ModuleScene.v().containsClass(SootModuleInfo.MODULE_INFO, Optional.of(moduleName))) {
           moduleInfo = new SootModuleInfo(SootModuleInfo.MODULE_INFO, moduleName, true);
           Scene.v().addClass(moduleInfo);
           moduleInfo.setApplicationClass();
@@ -382,8 +385,7 @@ public class ModulePathSourceLocator extends SourceLocator {
     // according to the java 9 spec and current implementation, version numbers are ignored when naming automatic modules
     Matcher matcher = Pattern.compile("-(\\d+(\\.|$))").matcher(moduleName);
     if (matcher.find()) {
-      int start = matcher.start();
-      moduleName = moduleName.substring(0, start);
+      moduleName = moduleName.substring(0, matcher.start());
     }
     moduleName = Pattern.compile("[^A-Za-z0-9]").matcher(moduleName).replaceAll(".");
 
@@ -455,14 +457,14 @@ public class ModulePathSourceLocator extends SourceLocator {
       // For class files
       StringBuilder sb = new StringBuilder(path);
       sb.append(File.pathSeparatorChar);
-      for (StringTokenizer tokenizer = new StringTokenizer(str, "."); tokenizer.hasMoreTokens();) {
-        sb.append(tokenizer.nextToken());
-        if (tokenizer.hasMoreTokens()) {
+      for (StringTokenizer tok = new StringTokenizer(str, "."); tok.hasMoreTokens();) {
+        sb.append(tok.nextToken());
+        if (tok.hasMoreTokens()) {
           sb.append(File.pathSeparatorChar);
         }
       }
       for (String string : super.getClassesUnder(sb.toString())) {
-        set.add(str + "." + string);
+        set.add(str + '.' + string);
       }
     }
     return set;
@@ -477,19 +479,20 @@ public class ModulePathSourceLocator extends SourceLocator {
   }
 
   private ClassSourceType getClassSourceType(Path path) {
-    String stringPath = path.toUri().toString();
-    if (stringPath.startsWith("jrt:/")) {
+    if (path.toUri().toString().startsWith("jrt:/")) {
       return ClassSourceType.jrt;
+    } else {
+      return super.getClassSourceType(path.toAbsolutePath().toString());
     }
-    return super.getClassSourceType(path.toAbsolutePath().toString());
   }
 
   @Override
   protected ClassSourceType getClassSourceType(String path) {
     if (path.startsWith("jrt:/")) {
       return ClassSourceType.jrt;
+    } else {
+      return super.getClassSourceType(path);
     }
-    return super.getClassSourceType(path);
   }
 
   public FoundFile lookUpInModulePath(String fileName) {
@@ -632,14 +635,11 @@ public class ModulePathSourceLocator extends SourceLocator {
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
         String fileName = aPath.relativize(file).toString().replace(File.separatorChar, '.');
         if (fileName.endsWith(".class")) {
-          int index = fileName.lastIndexOf(".class");
-          classes.add(fileName.substring(0, index));
+          classes.add(fileName.substring(0, fileName.lastIndexOf(".class")));
         } else if (fileName.endsWith(".jimple")) {
-          int index = fileName.lastIndexOf(".jimple");
-          classes.add(fileName.substring(0, index));
+          classes.add(fileName.substring(0, fileName.lastIndexOf(".jimple")));
         } else if (fileName.endsWith(".java")) {
-          int index = fileName.lastIndexOf(".java");
-          classes.add(fileName.substring(0, index));
+          classes.add(fileName.substring(0, fileName.lastIndexOf(".java")));
         }
         return FileVisitResult.CONTINUE;
       }
