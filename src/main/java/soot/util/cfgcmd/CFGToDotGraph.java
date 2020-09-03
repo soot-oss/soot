@@ -485,8 +485,10 @@ public class CFGToDotGraph {
           nodeLabel = targetLabel + ": " + printer.toString();
         }
       } else if (node instanceof Block) {
+        Block block = (Block) node;
         StringBuilder buffer = new StringBuilder();
-        for (Unit unit : ((Block) node)) {
+        buffer.append(block.toShortString()).append("\\n");
+        for (Unit unit : block) {
           String targetLabel = printer.labels().get(unit);
           if (targetLabel != null) {
             buffer.append(targetLabel).append(":\\n");
