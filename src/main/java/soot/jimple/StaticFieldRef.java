@@ -37,7 +37,10 @@ import soot.util.Switch;
 
 public class StaticFieldRef implements FieldRef, ConvertToBaf {
 
-  protected SootFieldRef fieldRef;
+  // NOTE: both fields here are private to force subclasses to use the get/set methods thus ensuring that the cached
+  // SootField remains consistent with the SootFieldRef
+  private SootFieldRef fieldRef;
+  private SootField fieldCache = null;
 
   protected StaticFieldRef(SootFieldRef fieldRef) {
     if (!fieldRef.isStatic()) {
@@ -68,12 +71,18 @@ public class StaticFieldRef implements FieldRef, ConvertToBaf {
 
   @Override
   public void setFieldRef(SootFieldRef fieldRef) {
+    this.fieldCache = null;// reset cache
     this.fieldRef = fieldRef;
   }
 
   @Override
   public SootField getField() {
-    return fieldRef.resolve();
+    SootField fieldCache = this.fieldCache;
+    if (fieldCache == null) { // Use the cached SootField if available
+      fieldCache = fieldRef.resolve();
+      this.fieldCache = fieldCache;
+    }
+    return fieldCache;
   }
 
   @Override

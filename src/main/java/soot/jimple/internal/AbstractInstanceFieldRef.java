@@ -44,8 +44,12 @@ import soot.util.Switch;
 @SuppressWarnings("serial")
 public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf {
 
-  protected SootFieldRef fieldRef;
   protected final ValueBox baseBox;
+
+  // NOTE: both fields here are private to force subclasses to use the get/set methods thus ensuring that the cached
+  // SootField remains consistent with the SootFieldRef
+  private SootFieldRef fieldRef;
+  private SootField fieldCache = null;
 
   protected AbstractInstanceFieldRef(ValueBox baseBox, SootFieldRef fieldRef) {
     if (fieldRef.isStatic()) {
@@ -99,12 +103,18 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
 
   @Override
   public void setFieldRef(SootFieldRef fieldRef) {
+    this.fieldCache = null;// reset cache
     this.fieldRef = fieldRef;
   }
 
   @Override
   public SootField getField() {
-    return fieldRef.resolve();
+    SootField fieldCache = this.fieldCache;
+    if (fieldCache == null) { // Use the cached SootField if available
+      fieldCache = fieldRef.resolve();
+      this.fieldCache = fieldCache;
+    }
+    return fieldCache;
   }
 
   @Override
