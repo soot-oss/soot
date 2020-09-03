@@ -30,28 +30,29 @@ import soot.grimp.Precedence;
 import soot.jimple.internal.AbstractInstanceFieldRef;
 
 public class GInstanceFieldRef extends AbstractInstanceFieldRef implements Precedence {
-
   public GInstanceFieldRef(Value base, SootFieldRef fieldRef) {
     super(Grimp.v().newObjExprBox(base), fieldRef);
   }
 
-  @Override
-  public String toString() {
-    final Value op = getBase();
-    String opString = op.toString();
+  private String toString(Value op, String opString, String rightString) {
+    String leftOp = opString;
+
     if (op instanceof Precedence && ((Precedence) op).getPrecedence() < getPrecedence()) {
-      opString = "(" + opString + ")";
+      leftOp = "(" + leftOp + ")";
     }
-    return opString + "." + fieldRef.getSignature();
+    return leftOp + rightString;
   }
 
-  @Override
+  public String toString() {
+    return toString(getBase(), getBase().toString(), "." + fieldRef.getSignature());
+  }
+
   public int getPrecedence() {
     return 950;
   }
 
-  @Override
   public Object clone() {
     return new GInstanceFieldRef(Grimp.cloneIfNecessary(getBase()), fieldRef);
   }
+
 }
