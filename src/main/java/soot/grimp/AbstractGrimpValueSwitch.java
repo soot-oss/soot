@@ -24,7 +24,8 @@ package soot.grimp;
 
 import soot.jimple.AbstractJimpleValueSwitch;
 
-public abstract class AbstractGrimpValueSwitch extends AbstractJimpleValueSwitch implements GrimpValueSwitch {
+public abstract class AbstractGrimpValueSwitch<T> extends AbstractJimpleValueSwitch<T> implements GrimpValueSwitch {
+  @Override
   public void caseNewInvokeExpr(NewInvokeExpr e) {
     defaultCase(e);
   }
