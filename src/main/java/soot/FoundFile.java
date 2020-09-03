@@ -41,6 +41,8 @@ import java.util.zip.ZipFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import soot.util.SharedCloseable;
+
 public class FoundFile {
   private static final Logger logger = LoggerFactory.getLogger(FoundFile.class);
 
@@ -51,17 +53,19 @@ public class FoundFile {
   protected File file;
   protected String entryName;
 
-  protected ZipFile zipFile;
+  protected SharedCloseable<ZipFile> zipFile;
   protected ZipEntry zipEntry;
 
-  public FoundFile(ZipFile file, ZipEntry entry) {
-    this();
-    if (file == null || entry == null) {
-      throw new IllegalArgumentException("Error: The archive and entry cannot be null.");
-    }
-    this.zipFile = file;
-    this.zipEntry = entry;
-  }
+  // NOTE: this constructor cannot be supported when using the SharedClosable
+  // without the risk of the ZipFile closing prematurely.
+  // public FoundFile(ZipFile file, ZipEntry entry) {
+  // this();
+  // if (file == null || entry == null) {
+  // throw new IllegalArgumentException("Error: The archive and entry cannot be null.");
+  // }
+  // this.zipFile = file;
+  // this.zipEntry = entry;
+  // }
 
   public FoundFile(String archivePath, String entryName) {
     this();
@@ -99,7 +103,7 @@ public class FoundFile {
   }
 
   public ZipFile getZipFile() {
-    return zipFile;
+    return zipFile != null ? zipFile.get() : null;
   }
 
   public File getFile() {
@@ -124,8 +128,8 @@ public class FoundFile {
     } else {
       if (zipFile == null) {
         try {
-          zipFile = new ZipFile(file);
-          zipEntry = zipFile.getEntry(entryName);
+          zipFile = SourceLocator.v().archivePathToZip.getRef(getFilePath());
+          zipEntry = zipFile.get().getEntry(entryName);
           if (zipEntry == null) {
             silentClose();
             throw new RuntimeException(
@@ -137,11 +141,11 @@ public class FoundFile {
               "Error: Failed to open the archive file at path '" + file.getPath() + "' for entry '" + entryName + "'.", e);
         }
       }
-      try (InputStream stream = zipFile.getInputStream(zipEntry)) {
+      try (InputStream stream = zipFile.get().getInputStream(zipEntry)) {
         ret = doJDKBugWorkaround(stream, zipEntry.getSize());
       } catch (Exception e) {
         throw new RuntimeException("Error: Failed to open a InputStream for the entry '" + zipEntry.getName()
-            + "' of the archive at path '" + zipFile.getName() + "'.", e);
+            + "' of the archive at path '" + zipFile.get().getName() + "'.", e);
       }
     }
 
