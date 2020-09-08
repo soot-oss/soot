@@ -63,7 +63,11 @@ public enum InvokeValidator implements BodyValidator {
               SootClass clazzDeclaring = method.getDeclaringClass();
               if (clazzDeclaring.isInterface()) {
                 if (!(ie instanceof InterfaceInvokeExpr)) {
-                  exceptions.add(new ValidationException(unit, "Should use interfaceinvoke for interface methods."));
+                  // There are case where the Java bytecode verifier allows an
+                  // invokevirtual to target an interface method.
+                  if (!(ie instanceof VirtualInvokeExpr)) {
+                    exceptions.add(new ValidationException(unit, "Should use interfaceinvoke for interface methods."));
+                  }
                 }
               } else if (method.isPrivate() || method.isConstructor()) {
                 if (!(ie instanceof SpecialInvokeExpr)) {
