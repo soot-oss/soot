@@ -22,9 +22,9 @@ package soot.tagkit;
  * #L%
  */
 
-public abstract class AbstractAnnotationElemTypeSwitch implements IAnnotationElemTypeSwitch {
+public abstract class AbstractAnnotationElemTypeSwitch<T> implements IAnnotationElemTypeSwitch {
 
-  Object result;
+  T result;
 
   @Override
   public void caseAnnotationAnnotationElem(AnnotationAnnotationElem v) {
@@ -91,12 +91,11 @@ public abstract class AbstractAnnotationElemTypeSwitch implements IAnnotationEle
 
   }
 
-  public Object getResult() {
+  public T getResult() {
     return result;
   }
 
-  public void setResult(Object result) {
+  public void setResult(T result) {
     this.result = result;
   }
-
 }

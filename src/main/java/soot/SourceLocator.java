@@ -80,7 +80,7 @@ public class SourceLocator {
                   return ClassSourceType.zip;
                 } else if (path.endsWith(".jar")) {
                   return ClassSourceType.jar;
-                } else if (Scene.isApk(path)) {
+                } else if (Scene.isApk(new File(path))) {
                   return ClassSourceType.apk;
                 } else if (path.endsWith(".dex")) {
                   return ClassSourceType.dex;
