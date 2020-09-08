@@ -78,6 +78,11 @@ public class EmptyChain<T> implements Chain<T> {
   }
 
   @Override
+  public String toString() {
+    return "[]";
+  }
+
+  @Override
   public boolean isEmpty() {
     return true;
   }
