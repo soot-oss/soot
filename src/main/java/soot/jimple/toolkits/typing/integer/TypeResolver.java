@@ -55,6 +55,12 @@ public class TypeResolver {
   private static final boolean DEBUG = false;
   private static final boolean IMPERFORMANT_TYPE_CHECK = false;
 
+  /** All type variable instances **/
+  private final List<TypeVariable> typeVariableList = new ArrayList<TypeVariable>();
+
+  /** Hashtable: [TypeNode or Local] -> TypeVariable **/
+  private final Map<Object, TypeVariable> typeVariableMap = new HashMap<Object, TypeVariable>();
+
   final TypeVariable BOOLEAN = typeVariable(ClassHierarchy.v().BOOLEAN);
   final TypeVariable BYTE = typeVariable(ClassHierarchy.v().BYTE);
   final TypeVariable SHORT = typeVariable(ClassHierarchy.v().SHORT);
@@ -65,17 +71,41 @@ public class TypeResolver {
   final TypeVariable R0_127 = typeVariable(ClassHierarchy.v().R0_127);
   final TypeVariable R0_32767 = typeVariable(ClassHierarchy.v().R0_32767);
 
-  /** All type variable instances **/
-  private final List<TypeVariable> typeVariableList = new ArrayList<TypeVariable>();
-
-  /** Hashtable: [TypeNode or Local] -> TypeVariable **/
-  private final Map<Object, TypeVariable> typeVariableMap = new HashMap<Object, TypeVariable>();
-
   private final JimpleBody stmtBody;
 
   // categories for type variables (solved = hard, unsolved = soft)
   private Collection<TypeVariable> unsolved;
   private Collection<TypeVariable> solved;
+
+  private TypeResolver(JimpleBody stmtBody) {
+    this.stmtBody = stmtBody;
+  }
+
+  public static void resolve(JimpleBody stmtBody) {
+    if (DEBUG) {
+      logger.debug("" + stmtBody.getMethod());
+    }
+
+    try {
+      TypeResolver resolver = new TypeResolver(stmtBody);
+      resolver.resolve_step_1();
+    } catch (TypeException e1) {
+      if (DEBUG) {
+        logger.debug("[integer] Step 1 Exception-->" + e1.getMessage());
+      }
+
+      try {
+        TypeResolver resolver = new TypeResolver(stmtBody);
+        resolver.resolve_step_2();
+      } catch (TypeException e2) {
+        StringWriter st = new StringWriter();
+        PrintWriter pw = new PrintWriter(st);
+        logger.error(e2.getMessage(), e2);
+        pw.close();
+        throw new RuntimeException(st.toString());
+      }
+    }
+  }
 
   /** Get type variable for the given local. **/
   TypeVariable typeVariable(Local local) {
@@ -130,36 +160,6 @@ public class TypeResolver {
     typeVariableList.set(id, result);
 
     return result;
-  }
-
-  private TypeResolver(JimpleBody stmtBody) {
-    this.stmtBody = stmtBody;
-  }
-
-  public static void resolve(JimpleBody stmtBody) {
-    if (DEBUG) {
-      logger.debug("" + stmtBody.getMethod());
-    }
-
-    try {
-      TypeResolver resolver = new TypeResolver(stmtBody);
-      resolver.resolve_step_1();
-    } catch (TypeException e1) {
-      if (DEBUG) {
-        logger.debug("[integer] Step 1 Exception-->" + e1.getMessage());
-      }
-
-      try {
-        TypeResolver resolver = new TypeResolver(stmtBody);
-        resolver.resolve_step_2();
-      } catch (TypeException e2) {
-        StringWriter st = new StringWriter();
-        PrintWriter pw = new PrintWriter(st);
-        logger.error(e2.getMessage(), e2);
-        pw.close();
-        throw new RuntimeException(st.toString());
-      }
-    }
   }
 
   private void debug_vars(String message) {
