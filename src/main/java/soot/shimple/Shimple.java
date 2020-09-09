@@ -265,8 +265,7 @@ public class Shimple {
 
     if (preds.isEmpty()) {
       if (debug) {
-        logger
-            .warn("Shimple.redirectToPreds couldn't find any predecessors for " + remove + " in " + body.getMethod() + ".");
+        logger.warn("Shimple.redirectToPreds found no predecessors for " + remove + " in " + body.getMethod() + ".");
       }
 
       if (!remove.equals(units.getFirst())) {
@@ -302,7 +301,8 @@ public class Shimple {
       for (Unit pred : preds) {
         boolean added = phiExpr.addArg(arg, pred);
         if (!added) {
-          logger.warn("Failed to add " + arg + " to " + phiExpr + ".");
+          logger.warn("Shimple.redirectToPreds failed to add " + arg + " (for predecessor: " + pred + ") to " + phiExpr
+              + " in " + body.getMethod() + ".");
         }
       }
     }
