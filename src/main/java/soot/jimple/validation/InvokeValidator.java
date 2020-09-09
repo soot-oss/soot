@@ -66,7 +66,8 @@ public enum InvokeValidator implements BodyValidator {
                   // There are case where the Java bytecode verifier allows an
                   // invokevirtual or invokespecial to target an interface method.
                   if (!(ie instanceof VirtualInvokeExpr || ie instanceof SpecialInvokeExpr)) {
-                    exceptions.add(new ValidationException(unit, "Should use interface/virtual/specialinvoke for interface methods."));
+                    exceptions.add(
+                        new ValidationException(unit, "Should use interface/virtual/specialinvoke for interface methods."));
                   }
                 }
               } else if (method.isPrivate() || method.isConstructor()) {
