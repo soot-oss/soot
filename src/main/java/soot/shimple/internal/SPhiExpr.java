@@ -399,12 +399,12 @@ public class SPhiExpr implements PhiExpr {
 
   @Override
   public List<UnitBox> getUnitBoxes() {
-    return new ArrayList<UnitBox>(new HashSet<UnitBox>(argPairs));
+    return Collections.unmodifiableList(new ArrayList<UnitBox>(new HashSet<UnitBox>(argPairs)));
   }
 
   @Override
   public void clearUnitBoxes() {
-    for (UnitBox box : getUnitBoxes()) {
+    for (UnitBox box : argPairs) {
       box.setUnit(null);
     }
   }
