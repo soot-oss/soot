@@ -23,6 +23,7 @@ package soot.toolkits.graph;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ import java.util.Map;
  * @author Navindra Umanee
  * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
  *      the Control Dependence Graph</a>
- **/
+ */
 public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
 
   protected DominatorTree<N> dt;
@@ -55,12 +56,13 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
     }
   }
 
+  @Override
   public List<DominatorNode<N>> getDominanceFrontierOf(DominatorNode<N> node) {
     List<DominatorNode<N>> frontier = nodeToFrontier.get(node);
     if (frontier == null) {
       throw new RuntimeException("Frontier not defined for node: " + node);
     }
-    return new ArrayList<DominatorNode<N>>(frontier);
+    return Collections.unmodifiableList(frontier);
   }
 
   protected boolean isFrontierKnown(DominatorNode<N> node) {
@@ -109,7 +111,7 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
    * </pre>
    **/
   protected void processNode(DominatorNode<N> node) {
-    List<DominatorNode<N>> dominanceFrontier = new ArrayList<DominatorNode<N>>();
+    ArrayList<DominatorNode<N>> dominanceFrontier = new ArrayList<DominatorNode<N>>();
 
     // local
     for (DominatorNode<N> succ : dt.getSuccsOf(node)) {
@@ -126,7 +128,7 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
         }
       }
     }
-
+    dominanceFrontier.trimToSize(); // potentially a long-lived object
     nodeToFrontier.put(node, dominanceFrontier);
   }
 }
