@@ -324,7 +324,7 @@ public class ExprVisitor implements ExprSwitch {
     // Double-check that we are not carrying out any arithmetic operations
     // on non-primitive values
     if (!(secondOperand.getType() instanceof PrimType)) {
-      throw new RuntimeException("Invalid value type for primitibe operation");
+      throw new RuntimeException("Invalid value type for primitive operation");
     }
 
     // For some data types, there are no calculating opcodes in Dalvik. In
