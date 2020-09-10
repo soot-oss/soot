@@ -700,8 +700,8 @@ public class OnFlyCallGraphBuilder {
     for (VirtualCallSite site : stringConstToSites.get(l)) {
       if (constant == null) {
         if (options.verbose()) {
-          logger.debug("Warning: Method " + site.container() + " is reachable, and calls Class.forName on a"
-              + " non-constant String; graph will be incomplete! Use safe-forname option for a conservative result.");
+          logger.warn("Method " + site.container() + " is reachable, and calls Class.forName on a non-constant"
+              + " String; graph will be incomplete! Use safe-forname option for a conservative result.");
         }
       } else {
         if (constant.length() > 0 && constant.charAt(0) == '[') {
@@ -713,7 +713,7 @@ public class OnFlyCallGraphBuilder {
         }
         if (!Scene.v().containsClass(constant)) {
           if (options.verbose()) {
-            logger.debug("Warning: Class " + constant + " is a dynamic class, and you did not specify"
+            logger.warn("Class " + constant + " is a dynamic class, and you did not specify"
                 + " it as such; graph will be incomplete!");
           }
         } else {
@@ -861,7 +861,7 @@ public class OnFlyCallGraphBuilder {
           }
         } else if (ie instanceof DynamicInvokeExpr) {
           if (options.verbose()) {
-            logger.debug("WARNING: InvokeDynamic to " + ie + " not resolved during call-graph construction.");
+            logger.warn("InvokeDynamic to " + ie + " not resolved during call-graph construction.");
           }
         } else {
           SootMethod tgt = ie.getMethod();
@@ -975,16 +975,15 @@ public class OnFlyCallGraphBuilder {
   }
 
   private void constantForName(String cls, SootMethod src, Stmt srcUnit) {
-    if (cls.length() > 0 && cls.charAt(0) == '[') {
-      if (cls.length() > 1 && cls.charAt(1) == 'L' && cls.charAt(cls.length() - 1) == ';') {
-        cls = cls.substring(2, cls.length() - 1);
-        constantForName(cls, src, srcUnit);
+    int clsLength = cls.length();
+    if (clsLength > 0 && cls.charAt(0) == '[') {
+      if (clsLength > 1 && cls.charAt(1) == 'L' && cls.charAt(clsLength - 1) == ';') {
+        constantForName(cls.substring(2, clsLength - 1), src, srcUnit);
       }
     } else {
       if (!Scene.v().containsClass(cls)) {
         if (options.verbose()) {
-          logger.warn(
-              "Class " + cls + " is a dynamic class, and you did not specify" + " it as such; graph will be incomplete!");
+          logger.warn("Class " + cls + " is a dynamic class, and you did not specify it as such; graph will be incomplete!");
         }
       } else {
         SootClass sootcls = Scene.v().getSootClass(cls);
