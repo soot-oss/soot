@@ -1471,11 +1471,10 @@ public class Scene {
   }
 
   public void setContextNumberer(Numberer<Context> n) {
-    Numberer<Context> temp = contextNumberer;
-    if (temp != null) {
+    if (contextNumberer != null) {
       throw new RuntimeException("Attempt to set context numberer when it is already set.");
     }
-    temp = n;
+    contextNumberer = n;
   }
 
   /**
