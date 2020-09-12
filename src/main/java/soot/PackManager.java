@@ -65,6 +65,7 @@ import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
 import soot.dava.toolkits.base.misc.PackageNamer;
 import soot.dava.toolkits.base.misc.ThrowFinder;
 import soot.grimp.Grimp;
+import soot.grimp.GrimpBody;
 import soot.grimp.toolkits.base.ConstructorFolder;
 import soot.jimple.JimpleBody;
 import soot.jimple.paddle.PaddleHook;
@@ -917,7 +918,7 @@ public class PackManager {
         throw new RuntimeException();
     }
 
-    soot.xml.TagCollector tc = new soot.xml.TagCollector();
+    TagCollector tc = (format != Options.output_format_jimple && Options.v().xml_attributes()) ? new TagCollector() : null;
 
     boolean wholeShimple = Options.v().whole_shimple();
     if (Options.v().via_shimple()) {
@@ -980,7 +981,7 @@ public class PackManager {
         }
         getPack("jop").apply(body);
         getPack("jap").apply(body);
-        if (Options.v().xml_attributes() && format != Options.output_format_jimple) {
+        if (tc != null) {
           // System.out.println("collecting body tags");
           tc.collectBodyTags(body);
         }
@@ -989,14 +990,15 @@ public class PackManager {
       // getPack("cfg").apply(m.retrieveActiveBody());
 
       if (produceGrimp) {
-        m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
-        getPack("gop").apply(m.getActiveBody());
+        GrimpBody newBody = Grimp.v().newBody(m.getActiveBody(), "gb");
+        m.setActiveBody(newBody);
+        getPack("gop").apply(newBody);
       } else if (produceBaf) {
         m.setActiveBody(convertJimpleBodyToBaf(m));
       }
     }
 
-    if (Options.v().xml_attributes() && format != Options.output_format_jimple) {
+    if (tc != null) {
       processXMLForClass(c, tc);
       // System.out.println("processed xml for class");
     }
