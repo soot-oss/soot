@@ -530,7 +530,7 @@ public class SootClass extends AbstractHost implements Numberable {
     }
 
     throw new RuntimeException(
-        "Class " + getName() + " doesn't have method " + name + "(" + parameterTypes + ")" + " : " + returnType);
+        "Class " + getName() + " doesn't have method " + name + "(" + parameterTypes + ") : " + returnType);
   }
 
   /**
@@ -1205,12 +1205,10 @@ public class SootClass extends AbstractHost implements Numberable {
 
     if (this.refType != null) {
       this.refType.setClassName(name);
+    } else if (ModuleUtil.module_mode()) {
+      this.refType = ModuleScene.v().getOrAddRefType(name, Optional.fromNullable(this.moduleName));
     } else {
-      if (ModuleUtil.module_mode()) {
-        this.refType = ModuleScene.v().getOrAddRefType(name, Optional.fromNullable(this.moduleName));
-      } else {
-        this.refType = Scene.v().getOrAddRefType(name);
-      }
+      this.refType = Scene.v().getOrAddRefType(name);
     }
   }
 
@@ -1281,7 +1279,6 @@ public class SootClass extends AbstractHost implements Numberable {
       ModuleScene.v().forceResolve(this.getName(), SootClass.BODIES, Optional.of(this.moduleName));
     }
     return this.getModuleInformation().exportsPackage(this.getJavaPackageName(), toModule);
-
   }
 
   public boolean isOpenedByModule() {
