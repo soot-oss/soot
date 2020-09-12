@@ -37,6 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Reference implementation of the Chain interface, using a HashMap as the underlying structure.
  */
 public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
+
   protected Map<E, Link<E>> map = new ConcurrentHashMap<>();
   protected E firstItem;
   protected E lastItem;
@@ -377,16 +378,24 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
   @Override
   public Iterator<E> snapshotIterator() {
-    return (new ArrayList<E>(this)).iterator();
+    if (firstItem == null || isEmpty()) {
+      return emptyIterator();
+    } else {
+      return (new ArrayList<E>(this)).iterator();
+    }
   }
 
-  public Iterator<E> snapshotIterator(E item) {
-    List<E> l = new ArrayList<E>(map.size());
-    for (Iterator<E> it = new LinkIterator<E>(item); it.hasNext();) {
-      E next = it.next();
-      l.add(next);
+  public Iterator<E> snapshotIterator(E from) {
+    if (from == null || firstItem == null || isEmpty()) {
+      return emptyIterator();
+    } else {
+      ArrayList<E> l = new ArrayList<E>(map.size());
+      for (Iterator<E> it = new LinkIterator<E>(from); it.hasNext();) {
+        E next = it.next();
+        l.add(next);
+      }
+      return l.iterator();
     }
-    return l.iterator();
   }
 
   @Override
@@ -399,11 +408,11 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
   }
 
   @Override
-  public synchronized Iterator<E> iterator(E item) {
-    if (firstItem == null || isEmpty()) {
+  public synchronized Iterator<E> iterator(E from) {
+    if (from == null || firstItem == null || isEmpty()) {
       return emptyIterator();
     } else {
-      return new LinkIterator<E>(item);
+      return new LinkIterator<E>(from);
     }
   }
 
@@ -424,9 +433,9 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
    */
   @Override
   public synchronized Iterator<E> iterator(E head, E tail) {
-    if (firstItem == null || isEmpty()) {
+    if (head == null || firstItem == null || isEmpty()) {
       return emptyIterator();
-    } else if (head != null && this.getPredOf(head) == tail) {
+    } else if (this.getPredOf(head) == tail) {
       return emptyIterator();
     } else {
       return new LinkIterator<E>(head, tail);
