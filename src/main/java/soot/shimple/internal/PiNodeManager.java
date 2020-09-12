@@ -37,7 +37,6 @@ import soot.UnitBox;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.AssignStmt;
-import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
 import soot.jimple.LookupSwitchStmt;
@@ -282,7 +281,7 @@ public class PiNodeManager {
       {
         Unit predOfTarget;
         try {
-          predOfTarget = (Unit) units.getPredOf(target);
+          predOfTarget = units.getPredOf(target);
         } catch (NoSuchElementException ex) {
           predOfTarget = null;
         }
