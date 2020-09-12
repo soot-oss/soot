@@ -25,6 +25,7 @@ package soot.toolkits.graph;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -71,7 +72,7 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
 
   /**
    * Make sure we visit children first. This is reverse topological order.
-   **/
+   */
   protected void bottomUpDispatch(DominatorNode<N> node) {
     // *** FIXME: It's annoying that this algorithm is so
     // *** inefficient in that in traverses the tree from the head
@@ -97,6 +98,7 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
    * Uses the algorithm of Cytron et al., TOPLAS Oct. 91:
    *
    * <pre>
+   * <code>
    * for each X in a bottom-up traversal of the dominator tree do
    *
    *      DF(X) < - null
@@ -108,10 +110,11 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
    *              if (idom(Y)!=X) then DF(X) <- DF(X) U Y
    *        end
    *      end
+   * </code>
    * </pre>
-   **/
+   */
   protected void processNode(DominatorNode<N> node) {
-    ArrayList<DominatorNode<N>> dominanceFrontier = new ArrayList<DominatorNode<N>>();
+    HashSet<DominatorNode<N>> dominanceFrontier = new HashSet<DominatorNode<N>>();
 
     // local
     for (DominatorNode<N> succ : dt.getSuccsOf(node)) {
@@ -128,7 +131,7 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
         }
       }
     }
-    dominanceFrontier.trimToSize(); // potentially a long-lived object
-    nodeToFrontier.put(node, dominanceFrontier);
+
+    nodeToFrontier.put(node, new ArrayList<>(dominanceFrontier));
   }
 }
