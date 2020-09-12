@@ -33,7 +33,6 @@ import java.util.NoSuchElementException;
  * @author Ondrej Lhotak
  * @author xiao, generalize it.
  */
-
 public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> {
 
   protected E[] numberToObj;
@@ -42,13 +41,13 @@ public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> 
 
   @SuppressWarnings("unchecked")
   public ArrayNumberer() {
-    numberToObj = (E[]) new Numberable[1024];
-    lastNumber = 0;
+    this.numberToObj = (E[]) new Numberable[1024];
+    this.lastNumber = 0;
   }
 
   public ArrayNumberer(E[] elements) {
-    numberToObj = elements;
-    lastNumber = elements.length;
+    this.numberToObj = elements;
+    this.lastNumber = elements.length;
   }
 
   private void resize(int n) {
