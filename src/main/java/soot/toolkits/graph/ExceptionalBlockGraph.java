@@ -45,6 +45,7 @@ import soot.toolkits.exceptions.ThrowableSet;
  * </p>
  */
 public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGraph<Block> {
+
   // Maps for distinguishing exceptional and unexceptional control flow.
   // We follow two conventions to save space (and runtime, if no client ever
   // asks for the exceptional information): if the graph contains no
@@ -170,14 +171,15 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
    *           if one of the elements in <code>keys</code> does not appear in <code>keyToValue</code>
    */
   private static <K, V> List<V> mappedValues(List<K> keys, Map<K, V> keyToValue) {
-    List<V> result = new ArrayList<V>(keys.size());
+    ArrayList<V> result = new ArrayList<V>(keys.size());
     for (K key : keys) {
       V value = keyToValue.get(key);
       if (value == null) {
-        throw new IllegalStateException("No value corresponding to key: " + key.toString());
+        throw new IllegalStateException("No value corresponding to key: " + key);
       }
       result.add(value);
     }
+    result.trimToSize(); // potentially a long-lived object
     return result;
   }
 
@@ -279,6 +281,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
         blocksDests.add(new ExceptionDest(trap, entry.getValue(), trapBlock));
       }
     }
+    blocksDests.trimToSize(); // potentially a long-lived object
     return blocksDests;
   }
 
@@ -322,8 +325,6 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
   public Collection<ExceptionDest> getExceptionDests(final Block b) {
     if (blockToExceptionDests == null) {
       ExceptionDest e = new ExceptionDest(null, null, null) {
-        private ThrowableSet throwables;
-
         @Override
         public ThrowableSet getThrowables() {
           if (null == throwables) {
@@ -341,9 +342,9 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
   }
 
   public static class ExceptionDest implements ExceptionalGraph.ExceptionDest<Block> {
-    private Trap trap;
-    private ThrowableSet throwables;
-    private Block handler;
+    private final Trap trap;
+    private final Block handler;
+    protected ThrowableSet throwables;
 
     protected ExceptionDest(Trap trap, ThrowableSet throwables, Block handler) {
       this.trap = trap;
