@@ -38,10 +38,30 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
-  protected Map<E, Link<E>> map = new ConcurrentHashMap<>();
+  protected final Map<E, Link<E>> map;
   protected E firstItem;
   protected E lastItem;
   protected int stateCount = 0;
+
+  /** Constructs an empty HashChain. */
+  public HashChain() {
+    this.map = new ConcurrentHashMap<>();
+    this.firstItem = null;
+    this.lastItem = null;
+  }
+
+  /** Constructs an empty HashChain with the given initial capacity. */
+  public HashChain(int initialCapacity) {
+    this.map = new ConcurrentHashMap<>(initialCapacity);
+    this.firstItem = null;
+    this.lastItem = null;
+  }
+
+  /** Constructs a HashChain filled with the contents of the src Chain. */
+  public HashChain(Chain<E> src) {
+    this(src.size());
+    addAll(src);
+  }
 
   // Lazy initialized singleton
   private static class EmptyIteratorSingleton {
@@ -109,18 +129,6 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
   @Deprecated
   public static <E> List<E> toList(Chain<E> c) {
     return new ArrayList<E>(c);
-  }
-
-  /** Constructs an empty HashChain. */
-  public HashChain() {
-    firstItem = null;
-    lastItem = null;
-  }
-
-  /** Constructs a HashChain filled with the contents of the src Chain. */
-  public HashChain(Chain<E> src) {
-    this();
-    addAll(src);
   }
 
   @Override
