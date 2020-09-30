@@ -78,7 +78,8 @@ public class Aggregator extends BodyTransformer {
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     StmtBody body = (StmtBody) b;
 
-    if (Options.v().time()) {
+    final boolean time = Options.v().time();
+    if (time) {
       Timers.v().aggregationTimer.start();
     }
 
@@ -88,10 +89,7 @@ public class Aggregator extends BodyTransformer {
       Zonation zonation = new Zonation(body);
       for (Unit u : body.getUnits()) {
         Zone zone = zonation.getZoneOf(u);
-        for (ValueBox box : u.getUseBoxes()) {
-          boxToZone.put(box, zone);
-        }
-        for (ValueBox box : u.getDefBoxes()) {
+        for (ValueBox box : u.getUseAndDefBoxes()) {
           boxToZone.put(box, zone);
         }
       }
@@ -106,7 +104,7 @@ public class Aggregator extends BodyTransformer {
       }
     } while (internalAggregate(body, boxToZone, onlyStackVars));
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().aggregationTimer.end();
     }
   }
@@ -262,11 +260,6 @@ public class Aggregator extends BodyTransformer {
           usepairUnit.addAllTagsOf(s);
         }
         hadAggregation = true;
-        // } else if (Options.v().verbose()) {
-        // logger.debug("[debug] failed aggregation");
-        // logger.debug("[debug] tried to put " + aggregatee + " into " + usepairUnit + ": in particular " +
-        // usepairValueBox);
-        // logger.debug("[debug] aggregatee instanceof Expr: " + (aggregatee instanceof soot.jimple.Expr));
       }
     } // end for(...)
     return hadAggregation;
