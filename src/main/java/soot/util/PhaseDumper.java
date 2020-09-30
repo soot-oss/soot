@@ -327,11 +327,25 @@ public class PhaseDumper {
    *          the {@link Body} represented by <code>g</code>.
    */
   public <N> void dumpGraph(DirectedGraph<N> g, Body b) {
+    dumpGraph(g, b, false);
+  }
+
+  /**
+   * Asks the <code>PhaseDumper</code> to dump the passed {@link DirectedGraph} if the current phase is being dumped or
+   * {@code skipPhaseCheck == true}.
+   *
+   * @param g
+   *          the graph to dump.
+   * @param b
+   *          the {@link Body} represented by <code>g</code>.
+   * @param skipPhaseCheck
+   */
+  public <N> void dumpGraph(DirectedGraph<N> g, Body b, boolean skipPhaseCheck) {
     if (!alreadyDumping) {
       try {
         alreadyDumping = true;
         String phaseName = phaseStack.currentPhase();
-        if (isCFGDumpingPhase(phaseName)) {
+        if (skipPhaseCheck || isCFGDumpingPhase(phaseName)) {
           try {
             String outputFile = nextGraphFileName(b, phaseName + '-' + getClassIdent(g) + '-');
             CFGToDotGraph drawer = new CFGToDotGraph();
@@ -356,11 +370,23 @@ public class PhaseDumper {
    *          the graph to dump.
    */
   public <N> void dumpGraph(ExceptionalGraph<N> g) {
+    dumpGraph(g, false);
+  }
+
+  /**
+   * Asks the <code>PhaseDumper</code> to dump the passed {@link ExceptionalGraph} if the current phase is being dumped or
+   * {@code skipPhaseCheck == true}.
+   *
+   * @param g
+   *          the graph to dump.
+   * @param skipPhaseCheck
+   */
+  public <N> void dumpGraph(ExceptionalGraph<N> g, boolean skipPhaseCheck) {
     if (!alreadyDumping) {
       try {
         alreadyDumping = true;
         String phaseName = phaseStack.currentPhase();
-        if (isCFGDumpingPhase(phaseName)) {
+        if (skipPhaseCheck || isCFGDumpingPhase(phaseName)) {
           try {
             String outputFile = nextGraphFileName(g.getBody(), phaseName + '-' + getClassIdent(g) + '-');
             CFGToDotGraph drawer = new CFGToDotGraph();
@@ -387,8 +413,7 @@ public class PhaseDumper {
    */
   private String getClassIdent(Object obj) {
     String qualifiedName = obj.getClass().getName();
-    int lastDotIndex = qualifiedName.lastIndexOf('.');
-    return qualifiedName.substring(lastDotIndex + 1);
+    return qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
   }
 
   /**
@@ -397,10 +422,7 @@ public class PhaseDumper {
    * BriefUnitGraph in order to print a graph. Doh!
    */
   public void printCurrentStackTrace() {
-    try {
-      throw new IOException("FAKE");
-    } catch (IOException e) {
-      logger.error(e.getMessage(), e);
-    }
+    IOException e = new IOException("FAKE");
+    logger.error(e.getMessage(), e);
   }
 }
