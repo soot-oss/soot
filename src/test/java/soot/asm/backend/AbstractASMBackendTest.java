@@ -10,12 +10,12 @@ package soot.asm.backend;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Scanner;
@@ -41,12 +42,10 @@ import soot.Main;
 import soot.ModulePathSourceLocator;
 import soot.Scene;
 
-
 /**
  * Abstract base class for tests for the ASM backend that work with compiled class files
  *
  * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer
- *
  */
 @Ignore("Abstract base class")
 public abstract class AbstractASMBackendTest implements Opcodes {
@@ -56,11 +55,17 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 
   private final TraceClassVisitor visitor = new TraceClassVisitor(pw);
 
-  protected TargetCompiler targetCompiler = Scene.isJavaGEQ9(System.getProperty("java.version")) ? TargetCompiler.javac9 : TargetCompiler.javac;
+  protected TargetCompiler targetCompiler = getJavaCompiler();
 
-  /**
-   * Runs Soot with the arguments needed for running one test
-   */
+  protected TargetCompiler getJavaCompiler() {
+    final String version = System.getProperty("java.version");
+    if (Scene.isJavaGEQ9(version)) {
+      return TargetCompiler.javac9;
+    }
+    return TargetCompiler.javac;
+  }
+
+  /** Runs Soot with the arguments needed for running one test */
   protected void runSoot() {
     G.reset();
     // Location of the rt.jar
@@ -69,20 +74,17 @@ public abstract class AbstractASMBackendTest implements Opcodes {
       rtJar = ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS;
     } else {
       rtJar = System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar";
-
     }
     String classpath = getClassPathFolder() + File.pathSeparator + rtJar;
     System.out.println("Class path: " + classpath);
 
     // Run Soot and print output to .asm-files.
     Main.main(new String[] { "-cp", classpath, "-src-prec", "only-class", "-output-format", "asm", "-allow-phantom-refs",
-        "-java-version", getRequiredJavaVersion(), getTargetClass() });
+        "-java-version", getRequiredJavaVersion(), "-no-derive-java-version", getTargetClass() });
   }
 
-  /**
-   * Generates the textual output and saves it for later for comparison
-   */
-  private String createComparison() {
+  /** Generates the textual output and saves it for later for comparison */
+  private String createComparison() throws IOException {
     generate(visitor);
     return sw.toString();
   }
@@ -94,7 +96,7 @@ public abstract class AbstractASMBackendTest implements Opcodes {
    *           if either the file for comparison could not be created or the soot output could not be opened
    */
   @Test
-  public void runTestAndCompareOutput() throws FileNotFoundException {
+  public void runTestAndCompareOutput() throws IOException {
     runSoot();
     String comparisonOutput = createComparison();
 
@@ -123,6 +125,7 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 
         // Get both lines
         String compare = compareOutput.nextLine();
+
         String output = sootOutput.nextLine();
 
         // Compare lines
@@ -183,11 +186,8 @@ public abstract class AbstractASMBackendTest implements Opcodes {
     return "default";
   }
 
-  /**
-   * Enumeration containing the supported Java compilers
-   */
+  /** Enumeration containing the supported Java compilers */
   enum TargetCompiler {
     eclipse, javac, javac9
   }
-
 }

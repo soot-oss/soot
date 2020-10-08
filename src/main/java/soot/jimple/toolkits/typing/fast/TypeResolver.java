@@ -142,9 +142,10 @@ public class TypeResolver {
   }
 
   public void inferTypes() {
+    ITypingStrategy typingStrategy = getTypingStrategy();
     AugEvalFunction ef = new AugEvalFunction(this.jb);
     BytecodeHierarchy bh = new BytecodeHierarchy();
-    Collection<Typing> sigma = this.applyAssignmentConstraints(new Typing(this.jb.getLocals()), ef, bh);
+    Collection<Typing> sigma = this.applyAssignmentConstraints(typingStrategy.createTyping(this.jb.getLocals()), ef, bh);
 
     // If there is nothing to type, we can quit
     if (sigma.isEmpty()) {
@@ -155,9 +156,10 @@ public class TypeResolver {
     Typing tg = this.minCasts(sigma, bh, castCount);
     if (castCount[0] != 0) {
       this.split_new();
-      sigma = this.applyAssignmentConstraints(new Typing(this.jb.getLocals()), ef, bh);
+      sigma = this.applyAssignmentConstraints(typingStrategy.createTyping(this.jb.getLocals()), ef, bh);
       tg = this.minCasts(sigma, bh, castCount);
     }
+
     this.insertCasts(tg, bh, false);
 
     final IntType inttype = IntType.v();
@@ -180,6 +182,10 @@ public class TypeResolver {
         v.setType(tg.get(v));
       }
     }
+  }
+
+  protected ITypingStrategy getTypingStrategy() {
+    return DefaultTypingStrategy.INSTANCE;
   }
 
   public class CastInsertionUseVisitor implements IUseVisitor {
@@ -223,7 +229,8 @@ public class TypeResolver {
             final String name = rt.getSootClass().getName();
             if (name.equals("java.lang.Object") || name.equals("java.io.Serializable")
                 || name.equals("java.lang.Cloneable")) {
-              tg.set((Local) ((DefinitionStmt) stmt).getLeftOp(), ((ArrayType) useType).getElementType());
+              Local lop = (Local) ((DefinitionStmt) stmt).getLeftOp();
+              tg.set(lop, ((ArrayType) useType).getElementType());
             }
           }
         }
@@ -242,6 +249,7 @@ public class TypeResolver {
           vold = (Local) op;
         }
 
+        // Cast from the original type to the type that we use in the code
         Local vnew = createCast(useType, stmt, vold);
         return vnew;
       }
@@ -259,11 +267,33 @@ public class TypeResolver {
      * @return the new local
      */
     protected Local createCast(Type useType, Stmt stmt, Local old) {
+      return createCast(useType, stmt, old, false);
+    }
+
+    /**
+     * Creates a cast at stmt of vold to the given type.
+     * 
+     * @param useType
+     *          the new type
+     * @param stmt
+     *          stmt
+     * @param old
+     *          the old local
+     * @param after
+     *          True to insert the cast after the statement, false to insert it before
+     * @return the new local
+     */
+    protected Local createCast(Type useType, Stmt stmt, Local old, boolean after) {
       Jimple jimple = Jimple.v();
       Local vnew = localGenerator.generateLocal(useType);
       this.tg.set(vnew, useType);
       Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
-      this.jb.getUnits().insertBefore(jimple.newAssignStmt(vnew, jimple.newCastExpr(old, useType)), u);
+      AssignStmt newStmt = jimple.newAssignStmt(vnew, jimple.newCastExpr(old, useType));
+      if (after) {
+        this.jb.getUnits().insertAfter(newStmt, u);
+      } else {
+        this.jb.getUnits().insertBefore(newStmt, u);
+      }
       return vnew;
     }
 
@@ -397,6 +427,9 @@ public class TypeResolver {
         } else if (t instanceof Integer32767Type) {
           tg.set(v, shortType);
           conversionDone = true;
+        } else if (t instanceof WeakObjectType) {
+          tg.set(v, RefType.v(((WeakObjectType) t).getClassName()));
+          conversionDone = true;
         }
       }
     } while (conversionDone);
@@ -453,6 +486,7 @@ public class TypeResolver {
       return sigma;
     }
 
+    final ITypingStrategy typingStrategy = getTypingStrategy();
     HashMap<Typing, BitSet> worklists = new HashMap<Typing, BitSet>();
 
     sigma.add(tg);
@@ -493,7 +527,7 @@ public class TypeResolver {
              * We only need to consider array references on the LHS of assignments where there is supertyping between array
              * types, which is only for arrays of reference types and multidimensional arrays.
              */
-            if (!(t_ instanceof RefType || t_ instanceof ArrayType)) {
+            if (!(t_ instanceof RefType || t_ instanceof ArrayType || told instanceof WeakObjectType)) {
               continue;
             }
 
@@ -514,13 +548,13 @@ public class TypeResolver {
             if (!typesEqual(t, told)) {
               Typing tg_;
               BitSet wl_;
-              if (/* (eval.size() == 1 && lcas.size() == 1) || */ isFirstType) {
+              if (/* (eval.size() == 1 && lcas.size() == 1) || */isFirstType) {
                 // The types agree, we have a type we can directly use
                 tg_ = tg;
                 wl_ = wl;
               } else {
                 // The types do not agree, add all supertype candidates
-                tg_ = new Typing(tg);
+                tg_ = typingStrategy.createTyping(tg);
                 wl_ = new BitSet(numAssignments - 1);
                 wl_.or(wl);
                 sigma.add(tg_);
@@ -538,8 +572,7 @@ public class TypeResolver {
         } // end for
       }
     }
-
-    Typing.minimize(r, h);
+    typingStrategy.minimize(r, h);
     return r;
   }
 
@@ -571,7 +604,7 @@ public class TypeResolver {
         if (invoke.getInvokeExpr() instanceof SpecialInvokeExpr) {
           SpecialInvokeExpr special = (SpecialInvokeExpr) invoke.getInvokeExpr();
 
-          if (special.getMethodRef().name().equals("<init>")) {
+          if (special.getMethodRef().getName().equals("<init>")) {
             List<Unit> deflist = defs.getDefsOfAt((Local) special.getBase(), invoke);
 
             while (deflist.size() == 1) {

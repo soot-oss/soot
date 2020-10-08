@@ -33,7 +33,6 @@ import org.objectweb.asm.util.TraceClassVisitor;
  *
  */
 
-
 public class InnerClassTest extends AbstractASMBackendTest {
 
   @Override
@@ -41,9 +40,11 @@ public class InnerClassTest extends AbstractASMBackendTest {
     MethodVisitor mv;
     FieldVisitor fv;
 
-    visitor.visit(V1_1, ACC_SUPER, "soot/asm/backend/targets/InnerClass$Inner", null, "java/lang/Object", null);
+    visitor.visit(V1_1, ACC_SUPER , "soot/asm/backend/targets/InnerClass$Inner", null, "java/lang/Object", null);
 
     visitor.visitSource("InnerClass.java", null);
+
+    visitor.visitOuterClass("soot/asm/backend/targets/InnerClass", null, null);
 
     visitor.visitInnerClass("soot/asm/backend/targets/InnerClass$Inner", "soot/asm/backend/targets/InnerClass", "Inner",
         ACC_PRIVATE);

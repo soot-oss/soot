@@ -25,7 +25,7 @@ import org.junit.Test;
 import soot.testing.framework.AbstractTestingFramework;
 
 /**
- * Reproduces issue 1292: https://github.com/Sable/soot/issues/1292
+ * Reproduces issue 1292: https://github.com/soot-oss/soot/issues/1292
  *
  * @author raintung.li
  */

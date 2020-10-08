@@ -221,7 +221,7 @@ public class ModulePathSourceLocator extends SourceLocator {
         path = Paths.get(aPath);
         break;
       case jrt:
-        path = Paths.get(URI.create(aPath)).resolve("modules");
+        path = getRootModulesPathOfJDK();
         break;
       case unknown:
         break;
@@ -258,6 +258,15 @@ public class ModulePathSourceLocator extends SourceLocator {
     }
     return mapModuleClasses;
 
+  }
+
+  public static Path getRootModulesPathOfJDK() {
+    Path p = Paths.get(URI.create("jrt:/"));
+    if (p.endsWith("modules")) {
+      return p;
+    }
+    //Due to a bug in some JDKs, p not necessarily points to modules directly: https://bugs.openjdk.java.net/browse/JDK-8227076
+    return p.resolve("modules");
   }
 
   /**
@@ -305,13 +314,11 @@ public class ModulePathSourceLocator extends SourceLocator {
   private Map<String, List<String>> buildModuleForJar(Path jar) {
     Map<String, List<String>> moduleClassMap = new HashMap<>();
 
-    try (FileSystem zipFileSystem = FileSystems.newFileSystem(jar, null)) {
+    try (FileSystem zipFileSystem = FileSystems.newFileSystem(jar, this.getClass().getClassLoader())) {
       Path mi = zipFileSystem.getPath(SootModuleInfo.MODULE_INFO_FILE);
       if (Files.exists(mi)) {
         FoundFile foundFile = new FoundFile(mi);
 
-        // we hava a modular jar
-        // try (InputStream in = Files.newInputStream(mi)) {
         for (ClassProvider cp : classProviders) {
           if (cp instanceof AsmModuleClassProvider) {
             String moduleName = ((AsmModuleClassProvider) cp).getModuleName(foundFile);
@@ -330,9 +337,6 @@ public class ModulePathSourceLocator extends SourceLocator {
 
           }
         }
-        /*
-         * } catch (IOException e) { e.printStackTrace(); }
-         */
       } else {
         // no module-info treat as automatic module
         // create module name from jar
@@ -604,7 +608,7 @@ public class ModulePathSourceLocator extends SourceLocator {
    */
   protected FoundFile lookupInArchive(String archivePath, String fileName) {
     Path archive = Paths.get(archivePath);
-    try (FileSystem zipFileSystem = FileSystems.newFileSystem(archive, null)) {
+    try (FileSystem zipFileSystem = FileSystems.newFileSystem(archive, this.getClass().getClassLoader())) {
       Path entry = zipFileSystem.getPath(fileName);
       if (entry == null || !Files.isRegularFile(entry)) {
         return null;

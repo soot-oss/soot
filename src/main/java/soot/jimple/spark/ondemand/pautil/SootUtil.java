@@ -271,7 +271,7 @@ public class SootUtil {
   @SuppressWarnings("unused")
   private static void checkSetsEqual(final HybridPointsToSet intersection, final PointsToSetInternal set1,
       final PointsToSetInternal set2, PAG pag) {
-    final PointsToSetInternal ret = new HybridPointsToSet(Scene.v().getObjectType(), pag);
+    final PointsToSetInternal ret = HybridPointsToSet.getFactory().newSet(Scene.v().getObjectType(), pag);
     set1.forall(new P2SetVisitor() {
 
       @Override
@@ -416,7 +416,7 @@ public class SootUtil {
     Type receiverType = invokedMethod.getDeclaringClass().getType();
     ChunkedQueue chunkedQueue = new ChunkedQueue();
     Iterator iter = chunkedQueue.reader();
-    VirtualCalls.v().resolve(type, receiverType, invokedMethod.getNumberedSubSignature(), null, chunkedQueue);
+    VirtualCalls.v().resolve(type, receiverType, invokedMethod.makeRef(), null, chunkedQueue);
     Set<SootMethod> ret = new ArraySet<SootMethod>();
     for (; iter.hasNext();) {
       SootMethod target = (SootMethod) iter.next();
