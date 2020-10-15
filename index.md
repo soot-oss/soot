@@ -1,3 +1,5 @@
+<iframe src="https://github.com/sponsors/soot-oss/card" title="Sponsor Soot" height="225" width="600" style="border: 0;"></iframe>
+
 # What is Soot?
 
 <img align="right" src="/soot/logo/soot-logo.png" width="150">
