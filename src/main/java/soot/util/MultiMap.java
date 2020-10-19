@@ -32,7 +32,6 @@ import java.util.Set;
  *
  * @author Ondrej Lhotak
  */
-
 public interface MultiMap<K, V> extends Iterable<Pair<K, V>> {
   public boolean isEmpty();
 
@@ -65,10 +64,6 @@ public interface MultiMap<K, V> extends Iterable<Pair<K, V>> {
   public Set<K> keySet();
 
   public Set<V> values();
-
-  public boolean equals(Object o);
-
-  public int hashCode();
 
   /**
    * Gets the number of keys in this MultiMap

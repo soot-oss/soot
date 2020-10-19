@@ -48,12 +48,13 @@ public enum MethodDeclarationValidator implements ClassValidator {
         for (Type tp : sm.getParameterTypes()) {
           if (tp == null) {
             exceptions.add(new ValidationException(sm, "Null parameter types are invalid"));
-          }
-          if (tp instanceof VoidType) {
-            exceptions.add(new ValidationException(sm, "Void parameter types are invalid"));
-          }
-          if (!tp.isAllowedInFinalCode()) {
-            exceptions.add(new ValidationException(sm, "Parameter type not allowed in final code"));
+          } else {
+            if (tp instanceof VoidType) {
+              exceptions.add(new ValidationException(sm, "Void parameter types are invalid"));
+            }
+            if (!tp.isAllowedInFinalCode()) {
+              exceptions.add(new ValidationException(sm, "Parameter type not allowed in final code"));
+            }
           }
         }
       }
@@ -64,5 +65,4 @@ public enum MethodDeclarationValidator implements ClassValidator {
   public boolean isBasicValidator() {
     return true;
   }
-
 }
