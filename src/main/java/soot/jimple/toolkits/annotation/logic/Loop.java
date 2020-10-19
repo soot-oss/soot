@@ -31,7 +31,7 @@ import soot.jimple.Stmt;
 import soot.toolkits.graph.UnitGraph;
 
 /**
- * A (natural) loop in Jimple. A back-edge (t,h) is a control-flog edge for which h dominates t. In this case h is the header
+ * A (natural) loop in Jimple. A back-edge (t,h) is a control-flow edge for which h dominates t. In this case h is the header
  * and the loop consists of all statements s which reach t without passing through h.
  *
  * @author Eric Bodden

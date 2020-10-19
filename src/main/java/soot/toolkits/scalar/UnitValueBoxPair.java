@@ -29,16 +29,17 @@ import soot.ValueBox;
  * Utility class used to package a Unit and a ValueBox together.
  */
 public class UnitValueBoxPair {
+
   public Unit unit;
   public ValueBox valueBox;
 
   /**
-   * Constructs a UnitValueBoxPair form a Unit object and a ValueBox object.
+   * Constructs a UnitValueBoxPair from a Unit object and a ValueBox object.
    * 
-   * @param local
-   *          some Local
    * @param unit
-   *          some Unit.
+   *          some Unit
+   * @param valueBox
+   *          some ValueBox
    */
   public UnitValueBoxPair(Unit unit, ValueBox valueBox) {
     this.unit = unit;
@@ -46,28 +47,29 @@ public class UnitValueBoxPair {
   }
 
   /**
-   * Two UnitValueBoxPairs are equal iff they the Unit they hold are 'equal' and the ValueBoxes they hold are 'equal'.
+   * Two UnitValueBoxPairs are equal iff they the Units they hold are 'equal' and the ValueBoxes they hold are 'equal'.
    * 
    * @param other
    *          another UnitValueBoxPair
    * @return true if equal.
    */
+  @Override
   public boolean equals(Object other) {
     if (other instanceof UnitValueBoxPair) {
       UnitValueBoxPair otherPair = (UnitValueBoxPair) other;
-
-      if (unit.equals(otherPair.unit) && valueBox.equals(otherPair.valueBox)) {
+      if (this.unit.equals(otherPair.unit) && this.valueBox.equals(otherPair.valueBox)) {
         return true;
       }
     }
-
     return false;
   }
 
+  @Override
   public int hashCode() {
     return unit.hashCode() + valueBox.hashCode();
   }
 
+  @Override
   public String toString() {
     return valueBox + " in " + unit;
   }
@@ -79,5 +81,4 @@ public class UnitValueBoxPair {
   public ValueBox getValueBox() {
     return valueBox;
   }
-
 }

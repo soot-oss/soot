@@ -23,22 +23,25 @@ package soot.jimple;
  */
 
 public class GroupIntPair {
-  public Object group;
-  public int x;
+  public final Object group;
+  public final int x;
 
   public GroupIntPair(Object group, int x) {
     this.group = group;
     this.x = x;
   }
 
+  @Override
   public boolean equals(Object other) {
     if (other instanceof GroupIntPair) {
-      return ((GroupIntPair) other).group.equals(this.group) && ((GroupIntPair) other).x == this.x;
+      GroupIntPair cast = (GroupIntPair) other;
+      return cast.group.equals(this.group) && cast.x == this.x;
     } else {
       return false;
     }
   }
 
+  @Override
   public int hashCode() {
     return group.hashCode() + 1013 * x;
   }
@@ -47,5 +50,4 @@ public class GroupIntPair {
   public String toString() {
     return this.group + ": " + this.x;
   }
-
 }

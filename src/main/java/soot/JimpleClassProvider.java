@@ -29,17 +29,16 @@ import soot.options.Options;
  * it.
  */
 public class JimpleClassProvider implements ClassProvider {
+
   /**
    * Look for the specified class. Return a ClassSource for it if found, or null if it was not found.
    */
+  @Override
   public ClassSource find(String className) {
-    // String fileName = className.replace('.', '/') + ".jimple";
-    String fileName = className + ".jimple";
-    FoundFile file = SourceLocator.v().lookupInClassPath(fileName);
+    FoundFile file = SourceLocator.v().lookupInClassPath(className + ".jimple");
     if (file == null) {
       if (Options.v().permissive_resolving()) {
-        fileName = className.replace('.', '/') + ".jimple";
-        file = SourceLocator.v().lookupInClassPath(fileName);
+        file = SourceLocator.v().lookupInClassPath(className.replace('.', '/') + ".jimple");
       }
       if (file == null) {
         return null;

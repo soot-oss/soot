@@ -49,8 +49,7 @@ public class DexClassProvider implements ClassProvider {
   public static Set<String> classesOfDex(DexFile dexFile) {
     Set<String> classes = new HashSet<String>();
     for (ClassDef c : dexFile.getClasses()) {
-      String name = Util.dottedClassName(c.getType());
-      classes.add(name);
+      classes.add(Util.dottedClassName(c.getType()));
     }
     return classes;
   }
@@ -62,33 +61,31 @@ public class DexClassProvider implements ClassProvider {
    *          class to provide.
    * @return a DexClassSource that defines the className named class.
    */
+  @Override
   public ClassSource find(String className) {
     ensureDexIndex();
 
-    Map<String, File> index = SourceLocator.v().dexClassIndex();
-    File file = index.get(className);
-    if (file == null) {
-      return null;
-    }
-
-    return new DexClassSource(className, file);
+    File file = SourceLocator.v().dexClassIndex().get(className);
+    return (file == null) ? null : new DexClassSource(className, file);
   }
 
   /**
    * Checks whether the dex class index needs to be (re)built and triggers the build if necessary
    */
   protected void ensureDexIndex() {
-    Map<String, File> index = SourceLocator.v().dexClassIndex();
+    final SourceLocator loc = SourceLocator.v();
+    Map<String, File> index = loc.dexClassIndex();
     if (index == null) {
       index = new HashMap<String, File>();
-      buildDexIndex(index, SourceLocator.v().classPath());
-      SourceLocator.v().setDexClassIndex(index);
+      buildDexIndex(index, loc.classPath());
+      loc.setDexClassIndex(index);
     }
 
     // Process the classpath extensions
-    if (SourceLocator.v().getDexClassPathExtensions() != null) {
-      buildDexIndex(SourceLocator.v().dexClassIndex(), new ArrayList<>(SourceLocator.v().getDexClassPathExtensions()));
-      SourceLocator.v().clearDexClassPathExtensions();
+    Set<String> extensions = loc.getDexClassPathExtensions();
+    if (extensions != null) {
+      buildDexIndex(index, new ArrayList<>(extensions));
+      loc.clearDexClassPathExtensions();
     }
   }
 
@@ -110,7 +107,7 @@ public class DexClassProvider implements ClassProvider {
               if (!index.containsKey(className)) {
                 index.put(className, container.getFilePath());
               } else if (Options.v().verbose()) {
-                logger.debug("" + String.format(
+                logger.debug(String.format(
                     "Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.", className,
                     container.getDexName(), container.getFilePath().getCanonicalPath()));
               }
@@ -125,6 +122,5 @@ public class DexClassProvider implements ClassProvider {
         logger.debug("Exception: " + e);
       }
     }
-
   }
 }

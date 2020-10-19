@@ -634,7 +634,11 @@ public class ModulePathSourceLocator extends SourceLocator {
 
       @Override
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        String fileName = aPath.relativize(file).toString().replace(File.separatorChar, '.');
+        // Note that some FileSystem implementations used by Path use even on Windows
+        // "/" as path separator. Therefore we have to use the file-system specific path separator
+        // instead of the system specific one (File.separatorChar).
+        String fileName = aPath.relativize(file).toString().replace(file.getFileSystem().getSeparator(), ".");
+
         if (fileName.endsWith(".class")) {
           classes.add(fileName.substring(0, fileName.lastIndexOf(".class")));
         } else if (fileName.endsWith(".jimple")) {

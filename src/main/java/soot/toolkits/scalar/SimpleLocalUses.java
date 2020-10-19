@@ -48,8 +48,9 @@ import soot.toolkits.graph.UnitGraph;
  */
 public class SimpleLocalUses implements LocalUses {
   private static final Logger logger = LoggerFactory.getLogger(SimpleLocalUses.class);
+
   final Body body;
-  private Map<Unit, List<UnitValueBoxPair>> unitToUses;
+  private final Map<Unit, List<UnitValueBoxPair>> unitToUses;
 
   /**
    * Construct the analysis from a UnitGraph representation of a method body and a LocalDefs interface. This supposes that a
@@ -68,23 +69,14 @@ public class SimpleLocalUses implements LocalUses {
    */
   public SimpleLocalUses(Body body, LocalDefs localDefs) {
     this.body = body;
-    final Options options = Options.v();
-    if (options.time()) {
-      Timers.v().usesTimer.start();
-      Timers.v().usePhase1Timer.start();
-    }
+    this.unitToUses = new HashMap<Unit, List<UnitValueBoxPair>>(body.getUnits().size() * 2 + 1, 0.7f);
 
+    final Options options = Options.v();
     if (options.verbose()) {
       logger.debug("[" + body.getMethod().getName() + "]     Constructing SimpleLocalUses...");
     }
-
-    unitToUses = new HashMap<Unit, List<UnitValueBoxPair>>(body.getUnits().size() * 2 + 1, 0.7f);
-
-    // Initialize this map to empty sets
-
     if (options.time()) {
-      Timers.v().usePhase1Timer.end();
-      Timers.v().usePhase2Timer.start();
+      Timers.v().usesTimer.start();
     }
 
     // Traverse units and associate uses with definitions
@@ -95,10 +87,9 @@ public class SimpleLocalUses implements LocalUses {
           // Add this statement to the uses of the definition of the local
           Local l = (Local) v;
 
-          UnitValueBoxPair newPair = new UnitValueBoxPair(unit, useBox);
-
           List<Unit> defs = localDefs.getDefsOfAt(l, unit);
           if (defs != null) {
+            UnitValueBoxPair newPair = new UnitValueBoxPair(unit, useBox);
             for (Unit def : defs) {
               List<UnitValueBoxPair> lst = unitToUses.get(def);
               if (lst == null) {
@@ -112,10 +103,8 @@ public class SimpleLocalUses implements LocalUses {
     }
 
     if (options.time()) {
-      Timers.v().usePhase2Timer.end();
       Timers.v().usesTimer.end();
     }
-
     if (options.verbose()) {
       logger.debug("[" + body.getMethod().getName() + "]     finished SimpleLocalUses...");
     }
@@ -132,11 +121,7 @@ public class SimpleLocalUses implements LocalUses {
   @Override
   public List<UnitValueBoxPair> getUsesOf(Unit s) {
     List<UnitValueBoxPair> l = unitToUses.get(s);
-    if (l == null) {
-      return Collections.emptyList();
-    }
-
-    return Collections.unmodifiableList(l);
+    return (l == null) ? Collections.emptyList() : Collections.unmodifiableList(l);
   }
 
   /**
@@ -164,5 +149,4 @@ public class SimpleLocalUses implements LocalUses {
     res.retainAll(getUsedVariables());
     return res;
   }
-
 }
