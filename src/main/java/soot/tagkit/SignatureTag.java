@@ -29,7 +29,7 @@ public class SignatureTag implements Tag {
 
   public static final String NAME = SignatureTag.class.getSimpleName();
 
-  private String signature;
+  private final String signature;
 
   public SignatureTag(String signature) {
     this.signature = signature;
@@ -59,5 +59,4 @@ public class SignatureTag implements Tag {
   public String toString() {
     return "Signature: " + signature;
   }
-
 }

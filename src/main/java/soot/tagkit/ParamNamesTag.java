@@ -28,9 +28,9 @@ import java.util.List;
 /**
  * Represents a tag that just has a string to be printed with the code.
  */
-
 public class ParamNamesTag implements Tag {
-  String[] names;
+
+  private final String[] names;
 
   /**
    * Backwards compatibility
@@ -42,12 +42,12 @@ public class ParamNamesTag implements Tag {
   }
 
   public ParamNamesTag(String[] parameterNames) {
-    names = parameterNames;
+    this.names = parameterNames;
   }
 
   @Override
   public String toString() {
-    return names.toString();
+    return Arrays.toString(names);
   }
 
   public List<String> getNames() {
