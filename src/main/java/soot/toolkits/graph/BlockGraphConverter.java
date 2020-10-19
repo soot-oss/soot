@@ -52,12 +52,11 @@ public class BlockGraphConverter {
   public static void addStartStopNodesTo(BlockGraph graph) {
     ADDSTART: {
       List<Block> heads = graph.getHeads();
-
-      if (heads.size() == 0) {
+      int headCount = heads.size();
+      if (headCount == 0) {
         break ADDSTART;
       }
-
-      if ((heads.size() == 1) && (heads.get(0) instanceof DummyBlock)) {
+      if ((headCount == 1) && (heads.get(0) instanceof DummyBlock)) {
         break ADDSTART;
       }
 
@@ -79,12 +78,11 @@ public class BlockGraphConverter {
 
     ADDSTOP: {
       List<Block> tails = graph.getTails();
-
-      if (tails.size() == 0) {
+      int tailCount = tails.size();
+      if (tailCount == 0) {
         break ADDSTOP;
       }
-
-      if ((tails.size() == 1) && (tails.get(0) instanceof DummyBlock)) {
+      if ((tailCount == 1) && (tails.get(0) instanceof DummyBlock)) {
         break ADDSTOP;
       }
 
@@ -109,9 +107,7 @@ public class BlockGraphConverter {
     // Issue: Do we need to implement an equals method in Block?
     // When are two Blocks from two different BlockGraphs
     // equal?
-
-    for (Iterator<Block> blocksIt = graph.getBlocks().iterator(); blocksIt.hasNext();) {
-      Block block = blocksIt.next();
+    for (Block block : graph.getBlocks()) {
       List<Block> succs = block.getSuccs();
       List<Block> preds = block.getPreds();
       block.setSuccs(preds);
@@ -139,7 +135,6 @@ public class BlockGraphConverter {
     BlockGraphConverter.reverse(cfg);
     System.out.println(cfg);
   }
-
 }
 
 /**
@@ -156,10 +151,7 @@ class DummyBlock extends Block {
     setPreds(new ArrayList<Block>());
     setSuccs(new ArrayList<Block>(oldHeads));
 
-    Iterator<Block> headsIt = oldHeads.iterator();
-    while (headsIt.hasNext()) {
-      Block oldHead = headsIt.next();
-
+    for (Block oldHead : oldHeads) {
       List<Block> newPreds = new ArrayList<Block>();
       newPreds.add(this);
 
@@ -192,8 +184,8 @@ class DummyBlock extends Block {
     }
   }
 
+  @Override
   public Iterator<Unit> iterator() {
-    List<Unit> s = Collections.emptyList();
-    return s.iterator();
+    return Collections.emptyIterator();
   }
 }
