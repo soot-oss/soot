@@ -25,9 +25,11 @@ package soot.tagkit;
 import soot.jimple.FloatConstant;
 
 public class FloatConstantValueTag extends ConstantValueTag {
+
   private final float value;
 
   public FloatConstantValueTag(float value) {
+    super(null);
     this.value = value;
   }
 
@@ -35,6 +37,7 @@ public class FloatConstantValueTag extends ConstantValueTag {
     return value;
   }
 
+  @Override
   public String toString() {
     return "ConstantValue: " + Float.toString(value);
   }
@@ -60,14 +63,10 @@ public class FloatConstantValueTag extends ConstantValueTag {
     if (!super.equals(obj)) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if (this.getClass() != obj.getClass()) {
       return false;
     }
     FloatConstantValueTag other = (FloatConstantValueTag) obj;
-    if (Float.floatToIntBits(value) != Float.floatToIntBits(other.value)) {
-      return false;
-    }
-    return true;
+    return Float.floatToIntBits(this.value) == Float.floatToIntBits(other.value);
   }
-
 }
