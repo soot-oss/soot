@@ -49,4 +49,9 @@ public class AbstractCallSite {
     return container;
   }
 
+  @Override
+  public String toString() {
+    return stmt == null ? "<null>" : stmt.toString();
+  }
+
 }
