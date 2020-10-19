@@ -98,7 +98,7 @@ public class SootClass extends AbstractHost implements Numberable {
   }
 
   public SootClass(String name, int modifiers, String moduleName) {
-    if (name.charAt(0) == '[') {
+    if (name.length() > 0 && name.charAt(0) == '[') {
       throw new RuntimeException("Attempt to make a class whose name starts with [");
     }
     this.moduleName = moduleName;

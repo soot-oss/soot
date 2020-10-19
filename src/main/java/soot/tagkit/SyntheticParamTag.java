@@ -25,17 +25,18 @@ package soot.tagkit;
 /**
  * Represents the synthetic attribute.
  */
-
 public class SyntheticParamTag implements Tag {
 
   public SyntheticParamTag() {
   }
 
+  @Override
   public String toString() {
     return "SyntheticParamTag";
   }
 
   /** Returns the tag name. */
+  @Override
   public String getName() {
     return "SyntheticParamTag";
   }
@@ -45,6 +46,7 @@ public class SyntheticParamTag implements Tag {
   }
 
   /** Returns the tag raw data. */
+  @Override
   public byte[] getValue() {
     throw new RuntimeException("SyntheticParamTag has no value for bytecode");
   }

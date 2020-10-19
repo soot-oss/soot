@@ -23,6 +23,7 @@ package soot.toolkits.graph;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,21 +46,20 @@ import org.slf4j.LoggerFactory;
  * If you need a DirectedGraph implementation, see DominatorTreeAdapter.
  *
  * @author Navindra Umanee
- **/
+ */
 public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
   private static final Logger logger = LoggerFactory.getLogger(DominatorTree.class);
 
-  protected DominatorsFinder<N> dominators;
-  protected DirectedGraph<N> graph;
-  protected List<DominatorNode<N>> heads;
-  protected List<DominatorNode<N>> tails;
-
+  protected final DominatorsFinder<N> dominators;
+  protected final DirectedGraph<N> graph;
+  protected final List<DominatorNode<N>> heads;
+  protected final List<DominatorNode<N>> tails;
   /**
    * "gode" is a node in the original graph, "dode" is a node in the dominator tree.
-   **/
-  protected Map<N, DominatorNode<N>> godeToDode;
+   */
+  protected final Map<N, DominatorNode<N>> godeToDode;
 
-  public DominatorTree(DominatorsFinder dominators) {
+  public DominatorTree(DominatorsFinder<N> dominators) {
     // if(Options.v().verbose())
     // logger.debug("[" + graph.getBody().getMethod().getName() +
     // "] Constructing DominatorTree...");
@@ -67,25 +67,25 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
     this.dominators = dominators;
     this.graph = dominators.getGraph();
 
-    heads = new ArrayList<DominatorNode<N>>();
-    tails = new ArrayList<DominatorNode<N>>();
-    godeToDode = new HashMap<N, DominatorNode<N>>();
+    this.heads = new ArrayList<DominatorNode<N>>();
+    this.tails = new ArrayList<DominatorNode<N>>();
+    this.godeToDode = new HashMap<N, DominatorNode<N>>();
 
     buildTree();
   }
 
   /**
    * @return the original graph to which the DominatorTree pertains
-   **/
+   */
   public DirectedGraph<N> getGraph() {
     return dominators.getGraph();
   }
 
   /**
    * @return the root of the dominator tree.
-   **/
+   */
   public List<DominatorNode<N>> getHeads() {
-    return new ArrayList<DominatorNode<N>>(heads);
+    return Collections.unmodifiableList(heads);
   }
 
   /**
@@ -100,32 +100,31 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
 
   /**
    * @return list of the tails of the dominator tree.
-   **/
+   */
   public List<DominatorNode<N>> getTails() {
-    return new ArrayList<DominatorNode<N>>(tails);
+    return Collections.unmodifiableList(tails);
   }
 
   /**
    * @return the parent of {@code node} in the tree, null if the node is at the root.
-   **/
+   */
   public DominatorNode<N> getParentOf(DominatorNode<N> node) {
     return node.getParent();
   }
 
   /**
    * @return the children of node in the tree.
-   **/
+   */
   public List<DominatorNode<N>> getChildrenOf(DominatorNode<N> node) {
-    return new ArrayList<DominatorNode<N>>(node.getChildren());
+    return Collections.unmodifiableList(node.getChildren());
   }
 
   /**
    * @return list of the DominatorNodes corresponding to the predecessors of {@code node} in the original DirectedGraph
-   **/
+   */
   public List<DominatorNode<N>> getPredsOf(DominatorNode<N> node) {
-    List<N> preds = graph.getPredsOf(node.getGode());
     List<DominatorNode<N>> predNodes = new ArrayList<DominatorNode<N>>();
-    for (N pred : preds) {
+    for (N pred : graph.getPredsOf(node.getGode())) {
       predNodes.add(getDode(pred));
     }
     return predNodes;
@@ -133,11 +132,10 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
 
   /**
    * @return list of the DominatorNodes corresponding to the successors of {@code node} in the original DirectedGraph
-   **/
+   */
   public List<DominatorNode<N>> getSuccsOf(DominatorNode<N> node) {
-    List<N> succs = graph.getSuccsOf(node.getGode());
     List<DominatorNode<N>> succNodes = new ArrayList<DominatorNode<N>>();
-    for (N succ : succs) {
+    for (N succ : graph.getSuccsOf(node.getGode())) {
       succNodes.add(getDode(succ));
     }
     return succNodes;
@@ -145,7 +143,7 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
 
   /**
    * @return true if idom immediately dominates node.
-   **/
+   */
   public boolean isImmediateDominatorOf(DominatorNode<N> idom, DominatorNode<N> node) {
     // node.getParent() could be null
     return (node.getParent() == idom);
@@ -153,14 +151,14 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
 
   /**
    * @return true if dom dominates node.
-   **/
+   */
   public boolean isDominatorOf(DominatorNode<N> dom, DominatorNode<N> node) {
     return dominators.isDominatedBy(node.getGode(), dom.getGode());
   }
 
   /**
    * @return DominatorNode for a given node in the original DirectedGraph.
-   **/
+   */
   public DominatorNode<N> getDode(N gode) {
     DominatorNode<N> dode = godeToDode.get(gode);
 
@@ -174,21 +172,22 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
 
   /**
    * @return iterator over the nodes in the tree. No ordering is implied.
-   **/
+   */
+  @Override
   public Iterator<DominatorNode<N>> iterator() {
     return godeToDode.values().iterator();
   }
 
   /**
    * @return the number of nodes in the tree
-   **/
+   */
   public int size() {
     return godeToDode.size();
   }
 
   /**
    * Add all the necessary links between nodes to form a meaningful tree structure.
-   **/
+   */
   protected void buildTree() {
     // hook up children with parents and vice-versa
     for (N gode : graph) {
@@ -204,36 +203,33 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
     }
 
     // identify the tail nodes
-    for (DominatorNode dode : this) {
+    for (DominatorNode<N> dode : this) {
       if (dode.isTail()) {
         tails.add(dode);
       }
+    }
+    if (heads instanceof ArrayList) {
+      ((ArrayList<?>) heads).trimToSize(); // potentially a long-lived object
+    }
+    if (tails instanceof ArrayList) {
+      ((ArrayList<?>) tails).trimToSize(); // potentially a long-lived object
     }
   }
 
   /**
    * Convenience method, ensures we don't create more than one DominatorNode for a given block.
-   **/
+   */
   protected DominatorNode<N> fetchDode(N gode) {
-    DominatorNode<N> dode;
-
-    if (godeToDode.containsKey(gode)) {
-      dode = godeToDode.get(gode);
-    } else {
-      dode = new DominatorNode(gode);
+    DominatorNode<N> dode = godeToDode.get(gode);
+    if (dode == null) {
+      dode = new DominatorNode<N>(gode);
       godeToDode.put(gode, dode);
     }
-
     return dode;
   }
 
   protected DominatorNode<N> fetchParent(N gode) {
     N immediateDominator = dominators.getImmediateDominator(gode);
-
-    if (immediateDominator == null) {
-      return null;
-    }
-
-    return fetchDode(immediateDominator);
+    return (immediateDominator == null) ? null : fetchDode(immediateDominator);
   }
 }

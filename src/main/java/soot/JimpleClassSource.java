@@ -51,6 +51,7 @@ public class JimpleClassSource extends ClassSource {
     this.foundFile = foundFile;
   }
 
+  @Override
   public Dependencies resolve(SootClass sc) {
     if (Options.v().verbose()) {
       logger.debug("resolving [from .jimple]: " + className);
@@ -65,28 +66,29 @@ public class JimpleClassSource extends ClassSource {
 
       // Set method source for all methods
       JimpleMethodSource mtdSrc = new JimpleMethodSource(jimpAST);
-      Iterator<SootMethod> mtdIt = sc.methodIterator();
-      while (mtdIt.hasNext()) {
+      for (Iterator<SootMethod> mtdIt = sc.methodIterator(); mtdIt.hasNext();) {
         SootMethod sm = mtdIt.next();
         sm.setSource(mtdSrc);
       }
 
       // set outer class if not set (which it should not be) and class name contains outer class indicator
       String outerClassName = null;
-      String className = sc.getName();
-      if (!sc.hasOuterClass() && className.contains("$")) {
-        if (className.contains("$-")) {
-          /*
-           * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may
-           * contain '$' which do not indicate an inner/outer class separator if the '$' occurs after a inner class with a
-           * name starting with '-'. Thus we search for '$-' and anything after it including '-' is the inner classes name
-           * and anything before it is the outer classes name.
-           */
-          outerClassName = className.substring(0, className.indexOf("$-"));
-        } else {
-          outerClassName = className.substring(0, className.lastIndexOf('$'));
+      if (!sc.hasOuterClass()) {
+        String className = sc.getName();
+        if (className.contains("$")) {
+          if (className.contains("$-")) {
+            /*
+             * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may
+             * contain '$' which do not indicate an inner/outer class separator if the '$' occurs after a inner class with a
+             * name starting with '-'. Thus we search for '$-' and anything after it including '-' is the inner classes name
+             * and anything before it is the outer classes name.
+             */
+            outerClassName = className.substring(0, className.indexOf("$-"));
+          } else {
+            outerClassName = className.substring(0, className.lastIndexOf('$'));
+          }
+          sc.setOuterClass(SootResolver.v().makeClassRef(outerClassName));
         }
-        sc.setOuterClass(SootResolver.v().makeClassRef(outerClassName));
       }
 
       // Construct the type dependencies of the class
@@ -128,5 +130,4 @@ public class JimpleClassSource extends ClassSource {
       foundFile = null;
     }
   }
-
 }
