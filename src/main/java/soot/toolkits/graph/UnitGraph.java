@@ -50,7 +50,7 @@ import soot.util.Chain;
  * This is an abstract class, providing the facilities used to build CFGs for specific purposes.
  * </p>
  */
-public abstract class UnitGraph implements DirectedGraph<Unit> {
+public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
   private static final Logger logger = LoggerFactory.getLogger(UnitGraph.class);
   protected List<Unit> heads;
   protected List<Unit> tails;
@@ -277,6 +277,7 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
    *
    * @see Body
    */
+  @Override
   public Body getBody() {
     return body;
   }
