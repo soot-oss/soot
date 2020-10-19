@@ -29,18 +29,18 @@ import java.util.Map;
 import java.util.Vector;
 
 /**
- * gives an injection of Objects to ints. Different instances of <code>ObjectIntMap</code> may map different ints to the same
- * object.
+ * Gives an injection of Objects to ints. Different instances may map different ints to the same object.
  */
 public class ObjectIntMapper<E> {
-  private Vector<E> intToObjects;
+
+  private final Vector<E> intToObjects;
+  private final Map<E, Integer> objectToInts;
   private int counter;
-  private Map<E, Integer> objectToInts;
 
   public ObjectIntMapper() {
-    intToObjects = new Vector<E>();
-    objectToInts = new HashMap<E, Integer>();
-    counter = 0;
+    this.intToObjects = new Vector<E>();
+    this.objectToInts = new HashMap<E, Integer>();
+    this.counter = 0;
   }
 
   public ObjectIntMapper(FlowUniverse<E> flowUniverse) {
@@ -52,9 +52,9 @@ public class ObjectIntMapper<E> {
   }
 
   private ObjectIntMapper(Iterator<E> it, int initSize) {
-    intToObjects = new Vector<E>(initSize);
-    objectToInts = new HashMap<E, Integer>(initSize);
-    counter = 0;
+    this.intToObjects = new Vector<E>(initSize);
+    this.objectToInts = new HashMap<E, Integer>(initSize);
+    this.counter = 0;
     while (it.hasNext()) {
       add(it.next());
     }
@@ -78,10 +78,7 @@ public class ObjectIntMapper<E> {
    */
   public int getInt(E o) {
     Integer i = objectToInts.get(o);
-    if (i != null) {
-      return i;
-    }
-    return add(o);
+    return (i != null) ? i : add(o);
   }
 
   /**
@@ -110,5 +107,4 @@ public class ObjectIntMapper<E> {
   public int size() {
     return counter;
   }
-
 }

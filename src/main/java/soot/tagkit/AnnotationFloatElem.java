@@ -25,18 +25,18 @@ package soot.tagkit;
 import soot.util.Switch;
 
 /**
- * Represents the int annotation element each annotation can have several elements for Java 1.5.
+ * Represents the float annotation element each annotation can have several elements for Java 1.5.
  */
-
 public class AnnotationFloatElem extends AnnotationElem {
 
-  float value;
+  private final float value;
 
   public AnnotationFloatElem(float v, char kind, String name) {
     super(kind, name);
     this.value = v;
   }
 
+  @Override
   public String toString() {
     return super.toString() + " value: " + value;
   }
@@ -66,14 +66,10 @@ public class AnnotationFloatElem extends AnnotationElem {
     if (!super.equals(obj)) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if (this.getClass() != obj.getClass()) {
       return false;
     }
     AnnotationFloatElem other = (AnnotationFloatElem) obj;
-    if (Float.floatToIntBits(value) != Float.floatToIntBits(other.value)) {
-      return false;
-    }
-    return true;
+    return Float.floatToIntBits(this.value) == Float.floatToIntBits(other.value);
   }
-
 }
