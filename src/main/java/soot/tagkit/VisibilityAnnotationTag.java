@@ -25,22 +25,26 @@ package soot.tagkit;
 import java.util.ArrayList;
 
 /**
- * Represents the visibility of an annotation attribute attatched to a class, field, method or method param (only one of
- * these each) has one or more annotations for Java 1.5.
+ * Represents the visibility of an annotation attribute attached to a class, field, method or method param (only one of these
+ * each) has one or more annotations for Java 1.5.
  */
-
 public class VisibilityAnnotationTag implements Tag {
 
-  private int visibility;
-  private ArrayList<AnnotationTag> annotations = null;
+  private final int visibility;
+  private ArrayList<AnnotationTag> annotations;
 
+  /**
+   * @param vis
+   *          one of {@link soot.tagkit.AnnotationConstants}
+   */
   public VisibilityAnnotationTag(int vis) {
     this.visibility = vis;
   }
 
-  // should also print here number of annotations and perhaps the annotations themselves
+  @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer("Visibility Annotation: level: ");
+    // should also print here number of annotations and perhaps the annotations themselves
+    StringBuilder sb = new StringBuilder("Visibility Annotation: level: ");
     switch (visibility) {
       case AnnotationConstants.RUNTIME_INVISIBLE:
         sb.append("CLASS (runtime-invisible)");
@@ -55,15 +59,16 @@ public class VisibilityAnnotationTag implements Tag {
     sb.append("\n Annotations:");
     if (annotations != null) {
       for (AnnotationTag tag : annotations) {
-        sb.append("\n");
+        sb.append('\n');
         sb.append(tag.toString());
       }
     }
-    sb.append("\n");
+    sb.append('\n');
     return sb.toString();
   }
 
   /** Returns the tag name. */
+  @Override
   public String getName() {
     return "VisibilityAnnotationTag";
   }
@@ -77,6 +82,7 @@ public class VisibilityAnnotationTag implements Tag {
   }
 
   /** Returns the tag raw data. */
+  @Override
   public byte[] getValue() {
     throw new RuntimeException("VisibilityAnnotationTag has no value for bytecode");
   }
@@ -93,6 +99,6 @@ public class VisibilityAnnotationTag implements Tag {
   }
 
   public boolean hasAnnotations() {
-    return annotations == null ? false : true;
+    return annotations != null && !annotations.isEmpty();
   }
 }

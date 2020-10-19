@@ -49,7 +49,7 @@ import soot.util.Chain;
  * <code>BlockGraph</code> constructor) and in how they identify block leaders (represented by overriding
  * <code>BlockGraph</code>'s definition of {@link computeLeaders()}.
  */
-public abstract class BlockGraph implements DirectedGraph<Block> {
+public abstract class BlockGraph implements DirectedBodyGraph<Block> {
   protected Body mBody;
   protected Chain<Unit> mUnits;
   protected List<Block> mBlocks;
@@ -318,6 +318,7 @@ public abstract class BlockGraph implements DirectedGraph<Block> {
    *
    * @return The {@link Body} this {@link BlockGraph} is derived from.
    */
+  @Override
   public Body getBody() {
     return mBody;
   }
