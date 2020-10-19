@@ -41,26 +41,24 @@ import soot.toolkits.astmetrics.ComputeASTMetrics;
 public class JavaClassSource extends ClassSource {
   private static final Logger logger = LoggerFactory.getLogger(JavaClassSource.class);
 
+  private final File fullPath;
+
   public JavaClassSource(String className, File fullPath) {
     super(className);
     this.fullPath = fullPath;
   }
 
   public JavaClassSource(String className) {
-    super(className);
+    this(className, null);
   }
 
+  @Override
   public Dependencies resolve(SootClass sc) {
     if (Options.v().verbose()) {
       logger.debug("resolving [from .java]: " + className);
     }
 
-    IInitialResolver resolver;
-    if (Options.v().polyglot()) {
-      resolver = InitialResolver.v();
-    } else {
-      resolver = JastAddInitialResolver.v();
-    }
+    IInitialResolver resolver = Options.v().polyglot() ? InitialResolver.v() : JastAddInitialResolver.v();
 
     if (fullPath != null) {
       resolver.formAst(fullPath.getPath(), SourceLocator.v().sourcePath(), className);
@@ -84,6 +82,4 @@ public class JavaClassSource extends ClassSource {
 
     return references;
   }
-
-  private File fullPath;
 }

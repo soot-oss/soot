@@ -76,7 +76,6 @@ public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializ
         currentKey = null;
       }
     }
-
   }
 
   @Override
@@ -130,5 +129,4 @@ public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializ
     }
     return hasNew;
   }
-
 }
