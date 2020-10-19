@@ -27,18 +27,18 @@ import java.util.ArrayList;
 import soot.util.Switch;
 
 /**
- * Represents the base class of annotation elements each annotation can have several elements for Java 1.5.
+ * Represents the Array annotation element each annotation can have several elements for Java 1.5.
  */
-
 public class AnnotationArrayElem extends AnnotationElem {
 
-  ArrayList<AnnotationElem> values;
+  private final ArrayList<AnnotationElem> values;
 
   public AnnotationArrayElem(ArrayList<AnnotationElem> t, char kind, String name) {
     super(kind, name);
     this.values = t;
   }
 
+  @Override
   public String toString() {
     return super.toString() + " values: " + values.toString();
   }
@@ -80,18 +80,17 @@ public class AnnotationArrayElem extends AnnotationElem {
     if (!super.equals(obj)) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if (this.getClass() != obj.getClass()) {
       return false;
     }
     AnnotationArrayElem other = (AnnotationArrayElem) obj;
-    if (values == null) {
+    if (this.values == null) {
       if (other.values != null) {
         return false;
       }
-    } else if (!values.equals(other.values)) {
+    } else if (!this.values.equals(other.values)) {
       return false;
     }
     return true;
   }
-
 }
