@@ -23,6 +23,7 @@ package soot.javaToJimple;
  */
 
 import java.util.HashSet;
+import java.util.Set;
 
 import soot.Body;
 import soot.BooleanType;
@@ -47,6 +48,8 @@ import soot.util.Chain;
 public class LocalGenerator {
 
   protected final Chain<Local> locals;
+  protected Set<String> names;
+  protected long expectedModCount;
 
   private int tempInt = -1;
   private int tempVoid = -1;
@@ -62,15 +65,25 @@ public class LocalGenerator {
 
   public LocalGenerator(Body b) {
     this.locals = b.getLocals();
+    this.names = null;
+    this.expectedModCount = -1;// init with invalid mod count
   }
 
   /** generates a new soot local given the type */
   public Local generateLocal(Type type) {
-
-    // store local names for enhanced performance
-    HashSet<String> localNames = new HashSet<String>();
-    for (Local l : locals) {
-      localNames.add(l.getName());
+    // Ensure the 'names' set is up to date with the local chain.
+    Set<String> localNames = this.names;
+    {
+      Chain<Local> locs = this.locals;
+      long modCount = locs.getModificationCount();
+      if (this.expectedModCount != modCount) {
+        this.expectedModCount = modCount;
+        this.names = localNames = new HashSet<>(locs.size());
+        for (Local l : locs) {
+          localNames.add(l.getName());
+        }
+      }
+      assert (localNames != null);
     }
 
     String name;
@@ -173,8 +186,17 @@ public class LocalGenerator {
 
   // this should be used for generated locals only
   protected Local createLocal(String name, Type sootType) {
+    assert (expectedModCount == locals.getModificationCount());//pre-condition
+    assert (!names.contains(name));//pre-condition
+
     Local sootLocal = Jimple.v().newLocal(name, sootType);
     locals.add(sootLocal);
+    expectedModCount++;
+    names.add(name);
+
+    assert (expectedModCount == locals.getModificationCount());//post-condition
+    assert (names.contains(name));//post-condition
+
     return sootLocal;
   }
 }
