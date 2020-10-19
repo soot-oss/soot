@@ -24,6 +24,7 @@ package soot.javaToJimple;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import soot.Body;
 import soot.BooleanType;
@@ -71,6 +72,35 @@ public class LocalGenerator {
 
   /** generates a new soot local given the type */
   public Local generateLocal(Type type) {
+    Supplier<String> nameGen;
+    if (type instanceof IntType || type instanceof Integer1Type || type instanceof Integer127Type
+        || type instanceof Integer32767Type) {
+      nameGen = this::nextIntName;
+    } else if (type instanceof ByteType) {
+      nameGen = this::nextByteName;
+    } else if (type instanceof ShortType) {
+      nameGen = this::nextShortName;
+    } else if (type instanceof BooleanType) {
+      nameGen = this::nextBooleanName;
+    } else if (type instanceof VoidType) {
+      nameGen = this::nextVoidName;
+    } else if (type instanceof CharType) {
+      nameGen = this::nextCharName;
+    } else if (type instanceof DoubleType) {
+      nameGen = this::nextDoubleName;
+    } else if (type instanceof FloatType) {
+      nameGen = this::nextFloatName;
+    } else if (type instanceof LongType) {
+      nameGen = this::nextLongName;
+    } else if (type instanceof RefLikeType) {
+      nameGen = this::nextRefLikeTypeName;
+    } else if (type instanceof UnknownType) {
+      nameGen = this::nextUnknownTypeName;
+    } else {
+      throw new RuntimeException(
+          String.format("Unhandled Type %s of Local variable to Generate - Not Implemented", type.getClass().getName()));
+    }
+
     // Ensure the 'names' set is up to date with the local chain.
     Set<String> localNames = this.names;
     {
@@ -87,55 +117,9 @@ public class LocalGenerator {
     }
 
     String name;
-    if (type instanceof IntType || type instanceof Integer1Type || type instanceof Integer127Type
-        || type instanceof Integer32767Type) {
-      do {
-        name = nextIntName();
-      } while (localNames.contains(name));
-    } else if (type instanceof ByteType) {
-      do {
-        name = nextByteName();
-      } while (localNames.contains(name));
-    } else if (type instanceof ShortType) {
-      do {
-        name = nextShortName();
-      } while (localNames.contains(name));
-    } else if (type instanceof BooleanType) {
-      do {
-        name = nextBooleanName();
-      } while (localNames.contains(name));
-    } else if (type instanceof VoidType) {
-      do {
-        name = nextVoidName();
-      } while (localNames.contains(name));
-    } else if (type instanceof CharType) {
-      do {
-        name = nextCharName();
-      } while (localNames.contains(name));
-    } else if (type instanceof DoubleType) {
-      do {
-        name = nextDoubleName();
-      } while (localNames.contains(name));
-    } else if (type instanceof FloatType) {
-      do {
-        name = nextFloatName();
-      } while (localNames.contains(name));
-    } else if (type instanceof LongType) {
-      do {
-        name = nextLongName();
-      } while (localNames.contains(name));
-    } else if (type instanceof RefLikeType) {
-      do {
-        name = nextRefLikeTypeName();
-      } while (localNames.contains(name));
-    } else if (type instanceof UnknownType) {
-      do {
-        name = nextUnknownTypeName();
-      } while (localNames.contains(name));
-    } else {
-      throw new RuntimeException(
-          String.format("Unhandled Type %s of Local variable to Generate - Not Implemented", type.getClass().getName()));
-    }
+    do {
+      name = nameGen.get();
+    } while (localNames.contains(name));
 
     return createLocal(name, type);
   }
