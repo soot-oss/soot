@@ -33,14 +33,13 @@ import soot.toolkits.scalar.FlowSet;
  * Implements an available expressions analysis on local variables. pessimistic analysis - for teaching 621
  */
 public class PessimisticAvailableExpressionsAnalysis extends SlowAvailableExpressionsAnalysis {
+
   public PessimisticAvailableExpressionsAnalysis(DirectedGraph<Unit> dg, SootMethod m, SideEffectTester st) {
     super(dg);
   }
 
+  @Override
   protected FlowSet<Value> newInitialFlow() {
-    FlowSet<Value> newSet = emptySet.clone();
-    // ((ToppedSet)newSet).setTop(true);
-    return newSet;
+    return emptySet.clone();
   }
-
 }
