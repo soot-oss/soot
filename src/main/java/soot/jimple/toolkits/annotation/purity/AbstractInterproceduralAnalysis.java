@@ -201,11 +201,11 @@ public abstract class AbstractInterproceduralAnalysis<S> {
   public void analyseCall(S src, Stmt callStmt, S dst) {
     S accum = newInitialSummary();
     copy(accum, dst);
-    System.out.println("Edges out of " + callStmt + "...");
+    // System.out.println("Edges out of " + callStmt + "...");
     for (Iterator<Edge> it = cg.edgesOutOf(callStmt); it.hasNext();) {
       Edge edge = it.next();
       SootMethod m = edge.tgt();
-      System.out.println("\t-> " + m.getSignature());
+      // System.out.println("\t-> " + m.getSignature());
       S elem;
       if (data.containsKey(m)) {
         // analysed method

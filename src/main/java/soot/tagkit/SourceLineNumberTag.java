@@ -23,18 +23,19 @@ package soot.tagkit;
  */
 
 public class SourceLineNumberTag implements Tag {
+
   /* it is a value representing line number. */
   protected int startLineNumber;
   protected int endLineNumber;
 
   public SourceLineNumberTag(int ln) {
-    startLineNumber = ln;
-    endLineNumber = ln;
+    this.startLineNumber = ln;
+    this.endLineNumber = ln;
   }
 
   public SourceLineNumberTag(int startLn, int endLn) {
-    startLineNumber = startLn;
-    endLineNumber = endLn;
+    this.startLineNumber = startLn;
+    this.endLineNumber = endLn;
   }
 
   public int getLineNumber() {
@@ -62,17 +63,19 @@ public class SourceLineNumberTag implements Tag {
     this.endLineNumber = value;
   }
 
+  @Override
   public String getName() {
     return "SourceLineNumberTag";
   }
 
+  @Override
   public byte[] getValue() {
     byte[] v = new byte[2];
     return v;
   }
 
+  @Override
   public String toString() {
     return String.valueOf(startLineNumber);
   }
-
 }

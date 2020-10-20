@@ -36,7 +36,8 @@ import soot.options.Options;
  */
 public class DexClassSource extends ClassSource {
   private static final Logger logger = LoggerFactory.getLogger(DexClassSource.class);
-  protected File path;
+
+  protected final File path;
 
   /**
    * @param className
@@ -56,6 +57,7 @@ public class DexClassSource extends ClassSource {
    *          The SootClass to resolve into.
    * @return Dependencies of class (Strings or Types referenced).
    */
+  @Override
   public Dependencies resolve(SootClass sc) {
     if (Options.v().verbose()) {
       logger.debug("resolving " + className + " from file " + path.getPath());

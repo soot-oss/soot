@@ -27,16 +27,16 @@ import soot.util.Switch;
 /**
  * Represents the int annotation element each annotation can have several elements for Java 1.5.
  */
-
 public class AnnotationIntElem extends AnnotationElem {
 
-  int value;
+  private final int value;
 
   public AnnotationIntElem(int v, char kind, String name) {
     super(kind, name);
     this.value = v;
   }
 
+  @Override
   public String toString() {
     return super.toString() + " value: " + value;
   }
@@ -66,14 +66,10 @@ public class AnnotationIntElem extends AnnotationElem {
     if (!super.equals(obj)) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if (this.getClass() != obj.getClass()) {
       return false;
     }
     AnnotationIntElem other = (AnnotationIntElem) obj;
-    if (value != other.value) {
-      return false;
-    }
-    return true;
+    return this.value == other.value;
   }
-
 }

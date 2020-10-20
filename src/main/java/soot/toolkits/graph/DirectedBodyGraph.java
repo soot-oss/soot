@@ -1,10 +1,10 @@
-package soot.grimp;
+package soot.toolkits.graph;
 
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * Copyright (C) 1999 Patrice Pominville, Raja Vallee-Rai
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,11 +22,16 @@ package soot.grimp;
  * #L%
  */
 
-import soot.jimple.AbstractJimpleValueSwitch;
+import soot.Body;
 
-public abstract class AbstractGrimpValueSwitch<T> extends AbstractJimpleValueSwitch<T> implements GrimpValueSwitch {
-  @Override
-  public void caseNewInvokeExpr(NewInvokeExpr e) {
-    defaultCase(e);
-  }
+/**
+ *
+ * @param <N>
+ */
+public interface DirectedBodyGraph<N> extends DirectedGraph<N> {
+
+  /**
+   * @return the {@link Body} from which this graph was built
+   */
+  public Body getBody();
 }

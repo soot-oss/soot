@@ -41,6 +41,7 @@ public class FloatConstant extends RealConstant {
     return new FloatConstant(value);
   }
 
+  @Override
   public boolean equals(Object c) {
     return c instanceof FloatConstant && Float.compare(((FloatConstant) c).value, value) == 0;
   }
@@ -154,11 +155,13 @@ public class FloatConstant extends RealConstant {
   @Override
   public String toString() {
     String floatString = Float.toString(value);
-
-    if (floatString.equals("NaN") || floatString.equals("Infinity") || floatString.equals("-Infinity")) {
-      return "#" + floatString + "F";
-    } else {
-      return floatString + "F";
+    switch (floatString) {
+      case "NaN":
+      case "Infinity":
+      case "-Infinity":
+        return "#" + floatString + "F";
+      default:
+        return floatString + "F";
     }
   }
 
@@ -185,5 +188,4 @@ public class FloatConstant extends RealConstant {
       throw new IllegalArgumentException("FloatConstant expected");
     }
   }
-
 }

@@ -57,18 +57,18 @@ public class NopEliminator extends BodyTransformer {
       logger.debug("[" + b.getMethod().getName() + "] Removing nops...");
     }
 
-    Chain<Unit> units = b.getUnits();
+    final Chain<Trap> traps = b.getTraps();
+    final Chain<Unit> units = b.getUnits();
 
     // Just do one trivial pass.
-    Iterator<Unit> stmtIt = units.snapshotIterator();
-    while (stmtIt.hasNext()) {
+    for (Iterator<Unit> stmtIt = units.snapshotIterator(); stmtIt.hasNext();) {
       Unit u = stmtIt.next();
       if (u instanceof NopStmt) {
         // Hack: do not remove nop, if is is used for a Trap which
         // is at the very end of the code.
         boolean keepNop = false;
-        if (b.getUnits().getLast() == u) {
-          for (Trap t : b.getTraps()) {
+        if (units.getLast() == u) {
+          for (Trap t : traps) {
             if (t.getEndUnit() == u) {
               keepNop = true;
             }
