@@ -46,14 +46,16 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
   }
 
   protected RefType(String className) {
-    if (className.charAt(0) == '[') {
-      throw new RuntimeException("Attempt to create RefType whose name starts with [ --> " + className);
-    }
-    if (className.indexOf('/') >= 0) {
-      throw new RuntimeException("Attempt to create RefType containing a / --> " + className);
-    }
-    if (className.indexOf(';') >= 0) {
-      throw new RuntimeException("Attempt to create RefType containing a ; --> " + className);
+    if (!className.isEmpty()) {
+      if (className.charAt(0) == '[') {
+        throw new RuntimeException("Attempt to create RefType whose name starts with [ --> " + className);
+      }
+      if (className.indexOf('/') >= 0) {
+        throw new RuntimeException("Attempt to create RefType containing a / --> " + className);
+      }
+      if (className.indexOf(';') >= 0) {
+        throw new RuntimeException("Attempt to create RefType containing a ; --> " + className);
+      }
     }
     this.className = className;
   }
@@ -235,8 +237,8 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
   @Override
   public Type getArrayElementType() {
-    if (className.equals("java.lang.Object") || className.equals("java.io.Serializable")
-        || className.equals("java.lang.Cloneable")) {
+    if ("java.lang.Object".equals(className) || "java.io.Serializable".equals(className)
+        || "java.lang.Cloneable".equals(className)) {
       return RefType.v("java.lang.Object");
     }
     throw new RuntimeException("Attempt to get array base type of a non-array");
