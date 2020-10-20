@@ -243,7 +243,7 @@ public class Scene {
       if (res.length() > 0) {
         res.append('.');
       }
-      if (part.charAt(0) == '-' || reservedNames.contains(part)) {
+      if ((!part.isEmpty() && part.charAt(0) == '-') || reservedNames.contains(part)) {
         res.append('\'').append(part).append('\'');
       } else {
         res.append(part);
@@ -271,9 +271,9 @@ public class Scene {
       if (res.length() > 0) {
         res.append('.');
       }
-      int endIdx = part.length() - 1;
-      if (part.charAt(0) == '\'' && part.charAt(endIdx) == '\'') {
-        res.append(part.substring(1, endIdx));
+      int len = part.length();
+      if (len > 1 && part.charAt(0) == '\'' && part.charAt(len - 1) == '\'') {
+        res.append(part.substring(1, len - 1));
       } else {
         res.append(part);
       }
@@ -862,7 +862,8 @@ public class Scene {
   }
 
   private static int signatureSeparatorIndex(String sig) {
-    if (sig.charAt(0) != '<' || sig.charAt(sig.length() - 1) != '>') {
+    int len = sig.length();
+    if (len < 3 || sig.charAt(0) != '<' || sig.charAt(len - 1) != '>') {
       throw new RuntimeException("oops " + sig);
     }
     int index = sig.indexOf(':');
