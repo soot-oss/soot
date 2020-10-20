@@ -51,11 +51,13 @@ public class UntypedIntOrFloatConstant extends UntypedConstant {
     return new UntypedIntOrFloatConstant(value);
   }
 
+  @Override
   public boolean equals(Object c) {
     return c instanceof UntypedIntOrFloatConstant && ((UntypedIntOrFloatConstant) c).value == this.value;
   }
 
   /** Returns a hash code for this DoubleConstant object. */
+  @Override
   public int hashCode() {
     return (int) (value ^ (value >>> 32));
   }
@@ -79,12 +81,11 @@ public class UntypedIntOrFloatConstant extends UntypedConstant {
       if (value == 0 && t instanceof RefLikeType) {
         return NullConstant.v();
       }
-      if (t == null) { // if the value is only used in a if to compare against another integer, then use default type of
-                       // integer
+      // if the value is only used in a if to compare against another integer, then use default type of integer
+      if (t == null) {
         return this.toIntConstant();
       }
       throw new RuntimeException("error: expected Float type or Int-like type. Got " + t);
     }
   }
-
 }
