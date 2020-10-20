@@ -93,22 +93,22 @@ public class ClassConstant extends Constant {
    */
   public boolean isRefType() {
     String tmp = this.value;
-    return tmp.charAt(0) == 'L' && tmp.charAt(tmp.length() - 1) == ';';
+    return !tmp.isEmpty() && tmp.charAt(0) == 'L' && tmp.charAt(tmp.length() - 1) == ';';
   }
 
   public Type toSootType() {
     int numDimensions = 0;
     String tmp = this.value;
-    while (tmp.charAt(0) == '[') {
+    while (!tmp.isEmpty() && tmp.charAt(0) == '[') {
       numDimensions++;
       tmp = tmp.substring(1);
     }
 
     Type baseType = null;
-    if (tmp.charAt(0) == 'L') {
+    if (!tmp.isEmpty() && tmp.charAt(0) == 'L') {
       tmp = tmp.substring(1);
       int lastIdx = tmp.length() - 1;
-      if (tmp.charAt(lastIdx) == ';') {
+      if (!tmp.isEmpty() && tmp.charAt(lastIdx) == ';') {
         tmp = tmp.substring(0, lastIdx);
       }
       tmp = tmp.replace('/', '.');
@@ -153,14 +153,14 @@ public class ClassConstant extends Constant {
    * https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.2.1
    */
   public String toInternalString() {
-    String internal = value;
-    while (internal.charAt(0) == '[') {
+    String internal = this.value;
+    while (!internal.isEmpty() && internal.charAt(0) == '[') {
       internal = internal.substring(1);
     }
     int lastIdx = internal.length() - 1;
-    if (internal.charAt(lastIdx) == ';') {
+    if (!internal.isEmpty() && internal.charAt(lastIdx) == ';') {
       internal = internal.substring(0, lastIdx);
-      if (internal.charAt(0) == 'L') {
+      if (!internal.isEmpty() && internal.charAt(0) == 'L') {
         internal = internal.substring(1);
       }
     }
