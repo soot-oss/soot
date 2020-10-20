@@ -126,9 +126,12 @@ public class Aggregator extends BodyTransformer {
       if (!(lhs instanceof Local)) {
         continue;
       }
-      Local lhsLocal = (Local) lhs;
-      if (onlyStackVars && lhsLocal.getName().charAt(0) != '$') {
-        continue;
+      final Local lhsLocal = (Local) lhs;
+      if (onlyStackVars) {
+        String lhsLocalName = lhsLocal.getName();
+        if (lhsLocalName.isEmpty() || lhsLocalName.charAt(0) != '$') {
+          continue;
+        }
       }
 
       Unit usepairUnit;
