@@ -93,8 +93,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
    */
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    boolean eliminateOnlyStackLocals = PhaseOptions.getBoolean(options, "only-stack-locals");
-
+    final boolean eliminateOnlyStackLocals = PhaseOptions.getBoolean(options, "only-stack-locals");
     final Options soptions = Options.v();
     if (soptions.verbose()) {
       logger.debug("[" + b.getMethod().getName() + "] Eliminating dead code...");
@@ -104,7 +103,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
       Timers.v().deadCodeTimer.start();
     }
 
-    Chain<Unit> units = b.getUnits();
+    final Chain<Unit> units = b.getUnits();
     Deque<Unit> q = new ArrayDeque<Unit>(units.size());
 
     // Make a first pass through the statements, noting
@@ -239,7 +238,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
       final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(b);
 
       if (!allEssential) {
-        Set<Unit> essential = new HashSet<Unit>(b.getUnits().size());
+        Set<Unit> essential = new HashSet<Unit>(units.size());
         while (!q.isEmpty()) {
           Unit s = q.removeFirst();
           if (essential.add(s)) {
