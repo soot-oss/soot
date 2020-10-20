@@ -39,17 +39,21 @@ import java.util.List;
  * </pre>
  */
 public abstract class AbstractFlowSet<T> implements FlowSet<T> {
+
+  @Override
   public abstract AbstractFlowSet<T> clone();
 
   /**
    * implemented, but inefficient.
    */
+  @Override
   public FlowSet<T> emptySet() {
     FlowSet<T> t = clone();
     t.clear();
     return t;
   }
 
+  @Override
   public void copy(FlowSet<T> dest) {
     if (this == dest) {
       return;
@@ -63,12 +67,14 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
   /**
    * implemented, but *very* inefficient.
    */
+  @Override
   public void clear() {
     for (T t : this) {
       remove(t);
     }
   }
 
+  @Override
   public void union(FlowSet<T> other) {
     if (this == other) {
       return;
@@ -76,6 +82,7 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
     union(other, this);
   }
 
+  @Override
   public void union(FlowSet<T> other, FlowSet<T> dest) {
     if (dest != this && dest != other) {
       dest.clear();
@@ -94,6 +101,7 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
     }
   }
 
+  @Override
   public void intersection(FlowSet<T> other) {
     if (this == other) {
       return;
@@ -101,6 +109,7 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
     intersection(other, this);
   }
 
+  @Override
   public void intersection(FlowSet<T> other, FlowSet<T> dest) {
     if (dest == this && dest == other) {
       return;
@@ -126,10 +135,12 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
     }
   }
 
+  @Override
   public void difference(FlowSet<T> other) {
     difference(other, this);
   }
 
+  @Override
   public void difference(FlowSet<T> other, FlowSet<T> dest) {
     if (dest == this && dest == other) {
       dest.clear();
@@ -146,12 +157,16 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
     }
   }
 
+  @Override
   public abstract boolean isEmpty();
 
+  @Override
   public abstract int size();
 
+  @Override
   public abstract void add(T obj);
 
+  @Override
   public void add(T obj, FlowSet<T> dest) {
     if (dest != this) {
       copy(dest);
@@ -159,8 +174,10 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
     dest.add(obj);
   }
 
+  @Override
   public abstract void remove(T obj);
 
+  @Override
   public void remove(T obj, FlowSet<T> dest) {
     if (dest != this) {
       copy(dest);
@@ -182,13 +199,16 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
     return true;
   }
 
+  @Override
   public abstract boolean contains(T obj);
 
+  @Override
   public abstract Iterator<T> iterator();
 
+  @Override
   public abstract List<T> toList();
 
-  @SuppressWarnings("unchecked")
+  @Override
   public boolean equals(Object o) {
     if (!(o instanceof FlowSet)) {
       return false;
@@ -205,6 +225,7 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
     return true;
   }
 
+  @Override
   public int hashCode() {
     int result = 1;
     for (T t : this) {
@@ -213,6 +234,7 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
     return result;
   }
 
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer("{");
 
