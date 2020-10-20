@@ -29,6 +29,7 @@ import soot.options.Options;
  * it.
  */
 public class JavaClassProvider implements ClassProvider {
+
   public static class JarException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
@@ -36,14 +37,13 @@ public class JavaClassProvider implements ClassProvider {
       super("Class " + className
           + " was found in an archive, but Soot doesn't support reading source files out of an archive");
     }
-
   }
 
   /**
    * Look for the specified class. Return a ClassSource for it if found, or null if it was not found.
    */
+  @Override
   public ClassSource find(String className) {
-
     if (Options.v().polyglot() && soot.javaToJimple.InitialResolver.v().hasASTForSootName(className)) {
       soot.javaToJimple.InitialResolver.v().setASTForSootName(className);
       return new JavaClassSource(className);
@@ -55,19 +55,15 @@ public class JavaClassProvider implements ClassProvider {
 
       FoundFile file = null;
       try {
-        String javaClassName = SourceLocator.v().getSourceForClass(className);
-        String fileName = javaClassName.replace('.', '/') + ".java";
-        file = SourceLocator.v().lookupInClassPath(fileName);
+        final SourceLocator loc = SourceLocator.v();
+        String javaClassName = loc.getSourceForClass(className);
+        file = loc.lookupInClassPath(javaClassName.replace('.', '/') + ".java");
 
         /*
          * 04.04.2006 mbatch if inner class not found, check if it's a real file
          */
-        if (file == null) {
-
-          if (checkAgain) {
-            fileName = className.replace('.', '/') + ".java";
-            file = SourceLocator.v().lookupInClassPath(fileName);
-          }
+        if (file == null && checkAgain) {
+          file = loc.lookupInClassPath(className.replace('.', '/') + ".java");
         }
         /* 04.04.2006 mbatch end */
 
@@ -85,6 +81,5 @@ public class JavaClassProvider implements ClassProvider {
         }
       }
     }
-
   }
 }

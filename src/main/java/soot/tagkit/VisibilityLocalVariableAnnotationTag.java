@@ -21,34 +21,40 @@ package soot.tagkit;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
 /**
  * Represents the visibility of an annotation attribute attached to method local variable. Only mark the local variable tag
  * different with{@link soot.tagkit.VisibilityParameterAnnotationTag}
  * 
  * @author raintung.li
- *
  */
-
 public class VisibilityLocalVariableAnnotationTag extends VisibilityParameterAnnotationTag {
 
+  /**
+   * @param num
+   *          number of local variable annotations
+   * @param kind
+   *          one of {@link soot.tagkit.AnnotationConstants}
+   */
   public VisibilityLocalVariableAnnotationTag(int num, int kind) {
     super(num, kind);
   }
 
-  // should also print here number of annotations and perhaps the annotations themselves
+  @Override
   public String toString() {
+    // should also print here number of annotations and perhaps the annotations themselves
     int num_var = getVisibilityAnnotations() != null ? getVisibilityAnnotations().size() : 0;
-    StringBuffer sb
-        = new StringBuffer("Visibility LocalVariable Annotation: num Annotation: " + num_var + " kind: " + getKind());
+    StringBuilder sb = new StringBuilder("Visibility LocalVariable Annotation: num Annotation: ");
+    sb.append(num_var).append(" kind: ").append(getKind());
     if (num_var > 0) {
       for (VisibilityAnnotationTag tag : getVisibilityAnnotations()) {
-        sb.append("\n");
+        sb.append('\n');
         if (tag != null) {
           sb.append(tag.toString());
         }
       }
     }
-    sb.append("\n");
+    sb.append('\n');
     return sb.toString();
   }
 
@@ -57,6 +63,7 @@ public class VisibilityLocalVariableAnnotationTag extends VisibilityParameterAnn
    * 
    * @return string
    */
+  @Override
   public String getName() {
     return "VisibilityLocalVariableAnnotationTag";
   }
@@ -66,6 +73,7 @@ public class VisibilityLocalVariableAnnotationTag extends VisibilityParameterAnn
    * 
    * @return string
    */
+  @Override
   public String getInfo() {
     return "VisibilityLocalVariableAnnotation";
   }
@@ -75,8 +83,8 @@ public class VisibilityLocalVariableAnnotationTag extends VisibilityParameterAnn
    * 
    * @return
    */
+  @Override
   public byte[] getValue() {
     throw new RuntimeException("VisibilityLocalVariableAnnotationTag has no value for bytecode");
   }
-
 }

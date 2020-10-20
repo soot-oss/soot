@@ -47,6 +47,7 @@ public class LoopNestTree extends TreeSet<Loop> {
    */
   private static class LoopNestTreeComparator implements Comparator<Loop> {
 
+    @Override
     public int compare(Loop loop1, Loop loop2) {
       Collection<Stmt> stmts1 = loop1.getLoopStatements();
       Collection<Stmt> stmts2 = loop2.getLoopStatements();
@@ -80,7 +81,6 @@ public class LoopNestTree extends TreeSet<Loop> {
    */
   public LoopNestTree(Collection<Loop> loops) {
     super(new LoopNestTreeComparator());
-
     addAll(loops);
   }
 
@@ -101,5 +101,4 @@ public class LoopNestTree extends TreeSet<Loop> {
     }
     return false;
   }
-
 }
