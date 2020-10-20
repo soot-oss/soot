@@ -37,24 +37,17 @@ public class StringTools {
    */
   public static String getEscapedStringOf(String fromString) {
     StringBuilder whole = new StringBuilder();
-    StringBuilder mini = new StringBuilder();
 
+    assert (!lineSeparator.isEmpty());
     final int cr = lineSeparator.charAt(0);
     final int lf = (lineSeparator.length() == 2) ? lineSeparator.charAt(1) : -1;
-    for (char element : fromString.toCharArray()) {
-      int ch = element;
-      if (((ch >= 32 && ch <= 126) || ch == cr || ch == lf) && ch != '\\') {
-        whole.append(element);
-        continue;
+    for (char ch : fromString.toCharArray()) {
+      int asInt = ch;
+      if (asInt != '\\' && ((asInt >= 32 && asInt <= 126) || asInt == cr || asInt == lf)) {
+        whole.append(ch);
+      } else {
+        whole.append(getUnicodeStringFromChar(ch));
       }
-
-      mini.setLength(0);
-      mini.append(Integer.toHexString(ch));
-      while (mini.length() < 4) {
-        mini.insert(0, '0');
-      }
-      mini.insert(0, "\\u");
-      whole.append(mini);
     }
 
     return whole.toString();
@@ -65,10 +58,11 @@ public class StringTools {
    * StringConstant.toString()
    */
   public static String getQuotedStringOf(String fromString) {
-    // We definitely need fromString.length + 2, but let's have some additional space
-    StringBuilder toStringBuffer = new StringBuilder(fromString.length() + 20);
+    final int fromStringLen = fromString.length();
+    // We definitely need fromStringLen + 2, but let's have some additional space
+    StringBuilder toStringBuffer = new StringBuilder(fromStringLen + 20);
     toStringBuffer.append("\"");
-    for (int i = 0; i < fromString.length(); i++) {
+    for (int i = 0; i < fromStringLen; i++) {
       char ch = fromString.charAt(i);
       switch (ch) {
         case '\\':
@@ -153,8 +147,7 @@ public class StringTools {
           for (int i = 0; i < 4; i++) {
             mini.append(iter.next());
           }
-          ch = (char) Integer.parseInt(mini.toString(), 16);
-          buf.append(ch);
+          buf.append((char) Integer.parseInt(mini.toString(), 16));
         } else {
           throw new RuntimeException("Unexpected char: " + ch);
         }
