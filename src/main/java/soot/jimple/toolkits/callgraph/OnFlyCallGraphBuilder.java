@@ -344,11 +344,10 @@ public class OnFlyCallGraphBuilder {
     assert (context == null);
     final Set<InvokeCallSite> invokeSites = invokeArgsToInvokeSite.get(argArray);
     if (invokeSites != null) {
-      if (invokeArgsToSize.containsKey(argArray)) {
-        return;
+      if (!invokeArgsToSize.containsKey(argArray)) {
+        invokeArgsToSize.put(argArray, null);
+        resolveInvoke(invokeSites);
       }
-      invokeArgsToSize.put(argArray, null);
-      resolveInvoke(invokeSites);
     }
   }
 
@@ -396,8 +395,7 @@ public class OnFlyCallGraphBuilder {
   private static Collection<RefLikeType> getTransitiveSubClasses(Set<SootClass> classRoots) {
     FastHierarchy fh = null;
     Set<RefLikeType> resolved = new HashSet<>();
-    LinkedList<SootClass> worklist = new LinkedList<>(classRoots);
-    while (!worklist.isEmpty()) {
+    for (LinkedList<SootClass> worklist = new LinkedList<>(classRoots); !worklist.isEmpty();) {
       SootClass cls = worklist.removeFirst();
       if (resolved.add(cls.getType())) {
         if (fh == null) {
@@ -697,34 +695,36 @@ public class OnFlyCallGraphBuilder {
   }
 
   public void addStringConstant(Local l, Context srcContext, String constant) {
-    for (VirtualCallSite site : stringConstToSites.get(l)) {
-      if (constant == null) {
-        if (options.verbose()) {
-          logger.warn("Method " + site.container() + " is reachable, and calls Class.forName on a non-constant"
-              + " String; graph will be incomplete! Use safe-forname option for a conservative result.");
-        }
-      } else {
-        if (constant.length() > 0 && constant.charAt(0) == '[') {
-          if (constant.length() > 1 && constant.charAt(1) == 'L' && constant.charAt(constant.length() - 1) == ';') {
-            constant = constant.substring(2, constant.length() - 1);
-          } else {
-            continue;
+    if (constant != null) {
+      final Scene sc = Scene.v();
+      for (VirtualCallSite site : stringConstToSites.get(l)) {
+        {
+          final int len = constant.length();
+          if (len > 0 && constant.charAt(0) == '[') {
+            if (len > 2 && constant.charAt(1) == 'L' && constant.charAt(len - 1) == ';') {
+              constant = constant.substring(2, len - 1);
+            } else {
+              continue;
+            }
           }
         }
-        if (!Scene.v().containsClass(constant)) {
-          if (options.verbose()) {
-            logger.warn("Class " + constant + " is a dynamic class, and you did not specify"
-                + " it as such; graph will be incomplete!");
-          }
-        } else {
-          SootClass sootcls = Scene.v().getSootClass(constant);
+        if (sc.containsClass(constant)) {
+          SootClass sootcls = sc.getSootClass(constant);
           if (!sootcls.isApplicationClass() && !sootcls.isPhantom()) {
             sootcls.setLibraryClass();
           }
           for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
             cm.addStaticEdge(MethodContext.v(site.container(), srcContext), site.stmt(), clinit, Kind.CLINIT);
           }
+        } else if (options.verbose()) {
+          logger.warn("Class " + constant + " is a dynamic class, and you did not specify"
+              + " it as such; graph will be incomplete!");
         }
+      }
+    } else if (options.verbose()) {
+      for (VirtualCallSite site : stringConstToSites.get(l)) {
+        logger.warn("Method " + site.container() + " is reachable, and calls Class.forName on a non-constant"
+            + " String; graph will be incomplete! Use safe-forname option for a conservative result.");
       }
     }
   }
@@ -878,11 +878,9 @@ public class OnFlyCallGraphBuilder {
               Local receiver = (Local) ie.getArg(0);
               addVirtualCallSite(s, m, receiver, null, sigObjRun, Kind.PRIVILEGED);
             }
-          } else {
-            if (!Options.v().ignore_resolution_errors()) {
-              throw new InternalError(
-                  "Unresolved target " + ie.getMethod() + ". Resolution error should have occured earlier.");
-            }
+          } else if (!Options.v().ignore_resolution_errors()) {
+            throw new InternalError(
+                "Unresolved target " + ie.getMethod() + ". Resolution error should have occured earlier.");
           }
         }
       }
@@ -977,25 +975,21 @@ public class OnFlyCallGraphBuilder {
   private void constantForName(String cls, SootMethod src, Stmt srcUnit) {
     int clsLength = cls.length();
     if (clsLength > 0 && cls.charAt(0) == '[') {
-      if (clsLength > 1 && cls.charAt(1) == 'L' && cls.charAt(clsLength - 1) == ';') {
+      if (clsLength > 2 && cls.charAt(1) == 'L' && cls.charAt(clsLength - 1) == ';') {
         constantForName(cls.substring(2, clsLength - 1), src, srcUnit);
       }
-    } else {
-      if (!Scene.v().containsClass(cls)) {
-        if (options.verbose()) {
-          logger.warn("Class " + cls + " is a dynamic class, and you did not specify it as such; graph will be incomplete!");
+    } else if (Scene.v().containsClass(cls)) {
+      SootClass sootcls = Scene.v().getSootClass(cls);
+      if (!sootcls.isPhantomClass()) {
+        if (!sootcls.isApplicationClass()) {
+          sootcls.setLibraryClass();
         }
-      } else {
-        SootClass sootcls = Scene.v().getSootClass(cls);
-        if (!sootcls.isPhantomClass()) {
-          if (!sootcls.isApplicationClass()) {
-            sootcls.setLibraryClass();
-          }
-          for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
-            addEdge(src, srcUnit, clinit, Kind.CLINIT);
-          }
+        for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
+          addEdge(src, srcUnit, clinit, Kind.CLINIT);
         }
       }
+    } else if (options.verbose()) {
+      logger.warn("Class " + cls + " is a dynamic class, and you did not specify it as such; graph will be incomplete!");
     }
   }
 
@@ -1082,7 +1076,7 @@ public class OnFlyCallGraphBuilder {
       } else {
         for (SootClass cls : Scene.v().dynamicClasses()) {
           for (SootMethod m : cls.getMethods()) {
-            if (m.getName().equals("<init>")) {
+            if ("<init>".equals(m.getName())) {
               addEdge(source, s, m, Kind.NEWINSTANCE);
             }
           }
@@ -1174,8 +1168,9 @@ public class OnFlyCallGraphBuilder {
         registerGuard(container, newInstanceInvokeStmt,
             "Class.newInstance() call site; Soot did not expect this site to be reached");
       } else {
+        final Scene sc = Scene.v();
         for (String clsName : classNames) {
-          SootMethod constructor = Scene.v().getSootClass(clsName).getMethodUnsafe(sigInit);
+          SootMethod constructor = sc.getSootClass(clsName).getMethodUnsafe(sigInit);
           if (constructor != null) {
             addEdge(container, newInstanceInvokeStmt, constructor, Kind.REFL_CLASS_NEWINSTANCE);
           }
@@ -1198,8 +1193,9 @@ public class OnFlyCallGraphBuilder {
         registerGuard(container, newInstanceInvokeStmt,
             "Constructor.newInstance(..) call site; Soot did not expect this site to be reached");
       } else {
+        final Scene sc = Scene.v();
         for (String constructorSignature : constructorSignatures) {
-          SootMethod constructor = Scene.v().getMethod(constructorSignature);
+          SootMethod constructor = sc.getMethod(constructorSignature);
           addEdge(container, newInstanceInvokeStmt, constructor, Kind.REFL_CONSTR_NEWINSTANCE);
         }
       }
@@ -1219,8 +1215,9 @@ public class OnFlyCallGraphBuilder {
       if (methodSignatures == null || methodSignatures.isEmpty()) {
         registerGuard(container, invokeStmt, "Method.invoke(..) call site; Soot did not expect this site to be reached");
       } else {
+        final Scene sc = Scene.v();
         for (String methodSignature : methodSignatures) {
-          SootMethod method = Scene.v().getMethod(methodSignature);
+          SootMethod method = sc.getMethod(methodSignature);
           addEdge(container, invokeStmt, method, Kind.REFL_INVOKE);
         }
       }
