@@ -27,7 +27,6 @@ import java.security.InvalidParameterException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,8 +56,8 @@ public class PluginLoader {
    * @return option list definitly containing enabled.
    */
   private static String[] appendEnabled(final String[] options) {
-    for (final String option : options) {
-      if (option.equals("enabled")) {
+    for (String option : options) {
+      if ("enabled".equals(option)) {
         return options;
       }
     }
@@ -80,12 +79,12 @@ public class PluginLoader {
   private static String concat(final String[] options) {
     StringBuilder sb = new StringBuilder();
     boolean first = true;
-
-    for (final String option : options) {
-      if (!first) {
-        sb.append(" ");
+    for (String option : options) {
+      if (first) {
+        first = false;
+      } else {
+        sb.append(' ');
       }
-      first = false;
       sb.append(option);
     }
 
@@ -132,9 +131,9 @@ public class PluginLoader {
       transform.setDefaultOptions(concat(phasePlugin.getDefaultOptions()));
       PackManager.v().getPack(packName).add(transform);
 
-    } catch (final ClassNotFoundException e) {
+    } catch (ClassNotFoundException e) {
       throw new RuntimeException("Failed to load plugin class for " + pluginDescription + ".", e);
-    } catch (final InstantiationException e) {
+    } catch (InstantiationException e) {
       throw new RuntimeException("Failed to instanciate plugin class for " + pluginDescription + ".", e);
     }
   }
@@ -160,10 +159,8 @@ public class PluginLoader {
     }
 
     try {
-      final JAXBContext context
-          = JAXBContext.newInstance(Plugins.class, PluginDescription.class, PhasePluginDescription.class);
-      final Unmarshaller unmarshaller = context.createUnmarshaller();
-      final Object root = unmarshaller.unmarshal(configFile);
+      JAXBContext context = JAXBContext.newInstance(Plugins.class, PluginDescription.class, PhasePluginDescription.class);
+      Object root = context.createUnmarshaller().unmarshal(configFile);
 
       if (!(root instanceof Plugins)) {
         System.err.println("Expected a root node of type Plugins got " + root.getClass());
@@ -171,11 +168,11 @@ public class PluginLoader {
       }
 
       loadPlugins((Plugins) root);
-    } catch (final RuntimeException e) {
+    } catch (RuntimeException e) {
       System.err.println("Failed to load plugin correctly.");
       logger.error(e.getMessage(), e);
       return false;
-    } catch (final JAXBException e) {
+    } catch (JAXBException e) {
       System.err.println("An error occured while loading plugin configuration '" + file + "'.");
       logger.error(e.getMessage(), e);
       return false;
@@ -194,7 +191,7 @@ public class PluginLoader {
    *           if an error occurs during loading.
    */
   public static void loadPlugins(final Plugins plugins) throws RuntimeException {
-    for (final PluginDescription plugin : plugins.getPluginDescriptions()) {
+    for (PluginDescription plugin : plugins.getPluginDescriptions()) {
       if (plugin instanceof PhasePluginDescription) {
         handlePhasePlugin((PhasePluginDescription) plugin);
       } else {

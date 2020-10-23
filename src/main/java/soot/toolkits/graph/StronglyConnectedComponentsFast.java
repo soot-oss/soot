@@ -38,17 +38,14 @@ import java.util.Stack;
  *
  *         Changes: 2015/08/23 Steven Arzt, added an iterative version of Tarjan's algorithm for large graphs
  */
-
 public class StronglyConnectedComponentsFast<N> {
+
   protected final List<List<N>> componentList = new ArrayList<List<N>>();
   protected final List<List<N>> trueComponentList = new ArrayList<List<N>>();
 
   protected int index = 0;
-
   protected Map<N, Integer> indexForNode, lowlinkForNode;
-
   protected Stack<N> s;
-
   protected DirectedGraph<N> g;
 
   /**
@@ -58,10 +55,9 @@ public class StronglyConnectedComponentsFast<N> {
    */
   public StronglyConnectedComponentsFast(DirectedGraph<N> g) {
     this.g = g;
-    s = new Stack<N>();
-
-    indexForNode = new HashMap<N, Integer>();
-    lowlinkForNode = new HashMap<N, Integer>();
+    this.s = new Stack<N>();
+    this.indexForNode = new HashMap<N, Integer>();
+    this.lowlinkForNode = new HashMap<N, Integer>();
 
     for (N node : g) {
       if (!indexForNode.containsKey(node)) {
@@ -77,10 +73,10 @@ public class StronglyConnectedComponentsFast<N> {
     }
 
     // free memory
-    indexForNode = null;
-    lowlinkForNode = null;
-    s = null;
-    g = null;
+    this.indexForNode = null;
+    this.lowlinkForNode = null;
+    this.s = null;
+    this.g = null;
   }
 
   protected void recurse(N v) {
@@ -99,7 +95,7 @@ public class StronglyConnectedComponentsFast<N> {
         lowlinkForNode.put(v, lowLinkForNodeV = Math.min(lowLinkForNodeV, indexForNodeSucc));
       }
     }
-    if (lowLinkForNodeV == indexForNode.get(v).intValue()) {
+    if (lowLinkForNodeV == indexForNode.get(v)) {
       List<N> scc = new ArrayList<N>();
       N v2;
       do {
@@ -160,7 +156,7 @@ public class StronglyConnectedComponentsFast<N> {
         }
 
         int lowLinkForNodeV = lowlinkForNode.get(v);
-        if (lowLinkForNodeV == indexForNode.get(v).intValue()) {
+        if (lowLinkForNodeV == indexForNode.get(v)) {
           List<N> scc = new ArrayList<N>();
           N v2;
           do {

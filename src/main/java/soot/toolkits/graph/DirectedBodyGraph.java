@@ -1,10 +1,10 @@
-package soot.tagkit;
+package soot.toolkits.graph;
 
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 2000 Patrice Pominville and Feng Qian
+ * Copyright (C) 1999 Patrice Pominville, Raja Vallee-Rai
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,11 +22,16 @@ package soot.tagkit;
  * #L%
  */
 
-/**
- * Tags that are attached to the class file, field, method, or method body should implement this interface.
- */
-public interface Attribute extends Tag {
+import soot.Body;
 
-  /** Sets the value of the attribute from a byte[]. */
-  public void setValue(byte[] v);
+/**
+ *
+ * @param <N>
+ */
+public interface DirectedBodyGraph<N> extends DirectedGraph<N> {
+
+  /**
+   * @return the {@link Body} from which this graph was built
+   */
+  public Body getBody();
 }

@@ -30,6 +30,9 @@ package soot.util;
  * @author Ondrej Lhotak
  */
 public class BitVector {
+
+  private long[] bits;
+
   public BitVector() {
     this(64);
   }
@@ -37,16 +40,15 @@ public class BitVector {
   /** Copy constructor */
   // Added by Adam Richard. More efficient than clone(), and easier to extend
   public BitVector(BitVector other) {
-    bits = new long[other.bits.length];
-    System.arraycopy(other.bits, 0, bits, 0, other.bits.length);
+    final long[] otherBits = other.bits;
+    bits = new long[otherBits.length];
+    System.arraycopy(otherBits, 0, bits, 0, otherBits.length);
   }
 
   public BitVector(int numBits) {
     int lastIndex = indexOf(numBits - 1);
     bits = new long[lastIndex + 1];
   }
-
-  private long[] bits;
 
   private int indexOf(int bit) {
     return bit >> 6;
@@ -60,7 +62,7 @@ public class BitVector {
     if (this == other) {
       return;
     }
-    long[] otherBits = other.bits;
+    final long[] otherBits = other.bits;
     int numToAnd = otherBits.length;
     if (bits.length < numToAnd) {
       numToAnd = bits.length;
@@ -75,7 +77,7 @@ public class BitVector {
   }
 
   public void andNot(BitVector other) {
-    long[] otherBits = other.bits;
+    final long[] otherBits = other.bits;
     int numToAnd = otherBits.length;
     if (bits.length < numToAnd) {
       numToAnd = bits.length;
@@ -91,6 +93,7 @@ public class BitVector {
     }
   }
 
+  @Override
   public Object clone() {
     try {
       BitVector ret = (BitVector) super.clone();
@@ -102,20 +105,21 @@ public class BitVector {
     }
   }
 
+  @Override
   public boolean equals(Object o) {
     if (!(o instanceof BitVector)) {
       return false;
     }
-    BitVector other = (BitVector) o;
+    final long[] otherBits = ((BitVector) o).bits;
+    long[] longer = otherBits;
     int min = bits.length;
-    long[] longer = other.bits;
-    if (other.bits.length < min) {
-      min = other.bits.length;
+    if (otherBits.length < min) {
+      min = otherBits.length;
       longer = bits;
     }
     int i;
     for (i = 0; i < min; i++) {
-      if (bits[i] != other.bits[i]) {
+      if (bits[i] != otherBits[i]) {
         return false;
       }
     }
@@ -134,6 +138,7 @@ public class BitVector {
     return (bits[indexOf(bit)] & mask(bit)) != 0L;
   }
 
+  @Override
   public int hashCode() {
     long ret = 0;
     for (long element : bits) {
@@ -157,7 +162,6 @@ public class BitVector {
     i++;
     i <<= 6;
     for (long k = 1L << 63; (k & j) == 0L; k >>= 1, i--) {
-      ;
     }
     return i;
   }
@@ -166,7 +170,7 @@ public class BitVector {
     if (this == other) {
       return;
     }
-    long[] otherBits = other.bits;
+    final long[] otherBits = other.bits;
     int j;
     for (j = otherBits.length - 1; j >= 0; j--) {
       if (otherBits[j] != 0L) {
@@ -187,7 +191,7 @@ public class BitVector {
     if (this == other) {
       return;
     }
-    long[] otherBits = other.bits;
+    final long[] otherBits = other.bits;
     int j;
     for (j = otherBits.length - 1; j >= 0; j--) {
       if (otherBits[j] != 0L) {
@@ -223,7 +227,7 @@ public class BitVector {
    * @author Quentin Sabah Inspired by the BitVector.and method.
    */
   public boolean intersects(BitVector other) {
-    long[] otherBits = other.bits;
+    final long[] otherBits = other.bits;
     int numToCheck = otherBits.length;
     if (bits.length < numToCheck) {
       numToCheck = bits.length;
@@ -254,7 +258,7 @@ public class BitVector {
     if (this == other) {
       return;
     }
-    long[] otherBits = other.bits;
+    final long[] otherBits = other.bits;
     int j;
     for (j = otherBits.length - 1; j >= 0; j--) {
       if (otherBits[j] != 0L) {
@@ -279,62 +283,57 @@ public class BitVector {
     return bits.length << 6;
   }
 
+  @Override
   public String toString() {
-    StringBuffer ret = new StringBuffer();
+    StringBuilder ret = new StringBuilder();
     ret.append('{');
     boolean start = true;
-    BitSetIterator it = new BitSetIterator(bits);
-    while (it.hasNext()) {
+    for (BitSetIterator it = new BitSetIterator(bits); it.hasNext();) {
       int bit = it.next();
-      if (!start) {
+      if (start) {
+        start = false;
+      } else {
         ret.append(", ");
       }
-      start = false;
       ret.append(bit);
     }
     ret.append('}');
     return ret.toString();
   }
 
-  /*
-   * public boolean orAndAndNotCheck(BitVector orset, BitVector andset, BitVector andnotset) { BitVector orAndAnd =
-   * (BitVector) orset.clone(); if( andset != null ) orAndAnd.and( andset ); if( andnotset != null ) orAndAnd.andNot(
-   * andnotset ); orAndAnd.or( this ); boolean ret = !orAndAnd.equals(this); orAndAndNotOld( orset, andset, andnotset ); if(
-   * !this.equals( orAndAnd ) ) { throw new RuntimeException(
-   * "orset is "+orset+"\nandset is "+andset+"\nandnotset is "+andnotset+"\nthis is "+this+"\ncorrect is "+orAndAnd ); }
-   * return ret; }
-   */
   /**
    * Computes this = this OR ((orset AND andset ) AND (NOT andnotset)) Returns true iff this is modified.
-   *
-   * @param set
-   *          a bit set.
    */
   public boolean orAndAndNot(BitVector orset, BitVector andset, BitVector andnotset) {
-    boolean ret = false;
-    long[] a = null, b = null, c = null, d = null, e = null;
-    int al, bl, cl, dl;
-    a = this.bits;
-    al = a.length;
+    final long[] a, b, c, d;
+    final int al, bl, cl, dl;
+    {
+      a = this.bits;
+      al = a.length;
+    }
     if (orset == null) {
+      b = null;
       bl = 0;
     } else {
       b = orset.bits;
       bl = b.length;
     }
     if (andset == null) {
+      c = null;
       cl = 0;
     } else {
       c = andset.bits;
       cl = c.length;
     }
     if (andnotset == null) {
+      d = null;
       dl = 0;
     } else {
       d = andnotset.bits;
       dl = d.length;
     }
 
+    final long[] e;
     if (al < bl) {
       e = new long[bl];
       System.arraycopy(a, 0, e, 0, al);
@@ -342,78 +341,68 @@ public class BitVector {
     } else {
       e = a;
     }
-    int i = 0;
-    long l;
 
+    boolean ret = false;
     if (c == null) {
       if (dl <= bl) {
-        while (i < dl) {
-          l = b[i] & ~d[i];
+        int i = 0;
+        for (; i < dl; i++) {
+          long l = b[i] & ~d[i];
           if ((l & ~e[i]) != 0) {
             ret = true;
           }
           e[i] |= l;
-          i++;
         }
-        while (i < bl) {
-          l = b[i];
+        for (; i < bl; i++) {
+          long l = b[i];
           if ((l & ~e[i]) != 0) {
             ret = true;
           }
           e[i] |= l;
-          i++;
         }
       } else {
-        while (i < bl) {
-          l = b[i] & ~d[i];
+        for (int i = 0; i < bl; i++) {
+          long l = b[i] & ~d[i];
           if ((l & ~e[i]) != 0) {
             ret = true;
           }
           e[i] |= l;
-          i++;
         }
       }
     } else if (bl <= cl && bl <= dl) {
       // bl is the shortest
-      while (i < bl) {
-        l = b[i] & c[i] & ~d[i];
+      for (int i = 0; i < bl; i++) {
+        long l = b[i] & c[i] & ~d[i];
         if ((l & ~e[i]) != 0) {
           ret = true;
         }
         e[i] |= l;
-        i++;
       }
     } else if (cl <= bl && cl <= dl) {
       // cl is the shortest
-      while (i < cl) {
-        l = b[i] & c[i] & ~d[i];
+      for (int i = 0; i < cl; i++) {
+        long l = b[i] & c[i] & ~d[i];
         if ((l & ~e[i]) != 0) {
           ret = true;
         }
         e[i] |= l;
-        i++;
       }
     } else {
       // dl is the shortest
-      while (i < dl) {
-        l = b[i] & c[i] & ~d[i];
+      int i = 0;
+      for (; i < dl; i++) {
+        long l = b[i] & c[i] & ~d[i];
         if ((l & ~e[i]) != 0) {
           ret = true;
         }
         e[i] |= l;
-        i++;
       }
-      int shorter = cl;
-      if (bl < shorter) {
-        shorter = bl;
-      }
-      while (i < shorter) {
-        l = b[i] & c[i];
+      for (int shorter = (bl < cl) ? bl : cl; i < shorter; i++) {
+        long l = b[i] & c[i];
         if ((l & ~e[i]) != 0) {
           ret = true;
         }
         e[i] |= l;
-        i++;
       }
     }
 
