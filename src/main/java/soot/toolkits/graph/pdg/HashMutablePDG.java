@@ -198,7 +198,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
 
           if (b.equals(a)) {
             //throw new RuntimeException("PDG construction: A and B are not supposed to be the same node!");
-        	continue;
+            continue;
           }
 
           DominatorNode<Block> aDode = pdom.getDode(a);
