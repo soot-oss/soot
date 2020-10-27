@@ -433,11 +433,11 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
 
                    // assert (succRPDGNode.getType() == PDGNode.Type.REGION);
                     Block h = null;
-                    if( succRPDGNode.getType() == PDGNode.Type.REGION ) {
-                    	Region succR = (Region) succRPDGNode.getNode();
-                        h = succR.getBlocks().get(0);
-                    }else {
-                    	continue;
+                    if (succRPDGNode.getType() == PDGNode.Type.REGION) {
+                      Region succR = (Region) succRPDGNode.getNode();
+                      h = succR.getBlocks().get(0);
+                    } else {
+                      continue;
                     }
                     
 
