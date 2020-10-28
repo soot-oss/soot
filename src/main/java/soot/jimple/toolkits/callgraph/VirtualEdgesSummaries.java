@@ -159,10 +159,12 @@ public class VirtualEdgesSummaries {
 
   private static VirtualEdgeSource parseEdgeSource(Element source) {
     String type = source.getAttribute("invoketype");
-    if ("instance".equals(type))
-        return new InstanceinvokeSource(source.getAttribute("subsignature"));
-    if ("static".equals(type))
-        return new StaticinvokeSource(source.getAttribute("signature"));
+    if ("instance".equals(type)) {
+      return new InstanceinvokeSource(source.getAttribute("subsignature"));
+    }
+    if ("static".equals(type)) {
+      return new StaticinvokeSource(source.getAttribute("signature"));
+    }
     return null;
   }
 
