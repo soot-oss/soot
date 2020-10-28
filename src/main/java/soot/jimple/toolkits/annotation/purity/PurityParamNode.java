@@ -24,39 +24,45 @@ package soot.jimple.toolkits.annotation.purity;
 
 /**
  * A node representing a method parameter. Each method parameter has a number, starting from 0.
- * 
  */
 public class PurityParamNode implements PurityNode {
-  private int id;
+
+  private final int id;
 
   PurityParamNode(int id) {
     this.id = id;
   }
 
+  @Override
   public String toString() {
     return "P_" + id;
   }
 
+  @Override
   public int hashCode() {
     return id;
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o instanceof PurityParamNode) {
-      return ((PurityParamNode) o).id == id;
+      return this.id == ((PurityParamNode) o).id;
     } else {
       return false;
     }
   }
 
+  @Override
   public boolean isInside() {
     return false;
   }
 
+  @Override
   public boolean isLoad() {
     return false;
   }
 
+  @Override
   public boolean isParam() {
     return true;
   }

@@ -30,12 +30,10 @@ public class CoffiClassProvider implements ClassProvider {
   /**
    * Look for the specified class. Return a ClassSource for it if found, or null if it was not found.
    */
+  @Override
   public ClassSource find(String className) {
     String fileName = className.replace('.', '/') + ".class";
     FoundFile file = SourceLocator.v().lookupInClassPath(fileName);
-    if (file == null) {
-      return null;
-    }
-    return new CoffiClassSource(className, file);
+    return (file == null) ? null : new CoffiClassSource(className, file);
   }
 }

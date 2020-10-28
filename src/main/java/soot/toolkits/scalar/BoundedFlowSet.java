@@ -44,11 +44,4 @@ public interface BoundedFlowSet<T> extends FlowSet<T> {
    * returns the topped set.
    */
   public FlowSet<T> topSet();
-
-  /**
-   * Returns elements [low..high] of this BoundedFlowSet. (optional operation)
-   */
-  /*
-   * public List toList(int low, int high) throws UnsupportedOperationException;
-   */
 }

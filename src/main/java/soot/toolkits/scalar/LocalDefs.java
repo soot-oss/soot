@@ -35,7 +35,37 @@ import soot.toolkits.scalar.SimpleLocalDefs.FlowAnalysisMode;
  * Provides an interface for querying for the definitions of a Local at a given Unit in a method.
  */
 public interface LocalDefs {
-  static final public class Factory {
+
+  /**
+   * Returns the definition sites for a Local at a certain point (Unit) in a method.
+   *
+   * You can assume this method never returns {@code null}.
+   *
+   * @param l
+   *          the Local in question.
+   * @param s
+   *          a unit that specifies the method context (location) to query for the definitions of the Local.
+   * @return a list of Units where the local is defined in the current method context. If there are no uses an empty list
+   *         will returned.
+   */
+  public List<Unit> getDefsOfAt(Local l, Unit s);
+
+  /**
+   * Returns the definition sites for a Local merged over all points in a method.
+   *
+   * You can assume this method never returns {@code null}.
+   *
+   * @param l
+   *          the Local in question.
+   * @return a list of Units where the local is defined in the current method context. If there are no uses an empty list
+   *         will returned.
+   */
+  public List<Unit> getDefsOf(Local l);
+
+  /**
+   * 
+   */
+  public static final class Factory {
     private Factory() {
     }
 
@@ -53,11 +83,11 @@ public interface LocalDefs {
 
     /**
      * Creates a new LocalDefs analysis based on a {@code ExceptionalUnitGraph} If you don't trust the input you should set
-     * <code>expectUndefined</code> to <code>true</code>
+     * {@code expectUndefined} to {@code true}.
      *
      * @see soot.toolkits.graph.ExceptionalUnitGraph#ExceptionalUnitGraph(Body)
      * @param body
-     * @param expectUndefinedUses
+     * @param expectUndefined
      *          if you expect uses of locals that are undefined
      * @return a new LocalDefs instance
      */
@@ -79,7 +109,7 @@ public interface LocalDefs {
 
     /**
      * Creates a new LocalDefs analysis based on a given {@code UnitGraph}. If you don't trust the input you should set
-     * <code>expectUndefined</code> to <code>true</code>
+     * {@code expectUndefined} to {@code true}.
      *
      * @see soot.toolkits.graph.UnitGraph#UnitGraph(Body)
      * @see soot.validation.UsesValidator
@@ -110,31 +140,4 @@ public interface LocalDefs {
       return new SimpleLocalDefs(graph, FlowAnalysisMode.FlowInsensitive);
     }
   }
-
-  /**
-   * Returns the definition sites for a Local at a certain point (Unit) in a method.
-   *
-   * You can assume this method never returns {@code null}.
-   *
-   * @param l
-   *          the Local in question.
-   * @param s
-   *          a unit that specifies the method context (location) to query for the definitions of the Local.
-   * @return a list of Units where the local is defined in the current method context. If there are no uses an empty list
-   *         will returned.
-   */
-  public List<Unit> getDefsOfAt(Local l, Unit s);
-
-  /**
-   * Returns the definition sites for a Local merged over all points in a method.
-   *
-   * You can assume this method never returns {@code null}.
-   *
-   * @param l
-   *          the Local in question.
-   * @return a list of Units where the local is defined in the current method context. If there are no uses an empty list
-   *         will returned.
-   */
-  public List<Unit> getDefsOf(Local l);
-
 }
