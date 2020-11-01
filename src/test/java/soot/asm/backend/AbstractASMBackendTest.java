@@ -31,10 +31,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Scanner;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
+
 import soot.G;
 import soot.Main;
 import soot.ModulePathSourceLocator;
@@ -53,10 +55,15 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 
   private final TraceClassVisitor visitor = new TraceClassVisitor(pw);
 
-  protected TargetCompiler targetCompiler =
-      Scene.isJavaGEQ9(System.getProperty("java.version"))
-          ? TargetCompiler.javac9
-          : TargetCompiler.javac;
+  protected TargetCompiler targetCompiler = getJavaCompiler();
+
+  protected TargetCompiler getJavaCompiler() {
+    final String version = System.getProperty("java.version");
+    if (Scene.isJavaGEQ9(version)) {
+      return TargetCompiler.javac9;
+    }
+    return TargetCompiler.javac;
+  }
 
   /** Runs Soot with the arguments needed for running one test */
   protected void runSoot() {
@@ -72,19 +79,8 @@ public abstract class AbstractASMBackendTest implements Opcodes {
     System.out.println("Class path: " + classpath);
 
     // Run Soot and print output to .asm-files.
-    Main.main(
-        new String[] {
-          "-cp",
-          classpath,
-          "-src-prec",
-          "only-class",
-          "-output-format",
-          "asm",
-          "-allow-phantom-refs",
-          "-java-version",
-          getRequiredJavaVersion(),
-          getTargetClass()
-        });
+    Main.main(new String[] { "-cp", classpath, "-src-prec", "only-class", "-output-format", "asm", "-allow-phantom-refs",
+        "-java-version", getRequiredJavaVersion(), "-no-derive-java-version", getTargetClass() });
   }
 
   /** Generates the textual output and saves it for later for comparison */
@@ -96,8 +92,8 @@ public abstract class AbstractASMBackendTest implements Opcodes {
   /**
    * Compares the generated test output with Soot's output for the tested class line by line
    *
-   * @throws FileNotFoundException if either the file for comparison could not be created or the
-   *     soot output could not be opened
+   * @throws FileNotFoundException
+   *           if either the file for comparison could not be created or the soot output could not be opened
    */
   @Test
   public void runTestAndCompareOutput() throws IOException {
@@ -114,25 +110,18 @@ public abstract class AbstractASMBackendTest implements Opcodes {
     ow.close();
 
     File targetFile = new File("sootOutput/" + getTargetClass() + ".asm");
-    assertTrue(
-        String.format("Soot output file %s not found", targetFile.getAbsolutePath()),
-        targetFile.exists());
+    assertTrue(String.format("Soot output file %s not found", targetFile.getAbsolutePath()), targetFile.exists());
     Scanner sootOutput = new Scanner(targetFile);
     Scanner compareOutput = new Scanner(comparisonOutput);
 
     try {
       System.out.println(
-          String.format(
-              "Comparing files %s and %s...",
-              compareFile.getAbsolutePath(), targetFile.getAbsolutePath()));
+          String.format("Comparing files %s and %s...", compareFile.getAbsolutePath(), targetFile.getAbsolutePath()));
       int line = 1;
       while (compareOutput.hasNextLine()) {
         // Soot-output must have as much lines as the compared output.
-        assertTrue(
-            String.format(
-                "Too few lines in Soot-output for class %s! Current line: %d. Comparison output: %s",
-                getTargetClass(), line, comparisonOutput),
-            sootOutput.hasNextLine());
+        assertTrue(String.format("Too few lines in Soot-output for class %s! Current line: %d. Comparison output: %s",
+            getTargetClass(), line, comparisonOutput), sootOutput.hasNextLine());
 
         // Get both lines
         String compare = compareOutput.nextLine();
@@ -140,17 +129,12 @@ public abstract class AbstractASMBackendTest implements Opcodes {
         String output = sootOutput.nextLine();
 
         // Compare lines
-        assertTrue(
-            String.format(
-                "Expected line %s, but got %s in line %d for class %s",
-                compare.trim(), output.trim(), line, getTargetClass()),
-            compare.equals(output));
+        assertTrue(String.format("Expected line %s, but got %s in line %d for class %s", compare.trim(), output.trim(), line,
+            getTargetClass()), compare.equals(output));
         ++line;
       }
 
-      assertFalse(
-          String.format("Too many lines in Soot-output for class %s!", getTargetClass()),
-          sootOutput.hasNextLine());
+      assertFalse(String.format("Too many lines in Soot-output for class %s!", getTargetClass()), sootOutput.hasNextLine());
       System.out.println("File comparison successful.");
     } finally {
       sootOutput.close();
@@ -161,7 +145,8 @@ public abstract class AbstractASMBackendTest implements Opcodes {
   /**
    * Generates the textual output for comparison with Soot's output
    *
-   * @param cw The TraceClassVisitor used to generate the textual output
+   * @param cw
+   *          The TraceClassVisitor used to generate the textual output
    */
   protected abstract void generate(TraceClassVisitor cw);
 
@@ -203,8 +188,6 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 
   /** Enumeration containing the supported Java compilers */
   enum TargetCompiler {
-    eclipse,
-    javac,
-    javac9
+    eclipse, javac, javac9
   }
 }

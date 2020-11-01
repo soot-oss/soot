@@ -211,14 +211,20 @@ public class UseChecker extends AbstractStmtSwitch {
             }
 
             // Check the original type of the array from the alloc site
+            boolean hasDefs = false;
             for (Unit defU : defs.getDefsOfAt(base, stmt)) {
               if (defU instanceof AssignStmt) {
                 AssignStmt defUas = (AssignStmt) defU;
                 if (defUas.getRightOp() instanceof NewArrayExpr) {
                   at = (ArrayType) defUas.getRightOp().getType();
+                  hasDefs = true;
                   break;
                 }
               }
+            }
+
+            if (!hasDefs) {
+              at = ArrayType.v(rhsType, 1);
             }
           }
         }

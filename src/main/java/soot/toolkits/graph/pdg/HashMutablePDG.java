@@ -197,7 +197,6 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
           Block b = bItr.next();
 
           if (b.equals(a)) {
-            //throw new RuntimeException("PDG construction: A and B are not supposed to be the same node!");
             continue;
           }
 
@@ -431,7 +430,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
                   while (succItr.hasNext()) {
                     PDGNode succRPDGNode = succItr.next();
 
-                   // assert (succRPDGNode.getType() == PDGNode.Type.REGION);
+                    // assert (succRPDGNode.getType() == PDGNode.Type.REGION);
                     Block h = null;
                     if (succRPDGNode.getType() == PDGNode.Type.REGION) {
                       Region succR = (Region) succRPDGNode.getNode();
@@ -439,7 +438,6 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
                     } else {
                       continue;
                     }
-                    
 
                     DominatorNode<Block> hdode = dom.getDode(h);
                     DominatorNode<Block> adode = dom.getDode(a);

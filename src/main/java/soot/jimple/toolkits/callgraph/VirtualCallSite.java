@@ -34,6 +34,7 @@ import soot.util.NumberedString;
  * @author Ondrej Lhotak
  */
 public class VirtualCallSite extends AbstractCallSite {
+
   private InstanceInvokeExpr iie;
   private NumberedString subSig;
   Kind kind;
@@ -64,4 +65,5 @@ public class VirtualCallSite extends AbstractCallSite {
   public Kind kind() {
     return kind;
   }
+
 }

@@ -36,8 +36,9 @@ import java.util.NoSuchElementException;
  * Reference implementation for a BoundedFlowSet. Items are stored in an Array.
  */
 public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
-  ObjectIntMapper<T> map;
-  BitSet bits;
+
+  protected final ObjectIntMapper<T> map;
+  protected final BitSet bits;
 
   public ArrayPackedSet(FlowUniverse<T> universe) {
     this(new ObjectIntMapper<T>(universe));
@@ -78,7 +79,7 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
   }
 
   private BitSet copyBitSet(ArrayPackedSet<?> dest) {
-    assert dest.map == map;
+    assert (dest.map == this.map);
     if (this != dest) {
       dest.bits.clear();
       dest.bits.or(bits);
@@ -88,10 +89,7 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
 
   /** Returns true if flowSet is the same type of flow set as this. */
   private boolean sameType(Object flowSet) {
-    if (flowSet instanceof ArrayPackedSet) {
-      return ((ArrayPackedSet<?>) flowSet).map == map;
-    }
-    return false;
+    return (flowSet instanceof ArrayPackedSet) && (((ArrayPackedSet<?>) flowSet).map == this.map);
   }
 
   private List<T> toList(BitSet bits, int base) {
@@ -123,13 +121,11 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
     if (lowInclusive > highInclusive) {
       return emptyList();
     }
-
-    int highExclusive = highInclusive + 1;
-
     if (lowInclusive < 0) {
       throw new IllegalArgumentException();
     }
 
+    int highExclusive = highInclusive + 1;
     return toList(bits.get(lowInclusive, highExclusive), lowInclusive);
   }
 
@@ -147,7 +143,6 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
   public void complement(FlowSet<T> destFlow) {
     if (sameType(destFlow)) {
       ArrayPackedSet<T> dest = (ArrayPackedSet<T>) destFlow;
-
       copyBitSet(dest).flip(0, dest.map.size());
     } else {
       super.complement(destFlow);
@@ -218,7 +213,6 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
     /*
      * check if the object is in the map, direct call of map.getInt will add the object into the map.
      */
-
     return map.contains(obj) && bits.get(map.getInt(obj));
   }
 

@@ -29,8 +29,13 @@ import java.util.Iterator;
  *
  * @author Ondrej Lhotak
  */
-
 public final class NumberedSet<N extends Numberable> {
+
+  private final IterableNumberer<N> universe;
+  private Numberable[] array = new Numberable[8];
+  private BitVector bits;
+  private int size = 0;
+
   public NumberedSet(IterableNumberer<N> universe) {
     this.universe = universe;
   }
@@ -82,26 +87,22 @@ public final class NumberedSet<N extends Numberable> {
     }
   }
 
-  /* Private stuff. */
-
-  private final int findPosition(Numberable o) {
+  private int findPosition(Numberable o) {
     int number = o.getNumber();
     if (number == 0) {
       throw new RuntimeException("unnumbered");
     }
     number = number & (array.length - 1);
     while (true) {
-      if (array[number] == o) {
-        return number;
-      }
-      if (array[number] == null) {
+      Numberable temp = array[number];
+      if (temp == o || temp == null) {
         return number;
       }
       number = (number + 1) & (array.length - 1);
     }
   }
 
-  private final void doubleSize() {
+  private void doubleSize() {
     int uniSize = universe.size();
     if (array.length * 128 > uniSize) {
       bits = new BitVector(uniSize);
@@ -123,47 +124,52 @@ public final class NumberedSet<N extends Numberable> {
     }
   }
 
+  public final int size() {
+    return size;
+  }
+
   public Iterator<N> iterator() {
     if (array == null) {
-      return new BitSetIterator(this);
+      return new BitSetIterator();
     } else {
-      return new NumberedSetIterator(this);
+      return new NumberedSetIterator();
     }
   }
 
-  class BitSetIterator implements Iterator<N> {
-    soot.util.BitSetIterator iter;
+  private class BitSetIterator implements Iterator<N> {
+    private final soot.util.BitSetIterator iter;
 
-    BitSetIterator(NumberedSet<N> set) {
-      iter = set.bits.iterator();
+    BitSetIterator() {
+      iter = NumberedSet.this.bits.iterator();
     }
 
+    @Override
     public final boolean hasNext() {
       return iter.hasNext();
     }
 
-    public void remove() {
-      throw new RuntimeException("Not implemented.");
-    }
-
+    @Override
     public final N next() {
-      return universe.get(iter.next());
+      return NumberedSet.this.universe.get(iter.next());
     }
 
+    @Override
+    public void remove() {
+      throw new UnsupportedOperationException();
+    }
   }
 
-  class NumberedSetIterator implements Iterator<N> {
-    NumberedSet<N> set;
-    int cur = 0;
+  private class NumberedSetIterator implements Iterator<N> {
+    private int cur = 0;
 
-    NumberedSetIterator(NumberedSet<N> set) {
-      this.set = set;
+    NumberedSetIterator() {
       seekNext();
     }
 
     protected final void seekNext() {
+      Numberable[] temp = NumberedSet.this.array;
       try {
-        while (set.array[cur] == null) {
+        while (temp[cur] == null) {
           cur++;
         }
       } catch (ArrayIndexOutOfBoundsException e) {
@@ -171,30 +177,23 @@ public final class NumberedSet<N extends Numberable> {
       }
     }
 
+    @Override
     public final boolean hasNext() {
       return cur != -1;
     }
 
+    @Override
     public void remove() {
-      throw new RuntimeException("Not implemented.");
+      throw new UnsupportedOperationException();
     }
 
+    @Override
     public final N next() {
       @SuppressWarnings("unchecked")
-      N ret = (N) set.array[cur];
+      N ret = (N) NumberedSet.this.array[cur];
       cur++;
       seekNext();
       return ret;
     }
   }
-
-  public final int size() {
-    return size;
-  }
-
-  private Numberable[] array = new Numberable[8];
-  private BitVector bits;
-  private int size = 0;
-  private IterableNumberer<N> universe;
-
 }

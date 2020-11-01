@@ -26,6 +26,7 @@ package soot.jimple.toolkits.typing.fast;
 
 import java.util.Collection;
 import java.util.Collections;
+
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -121,12 +122,8 @@ public class AugEvalFunction implements IEvalFunction {
 
       if (expr instanceof CmpExpr || expr instanceof CmpgExpr || expr instanceof CmplExpr) {
         return ByteType.v();
-      } else if (expr instanceof GeExpr
-          || expr instanceof GtExpr
-          || expr instanceof LeExpr
-          || expr instanceof LtExpr
-          || expr instanceof EqExpr
-          || expr instanceof NeExpr) {
+      } else if (expr instanceof GeExpr || expr instanceof GtExpr || expr instanceof LeExpr || expr instanceof LtExpr
+          || expr instanceof EqExpr || expr instanceof NeExpr) {
         return BooleanType.v();
       } else if (expr instanceof ShlExpr || expr instanceof ShrExpr || expr instanceof UshrExpr) {
         // In the JVM, there are op codes for integer and long only:
@@ -137,10 +134,7 @@ public class AugEvalFunction implements IEvalFunction {
         } else {
           return tl;
         }
-      } else if (expr instanceof AddExpr
-          || expr instanceof SubExpr
-          || expr instanceof MulExpr
-          || expr instanceof DivExpr
+      } else if (expr instanceof AddExpr || expr instanceof SubExpr || expr instanceof MulExpr || expr instanceof DivExpr
           || expr instanceof RemExpr) {
         if (tl instanceof IntegerType) {
           return IntType.v();
@@ -189,10 +183,7 @@ public class AugEvalFunction implements IEvalFunction {
          * Here I repeat the behaviour of the original type assigner, but is it right? For example, -128 is a byte, but
          * -(-128) is not! --BRB
          */
-        if (t instanceof Integer1Type
-            || t instanceof BooleanType
-            || t instanceof Integer127Type
-            || t instanceof ByteType) {
+        if (t instanceof Integer1Type || t instanceof BooleanType || t instanceof Integer127Type || t instanceof ByteType) {
           return ByteType.v();
         } else if (t instanceof ShortType || t instanceof Integer32767Type) {
           return ShortType.v();
@@ -228,8 +219,7 @@ public class AugEvalFunction implements IEvalFunction {
 
       if (r == null) {
         throw new RuntimeException(
-            "Exception reference used other than as the first "
-                + "statement of an exception handler.");
+            "Exception reference used other than as the first " + "statement of an exception handler.");
       }
 
       return r;
@@ -244,7 +234,7 @@ public class AugEvalFunction implements IEvalFunction {
         if (ref.getSootClass().getName().equals("java.lang.Object")
             || ref.getSootClass().getName().equals("java.io.Serializable")
             || ref.getSootClass().getName().equals("java.lang.Cloneable")) {
-          return ref;
+          return new WeakObjectType(ref.getSootClass().getName());
         } else {
           return BottomType.v();
         }
@@ -262,7 +252,7 @@ public class AugEvalFunction implements IEvalFunction {
     } else if (expr instanceof LengthExpr) {
       return IntType.v();
     } else if (expr instanceof InvokeExpr) {
-      return ((InvokeExpr) expr).getMethodRef().returnType();
+      return ((InvokeExpr) expr).getMethodRef().getReturnType();
     } else if (expr instanceof NewExpr) {
       return ((NewExpr) expr).getBaseType();
     } else if (expr instanceof FieldRef) {

@@ -270,10 +270,13 @@ public abstract class DexlibAbstractInstruction {
    * @return a list of register indices
    */
   protected List<Integer> getUsedRegistersNums(FiveRegisterInstruction instruction) {
+    final int regCount = instruction.getRegisterCount();
     int[] regs = { instruction.getRegisterC(), instruction.getRegisterD(), instruction.getRegisterE(),
         instruction.getRegisterF(), instruction.getRegisterG(), };
     List<Integer> l = new ArrayList<Integer>();
-    for (int i = 0; i < instruction.getRegisterCount(); i++) {
+    // We have at least one app with regCount=6, reg=35c.
+    // App is "com.mobirix.gk2019.apk" from 2020 PlayStore data set
+    for (int i = 0; i < Math.min(regCount, regs.length); i++) {
       l.add(regs[i]);
     }
     return l;

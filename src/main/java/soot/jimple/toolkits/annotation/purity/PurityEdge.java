@@ -24,14 +24,15 @@ package soot.jimple.toolkits.annotation.purity;
 
 /**
  * An edge in a purity graph. Each edge has a source PurityNode, a target PurityNode, and a field label (we use a String
- * here). To represent an array element, the convention is to use the [] field label. Edges are mmuable and hashable. They
+ * here). To represent an array element, the convention is to use the [] field label. Edges are immutable and hashable. They
  * compare equal only if they link equal nodes and have equal labels.
- *
  */
 public class PurityEdge {
-  private String field;
-  private PurityNode source, target;
-  private boolean inside;
+
+  private final String field;
+  private final PurityNode source;
+  private final PurityNode target;
+  private final boolean inside;
 
   PurityEdge(PurityNode source, String field, PurityNode target, boolean inside) {
     this.source = source;
@@ -56,10 +57,12 @@ public class PurityEdge {
     return inside;
   }
 
+  @Override
   public int hashCode() {
     return field.hashCode() + target.hashCode() + source.hashCode() + (inside ? 69 : 0);
   }
 
+  @Override
   public boolean equals(Object o) {
     if (!(o instanceof PurityEdge)) {
       return false;
@@ -68,12 +71,12 @@ public class PurityEdge {
     return source.equals(e.source) && field.equals(e.field) && target.equals(e.target) && inside == e.inside;
   }
 
+  @Override
   public String toString() {
     if (inside) {
       return source.toString() + " = " + field + " => " + target.toString();
     } else {
       return source.toString() + " - " + field + " -> " + target.toString();
     }
-
   }
 }

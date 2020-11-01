@@ -29,19 +29,22 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Provides an implementation of the Set object using java.util.Array
+ * Provides an implementation of the Set interface using an array.
+ * 
+ * @param <E>
  */
-
 public class ArraySet<E> extends AbstractSet<E> {
   private static final int DEFAULT_SIZE = 8;
 
   private int numElements;
   private int maxElements;
-  private Object[] elements;
+  private E[] elements;
 
   public ArraySet(int size) {
     maxElements = size;
-    elements = new Object[size];
+    @SuppressWarnings("unchecked")
+    E[] newElements = (E[]) new Object[size];
+    elements = newElements;
     numElements = 0;
   }
 
@@ -52,10 +55,8 @@ public class ArraySet<E> extends AbstractSet<E> {
   /**
    * Create a set which contains the given elements.
    */
-
   public ArraySet(E[] elements) {
     this();
-
     for (E element : elements) {
       add(element);
     }
@@ -73,7 +74,6 @@ public class ArraySet<E> extends AbstractSet<E> {
         return true;
       }
     }
-
     return false;
   }
 
@@ -114,19 +114,17 @@ public class ArraySet<E> extends AbstractSet<E> {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   final public boolean addAll(Collection<? extends E> s) {
-    boolean ret = false;
-    if (!(s instanceof ArraySet)) {
+    if (s instanceof ArraySet) {
+      boolean ret = false;
+      ArraySet<? extends E> as = (ArraySet<? extends E>) s;
+      for (E elem : as.elements) {
+        ret |= add(elem);
+      }
+      return ret;
+    } else {
       return super.addAll(s);
     }
-    ArraySet<?> as = (ArraySet<?>) s;
-    int asSize = as.size();
-    Object[] asElements = as.elements;
-    for (int i = 0; i < asSize; i++) {
-      ret = add((E) asElements[i]) | ret;
-    }
-    return ret;
   }
 
   @Override
@@ -136,10 +134,10 @@ public class ArraySet<E> extends AbstractSet<E> {
 
   @Override
   final public Iterator<E> iterator() {
-    return new ArrayIterator<E>();
+    return new ArrayIterator();
   }
 
-  private class ArrayIterator<V> implements Iterator<V> {
+  private class ArrayIterator implements Iterator<E> {
     int nextIndex;
 
     ArrayIterator() {
@@ -152,13 +150,12 @@ public class ArraySet<E> extends AbstractSet<E> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    final public V next() throws NoSuchElementException {
+    final public E next() throws NoSuchElementException {
       if (!(nextIndex < numElements)) {
         throw new NoSuchElementException();
+      } else {
+        return elements[nextIndex++];
       }
-
-      return (V) elements[nextIndex++];
     }
 
     @Override
@@ -172,7 +169,7 @@ public class ArraySet<E> extends AbstractSet<E> {
     }
   }
 
-  final private void removeElementAt(int index) {
+  private void removeElementAt(int index) {
     // Handle simple case
     if (index == numElements - 1) {
       numElements--;
@@ -184,11 +181,12 @@ public class ArraySet<E> extends AbstractSet<E> {
     numElements--;
   }
 
-  final private void doubleCapacity() {
+  private void doubleCapacity() {
     // plus one to ensure that we have at least one element
     int newSize = maxElements * 2 + 1;
 
-    Object[] newElements = new Object[newSize];
+    @SuppressWarnings("unchecked")
+    E[] newElements = (E[]) new Object[newSize];
 
     System.arraycopy(elements, 0, newElements, 0, numElements);
     elements = newElements;
@@ -196,18 +194,20 @@ public class ArraySet<E> extends AbstractSet<E> {
   }
 
   @Override
-  final public Object[] toArray() {
-    Object[] array = new Object[numElements];
+  final public E[] toArray() {
+    @SuppressWarnings("unchecked")
+    E[] array = (E[]) new Object[numElements];
 
     System.arraycopy(elements, 0, array, 0, numElements);
     return array;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   final public <T> T[] toArray(T[] array) {
     if (array.length < numElements) {
-      return (T[]) Arrays.copyOf(elements, numElements, array.getClass());
+      @SuppressWarnings("unchecked")
+      T[] ret = (T[]) Arrays.copyOf(elements, numElements, array.getClass());
+      return ret;
     } else {
       System.arraycopy(elements, 0, array, 0, numElements);
       if (array.length > numElements) {
@@ -219,91 +219,5 @@ public class ArraySet<E> extends AbstractSet<E> {
 
   final public Object[] getUnderlyingArray() {
     return elements;
-  }
-
-  class Array {
-    private final int DEFAULT_SIZE = 8;
-
-    private int numElements;
-    private int maxElements;
-    private Object[] elements;
-
-    final public void clear() {
-      numElements = 0;
-    }
-
-    public Array() {
-      elements = new Object[DEFAULT_SIZE];
-      maxElements = DEFAULT_SIZE;
-      numElements = 0;
-    }
-
-    final private void doubleCapacity() {
-      int newSize = maxElements * 2;
-
-      Object[] newElements = new Object[newSize];
-
-      System.arraycopy(elements, 0, newElements, 0, numElements);
-      elements = newElements;
-      maxElements = newSize;
-    }
-
-    final public void addElement(Object e) {
-      // Expand array if necessary
-      if (numElements == maxElements) {
-        doubleCapacity();
-      }
-
-      // Add element
-      elements[numElements++] = e;
-    }
-
-    final public void insertElementAt(Object e, int index) {
-      // Expaxpand array if necessary
-      if (numElements == maxElements) {
-        doubleCapacity();
-      }
-
-      // Handle simple case
-      if (index == numElements) {
-        elements[numElements++] = e;
-        return;
-      }
-
-      // Shift things over
-      System.arraycopy(elements, index, elements, index + 1, numElements - index);
-      elements[index] = e;
-      numElements++;
-    }
-
-    final public boolean contains(Object e) {
-      for (int i = 0; i < numElements; i++) {
-        if (elements[i].equals(e)) {
-          return true;
-        }
-      }
-
-      return false;
-    }
-
-    final public int size() {
-      return numElements;
-    }
-
-    final public Object elementAt(int index) {
-      return elements[index];
-    }
-
-    final public void removeElementAt(int index) {
-      // Handle simple case
-      if (index == numElements - 1) {
-        numElements--;
-        return;
-      }
-
-      // Else, shift over elements
-      System.arraycopy(elements, index + 1, elements, index, numElements - (index + 1));
-      numElements--;
-    }
   }
 }

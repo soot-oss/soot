@@ -412,8 +412,9 @@ class ConstraintCollector extends AbstractStmtSwitch {
 
       handleInvokeExpr(ie);
 
-      if (ie.getMethodRef().returnType() instanceof IntegerType) {
-        right = resolver.typeVariable(ie.getMethodRef().returnType());
+      final Type returnType = ie.getMethodRef().getReturnType();
+      if (returnType instanceof IntegerType) {
+        right = resolver.typeVariable(returnType);
       }
     } else if (r instanceof NewArrayExpr) {
       NewArrayExpr nae = (NewArrayExpr) r;

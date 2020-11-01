@@ -29,6 +29,7 @@ import soot.Type;
 import soot.jimple.IntConstant;
 
 public class DIntConstant extends IntConstant {
+
   public Type type;
 
   private DIntConstant(int value, Type type) {
@@ -40,21 +41,14 @@ public class DIntConstant extends IntConstant {
     return new DIntConstant(value, type);
   }
 
+  @Override
   public String toString() {
     if (type != null) {
       if (type instanceof BooleanType) {
-        if (value == 0) {
-          return "false";
-        } else {
-          return "true";
-        }
-      }
-
-      else if (type instanceof CharType) {
-        String ch = "";
-
+        return (value == 0) ? "false" : "true";
+      } else if (type instanceof CharType) {
+        String ch;
         switch (value) {
-
           case 0x08:
             ch = "\\b";
             break;
@@ -79,7 +73,6 @@ public class DIntConstant extends IntConstant {
           case 0x5c:
             ch = "\\\\";
             break;
-
           default:
             if ((value > 31) && (value < 127)) {
               ch = new Character((char) value).toString();
@@ -99,13 +92,11 @@ public class DIntConstant extends IntConstant {
         }
 
         return "'" + ch + "'";
-      }
-
-      else if (type instanceof ByteType) {
-        return "(byte) " + new Integer(value).toString();
+      } else if (type instanceof ByteType) {
+        return "(byte) " + Integer.toString(value);
       }
     }
 
-    return new Integer(value).toString();
+    return Integer.toString(value);
   }
 }

@@ -27,9 +27,10 @@ import java.io.UnsupportedEncodingException;
 import soot.SootClass;
 
 public class OuterClassTag implements Tag {
-  SootClass outerClass;
-  String simpleName;
-  boolean anon;
+
+  private final SootClass outerClass;
+  private final String simpleName;
+  private final boolean anon;
 
   public OuterClassTag(SootClass outer, String simpleName, boolean anon) {
     this.outerClass = outer;
@@ -37,12 +38,14 @@ public class OuterClassTag implements Tag {
     this.anon = anon;
   }
 
+  @Override
   public String getName() {
     return "OuterClassTag";
   }
 
   /**
    */
+  @Override
   public byte[] getValue() {
     try {
       return outerClass.getName().getBytes("UTF8");
@@ -63,6 +66,7 @@ public class OuterClassTag implements Tag {
     return anon;
   }
 
+  @Override
   public String toString() {
     return "[outer class=" + outerClass.getName() + "]";
   }

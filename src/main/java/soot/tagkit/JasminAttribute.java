@@ -33,7 +33,6 @@ import soot.Unit;
  * stream at the location where the value of their pc is to occur. For example:
  *
  * <pre>
- *
     aload_1
     iload_2
     label2:
@@ -53,9 +52,9 @@ import soot.Unit;
  * </pre>
  *
  */
-
 public abstract class JasminAttribute implements Attribute {
-  abstract public byte[] decode(String attr, Hashtable<String, Integer> labelToPc);
 
-  abstract public String getJasminValue(Map<Unit, String> instToLabel);
+  public abstract byte[] decode(String attr, Hashtable<String, Integer> labelToPc);
+
+  public abstract String getJasminValue(Map<Unit, String> instToLabel);
 }
