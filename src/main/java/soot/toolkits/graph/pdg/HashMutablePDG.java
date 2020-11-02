@@ -651,7 +651,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
 
     PDGRegion region = null;
     if (!node2Region.containsKey(node)) {
-      if(node.getType() == PDGNode.Type.REGION) {
+      if (node.getType() == PDGNode.Type.REGION) {
         region = new PDGRegion(node);
 	node2Region.put(node, region);
       }
