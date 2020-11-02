@@ -641,23 +641,23 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
   }
 
   private static PDGRegion pdgpostorder(PDGNode node, List<PDGRegion> list) {
-	if (node == null) {
+    if (node == null) {
       return null;
-	}
-	if (node.getVisited()) {
-	  return null;
-	}
-	node.setVisited(true);
+    }
+    if (node.getVisited()) {
+      return null;
+    }
+    node.setVisited(true);
 
-	PDGRegion region = null;
-	if (!node2Region.containsKey(node)) {
-	  if(node.getType() == PDGNode.Type.REGION) {
-	    region = new PDGRegion(node);
-	    node2Region.put(node, region);
-	  }
-	} else {
-	  region = node2Region.get(node);
-	}
+    PDGRegion region = null;
+    if (!node2Region.containsKey(node)) {
+      if(node.getType() == PDGNode.Type.REGION) {
+        region = new PDGRegion(node);
+	node2Region.put(node, region);
+      }
+    } else {
+      region = node2Region.get(node);
+    }
 
     // If there are children, push the children to the stack
     List<PDGNode> dependents = node.getDependents();
