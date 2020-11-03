@@ -26,7 +26,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
+
 import org.junit.Test;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+
 import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
@@ -34,6 +37,7 @@ import soot.options.Options;
 import soot.testing.framework.AbstractTestingFramework;
 
 /** @author Manuel Benz at 13.02.20 */
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class AsmMethodSourceTest extends AbstractTestingFramework {
 
   private static final String TEST_TARGET_CLASS = "soot.asm.LineNumberExtraction";

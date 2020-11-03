@@ -34,18 +34,19 @@ import com.google.common.collect.Sets;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.junit.Assert;
 import org.junit.Test;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+
 import soot.Body;
 import soot.FastHierarchy;
 import soot.MethodOrMethodContext;
-import soot.PackManager;
 import soot.PhaseOptions;
 import soot.Scene;
 import soot.SootClass;
@@ -57,10 +58,10 @@ import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
-import soot.options.Options;
 import soot.testing.framework.AbstractTestingFramework;
 
 /** */
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class DefaultInterfaceTest extends AbstractTestingFramework {
 	
 	private static String voidType = "void";
