@@ -533,19 +533,19 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.2.4</version> <!-- or higher, correspondning to powermock-version -->
+            <version>3.6.0</version> <!-- or higher, correspondning to powermock-version -->
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito2</artifactId>
-            <version>2.0.4</version> <!-- or higher -->
+            <version>2.0.9</version> <!-- or higher -->
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
-            <version>2.0.4</version> <!-- or higher -->
+            <version>2.0.9</version> <!-- or higher -->
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.android/android -->
