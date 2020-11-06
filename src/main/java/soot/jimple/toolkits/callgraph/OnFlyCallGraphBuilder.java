@@ -303,7 +303,7 @@ public class OnFlyCallGraphBuilder {
     assert context == null;
     final Set<InvokeCallSite> invokeSites = baseToInvokeSite.get(base);
     if (invokeSites != null) {
-      if (reachingBaseTypes.put(base, ty)) {
+      if (reachingBaseTypes.put(base, ty) && !invokeSites.isEmpty()) {
         resolveInvoke(invokeSites);
       }
     }
@@ -594,8 +594,7 @@ public class OnFlyCallGraphBuilder {
           continue;
         }
 
-        if (site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD && site.kind != Kind.EXECUTOR
-            && site.kind != Kind.ASYNCTASK) {
+        if (site.iie() instanceof SpecialInvokeExpr && !site.kind.isFake()) {
           SootMethod target = virtualCalls.resolveSpecial(site.iie().getMethodRef(), site.container(), appOnly);
           // if the call target resides in a phantom class then
           // "target" will be null;
@@ -608,7 +607,7 @@ public class OnFlyCallGraphBuilder {
           Type receiverType = receiver.getType();
 
           // Fake edges map to a different method signature, e.g., from execute(a) to a.run()
-          if (site.kind().isFake() && receiverType instanceof RefType) {
+          if (receiverType instanceof RefType) {
             SootClass receiverClass = ((RefType) receiverType).getSootClass();
             Matcher m = PATTERN_METHOD_SUBSIG.matcher(site.subSig().toString());
             if (m.matches()) {
@@ -894,24 +893,12 @@ public class OnFlyCallGraphBuilder {
                   } else {
                     Value runnable = ie.getArg(t.argIndex);
                     if (runnable instanceof Local) {
-                      addVirtualCallSite(s, m, (Local) runnable, null, directTarget.targetMethod, Kind.EXECUTOR);
+                      addVirtualCallSite(s, m, (Local) runnable, null, directTarget.targetMethod, Kind.GENERIC_FAKE);
                     }
                   }
                 }
               }
-            } /*
-               * if (signature
-               * .equals("<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>")
-               * || signature.equals("<java.security.AccessController: java.lang.Object doPrivileged" +
-               * "(java.security.PrivilegedExceptionAction)>") ||
-               * signature.equals("<java.security.AccessController: java.lang.Object doPrivileged" +
-               * "(java.security.PrivilegedAction,java.security.AccessControlContext)>") ||
-               * signature.equals("<java.security.AccessController: java.lang.Object doPrivileged" +
-               * "(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>")) {
-               * 
-               * Local receiver = (Local) ie.getArg(0); addVirtualCallSite(s, m, receiver, null, sigObjRun, Kind.PRIVILEGED);
-               * }
-               */
+            }
           } else {
             if (!Options.v().ignore_resolution_errors()) {
               throw new InternalError(
