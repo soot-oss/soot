@@ -105,8 +105,8 @@ public class SPatchingChain extends UnitPatchingChain {
     // insertion of branching statement in.
     processPhiNode(in);
     Shimple.redirectPointers(out, in);
-    super.insertBefore(in, out);
-    super.remove(out);
+    super.insertBefore(in, out);// use super to avoid repeating processPhiNode(in)
+    this.remove(out);
   }
 
   @Override
@@ -178,7 +178,7 @@ public class SPatchingChain extends UnitPatchingChain {
       }
 
       if (needsPatching) {
-        box.setUnit((Unit) toInsert);
+        box.setUnit(toInsert);
         box.setUnitChanged(false);
       }
     }
@@ -250,14 +250,8 @@ public class SPatchingChain extends UnitPatchingChain {
     super.addLast(u);
   }
 
-  public boolean remove(Unit obj) {
-    return remove((Object) obj);
-  }
-
-  @Override
-  public boolean remove(Object obj) {
-    if (contains(obj)) {
-      Unit u = (Unit) obj;
+  public boolean remove(Unit u) {
+    if (contains(u)) {
       Shimple.redirectToPreds(body, u);
       boolean ret = super.remove(u);
       patchAfterRemoval(u);
@@ -265,6 +259,11 @@ public class SPatchingChain extends UnitPatchingChain {
     } else {
       return false;
     }
+  }
+
+  @Override
+  public boolean remove(Object obj) {
+    return (obj instanceof Unit) ? remove((Unit) obj) : false;
   }
 
   // After all patching is done, clear references to this Unit
