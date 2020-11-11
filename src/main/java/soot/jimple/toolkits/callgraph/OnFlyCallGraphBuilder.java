@@ -96,6 +96,11 @@ import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.annotation.nullcheck.NullnessAnalysis;
 import soot.jimple.toolkits.callgraph.ConstantArrayAnalysis.ArrayTypes;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.DirectTarget;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.RegisteredHandlerTarget;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdge;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdgeTarget;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.WrapperTarget;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo;
 import soot.options.CGOptions;
 import soot.options.Options;
@@ -223,6 +228,7 @@ public class OnFlyCallGraphBuilder {
   protected VirtualCalls virtualCalls = VirtualCalls.v();
 
   public OnFlyCallGraphBuilder(ContextManager cm, ReachableMethods rm) {
+    VirtualEdgesSummaries.parseSummaries();
     this.cm = cm;
     this.rm = rm;
     worklist = rm.listener();
@@ -297,7 +303,7 @@ public class OnFlyCallGraphBuilder {
     assert context == null;
     final Set<InvokeCallSite> invokeSites = baseToInvokeSite.get(base);
     if (invokeSites != null) {
-      if (reachingBaseTypes.put(base, ty)) {
+      if (reachingBaseTypes.put(base, ty) && !invokeSites.isEmpty()) {
         resolveInvoke(invokeSites);
       }
     }
@@ -588,8 +594,7 @@ public class OnFlyCallGraphBuilder {
           continue;
         }
 
-        if (site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD && site.kind != Kind.EXECUTOR
-            && site.kind != Kind.ASYNCTASK) {
+        if (site.iie() instanceof SpecialInvokeExpr && !site.kind.isFake()) {
           SootMethod target = virtualCalls.resolveSpecial(site.iie().getMethodRef(), site.container(), appOnly);
           // if the call target resides in a phantom class then
           // "target" will be null;
@@ -602,7 +607,7 @@ public class OnFlyCallGraphBuilder {
           Type receiverType = receiver.getType();
 
           // Fake edges map to a different method signature, e.g., from execute(a) to a.run()
-          if (site.kind().isFake() && receiverType instanceof RefType) {
+          if (receiverType instanceof RefType) {
             SootClass receiverClass = ((RefType) receiverType).getSootClass();
             Matcher m = PATTERN_METHOD_SUBSIG.matcher(site.subSig().toString());
             if (m.matches()) {
@@ -825,25 +830,50 @@ public class OnFlyCallGraphBuilder {
           Local receiver = (Local) iie.getBase();
           NumberedString subSig = iie.getMethodRef().getSubSignature();
           addVirtualCallSite(s, m, receiver, iie, subSig, Edge.ieToKind(iie));
-          if (subSig == sigStart) {
-            addVirtualCallSite(s, m, receiver, iie, sigRun, Kind.THREAD);
-          } else if (subSig == sigExecutorExecute || subSig == sigHandlerPost || subSig == sigHandlerPostAtFrontOfQueue
-              || subSig == sigHandlerPostAtTime || subSig == sigHandlerPostAtTimeWithToken || subSig == sigHandlerPostDelayed
-              || subSig == sigRunOnUiThread) {
-            if (iie.getArgCount() > 0) {
-              Value runnable = iie.getArg(0);
-              if (runnable instanceof Local) {
-                addVirtualCallSite(s, m, (Local) runnable, iie, sigRun, Kind.EXECUTOR);
+          VirtualEdge virtualEdge = VirtualEdgesSummaries.getVirtualEdgesMatchingSubSig(subSig);
+          if (virtualEdge != null) {
+            for (VirtualEdgeTarget t : virtualEdge.targets) {
+              if (t instanceof DirectTarget) {
+                DirectTarget directTarget = (DirectTarget) t;
+                if (t.isBase) {
+                  addVirtualCallSite(s, m, receiver, iie, directTarget.targetMethod, virtualEdge.edgeType);
+                } else {
+                  Value runnable = iie.getArg(t.argIndex);
+                  if (runnable instanceof Local) {
+                    addVirtualCallSite(s, m, (Local) runnable, iie, directTarget.targetMethod, virtualEdge.edgeType);
+                  }
+                }
+              } else if (t instanceof WrapperTarget) {
+                WrapperTarget w = (WrapperTarget) t;
+                Local wrapperObject = null;
+                if (t.isBase) {
+                  wrapperObject = receiver;
+                } else {
+                  Value runnable = iie.getArg(t.argIndex);
+                  if (runnable instanceof Local) {
+                    wrapperObject = (Local) runnable;
+                  }
+                }
+
+                if (wrapperObject != null && receiverToSites.get(wrapperObject) != null) {
+                  for (Iterator<VirtualCallSite> siteIt = receiverToSites.get(wrapperObject).iterator(); siteIt.hasNext();) {
+                    final VirtualCallSite site = siteIt.next();
+                    if (w.registrationSignature == site.subSig()) {
+                      for (RegisteredHandlerTarget target : w.targets) {
+                        Value runnable = iie.getArg(t.argIndex);
+                        if (runnable instanceof Local) {
+                          addVirtualCallSite(s, m, (Local) runnable, iie, target.targetMethod, virtualEdge.edgeType);
+                        }
+
+                      }
+                    }
+                  }
+                }
+
               }
             }
-          } else if (subSig == sigHandlerSendEmptyMessage || subSig == sigHandlerSendEmptyMessageAtTime
-              || subSig == sigHandlerSendEmptyMessageDelayed || subSig == sigHandlerSendMessage
-              || subSig == sigHandlerSendMessageAtFrontOfQueue || subSig == sigHandlerSendMessageAtTime
-              || subSig == sigHandlerSendMessageDelayed) {
-            addVirtualCallSite(s, m, receiver, iie, sigHandlerHandleMessage, Kind.HANDLER);
-          } else if (subSig == sigExecute) {
-            addVirtualCallSite(s, m, receiver, iie, sigDoInBackground, Kind.ASYNCTASK);
           }
+
         } else if (ie instanceof DynamicInvokeExpr) {
           if (options.verbose()) {
             logger.debug("" + "WARNING: InvokeDynamic to " + ie + " not resolved during call-graph construction.");
@@ -853,17 +883,21 @@ public class OnFlyCallGraphBuilder {
           if (tgt != null) {
             addEdge(m, s, tgt);
             String signature = tgt.getSignature();
-            if (signature
-                .equals("<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>")
-                || signature.equals("<java.security.AccessController: java.lang.Object doPrivileged"
-                    + "(java.security.PrivilegedExceptionAction)>")
-                || signature.equals("<java.security.AccessController: java.lang.Object doPrivileged"
-                    + "(java.security.PrivilegedAction,java.security.AccessControlContext)>")
-                || signature.equals("<java.security.AccessController: java.lang.Object doPrivileged"
-                    + "(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>")) {
-
-              Local receiver = (Local) ie.getArg(0);
-              addVirtualCallSite(s, m, receiver, null, sigObjRun, Kind.PRIVILEGED);
+            VirtualEdge virtualEdge = VirtualEdgesSummaries.getVirtualEdgesMatchingFunction(signature);
+            if (virtualEdge != null) {
+              for (VirtualEdgeTarget t : virtualEdge.targets) {
+                if (t instanceof DirectTarget) {
+                  DirectTarget directTarget = (DirectTarget) t;
+                  if (t.isBase) {
+                    // this should not happen
+                  } else {
+                    Value runnable = ie.getArg(t.argIndex);
+                    if (runnable instanceof Local) {
+                      addVirtualCallSite(s, m, (Local) runnable, null, directTarget.targetMethod, Kind.GENERIC_FAKE);
+                    }
+                  }
+                }
+              }
             }
           } else {
             if (!Options.v().ignore_resolution_errors()) {
