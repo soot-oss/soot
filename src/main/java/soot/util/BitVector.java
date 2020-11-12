@@ -29,6 +29,8 @@ package soot.util;
  *
  * @author Ondrej Lhotak
  */
+import java.util.*;
+
 public class BitVector {
   public BitVector() {
     this(64);
@@ -310,6 +312,9 @@ public class BitVector {
    * @param set
    *          a bit set.
    */
+  public static long[] tmp_b;
+  public static long[] tmp_e;
+  public static boolean tmp_ret;
   public boolean orAndAndNot(BitVector orset, BitVector andset, BitVector andnotset) {
     boolean ret = false;
     long[] a = null, b = null, c = null, d = null, e = null;
@@ -355,13 +360,22 @@ public class BitVector {
           e[i] |= l;
           i++;
         }
+        if(Arrays.equals(tmp_b, b) == false || Arrays.equals(tmp_e, e) == false) {
+        tmp_b = Arrays.copyOf(b, b.length);
+        tmp_e = Arrays.copyOf(e, e.length);
+        tmp_ret = ret;
         while (i < bl) {
           l = b[i];
           if ((l & ~e[i]) != 0) {
             ret = true;
+            tmp_ret = ret;
           }
           e[i] |= l;
           i++;
+        }
+        }
+        else {
+            ret = tmp_ret;
         }
       } else {
         while (i < bl) {
