@@ -127,19 +127,19 @@ ModuleUtil.module_mode() helps you check if you have modules enabled in Soot. Th
 
 ```.java
 
-if(java < 9 ) { // when you want Java < 9 to use Soot and you are not using Soot on modules
+if(java < 9 ) { // when you want Java < 9 for Soot and you are not using Soot on modules
     Options.v().set_prepend_classpath(true);
     Options.v().set_process_dir(Arrays.asList(applicationClassPath().split(File.pathSeparator)));
     Options.v().set_soot_classpath(sootClassPath());
 }
 
-if(java >= 9 && USE_CLASSPATH) { // when you want Java >= 9 to use Soot and you are not using Soot on modules
+if(java >= 9 && USE_CLASSPATH) { // when you want Java >= 9 for Soot and you are not using Soot on modules
     Options.v().set_soot_classpath("VIRTUAL_FS_FOR_JDK" + File.pathSeparator + sootClassPath());
     Options.v().set_process_dir(Arrays.asList(applicationClassPath().split(File.pathSeparator)));
 }
 
 
-if(java>=9 && USE_MODULEPATH) { // when you want Java >= 9 to use Soot and you are using Soot on modules
+if(java>=9 && USE_MODULEPATH) { // when you want Java >= 9 for Soot and you are using Soot on modules
     Options.v().set_prepend_classpath(true);
     Options.v().set_soot_modulepath(sootClassPath());
     Options.v().set_process_dir(Arrays.asList(applicationClassPath().split(File.pathSeparator)));
