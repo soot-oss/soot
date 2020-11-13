@@ -55,24 +55,30 @@ import soot.util.NumberedString;
  *
  */
 public class VirtualEdgesSummaries {
-  private static final String SUMMARIESFILE = "virtualedges.xml";
-  private static HashMap<NumberedString, VirtualEdge> instanceinvokeEdges;
-  private static HashMap<String, VirtualEdge> staticinvokeEdges;
-  private static HashMap<NumberedString, VirtualEdge> registerfunctionsToEdges;
 
-  public static VirtualEdge getVirtualEdgesMatchingSubSig(NumberedString subsig) {
+  private static final String SUMMARIESFILE = "virtualedges.xml";
+
+  private HashMap<NumberedString, VirtualEdge> instanceinvokeEdges;
+  private HashMap<String, VirtualEdge> staticinvokeEdges;
+  private HashMap<NumberedString, VirtualEdge> registerfunctionsToEdges;
+
+  public VirtualEdgesSummaries() {
+    parseSummaries();
+  }
+
+  public VirtualEdge getVirtualEdgesMatchingSubSig(NumberedString subsig) {
     return instanceinvokeEdges.get(subsig);
   }
 
-  public static VirtualEdge getVirtualEdgesMatchingFunction(String signature) {
+  public VirtualEdge getVirtualEdgesMatchingFunction(String signature) {
     return staticinvokeEdges.get(signature);
   }
 
-  public static VirtualEdge getVirtualEdgesForPotentialRegisterFunction(NumberedString subsig) {
+  public VirtualEdge getVirtualEdgesForPotentialRegisterFunction(NumberedString subsig) {
     return registerfunctionsToEdges.get(subsig);
   }
 
-  public static void parseSummaries() {
+  private void parseSummaries() {
     if (instanceinvokeEdges != null) {
       // only parse once.
       return;
@@ -152,9 +158,8 @@ public class VirtualEdgesSummaries {
     } catch (IOException | ParserConfigurationException | SAXException e1) {
       e1.printStackTrace();
     }
-    System.out.println(
-        String.format("Found %d instanceinvoke , %d staticinvoke edge descriptions", instanceinvokeEdges.size(),
-            staticinvokeEdges.size()));
+    System.out.println(String.format("Found %d instanceinvoke , %d staticinvoke edge descriptions",
+        instanceinvokeEdges.size(), staticinvokeEdges.size()));
   }
 
   private static VirtualEdgeSource parseEdgeSource(Element source) {
@@ -217,8 +222,7 @@ public class VirtualEdgesSummaries {
         target.registrationSignature
             = Scene.v().getSubSigNumberer().findOrAdd(targetElement.getAttribute("registration-subsignature"));
 
-        target.targets
-            = parseRegisteredTargets((Element) (targetElement.getElementsByTagName("handlers").item(0)));
+        target.targets = parseRegisteredTargets((Element) (targetElement.getElementsByTagName("handlers").item(0)));
 
         if (targetElement.getAttribute("wrapper-position").equals("argument")) {
           target.isBase = false;
@@ -241,6 +245,7 @@ public class VirtualEdgesSummaries {
     public StaticinvokeSource(String signature) {
       this.signature = (signature);
     }
+
     /**
      * The method signature at which to insert this edge.
      */
@@ -257,6 +262,7 @@ public class VirtualEdgesSummaries {
     public InstanceinvokeSource(String subSignature) {
       this.subSignature = Scene.v().getSubSigNumberer().findOrAdd(subSignature);
     }
+
     /**
      * The method subsignature at which to insert this edge.
      */
@@ -319,9 +325,7 @@ public class VirtualEdgesSummaries {
 
     ArrayList<RegisteredHandlerTarget> targets;
 
-
   }
-
 
   public static class VirtualEdge {
     /**
@@ -339,7 +343,6 @@ public class VirtualEdgesSummaries {
       }
       return String.format("%s %s => %s", edgeType, source.toString(), targetstr);
     }
-
 
   }
 

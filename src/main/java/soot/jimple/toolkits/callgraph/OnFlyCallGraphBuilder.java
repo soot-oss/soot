@@ -227,8 +227,9 @@ public class OnFlyCallGraphBuilder {
   protected SootMethod analysisKey = null;
   protected VirtualCalls virtualCalls = VirtualCalls.v();
 
+  protected VirtualEdgesSummaries virtualEdgeSummaries = new VirtualEdgesSummaries();
+
   public OnFlyCallGraphBuilder(ContextManager cm, ReachableMethods rm) {
-    VirtualEdgesSummaries.parseSummaries();
     this.cm = cm;
     this.rm = rm;
     worklist = rm.listener();
@@ -830,7 +831,7 @@ public class OnFlyCallGraphBuilder {
           Local receiver = (Local) iie.getBase();
           NumberedString subSig = iie.getMethodRef().getSubSignature();
           addVirtualCallSite(s, m, receiver, iie, subSig, Edge.ieToKind(iie));
-          VirtualEdge virtualEdge = VirtualEdgesSummaries.getVirtualEdgesMatchingSubSig(subSig);
+          VirtualEdge virtualEdge = virtualEdgeSummaries.getVirtualEdgesMatchingSubSig(subSig);
           if (virtualEdge != null) {
             for (VirtualEdgeTarget t : virtualEdge.targets) {
               if (t instanceof DirectTarget) {
@@ -883,7 +884,7 @@ public class OnFlyCallGraphBuilder {
           if (tgt != null) {
             addEdge(m, s, tgt);
             String signature = tgt.getSignature();
-            VirtualEdge virtualEdge = VirtualEdgesSummaries.getVirtualEdgesMatchingFunction(signature);
+            VirtualEdge virtualEdge = virtualEdgeSummaries.getVirtualEdgesMatchingFunction(signature);
             if (virtualEdge != null) {
               for (VirtualEdgeTarget t : virtualEdge.targets) {
                 if (t instanceof DirectTarget) {
