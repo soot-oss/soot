@@ -41,6 +41,7 @@ import soot.testing.framework.AbstractTestingFramework;
  * @author Manuel Benz created on 2018-12-17
  */
 @Ignore
+
 public abstract class AbstractLambdaMetaFactoryCGTest extends AbstractTestingFramework {
 
   private static final String TEST_METHOD_NAME = "main";

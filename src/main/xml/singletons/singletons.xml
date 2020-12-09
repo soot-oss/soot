@@ -15,6 +15,7 @@
   <class>soot.jimple.toolkits.pointer.representations.TypeConstants</class>
   <class>soot.coffi.Util</class>
   <class>soot.SourceLocator</class>
+  <class>soot.ModulePathSourceLocator</class>
   <class>soot.coffi.CONSTANT_Utf8_collector</class>
   <class>soot.dava.toolkits.base.finders.AbruptEdgeFinder</class>
   <class>soot.jimple.toolkits.base.Aggregator</class>
@@ -79,7 +80,10 @@
   <class>soot.jimple.toolkits.annotation.profiling.ProfilingGenerator</class>
   <class>soot.jimple.toolkits.annotation.arraycheck.RectangularArrayFinder</class>
   <class>soot.RefType</class>
+  <class>soot.ModuleRefType</class>
   <class>soot.Scene</class>
+  <class>soot.ModuleScene</class>
+  <class>soot.ModuleUtil</class>
   <class>soot.dava.toolkits.base.finders.SequenceFinder</class>
   <class>soot.shimple.Shimple</class>
   <class>soot.shimple.ShimpleTransformer</class>
@@ -137,6 +141,7 @@
   <class>soot.toolkits.exceptions.DuplicateCatchAllTrapRemover</class>
   <class>soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher</class>
   <class>soot.SootResolver</class>
+  <class>soot.SootModuleResolver</class>
   <class>soot.javaToJimple.InitialResolver</class>
   <class>soot.jimple.paddle.PaddleHook</class>
   <class>soot.jimple.toolkits.annotation.DominatorsTagger</class>

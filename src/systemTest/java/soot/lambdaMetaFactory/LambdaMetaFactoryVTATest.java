@@ -1,5 +1,7 @@
 package soot.lambdaMetaFactory;
 
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,6 +29,7 @@ import soot.options.Options;
 /**
  * @author Manuel Benz created on 31.10.18
  */
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class LambdaMetaFactoryVTATest extends AbstractLambdaMetaFactoryCGTest {
 
   @Override

@@ -24,14 +24,19 @@ package soot.tagkit;
 
 import soot.util.Switch;
 
+/**
+ * Represents the boolean annotation element each annotation can have several elements for Java 1.5.
+ */
 public class AnnotationBooleanElem extends AnnotationElem {
-  boolean value;
+
+  private final boolean value;
 
   public AnnotationBooleanElem(boolean v, char kind, String name) {
     super(kind, name);
     this.value = v;
   }
 
+  @Override
   public String toString() {
     return super.toString() + " value: " + value;
   }
@@ -43,5 +48,28 @@ public class AnnotationBooleanElem extends AnnotationElem {
   @Override
   public void apply(Switch sw) {
     ((IAnnotationElemTypeSwitch) sw).caseAnnotationBooleanElem(this);
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + (value ? 1231 : 1237);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+    if (this.getClass() != obj.getClass()) {
+      return false;
+    }
+    AnnotationBooleanElem other = (AnnotationBooleanElem) obj;
+    return this.value == other.value;
   }
 }

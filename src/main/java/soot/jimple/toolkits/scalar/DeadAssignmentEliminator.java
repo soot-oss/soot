@@ -42,7 +42,7 @@ import soot.Local;
 import soot.LongType;
 import soot.NullType;
 import soot.PhaseOptions;
-import soot.RefType;
+import soot.RefLikeType;
 import soot.Scene;
 import soot.Singletons;
 import soot.Timers;
@@ -93,8 +93,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
    */
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    boolean eliminateOnlyStackLocals = PhaseOptions.getBoolean(options, "only-stack-locals");
-
+    final boolean eliminateOnlyStackLocals = PhaseOptions.getBoolean(options, "only-stack-locals");
     final Options soptions = Options.v();
     if (soptions.verbose()) {
       logger.debug("[" + b.getMethod().getName() + "] Eliminating dead code...");
@@ -104,7 +103,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
       Timers.v().deadCodeTimer.start();
     }
 
-    Chain<Unit> units = b.getUnits();
+    final Chain<Unit> units = b.getUnits();
     Deque<Unit> q = new ArrayDeque<Unit>(units.size());
 
     // Make a first pass through the statements, noting
@@ -165,7 +164,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
             CastExpr ce = (CastExpr) rhs;
             Type t = ce.getCastType();
             Value v = ce.getOp();
-            isEssential = !(v instanceof NullConstant && t instanceof RefType);
+            isEssential = !(v instanceof NullConstant) && t instanceof RefLikeType;
           } else if (rhs instanceof InvokeExpr || rhs instanceof ArrayRef || rhs instanceof NewExpr
               || rhs instanceof NewArrayExpr || rhs instanceof NewMultiArrayExpr) {
             // ArrayRef : can have side effects (like throwing a null pointer exception)
@@ -239,7 +238,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
       final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(b);
 
       if (!allEssential) {
-        Set<Unit> essential = new HashSet<Unit>(b.getUnits().size());
+        Set<Unit> essential = new HashSet<Unit>(units.size());
         while (!q.isEmpty()) {
           Unit s = q.removeFirst();
           if (essential.add(s)) {

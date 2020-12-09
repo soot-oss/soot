@@ -24,16 +24,18 @@ package soot.tagkit;
 
 public class SourceLnPosTag implements Tag {
 
+  public static final String IDENTIFIER = "SourceLnPosTag";
+
   private final int startLn;
   private final int endLn;
   private final int startPos;
   private final int endPos;
 
   public SourceLnPosTag(int sline, int eline, int spos, int epos) {
-    startLn = sline;
-    endLn = eline;
-    startPos = spos;
-    endPos = epos;
+    this.startLn = sline;
+    this.endLn = eline;
+    this.startPos = spos;
+    this.endPos = epos;
   }
 
   public int startLn() {
@@ -52,10 +54,12 @@ public class SourceLnPosTag implements Tag {
     return endPos;
   }
 
+  @Override
   public String getName() {
-    return "SourceLnPosTag";
+    return IDENTIFIER;
   }
 
+  @Override
   public byte[] getValue() {
     byte[] v = new byte[2];
     v[0] = (byte) (startLn / 256);
@@ -63,17 +67,14 @@ public class SourceLnPosTag implements Tag {
     return v;
   }
 
+  @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append("Source Line Pos Tag: ");
-    sb.append("sline: ");
-    sb.append(startLn);
-    sb.append(" eline: ");
-    sb.append(endLn);
-    sb.append(" spos: ");
-    sb.append(startPos);
-    sb.append(" epos: ");
-    sb.append(endPos);
+    sb.append("sline: ").append(startLn);
+    sb.append(" eline: ").append(endLn);
+    sb.append(" spos: ").append(startPos);
+    sb.append(" epos: ").append(endPos);
     return sb.toString();
   }
 }

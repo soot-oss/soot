@@ -22,20 +22,37 @@ package soot.jimple.toolkit.callgraph;
  * #L%
  */
 
+import static soot.SootClass.BODIES;
+import static soot.SootClass.HIERARCHY;
+
+import java.util.Collections;
+
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import soot.*;
-import soot.jimple.*;
+
+import soot.ArrayType;
+import soot.G;
+import soot.Local;
+import soot.Modifier;
+import soot.PackManager;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Type;
+import soot.Value;
+import soot.VoidType;
+import soot.jimple.IntConstant;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
+import soot.jimple.StaticInvokeExpr;
+import soot.jimple.StringConstant;
+import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.options.Options;
-
-import java.util.Collections;
-
-import static soot.SootClass.BODIES;
-import static soot.SootClass.HIERARCHY;
 
 /**
  * This class contains tests for {@link soot.jimple.toolkits.callgraph.OnFlyCallGraphBuilder.TypeBasedReflectionModel}.
@@ -43,6 +60,9 @@ import static soot.SootClass.HIERARCHY;
  * @author Manuel Benz
  *         created on 01.08.17
  */
+
+
+
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TypeBasedReflectionModelTest {
 

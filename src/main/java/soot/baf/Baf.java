@@ -26,7 +26,6 @@ package soot.baf;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;

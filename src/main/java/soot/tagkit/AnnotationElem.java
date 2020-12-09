@@ -27,17 +27,17 @@ import soot.util.Switchable;
 /**
  * Represents the base class of annotation elements each annotation can have several elements for Java 1.5.
  */
-
 public abstract class AnnotationElem implements Switchable {
 
-  char kind;
-  String name;
+  private final char kind;
+  private String name;
 
   public AnnotationElem(char k, String name) {
     this.kind = k;
     this.name = name;
   }
 
+  @Override
   public String toString() {
     return "Annotation Element: kind: " + kind + " name: " + name;
   }
@@ -52,5 +52,36 @@ public abstract class AnnotationElem implements Switchable {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + kind;
+    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || this.getClass() != obj.getClass()) {
+      return false;
+    }
+    AnnotationElem other = (AnnotationElem) obj;
+    if (this.kind != other.kind) {
+      return false;
+    }
+    if (this.name == null) {
+      if (other.name != null) {
+        return false;
+      }
+    } else if (!this.name.equals(other.name)) {
+      return false;
+    }
+    return true;
   }
 }

@@ -35,10 +35,21 @@ import soot.util.BitVector;
  * 
  * @author Ondrej Lhotak
  */
-public final class HybridPointsToSet extends PointsToSetInternal {
+public class HybridPointsToSet extends PointsToSetInternal {
+  private static P2SetFactory<HybridPointsToSet> HYBRID_PTS_FACTORY = new P2SetFactory<HybridPointsToSet>() {
+    @Override
+    public final HybridPointsToSet newSet(Type type, PAG pag) {
+      return new HybridPointsToSet(type, pag);
+    }
+  };
+
   public HybridPointsToSet(Type type, PAG pag) {
     super(type);
     this.pag = pag;
+  }
+
+  public static void setPointsToSetFactory(P2SetFactory<HybridPointsToSet> factory) {
+    HYBRID_PTS_FACTORY = factory;
   }
 
   /** Returns true if this set contains no run-time objects. */
@@ -88,7 +99,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
   /**
    * Adds contents of other into this set, returns true if this set changed.
    */
-  public final boolean addAll(final PointsToSetInternal other, final PointsToSetInternal exclude) {
+  public boolean addAll(final PointsToSetInternal other, final PointsToSetInternal exclude) {
     if (other != null && !(other instanceof HybridPointsToSet)) {
       return superAddAll(other, exclude);
     }
@@ -99,7 +110,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
   }
 
   /** Calls v's visit method on all nodes in this set. */
-  public final boolean forall(P2SetVisitor v) {
+  public boolean forall(P2SetVisitor v) {
     if (bits == null) {
       for (Node node : nodes) {
         if (node == null) {
@@ -116,7 +127,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
   }
 
   /** Adds n to this set, returns true if n was not already in this set. */
-  public final boolean add(Node n) {
+  public boolean add(Node n) {
     if (pag.getTypeManager().castNeverFails(n.getType(), type)) {
       return fastAdd(n);
     }
@@ -124,7 +135,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
   }
 
   /** Returns true iff the set contains n. */
-  public final boolean contains(Node n) {
+  public boolean contains(Node n) {
     if (bits == null) {
       for (Node node : nodes) {
         if (node == n) {
@@ -140,18 +151,14 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     }
   }
 
-  public static P2SetFactory getFactory() {
-    return new P2SetFactory() {
-      public final PointsToSetInternal newSet(Type type, PAG pag) {
-        return new HybridPointsToSet(type, pag);
-      }
-    };
+  public static P2SetFactory<HybridPointsToSet> getFactory() {
+    return HYBRID_PTS_FACTORY;
   }
 
   /* End of public methods. */
   /* End of package methods. */
 
-  protected final boolean fastAdd(Node n) {
+  protected boolean fastAdd(Node n) {
     if (bits == null) {
       for (int i = 0; i < nodes.length; i++) {
         if (nodes[i] == null) {
@@ -171,7 +178,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     return ret;
   }
 
-  protected final void convertToBits() {
+  protected void convertToBits() {
     if (bits != null) {
       return;
     }
@@ -185,13 +192,13 @@ public final class HybridPointsToSet extends PointsToSetInternal {
   }
 
   // public static int numBitVectors = 0;
-  private Node[] nodes = new Node[16];
-  private BitVector bits = null;
-  private PAG pag;
-  private boolean empty = true;
+  protected Node[] nodes = new Node[16];
+  protected BitVector bits = null;
+  protected PAG pag;
+  protected boolean empty = true;
 
   public static HybridPointsToSet intersection(final HybridPointsToSet set1, final HybridPointsToSet set2, PAG pag) {
-    final HybridPointsToSet ret = new HybridPointsToSet(Scene.v().getObjectType(), pag);
+    final HybridPointsToSet ret = HybridPointsToSet.getFactory().newSet(Scene.v().getObjectType(), pag);
     BitVector s1Bits = set1.bits;
     BitVector s2Bits = set2.bits;
     if (s1Bits == null || s2Bits == null) {

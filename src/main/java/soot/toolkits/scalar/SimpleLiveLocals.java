@@ -41,7 +41,8 @@ import soot.toolkits.graph.UnitGraph;
  */
 public class SimpleLiveLocals implements LiveLocals {
   private static final Logger logger = LoggerFactory.getLogger(SimpleLiveLocals.class);
-  final FlowAnalysis<Unit, FlowSet<Local>> analysis;
+
+  private final FlowAnalysis<Unit, FlowSet<Local>> analysis;
 
   /**
    * Computes the analysis given a UnitGraph computed from a method body. It is recommended that a ExceptionalUnitGraph (or
@@ -53,42 +54,40 @@ public class SimpleLiveLocals implements LiveLocals {
    * @see ExceptionalUnitGraph
    */
   public SimpleLiveLocals(UnitGraph graph) {
+    if (Options.v().verbose()) {
+      logger.debug("[" + graph.getBody().getMethod().getName() + "]     Constructing SimpleLiveLocals...");
+    }
     if (Options.v().time()) {
       Timers.v().liveTimer.start();
     }
 
-    if (Options.v().verbose()) {
-      logger.debug("[" + graph.getBody().getMethod().getName() + "]     Constructing SimpleLiveLocals...");
-    }
-
-    analysis = new Analysis(graph);
+    this.analysis = new Analysis(graph);
 
     if (Options.v().time()) {
       Timers.v().liveAnalysisTimer.start();
     }
 
-    analysis.doAnalysis();
+    this.analysis.doAnalysis();
 
     if (Options.v().time()) {
       Timers.v().liveAnalysisTimer.end();
-    }
-
-    if (Options.v().time()) {
       Timers.v().liveTimer.end();
     }
   }
 
+  @Override
   public List<Local> getLiveLocalsAfter(Unit s) {
     // ArraySparseSet returns a unbacked list of elements!
     return analysis.getFlowAfter(s).toList();
   }
 
+  @Override
   public List<Local> getLiveLocalsBefore(Unit s) {
     // ArraySparseSet returns a unbacked list of elements!
     return analysis.getFlowBefore(s).toList();
   }
 
-  static class Analysis extends BackwardFlowAnalysis<Unit, FlowSet<Local>> {
+  private static class Analysis extends BackwardFlowAnalysis<Unit, FlowSet<Local>> {
     Analysis(UnitGraph g) {
       super(g);
     }
@@ -106,8 +105,7 @@ public class SimpleLiveLocals implements LiveLocals {
       for (ValueBox box : unit.getDefBoxes()) {
         Value v = box.getValue();
         if (v instanceof Local) {
-          Local l = (Local) v;
-          out.remove(l);
+          out.remove((Local) v);
         }
       }
 
@@ -115,8 +113,7 @@ public class SimpleLiveLocals implements LiveLocals {
       for (ValueBox box : unit.getUseBoxes()) {
         Value v = box.getValue();
         if (v instanceof Local) {
-          Local l = (Local) v;
-          out.add(l);
+          out.add((Local) v);
         }
       }
     }

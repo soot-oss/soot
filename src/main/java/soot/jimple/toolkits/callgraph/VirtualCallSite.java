@@ -33,16 +33,14 @@ import soot.util.NumberedString;
  * 
  * @author Ondrej Lhotak
  */
-public class VirtualCallSite {
+public class VirtualCallSite extends AbstractCallSite {
+
   private InstanceInvokeExpr iie;
-  private Stmt stmt;
-  private SootMethod container;
   private NumberedString subSig;
   Kind kind;
 
   public VirtualCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, NumberedString subSig, Kind kind) {
-    this.stmt = stmt;
-    this.container = container;
+    super(stmt, container);
     this.iie = iie;
     this.subSig = subSig;
     this.kind = kind;
@@ -67,4 +65,5 @@ public class VirtualCallSite {
   public Kind kind() {
     return kind;
   }
+
 }

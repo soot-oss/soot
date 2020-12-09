@@ -30,7 +30,10 @@ package soot.toolkits.purity;
  * by Antoine Mine, 2005/02/08
  */
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
+
 
 public class BinarySearchTree {
     Node root;

@@ -48,6 +48,7 @@ import soot.Main;
  * @author Alex Betra,
  */
 
+
 public class MethodHandleTest {
 
   @Test

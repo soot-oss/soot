@@ -26,14 +26,12 @@ package soot.tagkit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * Represents the annotation attribute attached to a class, method, field, method param - they could have many annotations
  * each for Java 1.5.
  */
-
 public class AnnotationTag implements Tag {
 
   // type - the question here is the class of the type is potentially
@@ -61,7 +59,7 @@ public class AnnotationTag implements Tag {
   /**
    * The type
    */
-  private String type;
+  private final String type;
 
   /**
    * The annotations
@@ -92,15 +90,15 @@ public class AnnotationTag implements Tag {
   }
 
   // should also print here number of annotations and perhaps the annotations themselves
+  @Override
   public String toString() {
     if (elems != null) {
-      StringBuffer sb = new StringBuffer("Annotation: type: " + type + " num elems: " + elems.size() + " elems: ");
-      Iterator<AnnotationElem> it = elems.iterator();
-      while (it.hasNext()) {
-        sb.append("\n");
-        sb.append(it.next());
+      StringBuilder sb = new StringBuilder("Annotation: type: ");
+      sb.append(type).append(" num elems: ").append(elems.size()).append(" elems: ");
+      for (AnnotationElem next : elems) {
+        sb.append('\n').append(next);
       }
-      sb.append("\n");
+      sb.append('\n');
       return sb.toString();
     } else {
       return "Annotation type: " + type + " without elements";
@@ -108,6 +106,7 @@ public class AnnotationTag implements Tag {
   }
 
   /** Returns the tag name. */
+  @Override
   public String getName() {
     return "AnnotationTag";
   }
@@ -121,6 +120,7 @@ public class AnnotationTag implements Tag {
   }
 
   /** Returns the tag raw data. */
+  @Override
   public byte[] getValue() {
     throw new RuntimeException("AnnotationTag has no value for bytecode");
   }
@@ -153,5 +153,40 @@ public class AnnotationTag implements Tag {
    */
   public Collection<AnnotationElem> getElems() {
     return elems == null ? Collections.<AnnotationElem>emptyList() : Collections.unmodifiableCollection(elems);
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((elems == null) ? 0 : elems.hashCode());
+    result = prime * result + ((type == null) ? 0 : type.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || this.getClass() != obj.getClass()) {
+      return false;
+    }
+    AnnotationTag other = (AnnotationTag) obj;
+    if (this.elems == null) {
+      if (other.elems != null) {
+        return false;
+      }
+    } else if (!this.elems.equals(other.elems)) {
+      return false;
+    }
+    if (this.type == null) {
+      if (other.type != null) {
+        return false;
+      }
+    } else if (!this.type.equals(other.type)) {
+      return false;
+    }
+    return true;
   }
 }

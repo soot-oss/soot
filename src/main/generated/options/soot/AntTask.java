@@ -195,6 +195,11 @@ public class AntTask extends MatchingTask {
             addArg(arg);
         }
   
+        public void setsoot_modulepath(String arg) {
+            addArg("-soot-modulepath");
+            addArg(arg);
+        }
+  
         public void setprepend_classpath(boolean arg) {
             if(arg) addArg("-prepend-classpath");
         }
@@ -221,6 +226,10 @@ public class AntTask extends MatchingTask {
             if(process_dir == null )
                 process_dir = new Path(getProject());
             return process_dir.createPath();
+        }
+  
+        public void setderive_java_version(boolean arg) {
+            if(arg) addArg("-derive-java-version");
         }
   
         public void setoaat(boolean arg) {
@@ -366,6 +375,12 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "8" )
                 || arg.equals( "1.9" )
                 || arg.equals( "9" )
+                || arg.equals( "1.10" )
+                || arg.equals( "10" )
+                || arg.equals( "1.11" )
+                || arg.equals( "11" )
+                || arg.equals( "1.12" )
+                || arg.equals( "12" )
                 ) {
                 addArg("-java-version");
                 addArg(arg);
@@ -497,6 +512,7 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "pedantic" )
                 || arg.equals( "unit" )
                 || arg.equals( "dalvik" )
+                || arg.equals( "auto-select" )
                 ) {
                 addArg("-throw-analysis");
                 addArg(arg);

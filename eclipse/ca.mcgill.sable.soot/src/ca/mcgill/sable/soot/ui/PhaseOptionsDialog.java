@@ -1108,6 +1108,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionssearch_dex_in_archives_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getInput_Optionsderive_java_version_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsderive_java_version_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getInput_Optionsoaat_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -1173,6 +1179,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionssoot_classpath_widget().getAlias(), stringRes);
+		}
+		stringRes = getInput_Optionssoot_modulepath_widget().getText().getText();
+		defStringRes = "";
+
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionssoot_modulepath_widget().getAlias(), stringRes);
 		}
 		stringRes = getInput_Optionsprocess_dir_widget().getText().getText();
 		defStringRes = "";
@@ -1354,7 +1366,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			getConfig().put(getProcessing_Optionsfield_type_mismatches_widget().getAlias(), stringRes);
 		}
 		stringRes = getProcessing_Optionsthrow_analysis_widget().getSelectedAlias();
-		defStringRes = "unit";
+		defStringRes = "auto-select";
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getProcessing_Optionsthrow_analysis_widget().getAlias(), stringRes);
@@ -4637,6 +4649,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return Input_Optionssearch_dex_in_archives_widget;
 	}	
 	
+	private BooleanOptionWidget Input_Optionsderive_java_version_widget;
+	
+	private void setInput_Optionsderive_java_version_widget(BooleanOptionWidget widget) {
+		Input_Optionsderive_java_version_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsderive_java_version_widget() {
+		return Input_Optionsderive_java_version_widget;
+	}	
+	
 	private BooleanOptionWidget Input_Optionsoaat_widget;
 	
 	private void setInput_Optionsoaat_widget(BooleanOptionWidget widget) {
@@ -4758,6 +4780,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public StringOptionWidget getInput_Optionssoot_classpath_widget() {
 		return Input_Optionssoot_classpath_widget;
+	}
+	
+	
+	
+	private StringOptionWidget Input_Optionssoot_modulepath_widget;
+	
+	private void setInput_Optionssoot_modulepath_widget(StringOptionWidget widget) {
+		Input_Optionssoot_modulepath_widget = widget;
+	}
+	
+	public StringOptionWidget getInput_Optionssoot_modulepath_widget() {
+		return Input_Optionssoot_modulepath_widget;
 	}
 	
 	
@@ -8615,6 +8649,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		setInput_Optionssearch_dex_in_archives_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Search DEX files in Jar and Zip files", "", "","search-dex-in-archives", "\nBy default, Soot searches for DEX files in APKs and folders. \nThis option instructs Soot to also search for DEX files in Zip \nand Jar files on the classpath.", defaultBool)));
 
+		defKey = ""+" "+""+" "+"derive-java-version";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setInput_Optionsderive_java_version_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Derive Java version from input", "", "","derive-java-version", "\nIf this flag is set and the ASM frontend is uese, Soot will \nderive the Java bytecode version from the given Java class \ninput. It will asume the highest bycode version as the version \nto take. Writen-out files will then be written out with this \nbytecode version. Also, some optimizations depend on knowing the \nlanguage level, e.g., interfaces will only be considered for \ncomputing static dispatch for a languag level >=8. This option \nis ignored if the language level is enforced manually with the \noutput option java-version.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"oaat";
 		defKey = defKey.trim();
 
@@ -8787,6 +8832,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp soot-class-path soot-classpath", "\nUse PATH as the list of directories in which Soot should search \nfor classes. PATH should be a series of directories, separated \nby the path separator character for your system. If no classpath \nis set on the command line, but the system property \nsoot.class.path has been set, Soot uses its value as the \nclasspath. If neither the command line nor the system properties \nspecify a Soot classpath, Soot falls back on a default classpath \nconsisting of the value of the system property java.class.path \nfollowed java.home/lib/rt.jar, where java.home stands for the \ncontents of the system property java.home and / stands for the \nsystem file separator.", defaultString)));
+		
+
+		defKey = ""+" "+""+" "+"soot-modulepath";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		} else {
+			defaultString = "";
+		}
+
+		setInput_Optionssoot_modulepath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Modulepath",  "", "","soot-modulepath", "\nUse MODULEPATH as the list of directories in which Soot should \nsearch for classes. MODULEPATH should be a series of \ndirectories, separated by the path separator character for your \nsystem. If no modulepath is set on the command line, but the \nsystem property soot.module.path has been set, Soot uses its \nvalue as the modulepath. If neither the command line nor the \nsystem properties specify a Soot classpath, Soot falls back on a \ndefault modulepath jrt:.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"android-jars";
@@ -9092,6 +9149,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 						"1.9 9",
 						"\nForce Java 1.9 as output version. (Experimental)",
 						false),
+				new OptionData("Java 1.10",
+						"1.10 10",
+						"\nForce Java 1.10 as output version. (Experimental)",
+						false),
+				new OptionData("Java 1.11",
+						"1.11 11",
+						"\nForce Java 1.11 as output version. (Experimental)",
+						false),
+				new OptionData("Java 1.12",
+						"1.12 12",
+						"\nForce Java 1.12 as output version. (Experimental)",
+						false),
 		};
 
 
@@ -9318,11 +9387,15 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 				new OptionData("Unit",
 						"unit",
 						"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program.",
-						true),
+						false),
 				new OptionData("Dalvik",
 						"dalvik",
 						"\nSpecialized throw analysis implementation that covers the \nsemantics of the Dalvik IR used for Android apps",
 						false),
+				new OptionData("AutoSelect",
+						"auto-select",
+						"\nWhen processing DEX or APK files, choose the Dalvik throw \nanalysis. Otherwise, choose the unit throw analysis.",
+						true),
 		};
 
 

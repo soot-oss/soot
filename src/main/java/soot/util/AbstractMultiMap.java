@@ -27,6 +27,7 @@ import heros.solver.Pair;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializable {
@@ -75,7 +76,6 @@ public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializ
         currentKey = null;
       }
     }
-
   }
 
   @Override
@@ -117,5 +117,16 @@ public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializ
   @Override
   public Iterator<Pair<K, V>> iterator() {
     return new EntryIterator();
+  }
+
+  @Override
+  public boolean putMap(Map<K, V> m) {
+    boolean hasNew = false;
+    for (Entry<K, V> entry : m.entrySet()) {
+      if (put(entry.getKey(), entry.getValue())) {
+        hasNew = true;
+      }
+    }
+    return hasNew;
   }
 }

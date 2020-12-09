@@ -29,6 +29,7 @@ import soot.Type;
 import soot.util.Switch;
 
 public class NullConstant extends Constant {
+
   public NullConstant(Singletons.Global g) {
   }
 
@@ -36,22 +37,27 @@ public class NullConstant extends Constant {
     return G.v().soot_jimple_NullConstant();
   }
 
+  @Override
   public boolean equals(Object c) {
     return c == G.v().soot_jimple_NullConstant();
   }
 
+  @Override
   public int hashCode() {
     return 982;
   }
 
+  @Override
   public String toString() {
     return Jimple.NULL;
   }
 
+  @Override
   public Type getType() {
     return NullType.v();
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ConstantSwitch) sw).caseNullConstant(this);
   }

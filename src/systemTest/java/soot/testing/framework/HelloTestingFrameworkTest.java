@@ -24,12 +24,15 @@ package soot.testing.framework;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 
 import soot.SootMethod;
 
 /**
  * @author Manuel Benz created on 22.06.18
  */
+
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class HelloTestingFrameworkTest extends AbstractTestingFramework {
 
   private static final String TEST_TARGET_CLASS = "soot.testing.framework.HelloTestingFrameworkTarget";

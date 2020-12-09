@@ -23,8 +23,9 @@ package soot.toolkits.graph;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -34,14 +35,15 @@ import java.util.Map;
  * @author Navindra Umanee
  * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
  *      the Control Dependence Graph</a>
- **/
+ */
 public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
+
   protected DominatorTree<N> dt;
   protected Map<DominatorNode<N>, List<DominatorNode<N>>> nodeToFrontier;
 
   public CytronDominanceFrontier(DominatorTree<N> dt) {
     this.dt = dt;
-    nodeToFrontier = new HashMap<DominatorNode<N>, List<DominatorNode<N>>>();
+    this.nodeToFrontier = new HashMap<DominatorNode<N>, List<DominatorNode<N>>>();
     for (DominatorNode<N> head : dt.getHeads()) {
       bottomUpDispatch(head);
     }
@@ -50,20 +52,18 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
       if (dode == null) {
         throw new RuntimeException("dode == null");
       } else if (!isFrontierKnown(dode)) {
-        System.out.print("'");
-        System.out.print(dode);
-        System.out.println("'");
-        throw new RuntimeException("frontier did not have dode> ");
+        throw new RuntimeException("Frontier not defined for node: " + dode);
       }
     }
   }
 
+  @Override
   public List<DominatorNode<N>> getDominanceFrontierOf(DominatorNode<N> node) {
     List<DominatorNode<N>> frontier = nodeToFrontier.get(node);
     if (frontier == null) {
       throw new RuntimeException("Frontier not defined for node: " + node);
     }
-    return new ArrayList<DominatorNode<N>>(frontier);
+    return Collections.unmodifiableList(frontier);
   }
 
   protected boolean isFrontierKnown(DominatorNode<N> node) {
@@ -72,7 +72,7 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
 
   /**
    * Make sure we visit children first. This is reverse topological order.
-   **/
+   */
   protected void bottomUpDispatch(DominatorNode<N> node) {
     // *** FIXME: It's annoying that this algorithm is so
     // *** inefficient in that in traverses the tree from the head
@@ -98,6 +98,7 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
    * Uses the algorithm of Cytron et al., TOPLAS Oct. 91:
    *
    * <pre>
+   * <code>
    * for each X in a bottom-up traversal of the dominator tree do
    *
    *      DF(X) < - null
@@ -109,35 +110,28 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N> {
    *              if (idom(Y)!=X) then DF(X) <- DF(X) U Y
    *        end
    *      end
+   * </code>
    * </pre>
-   **/
+   */
   protected void processNode(DominatorNode<N> node) {
-    List<DominatorNode<N>> dominanceFrontier = new ArrayList<DominatorNode<N>>();
+    HashSet<DominatorNode<N>> dominanceFrontier = new HashSet<DominatorNode<N>>();
 
     // local
-    {
-      Iterator<DominatorNode<N>> succsIt = dt.getSuccsOf(node).iterator();
-
-      while (succsIt.hasNext()) {
-        DominatorNode<N> succ = succsIt.next();
-
-        if (!dt.isImmediateDominatorOf(node, succ)) {
-          dominanceFrontier.add(succ);
-        }
+    for (DominatorNode<N> succ : dt.getSuccsOf(node)) {
+      if (!dt.isImmediateDominatorOf(node, succ)) {
+        dominanceFrontier.add(succ);
       }
     }
 
     // up
-    {
-      for (DominatorNode<N> child : dt.getChildrenOf(node)) {
-        for (DominatorNode<N> childFront : getDominanceFrontierOf(child)) {
-          if (!dt.isImmediateDominatorOf(node, childFront)) {
-            dominanceFrontier.add(childFront);
-          }
+    for (DominatorNode<N> child : dt.getChildrenOf(node)) {
+      for (DominatorNode<N> childFront : getDominanceFrontierOf(child)) {
+        if (!dt.isImmediateDominatorOf(node, childFront)) {
+          dominanceFrontier.add(childFront);
         }
       }
     }
 
-    nodeToFrontier.put(node, dominanceFrontier);
+    nodeToFrontier.put(node, new ArrayList<>(dominanceFrontier));
   }
 }

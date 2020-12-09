@@ -31,7 +31,6 @@ import java.util.Set;
  *
  * @author Steven Arzt
  */
-
 public class IdentityHashMultiMap<K, V> extends HashMultiMap<K, V> {
 
   private static final long serialVersionUID = 4960774381646981495L;
@@ -46,5 +45,4 @@ public class IdentityHashMultiMap<K, V> extends HashMultiMap<K, V> {
   protected Set<V> newSet() {
     return new IdentityHashSet<V>();
   }
-
 }

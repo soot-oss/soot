@@ -37,13 +37,15 @@ import soot.testing.framework.AbstractTestingFramework;
  * @author Andreas Dann created on 06.02.19
  * @author Manuel Benz 27.2.19
  */
+
+
 public class PolymorphicDispatchTest extends AbstractTestingFramework {
 
   private static final String TEST_TARGET_CLASS = "soot.jimple.PolymorphicDispatch";
 
   @Override
   protected void setupSoot() {
-    Options.v().set_allow_phantom_refs(false);
+    Options.v().set_allow_phantom_refs(true);
     Options.v().set_no_bodies_for_excluded(false);
     Options.v().set_prepend_classpath(true);
     // if we use validate globally, every test will fail due to validation of target methods of other tests. Even if the test

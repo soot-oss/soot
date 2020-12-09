@@ -25,13 +25,12 @@ package soot.tagkit;
 import soot.util.Switch;
 
 /**
- * Represents the base class of annotation elements each annotation can have several elements for Java 1.5.
+ * Represents the Enum annotation element each annotation can have several elements for Java 1.5.
  */
-
 public class AnnotationEnumElem extends AnnotationElem {
 
-  String typeName;
-  String constantName;
+  private String typeName;
+  private String constantName;
 
   public AnnotationEnumElem(String t, String c, char kind, String name) {
     super(kind, name);
@@ -63,5 +62,43 @@ public class AnnotationEnumElem extends AnnotationElem {
   @Override
   public void apply(Switch sw) {
     ((IAnnotationElemTypeSwitch) sw).caseAnnotationEnumElem(this);
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + ((constantName == null) ? 0 : constantName.hashCode());
+    result = prime * result + ((typeName == null) ? 0 : typeName.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+    if (this.getClass() != obj.getClass()) {
+      return false;
+    }
+    AnnotationEnumElem other = (AnnotationEnumElem) obj;
+    if (this.constantName == null) {
+      if (other.constantName != null) {
+        return false;
+      }
+    } else if (!this.constantName.equals(other.constantName)) {
+      return false;
+    }
+    if (this.typeName == null) {
+      if (other.typeName != null) {
+        return false;
+      }
+    } else if (!this.typeName.equals(other.typeName)) {
+      return false;
+    }
+    return true;
   }
 }

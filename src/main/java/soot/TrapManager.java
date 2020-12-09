@@ -149,7 +149,14 @@ public class TrapManager {
 
     for (Trap trap : body.getTraps()) {
       if (trap.getHandlerUnit() == u) {
-        possibleTypes.add(RefType.v(trap.getException().getName()));
+        RefType type;
+        if (ModuleUtil.module_mode()) {
+          type = ModuleRefType.v(trap.getException().getName(),
+              com.google.common.base.Optional.fromNullable(trap.getException().moduleName));
+        } else {
+          type = RefType.v(trap.getException().getName());
+        }
+        possibleTypes.add(type);
       }
     }
 

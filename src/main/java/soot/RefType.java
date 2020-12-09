@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import com.google.common.base.Optional;
+
 import java.util.ArrayDeque;
 
 import soot.util.Switch;
@@ -38,6 +40,9 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
   }
 
   public static RefType v() {
+    if (ModuleUtil.module_mode()) {
+      return G.v().soot_ModuleRefType();
+    }
     return G.v().soot_RefType();
   }
 
@@ -48,7 +53,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     return className;
   }
 
-  private volatile SootClass sootClass;
+  protected volatile SootClass sootClass;
   private AnySubType anySubType;
 
   protected RefType(String className) {
@@ -72,6 +77,11 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
    * @return a RefType for the given class name.
    */
   public static RefType v(String className) {
+
+    if (ModuleUtil.module_mode()) {
+      return ModuleRefType.v(className);
+    }
+
     return Scene.v().getOrAddRefType(className);
   }
 
@@ -87,6 +97,9 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
    * @return a RefType for the given SootClass..
    */
   public static RefType v(SootClass c) {
+    if (ModuleUtil.module_mode()) {
+      return ModuleRefType.v(c.getName(), Optional.fromNullable(c.moduleName));
+    }
     return v(c.getName());
   }
 
