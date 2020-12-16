@@ -764,7 +764,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
    * @return the {@link ThrowAnalysis} used to generate this graph if the graph contains no {@link Trap}s, or
    *         <code>null</code> if the graph contains one or more {@link Trap}s.
    */
-  ThrowAnalysis getThrowAnalysis() {
+  public ThrowAnalysis getThrowAnalysis() {
     return throwAnalysis;
   }
 
