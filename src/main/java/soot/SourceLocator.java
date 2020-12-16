@@ -92,17 +92,14 @@ public class SourceLocator {
   // size must be able to contain all paths in the classpath or else
   // methods such as lookupInClassPath(..) that search for a file by
   // traversing each path in the classpath will cause cache thrashing.
-  final SharedZipFileCacheWrapper archivePathToZip = new SharedZipFileCacheWrapper(5, 500);
+  private static final int PATH_CACHE_CAPACITY = 1000;
 
-  // NOTE: Capacity here is based on the number of paths where classes are
-  // loaded from. This is typically quite small. However, the maximum
-  // size must be able to contain all paths in the classpath or else
-  // methods such as lookupInClassPath(..) that search for a file by
-  // traversing each path in the classpath will cause cache thrashing.
+  final SharedZipFileCacheWrapper archivePathToZip = new SharedZipFileCacheWrapper(5, PATH_CACHE_CAPACITY);
+
   // NOTE: Soft and weak references are useless here since the value is an
   // enum type and strings are interned.
   protected final LoadingCache<String, ClassSourceType> pathToSourceType
-        = CacheBuilder.newBuilder().initialCapacity(5).maximumSize(500)
+        = CacheBuilder.newBuilder().initialCapacity(5).maximumSize(PATH_CACHE_CAPACITY)
         .concurrencyLevel(Runtime.getRuntime().availableProcessors())
         .build(new CacheLoader<String, ClassSourceType>() {
           @Override
@@ -133,18 +130,13 @@ public class SourceLocator {
           }
         });
 
-  // NOTE: Capacity here is based on the number of paths where classes are
-  // loaded from. This is typically quite small. However, the maximum
-  // size must be able to contain all paths in the classpath or else
-  // methods such as lookupInClassPath(..) that search for a file by
-  // traversing each path in the classpath will cause cache thrashing.
   // NOTE: Considering that the uses of this cache hold a reference to the
   // returned value in a very limited scope combined with the softValues
   // directive means that the values will almost always be softly
   // reachable (and not strongly reachable) and thus could all be cleared
   // out if the garbage collector needs the memory.
   protected final LoadingCache<String, Set<String>> archivePathToEntriesCache
-        = CacheBuilder.newBuilder().initialCapacity(5).maximumSize(500).softValues()
+        = CacheBuilder.newBuilder().initialCapacity(5).maximumSize(PATH_CACHE_CAPACITY).softValues()
         .concurrencyLevel(Runtime.getRuntime().availableProcessors())
         .build(new CacheLoader<String, Set<String>>() {
           @Override
@@ -423,7 +415,7 @@ public class SourceLocator {
         }
       }
     } else {
-      throw new RuntimeException("Invalid class source type");
+      throw new RuntimeException("Invalid class source type " + cst + " for " + aPath);
     }
     return classes;
   }
@@ -789,11 +781,9 @@ public class SourceLocator {
         this.removalListener = new DelayedRemovalListener<K, SharedCloseable<V>>();
         // NOTE: values must be strong references or else they could
         // be garbage collected before they are closed.
-        this.delegate = CacheBuilder.newBuilder()
-            .initialCapacity(initSize).maximumSize(maxSize)
-            .concurrencyLevel(Runtime.getRuntime().availableProcessors())
-            .expireAfterAccess(15, TimeUnit.SECONDS).removalListener(removalListener)
-            .build(new CacheLoader<K, SharedCloseable<V>>() {
+        this.delegate = CacheBuilder.newBuilder().initialCapacity(initSize).maximumSize(maxSize)
+            .concurrencyLevel(Runtime.getRuntime().availableProcessors()).expireAfterAccess(15, TimeUnit.SECONDS)
+            .removalListener(removalListener).build(new CacheLoader<K, SharedCloseable<V>>() {
               @Override
               public SharedCloseable<V> load(K key) throws Exception {
                 return new SharedCloseable<V>(loader.load(key));
