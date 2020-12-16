@@ -239,7 +239,7 @@ public class OnFlyCallGraphBuilder {
     options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
     if (!options.verbose()) {
       logger.debug("[Call Graph] For information on where the call graph may be incomplete,"
-          + "use the verbose option to the cg phase.");
+          + " use the verbose option to the cg phase.");
     }
 
     if (options.reflection_log() == null || options.reflection_log().length() == 0) {
@@ -691,8 +691,8 @@ public class OnFlyCallGraphBuilder {
       final VirtualCallSite site = siteIt.next();
       if (constant == null) {
         if (options.verbose()) {
-          logger.debug("" + "Warning: Method " + site.container() + " is reachable, and calls Class.forName on a"
-              + " non-constant String; graph will be incomplete!" + " Use safe-forname option for a conservative result.");
+          logger.warn("Method " + site.container() + " is reachable, and calls Class.forName on a non-constant"
+              + " String; graph will be incomplete! Use safe-forname option for a conservative result.");
         }
       } else {
         if (constant.length() > 0 && constant.charAt(0) == '[') {
@@ -704,7 +704,7 @@ public class OnFlyCallGraphBuilder {
         }
         if (!Scene.v().containsClass(constant)) {
           if (options.verbose()) {
-            logger.debug("" + "Warning: Class " + constant + " is" + " a dynamic class, and you did not specify"
+            logger.warn("Class " + constant + " is a dynamic class, and you did not specify"
                 + " it as such; graph will be incomplete!");
           }
         } else {
@@ -880,7 +880,7 @@ public class OnFlyCallGraphBuilder {
 
         } else if (ie instanceof DynamicInvokeExpr) {
           if (options.verbose()) {
-            logger.debug("" + "WARNING: InvokeDynamic to " + ie + " not resolved during call-graph construction.");
+            logger.warn("InvokeDynamic to " + ie + " not resolved during call-graph construction.");
           }
         } else {
           SootMethod tgt = ie.getMethod();
@@ -1011,7 +1011,7 @@ public class OnFlyCallGraphBuilder {
     } else {
       if (!Scene.v().containsClass(cls)) {
         if (options.verbose()) {
-          logger.warn("Class " + cls + " is" + " a dynamic class, and you did not specify"
+          logger.warn("Class " + cls + " is a dynamic class, and you did not specify"
               + " it as such; graph will be incomplete!");
         }
       } else {
@@ -1099,7 +1099,7 @@ public class OnFlyCallGraphBuilder {
         }
 
         if (options.verbose()) {
-          logger.warn("Method " + source + " is reachable, and calls Class.newInstance;" + " graph will be incomplete!"
+          logger.warn("Method " + source + " is reachable, and calls Class.newInstance; graph will be incomplete!"
               + " Use safe-newinstance option for a conservative result.");
         }
       }
@@ -1120,7 +1120,7 @@ public class OnFlyCallGraphBuilder {
           }
         }
         if (options.verbose()) {
-          logger.warn("Method " + source + " is reachable, and calls Constructor.newInstance;" + " graph will be incomplete!"
+          logger.warn("Method " + source + " is reachable, and calls Constructor.newInstance; graph will be incomplete!"
               + " Use safe-newinstance option for a conservative result.");
         }
       }
@@ -1130,7 +1130,7 @@ public class OnFlyCallGraphBuilder {
     public void methodInvoke(SootMethod container, Stmt invokeStmt) {
       if (!warnedAlready(container)) {
         if (options.verbose()) {
-          logger.warn("call to " + "java.lang.reflect.Method: invoke() from " + container + "; graph will be incomplete!");
+          logger.warn("Call to java.lang.reflect.Method: invoke() from " + container + "; graph will be incomplete!");
         }
         markWarned(container);
       }
@@ -1273,8 +1273,8 @@ public class OnFlyCallGraphBuilder {
           logger.debug("Guarding strategy is set to 'print'. "
               + "Program will print a stack trace if this location is reached during execution.");
         } else if (options.guards().equals("throw")) {
-          logger.debug("Guarding strategy is set to 'throw'. Program will throw an "
-              + "Error if this location is reached during execution.");
+          logger.debug("Guarding strategy is set to 'throw'. "
+              + "Program will throw an error if this location is reached during execution.");
         } else {
           throw new RuntimeException("Invalid value for phase option (guarding): " + options.guards());
         }
