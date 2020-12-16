@@ -809,7 +809,7 @@ public class SootClass extends AbstractHost implements Numberable {
       throw new RuntimeException("duplicate interface: " + interfaceClass.getName());
     }
     if (this.interfaces == null) {
-      this.interfaces = new HashChain<>(4);
+      this.interfaces = new HashChain<SootClass>();
     }
     this.interfaces.add(interfaceClass);
   }
