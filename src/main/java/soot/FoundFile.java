@@ -46,7 +46,7 @@ import soot.util.SharedCloseable;
 public class FoundFile {
   private static final Logger logger = LoggerFactory.getLogger(FoundFile.class);
 
-  protected final List<InputStream> openedInputStreams;
+  protected final List<InputStream> openedInputStreams = new ArrayList<InputStream>();
 
   protected Path path;
 
@@ -68,7 +68,6 @@ public class FoundFile {
   // }
 
   public FoundFile(String archivePath, String entryName) {
-    this();
     if (archivePath == null || entryName == null) {
       throw new IllegalArgumentException("Error: The archive path and entry name cannot be null.");
     }
@@ -77,7 +76,6 @@ public class FoundFile {
   }
 
   public FoundFile(File file) {
-    this();
     if (file == null) {
       throw new IllegalArgumentException("Error: The file cannot be null.");
     }
@@ -86,14 +84,10 @@ public class FoundFile {
   }
 
   public FoundFile(Path path) {
-    this();
     this.path = path;
   }
 
-  private FoundFile() {
-    this.openedInputStreams = new ArrayList<InputStream>();
-  }
-
+  @Deprecated
   public String getFilePath() {
     return file.getPath();
   }
@@ -108,6 +102,14 @@ public class FoundFile {
 
   public File getFile() {
     return file;
+  }
+
+  public String getAbsolutePath() {
+    try {
+      return file != null ? file.getCanonicalPath() : path.toRealPath().toString();
+    } catch (IOException ex) {
+      return file != null ? file.getAbsolutePath() : path.toAbsolutePath().toString();
+    }
   }
 
   public InputStream inputStream() {
@@ -128,7 +130,7 @@ public class FoundFile {
     } else {
       if (zipFile == null) {
         try {
-          zipFile = SourceLocator.v().archivePathToZip.getRef(getFilePath());
+          zipFile = SourceLocator.v().archivePathToZip.getRef(file.getPath());
           zipEntry = zipFile.get().getEntry(entryName);
           if (zipEntry == null) {
             silentClose();

@@ -201,7 +201,7 @@ public class ModulePathSourceLocator extends SourceLocator {
    * If the entry is a regular file then it is assumed to be a packaged module.
    */
   public Map<String, List<String>> getClassUnderModulePath(String aPath) {
-    Path path = null;
+    Path path;
     switch (getClassSourceType(aPath)) {
       case jar:
         path = Paths.get(aPath);
@@ -216,6 +216,7 @@ public class ModulePathSourceLocator extends SourceLocator {
         path = getRootModulesPathOfJDK();
         break;
       case unknown:
+        path = null;
         break;
       default:
         path = Paths.get(aPath);
