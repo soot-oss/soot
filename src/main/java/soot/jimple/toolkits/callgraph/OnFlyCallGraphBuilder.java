@@ -367,12 +367,14 @@ public class OnFlyCallGraphBuilder {
     if (invokeSites != null) {
       // non-det size
       BitSet sizeSet = invokeArgsToSize.get(argArray);
-      if (sizeSet == null) {
-        invokeArgsToSize.put(argArray, sizeSet = new BitSet());
-      }
-      if (!sizeSet.isEmpty() && !sizeSet.get(value)) {
-        sizeSet.set(value);
-        resolveInvoke(invokeSites);
+      if (sizeSet == null || !sizeSet.isEmpty()) {
+        if (sizeSet == null) {
+          invokeArgsToSize.put(argArray, sizeSet = new BitSet());
+        }
+        if (!sizeSet.get(value)) {
+          sizeSet.set(value);
+          resolveInvoke(invokeSites);
+        }
       }
     }
   }
