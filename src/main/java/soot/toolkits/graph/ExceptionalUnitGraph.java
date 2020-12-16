@@ -87,25 +87,17 @@ import soot.util.Chain;
  * </p>
  */
 public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<Unit> {
-  protected Map<Unit, List<Unit>> unitToUnexceptionalSuccs; // If there are no
-  // Traps within
-  protected Map<Unit, List<Unit>> unitToUnexceptionalPreds; // the method,
-  // these will be
-  // the
-  // same maps as unitToSuccs and
-  // unitToPreds.
+  // If there are no Traps within the method, these will be the same maps as unitToSuccs and unitToPreds.
+  protected Map<Unit, List<Unit>> unitToUnexceptionalSuccs;
+  protected Map<Unit, List<Unit>> unitToUnexceptionalPreds;
 
   protected Map<Unit, List<Unit>> unitToExceptionalSuccs;
   protected Map<Unit, List<Unit>> unitToExceptionalPreds;
   protected Map<Unit, Collection<ExceptionDest>> unitToExceptionDests;
 
-  protected ThrowAnalysis throwAnalysis; // Cached reference to the
-
-  // analysis used to generate this
-  // graph, for generating responses
-  // to getExceptionDests() on the
-  // fly for nodes from which all
-  // exceptions escape the method.
+  // Cached reference to the analysis used to generate this graph, for generating responses
+  // to getExceptionDests() on the fly for nodes from which all exceptions escape the method.
+  protected ThrowAnalysis throwAnalysis;
 
   /**
    * Constructs the graph for a given Body instance, using the <code>ThrowAnalysis</code> and
