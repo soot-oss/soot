@@ -120,6 +120,9 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 public class OnFlyCallGraphBuilder {
+    
+  // NOTE: this field must be static to avoid adding the transformation again if the call graph is rebuilt.
+  static boolean registeredGuardsTransformation = false;
 
   private static Pattern PATTERN_METHOD_SUBSIG
       = Pattern.compile("(?<returnType>.*?) (?<methodName>.*?)\\((?<parameters>.*?)\\)");
@@ -1167,7 +1170,6 @@ public class OnFlyCallGraphBuilder {
 
     protected Set<Guard> guards;
     protected ReflectionTraceInfo reflectionInfo;
-    private boolean registeredTransformation = false;
 
     private TraceBasedReflectionModel() {
       guards = new HashSet<Guard>();
@@ -1278,8 +1280,8 @@ public class OnFlyCallGraphBuilder {
         }
       }
 
-      if (!registeredTransformation) {
-        registeredTransformation = true;
+      if (!registeredGuardsTransformation) {
+        registeredGuardsTransformation = true;
         PackManager.v().getPack("wjap").add(new Transform("wjap.guards", new SceneTransformer() {
 
           @Override
