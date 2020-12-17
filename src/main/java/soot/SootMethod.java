@@ -399,8 +399,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     if (!isConcrete()) {
       throw new RuntimeException("cannot set body for non-concrete method! " + this);
     }
-
-    if (body != null && body.getMethod() != this) {
+    if (body != null) {
       body.setMethod(this);
     }
 
