@@ -122,6 +122,15 @@ public abstract class Body extends AbstractHost implements Serializable {
   }
 
   /**
+   * Returns the method associated with this Body.
+   *
+   * @return the method that owns this body.
+   */
+  public SootMethod getMethodUnsafe() {
+    return method;
+  }
+
+  /**
    * Sets the method associated with this Body.
    *
    * @param method
