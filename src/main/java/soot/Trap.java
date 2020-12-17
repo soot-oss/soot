@@ -70,10 +70,11 @@ public interface Trap extends UnitBoxOwner {
   /** Returns the box holding the unit returned by {@link #getEndUnit()}. */
   public UnitBox getEndUnitBox();
 
-  /** Returns the box holding the exception handler's unit. */
+  /** Returns the box holding the exception handler unit. */
   public UnitBox getHandlerUnitBox();
 
-  /** Returns the boxes for first, last and handler units. */
+  /** Returns the boxes for first, last, and handler units. */
+  @Override
   public List<UnitBox> getUnitBoxes();
 
   /** Returns the exception being caught. */
