@@ -126,7 +126,7 @@ public class ModuleScene extends Scene {
       if (!dirs.isEmpty()) {
         StringBuilder pds = new StringBuilder();
         for (String path : dirs) {
-          if (!modulePath.contains(path)) {
+          if (!cp.contains(path)) {
             pds.append(path).append(File.pathSeparatorChar);
           }
         }
@@ -211,11 +211,7 @@ public class ModuleScene extends Scene {
       }
     }
 
-    if (type == null || !type.hasSootClass()) {
-      return false;
-    } else {
-      return type.getSootClass().isInScene();
-    }
+    return type != null && type.hasSootClass() && type.getSootClass().isInScene();
   }
 
   @Override
@@ -328,13 +324,8 @@ public class ModuleScene extends Scene {
       }
     }
 
-    if (result != null) {
-      int arrayCount = arg.contains("[") ? arg.replaceAll("([^\\[\\]]*)(.*)", "$2").length() / 2 : 0;
-      if (arrayCount != 0) {
-        result = ArrayType.v(result, arrayCount);
-      }
-    }
-    return result;
+    int arrayCount = arg.contains("[") ? arg.replaceAll("([^\\[\\]]*)(.*)", "$2").length() / 2 : 0;
+    return (arrayCount == 0) ? result : ArrayType.v(result, arrayCount);
   }
 
   /**
@@ -458,10 +449,11 @@ public class ModuleScene extends Scene {
   public void loadBasicClasses() {
     addReflectionTraceClasses();
 
+    final ModuleUtil modU = ModuleUtil.v();
     int loadedClasses = 0;
     for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
       for (String name : basicclasses[i]) {
-        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(name);
+        ModuleUtil.ModuleClassNameWrapper wrapper = modU.makeWrapper(name);
         SootClass sootClass = tryLoadClass(wrapper.getClassName(), i, wrapper.getModuleNameOptional());
         if (sootClass != null && !sootClass.isPhantom()) {
           loadedClasses++;
