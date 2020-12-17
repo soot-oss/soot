@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.function.Function;
 
 import soot.Unit;
 import soot.UnitBox;
