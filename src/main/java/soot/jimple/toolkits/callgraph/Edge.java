@@ -41,33 +41,17 @@ import soot.util.Invalidable;
  * @author Ondrej Lhotak
  */
 public final class Edge implements Invalidable {
+
   /**
    * The method in which the call occurs; may be null for calls not occurring in a specific method (eg. implicit calls by the
    * VM)
    */
   private MethodOrMethodContext src;
 
-  private boolean invalid = false;
-
-  public SootMethod src() {
-    if (src == null) {
-      return null;
-    } else {
-      return src.method();
-    }
-  }
-
-  public Context srcCtxt() {
-    if (src == null) {
-      return null;
-    } else {
-      return src.context();
-    }
-  }
-
-  public MethodOrMethodContext getSrc() {
-    return src;
-  }
+  /**
+   * The target method of the call edge.
+   */
+  private MethodOrMethodContext tgt;
 
   /**
    * The unit at which the call occurs; may be null for calls not occurring at a specific statement (eg. calls in native
@@ -75,38 +59,13 @@ public final class Edge implements Invalidable {
    */
   private Unit srcUnit;
 
-  public Unit srcUnit() {
-    return srcUnit;
-  }
-
-  public Stmt srcStmt() {
-    return (Stmt) srcUnit;
-  }
-
-  /** The target method of the call edge. */
-  private MethodOrMethodContext tgt;
-
-  public SootMethod tgt() {
-    return tgt == null ? null : tgt.method();
-  }
-
-  public Context tgtCtxt() {
-    return tgt.context();
-  }
-
-  public MethodOrMethodContext getTgt() {
-    return tgt;
-  }
-
   /**
    * The kind of edge. Note: kind should not be tested by other classes; instead, accessors such as isExplicit() should be
    * added.
-   **/
-  private Kind kind;
+   */
+  private final Kind kind;
 
-  public Kind kind() {
-    return kind;
-  }
+  private boolean invalid = false;
 
   public Edge(MethodOrMethodContext src, Unit srcUnit, MethodOrMethodContext tgt, Kind kind) {
     this.src = src;
@@ -120,6 +79,42 @@ public final class Edge implements Invalidable {
     this.src = src;
     this.srcUnit = srcUnit;
     this.tgt = tgt;
+  }
+
+  public SootMethod src() {
+    return (src == null) ? null : src.method();
+  }
+
+  public Context srcCtxt() {
+    return (src == null) ? null : src.context();
+  }
+
+  public MethodOrMethodContext getSrc() {
+    return src;
+  }
+
+  public Unit srcUnit() {
+    return srcUnit;
+  }
+
+  public Stmt srcStmt() {
+    return (Stmt) srcUnit;
+  }
+
+  public SootMethod tgt() {
+    return (tgt == null) ? null : tgt.method();
+  }
+
+  public Context tgtCtxt() {
+    return (tgt == null) ? null : tgt.context();
+  }
+
+  public MethodOrMethodContext getTgt() {
+    return tgt;
+  }
+
+  public Kind kind() {
+    return kind;
   }
 
   public static Kind ieToKind(InvokeExpr ie) {
@@ -136,7 +131,9 @@ public final class Edge implements Invalidable {
     }
   }
 
-  /** Returns true if the call is due to an explicit invoke statement. */
+  /**
+   * Returns true if the call is due to an explicit invoke statement.
+   */
   public boolean isExplicit() {
     return kind.isExplicit();
   }
@@ -156,7 +153,9 @@ public final class Edge implements Invalidable {
     return kind.isSpecial();
   }
 
-  /** Returns true if the call is to static initializer. */
+  /**
+   * Returns true if the call is to static initializer.
+   */
   public boolean isClinit() {
     return kind.isClinit();
   }
@@ -177,6 +176,20 @@ public final class Edge implements Invalidable {
   }
 
   @Override
+  public boolean isInvalid() {
+    return invalid;
+  }
+
+  @Override
+  public void invalidate() {
+    // Since the edge remains in the QueueReaders for a while, the GC could not claim old units.
+    src = null;
+    srcUnit = null;
+    tgt = null;
+    invalid = true;
+  }
+
+  @Override
   public int hashCode() {
     int ret = (tgt.hashCode() + 20) + kind.getNumber();
     if (src != null) {
@@ -194,22 +207,7 @@ public final class Edge implements Invalidable {
       return false;
     }
     Edge o = (Edge) other;
-    if (o == null) {
-      return false;
-    }
-    if (o.src != src) {
-      return false;
-    }
-    if (o.srcUnit != srcUnit) {
-      return false;
-    }
-    if (o.tgt != tgt) {
-      return false;
-    }
-    if (o.kind != kind) {
-      return false;
-    }
-    return true;
+    return (o.src == this.src) && (o.srcUnit == srcUnit) && (o.tgt == tgt) && (o.kind == kind);
   }
 
   @Override
@@ -298,19 +296,5 @@ public final class Edge implements Invalidable {
 
   Edge prevByTgt() {
     return prevByTgt;
-  }
-
-  @Override
-  public boolean isInvalid() {
-    return invalid;
-  }
-
-  @Override
-  public void invalidate() {
-    // Since the edge remains in the QueueReaders for a while, the GC could not claim old units.
-    src = null;
-    srcUnit = null;
-    tgt = null;
-    invalid = true;
   }
 }
