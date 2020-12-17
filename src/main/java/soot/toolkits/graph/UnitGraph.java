@@ -253,8 +253,7 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
   protected void addEdge(Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds, Unit head, Unit tail) {
     List<Unit> headsSuccs = unitToSuccs.get(head);
     if (headsSuccs == null) {
-      headsSuccs = new ArrayList<Unit>(3); // We expect this list to
-      // remain short.
+      headsSuccs = new ArrayList<Unit>(3); // We expect this list to remain short.
       unitToSuccs.put(head, headsSuccs);
     }
     if (!headsSuccs.contains(tail)) {
