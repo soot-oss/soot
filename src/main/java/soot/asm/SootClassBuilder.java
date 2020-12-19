@@ -1,5 +1,19 @@
 package soot.asm;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Attribute;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.ModuleVisitor;
+import org.objectweb.asm.Opcodes;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,20 +37,6 @@ package soot.asm;
  */
 
 import com.google.common.base.Optional;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.Attribute;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.ModuleVisitor;
-import org.objectweb.asm.Opcodes;
 
 import soot.Modifier;
 import soot.ModuleRefType;
@@ -134,7 +134,7 @@ public class SootClassBuilder extends ClassVisitor {
     }
     // FIXME: ad -- throw excpetion again
     // throw new RuntimeException("Class names not equal! "+name+" != "+klass.getName());
-    klass.setModifiers(access & ~Opcodes.ACC_SUPER);
+    klass.setModifiers(filterASMFlags(access) & ~Opcodes.ACC_SUPER);
     if (superName != null) {
       superName = AsmUtil.toQualifiedName(superName);
       addDep(makeRefType(superName));
