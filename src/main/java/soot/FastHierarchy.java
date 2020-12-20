@@ -696,7 +696,7 @@ public class FastHierarchy {
    * @return The concrete method o.f() to call
    */
   public SootMethod resolveMethod(SootClass baseType, SootMethod m, boolean allowAbstract) {
-    return resolveMethod(baseType, m, allowAbstract);
+    return resolveMethod(baseType, m.makeRef(), allowAbstract);
   }
 
   /**
