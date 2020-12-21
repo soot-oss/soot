@@ -182,15 +182,17 @@ public class SourceLocator {
     // the classpath is split at every path separator which is not escaped
     final String regex = "(?<!\\\\)" + Pattern.quote(File.pathSeparator);
     for (String originalDir : classPath.split(regex)) {
-      try {
-        String canonicalDir = new File(originalDir).getCanonicalPath();
-        if (ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS.equals(originalDir)) {
-          SourceLocator.v().java9Mode = true;
-          continue;
+      if (!originalDir.isEmpty()) {
+        try {
+          String canonicalDir = new File(originalDir).getCanonicalPath();
+          if (ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS.equals(originalDir)) {
+            SourceLocator.v().java9Mode = true;
+            continue;
+          }
+          ret.add(canonicalDir);
+        } catch (IOException e) {
+          throw new CompilationDeathException("Couldn't resolve classpath entry " + originalDir + ": " + e);
         }
-        ret.add(canonicalDir);
-      } catch (IOException e) {
-        throw new CompilationDeathException("Couldn't resolve classpath entry " + originalDir + ": " + e);
       }
     }
     return Collections.unmodifiableList(ret);
