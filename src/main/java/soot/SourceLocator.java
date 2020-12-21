@@ -620,7 +620,7 @@ public class SourceLocator {
     return null;
   }
 
-  private FoundFile lookupInDir(String dir, String fileName) {
+  protected FoundFile lookupInDir(String dir, String fileName) {
     File f = new File(dir, fileName);
     return (f.exists() && f.canRead()) ? new FoundFile(f) : null;
   }
