@@ -28,6 +28,8 @@ import soot.SootClass;
 
 public class OuterClassTag implements Tag {
 
+  public static final String NAME = "OuterClassTag";
+
   private final SootClass outerClass;
   private final String simpleName;
   private final boolean anon;
@@ -40,11 +42,9 @@ public class OuterClassTag implements Tag {
 
   @Override
   public String getName() {
-    return "OuterClassTag";
+    return NAME;
   }
 
-  /**
-   */
   @Override
   public byte[] getValue() {
     try {

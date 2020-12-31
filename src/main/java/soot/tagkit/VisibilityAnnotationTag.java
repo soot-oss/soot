@@ -30,6 +30,8 @@ import java.util.ArrayList;
  */
 public class VisibilityAnnotationTag implements Tag {
 
+  public static final String NAME = "VisibilityAnnotationTag";
+
   private final int visibility;
   private ArrayList<AnnotationTag> annotations;
 
@@ -67,10 +69,9 @@ public class VisibilityAnnotationTag implements Tag {
     return sb.toString();
   }
 
-  /** Returns the tag name. */
   @Override
   public String getName() {
-    return "VisibilityAnnotationTag";
+    return NAME;
   }
 
   public String getInfo() {
@@ -81,7 +82,6 @@ public class VisibilityAnnotationTag implements Tag {
     return visibility;
   }
 
-  /** Returns the tag raw data. */
   @Override
   public byte[] getValue() {
     throw new RuntimeException("VisibilityAnnotationTag has no value for bytecode");
