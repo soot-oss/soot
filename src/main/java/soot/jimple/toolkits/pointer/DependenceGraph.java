@@ -27,7 +27,8 @@ import java.util.HashSet;
 import soot.tagkit.Attribute;
 
 public class DependenceGraph implements Attribute {
-  private final static String NAME = "DependenceGraph";
+
+  public static final String NAME = "DependenceGraph";
 
   final HashSet<Edge> edges = new HashSet<Edge>();
 
