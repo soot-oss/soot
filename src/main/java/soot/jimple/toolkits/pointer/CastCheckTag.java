@@ -29,6 +29,8 @@ import soot.tagkit.Tag;
  */
 public class CastCheckTag implements Tag {
 
+  public static final String NAME = "CastCheckTag";
+
   private final boolean eliminateCheck;
 
   CastCheckTag(boolean eliminateCheck) {
@@ -37,7 +39,7 @@ public class CastCheckTag implements Tag {
 
   @Override
   public String getName() {
-    return "CastCheckTag";
+    return NAME;
   }
 
   @Override

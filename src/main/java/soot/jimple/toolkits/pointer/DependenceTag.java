@@ -25,7 +25,8 @@ package soot.jimple.toolkits.pointer;
 import soot.tagkit.Tag;
 
 public class DependenceTag implements Tag {
-  private static final String NAME = "DependenceTag";
+
+  public static final String NAME = "DependenceTag";
 
   protected short read = -1;
   protected short write = -1;
