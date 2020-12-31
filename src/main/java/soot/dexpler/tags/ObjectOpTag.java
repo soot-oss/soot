@@ -45,14 +45,16 @@ package soot.dexpler.tags;
 import soot.tagkit.Tag;
 
 public class ObjectOpTag implements Tag {
+
+  public static final String NAME = "ObjectOpTag";
+
+  @Override
   public String getName() {
-    return "ObjectOpTag";
+    return NAME;
   }
 
+  @Override
   public byte[] getValue() {
-    byte[] b = new byte[1];
-    b[0] = 0;
-    return b;
+    return new byte[1];
   }
-
 }

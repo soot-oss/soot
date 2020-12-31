@@ -27,6 +27,8 @@ package soot.tagkit;
  */
 public class DeprecatedTag implements Tag {
 
+  public static final String NAME = "DeprecatedTag";
+
   public DeprecatedTag() {
   }
 
@@ -35,17 +37,15 @@ public class DeprecatedTag implements Tag {
     return "Deprecated";
   }
 
-  /** Returns the tag name. */
   @Override
   public String getName() {
-    return "DeprecatedTag";
+    return NAME;
   }
 
   public String getInfo() {
     return "Deprecated";
   }
 
-  /** Returns the tag raw data. */
   @Override
   public byte[] getValue() {
     throw new RuntimeException("DeprecatedTag has no value for bytecode");
