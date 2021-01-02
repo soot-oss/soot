@@ -32,6 +32,8 @@ import java.util.List;
  */
 public class InnerClassAttribute implements Tag {
 
+  public static final String NAME = "InnerClassAttribute";
+
   private ArrayList<InnerClassTag> list;
 
   public InnerClassAttribute() {
@@ -65,7 +67,7 @@ public class InnerClassAttribute implements Tag {
 
   @Override
   public String getName() {
-    return "InnerClassAttribute";
+    return NAME;
   }
 
   @Override
