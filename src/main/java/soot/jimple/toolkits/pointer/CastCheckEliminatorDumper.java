@@ -32,6 +32,7 @@ import soot.toolkits.graph.BriefUnitGraph;
 
 /** A body transformer that simply calls the CastCheckEliminator analysis. */
 public class CastCheckEliminatorDumper extends BodyTransformer {
+
   public CastCheckEliminatorDumper(Singletons.Global g) {
   }
 
@@ -43,7 +44,8 @@ public class CastCheckEliminatorDumper extends BodyTransformer {
     return "";
   }
 
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  @Override
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     CastCheckEliminator cce = new CastCheckEliminator(new BriefUnitGraph(b));
   }
 }
