@@ -26,6 +26,8 @@ import soot.jimple.LongConstant;
 
 public class LongConstantValueTag extends ConstantValueTag {
 
+  public static final String NAME = "LongConstantValueTag";
+
   private final long value;
 
   public LongConstantValueTag(long value) {
@@ -37,6 +39,11 @@ public class LongConstantValueTag extends ConstantValueTag {
 
   public long getLongValue() {
     return value;
+  }
+
+  @Override
+  public String getName() {
+    return NAME;
   }
 
   @Override

@@ -26,15 +26,22 @@ import soot.jimple.DoubleConstant;
 
 public class DoubleConstantValueTag extends ConstantValueTag {
 
+  public static final String NAME = "DoubleConstantValueTag";
+
   private final double value;
+
+  public DoubleConstantValueTag(double val) {
+    super(null);
+    this.value = val;
+  }
 
   public double getDoubleValue() {
     return value;
   }
 
-  public DoubleConstantValueTag(double val) {
-    super(null);
-    this.value = val;
+  @Override
+  public String getName() {
+    return NAME;
   }
 
   @Override

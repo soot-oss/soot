@@ -29,47 +29,47 @@ import java.util.Vector;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
-import soot.PatchingChain;
 import soot.RefType;
 import soot.Scene;
 import soot.SootMethod;
 import soot.Unit;
+import soot.UnitPatchingChain;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
-import soot.jimple.JimpleBody;
 import soot.jimple.StringConstant;
 
 public class UnreachableMethodTransformer extends BodyTransformer {
-  protected void internalTransform(Body b, String phaseName, Map options) {
+
+  @Override
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     // System.out.println( "Performing UnreachableMethodTransformer" );
-    ReachableMethods reachableMethods = Scene.v().getReachableMethods();
+
     SootMethod method = b.getMethod();
+    final Scene scene = Scene.v();
     // System.out.println( "Method: " + method.getName() );
-    if (reachableMethods.contains(method)) {
+    if (scene.getReachableMethods().contains(method)) {
       return;
     }
 
-    JimpleBody body = (JimpleBody) method.getActiveBody();
-
-    PatchingChain units = body.getUnits();
+    final Jimple jimp = Jimple.v();
     List<Unit> list = new Vector<Unit>();
 
-    Local tmpRef = Jimple.v().newLocal("tmpRef", RefType.v("java.io.PrintStream"));
-    body.getLocals().add(tmpRef);
-    list.add(Jimple.v().newAssignStmt(tmpRef,
-        Jimple.v().newStaticFieldRef(Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef())));
+    Local tmpRef = jimp.newLocal("tmpRef", RefType.v("java.io.PrintStream"));
+    b.getLocals().add(tmpRef);
+    list.add(jimp.newAssignStmt(tmpRef,
+        jimp.newStaticFieldRef(scene.getField("<java.lang.System: java.io.PrintStream out>").makeRef())));
 
-    SootMethod toCall = Scene.v().getMethod("<java.lang.Thread: void dumpStack()>");
-    list.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(toCall.makeRef())));
+    SootMethod toCall = scene.getMethod("<java.lang.Thread: void dumpStack()>");
+    list.add(jimp.newInvokeStmt(jimp.newStaticInvokeExpr(toCall.makeRef())));
 
-    toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
-    list.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(),
-        StringConstant.v("Executing supposedly unreachable method:"))));
-    list.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(),
+    toCall = scene.getMethod("<java.io.PrintStream: void println(java.lang.String)>");
+    list.add(jimp.newInvokeStmt(
+        jimp.newVirtualInvokeExpr(tmpRef, toCall.makeRef(), StringConstant.v("Executing supposedly unreachable method:"))));
+    list.add(jimp.newInvokeStmt(jimp.newVirtualInvokeExpr(tmpRef, toCall.makeRef(),
         StringConstant.v("\t" + method.getDeclaringClass().getName() + "." + method.getName()))));
 
-    toCall = Scene.v().getMethod("<java.lang.System: void exit(int)>");
-    list.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(toCall.makeRef(), IntConstant.v(1))));
+    toCall = scene.getMethod("<java.lang.System: void exit(int)>");
+    list.add(jimp.newInvokeStmt(jimp.newStaticInvokeExpr(toCall.makeRef(), IntConstant.v(1))));
 
     /*
      * Stmt r; if( method.getReturnType() instanceof VoidType ) { list.add( r=Jimple.v().newReturnVoidStmt() ); } else if(
@@ -82,6 +82,7 @@ public class UnreachableMethodTransformer extends BodyTransformer {
      * ); }
      */
 
+    UnitPatchingChain units = b.getUnits();
     /*
      * if( method.getName().equals( "<init>" ) || method.getName().equals( "<clinit>" ) ) {
      *
@@ -91,9 +92,9 @@ public class UnreachableMethodTransformer extends BodyTransformer {
      * SootMethodRef break; } } o = units.getSuccOf( o ); } if( insertFirst ) { units.insertBefore( list, units.getFirst() );
      * } else { units.insertAfter( list, o ) ; } } else {
      */
-    {
-      units.insertBefore(list, units.getFirst());
-    }
+
+    units.insertBefore(list, units.getFirst());
+
     /*
      * ArrayList toRemove = new ArrayList(); for( Iterator sIt = units.iterator(r); sIt.hasNext(); ) { final Stmt s = (Stmt)
      * sIt.next(); if(s == r) continue; toRemove.add(s); } for( Iterator sIt = toRemove.iterator(); sIt.hasNext(); ) { final

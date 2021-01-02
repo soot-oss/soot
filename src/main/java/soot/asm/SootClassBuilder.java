@@ -134,7 +134,7 @@ public class SootClassBuilder extends ClassVisitor {
     }
     // FIXME: ad -- throw excpetion again
     // throw new RuntimeException("Class names not equal! "+name+" != "+klass.getName());
-    klass.setModifiers(access & ~Opcodes.ACC_SUPER);
+    klass.setModifiers(filterASMFlags(access) & ~Opcodes.ACC_SUPER);
     if (superName != null) {
       superName = AsmUtil.toQualifiedName(superName);
       addDep(makeRefType(superName));
