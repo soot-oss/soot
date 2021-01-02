@@ -24,12 +24,14 @@ package soot.tagkit;
 
 public class SourcePositionTag extends PositionTag {
 
+  public static final String NAME = "SourcePositionTag";
+
   public SourcePositionTag(int i, int j) {
     super(i, j);
   }
 
   @Override
   public String getName() {
-    return "SourcePositionTag";
+    return NAME;
   }
 }

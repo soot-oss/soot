@@ -23,12 +23,10 @@ package soot.jimple.toolkits.pointer;
  * #L%
  */
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,7 +46,6 @@ import soot.jimple.IdentityRef;
 import soot.jimple.ParameterRef;
 import soot.jimple.Stmt;
 import soot.jimple.ThisRef;
-import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
@@ -116,7 +113,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
     this.localsAndFieldRefs = new HashSet<Value>();
 
     // add all locals
-    for (Local l : (Collection<Local>) g.getBody().getLocals()) {
+    for (Local l : g.getBody().getLocals()) {
       if (l.getType() instanceof RefLikeType) {
         this.localsAndFieldRefs.add(l);
       }
@@ -144,9 +141,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
     Set<Value> usedFieldRefs = new HashSet<Value>();
     // add all field references that are in use boxes
     for (Unit unit : this.graph) {
-      Stmt s = (Stmt) unit;
-      List<ValueBox> useBoxes = s.getUseBoxes();
-      for (ValueBox useBox : useBoxes) {
+      for (ValueBox useBox : unit.getUseBoxes()) {
         Value val = useBox.getValue();
         if (val instanceof FieldRef) {
           FieldRef fieldRef = (FieldRef) val;
@@ -159,24 +154,20 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
 
     // prune all fields that are written to
     if (!usedFieldRefs.isEmpty()) {
-
       if (!Scene.v().hasCallGraph()) {
         throw new IllegalStateException("No call graph found!");
       }
 
-      CallGraph cg = Scene.v().getCallGraph();
-      ReachableMethods reachableMethods
-          = new ReachableMethods(cg, Collections.<MethodOrMethodContext>singletonList(container));
+      ReachableMethods reachableMethods =
+          new ReachableMethods(Scene.v().getCallGraph(), Collections.<MethodOrMethodContext>singletonList(container));
       reachableMethods.update();
       for (Iterator<MethodOrMethodContext> iterator = reachableMethods.listener(); iterator.hasNext();) {
         SootMethod m = (SootMethod) iterator.next();
-        if (m.hasActiveBody() &&
         // exclude static initializer of same class (assume that it has already been executed)
-            !(m.getName().equals(SootMethod.staticInitializerName)
-                && m.getDeclaringClass().equals(container.getDeclaringClass()))) {
+        if (m.hasActiveBody() && !(SootMethod.staticInitializerName.equals(m.getName())
+            && m.getDeclaringClass().equals(container.getDeclaringClass()))) {
           for (Unit u : m.getActiveBody().getUnits()) {
-            List<ValueBox> defBoxes = u.getDefBoxes();
-            for (ValueBox defBox : defBoxes) {
+            for (ValueBox defBox : u.getDefBoxes()) {
               Value value = defBox.getValue();
               if (value instanceof FieldRef) {
                 usedFieldRefs.remove(new EquivalentValue(value));
@@ -193,6 +184,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
   @Override
   protected void merge(Unit succUnit, HashMap<Value, Integer> inMap1, HashMap<Value, Integer> inMap2,
       HashMap<Value, Integer> outMap) {
+
     for (Value l : localsAndFieldRefs) {
       Integer i1 = inMap1.get(l), i2 = inMap2.get(l);
       if (i1 == null) {
@@ -218,8 +210,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
         // retrieve the unique number for l at the merge point succUnit
         // if there is no such number yet, generate one
         // then assign the number to l in the outMap
-        Map<Value, Integer> valueToNumber = mergePointToValueToNumber.get(succUnit);
         Integer number = null;
+        Map<Value, Integer> valueToNumber = mergePointToValueToNumber.get(succUnit);
         if (valueToNumber == null) {
           valueToNumber = new HashMap<Value, Integer>();
           mergePointToValueToNumber.put(succUnit, valueToNumber);
@@ -238,20 +230,17 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
 
   @Override
   protected void flowThrough(HashMap<Value, Integer> in, Unit u, HashMap<Value, Integer> out) {
-    Stmt s = (Stmt) u;
     out.clear();
-
     out.putAll(in);
 
-    if (s instanceof DefinitionStmt) {
-      DefinitionStmt ds = (DefinitionStmt) s;
+    if (u instanceof DefinitionStmt) {
+      DefinitionStmt ds = (DefinitionStmt) u;
       Value lhs = ds.getLeftOp();
       Value rhs = ds.getRightOp();
 
       if (rhs instanceof CastExpr) {
         // un-box casted value
-        CastExpr castExpr = (CastExpr) rhs;
-        rhs = castExpr.getOp();
+        rhs = ((CastExpr) rhs).getOp();
       }
 
       if ((lhs instanceof Local || (lhs instanceof FieldRef && this.localsAndFieldRefs.contains(new EquivalentValue(lhs))))
@@ -275,7 +264,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
       }
     } else {
       // which other kind of statement has def-boxes? hopefully none...
-      assert s.getDefBoxes().isEmpty();
+      assert u.getDefBoxes().isEmpty();
     }
   }
 
@@ -330,11 +319,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
    *          the statement at which to check
    */
   public String instanceKeyString(Local l, Stmt s) {
-    Object ln = getFlowBefore(s).get(l);
-    if (ln == null) {
-      return null;
-    }
-    return ln.toString();
+    Integer ln = getFlowBefore(s).get(l);
+    return (ln == null) ? null : ln.toString();
   }
 
   /**
@@ -343,8 +329,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
    * Permits s to be <code>null</code>, in which case <code>false</code> will be returned.
    */
   public boolean hasInfoOn(Local l, Stmt s) {
-    HashMap<Value, Integer> flowBefore = getFlowBefore(s);
-    return flowBefore != null;
+    return getFlowBefore(s) != null;
   }
 
   /**
@@ -352,14 +337,9 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
    *         must point to the same object as l2 at s2.
    */
   public boolean mustAlias(Local l1, Stmt s1, Local l2, Stmt s2) {
-    Object l1n = getFlowBefore(s1).get(l1);
-    Object l2n = getFlowBefore(s2).get(l2);
-
-    if (l1n == null || l2n == null) {
-      return false;
-    }
-
-    return l1n == l2n;
+    Integer l1n = getFlowBefore(s1).get(l1);
+    Integer l2n = getFlowBefore(s2).get(l2);
+    return l1n != null && l2n != null && l1n.equals(l2n);
   }
 
   @Override
