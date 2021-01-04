@@ -128,8 +128,8 @@ public class OnFlyCallGraphBuilder {
   // NOTE: this field must be static to avoid adding the transformation again if the call graph is rebuilt.
   static boolean registeredGuardsTransformation = false;
 
-  private static final Pattern PATTERN_METHOD_SUBSIG =
-      Pattern.compile("(?<returnType>.*?) (?<methodName>.*?)\\((?<parameters>.*?)\\)");
+  private static final Pattern PATTERN_METHOD_SUBSIG
+      = Pattern.compile("(?<returnType>.*?) (?<methodName>.*?)\\((?<parameters>.*?)\\)");
 
   private static final PrimType[] CHAR_NARROWINGS;
   private static final PrimType[] INT_NARROWINGS;
@@ -210,7 +210,7 @@ public class OnFlyCallGraphBuilder {
 
   protected final ReflectionModel reflectionModel;
   protected final CGOptions options;
-  protected final boolean appOnly;
+  protected boolean appOnly;
 
   /** context-sensitive stuff */
   protected final ReachableMethods rm;
@@ -1331,8 +1331,8 @@ public class OnFlyCallGraphBuilder {
         // exc.<init>(message)
         SootMethodRef cref = runtimeExceptionType.getSootClass()
             .getMethod("<init>", Collections.<Type>singletonList(RefType.v("java.lang.String"))).makeRef();
-        InvokeStmt initStmt =
-            jimp.newInvokeStmt(jimp.newSpecialInvokeExpr(exceptionLocal, cref, StringConstant.v(guard.message)));
+        InvokeStmt initStmt
+            = jimp.newInvokeStmt(jimp.newSpecialInvokeExpr(exceptionLocal, cref, StringConstant.v(guard.message)));
         units.insertAfter(initStmt, assignStmt);
 
         switch (options.guards()) {
