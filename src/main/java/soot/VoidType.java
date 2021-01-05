@@ -24,9 +24,12 @@ package soot;
 
 import soot.util.Switch;
 
-/** Represents the Java void type. */
+/**
+ * Represents the Java void type.
+ */
 @SuppressWarnings("serial")
 public class VoidType extends Type {
+
   public VoidType(Singletons.Global g) {
   }
 
@@ -34,24 +37,28 @@ public class VoidType extends Type {
     return G.v().soot_VoidType();
   }
 
+  @Override
   public int hashCode() {
     return 0x3A8C1035;
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public String toString() {
     return "void";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseVoidType(this);
   }
 
+  @Override
   public boolean isAllowedInFinalCode() {
     return true;
   }
-
 }

@@ -29,6 +29,7 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class LongType extends PrimType {
+
   public LongType(Singletons.Global g) {
   }
 
@@ -36,18 +37,22 @@ public class LongType extends PrimType {
     return G.v().soot_LongType();
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public int hashCode() {
     return 0x023DA077;
   }
 
+  @Override
   public String toString() {
     return "long";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseLongType(this);
   }
