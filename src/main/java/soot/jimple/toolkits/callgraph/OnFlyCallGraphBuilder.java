@@ -196,7 +196,7 @@ public class OnFlyCallGraphBuilder {
   protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases;
   protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs;
   protected final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants;
-  protected final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites;
+  protected final SmallNumberedMap<Local, List<VirtualCallSite>> stringConstToSites;
 
   protected final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
   protected final MultiMap<Local, InvokeCallSite> baseToInvokeSite = new HashMultiMap<>();
@@ -258,7 +258,7 @@ public class OnFlyCallGraphBuilder {
       this.methodToInvokeBases = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
       this.methodToInvokeArgs = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
       this.methodToStringConstants = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.stringConstToSites = new SmallNumberedMap<List<VirtualCallSite>>();
+      this.stringConstToSites = new SmallNumberedMap<Local, List<VirtualCallSite>>();
     }
 
     this.cm = cm;
