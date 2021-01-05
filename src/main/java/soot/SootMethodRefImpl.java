@@ -54,6 +54,8 @@ public class SootMethodRefImpl implements SootMethodRef {
   private final Type returnType;
   private final boolean isStatic;
 
+  private SootMethod resolveCache = null;
+
   /**
    * Constructor.
    *
@@ -175,7 +177,12 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   @Override
   public SootMethod resolve() {
-    return resolve(null);
+    SootMethod cached = this.resolveCache;
+    if (cached == null) { // Use the cached SootMethod if available
+      cached = resolve(null);
+      this.resolveCache = cached;
+    }
+    return cached;
   }
 
   @Override
