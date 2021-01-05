@@ -36,32 +36,34 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class AbstractTrap implements Trap, Serializable {
 
-  /** The exception being caught. */
+  /**
+   * The exception being caught.
+   */
   protected transient SootClass exception;
 
-  /** The first unit being trapped. */
+  /**
+   * The first unit being trapped.
+   */
   protected UnitBox beginUnitBox;
 
-  /** The unit just before the last unit being trapped. */
+  /**
+   * The unit just before the last unit being trapped.
+   */
   protected UnitBox endUnitBox;
 
-  /** The unit to which execution flows after the caught exception is triggered. */
+  /**
+   * The unit to which execution flows after the caught exception is triggered.
+   */
   protected UnitBox handlerUnitBox;
 
-  /** The list of unitBoxes referred to in this Trap (begin, end and handler. */
+  /**
+   * The list of UnitBoxes referred to in this Trap (begin, end, and handler).
+   */
   protected List<UnitBox> unitBoxes;
 
-  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-    in.defaultReadObject();
-    exception = Scene.v().getSootClass((String) in.readObject());
-  }
-
-  private void writeObject(ObjectOutputStream out) throws IOException {
-    out.defaultWriteObject();
-    out.writeObject(exception.getName());
-  }
-
-  /** Creates an AbstractTrap with the given exception, handler, begin and end units. */
+  /**
+   * Creates an AbstractTrap with the given exception, handler, begin, and end units.
+   */
   protected AbstractTrap(SootClass exception, UnitBox beginUnitBox, UnitBox endUnitBox, UnitBox handlerUnitBox) {
     this.exception = exception;
     this.beginUnitBox = beginUnitBox;
@@ -140,5 +142,15 @@ public class AbstractTrap implements Trap, Serializable {
   @Override
   public Object clone() {
     throw new RuntimeException();
+  }
+
+  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+    exception = Scene.v().getSootClass((String) in.readObject());
+  }
+
+  private void writeObject(ObjectOutputStream out) throws IOException {
+    out.defaultWriteObject();
+    out.writeObject(exception.getName());
   }
 }
