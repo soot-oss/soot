@@ -34,7 +34,6 @@ import soot.options.Options;
  * actually exist; the actual target of the reference is determined according to the resolution procedure in the Java Virtual
  * Machine Specification, 2nd ed, section 5.4.3.2.
  */
-
 public class AbstractSootFieldRef implements SootFieldRef {
   private static final Logger logger = LoggerFactory.getLogger(AbstractSootFieldRef.class);
 
@@ -42,6 +41,8 @@ public class AbstractSootFieldRef implements SootFieldRef {
   private final String name;
   private final Type type;
   private final boolean isStatic;
+
+  private SootField resolveCache = null;
 
   public AbstractSootFieldRef(SootClass declaringClass, String name, Type type, boolean isStatic) {
     if (declaringClass == null) {
@@ -102,7 +103,12 @@ public class AbstractSootFieldRef implements SootFieldRef {
 
   @Override
   public SootField resolve() {
-    return resolve(null);
+    SootField cached = this.resolveCache;
+    if (cached == null) { // Use the cached SootField if available
+      cached = resolve(null);
+      this.resolveCache = cached;
+    }
+    return cached;
   }
 
   private SootField checkStatic(SootField ret) {
