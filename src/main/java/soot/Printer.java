@@ -31,22 +31,28 @@ import java.util.StringTokenizer;
 import java.util.function.Function;
 
 import soot.options.Options;
+import soot.tagkit.Host;
 import soot.tagkit.JimpleLineNumberTag;
 import soot.tagkit.Tag;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.Chain;
 import soot.util.DeterministicHashMap;
 
-/** Prints out a class and all its methods. */
+/**
+ * Prints out a class and all its methods.
+ */
 public class Printer {
+
   public static final int USE_ABBREVIATIONS = 0x0001, ADD_JIMPLE_LN = 0x0010;
+
   private int options = 0;
   private int jimpleLnNum = 0; // actual line number
   private Function<Body, LabeledUnitPrinter> customUnitPrinter;
   private Function<SootClass, String> customClassSignaturePrinter;
   private Function<SootMethod, String> customMethodSignaturePrinter;
 
-  public Printer(Singletons.Global g) {}
+  public Printer(Singletons.Global g) {
+  }
 
   public static Printer v() {
     return G.v().soot_Printer();
@@ -78,7 +84,7 @@ public class Printer {
 
   public void incJimpleLnNum() {
     jimpleLnNum++;
-    // logger.debug("jimple Ln Num: "+jimpleLnNum);
+    // logger.debug("jimple Ln Num: " + jimpleLnNum);
   }
 
   public void printTo(SootClass cl, PrintWriter out) {
@@ -87,158 +93,106 @@ public class Printer {
 
     // Print class name + modifiers
     {
-      StringTokenizer st = new StringTokenizer(Modifier.toString(cl.getModifiers()));
-      while (st.hasMoreTokens()) {
+      StringBuilder sb = new StringBuilder();
+      for (StringTokenizer st = new StringTokenizer(Modifier.toString(cl.getModifiers())); st.hasMoreTokens();) {
         String tok = st.nextToken();
-        if (cl.isInterface() && tok.equals("abstract")) {
-          continue;
+        if (!cl.isInterface() || !"abstract".equals(tok)) {
+          sb.append(tok).append(' ');
         }
-        out.print(tok + " ");
       }
-
-      String classPrefix = "";
-
-      if (!cl.isInterface()) {
-        classPrefix = classPrefix + " class";
-        classPrefix = classPrefix.trim();
-      }
-
-      out.print(classPrefix + " " + printSignature(cl) + "");
+      sb.append(cl.isInterface() ? " " : "class ").append(printSignature(cl));
+      out.print(sb.toString());
     }
 
     // Print extension
-    {
-      if (cl.hasSuperclass()) {
-        out.print(" extends " + printSignature(cl.getSuperclass()) + "");
-      }
+    if (cl.hasSuperclass()) {
+      out.print(" extends " + printSignature(cl.getSuperclass()));
     }
 
     // Print interfaces
     {
       Iterator<SootClass> interfaceIt = cl.getInterfaces().iterator();
-
       if (interfaceIt.hasNext()) {
-        out.print(" implements ");
-
-        out.print("" + printSignature(interfaceIt.next()) + "");
-
+        out.print(" implements " + printSignature(interfaceIt.next()));
         while (interfaceIt.hasNext()) {
-          out.print(",");
-          out.print(" " + printSignature(interfaceIt.next()) + "");
+          out.print(", " + printSignature(interfaceIt.next()));
         }
       }
     }
 
     out.println();
     incJimpleLnNum();
-    /*
-     * if (!addJimpleLn()) { Iterator clTagsIt = cl.getTags().iterator(); while (clTagsIt.hasNext()) { final Tag t =
-     * (Tag)clTagsIt.next(); out.println(t); } }
-     */
-    out.println("{");
+    // if (!addJimpleLn()) {
+    // for (Tag t : cl.getTags()) {
+    // out.println(t);
+    // }
+    // }
+    out.println('{');
     incJimpleLnNum();
-    if (Options.v().print_tags_in_output()) {
-      Iterator<Tag> cTagIterator = cl.getTags().iterator();
-      while (cTagIterator.hasNext()) {
-        Tag t = cTagIterator.next();
-        out.print("/*");
-        out.print(t.toString());
-        out.println("*/");
+    final boolean printTagsInOutput = Options.v().print_tags_in_output();
+    if (printTagsInOutput) {
+      for (Tag t : cl.getTags()) {
+        out.println("/*" + t.toString() + "*/");
       }
     }
 
     // Print fields
-    {
-      Iterator<SootField> fieldIt = cl.getFields().iterator();
-
-      if (fieldIt.hasNext()) {
-        while (fieldIt.hasNext()) {
-          SootField f = fieldIt.next();
-
-          if (f.isPhantom()) {
-            continue;
+    for (SootField f : cl.getFields()) {
+      if (!f.isPhantom()) {
+        if (printTagsInOutput) {
+          for (Tag t : f.getTags()) {
+            out.println("/*" + t.toString() + "*/");
           }
-
-          if (Options.v().print_tags_in_output()) {
-            Iterator<Tag> fTagIterator = f.getTags().iterator();
-            while (fTagIterator.hasNext()) {
-              Tag t = fTagIterator.next();
-              out.print("/*");
-              out.print(t.toString());
-              out.println("*/");
-            }
-          }
-          out.println("    " + f.getDeclaration() + ";");
-          if (addJimpleLn()) {
-            setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), f));
-          }
-
-          // incJimpleLnNum();
         }
+        out.println("    " + f.getDeclaration() + ";");
+        if (addJimpleLn()) {
+          setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), f));
+        }
+        // incJimpleLnNum();
       }
     }
 
     // Print methods
     {
       Iterator<SootMethod> methodIt = cl.methodIterator();
-
       if (methodIt.hasNext()) {
         if (cl.getMethodCount() != 0) {
           out.println();
           incJimpleLnNum();
         }
 
-        while (methodIt.hasNext()) {
+        do { // condition already checked
           SootMethod method = methodIt.next();
 
           if (method.isPhantom()) {
             continue;
           }
 
-          if (!Modifier.isAbstract(method.getModifiers())
-              && !Modifier.isNative(method.getModifiers())) {
-            if (!method.hasActiveBody()) {
-              method.retrieveActiveBody(); // force loading the body
-              if (!method.hasActiveBody()) {
-                throw new RuntimeException("method " + method.getName() + " has no active body!");
-              }
-            } else if (Options.v().print_tags_in_output()) {
-              Iterator<Tag> mTagIterator = method.getTags().iterator();
-              while (mTagIterator.hasNext()) {
-                Tag t = mTagIterator.next();
-                out.print("/*");
-                out.print(t.toString());
-                out.println("*/");
+          if (!Modifier.isAbstract(method.getModifiers()) && !Modifier.isNative(method.getModifiers())) {
+            Body body = method.retrieveActiveBody(); // force loading the body
+            if (body == null) { // in case we don't have it
+              throw new RuntimeException("method " + method.getName() + " has no active body!");
+            }
+            if (printTagsInOutput) {
+              for (Tag t : method.getTags()) {
+                out.println("/*" + t.toString() + "*/");
               }
             }
-            printTo(method.getActiveBody(), out);
-
-            if (methodIt.hasNext()) {
-              out.println();
-              incJimpleLnNum();
-            }
+            printTo(body, out);
           } else {
-
-            if (Options.v().print_tags_in_output()) {
-              Iterator<Tag> mTagIterator = method.getTags().iterator();
-              while (mTagIterator.hasNext()) {
-                Tag t = mTagIterator.next();
-                out.print("/*");
-                out.print(t.toString());
-                out.println("*/");
+            if (printTagsInOutput) {
+              for (Tag t : method.getTags()) {
+                out.println("/*" + t.toString() + "*/");
               }
             }
-
-            out.print("    ");
-            out.print(method.getDeclaration());
-            out.println(";");
+            out.println("    " + method.getDeclaration() + ";");
             incJimpleLnNum();
-            if (methodIt.hasNext()) {
-              out.println();
-              incJimpleLnNum();
-            }
           }
-        }
+          if (methodIt.hasNext()) {
+            out.println();
+            incJimpleLnNum();
+          }
+        } while (methodIt.hasNext());
       }
     }
     out.println("}");
@@ -246,49 +200,40 @@ public class Printer {
   }
 
   /**
-   * Prints out the method corresponding to b Body, (declaration and body), in the textual format
-   * corresponding to the IR used to encode b body.
+   * Prints out the method corresponding to the {@link Body}, (declaration and body) in the textual format corresponding to
+   * the IR used to encode the {@link Body}.
    *
-   * @param out a PrintWriter instance to print to.
+   * @param b
+   *          the Body instance to print.
+   * @param out
+   *          a PrintWriter instance to print to.
    */
   public void printTo(Body b, PrintWriter out) {
     // b.validate();
-
-    String decl = printSignature(b.getMethod());
-
-    out.println("    " + decl);
+    out.println("    " + printSignature(b.getMethod()));
     // incJimpleLnNum();
-
-    // only print tags if not printing attributes in a file
-    if (!addJimpleLn()) {
-      /*
-       * for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) { final Tag t = (Tag) tIt.next();
-       * out.println(t); incJimpleLnNum();
-       *
-       * }
-       */
-    }
 
     if (addJimpleLn()) {
       setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), b.getMethod()));
-      // logger.debug("added jimple ln tag for method: "+b.getMethod().toString()+"
-      // "+b.getMethod().getDeclaringClass().getName());
+      // logger.debug("added jimple ln tag for method: " + b.getMethod().toString() + " " +
+      // b.getMethod().getDeclaringClass().getName());
+    } else {
+      // only print tags if not printing attributes in a file
+      // for (Tag t : b.getMethod().getTags()) {
+      // out.println(t);
+      // incJimpleLnNum();
+      // }
     }
 
     out.println("    {");
     incJimpleLnNum();
 
-    UnitGraph unitGraph = new soot.toolkits.graph.BriefUnitGraph(b);
-
     LabeledUnitPrinter up = getUnitPrinter(b);
-
     if (addJimpleLn()) {
       up.setPositionTagger(new AttributesUnitPrinter(getJimpleLnNum()));
     }
-
     printLocalsInBody(b, up);
-
-    printStatementsInBody(b, out, up, unitGraph);
+    printStatementsInBody(b, out, up, new soot.toolkits.graph.BriefUnitGraph(b));
 
     out.println("    }");
     incJimpleLnNum();
@@ -309,58 +254,46 @@ public class Printer {
   private LabeledUnitPrinter getUnitPrinter(Body b) {
     if (customUnitPrinter != null) {
       return customUnitPrinter.apply(b);
-    }
-
-    boolean isPrecise = !useAbbreviations();
-    if (isPrecise) {
-      return new NormalUnitPrinter(b);
-    } else {
+    } else if (useAbbreviations()) {
       return new BriefUnitPrinter(b);
+    } else {
+      return new NormalUnitPrinter(b);
     }
   }
 
   private String printSignature(SootClass sootClass) {
     if (customClassSignaturePrinter != null) {
       return customClassSignaturePrinter.apply(sootClass);
+    } else {
+      return Scene.v().quotedNameOf(sootClass.getName());
     }
-    return Scene.v().quotedNameOf(sootClass.getName());
   }
 
   private String printSignature(SootMethod sootMethod) {
     if (customMethodSignaturePrinter != null) {
       return customMethodSignaturePrinter.apply(sootMethod);
+    } else {
+      return sootMethod.getDeclaration();
     }
-    return sootMethod.getDeclaration();
   }
 
-  /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
-  private void printStatementsInBody(
-      Body body, java.io.PrintWriter out, LabeledUnitPrinter up, UnitGraph unitGraph) {
-    Chain<Unit> units = body.getUnits();
-    Unit previousStmt;
-
-    for (Unit currentStmt : units) {
-      previousStmt = currentStmt;
-
+  /**
+   * Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>.
+   */
+  private void printStatementsInBody(Body body, java.io.PrintWriter out, LabeledUnitPrinter up, UnitGraph unitGraph) {
+    final Chain<Unit> units = body.getUnits();
+    final Unit firstUnit = units.getFirst();
+    for (final Unit currentStmt : units) {
       // Print appropriate header.
       {
         // Put an empty line if the previous node was a branch node, the current node is a join node
         // or the previous statement does not have body statement as a successor, or if
         // body statement has a label on it
-
-        if (currentStmt != units.getFirst()) {
-          if (unitGraph.getSuccsOf(previousStmt).size() != 1
-              || unitGraph.getPredsOf(currentStmt).size() != 1
+        if (currentStmt != firstUnit) {
+          List<Unit> succs = unitGraph.getSuccsOf(currentStmt);
+          if (succs.size() != 1 || succs.get(0) != currentStmt || unitGraph.getPredsOf(currentStmt).size() != 1
               || up.labels().containsKey(currentStmt)) {
             up.newline();
-          } else {
-            // Or if the previous node does not have body statement as a successor.
-
-            List<Unit> succs = unitGraph.getSuccsOf(previousStmt);
-
-            if (succs.get(0) != currentStmt) {
-              up.newline();
-            }
           }
         }
 
@@ -386,20 +319,20 @@ public class Printer {
       // because they mess up line number
       // if (!addJimpleLn()) {
       if (Options.v().print_tags_in_output()) {
-        Iterator<Tag> tagIterator = currentStmt.getTags().iterator();
-        while (tagIterator.hasNext()) {
-          Tag t = tagIterator.next();
+        for (Tag t : currentStmt.getTags()) {
           up.noIndent();
           up.literal("/*");
           up.literal(t.toString());
           up.literal("*/");
           up.newline();
         }
-        /*
-         * Iterator udIt = currentStmt.getUseAndDefBoxes().iterator(); while (udIt.hasNext()) { ValueBox temp =
-         * (ValueBox)udIt.next(); Iterator vbtags = temp.getTags().iterator(); while (vbtags.hasNext()) { Tag t = (Tag)
-         * vbtags.next(); up.noIndent(); up.literal("VB Tag: "+t.toString()); up.newline(); } }
-         */
+        // for (ValueBox temp : currentStmt.getUseAndDefBoxes()) {
+        // for (Tag t : temp.getTags()) {
+        // up.noIndent();
+        // up.literal("VB Tag: " + t.toString());
+        // up.newline();
+        // }
+        // }
       }
     }
 
@@ -411,100 +344,58 @@ public class Printer {
     // Print out exceptions
     {
       Iterator<Trap> trapIt = body.getTraps().iterator();
-
       if (trapIt.hasNext()) {
         out.println();
         incJimpleLnNum();
-      }
-
-      while (trapIt.hasNext()) {
-        Trap trap = trapIt.next();
-
-        out.println(
-            "        catch "
-                + printSignature(trap.getException())
-                + " from "
-                + up.labels().get(trap.getBeginUnit())
-                + " to "
-                + up.labels().get(trap.getEndUnit())
-                + " with "
-                + up.labels().get(trap.getHandlerUnit())
-                + ";");
-
-        incJimpleLnNum();
+        do { // condition already checked
+          Trap trap = trapIt.next();
+          Map<Unit, String> lbls = up.labels();
+          out.println("        catch " + printSignature(trap.getException()) + " from " + lbls.get(trap.getBeginUnit())
+              + " to " + lbls.get(trap.getEndUnit()) + " with " + lbls.get(trap.getHandlerUnit()) + ";");
+          incJimpleLnNum();
+        } while (trapIt.hasNext());
       }
     }
   }
 
-  private int addJimpleLnTags(int lnNum, SootMethod meth) {
-    meth.addTag(new JimpleLineNumberTag(lnNum));
-    lnNum++;
-    return lnNum;
+  private int addJimpleLnTags(int lnNum, Host h) {
+    h.addTag(new JimpleLineNumberTag(lnNum));
+    return lnNum + 1;
   }
 
-  private int addJimpleLnTags(int lnNum, SootField f) {
-    f.addTag(new JimpleLineNumberTag(lnNum));
-    lnNum++;
-    return lnNum;
-  }
-
-  /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
+  /**
+   * Prints the Locals in the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>.
+   */
   private void printLocalsInBody(Body body, UnitPrinter up) {
-    // Print out local variables
-    {
-      Map<Type, List<Local>> typeToLocals =
-          new DeterministicHashMap<Type, List<Local>>(body.getLocalCount() * 2 + 1, 0.7f);
+    Map<Type, List<Local>> typeToLocals = new DeterministicHashMap<Type, List<Local>>(body.getLocalCount() * 2 + 1, 0.7f);
 
-      // Collect locals
-      {
-        Iterator<Local> localIt = body.getLocals().iterator();
+    // Collect locals
+    for (Local local : body.getLocals()) {
+      Type t = local.getType();
+      List<Local> localList = typeToLocals.get(t);
+      if (localList == null) {
+        typeToLocals.put(t, localList = new ArrayList<Local>());
+      }
+      localList.add(local);
+    }
 
-        while (localIt.hasNext()) {
-          Local local = localIt.next();
-
-          List<Local> localList;
-
-          Type t = local.getType();
-
-          if (typeToLocals.containsKey(t)) {
-            localList = typeToLocals.get(t);
-          } else {
-            localList = new ArrayList<Local>();
-            typeToLocals.put(t, localList);
-          }
-
-          localList.add(local);
+    // Print locals
+    for (Map.Entry<Type, List<Local>> e : typeToLocals.entrySet()) {
+      up.type(e.getKey());
+      up.literal(" ");
+      for (Iterator<Local> it = e.getValue().iterator(); it.hasNext();) {
+        Local l = it.next();
+        up.local(l);
+        if (it.hasNext()) {
+          up.literal(", ");
         }
       }
+      up.literal(";");
+      up.newline();
+    }
 
-      // Print locals
-      {
-        Iterator<Type> typeIt = typeToLocals.keySet().iterator();
-
-        while (typeIt.hasNext()) {
-          Type type = typeIt.next();
-
-          List<Local> localList = typeToLocals.get(type);
-          Object[] locals = localList.toArray();
-          up.type(type);
-          up.literal(" ");
-
-          for (int k = 0; k < locals.length; k++) {
-            if (k != 0) {
-              up.literal(", ");
-            }
-
-            up.local((Local) locals[k]);
-          }
-
-          up.literal(";");
-          up.newline();
-        }
-      }
-
-      if (!typeToLocals.isEmpty()) {
-        up.newline();
-      }
+    if (!typeToLocals.isEmpty()) {
+      up.newline();
     }
   }
 }
