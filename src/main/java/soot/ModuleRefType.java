@@ -92,7 +92,7 @@ public class ModuleRefType extends RefType {
    */
   @Override
   public Type merge(Type other, Scene cm) {
-    if (other.equals(UnknownType.v()) || this.equals(other)) {
+    if (UnknownType.v().equals(other) || this.equals(other)) {
       return this;
     }
 
@@ -142,7 +142,6 @@ public class ModuleRefType extends RefType {
         return commonClass.getType();
       }
     }
-
   }
 
   @Override
