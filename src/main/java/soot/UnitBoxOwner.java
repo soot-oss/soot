@@ -31,8 +31,9 @@ import java.util.List;
  * Currently this is implemented by soot.shimple.PhiExpr and used by soot.jimple.internal.JAssignStmt.
  *
  * @author Navindra Umanee
- **/
+ */
 public interface UnitBoxOwner {
+
   public List<UnitBox> getUnitBoxes();
 
   public void clearUnitBoxes();
