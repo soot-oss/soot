@@ -1223,9 +1223,7 @@ public class DexPrinter {
     LabelAssigner labelAssinger = new LabelAssigner(builder);
     List<BuilderInstruction> instructions = stmtV.getRealInsns(labelAssinger);
 
-    fixLongJumps(instructions, labelAssinger, stmtV);
-
-    Map<Local, Integer> seenRegisters = new HashMap<Local, Integer>();
+    Map<Local, Integer> seenRegisters = new HashMap<>();
     Map<Instruction, LocalRegisterAssignmentInformation> instructionRegisterMap = stmtV.getInstructionRegisterMap();
 
     if (Options.v().write_local_annotations()) {
@@ -1239,6 +1237,10 @@ public class DexPrinter {
         addRegisterAssignmentDebugInfo(assignment, seenRegisters, builder);
       }
     }
+
+    // Do not insert instructions into the instruction list after this step.
+    // Otherwise the jump offsets again may exceed the maximum offset limit!
+    fixLongJumps(instructions, labelAssinger, stmtV);
 
     for (BuilderInstruction ins : instructions) {
       Stmt origStmt = stmtV.getStmtForInstruction(ins);
@@ -1339,10 +1341,10 @@ public class DexPrinter {
    */
   private void fixLongJumps(List<BuilderInstruction> instructions, LabelAssigner labelAssigner, StmtVisitor stmtV) {
     // Only construct the maps once and update them afterwards
-    Map<Instruction, Integer> instructionsToIndex = new HashMap<Instruction, Integer>();
-    List<Integer> instructionsToOffsets = new ArrayList<Integer>();
-    Map<Label, Integer> labelsToOffsets = new HashMap<Label, Integer>();
-    Map<Label, Integer> labelsToIndex = new HashMap<Label, Integer>();
+    Map<Instruction, Integer> instructionsToIndex = new HashMap<>();
+    List<Integer> instructionsToOffsets = new ArrayList<>();
+    Map<Label, Integer> labelsToOffsets = new HashMap<>();
+    Map<Label, Integer> labelsToIndex = new HashMap<>();
 
     boolean hasChanged;
     l0: do {
@@ -1385,8 +1387,38 @@ public class DexPrinter {
               continue;
             }
 
-            int distance = instructionsToOffsets.get(j) - targetOffset;
-            if (Math.abs(distance) > offsetInsn.getMaxJumpOffset()) {
+            int distance = Math.abs(targetOffset - instructionsToOffsets.get(j));
+
+            if (distance <= offsetInsn.getMaxJumpOffset()) {
+              // Calculate how much the offset can change when CONST_STRING (4 byte) instructions are later converted to
+              // CONST_STRING_JUMBO instructions (6 byte). This can happen if the app has more than 2^16 strings
+              Integer targetIndex = labelsToIndex.get(boj.getTarget());
+              if (targetIndex != null) {
+                int start = Math.min(targetIndex, j);
+                int end = Math.max(targetIndex, j);
+
+                /*
+                 * Assuming every instruction between this instruction and the jump target is a CONST_STRING instruction, how
+                 * much could the distance increase?
+                 * 
+                 * Because we only spend the effort to count the number of CONST_STRING instructions if there is a real
+                 * chance that it changes the distance to overflow the allowed maximum.
+                 */
+                int theoreticalMaximumIncrease = (end - start) * 2; // maximum increase = number of instructions * 2 byte
+                if (distance + theoreticalMaximumIncrease > offsetInsn.getMaxJumpOffset()) {
+                  //
+                  int countConstString = 0;
+                  for (int z = start; z <= end; z++) {
+                    if (instructions.get(z).getOpcode() == Opcode.CONST_STRING) {
+                      countConstString++;
+                    }
+                  }
+                  int maxOffsetChange = countConstString * 2; // each CONST_STRING may grow by 2 bytes
+                  distance += maxOffsetChange;
+                }
+              }
+            }
+            if (distance > offsetInsn.getMaxJumpOffset()) {
               // We need intermediate jumps
               insertIntermediateJump(labelsToIndex.get(boj.getTarget()), j, stmtV, instructions, labelAssigner);
               hasChanged = true;

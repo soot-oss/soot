@@ -22,7 +22,6 @@ package soot.jimple.toolkits.pointer;
  * #L%
  */
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -37,8 +36,9 @@ import soot.Type;
 /** Represents a set of (local,type) pairs using a bit-vector. */
 class LocalTypeSet extends java.util.BitSet {
   private static final Logger logger = LoggerFactory.getLogger(LocalTypeSet.class);
-  protected List<Local> locals;
-  protected List<Type> types;
+
+  protected final List<Local> locals;
+  protected final List<Type> types;
 
   /**
    * Constructs a new empty set given a list of all locals and types that may ever be in the set.
@@ -54,25 +54,29 @@ class LocalTypeSet extends java.util.BitSet {
 
   /** Returns the number of the bit corresponding to the pair (l,t). */
   protected int indexOf(Local l, RefType t) {
-    if (locals.indexOf(l) == -1 || types.indexOf(t) == -1) {
+    int index_l = locals.indexOf(l);
+    int index_t = types.indexOf(t);
+    if (index_l == -1 || index_t == -1) {
       throw new RuntimeException("Invalid local or type in LocalTypeSet");
     }
-    return locals.indexOf(l) * types.size() + types.indexOf(t);
+    return index_l * types.size() + index_t;
   }
 
   /** Removes all pairs corresponding to local l from the set. */
   public void killLocal(Local l) {
-    int base = types.size() * locals.indexOf(l);
-    for (int i = 0; i < types.size(); i++) {
+    int typesSize = types.size();
+    int base = typesSize * locals.indexOf(l);
+    for (int i = 0; i < typesSize; i++) {
       clear(i + base);
     }
   }
 
   /** For each pair (from,t), adds a pair (to,t). */
   public void localCopy(Local to, Local from) {
-    int baseTo = types.size() * locals.indexOf(to);
-    int baseFrom = types.size() * locals.indexOf(from);
-    for (int i = 0; i < types.size(); i++) {
+    int typesSize = types.size();
+    int baseTo = typesSize * locals.indexOf(to);
+    int baseFrom = typesSize * locals.indexOf(from);
+    for (int i = 0; i < typesSize; i++) {
       if (get(i + baseFrom)) {
         set(i + baseTo);
       } else {
@@ -83,14 +87,14 @@ class LocalTypeSet extends java.util.BitSet {
 
   /** Empties the set. */
   public void clearAllBits() {
-    for (int i = 0; i < types.size() * locals.size(); i++) {
+    for (int i = 0, e = types.size() * locals.size(); i < e; i++) {
       clear(i);
     }
   }
 
   /** Fills the set to contain all possible (local,type) pairs. */
   public void setAllBits() {
-    for (int i = 0; i < types.size() * locals.size(); i++) {
+    for (int i = 0, e = types.size() * locals.size(); i < e; i++) {
       set(i);
     }
   }
@@ -106,21 +110,18 @@ class LocalTypeSet extends java.util.BitSet {
     }
   }
 
+  @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer();
-    Iterator<Local> localsIt = locals.iterator();
-    while (localsIt.hasNext()) {
-      Local l = localsIt.next();
-      Iterator<Type> typesIt = types.iterator();
-      while (typesIt.hasNext()) {
-        RefType t = (RefType) typesIt.next();
-        int index = indexOf(l, t);
-        // logger.debug("for: "+l+" and type: "+t+" at: "+index);
+    StringBuilder sb = new StringBuilder();
+    for (Local l : locals) {
+      for (Type t : types) {
+        RefType rt = (RefType) t;
+        int index = indexOf(l, rt);
+        // logger.debug("for: " + l + " and type: " + rt + " at: " + index);
         if (get(index)) {
-          sb.append("((" + l + "," + t + ") -> elim cast check) ");
+          sb.append("((").append(l).append(',').append(rt).append(") -> elim cast check) ");
         }
       }
-
     }
     return sb.toString();
   }

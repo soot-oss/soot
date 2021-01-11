@@ -27,22 +27,25 @@ import java.util.HashSet;
 import java.util.Set;
 
 import soot.PointsToSet;
+import soot.Type;
 
 public class MemoryEfficientRasUnion extends Union {
+
   HashSet<PointsToSet> subsets;
 
+  @Override
   public boolean isEmpty() {
-    if (subsets == null) {
-      return true;
-    }
-    for (PointsToSet subset : subsets) {
-      if (!subset.isEmpty()) {
-        return false;
+    if (subsets != null) {
+      for (PointsToSet subset : subsets) {
+        if (!subset.isEmpty()) {
+          return false;
+        }
       }
     }
     return true;
   }
 
+  @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     if (subsets == null) {
       return true;
@@ -61,45 +64,48 @@ public class MemoryEfficientRasUnion extends Union {
     return false;
   }
 
+  @Override
   public boolean addAll(PointsToSet s) {
-    boolean result;
-
     if (subsets == null) {
       subsets = new HashSet<PointsToSet>();
     }
+
     if (s instanceof MemoryEfficientRasUnion) {
       MemoryEfficientRasUnion meru = (MemoryEfficientRasUnion) s;
-      if (meru.subsets == null || subsets.containsAll(meru.subsets)) {
+      if (meru.subsets == null || this.subsets.containsAll(meru.subsets)) {
         return false;
       }
-      result = subsets.addAll(meru.subsets);
+      return this.subsets.addAll(meru.subsets);
     } else {
-      result = subsets.add(s);
+      return this.subsets.add(s);
     }
 
-    return result;
   }
 
+  @Override
   public Object clone() {
     MemoryEfficientRasUnion ret = new MemoryEfficientRasUnion();
     ret.addAll(this);
     return ret;
   }
 
-  public Set possibleTypes() {
+  @Override
+  public Set<Type> possibleTypes() {
     if (subsets == null) {
-      return Collections.EMPTY_SET;
+      return Collections.emptySet();
+    } else {
+      HashSet<Type> ret = new HashSet<Type>();
+      for (PointsToSet subset : subsets) {
+        ret.addAll(subset.possibleTypes());
+      }
+      return ret;
     }
-    HashSet ret = new HashSet();
-    for (PointsToSet subset : subsets) {
-      ret.addAll(subset.possibleTypes());
-    }
-    return ret;
   }
 
   /**
    * {@inheritDoc}
    */
+  @Override
   public int hashCode() {
     final int PRIME = 31;
     int result = 1;
@@ -110,22 +116,20 @@ public class MemoryEfficientRasUnion extends Union {
   /**
    * {@inheritDoc}
    */
+  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (obj == null || this.getClass() != obj.getClass()) {
       return false;
     }
     final MemoryEfficientRasUnion other = (MemoryEfficientRasUnion) obj;
-    if (subsets == null) {
+    if (this.subsets == null) {
       if (other.subsets != null) {
         return false;
       }
-    } else if (!subsets.equals(other.subsets)) {
+    } else if (!this.subsets.equals(other.subsets)) {
       return false;
     }
     return true;
@@ -134,12 +138,8 @@ public class MemoryEfficientRasUnion extends Union {
   /**
    * {@inheritDoc}
    */
+  @Override
   public String toString() {
-    if (subsets == null) {
-      return "[]";
-    } else {
-      return subsets.toString();
-    }
+    return (subsets == null) ? "[]" : subsets.toString();
   }
-
 }
