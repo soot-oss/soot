@@ -179,8 +179,6 @@ public class SimpleLocalDefs implements LocalDefs {
           if (v instanceof Local) {
             Local l = (Local) v;
             int lno = getLocalNumber(l);
-            if (lno + 1 >= localRange.length)
-              System.out.println();
             return (localRange[lno] == localRange[lno + 1]);
           }
         }
@@ -385,8 +383,6 @@ public class SimpleLocalDefs implements LocalDefs {
           Local l = (Local) v;
           int lno = getLocalNumber(l);
 
-          if (lno >= unitList.length)
-            System.out.println();
           switch (unitList[lno].size()) {
             case 0:
               unitList[lno] = Collections.singletonList(unit);
