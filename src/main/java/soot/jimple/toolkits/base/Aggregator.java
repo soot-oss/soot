@@ -127,7 +127,7 @@ public class Aggregator extends BodyTransformer {
     Chain<Unit> units = body.getUnits();
 
     ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
-    LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(graph);
+    LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph);
     LocalUses localUses = LocalUses.Factory.newLocalUses(body, localDefs);
 
     List<Unit> unitList = new PseudoTopologicalOrderer<Unit>().newList(graph, false);

@@ -36,6 +36,7 @@ import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
+import soot.G;
 import soot.IntType;
 import soot.IntegerType;
 import soot.Local;
@@ -590,7 +591,7 @@ public class TypeResolver {
    * Taken from the soot.jimple.toolkits.typing.TypeResolver class of Soot version 2.2.5.
    */
   private void split_new() {
-    LocalDefs defs = LocalDefs.Factory.newLocalDefs(jb);
+    LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(jb);
     PatchingChain<Unit> units = this.jb.getUnits();
     Stmt[] stmts = new Stmt[units.size()];
 
