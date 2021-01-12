@@ -496,6 +496,20 @@ public class Singletons {
     	instance_soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder = null;
     }
 
+    private soot.jimple.toolkits.scalar.ConditionalConstantPropagatorAndFolder instance_soot_jimple_toolkits_scalar_ConditionalConstantPropagatorAndFolder;
+    public soot.jimple.toolkits.scalar.ConditionalConstantPropagatorAndFolder soot_jimple_toolkits_scalar_ConditionalConstantPropagatorAndFolder() {
+        if (instance_soot_jimple_toolkits_scalar_ConditionalConstantPropagatorAndFolder == null) {
+	       	synchronized (this) {
+		        if (instance_soot_jimple_toolkits_scalar_ConditionalConstantPropagatorAndFolder == null)
+                instance_soot_jimple_toolkits_scalar_ConditionalConstantPropagatorAndFolder = new soot.jimple.toolkits.scalar.ConditionalConstantPropagatorAndFolder(g);
+	       	}
+       	}
+        return instance_soot_jimple_toolkits_scalar_ConditionalConstantPropagatorAndFolder;
+    }
+    protected void release_soot_jimple_toolkits_scalar_ConditionalConstantPropagatorAndFolder() {
+    	instance_soot_jimple_toolkits_scalar_ConditionalConstantPropagatorAndFolder = null;
+    }
+
     private soot.grimp.toolkits.base.ConstructorFolder instance_soot_grimp_toolkits_base_ConstructorFolder;
     public soot.grimp.toolkits.base.ConstructorFolder soot_grimp_toolkits_base_ConstructorFolder() {
         if (instance_soot_grimp_toolkits_base_ConstructorFolder == null) {
