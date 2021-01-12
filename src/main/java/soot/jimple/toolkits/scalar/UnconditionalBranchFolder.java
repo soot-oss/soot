@@ -63,19 +63,19 @@ public class UnconditionalBranchFolder extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    StmtBody body = (StmtBody) b;
+    final boolean verbose = Options.v().verbose();
 
-    if (Options.v().verbose()) {
-      logger.debug("[" + body.getMethod().getName() + "] Folding unconditional branches...");
+    if (verbose) {
+      logger.debug("[" + b.getMethod().getName() + "] Folding unconditional branches...");
     }
-    final Transformer transformer = new Transformer(body);
+    final Transformer transformer = new Transformer((StmtBody) b);
     int iter = 0;
     Result res;
     do {
       res = transformer.transform();
-      if (Options.v().verbose()) {
+      if (verbose) {
         iter++;
-        logger.debug("[" + body.getMethod().getName() + "]     " + res.getNumFixed(BranchType.TOTAL_COUNT) + " of "
+        logger.debug("[" + b.getMethod().getName() + "]     " + res.getNumFixed(BranchType.TOTAL_COUNT) + " of "
             + res.getNumFound(BranchType.TOTAL_COUNT) + " branches folded in iteration " + iter + ".");
       }
     } while (res.modified);
@@ -307,25 +307,28 @@ public class UnconditionalBranchFolder extends BodyTransformer {
         return new HandleRes(BranchType.IF_TO_GOTO, false);
       } else if (target instanceof IfStmt) {
         // "if C goto [if C goto X]" -> "if C goto X"
-        if (!isShimple || removalIsSafeInShimple(target)) {
-          final IfStmt targetAsIfStmt = (IfStmt) target;
-          // Perform "jump threading" optimization. If the target IfStmt
-          // has the same condition as the first IfStmt, then the first
-          // should jump directly to the target of the target IfStmt.
-          // TODO: This could also be done when the first condition
-          // implies the second but that's obviously more complicated
-          // to check. Could even do something if the first implies
-          // the negation of the second.
-          if (ifStmt.getCondition().equivTo(targetAsIfStmt.getCondition())) {
-            if (isShimple) {
-              // NOTE: It is safe to redirect all PhiExpr pointers since removalIsSafeInShimple(..) ensures there is a single
-              // predecessor for 'target' and we know 'ifStmt' is that predecessor. Hence, 'target' becomes unreachable which
-              // means any PhiExpr that had 'target' as a predecessor now has 'ifStmt' as a predecessor instead.
-              assert (hasNoPointersOrSingleJumpPred(target, ifStmt));
-              Shimple.redirectPointers(target, ifStmt);
+        if (ifStmt != target) { // skip when IfStmt jumps to itself
+          if (!isShimple || removalIsSafeInShimple(target)) {
+            final IfStmt targetAsIfStmt = (IfStmt) target;
+            // Perform "jump threading" optimization. If the target IfStmt
+            // has the same condition as the first IfStmt, then the first
+            // should jump directly to the target of the target IfStmt.
+            // TODO: This could also be done when the first condition
+            // implies the second but that's obviously more complicated
+            // to check. Could even do something if the first implies
+            // the negation of the second.
+            if (ifStmt.getCondition().equivTo(targetAsIfStmt.getCondition())) {
+              if (isShimple) {
+                // NOTE: It is safe to redirect all PhiExpr pointers since removalIsSafeInShimple(..)
+                // ensures there is a single predecessor for 'target' and we know 'ifStmt' is that
+                // predecessor. Hence, 'target' becomes unreachable which means any PhiExpr that
+                // had 'target' as a predecessor now has 'ifStmt' as a predecessor instead.
+                assert (hasNoPointersOrSingleJumpPred(target, ifStmt));
+                Shimple.redirectPointers(target, ifStmt);
+              }
+              ifStmt.setTarget(targetAsIfStmt.getTarget());
+              return new HandleRes(BranchType.IF_TO_IF, true);
             }
-            ifStmt.setTarget(targetAsIfStmt.getTarget());
-            return new HandleRes(BranchType.IF_TO_IF, true);
           }
         }
         return new HandleRes(BranchType.IF_TO_IF, false);
