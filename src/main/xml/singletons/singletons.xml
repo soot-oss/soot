@@ -33,6 +33,7 @@
   <class>soot.jimple.toolkits.scalar.CommonSubexpressionEliminator</class>
   <class>soot.jimple.toolkits.scalar.ConditionalBranchFolder</class>
   <class>soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder</class>
+  <class>soot.jimple.toolkits.scalar.ConditionalConstantPropagatorAndFolder</class>
   <class>soot.grimp.toolkits.base.ConstructorFolder</class>
   <class>soot.jimple.toolkits.scalar.CopyPropagator</class>
   <class>soot.jimple.toolkits.graph.CriticalEdgeRemover</class>
