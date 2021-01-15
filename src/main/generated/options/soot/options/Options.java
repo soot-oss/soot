@@ -443,6 +443,10 @@ public class Options extends OptionsBase {
             )
                 allow_phantom_elms = true;
             else if (false
+                    || option.equals("allow-cg-errors")
+            )
+                allow_cg_errors = true;
+            else if (false
                     || option.equals("no-bodies-for-excluded")
             )
                 no_bodies_for_excluded = true;
@@ -1510,6 +1514,10 @@ public class Options extends OptionsBase {
     private boolean allow_phantom_elms = false;
     public void set_allow_phantom_elms(boolean setting) { allow_phantom_elms = setting; }
 
+    public boolean allow_cg_errors() { return allow_cg_errors; }
+    private boolean allow_cg_errors = false;
+    public void set_allow_cg_errors(boolean setting) { allow_cg_errors = setting; }
+
     public boolean no_bodies_for_excluded() { return no_bodies_for_excluded; }
     private boolean no_bodies_for_excluded = false;
     public void set_no_bodies_for_excluded(boolean setting) { no_bodies_for_excluded = setting; }
@@ -1751,6 +1759,7 @@ public class Options extends OptionsBase {
                 + padOpt("-full-resolver", "Force transitive resolving of referenced classes")
                 + padOpt("-allow-phantom-refs", "Allow unresolved classes; may cause errors")
                 + padOpt("-allow-phantom-elms", "Allow phantom methods and fields in non-phantom classes")
+                + padOpt("-allow-cg-errors", "Allow Errors during callgraph construction")
                 + padOpt("-no-bodies-for-excluded", "Do not load bodies for excluded classes")
                 + padOpt("-j2me", "Use J2ME mode; changes assignment of types")
                 + padOpt("-main-class ARG", "Sets the main class for whole-program analysis.")
