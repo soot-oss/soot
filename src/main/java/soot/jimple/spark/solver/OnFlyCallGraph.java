@@ -48,6 +48,7 @@ import soot.jimple.toolkits.callgraph.ContextManager;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.OnFlyCallGraphBuilder;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
+import soot.options.Options;
 import soot.util.queue.QueueReader;
 
 /**
@@ -114,7 +115,12 @@ public class OnFlyCallGraph {
       try {
         mpag.build();
       } catch (Exception e) {
-        logger.error(String.format("An error occurred while processing %s in callgraph", mpag.getMethod()), e);
+        String msg = String.format("An error occurred while processing %s in callgraph", mpag.getMethod());
+        if (Options.v().allow_cg_errors()) {
+          logger.error(msg, e);
+        } else {
+          throw new RuntimeException(msg, e);
+        }
       }
       mpag.addToPAG(m.context());
     }
