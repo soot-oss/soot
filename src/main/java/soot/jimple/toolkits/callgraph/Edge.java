@@ -191,8 +191,9 @@ public final class Edge implements Invalidable {
 
   @Override
   public int hashCode() {
-    if (invalid)
+    if (invalid) {
       return 0;
+    }
     int ret = (tgt.hashCode() + 20) + kind.getNumber();
     if (src != null) {
       ret = ret * 32 + src.hashCode();
