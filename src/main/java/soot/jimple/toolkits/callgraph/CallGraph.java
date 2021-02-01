@@ -106,8 +106,9 @@ public class CallGraph implements Iterable<Edge> {
         hasRemoved = true;
       }
     }
-    if (hasRemoved)
+    if (hasRemoved) {
       reader.remove(edgesToRemove);
+    }
     return hasRemoved;
   }
 
