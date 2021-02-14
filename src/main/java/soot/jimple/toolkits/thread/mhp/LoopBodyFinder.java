@@ -26,9 +26,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import soot.toolkits.graph.DirectedGraph;
+import soot.util.FastStack;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -43,7 +43,7 @@ import soot.toolkits.graph.DirectedGraph;
 
 public class LoopBodyFinder {
 
-  private final Stack<Object> stack = new Stack<Object>();
+  private final FastStack<Object> stack = new FastStack<Object>();
   private final Set<Set<Object>> loops = new HashSet<Set<Object>>();
 
   LoopBodyFinder(Map<Object, Object> backEdges, DirectedGraph g) {
@@ -66,7 +66,6 @@ public class LoopBodyFinder {
 
   private Set<Object> finder(Object tail, Object head, DirectedGraph g) {
     Set<Object> loop = new HashSet<Object>();
-    stack.empty();
     loop.add(head);
     insert(tail, loop);
     while (!stack.empty()) {
