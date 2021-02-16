@@ -38,10 +38,6 @@ public class Typing {
 
   public Typing(Collection<Local> vs) {
     map = new HashMap<Local, Type>(vs.size());
-    final BottomType bottomType = BottomType.v();
-    for (Local v : vs) {
-      this.map.put(v, bottomType);
-    }
   }
 
   public Typing(Typing tg) {
@@ -49,10 +45,17 @@ public class Typing {
   }
 
   public Type get(Local v) {
-    return this.map.get(v);
+    Type t = this.map.get(v);
+    if (t == null) {
+      return BottomType.v();
+    }
+    return t;
   }
 
   public Type set(Local v, Type t) {
+    if (t instanceof BottomType) {
+      return null;
+    }
     return this.map.put(v, t);
   }
 
