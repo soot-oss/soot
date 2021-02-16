@@ -536,7 +536,7 @@ public class TypeResolver {
 
         Type told = tg.get(v);
 
-        Collection<Type> eval = /* new ArrayList<Type>( */ef.eval(tg, rhs, stmt)/* ) */;
+        Collection<Type> eval = ef.eval(tg, rhs, stmt);
 
         boolean isFirstType = true;
         for (Type t_ : eval) {
