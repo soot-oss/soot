@@ -574,20 +574,16 @@ public class TypeResolver {
                 // The types agree, we have a type we can directly use
                 tg_ = tg;
                 wl_ = wl;
-                tg_.set(v, t);
-                if (dependsV != null) {
-                  wl_.or(dependsV);
-                }
               } else {
                 // The types do not agree, add all supertype candidates
                 tg_ = typingStrategy.createTyping(tg);
                 wl_ = (BitSet) wl.clone();
-                tg_.set(v, t);
-                if (dependsV != null) {
-                  wl_.or(dependsV);
-                }
                 WorklistElement e = new WorklistElement(tg_, wl_);
                 sigma.add(e);
+              }
+              tg_.set(v, t);
+              if (dependsV != null) {
+                wl_.or(dependsV);
               }
 
             }
