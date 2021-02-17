@@ -92,6 +92,10 @@ public class BytecodeHierarchy implements IHierarchy {
   }
 
   public static Collection<Type> lcas_(Type a, Type b) {
+    return lcas_(a, b, false);
+  }
+
+  public static Collection<Type> lcas_(Type a, Type b, boolean useWeakObjectType) {
     if (TypeResolver.typesEqual(a, b)) {
       return Collections.<Type>singletonList(a);
     } else if (a instanceof BottomType) {
@@ -127,10 +131,14 @@ public class BytecodeHierarchy implements IHierarchy {
 
       LinkedList<Type> r = new LinkedList<Type>();
       if (ts.isEmpty()) {
-        // From Java Language Spec 2nd ed., Chapter 10, Arrays
-        r.add(RefType.v("java.lang.Object"));
-        r.add(RefType.v("java.io.Serializable"));
-        r.add(RefType.v("java.lang.Cloneable"));
+        if (useWeakObjectType) {
+          r.add(new WeakObjectType("java.lang.Object"));
+        } else {
+          // From Java Language Spec 2nd ed., Chapter 10, Arrays
+          r.add(RefType.v("java.lang.Object"));
+          r.add(RefType.v("java.io.Serializable"));
+          r.add(RefType.v("java.lang.Cloneable"));
+        }
       } else {
         for (Type t : ts) {
           r.add(t.makeArrayType());
@@ -288,8 +296,8 @@ public class BytecodeHierarchy implements IHierarchy {
     return r;
   }
 
-  public Collection<Type> lcas(Type a, Type b) {
-    return lcas_(a, b);
+  public Collection<Type> lcas(Type a, Type b, boolean useWeakObjectType) {
+    return lcas_(a, b, useWeakObjectType);
   }
 
   public boolean ancestor(Type ancestor, Type child) {
