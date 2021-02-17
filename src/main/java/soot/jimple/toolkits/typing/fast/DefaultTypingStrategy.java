@@ -43,6 +43,8 @@ import soot.util.MultiMap;
  */
 public class DefaultTypingStrategy implements ITypingStrategy {
 
+  public static final ITypingStrategy INSTANCE = new DefaultTypingStrategy();
+
   @Override
   public Typing createTyping(Chain<Local> locals) {
     return new Typing(locals);
