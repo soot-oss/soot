@@ -152,7 +152,7 @@ public class AugEvalFunction implements IEvalFunction {
           } else if (tr instanceof BooleanType) {
             return tl;
           } else {
-            Collection<Type> rs = AugHierarchy.lcas_(tl, tr);
+            Collection<Type> rs = AugHierarchy.lcas_(tl, tr, false);
             // AugHierarchy.lcas_ is single-valued
             for (Type r : rs) {
               if (r instanceof BooleanType) {
@@ -231,6 +231,9 @@ public class AugEvalFunction implements IEvalFunction {
         return ((ArrayType) at).getElementType();
       } else if (at instanceof RefType) {
         RefType ref = (RefType) at;
+        if (ref instanceof WeakObjectType) {
+          return ref;
+        }
         if (ref.getSootClass().getName().equals("java.lang.Object")
             || ref.getSootClass().getName().equals("java.io.Serializable")
             || ref.getSootClass().getName().equals("java.lang.Cloneable")) {

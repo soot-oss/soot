@@ -48,7 +48,7 @@ import soot.Singletons.Global;
  * 
  * @author Steven Arzt
  */
-class WeakObjectType extends RefType {
+public class WeakObjectType extends RefType {
 
   public WeakObjectType(Global g) {
     super(g);
