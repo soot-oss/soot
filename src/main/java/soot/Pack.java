@@ -1,7 +1,5 @@
 package soot;
 
-import java.util.ArrayList;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,6 +22,7 @@ import java.util.ArrayList;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
