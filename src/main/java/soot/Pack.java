@@ -1,5 +1,7 @@
 package soot;
 
+import java.util.ArrayList;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,10 +25,8 @@ package soot;
  */
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-
-import soot.util.Chain;
-import soot.util.HashChain;
 
 /**
  * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key is the phase name.
@@ -42,7 +42,7 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
     this.name = name;
   }
 
-  Chain<Transform> opts = new HashChain<Transform>();
+  List<Transform> opts = new ArrayList<Transform>();
 
   public Iterator<Transform> iterator() {
     return opts.iterator();
@@ -64,7 +64,8 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
     PhaseOptions.v().getPM().notifyAddPack();
     for (Transform tr : opts) {
       if (tr.getPhaseName().equals(phaseName)) {
-        opts.insertAfter(t, tr);
+
+        opts.add(opts.indexOf(t) + 1, tr);
         return;
       }
     }
@@ -75,7 +76,7 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
     PhaseOptions.v().getPM().notifyAddPack();
     for (Transform tr : opts) {
       if (tr.getPhaseName().equals(phaseName)) {
-        opts.insertBefore(t, tr);
+        opts.add(opts.indexOf(t), tr);
         return;
       }
     }
