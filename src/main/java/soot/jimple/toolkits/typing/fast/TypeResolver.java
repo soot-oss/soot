@@ -180,7 +180,8 @@ public class TypeResolver {
       soot.jimple.toolkits.typing.integer.TypeResolver.resolve(this.jb);
     } else {
       for (Local v : this.jb.getLocals()) {
-        v.setType(tg.get(v));
+        Type type = tg.get(v);
+        v.setType(type);
       }
     }
   }
@@ -393,11 +394,12 @@ public class TypeResolver {
     }
   }
 
+  final BooleanType booleanType = BooleanType.v();
+  final ByteType byteType = ByteType.v();
+  final ShortType shortType = ShortType.v();
+
   private Typing typePromotion(Typing tg) {
-    final BooleanType booleanType = BooleanType.v();
-    final ByteType byteType = ByteType.v();
-    final ShortType shortType = ShortType.v();
-    boolean conversionDone;
+    boolean conversionsPending;
     do {
       AugEvalFunction ef = new AugEvalFunction(this.jb);
       AugHierarchy h = new AugHierarchy();
@@ -414,28 +416,34 @@ public class TypeResolver {
         if (uv.fail) {
           return null;
         }
+
       } while (uv.typingChanged);
 
-      conversionDone = false;
+      conversionsPending = false;
       for (Local v : this.jb.getLocals()) {
         Type t = tg.get(v);
-        if (t instanceof Integer1Type) {
-          tg.set(v, booleanType);
-          conversionDone = true;
-        } else if (t instanceof Integer127Type) {
-          tg.set(v, byteType);
-          conversionDone = true;
-        } else if (t instanceof Integer32767Type) {
-          tg.set(v, shortType);
-          conversionDone = true;
-        } else if (t instanceof WeakObjectType) {
-          tg.set(v, RefType.v(((WeakObjectType) t).getClassName()));
-          conversionDone = true;
+        Type r = convert(t);
+        if (r != null) {
+          tg.set(v, r);
+          conversionsPending = true;
         }
       }
-    } while (conversionDone);
+    } while (conversionsPending);
 
     return tg;
+  }
+
+  protected Type convert(Type t) {
+    if (t instanceof Integer1Type) {
+      return booleanType;
+    } else if (t instanceof Integer127Type) {
+      return byteType;
+    } else if (t instanceof Integer32767Type) {
+      return shortType;
+    } else if (t instanceof WeakObjectType) {
+      return RefType.v(((WeakObjectType) t).getClassName());
+    }
+    return null;
   }
 
   private int insertCasts(Typing tg, IHierarchy h, boolean countOnly) {
@@ -494,7 +502,7 @@ public class TypeResolver {
     }
   }
 
-  private Collection<Typing> applyAssignmentConstraints(Typing tg, IEvalFunction ef, IHierarchy h) {
+  protected Collection<Typing> applyAssignmentConstraints(Typing tg, IEvalFunction ef, IHierarchy h) {
     final int numAssignments = this.assignments.size();
     if (numAssignments == 0) {
       return Collections.emptyList();
@@ -562,7 +570,7 @@ public class TypeResolver {
             }
             lcas = throwable;
           } else {
-            lcas = h.lcas(told, t_);
+            lcas = h.lcas(told, t_, true);
           }
 
           for (Type t : lcas) {

@@ -26,6 +26,7 @@ package soot.jimple.toolkits.typing.fast;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import soot.Local;
 import soot.Type;
@@ -42,6 +43,10 @@ public class Typing {
 
   public Typing(Typing tg) {
     this.map = new HashMap<Local, Type>(tg.map);
+  }
+
+  public Map<Local, Type> getMap() {
+    return map;
   }
 
   public Type get(Local v) {
