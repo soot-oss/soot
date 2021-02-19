@@ -116,7 +116,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
     private final Map<String, String> gOptions;
     private final Chain<Unit> mUnits;
     private final Body mBody;
-    private final Map<Unit, Block> mUnitToBlockMap; // maps each Unit to it's containing block
+    private final Map<Unit, Block> mUnitToBlockMap; // maps each Unit to it's containing Block
     private LocalDefs mLocalDefs;
     private LocalUses mLocalUses;
 
@@ -131,17 +131,20 @@ public class LoadStoreOptimizer extends BodyTransformer {
     public void go() {
       if (!mUnits.isEmpty()) {
         buildUnitToBlockMap();
+        assert (unitToBlockMapIsValid());
 
         if (debug) {
           logger.debug("Calling optimizeLoadStore(1)\n");
         }
         optimizeLoadStores(false);
+        assert (unitToBlockMapIsValid());
 
         if (PhaseOptions.getBoolean(gOptions, "inter")) {
           if (debug) {
             logger.debug("Calling doInterBlockOptimizations");
           }
           doInterBlockOptimizations();
+          assert (unitToBlockMapIsValid());
 
           // Clear the use/def sets so they will be recomputed if running
           // optimizeLoadStores() again. Otherwise, they would contain
@@ -154,6 +157,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
             logger.debug("Calling optimizeLoadStore(2)");
           }
           optimizeLoadStores(true);
+          assert (unitToBlockMapIsValid());
         }
       }
     }
@@ -263,11 +267,12 @@ public class LoadStoreOptimizer extends BodyTransformer {
                     Unit loadUnit = uses.get(0).getUnit();
                     Block block = mUnitToBlockMap.get(unit);
                     int test = stackIndependent(unit, loadUnit, block, STORE_LOAD_ELIMINATION);
-
                     if (test == SUCCESS || test == SPECIAL_SUCCESS) {
-
                       block.remove(unit);
+                      mUnitToBlockMap.remove(unit);
                       block.remove(loadUnit);
+                      mUnitToBlockMap.remove(loadUnit);
+
                       unitIt.remove();
                       hasChanged = true;
                       hasChangedFlag = false;
@@ -309,7 +314,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
                         unitIt.remove(); // remove store from store list
 
                         block.remove(firstLoad);
+                        mUnitToBlockMap.remove(firstLoad);
                         block.remove(secondLoad);
+                        mUnitToBlockMap.remove(secondLoad);
 
                         hasChanged = true;
                         hasChangedFlag = false;
@@ -359,6 +366,13 @@ public class LoadStoreOptimizer extends BodyTransformer {
     private int pushStoreToLoad(final Unit from, final Unit to, final Block block) {
       final Unit storePred = block.getPredOf(from);
       if (storePred == null || ((Inst) storePred).getOutCount() != 1) {
+        if (debug) {
+          if (storePred == null) {
+            logger.debug("xxx: failed due: cannot move past block tail ");
+          } else {
+            logger.debug("xxx: failed due: pred out-count != 1 ");
+          }
+        }
         return FAILURE;
       }
 
@@ -543,6 +557,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
           if (unitToMove != null) {
             if (tryToMoveUnit(unitToMove, block, from, to, 0)) {
               if (stackHeight > -2 && minStackHeightAttained == -2) {
+                if (debug) {
+                  logger.debug("xxx: has changed ");
+                }
                 return HAS_CHANGED;
               }
 
@@ -570,13 +587,22 @@ public class LoadStoreOptimizer extends BodyTransformer {
           if (toPred.getOutCount() == 1 && toPred.getInCount() == 0) {
             block.remove(toPred);
             block.insertAfter(toPred, to);
-            return HAS_CHANGED; // return has changed
+            if (debug) {
+              logger.debug("xxx: (commutative) has changed ");
+            }
+            return HAS_CHANGED;
           }
+        }
+        if (debug) {
+          logger.debug("xxx: (commutative) failed due: ??? ");
         }
         return FAILURE;
       }
       if (aContext == STORE_LOAD_ELIMINATION) {
         return pushStoreToLoad(from, to, block);
+      }
+      if (debug) {
+        logger.debug("xxx: failed due: ??? ");
       }
       return FAILURE;
     }
@@ -748,11 +774,13 @@ public class LoadStoreOptimizer extends BodyTransformer {
       if (aToReplace2 != null) {
         block.insertAfter(aReplacement, aToReplace2);
         block.remove(aToReplace2);
+        mUnitToBlockMap.remove(aToReplace2);
       } else {
         block.insertAfter(aReplacement, aToReplace1);
       }
 
       block.remove(aToReplace1);
+      mUnitToBlockMap.remove(aToReplace1);
 
       // add the new unit the block map
       mUnitToBlockMap.put(aReplacement, block);
@@ -788,23 +816,29 @@ public class LoadStoreOptimizer extends BodyTransformer {
     /**
      * Performs 2 simple inter-block optimizations in order to keep some variables on the stack between blocks. Both are
      * intended to catch 'if' like constructs where the control flow branches temporarily into two paths that join up at a
-     * latter point.
+     * later point.
      */
     private void doInterBlockOptimizations() {
       for (boolean hasChanged = true; hasChanged;) {
         hasChanged = false;
+        if (debug) {
+          logger.debug("[doInterBlockOptimizations] begin pass...");
+        }
         for (Unit u : new ArrayList<>(mUnits)) {
           if (u instanceof LoadInst) {
             if (debug) {
               logger.debug("interopt trying: " + u);
             }
-            Block loadBlock = mUnitToBlockMap.get(u);
-            List<Unit> defs = mLocalDefs.getDefsOfAt(((LoadInst) u).getLocal(), u);
+            final Block loadBlock = mUnitToBlockMap.get(u);
+            final List<Unit> defs = mLocalDefs.getDefsOfAt(((LoadInst) u).getLocal(), u);
 
-            // first optimization
-            if (defs.size() == 1) {
-              Unit def = defs.get(0);
-              Block defBlock = mUnitToBlockMap.get(def);
+            if (debug) {
+              logger.debug("  loadBlock: " + loadBlock);
+              logger.debug("  defs: " + defs);
+            }
+            if (defs.size() == 1) { // first optimization
+              final Unit def = defs.get(0);
+              final Block defBlock = mUnitToBlockMap.get(def);
               if (defBlock != loadBlock && !isExceptionHandlerBlock(loadBlock)) {
                 if (def instanceof StoreInst) {
                   List<UnitValueBoxPair> uses = mLocalUses.getUsesOf(def);
@@ -838,13 +872,11 @@ public class LoadStoreOptimizer extends BodyTransformer {
                   }
                 }
               }
-            } // second optimization
-            else if (defs.size() == 2) {
-              Unit def0 = defs.get(0);
-              Unit def1 = defs.get(1);
-
-              Block defBlock0 = mUnitToBlockMap.get(def0);
-              Block defBlock1 = mUnitToBlockMap.get(def1);
+            } else if (defs.size() == 2) { // second optimization
+              final Unit def0 = defs.get(0);
+              final Unit def1 = defs.get(1);
+              final Block defBlock0 = mUnitToBlockMap.get(def0);
+              final Block defBlock1 = mUnitToBlockMap.get(def1);
               if (defBlock0 != loadBlock && defBlock1 != loadBlock && defBlock0 != defBlock1
                   && !(isExceptionHandlerBlock(loadBlock))) {
                 if (mLocalUses.getUsesOf(def0).size() == 1 && mLocalUses.getUsesOf(def1).size() == 1) {
@@ -853,38 +885,43 @@ public class LoadStoreOptimizer extends BodyTransformer {
                   if (def0Succs.size() == 1 && def1Succs.size() == 1) {
                     if (def0Succs.get(0) == loadBlock && def1Succs.get(0) == loadBlock) {
                       if (loadBlock.getPreds().size() == 2) {
-                        if ((def0 == defBlock0.getTail()
-                            || getDeltaStackHeightFromTo(defBlock0.getSuccOf(def0), defBlock0.getTail()) == 0)
-                            && (def1 == defBlock1.getTail()
-                                || getDeltaStackHeightFromTo(defBlock1.getSuccOf(def1), defBlock1.getTail()) == 0)) {
+                        final Unit defB0tail = defBlock0.getTail();
+                        final Unit defB1tail = defBlock1.getTail();
+                        if ((def0 == defB0tail || getDeltaStackHeightFromTo(defBlock0.getSuccOf(def0), defB0tail) == 0)
+                            && (def1 == defB1tail || getDeltaStackHeightFromTo(defBlock1.getSuccOf(def1), defB1tail) == 0)) {
                           defBlock0.remove(def0);
                           defBlock1.remove(def1);
                           loadBlock.insertBefore(def0, loadBlock.getHead());
                           mUnitToBlockMap.put(def0, loadBlock);
+                          mUnitToBlockMap.remove(def1);
+
                           hasChanged = true;
                           if (debug) {
                             logger.debug("inter-block opti2 occurred " + def0);
                           }
                         } else if (debug) {
-                          logger.debug("failed: inter1");
+                          logger.debug("failed: inter: unacceptable stack offset");
                         }
                       } else if (debug) {
-                        logger.debug("failed: inter2");
+                        logger.debug("failed: inter: 'loadBlock' #preds != 2");
                       }
                     } else if (debug) {
-                      logger.debug("failed: inter3");
+                      logger.debug("failed: inter: successor is not 'loadBlock'");
                     }
                   } else if (debug) {
-                    logger.debug("failed: inter4");
+                    logger.debug("failed: inter: #successors != 1");
                   }
                 } else if (debug) {
-                  logger.debug("failed: inter5");
+                  logger.debug("failed: inter: #defs != 1");
                 }
               } else if (debug) {
-                logger.debug("failed: inter6");
+                logger.debug("failed: inter: unacceptable blocks");
               }
             }
           }
+        }
+        if (debug) {
+          logger.debug("[doInterBlockOptimizations] completed pass. changed? " + hasChanged);
         }
       }
     }
@@ -908,6 +945,41 @@ public class LoadStoreOptimizer extends BodyTransformer {
     private boolean isCommutativeBinOp(Unit aUnit) {
       return aUnit instanceof AddInst || aUnit instanceof MulInst || aUnit instanceof AndInst || aUnit instanceof OrInst
           || aUnit instanceof XorInst;
+    }
+
+    //For assertions
+    private boolean unitToBlockMapIsValid() {
+      // Ensure every Unit in the body is mapped
+      for (Unit u : mUnits) {
+        assert (mUnitToBlockMap.containsKey(u));
+      }
+      for (Map.Entry<Unit, Block> e : mUnitToBlockMap.entrySet()) {
+        final Unit u = e.getKey();
+        final Block b = e.getValue();
+        // Ensure the Unit is mapped to the correct Block
+        assert (contains(b, u));
+        // Ensure that every Unit in the Block is mapped to the Block
+        final Unit t = b.getTail();
+        assert (mUnitToBlockMap.get(t) == b);
+        for (Unit u2 = b.getHead(); u2 != t; u2 = b.getSuccOf(u2)) {
+          assert (mUnitToBlockMap.get(u2) == b);
+        }
+      }
+      return true;
+    }
+
+    //For assertions
+    private static boolean contains(Block b, Unit u) {
+      final Unit t = b.getTail();
+      if (u == t) {
+        return true;
+      }
+      for (Unit u2 = b.getHead(); u2 != t; u2 = b.getSuccOf(u2)) {
+        if (u == u2) {
+          return true;
+        }
+      }
+      return false;
     }
   }
 }
