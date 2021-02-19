@@ -145,11 +145,6 @@ public class LoadStoreOptimizer extends BodyTransformer {
           }
           doInterBlockOptimizations();
           assert (unitToBlockMapIsValid());
-
-          // Clear the use/def sets so they will be recomputed if running
-          // optimizeLoadStores() again. Otherwise, they would contain
-          // stale information leading to incomplete optimization.
-          clearLocalDefsAndLocalUsesInfo();
         }
 
         if (PhaseOptions.getBoolean(gOptions, "sl2") || PhaseOptions.getBoolean(gOptions, "sll2")) {
@@ -242,8 +237,10 @@ public class LoadStoreOptimizer extends BodyTransformer {
             // Check that all loads are in the same bb as the store
             {
               Block storeBlock = mUnitToBlockMap.get(unit);
+              assert (contains(storeBlock, unit));
               for (UnitValueBoxPair pair : uses) {
                 Block useBlock = mUnitToBlockMap.get(pair.getUnit());
+                assert (contains(useBlock, pair.getUnit()));
                 if (useBlock != storeBlock) {
                   continue nextUnit;
                 }
@@ -266,6 +263,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
                     // try to eliminate store/load pair
                     Unit loadUnit = uses.get(0).getUnit();
                     Block block = mUnitToBlockMap.get(unit);
+                    assert (contains(block, unit));
                     int test = stackIndependent(unit, loadUnit, block, STORE_LOAD_ELIMINATION);
                     if (test == SUCCESS || test == SPECIAL_SUCCESS) {
                       block.remove(unit);
@@ -299,6 +297,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
                     }
 
                     Block block = mUnitToBlockMap.get(unit);
+                    assert (contains(block, unit));
                     int result = stackIndependent(unit, firstLoad, block, STORE_LOAD_ELIMINATION);
                     if (result == SUCCESS) {
                       // move the first load just after its defining store.
@@ -770,6 +769,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
      */
     private void replaceUnit(Unit aToReplace1, Unit aToReplace2, Unit aReplacement) {
       Block block = mUnitToBlockMap.get(aToReplace1);
+      assert (contains(block, aToReplace1));
 
       if (aToReplace2 != null) {
         block.insertAfter(aReplacement, aToReplace2);
@@ -813,6 +813,19 @@ public class LoadStoreOptimizer extends BodyTransformer {
       return h;
     }
 
+    // not a save function :: goes over block boundries
+    private boolean isZeroStackDeltaWithoutClobbering(Unit aFrom, Unit aTo) {
+      int h = 0;
+      for (Iterator<Unit> it = mUnits.iterator(aFrom, aTo); it.hasNext();) {
+        Unit next = it.next();
+        h += ((Inst) next).getNetCount();
+        if (h < 0) { // detect clobbering of the top value at 'aFrom'
+          return false;
+        }
+      }
+      return h == 0;
+    }
+
     /**
      * Performs 2 simple inter-block optimizations in order to keep some variables on the stack between blocks. Both are
      * intended to catch 'if' like constructs where the control flow branches temporarily into two paths that join up at a
@@ -820,6 +833,9 @@ public class LoadStoreOptimizer extends BodyTransformer {
      */
     private void doInterBlockOptimizations() {
       for (boolean hasChanged = true; hasChanged;) {
+        // Ensure LocalDefs and LocalUses are computed
+        computeLocalDefsAndLocalUsesInfo();
+
         hasChanged = false;
         if (debug) {
           logger.debug("[doInterBlockOptimizations] begin pass...");
@@ -830,6 +846,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
               logger.debug("interopt trying: " + u);
             }
             final Block loadBlock = mUnitToBlockMap.get(u);
+            assert (contains(loadBlock, u));
             final List<Unit> defs = mLocalDefs.getDefsOfAt(((LoadInst) u).getLocal(), u);
 
             if (debug) {
@@ -839,6 +856,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
             if (defs.size() == 1) { // first optimization
               final Unit def = defs.get(0);
               final Block defBlock = mUnitToBlockMap.get(def);
+              assert (contains(defBlock, def));
               if (defBlock != loadBlock && !isExceptionHandlerBlock(loadBlock)) {
                 if (def instanceof StoreInst) {
                   List<UnitValueBoxPair> uses = mLocalUses.getUsesOf(def);
@@ -874,9 +892,11 @@ public class LoadStoreOptimizer extends BodyTransformer {
               }
             } else if (defs.size() == 2) { // second optimization
               final Unit def0 = defs.get(0);
-              final Unit def1 = defs.get(1);
               final Block defBlock0 = mUnitToBlockMap.get(def0);
+              assert (contains(defBlock0, def0));
+              final Unit def1 = defs.get(1);
               final Block defBlock1 = mUnitToBlockMap.get(def1);
+              assert (contains(defBlock1, def1));
               if (defBlock0 != loadBlock && defBlock1 != loadBlock && defBlock0 != defBlock1
                   && !(isExceptionHandlerBlock(loadBlock))) {
                 if (mLocalUses.getUsesOf(def0).size() == 1 && mLocalUses.getUsesOf(def1).size() == 1) {
@@ -885,10 +905,11 @@ public class LoadStoreOptimizer extends BodyTransformer {
                   if (def0Succs.size() == 1 && def1Succs.size() == 1) {
                     if (def0Succs.get(0) == loadBlock && def1Succs.get(0) == loadBlock) {
                       if (loadBlock.getPreds().size() == 2) {
-                        final Unit defB0tail = defBlock0.getTail();
-                        final Unit defB1tail = defBlock1.getTail();
-                        if ((def0 == defB0tail || getDeltaStackHeightFromTo(defBlock0.getSuccOf(def0), defB0tail) == 0)
-                            && (def1 == defB1tail || getDeltaStackHeightFromTo(defBlock1.getSuccOf(def1), defB1tail) == 0)) {
+                        final Unit tailB0 = defBlock0.getTail();
+                        final Unit tailB1 = defBlock1.getTail();
+                        if ((def0 == tailB0 || isZeroStackDeltaWithoutClobbering(defBlock0.getSuccOf(def0), tailB0))
+                            && (def1 == tailB1 || isZeroStackDeltaWithoutClobbering(defBlock1.getSuccOf(def1), tailB1))) {
+
                           defBlock0.remove(def0);
                           defBlock1.remove(def1);
                           loadBlock.insertBefore(def0, loadBlock.getHead());
@@ -923,6 +944,12 @@ public class LoadStoreOptimizer extends BodyTransformer {
         if (debug) {
           logger.debug("[doInterBlockOptimizations] completed pass. changed? " + hasChanged);
         }
+        if (hasChanged) {
+          // Clear the use/def sets so they will be recomputed if running another
+          // iteration or if running optimizeLoadStores() again. Otherwise, their
+          // stale information could cause incomplete or incorrect optimization.
+          clearLocalDefsAndLocalUsesInfo();
+        }
       }
     }
 
@@ -947,7 +974,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
           || aUnit instanceof XorInst;
     }
 
-    //For assertions
+    // For assertions
     private boolean unitToBlockMapIsValid() {
       // Ensure every Unit in the body is mapped
       for (Unit u : mUnits) {
@@ -968,7 +995,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
       return true;
     }
 
-    //For assertions
+    // For assertions
     private static boolean contains(Block b, Unit u) {
       final Unit t = b.getTail();
       if (u == t) {
