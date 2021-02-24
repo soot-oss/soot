@@ -32,7 +32,7 @@ import soot.Type;
  * @author Ben Bellamy
  */
 public interface IHierarchy {
-  Collection<Type> lcas(Type a, Type b);
+  Collection<Type> lcas(Type a, Type b, boolean useWeakObjectType);
 
   boolean ancestor(Type ancestor, Type child);
 }

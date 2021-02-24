@@ -28,6 +28,7 @@ import java.util.Iterator;
 
 import soot.ArrayType;
 import soot.BooleanType;
+import soot.G;
 import soot.IntType;
 import soot.IntegerType;
 import soot.Local;
@@ -206,7 +207,7 @@ public class UseChecker extends AbstractStmtSwitch {
           Type rhsType = this.tg.get((Local) rhs);
           if (rhsType instanceof PrimType) {
             if (defs == null) {
-              defs = LocalDefs.Factory.newLocalDefs(jb);
+              defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(jb);
               uses = LocalUses.Factory.newLocalUses(jb, defs);
             }
 
@@ -277,7 +278,7 @@ public class UseChecker extends AbstractStmtSwitch {
               || rt.getSootClass().getName().equals("java.io.Serializable")
               || rt.getSootClass().getName().equals("java.lang.Cloneable")) {
             if (defs == null) {
-              defs = LocalDefs.Factory.newLocalDefs(jb);
+              defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(jb);
               uses = LocalUses.Factory.newLocalUses(jb, defs);
             }
 

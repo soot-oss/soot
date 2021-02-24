@@ -2497,4 +2497,18 @@ public class Singletons {
     protected void release_soot_jbco_jimpleTransformations_FieldRenamer() {
     	instance_soot_jbco_jimpleTransformations_FieldRenamer = null;
     }
+
+    private soot.toolkits.scalar.LocalDefsFactory instance_soot_toolkits_scalar_LocalDefsFactory;
+    public soot.toolkits.scalar.LocalDefsFactory soot_toolkits_scalar_LocalDefsFactory() {
+        if (instance_soot_toolkits_scalar_LocalDefsFactory == null) {
+	       	synchronized (this) {
+		        if (instance_soot_toolkits_scalar_LocalDefsFactory == null)
+	        		instance_soot_toolkits_scalar_LocalDefsFactory = new soot.toolkits.scalar.LocalDefsFactory(g);
+	       	}
+       	}
+        return instance_soot_toolkits_scalar_LocalDefsFactory;
+    }
+    protected void release_soot_toolkits_scalar_LocalDefsFactory() {
+    	instance_soot_toolkits_scalar_LocalDefsFactory = null;
+    }
 }
