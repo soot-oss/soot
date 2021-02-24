@@ -148,6 +148,12 @@ The further development of Soot is financed by generous support from the German 
 <a href="https://www.hni.uni-paderborn.de/en/"><img src="images/Heinz_Nixdorf_Institut_Logo_CMYK.jpg" height="40"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="https://aws.amazon.com/"><img src="images/200px-Amazon_Web_Services_Logo.svg.png" height="40"></a>
 
+Amazon Web Services is a Gold Sponsor. [![AWS](https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/150px-Amazon_Web_Services_Logo.svg.png)]()
+
+[Read more here about how to become a sponsor on your own.](https://github.com/sponsors/soot-oss)
+
 Also many thanks to [![JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)](https://www.ej-technologies.com/products/jprofiler/overview.html) for supporting Soot with a free-to-use open source license!
+
+
 
 <a class="twitter-timeline tw-align-center" data-width="220" data-dnt="true" data-theme="light" href="https://twitter.com/sootAnalyzer?ref_src=twsrc%5Etfw">Tweets by sootAnalyzer</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
