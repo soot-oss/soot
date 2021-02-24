@@ -53,14 +53,17 @@ import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
 import soot.util.Chain;
 
-/** Methods for checking Java scope and visibility requirements. */
+/**
+ * Methods for checking Java scope and visibility requirements.
+ */
 public class AccessManager {
 
   /**
    * Returns true iff target is legally accessible from container. Illegal access occurs when any of the following cases
-   * holds: 1. target is private, but container.declaringClass() != target.declaringClass(); or, 2. target is
-   * package-visible, and its package differs from that of container; or, 3. target is protected, and either: a. container
-   * doesn't belong to target.declaringClass, or any subclass of ;
+   * holds: (1) target is private, but container.declaringClass() != target.declaringClass(); or, (2) target is
+   * package-visible (i.e. default), and its package differs from that of container; or, (3) target is protected and the
+   * package of container differs from the package of target and the container doesn't belong to target.declaringClass or any
+   * subclass.
    */
   public static boolean isAccessLegal(final SootMethod container, final ClassMember target) {
     final SootClass targetClass = target.getDeclaringClass();
@@ -75,7 +78,7 @@ public class AccessManager {
     }
 
     // Condition 2. Check the package names.
-    if (!target.isPrivate() && !target.isProtected() && !target.isPublic()) {
+    if (!target.isPrivate() && !target.isProtected() && !target.isPublic()) { // i.e. default
       if (!targetClass.getPackageName().equals(containerClass.getPackageName())) {
         return false;
       }
@@ -83,10 +86,12 @@ public class AccessManager {
 
     // Condition 3.
     if (target.isProtected()) {
-      // protected means that you can be accessed by your children.
-      // i.e. container must be in a child of target.
-      Hierarchy h = Scene.v().getActiveHierarchy();
-      return h.isClassSuperclassOfIncluding(targetClass, containerClass);
+      // protected means that you can be accessed by your children (i.e.
+      // container is in a child of target) and classes in the same package.
+      if (!targetClass.getPackageName().equals(containerClass.getPackageName())) {
+        Hierarchy h = Scene.v().getActiveHierarchy();
+        return h.isClassSuperclassOfIncluding(targetClass, containerClass);
+      }
     }
 
     return true;
@@ -385,23 +390,22 @@ public class AccessManager {
     if (isAccessLegal(container, target)) {
       return true;
     }
-
-    boolean accessors = "accessors".equals(options);
-    if (!accessors && "none".equals(options)) {
-      return false;
-    }
     if (!targetClass.isApplicationClass()) {
       return false;
     }
-    if (accessors) {
-      return true;
-    }
-    if (!"unsafe".equals(options)) {
-      throw new RuntimeException("Not implemented yet!");
-    }
 
-    target.setModifiers(target.getModifiers() | Modifier.PUBLIC);
-    return true;
+    if (options != null) {
+      switch (options) {
+        case "none":
+          return false;
+        case "accessors":
+          return true;
+        case "unsafe":
+          target.setModifiers(target.getModifiers() | Modifier.PUBLIC);
+          return true;
+      }
+    }
+    throw new RuntimeException("Not implemented yet!");
   }
 
   /**
@@ -411,20 +415,24 @@ public class AccessManager {
     if (isAccessLegal(container, target)) {
       return true;
     }
-    switch (options) {
-      case "accessors":
-        return false;
-      case "none":
-        return false;
-      case "unsafe":
-        if (target.isApplicationClass()) {
-          target.setModifiers(target.getModifiers() | Modifier.PUBLIC);
-          return true;
-        } else {
+    if (options != null) {
+      switch (options) {
+        case "accessors":
           return false;
-        }
-      default:
-        throw new RuntimeException("Not implemented yet!");
+        case "none":
+          return false;
+        case "unsafe":
+          if (target.isApplicationClass()) {
+            target.setModifiers(target.getModifiers() | Modifier.PUBLIC);
+            return true;
+          } else {
+            return false;
+          }
+      }
     }
+    throw new RuntimeException("Not implemented yet!");
+  }
+
+  private AccessManager() {
   }
 }

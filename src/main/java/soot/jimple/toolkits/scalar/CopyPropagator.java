@@ -137,7 +137,7 @@ public class CopyPropagator extends BodyTransformer {
       int slowCopyPropagationCount = 0;
 
       UnitGraph graph = new ExceptionalUnitGraph(b, throwAnalysis, forceOmitExceptingUnitEdges);
-      LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(graph);
+      LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph);
       CPOptions options = new CPOptions(opts);
       // Perform a local propagation pass.
       for (Unit u : (new PseudoTopologicalOrderer<Unit>()).newList(graph, false)) {
