@@ -788,6 +788,15 @@
             </long_desc>
         </boolopt>
         <boolopt>
+            <name>Allow Errors during callgraph construction</name>
+            <alias>allow-cg-errors</alias>
+            <short_desc>Allow Errors during callgraph construction</short_desc>
+            <long_desc>
+                Allow the callgraph construction to continue even if there are errors.
+                Errors are logged instead.
+            </long_desc>
+        </boolopt>
+        <boolopt>
             <name>No Bodies for Excluded</name>
             <alias>no-bodies-for-excluded</alias>
             <short_desc>Do not load bodies for excluded classes</short_desc>
