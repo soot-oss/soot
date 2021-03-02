@@ -37,7 +37,9 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
 
-/** Methods for checking safety requirements for inlining. */
+/**
+ * Methods for checking safety requirements for inlining.
+ */
 public class InlinerSafetyManager {
 
   private static final boolean PRINT_FAILURE_REASONS = true;
@@ -258,5 +260,8 @@ public class InlinerSafetyManager {
     // ACC_SUPER must always be set, eh?
     Hierarchy h = Scene.v().getActiveHierarchy();
     return h.isClassSuperclassOf(m.getDeclaringClass(), containerClass);
+  }
+
+  private InlinerSafetyManager() {
   }
 }
