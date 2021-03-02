@@ -426,7 +426,7 @@ public class Options extends OptionsBase {
                     src_prec = src_prec_apk_c_j;
                 }
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    G.v().out.println(String.format("Invalid value %s given for option -%s", value, option));
                     return false;
                 }
             }
@@ -678,7 +678,7 @@ public class Options extends OptionsBase {
                     output_format = output_format_asm;
                 }
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    G.v().out.println(String.format("Invalid value %s given for option -%s", value, option));
                     return false;
                 }
             }
@@ -823,7 +823,7 @@ public class Options extends OptionsBase {
                     java_version = java_version_12;
                 }
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    G.v().out.println(String.format("Invalid value %s given for option -%s", value, option));
                     return false;
                 }
             }
@@ -957,7 +957,7 @@ public class Options extends OptionsBase {
                     wrong_staticness = wrong_staticness_fixstrict;
                 }
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    G.v().out.println(String.format("Invalid value %s given for option -%s", value, option));
                     return false;
                 }
             }
@@ -1000,7 +1000,7 @@ public class Options extends OptionsBase {
                     field_type_mismatches = field_type_mismatches_null;
                 }
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    G.v().out.println(String.format("Invalid value %s given for option -%s", value, option));
                     return false;
                 }
             }
@@ -1114,7 +1114,7 @@ public class Options extends OptionsBase {
                     throw_analysis = throw_analysis_auto_select;
                 }
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    G.v().out.println(String.format("Invalid value %s given for option -%s", value, option));
                     return false;
                 }
             }
@@ -1167,7 +1167,7 @@ public class Options extends OptionsBase {
                     check_init_throw_analysis = check_init_throw_analysis_dalvik;
                 }
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    G.v().out.println(String.format("Invalid value %s given for option -%s", value, option));
                     return false;
                 }
             }
