@@ -1144,12 +1144,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsallow_phantom_elms_widget().getAlias(), new Boolean(boolRes));
 		}
-		boolRes = getInput_Optionsallow_cg_errors_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getInput_Optionsallow_cg_errors_widget().getAlias(), new Boolean(boolRes));
-		}
 		boolRes = getInput_Optionsno_bodies_for_excluded_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -4713,16 +4707,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getInput_Optionsallow_phantom_elms_widget() {
 		return Input_Optionsallow_phantom_elms_widget;
-	}	
-	
-	private BooleanOptionWidget Input_Optionsallow_cg_errors_widget;
-	
-	private void setInput_Optionsallow_cg_errors_widget(BooleanOptionWidget widget) {
-		Input_Optionsallow_cg_errors_widget = widget;
-	}
-	
-	public BooleanOptionWidget getInput_Optionsallow_cg_errors_widget() {
-		return Input_Optionsallow_cg_errors_widget;
 	}	
 	
 	private BooleanOptionWidget Input_Optionsno_bodies_for_excluded_widget;
@@ -8730,17 +8714,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setInput_Optionsallow_phantom_elms_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom Elements in Non-Phantom Classes", "", "","allow-phantom-elms", "\nAllow non-phantom classes to contain phantom fields and methods \nwhen allow-phantom-refs is enabled. This can be used to add \nmissing methods and fields to a class that may not exactly match \na similar class used by other classes.", defaultBool)));
-
-		defKey = ""+" "+""+" "+"allow-cg-errors";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setInput_Optionsallow_cg_errors_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Errors during callgraph construction", "", "","allow-cg-errors", "\nAllow the callgraph construction to continue even if there are \nerrors. Errors are logged instead.", defaultBool)));
 
 		defKey = ""+" "+""+" "+"no-bodies-for-excluded";
 		defKey = defKey.trim();
