@@ -27,11 +27,11 @@ import com.google.common.cache.CacheBuilder;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import soot.AnySubType;
 import soot.FastHierarchy;
@@ -168,7 +168,7 @@ public class ThrowableSet {
 
   private void addToMemoizedAdds(Object key, ThrowableSet value) {
     if (memoizedAdds == null) {
-      memoizedAdds = new HashMap<>();
+      memoizedAdds = new ConcurrentHashMap<>();
     }
     memoizedAdds.put(key, value);
   }
