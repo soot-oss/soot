@@ -17,6 +17,7 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.Type;
+import soot.options.Options;
 
 /*-
  * #%L
@@ -72,7 +73,8 @@ public class BytecodeHierarchy implements IHierarchy {
 
         // The superclass of all interfaces is Object
         // -- try to discard phantom interfaces.
-        if ((!sc.isInterface() || sc.getInterfaceCount() == 0) && !sc.isPhantom()) {
+        if ((!sc.isInterface() || sc.getInterfaceCount() == 0) && !sc.isPhantom()
+                && Options.v().ignore_resolution_errors() && sc.hasSuperclass()) {
           leafs.add(new AncestryTreeNode(node, sc.getSuperclass().getType()));
         }
 
