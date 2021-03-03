@@ -878,8 +878,11 @@ public class OnFlyCallGraphBuilder {
                 }
 
                 if (wrapperObject != null && receiverToSites.get(wrapperObject) != null) {
-                  for (Iterator<VirtualCallSite> siteIt = receiverToSites.get(wrapperObject).iterator(); siteIt.hasNext();) {
-                    final VirtualCallSite site = siteIt.next();
+                  // addVirtualCallSite() may change receiverToSites, which may lead to a ConcurrentModificationException
+                  // I'm not entirely sure whether we ought to deal with the new call sites that are being added, instead of
+                  // just working on a snapshot, though.
+                  List<VirtualCallSite> callSites = new ArrayList<>(receiverToSites.get(wrapperObject));
+                  for (final VirtualCallSite site : callSites) {
                     if (w.registrationSignature == site.subSig()) {
                       for (RegisteredHandlerTarget target : w.targets) {
                         Value runnable = iie.getArg(t.argIndex);
