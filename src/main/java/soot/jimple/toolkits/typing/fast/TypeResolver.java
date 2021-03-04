@@ -553,7 +553,7 @@ public class TypeResolver {
              * We only need to consider array references on the LHS of assignments where there is supertyping between array
              * types, which is only for arrays of reference types and multidimensional arrays.
              */
-            if (!(t_ instanceof RefType || t_ instanceof ArrayType || told instanceof WeakObjectType)) {
+            if (!(t_ instanceof RefType || t_ instanceof ArrayType || t_ instanceof WeakObjectType)) {
               continue;
             }
 
