@@ -228,9 +228,7 @@ public class TypeResolver {
           DefinitionStmt defStmt = (DefinitionStmt) stmt;
           if (baseType instanceof RefType && defStmt.getLeftOp() instanceof Local) {
             RefType rt = (RefType) baseType;
-            final String name = rt.getSootClass().getName();
-            if (name.equals("java.lang.Object") || name.equals("java.io.Serializable")
-                || name.equals("java.lang.Cloneable")) {
+            if (isObjectLikeType(rt)) {
               Local lop = (Local) ((DefinitionStmt) stmt).getLeftOp();
               tg.set(lop, ((ArrayType) useType).getElementType());
             }
@@ -255,6 +253,15 @@ public class TypeResolver {
         Local vnew = createCast(useType, stmt, vold);
         return vnew;
       }
+    }
+
+    private boolean isObjectLikeType(RefType rt) {
+      if (rt instanceof WeakObjectType) {
+        return true;
+      }
+      final String name = rt.getSootClass().getName();
+      return name.equals("java.lang.Object") || name.equals("java.io.Serializable") || name.equals("java.lang.Cloneable");
+
     }
 
     /**
@@ -373,8 +380,8 @@ public class TypeResolver {
 
       if (!AugHierarchy.ancestor_(useType, t)) {
         this.fail = true;
-      } else if (op instanceof Local
-          && (t instanceof Integer1Type || t instanceof Integer127Type || t instanceof Integer32767Type)) {
+      } else if (op instanceof Local && (t instanceof Integer1Type || t instanceof Integer127Type
+          || t instanceof Integer32767Type || t instanceof WeakObjectType)) {
         Local v = (Local) op;
         if (!typesEqual(t, useType)) {
           Type t_ = this.promote(t, useType);
