@@ -129,8 +129,6 @@ public class VirtualEdgesSummaries {
     } catch (IOException | ParserConfigurationException | SAXException e1) {
       e1.printStackTrace();
     }
-    System.out.println(String.format("Found %d instanceinvoke , %d staticinvoke edge descriptions",
-        instanceinvokeEdges.size(), staticinvokeEdges.size()));
   }
 
   public VirtualEdge getVirtualEdgesMatchingSubSig(NumberedString subsig) {
