@@ -203,9 +203,9 @@ public class UseChecker extends AbstractStmtSwitch {
       } else {
         // If the right-hand side is a primitive and the left-side type
         // is java.lang.Object
-        if (tgType == Scene.v().getObjectType() && rhs instanceof Local) {
+        if (rhs instanceof Local) {
           Type rhsType = this.tg.get((Local) rhs);
-          if (rhsType instanceof PrimType) {
+          if ((tgType == Scene.v().getObjectType() && rhsType instanceof PrimType) || tgType instanceof WeakObjectType) {
             if (defs == null) {
               defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(jb);
               uses = LocalUses.Factory.newLocalUses(jb, defs);

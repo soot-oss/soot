@@ -51,6 +51,8 @@ import soot.Scene;
 import soot.SootClass;
 import soot.Type;
 import soot.Unit;
+import soot.UnknownType;
+import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
@@ -78,6 +80,7 @@ public class TypeResolver {
   private final Map<Object, TypeVariable> typeVariableMap = new HashMap<Object, TypeVariable>();
 
   private final JimpleBody stmtBody;
+  private final LocalGenerator localGenerator;
 
   final TypeNode NULL;
   private final TypeNode OBJECT;
@@ -169,6 +172,7 @@ public class TypeResolver {
 
   private TypeResolver(JimpleBody stmtBody, Scene scene) {
     this.stmtBody = stmtBody;
+    this.localGenerator = new LocalGenerator(stmtBody);
     hierarchy = ClassHierarchy.classHierarchy(scene);
 
     OBJECT = hierarchy.OBJECT;
@@ -864,9 +868,7 @@ public class TypeResolver {
                 } else if (assign.getRightOp() instanceof NewExpr) {
                   // We split the local.
                   // logger.debug("split: [" + assign + "] and [" + stmt + "]");
-                  Local newlocal = Jimple.v().newLocal("tmp", null);
-                  stmtBody.getLocals().add(newlocal);
-
+                  Local newlocal = localGenerator.generateLocal(UnknownType.v());
                   special.setBase(newlocal);
 
                   units.insertAfter(Jimple.v().newAssignStmt(assign.getLeftOp(), newlocal), assign);

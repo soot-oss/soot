@@ -17,7 +17,6 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.Type;
-import soot.options.Options;
 
 /*-
  * #%L
@@ -73,8 +72,7 @@ public class BytecodeHierarchy implements IHierarchy {
 
         // The superclass of all interfaces is Object
         // -- try to discard phantom interfaces.
-        if ((!sc.isInterface() || sc.getInterfaceCount() == 0) && !sc.isPhantom()
-                && Options.v().ignore_resolution_errors() && sc.hasSuperclass()) {
+        if ((!sc.isInterface() || sc.getInterfaceCount() == 0) && !sc.isPhantom() && sc.hasSuperclass()) {
           leafs.add(new AncestryTreeNode(node, sc.getSuperclass().getType()));
         }
 
@@ -104,9 +102,9 @@ public class BytecodeHierarchy implements IHierarchy {
       return Collections.<Type>singletonList(b);
     } else if (b instanceof BottomType) {
       return Collections.<Type>singletonList(a);
-    } else if (a instanceof WeakObjectType) {
+    } else if (a instanceof WeakObjectType && b instanceof RefType) {
       return Collections.<Type>singletonList(b);
-    } else if (b instanceof WeakObjectType) {
+    } else if (b instanceof WeakObjectType && a instanceof RefType) {
       return Collections.<Type>singletonList(a);
     } else if (a instanceof IntegerType && b instanceof IntegerType) {
       return Collections.<Type>singletonList(IntType.v());

@@ -64,6 +64,10 @@ public class Typing {
     return this.map.put(v, t);
   }
 
+  public Collection<Local> getAllLocals() {
+    return map.keySet();
+  }
+
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
