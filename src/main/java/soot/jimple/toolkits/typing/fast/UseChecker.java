@@ -145,25 +145,24 @@ public class UseChecker extends AbstractStmtSwitch {
   private void handleBinopExpr(BinopExpr be, Stmt stmt, Type tlhs) {
     Value opl = be.getOp1(), opr = be.getOp2();
     Type tl = AugEvalFunction.eval_(this.tg, opl, stmt, this.jb), tr = AugEvalFunction.eval_(this.tg, opr, stmt, this.jb);
-
     if (be instanceof AddExpr || be instanceof SubExpr || be instanceof MulExpr || be instanceof DivExpr
         || be instanceof RemExpr || be instanceof GeExpr || be instanceof GtExpr || be instanceof LeExpr
         || be instanceof LtExpr || be instanceof ShlExpr || be instanceof ShrExpr || be instanceof UshrExpr) {
       if (tlhs instanceof IntegerType) {
-        be.setOp1(this.uv.visit(opl, IntType.v(), stmt));
-        be.setOp2(this.uv.visit(opr, IntType.v(), stmt));
+        be.setOp1(this.uv.visit(opl, IntType.v(), stmt, true));
+        be.setOp2(this.uv.visit(opr, IntType.v(), stmt, true));
       }
     } else if (be instanceof CmpExpr || be instanceof CmpgExpr || be instanceof CmplExpr) {
       // No checks in the original assigner
     } else if (be instanceof AndExpr || be instanceof OrExpr || be instanceof XorExpr) {
-      be.setOp1(this.uv.visit(opl, tlhs, stmt));
-      be.setOp2(this.uv.visit(opr, tlhs, stmt));
+      be.setOp1(this.uv.visit(opl, tlhs, stmt, true));
+      be.setOp2(this.uv.visit(opr, tlhs, stmt, true));
     } else if (be instanceof EqExpr || be instanceof NeExpr) {
       if (tl instanceof BooleanType && tr instanceof BooleanType) {
       } else if (tl instanceof Integer1Type || tr instanceof Integer1Type) {
       } else if (tl instanceof IntegerType) {
-        be.setOp1(this.uv.visit(opl, IntType.v(), stmt));
-        be.setOp2(this.uv.visit(opr, IntType.v(), stmt));
+        be.setOp1(this.uv.visit(opl, IntType.v(), stmt, true));
+        be.setOp2(this.uv.visit(opr, IntType.v(), stmt, true));
       }
     }
   }

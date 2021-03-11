@@ -48,7 +48,7 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.LocalBitSetPacker;
 
 /**
- * A BodyTransformer that attemps to indentify and separate uses of a local variable that are independent of each other.
+ * A BodyTransformer that attempts to identify and separate uses of a local variable that are independent of each other.
  * Conceptually the inverse transform with respect to the LocalPacker transform.
  *
  *
@@ -122,14 +122,12 @@ public class LocalSplitter extends BodyTransformer {
 
     if (Options.v().time()) {
       Timers.v().splitPhase1Timer.end();
-    }
-    if (Options.v().time()) {
       Timers.v().splitPhase2Timer.start();
     }
 
     Set<Unit> visited = new HashSet<Unit>();
 
-    // Collect the set of locals that we need to split^
+    // Collect the set of locals that we need to split
     BitSet localsToSplit = new BitSet(localPacker.getLocalCount());
     {
       BitSet localsVisited = new BitSet(localPacker.getLocalCount());
@@ -220,9 +218,6 @@ public class LocalSplitter extends BodyTransformer {
 
     if (Options.v().time()) {
       Timers.v().splitPhase2Timer.end();
-    }
-
-    if (Options.v().time()) {
       Timers.v().splitTimer.end();
     }
   }

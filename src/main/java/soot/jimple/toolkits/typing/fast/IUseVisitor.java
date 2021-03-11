@@ -32,7 +32,11 @@ import soot.jimple.Stmt;
  * @author Ben Bellamy
  */
 public interface IUseVisitor {
-  Value visit(Value op, Type useType, Stmt stmt);
+  Value visit(Value op, Type useType, Stmt stmt, boolean checkOnly);
+
+  default Value visit(Value op, Type useType, Stmt stmt) {
+    return visit(op, useType, stmt, false);
+  }
 
   boolean finish();
 }
