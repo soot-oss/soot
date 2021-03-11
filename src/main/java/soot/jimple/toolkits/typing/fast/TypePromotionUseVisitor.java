@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.typing.fast;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -11,7 +14,8 @@ import soot.Value;
 import soot.jimple.JimpleBody;
 import soot.jimple.Stmt;
 
-class TypePromotionUseVisitor implements IUseVisitor {
+public class TypePromotionUseVisitor implements IUseVisitor {
+  private static final Logger logger = LoggerFactory.getLogger(TypePromotionUseVisitor.class);
   private JimpleBody jb;
   private Typing tg;
 
@@ -74,6 +78,8 @@ class TypePromotionUseVisitor implements IUseVisitor {
     Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
 
     if (!AugHierarchy.ancestor_(useType, t)) {
+      logger.error(String.format("Failed Typing in %s at statement %s: Is not cast compatible: %s <-- %s",
+          jb.getMethod().getSignature(), stmt, useType, t));
       this.fail = true;
     } else if (!checkOnly && op instanceof Local && (t instanceof Integer1Type || t instanceof Integer127Type
         || t instanceof Integer32767Type || t instanceof WeakObjectType)) {
