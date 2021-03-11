@@ -205,23 +205,30 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (obj == null)
+      }
+      if (obj == null) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       ConstantState other = (ConstantState) obj;
       if (nonConstant == null) {
-        if (other.nonConstant != null)
+        if (other.nonConstant != null) {
           return false;
-      } else if (!nonConstant.equals(other.nonConstant))
+        }
+      } else if (!nonConstant.equals(other.nonConstant)) {
         return false;
+      }
       if (constants == null) {
-        if (other.constants != null)
+        if (other.constants != null) {
           return false;
-      } else if (!constants.equals(other.constants))
+        }
+      } else if (!constants.equals(other.constants)) {
         return false;
+      }
       return true;
     }
 
@@ -231,10 +238,12 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
       in2.checkConsistency();
       nonConstant.or(in1.nonConstant);
       nonConstant.or(in2.nonConstant);
-      if (!in1.constants.isEmpty())
+      if (!in1.constants.isEmpty()) {
         mergeInternal(in1, in2);
-      if (!in2.constants.isEmpty())
+      }
+      if (!in2.constants.isEmpty()) {
         mergeInternal(in2, in1);
+      }
       checkConsistency();
       in1.checkConsistency();
       in2.checkConsistency();

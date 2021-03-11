@@ -32,6 +32,8 @@ import soot.ShortType;
  */
 
 /**
+ * Contains several utilities for integer typing.
+ * 
  * @author Marc Miltenberger
  */
 public class IntUtils {
@@ -68,14 +70,18 @@ public class IntUtils {
    * @return the maximum value
    */
   public static int getMaxValue(IntegerType t) {
-    if (t instanceof Integer1Type || t instanceof BooleanType)
+    if (t instanceof Integer1Type || t instanceof BooleanType) {
       return 1;
-    if (t instanceof Integer127Type || t instanceof ByteType)
+    }
+    if (t instanceof Integer127Type || t instanceof ByteType) {
       return 127;
-    if (t instanceof Integer32767Type || t instanceof ShortType || t instanceof CharType)
+    }
+    if (t instanceof Integer32767Type || t instanceof ShortType || t instanceof CharType) {
       return 32767;
-    if (t instanceof IntType)
+    }
+    if (t instanceof IntType) {
       return Integer.MAX_VALUE;
+    }
     throw new RuntimeException("Unsupported type: " + t);
   }
 

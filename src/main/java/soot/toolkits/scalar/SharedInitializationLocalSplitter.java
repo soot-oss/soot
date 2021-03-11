@@ -138,8 +138,9 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
           Local luse = (Local) v;
           List<Unit> allAffectingDefs = defs.getDefsOfAt(luse, s);
           for (Unit def : allAffectingDefs) {
-            if (def instanceof IdentityStmt)
+            if (def instanceof IdentityStmt) {
               continue nextUse;
+            }
 
             AssignStmt assign = (AssignStmt) def;
             if (!(assign.getRightOp() instanceof Constant)) {
@@ -156,9 +157,10 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     int w = 0;
     for (Local lcl : clustersPerLocal.keySet()) {
       Set<Cluster> clusters = clustersPerLocal.get(lcl);
-      if (clusters.size() <= 1)
+      if (clusters.size() <= 1) {
         // Not interesting
         continue;
+      }
       for (Cluster cluster : clusters) {
         // we have an overlap, we need to split.
         Local newLocal = (Local) lcl.clone();
