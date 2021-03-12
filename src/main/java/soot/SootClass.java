@@ -104,8 +104,8 @@ public class SootClass extends AbstractHost implements Numberable {
    * Lazy initialized array containing some validators in order to validate the SootClass.
    */
   private static class LazyValidatorsSingleton {
-    static final ClassValidator[] V =
-        new ClassValidator[] { OuterClassValidator.v(), MethodDeclarationValidator.v(), ClassFlagsValidator.v() };
+    static final ClassValidator[] V
+        = new ClassValidator[] { OuterClassValidator.v(), MethodDeclarationValidator.v(), ClassFlagsValidator.v() };
 
     private LazyValidatorsSingleton() {
     }

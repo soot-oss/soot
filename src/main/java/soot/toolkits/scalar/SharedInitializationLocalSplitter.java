@@ -134,6 +134,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       omitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
     }
 
+    CopyPropagator.v().transform(body);
     ConstantPropagatorAndFolder.v().transform(body);
 
     DexNullThrowTransformer.v().transform(body);
@@ -190,6 +191,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
           AssignStmt assign = (AssignStmt) u;
           AssignStmt newAssign = Jimple.v().newAssignStmt(newLocal, (Value) assign.getRightOp());
           body.getUnits().insertAfter(newAssign, assign);
+          CopyPropagator.copyLineTags(newAssign.getUseBoxes().get(0), assign);
         }
 
         newLocal.setName(newLocal.getName() + '_' + ++w);

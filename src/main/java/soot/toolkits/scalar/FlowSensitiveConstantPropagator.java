@@ -25,6 +25,7 @@ package soot.toolkits.scalar;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -56,7 +57,9 @@ import soot.jimple.RealConstant;
 import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.ImmediateBox;
+import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.options.Options;
+import soot.tagkit.Tag;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
@@ -129,7 +132,10 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
           Local l = (Local) rop;
           Constant c = v.getConstant(l);
           if (c != null) {
+            List<Tag> oldTags = assign.getRightOpBox().getTags();
             assign.setRightOp((Constant) c);
+            assign.getRightOpBox().getTags().addAll(oldTags);
+            CopyPropagator.copyLineTags(assign.getUseBoxes().get(0), assign);
             continue;
           }
         }
@@ -198,8 +204,6 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
     public void copyTo(ConstantState dest) {
       dest.nonConstant = (BitSet) nonConstant.clone();
       dest.constants = new HashMap<>(constants);
-      dest.checkConsistency();
-      checkConsistency();
     }
 
     private void checkConsistency() {
@@ -255,9 +259,6 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
     }
 
     public void merge(ConstantState in1, ConstantState in2) {
-      checkConsistency();
-      in1.checkConsistency();
-      in2.checkConsistency();
       nonConstant.or(in1.nonConstant);
       nonConstant.or(in2.nonConstant);
       if (!in1.constants.isEmpty()) {
@@ -266,9 +267,6 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
       if (!in2.constants.isEmpty()) {
         mergeInternal(in2, in1);
       }
-      checkConsistency();
-      in1.checkConsistency();
-      in2.checkConsistency();
     }
 
     private void mergeInternal(ConstantState in1, ConstantState in2) {
@@ -307,7 +305,6 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
           it.remove();
         }
       }
-      checkConsistency();
 
     }
 
