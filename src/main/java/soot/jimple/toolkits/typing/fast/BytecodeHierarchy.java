@@ -9,7 +9,6 @@ import java.util.ListIterator;
 
 import soot.ArrayType;
 import soot.FloatType;
-import soot.IntType;
 import soot.IntegerType;
 import soot.NullType;
 import soot.PrimType;
@@ -107,7 +106,8 @@ public class BytecodeHierarchy implements IHierarchy {
     } else if (b instanceof WeakObjectType && a instanceof RefType) {
       return Collections.<Type>singletonList(a);
     } else if (a instanceof IntegerType && b instanceof IntegerType) {
-      return Collections.<Type>singletonList(IntType.v());
+      int m = Math.max(IntUtils.getMaxValue((IntegerType) a), IntUtils.getMaxValue((IntegerType) b));
+      return Collections.<Type>singletonList((Type) IntUtils.getTypeByWidth(m));
     } else if (a instanceof IntegerType && b instanceof FloatType) {
       return Collections.<Type>singletonList(FloatType.v());
     } else if (b instanceof IntegerType && a instanceof FloatType) {

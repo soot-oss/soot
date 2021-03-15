@@ -155,14 +155,7 @@ public class AugEvalFunction implements IEvalFunction {
             Collection<Type> rs = AugHierarchy.lcas_(tl, tr, false);
             // AugHierarchy.lcas_ is single-valued
             for (Type r : rs) {
-              if (r instanceof BooleanType) {
-                return r;
-              }
-              if (r instanceof IntegerType) {
-                return IntType.v();
-              } else {
-                return r;
-              }
+              return r;
             }
             throw new RuntimeException();
           }

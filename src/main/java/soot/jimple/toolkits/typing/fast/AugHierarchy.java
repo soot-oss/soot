@@ -86,7 +86,10 @@ public class AugHierarchy implements IHierarchy {
   public static boolean ancestor_(Type ancestor, Type child) {
     if (TypeResolver.typesEqual(ancestor, child)) {
       return true;
-    } else if (ancestor instanceof Integer1Type) {
+    } else if (ancestor instanceof IntegerType && child instanceof IntegerType) {
+      return IntUtils.getMaxValue((IntegerType) ancestor) >= IntUtils.getMaxValue((IntegerType) child);
+    }
+    if (ancestor instanceof Integer1Type) {
       if (child instanceof BottomType) {
         return true;
       } else {

@@ -271,7 +271,7 @@ public class CopyPropagator extends BodyTransformer {
     }
   }
 
-  private void copyLineTags(ValueBox useBox, DefinitionStmt def) {
+  public static void copyLineTags(ValueBox useBox, DefinitionStmt def) {
     // we might have a def statement which contains a propagated constant itself as right-op. we
     // want to propagate the tags of this constant and not the def statement itself in this case.
     if (!copyLineTags(useBox, def.getRightOpBox())) {
@@ -288,7 +288,7 @@ public class CopyPropagator extends BodyTransformer {
    *          The host from which the position tags should be copied
    * @return True if a copy was conducted, false otherwise
    */
-  private boolean copyLineTags(ValueBox useBox, Host host) {
+  private static boolean copyLineTags(ValueBox useBox, Host host) {
     boolean res = false;
 
     Tag tag = host.getTag(SourceLnPosTag.IDENTIFIER);

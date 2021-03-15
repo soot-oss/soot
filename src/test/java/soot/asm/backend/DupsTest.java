@@ -32,7 +32,6 @@ import org.objectweb.asm.util.TraceClassVisitor;
  *
  */
 
-
 public class DupsTest extends AbstractASMBackendTest {
 
   @Override
@@ -54,9 +53,8 @@ public class DupsTest extends AbstractASMBackendTest {
     {
       mv = cw.visitMethod(ACC_PUBLIC, "dubl", "()J", null, null);
       mv.visitCode();
-      mv.visitLdcInsn(new Long(1234L));
-      mv.visitLdcInsn(new Long(1234L));
-      mv.visitInsn(LADD);
+      // Note that due to constant folding we already evaluated 1234+1234
+      mv.visitLdcInsn(new Long(2468L));
       mv.visitInsn(LRETURN);
       mv.visitMaxs(0, 0);
       mv.visitEnd();
