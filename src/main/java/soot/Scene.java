@@ -1197,6 +1197,9 @@ public class Scene {
    * Returns the SootClass with the given className. If no class with the given name exists, null is
    * returned unless phantom refs are allowed. In this case, a new phantom class is created.
    *
+   * The difference with the getSootClass() version is that this version doesn't throw a RuntimeException
+   * if the requested class doesn't exist in the Scene. Instead it returns null.
+   *
    * @param className The name of the class to get
    * @return The class if it exists, otherwise null
    */
@@ -1208,6 +1211,10 @@ public class Scene {
    * Returns the SootClass with the given className. If no class with the given name exists, null is
    * returned unless phantomNonExist=true and phantom refs are allowed. In this case, a new phantom
    * class is created and returned.
+   *
+   * The difference with the getSootClass() version is that this version doesn't throw a RuntimeException
+   * if the requested class doesn't exist in the Scene. Instead it returns null or a phantom class, depending
+   * on the flag.
    *
    * @param className The name of the class to get
    * @param phantomNonExist Indicates that a phantom class should be created if a class with the
@@ -1238,7 +1245,9 @@ public class Scene {
     return null;
   }
 
-  /** Returns the SootClass with the given className. */
+  /** Returns the SootClass with the given className.
+   * @param className The name of the class to get; throws RuntimeException if this class does not exist.
+   */
   public SootClass getSootClass(String className) {
     SootClass sc = getSootClassUnsafe(className);
     if (sc != null) {
