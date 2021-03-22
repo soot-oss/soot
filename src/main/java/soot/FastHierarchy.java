@@ -416,12 +416,8 @@ public class FastHierarchy {
     final boolean parentIsInterface = parent.isInterface();
     ArrayDeque<SootClass> children = new ArrayDeque<>();
     children.add(child);
-    while (true) {
-      SootClass p = children.poll();
-      if (p == null) {
-        return false;
-      }
-
+    SootClass p;
+    while ((p = children.poll()) != null) {
       SootClass sc = p;
       while (sc != null) {
         if (sc == parent) {
@@ -438,6 +434,7 @@ public class FastHierarchy {
         sc = sc.getSuperclassUnsafe();
       }
     }
+    return false;
   }
 
   public Collection<SootMethod> resolveConcreteDispatchWithoutFailing(Collection<Type> concreteTypes, SootMethod m,
