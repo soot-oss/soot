@@ -418,8 +418,9 @@ public class FastHierarchy {
     children.add(child);
     while (true) {
       SootClass p = children.poll();
-      if (p == null)
+      if (p == null) {
         return false;
+      }
 
       SootClass sc = p;
       while (sc != null) {
