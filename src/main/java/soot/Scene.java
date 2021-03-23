@@ -1609,6 +1609,7 @@ public class Scene {
     addBasicClass("java.lang.Long", SootClass.SIGNATURES);
     addBasicClass("java.lang.Float", SootClass.SIGNATURES);
     addBasicClass("java.lang.Double", SootClass.SIGNATURES);
+    addBasicClass("java.lang.Number", SootClass.SIGNATURES);
 
     addBasicClass("java.lang.String");
     addBasicClass("java.lang.StringBuffer", SootClass.SIGNATURES);
