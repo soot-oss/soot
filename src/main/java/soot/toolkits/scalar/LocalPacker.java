@@ -72,19 +72,21 @@ public class LocalPacker extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    boolean isUnsplit = PhaseOptions.getBoolean(options, "unsplit-original-locals");
-
     if (Options.v().verbose()) {
       logger.debug("[" + body.getMethod().getName() + "] Packing locals...");
     }
 
+    final Chain<Local> bodyLocalsRef = body.getLocals();
+    final int origLocalCount = bodyLocalsRef.size();
+    if (origLocalCount < 1) {
+      return;
+    }
+
     // A group represents a bunch of locals which may potentially interfere with each other.
     // Separate groups can not possibly interfere with each other (coloring say ints and doubles).
-    Map<Local, Type> localToGroup = new DeterministicHashMap<Local, Type>(body.getLocalCount() * 2 + 1, 0.7f);
-    Map<Type, Integer> groupToColorCount = new HashMap<Type, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
-    Map<Local, Integer> localToColor = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
-
-    final Chain<Local> bodyLocalsRef = body.getLocals();
+    Map<Local, Type> localToGroup = new DeterministicHashMap<Local, Type>(origLocalCount * 2 + 1, 0.7f);
+    Map<Type, Integer> groupToColorCount = new HashMap<Type, Integer>(origLocalCount * 2 + 1, 0.7f);
+    Map<Local, Integer> localToColor = new HashMap<Local, Integer>(origLocalCount * 2 + 1, 0.7f);
 
     // Assign each local to a group, and set that group's color count to 0.
     for (Local l : bodyLocalsRef) {
@@ -109,16 +111,16 @@ public class LocalPacker extends BodyTransformer {
     }
 
     // Call the graph colorer.
-    if (isUnsplit) {
+    if (PhaseOptions.getBoolean(options, "unsplit-original-locals")) {
       FastColorer.unsplitAssignColorsToLocals(body, localToGroup, localToColor, groupToColorCount);
     } else {
       FastColorer.assignColorsToLocals(body, localToGroup, localToColor, groupToColorCount);
     }
 
     // Map each local to a new local.
-    Map<Local, Local> localToNewLocal = new HashMap<Local, Local>(body.getLocalCount() * 2 + 1, 0.7f);
+    Map<Local, Local> localToNewLocal = new HashMap<Local, Local>(origLocalCount * 2 + 1, 0.7f);
     {
-      Map<GroupIntPair, Local> groupIntToLocal = new HashMap<GroupIntPair, Local>(body.getLocalCount() * 2 + 1, 0.7f);
+      Map<GroupIntPair, Local> groupIntToLocal = new HashMap<GroupIntPair, Local>(origLocalCount * 2 + 1, 0.7f);
       List<Local> originalLocals = new ArrayList<Local>(bodyLocalsRef);
       bodyLocalsRef.clear();
 
