@@ -1240,12 +1240,7 @@ public class PackManager {
       // are added during resolution
       for (SootMethod m : new ArrayList<SootMethod>(cl.getMethods())) {
         if (m.isConcrete()) {
-          executor.execute(new Runnable() {
-            @Override
-            public void run() {
-              m.retrieveActiveBody();
-            }
-          });
+          executor.execute(() -> m.retrieveActiveBody());
         }
       }
     }
