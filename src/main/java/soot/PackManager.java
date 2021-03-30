@@ -135,6 +135,7 @@ import soot.toolkits.scalar.ConstantInitializerToTagTransformer;
 import soot.toolkits.scalar.ConstantValueToInitializerTransformer;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
+import soot.toolkits.scalar.SharedInitializationLocalSplitter;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.util.EscapedWriter;
 import soot.util.JasminOutputStream;
@@ -182,6 +183,7 @@ public class PackManager {
       p.add(new Transform("jb.dtr", DuplicateCatchAllTrapRemover.v()));
       p.add(new Transform("jb.ese", EmptySwitchEliminator.v()));
       p.add(new Transform("jb.ls", LocalSplitter.v()));
+      p.add(new Transform("jb.sils", SharedInitializationLocalSplitter.v()));
       p.add(new Transform("jb.a", Aggregator.v()));
       p.add(new Transform("jb.ule", UnusedLocalEliminator.v()));
       p.add(new Transform("jb.tr", TypeAssigner.v()));
@@ -199,6 +201,7 @@ public class PackManager {
     addPack(p = new JavaToJimpleBodyPack());
     {
       p.add(new Transform("jj.ls", LocalSplitter.v()));
+      p.add(new Transform("jj.sils", SharedInitializationLocalSplitter.v()));
       p.add(new Transform("jj.a", Aggregator.v()));
       p.add(new Transform("jj.ule", UnusedLocalEliminator.v()));
       p.add(new Transform("jj.ne", NopEliminator.v()));

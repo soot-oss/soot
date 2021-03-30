@@ -1,6 +1,7 @@
 package soot.jimple.toolkits.callgraph;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /*-
  * #%L
@@ -95,13 +96,18 @@ public class CallGraph implements Iterable<Edge> {
    */
   public boolean removeAllEdgesOutOf(Unit u) {
     boolean hasRemoved = false;
+    Set<Edge> edgesToRemove = new HashSet<>();
     for (QueueReader<Edge> edgeRdr = listener(); edgeRdr.hasNext();) {
       Edge e = edgeRdr.next();
       if (e.srcUnit() == u) {
         e.remove();
         removeEdge(e, false);
+        edgesToRemove.add(e);
         hasRemoved = true;
       }
+    }
+    if (hasRemoved) {
+      reader.remove(edgesToRemove);
     }
     return hasRemoved;
   }

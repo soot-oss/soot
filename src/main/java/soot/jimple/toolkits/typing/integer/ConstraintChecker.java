@@ -40,6 +40,7 @@ import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
+import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
@@ -107,6 +108,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
   private final boolean fix; // if true, fix constraint violations
 
   private JimpleBody stmtBody;
+  private LocalGenerator localGenerator;
 
   public ConstraintChecker(TypeResolver resolver, boolean fix) {
     this.resolver = resolver;
@@ -116,6 +118,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
   public void check(Stmt stmt, JimpleBody stmtBody) throws TypeException {
     try {
       this.stmtBody = stmtBody;
+      this.localGenerator = new LocalGenerator(stmtBody);
       stmt.apply(this);
     } catch (RuntimeTypeException e) {
       StringWriter st = new StringWriter();
@@ -145,9 +148,9 @@ class ConstraintChecker extends AbstractStmtSwitch {
         Local local = (Local) ie.getArg(i);
         if (local.getType() instanceof IntegerType) {
           if (!ClassHierarchy.v().typeNode(local.getType())
-              .hasAncestor_1(ClassHierarchy.v().typeNode(method.parameterType(i)))) {
+              .hasAncestor_1(ClassHierarchy.v().typeNode(method.getParameterType(i)))) {
             if (fix) {
-              ie.setArg(i, insertCast(local, method.parameterType(i), invokestmt));
+              ie.setArg(i, insertCast(local, method.getParameterType(i), invokestmt));
             } else {
               error("Type Error");
             }
@@ -164,9 +167,9 @@ class ConstraintChecker extends AbstractStmtSwitch {
           Local local = (Local) die.getBootstrapArg(i);
           if (local.getType() instanceof IntegerType) {
             if (!ClassHierarchy.v().typeNode(local.getType())
-                .hasAncestor_1(ClassHierarchy.v().typeNode(bootstrapMethod.parameterType(i)))) {
+                .hasAncestor_1(ClassHierarchy.v().typeNode(bootstrapMethod.getParameterType(i)))) {
               if (fix) {
-                die.setArg(i, insertCast(local, bootstrapMethod.parameterType(i), invokestmt));
+                die.setArg(i, insertCast(local, bootstrapMethod.getParameterType(i), invokestmt));
               } else {
                 error("Type Error");
               }
@@ -488,8 +491,8 @@ class ConstraintChecker extends AbstractStmtSwitch {
 
       handleInvokeExpr(ie, stmt);
 
-      if (ie.getMethodRef().returnType() instanceof IntegerType) {
-        right = ClassHierarchy.v().typeNode(ie.getMethodRef().returnType());
+      if (ie.getMethodRef().getReturnType() instanceof IntegerType) {
+        right = ClassHierarchy.v().typeNode(ie.getMethodRef().getReturnType());
       }
     } else if (r instanceof NewArrayExpr) {
       NewArrayExpr nae = (NewArrayExpr) r;
@@ -791,28 +794,22 @@ class ConstraintChecker extends AbstractStmtSwitch {
   }
 
   private Local insertCast(Local oldlocal, Type type, Stmt stmt) {
-    Local newlocal = Jimple.v().newLocal("tmp", type);
-    stmtBody.getLocals().add(newlocal);
-
+    Local newlocal = localGenerator.generateLocal(type);
     Unit u = Util.findFirstNonIdentityUnit(this.stmtBody, stmt);
     stmtBody.getUnits().insertBefore(Jimple.v().newAssignStmt(newlocal, Jimple.v().newCastExpr(oldlocal, type)), u);
     return newlocal;
   }
 
   private Local insertCastAfter(Local leftlocal, Type lefttype, Type righttype, Stmt stmt) {
-    Local newlocal = Jimple.v().newLocal("tmp", righttype);
-    stmtBody.getLocals().add(newlocal);
-
+    Local newlocal = localGenerator.generateLocal(righttype);
     Unit u = Util.findLastIdentityUnit(this.stmtBody, stmt);
     stmtBody.getUnits().insertAfter(Jimple.v().newAssignStmt(leftlocal, Jimple.v().newCastExpr(newlocal, lefttype)), u);
     return newlocal;
   }
 
   private Local insertCast(Value oldvalue, Type oldtype, Type type, Stmt stmt) {
-    Local newlocal1 = Jimple.v().newLocal("tmp", oldtype);
-    Local newlocal2 = Jimple.v().newLocal("tmp", type);
-    stmtBody.getLocals().add(newlocal1);
-    stmtBody.getLocals().add(newlocal2);
+    Local newlocal1 = localGenerator.generateLocal(oldtype);
+    Local newlocal2 = localGenerator.generateLocal(type);
 
     Unit u = Util.findFirstNonIdentityUnit(this.stmtBody, stmt);
     stmtBody.getUnits().insertBefore(Jimple.v().newAssignStmt(newlocal1, oldvalue), u);

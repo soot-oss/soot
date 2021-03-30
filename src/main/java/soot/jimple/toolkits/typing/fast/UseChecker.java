@@ -28,6 +28,7 @@ import java.util.Iterator;
 
 import soot.ArrayType;
 import soot.BooleanType;
+import soot.G;
 import soot.IntType;
 import soot.IntegerType;
 import soot.Local;
@@ -144,25 +145,24 @@ public class UseChecker extends AbstractStmtSwitch {
   private void handleBinopExpr(BinopExpr be, Stmt stmt, Type tlhs) {
     Value opl = be.getOp1(), opr = be.getOp2();
     Type tl = AugEvalFunction.eval_(this.tg, opl, stmt, this.jb), tr = AugEvalFunction.eval_(this.tg, opr, stmt, this.jb);
-
     if (be instanceof AddExpr || be instanceof SubExpr || be instanceof MulExpr || be instanceof DivExpr
         || be instanceof RemExpr || be instanceof GeExpr || be instanceof GtExpr || be instanceof LeExpr
         || be instanceof LtExpr || be instanceof ShlExpr || be instanceof ShrExpr || be instanceof UshrExpr) {
       if (tlhs instanceof IntegerType) {
-        be.setOp1(this.uv.visit(opl, IntType.v(), stmt));
-        be.setOp2(this.uv.visit(opr, IntType.v(), stmt));
+        be.setOp1(this.uv.visit(opl, IntType.v(), stmt, true));
+        be.setOp2(this.uv.visit(opr, IntType.v(), stmt, true));
       }
     } else if (be instanceof CmpExpr || be instanceof CmpgExpr || be instanceof CmplExpr) {
       // No checks in the original assigner
     } else if (be instanceof AndExpr || be instanceof OrExpr || be instanceof XorExpr) {
-      be.setOp1(this.uv.visit(opl, tlhs, stmt));
-      be.setOp2(this.uv.visit(opr, tlhs, stmt));
+      be.setOp1(this.uv.visit(opl, tlhs, stmt, true));
+      be.setOp2(this.uv.visit(opr, tlhs, stmt, true));
     } else if (be instanceof EqExpr || be instanceof NeExpr) {
       if (tl instanceof BooleanType && tr instanceof BooleanType) {
       } else if (tl instanceof Integer1Type || tr instanceof Integer1Type) {
       } else if (tl instanceof IntegerType) {
-        be.setOp1(this.uv.visit(opl, IntType.v(), stmt));
-        be.setOp2(this.uv.visit(opr, IntType.v(), stmt));
+        be.setOp1(this.uv.visit(opl, IntType.v(), stmt, true));
+        be.setOp2(this.uv.visit(opr, IntType.v(), stmt, true));
       }
     }
   }
@@ -202,11 +202,11 @@ public class UseChecker extends AbstractStmtSwitch {
       } else {
         // If the right-hand side is a primitive and the left-side type
         // is java.lang.Object
-        if (tgType == Scene.v().getObjectType() && rhs instanceof Local) {
+        if (rhs instanceof Local) {
           Type rhsType = this.tg.get((Local) rhs);
-          if (rhsType instanceof PrimType) {
+          if ((tgType == Scene.v().getObjectType() && rhsType instanceof PrimType) || tgType instanceof WeakObjectType) {
             if (defs == null) {
-              defs = LocalDefs.Factory.newLocalDefs(jb);
+              defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(jb);
               uses = LocalUses.Factory.newLocalUses(jb, defs);
             }
 
@@ -277,7 +277,7 @@ public class UseChecker extends AbstractStmtSwitch {
               || rt.getSootClass().getName().equals("java.io.Serializable")
               || rt.getSootClass().getName().equals("java.lang.Cloneable")) {
             if (defs == null) {
-              defs = LocalDefs.Factory.newLocalDefs(jb);
+              defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(jb);
               uses = LocalUses.Factory.newLocalUses(jb, defs);
             }
 

@@ -33,7 +33,6 @@ import org.objectweb.asm.util.TraceClassVisitor;
  *
  */
 
-
 public class ArithmeticTest extends AbstractASMBackendTest {
 
   @Override
@@ -225,6 +224,7 @@ public class ArithmeticTest extends AbstractASMBackendTest {
       mv.visitVarInsn(ALOAD, 0);
       mv.visitVarInsn(ILOAD, 1);
       mv.visitInsn(ICONST_M1);
+      mv.visitInsn(NOP);
       mv.visitInsn(IDIV);
       mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/ArithmeticLib", "rInt", "I");
       mv.visitVarInsn(ALOAD, 0);

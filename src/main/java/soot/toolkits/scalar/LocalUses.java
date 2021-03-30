@@ -25,6 +25,7 @@ package soot.toolkits.scalar;
 import java.util.List;
 
 import soot.Body;
+import soot.G;
 import soot.Unit;
 import soot.toolkits.graph.UnitGraph;
 
@@ -58,11 +59,11 @@ public interface LocalUses {
     }
 
     public static LocalUses newLocalUses(Body body) {
-      return newLocalUses(body, LocalDefs.Factory.newLocalDefs(body));
+      return newLocalUses(body, G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(body));
     }
 
     public static LocalUses newLocalUses(UnitGraph graph) {
-      return newLocalUses(graph.getBody(), LocalDefs.Factory.newLocalDefs(graph));
+      return newLocalUses(graph.getBody(), G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph));
     }
   }
 }
