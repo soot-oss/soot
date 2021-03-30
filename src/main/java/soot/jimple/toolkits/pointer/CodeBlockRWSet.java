@@ -24,7 +24,7 @@ package soot.jimple.toolkits.pointer;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Map;
 
 import soot.PointsToSet;
 import soot.Scene;
@@ -36,47 +36,31 @@ import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 
 public class CodeBlockRWSet extends MethodRWSet {
-  public int size() {
-    if (globals == null) {
-      if (fields == null) {
-        return 0;
-      } else {
-        return fields.size();
-      }
-    } else {
-      if (fields == null) {
-        return globals.size();
-      } else {
-        return globals.size() + fields.size();
-      }
-    }
-  }
 
+  @Override
   public String toString() {
+    StringBuilder ret = new StringBuilder();
     boolean empty = true;
-    final StringBuffer ret = new StringBuffer();
     if (fields != null) {
-      for (Object element : fields.keySet()) {
-        final Object field = element;
-        ret.append("[Field: " + field + " ");
-        Object baseObj = fields.get(field);
+      for (Map.Entry<Object, PointsToSet> e : fields.entrySet()) {
+        ret.append("[Field: ").append(e.getKey()).append(' ');
+        PointsToSet baseObj = e.getValue();
         if (baseObj instanceof PointsToSetInternal) {
           /*
            * PointsToSetInternal base = (PointsToSetInternal) fields.get(field); base.forall( new P2SetVisitor() { public
            * void visit( Node n ) { ret.append(n.getNumber() + " "); } } );
            */
           int baseSize = ((PointsToSetInternal) baseObj).size();
-          ret.append(baseSize + (baseSize == 1 ? " Node]\n" : " Nodes]\n"));
+          ret.append(baseSize).append(baseSize == 1 ? " Node]\n" : " Nodes]\n");
         } else {
-          ret.append(baseObj + "]\n");
+          ret.append(baseObj).append("]\n");
         }
         empty = false;
       }
     }
     if (globals != null) {
-      for (Iterator globalIt = globals.iterator(); globalIt.hasNext();) {
-        final Object global = globalIt.next();
-        ret.append("[Global: " + global + "]\n");
+      for (SootField global : globals) {
+        ret.append("[Global: ").append(global).append("]\n");
         empty = false;
       }
     }
@@ -87,11 +71,9 @@ public class CodeBlockRWSet extends MethodRWSet {
   }
 
   /** Adds the RWSet other into this set. */
+  @Override
   public boolean union(RWSet other) {
-    if (other == null) {
-      return false;
-    }
-    if (isFull) {
+    if (other == null || isFull) {
       return false;
     }
     boolean ret = false;
@@ -113,7 +95,7 @@ public class CodeBlockRWSet extends MethodRWSet {
       }
       if (o.globals != null) {
         if (globals == null) {
-          globals = new HashSet();
+          globals = new HashSet<SootField>();
         }
         ret = globals.addAll(o.globals) | ret;
         if (globals.size() > MAX_SIZE) {
@@ -123,10 +105,8 @@ public class CodeBlockRWSet extends MethodRWSet {
         }
       }
       if (o.fields != null) {
-        for (Object element : o.fields.keySet()) {
-          final Object field = element;
-          PointsToSet os = o.getBaseForField(field);
-          ret = addFieldRef(os, field) | ret;
+        for (Object field : o.fields.keySet()) {
+          ret = addFieldRef(o.getBaseForField(field), field) | ret;
         }
       }
     } else if (other instanceof StmtRWSet) {
@@ -150,10 +130,7 @@ public class CodeBlockRWSet extends MethodRWSet {
   }
 
   public boolean containsField(Object field) {
-    if (fields == null) {
-      return false;
-    }
-    return fields.containsKey(field);
+    return fields != null && fields.containsKey(field);
   }
 
   public CodeBlockRWSet intersection(MethodRWSet other) {
@@ -165,8 +142,7 @@ public class CodeBlockRWSet extends MethodRWSet {
     }
 
     if (globals != null && other.globals != null && !globals.isEmpty() && !other.globals.isEmpty()) {
-      for (Iterator it = other.globals.iterator(); it.hasNext();) {
-        SootField sg = (SootField) it.next();
+      for (SootField sg : other.globals) {
         if (globals.contains(sg)) {
           ret.addGlobal(sg);
         }
@@ -174,9 +150,7 @@ public class CodeBlockRWSet extends MethodRWSet {
     }
 
     if (fields != null && other.fields != null && !fields.isEmpty() && !other.fields.isEmpty()) {
-      for (Object element : other.fields.keySet()) {
-        final Object field = element;
-
+      for (Object field : other.fields.keySet()) {
         if (fields.containsKey(field)) {
           PointsToSet pts1 = getBaseForField(field);
           PointsToSet pts2 = other.getBaseForField(field);
@@ -191,6 +165,7 @@ public class CodeBlockRWSet extends MethodRWSet {
               final PointsToSetInternal newpti = new HashPointsToSet(pti1.getType(), (PAG) Scene.v().getPointsToAnalysis());
 
               pti1.forall(new P2SetVisitor() {
+                @Override
                 public void visit(Node n) {
                   if (pti2.contains(n)) {
                     newpti.add(n);
@@ -207,10 +182,11 @@ public class CodeBlockRWSet extends MethodRWSet {
     return ret;
   }
 
+  @Override
   public boolean addFieldRef(PointsToSet otherBase, Object field) {
     boolean ret = false;
     if (fields == null) {
-      fields = new HashMap();
+      fields = new HashMap<Object, PointsToSet>();
     }
 
     // Get our points-to set, merge with other
@@ -227,13 +203,10 @@ public class CodeBlockRWSet extends MethodRWSet {
     }
     if (base == null) {
       // NOTE: this line makes unsafe assumptions about the PTA
-      PointsToSetInternal newpti
-          = new HashPointsToSet(((PointsToSetInternal) otherBase).getType(), (PAG) Scene.v().getPointsToAnalysis());
-      base = newpti;
+      base = new HashPointsToSet(((PointsToSetInternal) otherBase).getType(), (PAG) Scene.v().getPointsToAnalysis());
       fields.put(field, base);
     }
 
-    ret = ((PointsToSetInternal) base).addAll((PointsToSetInternal) otherBase, null) | ret;
-    return ret;
+    return ((PointsToSetInternal) base).addAll((PointsToSetInternal) otherBase, null) | ret;
   }
 }

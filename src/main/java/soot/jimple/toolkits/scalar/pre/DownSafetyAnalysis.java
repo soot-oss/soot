@@ -44,15 +44,15 @@ import soot.toolkits.scalar.FlowSet;
  * from the current point down to the END.
  */
 public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<EquivalentValue>> {
-  private SideEffectTester sideEffect = null;
 
-  private Map<Unit, EquivalentValue> unitToGenerateMap;
-
-  private BoundedFlowSet<EquivalentValue> set;
+  private final SideEffectTester sideEffect;
+  private final Map<Unit, EquivalentValue> unitToGenerateMap;
+  private final BoundedFlowSet<EquivalentValue> set;
 
   /**
    * This constructor should not be used, and will throw a runtime-exception!
    */
+  @Deprecated
   public DownSafetyAnalysis(DirectedGraph<Unit> dg) {
     /* we have to add super(dg). otherwise Javac complains. */
     super(dg);
@@ -87,7 +87,7 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equiv
    *          the equivalentValue of each unit.
    * @param sideEffect
    *          the SideEffectTester that performs kills.
-   * @param BoundedFlowSet
+   * @param set
    *          the shared set.
    */
   public DownSafetyAnalysis(DirectedGraph<Unit> dg, Map<Unit, EquivalentValue> unitToGen, SideEffectTester sideEffect,
@@ -113,27 +113,22 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equiv
   protected void flowThrough(FlowSet<EquivalentValue> in, Unit u, FlowSet<EquivalentValue> out) {
     in.copy(out);
 
-    { /* Perform kill */
-
-      Iterator<EquivalentValue> outIt = out.iterator();
-      // iterate over things (avail) in out set.
-      while (outIt.hasNext()) {
-        EquivalentValue equiVal = outIt.next();
-        Value avail = equiVal.getValue();
-        if (avail instanceof FieldRef) {
-          if (sideEffect.unitCanWriteTo(u, avail)) {
+    /* Perform kill */
+    // iterate over things (avail) in out set.
+    for (Iterator<EquivalentValue> outIt = out.iterator(); outIt.hasNext();) {
+      EquivalentValue equiVal = outIt.next();
+      Value avail = equiVal.getValue();
+      if (avail instanceof FieldRef) {
+        if (sideEffect.unitCanWriteTo(u, avail)) {
+          outIt.remove();
+        }
+      } else {
+        // iterate over uses in each avail.
+        for (ValueBox next : avail.getUseBoxes()) {
+          Value use = next.getValue();
+          if (sideEffect.unitCanWriteTo(u, use)) {
             outIt.remove();
-          }
-        } else {
-          Iterator<ValueBox> usesIt = avail.getUseBoxes().iterator();
-
-          // iterate over uses in each avail.
-          while (usesIt.hasNext()) {
-            Value use = usesIt.next().getValue();
-            if (sideEffect.unitCanWriteTo(u, use)) {
-              outIt.remove();
-              break;
-            }
+            break;
           }
         }
       }

@@ -78,9 +78,6 @@ public class InstanceKey {
     this.hashCode = computeHashCode();
   }
 
-  /**
-   * {@inheritDoc}
-   */
   public boolean mustAlias(InstanceKey otherKey) {
     if (stmtAfterAssignStmt == null || otherKey.stmtAfterAssignStmt == null) {
       // don't know
@@ -89,9 +86,6 @@ public class InstanceKey {
     return lmaa.mustAlias(assignedLocal, stmtAfterAssignStmt, otherKey.assignedLocal, otherKey.stmtAfterAssignStmt);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   public boolean mayNotAlias(InstanceKey otherKey) {
     if (owner.equals(otherKey.owner) && stmtAfterAssignStmt != null && otherKey.stmtAfterAssignStmt != null) {
       if (lnma.notMayAlias(assignedLocal, stmtAfterAssignStmt, otherKey.assignedLocal, otherKey.stmtAfterAssignStmt)) {
@@ -99,12 +93,13 @@ public class InstanceKey {
       }
     }
     // different methods or local not-may-alias was not successful: get points-to info
-    PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
-    if (pta == null) {
-      return false; // no info; hence don't know for sure
+    if (Scene.v().getPointsToAnalysis() == null) {
+      // no info; hence don't know for sure
+      return false;
+    } else {
+      // may not alias if we have an empty intersection
+      return !pts.hasNonEmptyIntersection(otherKey.pts);
     }
-    // may not alias if we have an empty intersection
-    return !pts.hasNonEmptyIntersection(otherKey.pts);
   }
 
   public PointsToSet getPointsToSet() {
@@ -119,9 +114,10 @@ public class InstanceKey {
     return stmtAfterAssignStmt != null;
   }
 
+  @Override
   public String toString() {
-    String instanceKeyString
-        = stmtAfterAssignStmt != null ? lmaa.instanceKeyString(assignedLocal, stmtAfterAssignStmt) : "pts(" + hashCode + ")";
+    String instanceKeyString =
+        stmtAfterAssignStmt != null ? lmaa.instanceKeyString(assignedLocal, stmtAfterAssignStmt) : "pts(" + hashCode + ")";
     return instanceKeyString + "(" + assignedLocal.getName() + ")";
   }
 
@@ -157,18 +153,15 @@ public class InstanceKey {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (obj == null || this.getClass() != obj.getClass()) {
       return false;
     }
     final InstanceKey other = (InstanceKey) obj;
-    if (owner == null) {
+    if (this.owner == null) {
       if (other.owner != null) {
         return false;
       }
-    } else if (!owner.equals(other.owner)) {
+    } else if (!this.owner.equals(other.owner)) {
       return false;
     }
     // two keys are equal if they must alias
@@ -176,7 +169,7 @@ public class InstanceKey {
       return true;
     }
     // or if both have no statement set but the same local
-    return (stmtAfterAssignStmt == null && other.stmtAfterAssignStmt == null && pts.equals(other.pts));
+    return (this.stmtAfterAssignStmt == null && other.stmtAfterAssignStmt == null && this.pts.equals(other.pts));
   }
 
   public boolean isOfReferenceType() {

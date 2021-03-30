@@ -25,12 +25,12 @@ package soot.tagkit;
 /**
  * Represents the synthetic attribute.
  */
-
 public class QualifyingTag extends SyntheticParamTag {
 
-  /** Returns the tag name. */
-  public String getName() {
-    return "QualifyingTag";
-  }
+  public static final String NAME = "QualifyingTag";
 
+  @Override
+  public String getName() {
+    return NAME;
+  }
 }

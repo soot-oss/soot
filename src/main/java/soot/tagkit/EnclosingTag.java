@@ -25,12 +25,12 @@ package soot.tagkit;
 /**
  * Represents the synthetic attribute.
  */
-
 public class EnclosingTag extends SyntheticParamTag {
 
-  /** Returns the tag name. */
-  public String getName() {
-    return "EnclosingTag";
-  }
+  public static final String NAME = "EnclosingTag";
 
+  @Override
+  public String getName() {
+    return NAME;
+  }
 }

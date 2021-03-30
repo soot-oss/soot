@@ -37,10 +37,12 @@ import soot.Singletons;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
+import soot.Value;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
+import soot.util.Chain;
 
 /**
  * This class creates a local for each string constant that is used as a base object to a reflective Method.invoke call.
@@ -52,8 +54,8 @@ import soot.jimple.StringConstant;
 public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
   private static final Logger logger = LoggerFactory.getLogger(ConstantInvokeMethodBaseTransformer.class);
 
-  private final static String INVOKE_SIG
-      = "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>";
+  private final static String INVOKE_SIG =
+      "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>";
 
   public ConstantInvokeMethodBaseTransformer(Singletons.Global g) {
   }
@@ -64,31 +66,31 @@ public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
 
   @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
-    boolean verbose = options.containsKey("verbose");
+    final boolean verbose = options.containsKey("verbose");
+    final Jimple jimp = Jimple.v();
 
     for (SootClass sootClass : Scene.v().getApplicationClasses()) {
       // In some rare cases we will have application classes that are not resolved due to being located in excluded packages
-      // (e.g., the
-      // ServiceConnection class constructed by FlowDroid:
+      // (e.g., the ServiceConnection class constructed by FlowDroid:
       // soot.jimple.infoflow.cfg.LibraryClassPatcher#patchServiceConnection)
       if (sootClass.resolvingLevel() < SootClass.BODIES) {
         continue;
       }
       for (SootMethod sootMethod : sootClass.getMethods()) {
         Body body = sootMethod.retrieveActiveBody();
+        final Chain<Local> locals = body.getLocals();
+        final Chain<Unit> units = body.getUnits();
+        for (Iterator<Unit> iterator = units.snapshotIterator(); iterator.hasNext();) {
+          Stmt s = (Stmt) iterator.next();
 
-        for (Iterator<Unit> iterator = body.getUnits().snapshotIterator(); iterator.hasNext();) {
-          Stmt u = (Stmt) iterator.next();
-
-          if (u.containsInvokeExpr()) {
-            InvokeExpr invokeExpr = u.getInvokeExpr();
-            if (invokeExpr.getMethod().getSignature().equals(INVOKE_SIG)) {
-              if (invokeExpr.getArg(0) instanceof StringConstant) {
-
-                StringConstant constant = (StringConstant) invokeExpr.getArg(0);
-                Local newLocal = Jimple.v().newLocal("sc" + body.getLocalCount(), constant.getType());
-                body.getLocals().add(newLocal);
-                body.getUnits().insertBefore(Jimple.v().newAssignStmt(newLocal, constant), u);
+          if (s.containsInvokeExpr()) {
+            InvokeExpr invokeExpr = s.getInvokeExpr();
+            if (INVOKE_SIG.equals(invokeExpr.getMethod().getSignature())) {
+              Value arg0 = invokeExpr.getArg(0);
+              if (arg0 instanceof StringConstant) {
+                Local newLocal = jimp.newLocal("sc" + locals.size(), arg0.getType());
+                locals.add(newLocal);
+                units.insertBefore(jimp.newAssignStmt(newLocal, (StringConstant) arg0), s);
                 invokeExpr.setArg(0, newLocal);
 
                 if (verbose) {

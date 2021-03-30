@@ -107,7 +107,7 @@ public class LocalSplitter extends BodyTransformer {
     ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
 
     // run in panic mode on first split (maybe change this depending on the input source)
-    final LocalDefs defs = LocalDefs.Factory.newLocalDefs(graph, true);
+    final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
     final LocalUses uses = LocalUses.Factory.newLocalUses(graph, defs);
 
     if (Options.v().time()) {
