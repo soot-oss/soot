@@ -2075,7 +2075,8 @@ final class AsmMethodSource implements MethodSource {
 
       // We need to jump to the original implementation
       Unit targetUnit = units.get(ln);
-      GotoStmt gotoImpl = Jimple.v().newGotoStmt(targetUnit instanceof UnitContainer ? ((UnitContainer) targetUnit).getFirstUnit() : targetUnit);
+      GotoStmt gotoImpl = Jimple.v().newGotoStmt(
+              targetUnit instanceof UnitContainer ? ((UnitContainer) targetUnit).getFirstUnit() : targetUnit);
       body.getUnits().add(gotoImpl);
     }
 
