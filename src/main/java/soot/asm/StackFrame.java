@@ -194,7 +194,7 @@ final class StackFrame {
             AssignStmt as = Jimple.v().newAssignStmt(stack, newOp.value);
             src.setUnit(newOp.insn, as);
           } else {
-            Unit u = src.getUnit(newOp.insn);
+            Unit u = src.getUnitMaybeInlineExceptionHandler(newOp.insn);
             DefinitionStmt as = (DefinitionStmt) (u instanceof UnitContainer ? ((UnitContainer) u).getFirstUnit() : u);
             ValueBox lvb = as.getLeftOpBox();
             assert lvb.getValue() == newOp.stack : "Invalid stack local!";

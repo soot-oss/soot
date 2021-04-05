@@ -1902,6 +1902,16 @@ final class AsmMethodSource implements MethodSource {
     edges = null;
   }
 
+  Unit getUnitMaybeInlineExceptionHandler(AbstractInsnNode insn) {
+    Unit ret = getUnit(insn);
+
+    if (ret instanceof NopStmt && inlineExceptionHandlers.containsKey(insn)) {
+      return inlineExceptionHandlers.get(insn);
+    } else {
+      return ret;
+    }
+  }
+
   private void handleInlineExceptionHandler(LabelNode ln, ArrayDeque<Edge> worklist) {
     // Catch the exception
     CaughtExceptionRef ref = Jimple.v().newCaughtExceptionRef();
@@ -2065,7 +2075,7 @@ final class AsmMethodSource implements MethodSource {
 
       // We need to jump to the original implementation
       Unit targetUnit = units.get(ln);
-      GotoStmt gotoImpl = Jimple.v().newGotoStmt(targetUnit);
+      GotoStmt gotoImpl = Jimple.v().newGotoStmt(targetUnit instanceof UnitContainer ? ((UnitContainer) targetUnit).getFirstUnit() : targetUnit);
       body.getUnits().add(gotoImpl);
     }
 
