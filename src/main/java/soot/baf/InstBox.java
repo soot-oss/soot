@@ -26,11 +26,13 @@ import soot.AbstractUnitBox;
 import soot.Unit;
 
 class InstBox extends AbstractUnitBox {
+
   InstBox(Inst s) {
     setUnit(s);
   }
 
+  @Override
   public boolean canContainUnit(Unit u) {
-    return u instanceof Inst || u == null;
+    return u == null || u instanceof Inst;
   }
 }
