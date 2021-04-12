@@ -40,6 +40,7 @@ import soot.ByteType;
 import soot.CharType;
 import soot.DoubleType;
 import soot.FloatType;
+import soot.G;
 import soot.IntType;
 import soot.IntegerType;
 import soot.Local;
@@ -266,7 +267,7 @@ public class JasminClass extends AbstractJasminClass {
     final boolean enablePeephole = false;
     if (enablePeephole) {
       stmtGraph = new ExceptionalUnitGraph(body);
-      ld = LocalDefs.Factory.newLocalDefs(stmtGraph);
+      ld = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(stmtGraph);
       lu = LocalUses.Factory.newLocalUses(body, ld);
     }
 
