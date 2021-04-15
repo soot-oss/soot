@@ -77,6 +77,8 @@ import soot.util.Chain;
 
 public class LoadStoreOptimizer extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(LoadStoreOptimizer.class);
+  
+  private static final boolean SKIP_SLOW_ASSERTS = true;
 
   public LoadStoreOptimizer(Singletons.Global g) {
   }
@@ -131,20 +133,20 @@ public class LoadStoreOptimizer extends BodyTransformer {
     public void go() {
       if (!mUnits.isEmpty()) {
         buildUnitToBlockMap();
-        assert (unitToBlockMapIsValid());
+        assert (SKIP_SLOW_ASSERTS || unitToBlockMapIsValid());
 
         if (debug) {
           logger.debug("Calling optimizeLoadStore(1)\n");
         }
         optimizeLoadStores(false);
-        assert (unitToBlockMapIsValid());
+        assert (SKIP_SLOW_ASSERTS || unitToBlockMapIsValid());
 
         if (PhaseOptions.getBoolean(gOptions, "inter")) {
           if (debug) {
             logger.debug("Calling doInterBlockOptimizations");
           }
           doInterBlockOptimizations();
-          assert (unitToBlockMapIsValid());
+          assert (SKIP_SLOW_ASSERTS || unitToBlockMapIsValid());
         }
 
         if (PhaseOptions.getBoolean(gOptions, "sl2") || PhaseOptions.getBoolean(gOptions, "sll2")) {
@@ -152,7 +154,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
             logger.debug("Calling optimizeLoadStore(2)");
           }
           optimizeLoadStores(true);
-          assert (unitToBlockMapIsValid());
+          assert (SKIP_SLOW_ASSERTS || unitToBlockMapIsValid());
         }
       }
     }
@@ -237,10 +239,10 @@ public class LoadStoreOptimizer extends BodyTransformer {
             // Check that all loads are in the same bb as the store
             {
               Block storeBlock = mUnitToBlockMap.get(unit);
-              assert (contains(storeBlock, unit));
+              assert (SKIP_SLOW_ASSERTS || contains(storeBlock, unit));
               for (UnitValueBoxPair pair : uses) {
                 Block useBlock = mUnitToBlockMap.get(pair.getUnit());
-                assert (contains(useBlock, pair.getUnit()));
+                assert (SKIP_SLOW_ASSERTS || contains(useBlock, pair.getUnit()));
                 if (useBlock != storeBlock) {
                   continue nextUnit;
                 }
@@ -263,7 +265,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
                     // try to eliminate store/load pair
                     Unit loadUnit = uses.get(0).getUnit();
                     Block block = mUnitToBlockMap.get(unit);
-                    assert (contains(block, unit));
+                    assert (SKIP_SLOW_ASSERTS || contains(block, unit));
                     int test = stackIndependent(unit, loadUnit, block, STORE_LOAD_ELIMINATION);
                     if (test == SUCCESS || test == SPECIAL_SUCCESS) {
                       block.remove(unit);
@@ -297,7 +299,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
                     }
 
                     Block block = mUnitToBlockMap.get(unit);
-                    assert (contains(block, unit));
+                    assert (SKIP_SLOW_ASSERTS || contains(block, unit));
                     int result = stackIndependent(unit, firstLoad, block, STORE_LOAD_ELIMINATION);
                     if (result == SUCCESS) {
                       // move the first load just after its defining store.
@@ -769,7 +771,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
      */
     private void replaceUnit(Unit aToReplace1, Unit aToReplace2, Unit aReplacement) {
       Block block = mUnitToBlockMap.get(aToReplace1);
-      assert (contains(block, aToReplace1));
+      assert (SKIP_SLOW_ASSERTS || contains(block, aToReplace1));
 
       if (aToReplace2 != null) {
         block.insertAfter(aReplacement, aToReplace2);
@@ -846,7 +848,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
               logger.debug("interopt trying: " + u);
             }
             final Block loadBlock = mUnitToBlockMap.get(u);
-            assert (contains(loadBlock, u));
+            assert (SKIP_SLOW_ASSERTS || contains(loadBlock, u));
             final List<Unit> defs = mLocalDefs.getDefsOfAt(((LoadInst) u).getLocal(), u);
 
             if (debug) {
@@ -856,7 +858,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
             if (defs.size() == 1) { // first optimization
               final Unit def = defs.get(0);
               final Block defBlock = mUnitToBlockMap.get(def);
-              assert (contains(defBlock, def));
+              assert (SKIP_SLOW_ASSERTS || contains(defBlock, def));
               if (defBlock != loadBlock && !isExceptionHandlerBlock(loadBlock)) {
                 if (def instanceof StoreInst) {
                   List<UnitValueBoxPair> uses = mLocalUses.getUsesOf(def);
@@ -893,10 +895,10 @@ public class LoadStoreOptimizer extends BodyTransformer {
             } else if (defs.size() == 2) { // second optimization
               final Unit def0 = defs.get(0);
               final Block defBlock0 = mUnitToBlockMap.get(def0);
-              assert (contains(defBlock0, def0));
+              assert (SKIP_SLOW_ASSERTS || contains(defBlock0, def0));
               final Unit def1 = defs.get(1);
               final Block defBlock1 = mUnitToBlockMap.get(def1);
-              assert (contains(defBlock1, def1));
+              assert (SKIP_SLOW_ASSERTS || contains(defBlock1, def1));
               if (defBlock0 != loadBlock && defBlock1 != loadBlock && defBlock0 != defBlock1
                   && !(isExceptionHandlerBlock(loadBlock))) {
                 if (mLocalUses.getUsesOf(def0).size() == 1 && mLocalUses.getUsesOf(def1).size() == 1) {
@@ -980,12 +982,14 @@ public class LoadStoreOptimizer extends BodyTransformer {
       for (Unit u : mUnits) {
         assert (mUnitToBlockMap.containsKey(u));
       }
+      HashSet<Block> blocks = new HashSet<Block>();
       for (Map.Entry<Unit, Block> e : mUnitToBlockMap.entrySet()) {
-        final Unit u = e.getKey();
-        final Block b = e.getValue();
+        blocks.add(e.getValue());
         // Ensure the Unit is mapped to the correct Block
-        assert (contains(b, u));
-        // Ensure that every Unit in the Block is mapped to the Block
+        assert (contains(e.getValue(), e.getKey()));
+      }
+      // Ensure that every Unit in the Block is mapped to the Block
+      for (Block b : blocks) {
         final Unit t = b.getTail();
         assert (mUnitToBlockMap.get(t) == b);
         for (Unit u2 = b.getHead(); u2 != t; u2 = b.getSuccOf(u2)) {
