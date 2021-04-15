@@ -819,9 +819,14 @@ public class LoadStoreOptimizer extends BodyTransformer {
     private boolean isZeroStackDeltaWithoutClobbering(Unit aFrom, Unit aTo) {
       int h = 0;
       for (Iterator<Unit> it = mUnits.iterator(aFrom, aTo); it.hasNext();) {
-        Unit next = it.next();
-        h += ((Inst) next).getNetCount();
-        if (h < 0) { // detect clobbering of the top value at 'aFrom'
+        Inst next = (Inst) it.next();
+        // detect use of the top stack value at 'aFrom'
+        if (next.getInCount() > h) {
+          return false;
+        }
+        h += next.getNetCount();
+        // detect removal of the top stack value at 'aFrom'
+        if (h < 0) {
           return false;
         }
       }
@@ -882,7 +887,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
                         loadBlock.insertBefore(def, loadBlock.getHead());
                         hasChanged = true;
                         if (debug) {
-                          logger.debug("inter-block opti occurred " + def + " " + u);
+                          logger.debug("inter-block opt 1 occurred " + def + " " + u);
                         }
                         if (debug) {
                           logger.debug(defBlock.toString() + loadBlock.toString());
@@ -920,7 +925,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
 
                           hasChanged = true;
                           if (debug) {
-                            logger.debug("inter-block opti2 occurred " + def0);
+                            logger.debug("inter-block opt 2 occurred " + def0);
                           }
                         } else if (debug) {
                           logger.debug("failed: inter: unacceptable stack offset");
