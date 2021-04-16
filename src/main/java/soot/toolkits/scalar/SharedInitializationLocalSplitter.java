@@ -186,6 +186,9 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       for (Cluster cluster : clusters) {
         // we have an overlap, we need to split.
         Local newLocal = (Local) lcl.clone();
+        newLocal.setName(newLocal.getName() + '_' + ++w);
+        locals.add(newLocal);
+
         for (Unit u : cluster.constantInitializers) {
           AssignStmt assign = (AssignStmt) u;
           AssignStmt newAssign = Jimple.v().newAssignStmt(newLocal, assign.getRightOp());
@@ -193,8 +196,6 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
           CopyPropagator.copyLineTags(newAssign.getUseBoxes().get(0), assign);
         }
 
-        newLocal.setName(newLocal.getName() + '_' + ++w);
-        locals.add(newLocal);
         replaceLocalsInUnitUses(cluster.use, lcl, newLocal);
       }
     }
