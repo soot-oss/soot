@@ -134,11 +134,13 @@ public class AugEvalFunction implements IEvalFunction {
             return tl;
           } else {
             Collection<Type> rs = AugHierarchy.lcas_(tl, tr, false);
-            // AugHierarchy.lcas_ is single-valued
-            for (Type r : rs) {
-              return r;
+            if (rs.isEmpty()) {
+              throw new RuntimeException();
+            } else {
+              // AugHierarchy.lcas_ is single-valued
+              assert (rs.size() == 1);
+              return rs.iterator().next();
             }
-            throw new RuntimeException();
           }
         } else {
           return (tl instanceof RefLikeType) ? tr : tl;
