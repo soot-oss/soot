@@ -663,10 +663,12 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    */
   @Override
   public String getSignature() {
+    String sig = this.sig;
     if (sig == null) {
       synchronized (this) {
+        sig = this.sig;
         if (sig == null) {
-          sig = getSignature(getDeclaringClass(), getSubSignature());
+          this.sig = sig = getSignature(getDeclaringClass(), getSubSignature());
         }
       }
     }
@@ -691,10 +693,12 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    * Returns the Soot subsignature of this method. Used to refer to methods unambiguously.
    */
   public String getSubSignature() {
+    String subSig = this.subSig;
     if (subSig == null) {
       synchronized (this) {
+        subSig = this.subSig;
         if (subSig == null) {
-          subSig = getSubSignatureImpl(getName(), getParameterTypes(), getReturnType());
+          this.subSig = subSig = getSubSignatureImpl(getName(), getParameterTypes(), getReturnType());
         }
       }
     }
