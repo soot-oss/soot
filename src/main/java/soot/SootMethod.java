@@ -136,7 +136,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     this.returnType = returnType;
     this.modifiers = modifiers;
 
-    if (this.exceptions == null && !thrownExceptions.isEmpty()) {
+    if (thrownExceptions != null && !thrownExceptions.isEmpty()) {
       this.exceptions = new ArrayList<SootClass>(thrownExceptions);
     }
     this.subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
