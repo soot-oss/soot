@@ -699,7 +699,7 @@ public class SourceLocator {
     this.dexClassPathExtensions = null;
   }
 
-  protected enum ClassSourceType {
+  public enum ClassSourceType {
     jar, zip, apk, dex, directory, jrt, unknown
   }
 
