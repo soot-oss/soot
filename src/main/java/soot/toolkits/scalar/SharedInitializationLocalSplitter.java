@@ -96,9 +96,10 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     return G.v().soot_toolkits_scalar_SharedInitializationLocalSplitter();
   }
 
-  static class Cluster {
-    List<Unit> constantInitializers;
-    private Unit use;
+  private static final class Cluster {
+
+    protected final List<Unit> constantInitializers;
+    protected final Unit use;
 
     public Cluster(Unit use, List<Unit> constantInitializers) {
       this.use = use;
