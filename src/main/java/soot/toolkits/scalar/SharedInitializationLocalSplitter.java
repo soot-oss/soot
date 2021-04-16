@@ -1,5 +1,27 @@
 package soot.toolkits.scalar;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1999 Phong Co
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,30 +50,9 @@ import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.options.Options;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.util.Chain;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
-
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 1999 Phong Co
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
 
 //@formatter:off
 /**
@@ -109,7 +110,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       StringBuilder sb = new StringBuilder();
       sb.append("Constant intializers:\n");
       for (Unit r : constantInitializers) {
-        sb.append("\n - " + toStringUnit(r));
+        sb.append("\n - ").append(toStringUnit(r));
       }
       return sb.toString();
     }
@@ -117,7 +118,6 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     private String toStringUnit(Unit u) {
       return u + " (" + System.identityHashCode(u) + ")";
     }
-
   }
 
   @Override
@@ -148,13 +148,12 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     DeadAssignmentEliminator.v().transform(body);
     CopyPropagator.v().transform(body);
 
-    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
-
+    final ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
+    final MultiMap<Local, Cluster> clustersPerLocal = new HashMultiMap<Local, Cluster>();
 
-    MultiMap<Local, Cluster> clustersPerLocal = new HashMultiMap<Local, Cluster>();
-
-    for (Unit s : body.getUnits()) {
+    final Chain<Unit> units = body.getUnits();
+    for (Unit s : units) {
       nextUse: for (ValueBox useBox : s.getUseBoxes()) {
         Value v = useBox.getValue();
         if (v instanceof Local) {
@@ -164,19 +163,18 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
             if (def instanceof IdentityStmt) {
               continue nextUse;
             }
-
-            AssignStmt assign = (AssignStmt) def;
-            if (!(assign.getRightOp() instanceof Constant)) {
+            assert (def instanceof AssignStmt);
+            if (!(((AssignStmt) def).getRightOp() instanceof Constant)) {
               // Make sure we are only affected by constant definitions
               continue nextUse;
             }
           }
-          Cluster c = new Cluster(s, allAffectingDefs);
-          clustersPerLocal.put(luse, c);
+          clustersPerLocal.put(luse, new Cluster(s, allAffectingDefs));
         }
       }
     }
 
+    final Chain<Local> locals = body.getLocals();
     int w = 0;
     for (Local lcl : clustersPerLocal.keySet()) {
       Set<Cluster> clusters = clustersPerLocal.get(lcl);
@@ -189,13 +187,13 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
         Local newLocal = (Local) lcl.clone();
         for (Unit u : cluster.constantInitializers) {
           AssignStmt assign = (AssignStmt) u;
-          AssignStmt newAssign = Jimple.v().newAssignStmt(newLocal, (Value) assign.getRightOp());
-          body.getUnits().insertAfter(newAssign, assign);
+          AssignStmt newAssign = Jimple.v().newAssignStmt(newLocal, assign.getRightOp());
+          units.insertAfter(newAssign, assign);
           CopyPropagator.copyLineTags(newAssign.getUseBoxes().get(0), assign);
         }
 
         newLocal.setName(newLocal.getName() + '_' + ++w);
-        body.getLocals().add(newLocal);
+        locals.add(newLocal);
         replaceLocalsInUnitUses(cluster.use, lcl, newLocal);
       }
     }
@@ -208,5 +206,4 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       }
     }
   }
-
 }
