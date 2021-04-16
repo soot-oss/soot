@@ -155,20 +155,18 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
 
     final Chain<Unit> units = body.getUnits();
     for (Unit s : units) {
-      nextUse: for (ValueBox useBox : s.getUseBoxes()) {
+      for (ValueBox useBox : s.getUseBoxes()) {
         Value v = useBox.getValue();
         if (v instanceof Local) {
           Local luse = (Local) v;
           List<Unit> allAffectingDefs = defs.getDefsOfAt(luse, s);
-          for (Unit def : allAffectingDefs) {
-            if (def instanceof IdentityStmt) {
-              continue nextUse;
-            }
-            assert (def instanceof AssignStmt);
-            if (!(((AssignStmt) def).getRightOp() instanceof Constant)) {
-              // Make sure we are only affected by constant definitions
-              continue nextUse;
-            }
+          if (allAffectingDefs.isEmpty()) {
+            continue;
+          }
+          // Make sure we are only affected by Constant definitions via AssignStmt
+          if (!allAffectingDefs.stream()
+              .allMatch(u -> (u instanceof AssignStmt) && (((AssignStmt) u).getRightOp() instanceof Constant))) {
+            continue;
           }
           clustersPerLocal.put(luse, new Cluster(s, allAffectingDefs));
         }
