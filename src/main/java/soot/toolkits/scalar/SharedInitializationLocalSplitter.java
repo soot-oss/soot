@@ -56,15 +56,15 @@ import soot.util.MultiMap;
 
 //@formatter:off
 /**
- *
- * With the following code <code>
- * $u2#6 = 0; interfaceinvoke $u5#30.<Foo: void setMomentary(android.view.View,boolean)>($u4, $u2#6);
+ * There is a problem with the following code <code>
+ * $u2#6 = 0;
+ * interfaceinvoke $u5#30.<Foo: void setMomentary(android.view.View,boolean)>($u4, $u2#6);
  * interfaceinvoke $u5#56.<Foo: void setSelectedIndex(android.view.View,int)>($u4, $u2#6);
  * </code>
  *
- * there is a problem since $u2#6 will be boolean as well as int. A cast from boolean to int or vice versa is not valid in
- * Java. The local splitter does not split the local since it would require the introduction of a new initialization
- * statement. Therefore, we split for each usage of a constant variable, such as: <code>
+ * since $u2#6 will be boolean as well as int. A cast from boolean to int or vice versa is not valid in Java. The local
+ * splitter does not split the local since it would require the introduction of a new initialization statement. Therefore, we
+ * split for each usage of a constant variable, such as: <code>
  * $u2#6 = 0;
  * $u2#6_2 = 0; 
  * interfaceinvoke $u5#30.<Foo: void setMomentary(android.view.View,boolean)>($u4, $u2#6);
