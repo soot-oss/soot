@@ -164,33 +164,35 @@ public abstract class BlockGraph implements DirectedBodyGraph<Block> {
     // Maps head and tail units to their blocks, for building predecessor and successor lists.
     final Map<Unit, Block> unitToBlock = new HashMap<Unit, Block>();
 
-    Unit blockHead = null;
-    int blockLength = 0;
-    Iterator<Unit> unitIt = mUnits.iterator();
-    if (unitIt.hasNext()) {
-      blockHead = unitIt.next();
-      if (!leaders.contains(blockHead)) {
-        throw new RuntimeException("BlockGraph: first unit not a leader!");
+    {
+      Unit blockHead = null;
+      int blockLength = 0;
+      Iterator<Unit> unitIt = mUnits.iterator();
+      if (unitIt.hasNext()) {
+        blockHead = unitIt.next();
+        if (!leaders.contains(blockHead)) {
+          throw new RuntimeException("BlockGraph: first unit not a leader!");
+        }
+        blockLength++;
       }
-      blockLength++;
-    }
 
-    Unit blockTail = blockHead;
-    int indexInMethod = 0;
-    while (unitIt.hasNext()) {
-      Unit u = unitIt.next();
-      if (leaders.contains(u)) {
-        addBlock(blockHead, blockTail, indexInMethod, blockLength, blockList, unitToBlock);
-        indexInMethod++;
-        blockHead = u;
-        blockLength = 0;
+      Unit blockTail = blockHead;
+      int indexInMethod = 0;
+      while (unitIt.hasNext()) {
+        Unit u = unitIt.next();
+        if (leaders.contains(u)) {
+          addBlock(blockHead, blockTail, indexInMethod, blockLength, blockList, unitToBlock);
+          indexInMethod++;
+          blockHead = u;
+          blockLength = 0;
+        }
+        blockTail = u;
+        blockLength++;
       }
-      blockTail = u;
-      blockLength++;
-    }
-    if (blockLength > 0) {
-      // Add final block.
-      addBlock(blockHead, blockTail, indexInMethod, blockLength, blockList, unitToBlock);
+      if (blockLength > 0) {
+        // Add final block.
+        addBlock(blockHead, blockTail, indexInMethod, blockLength, blockList, unitToBlock);
+      }
     }
 
     // The underlying UnitGraph defines heads and tails.
@@ -215,20 +217,10 @@ public abstract class BlockGraph implements DirectedBodyGraph<Block> {
       Block block = blockIt.next();
 
       List<Unit> predUnits = unitGraph.getPredsOf(block.getHead());
-      List<Block> predBlocks = new ArrayList<Block>(predUnits.size());
-      for (Unit predUnit : predUnits) {
-        Block predBlock = unitToBlock.get(predUnit);
-        if (predBlock == null) {
-          throw new RuntimeException("BlockGraph(): block head mapped to null block!");
-        }
-        predBlocks.add(predBlock);
-      }
-
-      if (predBlocks.isEmpty()) {
+      if (predUnits.isEmpty()) {
         block.setPreds(Collections.<Block>emptyList());
 
-        // If the UnreachableCodeEliminator is not eliminating
-        // unreachable handlers, then they will have no
+        // If the UnreachableCodeEliminator is not eliminating unreachable handlers, then they will have no
         // predecessors, yet not be heads.
         /*
          * if (! headList.contains(block)) { throw new RuntimeException("Block with no predecessors is not a head!" );
@@ -237,24 +229,23 @@ public abstract class BlockGraph implements DirectedBodyGraph<Block> {
          * thrown by the first Unit in the method. }
          */
       } else {
+        List<Block> predBlocks = new ArrayList<Block>(predUnits.size());
+        for (Unit predUnit : predUnits) {
+          assert (predUnit != null);
+          Block predBlock = unitToBlock.get(predUnit);
+          if (predBlock == null) {
+            throw new RuntimeException("BlockGraph(): block head predecessor (" + predUnit + ") mapped to null block!");
+          }
+          predBlocks.add(predBlock);
+        }
         block.setPreds(Collections.unmodifiableList(predBlocks));
         if (block.getHead() == mUnits.getFirst()) {
-          headList.add(block); // Make the first block a head
-          // even if the Body is one huge loop.
+          headList.add(block); // Make the first block a head even if the Body is one huge loop.
         }
       }
 
       List<Unit> succUnits = unitGraph.getSuccsOf(block.getTail());
-      List<Block> succBlocks = new ArrayList<Block>(succUnits.size());
-      for (Unit succUnit : succUnits) {
-        Block succBlock = unitToBlock.get(succUnit);
-        if (succBlock == null) {
-          throw new RuntimeException("BlockGraph(): block tail mapped to null block!");
-        }
-        succBlocks.add(succBlock);
-      }
-
-      if (succBlocks.isEmpty()) {
+      if (succUnits.isEmpty()) {
         block.setSuccs(Collections.<Block>emptyList());
         if (!tailList.contains(block)) {
           // if this block is totally empty and unreachable, we remove it
@@ -267,6 +258,16 @@ public abstract class BlockGraph implements DirectedBodyGraph<Block> {
           }
         }
       } else {
+        List<Block> succBlocks = new ArrayList<Block>(succUnits.size());
+        for (Unit succUnit : succUnits) {
+          assert (succUnit != null);
+          Block succBlock = unitToBlock.get(succUnit);
+          if (succBlock == null) {
+            throw new RuntimeException("BlockGraph(): block tail successor (" + succUnit + ") mapped to null block!");
+          }
+          succBlocks.add(succBlock);
+        }
+
         block.setSuccs(Collections.unmodifiableList(succBlocks));
       }
     }
