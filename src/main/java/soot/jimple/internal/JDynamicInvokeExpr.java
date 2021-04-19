@@ -35,6 +35,7 @@ import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
 import soot.baf.Baf;
+import soot.jimple.Constant;
 import soot.jimple.ConvertToBaf;
 import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.ExprSwitch;
@@ -66,6 +67,9 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
     final Jimple jimp = Jimple.v();
     for (ListIterator<? extends Value> it = bootstrapArgs.listIterator(); it.hasNext();) {
       Value v = it.next();
+      if (!(v instanceof Constant)) {
+        throw new IllegalArgumentException("Bootstrap arg must be a Constant: " + v);
+      }
       this.bsmArgBoxes[it.previousIndex()] = jimp.newImmediateBox(v);
     }
     for (ListIterator<? extends Value> it = methodArgs.listIterator(); it.hasNext();) {
