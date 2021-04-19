@@ -636,7 +636,7 @@ public final class LambdaMetaFactory {
         // still dealing with
         // booleans semantically.
         // Actually, the wrapper type could be also be other types if wirdcards (?) are used in generic code. 
-        if (wrapper.wrapperTypes.get(from)==null) {
+        if (wrapper.wrapperTypes.get(from) == null) {
           // Insert the cast
           RefType boxedType = wrapper.primitiveTypes.get(to);
           Local castLocal = lc.generateLocal(boxedType);
