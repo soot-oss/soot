@@ -48,32 +48,15 @@ import soot.options.Options;
 
 public class BafBody extends Body {
   private static final Logger logger = LoggerFactory.getLogger(BafBody.class);
-  
-  private JimpleToBafContext jimpleToBafContext;
 
-  public JimpleToBafContext getContext() {
-    return jimpleToBafContext;
-  }
+  private final JimpleToBafContext jimpleToBafContext;
 
-  @Override
-  public Object clone() {
-    Body b = new BafBody(getMethod());
-    b.importBodyContentsFrom(this);
-    return b;
-  }
-
-  BafBody(SootMethod m) {
-    super(m);
-  }
-
-  public BafBody(JimpleBody body, Map<String, String> options) {
-    super(body.getMethod());
+  public BafBody(JimpleBody jimpleBody, Map<String, String> options) {
+    super(jimpleBody.getMethod());
 
     if (Options.v().verbose()) {
       logger.debug("[" + getMethod().getName() + "] Constructing BafBody...");
     }
-
-    JimpleBody jimpleBody = (JimpleBody) body;
 
     JimpleToBafContext context = new JimpleToBafContext(jimpleBody.getLocalCount());
     this.jimpleToBafContext = context;
@@ -83,7 +66,6 @@ public class BafBody extends Body {
       t = (DoubleType.v().equals(t) || LongType.v().equals(t)) ? DoubleWordType.v() : WordType.v();
 
       BafLocal newLocal = (BafLocal) Baf.v().newLocal(l.getName(), t);
-
       context.setBafLocalOfJimpleLocal(l, newLocal);
 
       // We cannot use the context for the purpose of saving the old Jimple locals, because
@@ -92,6 +74,7 @@ public class BafBody extends Body {
       newLocal.setOriginalLocal(l);
       getLocals().add(newLocal);
     }
+    assert (getLocals().size() == jimpleBody.getLocalCount());
 
     Map<Unit, Unit> origToFirstConverted = new HashMap<Unit, Unit>();
 
@@ -122,5 +105,22 @@ public class BafBody extends Body {
     }
 
     PackManager.v().getPack("bb").apply(this);
+  }
+
+  //clone constructor
+  BafBody(SootMethod m) {
+    super(m);
+    this.jimpleToBafContext = null;
+  }
+
+  public JimpleToBafContext getContext() {
+    return this.jimpleToBafContext;
+  }
+
+  @Override
+  public Object clone() {
+    Body b = new BafBody(getMethod());
+    b.importBodyContentsFrom(this);
+    return b;
   }
 }
