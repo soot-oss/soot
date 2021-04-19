@@ -67,6 +67,13 @@ public class XMLPrinter {
   // xml tree
   public XMLRoot root;
 
+  public XMLPrinter(Singletons.Global g) {
+  }
+
+  public static XMLPrinter v() {
+    return G.v().soot_xml_XMLPrinter();
+  }
+
   // returns the buffer - this is the XML output
   @Override
   public String toString() {
@@ -98,13 +105,6 @@ public class XMLPrinter {
     return root.addElement(name, value, attributes, values);
   }
 
-  public XMLPrinter(Singletons.Global g) {
-  }
-
-  public static XMLPrinter v() {
-    return G.v().soot_xml_XMLPrinter();
-  }
-
   /**
    * Prints out an XML representation of the given SootClass with each method Body printed in the textual format
    * corresponding to the IR used to encode the Body.
@@ -114,9 +114,10 @@ public class XMLPrinter {
    *          a PrintWriter instance to print to.
    */
   public void printJimpleStyleTo(SootClass cl, PrintWriter out) {
-    root = new XMLRoot();
+    this.root = new XMLRoot();
 
-    XMLNode xmlClassNode = null;
+    final Scene sc = Scene.v();
+    final XMLNode xmlClassNode;
 
     // Print XML class output
     {
@@ -136,13 +137,12 @@ public class XMLPrinter {
           new String[] { Main.versionString, cmdlineStr.toString().trim(), dateStr });
 
       // add class root node
-      xmlClassNode =
-          xmlRootNode.addChild("class", new String[] { "name" }, new String[] { Scene.v().quotedNameOf(cl.getName()) });
+      xmlClassNode = xmlRootNode.addChild("class", new String[] { "name" }, new String[] { sc.quotedNameOf(cl.getName()) });
       if (!cl.getPackageName().isEmpty()) {
         xmlClassNode.addAttribute("package", cl.getPackageName());
       }
       if (cl.hasSuperclass()) {
-        xmlClassNode.addAttribute("extends", Scene.v().quotedNameOf(cl.getSuperclass().getName()));
+        xmlClassNode.addAttribute("extends", sc.quotedNameOf(cl.getSuperclass().getName()));
       }
 
       // add modifiers subnode
@@ -158,8 +158,7 @@ public class XMLPrinter {
       XMLNode xmlTempNode = xmlClassNode.addChild("interfaces", "", new String[] { "count" },
           new String[] { String.valueOf(cl.getInterfaceCount()) });
       for (SootClass next : cl.getInterfaces()) {
-        xmlTempNode.addChild("implements", "", new String[] { "class" },
-            new String[] { Scene.v().quotedNameOf(next.getName()) });
+        xmlTempNode.addChild("implements", "", new String[] { "class" }, new String[] { sc.quotedNameOf(next.getName()) });
       }
     }
 
@@ -171,12 +170,9 @@ public class XMLPrinter {
       int i = 0;
       for (SootField f : cl.getFields()) {
         if (!f.isPhantom()) {
-          String type = f.getType().toString();
-          String name = f.getName();
-
           // add the field node
           XMLNode xmlFieldNode = xmlTempNode.addChild("field", "", new String[] { "id", "name", "type" },
-              new String[] { String.valueOf(i++), name, type });
+              new String[] { String.valueOf(i++), f.getName(), f.getType().toString() });
 
           XMLNode xmlModifiersNode = xmlFieldNode.addChild("modifiers");
           for (StringTokenizer st = new StringTokenizer(Modifier.toString(f.getModifiers())); st.hasMoreTokens();) {
@@ -613,8 +609,7 @@ public class XMLPrinter {
 
   private static String toCDATA(String str) {
     // wrap a string in CDATA markup - str can contain anything and will pass XML validation
-    str = str.replaceAll("]]>", "]]&gt;");
-    return "<![CDATA[" + str + "]]>";
+    return "<![CDATA[" + str.replaceAll("]]>", "]]&gt;") + "]]>";
   }
 
   private static String boolToString(boolean bool) {
@@ -622,9 +617,9 @@ public class XMLPrinter {
   }
 
   private static class XMLLabel {
-    public long id;
-    public String methodName;
-    public String label;
+    public final long id;
+    public final String methodName;
+    public final String label;
     public long stmtCount;
     public long stmtPercentage;
 
