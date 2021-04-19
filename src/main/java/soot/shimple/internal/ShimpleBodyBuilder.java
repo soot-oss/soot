@@ -120,7 +120,7 @@ public class ShimpleBodyBuilder {
   }
 
   public void update() {
-    origLocals = Collections.unmodifiableList(new ArrayList<Local>(body.getLocals()));
+    this.origLocals = Collections.unmodifiableList(new ArrayList<Local>(body.getLocals()));
   }
 
   public void transform() {
@@ -132,8 +132,7 @@ public class ShimpleBodyBuilder {
     phi.insertTrivialPhiNodes();
 
     if (options.extended()) {
-      boolean change = pi.insertTrivialPiNodes();
-      while (change) {
+      for (boolean change = pi.insertTrivialPiNodes(); change;) {
         if (phi.insertTrivialPhiNodes()) {
           change = pi.insertTrivialPiNodes();
         } else {
@@ -181,8 +180,7 @@ public class ShimpleBodyBuilder {
   }
 
   public void eliminatePiNodes() {
-    boolean optElim = options.node_elim_opt();
-    pi.eliminatePiNodes(optElim);
+    pi.eliminatePiNodes(options.node_elim_opt());
   }
 
   /**
@@ -198,11 +196,10 @@ public class ShimpleBodyBuilder {
     this.assignmentCounters = new int[size];
     @SuppressWarnings("unchecked")
     Stack<Integer>[] temp = new Stack[size];
-    this.namingStacks = temp;
-
     for (int i = 0; i < size; i++) {
-      namingStacks[i] = new Stack<Integer>();
+      temp[i] = new Stack<Integer>();
     }
+    this.namingStacks = temp;
 
     List<Block> heads = sf.getBlockGraph().getHeads();
     switch (heads.size()) {

@@ -207,17 +207,16 @@ public class Shimple {
    * implementation of PatchingChain.
    */
   public static void redirectToPreds(Body body, Unit remove) {
-    boolean debug = Options.v().debug();
-    if (body instanceof ShimpleBody) {
-      debug |= ((ShimpleBody) body).getOptions().debug();
-    }
-
     /* Determine whether we should continue processing or not. */
     if (remove.getBoxesPointingToThis().isEmpty()) {
       return;
     }
-
+    
     /* Ok, continuing... */
+    boolean debug = Options.v().debug();
+    if (body instanceof ShimpleBody) {
+      debug |= ((ShimpleBody) body).getOptions().debug();
+    }
 
     final Chain<Unit> units = body.getUnits();
     final Set<Unit> preds = new HashSet<Unit>();
@@ -301,8 +300,11 @@ public class Shimple {
       for (Unit pred : preds) {
         boolean added = phiExpr.addArg(arg, pred);
         if (!added) {
-          logger.warn("Shimple.redirectToPreds failed to add " + arg + " (for predecessor: " + pred + ") to " + phiExpr
-              + " in " + body.getMethod() + ".");
+          soot.BriefUnitPrinter prtr = new soot.BriefUnitPrinter(body);
+          prtr.setIndent("");
+          phiExpr.toString(prtr);
+          logger.warn("Shimple.redirectToPreds failed to add " + arg + " (for predecessor: " + pred + ") to "
+              + prtr.toString() + " in " + body.getMethod() + ".");
         }
       }
     }

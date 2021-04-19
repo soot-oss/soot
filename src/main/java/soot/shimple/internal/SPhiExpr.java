@@ -332,7 +332,7 @@ public class SPhiExpr implements PhiExpr {
     }
 
     // we disallow duplicate arguments
-    if (predToPair.keySet().contains(predTailUnit)) {
+    if (predToPair.containsKey(predTailUnit)) {
       return false;
     }
 
@@ -434,8 +434,7 @@ public class SPhiExpr implements PhiExpr {
       } else {
         isFirst = false;
       }
-      Value arg = vuPair.getValue();
-      expr.append(arg.toString());
+      expr.append(vuPair.getValue().toString());
     }
     expr.append(')');
 
