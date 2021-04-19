@@ -158,7 +158,7 @@ public class UnconditionalBranchFolder extends BodyTransformer {
     public Result transform() {
       stmtMap.clear();// reset in case of multiple passes
       Result res = new Result();
-      NextUnit: for (Iterator<Unit> stmtIt = units.iterator(); stmtIt.hasNext();) {
+      NextUnit: for (final Iterator<Unit> stmtIt = units.iterator(); stmtIt.hasNext();) {
         Unit stmt = stmtIt.next();
         if (stmt instanceof GotoStmt) {
           final GotoStmt stmtAsGotoStmt = (GotoStmt) stmt;
@@ -238,7 +238,7 @@ public class UnconditionalBranchFolder extends BodyTransformer {
             if (caseTarget instanceof GotoStmt) {
               // "goto [goto X]" -> "goto X"
               Stmt newTarget = getFinalTarget(caseTarget);
-              if (newTarget == null) {
+              if (newTarget == null || newTarget == caseTarget) {
                 res.updateCounters(BranchType.GOTO_GOTO, false);
               } else {
                 ub.setUnit(newTarget);
@@ -283,7 +283,7 @@ public class UnconditionalBranchFolder extends BodyTransformer {
     }
 
     // NOTE: factored out to ensure all cases return a result and thus are counted
-    private HandleRes handle(IfStmt ifStmt, Stmt target) {
+    private HandleRes handle(final IfStmt ifStmt, final Stmt target) {
       assert (ifStmt.getTarget() == target);// pre-conditions
       if (target instanceof GotoStmt) {
         // "if C goto [goto X]" -> "if C goto X"
@@ -292,7 +292,7 @@ public class UnconditionalBranchFolder extends BodyTransformer {
           if (newTarget == null) {
             newTarget = ifStmt;
           }
-          if (newTarget != target) {
+          if (newTarget != target) { // skip if target would not change
             if (isShimple) {
               // NOTE: It is safe to redirect all PhiExpr pointers since removalIsSafeInShimple(..) ensures there is a single
               // predecessor for 'target' and we know 'ifStmt' is that predecessor. Hence, 'target' becomes unreachable which
@@ -310,24 +310,27 @@ public class UnconditionalBranchFolder extends BodyTransformer {
         if (ifStmt != target) { // skip when IfStmt jumps to itself
           if (!isShimple || removalIsSafeInShimple(target)) {
             final IfStmt targetAsIfStmt = (IfStmt) target;
-            // Perform "jump threading" optimization. If the target IfStmt
-            // has the same condition as the first IfStmt, then the first
-            // should jump directly to the target of the target IfStmt.
-            // TODO: This could also be done when the first condition
-            // implies the second but that's obviously more complicated
-            // to check. Could even do something if the first implies
-            // the negation of the second.
-            if (ifStmt.getCondition().equivTo(targetAsIfStmt.getCondition())) {
-              if (isShimple) {
-                // NOTE: It is safe to redirect all PhiExpr pointers since removalIsSafeInShimple(..)
-                // ensures there is a single predecessor for 'target' and we know 'ifStmt' is that
-                // predecessor. Hence, 'target' becomes unreachable which means any PhiExpr that
-                // had 'target' as a predecessor now has 'ifStmt' as a predecessor instead.
-                assert (hasNoPointersOrSingleJumpPred(target, ifStmt));
-                Shimple.redirectPointers(target, ifStmt);
+            Stmt newTarget = targetAsIfStmt.getTarget();
+            if (newTarget != target) { // skip if target would not change
+              // Perform "jump threading" optimization. If the target IfStmt
+              // has the same condition as the first IfStmt, then the first
+              // should jump directly to the target of the target IfStmt.
+              // TODO: This could also be done when the first condition
+              // implies the second but that's obviously more complicated
+              // to check. Could even do something if the first implies
+              // the negation of the second.
+              if (ifStmt.getCondition().equivTo(targetAsIfStmt.getCondition())) {
+                if (isShimple) {
+                  // NOTE: It is safe to redirect all PhiExpr pointers since removalIsSafeInShimple(..)
+                  // ensures there is a single predecessor for 'target' and we know 'ifStmt' is that
+                  // predecessor. Hence, 'target' becomes unreachable which means any PhiExpr that
+                  // had 'target' as a predecessor now has 'ifStmt' as a predecessor instead.
+                  assert (hasNoPointersOrSingleJumpPred(target, ifStmt));
+                  Shimple.redirectPointers(target, ifStmt);
+                }
+                ifStmt.setTarget(newTarget);
+                return new HandleRes(BranchType.IF_TO_IF, true);
               }
-              ifStmt.setTarget(targetAsIfStmt.getTarget());
-              return new HandleRes(BranchType.IF_TO_IF, true);
             }
           }
         }
