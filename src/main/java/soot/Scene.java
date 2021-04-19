@@ -260,7 +260,7 @@ public class Scene {
    *          The possibly escaped name
    * @return The original, non-escaped name
    */
-  public String unescapeName(String s) {
+  public static String unescapeName(String s) {
     // If the name is not escaped, there is nothing to do here
     if (s.indexOf('\'') < 0) {
       return s;
@@ -873,21 +873,21 @@ public class Scene {
     return index;
   }
 
-  private String sepIndexToClass(String sig, int index) {
+  private static String sepIndexToClass(String sig, int index) {
     // Must unescape the class name from a signature because the
     // Scene does not contain the escaped versions of the classes.
     return unescapeName(sig.substring(1, index));
   }
 
-  private String sepIndexToSubsignature(String sig, int index) {
+  private static String sepIndexToSubsignature(String sig, int index) {
     return sig.substring(index + 2, sig.length() - 1);
   }
 
-  public String signatureToClass(String sig) {
+  public static String signatureToClass(String sig) {
     return sepIndexToClass(sig, signatureSeparatorIndex(sig));
   }
 
-  public String signatureToSubsignature(String sig) {
+  public static String signatureToSubsignature(String sig) {
     return sepIndexToSubsignature(sig, signatureSeparatorIndex(sig));
   }
 
