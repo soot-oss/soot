@@ -167,8 +167,9 @@ public class SootResolver {
     final boolean resolveEverything = resolveEverything();
     final boolean no_bodies_for_excluded = Options.v().no_bodies_for_excluded();
     for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
-      while (!worklist[i].isEmpty()) {
-        SootClass sc = worklist[i].pop();
+      Deque<SootClass> currWorklist = worklist[i];
+      while (!currWorklist.isEmpty()) {
+        SootClass sc = currWorklist.pop();
         if (resolveEverything) {
           // Whole program mode
           boolean onlySignatures = sc.isPhantom()
@@ -199,6 +200,9 @@ public class SootResolver {
           }
         }
       }
+      // The ArrayDeque can grow particularly large but the implementation will
+      // never shrink the backing array, leaving a possibly large memory leak.
+      worklist[i] = new ArrayDeque<SootClass>(0);
     }
   }
 
