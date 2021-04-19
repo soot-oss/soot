@@ -53,8 +53,9 @@ public enum CheckTypesValidator implements BodyValidator {
 
   @Override
   public void validate(Body body, List<ValidationException> exception) {
+    final String methodSuffix = " in " + body.getMethod();
     for (Unit u : body.getUnits()) {
-      String errorSuffix = " at " + u + " in " + body.getMethod();
+      String errorSuffix = " at " + u + methodSuffix;
 
       if (u instanceof DefinitionStmt) {
         DefinitionStmt astmt = (DefinitionStmt) u;
@@ -69,22 +70,22 @@ public enum CheckTypesValidator implements BodyValidator {
       if (u instanceof Stmt) {
         Stmt stmt = (Stmt) u;
         if (stmt.containsInvokeExpr()) {
-          SootMethodRef called = stmt.getInvokeExpr().getMethodRef();
           InvokeExpr iexpr = stmt.getInvokeExpr();
+          SootMethodRef called = iexpr.getMethodRef();
 
           if (iexpr instanceof InstanceInvokeExpr) {
             InstanceInvokeExpr iiexpr = (InstanceInvokeExpr) iexpr;
-            checkCopy(stmt, exception, called.declaringClass().getType(), iiexpr.getBase().getType(),
+            checkCopy(stmt, exception, called.getDeclaringClass().getType(), iiexpr.getBase().getType(),
                 " in receiver of call" + errorSuffix);
           }
 
           final int argCount = iexpr.getArgCount();
-          if (called.parameterTypes().size() != argCount) {
+          if (called.getParameterTypes().size() != argCount) {
             exception.add(new ValidationException(stmt, "Argument count does not match the signature of the called function",
                 "Warning: Argument count doesn't match up with signature in call" + errorSuffix));
           } else {
             for (int i = 0; i < argCount; i++) {
-              checkCopy(stmt, exception, Type.toMachineType(called.parameterType(i)),
+              checkCopy(stmt, exception, Type.toMachineType(called.getParameterType(i)),
                   Type.toMachineType(iexpr.getArg(i).getType()),
                   " in argument " + i + " of call" + errorSuffix + " (Note: Parameters are zero-indexed)");
             }
@@ -108,12 +109,14 @@ public enum CheckTypesValidator implements BodyValidator {
       if (leftType instanceof DoubleType && rightType instanceof DoubleType) {
         return;
       }
-      exception.add(new ValidationException(stmt, "", "Warning: Bad use of primitive type" + errorSuffix));
+      exception.add(new ValidationException(stmt, "Warning: Bad use of primitive type" + errorSuffix));
+      return;
     }
 
     if (rightType instanceof NullType) {
       return;
     }
+
     if (leftType instanceof RefType && "java.lang.Object".equals(((RefType) leftType).getClassName())) {
       return;
     }
@@ -131,6 +134,7 @@ public enum CheckTypesValidator implements BodyValidator {
       }
 
       exception.add(new ValidationException(stmt, "Warning: Bad use of array type" + errorSuffix));
+      return;
     }
 
     if (leftType instanceof RefType && rightType instanceof RefType) {
@@ -157,6 +161,7 @@ public enum CheckTypesValidator implements BodyValidator {
       }
       return;
     }
+
     exception.add(new ValidationException(stmt, "Warning: Bad types" + errorSuffix));
   }
 
