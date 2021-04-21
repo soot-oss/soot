@@ -23,10 +23,11 @@ package soot.baf.toolkits.base;
  */
 
 import java.util.Arrays;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
@@ -34,10 +35,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import soot.Body;
+import soot.DoubleType;
 import soot.ErroneousType;
+import soot.FloatType;
 import soot.IntType;
 import soot.IntegerType;
 import soot.Local;
+import soot.LongType;
 import soot.NullType;
 import soot.RefLikeType;
 import soot.RefType;
@@ -131,7 +135,7 @@ import soot.validation.ValidationException;
  */
 public enum StackTypesValidator implements BodyValidator {
   INSTANCE;
-  
+
   public static StackTypesValidator v() {
     return INSTANCE;
   }
@@ -145,28 +149,87 @@ public enum StackTypesValidator implements BodyValidator {
   public void validate(Body body, List<ValidationException> exceptions) {
     assert (body instanceof BafBody);
 
-    VMStateAnalysis a = new VMStateAnalysis((BafBody) body);
+    VMStateAnalysis a = new VMStateAnalysis((BafBody) body, exceptions);
 
-    // Scan through all Units in the body and make sure the stack types and
-    // local types are valid for the semantics of each Unit.
-    InstSwitch verif = a.createVerifier(exceptions);
+    // Scan through all Units in the body and make sure the stack types
+    // and local types are valid for the semantics of each Unit.
+    InstSwitch verif = a.createVerifier();
     for (Unit u : body.getUnits()) {
       u.apply(verif);
     }
   }
 
-  private static final class VMStateAnalysis extends ForwardFlowAnalysis<Unit, Type[]> {
+  /**
+   * Wrapper class for {@code Type[]} that correctly implements equals and hashcode for the ForwardFlowAnalysis.
+   */
+  private static final class TypeArray implements Cloneable {
 
-    protected static final RefType TY_REF_CANON = RefType.v();
+    public final Type[] data;
 
+    public TypeArray(int count, Type t) {
+      Type[] temp = new Type[count];
+      for (int i = 0; i < count; i++) {
+        temp[i] = t;
+      }
+      this.data = temp;
+    }
+    
+    private TypeArray(Type[] otherData) {
+      int count = otherData.length;
+      Type[] temp = new Type[count];
+      System.arraycopy(otherData, 0, temp, 0, count);
+      this.data = temp;
+    }
+
+    @Override
+    public int hashCode() {
+      return Arrays.hashCode(this.data);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null || TypeArray.class != obj.getClass()) {
+        return false;
+      }
+      final TypeArray other = (TypeArray) obj;
+      return Arrays.equals(this.data, other.data);
+    }
+
+    @Override
+    public String toString() {
+      return VMStateAnalysis.toString(Stream.of(this.data));
+    }
+
+    @Override
+    public TypeArray clone() {
+      return new TypeArray(this.data);
+    }
+  }
+
+  private static final class VMStateAnalysis extends ForwardFlowAnalysis<Unit, TypeArray> {
+
+    protected static final Type TYPE_INT = IntType.v();
+    protected static final Type TYPE_REF = RefType.v();
+
+    //
+    protected final List<ValidationException> exceptions;
+    // Map each Unit to the operand stack prior to executing the Unit
+    protected final Map<Unit, Stack<Type>> opStacks;
     // Map each Local to array index for the Local->Type arrays
     protected final Map<Local, Integer> varToIdx;
     protected final int numVars;
-    // Map each Unit to the operand stack prior to executing the Unit
-    protected final Map<Unit, Stack<Type>> opStacks;
+    //
+    protected final TypeArray initFlow;
 
-    public VMStateAnalysis(BafBody body) {
+    public VMStateAnalysis(BafBody body, List<ValidationException> exceptions) {
       super(new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v(), false));
+      this.exceptions = exceptions;
+      this.opStacks = OpStackCalculator.calculateStacks(body);
+      assert (opStacks.keySet().equals(new HashSet<>(body.getUnits())));
+
       {
         HashMap<Local, Integer> varToIdx = new HashMap<>();
         int varNum = 0;
@@ -175,9 +238,8 @@ public enum StackTypesValidator implements BodyValidator {
         }
         this.varToIdx = varToIdx;
         this.numVars = varNum;
+        this.initFlow = new TypeArray(varNum, UnknownType.v());
       }
-      this.opStacks = OpStackCalculator.calculateStacks(body);
-      assert (opStacks.keySet().equals(new HashSet<>(body.getUnits())));
 
       doAnalysis();
     }
@@ -187,7 +249,7 @@ public enum StackTypesValidator implements BodyValidator {
     }
 
     protected static String toString(Type t) {
-      return (t == TY_REF_CANON) ? "RefType" : t.toString();
+      return (t == TYPE_REF) ? "RefType" : t.toString();
     }
 
     protected int indexOf(Local loc) {
@@ -196,9 +258,18 @@ public enum StackTypesValidator implements BodyValidator {
       return idx;
     }
 
+    protected Type peekStackAt(Unit u) {
+      try {
+        return opStacks.get(u).peek();
+      } catch (EmptyStackException ex) {
+        exceptions.add(new ValidationException(u, "Stack is empty!"));
+        return ErroneousType.v();
+      }
+    }
+
     @Override
-    protected void flowThrough(final Type[] in, final Unit d, final Type[] out) {
-      assert (d instanceof Inst);
+    protected void flowThrough(final TypeArray in, final Unit u, final TypeArray out) {
+      assert (u instanceof Inst);
 
       // Initialize the output Local types from input local Types
       copy(in, out);
@@ -211,58 +282,78 @@ public enum StackTypesValidator implements BodyValidator {
           assert (i.getLeftOp() instanceof Local);
           assert (i.getRightOp() instanceof IdentityRef);
           // Type of the LHS Local is updated to the RHS type
-          out[indexOf((Local) i.getLeftOp())] = canonicalizeRefs(i.getRightOp().getType());
+          int x = indexOf((Local) i.getLeftOp());
+          out.data[x] = merge(out.data[x], canonicalizeRefs(i.getRightOp().getType()), u);
         }
 
         @Override
         public void caseStoreInst(StoreInst i) {
           // Type of the Local is updated to the Type from the top of the stack
-          out[indexOf(i.getLocal())] = canonicalizeRefs(opStacks.get(d).peek());
+          int x = indexOf(i.getLocal());
+          out.data[x] = merge(out.data[x], canonicalizeRefs(peekStackAt(u)), u);
         }
       };
-      d.apply(sw);
+      u.apply(sw);
     }
 
     @Override
-    protected Type[] newInitialFlow() {
-      Type[] ret = new Type[this.numVars];
-      Arrays.fill(ret, UnknownType.v());
-      return ret;
+    @SuppressWarnings("unchecked")
+    protected TypeArray newInitialFlow() {
+      return (TypeArray) initFlow.clone();
     }
 
     @Override
-    protected void copy(final Type[] source, final Type[] dest) {
-      System.arraycopy(source, 0, dest, 0, this.numVars);
+    protected void copy(final TypeArray in, final TypeArray out) {
+      assert (in.data.length == this.numVars);
+      assert (out.data.length == this.numVars);
+      if (in != out) {
+        System.arraycopy(in.data, 0, out.data, 0, this.numVars);
+      }
     }
 
     @Override
-    protected void merge(final Type[] in1, final Type[] in2, final Type[] out) {
+    protected void merge(final TypeArray in1, final TypeArray in2, final TypeArray out) {
       if (in1 == in2) {
         copy(in1, out);
       } else {
-        assert (in1.length == this.numVars);
-        assert (in2.length == this.numVars);
-        assert (out.length == this.numVars);
-        final Type tUnk = UnknownType.v();
-        final Type tErr = ErroneousType.v();
-        for (int i = 0, e = this.numVars; i < e; i++) {
-          Type t1 = in1[i];
-          Type t2 = in2[i];
-          if (t1 == t2) {
-            // If they are identical, the output type is the same.
-            out[i] = t1;
-          } else if (t1 == tUnk || t2 == tUnk) {
-            // If either type is unknown/uninitialized, the output type is too.
-            out[i] = tUnk;
-          } else if (t1 == tErr || t2 == tErr) {
-            // If either type is erroneous, the output type is too.
-            out[i] = tErr;
-          } else {
-            // TODO: Maybe need to use ErroneousType if there is a clash.
-            throw new UnsupportedOperationException("Not yet implemented!");
-          }
+        final Type[] dataIn1 = in1.data;
+        final Type[] dataIn2 = in2.data;
+        final Type[] dataOut = out.data;
+        final int size = this.numVars;
+        assert (dataIn1.length == size);
+        assert (dataIn2.length == size);
+        assert (dataOut.length == size);
+        for (int i = 0; i < size; i++) {
+          dataOut[i] = merge(dataIn1[i], dataIn2[i], null);
         }
       }
+    }
+
+    protected Type merge(final Type in1, final Type in2, final Unit u) {
+      // If they are identical, the output type is the same.
+      if (in1 == in2) {
+        return in1;
+      }
+
+      // If either type is unknown (i.e. uninitialized), return the other.
+      final Type tUnk = UnknownType.v();
+      if (in1 == tUnk) {
+        return in2;
+      } else if (in2 == tUnk) {
+        return in1;
+      }
+
+      // If either type is erroneous, the output type is too.
+      final Type tErr = ErroneousType.v();
+      if (in1 == tErr || in2 == tErr) {
+        return tErr;
+      }
+
+      // Use ErroneousType if there is a mismatch.
+      assert (in1 == TYPE_INT || in1 == TYPE_REF || in1 == DoubleType.v() || in1 == FloatType.v() || in1 == LongType.v());
+      assert (in2 == TYPE_INT || in2 == TYPE_REF || in2 == DoubleType.v() || in2 == FloatType.v() || in2 == LongType.v());
+      exceptions.add(new ValidationException(u, "Ambiguous type: '" + toString(in1) + "' vs '" + toString(in2) + "'"));
+      return tErr;
     }
 
     /**
@@ -272,11 +363,10 @@ public enum StackTypesValidator implements BodyValidator {
      * @return
      */
     private Type canonicalizeRefs(Type t) {
-      return (t instanceof RefLikeType || t instanceof NullType) ? TY_REF_CANON
-          : (t instanceof IntegerType) ? IntType.v() : t;
+      return (t instanceof RefLikeType || t instanceof NullType) ? TYPE_REF : (t instanceof IntegerType) ? TYPE_INT : t;
     }
 
-    public InstSwitch createVerifier(final List<ValidationException> exceptions) {
+    public InstSwitch createVerifier() {
       return new InstSwitch() {
 
         private void checkType(Inst i, Type expect, Type actual) {
@@ -290,7 +380,7 @@ public enum StackTypesValidator implements BodyValidator {
 
         // Top of the stack must be 'expect' Type
         private void checkStack1(Inst i, Type expect) {
-          checkType(i, expect, opStacks.get(i).peek());
+          checkType(i, expect, peekStackAt(i));
         }
 
         // Top 2 on the stack must be 'expect' Type
@@ -374,75 +464,75 @@ public enum StackTypesValidator implements BodyValidator {
         @Override
         public void caseLoadInst(LoadInst i) {
           // The type of the Local must match the type expected by the instruction.
-          checkType(i, i.getOpType(), getFlowBefore(i)[indexOf(i.getLocal())]);
+          checkType(i, i.getOpType(), getFlowBefore(i).data[indexOf(i.getLocal())]);
         }
 
         @Override
         public void caseArrayWriteInst(ArrayWriteInst i) {
           // Top of stack contains the value with the Type expected by the
           // instruction, beneath that is the index then array reference.
-          checkStack3(i, i.getOpType(), IntType.v(), TY_REF_CANON);
+          checkStack3(i, i.getOpType(), TYPE_INT, TYPE_REF);
         }
 
         @Override
         public void caseArrayReadInst(ArrayReadInst i) {
           // Top of stack is an index with an array reference beneath.
-          checkStack2(i, IntType.v(), TY_REF_CANON);
+          checkStack2(i, TYPE_INT, TYPE_REF);
         }
 
         @Override
         public void caseArrayLengthInst(ArrayLengthInst i) {
-          checkStack1(i, TY_REF_CANON);
+          checkStack1(i, TYPE_REF);
         }
 
         @Override
         public void caseNewArrayInst(NewArrayInst i) {
-          checkStack1(i, IntType.v());
+          checkStack1(i, TYPE_INT);
         }
 
         @Override
         public void caseNewMultiArrayInst(NewMultiArrayInst i) {
-          checkStackN(i, IntType.v(), i.getDimensionCount());
+          checkStackN(i, TYPE_INT, i.getDimensionCount());
         }
 
         @Override
         public void caseIfNullInst(IfNullInst i) {
-          checkStack1(i, TY_REF_CANON);
+          checkStack1(i, TYPE_REF);
         }
 
         @Override
         public void caseIfNonNullInst(IfNonNullInst i) {
-          checkStack1(i, TY_REF_CANON);
+          checkStack1(i, TYPE_REF);
         }
 
         @Override
         public void caseIfEqInst(IfEqInst i) {
-          checkStack1(i, IntType.v());
+          checkStack1(i, TYPE_INT);
         }
 
         @Override
         public void caseIfNeInst(IfNeInst i) {
-          checkStack1(i, IntType.v());
+          checkStack1(i, TYPE_INT);
         }
 
         @Override
         public void caseIfGtInst(IfGtInst i) {
-          checkStack1(i, IntType.v());
+          checkStack1(i, TYPE_INT);
         }
 
         @Override
         public void caseIfGeInst(IfGeInst i) {
-          checkStack1(i, IntType.v());
+          checkStack1(i, TYPE_INT);
         }
 
         @Override
         public void caseIfLtInst(IfLtInst i) {
-          checkStack1(i, IntType.v());
+          checkStack1(i, TYPE_INT);
         }
 
         @Override
         public void caseIfLeInst(IfLeInst i) {
-          checkStack1(i, IntType.v());
+          checkStack1(i, TYPE_INT);
         }
 
         @Override
@@ -502,24 +592,24 @@ public enum StackTypesValidator implements BodyValidator {
 
         @Override
         public void caseFieldGetInst(FieldGetInst i) {
-          checkStack1(i, TY_REF_CANON);
+          checkStack1(i, TYPE_REF);
         }
 
         @Override
         public void caseFieldPutInst(FieldPutInst i) {
           // Top of stack contains the value with the Type expected by the
           // instruction, beneath that is base object reference.
-          checkStack2(i, i.getFieldRef().type(), TY_REF_CANON);
+          checkStack2(i, i.getFieldRef().type(), TYPE_REF);
         }
 
         @Override
         public void caseInstanceCastInst(InstanceCastInst i) {
-          checkStack1(i, TY_REF_CANON);
+          checkStack1(i, TYPE_REF);
         }
 
         @Override
         public void caseInstanceOfInst(InstanceOfInst i) {
-          checkStack1(i, TY_REF_CANON);
+          checkStack1(i, TYPE_REF);
         }
 
         @Override
@@ -534,8 +624,8 @@ public enum StackTypesValidator implements BodyValidator {
           int idx = stk.size();
           final int numParams = pTypes.size();
           if (numParams > 0) {
-            for (Iterator<Type> it = pTypes.listIterator(numParams - 1); it.hasNext();) {
-              Type t = it.next();
+            for (ListIterator<Type> it = pTypes.listIterator(numParams); it.hasPrevious();) {
+              Type t = it.previous();
               checkType(i, t, stk.elementAt(--idx));
             }
           }
@@ -559,24 +649,24 @@ public enum StackTypesValidator implements BodyValidator {
         @Override
         public void caseVirtualInvokeInst(VirtualInvokeInst i) {
           // Stack contains the parameters in reverse order then the base object reference.
-          checkStackForParams(i, i.getMethodRef().getParameterTypes(), TY_REF_CANON);
+          checkStackForParams(i, i.getMethodRef().getParameterTypes(), TYPE_REF);
         }
 
         @Override
         public void caseInterfaceInvokeInst(InterfaceInvokeInst i) {
           // Stack contains the parameters in reverse order then the base object reference.
-          checkStackForParams(i, i.getMethodRef().getParameterTypes(), TY_REF_CANON);
+          checkStackForParams(i, i.getMethodRef().getParameterTypes(), TYPE_REF);
         }
 
         @Override
         public void caseSpecialInvokeInst(SpecialInvokeInst i) {
           // Stack contains the parameters in reverse order then the base object reference.
-          checkStackForParams(i, i.getMethodRef().getParameterTypes(), TY_REF_CANON);
+          checkStackForParams(i, i.getMethodRef().getParameterTypes(), TYPE_REF);
         }
 
         @Override
         public void caseThrowInst(ThrowInst i) {
-          checkStack1(i, TY_REF_CANON);
+          checkStack1(i, TYPE_REF);
         }
 
         @Override
@@ -621,17 +711,20 @@ public enum StackTypesValidator implements BodyValidator {
 
         @Override
         public void caseShlInst(ShlInst i) {
-          checkStack2(i, i.getOpType());
+          // Top of stack is an integer with the operand value underneath.
+          checkStack2(i, TYPE_INT, i.getOpType());
         }
 
         @Override
         public void caseShrInst(ShrInst i) {
-          checkStack2(i, i.getOpType());
+          // Top of stack is an integer with the operand value underneath.
+          checkStack2(i, TYPE_INT, i.getOpType());
         }
 
         @Override
         public void caseUshrInst(UshrInst i) {
-          checkStack2(i, i.getOpType());
+          // Top of stack is an integer with the operand value underneath.
+          checkStack2(i, TYPE_INT, i.getOpType());
         }
 
         @Override
@@ -641,7 +734,8 @@ public enum StackTypesValidator implements BodyValidator {
 
         @Override
         public void caseIncInst(IncInst i) {
-          checkStack1(i, IntType.v());
+          // The type of the Local must be an integer type.
+          checkType(i, TYPE_INT, getFlowBefore(i).data[indexOf(i.getLocal())]);
         }
 
         @Override
@@ -686,22 +780,22 @@ public enum StackTypesValidator implements BodyValidator {
 
         @Override
         public void caseLookupSwitchInst(LookupSwitchInst i) {
-          checkStack1(i, IntType.v());
+          checkStack1(i, TYPE_INT);
         }
 
         @Override
         public void caseTableSwitchInst(TableSwitchInst i) {
-          checkStack1(i, IntType.v());
+          checkStack1(i, TYPE_INT);
         }
 
         @Override
         public void caseEnterMonitorInst(EnterMonitorInst i) {
-          checkStack1(i, TY_REF_CANON);
+          checkStack1(i, TYPE_REF);
         }
 
         @Override
         public void caseExitMonitorInst(ExitMonitorInst i) {
-          checkStack1(i, TY_REF_CANON);
+          checkStack1(i, TYPE_REF);
         }
       };
     }
