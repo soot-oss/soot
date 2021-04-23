@@ -151,17 +151,8 @@ public class AugEvalFunction implements IEvalFunction {
     } else if (expr instanceof NegExpr) {
       Type t = eval_(tg, ((NegExpr) expr).getOp(), stmt, jb);
       if (t instanceof IntegerType) {
-        /*
-         * Here I repeat the behaviour of the original type assigner, but is it right? For example, -128 is a byte, but
-         * -(-128) is not! --BRB
-         */
-        if (t instanceof Integer1Type || t instanceof BooleanType || t instanceof Integer127Type || t instanceof ByteType) {
-          return ByteType.v();
-        } else if (t instanceof ShortType || t instanceof Integer32767Type) {
-          return ShortType.v();
-        } else {
-          return IntType.v();
-        }
+        //The "ineg" bytecode causes and implicit widening to int type and produces an int type.
+        return IntType.v();
       } else {
         return t;
       }
