@@ -67,7 +67,7 @@
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
-        <checkstyle.version>8.18</checkstyle.version>
+        <checkstyle.version>8.29</checkstyle.version>
         <checkstyle.dir.path>${basedir}/codingstyle</checkstyle.dir.path>
         <checkstyle.file.path>${checkstyle.dir.path}/soot_checkstyle_checks.xml</checkstyle.file.path>
         <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
