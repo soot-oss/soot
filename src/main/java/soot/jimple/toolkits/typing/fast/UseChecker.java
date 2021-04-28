@@ -1,9 +1,5 @@
 package soot.jimple.toolkits.typing.fast;
 
-import heros.solver.Pair;
-
-import java.util.ArrayDeque;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -28,6 +24,9 @@ import java.util.ArrayDeque;
  * #L%
  */
 
+import heros.solver.Pair;
+
+import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.List;
 
