@@ -1,5 +1,9 @@
 package soot.jimple.toolkits.typing.fast;
 
+import heros.solver.Pair;
+
+import java.util.ArrayDeque;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,6 +29,10 @@ package soot.jimple.toolkits.typing.fast;
  */
 
 import java.util.Iterator;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -109,6 +117,8 @@ public class UseChecker extends AbstractStmtSwitch {
 
   private LocalDefs defs = null;
   private LocalUses uses = null;
+
+  private static final Logger logger = LoggerFactory.getLogger(UseChecker.class);
 
   public UseChecker(JimpleBody jb) {
     this.jb = jb;
@@ -259,14 +269,11 @@ public class UseChecker extends AbstractStmtSwitch {
 
       // try to force Type integrity
       ArrayType at = null;
-      Type et = null;
       if (this.tg.get(base) instanceof ArrayType) {
         at = (ArrayType) this.tg.get(base);
       } else {
+        Type et = null;
         Type bt = this.tg.get(base);
-        // At the very least, the the type for this array should be whatever its
-        // base type is
-        et = bt;
 
         // If we have a type of java.lang.Object and access it like an object,
         // this could lead to any kind of object, so we have to look at the uses.
@@ -280,70 +287,111 @@ public class UseChecker extends AbstractStmtSwitch {
               defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(jb);
               uses = LocalUses.Factory.newLocalUses(jb, defs);
             }
+            // First, we check the definitions. If we can see the definitions and know the array type
+            // that way, we are safe.
+            ArrayDeque<Pair<Unit, Local>> worklist = new ArrayDeque<Pair<Unit, Local>>();
+            worklist.add(new Pair<>(stmt, (Local) ((ArrayRef) rhs).getBase()));
+            while (!worklist.isEmpty()) {
+              Pair<Unit, Local> r = worklist.removeFirst();
 
-            outer: for (UnitValueBoxPair usePair : uses.getUsesOf(stmt)) {
-              Stmt useStmt = (Stmt) usePair.getUnit();
-              // Is the array element used in an invocation for which we have a type
-              // from the callee's signature=
-              if (useStmt.containsInvokeExpr()) {
-                for (int i = 0; i < useStmt.getInvokeExpr().getArgCount(); i++) {
-                  if (useStmt.getInvokeExpr().getArg(i) == usePair.getValueBox().getValue()) {
-                    et = useStmt.getInvokeExpr().getMethod().getParameterType(i);
-                    at = et.makeArrayType();
-                    break outer;
+              List<Unit> d = defs.getDefsOfAt(r.getO2(), r.getO1());
+              if (d.isEmpty()) {
+                // In this case, probably we are asking for some variable which got casted. Since the local defs and uses are
+                // cached
+                // they might not reflect this.
+                defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(jb);
+                uses = LocalUses.Factory.newLocalUses(jb, defs);
+                d = defs.getDefsOfAt(r.getO2(), r.getO1());
+              }
+              for (Unit u : d) {
+                if (u instanceof AssignStmt) {
+                  AssignStmt assign = (AssignStmt) u;
+                  Value rop = assign.getRightOp();
+                  if (rop instanceof NewArrayExpr) {
+                    et = merge(stmt, et, ((NewArrayExpr) assign.getRightOp()).getBaseType());
+                  } else if (rop instanceof Local) {
+                    worklist.add(new Pair<>(u, (Local) rop));
+                  } else if (rop instanceof CastExpr) {
+                    worklist.add(new Pair<>(u, (Local) ((CastExpr) rop).getOp()));
                   }
                 }
               }
-              // If we have a comparison, we look at the other value. Using the type
-              // of the value is at least closer to the truth than java.lang.Object
-              // if the other value is a primitive.
-              else if (useStmt instanceof IfStmt) {
-                IfStmt ifStmt = (IfStmt) useStmt;
-                if (ifStmt.getCondition() instanceof EqExpr) {
-                  EqExpr expr = (EqExpr) ifStmt.getCondition();
-                  final Value other;
-                  if (expr.getOp1() == usePair.getValueBox().getValue()) {
-                    other = expr.getOp2();
-                  } else {
-                    other = expr.getOp1();
-                  }
 
-                  Type newEt = getTargetType(other);
-                  if (newEt != null) {
-                    et = newEt;
+            }
+
+            // Take a look at uses if the definitions didn't give any intel.
+            if (et == null) {
+              outer: for (UnitValueBoxPair usePair : uses.getUsesOf(stmt)) {
+                Stmt useStmt = (Stmt) usePair.getUnit();
+                // Is the array element used in an invocation for which we have a type
+                // from the callee's signature=
+                if (useStmt.containsInvokeExpr()) {
+                  for (int i = 0; i < useStmt.getInvokeExpr().getArgCount(); i++) {
+                    if (useStmt.getInvokeExpr().getArg(i) == usePair.getValueBox().getValue()) {
+                      Type newEt = useStmt.getInvokeExpr().getMethod().getParameterType(i);
+                      et = merge(stmt, et, newEt);
+                      break outer;
+                    }
                   }
                 }
-              } else if (useStmt instanceof AssignStmt) {
-                // For binary expressions, we can look for type information in the
-                // other operands
-                AssignStmt useAssignStmt = (AssignStmt) useStmt;
-                Value rop = useAssignStmt.getRightOp();
-                if (rop instanceof BinopExpr) {
-                  BinopExpr binOp = (BinopExpr) useAssignStmt.getRightOp();
-                  final Value other;
-                  if (binOp.getOp1() == usePair.getValueBox().getValue()) {
-                    other = binOp.getOp2();
-                  } else {
-                    other = binOp.getOp1();
-                  }
+                // If we have a comparison, we look at the other value. Using the type
+                // of the value is at least closer to the truth than java.lang.Object
+                // if the other value is a primitive.
+                else if (useStmt instanceof IfStmt) {
+                  IfStmt ifStmt = (IfStmt) useStmt;
+                  if (ifStmt.getCondition() instanceof EqExpr) {
+                    EqExpr expr = (EqExpr) ifStmt.getCondition();
+                    final Value other;
+                    if (expr.getOp1() == usePair.getValueBox().getValue()) {
+                      other = expr.getOp2();
+                    } else {
+                      other = expr.getOp1();
+                    }
 
-                  Type newEt = getTargetType(other);
-                  if (newEt != null) {
-                    et = newEt;
+                    Type newEt = getTargetType(other);
+                    if (newEt != null) {
+                      et = merge(stmt, et, newEt);
+                    }
                   }
-                } else if (rop instanceof CastExpr) {
-                  et = ((CastExpr) rop).getCastType();
+                } else if (useStmt instanceof AssignStmt) {
+                  // For binary expressions, we can look for type information in the
+                  // other operands
+                  AssignStmt useAssignStmt = (AssignStmt) useStmt;
+                  Value rop = useAssignStmt.getRightOp();
+                  if (rop instanceof BinopExpr) {
+                    BinopExpr binOp = (BinopExpr) useAssignStmt.getRightOp();
+                    final Value other;
+                    if (binOp.getOp1() == usePair.getValueBox().getValue()) {
+                      other = binOp.getOp2();
+                    } else {
+                      other = binOp.getOp1();
+                    }
+
+                    Type newEt = getTargetType(other);
+                    if (newEt != null) {
+                      et = merge(stmt, et, newEt);
+                    }
+                  } else if (rop instanceof CastExpr) {
+                    et = merge(stmt, et, ((CastExpr) rop).getCastType());
+                  }
+                } else if (useStmt instanceof ReturnStmt) {
+                  et = merge(stmt, et, jb.getMethod().getReturnType());
                 }
-              } else if (useStmt instanceof ReturnStmt) {
-                et = jb.getMethod().getReturnType();
               }
             }
           }
+
         }
 
-        if (at == null) {
-          at = et.makeArrayType();
+        if (et == null) {
+          // At the very least, the the type for this array should be whatever its
+          // base type is
+          et = bt;
+          logger.warn("Could not find any indication on the array type of " + stmt + " in " + jb.getMethod().getSignature(),
+              ", assuming its base type is " + bt);
         }
+
+        at = et.makeArrayType();
       }
       Type trhs = ((ArrayType) at).getElementType();
 
@@ -384,6 +432,25 @@ public class UseChecker extends AbstractStmtSwitch {
         stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
       }
     }
+  }
+
+  protected Type merge(Stmt stmt, Type previousType, Type newType) {
+    if (previousType == null) {
+      return newType;
+    }
+    if (newType == previousType) {
+      return previousType;
+    }
+    Type choose;
+    // we choose the wider one. Note that this probably still results in code which cannot be executed!
+    if (TypeUtils.getValueBitSize(previousType) > TypeUtils.getValueBitSize(newType)) {
+      choose = previousType;
+    } else {
+      choose = newType;
+    }
+    logger.warn("Conflicting array types at " + stmt + " in " + jb.getMethod().getSignature(),
+        ", its base type may be " + previousType + " or " + newType + ". Choosing " + choose + ".");
+    return newType;
   }
 
   private Type getTargetType(final Value other) {
