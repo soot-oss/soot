@@ -31,8 +31,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import soot.Body;
 import soot.DoubleType;
@@ -48,7 +46,6 @@ import soot.RefType;
 import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
-import soot.baf.AbstractInstSwitch;
 import soot.baf.AddInst;
 import soot.baf.AndInst;
 import soot.baf.ArrayLengthInst;
@@ -126,11 +123,17 @@ import soot.jimple.IdentityRef;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-import soot.toolkits.scalar.Pair;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
 /**
+ * Checks if the locals and the operand stack will contain the correct types for each instruction in the {@link BafBody}.
+ * 
+ * NOTE: This validator assumes that each local will hold a single {@link Type} throughout the method. However, that is
+ * actually a stronger requirement than necessary for bytecode. In fact, after running the
+ * {@link soot.toolkits.scalar.LocalPacker} pass, there will likely be cases that are reported by this validator which are
+ * actually safe for bytecode.
+ *
  * @author Timothy Hoffman
  */
 public enum StackTypesValidator implements BodyValidator {
@@ -159,26 +162,48 @@ public enum StackTypesValidator implements BodyValidator {
     }
   }
 
-  /**
-   * Wrapper class for {@code Type[]} that correctly implements equals and hashcode for the ForwardFlowAnalysis.
-   */
-  private static final class TypeArray implements Cloneable {
+  private static final class BitArray implements Cloneable {
 
-    public final Type[] data;
+    // number of bits required to store each value
+    // NOTE: Although 3 is sufficient, using a power of 2 gives a reasonable
+    // speedup for only a small trade-off in terms of memory usage.
+    public static final int BITS_PER_VAL = 4;
+    // number of values to store at each array index
+    public static final int VALS_PER_IDX = Integer.SIZE / BITS_PER_VAL;
+    // rightmost 'BITS_PER_VAL' bits will be '1'
+    public static final int VAL_MASK = 0xFFFFFFFF >>> (Integer.SIZE - BITS_PER_VAL);
 
-    public TypeArray(int count, Type t) {
-      Type[] temp = new Type[count];
-      for (int i = 0; i < count; i++) {
-        temp[i] = t;
-      }
-      this.data = temp;
+    private final int[] data;
+
+    public BitArray(int numValues) {
+      assert (numValues >= 0);
+      this.data = new int[numValues / VALS_PER_IDX + (numValues % VALS_PER_IDX == 0 ? 0 : 1)];
     }
-    
-    private TypeArray(Type[] otherData) {
+
+    private BitArray(int[] otherData) {
       int count = otherData.length;
-      Type[] temp = new Type[count];
+      int[] temp = new int[count];
       System.arraycopy(otherData, 0, temp, 0, count);
       this.data = temp;
+    }
+
+    public int get(int index) {
+      final int arrIdx = index / VALS_PER_IDX;
+      final int bitShift = (index % VALS_PER_IDX) * BITS_PER_VAL;
+      // Shift (unsigned) the relevant value to the right-most bits and then mask.
+      return (this.data[arrIdx] >>> bitShift) & VAL_MASK;
+    }
+
+    public void set(int index, int value) {
+      if ((value & VAL_MASK) != value) {
+        throw new IllegalArgumentException(value + " does not fit in " + BITS_PER_VAL + " bits!");
+      }
+
+      final int arrIdx = index / VALS_PER_IDX;
+      final int bitShift = (index % VALS_PER_IDX) * BITS_PER_VAL;
+
+      // First, use the inverse of 'VAL_MASK' to set position 'i' to all zeros and then set the new value.
+      this.data[arrIdx] = (this.data[arrIdx] & Integer.rotateLeft(~VAL_MASK, bitShift)) | (value << bitShift);
     }
 
     @Override
@@ -191,28 +216,106 @@ public enum StackTypesValidator implements BodyValidator {
       if (this == obj) {
         return true;
       }
-      if (obj == null || TypeArray.class != obj.getClass()) {
+      if (obj == null || BitArray.class != obj.getClass()) {
         return false;
       }
-      final TypeArray other = (TypeArray) obj;
+      final BitArray other = (BitArray) obj;
       return Arrays.equals(this.data, other.data);
     }
 
     @Override
-    public String toString() {
-      return VMStateAnalysis.toString(Stream.of(this.data));
+    public BitArray clone() {
+      return new BitArray(this.data);
     }
 
-    @Override
-    public TypeArray clone() {
-      return new TypeArray(this.data);
+    public void copyTo(BitArray dest) {
+      if (this != dest) {
+        assert (this.data.length == dest.data.length);
+        System.arraycopy(this.data, 0, dest.data, 0, this.data.length);
+      }
     }
   }
 
-  private static final class VMStateAnalysis extends ForwardFlowAnalysis<Unit, TypeArray> {
+  private static final class VMStateAnalysis extends ForwardFlowAnalysis<Unit, BitArray> {
 
-    protected static final Type TYPE_INT = IntType.v();
+    protected static final Type TYPE_UNK = UnknownType.v();
     protected static final Type TYPE_REF = RefType.v();
+    protected static final Type TYPE_INT = IntType.v();
+    protected static final Type TYPE_DUB = DoubleType.v();
+    protected static final Type TYPE_FLT = FloatType.v();
+    protected static final Type TYPE_LNG = LongType.v();
+    protected static final Type TYPE_ERR = ErroneousType.v();
+
+    // NOTE: UnknownType is 0 so that a new BitArray is trivially all UnknownType
+    protected static final int TYPE_UNK_BITS = 0b000;
+    protected static final int TYPE_ERR_BITS = 0b111;
+
+    /**
+     * Convert all reference-like types to the canonical reference instance and all subclasses of {@link IntegerType} to
+     * {@link IntType} but preserve other types.
+     *
+     * @param t
+     *
+     * @return
+     */
+    protected static Type canonicalize(Type t) {
+      return (t instanceof RefLikeType || t instanceof NullType) ? TYPE_REF : (t instanceof IntegerType) ? TYPE_INT : t;
+    }
+    
+    /**
+     * Performs {@link #canonicalize(Type)} and converts the canonical {@link Type} to its 3-bit representation.
+     *
+     * @param type
+     *
+     * @return
+     */
+    protected static int typeToBits(Type type) {
+      if (type == TYPE_UNK) {
+        return TYPE_UNK_BITS;
+      } else if (type == TYPE_INT || type instanceof IntegerType) {
+        return 0b010;
+      } else if (type == TYPE_REF || type instanceof RefLikeType || type instanceof NullType) {
+        return 0b001;
+      } else if (type == TYPE_DUB) {
+        return 0b011;
+      } else if (type == TYPE_FLT) {
+        return 0b100;
+      } else if (type == TYPE_LNG) {
+        return 0b101;
+      } else if (type == TYPE_ERR) {
+        return TYPE_ERR_BITS;
+      } else {
+        throw new IllegalArgumentException(Objects.toString(type));
+      }
+    }
+
+    /**
+     * Convert the given 3-bit representation (right-most bits of the argument) to its canonical {@link Type}.
+     * 
+     * @param bits
+     * 
+     * @return 
+     */
+    protected static Type bitsToType(int bits) {
+      switch (bits) {
+        case TYPE_UNK_BITS:
+          return TYPE_UNK;
+        case 0b001:
+          return TYPE_REF;
+        case 0b010:
+          return TYPE_INT;
+        case 0b011:
+          return TYPE_DUB;
+        case 0b100:
+          return TYPE_FLT;
+        case 0b101:
+          return TYPE_LNG;
+        case TYPE_ERR_BITS:
+          return TYPE_ERR;
+        default:
+          throw new IllegalArgumentException(Integer.toString(bits));
+      }
+    }
 
     //
     protected final List<ValidationException> exceptions;
@@ -220,9 +323,8 @@ public enum StackTypesValidator implements BodyValidator {
     protected final Map<Unit, Stack<Type>> opStacks;
     // Map each Local to array index for the Local->Type arrays
     protected final Map<Local, Integer> varToIdx;
-    protected final int numVars;
     //
-    protected final TypeArray initFlow;
+    protected final BitArray initFlow;
 
     public VMStateAnalysis(BafBody body, List<ValidationException> exceptions) {
       super(new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v(), false));
@@ -237,15 +339,10 @@ public enum StackTypesValidator implements BodyValidator {
           varToIdx.put(l, varNum++);
         }
         this.varToIdx = varToIdx;
-        this.numVars = varNum;
-        this.initFlow = new TypeArray(varNum, UnknownType.v());
+        this.initFlow = new BitArray(varNum);
       }
 
       doAnalysis();
-    }
-
-    protected static String toString(Stream<Type> str) {
-      return str.map(t -> toString(t)).collect(Collectors.toList()).toString();
     }
 
     protected static String toString(Type t) {
@@ -268,110 +365,85 @@ public enum StackTypesValidator implements BodyValidator {
     }
 
     @Override
-    protected void flowThrough(final TypeArray in, final Unit u, final TypeArray out) {
+    protected void flowThrough(final BitArray in, final Unit u, final BitArray out) {
       assert (u instanceof Inst);
 
       // Initialize the output Local types from input local Types
       copy(in, out);
 
       // Update Locals based on the current instruction
-      AbstractInstSwitch<Pair<Local, Type>> sw = new AbstractInstSwitch<Pair<Local, Type>>() {
-
-        @Override
-        public void caseIdentityInst(IdentityInst i) {
-          assert (i.getLeftOp() instanceof Local);
-          assert (i.getRightOp() instanceof IdentityRef);
-          // Type of the LHS Local is updated to the RHS type
-          int x = indexOf((Local) i.getLeftOp());
-          out.data[x] = merge(out.data[x], canonicalizeRefs(i.getRightOp().getType()), u);
-        }
-
-        @Override
-        public void caseStoreInst(StoreInst i) {
-          // Type of the Local is updated to the Type from the top of the stack
-          int x = indexOf(i.getLocal());
-          out.data[x] = merge(out.data[x], canonicalizeRefs(peekStackAt(u)), u);
-        }
-      };
-      u.apply(sw);
+      if (u instanceof IdentityInst) {
+        IdentityInst i = (IdentityInst) u;
+        assert (i.getLeftOp() instanceof Local);
+        assert (i.getRightOp() instanceof IdentityRef);
+        // Type of the LHS Local is updated to the RHS type
+        int x = indexOf((Local) i.getLeftOp());
+        out.set(x, merge(out.get(x), typeToBits(i.getRightOp().getType()), u));
+      } else if (u instanceof StoreInst) {
+        StoreInst i = (StoreInst) u;
+        // Type of the Local is updated to the Type from the top of the stack
+        int x = indexOf(i.getLocal());
+        out.set(x, merge(out.get(x), typeToBits(peekStackAt(u)), u));
+      }
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected TypeArray newInitialFlow() {
-      return (TypeArray) initFlow.clone();
+    protected BitArray newInitialFlow() {
+      return initFlow.clone();
     }
 
     @Override
-    protected void copy(final TypeArray in, final TypeArray out) {
-      assert (in.data.length == this.numVars);
-      assert (out.data.length == this.numVars);
-      if (in != out) {
-        System.arraycopy(in.data, 0, out.data, 0, this.numVars);
-      }
+    protected void copy(BitArray in, BitArray out) {
+      in.copyTo(out);
     }
 
     @Override
-    protected void merge(final TypeArray in1, final TypeArray in2, final TypeArray out) {
-      if (in1 == in2) {
+    protected void merge(BitArray in1, BitArray in2, BitArray out) {
+      merge(null, in1, in2, out);
+    }
+
+    @Override
+    protected void merge(Unit successor, BitArray in1, BitArray in2, BitArray out) {
+      if (in1.equals(in2)) {
         copy(in1, out);
       } else {
-        final Type[] dataIn1 = in1.data;
-        final Type[] dataIn2 = in2.data;
-        final Type[] dataOut = out.data;
-        final int size = this.numVars;
-        assert (dataIn1.length == size);
-        assert (dataIn2.length == size);
-        assert (dataOut.length == size);
-        for (int i = 0; i < size; i++) {
-          dataOut[i] = merge(dataIn1[i], dataIn2[i], null);
+        for (int i = 0, e = this.varToIdx.size(); i < e; i++) {
+          out.set(i, merge(in1.get(i), in2.get(i), successor));
         }
       }
     }
 
-    protected Type merge(final Type in1, final Type in2, final Unit u) {
+    private int merge(final int in1, final int in2, final Unit u) {
       // If they are identical, the output type is the same.
       if (in1 == in2) {
         return in1;
       }
 
       // If either type is unknown (i.e. uninitialized), return the other.
-      final Type tUnk = UnknownType.v();
-      if (in1 == tUnk) {
+      if (in1 == TYPE_UNK_BITS) {
         return in2;
-      } else if (in2 == tUnk) {
+      } else if (in2 == TYPE_UNK_BITS) {
         return in1;
       }
 
       // If either type is erroneous, the output type is too.
-      final Type tErr = ErroneousType.v();
-      if (in1 == tErr || in2 == tErr) {
-        return tErr;
+      if (in1 == TYPE_ERR_BITS || in2 == TYPE_ERR_BITS) {
+        return TYPE_ERR_BITS;
       }
 
-      // Use ErroneousType if there is a mismatch.
-      assert (in1 == TYPE_INT || in1 == TYPE_REF || in1 == DoubleType.v() || in1 == FloatType.v() || in1 == LongType.v());
-      assert (in2 == TYPE_INT || in2 == TYPE_REF || in2 == DoubleType.v() || in2 == FloatType.v() || in2 == LongType.v());
-      exceptions.add(new ValidationException(u, "Ambiguous type: '" + toString(in1) + "' vs '" + toString(in2) + "'"));
-      return tErr;
-    }
-
-    /**
-     * Convert all reference-like types to the canonical reference instance but preserve other types.
-     * 
-     * @param t
-     * @return
-     */
-    private Type canonicalizeRefs(Type t) {
-      return (t instanceof RefLikeType || t instanceof NullType) ? TYPE_REF : (t instanceof IntegerType) ? TYPE_INT : t;
+      // If there is a mismatch, return erroneous type.
+      exceptions.add(new ValidationException(u, "Ambiguous type: '" + toString(bitsToType(in1))
+          + "' vs '" + toString(bitsToType(in2)) + "'"));
+      return TYPE_ERR_BITS;
     }
 
     public InstSwitch createVerifier() {
       return new InstSwitch() {
 
         private void checkType(Inst i, Type expect, Type actual) {
-          Type canonExpect = canonicalizeRefs(expect);
-          Type canonActual = canonicalizeRefs(actual);
+          Type canonExpect = canonicalize(expect);
+          Type canonActual = canonicalize(actual);
           if (!Objects.equals(canonExpect, canonActual)) {
             exceptions.add(new ValidationException(i, "Expected " + VMStateAnalysis.toString(canonExpect) + " but found "
                 + VMStateAnalysis.toString(canonActual)));
@@ -464,7 +536,7 @@ public enum StackTypesValidator implements BodyValidator {
         @Override
         public void caseLoadInst(LoadInst i) {
           // The type of the Local must match the type expected by the instruction.
-          checkType(i, i.getOpType(), getFlowBefore(i).data[indexOf(i.getLocal())]);
+          checkType(i, i.getOpType(), bitsToType(getFlowBefore(i).get(indexOf(i.getLocal()))));
         }
 
         @Override
@@ -735,7 +807,7 @@ public enum StackTypesValidator implements BodyValidator {
         @Override
         public void caseIncInst(IncInst i) {
           // The type of the Local must be an integer type.
-          checkType(i, TYPE_INT, getFlowBefore(i).data[indexOf(i.getLocal())]);
+          checkType(i, TYPE_INT, bitsToType(getFlowBefore(i).get(indexOf(i.getLocal()))));
         }
 
         @Override
