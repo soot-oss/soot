@@ -868,8 +868,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
                 if (def instanceof StoreInst) {
                   List<UnitValueBoxPair> uses = mLocalUses.getUsesOf(def);
                   if (uses.size() == 1 && allSuccesorsOfAreThePredecessorsOf(defBlock, loadBlock)) {
-                    Unit defSucc = defBlock.getSuccOf(def);
-                    if (getDeltaStackHeightFromTo(defSucc, defBlock.getTail()) == 0) {
+                    if (isZeroStackDeltaWithoutClobbering(defBlock.getSuccOf(def), defBlock.getTail())) {
                       boolean res = true;
                       for (Block b : defBlock.getSuccs()) {
                         if (getDeltaStackHeightFromTo(b.getHead(), b.getTail()) != 0 || b.getPreds().size() != 1
