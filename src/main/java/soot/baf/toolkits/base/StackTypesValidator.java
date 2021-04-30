@@ -394,6 +394,11 @@ public enum StackTypesValidator implements BodyValidator {
     }
 
     @Override
+    protected boolean omissible(Unit u) {
+      return !(u instanceof IdentityInst) && !(u instanceof StoreInst);
+    }
+
+    @Override
     protected void copy(BitArray in, BitArray out) {
       in.copyTo(out);
     }
