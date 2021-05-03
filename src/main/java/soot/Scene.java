@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
+
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
@@ -661,8 +662,10 @@ public class Scene {
 
   public static boolean isApk(File apk) {
     // first check magic number
-    MagicNumberFileFilter apkFilter
-        = new MagicNumberFileFilter(new byte[] { (byte) 0x50, (byte) 0x4B, (byte) 0x03, (byte) 0x04 });
+    // Note that there are multiple magic numbers for different versions of ZIP files, but all of them
+    // have "PK" at the beginning. In order to not decline possible future versions of ZIP files which may be supported
+    // by the JVM, we only check these two bytes.
+    MagicNumberFileFilter apkFilter = new MagicNumberFileFilter(new byte[] { (byte) 0x50, (byte) 0x4B });
     if (!apkFilter.accept(apk)) {
       return false;
     }
