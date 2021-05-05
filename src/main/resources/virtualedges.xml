@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <virtualedges>
 	<!-- Thread.start()  -->
 	<edge type="THREAD">
@@ -96,6 +95,18 @@
 		<source invoketype="instance" subsignature="boolean sendMessageDelayed(android.os.Message,long)" />
 		<targets>
 			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+		</targets>
+	</edge>
+	<edge type="HANDLER">
+		<source invoketype="instance" subsignature="void send(org.eclipse.jetty.client.api.Response$CompleteListener)" />
+		<targets>
+			<direct subsignature="void onComplete(org.eclipse.jetty.client.api.Result)" target-position="argument" index="0"/>
+		</targets>
+	</edge>
+	<edge type="HANDLER">
+		<source invoketype="instance" subsignature="java.util.concurrent.Future execute(org.apache.http.client.methods.HttpUriRequest,org.apache.http.concurrent.FutureCallback)>($r2, $r3)" />
+		<targets>
+			<direct subsignature="void completed(org.apache.http.HttpResponse)" target-position="argument" index="1"/>
 		</targets>
 	</edge>
 	
