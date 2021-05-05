@@ -37,12 +37,11 @@ import java.util.Set;
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
-import soot.CharType;
 import soot.G;
-import soot.IntType;
 import soot.IntegerType;
 import soot.Local;
 import soot.PatchingChain;
+import soot.PrimType;
 import soot.RefType;
 import soot.ShortType;
 import soot.Type;
@@ -163,12 +162,11 @@ public class TypeResolver {
 
     this.insertCasts(tg, bh, false);
 
-    final IntType inttype = IntType.v();
     final BottomType bottom = BottomType.v();
     for (Local v : this.jb.getLocals()) {
       Type t = tg.get(v);
       if (t instanceof IntegerType) {
-        t = inttype;
+        // t = inttype;
         tg.set(v, bottom);
       }
       v.setType(t);
@@ -195,7 +193,7 @@ public class TypeResolver {
     protected Typing tg;
     protected IHierarchy h;
 
-    private boolean countOnly;
+    private final boolean countOnly;
     private int count;
 
     public CastInsertionUseVisitor(boolean countOnly, JimpleBody jb, Typing tg, IHierarchy h) {
@@ -208,11 +206,19 @@ public class TypeResolver {
     }
 
     @Override
-    public Value visit(Value op, Type useType, Stmt stmt) {
-      final Jimple jimple = Jimple.v();
+    public Value visit(Value op, Type useType, Stmt stmt, boolean checkOnly) {
       Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
+      if (useType == t) {
+        return op;
+      }
 
-      if (this.h.ancestor(useType, t)) {
+      boolean needCast = false;
+      if (useType instanceof PrimType && t instanceof PrimType) {
+        if (t.isAllowedInFinalCode() && useType.isAllowedInFinalCode()) {
+          needCast = true;
+        }
+      }
+      if (!needCast && this.h.ancestor(useType, t)) {
         return op;
       }
 
@@ -244,13 +250,12 @@ public class TypeResolver {
           vold = localGenerator.generateLocal(t);
           this.tg.set(vold, t);
           Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
-          this.jb.getUnits().insertBefore(jimple.newAssignStmt(vold, op), u);
+          this.jb.getUnits().insertBefore(Jimple.v().newAssignStmt(vold, op), u);
         } else {
           vold = (Local) op;
         }
-
         // Cast from the original type to the type that we use in the code
-        Local vnew = createCast(useType, stmt, vold);
+        Local vnew = createCast(useType, stmt, vold, false);
         return vnew;
       }
     }
@@ -262,21 +267,6 @@ public class TypeResolver {
       final String name = rt.getSootClass().getName();
       return name.equals("java.lang.Object") || name.equals("java.io.Serializable") || name.equals("java.lang.Cloneable");
 
-    }
-
-    /**
-     * Creates a cast at stmt of vold to the given type.
-     * 
-     * @param useType
-     *          the new type
-     * @param stmt
-     *          stmt
-     * @param old
-     *          the old local
-     * @return the new local
-     */
-    protected Local createCast(Type useType, Stmt stmt, Local old) {
-      return createCast(useType, stmt, old, false);
     }
 
     /**
@@ -313,91 +303,6 @@ public class TypeResolver {
     @Override
     public boolean finish() {
       return false;
-    }
-  }
-
-  private class TypePromotionUseVisitor implements IUseVisitor {
-    private JimpleBody jb;
-    private Typing tg;
-
-    public boolean fail;
-    public boolean typingChanged;
-
-    private final ByteType byteType = ByteType.v();
-    private final Integer32767Type integer32767Type = Integer32767Type.v();
-    private final Integer127Type integer127Type = Integer127Type.v();
-
-    public TypePromotionUseVisitor(JimpleBody jb, Typing tg) {
-      this.jb = jb;
-      this.tg = tg;
-
-      this.fail = false;
-      this.typingChanged = false;
-    }
-
-    private Type promote(Type tlow, Type thigh) {
-      if (tlow instanceof Integer1Type) {
-        if (thigh instanceof IntType) {
-          return Integer127Type.v();
-        } else if (thigh instanceof ShortType) {
-          return byteType;
-        } else if (thigh instanceof BooleanType || thigh instanceof ByteType || thigh instanceof CharType
-            || thigh instanceof Integer127Type || thigh instanceof Integer32767Type) {
-          return thigh;
-        } else {
-          throw new RuntimeException();
-        }
-      } else if (tlow instanceof Integer127Type) {
-        if (thigh instanceof ShortType) {
-          return byteType;
-        } else if (thigh instanceof IntType) {
-          return integer127Type;
-        } else if (thigh instanceof ByteType || thigh instanceof CharType || thigh instanceof Integer32767Type) {
-          return thigh;
-        } else {
-          throw new RuntimeException();
-        }
-      } else if (tlow instanceof Integer32767Type) {
-        if (thigh instanceof IntType) {
-          return integer32767Type;
-        } else if (thigh instanceof ShortType || thigh instanceof CharType) {
-          return thigh;
-        } else {
-          throw new RuntimeException();
-        }
-      } else {
-        throw new RuntimeException();
-      }
-    }
-
-    @Override
-    public Value visit(Value op, Type useType, Stmt stmt) {
-      if (this.finish()) {
-        return op;
-      }
-
-      Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
-
-      if (!AugHierarchy.ancestor_(useType, t)) {
-        this.fail = true;
-      } else if (op instanceof Local && (t instanceof Integer1Type || t instanceof Integer127Type
-          || t instanceof Integer32767Type || t instanceof WeakObjectType)) {
-        Local v = (Local) op;
-        if (!typesEqual(t, useType)) {
-          Type t_ = this.promote(t, useType);
-          if (!typesEqual(t, t_)) {
-            this.tg.set(v, t_);
-            this.typingChanged = true;
-          }
-        }
-      }
-
-      return op;
-    }
-
-    @Override
-    public boolean finish() {
-      return this.typingChanged || this.fail;
     }
   }
 
@@ -449,6 +354,12 @@ public class TypeResolver {
       return shortType;
     } else if (t instanceof WeakObjectType) {
       return RefType.v(((WeakObjectType) t).getClassName());
+    } else if (t instanceof ArrayType) {
+      ArrayType r = (ArrayType) t;
+      Type cv = convert(r.getElementType());
+      if (cv != null) {
+        return ArrayType.v(cv, r.numDimensions);
+      }
     }
     return null;
   }
@@ -550,7 +461,6 @@ public class TypeResolver {
         }
 
         Type told = tg.get(v);
-
         Collection<Type> eval = ef.eval(tg, rhs, stmt);
 
         boolean isFirstType = true;
