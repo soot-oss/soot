@@ -79,7 +79,7 @@ public class SimpleLocalDefs implements LocalDefs {
     }
   } // end inner class StaticSingleAssignment
 
-  private static class FlowAssignment extends ForwardFlowAnalysis<Unit, FlowAssignment.FlowBitSet> implements LocalDefs {
+  private class FlowAssignment extends ForwardFlowAnalysis<Unit, FlowAssignment.FlowBitSet> implements LocalDefs {
 
     class FlowBitSet extends BitSet {
       private static final long serialVersionUID = -8348696077189400377L;
@@ -178,7 +178,7 @@ public class SimpleLocalDefs implements LocalDefs {
           Value v = vb.getValue();
           if (v instanceof Local) {
             Local l = (Local) v;
-            int lno = l.getNumber();
+            int lno = getLocalNumber(l);
             return (localRange[lno] == localRange[lno + 1]);
           }
         }
@@ -213,7 +213,7 @@ public class SimpleLocalDefs implements LocalDefs {
         Value v = vb.getValue();
         if (v instanceof Local) {
           Local l = (Local) v;
-          int lno = l.getNumber();
+          int lno = getLocalNumber(l);
           int from = localRange[lno];
           int to = localRange[1 + lno];
 
@@ -293,7 +293,7 @@ public class SimpleLocalDefs implements LocalDefs {
   /**
    * The different modes in which the flow analysis can run
    */
-  enum FlowAnalysisMode {
+  public enum FlowAnalysisMode {
     /**
      * Automatically detect the mode to use
      */
@@ -336,25 +336,33 @@ public class SimpleLocalDefs implements LocalDefs {
       Timers.v().defsTimer.start();
     }
 
-    final int N = locals.length;
-
     // reassign local numbers
+    int[] oldNumbers = assignNumbers(locals);
+
+    this.def = init(graph, locals, mode);
+
+    // restore local numbering
+    restoreNumbers(locals, oldNumbers);
+
+    if (time) {
+      Timers.v().defsTimer.end();
+    }
+  }
+
+  protected void restoreNumbers(Local[] locals, int[] oldNumbers) {
+    for (int i = 0; i < oldNumbers.length; i++) {
+      locals[i].setNumber(oldNumbers[i]);
+    }
+  }
+
+  protected int[] assignNumbers(Local[] locals) {
+    final int N = locals.length;
     int[] oldNumbers = new int[N];
     for (int i = 0; i < N; i++) {
       oldNumbers[i] = locals[i].getNumber();
       locals[i].setNumber(i);
     }
-
-    this.def = init(graph, locals, mode);
-
-    // restore local numbering
-    for (int i = 0; i < N; i++) {
-      locals[i].setNumber(oldNumbers[i]);
-    }
-
-    if (time) {
-      Timers.v().defsTimer.end();
-    }
+    return oldNumbers;
   }
 
   private LocalDefs init(DirectedGraph<Unit> graph, Local[] locals, FlowAnalysisMode mode) {
@@ -373,7 +381,7 @@ public class SimpleLocalDefs implements LocalDefs {
         Value v = box.getValue();
         if (v instanceof Local) {
           Local l = (Local) v;
-          int lno = l.getNumber();
+          int lno = getLocalNumber(l);
 
           switch (unitList[lno].size()) {
             case 0:
@@ -403,6 +411,11 @@ public class SimpleLocalDefs implements LocalDefs {
     } else {
       return new StaticSingleAssignment(locals, unitList);
     }
+  }
+
+  // Is protected so that in case we have a smarter implementation we can use it.
+  protected int getLocalNumber(Local l) {
+    return l.getNumber();
   }
 
   @Override

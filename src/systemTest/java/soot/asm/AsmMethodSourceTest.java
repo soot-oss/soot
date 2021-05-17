@@ -26,7 +26,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
+
 import org.junit.Test;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+
 import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
@@ -34,6 +37,7 @@ import soot.options.Options;
 import soot.testing.framework.AbstractTestingFramework;
 
 /** @author Manuel Benz at 13.02.20 */
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class AsmMethodSourceTest extends AbstractTestingFramework {
 
   private static final String TEST_TARGET_CLASS = "soot.asm.LineNumberExtraction";
@@ -50,20 +54,12 @@ public class AsmMethodSourceTest extends AbstractTestingFramework {
   public void iterator() {
     // statements at the beginning of a for loop should have the line number as for the branching
     // statement and not the last line number after the branch that leads outside the loop
-    SootMethod target =
-        prepareTarget(
-            methodSigFromComponents(TEST_TARGET_CLASS, "void", "iterator"), TEST_TARGET_CLASS);
+    SootMethod target = prepareTarget(methodSigFromComponents(TEST_TARGET_CLASS, "void", "iterator"), TEST_TARGET_CLASS);
 
     Body body = target.retrieveActiveBody();
 
-    Optional<Unit> unit =
-        body.getUnits().stream()
-            .filter(
-                u ->
-                    u.toString()
-                        .equals(
-                            "object = interfaceinvoke l1.<java.util.Iterator: java.lang.Object next()>()"))
-            .findFirst();
+    Optional<Unit> unit = body.getUnits().stream()
+        .filter(u -> u.toString().contains("<java.util.Iterator: java.lang.Object next()>()")).findFirst();
 
     assertTrue(unit.isPresent());
 

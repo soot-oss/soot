@@ -24,6 +24,8 @@ package soot.tagkit;
 
 public class PositionTag implements Tag {
 
+  public static final String NAME = "PositionTag";
+
   /* it is a value representing end offset. */
   private final int endOffset;
 
@@ -45,7 +47,7 @@ public class PositionTag implements Tag {
 
   @Override
   public String getName() {
-    return "PositionTag";
+    return NAME;
   }
 
   @Override

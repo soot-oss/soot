@@ -26,6 +26,8 @@ import java.io.UnsupportedEncodingException;
 
 public class InnerClassTag implements Tag {
 
+  public static final String NAME = "InnerClassTag";
+
   private final String innerClass;
   private final String outerClass;
   private final String name;
@@ -51,7 +53,7 @@ public class InnerClassTag implements Tag {
 
   @Override
   public String getName() {
-    return "InnerClassTag";
+    return NAME;
   }
 
   /**

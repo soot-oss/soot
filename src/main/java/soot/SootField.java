@@ -41,8 +41,11 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
   protected boolean isPhantom = false;
   protected volatile String sig;
   protected volatile String subSig;
+  private int number = 0;
 
-  /** Constructs a Soot field with the given name, type and modifiers. */
+  /**
+   * Constructs a Soot field with the given name, type and modifiers.
+   */
   public SootField(String name, Type type, int modifiers) {
     if (name == null || type == null) {
       throw new RuntimeException("A SootField cannot have a null name or type.");
@@ -52,7 +55,9 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
     this.modifiers = modifiers;
   }
 
-  /** Constructs a Soot field with the given name, type and no modifiers. */
+  /**
+   * Constructs a Soot field with the given name, type and no modifiers.
+   */
   public SootField(String name, Type type) {
     this(name, type, 0);
   }
@@ -78,12 +83,9 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
   public static String getSignature(SootClass cl, String subSignature) {
     StringBuilder buffer = new StringBuilder();
-
-    buffer.append("<").append(Scene.v().quotedNameOf(cl.getName())).append(": ");
-    buffer.append(subSignature).append(">");
-
+    buffer.append('<').append(Scene.v().quotedNameOf(cl.getName())).append(": ");
+    buffer.append(subSignature).append('>');
     return buffer.toString();
-
   }
 
   public String getSubSignature() {
@@ -99,10 +101,11 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
   protected static String getSubSignature(String name, Type type) {
     StringBuilder buffer = new StringBuilder();
-    buffer.append(type.toQuotedString() + " " + Scene.v().quotedNameOf(name));
+    buffer.append(type.toQuotedString()).append(' ').append(Scene.v().quotedNameOf(name));
     return buffer.toString();
   }
 
+  @Override
   public SootClass getDeclaringClass() {
     if (!isDeclared) {
       throw new RuntimeException("not declared: " + getName() + " " + getType());
@@ -137,6 +140,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
     isPhantom = value;
   }
 
+  @Override
   public boolean isDeclared() {
     return isDeclared;
   }
@@ -157,6 +161,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
     }
   }
 
+  @Override
   public Type getType() {
     return type;
   }
@@ -172,6 +177,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
   /**
    * Convenience method returning true if this field is public.
    */
+  @Override
   public boolean isPublic() {
     return Modifier.isPublic(this.getModifiers());
   }
@@ -179,6 +185,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
   /**
    * Convenience method returning true if this field is protected.
    */
+  @Override
   public boolean isProtected() {
     return Modifier.isProtected(this.getModifiers());
   }
@@ -186,6 +193,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
   /**
    * Convenience method returning true if this field is private.
    */
+  @Override
   public boolean isPrivate() {
     return Modifier.isPrivate(this.getModifiers());
   }
@@ -193,6 +201,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
   /**
    * Convenience method returning true if this field is static.
    */
+  @Override
   public boolean isStatic() {
     return Modifier.isStatic(this.getModifiers());
   }
@@ -204,26 +213,27 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
     return Modifier.isFinal(this.getModifiers());
   }
 
+  @Override
   public void setModifiers(int modifiers) {
     this.modifiers = modifiers;
   }
 
+  @Override
   public int getModifiers() {
     return modifiers;
   }
 
+  @Override
   public String toString() {
     return getSignature();
   }
 
   private String getOriginalStyleDeclaration() {
-    String qualifiers = Modifier.toString(modifiers) + " " + type.toQuotedString();
-    qualifiers = qualifiers.trim();
-
+    String qualifiers = (Modifier.toString(modifiers) + ' ' + type.toQuotedString()).trim();
     if (qualifiers.isEmpty()) {
       return Scene.v().quotedNameOf(name);
     } else {
-      return qualifiers + " " + Scene.v().quotedNameOf(name) + "";
+      return qualifiers + ' ' + Scene.v().quotedNameOf(name);
     }
 
   }
@@ -232,18 +242,17 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
     return getOriginalStyleDeclaration();
   }
 
+  @Override
   public final int getNumber() {
     return number;
   }
 
+  @Override
   public final void setNumber(int number) {
     this.number = number;
   }
 
-  private int number = 0;
-
   public SootFieldRef makeRef() {
     return Scene.v().makeFieldRef(declaringClass, name, type, isStatic());
   }
-
 }

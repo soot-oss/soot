@@ -9,7 +9,6 @@ import java.util.ListIterator;
 
 import soot.ArrayType;
 import soot.FloatType;
-import soot.IntType;
 import soot.IntegerType;
 import soot.NullType;
 import soot.PrimType;
@@ -72,7 +71,7 @@ public class BytecodeHierarchy implements IHierarchy {
 
         // The superclass of all interfaces is Object
         // -- try to discard phantom interfaces.
-        if ((!sc.isInterface() || sc.getInterfaceCount() == 0) && !sc.isPhantom()) {
+        if ((!sc.isInterface() || sc.getInterfaceCount() == 0) && !sc.isPhantom() && sc.hasSuperclass()) {
           leafs.add(new AncestryTreeNode(node, sc.getSuperclass().getType()));
         }
 
@@ -92,18 +91,23 @@ public class BytecodeHierarchy implements IHierarchy {
   }
 
   public static Collection<Type> lcas_(Type a, Type b) {
+    return lcas_(a, b, false);
+  }
+
+  public static Collection<Type> lcas_(Type a, Type b, boolean useWeakObjectType) {
     if (TypeResolver.typesEqual(a, b)) {
       return Collections.<Type>singletonList(a);
     } else if (a instanceof BottomType) {
       return Collections.<Type>singletonList(b);
     } else if (b instanceof BottomType) {
       return Collections.<Type>singletonList(a);
-    } else if (a instanceof WeakObjectType) {
+    } else if (a instanceof WeakObjectType && b instanceof RefType) {
       return Collections.<Type>singletonList(b);
-    } else if (b instanceof WeakObjectType) {
+    } else if (b instanceof WeakObjectType && a instanceof RefType) {
       return Collections.<Type>singletonList(a);
     } else if (a instanceof IntegerType && b instanceof IntegerType) {
-      return Collections.<Type>singletonList(IntType.v());
+      int m = Math.max(IntUtils.getMaxValue((IntegerType) a), IntUtils.getMaxValue((IntegerType) b));
+      return Collections.<Type>singletonList((Type) IntUtils.getTypeByWidth(m));
     } else if (a instanceof IntegerType && b instanceof FloatType) {
       return Collections.<Type>singletonList(FloatType.v());
     } else if (b instanceof IntegerType && a instanceof FloatType) {
@@ -127,10 +131,14 @@ public class BytecodeHierarchy implements IHierarchy {
 
       LinkedList<Type> r = new LinkedList<Type>();
       if (ts.isEmpty()) {
-        // From Java Language Spec 2nd ed., Chapter 10, Arrays
-        r.add(RefType.v("java.lang.Object"));
-        r.add(RefType.v("java.io.Serializable"));
-        r.add(RefType.v("java.lang.Cloneable"));
+        if (useWeakObjectType) {
+          r.add(new WeakObjectType("java.lang.Object"));
+        } else {
+          // From Java Language Spec 2nd ed., Chapter 10, Arrays
+          r.add(RefType.v("java.lang.Object"));
+          r.add(RefType.v("java.io.Serializable"));
+          r.add(RefType.v("java.lang.Cloneable"));
+        }
       } else {
         for (Type t : ts) {
           r.add(t.makeArrayType());
@@ -288,8 +296,8 @@ public class BytecodeHierarchy implements IHierarchy {
     return r;
   }
 
-  public Collection<Type> lcas(Type a, Type b) {
-    return lcas_(a, b);
+  public Collection<Type> lcas(Type a, Type b, boolean useWeakObjectType) {
+    return lcas_(a, b, useWeakObjectType);
   }
 
   public boolean ancestor(Type ancestor, Type child) {

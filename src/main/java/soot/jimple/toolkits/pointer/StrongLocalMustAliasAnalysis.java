@@ -52,11 +52,11 @@ import soot.toolkits.graph.UnitGraph;
  */
 public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
 
-  protected Set<Integer> invalidInstanceKeys;
+  protected final Set<Integer> invalidInstanceKeys;
 
   public StrongLocalMustAliasAnalysis(UnitGraph g) {
     super(g);
-    invalidInstanceKeys = new HashSet<Integer>();
+    this.invalidInstanceKeys = new HashSet<Integer>();
     /*
      * Find all SCCs, then invalidate all instance keys for variable defined within an SCC.
      */
@@ -68,18 +68,10 @@ public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
           if (defValue instanceof Local) {
             Local defLocal = (Local) defValue;
             if (defLocal.getType() instanceof RefLikeType) {
-              Object instanceKey = getFlowBefore(unit).get(defLocal);
               // if key is not already UNKNOWN
-              if (instanceKey instanceof Integer) {
-                Integer intKey = (Integer) instanceKey;
-                invalidInstanceKeys.add(intKey);
-              }
-              instanceKey = getFlowAfter(unit).get(defLocal);
+              invalidInstanceKeys.add(getFlowBefore(unit).get(defLocal));
               // if key is not already UNKNOWN
-              if (instanceKey instanceof Integer) {
-                Integer intKey = (Integer) instanceKey;
-                invalidInstanceKeys.add(intKey);
-              }
+              invalidInstanceKeys.add(getFlowAfter(unit).get(defLocal));
             }
           }
         }
@@ -92,14 +84,10 @@ public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
    */
   @Override
   public boolean mustAlias(Local l1, Stmt s1, Local l2, Stmt s2) {
-    Object l1n = getFlowBefore(s1).get(l1);
-    Object l2n = getFlowBefore(s2).get(l2);
-
-    if (l1n == null || l2n == null || invalidInstanceKeys.contains(l1n) || invalidInstanceKeys.contains(l2n)) {
-      return false;
-    }
-
-    return l1n == l2n;
+    Integer l1n = getFlowBefore(s1).get(l1);
+    Integer l2n = getFlowBefore(s2).get(l2);
+    return l1n != null && l2n != null && !invalidInstanceKeys.contains(l1n) && !invalidInstanceKeys.contains(l2n)
+        && l1n.equals(l2n);
   }
 
   /**
@@ -107,11 +95,6 @@ public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
    */
   @Override
   public String instanceKeyString(Local l, Stmt s) {
-    Object ln = getFlowBefore(s).get(l);
-    if (invalidInstanceKeys.contains(ln)) {
-      return "UNKNOWN";
-    }
-    return super.instanceKeyString(l, s);
+    return invalidInstanceKeys.contains(getFlowBefore(s).get(l)) ? "UNKNOWN" : super.instanceKeyString(l, s);
   }
-
 }

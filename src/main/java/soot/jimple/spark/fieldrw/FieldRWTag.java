@@ -29,25 +29,26 @@ import soot.tagkit.Tag;
 
 /** Implements a tag that holds a list of fields read or written by a call. */
 public abstract class FieldRWTag implements Tag {
-  String fieldNames = new String();
+
+  private final String fieldNames;
 
   FieldRWTag(Set<SootField> fields) {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     boolean first = true;
     for (SootField field : fields) {
-      if (!first) {
-        sb.append("%");
+      if (first) {
+        first = false;
+      } else {
+        sb.append('%');
       }
-      first = false;
       sb.append(field.getDeclaringClass().getName());
-      sb.append(":");
+      sb.append(':');
       sb.append(field.getName());
     }
-    fieldNames = sb.toString();
+    this.fieldNames = sb.toString();
   }
 
-  public abstract String getName();
-
+  @Override
   public byte[] getValue() {
     byte[] bytes = fieldNames.getBytes();
     byte[] ret = new byte[bytes.length + 2];
@@ -57,6 +58,7 @@ public abstract class FieldRWTag implements Tag {
     return ret;
   }
 
+  @Override
   public String toString() {
     return getName() + fieldNames;
   }

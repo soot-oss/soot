@@ -43,6 +43,7 @@ import soot.TrapManager;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
+import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
@@ -114,6 +115,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
   private final boolean fix; // if true, fix constraint violations
 
   private JimpleBody stmtBody;
+  private LocalGenerator localGenerator;
 
   public ConstraintChecker(TypeResolver resolver, boolean fix) {
     this.fix = fix;
@@ -124,6 +126,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
   public void check(Stmt stmt, JimpleBody stmtBody) throws TypeException {
     try {
       this.stmtBody = stmtBody;
+      this.localGenerator = new LocalGenerator(stmtBody);
       stmt.apply(this);
     } catch (RuntimeTypeException e) {
       StringWriter st = new StringWriter();
@@ -749,9 +752,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
   }
 
   private Local insertCast(Local oldlocal, Type type, Stmt stmt) {
-    Local newlocal = Jimple.v().newLocal("tmp", type);
-    stmtBody.getLocals().add(newlocal);
-
+    Local newlocal = localGenerator.generateLocal(type);
     Unit u = Util.findFirstNonIdentityUnit(stmtBody, stmt);
     stmtBody.getUnits().insertBefore(Jimple.v().newAssignStmt(newlocal, Jimple.v().newCastExpr(oldlocal, type)), u);
     return newlocal;
