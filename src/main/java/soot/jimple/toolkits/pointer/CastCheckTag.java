@@ -28,22 +28,26 @@ import soot.tagkit.Tag;
  * Implements a tag that can be used to tell a VM whether a cast check can be eliminated or not.
  */
 public class CastCheckTag implements Tag {
-  boolean eliminateCheck;
+
+  public static final String NAME = "CastCheckTag";
+
+  private final boolean eliminateCheck;
 
   CastCheckTag(boolean eliminateCheck) {
     this.eliminateCheck = eliminateCheck;
   }
 
+  @Override
   public String getName() {
-    return "CastCheckTag";
+    return NAME;
   }
 
+  @Override
   public byte[] getValue() {
-    byte[] ret = new byte[1];
-    ret[0] = (byte) (eliminateCheck ? 1 : 0);
-    return ret;
+    return new byte[] { (byte) (eliminateCheck ? 1 : 0) };
   }
 
+  @Override
   public String toString() {
     if (eliminateCheck) {
       return "This cast check can be eliminated.";

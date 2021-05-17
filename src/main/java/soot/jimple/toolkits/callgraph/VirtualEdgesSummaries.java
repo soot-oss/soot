@@ -30,7 +30,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -44,6 +43,7 @@ import soot.Kind;
 import soot.ModuleUtil;
 import soot.Scene;
 import soot.util.NumberedString;
+import soot.util.StringNumberer;
 
 /**
  * 
@@ -58,12 +58,82 @@ public class VirtualEdgesSummaries {
 
   private static final String SUMMARIESFILE = "virtualedges.xml";
 
-  private HashMap<NumberedString, VirtualEdge> instanceinvokeEdges;
-  private HashMap<String, VirtualEdge> staticinvokeEdges;
-  private HashMap<NumberedString, VirtualEdge> registerfunctionsToEdges;
+  private final HashMap<NumberedString, VirtualEdge> instanceinvokeEdges;
+  private final HashMap<String, VirtualEdge> staticinvokeEdges;
+  private final HashMap<NumberedString, VirtualEdge> registerfunctionsToEdges;
 
   public VirtualEdgesSummaries() {
-    parseSummaries();
+    this.instanceinvokeEdges = new HashMap<>();
+    this.staticinvokeEdges = new HashMap<>();
+    this.registerfunctionsToEdges = new HashMap<>();
+
+    Path summariesFile = Paths.get(SUMMARIESFILE);
+    try (InputStream in = Files.exists(summariesFile) ? Files.newInputStream(summariesFile)
+        : ModuleUtil.class.getResourceAsStream("/" + SUMMARIESFILE)) {
+
+      Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
+      doc.getDocumentElement().normalize();
+
+      NodeList edges = doc.getElementsByTagName("edge");
+      for (int i = 0, e = edges.getLength(); i < e; i++) {
+        if (edges.item(i).getNodeType() == Node.ELEMENT_NODE) {
+          Element edge = (Element) edges.item(i);
+          VirtualEdge edg = new VirtualEdge();
+          switch (edge.getAttribute("type")) {
+            case "THREAD":
+              edg.edgeType = Kind.THREAD;
+              break;
+            case "EXECUTOR":
+              edg.edgeType = Kind.EXECUTOR;
+              break;
+            case "HANDLER":
+              edg.edgeType = Kind.HANDLER;
+              break;
+            case "ASYNCTASK":
+              edg.edgeType = Kind.ASYNCTASK;
+              break;
+            case "PRIVILEDGED":
+              edg.edgeType = Kind.PRIVILEGED;
+              break;
+            default:
+              edg.edgeType = Kind.GENERIC_FAKE;
+              break;
+          }
+          edg.source = parseEdgeSource((Element) (edge.getElementsByTagName("source").item(0)));
+          edg.targets = new ArrayList<VirtualEdgesSummaries.VirtualEdgeTarget>();
+          Element targetsElement = (Element) edge.getElementsByTagName("targets").item(0);
+          edg.targets.addAll(parseDirectEdgeTargets(targetsElement));
+          edg.targets.addAll(parseWrapperTargets(targetsElement));
+          if (edg.source instanceof InstanceinvokeSource) {
+            InstanceinvokeSource inst = (InstanceinvokeSource) edg.source;
+
+            // don't overwrite existing definition
+            VirtualEdge existing = instanceinvokeEdges.get(inst.subSignature);
+            if (existing != null) {
+              existing.targets.addAll(edg.targets);
+            } else {
+              instanceinvokeEdges.put(inst.subSignature, edg);
+            }
+          }
+          if (edg.source instanceof StaticinvokeSource) {
+            StaticinvokeSource stat = (StaticinvokeSource) edg.source;
+            staticinvokeEdges.put(stat.signature, edg);
+          }
+          for (VirtualEdgeTarget t : edg.targets) {
+            if (t instanceof WrapperTarget) {
+              WrapperTarget target = (WrapperTarget) t;
+              registerfunctionsToEdges.put(target.registrationSignature, edg);
+            }
+          }
+
+        }
+      }
+
+    } catch (IOException | ParserConfigurationException | SAXException e1) {
+      e1.printStackTrace();
+    }
+    System.out.println(String.format("Found %d instanceinvoke , %d staticinvoke edge descriptions",
+        instanceinvokeEdges.size(), staticinvokeEdges.size()));
   }
 
   public VirtualEdge getVirtualEdgesMatchingSubSig(NumberedString subsig) {
@@ -78,112 +148,28 @@ public class VirtualEdgesSummaries {
     return registerfunctionsToEdges.get(subsig);
   }
 
-  private void parseSummaries() {
-    if (instanceinvokeEdges != null) {
-      // only parse once.
-      return;
-    }
-    instanceinvokeEdges = new HashMap<>();
-    staticinvokeEdges = new HashMap<>();
-    registerfunctionsToEdges = new HashMap<>();
-    InputStream in = null;
-    Path summariesFile = Paths.get(SUMMARIESFILE);
-    try {
-      if (!Files.exists(summariesFile)) {
-        // else take the one package
-
-        in = ModuleUtil.class.getResourceAsStream("/" + SUMMARIESFILE);
-      } else {
-
-        in = Files.newInputStream(summariesFile);
-
-      }
-      DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-      Document doc = dBuilder.parse(in);
-      doc.getDocumentElement().normalize();
-
-      NodeList edges = doc.getElementsByTagName("edge");
-      for (int i = 0; i < edges.getLength(); i++) {
-        if (edges.item(i).getNodeType() == Node.ELEMENT_NODE) {
-          Element edge = (Element) edges.item(i);
-          VirtualEdge e = new VirtualEdge();
-          switch (edge.getAttribute("type")) {
-            case "THREAD":
-              e.edgeType = Kind.THREAD;
-              break;
-            case "EXECUTOR":
-              e.edgeType = Kind.EXECUTOR;
-              break;
-            case "HANDLER":
-              e.edgeType = Kind.HANDLER;
-              break;
-            case "ASYNCTASK":
-              e.edgeType = Kind.ASYNCTASK;
-              break;
-            case "PRIVILEDGED":
-              e.edgeType = Kind.PRIVILEGED;
-              break;
-          }
-          e.source = parseEdgeSource((Element) (edge.getElementsByTagName("source").item(0)));
-          e.targets = new ArrayList<VirtualEdgesSummaries.VirtualEdgeTarget>();
-          Element targetsElement = (Element) edge.getElementsByTagName("targets").item(0);
-          e.targets.addAll(parseDirectEdgeTargets(targetsElement));
-          e.targets.addAll(parseWrapperTargets(targetsElement));
-          if (e.source instanceof InstanceinvokeSource) {
-            InstanceinvokeSource inst = (InstanceinvokeSource) e.source;
-
-            // don't overwrite existing definition
-            VirtualEdge existing = instanceinvokeEdges.get(inst.subSignature);
-            if (existing != null) {
-              existing.targets.addAll(e.targets);
-            } else {
-              instanceinvokeEdges.put(inst.subSignature, e);
-            }
-          }
-          if (e.source instanceof StaticinvokeSource) {
-            StaticinvokeSource stat = (StaticinvokeSource) e.source;
-            staticinvokeEdges.put(stat.signature, e);
-          }
-          for (VirtualEdgeTarget t : e.targets) {
-            if (t instanceof WrapperTarget) {
-              WrapperTarget target = (WrapperTarget) t;
-              registerfunctionsToEdges.put(target.registrationSignature, e);
-            }
-          }
-
-        }
-      }
-
-    } catch (IOException | ParserConfigurationException | SAXException e1) {
-      e1.printStackTrace();
-    }
-    System.out.println(String.format("Found %d instanceinvoke , %d staticinvoke edge descriptions",
-        instanceinvokeEdges.size(), staticinvokeEdges.size()));
-  }
-
   private static VirtualEdgeSource parseEdgeSource(Element source) {
-    String type = source.getAttribute("invoketype");
-    if ("instance".equals(type)) {
-      return new InstanceinvokeSource(source.getAttribute("subsignature"));
+    switch (source.getAttribute("invoketype")) {
+      case "instance":
+        return new InstanceinvokeSource(source.getAttribute("subsignature"));
+      case "static":
+        return new StaticinvokeSource(source.getAttribute("signature"));
+      default:
+        return null;
     }
-    if ("static".equals(type)) {
-      return new StaticinvokeSource(source.getAttribute("signature"));
-    }
-    return null;
   }
 
   private static ArrayList<DirectTarget> parseDirectEdgeTargets(Element targetsElement) {
     ArrayList<DirectTarget> targets = new ArrayList<>();
+    final StringNumberer nmbr = Scene.v().getSubSigNumberer();
     NodeList children = targetsElement.getElementsByTagName("direct");
-    for (int i = 0; i < children.getLength(); i++) {
+    for (int i = 0, e = children.getLength(); i < e; i++) {
       if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
         Element targetElement = (Element) children.item(i);
         DirectTarget target = new DirectTarget();
 
-        target.targetMethod = Scene.v().getSubSigNumberer().findOrAdd(targetElement.getAttribute("subsignature"));
-
-        if (targetElement.getAttribute("target-position").equals("argument")) {
+        target.targetMethod = nmbr.findOrAdd(targetElement.getAttribute("subsignature"));
+        if ("argument".equals(targetElement.getAttribute("target-position"))) {
           target.isBase = false;
           target.argIndex = Integer.valueOf(targetElement.getAttribute("index"));
         } else {
@@ -198,12 +184,13 @@ public class VirtualEdgesSummaries {
 
   private static ArrayList<RegisteredHandlerTarget> parseRegisteredTargets(Element registermethodsElement) {
     ArrayList<RegisteredHandlerTarget> targets = new ArrayList<>();
+    final StringNumberer nmbr = Scene.v().getSubSigNumberer();
     NodeList children = registermethodsElement.getElementsByTagName("registered-handler");
-    for (int i = 0; i < children.getLength(); i++) {
+    for (int i = 0, e = children.getLength(); i < e; i++) {
       if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
         Element targetElement = (Element) children.item(i);
         RegisteredHandlerTarget target = new RegisteredHandlerTarget();
-        target.targetMethod = Scene.v().getSubSigNumberer().findOrAdd(targetElement.getAttribute("target-subsignature"));
+        target.targetMethod = nmbr.findOrAdd(targetElement.getAttribute("target-subsignature"));
         target.argIndex = Integer.valueOf(targetElement.getAttribute("target-argument-index"));
         targets.add(target);
       }
@@ -213,18 +200,16 @@ public class VirtualEdgesSummaries {
 
   private static ArrayList<WrapperTarget> parseWrapperTargets(Element targetsElement) {
     ArrayList<WrapperTarget> targets = new ArrayList<>();
+    final StringNumberer nmbr = Scene.v().getSubSigNumberer();
     NodeList children = targetsElement.getElementsByTagName("callback-wrapper");
-    for (int i = 0; i < children.getLength(); i++) {
+    for (int i = 0, e = children.getLength(); i < e; i++) {
       if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
         Element targetElement = (Element) children.item(i);
         WrapperTarget target = new WrapperTarget();
 
-        target.registrationSignature
-            = Scene.v().getSubSigNumberer().findOrAdd(targetElement.getAttribute("registration-subsignature"));
-
-        target.targets = parseRegisteredTargets((Element) (targetElement.getElementsByTagName("handlers").item(0)));
-
-        if (targetElement.getAttribute("wrapper-position").equals("argument")) {
+        target.registrationSignature = nmbr.findOrAdd(targetElement.getAttribute("registration-subsignature"));
+        target.targets = parseRegisteredTargets((Element) targetElement.getElementsByTagName("handlers").item(0));
+        if ("argument".equals(targetElement.getAttribute("wrapper-position"))) {
           target.isBase = false;
           target.argIndex = Integer.valueOf(targetElement.getAttribute("wrapper-argument-index"));
         } else {
@@ -238,54 +223,48 @@ public class VirtualEdgesSummaries {
   }
 
   public static abstract class VirtualEdgeSource {
-
   }
 
   public static class StaticinvokeSource extends VirtualEdgeSource {
-    public StaticinvokeSource(String signature) {
-      this.signature = (signature);
-    }
-
     /**
      * The method signature at which to insert this edge.
      */
     String signature;
 
+    public StaticinvokeSource(String signature) {
+      this.signature = signature;
+    }
+
     @Override
     public String toString() {
       return signature;
     }
-
   }
 
   public static class InstanceinvokeSource extends VirtualEdgeSource {
-    public InstanceinvokeSource(String subSignature) {
-      this.subSignature = Scene.v().getSubSigNumberer().findOrAdd(subSignature);
-    }
-
     /**
      * The method subsignature at which to insert this edge.
      */
     NumberedString subSignature;
 
+    public InstanceinvokeSource(String subSignature) {
+      this.subSignature = Scene.v().getSubSigNumberer().findOrAdd(subSignature);
+    }
+
     @Override
     public String toString() {
       return subSignature.toString();
     }
-
   }
 
   public static abstract class VirtualEdgeTarget {
-
     boolean isBase;
-
     int argIndex;
 
     @Override
     public String toString() {
       return isBase ? "base" : String.format("argument %d", argIndex);
     }
-
   }
 
   public static class DirectTarget extends VirtualEdgeTarget {
@@ -295,7 +274,6 @@ public class VirtualEdgesSummaries {
     public String toString() {
       return String.format("Direct to %s on %s", targetMethod.toString(), super.toString());
     }
-
   }
 
   public static class RegisteredHandlerTarget {
@@ -306,25 +284,22 @@ public class VirtualEdgesSummaries {
     public String toString() {
       return String.format("Register to %s passed at %d", targetMethod.toString(), argIndex);
     }
-
   }
 
   public static class WrapperTarget extends VirtualEdgeTarget {
     NumberedString registrationSignature;
+    ArrayList<RegisteredHandlerTarget> targets;
 
     @Override
     public String toString() {
-      String targetstr = "";
+      StringBuilder sb = new StringBuilder();
       for (RegisteredHandlerTarget t : targets) {
-        targetstr += "(" + t.toString() + ") ";
+        sb.append('(').append(t.toString()).append(") ");
       }
       return String.format("(Instances passed to <?: %s> on %s => %s)", registrationSignature.toString(), super.toString(),
-          targetstr);
+          sb.toString());
 
     }
-
-    ArrayList<RegisteredHandlerTarget> targets;
-
   }
 
   public static class VirtualEdge {
@@ -337,13 +312,11 @@ public class VirtualEdgesSummaries {
 
     @Override
     public String toString() {
-      String targetstr = "";
+      StringBuilder sb = new StringBuilder();
       for (VirtualEdgeTarget t : targets) {
-        targetstr += t.toString() + " ";
+        sb.append(t.toString()).append(' ');
       }
-      return String.format("%s %s => %s", edgeType, source.toString(), targetstr);
+      return String.format("%s %s => %s", edgeType, source.toString(), sb.toString());
     }
-
   }
-
 }

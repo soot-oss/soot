@@ -27,6 +27,8 @@ import soot.jimple.StringConstant;
 
 public class StringConstantValueTag extends ConstantValueTag {
 
+  public static final String NAME = "StringConstantValueTag";
+
   private final String value;
 
   public StringConstantValueTag(String value) {
@@ -36,6 +38,11 @@ public class StringConstantValueTag extends ConstantValueTag {
 
   public String getStringValue() {
     return value;
+  }
+
+  @Override
+  public String getName() {
+    return NAME;
   }
 
   @Override

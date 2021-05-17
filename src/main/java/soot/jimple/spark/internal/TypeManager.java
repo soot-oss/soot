@@ -208,9 +208,7 @@ public final class TypeManager {
   private LargeNumberedMap<Type, BitVector> typeMask = null;
 
   final public boolean castNeverFails(Type src, Type dst) {
-    if (fh == null) {
-      return true;
-    } else if (dst == null) {
+    if (dst == null) {
       return true;
     } else if (dst == src) {
       return true;
@@ -225,7 +223,11 @@ public final class TypeManager {
     } else if (dst instanceof AnySubType) {
       throw new RuntimeException("oops src=" + src + " dst=" + dst);
     } else {
-      return getFastHierarchy().canStoreType(src, dst);
+      FastHierarchy fh = getFastHierarchy();
+      if (fh == null) {
+        return true;
+      }
+      return fh.canStoreType(src, dst);
     }
   }
 

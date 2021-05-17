@@ -29,7 +29,6 @@ import soot.jimple.Stmt;
  * Abstract base class for call sites
  * 
  * @author Steven Arzt
- *
  */
 public class AbstractCallSite {
 
@@ -53,5 +52,4 @@ public class AbstractCallSite {
   public String toString() {
     return stmt == null ? "<null>" : stmt.toString();
   }
-
 }

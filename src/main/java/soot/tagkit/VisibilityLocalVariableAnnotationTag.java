@@ -30,6 +30,8 @@ package soot.tagkit;
  */
 public class VisibilityLocalVariableAnnotationTag extends VisibilityParameterAnnotationTag {
 
+  public static final String NAME = "VisibilityLocalVariableAnnotationTag";
+
   /**
    * @param num
    *          number of local variable annotations
@@ -58,14 +60,9 @@ public class VisibilityLocalVariableAnnotationTag extends VisibilityParameterAnn
     return sb.toString();
   }
 
-  /**
-   * Returns Local Variable tag name
-   * 
-   * @return string
-   */
   @Override
   public String getName() {
-    return "VisibilityLocalVariableAnnotationTag";
+    return NAME;
   }
 
   /**

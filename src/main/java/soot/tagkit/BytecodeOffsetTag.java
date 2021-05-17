@@ -29,6 +29,8 @@ package soot.tagkit;
  * @since October 3 2002 Initial creation.
  */
 public class BytecodeOffsetTag implements Tag {
+
+  public static final String NAME = "BytecodeOffsetTag";
   /**
    * The index of the last byte-code instruction.
    */
@@ -41,12 +43,9 @@ public class BytecodeOffsetTag implements Tag {
     this.offset = offset;
   }
 
-  /**
-   * Returns the name of this tag.
-   */
   @Override
   public String getName() {
-    return "BytecodeOffsetTag";
+    return NAME;
   }
 
   /**

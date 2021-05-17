@@ -115,6 +115,10 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
         Scene.v()
             .getFastHierarchy()
             .resolveConcreteDispatch(Scene.v().getSootClass(testClass), defaultMethod);
+    SootMethod concreteImplViaResolveMethod =
+        Scene.v()
+            .getFastHierarchy()
+            .resolveMethod(Scene.v().getSootClass(testClass), defaultMethod, false);
     Set<SootMethod> abstractImpl =
         Scene.v()
             .getFastHierarchy()
@@ -131,6 +135,7 @@ public class DefaultInterfaceTest extends AbstractTestingFramework {
     assertTrue(reachableMethods.contains(defaultMethod));
     assertTrue(edgePresent);
     assertEquals(defaultMethod, concreteImpl);
+    assertEquals(concreteImpl, concreteImplViaResolveMethod);
     assertTrue(
         abstractImpl.contains(
             Scene.v().getMethod("<soot.defaultInterfaceMethods.Default: void target()>")));
