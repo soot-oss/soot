@@ -99,6 +99,8 @@ import soot.toDex.instructions.InsnWithOffset;
 import soot.toDex.instructions.PackedSwitchPayload;
 import soot.toDex.instructions.SparseSwitchPayload;
 import soot.toDex.instructions.SwitchPayload;
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
 import soot.util.Switchable;
 
 /**
@@ -234,6 +236,14 @@ public class StmtVisitor implements StmtSwitch {
    * @param trapReferences
    */
   private void reduceInstructions(Set<Unit> trapReferences) {
+    MultiMap<Stmt, Insn> jumpsToTarget = new HashMultiMap<>();
+    for (Insn insn : this.insns) {
+      if (insn instanceof InsnWithOffset) {
+        Stmt t = ((InsnWithOffset) insn).getTarget();
+        jumpsToTarget.put(t, insn);
+      }
+    }
+
     for (int i = 0; i < this.insns.size() - 1; i++) {
       Insn curInsn = this.insns.get(i);
       // Only consider real instructions
@@ -277,8 +287,13 @@ public class StmtVisitor implements StmtSwitch {
         // Remove the second instruction as it does not change any
         // state. We cannot remove the first instruction as other
         // instructions may depend on the register being set.
-        if (nextStmt == null || (!isJumpTarget(nextStmt) && !trapReferences.contains(nextStmt))) {
-          insns.remove(nextIndex);
+        boolean isNotJumpTarget = jumpsToTarget.get(nextStmt).isEmpty();
+        if (nextStmt == null || (isNotJumpTarget && !trapReferences.contains(nextStmt))) {
+          Insn removed = insns.remove(nextIndex);
+          if (removed instanceof InsnWithOffset) {
+            Stmt t = ((InsnWithOffset) removed).getTarget();
+            jumpsToTarget.remove(t, removed);
+          }
 
           if (nextStmt != null) {
             if (nextIndex == this.insns.size() - 1) {
@@ -311,17 +326,6 @@ public class StmtVisitor implements StmtSwitch {
     }
     // Should be equivalent to
     // return opcode.startsWith("move/") || opcode.startsWith("move-object/") || opcode.startsWith("move-wide/");
-  }
-
-  private boolean isJumpTarget(Stmt target) {
-    for (Insn insn : this.insns) {
-      if (insn instanceof InsnWithOffset) {
-        if (((InsnWithOffset) insn).getTarget() == target) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   private void addPayloads() {

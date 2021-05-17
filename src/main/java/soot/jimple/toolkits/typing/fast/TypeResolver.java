@@ -164,7 +164,6 @@ public class TypeResolver {
 
     this.insertCasts(tg, bh, false);
 
-    // final IntType inttype = IntType.v();
     final BottomType bottom = BottomType.v();
     for (Local v : this.jb.getLocals()) {
       Type t = tg.get(v);
