@@ -344,6 +344,7 @@ public class PackManager {
       p.add(new Transform("bb.ule", UnusedLocalEliminator.v()));
       p.add(new Transform("bb.lp", LocalPacker.v()));
       p.add(new Transform("bb.sco", StoreChainOptimizer.v()));
+      p.add(new Transform("bb.ne", NopEliminator.v()));
     }
 
     // Baf optimization pack
