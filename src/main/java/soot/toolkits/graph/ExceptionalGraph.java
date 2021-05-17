@@ -37,7 +37,7 @@ import soot.toolkits.exceptions.ThrowableSet;
  * @param N
  *          node type
  */
-public interface ExceptionalGraph<N> extends DirectedGraph<N> {
+public interface ExceptionalGraph<N> extends DirectedBodyGraph<N> {
   /**
    * <p>
    * Data structure to represent the fact that a given {@link Trap} will catch some subset of the exceptions which may be
@@ -91,6 +91,7 @@ public interface ExceptionalGraph<N> extends DirectedGraph<N> {
    *
    * @return the <code>Body</code> from which this graph was built.
    */
+  @Override
   public Body getBody();
 
   /**

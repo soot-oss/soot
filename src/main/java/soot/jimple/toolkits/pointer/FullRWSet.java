@@ -29,55 +29,60 @@ import soot.SootField;
 
 public class FullRWSet extends RWSet {
 
+  @Override
   public int size() {
     throw new RuntimeException("Unsupported");
   }
 
+  @Override
   public boolean getCallsNative() {
     return true;
   }
 
+  @Override
   public boolean setCallsNative() {
     throw new RuntimeException("Unsupported");
   }
 
   /** Returns an iterator over any globals read/written. */
+  @Override
   public Set getGlobals() {
     throw new RuntimeException("Unsupported");
   }
 
+  @Override
   public Set getFields() {
     throw new RuntimeException("Unsupported");
   }
 
+  @Override
   public PointsToSet getBaseForField(Object f) {
     throw new RuntimeException("Unsupported");
   }
 
+  @Override
   public boolean hasNonEmptyIntersection(RWSet other) {
-    if (other == null) {
-      return false;
-    }
-    return true;
+    return other != null;
   }
 
   /** Adds the RWSet other into this set. */
+  @Override
   public boolean union(RWSet other) {
     throw new RuntimeException("Unsupported");
   }
 
+  @Override
   public boolean addGlobal(SootField global) {
     throw new RuntimeException("Unsupported");
   }
 
+  @Override
   public boolean addFieldRef(PointsToSet otherBase, Object field) {
     throw new RuntimeException("Unsupported");
   }
 
+  @Override
   public boolean isEquivTo(RWSet other) {
-    if (other instanceof FullRWSet) {
-      return true;
-    }
-    return false;
+    return other instanceof FullRWSet;
   }
 }

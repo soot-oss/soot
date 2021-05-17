@@ -27,25 +27,29 @@ import java.util.HashSet;
 import soot.tagkit.Attribute;
 
 public class DependenceGraph implements Attribute {
-  private final static String NAME = "DependenceGraph";
-  HashSet<Edge> edges = new HashSet<Edge>();
+
+  public static final String NAME = "DependenceGraph";
+
+  final HashSet<Edge> edges = new HashSet<Edge>();
 
   protected class Edge {
-    short from;
-    short to;
+    final short from;
+    final short to;
 
-    Edge(short from, short to) {
+    public Edge(short from, short to) {
       this.from = from;
       this.to = to;
     }
 
+    @Override
     public int hashCode() {
-      return (((from) << 16) + to);
+      return (this.from << 16) + this.to;
     }
 
+    @Override
     public boolean equals(Object other) {
       Edge o = (Edge) other;
-      return from == o.from && to == o.to;
+      return this.from == o.from && this.to == o.to;
     }
   }
 
@@ -76,31 +80,34 @@ public class DependenceGraph implements Attribute {
     edges.add(new Edge(from, to));
   }
 
+  @Override
   public String getName() {
     return NAME;
   }
 
+  @Override
   public void setValue(byte[] v) {
     throw new RuntimeException("Not Supported");
   }
 
+  @Override
   public byte[] getValue() {
     byte[] ret = new byte[4 * edges.size()];
     int i = 0;
     for (Edge e : edges) {
-      ret[i + 0] = (byte) ((e.from >> 8) & 0xff);
-      ret[i + 1] = (byte) (e.from & 0xff);
-      ret[i + 2] = (byte) ((e.to >> 8) & 0xff);
-      ret[i + 3] = (byte) (e.to & 0xff);
-      i += 4;
+      ret[i++] = (byte) ((e.from >> 8) & 0xff);
+      ret[i++] = (byte) (e.from & 0xff);
+      ret[i++] = (byte) ((e.to >> 8) & 0xff);
+      ret[i++] = (byte) (e.to & 0xff);
     }
     return ret;
   }
 
+  @Override
   public String toString() {
-    StringBuffer buf = new StringBuffer("Dependences");
+    StringBuilder buf = new StringBuilder("Dependences");
     for (Edge e : edges) {
-      buf.append("( " + e.from + ", " + e.to + " ) ");
+      buf.append("( ").append(e.from).append(", ").append(e.to).append(" ) ");
     }
     return buf.toString();
   }
