@@ -330,7 +330,7 @@ public class UseChecker extends AbstractStmtSwitch {
                 // from the callee's signature=
                 if (useStmt.containsInvokeExpr()) {
                   InvokeExpr invokeExpr = useStmt.getInvokeExpr();
-                  for (int i = 0, e= invokeExpr.getArgCount(); i < e; i++) {
+                  for (int i = 0, e = invokeExpr.getArgCount(); i < e; i++) {
                     if (invokeExpr.getArg(i) == usePair.getValueBox().getValue()) {
                       et = merge(stmt, et, invokeExpr.getMethod().getParameterType(i));
                       break OUTER;
