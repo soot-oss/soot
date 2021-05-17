@@ -95,6 +95,9 @@ public class VirtualEdgesSummaries {
             case "PRIVILEDGED":
               edg.edgeType = Kind.PRIVILEGED;
               break;
+            default:
+              edg.edgeType = Kind.GENERIC_FAKE;
+              break;
           }
           edg.source = parseEdgeSource((Element) (edge.getElementsByTagName("source").item(0)));
           edg.targets = new ArrayList<VirtualEdgesSummaries.VirtualEdgeTarget>();

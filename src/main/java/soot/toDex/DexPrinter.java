@@ -557,7 +557,7 @@ public class DexPrinter {
     }
   }
 
-  private EncodedValue makeConstantItem(SootField sf, Tag t) {
+  protected EncodedValue makeConstantItem(SootField sf, Tag t) {
     if (!(t instanceof ConstantValueTag)) {
       throw new RuntimeException("error: t not ConstantValueTag.");
     }
