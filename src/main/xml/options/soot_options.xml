@@ -6620,6 +6620,19 @@ This locking scheme aims to achieve simple fine-grained locking.
                         </long_desc>
                     </boolopt>
                 </sub_phase>
+                <sub_phase>
+                    <name>Nop Eliminator</name>
+                    <alias>bb.ne</alias>
+                    <short_desc>Nop eliminator</short_desc>
+                    <long_desc>
+                        The Nop Eliminator removes <tt>nop</tt> instructions from the method.
+                    </long_desc>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>true</default>
+                    </boolopt>
+                </sub_phase>
             </phase>
             <phase>
                 <name>Baf Optimization</name>

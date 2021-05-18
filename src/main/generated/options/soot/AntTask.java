@@ -3260,6 +3260,21 @@ public class AntTask extends MatchingTask {
       
         }
     
+        public Object createp_bb_ne() {
+            Object ret = new PhaseOptbb_ne();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptbb_ne {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("bb.ne");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
         public Object createp_bop() {
             Object ret = new PhaseOptbop();
             phaseopts.add(ret);
