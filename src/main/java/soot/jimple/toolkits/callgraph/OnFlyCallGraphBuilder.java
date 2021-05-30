@@ -1039,6 +1039,9 @@ public class OnFlyCallGraphBuilder {
   }
 
   private void addEdge(SootMethod src, Stmt stmt, SootMethod tgt, Kind kind) {
+    if (src.equals(tgt) && src.isStaticInitializer()) { 
+      return; 
+    }
     cicg.addEdge(new Edge(src, stmt, tgt, kind));
   }
 
