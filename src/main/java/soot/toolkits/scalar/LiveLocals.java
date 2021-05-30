@@ -26,7 +26,7 @@ import java.util.List;
 
 import soot.Local;
 import soot.Unit;
-import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.graph.DirectedBodyGraph;
 
 /**
  * Provides an interface for querying for the list of Locals that are live before an after a given unit in a method.
@@ -58,7 +58,7 @@ public interface LiveLocals {
     private Factory() {
     }
 
-    public static LiveLocals newLiveLocals(UnitGraph graph) {
+    public static LiveLocals newLiveLocals(DirectedBodyGraph<Unit> graph) {
       return new SimpleLiveLocals(graph);
     }
   }

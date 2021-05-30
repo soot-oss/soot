@@ -79,7 +79,7 @@ public class SootClass extends AbstractHost implements Numberable {
   protected String name, shortName, fixedShortName, packageName, fixedPackageName;
   protected int modifiers;
   protected Chain<SootField> fields;
-  protected SmallNumberedMap<SootMethod> subSigToMethods;
+  protected SmallNumberedMap<NumberedString, SootMethod> subSigToMethods;
   // methodList is just for keeping the methods in a consistent order. It
   // needs to be kept consistent with subSigToMethods.
   protected List<SootMethod> methodList;
@@ -104,8 +104,8 @@ public class SootClass extends AbstractHost implements Numberable {
    * Lazy initialized array containing some validators in order to validate the SootClass.
    */
   private static class LazyValidatorsSingleton {
-    static final ClassValidator[] V =
-        new ClassValidator[] { OuterClassValidator.v(), MethodDeclarationValidator.v(), ClassFlagsValidator.v() };
+    static final ClassValidator[] V
+        = new ClassValidator[] { OuterClassValidator.v(), MethodDeclarationValidator.v(), ClassFlagsValidator.v() };
 
     private LazyValidatorsSingleton() {
     }
@@ -843,7 +843,7 @@ public class SootClass extends AbstractHost implements Numberable {
    */
   public SootClass getSuperclass() {
     checkLevel(HIERARCHY);
-    if (superClass == null && !isPhantom()) {
+    if (superClass == null && !isPhantom() && !Options.v().ignore_resolution_errors()) {
       throw new RuntimeException("no superclass for " + getName());
     } else {
       return superClass;
