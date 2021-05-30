@@ -615,8 +615,7 @@ public class OnFlyCallGraphBuilder {
       final VirtualCalls virtualCalls = VirtualCalls.v();
       final Scene sc = Scene.v();
       final FastHierarchy fh = sc.getOrMakeFastHierarchy();
-      for (Iterator<VirtualCallSite> siteIt = rcvrToCallSites.iterator(); siteIt.hasNext();) {
-        final VirtualCallSite site = siteIt.next();
+      for (final VirtualCallSite site : rcvrToCallSites) {
         if (skipSite(site, fh, type)) {
           continue;
         }
@@ -846,7 +845,6 @@ public class OnFlyCallGraphBuilder {
       final Stmt s = (Stmt) u;
       if (s.containsInvokeExpr()) {
         InvokeExpr ie = s.getInvokeExpr();
-
         if (ie instanceof InstanceInvokeExpr) {
           InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
           Local receiver = (Local) iie.getBase();
@@ -1041,6 +1039,9 @@ public class OnFlyCallGraphBuilder {
   }
 
   private void addEdge(SootMethod src, Stmt stmt, SootMethod tgt, Kind kind) {
+    if (src.equals(tgt) && src.isStaticInitializer()) { 
+      return; 
+    }
     cicg.addEdge(new Edge(src, stmt, tgt, kind));
   }
 
