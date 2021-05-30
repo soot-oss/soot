@@ -33,8 +33,8 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
+import soot.toolkits.graph.DirectedBodyGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.graph.UnitGraph;
 
 /**
  * Analysis that provides an implementation of the LiveLocals interface.
@@ -45,15 +45,15 @@ public class SimpleLiveLocals implements LiveLocals {
   private final FlowAnalysis<Unit, FlowSet<Local>> analysis;
 
   /**
-   * Computes the analysis given a UnitGraph computed from a method body. It is recommended that a ExceptionalUnitGraph (or
-   * similar) be provided for correct results in the case of exceptional control flow.
+   * Computes the analysis given a DirectedBodyGraph<Unit> computed from a method body. It is recommended that a
+   * ExceptionalUnitGraph (or similar) be provided for correct results in the case of exceptional control flow.
    *
    * @param graph
    *          a graph on which to compute the analysis.
    *
    * @see ExceptionalUnitGraph
    */
-  public SimpleLiveLocals(UnitGraph graph) {
+  public SimpleLiveLocals(DirectedBodyGraph<Unit> graph) {
     if (Options.v().verbose()) {
       logger.debug("[" + graph.getBody().getMethod().getName() + "]     Constructing SimpleLiveLocals...");
     }
@@ -88,7 +88,7 @@ public class SimpleLiveLocals implements LiveLocals {
   }
 
   private static class Analysis extends BackwardFlowAnalysis<Unit, FlowSet<Local>> {
-    Analysis(UnitGraph g) {
+    Analysis(DirectedBodyGraph<Unit> g) {
       super(g);
     }
 
