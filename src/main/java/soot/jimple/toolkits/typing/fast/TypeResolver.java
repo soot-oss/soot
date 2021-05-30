@@ -38,7 +38,6 @@ import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.G;
-import soot.IntType;
 import soot.IntegerType;
 import soot.Local;
 import soot.PatchingChain;
@@ -163,7 +162,6 @@ public class TypeResolver {
 
     this.insertCasts(tg, bh, false);
 
-    final IntType inttype = IntType.v();
     final BottomType bottom = BottomType.v();
     for (Local v : this.jb.getLocals()) {
       Type t = tg.get(v);
