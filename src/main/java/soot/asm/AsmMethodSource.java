@@ -1809,6 +1809,9 @@ final class AsmMethodSource implements MethodSource {
   }
 
   private void convert() {
+    if (instructions.size() == 0) {
+      return;
+    }
     ArrayDeque<Edge> worklist = new ArrayDeque<Edge>();
     for (LabelNode ln : trapHandlers.keySet()) {
       if (checkInlineExceptionHandler(ln)) {
@@ -2099,7 +2102,7 @@ final class AsmMethodSource implements MethodSource {
 
   @Override
   public Body getBody(SootMethod m, String phaseName) {
-    if (!m.isConcrete()) {
+    if (!m.isConcrete() || instructions == null || instructions.size() == 0) {
       return null;
     }
     JimpleBody jb = Jimple.v().newBody(m);

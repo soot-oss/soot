@@ -978,14 +978,15 @@ public class PackManager {
         // whole shimple or not?
         {
           Body body = m.retrieveActiveBody();
-
-          if (body instanceof ShimpleBody) {
-            sBody = (ShimpleBody) body;
-            if (!sBody.isSSA()) {
-              sBody.rebuild();
+          if (body != null) {
+            if (body instanceof ShimpleBody) {
+              sBody = (ShimpleBody) body;
+              if (!sBody.isSSA()) {
+                sBody.rebuild();
+              }
+            } else {
+              sBody = Shimple.v().newBody(body);
             }
-          } else {
-            sBody = Shimple.v().newBody(body);
           }
         }
 
@@ -1018,12 +1019,13 @@ public class PackManager {
       }
 
       // PackManager.v().getPack("cfg").apply(m.retrieveActiveBody());
-
-      if (produceGrimp) {
-        m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
-        PackManager.v().getPack("gop").apply(m.getActiveBody());
-      } else if (produceBaf) {
-        m.setActiveBody(convertJimpleBodyToBaf(m));
+      if (m.hasActiveBody()) {
+        if (produceGrimp) {
+          m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
+          PackManager.v().getPack("gop").apply(m.getActiveBody());
+        } else if (produceBaf) {
+          m.setActiveBody(convertJimpleBodyToBaf(m));
+        }
       }
     }
 
@@ -1034,7 +1036,7 @@ public class PackManager {
 
     if (produceDava) {
       for (SootMethod m : c.getMethods()) {
-        if (!m.isConcrete()) {
+        if (!m.isConcrete() || !m.hasActiveBody()) {
           continue;
         }
         // all the work done in decompilation is done in DavaBody which
