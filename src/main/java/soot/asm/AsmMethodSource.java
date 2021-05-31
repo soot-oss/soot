@@ -1809,7 +1809,7 @@ final class AsmMethodSource implements MethodSource {
   }
 
   private void convert() {
-    if (instructions.size() == 0) {
+    if (instructions == null || instructions.size() == 0) {
       return;
     }
     ArrayDeque<Edge> worklist = new ArrayDeque<Edge>();
