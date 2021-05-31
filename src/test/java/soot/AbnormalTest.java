@@ -54,5 +54,6 @@ public class AbnormalTest {
         // Such method can be created by a bytecode editor.
         SootMethod method = Scene.v().getSootClass("E").getMethodByName("test");
         assertTrue(!method.hasActiveBody());
+        assertTrue(method.isConcrete());
     }
 }
