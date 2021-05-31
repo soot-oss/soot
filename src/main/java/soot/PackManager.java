@@ -192,6 +192,7 @@ public class PackManager {
       p.add(new Transform("jb.lp", LocalPacker.v()));
       p.add(new Transform("jb.ne", NopEliminator.v()));
       p.add(new Transform("jb.uce", UnreachableCodeEliminator.v()));
+      p.add(new Transform("jb.cbf", ConditionalBranchFolder.v()));
     }
 
     // Java to Jimple - Jimple body creation
@@ -1000,12 +1001,11 @@ public class PackManager {
 
       if (produceJimple) {
         Body body = m.retrieveActiveBody();
-        // Change
-        CopyPropagator.v().transform(body);
-        ConditionalBranchFolder.v().transform(body);
-        UnreachableCodeEliminator.v().transform(body);
-        DeadAssignmentEliminator.v().transform(body);
-        UnusedLocalEliminator.v().transform(body);
+        PackManager.v().getTransform("jb.cp").apply(body); // CopyPropagator
+        PackManager.v().getTransform("jb.cbf").apply(body); // ConditionalBranchFolder
+        PackManager.v().getTransform("jb.uce").apply(body); // UnreachableCodeEliminator
+        PackManager.v().getTransform("jb.dae").apply(body); //DeadAssignmentEliminator
+        PackManager.v().getTransform("jb.cp-ule").apply(body); // UnusedLocalEliminator
         PackManager.v().getPack("jtp").apply(body);
         if (Options.v().validate()) {
           body.validate();
