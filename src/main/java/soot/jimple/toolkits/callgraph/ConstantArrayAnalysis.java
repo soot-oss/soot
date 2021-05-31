@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import soot.ArrayType;
@@ -49,6 +50,7 @@ import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArrayAnalysis.ArrayState> {
+
   private class ArrayTypesInternal implements Cloneable {
     BitSet mustAssign;
     BitSet typeState[];
@@ -74,8 +76,17 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
         return false;
       }
       ArrayTypesInternal otherTypes = (ArrayTypesInternal) obj;
-      return otherTypes.sizeState.equals(sizeState) && Arrays.equals(typeState, otherTypes.typeState)
-          && mustAssign.equals(otherTypes.mustAssign);
+      return this.sizeState.equals(otherTypes.sizeState) && Arrays.equals(this.typeState, otherTypes.typeState)
+          && this.mustAssign.equals(otherTypes.mustAssign);
+    }
+
+    @Override
+    public int hashCode() {
+      int hash = 5;
+      hash = 59 * hash + Objects.hashCode(this.mustAssign);
+      hash = 59 * hash + Arrays.deepHashCode(this.typeState);
+      hash = 59 * hash + Objects.hashCode(this.sizeState);
+      return hash;
     }
   }
 
@@ -99,7 +110,15 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
         return false;
       }
       ArrayState otherState = (ArrayState) obj;
-      return otherState.active.equals(active) && Arrays.equals(state, otherState.state);
+      return this.active.equals(otherState.active) && Arrays.equals(this.state, otherState.state);
+    }
+
+    @Override
+    public int hashCode() {
+      int hash = 3;
+      hash = 73 * hash + Arrays.deepHashCode(this.state);
+      hash = 73 * hash + Objects.hashCode(this.active);
+      return hash;
     }
 
     public void deepCloneLocalValueSlot(int localRef, int index) {
@@ -108,12 +127,11 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
     }
   }
 
-  private Map<Local, Integer> localToInt = new HashMap<Local, Integer>();
-  private Map<Type, Integer> typeToInt = new HashMap<Type, Integer>();
-  private Map<Integer, Integer> sizeToInt = new HashMap<Integer, Integer>();
-
-  private Map<Integer, Type> rvTypeToInt = new HashMap<Integer, Type>();
-  private Map<Integer, Integer> rvSizeToInt = new HashMap<Integer, Integer>();
+  private final Map<Local, Integer> localToInt = new HashMap<Local, Integer>();
+  private final Map<Type, Integer> typeToInt = new HashMap<Type, Integer>();
+  private final Map<Integer, Integer> sizeToInt = new HashMap<Integer, Integer>();
+  private final Map<Integer, Type> rvTypeToInt = new HashMap<Integer, Type>();
+  private final Map<Integer, Integer> rvSizeToInt = new HashMap<Integer, Integer>();
 
   private int size;
   private int typeSize;
@@ -125,16 +143,16 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
       localToInt.put(l, size++);
     }
     for (Unit u : b.getUnits()) {
-      Stmt s = (Stmt) u;
-      if (s instanceof DefinitionStmt) {
-        Type ty = ((DefinitionStmt) s).getRightOp().getType();
+      if (u instanceof DefinitionStmt) {
+        Value rhs = ((DefinitionStmt) u).getRightOp();
+        Type ty = rhs.getType();
         if (!typeToInt.containsKey(ty)) {
           int key = typeSize++;
           typeToInt.put(ty, key);
           rvTypeToInt.put(key, ty);
         }
-        if (((DefinitionStmt) s).getRightOp() instanceof NewArrayExpr) {
-          NewArrayExpr nae = (NewArrayExpr) ((DefinitionStmt) s).getRightOp();
+        if (rhs instanceof NewArrayExpr) {
+          NewArrayExpr nae = (NewArrayExpr) rhs;
           if (nae.getSize() instanceof IntConstant) {
             int sz = ((IntConstant) nae.getSize()).value;
             if (!sizeToInt.containsKey(sz)) {
@@ -161,12 +179,10 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
       if (rhs instanceof NewArrayExpr) {
         Local l = (Local) lhs;
         int varRef = localToInt.get(l);
-        NewArrayExpr nae = (NewArrayExpr) rhs;
         out.active.set(varRef);
-        if (!(nae.getSize() instanceof IntConstant)) {
-          out.state[varRef] = null;
-        } else {
-          int arraySize = ((IntConstant) nae.getSize()).value;
+        Value naeSize = ((NewArrayExpr) rhs).getSize();
+        if (naeSize instanceof IntConstant) {
+          int arraySize = ((IntConstant) naeSize).value;
           out.state[varRef] = new ArrayTypesInternal();
           out.state[varRef].sizeState.set(sizeToInt.get(arraySize));
           out.state[varRef].typeState = new BitSet[arraySize];
@@ -174,90 +190,99 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
           for (int i = 0; i < arraySize; i++) {
             out.state[varRef].typeState[i] = new BitSet(typeSize);
           }
-        }
-      } else if (lhs instanceof Local && lhs.getType() instanceof ArrayType && rhs instanceof NullConstant) {
-        int varRef = localToInt.get(lhs);
-        out.active.clear(varRef);
-        out.state[varRef] = null;
-      } else if (lhs instanceof Local && rhs instanceof Local && in.state[localToInt.get(rhs)] != null
-          && in.active.get(localToInt.get(rhs))) {
-        int lhsRef = localToInt.get(lhs);
-        int rhsRef = localToInt.get(rhs);
-        out.active.set(lhsRef);
-        out.state[lhsRef] = in.state[rhsRef];
-        out.state[rhsRef] = null;
-      } else if (lhs instanceof Local && rhs instanceof PhiExpr) {
-        PhiExpr rPhi = (PhiExpr) rhs;
-        int lhsRef = localToInt.get(lhs);
-        out.state[lhsRef] = null;
-        int i = 0;
-        List<Value> phiValues = rPhi.getValues();
-        for (; i < phiValues.size(); i++) {
-          Value v = phiValues.get(i);
-          int argRef = localToInt.get(v);
-          if (!in.active.get(argRef)) {
-            continue;
-          }
-          out.active.set(lhsRef);
-          // one bottom -> all bottom
-          if (in.state[argRef] == null) {
-            out.state[lhsRef] = null;
-            break;
-          }
-          if (out.state[lhsRef] == null) {
-            out.state[lhsRef] = in.state[argRef];
-          } else {
-            out.state[lhsRef] = mergeTypeStates(in.state[argRef], out.state[lhsRef]);
-          }
-          out.state[argRef] = null;
-        }
-        for (; i < phiValues.size(); i++) {
-          int argRef = localToInt.get(phiValues.get(i));
-          out.state[argRef] = null;
+        } else {
+          out.state[varRef] = null;
         }
       } else if (lhs instanceof ArrayRef) {
         ArrayRef ar = (ArrayRef) lhs;
+        int localRef = localToInt.get((Local) ar.getBase());
         Value indexVal = ar.getIndex();
-        int localRef = localToInt.get(ar.getBase());
         if (!(indexVal instanceof IntConstant)) {
           out.state[localRef] = null;
           out.active.set(localRef);
         } else if (out.state[localRef] != null) {
-          Type assignType = rhs.getType();
           int index = ((IntConstant) indexVal).value;
-          assert index < out.state[localRef].typeState.length;
+          assert (index < out.state[localRef].typeState.length);
           out.deepCloneLocalValueSlot(localRef, index);
-          assert out.state[localRef].typeState[index] != null : d;
-          out.state[localRef].typeState[index].set(typeToInt.get(assignType));
+          assert (out.state[localRef].typeState[index] != null) : d;
+          out.state[localRef].typeState[index].set(typeToInt.get(rhs.getType()));
           out.state[localRef].mustAssign.set(index);
         }
-      } else {
-        Value leftOp = lhs;
-        if (leftOp instanceof Local) {
-          Local defLocal = (Local) leftOp;
-          int varRef = localToInt.get(defLocal);
+      } else if (lhs instanceof Local) {
+        if (rhs instanceof NullConstant && lhs.getType() instanceof ArrayType) {
+          int varRef = localToInt.get((Local) lhs);
+          out.active.clear(varRef);
+          out.state[varRef] = null;
+        } else if (rhs instanceof Local && in.state[localToInt.get((Local) rhs)] != null
+            && in.active.get(localToInt.get((Local) rhs))) {
+          int lhsRef = localToInt.get((Local) lhs);
+          int rhsRef = localToInt.get((Local) rhs);
+          out.active.set(lhsRef);
+          out.state[lhsRef] = in.state[rhsRef];
+          out.state[rhsRef] = null;
+        } else if (rhs instanceof PhiExpr) {
+          PhiExpr rPhi = (PhiExpr) rhs;
+          int lhsRef = localToInt.get((Local) lhs);
+          out.state[lhsRef] = null;
+          int i = 0;
+          List<Value> phiValues = rPhi.getValues();
+          for (; i < phiValues.size(); i++) {
+            int argRef = localToInt.get((Local) phiValues.get(i));
+            if (!in.active.get(argRef)) {
+              continue;
+            }
+            out.active.set(lhsRef);
+            // one bottom -> all bottom
+            if (in.state[argRef] == null) {
+              out.state[lhsRef] = null;
+              break;
+            }
+            if (out.state[lhsRef] == null) {
+              out.state[lhsRef] = in.state[argRef];
+            } else {
+              out.state[lhsRef] = mergeTypeStates(in.state[argRef], out.state[lhsRef]);
+            }
+            out.state[argRef] = null;
+          }
+          for (; i < phiValues.size(); i++) {
+            int argRef = localToInt.get((Local) phiValues.get(i));
+            out.state[argRef] = null;
+          }
+        } else {
+          int varRef = localToInt.get((Local) lhs);
           out.active.set(varRef);
           out.state[varRef] = null;
         }
       }
       for (ValueBox b : rhs.getUseBoxes()) {
-        if (localToInt.containsKey(b.getValue())) {
-          int localRef = localToInt.get(b.getValue());
-          out.state[localRef] = null;
-          out.active.set(localRef);
+        Value v = b.getValue();
+        if (v instanceof Local) {
+          Integer localRef = localToInt.get((Local) v);
+          if (localRef != null) {
+            int iLocalRef = localRef;
+            out.state[iLocalRef] = null;
+            out.active.set(iLocalRef);
+          }
         }
       }
-      if (localToInt.containsKey(rhs)) {
-        int localRef = localToInt.get(rhs);
-        out.state[localRef] = null;
-        out.active.set(localRef);
+      if (rhs instanceof Local) {
+        Integer localRef = localToInt.get((Local) rhs);
+        if (localRef != null) {
+          int iLocalRef = localRef;
+          out.state[iLocalRef] = null;
+          out.active.set(iLocalRef);
+        }
       }
     } else {
       for (ValueBox b : d.getUseBoxes()) {
-        if (localToInt.containsKey(b.getValue())) {
-          int localRef = localToInt.get(b.getValue());
-          out.state[localRef] = null;
-          out.active.set(localRef);
+        Value v = b.getValue();
+        if (v instanceof Local) {
+          Integer localRef = localToInt.get((Local) v);
+          if (localRef != null) {
+            int iLocalRef = localRef;
+            out.state[iLocalRef] = null;
+            out.active.set(iLocalRef);
+          }
         }
       }
     }
@@ -295,7 +320,7 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
   }
 
   private ArrayTypesInternal mergeTypeStates(ArrayTypesInternal a1, ArrayTypesInternal a2) {
-    assert a1 != null && a2 != null;
+    assert (a1 != null && a2 != null);
     ArrayTypesInternal toRet = new ArrayTypesInternal();
     toRet.sizeState.or(a1.sizeState);
     toRet.sizeState.or(a2.sizeState);
@@ -357,5 +382,4 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
     }
     return toRet;
   }
-
 }

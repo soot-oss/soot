@@ -28,6 +28,8 @@ package soot.tagkit;
  */
 public class EnclosingMethodTag implements Tag {
 
+  public static final String NAME = "EnclosingMethodTag";
+
   private final String enclosingClass;
   private final String enclosingMethod;
   private final String enclosingMethodSig;
@@ -43,10 +45,9 @@ public class EnclosingMethodTag implements Tag {
     return "Enclosing Class: " + enclosingClass + " Enclosing Method: " + enclosingMethod + " Sig: " + enclosingMethodSig;
   }
 
-  /** Returns the tag name. */
   @Override
   public String getName() {
-    return "EnclosingMethodTag";
+    return NAME;
   }
 
   public String getInfo() {
@@ -65,7 +66,6 @@ public class EnclosingMethodTag implements Tag {
     return enclosingMethodSig;
   }
 
-  /** Returns the tag raw data. */
   @Override
   public byte[] getValue() {
     throw new RuntimeException("EnclosingMethodTag has no value for bytecode");

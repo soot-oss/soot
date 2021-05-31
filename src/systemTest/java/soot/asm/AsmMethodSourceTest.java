@@ -54,20 +54,12 @@ public class AsmMethodSourceTest extends AbstractTestingFramework {
   public void iterator() {
     // statements at the beginning of a for loop should have the line number as for the branching
     // statement and not the last line number after the branch that leads outside the loop
-    SootMethod target =
-        prepareTarget(
-            methodSigFromComponents(TEST_TARGET_CLASS, "void", "iterator"), TEST_TARGET_CLASS);
+    SootMethod target = prepareTarget(methodSigFromComponents(TEST_TARGET_CLASS, "void", "iterator"), TEST_TARGET_CLASS);
 
     Body body = target.retrieveActiveBody();
 
-    Optional<Unit> unit =
-        body.getUnits().stream()
-            .filter(
-                u ->
-                    u.toString()
-                        .equals(
-                            "object = interfaceinvoke l1.<java.util.Iterator: java.lang.Object next()>()"))
-            .findFirst();
+    Optional<Unit> unit = body.getUnits().stream()
+        .filter(u -> u.toString().contains("<java.util.Iterator: java.lang.Object next()>()")).findFirst();
 
     assertTrue(unit.isPresent());
 
