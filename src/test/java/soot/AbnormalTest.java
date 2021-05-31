@@ -44,6 +44,7 @@ public class AbnormalTest {
         Options.v().set_prepend_classpath(true);
         Options.v().set_process_dir(Collections.singletonList(cp.toFile().getAbsolutePath()));
         Options.v().set_src_prec(Options.src_prec_class);
+        Options.v().set_drop_bodies_after_load(false);
     }
 
     @Test
