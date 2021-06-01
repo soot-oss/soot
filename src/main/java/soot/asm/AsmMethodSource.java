@@ -1,141 +1,6 @@
 package soot.asm;
 
-import static org.objectweb.asm.Opcodes.ACONST_NULL;
-import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.ANEWARRAY;
-import static org.objectweb.asm.Opcodes.ARETURN;
-import static org.objectweb.asm.Opcodes.ARRAYLENGTH;
-import static org.objectweb.asm.Opcodes.ASTORE;
-import static org.objectweb.asm.Opcodes.ATHROW;
-import static org.objectweb.asm.Opcodes.BIPUSH;
-import static org.objectweb.asm.Opcodes.CHECKCAST;
-import static org.objectweb.asm.Opcodes.D2F;
-import static org.objectweb.asm.Opcodes.D2I;
-import static org.objectweb.asm.Opcodes.D2L;
-import static org.objectweb.asm.Opcodes.DADD;
-import static org.objectweb.asm.Opcodes.DALOAD;
-import static org.objectweb.asm.Opcodes.DASTORE;
-import static org.objectweb.asm.Opcodes.DCMPG;
-import static org.objectweb.asm.Opcodes.DCMPL;
-import static org.objectweb.asm.Opcodes.DCONST_0;
-import static org.objectweb.asm.Opcodes.DCONST_1;
-import static org.objectweb.asm.Opcodes.DDIV;
-import static org.objectweb.asm.Opcodes.DLOAD;
-import static org.objectweb.asm.Opcodes.DMUL;
-import static org.objectweb.asm.Opcodes.DNEG;
-import static org.objectweb.asm.Opcodes.DREM;
-import static org.objectweb.asm.Opcodes.DRETURN;
-import static org.objectweb.asm.Opcodes.DSTORE;
-import static org.objectweb.asm.Opcodes.DSUB;
-import static org.objectweb.asm.Opcodes.DUP;
-import static org.objectweb.asm.Opcodes.DUP2;
-import static org.objectweb.asm.Opcodes.DUP2_X1;
-import static org.objectweb.asm.Opcodes.DUP2_X2;
-import static org.objectweb.asm.Opcodes.DUP_X1;
-import static org.objectweb.asm.Opcodes.DUP_X2;
-import static org.objectweb.asm.Opcodes.F2D;
-import static org.objectweb.asm.Opcodes.F2I;
-import static org.objectweb.asm.Opcodes.F2L;
-import static org.objectweb.asm.Opcodes.FCMPG;
-import static org.objectweb.asm.Opcodes.FCMPL;
-import static org.objectweb.asm.Opcodes.FCONST_0;
-import static org.objectweb.asm.Opcodes.FCONST_2;
-import static org.objectweb.asm.Opcodes.GETFIELD;
-import static org.objectweb.asm.Opcodes.GETSTATIC;
-import static org.objectweb.asm.Opcodes.GOTO;
-import static org.objectweb.asm.Opcodes.I2B;
-import static org.objectweb.asm.Opcodes.I2C;
-import static org.objectweb.asm.Opcodes.I2D;
-import static org.objectweb.asm.Opcodes.I2F;
-import static org.objectweb.asm.Opcodes.I2L;
-import static org.objectweb.asm.Opcodes.I2S;
-import static org.objectweb.asm.Opcodes.IADD;
-import static org.objectweb.asm.Opcodes.IALOAD;
-import static org.objectweb.asm.Opcodes.IAND;
-import static org.objectweb.asm.Opcodes.IASTORE;
-import static org.objectweb.asm.Opcodes.ICONST_0;
-import static org.objectweb.asm.Opcodes.ICONST_5;
-import static org.objectweb.asm.Opcodes.ICONST_M1;
-import static org.objectweb.asm.Opcodes.IDIV;
-import static org.objectweb.asm.Opcodes.IFEQ;
-import static org.objectweb.asm.Opcodes.IFGE;
-import static org.objectweb.asm.Opcodes.IFGT;
-import static org.objectweb.asm.Opcodes.IFLE;
-import static org.objectweb.asm.Opcodes.IFLT;
-import static org.objectweb.asm.Opcodes.IFNE;
-import static org.objectweb.asm.Opcodes.IFNONNULL;
-import static org.objectweb.asm.Opcodes.IFNULL;
-import static org.objectweb.asm.Opcodes.IF_ACMPEQ;
-import static org.objectweb.asm.Opcodes.IF_ACMPNE;
-import static org.objectweb.asm.Opcodes.IF_ICMPEQ;
-import static org.objectweb.asm.Opcodes.IF_ICMPGE;
-import static org.objectweb.asm.Opcodes.IF_ICMPGT;
-import static org.objectweb.asm.Opcodes.IF_ICMPLE;
-import static org.objectweb.asm.Opcodes.IF_ICMPLT;
-import static org.objectweb.asm.Opcodes.IF_ICMPNE;
-import static org.objectweb.asm.Opcodes.ILOAD;
-import static org.objectweb.asm.Opcodes.IMUL;
-import static org.objectweb.asm.Opcodes.INEG;
-import static org.objectweb.asm.Opcodes.INSTANCEOF;
-import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
-import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
-import static org.objectweb.asm.Opcodes.INVOKESTATIC;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
-import static org.objectweb.asm.Opcodes.IOR;
-import static org.objectweb.asm.Opcodes.IREM;
-import static org.objectweb.asm.Opcodes.IRETURN;
-import static org.objectweb.asm.Opcodes.ISHL;
-import static org.objectweb.asm.Opcodes.ISHR;
-import static org.objectweb.asm.Opcodes.ISTORE;
-import static org.objectweb.asm.Opcodes.ISUB;
-import static org.objectweb.asm.Opcodes.IUSHR;
-import static org.objectweb.asm.Opcodes.IXOR;
-import static org.objectweb.asm.Opcodes.JSR;
-import static org.objectweb.asm.Opcodes.L2D;
-import static org.objectweb.asm.Opcodes.L2F;
-import static org.objectweb.asm.Opcodes.L2I;
-import static org.objectweb.asm.Opcodes.LADD;
-import static org.objectweb.asm.Opcodes.LALOAD;
-import static org.objectweb.asm.Opcodes.LAND;
-import static org.objectweb.asm.Opcodes.LASTORE;
-import static org.objectweb.asm.Opcodes.LCMP;
-import static org.objectweb.asm.Opcodes.LCONST_0;
-import static org.objectweb.asm.Opcodes.LCONST_1;
-import static org.objectweb.asm.Opcodes.LDIV;
-import static org.objectweb.asm.Opcodes.LLOAD;
-import static org.objectweb.asm.Opcodes.LMUL;
-import static org.objectweb.asm.Opcodes.LNEG;
-import static org.objectweb.asm.Opcodes.LOR;
-import static org.objectweb.asm.Opcodes.LREM;
-import static org.objectweb.asm.Opcodes.LRETURN;
-import static org.objectweb.asm.Opcodes.LSHL;
-import static org.objectweb.asm.Opcodes.LSHR;
-import static org.objectweb.asm.Opcodes.LSTORE;
-import static org.objectweb.asm.Opcodes.LSUB;
-import static org.objectweb.asm.Opcodes.LUSHR;
-import static org.objectweb.asm.Opcodes.LXOR;
-import static org.objectweb.asm.Opcodes.MONITORENTER;
-import static org.objectweb.asm.Opcodes.MONITOREXIT;
-import static org.objectweb.asm.Opcodes.NEW;
-import static org.objectweb.asm.Opcodes.NEWARRAY;
-import static org.objectweb.asm.Opcodes.NOP;
-import static org.objectweb.asm.Opcodes.POP;
-import static org.objectweb.asm.Opcodes.POP2;
-import static org.objectweb.asm.Opcodes.PUTFIELD;
-import static org.objectweb.asm.Opcodes.RET;
-import static org.objectweb.asm.Opcodes.RETURN;
-import static org.objectweb.asm.Opcodes.SALOAD;
-import static org.objectweb.asm.Opcodes.SASTORE;
-import static org.objectweb.asm.Opcodes.SIPUSH;
-import static org.objectweb.asm.Opcodes.SWAP;
-import static org.objectweb.asm.Opcodes.T_BOOLEAN;
-import static org.objectweb.asm.Opcodes.T_BYTE;
-import static org.objectweb.asm.Opcodes.T_CHAR;
-import static org.objectweb.asm.Opcodes.T_DOUBLE;
-import static org.objectweb.asm.Opcodes.T_FLOAT;
-import static org.objectweb.asm.Opcodes.T_INT;
-import static org.objectweb.asm.Opcodes.T_LONG;
-import static org.objectweb.asm.Opcodes.T_SHORT;
+import static org.objectweb.asm.Opcodes.*;
 import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
 import static org.objectweb.asm.tree.AbstractInsnNode.IINC_INSN;
@@ -158,18 +23,21 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
+
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
@@ -192,6 +60,7 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -298,15 +167,12 @@ final class AsmMethodSource implements MethodSource {
 
   private static final Operand DWORD_DUMMY = new Operand(null, null);
   private final String module;
-  private static final String METAFACTORY_SIGNATURE =
-      "<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite "
-          + "metafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType,"
-          + ""
-          + "java.lang.invoke.MethodType,java.lang.invoke.MethodHandle,java.lang.invoke.MethodType)>";
-  private static final String ALT_METAFACTORY_SIGNATURE =
-      "<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite "
-          + "altMetafactory(java.lang.invoke.MethodHandles$Lookup,"
-          + "java.lang.String,java.lang.invoke.MethodType,java.lang.Object[])>";
+  private static final String METAFACTORY_SIGNATURE = "<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite "
+      + "metafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType," + ""
+      + "java.lang.invoke.MethodType,java.lang.invoke.MethodHandle,java.lang.invoke.MethodType)>";
+  private static final String ALT_METAFACTORY_SIGNATURE = "<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite "
+      + "altMetafactory(java.lang.invoke.MethodHandles$Lookup,"
+      + "java.lang.String,java.lang.invoke.MethodType,java.lang.Object[])>";
   /* -const fields- */
   private final int maxLocals;
   private final InsnList instructions;
@@ -1050,9 +916,7 @@ final class AsmMethodSource implements MethodSource {
       Operand o2 = popImmediate();
       push(o1);
       push(o2);
-    } else if ((op >= IADD && op <= DREM)
-        || (op >= ISHL && op <= LXOR)
-        || (op >= LCMP && op <= DCMPG)) {
+    } else if ((op >= IADD && op <= DREM) || (op >= ISHL && op <= LXOR) || (op >= LCMP && op <= DCMPG)) {
       convertBinopInsn(insn);
     } else if ((op >= INEG && op <= DNEG) || op == ARRAYLENGTH) {
       convertUnopInsn(insn);
@@ -1084,10 +948,8 @@ final class AsmMethodSource implements MethodSource {
       StackFrame frame = getFrame(insn);
       if (!units.containsKey(insn)) {
         Operand opr = popStackConst();
-        MonitorStmt ts =
-            op == MONITORENTER
-                ? Jimple.v().newEnterMonitorStmt(opr.stackOrValue())
-                : Jimple.v().newExitMonitorStmt(opr.stackOrValue());
+        MonitorStmt ts = op == MONITORENTER ? Jimple.v().newEnterMonitorStmt(opr.stackOrValue())
+            : Jimple.v().newExitMonitorStmt(opr.stackOrValue());
         opr.addBox(ts.getOpBox());
         frame.in(opr);
         frame.boxes(ts.getOpBox());
@@ -1270,10 +1132,8 @@ final class AsmMethodSource implements MethodSource {
     } else if (val instanceof org.objectweb.asm.Type) {
       org.objectweb.asm.Type t = (org.objectweb.asm.Type) val;
       if (t.getSort() == org.objectweb.asm.Type.METHOD) {
-        List<Type> paramTypes =
-            AsmUtil.toJimpleDesc(
-                ((org.objectweb.asm.Type) val).getDescriptor(),
-                Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+        List<Type> paramTypes = AsmUtil.toJimpleDesc(((org.objectweb.asm.Type) val).getDescriptor(),
+            Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
         Type returnType = paramTypes.remove(paramTypes.size() - 1);
         v = MethodType.v(paramTypes, returnType);
       } else {
@@ -1541,36 +1401,23 @@ final class AsmMethodSource implements MethodSource {
   private SootMethodRef toSootMethodRef(Handle methodHandle) {
     String bsmClsName = AsmUtil.toQualifiedName(methodHandle.getOwner());
     SootClass bsmCls = this.getClassFromScene(bsmClsName);
-    List<Type> bsmSigTypes =
-        AsmUtil.toJimpleDesc(
-            methodHandle.getDesc(),
-            Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+    List<Type> bsmSigTypes = AsmUtil.toJimpleDesc(methodHandle.getDesc(),
+        Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
     Type returnType = bsmSigTypes.remove(bsmSigTypes.size() - 1);
-    return Scene.v()
-        .makeMethodRef(
-            bsmCls,
-            methodHandle.getName(),
-            bsmSigTypes,
-            returnType,
-            methodHandle.getTag() == MethodHandle.Kind.REF_INVOKE_STATIC.getValue());
+    return Scene.v().makeMethodRef(bsmCls, methodHandle.getName(), bsmSigTypes, returnType,
+        methodHandle.getTag() == MethodHandle.Kind.REF_INVOKE_STATIC.getValue());
   }
 
   private SootFieldRef toSootFieldRef(Handle methodHandle) {
     String bsmClsName = AsmUtil.toQualifiedName(methodHandle.getOwner());
     SootClass bsmCls = Scene.v().getSootClass(bsmClsName);
-    Type t =
-        AsmUtil.toJimpleDesc(
-                methodHandle.getDesc(),
-                Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName))
-            .get(0);
+    Type t = AsmUtil
+        .toJimpleDesc(methodHandle.getDesc(), Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName))
+        .get(0);
     int kind = methodHandle.getTag();
-    return Scene.v()
-        .makeFieldRef(
-            bsmCls,
-            methodHandle.getName(),
-            t,
-            kind == MethodHandle.Kind.REF_GET_FIELD_STATIC.getValue()
-                || kind == MethodHandle.Kind.REF_PUT_FIELD_STATIC.getValue());
+    return Scene.v().makeFieldRef(bsmCls, methodHandle.getName(), t,
+        kind == MethodHandle.Kind.REF_GET_FIELD_STATIC.getValue()
+            || kind == MethodHandle.Kind.REF_PUT_FIELD_STATIC.getValue());
   }
 
   private void convertMultiANewArrayInsn(MultiANewArrayInsnNode insn) {
@@ -1771,7 +1618,7 @@ final class AsmMethodSource implements MethodSource {
 
   private void addEdges(AbstractInsnNode cur, AbstractInsnNode tgt1, List<LabelNode> tgts) {
     int lastIdx = tgts == null ? -1 : tgts.size() - 1;
-    Operand[] stackss = (new ArrayList<Operand>(stack)).toArray(new Operand[stack.size()]);
+    Operand[] stackss = stack.toArray(new Operand[stack.size()]);
     AbstractInsnNode tgt = tgt1;
     int i = 0;
     tgt_loop: do {
@@ -1797,13 +1644,10 @@ final class AsmMethodSource implements MethodSource {
         }
         continue;
       }
-      for (Operand[] ps : edge.prevStacks) {
-        if (Arrays.equals(ps, stackss)) {
-          continue tgt_loop;
-        }
+      if (!edge.prevStacks.add(stackss)) {
+        continue tgt_loop;
       }
       edge.stack = new ArrayList<Operand>(stack);
-      edge.prevStacks.add(stackss);
       conversionWorklist.add(edge);
     } while (i <= lastIdx && (tgt = tgts.get(i++)) != null);
   }
@@ -1831,70 +1675,84 @@ final class AsmMethodSource implements MethodSource {
       // statement
       lastLineNumber = edge.lastLineNumber == -1 ? lastLineNumber : edge.lastLineNumber;
       edge.stack = null;
-      do {
+      insnLoop: do {
         int type = insn.getType();
-        if (type == FIELD_INSN) {
-          convertFieldInsn((FieldInsnNode) insn);
-        } else if (type == IINC_INSN) {
-          convertIincInsn((IincInsnNode) insn);
-        } else if (type == INSN) {
-          convertInsn((InsnNode) insn);
-          int op = insn.getOpcode();
-          if ((op >= IRETURN && op <= RETURN) || op == ATHROW) {
+        switch (type) {
+          case FIELD_INSN:
+            convertFieldInsn((FieldInsnNode) insn);
             break;
-          }
-        } else if (type == INT_INSN) {
-          convertIntInsn((IntInsnNode) insn);
-        } else if (type == LDC_INSN) {
-          convertLdcInsn((LdcInsnNode) insn);
-        } else if (type == JUMP_INSN) {
-          JumpInsnNode jmp = (JumpInsnNode) insn;
-          convertJumpInsn(jmp);
-          int op = jmp.getOpcode();
-          if (op == JSR) {
-            throw new UnsupportedOperationException("JSR!");
-          }
-          if (op != GOTO) {
-            /* ifX opcode, i.e. two successors */
-            AbstractInsnNode next = insn.getNext();
-            addEdges(insn, next, Collections.singletonList(jmp.label));
-          } else {
-            addEdges(insn, jmp.label, null);
-          }
-          break;
-        } else if (type == LOOKUPSWITCH_INSN) {
-          LookupSwitchInsnNode swtch = (LookupSwitchInsnNode) insn;
-          convertLookupSwitchInsn(swtch);
-          LabelNode dflt = swtch.dflt;
-          addEdges(insn, dflt, swtch.labels);
-          break;
-        } else if (type == METHOD_INSN) {
-          convertMethodInsn((MethodInsnNode) insn);
-        } else if (type == INVOKE_DYNAMIC_INSN) {
-          convertInvokeDynamicInsn((InvokeDynamicInsnNode) insn);
-        } else if (type == MULTIANEWARRAY_INSN) {
-          convertMultiANewArrayInsn((MultiANewArrayInsnNode) insn);
-        } else if (type == TABLESWITCH_INSN) {
-          TableSwitchInsnNode swtch = (TableSwitchInsnNode) insn;
-          convertTableSwitchInsn(swtch);
-          LabelNode dflt = swtch.dflt;
-          addEdges(insn, dflt, swtch.labels);
-          break;
-        } else if (type == TYPE_INSN) {
-          convertTypeInsn((TypeInsnNode) insn);
-        } else if (type == VAR_INSN) {
-          if (insn.getOpcode() == RET) {
-            throw new UnsupportedOperationException("RET!");
-          }
-          convertVarInsn((VarInsnNode) insn);
-        } else if (type == LABEL) {
-          convertLabel((LabelNode) insn);
-        } else if (type == LINE) {
-          convertLine((LineNumberNode) insn);
-        } else if (type == FRAME) {
-          // we can ignore it
-        } else {
-          throw new RuntimeException("Unknown instruction type: " + type);
+          case IINC_INSN:
+            convertIincInsn((IincInsnNode) insn);
+            break;
+          case INSN:
+            convertInsn((InsnNode) insn);
+            int op = insn.getOpcode();
+            if ((op >= IRETURN && op <= RETURN) || op == ATHROW) {
+              break insnLoop;
+            }
+            break;
+          case INT_INSN:
+            convertIntInsn((IntInsnNode) insn);
+            break;
+          case LDC_INSN:
+            convertLdcInsn((LdcInsnNode) insn);
+            break;
+          case JUMP_INSN:
+            JumpInsnNode jmp = (JumpInsnNode) insn;
+            convertJumpInsn(jmp);
+            op = jmp.getOpcode();
+            if (op == JSR) {
+              throw new UnsupportedOperationException("JSR!");
+            }
+            if (op != GOTO) {
+              /* ifX opcode, i.e. two successors */
+              AbstractInsnNode next = insn.getNext();
+              addEdges(insn, next, Collections.singletonList(jmp.label));
+            } else {
+              addEdges(insn, jmp.label, null);
+            }
+            break insnLoop;
+          case LOOKUPSWITCH_INSN:
+            LookupSwitchInsnNode swtch = (LookupSwitchInsnNode) insn;
+            convertLookupSwitchInsn(swtch);
+            LabelNode dflt = swtch.dflt;
+            addEdges(insn, dflt, swtch.labels);
+            break insnLoop;
+          case METHOD_INSN:
+            convertMethodInsn((MethodInsnNode) insn);
+            break;
+          case INVOKE_DYNAMIC_INSN:
+            convertInvokeDynamicInsn((InvokeDynamicInsnNode) insn);
+            break;
+          case MULTIANEWARRAY_INSN:
+            convertMultiANewArrayInsn((MultiANewArrayInsnNode) insn);
+            break;
+          case TABLESWITCH_INSN:
+            TableSwitchInsnNode tswtch = (TableSwitchInsnNode) insn;
+            convertTableSwitchInsn(tswtch);
+            LabelNode ldflt = tswtch.dflt;
+            addEdges(insn, ldflt, tswtch.labels);
+            break insnLoop;
+          case TYPE_INSN:
+            convertTypeInsn((TypeInsnNode) insn);
+            break;
+          case VAR_INSN:
+            if (insn.getOpcode() == RET) {
+              throw new UnsupportedOperationException("RET!");
+            }
+            convertVarInsn((VarInsnNode) insn);
+            break;
+          case LABEL:
+            convertLabel((LabelNode) insn);
+            break;
+          case LINE:
+            convertLine((LineNumberNode) insn);
+            break;
+          case FRAME:
+            // we can ignore it
+            break;
+          default:
+            throw new RuntimeException("Unknown instruction type: " + type);
         }
       } while ((insn = insn.getNext()) != null);
     } while (!worklist.isEmpty());
@@ -1993,10 +1851,33 @@ final class AsmMethodSource implements MethodSource {
     }
   }
 
+  private static class UnitContainerWorklistElement {
+    UnitContainer u;
+    int position;
+
+    public UnitContainerWorklistElement(UnitContainer u) {
+      this.u = u;
+    }
+
+  }
+
   private void emitUnits(Unit u) {
     if (u instanceof UnitContainer) {
-      for (Unit uu : ((UnitContainer) u).units) {
-        emitUnits(uu);
+      Stack<UnitContainerWorklistElement> stack = new Stack<>();
+      stack.push(new UnitContainerWorklistElement((UnitContainer) u));
+      processStack: while (!stack.isEmpty()) {
+        UnitContainerWorklistElement r = stack.pop();
+        for (int i = r.position; i < r.u.units.length; i++) {
+          r.position = i + 1;
+          Unit e = r.u.units[i];
+          if (e instanceof UnitContainer) {
+            stack.push(new UnitContainerWorklistElement((UnitContainer) e));
+            continue processStack;
+          } else {
+            body.getUnits().add(e);
+          }
+        }
+
       }
     } else {
       body.getUnits().add(u);
@@ -2102,6 +1983,8 @@ final class AsmMethodSource implements MethodSource {
     if (!m.isConcrete()) {
       return null;
     }
+    if (m.getSignature().equals("<tests.emulator.SwitchTests: java.lang.String testFallthrough2()>"))
+      System.out.println();
     JimpleBody jb = Jimple.v().newBody(m);
     /* initialize */
     int nrInsn = instructions.size();
@@ -2158,14 +2041,14 @@ final class AsmMethodSource implements MethodSource {
     /* edge endpoint */
     final AbstractInsnNode insn;
     /* previous stacks at edge */
-    final LinkedList<Operand[]> prevStacks;
+    final Set<Operand[]> prevStacks;
     private int lastLineNumber = -1;
     /* current stack at edge */
     ArrayList<Operand> stack;
 
     Edge(AbstractInsnNode insn, ArrayList<Operand> stack) {
       this.insn = insn;
-      this.prevStacks = new LinkedList<Operand[]>();
+      this.prevStacks = new HashSet<Operand[]>();
       this.stack = stack;
     }
 
