@@ -1785,24 +1785,21 @@ final class AsmMethodSource implements MethodSource {
         conversionWorklist.add(edge);
         continue;
       }
-      if (edge.stack != null) {
-        ArrayList<Operand> stackTemp = edge.stack;
-        if (stackTemp.size() != stackss.length) {
-          throw new AssertionError("Multiple un-equal stacks!");
-        }
-        for (int j = 0; j != stackss.length; j++) {
-          if (!stackTemp.get(j).equivTo(stackss[j])) {
-            throw new AssertionError("Multiple un-equal stacks!");
+      for (ArrayList<Operand> stackTemp : edge.stacks) {
+        if (stackTemp.size() == stackss.length) {
+          int j = 0;
+          for (; j != stackss.length && stackTemp.get(j).equivTo(stackss[j]); j++) {}
+          if (j == stackss.length) {
+            continue tgt_loop;
           }
         }
-        continue;
       }
       for (Operand[] ps : edge.prevStacks) {
         if (Arrays.equals(ps, stackss)) {
           continue tgt_loop;
         }
       }
-      edge.stack = new ArrayList<Operand>(stack);
+      edge.stacks.addLast(new ArrayList<Operand>(stack));
       edge.prevStacks.add(stackss);
       conversionWorklist.add(edge);
     } while (i <= lastIdx && (tgt = tgts.get(i++)) != null);
@@ -1824,13 +1821,12 @@ final class AsmMethodSource implements MethodSource {
     do {
       Edge edge = worklist.pollLast();
       AbstractInsnNode insn = edge.insn;
-      stack = edge.stack;
+      stack = edge.stacks.pollLast();
       // restore line. this is important since we might have traversed the edge that leads to
       // bytecode far away from the branch statement first and are now processing the statement
       // right after the branch which should start with the lastLineNumber as it was for the branch
       // statement
       lastLineNumber = edge.lastLineNumber == -1 ? lastLineNumber : edge.lastLineNumber;
-      edge.stack = null;
       do {
         int type = insn.getType();
         if (type == FIELD_INSN) {
@@ -1900,6 +1896,16 @@ final class AsmMethodSource implements MethodSource {
     } while (!worklist.isEmpty());
     conversionWorklist = null;
     edges = null;
+  }
+
+  Unit getUnitMaybeInlineExceptionHandler(AbstractInsnNode insn) {
+    Unit ret = getUnit(insn);
+
+    if (ret instanceof NopStmt && inlineExceptionHandlers.containsKey(insn)) {
+      return inlineExceptionHandlers.get(insn);
+    } else {
+      return ret;
+    }
   }
 
   private void handleInlineExceptionHandler(LabelNode ln, ArrayDeque<Edge> worklist) {
@@ -2065,7 +2071,8 @@ final class AsmMethodSource implements MethodSource {
 
       // We need to jump to the original implementation
       Unit targetUnit = units.get(ln);
-      GotoStmt gotoImpl = Jimple.v().newGotoStmt(targetUnit);
+      GotoStmt gotoImpl = Jimple.v().newGotoStmt(
+              targetUnit instanceof UnitContainer ? ((UnitContainer) targetUnit).getFirstUnit() : targetUnit);
       body.getUnits().add(gotoImpl);
     }
 
@@ -2161,12 +2168,13 @@ final class AsmMethodSource implements MethodSource {
     final LinkedList<Operand[]> prevStacks;
     private int lastLineNumber = -1;
     /* current stack at edge */
-    ArrayList<Operand> stack;
+    final ArrayDeque<ArrayList<Operand>> stacks;
 
     Edge(AbstractInsnNode insn, ArrayList<Operand> stack) {
       this.insn = insn;
       this.prevStacks = new LinkedList<Operand[]>();
-      this.stack = stack;
+      this.stacks = new ArrayDeque<ArrayList<Operand>>();
+      this.stacks.addLast(stack);
     }
 
     Edge(AbstractInsnNode insn, int lastLineNumber) {
