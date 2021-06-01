@@ -224,6 +224,7 @@ import soot.Trap;
 import soot.Type;
 import soot.Unit;
 import soot.UnitBox;
+import soot.UnitPatchingChain;
 import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
@@ -1754,6 +1755,7 @@ final class AsmMethodSource implements MethodSource {
   private void addEdges(AbstractInsnNode cur, AbstractInsnNode tgt1, List<LabelNode> tgts) {
     int lastIdx = tgts == null ? -1 : tgts.size() - 1;
     Operand[] stackss = stack.toArray(new Operand[stack.size()]);
+    List<Operand> stackssL = Arrays.asList(stackss);
     AbstractInsnNode tgt = tgt1;
     int i = 0;
     tgt_loop: do {
@@ -1762,7 +1764,7 @@ final class AsmMethodSource implements MethodSource {
         // make sure to store last line number to stay sound if the branch that comes later in
         // bytecode is processed first
         edge = new Edge(tgt, lastLineNumber);
-        edge.prevStacks.add(stackss);
+        edge.prevStacks.add(stackssL);
         edges.put(cur, tgt, edge);
         conversionWorklist.add(edge);
         continue;
@@ -1779,7 +1781,7 @@ final class AsmMethodSource implements MethodSource {
         }
         continue;
       }
-      if (!edge.prevStacks.add(stackss)) {
+      if (!edge.prevStacks.add(stackssL)) {
         continue tgt_loop;
       }
       edge.stack = new ArrayList<Operand>(stack);
@@ -1996,12 +1998,12 @@ final class AsmMethodSource implements MethodSource {
 
   }
 
-  private void emitUnits(Unit u) {
+  static void emitUnits(Unit u, UnitPatchingChain chain) {
     if (u instanceof UnitContainer) {
       Stack<UnitContainerWorklistElement> stack = new Stack<>();
       stack.push(new UnitContainerWorklistElement((UnitContainer) u));
       processStack: while (!stack.isEmpty()) {
-        UnitContainerWorklistElement r = stack.pop();
+        UnitContainerWorklistElement r = stack.peek();
         for (int i = r.position; i < r.u.units.length; i++) {
           r.position = i + 1;
           Unit e = r.u.units[i];
@@ -2009,13 +2011,16 @@ final class AsmMethodSource implements MethodSource {
             stack.push(new UnitContainerWorklistElement((UnitContainer) e));
             continue processStack;
           } else {
-            body.getUnits().add(e);
+            chain.add(e);
           }
+        }
+        if (stack.pop() != r) {
+          throw new AssertionError("Not expected element");
         }
 
       }
     } else {
-      body.getUnits().add(u);
+      chain.add(u);
     }
   }
 
@@ -2036,7 +2041,7 @@ final class AsmMethodSource implements MethodSource {
         continue;
       }
 
-      emitUnits(u);
+      emitUnits(u, body.getUnits());
 
       // If this is an exception handler, register the starting unit for it
       {
@@ -2072,7 +2077,7 @@ final class AsmMethodSource implements MethodSource {
     // Emit the inline exception handlers
     for (LabelNode ln : this.inlineExceptionHandlers.keySet()) {
       Unit handler = this.inlineExceptionHandlers.get(ln);
-      emitUnits(handler);
+      emitUnits(handler, body.getUnits());
 
       Collection<UnitBox> traps = trapHandlers.get(ln);
       for (UnitBox ub : traps) {
@@ -2174,14 +2179,14 @@ final class AsmMethodSource implements MethodSource {
     /* edge endpoint */
     final AbstractInsnNode insn;
     /* previous stacks at edge */
-    final Set<Operand[]> prevStacks;
+    final Set<List<Operand>> prevStacks;
     private int lastLineNumber = -1;
     /* current stack at edge */
     ArrayList<Operand> stack;
 
     Edge(AbstractInsnNode insn, ArrayList<Operand> stack) {
       this.insn = insn;
-      this.prevStacks = new HashSet<Operand[]>();
+      this.prevStacks = new HashSet<List<Operand>>();
       this.stack = stack;
     }
 
