@@ -2118,8 +2118,6 @@ final class AsmMethodSource implements MethodSource {
     if (!m.isConcrete()) {
       return null;
     }
-    if (m.getSignature().equals("<tests.emulator.SwitchTests: java.lang.String testFallthrough2()>"))
-      System.out.println();
     JimpleBody jb = Jimple.v().newBody(m);
     /* initialize */
     int nrInsn = instructions.size();
