@@ -12,7 +12,7 @@ A clear and concise description of what the bug is.
 
 **To reproduce**
 Steps to reproduce the behavior:
-Please include soot options you used
+Please include soot options you used or supply a code snippet to ease reproduction of the problem.
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
