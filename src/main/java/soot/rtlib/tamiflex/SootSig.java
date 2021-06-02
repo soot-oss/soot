@@ -35,12 +35,10 @@ import org.slf4j.LoggerFactory;
 public class SootSig {
   private static final Logger logger = LoggerFactory.getLogger(SootSig.class);
 
-  private static Map<Constructor<?>, String> constrCache = new ConcurrentHashMap<Constructor<?>, String>(); // TODO should be
-                                                                                                            // a map with
-                                                                                                            // soft keys,
-                                                                                                            // actually
-  private static Map<Method, String> methodCache = new ConcurrentHashMap<Method, String>(); // TODO should be a map with soft
-                                                                                            // keys, actually
+  // TODO should be a map with soft keys, actually
+  private static Map<Constructor<?>, String> constrCache = new ConcurrentHashMap<Constructor<?>, String>();
+  // TODO should be a map with soft keys, actually
+  private static Map<Method, String> methodCache = new ConcurrentHashMap<Method, String>();
 
   public static String sootSignature(Constructor<?> c) {
     String res = constrCache.get(c);
@@ -103,7 +101,7 @@ public class SootSig {
           dimensions++;
           cl = cl.getComponentType();
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(cl.getName());
         for (int i = 0; i < dimensions; i++) {
           sb.append("[]");
@@ -117,19 +115,19 @@ public class SootSig {
 
   private static String sootSignature(String declaringClass, String returnType, String name, String... paramTypes) {
     StringBuilder b = new StringBuilder();
-    b.append("<");
+    b.append('<');
     b.append(declaringClass);
     b.append(": ");
     b.append(returnType);
-    b.append(" ");
+    b.append(' ');
     b.append(name);
-    b.append("(");
+    b.append('(');
     int i = 0;
     for (String type : paramTypes) {
       i++;
       b.append(type);
       if (i < paramTypes.length) {
-        b.append(",");
+        b.append(',');
       }
     }
     b.append(")>");
@@ -138,14 +136,13 @@ public class SootSig {
 
   public static String sootSignature(Field f) {
     StringBuilder b = new StringBuilder();
-    b.append("<");
+    b.append('<');
     b.append(getTypeName(f.getDeclaringClass()));
     b.append(": ");
     b.append(getTypeName(f.getType()));
-    b.append(" ");
+    b.append(' ');
     b.append(f.getName());
-    b.append(">");
+    b.append('>');
     return b.toString();
   }
-
 }

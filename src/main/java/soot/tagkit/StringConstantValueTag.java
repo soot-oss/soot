@@ -26,17 +26,26 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.jimple.StringConstant;
 
 public class StringConstantValueTag extends ConstantValueTag {
+
+  public static final String NAME = "StringConstantValueTag";
+
   private final String value;
 
   public StringConstantValueTag(String value) {
+    super(CONSTANT_Utf8_info.toUtf8(value));
     this.value = value;
-    this.bytes = CONSTANT_Utf8_info.toUtf8(value);
   }
 
   public String getStringValue() {
     return value;
   }
 
+  @Override
+  public String getName() {
+    return NAME;
+  }
+
+  @Override
   public String toString() {
     return "ConstantValue: " + value;
   }
@@ -62,18 +71,17 @@ public class StringConstantValueTag extends ConstantValueTag {
     if (!super.equals(obj)) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if (this.getClass() != obj.getClass()) {
       return false;
     }
     StringConstantValueTag other = (StringConstantValueTag) obj;
-    if (value == null) {
+    if (this.value == null) {
       if (other.value != null) {
         return false;
       }
-    } else if (!value.equals(other.value)) {
+    } else if (!this.value.equals(other.value)) {
       return false;
     }
     return true;
   }
-
 }

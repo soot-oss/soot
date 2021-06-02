@@ -24,76 +24,73 @@ package soot.tagkit;
 
 public class KeyTag implements Tag {
 
-  private int red;
-  private int green;
-  private int blue;
-  private String key;
-  private String analysisType;
+  public static final String NAME = "KeyTag";
 
-  /*
-   * public KeyTag(int r, int g, int b, String k){ this(r, g, b, k, "Unknown"); }
-   */
+  private final int red;
+  private final int green;
+  private final int blue;
+  private final String key;
+  private final String analysisType;
 
   public KeyTag(int r, int g, int b, String k, String type) {
-    red = r;
-    green = g;
-    blue = b;
-    key = k;
-    analysisType = type;
+    this.red = r;
+    this.green = g;
+    this.blue = b;
+    this.key = k;
+    this.analysisType = type;
   }
 
   public KeyTag(int color, String k, String type) {
-    this(color, k);
-    analysisType = type;
-  }
-
-  public KeyTag(int color, String k) {
     switch (color) {
       case ColorTag.RED: {
-        red = 255;
-        green = 0;
-        blue = 0;
+        this.red = 255;
+        this.green = 0;
+        this.blue = 0;
         break;
       }
       case ColorTag.GREEN: {
-        red = 45;
-        green = 255;
-        blue = 84;
+        this.red = 45;
+        this.green = 255;
+        this.blue = 84;
         break;
       }
       case ColorTag.YELLOW: {
-        red = 255;
-        green = 248;
-        blue = 35;
+        this.red = 255;
+        this.green = 248;
+        this.blue = 35;
         break;
       }
       case ColorTag.BLUE: {
-        red = 174;
-        green = 210;
-        blue = 255;
+        this.red = 174;
+        this.green = 210;
+        this.blue = 255;
         break;
       }
       case ColorTag.ORANGE: {
-        red = 255;
-        green = 163;
-        blue = 0;
+        this.red = 255;
+        this.green = 163;
+        this.blue = 0;
         break;
       }
       case ColorTag.PURPLE: {
-        red = 159;
-        green = 34;
-        blue = 193;
+        this.red = 159;
+        this.green = 34;
+        this.blue = 193;
         break;
       }
       default: {
-        red = 220;
-        green = 220;
-        blue = 220;
+        this.red = 220;
+        this.green = 220;
+        this.blue = 220;
         break;
       }
-
     }
-    key = k;
+    this.key = k;
+    this.analysisType = type;
+  }
+
+  public KeyTag(int color, String k) {
+    this(color, k, null);
   }
 
   public int red() {
@@ -116,13 +113,13 @@ public class KeyTag implements Tag {
     return analysisType;
   }
 
+  @Override
   public String getName() {
-    return "KeyTag";
+    return NAME;
   }
 
+  @Override
   public byte[] getValue() {
-    byte[] v = new byte[4];
-    return v;
+    return new byte[4];
   }
-
 }
