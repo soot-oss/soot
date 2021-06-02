@@ -1023,6 +1023,23 @@ public class Options extends OptionsBase {
                 phaseOptions.add(phaseOption);
             }
             else if (false
+                || option.equals("t")
+                || option.equals("num-threads")
+            ) {
+                if (!hasMoreOptions()) {
+                    G.v().out.println("No value given for option -" + option);
+                    return false;
+                }
+
+                String value = nextOption();
+                if(num_threads == -1)
+                    num_threads = Integer.valueOf(value);
+                else {
+                    G.v().out.println("Duplicate values " + num_threads + " and " + value + " for option -" + option);
+                    return false;
+                }
+            }
+            else if (false
                 || option.equals("O")
                 || option.equals("optimize")
             ) {
@@ -1626,6 +1643,10 @@ public class Options extends OptionsBase {
     }
     public void set_field_type_mismatches(int setting) { field_type_mismatches = setting; }
     private int field_type_mismatches = 0;
+
+    public int num_threads() { return num_threads; }
+    public void set_num_threads(int setting) { num_threads = setting; }
+    private int num_threads = -1;
 
     public boolean via_grimp() { return via_grimp; }
     private boolean via_grimp = false;

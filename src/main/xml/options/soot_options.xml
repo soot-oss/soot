@@ -6886,6 +6886,18 @@ This locking scheme aims to achieve simple fine-grained locking.
 
 
         </phaseopt>
+        <intopt>
+            <name>Class transformation parallelism</name>
+            <alias>t</alias>
+            <alias>num-threads</alias>
+            <set_arg_label>num</set_arg_label>
+            <short_desc>Force Soot to use <use_arg_label/> threads when transforming classes.
+            </short_desc>
+            <long_desc>
+                Force Soot to use <use_arg_label/> threads to transform classes in parallel.
+                The default behavior is to use one thread per processor.
+            </long_desc>
+        </intopt>
         <macroopt>
             <name>Optimize</name>
             <alias>O</alias>
