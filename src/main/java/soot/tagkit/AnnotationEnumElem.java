@@ -25,13 +25,12 @@ package soot.tagkit;
 import soot.util.Switch;
 
 /**
- * Represents the base class of annotation elements each annotation can have several elements for Java 1.5.
+ * Represents the Enum annotation element each annotation can have several elements for Java 1.5.
  */
-
 public class AnnotationEnumElem extends AnnotationElem {
 
-  String typeName;
-  String constantName;
+  private String typeName;
+  private String constantName;
 
   public AnnotationEnumElem(String t, String c, char kind, String name) {
     super(kind, name);
@@ -82,25 +81,24 @@ public class AnnotationEnumElem extends AnnotationElem {
     if (!super.equals(obj)) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if (this.getClass() != obj.getClass()) {
       return false;
     }
     AnnotationEnumElem other = (AnnotationEnumElem) obj;
-    if (constantName == null) {
+    if (this.constantName == null) {
       if (other.constantName != null) {
         return false;
       }
-    } else if (!constantName.equals(other.constantName)) {
+    } else if (!this.constantName.equals(other.constantName)) {
       return false;
     }
-    if (typeName == null) {
+    if (this.typeName == null) {
       if (other.typeName != null) {
         return false;
       }
-    } else if (!typeName.equals(other.typeName)) {
+    } else if (!this.typeName.equals(other.typeName)) {
       return false;
     }
     return true;
   }
-
 }

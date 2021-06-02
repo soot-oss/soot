@@ -61,17 +61,19 @@ public class UnusedLocalEliminator extends BodyTransformer {
       logger.debug("[" + body.getMethod().getName() + "] Eliminating unused locals...");
     }
 
-    int i = 0;
-    int n = body.getLocals().size();
-    int[] oldNumbers = new int[n];
-    Chain<Local> locals = body.getLocals();
-    for (Local local : locals) {
-      oldNumbers[i] = local.getNumber();
-      local.setNumber(i);
-      i++;
+    final Chain<Local> locals = body.getLocals();
+    final int numLocals = locals.size();
+    final int[] oldNumbers = new int[numLocals];
+    {
+      int i = 0;
+      for (Local local : locals) {
+        oldNumbers[i] = local.getNumber();
+        local.setNumber(i);
+        i++;
+      }
     }
 
-    BitSet usedLocals = new BitSet(n);
+    BitSet usedLocals = new BitSet(numLocals);
 
     // Traverse statements noting all the uses and defs
     for (Unit s : body.getUnits()) {
@@ -79,7 +81,7 @@ public class UnusedLocalEliminator extends BodyTransformer {
         Value v = vb.getValue();
         if (v instanceof Local) {
           Local l = (Local) v;
-          assert locals.contains(l);
+          // assert locals.contains(l);
           usedLocals.set(l.getNumber());
         }
       }
@@ -87,15 +89,14 @@ public class UnusedLocalEliminator extends BodyTransformer {
         Value v = vb.getValue();
         if (v instanceof Local) {
           Local l = (Local) v;
-          assert locals.contains(l);
+          // assert locals.contains(l);
           usedLocals.set(l.getNumber());
         }
       }
     }
 
     // Remove all locals that are unused.
-    Iterator<Local> localIt = locals.iterator();
-    while (localIt.hasNext()) {
+    for (Iterator<Local> localIt = locals.iterator(); localIt.hasNext();) {
       final Local local = localIt.next();
       final int lno = local.getNumber();
       if (!usedLocals.get(lno)) {
@@ -105,5 +106,4 @@ public class UnusedLocalEliminator extends BodyTransformer {
       }
     }
   }
-
 }

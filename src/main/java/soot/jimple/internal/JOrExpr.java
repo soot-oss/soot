@@ -23,6 +23,7 @@ package soot.jimple.internal;
  */
 
 import soot.Type;
+import soot.Unit;
 import soot.Value;
 import soot.baf.Baf;
 import soot.jimple.ExprSwitch;
@@ -31,24 +32,28 @@ import soot.jimple.OrExpr;
 import soot.util.Switch;
 
 public class JOrExpr extends AbstractJimpleIntLongBinopExpr implements OrExpr {
+
   public JOrExpr(Value op1, Value op2) {
     super(op1, op2);
   }
 
+  @Override
   public String getSymbol() {
     return " | ";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseOrExpr(this);
   }
 
-  Object makeBafInst(Type opType) {
+  @Override
+  protected Unit makeBafInst(Type opType) {
     return Baf.v().newOrInst(this.getOp1().getType());
   }
 
+  @Override
   public Object clone() {
     return new JOrExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
   }
-
 }

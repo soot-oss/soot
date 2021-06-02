@@ -22,7 +22,6 @@ package soot.jimple.toolkits.invoke;
  * #L%
  */
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -34,7 +33,6 @@ import soot.Scene;
 import soot.SootClass;
 import soot.Trap;
 import soot.TrapManager;
-import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.AssignStmt;
@@ -47,46 +45,64 @@ import soot.jimple.NewExpr;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
+import soot.shimple.ShimpleBody;
 import soot.util.Chain;
 
 /** Utility methods for dealing with traps. */
 public class ThrowManager {
+
   /**
    * Iterate through the statements in b (starting at the end), returning the last instance of the following pattern:
    *
+   * <code>
    * r928 = new java.lang.NullPointerException; specialinvoke r928."<init>"(); throw r928;
+   * </code>
    *
    * Creates if necessary.
    */
-
   public static Stmt getNullPointerExceptionThrower(JimpleBody b) {
-    Chain<Unit> units = b.getUnits();
-    Set<Unit> trappedUnits = TrapManager.getTrappedUnitsOf(b);
+    return getNullPointerExceptionThrower((Body) b);
+  }
 
-    for (Stmt s = (Stmt) units.getLast(); s != units.getFirst(); s = (Stmt) units.getPredOf(s)) {
-      if (trappedUnits.contains(s)) {
-        continue;
-      }
-      if (s instanceof ThrowStmt) {
+  /**
+   * Iterate through the statements in b (starting at the end), returning the last instance of the following pattern:
+   *
+   * <code>
+   * r928 = new java.lang.NullPointerException; specialinvoke r928."<init>"(); throw r928;
+   * </code>
+   *
+   * Creates if necessary.
+   */
+  public static Stmt getNullPointerExceptionThrower(ShimpleBody b) {
+    return getNullPointerExceptionThrower((Body) b);
+  }
+
+  static Stmt getNullPointerExceptionThrower(Body b) {
+    assert (b instanceof JimpleBody || b instanceof ShimpleBody);
+    final Set<Unit> trappedUnits = TrapManager.getTrappedUnitsOf(b);
+    final Chain<Unit> units = b.getUnits();
+    final Unit first = units.getFirst();
+    final Stmt last = (Stmt) units.getLast();
+    for (Stmt s = last; s != first; s = (Stmt) units.getPredOf(s)) {
+      if (!trappedUnits.contains(s) && s instanceof ThrowStmt) {
         Value throwee = ((ThrowStmt) s).getOp();
         if (throwee instanceof Constant) {
           continue;
         }
 
-        if (s == units.getFirst()) {
+        if (s == first) {
           break;
         }
         Stmt prosInvoke = (Stmt) units.getPredOf(s);
-
         if (!(prosInvoke instanceof InvokeStmt)) {
           continue;
         }
 
-        if (prosInvoke == units.getFirst()) {
+        if (prosInvoke == first) {
           break;
         }
-        Stmt prosNew = (Stmt) units.getPredOf(prosInvoke);
 
+        Stmt prosNew = (Stmt) units.getPredOf(prosInvoke);
         if (!(prosNew instanceof AssignStmt)) {
           continue;
         }
@@ -96,18 +112,16 @@ public class ThrowManager {
           continue;
         }
 
-        if (((SpecialInvokeExpr) ie).getBase() != throwee || !ie.getMethodRef().name().equals("<init>")) {
+        if (((SpecialInvokeExpr) ie).getBase() != throwee || !"<init>".equals(ie.getMethodRef().name())) {
           continue;
         }
 
-        Value lo = ((AssignStmt) prosNew).getLeftOp();
         Value ro = ((AssignStmt) prosNew).getRightOp();
-        if (lo != throwee || !(ro instanceof NewExpr)) {
+        if (((AssignStmt) prosNew).getLeftOp() != throwee || !(ro instanceof NewExpr)) {
           continue;
         }
 
-        Type newType = ((NewExpr) ro).getBaseType();
-        if (!newType.equals(RefType.v("java.lang.NullPointerException"))) {
+        if (!((NewExpr) ro).getBaseType().equals(RefType.v("java.lang.NullPointerException"))) {
           continue;
         }
 
@@ -117,24 +131,25 @@ public class ThrowManager {
     }
 
     // Create.
-    Stmt last = (Stmt) units.getLast();
-
-    return addThrowAfter(b, last);
+    return addThrowAfter(b.getLocals(), units, last);
   }
 
   static Stmt addThrowAfter(JimpleBody b, Stmt target) {
-    Chain<Unit> units = b.getUnits();
-    Collection<Local> locals = b.getLocals();
-    int i = 0;
+    return addThrowAfter(b.getLocals(), b.getUnits(), target);
+  }
 
-    // Bah!
-    boolean canAddI = false;
+  static Stmt addThrowAfter(ShimpleBody b, Stmt target) {
+    return addThrowAfter(b.getLocals(), b.getUnits(), target);
+  }
+
+  static Stmt addThrowAfter(Chain<Local> locals, Chain<Unit> units, Stmt target) {
+    int i = 0;
+    boolean canAddI;
     do {
       canAddI = true;
-      Iterator<Local> localIt = locals.iterator();
-      while (localIt.hasNext()) {
-        Local l = (Local) localIt.next();
-        if (l.getName().equals("__throwee" + i)) {
+      String name = "__throwee" + i;
+      for (Local l : locals) {
+        if (name.equals(l.getName())) {
           canAddI = false;
         }
       }
@@ -143,15 +158,16 @@ public class ThrowManager {
       }
     } while (!canAddI);
 
-    Local l = Jimple.v().newLocal("__throwee" + i, RefType.v("java.lang.NullPointerException"));
-    b.getLocals().add(l);
+    final Jimple jimp = Jimple.v();
+    Local l = jimp.newLocal("__throwee" + i, RefType.v("java.lang.NullPointerException"));
+    locals.add(l);
 
-    Stmt newStmt = Jimple.v().newAssignStmt(l, Jimple.v().newNewExpr(RefType.v("java.lang.NullPointerException")));
+    Stmt newStmt = jimp.newAssignStmt(l, jimp.newNewExpr(RefType.v("java.lang.NullPointerException")));
 
-    Stmt invStmt = Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(l,
-        Scene.v().getMethod("<java.lang.NullPointerException: void <init>()>").makeRef()));
+    Stmt invStmt = jimp.newInvokeStmt(
+        jimp.newSpecialInvokeExpr(l, Scene.v().getMethod("<java.lang.NullPointerException: void <init>()>").makeRef()));
 
-    Stmt throwStmt = Jimple.v().newThrowStmt(l);
+    Stmt throwStmt = jimp.newThrowStmt(l);
 
     units.insertAfter(newStmt, target);
     units.insertAfter(invStmt, newStmt);
@@ -163,22 +179,13 @@ public class ThrowManager {
    * If exception e is caught at stmt s in body b, return the handler; otherwise, return null.
    */
   static boolean isExceptionCaughtAt(SootClass e, Stmt stmt, Body b) {
-    /*
-     * Look through the traps t of b, checking to see if: - caught exception is e; - and, stmt lies between t.beginUnit and
-     * t.endUnit
-     */
-
+    // Look through the traps t of b, checking to see if (1) caught exception
+    // is e and (2) stmt lies between t.beginUnit and t.endUnit
     Hierarchy h = new Hierarchy();
-
-    Iterator<Trap> trapsIt = b.getTraps().iterator();
-
-    while (trapsIt.hasNext()) {
-      Trap t = trapsIt.next();
-
+    for (Trap t : b.getTraps()) {
       /* Ah ha, we might win. */
       if (h.isClassSubclassOfIncluding(e, t.getException())) {
-        Iterator<Unit> it = b.getUnits().iterator(t.getBeginUnit(), t.getEndUnit());
-        while (it.hasNext()) {
+        for (Iterator<Unit> it = b.getUnits().iterator(t.getBeginUnit(), t.getEndUnit()); it.hasNext();) {
           if (stmt.equals(it.next())) {
             return true;
           }

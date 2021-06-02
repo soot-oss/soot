@@ -35,29 +35,35 @@ import soot.ValueBox;
 import soot.jimple.InvokeExpr;
 
 @SuppressWarnings("serial")
-abstract public class AbstractInvokeExpr implements InvokeExpr {
+public abstract class AbstractInvokeExpr implements InvokeExpr {
+
   protected SootMethodRef methodRef;
-  final protected ValueBox[] argBoxes;
+  protected final ValueBox[] argBoxes;
 
   protected AbstractInvokeExpr(SootMethodRef methodRef, ValueBox[] argBoxes) {
     this.methodRef = methodRef;
     this.argBoxes = argBoxes.length == 0 ? null : argBoxes;
   }
 
+  @Override
   public void setMethodRef(SootMethodRef methodRef) {
     this.methodRef = methodRef;
   }
 
+  @Override
   public SootMethodRef getMethodRef() {
     return methodRef;
   }
 
+  @Override
   public SootMethod getMethod() {
     return methodRef.resolve();
   }
 
+  @Override
   public abstract Object clone();
 
+  @Override
   public Value getArg(int index) {
     if (argBoxes == null) {
       return null;
@@ -66,46 +72,53 @@ abstract public class AbstractInvokeExpr implements InvokeExpr {
     return vb == null ? null : vb.getValue();
   }
 
+  @Override
   public List<Value> getArgs() {
-    List<Value> l = new ArrayList<>();
-    if (argBoxes != null) {
-      for (ValueBox element : argBoxes) {
-        l.add(element == null ? null : element.getValue());
+    final ValueBox[] boxes = this.argBoxes;
+    final List<Value> r;
+    if (boxes == null) {
+      r = new ArrayList<>(0);
+    } else {
+      r = new ArrayList<>(boxes.length);
+      for (ValueBox element : boxes) {
+        r.add(element == null ? null : element.getValue());
       }
     }
-    return l;
+    return r;
   }
 
+  @Override
   public int getArgCount() {
     return argBoxes == null ? 0 : argBoxes.length;
   }
 
+  @Override
   public void setArg(int index, Value arg) {
     argBoxes[index].setValue(arg);
   }
 
+  @Override
   public ValueBox getArgBox(int index) {
     return argBoxes[index];
   }
 
+  @Override
   public Type getType() {
     return methodRef.returnType();
   }
 
   @Override
   public List<ValueBox> getUseBoxes() {
-    if (argBoxes == null) {
+    final ValueBox[] boxes = argBoxes;
+    if (boxes == null) {
       return Collections.emptyList();
     }
 
     List<ValueBox> list = new ArrayList<ValueBox>();
-    Collections.addAll(list, argBoxes);
-
-    for (ValueBox element : argBoxes) {
+    Collections.addAll(list, boxes);
+    for (ValueBox element : boxes) {
       list.addAll(element.getValue().getUseBoxes());
     }
-
     return list;
   }
-
 }

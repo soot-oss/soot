@@ -44,9 +44,12 @@ public final class SharedBitSetCache {
       hash = -hash;
     }
     hash %= size;
-    if (cache[hash] == null || !cache[hash].equals(set)) {
-      return cache[hash] = set;
+    BitVector hashed = cache[hash];
+    if (hashed != null && hashed.equals(set)) {
+      return hashed;
+    } else {
+      cache[hash] = set;
+      return set;
     }
-    return cache[hash];
   }
 }

@@ -28,35 +28,42 @@ import soot.baf.InstSwitch;
 import soot.util.Switch;
 
 public class BCmpInst extends AbstractOpTypeInst implements CmpInst {
+
   public BCmpInst(Type opType) {
     super(opType);
-
   }
 
-  public int getInCount() {
-    return 2;
-  }
-
-  public int getInMachineCount() {
-    return 4;
-  }
-
+  @Override
   public Object clone() {
     return new BCmpInst(getOpType());
   }
 
+  @Override
+  public int getInCount() {
+    return 2;
+  }
+
+  @Override
+  public int getInMachineCount() {
+    return 4;
+  }
+
+  @Override
   public int getOutCount() {
     return 1;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 1;
   }
 
+  @Override
   public final String getName() {
     return "cmp";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseCmpInst(this);
   }

@@ -134,6 +134,7 @@ import soot.toolkits.scalar.ConstantInitializerToTagTransformer;
 import soot.toolkits.scalar.ConstantValueToInitializerTransformer;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
+import soot.toolkits.scalar.SharedInitializationLocalSplitter;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.util.Chain;
 import soot.util.EscapedWriter;
@@ -179,6 +180,7 @@ public class PackManager {
       p.add(new Transform("jb.dtr", DuplicateCatchAllTrapRemover.v()));
       p.add(new Transform("jb.ese", EmptySwitchEliminator.v()));
       p.add(new Transform("jb.ls", LocalSplitter.v()));
+      p.add(new Transform("jb.sils", SharedInitializationLocalSplitter.v()));
       p.add(new Transform("jb.a", Aggregator.v()));
       p.add(new Transform("jb.ule", UnusedLocalEliminator.v()));
       p.add(new Transform("jb.tr", TypeAssigner.v()));
@@ -190,12 +192,14 @@ public class PackManager {
       p.add(new Transform("jb.lp", LocalPacker.v()));
       p.add(new Transform("jb.ne", NopEliminator.v()));
       p.add(new Transform("jb.uce", UnreachableCodeEliminator.v()));
+      p.add(new Transform("jb.cbf", ConditionalBranchFolder.v()));
     }
 
     // Java to Jimple - Jimple body creation
     addPack(p = new JavaToJimpleBodyPack());
     {
       p.add(new Transform("jj.ls", LocalSplitter.v()));
+      p.add(new Transform("jj.sils", SharedInitializationLocalSplitter.v()));
       p.add(new Transform("jj.a", Aggregator.v()));
       p.add(new Transform("jj.ule", UnusedLocalEliminator.v()));
       p.add(new Transform("jj.ne", NopEliminator.v()));
@@ -999,12 +1003,11 @@ public class PackManager {
 
       if (produceJimple) {
         Body body = m.retrieveActiveBody();
-        // Change
-        CopyPropagator.v().transform(body);
-        ConditionalBranchFolder.v().transform(body);
-        UnreachableCodeEliminator.v().transform(body);
-        DeadAssignmentEliminator.v().transform(body);
-        UnusedLocalEliminator.v().transform(body);
+        PackManager.v().getTransform("jb.cp").apply(body); // CopyPropagator
+        PackManager.v().getTransform("jb.cbf").apply(body); // ConditionalBranchFolder
+        PackManager.v().getTransform("jb.uce").apply(body); // UnreachableCodeEliminator
+        PackManager.v().getTransform("jb.dae").apply(body); //DeadAssignmentEliminator
+        PackManager.v().getTransform("jb.cp-ule").apply(body); // UnusedLocalEliminator
         PackManager.v().getPack("jtp").apply(body);
         if (Options.v().validate()) {
           body.validate();
