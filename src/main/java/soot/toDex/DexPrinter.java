@@ -254,7 +254,7 @@ public class DexPrinter {
     if (visibility == AnnotationConstants.SOURCE_VISIBLE) {
       return AnnotationVisibility.BUILD;
     }
-    throw new RuntimeException("Unknown annotation visibility: '" + visibility + "'");
+    throw new DexPrinterException("Unknown annotation visibility: '" + visibility + "'");
   }
 
   protected static FieldReference toFieldReference(SootField f) {
@@ -406,7 +406,10 @@ public class DexPrinter {
 
     final ZipEntry manifestEntry = new ZipEntry(JarFile.MANIFEST_NAME);
     destination.putNextEntry(manifestEntry);
-    manifest.write(new BufferedOutputStream(destination));
+    try (BufferedOutputStream bufOut = new BufferedOutputStream(destination)) {
+      manifest.write(bufOut);
+      bufOut.flush();
+    }
     destination.closeEntry();
   }
 
@@ -427,7 +430,7 @@ public class DexPrinter {
           } else if (e.getValue() == 1) {
             return ImmutableBooleanEncodedValue.TRUE_VALUE;
           } else {
-            throw new RuntimeException("error: boolean value from int with value != 0 or 1.");
+            throw new DexPrinterException("error: boolean value from int with value != 0 or 1.");
           }
         } else if (elem instanceof AnnotationBooleanElem) {
           AnnotationBooleanElem e = (AnnotationBooleanElem) elem;
@@ -437,7 +440,7 @@ public class DexPrinter {
             return ImmutableBooleanEncodedValue.FALSE_VALUE;
           }
         } else {
-          throw new RuntimeException("Annotation type incompatible with target type boolean");
+          throw new DexPrinterException("Annotation type incompatible with target type boolean");
         }
       }
       case 'S': {
@@ -501,7 +504,7 @@ public class DexPrinter {
           elements = new ArrayList<AnnotationElement>();
           for (AnnotationElem ae : e.getValue().getElems()) {
             if (!alreadyWritten.add(ae.getName())) {
-              throw new RuntimeException("Duplicate annotation attribute: " + ae.getName());
+              throw new DexPrinterException("Duplicate annotation attribute: " + ae.getName());
             }
 
             AnnotationElement element = new ImmutableAnnotationElement(ae.getName(), buildEncodedValueForAnnotation(ae));
@@ -518,12 +521,12 @@ public class DexPrinter {
         String[] sp = fSig.split(" ");
         String classString = SootToDexUtils.getDexClassName(sp[0].split(":")[0]);
         if (classString.isEmpty()) {
-          throw new RuntimeException("Empty class name in annotation");
+          throw new DexPrinterException("Empty class name in annotation");
         }
 
         String typeString = sp[1];
         if (typeString.isEmpty()) {
-          throw new RuntimeException("Empty type string in annotation");
+          throw new DexPrinterException("Empty type string in annotation");
         }
 
         String fieldName = sp[2];
@@ -536,7 +539,7 @@ public class DexPrinter {
         String[] sp = e.getValue().split(" ");
         String classString = SootToDexUtils.getDexClassName(sp[0].split(":")[0]);
         if (classString.isEmpty()) {
-          throw new RuntimeException("Empty class name in annotation");
+          throw new DexPrinterException("Empty class name in annotation");
         }
 
         String returnType = sp[1];
@@ -553,13 +556,13 @@ public class DexPrinter {
         return ImmutableNullEncodedValue.INSTANCE;
       }
       default:
-        throw new RuntimeException("Unknown Elem Attr Kind: " + elem.getKind());
+        throw new DexPrinterException("Unknown Elem Attr Kind: " + elem.getKind());
     }
   }
 
   protected EncodedValue makeConstantItem(SootField sf, Tag t) {
     if (!(t instanceof ConstantValueTag)) {
-      throw new RuntimeException("error: t not ConstantValueTag.");
+      throw new DexPrinterException("error: t not ConstantValueTag.");
     }
 
     if (t instanceof IntegerConstantValueTag) {
@@ -572,7 +575,7 @@ public class DexPrinter {
         } else if (v == 1) {
           return ImmutableBooleanEncodedValue.TRUE_VALUE;
         } else {
-          throw new RuntimeException("error: boolean value from int with value != 0 or 1.");
+          throw new DexPrinterException("error: boolean value from int with value != 0 or 1.");
         }
       } else if (sft instanceof CharType) {
         return new ImmutableCharEncodedValue((char) i.getIntValue());
@@ -583,7 +586,7 @@ public class DexPrinter {
       } else if (sft instanceof ShortType) {
         return new ImmutableShortEncodedValue((short) i.getIntValue());
       } else {
-        throw new RuntimeException("error: unexpected constant tag type: " + t + " for field " + sf);
+        throw new DexPrinterException("error: unexpected constant tag type: " + t + " for field " + sf);
       }
     } else if (t instanceof LongConstantValueTag) {
       LongConstantValueTag l = (LongConstantValueTag) t;
@@ -606,7 +609,7 @@ public class DexPrinter {
         return null;
       }
     } else {
-      throw new RuntimeException("Unexpected constant type");
+      throw new DexPrinterException("Unexpected constant type");
     }
   }
 
@@ -882,10 +885,10 @@ public class DexPrinter {
         elements = new ArrayList<AnnotationElement>();
         for (AnnotationElem ae : at.getElems()) {
           if (ae.getName() == null || ae.getName().isEmpty()) {
-            throw new RuntimeException("Null or empty annotation name encountered");
+            throw new DexPrinterException("Null or empty annotation name encountered");
           }
           if (!alreadyWritten.add(ae.getName())) {
-            throw new RuntimeException("Duplicate annotation attribute: " + ae.getName());
+            throw new DexPrinterException("Duplicate annotation attribute: " + ae.getName());
           }
 
           EncodedValue value = buildEncodedValueForAnnotation(ae);
@@ -923,10 +926,10 @@ public class DexPrinter {
             elements = new ArrayList<AnnotationElement>();
             for (AnnotationElem ae : at.getElems()) {
               if (ae.getName() == null || ae.getName().isEmpty()) {
-                throw new RuntimeException("Null or empty annotation name encountered");
+                throw new DexPrinterException("Null or empty annotation name encountered");
               }
               if (!alreadyWritten.add(ae.getName())) {
-                throw new RuntimeException("Duplicate annotation attribute: " + ae.getName());
+                throw new DexPrinterException("Duplicate annotation attribute: " + ae.getName());
               }
 
               EncodedValue value = buildEncodedValueForAnnotation(ae);
@@ -1094,7 +1097,7 @@ public class DexPrinter {
       try {
         impl = toMethodImplementation(sm);
       } catch (Exception e) {
-        throw new RuntimeException("Error while processing method " + sm, e);
+        throw new DexPrinterException("Error while processing method " + sm, e);
       }
 
       List<String> parameterNames = null;
@@ -1157,11 +1160,11 @@ public class DexPrinter {
     // https://android.googlesource.com/platform/art/+/refs/heads/master/libdexfile/dex/descriptors_names.cc#271
     if (m.getName().contains("<") || m.getName().contains(">")) {
       if (!m.isConstructor() && !m.isStaticInitializer()) {
-        throw new RuntimeException("Invalid method name: " + m.getSignature());
+        throw new DexPrinterException("Invalid method name: " + m.getSignature());
       }
     }
     if (m.getName().isEmpty()) {
-      throw new RuntimeException("Invalid empty method name: " + m.getSignature());
+      throw new DexPrinterException("Invalid empty method name: " + m.getSignature());
     }
 
     // Switch statements may not be empty in dex, so we have to fix this
@@ -1295,7 +1298,7 @@ public class DexPrinter {
     // Make sure that all labels have been placed by now
     for (Label lbl : labelAssigner.getAllLabels()) {
       if (!lbl.isPlaced()) {
-        throw new RuntimeException("Label not placed: " + lbl);
+        throw new DexPrinterException("Label not placed: " + lbl);
       }
     }
 
@@ -1462,7 +1465,7 @@ public class DexPrinter {
       return;
     }
     if (!(originalJumpInsn instanceof InsnWithOffset)) {
-      throw new RuntimeException("Unexpected jump instruction target");
+      throw new DexPrinterException("Unexpected jump instruction target");
     }
     InsnWithOffset offsetInsn = (InsnWithOffset) originalJumpInsn;
 
@@ -1497,7 +1500,7 @@ public class DexPrinter {
       if (newStmt == null || newStmt == prevStmt) {
         newJumpIdx -= sign;
         if (newJumpIdx < 0 || newJumpIdx >= instructions.size()) {
-          throw new RuntimeException("No position for inserting intermediate " + "jump instruction found");
+          throw new DexPrinterException("No position for inserting intermediate jump instruction found");
         }
       } else {
         break;
