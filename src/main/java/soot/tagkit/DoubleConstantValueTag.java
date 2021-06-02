@@ -25,16 +25,26 @@ package soot.tagkit;
 import soot.jimple.DoubleConstant;
 
 public class DoubleConstantValueTag extends ConstantValueTag {
+
+  public static final String NAME = "DoubleConstantValueTag";
+
   private final double value;
+
+  public DoubleConstantValueTag(double val) {
+    super(null);
+    this.value = val;
+  }
 
   public double getDoubleValue() {
     return value;
   }
 
-  public DoubleConstantValueTag(double val) {
-    this.value = val;
+  @Override
+  public String getName() {
+    return NAME;
   }
 
+  @Override
   public String toString() {
     return "ConstantValue: " + Double.toString(value);
   }
@@ -48,8 +58,7 @@ public class DoubleConstantValueTag extends ConstantValueTag {
   public int hashCode() {
     final int prime = 31;
     int result = super.hashCode();
-    long temp;
-    temp = Double.doubleToLongBits(value);
+    long temp = Double.doubleToLongBits(value);
     result = prime * result + (int) (temp ^ (temp >>> 32));
     return result;
   }
@@ -62,14 +71,10 @@ public class DoubleConstantValueTag extends ConstantValueTag {
     if (!super.equals(obj)) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if (this.getClass() != obj.getClass()) {
       return false;
     }
     DoubleConstantValueTag other = (DoubleConstantValueTag) obj;
-    if (Double.doubleToLongBits(value) != Double.doubleToLongBits(other.value)) {
-      return false;
-    }
-    return true;
+    return Double.doubleToLongBits(this.value) == Double.doubleToLongBits(other.value);
   }
-
 }

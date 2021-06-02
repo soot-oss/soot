@@ -24,11 +24,15 @@ package soot.jimple.toolkits.callgraph;
 
 /**
  * A predicate that accepts edges that are the result of an explicit invoke.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class ExplicitEdgesPred implements EdgePredicate {
-  /** Returns true iff the edge e is wanted. */
+
+  /**
+   * Returns true iff the edge e is wanted.
+   */
+  @Override
   public boolean want(Edge e) {
     return e.isExplicit();
   }

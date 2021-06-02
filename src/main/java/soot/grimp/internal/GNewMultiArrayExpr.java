@@ -24,6 +24,7 @@ package soot.grimp.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import soot.ArrayType;
 import soot.Value;
@@ -32,22 +33,24 @@ import soot.grimp.Grimp;
 import soot.jimple.internal.AbstractNewMultiArrayExpr;
 
 public class GNewMultiArrayExpr extends AbstractNewMultiArrayExpr {
-  public GNewMultiArrayExpr(ArrayType type, List sizes) {
+
+  public GNewMultiArrayExpr(ArrayType type, List<? extends Value> sizes) {
     super(type, new ValueBox[sizes.size()]);
 
-    for (int i = 0; i < sizes.size(); i++) {
-      sizeBoxes[i] = Grimp.v().newExprBox((Value) sizes.get(i));
+    final Grimp grmp = Grimp.v();
+    for (ListIterator<? extends Value> it = sizes.listIterator(); it.hasNext();) {
+      Value v = it.next();
+      sizeBoxes[it.previousIndex()] = grmp.newExprBox(v);
     }
   }
 
+  @Override
   public Object clone() {
-    List clonedSizes = new ArrayList(getSizeCount());
-
-    for (int i = 0; i < getSizeCount(); i++) {
-      clonedSizes.add(i, Grimp.cloneIfNecessary(getSize(i)));
+    final ValueBox[] boxes = this.sizeBoxes;
+    List<Value> clonedSizes = new ArrayList<Value>(boxes.length);
+    for (ValueBox vb : boxes) {
+      clonedSizes.add(Grimp.cloneIfNecessary(vb.getValue()));
     }
-
     return new GNewMultiArrayExpr(getBaseType(), clonedSizes);
   }
-
 }

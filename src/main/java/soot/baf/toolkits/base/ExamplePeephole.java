@@ -31,20 +31,18 @@ import soot.baf.InstanceCastInst;
 /**
  * Example peephole that remove all checkcast operations. Resulting class will likely not verify.
  */
-
 public class ExamplePeephole implements Peephole {
+
+  @Override
   public boolean apply(Body b) {
     boolean changed = false;
-
-    Iterator<Unit> it = b.getUnits().iterator();
-    while (it.hasNext()) {
+    for (Iterator<Unit> it = b.getUnits().iterator(); it.hasNext();) {
       Unit u = it.next();
       if (u instanceof InstanceCastInst) {
         it.remove();
         changed = true;
       }
     }
-
     return changed;
   }
 }

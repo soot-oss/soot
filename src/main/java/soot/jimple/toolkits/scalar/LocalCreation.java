@@ -24,7 +24,6 @@ package soot.jimple.toolkits.scalar;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import soot.Local;
@@ -36,17 +35,19 @@ import soot.jimple.Jimple;
  * locals are guaranteed to have a unique name.
  */
 public class LocalCreation {
+
   /** if no prefix is given, this one's used */
   public static final String DEFAULT_PREFIX = "soot";
-  private String prefix;
+
+  private final Collection<Local> localChain;
+  private final Set<String> locals;
+  private final String prefix;
   private int counter;
-  private Set<String> locals;
-  private Collection<Local> localChain;
 
   /**
    * all actions are done on the given locals-chain. as prefix the <code>DEFAULT-PREFIX</code> will be used.
    *
-   * @param chain
+   * @param locals
    *          the locals-chain of a Jimple-body
    */
   public LocalCreation(Collection<Local> locals) {
@@ -56,28 +57,26 @@ public class LocalCreation {
   /**
    * whenever <code>newLocal(type)</code> will be called, the given prefix is used.
    *
-   * @param Chain
+   * @param locals
    *          the locals-chain of a Jimple-body
-   * @param String
+   * @param prefix
    *          prefix overrides the DEFAULT-PREFIX
    */
   public LocalCreation(Collection<Local> locals, String prefix) {
+    this.localChain = locals;
     this.locals = new HashSet<String>(locals.size());
-    localChain = locals;
-    Iterator<Local> it = locals.iterator();
-    while (it.hasNext()) {
-      Local l = (Local) it.next();
+    for (Local l : locals) {
       this.locals.add(l.getName());
     }
     this.prefix = prefix;
-    counter = 0; // try the first one with suffix 0.
+    this.counter = 0; // try the first one with suffix 0.
   }
 
   /**
    * returns a new local with the prefix given to the constructor (or the default-prefix if none has been given) and the
    * given type.<br>
    * The returned local will automatically added to the locals-chain.<br>
-   * The local will be of the form: <tt>prefix</tt><i>X</i> (where the last <i>X</i> is a number, so the localname is
+   * The local will be of the form: <tt>prefix</tt><i>X</i> (where the last <i>X</i> is a number, so the local name is
    * unique).
    *
    * @param type
@@ -85,7 +84,7 @@ public class LocalCreation {
    * @return a new local with a unique name and the given type.
    */
   public Local newLocal(Type type) {
-    return newLocal(prefix, type);
+    return newLocal(this.prefix, type);
   }
 
   /**
@@ -100,22 +99,17 @@ public class LocalCreation {
    * @return a local with the given prefix and the given type.
    */
   public Local newLocal(String prefix, Type type) {
-    int suffix = 0;
-    if (prefix == this.prefix || prefix.equals(this.prefix)) {
-      suffix = counter;
-    }
-
-    while (locals.contains(prefix + suffix)) {
+    int suffix = prefix.equals(this.prefix) ? this.counter : 0;
+    while (this.locals.contains(prefix + suffix)) {
       suffix++;
     }
-
-    if (prefix == this.prefix || prefix.equals(this.prefix)) {
-      counter = suffix + 1;
+    if (prefix.equals(this.prefix)) {
+      this.counter = suffix + 1;
     }
     String newName = prefix + suffix;
     Local newLocal = Jimple.v().newLocal(newName, type);
-    localChain.add(newLocal);
-    locals.add(newName);
+    this.localChain.add(newLocal);
+    this.locals.add(newName);
     return newLocal;
   }
 }

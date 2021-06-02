@@ -31,7 +31,7 @@ import soot.ValueBox;
 @SuppressWarnings("serial")
 public abstract class AbstractOpStmt extends AbstractStmt {
 
-  final ValueBox opBox;
+  protected final ValueBox opBox;
 
   protected AbstractOpStmt(ValueBox opBox) {
     this.opBox = opBox;
@@ -51,11 +51,8 @@ public abstract class AbstractOpStmt extends AbstractStmt {
 
   @Override
   final public List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<ValueBox>();
-
-    list.addAll(opBox.getValue().getUseBoxes());
+    List<ValueBox> list = new ArrayList<ValueBox>(opBox.getValue().getUseBoxes());
     list.add(opBox);
-
     return list;
   }
 }

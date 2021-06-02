@@ -31,7 +31,6 @@ import soot.G;
 import soot.Scene;
 import soot.SceneTransformer;
 import soot.Singletons;
-import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.options.PurityOptions;
 
 /**
@@ -43,10 +42,7 @@ import soot.options.PurityOptions;
 public class PurityAnalysis extends SceneTransformer {
   private static final Logger logger = LoggerFactory.getLogger(PurityAnalysis.class);
 
-  Singletons.Global g;
-
   public PurityAnalysis(Singletons.Global g) {
-    this.g = g;
   }
 
   public static PurityAnalysis v() {
@@ -58,10 +54,9 @@ public class PurityAnalysis extends SceneTransformer {
     PurityOptions opts = new PurityOptions(options);
 
     logger.debug("[AM] Analysing purity");
-
-    CallGraph cg = Scene.v().getCallGraph();
+    final Scene sc = Scene.v();
 
     // launch the analysis
-    new PurityInterproceduralAnalysis(cg, Scene.v().getEntryPoints().iterator(), opts);
+    new PurityInterproceduralAnalysis(sc.getCallGraph(), sc.getEntryPoints().iterator(), opts);
   }
 }

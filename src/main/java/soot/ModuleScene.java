@@ -210,7 +210,7 @@ public class ModuleScene extends Scene // extends original Scene
     Map<String, RefType> map = nameToClass.get(className);
     if (map != null && !map.isEmpty()) {
       if (moduleName.isPresent()) {
-        String module = ModuleUtil.v().findModuleThatExports(className, moduleName.get());
+        String module = ModuleUtil.v().declaringModule(className, moduleName.get());
 
         type = map.get(module);
       }
@@ -437,7 +437,7 @@ public class ModuleScene extends Scene // extends original Scene
     String module;
     if (map != null && !map.isEmpty()) {
       if (moduleName.isPresent()) {
-        module = ModuleUtil.v().findModuleThatExports(className, moduleName.get());
+        module = ModuleUtil.v().declaringModule(className, moduleName.get());
         type = map.get(module);
       }
       // return first element

@@ -26,7 +26,7 @@ import java.nio.charset.StandardCharsets;
 
 public class SourceFileTag implements Tag {
 
-  public static final String NAME = SourceFileTag.class.getSimpleName();
+  public static final String NAME = "SourceFileTag";
 
   private String sourceFile;
   private String absolutePath;
@@ -73,5 +73,4 @@ public class SourceFileTag implements Tag {
   public String toString() {
     return sourceFile;
   }
-
 }

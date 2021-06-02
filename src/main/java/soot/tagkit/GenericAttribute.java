@@ -22,6 +22,7 @@ package soot.tagkit;
  * #L%
  */
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,29 +35,31 @@ import soot.UnitBox;
  * @see CodeAttribute
  */
 public class GenericAttribute implements Attribute {
+
   private final String mName;
   private byte[] mValue;
 
   public GenericAttribute(String name, byte[] value) {
-    if (value == null) {
-      value = new byte[0];
-    }
-    mName = name;
-    mValue = value;
+    this.mName = name;
+    this.mValue = value != null ? value : new byte[0];
   }
 
+  @Override
   public String getName() {
     return mName;
   }
 
+  @Override
   public byte[] getValue() {
     return mValue;
   }
 
+  @Override
   public String toString() {
-    return mName + " " + Base64.encode(mValue).toString();
+    return mName + ' ' + Arrays.toString(Base64.encode(mValue));
   }
 
+  @Override
   public void setValue(byte[] value) {
     mValue = value;
   }

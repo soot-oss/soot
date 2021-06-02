@@ -24,7 +24,6 @@ package soot.xml;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import soot.tagkit.ColorTag;
 import soot.tagkit.Host;
@@ -38,8 +37,9 @@ import soot.tagkit.Tag;
 
 public class Attribute {
 
-  // private ColorAttribute color;
   private ArrayList<ColorAttribute> colors;
+  private ArrayList<StringAttribute> texts;
+  private ArrayList<LinkAttribute> links;
   private int jimpleStartPos;
   private int jimpleEndPos;
   private int javaStartPos;
@@ -54,110 +54,100 @@ public class Attribute {
   }
 
   public void addColor(ColorAttribute ca) {
+    ArrayList<ColorAttribute> colors = this.colors;
     if (colors == null) {
-      colors = new ArrayList<ColorAttribute>();
+      this.colors = colors = new ArrayList<ColorAttribute>();
     }
     colors.add(ca);
   }
 
-  /*
-   * public ColorAttribute color(){ return color; }
-   *
-   * public void color(ColorAttribute c){ color = c; }
-   */
-
-  public int jimpleStartPos() {
-    return jimpleStartPos;
-  }
-
-  public void jimpleStartPos(int x) {
-    jimpleStartPos = x;
-  }
-
-  public int jimpleEndPos() {
-    return jimpleEndPos;
-  }
-
-  public void jimpleEndPos(int x) {
-    jimpleEndPos = x;
-  }
-
-  public int javaStartPos() {
-    return javaStartPos;
-  }
-
-  public void javaStartPos(int x) {
-    javaStartPos = x;
-  }
-
-  public int javaEndPos() {
-    return javaEndPos;
-  }
-
-  public void javaEndPos(int x) {
-    javaEndPos = x;
-  }
-
-  public int jimpleStartLn() {
-    return jimpleStartLn;
-  }
-
-  public void jimpleStartLn(int x) {
-    jimpleStartLn = x;
-  }
-
-  public int jimpleEndLn() {
-    return jimpleEndLn;
-  }
-
-  public void jimpleEndLn(int x) {
-    jimpleEndLn = x;
-  }
-
-  public int javaStartLn() {
-    return javaStartLn;
-  }
-
-  public void javaStartLn(int x) {
-    javaStartLn = x;
-  }
-
-  public int javaEndLn() {
-    return javaEndLn;
-  }
-
-  public void javaEndLn(int x) {
-    javaEndLn = x;
-  }
-
-  public boolean hasColor() {
-    if (colors != null) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  ArrayList<StringAttribute> texts;
-  ArrayList<LinkAttribute> links;
-
   public void addText(StringAttribute s) {
+    ArrayList<StringAttribute> texts = this.texts;
     if (texts == null) {
-      texts = new ArrayList<StringAttribute>();
+      this.texts = texts = new ArrayList<StringAttribute>();
     }
     texts.add(s);
   }
 
   public void addLink(LinkAttribute la) {
+    ArrayList<LinkAttribute> links = this.links;
     if (links == null) {
-      links = new ArrayList<LinkAttribute>();
+      this.links = links = new ArrayList<LinkAttribute>();
     }
     links.add(la);
   }
 
+  public int jimpleStartPos() {
+    return this.jimpleStartPos;
+  }
+
+  public void jimpleStartPos(int x) {
+    this.jimpleStartPos = x;
+  }
+
+  public int jimpleEndPos() {
+    return this.jimpleEndPos;
+  }
+
+  public void jimpleEndPos(int x) {
+    this.jimpleEndPos = x;
+  }
+
+  public int javaStartPos() {
+    return this.javaStartPos;
+  }
+
+  public void javaStartPos(int x) {
+    this.javaStartPos = x;
+  }
+
+  public int javaEndPos() {
+    return this.javaEndPos;
+  }
+
+  public void javaEndPos(int x) {
+    this.javaEndPos = x;
+  }
+
+  public int jimpleStartLn() {
+    return this.jimpleStartLn;
+  }
+
+  public void jimpleStartLn(int x) {
+    this.jimpleStartLn = x;
+  }
+
+  public int jimpleEndLn() {
+    return this.jimpleEndLn;
+  }
+
+  public void jimpleEndLn(int x) {
+    this.jimpleEndLn = x;
+  }
+
+  public int javaStartLn() {
+    return this.javaStartLn;
+  }
+
+  public void javaStartLn(int x) {
+    this.javaStartLn = x;
+  }
+
+  public int javaEndLn() {
+    return this.javaEndLn;
+  }
+
+  public void javaEndLn(int x) {
+    this.javaEndLn = x;
+  }
+
+  public boolean hasColor() {
+    return this.colors != null;
+  }
+
   public void addTag(Tag t) {
     if (t instanceof LineNumberTag) {
-      int lnNum = (new Integer(((LineNumberTag) t).toString())).intValue();
+      int lnNum = ((LineNumberTag) t).getLineNumber();
       javaStartLn(lnNum);
       javaEndLn(lnNum);
     } else if (t instanceof JimpleLineNumberTag) {
@@ -173,34 +163,25 @@ public class Attribute {
     } else if (t instanceof LinkTag) {
       LinkTag lt = (LinkTag) t;
       Host h = lt.getLink();
-      LinkAttribute link = new LinkAttribute(lt.getInfo(), getJimpleLnOfHost(h), getJavaLnOfHost(h), lt.getClassName(),
-          lt.getAnalysisType());
-      addLink(link);
-
+      addLink(new LinkAttribute(lt.getInfo(), getJimpleLnOfHost(h), getJavaLnOfHost(h), lt.getClassName(),
+          lt.getAnalysisType()));
     } else if (t instanceof StringTag) {
       StringTag st = (StringTag) t;
-      StringAttribute string = new StringAttribute(formatForXML(st.getInfo()), st.getAnalysisType());
-      addText(string);
+      addText(new StringAttribute(formatForXML(st.getInfo()), st.getAnalysisType()));
     } else if (t instanceof PositionTag) {
       PositionTag pt = (PositionTag) t;
       jimpleStartPos(pt.getStartOffset());
       jimpleEndPos(pt.getEndOffset());
     } else if (t instanceof ColorTag) {
       ColorTag ct = (ColorTag) t;
-      ColorAttribute ca
-          = new ColorAttribute(ct.getRed(), ct.getGreen(), ct.getBlue(), ct.isForeground(), ct.getAnalysisType());
-      // color(ca);
-      addColor(ca);
+      addColor(new ColorAttribute(ct.getRed(), ct.getGreen(), ct.getBlue(), ct.isForeground(), ct.getAnalysisType()));
     }
     /*
      * else if (t instanceof SourcePositionTag){ } else if (t instanceof SourceLineNumberTag){ }
      */
     else {
-      // System.out.println("t is: "+t.getClass());
-      StringAttribute sa = new StringAttribute(t.toString(), t.getName());
-      addText(sa);
+      addText(new StringAttribute(t.toString(), t.getName()));
     }
-
   }
 
   private String formatForXML(String in) {
@@ -212,22 +193,18 @@ public class Attribute {
   }
 
   private int getJavaLnOfHost(Host h) {
-    Iterator<Tag> it = h.getTags().iterator();
-    while (it.hasNext()) {
-      Tag t = it.next();
+    for (Tag t : h.getTags()) {
       if (t instanceof SourceLnPosTag) {
         return ((SourceLnPosTag) t).startLn();
       } else if (t instanceof LineNumberTag) {
-        return (new Integer(((LineNumberTag) t).toString())).intValue();
+        return ((LineNumberTag) t).getLineNumber();
       }
     }
     return 0;
   }
 
   private int getJimpleLnOfHost(Host h) {
-    Iterator<Tag> it = h.getTags().iterator();
-    while (it.hasNext()) {
-      Tag t = it.next();
+    for (Tag t : h.getTags()) {
       if (t instanceof JimpleLineNumberTag) {
         return ((JimpleLineNumberTag) t).getStartLineNumber();
       }
@@ -235,12 +212,17 @@ public class Attribute {
     return 0;
   }
 
+  @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer();
-    sb.append("<srcPos sline=\"" + javaStartLn() + "\" eline=\"" + javaEndLn() + "\" spos=\"" + javaStartPos() + "\" epos=\""
-        + javaEndPos() + "\"/>");
-    sb.append("<jmpPos sline=\"" + jimpleStartLn() + "\" eline=\"" + jimpleEndLn() + "\" spos=\"" + jimpleStartPos()
-        + "\" epos=\"" + jimpleEndPos() + "\"/>");
+    StringBuilder sb = new StringBuilder();
+    sb.append("<srcPos sline=\"").append(javaStartLn());
+    sb.append("\" eline=\"").append(javaEndLn());
+    sb.append("\" spos=\"").append(javaStartPos());
+    sb.append("\" epos=\"").append(javaEndPos()).append("\"/>");
+    sb.append("<jmpPos sline=\"").append(jimpleStartLn());
+    sb.append("\" eline=\"").append(jimpleEndLn());
+    sb.append("\" spos=\"").append(jimpleStartPos());
+    sb.append("\" epos=\"").append(jimpleEndPos()).append("\"/>");
     return sb.toString();
   }
 
@@ -263,24 +245,18 @@ public class Attribute {
     writerOut.println("<jmpPos sline=\"" + jimpleStartLn() + "\" eline=\"" + jimpleEndLn() + "\" spos=\"" + jimpleStartPos()
         + "\" epos=\"" + jimpleEndPos() + "\"/>");
     if (colors != null) {
-      Iterator<ColorAttribute> cIt = colors.iterator();
-      while (cIt.hasNext()) {
-        ColorAttribute ca = cIt.next();
+      for (ColorAttribute ca : colors) {
         writerOut.println("<color r=\"" + ca.red() + "\" g=\"" + ca.green() + "\" b=\"" + ca.blue() + "\" fg=\"" + ca.fg()
             + "\" aType=\"" + ca.analysisType() + "\"/>");
       }
     }
     if (texts != null) {
-      Iterator<StringAttribute> textsIt = texts.iterator();
-      while (textsIt.hasNext()) {
-        StringAttribute sa = textsIt.next();
+      for (StringAttribute sa : texts) {
         writerOut.println("<text info=\"" + sa.info() + "\" aType=\"" + sa.analysisType() + "\"/>");
       }
     }
     if (links != null) {
-      Iterator<LinkAttribute> linksIt = links.iterator();
-      while (linksIt.hasNext()) {
-        LinkAttribute la = linksIt.next();
+      for (LinkAttribute la : links) {
         writerOut.println("<link label=\"" + formatForXML(la.info()) + "\" jmpLink=\"" + la.jimpleLink() + "\" srcLink=\""
             + la.javaLink() + "\" clssNm=\"" + la.className() + "\" aType=\"" + la.analysisType() + "\"/>");
       }

@@ -36,11 +36,12 @@ import soot.Unit;
  * @author Ondrej Lhotak
  */
 public class TransitiveTargets {
-  private CallGraph cg;
-  private Filter filter;
+
+  private final CallGraph cg;
+  private final Filter filter;
 
   public TransitiveTargets(CallGraph cg) {
-    this.cg = cg;
+    this(cg, null);
   }
 
   public TransitiveTargets(CallGraph cg, Filter filter) {
@@ -55,7 +56,7 @@ public class TransitiveTargets {
       it = filter.wrap(it);
     }
     while (it.hasNext()) {
-      Edge e = (Edge) it.next();
+      Edge e = it.next();
       methods.add(e.getTgt());
     }
     return iterator(methods.iterator());
@@ -68,7 +69,7 @@ public class TransitiveTargets {
       it = filter.wrap(it);
     }
     while (it.hasNext()) {
-      Edge e = (Edge) it.next();
+      Edge e = it.next();
       methods.add(e.getTgt());
     }
     return iterator(methods.iterator());
@@ -87,14 +88,14 @@ public class TransitiveTargets {
   }
 
   private Iterator<MethodOrMethodContext> iterator(Set<MethodOrMethodContext> s, ArrayList<MethodOrMethodContext> worklist) {
-    for (int i = 0; i < worklist.size(); i++) {
+    for (int i = 0, end = worklist.size(); i < end; i++) {
       MethodOrMethodContext method = worklist.get(i);
       Iterator<Edge> it = cg.edgesOutOf(method);
       if (filter != null) {
         it = filter.wrap(it);
       }
       while (it.hasNext()) {
-        Edge e = (Edge) it.next();
+        Edge e = it.next();
         if (s.add(e.getTgt())) {
           worklist.add(e.getTgt());
         }
