@@ -22,7 +22,6 @@ package soot.toolkits.graph;
  * #L%
  */
 
-import java.util.Iterator;
 import java.util.Set;
 
 import soot.Body;
@@ -32,12 +31,10 @@ import soot.Unit;
 /**
  * A CFG where the nodes are {@link Block} instances, and where exception boundaries are taken into account when finding the
  * <tt>Block</tt>s for the provided Body. Any {@link Unit} which is the first <tt>Unit</tt> to be convered by some exception
- * handler will start a new Block, and any <ttUnit</tt> which is the last <tt>Unit</tt> to be covered a some exception
+ * handler will start a new Block, and any <tt>Unit</tt> which is the last <tt>Unit</tt> to be covered a some exception
  * handler, will end the block it is part of. These ``zones'', however, are not split up to indicate the possibility that an
  * exception will lead to control exiting the zone before it is completed.
- *
  */
-
 public class ZonedBlockGraph extends BlockGraph {
   /**
    * <p>
@@ -95,16 +92,14 @@ public class ZonedBlockGraph extends BlockGraph {
    *
    * @return the {@link Set} of {@link Unit}s in <tt>unitGraph</tt> which are block leaders.
    */
+  @Override
   protected Set<Unit> computeLeaders(UnitGraph unitGraph) {
     Body body = unitGraph.getBody();
     if (body != mBody) {
       throw new RuntimeException("ZonedBlockGraph.computeLeaders() called with a UnitGraph that doesn't match its mBody.");
     }
-
     Set<Unit> leaders = super.computeLeaders(unitGraph);
-
-    for (Iterator<Trap> it = body.getTraps().iterator(); it.hasNext();) {
-      Trap trap = it.next();
+    for (Trap trap : body.getTraps()) {
       leaders.add(trap.getBeginUnit());
       leaders.add(trap.getEndUnit());
     }
