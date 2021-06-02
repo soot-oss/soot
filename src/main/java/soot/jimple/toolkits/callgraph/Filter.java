@@ -30,8 +30,9 @@ import java.util.Iterator;
  * @author Ondrej Lhotak
  */
 public class Filter implements Iterator<Edge> {
+
+  private final EdgePredicate pred;
   private Iterator<Edge> source;
-  private EdgePredicate pred;
   private Edge next = null;
 
   public Filter(EdgePredicate pred) {
@@ -46,7 +47,7 @@ public class Filter implements Iterator<Edge> {
 
   private void advance() {
     while (source.hasNext()) {
-      next = (Edge) source.next();
+      next = source.next();
       if (pred.want(next)) {
         return;
       }
@@ -54,16 +55,19 @@ public class Filter implements Iterator<Edge> {
     next = null;
   }
 
+  @Override
   public boolean hasNext() {
     return next != null;
   }
 
+  @Override
   public Edge next() {
     Edge ret = next;
     advance();
     return ret;
   }
 
+  @Override
   public void remove() {
     throw new UnsupportedOperationException();
   }

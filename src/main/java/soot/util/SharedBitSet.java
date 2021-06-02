@@ -27,7 +27,7 @@ public final class SharedBitSet {
   boolean own = true;
 
   public SharedBitSet(int i) {
-    value = new BitVector(i);
+    this.value = new BitVector(i);
   }
 
   public SharedBitSet() {
@@ -99,11 +99,15 @@ public final class SharedBitSet {
     return value.iterator();
   }
 
+  @Override
   public String toString() {
-    StringBuffer b = new StringBuffer();
+    StringBuilder b = new StringBuilder();
     for (BitSetIterator it = iterator(); it.hasNext();) {
-      b.append(it.next());
-      b.append(",");
+      int next = it.next();
+      b.append(next);
+      if (it.hasNext()) {
+        b.append(',');
+      }
     }
     return b.toString();
   }

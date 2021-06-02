@@ -48,9 +48,9 @@ public enum LocalsValidator implements BodyValidator {
   }
 
   private void validateLocal(Body body, ValueBox vb, List<ValidationException> exception) {
-    Value value;
-    if ((value = vb.getValue()) instanceof Local) {
-      if (!body.getLocals().contains(value)) {
+    Value value = vb.getValue();
+    if (value instanceof Local) {
+      if (!body.getLocals().contains((Local) value)) {
         exception.add(new ValidationException(value, "Local not in chain : " + value + " in " + body.getMethod()));
       }
     }

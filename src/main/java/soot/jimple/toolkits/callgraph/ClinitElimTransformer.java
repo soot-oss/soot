@@ -28,32 +28,25 @@ import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Scene;
-import soot.SootMethod;
+import soot.jimple.Stmt;
 import soot.toolkits.graph.BriefUnitGraph;
-import soot.toolkits.scalar.FlowSet;
 
 public class ClinitElimTransformer extends BodyTransformer {
 
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  @Override
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     ClinitElimAnalysis a = new ClinitElimAnalysis(new BriefUnitGraph(b));
 
     CallGraph cg = Scene.v().getCallGraph();
-
-    SootMethod m = b.getMethod();
-
-    Iterator edgeIt = cg.edgesOutOf(m);
-
-    while (edgeIt.hasNext()) {
-      Edge e = (Edge) edgeIt.next();
-      if (e.srcStmt() == null) {
-        continue;
-      }
-      if (!e.isClinit()) {
-        continue;
-      }
-      FlowSet methods = (FlowSet) a.getFlowBefore(e.srcStmt());
-      if (methods.contains(e.tgt())) {
-        cg.removeEdge(e);
+    for (Iterator<Edge> edgeIt = cg.edgesOutOf(b.getMethod()); edgeIt.hasNext();) {
+      Edge e = edgeIt.next();
+      if (e.isClinit()) {
+        Stmt srcStmt = e.srcStmt();
+        if (srcStmt != null) {
+          if (a.getFlowBefore(srcStmt).contains(e.tgt())) {
+            cg.removeEdge(e);
+          }
+        }
       }
     }
   }

@@ -32,15 +32,16 @@ import soot.Singletons;
 import soot.Unit;
 import soot.jimple.Jimple;
 import soot.jimple.LookupSwitchStmt;
+import soot.util.Chain;
 
 /**
  * Removes empty switch statements which always take the default action from a method body, i.e. blocks of the form switch(x)
  * { default: ... }. Such blocks are replaced by the code of the default block.
  *
  * @author Steven Arzt
- *
  */
 public class EmptySwitchEliminator extends BodyTransformer {
+
   public EmptySwitchEliminator(Singletons.Global g) {
   }
 
@@ -48,17 +49,20 @@ public class EmptySwitchEliminator extends BodyTransformer {
     return G.v().soot_jimple_toolkits_scalar_EmptySwitchEliminator();
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    Iterator<Unit> it = b.getUnits().snapshotIterator();
-    while (it.hasNext()) {
+    final Chain<Unit> units = b.getUnits();
+    for (Iterator<Unit> it = units.snapshotIterator(); it.hasNext();) {
       Unit u = it.next();
       if (u instanceof LookupSwitchStmt) {
         LookupSwitchStmt sw = (LookupSwitchStmt) u;
-        if (sw.getTargetCount() == 0 && sw.getDefaultTarget() != null) {
-          b.getUnits().swapWith(sw, Jimple.v().newGotoStmt(sw.getDefaultTarget()));
+        if (sw.getTargetCount() == 0) {
+          Unit defaultTarget = sw.getDefaultTarget();
+          if (defaultTarget != null) {
+            units.swapWith(sw, Jimple.v().newGotoStmt(defaultTarget));
+          }
         }
       }
     }
-
   }
 }

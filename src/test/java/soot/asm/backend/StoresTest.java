@@ -33,7 +33,6 @@ import org.objectweb.asm.util.TraceClassVisitor;
  *
  */
 
-
 public class StoresTest extends AbstractASMBackendTest {
 
   @Override
@@ -133,24 +132,27 @@ public class StoresTest extends AbstractASMBackendTest {
       Label l0 = new Label();
       mv.visitJumpInsn(IFLE, l0);
       mv.visitInsn(ICONST_1);
-      mv.visitVarInsn(ISTORE, 1);
+      mv.visitVarInsn(ISTORE, 0);
       Label l1 = new Label();
       mv.visitJumpInsn(GOTO, l1);
 
       mv.visitLabel(l0);
       mv.visitInsn(ICONST_0);
-      mv.visitVarInsn(ISTORE, 1);
+      mv.visitVarInsn(ISTORE, 0);
 
       mv.visitLabel(l1);
+      mv.visitLdcInsn(new Integer(2343249));
+      mv.visitInsn(I2B);
       mv.visitTypeInsn(NEW, "java/lang/Object");
-      mv.visitVarInsn(ASTORE, 0);
-      mv.visitVarInsn(ALOAD, 0);
+      mv.visitVarInsn(ASTORE, 1);
+      mv.visitVarInsn(ALOAD, 1);
       mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
       mv.visitInsn(ICONST_3);
       mv.visitIntInsn(NEWARRAY, T_INT);
       mv.visitInsn(ICONST_1);
       mv.visitLdcInsn(new Integer(24355764));
       mv.visitInsn(IASTORE);
+      mv.visitVarInsn(ISTORE, 2);
       mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
       mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
       mv.visitInsn(DUP);
@@ -169,10 +171,9 @@ public class StoresTest extends AbstractASMBackendTest {
       mv.visitLdcInsn("");
       mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;",
           false);
-      mv.visitVarInsn(ILOAD, 1);
+      mv.visitVarInsn(ILOAD, 0);
       mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Z)Ljava/lang/StringBuilder;", false);
-      mv.visitLdcInsn(new Integer(2343249));
-      mv.visitInsn(I2B);
+      mv.visitVarInsn(ILOAD, 2);
       mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;", false);
       mv.visitLdcInsn(new Long(314435665L));
       mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(J)Ljava/lang/StringBuilder;", false);
@@ -181,7 +182,7 @@ public class StoresTest extends AbstractASMBackendTest {
       mv.visitLdcInsn(" ");
       mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;",
           false);
-      mv.visitVarInsn(ALOAD, 0);
+      mv.visitVarInsn(ALOAD, 1);
       mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;",
           false);
       mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
