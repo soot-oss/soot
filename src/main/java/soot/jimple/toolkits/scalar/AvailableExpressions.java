@@ -24,7 +24,9 @@ package soot.jimple.toolkits.scalar;
 
 import java.util.List;
 
+import soot.EquivalentValue;
 import soot.Unit;
+import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
 /**
@@ -33,14 +35,14 @@ import soot.util.Chain;
  */
 public interface AvailableExpressions {
   /** Returns a List containing the UnitValueBox pairs corresponding to expressions available before u. */
-  public List getAvailablePairsBefore(Unit u);
+  public List<UnitValueBoxPair> getAvailablePairsBefore(Unit u);
 
   /** Returns a List containing the UnitValueBox pairs corresponding to expressions available after u. */
-  public List getAvailablePairsAfter(Unit u);
+  public List<UnitValueBoxPair> getAvailablePairsAfter(Unit u);
 
   /** Returns a Chain containing the EquivalentValue objects corresponding to expressions available before u. */
-  public Chain getAvailableEquivsBefore(Unit u);
+  public Chain<EquivalentValue> getAvailableEquivsBefore(Unit u);
 
   /** Returns a Chain containing the EquivalentValue objects corresponding to expressions available after u. */
-  public Chain getAvailableEquivsAfter(Unit u);
+  public Chain<EquivalentValue> getAvailableEquivsAfter(Unit u);
 }

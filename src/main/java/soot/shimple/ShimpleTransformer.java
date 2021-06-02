@@ -22,7 +22,6 @@ package soot.shimple;
  * #L%
  */
 
-import java.util.Iterator;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -30,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import soot.Body;
 import soot.G;
-import soot.MethodSource;
 import soot.Scene;
 import soot.SceneTransformer;
 import soot.Singletons;
@@ -43,7 +41,7 @@ import soot.options.Options;
  * analysis on Shimple.
  *
  * @author Navindra Umanee
- **/
+ */
 public class ShimpleTransformer extends SceneTransformer {
   private static final Logger logger = LoggerFactory.getLogger(ShimpleTransformer.class);
 
@@ -54,46 +52,37 @@ public class ShimpleTransformer extends SceneTransformer {
     return G.v().soot_shimple_ShimpleTransformer();
   }
 
+  @Override
   protected void internalTransform(String phaseName, Map options) {
     if (Options.v().verbose()) {
       logger.debug("Transforming all classes in the Scene to Shimple...");
     }
-
     // *** FIXME: Add debug output to indicate which class/method is being shimplified.
     // *** FIXME: Is ShimpleTransformer the right solution? The call graph may deem
     // some classes unreachable.
 
-    Iterator classesIt = Scene.v().getClasses().iterator();
-    while (classesIt.hasNext()) {
-      SootClass sClass = (SootClass) classesIt.next();
-      if (sClass.isPhantom()) {
-        continue;
-      }
+    for (SootClass sClass : Scene.v().getClasses()) {
+      if (!sClass.isPhantom()) {
+        for (SootMethod method : sClass.getMethods()) {
+          if (method.isConcrete()) {
+            if (method.hasActiveBody()) {
+              Body body = method.getActiveBody();
 
-      Iterator methodsIt = sClass.getMethods().iterator();
-      while (methodsIt.hasNext()) {
-        SootMethod method = (SootMethod) methodsIt.next();
-        if (!method.isConcrete()) {
-          continue;
-        }
+              ShimpleBody sBody;
+              if (body instanceof ShimpleBody) {
+                sBody = (ShimpleBody) body;
+                if (!sBody.isSSA()) {
+                  sBody.rebuild();
+                }
+              } else {
+                sBody = Shimple.v().newBody(body);
+              }
 
-        if (method.hasActiveBody()) {
-          Body body = method.getActiveBody();
-          ShimpleBody sBody = null;
-
-          if (body instanceof ShimpleBody) {
-            sBody = (ShimpleBody) body;
-            if (!sBody.isSSA()) {
-              sBody.rebuild();
+              method.setActiveBody(sBody);
+            } else {
+              method.setSource(new ShimpleMethodSource(method.getSource()));
             }
-          } else {
-            sBody = Shimple.v().newBody(body);
           }
-
-          method.setActiveBody(sBody);
-        } else {
-          MethodSource ms = new ShimpleMethodSource(method.getSource());
-          method.setSource(ms);
         }
       }
     }

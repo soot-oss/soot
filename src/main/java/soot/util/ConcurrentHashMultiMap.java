@@ -33,13 +33,12 @@ import java.util.concurrent.ConcurrentMap;
  * A concurrent version of the {@link HashMultiMap}
  *
  * @author Steven Arzt
- * 
  */
 public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
   private static final long serialVersionUID = -3182515910302586044L;
 
-  Map<K, ConcurrentMap<V, V>> m = new ConcurrentHashMap<K, ConcurrentMap<V, V>>(0);
+  private final Map<K, ConcurrentMap<V, V>> m = new ConcurrentHashMap<K, ConcurrentMap<V, V>>(0);
 
   public ConcurrentHashMultiMap() {
   }
@@ -176,8 +175,9 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
     Map<V, V> ret = m.get(o);
     if (ret == null) {
       return Collections.emptySet();
+    } else {
+      return Collections.unmodifiableSet(ret.keySet());
     }
-    return Collections.unmodifiableSet(ret.keySet());
   }
 
   @Override
@@ -232,5 +232,4 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   public String toString() {
     return m.toString();
   }
-
 }

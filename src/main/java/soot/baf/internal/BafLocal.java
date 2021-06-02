@@ -31,16 +31,24 @@ import soot.ValueBox;
 import soot.util.Switch;
 
 public class BafLocal implements Local {
+
   String name;
   Type type;
-
   int fixedHashCode;
   boolean isHashCodeChosen;
   private Local originalLocal;
+  private int number = 0;
 
   public BafLocal(String name, Type t) {
     this.name = name;
     this.type = t;
+  }
+
+  @Override
+  public Object clone() {
+    BafLocal baf = new BafLocal(name, type);
+    baf.originalLocal = this.originalLocal;
+    return baf;
   }
 
   /* JimpleLocals are *NOT* equivalent to Baf Locals! */
@@ -55,24 +63,17 @@ public class BafLocal implements Local {
     return name.hashCode() * 101 + type.hashCode() * 17;
   }
 
-  @Override
-  public Object clone() {
-    BafLocal baf = new BafLocal(name, type);
-    baf.originalLocal = originalLocal;
-    return baf;
-  }
-
   public Local getOriginalLocal() {
-    return originalLocal;
+    return this.originalLocal;
   }
 
   public void setOriginalLocal(Local l) {
-    originalLocal = l;
+    this.originalLocal = l;
   }
 
   @Override
   public String getName() {
-    return name;
+    return this.name;
   }
 
   @Override
@@ -82,7 +83,7 @@ public class BafLocal implements Local {
 
   @Override
   public Type getType() {
-    return type;
+    return this.type;
   }
 
   @Override
@@ -119,6 +120,4 @@ public class BafLocal implements Local {
   public final void setNumber(int number) {
     this.number = number;
   }
-
-  private int number = 0;
 }

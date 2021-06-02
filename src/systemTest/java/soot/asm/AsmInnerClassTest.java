@@ -28,6 +28,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+
 import soot.Modifier;
 import soot.Scene;
 import soot.SootMethod;
@@ -35,6 +37,7 @@ import soot.tagkit.InnerClassTag;
 import soot.tagkit.Tag;
 import soot.testing.framework.AbstractTestingFramework;
 
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class AsmInnerClassTest extends AbstractTestingFramework {
 
   private static final String TEST_TARGET_CLASS = "soot.asm.ScopeFinderTarget";

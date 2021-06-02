@@ -26,20 +26,25 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * A java.util.Map-like map with Numberable objects as the keys. This one is designed for maps close to the size of the
- * universe. For smaller maps, use SmallNumberedMap.
+ * A java.util.Map with Numberable objects as the keys. This one is designed for maps close to the size of the universe. For
+ * smaller maps, use SmallNumberedMap.
  *
  * @author Ondrej Lhotak
  */
-
 public final class LargeNumberedMap<K extends Numberable, V> implements INumberedMap<K, V> {
+
+  private final IterableNumberer<K> universe;
+  private V[] values;
+
   public LargeNumberedMap(IterableNumberer<K> universe) {
     this.universe = universe;
-    int newsize = universe.size();
-    if (newsize < 8) {
-      newsize = 8;
-    }
-    values = new Object[newsize];
+    int size = universe.size();
+    this.values = newArray(size < 8 ? 8 : size);
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <T> T[] newArray(int size) {
+    return (T[]) new Object[size];
   }
 
   @Override
@@ -51,7 +56,7 @@ public final class LargeNumberedMap<K extends Numberable, V> implements INumbere
     }
     if (number >= values.length) {
       Object[] oldValues = values;
-      values = new Object[Math.max(universe.size() * 2, number) + 5];
+      values = newArray(Math.max(universe.size() * 2, number) + 5);
       System.arraycopy(oldValues, 0, values, 0, oldValues.length);
     }
     boolean ret = (values[number] != value);
@@ -59,13 +64,13 @@ public final class LargeNumberedMap<K extends Numberable, V> implements INumbere
     return ret;
   }
 
-  @SuppressWarnings("unchecked")
+  @Override
   public V get(K key) {
     int i = key.getNumber();
     if (i >= values.length) {
       return null;
     }
-    return (V) values[i];
+    return values[i];
   }
 
   @Override
@@ -87,11 +92,13 @@ public final class LargeNumberedMap<K extends Numberable, V> implements INumbere
         }
       }
 
+      @Override
       public boolean hasNext() {
         advance();
         return cur < values.length;
       }
 
+      @Override
       public K next() {
         if (!hasNext()) {
           throw new NoSuchElementException();
@@ -99,14 +106,10 @@ public final class LargeNumberedMap<K extends Numberable, V> implements INumbere
         return universe.get(cur++);
       }
 
+      @Override
       public void remove() {
         values[cur - 1] = null;
       }
     };
   }
-
-  /* Private stuff. */
-
-  private Object[] values;
-  private IterableNumberer<K> universe;
 }

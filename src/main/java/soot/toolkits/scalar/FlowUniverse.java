@@ -41,6 +41,7 @@ public interface FlowUniverse<E> extends Iterable<E> {
    *
    * @return an Iterator over the elements.
    */
+  @Override
   public Iterator<E> iterator();
 
   /**

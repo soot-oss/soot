@@ -27,6 +27,7 @@ import soot.Type;
 import soot.util.Switch;
 
 public class LongConstant extends ArithmeticConstant {
+
   public final long value;
 
   private LongConstant(long value) {
@@ -37,16 +38,19 @@ public class LongConstant extends ArithmeticConstant {
     return new LongConstant(value);
   }
 
+  @Override
   public boolean equals(Object c) {
     return c instanceof LongConstant && ((LongConstant) c).value == this.value;
   }
 
   /** Returns a hash code for this DoubleConstant object. */
+  @Override
   public int hashCode() {
     return (int) (value ^ (value >>> 32));
   }
 
   // PTC 1999/06/28
+  @Override
   public NumericConstant add(NumericConstant c) {
     if (!(c instanceof LongConstant)) {
       throw new IllegalArgumentException("LongConstant expected");
@@ -54,6 +58,7 @@ public class LongConstant extends ArithmeticConstant {
     return LongConstant.v(this.value + ((LongConstant) c).value);
   }
 
+  @Override
   public NumericConstant subtract(NumericConstant c) {
     if (!(c instanceof LongConstant)) {
       throw new IllegalArgumentException("LongConstant expected");
@@ -61,6 +66,7 @@ public class LongConstant extends ArithmeticConstant {
     return LongConstant.v(this.value - ((LongConstant) c).value);
   }
 
+  @Override
   public NumericConstant multiply(NumericConstant c) {
     if (!(c instanceof LongConstant)) {
       throw new IllegalArgumentException("LongConstant expected");
@@ -68,6 +74,7 @@ public class LongConstant extends ArithmeticConstant {
     return LongConstant.v(this.value * ((LongConstant) c).value);
   }
 
+  @Override
   public NumericConstant divide(NumericConstant c) {
     if (!(c instanceof LongConstant)) {
       throw new IllegalArgumentException("LongConstant expected");
@@ -75,6 +82,7 @@ public class LongConstant extends ArithmeticConstant {
     return LongConstant.v(this.value / ((LongConstant) c).value);
   }
 
+  @Override
   public NumericConstant remainder(NumericConstant c) {
     if (!(c instanceof LongConstant)) {
       throw new IllegalArgumentException("LongConstant expected");
@@ -82,6 +90,7 @@ public class LongConstant extends ArithmeticConstant {
     return LongConstant.v(this.value % ((LongConstant) c).value);
   }
 
+  @Override
   public NumericConstant equalEqual(NumericConstant c) {
     if (!(c instanceof LongConstant)) {
       throw new IllegalArgumentException("LongConstant expected");
@@ -89,6 +98,7 @@ public class LongConstant extends ArithmeticConstant {
     return IntConstant.v((this.value == ((LongConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant notEqual(NumericConstant c) {
     if (!(c instanceof LongConstant)) {
       throw new IllegalArgumentException("LongConstant expected");
@@ -96,6 +106,7 @@ public class LongConstant extends ArithmeticConstant {
     return IntConstant.v((this.value != ((LongConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant lessThan(NumericConstant c) {
     if (!(c instanceof LongConstant)) {
       throw new IllegalArgumentException("LongConstant expected");
@@ -103,6 +114,7 @@ public class LongConstant extends ArithmeticConstant {
     return IntConstant.v((this.value < ((LongConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant lessThanOrEqual(NumericConstant c) {
     if (!(c instanceof LongConstant)) {
       throw new IllegalArgumentException("LongConstant expected");
@@ -110,6 +122,7 @@ public class LongConstant extends ArithmeticConstant {
     return IntConstant.v((this.value <= ((LongConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant greaterThan(NumericConstant c) {
     if (!(c instanceof LongConstant)) {
       throw new IllegalArgumentException("LongConstant expected");
@@ -117,6 +130,7 @@ public class LongConstant extends ArithmeticConstant {
     return IntConstant.v((this.value > ((LongConstant) c).value) ? 1 : 0);
   }
 
+  @Override
   public NumericConstant greaterThanOrEqual(NumericConstant c) {
     if (!(c instanceof LongConstant)) {
       throw new IllegalArgumentException("LongConstant expected");
@@ -134,10 +148,12 @@ public class LongConstant extends ArithmeticConstant {
     }
   }
 
+  @Override
   public NumericConstant negate() {
     return LongConstant.v(-(this.value));
   }
 
+  @Override
   public ArithmeticConstant and(ArithmeticConstant c) {
     if (!(c instanceof LongConstant)) {
       throw new IllegalArgumentException("LongConstant expected");
@@ -145,6 +161,7 @@ public class LongConstant extends ArithmeticConstant {
     return LongConstant.v(this.value & ((LongConstant) c).value);
   }
 
+  @Override
   public ArithmeticConstant or(ArithmeticConstant c) {
     if (!(c instanceof LongConstant)) {
       throw new IllegalArgumentException("LongConstant expected");
@@ -152,6 +169,7 @@ public class LongConstant extends ArithmeticConstant {
     return LongConstant.v(this.value | ((LongConstant) c).value);
   }
 
+  @Override
   public ArithmeticConstant xor(ArithmeticConstant c) {
     if (!(c instanceof LongConstant)) {
       throw new IllegalArgumentException("LongConstant expected");
@@ -159,6 +177,7 @@ public class LongConstant extends ArithmeticConstant {
     return LongConstant.v(this.value ^ ((LongConstant) c).value);
   }
 
+  @Override
   public ArithmeticConstant shiftLeft(ArithmeticConstant c) {
     // NOTE CAREFULLY: the RHS of a shift op is not (!)
     // of Long type. It is, in fact, an IntConstant.
@@ -169,6 +188,7 @@ public class LongConstant extends ArithmeticConstant {
     return LongConstant.v(this.value << ((IntConstant) c).value);
   }
 
+  @Override
   public ArithmeticConstant shiftRight(ArithmeticConstant c) {
     if (!(c instanceof IntConstant)) {
       throw new IllegalArgumentException("IntConstant expected");
@@ -176,6 +196,7 @@ public class LongConstant extends ArithmeticConstant {
     return LongConstant.v(this.value >> ((IntConstant) c).value);
   }
 
+  @Override
   public ArithmeticConstant unsignedShiftRight(ArithmeticConstant c) {
     if (!(c instanceof IntConstant)) {
       throw new IllegalArgumentException("IntConstant expected");
@@ -183,14 +204,17 @@ public class LongConstant extends ArithmeticConstant {
     return LongConstant.v(this.value >>> ((IntConstant) c).value);
   }
 
+  @Override
   public String toString() {
-    return new Long(value).toString() + "L";
+    return Long.toString(value) + "L";
   }
 
+  @Override
   public Type getType() {
     return LongType.v();
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ConstantSwitch) sw).caseLongConstant(this);
   }

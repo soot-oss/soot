@@ -29,29 +29,35 @@ import soot.baf.VirtualInvokeInst;
 import soot.util.Switch;
 
 public class BVirtualInvokeInst extends AbstractInvokeInst implements VirtualInvokeInst {
+
   public BVirtualInvokeInst(SootMethodRef methodRef) {
     if (methodRef.isStatic()) {
       throw new RuntimeException("wrong static-ness");
     }
-    this.methodRef = methodRef;
+    super.methodRef = methodRef;
   }
 
-  public int getInMachineCount() {
-    return super.getInMachineCount() + 1;
-  }
-
-  public int getInCount() {
-    return super.getInCount() + 1;
-  }
-
+  @Override
   public Object clone() {
     return new BVirtualInvokeInst(methodRef);
   }
 
+  @Override
+  public int getInMachineCount() {
+    return super.getInMachineCount() + 1;
+  }
+
+  @Override
+  public int getInCount() {
+    return super.getInCount() + 1;
+  }
+
+  @Override
   final public String getName() {
     return "virtualinvoke";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseVirtualInvokeInst(this);
   }

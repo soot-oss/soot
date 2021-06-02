@@ -22,36 +22,32 @@ package soot.toolkits.graph;
  * #L%
  */
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * A reversible version of HashMutableDirectedGraph
  *
  * @author Navindra Umanee
- **/
+ *
+ * @param <N>
+ */
 public class HashReversibleGraph<N> extends HashMutableDirectedGraph<N> implements ReversibleGraph<N> {
   protected boolean reversed;
 
   public HashReversibleGraph(DirectedGraph<N> dg) {
     this();
 
-    for (Iterator<N> i = dg.iterator(); i.hasNext();) {
-      N s = i.next();
+    for (N s : dg) {
       addNode(s);
     }
 
-    for (Iterator<N> i = dg.iterator(); i.hasNext();) {
-      N s = i.next();
-      List<N> succs = dg.getSuccsOf(s);
-      for (Iterator<N> succsIt = succs.iterator(); succsIt.hasNext();) {
-        N t = succsIt.next();
+    for (N s : dg) {
+      for (N t : dg.getSuccsOf(s)) {
         addEdge(s, t);
       }
     }
 
     /* use the same heads and tails as the original graph */
-
     heads.clear();
     heads.addAll(dg.getHeads());
     tails.clear();
@@ -63,15 +59,18 @@ public class HashReversibleGraph<N> extends HashMutableDirectedGraph<N> implemen
     reversed = false;
   }
 
+  @Override
   public boolean isReversed() {
     return reversed;
   }
 
+  @Override
   public ReversibleGraph<N> reverse() {
     reversed = !reversed;
     return this;
   }
 
+  @Override
   public void addEdge(N from, N to) {
     if (reversed) {
       super.addEdge(to, from);
@@ -80,6 +79,7 @@ public class HashReversibleGraph<N> extends HashMutableDirectedGraph<N> implemen
     }
   }
 
+  @Override
   public void removeEdge(N from, N to) {
     if (reversed) {
       super.removeEdge(to, from);
@@ -88,22 +88,27 @@ public class HashReversibleGraph<N> extends HashMutableDirectedGraph<N> implemen
     }
   }
 
+  @Override
   public boolean containsEdge(N from, N to) {
     return reversed ? super.containsEdge(to, from) : super.containsEdge(from, to);
   }
 
+  @Override
   public List<N> getHeads() {
     return reversed ? super.getTails() : super.getHeads();
   }
 
+  @Override
   public List<N> getTails() {
     return reversed ? super.getHeads() : super.getTails();
   }
 
+  @Override
   public List<N> getPredsOf(N s) {
     return reversed ? super.getSuccsOf(s) : super.getPredsOf(s);
   }
 
+  @Override
   public List<N> getSuccsOf(N s) {
     return reversed ? super.getPredsOf(s) : super.getSuccsOf(s);
   }

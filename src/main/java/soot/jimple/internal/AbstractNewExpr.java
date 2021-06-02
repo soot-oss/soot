@@ -36,8 +36,13 @@ import soot.util.Switch;
 
 @SuppressWarnings("serial")
 public abstract class AbstractNewExpr implements NewExpr {
-  RefType type;
 
+  protected RefType type;
+
+  @Override
+  public abstract Object clone();
+
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractNewExpr) {
       AbstractNewExpr ae = (AbstractNewExpr) o;
@@ -47,38 +52,43 @@ public abstract class AbstractNewExpr implements NewExpr {
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return type.hashCode();
   }
 
-  public abstract Object clone();
-
+  @Override
   public String toString() {
     return Jimple.NEW + " " + type.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    up.literal(Jimple.NEW);
-    up.literal(" ");
+    up.literal(Jimple.NEW + " ");
     up.type(type);
   }
 
+  @Override
   public RefType getBaseType() {
     return type;
   }
 
+  @Override
   public void setBaseType(RefType type) {
     this.type = type;
   }
 
+  @Override
   public Type getType() {
     return type;
   }
 
+  @Override
   public List<ValueBox> getUseBoxes() {
     return Collections.emptyList();
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseNewExpr(this);
   }

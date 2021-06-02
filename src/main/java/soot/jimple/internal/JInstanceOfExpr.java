@@ -33,10 +33,12 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
 
 public class JInstanceOfExpr extends AbstractInstanceOfExpr implements ConvertToBaf {
+
   public JInstanceOfExpr(Value op, Type checkType) {
     super(Jimple.v().newImmediateBox(op), checkType);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     ((ConvertToBaf) (getOp())).convertToBaf(context, out);
     Unit u = Baf.v().newInstanceOfInst(getCheckType());
@@ -44,8 +46,8 @@ public class JInstanceOfExpr extends AbstractInstanceOfExpr implements ConvertTo
     out.add(u);
   }
 
+  @Override
   public Object clone() {
     return new JInstanceOfExpr(Jimple.cloneIfNecessary(getOp()), checkType);
   }
-
 }
