@@ -46,7 +46,7 @@ public class ReachingDefsTagger extends BodyTransformer {
 
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
-    LocalDefs ld = LocalDefs.Factory.newLocalDefs(b);
+    LocalDefs ld = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(b);
 
     for (Unit s : b.getUnits()) {
       // System.out.println("stmt: "+s);

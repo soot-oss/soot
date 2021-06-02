@@ -25,10 +25,13 @@ package soot.tagkit;
 import java.io.UnsupportedEncodingException;
 
 public class InnerClassTag implements Tag {
-  String innerClass;
-  String outerClass;
-  String name;
-  int accessFlags;
+
+  public static final String NAME = "InnerClassTag";
+
+  private final String innerClass;
+  private final String outerClass;
+  private final String name;
+  private final int accessFlags;
 
   public InnerClassTag(String innerClass, String outerClass, String name, int accessFlags) {
     this.innerClass = innerClass;
@@ -37,11 +40,11 @@ public class InnerClassTag implements Tag {
     this.accessFlags = accessFlags;
     if (innerClass != null && (innerClass.startsWith("L") && innerClass.endsWith(";"))) {
       throw new RuntimeException(
-          "InnerClass annotation type string must " + "be of the form a/b/ClassName not '" + innerClass + "'");
+          "InnerClass annotation type string must be of the form a/b/ClassName not '" + innerClass + "'");
     }
     if (outerClass != null && (outerClass.startsWith("L") && outerClass.endsWith(";"))) {
       throw new RuntimeException(
-          "OuterType annotation type string must " + "be of the form a/b/ClassName not '" + innerClass + "'");
+          "OuterType annotation type string must be of the form a/b/ClassName not '" + innerClass + "'");
     }
     if (name != null && name.endsWith(";")) {
       throw new RuntimeException("InnerClass name cannot end with ';', got '" + name + "'");
@@ -50,12 +53,12 @@ public class InnerClassTag implements Tag {
 
   @Override
   public String getName() {
-    return "InnerClassTag";
+    return NAME;
   }
 
   /**
    * Returns the inner class name (only) encoded in UTF8. There is no obvious standalone byte[] encoding for this attribute
-   * because it contains embedded constant pool indicies.
+   * because it contains embedded constant pool indices.
    */
   @Override
   public byte[] getValue() {

@@ -22,22 +22,14 @@ package soot.tagkit;
  * #L%
  */
 
+import java.awt.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ColorTag implements Tag {
   private static final Logger logger = LoggerFactory.getLogger(ColorTag.class);
-  /* it is a value representing red. */
-  private int red;
-  /* it is a value representing green. */
-  private int green;
-  /* it is a value representing blue. */
-  private int blue;
-  /*
-   * for highlighting foreground of text default is to higlight background
-   */
-  private boolean foreground = false;
-  private String analysisType = "Unknown";
+
+  public static final String NAME = "ColorTag";
 
   public static final int RED = 0;
   public static final int GREEN = 1;
@@ -46,86 +38,102 @@ public class ColorTag implements Tag {
   public static final int ORANGE = 4;
   public static final int PURPLE = 5;
 
-  public ColorTag(int r, int g, int b, boolean fg) {
-    red = r;
-    green = g;
-    blue = b;
-    foreground = fg;
+  private static final boolean DEFAULT_FOREGROUND = false;
+  private static final String DEFAULT_ANALYSIS_TYPE = "Unknown";
+
+  /* it is a value representing red. */
+  private final int red;
+  /* it is a value representing green. */
+  private final int green;
+  /* it is a value representing blue. */
+  private final int blue;
+  /* for highlighting foreground of text default is to higlight background */
+  private final boolean foreground;
+  private final String analysisType;
+
+  public ColorTag(Color c) {
+    this(c.getRed(), c.getGreen(), c.getBlue(), DEFAULT_FOREGROUND, DEFAULT_ANALYSIS_TYPE);
   }
 
   public ColorTag(int r, int g, int b) {
-    this(r, g, b, false);
+    this(r, g, b, DEFAULT_FOREGROUND, DEFAULT_ANALYSIS_TYPE);
+  }
+
+  public ColorTag(int r, int g, int b, boolean fg) {
+    this(r, g, b, fg, DEFAULT_ANALYSIS_TYPE);
   }
 
   public ColorTag(int r, int g, int b, String type) {
-    this(r, g, b, false, type);
+    this(r, g, b, DEFAULT_FOREGROUND, type);
   }
 
   public ColorTag(int r, int g, int b, boolean fg, String type) {
-    this(r, g, b, false);
-    analysisType = type;
-  }
-
-  public ColorTag(int color, String type) {
-    this(color, false, type);
-  }
-
-  public ColorTag(int color, boolean fg, String type) {
-    this(color, fg);
-    analysisType = type;
+    this.red = r;
+    this.green = g;
+    this.blue = b;
+    this.foreground = fg;
+    this.analysisType = type;
   }
 
   public ColorTag(int color) {
-    this(color, false);
+    this(color, DEFAULT_FOREGROUND, DEFAULT_ANALYSIS_TYPE);
+  }
+
+  public ColorTag(int color, String type) {
+    this(color, DEFAULT_FOREGROUND, type);
   }
 
   public ColorTag(int color, boolean fg) {
-    // logger.debug("color: "+color);
+    this(color, fg, DEFAULT_ANALYSIS_TYPE);
+  }
+
+  public ColorTag(int color, boolean fg, String type) {
     switch (color) {
       case RED: {
-        red = 255;
-        green = 0;
-        blue = 0;
+        this.red = 255;
+        this.green = 0;
+        this.blue = 0;
         break;
       }
       case GREEN: {
-        red = 45;
-        green = 255;
-        blue = 84;
+        this.red = 45;
+        this.green = 255;
+        this.blue = 84;
         break;
       }
       case YELLOW: {
-        red = 255;
-        green = 248;
-        blue = 35;
+        this.red = 255;
+        this.green = 248;
+        this.blue = 35;
         break;
       }
       case BLUE: {
-        red = 174;
-        green = 210;
-        blue = 255;
+        this.red = 174;
+        this.green = 210;
+        this.blue = 255;
         break;
       }
       case ORANGE: {
-        red = 255;
-        green = 163;
-        blue = 0;
+        this.red = 255;
+        this.green = 163;
+        this.blue = 0;
         break;
       }
       case PURPLE: {
-        red = 159;
-        green = 34;
-        blue = 193;
+        this.red = 159;
+        this.green = 34;
+        this.blue = 193;
         break;
       }
       default: {
-        red = 220;
-        green = 220;
-        blue = 220;
+        this.red = 220;
+        this.green = 220;
+        this.blue = 220;
         break;
       }
     }
-    foreground = fg;
+    this.foreground = fg;
+    this.analysisType = type;
   }
 
   public String getAnalysisType() {
@@ -148,17 +156,18 @@ public class ColorTag implements Tag {
     return foreground;
   }
 
+  @Override
   public String getName() {
-    return "ColorTag";
+    return NAME;
   }
 
+  @Override
   public byte[] getValue() {
-    byte[] v = new byte[2];
-    return v;
+    return new byte[2];
   }
 
+  @Override
   public String toString() {
     return "" + red + " " + green + " " + blue;
   }
-
 }

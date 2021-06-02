@@ -29,6 +29,7 @@ import java.util.Set;
 
 import soot.ArrayType;
 import soot.Body;
+import soot.G;
 import soot.Local;
 import soot.RefType;
 import soot.Scene;
@@ -79,7 +80,7 @@ public class Validate {
       }
     }
 
-    final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(b, true);
+    final LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(b, true);
 
     Set<Unit> toReplace = new HashSet<Unit>();
 

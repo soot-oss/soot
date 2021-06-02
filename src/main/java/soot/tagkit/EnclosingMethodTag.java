@@ -23,15 +23,16 @@ package soot.tagkit;
  */
 
 /**
- * Represents the enclosing method attribute attatched to anon and inner classes to indicate the class and method it is
+ * Represents the enclosing method attribute attached to anon and inner classes to indicate the class and method it is
  * declared in for Java 1.5.
  */
-
 public class EnclosingMethodTag implements Tag {
 
-  private String enclosingClass;
-  private String enclosingMethod;
-  private String enclosingMethodSig;
+  public static final String NAME = "EnclosingMethodTag";
+
+  private final String enclosingClass;
+  private final String enclosingMethod;
+  private final String enclosingMethodSig;
 
   public EnclosingMethodTag(String c, String m, String s) {
     this.enclosingClass = c;
@@ -39,13 +40,14 @@ public class EnclosingMethodTag implements Tag {
     this.enclosingMethodSig = s;
   }
 
+  @Override
   public String toString() {
     return "Enclosing Class: " + enclosingClass + " Enclosing Method: " + enclosingMethod + " Sig: " + enclosingMethodSig;
   }
 
-  /** Returns the tag name. */
+  @Override
   public String getName() {
-    return "EnclosingMethodTag";
+    return NAME;
   }
 
   public String getInfo() {
@@ -64,7 +66,7 @@ public class EnclosingMethodTag implements Tag {
     return enclosingMethodSig;
   }
 
-  /** Returns the tag raw data. */
+  @Override
   public byte[] getValue() {
     throw new RuntimeException("EnclosingMethodTag has no value for bytecode");
   }

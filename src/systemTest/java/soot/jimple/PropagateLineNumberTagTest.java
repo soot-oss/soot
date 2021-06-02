@@ -27,7 +27,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.junit.Test;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+
 import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
@@ -38,6 +41,7 @@ import soot.tagkit.LineNumberTag;
 import soot.testing.framework.AbstractTestingFramework;
 
 /** @author Manuel Benz at 20.01.20 */
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class PropagateLineNumberTagTest extends AbstractTestingFramework {
 
   private static final String TEST_TARGET_CLASS = "soot.jimple.PropagateLineNumberTag";

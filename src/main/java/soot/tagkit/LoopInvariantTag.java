@@ -25,15 +25,16 @@ package soot.tagkit;
 /**
  * Represents a tag that just has a string to be printed with the code.
  */
-
 public class LoopInvariantTag extends StringTag {
+
+  public static final String NAME = "LoopInvariantTag";
 
   public LoopInvariantTag(String s) {
     super(s);
   }
 
-  /** Returns the tag name. */
+  @Override
   public String getName() {
-    return "LoopInvariantTag";
+    return NAME;
   }
 }
