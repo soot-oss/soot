@@ -24,6 +24,8 @@ package soot.tagkit;
 
 public class SourceLineNumberTag implements Tag {
 
+  public static final String NAME = "SourceLineNumberTag";
+
   /* it is a value representing line number. */
   protected int startLineNumber;
   protected int endLineNumber;
@@ -65,13 +67,12 @@ public class SourceLineNumberTag implements Tag {
 
   @Override
   public String getName() {
-    return "SourceLineNumberTag";
+    return NAME;
   }
 
   @Override
   public byte[] getValue() {
-    byte[] v = new byte[2];
-    return v;
+    return new byte[2];
   }
 
   @Override

@@ -71,6 +71,7 @@ public class DexArrayInitDetector {
     List<Value> arrayValues = null;
     Set<Unit> curIgnoreUnits = null;
     int arraySize = 0;
+    Value concernedArray = null;
     for (Unit u : body.getUnits()) {
       if (!(u instanceof AssignStmt)) {
         arrayValues = null;
@@ -86,6 +87,7 @@ public class DexArrayInitDetector {
             arrayValues = new ArrayList<Value>();
             arraySize = intConst.value;
             curIgnoreUnits = new HashSet<Unit>();
+            concernedArray = assignStmt.getLeftOp();
           }
         } else {
           arrayValues = null;
@@ -96,6 +98,10 @@ public class DexArrayInitDetector {
        */
           && arrayValues != null) {
         ArrayRef aref = (ArrayRef) assignStmt.getLeftOp();
+        if (aref.getBase() != concernedArray) {
+          arrayValues = null;
+          continue;
+        }
         if (aref.getIndex() instanceof IntConstant) {
           IntConstant intConst = (IntConstant) aref.getIndex();
           if (intConst.value == arrayValues.size()) {

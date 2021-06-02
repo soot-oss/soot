@@ -76,7 +76,7 @@ public class FoundFile {
     this.entryName = null;
   }
 
-  FoundFile(Path path) {
+  public FoundFile(Path path) {
     this();
     this.path = path;
   }

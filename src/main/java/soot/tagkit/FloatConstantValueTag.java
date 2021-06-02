@@ -26,6 +26,8 @@ import soot.jimple.FloatConstant;
 
 public class FloatConstantValueTag extends ConstantValueTag {
 
+  public static final String NAME = "FloatConstantValueTag";
+
   private final float value;
 
   public FloatConstantValueTag(float value) {
@@ -35,6 +37,11 @@ public class FloatConstantValueTag extends ConstantValueTag {
 
   public float getFloatValue() {
     return value;
+  }
+
+  @Override
+  public String getName() {
+    return NAME;
   }
 
   @Override

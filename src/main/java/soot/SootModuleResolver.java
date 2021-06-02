@@ -45,7 +45,7 @@ public class SootModuleResolver extends SootResolver {
 
     String module = null;
     if (moduleName.isPresent()) {
-      module = ModuleUtil.v().findModuleThatExports(className, moduleName.get());
+      module = ModuleUtil.v().declaringModule(className, moduleName.get());
     }
 
     // if no module return first one found

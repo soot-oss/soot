@@ -30,6 +30,8 @@ import java.util.List;
  */
 public class ParamNamesTag implements Tag {
 
+  public static final String NAME = "ParamNamesTag";
+
   private final String[] names;
 
   /**
@@ -58,17 +60,15 @@ public class ParamNamesTag implements Tag {
     return names;
   }
 
-  /** Returns the tag name. */
   @Override
   public String getName() {
-    return "ParamNamesTag";
+    return NAME;
   }
 
   public List<String> getInfo() {
     return getNames();
   }
 
-  /** Returns the tag raw data. */
   @Override
   public byte[] getValue() {
     throw new RuntimeException("ParamNamesTag has no value for bytecode");

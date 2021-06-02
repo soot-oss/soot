@@ -22,11 +22,14 @@ package soot.tagkit;
  * #L%
  */
 
+import java.awt.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ColorTag implements Tag {
   private static final Logger logger = LoggerFactory.getLogger(ColorTag.class);
+
+  public static final String NAME = "ColorTag";
 
   public static final int RED = 0;
   public static final int GREEN = 1;
@@ -47,6 +50,10 @@ public class ColorTag implements Tag {
   /* for highlighting foreground of text default is to higlight background */
   private final boolean foreground;
   private final String analysisType;
+
+  public ColorTag(Color c) {
+    this(c.getRed(), c.getGreen(), c.getBlue(), DEFAULT_FOREGROUND, DEFAULT_ANALYSIS_TYPE);
+  }
 
   public ColorTag(int r, int g, int b) {
     this(r, g, b, DEFAULT_FOREGROUND, DEFAULT_ANALYSIS_TYPE);
@@ -151,7 +158,7 @@ public class ColorTag implements Tag {
 
   @Override
   public String getName() {
-    return "ColorTag";
+    return NAME;
   }
 
   @Override

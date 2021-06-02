@@ -26,6 +26,7 @@ import soot.Body;
 import soot.Unit;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Stmt;
+import soot.util.Chain;
 
 public class Util {
 
@@ -40,11 +41,11 @@ public class Util {
    * @return
    */
   public static Unit findLastIdentityUnit(Body b, Stmt s) {
+    final Chain<Unit> units = b.getUnits();
     Unit u2 = s;
-    Unit u1 = s;
-    while (u1 instanceof IdentityStmt) {
+    for (Unit u1 = u2; u1 instanceof IdentityStmt;) {
       u2 = u1;
-      u1 = b.getUnits().getSuccOf(u1);
+      u1 = units.getSuccOf(u1);
     }
     return u2;
   }
@@ -57,11 +58,14 @@ public class Util {
    * @return
    */
   public static Unit findFirstNonIdentityUnit(Body b, Stmt s) {
+    final Chain<Unit> units = b.getUnits();
     Unit u1 = s;
     while (u1 instanceof IdentityStmt) {
-      u1 = b.getUnits().getSuccOf(u1);
+      u1 = units.getSuccOf(u1);
     }
     return u1;
   }
 
+  private Util() {
+  }
 }
