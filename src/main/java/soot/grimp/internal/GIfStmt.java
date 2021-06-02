@@ -28,10 +28,12 @@ import soot.grimp.Grimp;
 import soot.jimple.internal.JIfStmt;
 
 public class GIfStmt extends JIfStmt {
+
   public GIfStmt(Value condition, Unit target) {
     super(Grimp.v().newConditionExprBox(condition), Grimp.v().newStmtBox(target));
   }
 
+  @Override
   public Object clone() {
     return new GIfStmt(Grimp.cloneIfNecessary(getCondition()), getTarget());
   }

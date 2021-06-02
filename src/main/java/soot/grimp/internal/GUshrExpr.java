@@ -33,43 +33,43 @@ import soot.jimple.UshrExpr;
 import soot.util.Switch;
 
 public class GUshrExpr extends AbstractGrimpIntLongBinopExpr implements UshrExpr {
+
   public GUshrExpr(Value op1, Value op2) {
     super(op1, op2);
   }
 
+  @Override
   public String getSymbol() {
     return " >>> ";
   }
 
+  @Override
   public int getPrecedence() {
     return 650;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseUshrExpr(this);
   }
 
   @Override
   public Type getType() {
-    Value op1 = op1Box.getValue();
-    Value op2 = op2Box.getValue();
-
-    if (!isIntLikeType(op2.getType())) {
-      return UnknownType.v();
+    if (isIntLikeType(op2Box.getValue().getType())) {
+      final Type t1 = op1Box.getValue().getType();
+      if (isIntLikeType(t1)) {
+        return IntType.v();
+      }
+      final LongType tyLong = LongType.v();
+      if (tyLong.equals(t1)) {
+        return LongType.v();
+      }
     }
-
-    if (isIntLikeType(op1.getType())) {
-      return IntType.v();
-    }
-    if (op1.getType().equals(LongType.v())) {
-      return LongType.v();
-    }
-
     return UnknownType.v();
   }
 
+  @Override
   public Object clone() {
     return new GUshrExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
   }
-
 }
