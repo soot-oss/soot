@@ -39,11 +39,11 @@ import soot.Type;
  * @author Ben Bellamy
  */
 public class AugHierarchy implements IHierarchy {
-  public Collection<Type> lcas(Type a, Type b) {
-    return lcas_(a, b);
+  public Collection<Type> lcas(Type a, Type b, boolean useWeakObjectType) {
+    return lcas_(a, b, useWeakObjectType);
   }
 
-  public static Collection<Type> lcas_(Type a, Type b) {
+  public static Collection<Type> lcas_(Type a, Type b, boolean useWeakObjectType) {
     if (TypeResolver.typesEqual(a, b)) {
       return Collections.<Type>singletonList(a);
     } else if (a instanceof BottomType) {
@@ -75,7 +75,7 @@ public class AugHierarchy implements IHierarchy {
     } else if (a instanceof IntegerType || b instanceof IntegerType) {
       return Collections.<Type>emptyList();
     } else {
-      return BytecodeHierarchy.lcas_(a, b);
+      return BytecodeHierarchy.lcas_(a, b, useWeakObjectType);
     }
   }
 
@@ -86,7 +86,10 @@ public class AugHierarchy implements IHierarchy {
   public static boolean ancestor_(Type ancestor, Type child) {
     if (TypeResolver.typesEqual(ancestor, child)) {
       return true;
-    } else if (ancestor instanceof Integer1Type) {
+    } else if (ancestor instanceof IntegerType && child instanceof IntegerType) {
+      return IntUtils.getMaxValue((IntegerType) ancestor) >= IntUtils.getMaxValue((IntegerType) child);
+    }
+    if (ancestor instanceof Integer1Type) {
       if (child instanceof BottomType) {
         return true;
       } else {

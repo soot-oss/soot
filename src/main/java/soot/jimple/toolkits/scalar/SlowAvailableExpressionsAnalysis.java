@@ -22,8 +22,8 @@ package soot.jimple.toolkits.scalar;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import soot.EquivalentValue;
@@ -55,52 +55,44 @@ import soot.util.HashChain;
  * implementation would use an implicit universe and the kill rule would be computed on-the-fly for each statement.
  */
 public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Value>> {
-  Map<Unit, BoundedFlowSet<Value>> unitToGenerateSet;
-  Map<Unit, BoundedFlowSet<Value>> unitToPreserveSet;
-  Map<Value, Stmt> rhsToContainingStmt;
-  private final HashMap<Value, EquivalentValue> valueToEquivValue;
 
-  FlowSet<Value> emptySet;
+  protected final Map<Unit, BoundedFlowSet<Value>> unitToGenerateSet;
+  protected final Map<Unit, BoundedFlowSet<Value>> unitToPreserveSet;
+  /** maps an rhs to its containing stmt. object equality in rhs. */
+  protected final Map<Value, Stmt> rhsToContainingStmt;
+  protected final FlowSet<Value> emptySet;
+
+  /** maps a Value to its EquivalentValue */
+  private final HashMap<Value, EquivalentValue> valueToEquivValue;
 
   public SlowAvailableExpressionsAnalysis(DirectedGraph<Unit> dg) {
     super(dg);
-
-    UnitGraph g = (UnitGraph) dg;
+    this.valueToEquivValue = new HashMap<Value, EquivalentValue>();
+    this.rhsToContainingStmt = new HashMap<Value, Stmt>();
 
     /* we need a universe of all of the expressions. */
-    ArrayList<Value> exprs = new ArrayList<Value>();
+    HashSet<Value> exprs = new HashSet<Value>();
 
     // Consider "a + b". containingExprs maps a and b (object equality) both to "a + b" (equivalence).
-    HashMap<EquivalentValue, Chain<EquivalentValue>> containingExprs
-        = new HashMap<EquivalentValue, Chain<EquivalentValue>>();
+    Map<EquivalentValue, Chain<EquivalentValue>> containingExprs = new HashMap<EquivalentValue, Chain<EquivalentValue>>();
 
-    // maps a Value to its EquivalentValue.
-    valueToEquivValue = new HashMap<Value, EquivalentValue>();
-
-    // maps an rhs to its containing stmt. object equality in rhs.
-    rhsToContainingStmt = new HashMap<Value, Stmt>();
-
-    HashMap<EquivalentValue, Chain<Value>> equivValToSiblingList = new HashMap<EquivalentValue, Chain<Value>>();
+    Map<EquivalentValue, Chain<Value>> equivValToSiblingList = new HashMap<EquivalentValue, Chain<Value>>();
 
     // Create the set of all expressions, and a map from values to their containing expressions.
+    final UnitGraph g = (UnitGraph) dg;
     for (Unit u : g.getBody().getUnits()) {
       Stmt s = (Stmt) u;
-
       if (s instanceof AssignStmt) {
         Value v = ((AssignStmt) s).getRightOp();
         rhsToContainingStmt.put(v, s);
         EquivalentValue ev = valueToEquivValue.get(v);
         if (ev == null) {
-          ev = new EquivalentValue(v);
-          valueToEquivValue.put(v, ev);
+          valueToEquivValue.put(v, ev = new EquivalentValue(v));
         }
 
-        Chain<Value> sibList = null;
-        if (equivValToSiblingList.get(ev) == null) {
-          sibList = new HashChain<Value>();
-          equivValToSiblingList.put(ev, sibList);
-        } else {
-          sibList = equivValToSiblingList.get(ev);
+        Chain<Value> sibList = equivValToSiblingList.get(ev);
+        if (sibList == null) {
+          equivValToSiblingList.put(ev, sibList = new HashChain<Value>());
         }
 
         if (!sibList.contains(v)) {
@@ -119,26 +111,21 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
             Value o = vb.getValue();
             EquivalentValue eo = valueToEquivValue.get(o);
             if (eo == null) {
-              eo = new EquivalentValue(o);
-              valueToEquivValue.put(o, eo);
+              valueToEquivValue.put(o, eo = new EquivalentValue(o));
             }
 
-            if (equivValToSiblingList.get(eo) == null) {
-              sibList = new HashChain<Value>();
-              equivValToSiblingList.put(eo, sibList);
-            } else {
-              sibList = equivValToSiblingList.get(eo);
+            sibList = equivValToSiblingList.get(eo);
+            if (sibList == null) {
+              equivValToSiblingList.put(eo, sibList = new HashChain<Value>());
             }
+
             if (!sibList.contains(o)) {
               sibList.add(o);
             }
 
-            Chain<EquivalentValue> l = null;
-            if (containingExprs.containsKey(eo)) {
-              l = containingExprs.get(eo);
-            } else {
-              l = new HashChain<EquivalentValue>();
-              containingExprs.put(eo, l);
+            Chain<EquivalentValue> l = containingExprs.get(eo);
+            if (l == null) {
+              containingExprs.put(eo, l = new HashChain<EquivalentValue>());
             }
 
             if (!l.contains(ev)) {
@@ -150,101 +137,84 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
     }
 
     FlowUniverse<Value> exprUniv = new ArrayFlowUniverse<Value>(exprs.toArray(new Value[exprs.size()]));
-    emptySet = new ArrayPackedSet<Value>(exprUniv);
+    this.emptySet = new ArrayPackedSet<Value>(exprUniv);
 
     // Create preserve sets.
-    {
-      unitToPreserveSet = new HashMap<Unit, BoundedFlowSet<Value>>(g.size() * 2 + 1, 0.7f);
+    this.unitToPreserveSet = new HashMap<Unit, BoundedFlowSet<Value>>(g.size() * 2 + 1, 0.7f);
+    for (Unit s : g) {
+      BoundedFlowSet<Value> killSet = new ArrayPackedSet<Value>(exprUniv);
 
-      for (Unit s : g) {
-        BoundedFlowSet<Value> killSet = new ArrayPackedSet<Value>(exprUniv);
+      // We need to do more! In particular handle invokeExprs, etc.
 
-        // We need to do more! In particular handle invokeExprs, etc.
-
-        // For each def (say of x), kill the set of exprs containing x.
-        for (ValueBox box : s.getDefBoxes()) {
-          Value v = box.getValue();
-          EquivalentValue ev = valueToEquivValue.get(v);
-
-          Chain<EquivalentValue> c = containingExprs.get(ev);
-          if (c != null) {
-            for (EquivalentValue container : c) {
-              // Add all siblings of it.next().
-              for (Value sibVal : equivValToSiblingList.get(container)) {
-                killSet.add(sibVal, killSet);
-              }
+      // For each def (say of x), kill the set of exprs containing x.
+      for (ValueBox box : s.getDefBoxes()) {
+        Chain<EquivalentValue> c = containingExprs.get(valueToEquivValue.get(box.getValue()));
+        if (c != null) {
+          for (EquivalentValue container : c) {
+            // Add all siblings of it.next().
+            for (Value sibVal : equivValToSiblingList.get(container)) {
+              killSet.add(sibVal);
             }
           }
         }
-
-        // Store complement
-        killSet.complement(killSet);
-        unitToPreserveSet.put(s, killSet);
       }
+
+      // Store complement
+      killSet.complement(killSet);
+      unitToPreserveSet.put(s, killSet);
     }
 
     // Create generate sets
-    {
-      unitToGenerateSet = new HashMap<Unit, BoundedFlowSet<Value>>(g.size() * 2 + 1, 0.7f);
-
-      for (Unit s : g) {
-        BoundedFlowSet<Value> genSet = new ArrayPackedSet<Value>(exprUniv);
-        // In Jimple, expressions only occur as the RHS of an AssignStmt.
-        if (s instanceof AssignStmt)
-
-        {
-          AssignStmt as = (AssignStmt) s;
-          if (as.getRightOp() instanceof Expr) {
-            // canonical rep of as.getRightOp();
-            Value gen = as.getRightOp();
-
-            boolean cantAdd = false;
-            if (gen instanceof NewExpr || gen instanceof NewArrayExpr || gen instanceof NewMultiArrayExpr) {
-              cantAdd = true;
-            }
-            if (gen instanceof InvokeExpr) {
-              cantAdd = true;
-            }
-
-            // Whee, double negative!
-            if (!cantAdd) {
-              genSet.add(gen, genSet);
-            }
+    this.unitToGenerateSet = new HashMap<Unit, BoundedFlowSet<Value>>(g.size() * 2 + 1, 0.7f);
+    for (Unit s : g) {
+      BoundedFlowSet<Value> genSet = new ArrayPackedSet<Value>(exprUniv);
+      // In Jimple, expressions only occur as the RHS of an AssignStmt.
+      if (s instanceof AssignStmt) {
+        AssignStmt as = (AssignStmt) s;
+        Value gen = as.getRightOp();
+        if (gen instanceof Expr) {
+          if (!(gen instanceof NewExpr || gen instanceof NewArrayExpr || gen instanceof NewMultiArrayExpr
+              || gen instanceof InvokeExpr)) {
+            genSet.add(gen);
           }
         }
-
-        // remove the kill set
-        genSet.intersection(unitToPreserveSet.get(s), genSet);
-
-        unitToGenerateSet.put(s, genSet);
       }
+
+      // remove the kill set
+      genSet.intersection(unitToPreserveSet.get(s), genSet);
+      unitToGenerateSet.put(s, genSet);
     }
 
     doAnalysis();
   }
 
+  @Override
   protected FlowSet<Value> newInitialFlow() {
     BoundedFlowSet<Value> out = (BoundedFlowSet<Value>) emptySet.clone();
     out.complement(out);
     return out;
   }
 
+  @Override
   protected FlowSet<Value> entryInitialFlow() {
     return emptySet.clone();
   }
 
+  @Override
   protected void flowThrough(FlowSet<Value> in, Unit unit, FlowSet<Value> out) {
     // Perform kill
     in.intersection(unitToPreserveSet.get(unit), out);
 
     // Perform generation
-    out.union(unitToGenerateSet.get(unit), out);
+    out.union(unitToGenerateSet.get(unit));
   }
 
+  @Override
   protected void merge(FlowSet<Value> inSet1, FlowSet<Value> inSet2, FlowSet<Value> outSet) {
     inSet1.intersection(inSet2, outSet);
   }
 
+  @Override
   protected void copy(FlowSet<Value> sourceSet, FlowSet<Value> destSet) {
     sourceSet.copy(destSet);
   }

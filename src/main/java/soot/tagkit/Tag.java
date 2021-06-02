@@ -25,11 +25,14 @@ package soot.tagkit;
 /**
  * Represents a tag; these get attached to implementations of Host.
  */
-
 public interface Tag {
-  /** Returns the tag name. */
+  /**
+   * Returns the tag name.
+   */
   public String getName();
 
-  /** Returns the tag raw data. */
+  /**
+   * Returns the tag raw data.
+   */
   public byte[] getValue() throws AttributeValueException;
 }

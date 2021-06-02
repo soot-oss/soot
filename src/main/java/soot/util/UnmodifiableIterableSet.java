@@ -26,7 +26,8 @@ package soot.util;
  * An unmodifiable version of the IterableSet class
  * 
  * @author Steven Arzt
- *
+ * 
+ * @param <E>
  */
 public class UnmodifiableIterableSet<E> extends IterableSet<E> {
 
@@ -59,5 +60,4 @@ public class UnmodifiableIterableSet<E> extends IterableSet<E> {
   public boolean forceRemove(Object o) {
     return super.remove(o);
   }
-
 }
