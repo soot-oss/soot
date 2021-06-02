@@ -1,10 +1,10 @@
-package soot.xml;
+package soot.toDex;
 
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 2004 Jennifer Lhotak
+ * Copyright (C) 1997 - 2021 Raja Vallée-Rai and others
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,21 +22,18 @@ package soot.xml;
  * #L%
  */
 
-public class StringAttribute {
+public class DexPrinterException extends RuntimeException {
 
-  private final String info;
-  private final String analysisType;
-
-  public StringAttribute(String info, String type) {
-    this.info = info;
-    this.analysisType = type;
+  public DexPrinterException(String message) {
+    super(message);
   }
 
-  public String info() {
-    return this.info;
+  public DexPrinterException(Throwable cause) {
+    super(cause);
   }
 
-  public String analysisType() {
-    return this.analysisType;
+  public DexPrinterException(String message, Throwable cause) {
+    super(message, cause);
   }
+
 }

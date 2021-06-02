@@ -71,17 +71,18 @@ import soot.validation.ValueBoxesValidator;
 @SuppressWarnings("serial")
 public abstract class Body extends AbstractHost implements Serializable {
   private static final Logger logger = LoggerFactory.getLogger(Body.class);
+
   /** The method associated with this Body. */
   protected transient SootMethod method = null;
 
   /** The chain of locals for this Body. */
-  protected Chain<Local> localChain = new HashChain<Local>();
+  protected Chain<Local> localChain = new HashChain<>();
 
   /** The chain of traps for this Body. */
-  protected Chain<Trap> trapChain = new HashChain<Trap>();
+  protected Chain<Trap> trapChain = new HashChain<>();
 
   /** The chain of units for this Body. */
-  protected UnitPatchingChain unitChain = new UnitPatchingChain(new HashChain<Unit>());
+  protected UnitPatchingChain unitChain = new UnitPatchingChain(new HashChain<>());
 
   private static BodyValidator[] validators;
 
@@ -146,7 +147,7 @@ public abstract class Body extends AbstractHost implements Serializable {
 
   /** Copies the contents of the given Body into this one. */
   public Map<Object, Object> importBodyContentsFrom(Body b) {
-    HashMap<Object, Object> bindings = new HashMap<Object, Object>();
+    HashMap<Object, Object> bindings = new HashMap<>();
 
     {
       // Clone units in body's statement list
@@ -222,7 +223,7 @@ public abstract class Body extends AbstractHost implements Serializable {
   }
 
   protected void runValidation(BodyValidator validator) {
-    final List<ValidationException> exceptionList = new ArrayList<ValidationException>();
+    final List<ValidationException> exceptionList = new ArrayList<>();
     validator.validate(this, exceptionList);
     if (!exceptionList.isEmpty()) {
       throw exceptionList.get(0);
@@ -231,7 +232,7 @@ public abstract class Body extends AbstractHost implements Serializable {
 
   /** Verifies a few sanity conditions on the contents on this body. */
   public void validate() {
-    List<ValidationException> exceptionList = new ArrayList<ValidationException>();
+    List<ValidationException> exceptionList = new ArrayList<>();
     validate(exceptionList);
     if (!exceptionList.isEmpty()) {
       throw exceptionList.get(0);
@@ -330,7 +331,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    */
   public List<Local> getParameterLocals() {
     final int numParams = getMethod().getParameterCount();
-    final List<Local> retVal = new ArrayList<Local>(numParams);
+    final List<Local> retVal = new ArrayList<>(numParams);
 
     // Parameters are zero-indexed, so the keeping of the index is safe
     for (Unit u : getUnits()) {
@@ -396,7 +397,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @see soot.shimple.PhiExpr#getUnitBoxes()
    **/
   public List<UnitBox> getAllUnitBoxes() {
-    ArrayList<UnitBox> unitBoxList = new ArrayList<UnitBox>();
+    ArrayList<UnitBox> unitBoxList = new ArrayList<>();
     {
       Iterator<Unit> it = unitChain.iterator();
       while (it.hasNext()) {
@@ -443,7 +444,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @see soot.shimple.PhiExpr#getUnitBoxes()
    **/
   public List<UnitBox> getUnitBoxes(boolean branchTarget) {
-    ArrayList<UnitBox> unitBoxList = new ArrayList<UnitBox>();
+    ArrayList<UnitBox> unitBoxList = new ArrayList<>();
     {
       Iterator<Unit> it = unitChain.iterator();
       while (it.hasNext()) {
@@ -494,7 +495,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    *
    */
   public List<ValueBox> getUseBoxes() {
-    ArrayList<ValueBox> useBoxList = new ArrayList<ValueBox>();
+    ArrayList<ValueBox> useBoxList = new ArrayList<>();
 
     Iterator<Unit> it = unitChain.iterator();
     while (it.hasNext()) {
@@ -537,7 +538,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @see Value
    */
   public List<ValueBox> getUseAndDefBoxes() {
-    ArrayList<ValueBox> useAndDefBoxList = new ArrayList<ValueBox>();
+    ArrayList<ValueBox> useAndDefBoxList = new ArrayList<>();
 
     Iterator<Unit> it = unitChain.iterator();
     while (it.hasNext()) {
@@ -558,14 +559,12 @@ public abstract class Body extends AbstractHost implements Serializable {
   @Override
   public String toString() {
     ByteArrayOutputStream streamOut = new ByteArrayOutputStream();
-    PrintWriter writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
-    try {
+    try (PrintWriter writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)))) {
       Printer.v().printTo(this, writerOut);
+      writerOut.flush();
     } catch (RuntimeException e) {
       logger.error(e.getMessage(), e);
     }
-    writerOut.flush();
-    writerOut.close();
     return streamOut.toString();
   }
 
