@@ -27,6 +27,8 @@ package soot.tagkit;
  */
 public class LinkTag extends StringTag {
 
+  public static final String NAME = "LinkTag";
+
   private final Host link;
   private final String className;
 
@@ -50,15 +52,13 @@ public class LinkTag extends StringTag {
     return link;
   }
 
-  /** Returns the tag name. */
   @Override
   public String getName() {
-    return "StringTag";
+    return NAME;
   }
 
-  /** Returns the tag raw data. */
   @Override
   public byte[] getValue() {
-    throw new RuntimeException("StringTag has no value for bytecode");
+    throw new RuntimeException("LinkTag has no value for bytecode");
   }
 }

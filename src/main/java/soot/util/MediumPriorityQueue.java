@@ -39,11 +39,19 @@ import java.util.Map;
 class MediumPriorityQueue<E> extends PriorityQueue<E> {
   final static int MAX_CAPACITY = Long.SIZE * Long.SIZE;
 
+  private final long[] data;
   private int size = 0;
   private long modCount = 0;
-  private long[] data;
   private long lookup = 0;
 
+  MediumPriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
+    super(universe, ordinalMap);
+    data = new long[(N + Long.SIZE - 1) >>> 6];
+    assert N > SmallPriorityQueue.MAX_CAPACITY;
+    assert N <= MAX_CAPACITY;
+  }
+
+  @Override
   void addAll() {
     size = N;
     Arrays.fill(data, -1);
@@ -51,13 +59,6 @@ class MediumPriorityQueue<E> extends PriorityQueue<E> {
     lookup = -1L >>> -data.length;
     min = 0;
     modCount++;
-  }
-
-  MediumPriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
-    super(universe, ordinalMap);
-    data = new long[(N + Long.SIZE - 1) >>> 6];
-    assert N > SmallPriorityQueue.MAX_CAPACITY;
-    assert N <= MAX_CAPACITY;
   }
 
   @Override
@@ -72,10 +73,7 @@ class MediumPriorityQueue<E> extends PriorityQueue<E> {
   @Override
   int nextSetBit(int fromIndex) {
     assert fromIndex >= 0;
-
-    int bb = fromIndex >>> 6;
-
-    while (fromIndex < N) {
+    for (int bb = fromIndex >>> 6; fromIndex < N;) {
       // remove everything from t1 that is less than "fromIndex",
       long m1 = -1L << fromIndex;
       // t1 contains now all active bits

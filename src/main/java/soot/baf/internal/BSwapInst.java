@@ -32,10 +32,10 @@ import soot.util.Switch;
 
 public class BSwapInst extends AbstractInst implements SwapInst {
 
-  protected Type mFromType, mToType;
+  protected Type mFromType;
+  protected Type mToType;
 
   public BSwapInst(Type fromType, Type toType) {
-
     if (fromType instanceof LongType || fromType instanceof DoubleType) {
       throw new RuntimeException("fromType is LongType or DoubleType !");
     }
@@ -43,52 +43,62 @@ public class BSwapInst extends AbstractInst implements SwapInst {
       throw new RuntimeException("toType is LongType or DoubleType !");
     }
 
-    mFromType = Baf.getDescriptorTypeOf(fromType);
-    mToType = Baf.getDescriptorTypeOf(toType);
+    this.mFromType = Baf.getDescriptorTypeOf(fromType);
+    this.mToType = Baf.getDescriptorTypeOf(toType);
   }
 
+  @Override
   public Type getFromType() {
     return mFromType;
   }
 
+  @Override
   public void setFromType(Type fromType) {
     mFromType = fromType;
   }
 
+  @Override
   public Type getToType() {
     return mToType;
   }
 
+  @Override
   public void setToType(Type toType) {
     mToType = toType;
   }
 
+  @Override
   public int getInCount() {
     return 2;
   }
 
+  @Override
   public int getInMachineCount() {
     return 2;
   }
 
+  @Override
   public int getOutCount() {
     return 2;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 2;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseSwapInst(this);
   }
 
+  @Override
   public String toString() {
     return "swap." + Baf.bafDescriptorOf(mFromType) + Baf.bafDescriptorOf(mToType);
   }
 
+  @Override
   public String getName() {
     return "swap";
   }
-
 }

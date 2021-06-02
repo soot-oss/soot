@@ -23,6 +23,7 @@ package soot.jimple.internal;
  */
 
 import soot.Type;
+import soot.Unit;
 import soot.Value;
 import soot.baf.Baf;
 import soot.jimple.CmpgExpr;
@@ -31,24 +32,28 @@ import soot.jimple.Jimple;
 import soot.util.Switch;
 
 public class JCmpgExpr extends AbstractJimpleIntBinopExpr implements CmpgExpr {
+
   public JCmpgExpr(Value op1, Value op2) {
     super(op1, op2);
   }
 
+  @Override
   public final String getSymbol() {
     return " " + Jimple.CMPG + " ";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseCmpgExpr(this);
   }
 
-  Object makeBafInst(Type opType) {
+  @Override
+  protected Unit makeBafInst(Type opType) {
     return Baf.v().newCmpgInst(this.getOp1().getType());
   }
 
+  @Override
   public Object clone() {
     return new JCmpgExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
   }
-
 }

@@ -23,11 +23,11 @@ package soot.jimple.toolkits.scalar;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import soot.EquivalentValue;
 import soot.Local;
+import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.DefinitionStmt;
@@ -42,144 +42,124 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 // Finds equal/equavalent/aliasing locals to a given local at a given statement, on demand
 // The answer provided is occasionally suboptimal (but correct) in the event where
 // a _re_definition of the given local causes it to become equal to existing locals.
+public class EqualLocalsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Object>> {
 
-public class EqualLocalsAnalysis extends ForwardFlowAnalysis {
-  Local l;
-  Stmt s;
+  protected Local l = null;
+  protected Stmt s = null;
 
   public EqualLocalsAnalysis(UnitGraph g) {
     super(g);
-
-    l = null;
-    s = null;
 
     // analysis is done on-demand, not now
   }
 
   /** Returns a list of EquivalentValue wrapped Locals and Refs that must always be equal to l at s */
-  public List getCopiesOfAt(Local l, Stmt s) {
+  public List<Object> getCopiesOfAt(Local l, Stmt s) {
     this.l = l;
     this.s = s;
 
     doAnalysis();
 
-    FlowSet fs = (FlowSet) getFlowBefore(s);
-    List aliasList = new ArrayList(fs.size());
+    FlowSet<Object> fs = (FlowSet<Object>) getFlowBefore(s);
+    ArrayList<Object> aliasList = new ArrayList<Object>(fs.size());
     for (Object o : fs) {
       aliasList.add(o);
     }
 
-    if (aliasList.contains(new EquivalentValue(l))) {
-      return aliasList;
+    if (!aliasList.contains(new EquivalentValue(l))) {
+      aliasList.clear();
+      aliasList.trimToSize();
     }
-    return new ArrayList();
+    return aliasList;
   }
 
-  protected void merge(Object in1, Object in2, Object out) {
-    FlowSet inSet1 = (FlowSet) in1;
-    FlowSet inSet2 = (FlowSet) in2;
-    FlowSet outSet = (FlowSet) out;
-
-    inSet1.intersection(inSet2, outSet);
-  }
-
-  protected void flowThrough(Object inValue, Object unit, Object outValue) {
-    FlowSet in = (FlowSet) inValue;
-    FlowSet out = (FlowSet) outValue;
-    Stmt stmt = (Stmt) unit;
-
+  @Override
+  protected void flowThrough(FlowSet<Object> in, Unit unit, FlowSet<Object> out) {
     in.copy(out);
 
     // get list of definitions at this unit
     List<EquivalentValue> newDefs = new ArrayList<EquivalentValue>();
-    Iterator newDefBoxesIt = stmt.getDefBoxes().iterator();
-    while (newDefBoxesIt.hasNext()) {
-      newDefs.add(new EquivalentValue(((ValueBox) newDefBoxesIt.next()).getValue()));
+    for (ValueBox next : unit.getDefBoxes()) {
+      newDefs.add(new EquivalentValue(next.getValue()));
     }
 
     // If the local of interest was defined in this statement, then we must
     // generate a new list of aliases to it starting here
     if (newDefs.contains(new EquivalentValue(l))) {
-      List<Object> existingDefStmts = new ArrayList<Object>();
-      Iterator outIt = out.iterator();
-      while (outIt.hasNext()) {
-        Object o = outIt.next();
+      List<Stmt> existingDefStmts = new ArrayList<Stmt>();
+      for (Object o : out) {
         if (o instanceof Stmt) {
-          existingDefStmts.add(o);
+          existingDefStmts.add((Stmt) o);
         }
       }
       out.clear();
-      Iterator<EquivalentValue> newDefsIt = newDefs.iterator();
-      while (newDefsIt.hasNext()) {
-        out.add(newDefsIt.next());
+
+      for (EquivalentValue next : newDefs) {
+        out.add(next);
       }
-      if (stmt instanceof DefinitionStmt) {
-        if (!stmt.containsInvokeExpr() && !(stmt instanceof IdentityStmt)) {
-          out.add(new EquivalentValue(((DefinitionStmt) stmt).getRightOp()));
+      if (unit instanceof DefinitionStmt) {
+        DefinitionStmt du = (DefinitionStmt) unit;
+        if (!du.containsInvokeExpr() && !(unit instanceof IdentityStmt)) {
+          out.add(new EquivalentValue(du.getRightOp()));
         }
       }
 
-      Iterator<Object> existingDefIt = existingDefStmts.iterator();
-      while (existingDefIt.hasNext()) {
-        Stmt s = (Stmt) existingDefIt.next();
-        List sNewDefs = new ArrayList();
-        Iterator sNewDefBoxesIt = s.getDefBoxes().iterator();
-        while (sNewDefBoxesIt.hasNext()) {
-          sNewDefs.add(((ValueBox) sNewDefBoxesIt.next()).getValue());
+      for (Stmt def : existingDefStmts) {
+        List<Value> sNewDefs = new ArrayList<Value>();
+        for (ValueBox next : def.getDefBoxes()) {
+          sNewDefs.add(next.getValue());
         }
-
-        if (s instanceof DefinitionStmt) {
-          if (out.contains(new EquivalentValue(((DefinitionStmt) s).getRightOp()))) {
-            Iterator sNewDefsIt = sNewDefs.iterator();
-            while (sNewDefsIt.hasNext()) {
-              out.add(new EquivalentValue((Value) sNewDefsIt.next()));
+        if (def instanceof DefinitionStmt) {
+          if (out.contains(new EquivalentValue(((DefinitionStmt) def).getRightOp()))) {
+            for (Value v : sNewDefs) {
+              out.add(new EquivalentValue(v));
             }
           } else {
-            Iterator sNewDefsIt = sNewDefs.iterator();
-            while (sNewDefsIt.hasNext()) {
-              out.remove(new EquivalentValue((Value) sNewDefsIt.next()));
+            for (Value v : sNewDefs) {
+              out.remove(new EquivalentValue(v));
             }
           }
         }
       }
     } else {
-      if (stmt instanceof DefinitionStmt) {
+      if (unit instanceof DefinitionStmt) {
         if (out.contains(new EquivalentValue(l))) {
-          if (out.contains(new EquivalentValue(((DefinitionStmt) stmt).getRightOp()))) {
-            Iterator<EquivalentValue> newDefsIt = newDefs.iterator();
-            while (newDefsIt.hasNext()) {
-              out.add(newDefsIt.next());
+          if (out.contains(new EquivalentValue(((DefinitionStmt) unit).getRightOp()))) {
+            for (EquivalentValue ev : newDefs) {
+              out.add(ev);
             }
           } else {
-            Iterator<EquivalentValue> newDefsIt = newDefs.iterator();
-            while (newDefsIt.hasNext()) {
-              out.remove(newDefsIt.next());
+            for (EquivalentValue ev : newDefs) {
+              out.remove(ev);
             }
           }
-        } else // before finding a def for l, just keep track of all definition statements
-               // note that if l is redefined, then we'll miss existing values that then
-               // become equal to l. It is suboptimal but correct to miss these values.
-        {
-          out.add(stmt);
+        } else {
+          // before finding a def for l, just keep track of all definition statements
+          // note that if l is redefined, then we'll miss existing values that then
+          // become equal to l. It is suboptimal but correct to miss these values.
+          out.add(unit);
         }
       }
     }
   }
 
-  protected void copy(Object source, Object dest) {
-
-    FlowSet sourceSet = (FlowSet) source;
-    FlowSet destSet = (FlowSet) dest;
-
-    sourceSet.copy(destSet);
-
+  @Override
+  protected void merge(FlowSet<Object> in1, FlowSet<Object> in2, FlowSet<Object> out) {
+    in1.intersection(in2, out);
   }
 
-  protected Object entryInitialFlow() {
-    return new ArraySparseSet();
+  @Override
+  protected void copy(FlowSet<Object> source, FlowSet<Object> dest) {
+    source.copy(dest);
   }
 
-  protected Object newInitialFlow() {
-    return new ArraySparseSet();
+  @Override
+  protected FlowSet<Object> entryInitialFlow() {
+    return new ArraySparseSet<Object>();
+  }
+
+  @Override
+  protected FlowSet<Object> newInitialFlow() {
+    return new ArraySparseSet<Object>();
   }
 }

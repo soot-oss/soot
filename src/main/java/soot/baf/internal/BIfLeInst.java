@@ -29,34 +29,42 @@ import soot.baf.InstSwitch;
 import soot.util.Switch;
 
 public class BIfLeInst extends AbstractBranchInst implements IfLeInst {
+
   public BIfLeInst(Unit target) {
     super(Baf.v().newInstBox(target));
   }
 
-  public int getInCount() {
-    return 1;
-  }
-
+  @Override
   public Object clone() {
     return new BIfLeInst(getTarget());
   }
 
+  @Override
+  public int getInCount() {
+    return 1;
+  }
+
+  @Override
   public int getInMachineCount() {
     return 1;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public String getName() {
     return "ifle";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseIfLeInst(this);
   }

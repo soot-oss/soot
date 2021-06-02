@@ -610,7 +610,7 @@ public class LockAllocator extends SceneTransformer {
         continue;
       }
 
-      LocalDefs ld = LocalDefs.Factory.newLocalDefs(tn.method.retrieveActiveBody());
+      LocalDefs ld = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(tn.method.retrieveActiveBody());
 
       if (tn.origLock == null || !(tn.origLock instanceof Local)) {
         continue;

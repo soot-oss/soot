@@ -37,6 +37,7 @@ import soot.jimple.StmtSwitch;
 import soot.util.Switch;
 
 public class JExitMonitorStmt extends AbstractOpStmt implements ExitMonitorStmt {
+
   public JExitMonitorStmt(Value op) {
     this(Jimple.v().newImmediateBox(op));
   }
@@ -45,25 +46,29 @@ public class JExitMonitorStmt extends AbstractOpStmt implements ExitMonitorStmt 
     super(opBox);
   }
 
+  @Override
   public Object clone() {
     return new JExitMonitorStmt(Jimple.cloneIfNecessary(getOp()));
   }
 
+  @Override
   public String toString() {
     return Jimple.EXITMONITOR + " " + opBox.getValue().toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    up.literal(Jimple.EXITMONITOR);
-    up.literal(" ");
+    up.literal(Jimple.EXITMONITOR + " ");
     opBox.toString(up);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((StmtSwitch) sw).caseExitMonitorStmt(this);
 
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     ((ConvertToBaf) (getOp())).convertToBaf(context, out);
 
@@ -72,12 +77,13 @@ public class JExitMonitorStmt extends AbstractOpStmt implements ExitMonitorStmt 
     out.add(u);
   }
 
+  @Override
   public boolean fallsThrough() {
     return true;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }
-
 }

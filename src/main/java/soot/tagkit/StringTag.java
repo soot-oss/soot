@@ -27,6 +27,8 @@ package soot.tagkit;
  */
 public class StringTag implements Tag {
 
+  public static final String NAME = "StringTag";
+
   private final String s;
   private final String analysisType;
 
@@ -48,17 +50,15 @@ public class StringTag implements Tag {
     return analysisType;
   }
 
-  /** Returns the tag name. */
   @Override
   public String getName() {
-    return "StringTag";
+    return NAME;
   }
 
   public String getInfo() {
     return s;
   }
 
-  /** Returns the tag raw data. */
   @Override
   public byte[] getValue() {
     throw new RuntimeException("StringTag has no value for bytecode");

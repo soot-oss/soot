@@ -30,7 +30,7 @@ import java.util.Map;
 // QND
 class LargePriorityQueue<E> extends PriorityQueue<E> {
 
-  BitSet queue;
+  private final BitSet queue;
   private long modCount = 0;
 
   LargePriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
@@ -96,5 +96,4 @@ class LargePriorityQueue<E> extends PriorityQueue<E> {
   public int size() {
     return queue.cardinality();
   }
-
 }

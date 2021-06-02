@@ -46,10 +46,6 @@ public class SourceLnNamePosTag extends SourceLnPosTag {
    */
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(super.toString());
-    sb.append(" file: ");
-    sb.append(fileName);
-    return sb.toString();
+    return super.toString() + " file: " + this.fileName;
   }
 }
