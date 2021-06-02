@@ -30,6 +30,7 @@ import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
 import soot.Value;
+import soot.ValueBox;
 import soot.shimple.PiExpr;
 import soot.shimple.Shimple;
 import soot.toolkits.scalar.ValueUnitPair;
@@ -37,79 +38,93 @@ import soot.util.Switch;
 
 /**
  * @author Navindra Umanee
- **/
+ */
 public class SPiExpr implements PiExpr {
+
   protected ValueUnitPair argBox;
   protected Object targetKey;
 
   public SPiExpr(Value v, Unit u, Object o) {
-    argBox = new SValueUnitPair(v, u);
+    this.argBox = new SValueUnitPair(v, u);
     this.targetKey = o;
   }
 
+  @Override
   public ValueUnitPair getArgBox() {
     return argBox;
   }
 
+  @Override
   public Value getValue() {
     return argBox.getValue();
   }
 
+  @Override
   public Unit getCondStmt() {
     return argBox.getUnit();
   }
 
+  @Override
   public Object getTargetKey() {
     return targetKey;
   }
 
+  @Override
   public void setValue(Value value) {
     argBox.setValue(value);
   }
 
+  @Override
   public void setCondStmt(Unit pred) {
     argBox.setUnit(pred);
   }
 
+  @Override
   public void setTargetKey(Object targetKey) {
     this.targetKey = targetKey;
   }
 
+  @Override
   public List<UnitBox> getUnitBoxes() {
     return Collections.<UnitBox>singletonList(argBox);
   }
 
+  @Override
   public void clearUnitBoxes() {
-    System.out.println("clear unit boxes");
     argBox.setUnit(null);
   }
 
+  @Override
   public boolean equivTo(Object o) {
-    if (!(o instanceof SPiExpr)) {
+    if (o instanceof SPiExpr) {
+      return getArgBox().equivTo(((SPiExpr) o).getArgBox());
+    } else {
       return false;
     }
-
-    return getArgBox().equivTo(((SPiExpr) o).getArgBox());
   }
 
+  @Override
   public int equivHashCode() {
     return getArgBox().equivHashCode() * 17;
   }
 
+  @Override
   public void apply(Switch sw) {
     // *** FIXME:
     throw new RuntimeException("Not Yet Implemented.");
   }
 
+  @Override
   public Object clone() {
     return new SPiExpr(getValue(), getCondStmt(), getTargetKey());
   }
 
+  @Override
   public String toString() {
-    String s = Shimple.PI + "(" + getValue() + ")";
-    return s;
+    return Shimple.PI + "(" + getValue() + ")";
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Shimple.PI);
     up.literal("(");
@@ -119,11 +134,13 @@ public class SPiExpr implements PiExpr {
     up.literal("])");
   }
 
+  @Override
   public Type getType() {
     return getValue().getType();
   }
 
-  public List getUseBoxes() {
-    return Collections.singletonList(argBox);
+  @Override
+  public List<ValueBox> getUseBoxes() {
+    return Collections.<ValueBox>singletonList(argBox);
   }
 }

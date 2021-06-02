@@ -24,29 +24,26 @@ package soot.util.dot;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * A Dot graph node with various attributes.
  */
-public class DotGraphNode implements Renderable {
-  private String name;
-  private List<DotGraphAttribute> attributes;
+public class DotGraphNode extends AbstractDotGraphElement implements Renderable {
+
+  private final String name;
 
   public DotGraphNode(String name) {
-    this.name = "\"" + DotGraphUtility.replaceQuotes(name) + "\"";
+    // make any illegal name to be legal
+    this.name = '"' + DotGraphUtility.replaceQuotes(name) + '"';
   }
 
-  // make any illegal name to be legal
+  public DotGraphNode(String name, boolean dontQuoteName) {
+    this.name = dontQuoteName ? DotGraphUtility.replaceQuotes(name) : '"' + DotGraphUtility.replaceQuotes(name) + '"';
+  }
+
   public String getName() {
     return this.name;
-  }
-
-  public void setLabel(String label) {
-    label = DotGraphUtility.replaceQuotes(label);
-    label = DotGraphUtility.replaceReturns(label);
-    this.setAttribute("label", "\"" + label + "\"");
   }
 
   public void setHTMLLabel(String label) {
@@ -62,32 +59,21 @@ public class DotGraphNode implements Renderable {
     this.setAttribute("style", style);
   }
 
-  public void setAttribute(String id, String value) {
-    if (this.attributes == null) {
-      this.attributes = new LinkedList<DotGraphAttribute>();
-    }
-
-    this.setAttribute(new DotGraphAttribute(id, value));
-  }
-
-  public void setAttribute(DotGraphAttribute attr) {
-    if (this.attributes == null) {
-      this.attributes = new LinkedList<DotGraphAttribute>();
-    }
-
-    this.attributes.add(attr);
-  }
-
+  @Override
   public void render(OutputStream out, int indent) throws IOException {
-    StringBuffer line = new StringBuffer(this.getName());
-    if (this.attributes != null) {
+    StringBuilder line = new StringBuilder();
+    line.append(this.getName());
+
+    Collection<DotGraphAttribute> attrs = this.getAttributes();
+    if (!attrs.isEmpty()) {
       line.append(" [");
-      for (DotGraphAttribute attr : this.attributes) {
-        line.append(attr.toString());
-        line.append(",");
+      for (DotGraphAttribute attr : attrs) {
+        line.append(attr.toString()).append(',');
       }
-      line.append("];");
+      line.append(']');
     }
-    DotGraphUtility.renderLine(out, new String(line), indent);
+    line.append(';');
+
+    DotGraphUtility.renderLine(out, line.toString(), indent);
   }
 }

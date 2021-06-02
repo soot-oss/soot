@@ -37,8 +37,9 @@ import soot.util.Numberable;
  * @author xiao
  */
 public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>, Iterable<E> {
-  Numberable[] numberToObj = null;
-  Map<E, E> objContainer = null;
+
+  final Map<E, E> objContainer;
+  Numberable[] numberToObj;
   int lastNumber = 0;
   int filledCells = 0;
 
@@ -53,6 +54,7 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
     objContainer = new HashMap<E, E>(initSize);
   }
 
+  @Override
   public void add(E o) {
     // We check if this object is already put into the set
     if (o.getNumber() != -1 && numberToObj[o.getNumber()] == o) {
@@ -76,7 +78,6 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
    * Clear the reference to the objects to help the garbage collection
    */
   public void clear() {
-
     for (int i = 0; i < lastNumber; ++i) {
       numberToObj[i] = null;
     }
@@ -89,6 +90,7 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
   /**
    * Input object o should be added to this container previously.
    */
+  @Override
   public long get(E o) {
     if (o == null) {
       return -1;
@@ -96,8 +98,9 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
     return o.getNumber();
   }
 
-  @SuppressWarnings("unchecked")
+  @Override
   public E get(long number) {
+    @SuppressWarnings("unchecked")
     E ret = (E) numberToObj[(int) number];
     return ret;
   }
@@ -112,6 +115,7 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
     return objContainer.get(o);
   }
 
+  @Override
   public boolean remove(E o) {
     int id = o.getNumber();
     if (id < 0) {
@@ -130,6 +134,7 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
   /**
    * Return how many objects are in the container but not the capacity of the container.
    */
+  @Override
   public int size() {
     return filledCells;
   }
@@ -139,9 +144,8 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
    * objects are less than the filledCells.
    */
   public void reassign() {
-    int i, j;
-
-    for (i = 0, j = lastNumber - 1; i < j; ++i) {
+    int i = 0;
+    for (int j = lastNumber - 1; i < j; ++i) {
       if (numberToObj[i] != null) {
         continue;
       }
@@ -161,7 +165,6 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
       numberToObj[i].setNumber(i);
       numberToObj[j] = null;
     }
-
     lastNumber = i;
   }
 
@@ -177,6 +180,7 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
     /**
      * We locate the next non-null item.
      */
+    @Override
     public final boolean hasNext() {
       while (cur < lastNumber) {
         if (numberToObj[cur] != null) {
@@ -191,12 +195,15 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
     /**
      * We move on until a none null pointer found. In this way, the clients don't need to be aware of the empty slots.
      */
-    @SuppressWarnings("unchecked")
+    @Override
     public final E next() {
-      lastElement = (E) numberToObj[cur++];
-      return lastElement;
+      @SuppressWarnings("unchecked")
+      E temp = (E) numberToObj[cur++];
+      lastElement = temp;
+      return temp;
     }
 
+    @Override
     public final void remove() {
       ZArrayNumberer.this.remove(lastElement);
     }

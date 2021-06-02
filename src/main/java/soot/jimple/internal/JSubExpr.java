@@ -23,6 +23,7 @@ package soot.jimple.internal;
  */
 
 import soot.Type;
+import soot.Unit;
 import soot.Value;
 import soot.baf.Baf;
 import soot.jimple.ExprSwitch;
@@ -31,24 +32,28 @@ import soot.jimple.SubExpr;
 import soot.util.Switch;
 
 public class JSubExpr extends AbstractJimpleFloatBinopExpr implements SubExpr {
+
   public JSubExpr(Value op1, Value op2) {
     super(op1, op2);
   }
 
+  @Override
   public final String getSymbol() {
     return " - ";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseSubExpr(this);
   }
 
-  Object makeBafInst(Type opType) {
+  @Override
+  protected Unit makeBafInst(Type opType) {
     return Baf.v().newSubInst(this.getOp1().getType());
   }
 
+  @Override
   public Object clone() {
     return new JSubExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
   }
-
 }

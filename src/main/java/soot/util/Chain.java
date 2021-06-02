@@ -34,35 +34,30 @@ import java.util.List;
  *          element type
  */
 public interface Chain<E> extends Collection<E>, Serializable {
+
+  /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
+  public void insertBefore(E toInsert, E point);
+
+  /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
+  public void insertAfter(E toInsert, E point);
+
+  /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
+  public void insertBefore(Chain<E> toInsert, E point);
+
+  /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
+  public void insertAfter(Chain<E> toInsert, E point);
+
   /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
   public void insertBefore(List<E> toInsert, E point);
 
   /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
   public void insertAfter(List<E> toInsert, E point);
 
-  /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
-  public void insertAfter(E toInsert, E point);
-
-  /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
-  public void insertAfter(Collection<? extends E> toInsert, E point);
-
-  /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
-  public void insertBefore(E toInsert, E point);
-
   /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
   public void insertBefore(Collection<? extends E> toInsert, E point);
 
-  /**
-   * Inserts <code>toInsert</code> in the Chain before <code>point</code>. (It would probably be better to make Chain
-   * implement List)
-   */
-  public void insertBefore(Chain<E> toInsert, E point);
-
-  /**
-   * Inserts <code>toInsert</code> in the Chain after <code>point</code>. (It would probably be better to make Chain
-   * implement List)
-   */
-  public void insertAfter(Chain<E> toInsert, E point);
+  /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
+  public void insertAfter(Collection<? extends E> toInsert, E point);
 
   /** Replaces <code>out</code> in the Chain by <code>in</code>. */
   public void swapWith(E out, E in);
@@ -87,8 +82,8 @@ public interface Chain<E> extends Collection<E>, Serializable {
   public void removeLast();
 
   /**
-   * Returns true if object <code>someObject</code> follows object <code>someReferenceObject</code> in the Chain,
-   * i.e. someReferenceObject comes first and then someObject.
+   * Returns true if object <code>someObject</code> follows object <code>someReferenceObject</code> in the Chain, i.e.
+   * someReferenceObject comes first and then someObject.
    */
   public boolean follows(E someObject, E someReferenceObject);
 

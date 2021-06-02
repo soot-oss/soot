@@ -345,6 +345,7 @@ public class PackManager {
       p.add(new Transform("bb.ule", UnusedLocalEliminator.v()));
       p.add(new Transform("bb.lp", LocalPacker.v()));
       p.add(new Transform("bb.sco", StoreChainOptimizer.v()));
+      p.add(new Transform("bb.ne", NopEliminator.v()));
     }
 
     // Baf optimization pack
@@ -655,7 +656,10 @@ public class PackManager {
   }
 
   private void runBodyPacks(final Iterator<SootClass> classes) {
-    int threadNum = Runtime.getRuntime().availableProcessors();
+    int threadNum = Options.v().num_threads();
+    if (threadNum < 1) {
+      threadNum = Runtime.getRuntime().availableProcessors();
+    }
     CountingThreadPoolExecutor executor
         = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 

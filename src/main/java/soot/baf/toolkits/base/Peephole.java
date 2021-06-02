@@ -30,8 +30,8 @@ import soot.Body;
  * @see PeepholeOptimizer
  * @see ExamplePeephole
  */
-
 public interface Peephole {
+
   /**
    * Entry point for a peephole. This method is repeatedly called by the peephole driver, until a fixed-point is reached over
    * all peepholes.
