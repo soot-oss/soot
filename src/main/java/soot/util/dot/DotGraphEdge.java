@@ -24,17 +24,18 @@ package soot.util.dot;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
 
-/* Graph edges are the major elements of a graph
- * @author Feng Qian 
+/**
+ * Graph edges are the major elements of a graph
+ * 
+ * @author Feng Qian
  */
-public class DotGraphEdge implements Renderable {
-  private boolean isDirected;
-  private DotGraphNode start, end;
-  private List<DotGraphAttribute> attributes;
+public class DotGraphEdge extends AbstractDotGraphElement implements Renderable {
+
+  private final DotGraphNode start;
+  private final DotGraphNode end;
+  private final boolean isDirected;
 
   /**
    * Draws a directed edge.
@@ -67,18 +68,6 @@ public class DotGraphEdge implements Renderable {
   }
 
   /**
-   * Sets the label for the edge.
-   * 
-   * @param label,
-   *          a label string
-   */
-  public void setLabel(String label) {
-    label = DotGraphUtility.replaceQuotes(label);
-    label = DotGraphUtility.replaceReturns(label);
-    this.setAttribute("label", "\"" + label + "\"");
-  }
-
-  /**
    * Sets the edge style.
    * 
    * @param style,
@@ -89,51 +78,23 @@ public class DotGraphEdge implements Renderable {
     this.setAttribute("style", style);
   }
 
-  /**
-   * Sets an edge attribute.
-   * 
-   * @param id,
-   *          the attribute id to be set
-   * @param value,
-   *          the attribute value
-   */
-  public void setAttribute(String id, String value) {
-    this.setAttribute(new DotGraphAttribute(id, value));
-  }
-
-  /**
-   * Sets an edge attribute.
-   * 
-   * @param attr,
-   *          a {@link DotGraphAttribute} specifying the attribute name and value.
-   */
-  public void setAttribute(DotGraphAttribute attr) {
-    if (this.attributes == null) {
-      this.attributes = new LinkedList<DotGraphAttribute>();
-    }
-
-    this.attributes.add(attr);
-  }
-
+  @Override
   public void render(OutputStream out, int indent) throws IOException {
-    StringBuffer line = new StringBuffer(start.getName());
-    line.append((this.isDirected) ? "->" : "--");
-    line.append(end.getName());
+    StringBuilder line = new StringBuilder();
+    line.append(this.start.getName());
+    line.append(this.isDirected ? "->" : "--");
+    line.append(this.end.getName());
 
-    if (this.attributes != null) {
-
+    Collection<DotGraphAttribute> attrs = this.getAttributes();
+    if (!attrs.isEmpty()) {
       line.append(" [");
-      Iterator<DotGraphAttribute> attrIt = this.attributes.iterator();
-      while (attrIt.hasNext()) {
-        DotGraphAttribute attr = attrIt.next();
-        line.append(attr.toString());
-        line.append(",");
+      for (DotGraphAttribute attr : attrs) {
+        line.append(attr.toString()).append(',');
       }
-      line.append("]");
+      line.append(']');
     }
+    line.append(';');
 
-    line.append(";");
-
-    DotGraphUtility.renderLine(out, new String(line), indent);
+    DotGraphUtility.renderLine(out, line.toString(), indent);
   }
 }

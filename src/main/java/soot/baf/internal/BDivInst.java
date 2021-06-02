@@ -29,34 +29,42 @@ import soot.baf.InstSwitch;
 import soot.util.Switch;
 
 public class BDivInst extends AbstractOpTypeInst implements DivInst {
+
   public BDivInst(Type opType) {
     super(opType);
   }
 
-  public int getInCount() {
-    return 2;
-  }
-
+  @Override
   public Object clone() {
     return new BDivInst(getOpType());
   }
 
+  @Override
+  public int getInCount() {
+    return 2;
+  }
+
+  @Override
   public int getInMachineCount() {
     return 2 * AbstractJasminClass.sizeOfType(getOpType());
   }
 
+  @Override
   public int getOutCount() {
     return 1;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 1 * AbstractJasminClass.sizeOfType(getOpType());
   }
 
+  @Override
   public final String getName() {
     return "div";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseDivInst(this);
   }

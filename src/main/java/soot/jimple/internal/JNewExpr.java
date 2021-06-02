@@ -31,16 +31,19 @@ import soot.jimple.ConvertToBaf;
 import soot.jimple.JimpleToBafContext;
 
 public class JNewExpr extends AbstractNewExpr implements ConvertToBaf {
+
   public JNewExpr(RefType type) {
     this.type = type;
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     Unit u = Baf.v().newNewInst(getBaseType());
     u.addAllTagsOf(context.getCurrentUnit());
     out.add(u);
   }
 
+  @Override
   public Object clone() {
     return new JNewExpr(type);
   }

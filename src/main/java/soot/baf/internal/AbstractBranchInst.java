@@ -28,32 +28,30 @@ import java.util.List;
 import soot.Unit;
 import soot.UnitBox;
 import soot.UnitPrinter;
-import soot.util.Switch;
 
 public abstract class AbstractBranchInst extends AbstractInst {
-  UnitBox targetBox;
 
+  UnitBox targetBox;
   final List<UnitBox> targetBoxes;
 
   AbstractBranchInst(UnitBox targetBox) {
     this.targetBox = targetBox;
-
-    targetBoxes = Collections.singletonList(targetBox);
+    this.targetBoxes = Collections.singletonList(targetBox);
   }
 
-  abstract public String getName();
-
+  @Override
   public String toString() {
-    String target = "";
+    String target;
     Unit targetUnit = getTarget();
     if (this == targetUnit) {
       target = getName();
     } else {
-      target = getTarget().toString();
+      target = targetUnit.toString();
     }
     return getName() + " " + target;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(getName());
     up.literal(" ");
@@ -72,14 +70,13 @@ public abstract class AbstractBranchInst extends AbstractInst {
     return targetBox;
   }
 
+  @Override
   public List<UnitBox> getUnitBoxes() {
     return targetBoxes;
   }
 
-  abstract public void apply(Switch sw);
-
+  @Override
   public boolean branches() {
     return true;
   }
-
 }

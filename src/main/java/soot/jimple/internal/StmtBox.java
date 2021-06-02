@@ -27,11 +27,13 @@ import soot.Unit;
 import soot.jimple.Stmt;
 
 public class StmtBox extends AbstractUnitBox {
+
   public StmtBox(Stmt s) {
     setUnit(s);
   }
 
+  @Override
   public boolean canContainUnit(Unit u) {
-    return u instanceof Stmt || u == null;
+    return u == null || u instanceof Stmt;
   }
 }

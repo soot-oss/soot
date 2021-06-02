@@ -41,6 +41,12 @@ class SmallPriorityQueue<E> extends PriorityQueue<E> {
 
   private long queue = 0;
 
+  SmallPriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
+    super(universe, ordinalMap);
+    assert universe.size() <= Long.SIZE;
+  }
+
+  @Override
   void addAll() {
     if (N == 0) {
       return;
@@ -48,11 +54,6 @@ class SmallPriorityQueue<E> extends PriorityQueue<E> {
 
     queue = -1L >>> -N;
     min = 0;
-  }
-
-  SmallPriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
-    super(universe, ordinalMap);
-    assert universe.size() <= Long.SIZE;
   }
 
   @Override
@@ -177,5 +178,4 @@ class SmallPriorityQueue<E> extends PriorityQueue<E> {
     min = nextSetBit(0);
     return true;
   }
-
 }

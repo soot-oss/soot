@@ -25,6 +25,7 @@ package soot.jimple.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 import soot.Unit;
 import soot.UnitBox;
@@ -45,31 +46,12 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
   /**
    * List of lookup values from the corresponding bytecode instruction, represented as IntConstants.
    */
-  List<IntConstant> lookupValues;
-
-  // This method is necessary to deal with constructor-must-be-first-ism.
-  private static UnitBox[] getTargetBoxesArray(List<? extends Unit> targets) {
-    UnitBox[] targetBoxes = new UnitBox[targets.size()];
-    for (int i = 0; i < targetBoxes.length; i++) {
-      targetBoxes[i] = Jimple.v().newStmtBox(targets.get(i));
-    }
-    return targetBoxes;
-  }
-
-  public Object clone() {
-    int lookupValueCount = lookupValues.size();
-    List<IntConstant> clonedLookupValues = new ArrayList<IntConstant>(lookupValueCount);
-
-    for (int i = 0; i < lookupValueCount; i++) {
-      clonedLookupValues.add(i, IntConstant.v(getLookupValue(i)));
-    }
-
-    return new JLookupSwitchStmt(getKey(), clonedLookupValues, getTargets(), getDefaultTarget());
-  }
+  protected List<IntConstant> lookupValues;
 
   /** Constructs a new JLookupSwitchStmt. lookupValues should be a list of IntConst s. */
   public JLookupSwitchStmt(Value key, List<IntConstant> lookupValues, List<? extends Unit> targets, Unit defaultTarget) {
-    this(Jimple.v().newImmediateBox(key), lookupValues, getTargetBoxesArray(targets), Jimple.v().newStmtBox(defaultTarget));
+    this(Jimple.v().newImmediateBox(key), lookupValues, getTargetBoxesArray(targets, Jimple.v()::newStmtBox),
+        Jimple.v().newStmtBox(defaultTarget));
   }
 
   /** Constructs a new JLookupSwitchStmt. lookupValues should be a list of IntConst s. */
@@ -84,91 +66,101 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
     setLookupValues(lookupValues);
   }
 
-  public String toString() {
-    StringBuffer buffer = new StringBuffer();
-    String endOfLine = " ";
-
-    buffer.append(Jimple.LOOKUPSWITCH + "(" + keyBox.getValue().toString() + ")" + endOfLine);
-
-    buffer.append("{" + endOfLine);
-
-    for (int i = 0; i < lookupValues.size(); i++) {
-      Unit target = getTarget(i);
-      buffer.append("    " + Jimple.CASE + " " + lookupValues.get(i) + ": " + Jimple.GOTO + " "
-          + (target == this ? "self" : target) + ";" + endOfLine);
+  @Override
+  public Object clone() {
+    List<IntConstant> clonedLookupValues = new ArrayList<IntConstant>(lookupValues.size());
+    for (IntConstant c : lookupValues) {
+      clonedLookupValues.add(IntConstant.v(c.value));
     }
-
-    Unit target = getDefaultTarget();
-    buffer.append("    " + Jimple.DEFAULT + ": " + Jimple.GOTO + " " + (target == this ? "self" : target) + ";" + endOfLine);
-
-    buffer.append("}");
-
-    return buffer.toString();
+    return new JLookupSwitchStmt(getKey(), clonedLookupValues, getTargets(), getDefaultTarget());
   }
 
+  @Override
+  public String toString() {
+    final char endOfLine = ' ';
+    StringBuilder buf = new StringBuilder(Jimple.LOOKUPSWITCH + "(");
+
+    buf.append(keyBox.getValue().toString()).append(')').append(endOfLine);
+    buf.append('{').append(endOfLine);
+
+    for (ListIterator<IntConstant> it = lookupValues.listIterator(); it.hasNext();) {
+      IntConstant c = it.next();
+      buf.append("    " + Jimple.CASE + " ").append(c).append(": " + Jimple.GOTO + " ");
+      Unit target = getTarget(it.previousIndex());
+      buf.append(target == this ? "self" : target).append(';').append(endOfLine);
+    }
+    {
+      buf.append("    " + Jimple.DEFAULT + ": " + Jimple.GOTO + " ");
+      Unit target = getDefaultTarget();
+      buf.append(target == this ? "self" : target).append(';').append(endOfLine);
+    }
+    buf.append('}');
+
+    return buf.toString();
+  }
+
+  @Override
   public void toString(UnitPrinter up) {
-    up.literal(Jimple.LOOKUPSWITCH);
-    up.literal("(");
+    up.literal(Jimple.LOOKUPSWITCH + "(");
     keyBox.toString(up);
     up.literal(")");
     up.newline();
     up.literal("{");
     up.newline();
-    for (int i = 0; i < lookupValues.size(); i++) {
-      up.literal("    ");
-      up.literal(Jimple.CASE);
-      up.literal(" ");
-      up.constant(lookupValues.get(i));
-      up.literal(": ");
-      up.literal(Jimple.GOTO);
-      up.literal(" ");
-      targetBoxes[i].toString(up);
+    for (ListIterator<IntConstant> it = lookupValues.listIterator(); it.hasNext();) {
+      IntConstant c = it.next();
+      up.literal("    " + Jimple.CASE + " ");
+      up.constant(c);
+      up.literal(": " + Jimple.GOTO + " ");
+      targetBoxes[it.previousIndex()].toString(up);
       up.literal(";");
       up.newline();
     }
 
-    up.literal("    ");
-    up.literal(Jimple.DEFAULT);
-    up.literal(": ");
-    up.literal(Jimple.GOTO);
-    up.literal(" ");
+    up.literal("    " + Jimple.DEFAULT + ": " + Jimple.GOTO + " ");
     defaultTargetBox.toString(up);
     up.literal(";");
     up.newline();
     up.literal("}");
   }
 
+  @Override
   public void setLookupValues(List<IntConstant> lookupValues) {
     this.lookupValues = new ArrayList<IntConstant>(lookupValues);
   }
 
+  @Override
   public void setLookupValue(int index, int value) {
     lookupValues.set(index, IntConstant.v(value));
   }
 
+  @Override
   public int getLookupValue(int index) {
     return lookupValues.get(index).value;
   }
 
+  @Override
   public List<IntConstant> getLookupValues() {
     return Collections.unmodifiableList(lookupValues);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((StmtSwitch) sw).caseLookupSwitchStmt(this);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
-    List<PlaceholderInst> targetPlaceholders = new ArrayList<PlaceholderInst>();
-
     ((ConvertToBaf) getKey()).convertToBaf(context, out);
 
-    for (Unit target : getTargets()) {
-      targetPlaceholders.add(Baf.v().newPlaceholderInst(target));
+    final Baf baf = Baf.v();
+    final List<Unit> targets = getTargets();
+    List<PlaceholderInst> targetPlaceholders = new ArrayList<PlaceholderInst>(targets.size());
+    for (Unit target : targets) {
+      targetPlaceholders.add(baf.newPlaceholderInst(target));
     }
 
-    Unit u
-        = Baf.v().newLookupSwitchInst(Baf.v().newPlaceholderInst(getDefaultTarget()), getLookupValues(), targetPlaceholders);
+    Unit u = baf.newLookupSwitchInst(baf.newPlaceholderInst(getDefaultTarget()), getLookupValues(), targetPlaceholders);
     u.addAllTagsOf(this);
     out.add(u);
   }

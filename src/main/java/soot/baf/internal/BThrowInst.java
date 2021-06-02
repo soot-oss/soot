@@ -27,37 +27,46 @@ import soot.baf.ThrowInst;
 import soot.util.Switch;
 
 public class BThrowInst extends AbstractInst implements ThrowInst {
+
   public BThrowInst() {
   }
 
-  public int getInCount() {
-    return 1;
-  }
-
-  public int getInMachineCount() {
-    return 1;
-  }
-
-  public int getOutCount() {
-    return 0;
-  }
-
-  public int getOutMachineCount() {
-    return 0;
-  }
-
-  final public String getName() {
-    return "athrow";
-  }
-
-  public void apply(Switch sw) {
-    ((InstSwitch) sw).caseThrowInst(this);
-  }
-
+  @Override
   public Object clone() {
     return new BThrowInst();
   }
 
+  @Override
+  public int getInCount() {
+    return 1;
+  }
+
+  @Override
+  public int getInMachineCount() {
+    return 1;
+  }
+
+  @Override
+  public int getOutCount() {
+    return 0;
+  }
+
+  @Override
+  public int getOutMachineCount() {
+    return 0;
+  }
+
+  @Override
+  final public String getName() {
+    return "athrow";
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseThrowInst(this);
+  }
+
+  @Override
   public boolean fallsThrough() {
     return false;
   }
