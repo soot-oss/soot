@@ -74,9 +74,6 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
    * @author Julian Tibble
    */
   protected class AnalysisInfo extends java.util.BitSet {
-    /**
-     *
-     */
     private static final long serialVersionUID = -9200043127757823764L;
 
     public AnalysisInfo() {
@@ -92,12 +89,8 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
       if (!valueToIndex.containsKey(key)) {
         return BOTTOM;
       }
-
       int index = valueToIndex.get(key);
-      int result = get(index) ? 2 : 0;
-      result += get(index + 1) ? 1 : 0;
-
-      return result;
+      return (get(index) ? 2 : 0) + (get(index + 1) ? 1 : 0);
     }
 
     public void put(Value key, int val) {
@@ -149,29 +142,23 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     // x!=null for the branchOut
     // or for an instanceof expression
     if (s instanceof JIfStmt) {
-      JIfStmt ifStmt = (JIfStmt) s;
-      handleIfStmt(ifStmt, in, out, outBranch);
-    }
-    // in case of a monitor statement, we know that if it succeeds, we have a non-null value
-    else if (s instanceof MonitorStmt) {
-      MonitorStmt monitorStmt = (MonitorStmt) s;
-      out.put(monitorStmt.getOp(), NON_NULL);
+      handleIfStmt((JIfStmt) s, in, out, outBranch);
+    } else if (s instanceof MonitorStmt) {
+      // in case of a monitor statement, we know that if it succeeds, we have a non-null value
+      out.put(((MonitorStmt) s).getOp(), NON_NULL);
     }
 
     // if we have an array ref, set the base to non-null
     if (s.containsArrayRef()) {
-      ArrayRef arrayRef = s.getArrayRef();
-      handleArrayRef(arrayRef, out);
+      handleArrayRef(s.getArrayRef(), out);
     }
     // for field refs, set the receiver object to non-null, if there is one
     if (s.containsFieldRef()) {
-      FieldRef fieldRef = s.getFieldRef();
-      handleFieldRef(fieldRef, out);
+      handleFieldRef(s.getFieldRef(), out);
     }
     // for invoke expr, set the receiver object to non-null, if there is one
     if (s.containsInvokeExpr()) {
-      InvokeExpr invokeExpr = s.getInvokeExpr();
-      handleInvokeExpr(invokeExpr, out);
+      handleInvokeExpr(s.getInvokeExpr(), out);
     }
 
     // if we have a definition (assignment) statement to a ref-like type, handle it,
@@ -187,11 +174,11 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     }
 
     // now copy the computed info to all successors
-    for (Iterator<AnalysisInfo> it = fallOut.iterator(); it.hasNext();) {
-      copy(out, it.next());
+    for (AnalysisInfo next : fallOut) {
+      copy(out, next);
     }
-    for (Iterator<AnalysisInfo> it = branchOuts.iterator(); it.hasNext();) {
-      copy(outBranch, it.next());
+    for (AnalysisInfo next : branchOuts) {
+      copy(outBranch, next);
     }
   }
 
@@ -210,12 +197,10 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     Value condition = ifStmt.getCondition();
     if (condition instanceof JInstanceOfExpr) {
       // a instanceof X ; if this succeeds, a is not null
-      JInstanceOfExpr expr = (JInstanceOfExpr) condition;
-      handleInstanceOfExpression(expr, in, out, outBranch);
+      handleInstanceOfExpression((JInstanceOfExpr) condition, in, out, outBranch);
     } else if (condition instanceof JEqExpr || condition instanceof JNeExpr) {
       // a==b or a!=b
-      AbstractBinopExpr eqExpr = (AbstractBinopExpr) condition;
-      handleEqualityOrNonEqualityCheck(eqExpr, in, out, outBranch);
+      handleEqualityOrNonEqualityCheck((AbstractBinopExpr) condition, in, out, outBranch);
     }
   }
 
@@ -275,8 +260,7 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     if (fieldRef instanceof InstanceFieldRef) {
       InstanceFieldRef instanceFieldRef = (InstanceFieldRef) fieldRef;
       // here we know that the receiver must point to an object
-      Value base = instanceFieldRef.getBase();
-      out.put(base, NON_NULL);
+      out.put(instanceFieldRef.getBase(), NON_NULL);
     }
   }
 
@@ -284,21 +268,18 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     if (invokeExpr instanceof InstanceInvokeExpr) {
       InstanceInvokeExpr instanceInvokeExpr = (InstanceInvokeExpr) invokeExpr;
       // here we know that the receiver must point to an object
-      Value base = instanceInvokeExpr.getBase();
-      out.put(base, NON_NULL);
+      out.put(instanceInvokeExpr.getBase(), NON_NULL);
     }
   }
 
   private void handleRefTypeAssignment(DefinitionStmt assignStmt, AnalysisInfo out) {
-    Value left = assignStmt.getLeftOp();
     Value right = assignStmt.getRightOp();
-
     // unbox casted value
     if (right instanceof JCastExpr) {
-      JCastExpr castExpr = (JCastExpr) right;
-      right = castExpr.getOp();
+      right = ((JCastExpr) right).getOp();
     }
 
+    Value left = assignStmt.getLeftOp();
     // if we have a definition (assignment) statement to a ref-like type, handle it,
     if (isAlwaysNonNull(right) || right instanceof NewExpr || right instanceof NewArrayExpr
         || right instanceof NewMultiArrayExpr || right instanceof ThisRef || right instanceof StringConstant
@@ -320,26 +301,30 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
   private void handlePhiExpr(AnalysisInfo out, Value left, PhiExpr right) {
     int curr = BOTTOM;
     for (Value v : right.getValues()) {
-      int nullness = out.get(v);
-      if (nullness == BOTTOM) {
-        continue;
-      } else if (nullness == TOP) {
-        out.put(left, TOP);
-        return;
-      } else if (nullness == NULL) {
-        if (curr == BOTTOM) {
-          curr = NULL;
-        } else if (curr != NULL) {
+      switch (out.get(v)) {
+        case BOTTOM:
+          continue;
+        case TOP:
           out.put(left, TOP);
           return;
-        }
-      } else if (nullness == NON_NULL) {
-        if (curr == BOTTOM) {
-          curr = NON_NULL;
-        } else if (curr != NON_NULL) {
-          out.put(left, TOP);
-          return;
-        }
+        case NULL:
+          if (curr == BOTTOM) {
+            curr = NULL;
+          } else if (curr != NULL) {
+            out.put(left, TOP);
+            return;
+          }
+          break;
+        case NON_NULL:
+          if (curr == BOTTOM) {
+            curr = NON_NULL;
+          } else if (curr != NON_NULL) {
+            out.put(left, TOP);
+            return;
+          }
+          break;
+        default:
+          break;
       }
     }
     out.put(left, curr);

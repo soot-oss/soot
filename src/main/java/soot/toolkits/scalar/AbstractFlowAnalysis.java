@@ -31,7 +31,7 @@ import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.interaction.InteractionHandler;
 
 /**
- * An abstract class providing a metaframework for carrying out dataflow analysis. This class provides common methods and
+ * An abstract class providing a meta-framework for carrying out dataflow analysis. This class provides common methods and
  * fields required by the BranchedFlowAnalysis and FlowAnalysis abstract classes.
  *
  * @param <N>
@@ -40,19 +40,21 @@ import soot.toolkits.graph.interaction.InteractionHandler;
  *          abstraction type
  */
 public abstract class AbstractFlowAnalysis<N, A> {
-  /** Maps graph nodes to IN sets. */
-  protected Map<N, A> unitToBeforeFlow;
-
-  /** Filtered: Maps graph nodes to IN sets. */
-  protected Map<N, A> filterUnitToBeforeFlow = Collections.emptyMap();
 
   /** The graph being analysed. */
-  protected DirectedGraph<N> graph;
+  protected final DirectedGraph<N> graph;
+
+  /** Maps graph nodes to IN sets. */
+  protected final Map<N, A> unitToBeforeFlow;
+
+  /** Filtered: Maps graph nodes to IN sets. */
+  protected Map<N, A> filterUnitToBeforeFlow;
 
   /** Constructs a flow analysis on the given <code>DirectedGraph</code>. */
   public AbstractFlowAnalysis(DirectedGraph<N> graph) {
-    unitToBeforeFlow = new IdentityHashMap<N, A>(graph.size() * 2 + 1);
     this.graph = graph;
+    this.unitToBeforeFlow = new IdentityHashMap<N, A>(graph.size() * 2 + 1);
+    this.filterUnitToBeforeFlow = Collections.emptyMap();
     if (Options.v().interactive_mode()) {
       InteractionHandler.v().handleCfgEvent(graph);
     }

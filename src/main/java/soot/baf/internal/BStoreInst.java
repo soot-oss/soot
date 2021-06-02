@@ -37,61 +37,72 @@ import soot.util.Switch;
 public class BStoreInst extends AbstractOpTypeInst implements StoreInst {
 
   ValueBox localBox;
-  List defBoxes;
+  List<ValueBox> defBoxes;
 
   public BStoreInst(Type opType, Local local) {
     super(opType);
-    localBox = new BafLocalBox(local);
-    defBoxes = Collections.singletonList(localBox);
+    this.localBox = new BafLocalBox(local);
+    this.defBoxes = Collections.singletonList(localBox);
   }
 
-  public int getInCount() {
-    return 1;
-  }
-
+  @Override
   public Object clone() {
     return new BStoreInst(getOpType(), getLocal());
   }
 
+  @Override
+  public int getInCount() {
+    return 1;
+  }
+
+  @Override
   public int getInMachineCount() {
     return AbstractJasminClass.sizeOfType(getOpType());
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   final public String getName() {
     return "store";
   }
 
+  @Override
   final String getParameters() {
     return " " + localBox.getValue().toString();
   }
 
+  @Override
   protected void getParameters(UnitPrinter up) {
     up.literal(" ");
     localBox.toString(up);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseStoreInst(this);
   }
 
+  @Override
   public void setLocal(Local l) {
     localBox.setValue(l);
   }
 
+  @Override
   public Local getLocal() {
     return (Local) localBox.getValue();
   }
 
-  public List getDefBoxes() {
+  @Override
+  public List<ValueBox> getDefBoxes() {
     return defBoxes;
   }
-
 }

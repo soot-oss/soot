@@ -27,35 +27,42 @@ import soot.baf.InstSwitch;
 import soot.util.Switch;
 
 public class BArrayLengthInst extends AbstractInst implements ArrayLengthInst {
+
   public BArrayLengthInst() {
   }
 
-  public int getInCount() {
-    return 1;
-  }
-
-  public int getInMachineCount() {
-    return 1;
-  }
-
-  public int getOutCount() {
-    return 1;
-  }
-
-  public int getOutMachineCount() {
-    return 1;
-  }
-
-  public final String getName() {
-    return "arraylength";
-  }
-
-  public void apply(Switch sw) {
-    ((InstSwitch) sw).caseArrayLengthInst(this);
-  }
-
+  @Override
   public Object clone() {
     return new BArrayLengthInst();
   }
 
+  @Override
+  public int getInCount() {
+    return 1;
+  }
+
+  @Override
+  public int getInMachineCount() {
+    return 1;
+  }
+
+  @Override
+  public int getOutCount() {
+    return 1;
+  }
+
+  @Override
+  public int getOutMachineCount() {
+    return 1;
+  }
+
+  @Override
+  public final String getName() {
+    return "arraylength";
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseArrayLengthInst(this);
+  }
 }

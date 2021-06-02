@@ -6,6 +6,13 @@ We are regularly applying for funding to help us maintain Soot. You can help us 
 
 Also many thanks to [![JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)](https://www.ej-technologies.com/products/jprofiler/overview.html) for supporting Soot with a free-to-use open source license!
 
+# Thanks to our Sponsors...
+... for supporting the further Development of Soot!
+Amazon Web Services is a Gold Sponsor. [![AWS](https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/150px-Amazon_Web_Services_Logo.svg.png)]()
+
+[Read more here about how to become a sponsor on your own.](https://github.com/sponsors/soot-oss)
+
+
 # Soot supports Java 9 modules now!
 Try and get involved in Soot's Java 9 bleeding edge developement.
 ## What works and is tested?

@@ -24,16 +24,17 @@ package soot.xml;
 
 /** XML helper */
 public class XMLRoot {
+
   public String name = ""; // <NAME attr1="val1" attr2="val2"...>val</NAME>
   public String value = ""; // <name attr1="val1" attr2="val2"...>VAL</name>
   public String[] attributes = { "" }; // <name ATTR1="val1" ATTR2="val2"...>val</name>
   public String[] values = { "" }; // <name attr1="VAL1" attr2="VAL2"...>val</name>
-
   protected XMLNode child = null; // -> to child node
 
   XMLRoot() {
   }
 
+  @Override
   public String toString() {
     return XMLPrinter.xmlHeader + XMLPrinter.dtdHeader + this.child.toPostString();
   }
@@ -60,7 +61,6 @@ public class XMLRoot {
   }
 
   public XMLNode addElement(String name, String value, String[] attributes, String[] values) {
-    XMLNode current = null;
     XMLNode newnode = new XMLNode(name, value, attributes, values);
     newnode.root = this;
 
@@ -68,7 +68,7 @@ public class XMLRoot {
       this.child = newnode;
       newnode.parent = null; // root's children have NO PARENTS :(
     } else {
-      current = this.child;
+      XMLNode current = this.child;
       while (current.next != null) {
         current = current.next;
       }

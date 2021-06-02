@@ -61,7 +61,7 @@ public class Evaluator {
   public static boolean isValueConstantValued(Value op) {
     if (op instanceof Constant) {
       return true;
-    } else if ((op instanceof UnopExpr)) {
+    } else if (op instanceof UnopExpr) {
       Value innerOp = ((UnopExpr) op).getOp();
       if (innerOp == NullConstant.v()) {
         // operations on null will throw an exception and the operation
@@ -89,9 +89,8 @@ public class Evaluator {
 
         /* check for a 0 value. If so, punt. */
         Value c2 = getConstantValueOf(op2);
-        if (c2 instanceof IntConstant && ((IntConstant) c2).value == 0) {
-          return false;
-        } else if (c2 instanceof LongConstant && ((LongConstant) c2).value == 0) {
+        if ((c2 instanceof IntConstant && ((IntConstant) c2).value == 0)
+            || (c2 instanceof LongConstant && ((LongConstant) c2).value == 0)) {
           return false;
         }
       }
@@ -120,11 +119,8 @@ public class Evaluator {
       }
     } else if (op instanceof BinopExpr) {
       final BinopExpr binExpr = (BinopExpr) op;
-      final Value op1 = binExpr.getOp1();
-      final Value op2 = binExpr.getOp2();
-
-      final Value c1 = getConstantValueOf(op1);
-      final Value c2 = getConstantValueOf(op2);
+      final Value c1 = getConstantValueOf(binExpr.getOp1());
+      final Value c2 = getConstantValueOf(binExpr.getOp2());
 
       if (op instanceof AddExpr) {
         return ((NumericConstant) c1).add((NumericConstant) c2);
@@ -147,12 +143,8 @@ public class Evaluator {
           }
         } else if (c1 instanceof StringConstant || c1 instanceof NullConstant || c1 instanceof ClassConstant) {
           boolean equality = c1.equals(c2);
-
           boolean truth = (op instanceof EqExpr) ? equality : !equality;
-
-          // Yeah, this variable name sucks, but I couldn't resist.
-          IntConstant beauty = IntConstant.v(truth ? 1 : 0);
-          return beauty;
+          return IntConstant.v(truth ? 1 : 0);
         }
         throw new RuntimeException("constant neither numeric nor string");
       } else if (op instanceof GtExpr) {
@@ -183,13 +175,11 @@ public class Evaluator {
         }
       } else if ((op instanceof CmpgExpr) || (op instanceof CmplExpr)) {
         if ((c1 instanceof RealConstant) && (c2 instanceof RealConstant)) {
-
           if (op instanceof CmpgExpr) {
             return ((RealConstant) c1).cmpg((RealConstant) c2);
           } else if (op instanceof CmplExpr) {
             return ((RealConstant) c1).cmpl((RealConstant) c2);
           }
-
         } else {
           throw new IllegalArgumentException("CmpExpr: RealConstant(s) expected");
         }

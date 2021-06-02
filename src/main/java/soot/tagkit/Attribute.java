@@ -27,6 +27,8 @@ package soot.tagkit;
  */
 public interface Attribute extends Tag {
 
-  /** Sets the value of the attribute from a byte[]. */
+  /**
+   * Sets the value of the attribute from a byte[].
+   */
   public void setValue(byte[] v);
 }

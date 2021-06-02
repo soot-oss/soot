@@ -58,6 +58,7 @@ public class JimpleBodyPack extends BodyPack {
     PackManager.v().getTransform("jb.uce").apply(b);
 
     PackManager.v().getTransform("jb.ls").apply(b);
+    PackManager.v().getTransform("jb.sils").apply(b);
 
     if (Options.v().time()) {
       Timers.v().splitTimer.end();

@@ -32,39 +32,54 @@ import java.util.NoSuchElementException;
  * Class representing an unmodifiable empty chain
  * 
  * @author Steven Arzt
- *
+ * 
+ * @param <T>
  */
 public class EmptyChain<T> implements Chain<T> {
 
   private static final long serialVersionUID = 1675685752701192002L;
 
-  private static final Iterator emptyIterator = new Iterator() {
+  // Lazy initialized singleton
+  private static class EmptyIteratorSingleton {
+    static final Iterator<Object> INSTANCE = new Iterator<Object>() {
 
-    @Override
-    public void remove() {
-      throw new NoSuchElementException();
-    }
+      @Override
+      public boolean hasNext() {
+        return false;
+      }
 
-    @Override
-    public boolean hasNext() {
-      return false;
-    }
+      @Override
+      public Object next() {
+        throw new NoSuchElementException();
+      }
 
-    @Override
-    public Object next() {
-      throw new NoSuchElementException();
-    }
+      @Override
+      public void remove() {
+        throw new NoSuchElementException();
+      }
+    };
+  }
 
-  };
+  private static <X> Iterator<X> emptyIterator() {
+    @SuppressWarnings("unchecked")
+    Iterator<X> retVal = (Iterator<X>) EmptyIteratorSingleton.INSTANCE;
+    return retVal;
+  }
 
-  private static EmptyChain instance = null;
+  // Lazy initialized singleton
+  private static class EmptyChainSingleton {
+    static final EmptyChain<Object> INSTANCE = new EmptyChain<Object>();
+  }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  public static <T> EmptyChain<T> v() {
-    if (instance == null) {
-      instance = new EmptyChain();
-    }
-    return instance;
+  public static <X> EmptyChain<X> v() {
+    @SuppressWarnings("unchecked")
+    EmptyChain<X> retVal = (EmptyChain<X>) EmptyChainSingleton.INSTANCE;
+    return retVal;
+  }
+
+  @Override
+  public String toString() {
+    return "[]";
   }
 
   @Override
@@ -83,12 +98,14 @@ public class EmptyChain<T> implements Chain<T> {
   }
 
   @Override
-  public Object[] toArray(Object[] a) {
-    return new Object[0];
+  public <X> X[] toArray(X[] a) {
+    @SuppressWarnings("unchecked")
+    X[] retVal = (X[]) new Object[0];
+    return retVal;
   }
 
   @Override
-  public boolean add(Object e) {
+  public boolean add(T e) {
     throw new RuntimeException("Cannot add elements to an unmodifiable chain");
   }
 
@@ -204,22 +221,22 @@ public class EmptyChain<T> implements Chain<T> {
 
   @Override
   public Iterator<T> snapshotIterator() {
-    return emptyIterator;
+    return emptyIterator();
   }
 
   @Override
   public Iterator<T> iterator() {
-    return emptyIterator;
+    return emptyIterator();
   }
 
   @Override
-  public Iterator<T> iterator(Object u) {
-    return emptyIterator;
+  public Iterator<T> iterator(T u) {
+    return emptyIterator();
   }
 
   @Override
-  public Iterator<T> iterator(Object head, Object tail) {
-    return emptyIterator;
+  public Iterator<T> iterator(T head, T tail) {
+    return emptyIterator();
   }
 
   @Override
@@ -246,5 +263,4 @@ public class EmptyChain<T> implements Chain<T> {
   public void insertBefore(Collection<? extends T> toInsert, T point) {
     throw new RuntimeException("Cannot add elements to an unmodifiable chain");
   }
-
 }

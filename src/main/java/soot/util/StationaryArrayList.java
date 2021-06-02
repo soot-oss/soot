@@ -29,10 +29,12 @@ package soot.util;
  * The notation "Stationary" refers to the fact that the List stays "fixed" under list changes.
  */
 public class StationaryArrayList<T> extends java.util.ArrayList<T> {
+  @Override
   public int hashCode() {
     return System.identityHashCode(this);
   }
 
+  @Override
   public boolean equals(Object other) {
     return this == other;
   }
