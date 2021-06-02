@@ -1871,6 +1871,7 @@ public class Options extends OptionsBase {
                     + padVal("jb.dtr", "Reduces chains of catch-all traps")
                     + padVal("jb.ese", "Removes empty switch statements")
                     + padVal("jb.ls", "Local splitter: one local per DU-UD web")
+                    + padVal("jb.sils", "Splits primitive locals used as different types")
                     + padVal("jb.a", "Aggregator: removes some unnecessary copies")
                     + padVal("jb.ule", "Unused local eliminator")
                     + padVal("jb.tr", "Assigns types to locals")
@@ -1885,6 +1886,7 @@ public class Options extends OptionsBase {
                     + padVal("jb.tt", "Trap Tightener")
                 + padOpt("jj", "Creates a JimpleBody for each method directly from source")
                     + padVal("jj.ls", "Local splitter: one local per DU-UD web")
+                    + padVal("jj.sils", "Splits primitive locals used as different types")
                     + padVal("jj.a", "Aggregator: removes some unnecessary copies")
                     + padVal("jj.ule", "Unused local eliminator")
                     + padVal("jj.tr", "Assigns types to locals")
@@ -2009,6 +2011,12 @@ public class Options extends OptionsBase {
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (true)", "");
 
+        if (phaseName.equals("jb.sils"))
+            return "Phase " + phaseName + ":\n"
+                    + "\n"
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (true)", "");
+
         if (phaseName.equals("jb.a"))
             return "Phase " + phaseName + ":\n"
                     + "\nThe Jimple Local Aggregator removes some unnecessary copies by \ncombining local variables. Essentially, it finds definitions \nwhich have only a single use and, if it is safe to do so, \nremoves the original definition after replacing the use with the \ndefinition's right-hand side. At this stage in JimpleBody \nconstruction, local aggregation serves largely to remove the \ncopies to and from stack variables which simulate load and store \ninstructions in the original bytecode."
@@ -2105,6 +2113,12 @@ public class Options extends OptionsBase {
                     + "\nThe Local Splitter identifies DU-UD webs for local variables and \nintroduces new variables so that each disjoint web is associated \nwith a single local."
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (false)", "");
+
+        if (phaseName.equals("jj.sils"))
+            return "Phase " + phaseName + ":\n"
+                    + "\n"
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (true)", "");
 
         if (phaseName.equals("jj.a"))
             return "Phase " + phaseName + ":\n"
@@ -2957,6 +2971,11 @@ public class Options extends OptionsBase {
                     "enabled"
             );
 
+        if (phaseName.equals("jb.sils"))
+            return String.join(" ", 
+                    "enabled"
+            );
+
         if (phaseName.equals("jb.a"))
             return String.join(" ", 
                     "enabled",
@@ -3036,6 +3055,11 @@ public class Options extends OptionsBase {
             );
 
         if (phaseName.equals("jj.ls"))
+            return String.join(" ", 
+                    "enabled"
+            );
+
+        if (phaseName.equals("jj.sils"))
             return String.join(" ", 
                     "enabled"
             );
@@ -3698,6 +3722,10 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:true ";
 
+        if (phaseName.equals("jb.sils"))
+            return ""
+                    + "enabled:true ";
+
         if (phaseName.equals("jb.a"))
             return ""
                     + "enabled:true "
@@ -3766,6 +3794,10 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jj.ls"))
             return ""
                     + "enabled:false ";
+
+        if (phaseName.equals("jj.sils"))
+            return ""
+                    + "enabled:true ";
 
         if (phaseName.equals("jj.a"))
             return ""
@@ -4316,6 +4348,7 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jb.dtr")
                 || phaseName.equals("jb.ese")
                 || phaseName.equals("jb.ls")
+                || phaseName.equals("jb.sils")
                 || phaseName.equals("jb.a")
                 || phaseName.equals("jb.ule")
                 || phaseName.equals("jb.tr")
@@ -4330,6 +4363,7 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jb.tt")
                 || phaseName.equals("jj")
                 || phaseName.equals("jj.ls")
+                || phaseName.equals("jj.sils")
                 || phaseName.equals("jj.a")
                 || phaseName.equals("jj.ule")
                 || phaseName.equals("jj.tr")
@@ -4437,6 +4471,8 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jb.ese");
         if (!PackManager.v().hasPhase("jb.ls"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.ls");
+        if (!PackManager.v().hasPhase("jb.sils"))
+            G.v().out.println("Warning: Options exist for non-existent phase jb.sils");
         if (!PackManager.v().hasPhase("jb.a"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.a");
         if (!PackManager.v().hasPhase("jb.ule"))
@@ -4465,6 +4501,8 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jj");
         if (!PackManager.v().hasPhase("jj.ls"))
             G.v().out.println("Warning: Options exist for non-existent phase jj.ls");
+        if (!PackManager.v().hasPhase("jj.sils"))
+            G.v().out.println("Warning: Options exist for non-existent phase jj.sils");
         if (!PackManager.v().hasPhase("jj.a"))
             G.v().out.println("Warning: Options exist for non-existent phase jj.a");
         if (!PackManager.v().hasPhase("jj.ule"))
