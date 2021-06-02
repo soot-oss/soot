@@ -47,11 +47,11 @@ public enum CheckEscapingValidator implements BodyValidator {
           InvokeExpr iexpr = stmt.getInvokeExpr();
           SootMethodRef ref = iexpr.getMethodRef();
           if (ref.name().contains("'") || ref.declaringClass().getName().contains("'")) {
-            throw new ValidationException(stmt, "Escaped name in signature found");
+            exception.add(new ValidationException(stmt, "Escaped name found in signature"));
           }
           for (Type paramType : ref.parameterTypes()) {
             if (paramType.toString().contains("'")) {
-              throw new ValidationException(stmt, "Escaped name in signature found");
+              exception.add(new ValidationException(stmt, "Escaped name found in signature"));
             }
           }
         }
@@ -63,5 +63,4 @@ public enum CheckEscapingValidator implements BodyValidator {
   public boolean isBasicValidator() {
     return false;
   }
-
 }

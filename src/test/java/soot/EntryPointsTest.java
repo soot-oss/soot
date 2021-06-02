@@ -46,7 +46,7 @@ public class EntryPointsTest {
 	@Test
 	public void testClinitOf() {
 		Path cp = Paths.get("src", "test", "resources", "Clinit", "bin");
-		G.v();
+		G.reset();
 		Options.v().set_prepend_classpath(true);
 		Options.v().set_process_dir(Collections.singletonList(cp.toFile().getAbsolutePath()));
 		Options.v().set_src_prec(Options.src_prec_class);
