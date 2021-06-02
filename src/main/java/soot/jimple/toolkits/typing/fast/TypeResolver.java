@@ -31,6 +31,7 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -54,6 +55,7 @@ import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.DefinitionStmt;
+import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
@@ -84,7 +86,6 @@ public class TypeResolver {
 
   public TypeResolver(JimpleBody jb) {
     this.jb = jb;
-
     this.assignments = new ArrayList<DefinitionStmt>();
     this.depends = new HashMap<Local, BitSet>(jb.getLocalCount());
     this.localGenerator = new LocalGenerator(jb);
@@ -100,11 +101,12 @@ public class TypeResolver {
   }
 
   private void initAssignment(DefinitionStmt ds) {
-    Value lhs = ds.getLeftOp(), rhs = ds.getRightOp();
+    Value lhs = ds.getLeftOp();
     if (lhs instanceof Local || lhs instanceof ArrayRef) {
       int assignmentIdx = this.assignments.size();
       this.assignments.add(ds);
 
+      Value rhs = ds.getRightOp();
       if (rhs instanceof Local) {
         this.addDepend((Local) rhs, assignmentIdx);
       } else if (rhs instanceof BinopExpr) {
@@ -230,43 +232,39 @@ public class TypeResolver {
         // If we're referencing an array of the base type java.lang.Object,
         // we also need to fix the type of the assignment's target variable.
         if (stmt.containsArrayRef() && stmt.getArrayRef().getBase() == op && stmt instanceof DefinitionStmt) {
-          Type baseType = tg.get((Local) stmt.getArrayRef().getBase());
-          DefinitionStmt defStmt = (DefinitionStmt) stmt;
-          if (baseType instanceof RefType && defStmt.getLeftOp() instanceof Local) {
-            RefType rt = (RefType) baseType;
-            if (isObjectLikeType(rt)) {
-              Local lop = (Local) ((DefinitionStmt) stmt).getLeftOp();
-              tg.set(lop, ((ArrayType) useType).getElementType());
+          Value leftOp = ((DefinitionStmt) stmt).getLeftOp();
+          if (leftOp instanceof Local) {
+            Type baseType = tg.get((Local) op);
+            if (baseType instanceof RefType && isObjectLikeType((RefType) baseType)) {
+              tg.set((Local) leftOp, ((ArrayType) useType).getElementType());
             }
           }
         }
 
         Local vold;
-        if (!(op instanceof Local)) {
+        if (op instanceof Local) {
+          vold = (Local) op;
+        } else {
           /*
            * By the time we have countOnly == false, all variables must by typed with concrete Jimple types, and never
            * [0..1], [0..127] or [0..32767].
            */
           vold = localGenerator.generateLocal(t);
           this.tg.set(vold, t);
-          Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
-          this.jb.getUnits().insertBefore(Jimple.v().newAssignStmt(vold, op), u);
-        } else {
-          vold = (Local) op;
+          this.jb.getUnits().insertBefore(Jimple.v().newAssignStmt(vold, op), Util.findFirstNonIdentityUnit(this.jb, stmt));
         }
         // Cast from the original type to the type that we use in the code
-        Local vnew = createCast(useType, stmt, vold, false);
-        return vnew;
+        return createCast(useType, stmt, vold, false);
       }
     }
 
     private boolean isObjectLikeType(RefType rt) {
       if (rt instanceof WeakObjectType) {
         return true;
+      } else {
+        final String name = rt.getSootClass().getName();
+        return "java.lang.Object".equals(name) || "java.io.Serializable".equals(name) || "java.lang.Cloneable".equals(name);
       }
-      final String name = rt.getSootClass().getName();
-      return name.equals("java.lang.Object") || name.equals("java.io.Serializable") || name.equals("java.lang.Cloneable");
-
     }
 
     /**
@@ -283,11 +281,11 @@ public class TypeResolver {
      * @return the new local
      */
     protected Local createCast(Type useType, Stmt stmt, Local old, boolean after) {
-      Jimple jimple = Jimple.v();
       Local vnew = localGenerator.generateLocal(useType);
       this.tg.set(vnew, useType);
-      Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
+      Jimple jimple = Jimple.v();
       AssignStmt newStmt = jimple.newAssignStmt(vnew, jimple.newCastExpr(old, useType));
+      Unit u = Util.findFirstNonIdentityUnit(this.jb, stmt);
       if (after) {
         this.jb.getUnits().insertAfter(newStmt, u);
       } else {
@@ -387,22 +385,16 @@ public class TypeResolver {
   }
 
   private Typing minCasts(Collection<Typing> sigma, IHierarchy h, int[] count) {
-    Typing r = null;
     count[0] = -1;
-    boolean setR = false;
+    Typing r = null;
     for (Typing tg : sigma) {
       int n = this.insertCasts(tg, h, true);
       if (count[0] == -1 || n < count[0]) {
         count[0] = n;
         r = tg;
-        setR = true;
       }
     }
-    if (setR) {
-      return r;
-    } else {
-      return null;
-    }
+    return r;
   }
 
   static class WorklistElement {
@@ -449,22 +441,14 @@ public class TypeResolver {
       } else {
         // Get the next definition statement
         wl.clear(defIdx);
-        DefinitionStmt stmt = this.assignments.get(defIdx);
+        final DefinitionStmt stmt = this.assignments.get(defIdx);
 
-        Value lhs = stmt.getLeftOp(), rhs = stmt.getRightOp();
-
-        Local v;
-        if (lhs instanceof Local) {
-          v = (Local) lhs;
-        } else {
-          v = (Local) ((ArrayRef) lhs).getBase();
-        }
-
+        Value lhs = stmt.getLeftOp();
+        Local v = (lhs instanceof Local) ? (Local) lhs : (Local) ((ArrayRef) lhs).getBase();
         Type told = tg.get(v);
-        Collection<Type> eval = ef.eval(tg, rhs, stmt);
 
         boolean isFirstType = true;
-        for (Type t_ : eval) {
+        for (Type t_ : ef.eval(tg, stmt.getRightOp(), stmt)) {
           if (lhs instanceof ArrayRef) {
             /*
              * We only need to consider array references on the LHS of assignments where there is supertyping between array
@@ -534,58 +518,50 @@ public class TypeResolver {
     if (a instanceof ArrayType && b instanceof ArrayType) {
       ArrayType a_ = (ArrayType) a, b_ = (ArrayType) b;
       return a_.numDimensions == b_.numDimensions && a_.baseType.equals(b_.baseType);
+    } else {
+      return a.equals(b);
     }
-
-    return a.equals(b);
   }
 
   /*
    * Taken from the soot.jimple.toolkits.typing.TypeResolver class of Soot version 2.2.5.
    */
   private void split_new() {
-    LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(jb);
-    PatchingChain<Unit> units = this.jb.getUnits();
-    Stmt[] stmts = new Stmt[units.size()];
+    final Jimple jimp = Jimple.v();
+    final JimpleBody body = this.jb;
+    final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(body);
 
-    units.toArray(stmts);
-    final Jimple jimple = Jimple.v();
-
-    for (Stmt stmt : stmts) {
+    PatchingChain<Unit> units = body.getUnits();
+    for (Iterator<Unit> it = units.snapshotIterator(); it.hasNext();) {
+      Unit stmt = it.next();
       if (stmt instanceof InvokeStmt) {
-        InvokeStmt invoke = (InvokeStmt) stmt;
+        InvokeExpr invokeExpr = ((InvokeStmt) stmt).getInvokeExpr();
+        if ((invokeExpr instanceof SpecialInvokeExpr) && ("<init>".equals(invokeExpr.getMethodRef().getName()))) {
+          SpecialInvokeExpr special = (SpecialInvokeExpr) invokeExpr;
+          for (List<Unit> deflist = defs.getDefsOfAt((Local) special.getBase(), stmt); deflist.size() == 1;) {
+            Stmt stmt2 = (Stmt) deflist.get(0);
 
-        if (invoke.getInvokeExpr() instanceof SpecialInvokeExpr) {
-          SpecialInvokeExpr special = (SpecialInvokeExpr) invoke.getInvokeExpr();
+            if (stmt2 instanceof AssignStmt) {
+              AssignStmt assign = (AssignStmt) stmt2;
+              Value rightOp = assign.getRightOp();
 
-          if (special.getMethodRef().getName().equals("<init>")) {
-            List<Unit> deflist = defs.getDefsOfAt((Local) special.getBase(), invoke);
+              if (rightOp instanceof Local) {
+                deflist = defs.getDefsOfAt((Local) rightOp, assign);
+                continue;
+              } else if (rightOp instanceof NewExpr) {
+                Local newlocal = localGenerator.generateLocal(assign.getLeftOp().getType());
 
-            while (deflist.size() == 1) {
-              Stmt stmt2 = (Stmt) deflist.get(0);
+                special.setBase(newlocal);
 
-              if (stmt2 instanceof AssignStmt) {
-                AssignStmt assign = (AssignStmt) stmt2;
+                DefinitionStmt assignStmt = jimp.newAssignStmt(assign.getLeftOp(), newlocal);
+                units.insertAfter(assignStmt, Util.findLastIdentityUnit(body, assign));
 
-                if (assign.getRightOp() instanceof Local) {
-                  deflist = defs.getDefsOfAt((Local) assign.getRightOp(), assign);
-                  continue;
-                } else if (assign.getRightOp() instanceof NewExpr) {
-                  Type type = assign.getLeftOp().getType();
-                  Local newlocal = localGenerator.generateLocal(type);
-
-                  special.setBase(newlocal);
-
-                  DefinitionStmt assignStmt = jimple.newAssignStmt(assign.getLeftOp(), newlocal);
-                  Unit u = Util.findLastIdentityUnit(jb, assign);
-                  units.insertAfter(assignStmt, u);
-                  assign.setLeftOp(newlocal);
-
-                  this.initAssignment(assignStmt);
-                }
+                assign.setLeftOp(newlocal);
+                this.initAssignment(assignStmt);
               }
-              break;
             }
-          }
+            break;
+          } // end for(List<Unit>)
         }
       }
     }
