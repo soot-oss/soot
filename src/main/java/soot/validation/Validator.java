@@ -24,22 +24,21 @@ package soot.validation;
 
 import java.util.List;
 
-import soot.SootClass;
-
 /**
- * Implement this interface if you want to provide your own class validator
+ * Generic interface for all types of Validators.
+ * 
+ * @param <E>
  */
-public interface ClassValidator extends Validator<SootClass> {
+public interface Validator<E> {
   /**
-   * Validates the given class and saves all validation errors in the given list.
+   * Validates the given object and saves all validation errors in the given list.
    * 
-   * @param sc
-   *          the class to check
+   * @param obj
+   *          the object to check
    * @param exceptions
    *          the list of exceptions
    */
-  @Override
-  public void validate(SootClass sc, List<ValidationException> exceptions);
+  public void validate(E obj, List<ValidationException> exceptions);
 
   /**
    * Basic validators run essential checks and are run always if validate is called.<br>
@@ -48,6 +47,5 @@ public interface ClassValidator extends Validator<SootClass> {
    * 
    * @return whether this validator is a basic validator
    */
-  @Override
   public boolean isBasicValidator();
 }
