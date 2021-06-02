@@ -34,37 +34,44 @@ import soot.jimple.StmtSwitch;
 import soot.util.Switch;
 
 public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt {
+
   public JReturnVoidStmt() {
   }
 
+  @Override
   public Object clone() {
     return new JReturnVoidStmt();
   }
 
+  @Override
   public String toString() {
     return Jimple.RETURN;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Jimple.RETURN);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((StmtSwitch) sw).caseReturnVoidStmt(this);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     Unit u = Baf.v().newReturnVoidInst();
     u.addAllTagsOf(this);
     out.add(u);
   }
 
+  @Override
   public boolean fallsThrough() {
     return false;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }
-
 }

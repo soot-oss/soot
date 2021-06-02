@@ -24,7 +24,6 @@ package soot.jimple.validation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -84,9 +83,6 @@ public enum NewValidator implements BodyValidator {
           }
 
           // We search for a JSpecialInvokeExpr on the local.
-          LinkedHashSet<Local> locals = new LinkedHashSet<Local>();
-          locals.add((Local) assign.getLeftOp());
-
           checkForInitializerOnPath(g, assign, exceptions);
         }
       }
@@ -95,7 +91,7 @@ public enum NewValidator implements BodyValidator {
 
   /**
    * <p>
-   * Checks whether all pathes from start to the end of the method have a call to the &lt;init&gt; method in between.
+   * Checks whether all paths from start to the end of the method have a call to the &lt;init&gt; method in between.
    * </p>
    * <code>
    * $r0 = new X;<br>

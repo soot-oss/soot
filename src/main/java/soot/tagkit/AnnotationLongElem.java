@@ -25,18 +25,18 @@ package soot.tagkit;
 import soot.util.Switch;
 
 /**
- * Represents the int annotation element each annotation can have several elements for Java 1.5.
+ * Represents the long annotation element each annotation can have several elements for Java 1.5.
  */
-
 public class AnnotationLongElem extends AnnotationElem {
 
-  long value;
+  private final long value;
 
   public AnnotationLongElem(long v, char kind, String name) {
     super(kind, name);
     this.value = v;
   }
 
+  @Override
   public String toString() {
     return super.toString() + " value: " + value;
   }
@@ -66,14 +66,10 @@ public class AnnotationLongElem extends AnnotationElem {
     if (!super.equals(obj)) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if (this.getClass() != obj.getClass()) {
       return false;
     }
     AnnotationLongElem other = (AnnotationLongElem) obj;
-    if (value != other.value) {
-      return false;
-    }
-    return true;
+    return this.value == other.value;
   }
-
 }

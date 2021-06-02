@@ -29,34 +29,42 @@ import soot.baf.InstSwitch;
 import soot.util.Switch;
 
 public class BIfEqInst extends AbstractBranchInst implements IfEqInst {
+
   public BIfEqInst(Unit target) {
     super(Baf.v().newInstBox(target));
   }
 
-  public int getInCount() {
-    return 1;
-  }
-
+  @Override
   public Object clone() {
     return new BIfEqInst(getTarget());
   }
 
+  @Override
+  public int getInCount() {
+    return 1;
+  }
+
+  @Override
   public int getInMachineCount() {
     return 1;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   public String getName() {
     return "ifeq";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseIfEqInst(this);
   }

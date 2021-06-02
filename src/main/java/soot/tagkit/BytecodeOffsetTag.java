@@ -28,12 +28,13 @@ package soot.tagkit;
  * @author Roman Manevich.
  * @since October 3 2002 Initial creation.
  */
-
 public class BytecodeOffsetTag implements Tag {
+
+  public static final String NAME = "BytecodeOffsetTag";
   /**
    * The index of the last byte-code instruction.
    */
-  protected int offset;
+  protected final int offset;
 
   /**
    * Constructs a tag from the index offset.
@@ -42,24 +43,20 @@ public class BytecodeOffsetTag implements Tag {
     this.offset = offset;
   }
 
-  /**
-   * Returns the name of this tag.
-   */
+  @Override
   public String getName() {
-    return "BytecodeOffsetTag";
+    return NAME;
   }
 
   /**
    * Returns the offset in a four byte array.
    */
+  @Override
   public byte[] getValue() {
     byte[] v = new byte[4];
     v[0] = (byte) ((offset >> 24) % 256);
-    ;
     v[1] = (byte) ((offset >> 16) % 256);
-    ;
     v[2] = (byte) ((offset >> 8) % 256);
-    ;
     v[3] = (byte) (offset % 256);
     return v;
   }
@@ -74,7 +71,8 @@ public class BytecodeOffsetTag implements Tag {
   /**
    * Returns the offset in a string.
    */
+  @Override
   public String toString() {
-    return "" + offset;
+    return Integer.toString(offset);
   }
 }

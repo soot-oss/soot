@@ -33,7 +33,6 @@ import org.objectweb.asm.util.TraceClassVisitor;
  *
  */
 
-
 public class TryCatchTest extends AbstractASMBackendTest {
 
   @Override
@@ -112,6 +111,7 @@ public class TryCatchTest extends AbstractASMBackendTest {
       mv.visitVarInsn(ASTORE, 0);
       mv.visitLabel(l4);
       mv.visitInsn(ICONST_M1);
+      mv.visitInsn(NOP);
       mv.visitInsn(IRETURN);
       mv.visitLabel(l3);
       mv.visitVarInsn(ASTORE, 0);

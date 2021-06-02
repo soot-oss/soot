@@ -33,8 +33,9 @@ import java.util.Set;
  * @author Ben Bellamy
  */
 public class QueuedSet<E> {
-  private Set<E> hs;
-  private LinkedList<E> ll;
+    
+  private final Set<E> hs;
+  private final LinkedList<E> ll;
 
   public QueuedSet() {
     this.hs = new HashSet<E>();

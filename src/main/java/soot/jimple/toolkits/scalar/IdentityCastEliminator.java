@@ -30,8 +30,8 @@ import soot.BodyTransformer;
 import soot.G;
 import soot.Local;
 import soot.Singletons;
-import soot.Type;
 import soot.Unit;
+import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 
@@ -43,7 +43,6 @@ import soot.jimple.CastExpr;
  * when $i3 is already of type "int".
  * 
  * @author Steven Arzt
- *
  */
 public class IdentityCastEliminator extends BodyTransformer {
 
@@ -59,26 +58,25 @@ public class IdentityCastEliminator extends BodyTransformer {
     for (Iterator<Unit> unitIt = b.getUnits().iterator(); unitIt.hasNext();) {
       Unit curUnit = unitIt.next();
       if (curUnit instanceof AssignStmt) {
-        AssignStmt assignStmt = (AssignStmt) curUnit;
-        if (assignStmt.getLeftOp() instanceof Local && assignStmt.getRightOp() instanceof CastExpr) {
-          CastExpr ce = (CastExpr) assignStmt.getRightOp();
-
-          Type orgType = ce.getOp().getType();
-          Type newType = ce.getCastType();
+        final AssignStmt assignStmt = (AssignStmt) curUnit;
+        final Value leftOp = assignStmt.getLeftOp();
+        final Value rightOp = assignStmt.getRightOp();
+        if (leftOp instanceof Local && rightOp instanceof CastExpr) {
+          final CastExpr ce = (CastExpr) rightOp;
+          final Value castOp = ce.getOp();
 
           // If this a cast such as a = (X) a, we can remove the whole line.
           // Otherwise, if only the types match, we can replace the typecast
           // with a normal assignment.
-          if (orgType == newType) {
-            if (assignStmt.getLeftOp() == ce.getOp()) {
+          if (castOp.getType() == ce.getCastType()) {
+            if (leftOp == castOp) {
               unitIt.remove();
             } else {
-              assignStmt.setRightOp(ce.getOp());
+              assignStmt.setRightOp(castOp);
             }
           }
         }
       }
     }
   }
-
 }

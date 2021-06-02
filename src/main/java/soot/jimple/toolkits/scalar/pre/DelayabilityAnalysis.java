@@ -27,7 +27,6 @@ import java.util.Map;
 import soot.EquivalentValue;
 import soot.Unit;
 import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArrayPackedSet;
 import soot.toolkits.scalar.BoundedFlowSet;
 import soot.toolkits.scalar.CollectionFlowUniverse;
@@ -41,13 +40,15 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
  * and produces only one temporary).
  */
 public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<EquivalentValue>> {
-  private EarliestnessComputation earliest;
-  private Map<Unit, EquivalentValue> unitToKillValue;
-  private BoundedFlowSet<EquivalentValue> set;
+
+  private final EarliestnessComputation earliest;
+  private final Map<Unit, EquivalentValue> unitToKillValue;
+  private final BoundedFlowSet<EquivalentValue> set;
 
   /**
    * this constructor should not be used, and will throw a runtime-exception!
    */
+  @Deprecated
   public DelayabilityAnalysis(DirectedGraph<Unit> dg) {
     /* we have to add super(dg). otherwise Javac complains. */
     super(dg);
@@ -91,17 +92,14 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
   public DelayabilityAnalysis(DirectedGraph<Unit> dg, EarliestnessComputation earliest,
       Map<Unit, EquivalentValue> equivRhsMap, BoundedFlowSet<EquivalentValue> set) {
     super(dg);
-    UnitGraph g = (UnitGraph) dg;
     this.set = set;
-    unitToKillValue = equivRhsMap;
+    this.unitToKillValue = equivRhsMap;
     this.earliest = earliest;
 
     doAnalysis();
-    { // finally add the genSet to each BeforeFlow
-      for (Unit currentUnit : g) {
-        FlowSet<EquivalentValue> beforeSet = getFlowBefore(currentUnit);
-        beforeSet.union(earliest.getFlowBefore(currentUnit));
-      }
+    // finally add the genSet to each BeforeFlow
+    for (Unit currentUnit : dg) {
+      getFlowBefore(currentUnit).union(earliest.getFlowBefore(currentUnit));
     }
   }
 
@@ -122,11 +120,10 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
     // Perform generation
     out.union(earliest.getFlowBefore(u));
 
-    { /* Perform kill */
-      EquivalentValue equiVal = (EquivalentValue) unitToKillValue.get(u);
-      if (equiVal != null) {
-        out.remove(equiVal);
-      }
+    /* Perform kill */
+    EquivalentValue equiVal = (EquivalentValue) unitToKillValue.get(u);
+    if (equiVal != null) {
+      out.remove(equiVal);
     }
   }
 

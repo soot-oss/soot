@@ -29,7 +29,7 @@ import soot.Body;
 /**
  * Implement this interface if you want to provide your own body Validator
  */
-public interface BodyValidator {
+public interface BodyValidator extends Validator<Body> {
   /**
    * Validates the given body and saves all validation errors in the given list.
    * 
@@ -38,6 +38,7 @@ public interface BodyValidator {
    * @param exceptions
    *          the list of exceptions
    */
+  @Override
   public void validate(Body body, List<ValidationException> exceptions);
 
   /**
@@ -47,5 +48,6 @@ public interface BodyValidator {
    * 
    * @return whether this validator is a basic validator
    */
+  @Override
   public boolean isBasicValidator();
 }

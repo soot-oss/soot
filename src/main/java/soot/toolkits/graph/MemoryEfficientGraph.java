@@ -27,22 +27,26 @@ import java.util.HashMap;
 /**
  * A memory efficient version of HashMutableDirectedGraph, in the sense that throw-away objects passed as arguments will not
  * be kept in the process of adding edges.
+ * 
+ * @param <N>
  */
-
 public class MemoryEfficientGraph<N> extends HashMutableDirectedGraph<N> {
 
   HashMap<N, N> self = new HashMap<N, N>();
 
+  @Override
   public void addNode(N o) {
     super.addNode(o);
     self.put(o, o);
   }
 
+  @Override
   public void removeNode(N o) {
     super.removeNode(o);
     self.remove(o);
   }
 
+  @Override
   public void addEdge(N from, N to) {
     if (containsNode(from) && containsNode(to)) {
       super.addEdge(self.get(from), self.get(to));
@@ -53,6 +57,7 @@ public class MemoryEfficientGraph<N> extends HashMutableDirectedGraph<N> {
     }
   }
 
+  @Override
   public void removeEdge(N from, N to) {
     if (containsNode(from) && containsNode(to)) {
       super.removeEdge(self.get(from), self.get(to));
@@ -62,5 +67,4 @@ public class MemoryEfficientGraph<N> extends HashMutableDirectedGraph<N> {
       throw new RuntimeException(to.toString() + " not in graph!");
     }
   }
-
 }

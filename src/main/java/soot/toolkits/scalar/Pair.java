@@ -34,9 +34,13 @@ import soot.SootMethod;
  * @author xiao, extend it with more functions
  */
 public class Pair<T, U> {
+
+  protected T o1;
+  protected U o2;
+
   public Pair() {
-    o1 = null;
-    o2 = null;
+    this.o1 = null;
+    this.o2 = null;
   }
 
   public Pair(T o1, U o2) {
@@ -58,50 +62,44 @@ public class Pair<T, U> {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
+    if (obj == null || this.getClass() != obj.getClass()) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    @SuppressWarnings("rawtypes")
-    Pair other = (Pair) obj;
-    if (o1 == null) {
+    Pair<?, ?> other = (Pair<?, ?>) obj;
+    if (this.o1 == null) {
       if (other.o1 != null) {
         return false;
       }
-    } else if (!o1.equals(other.o1)) {
+    } else if (!this.o1.equals(other.o1)) {
       return false;
     }
-    if (o2 == null) {
+    if (this.o2 == null) {
       if (other.o2 != null) {
         return false;
       }
-    } else if (!o2.equals(other.o2)) {
+    } else if (!this.o2.equals(other.o2)) {
       return false;
     }
     return true;
+  }
+
+  @Override
+  public String toString() {
+    return "Pair " + o1 + "," + o2;
   }
 
   /**
    * Decide if this pair represents a method parameter.
    */
   public boolean isParameter() {
-    if (o1 instanceof SootMethod && o2 instanceof Integer) {
-      return true;
-    }
-    return false;
+    return o1 instanceof SootMethod && o2 instanceof Integer;
   }
 
   /**
    * Decide if this pair stores the THIS parameter for a method.
    */
   public boolean isThisParameter() {
-    return (o1 instanceof SootMethod && o2.equals(PointsToAnalysis.THIS_NODE)) ? true : false;
-  }
-
-  public String toString() {
-    return "Pair " + o1 + "," + o2;
+    return o1 instanceof SootMethod && PointsToAnalysis.THIS_NODE.equals(o2);
   }
 
   public T getO1() {
@@ -124,7 +122,4 @@ public class Pair<T, U> {
     o1 = no1;
     o2 = no2;
   }
-
-  protected T o1;
-  protected U o2;
 }
