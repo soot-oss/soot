@@ -34,12 +34,14 @@ import soot.baf.Baf;
 
 @SuppressWarnings("serial")
 public abstract class Constant implements Value, ConvertToBaf, Immediate {
+
   @Override
   public final List<ValueBox> getUseBoxes() {
     return Collections.emptyList();
   }
 
   /** Adds a Baf instruction pushing this constant to the stack onto <code>out</code>. */
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     Unit u = Baf.v().newPushInst(this);
     u.addAllTagsOf(context.getCurrentUnit());
@@ -47,6 +49,7 @@ public abstract class Constant implements Value, ConvertToBaf, Immediate {
   }
 
   /** Clones the current constant. Not implemented here. */
+  @Override
   public Object clone() {
     throw new RuntimeException();
   }
@@ -55,6 +58,7 @@ public abstract class Constant implements Value, ConvertToBaf, Immediate {
    * Returns true if this object is structurally equivalent to c. For Constants, equality is structural equality, so we just
    * call equals().
    */
+  @Override
   public boolean equivTo(Object c) {
     return equals(c);
   }
@@ -63,10 +67,12 @@ public abstract class Constant implements Value, ConvertToBaf, Immediate {
    * Returns a hash code consistent with structural equality for this object. For Constants, equality is structural equality;
    * we hope that each subclass defines hashCode() correctly.
    */
+  @Override
   public int equivHashCode() {
     return hashCode();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.constant(this);
   }

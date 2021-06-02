@@ -28,6 +28,9 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ModuleVisitor;
 import org.objectweb.asm.Opcodes;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.ClassProvider;
 import soot.ClassSource;
 import soot.FoundFile;
@@ -39,11 +42,12 @@ import soot.ModulePathSourceLocator;
  * @author Andreas Dann
  */
 public class AsmModuleClassProvider implements ClassProvider {
+  private static final Logger logger = LoggerFactory.getLogger(AsmModuleClassProvider.class);
 
+  @Override
   public ClassSource find(String cls) {
-    String clsFileName = cls.substring(cls.lastIndexOf(":") + 1).replace('.', '/') + ".class";
-    String modules = cls.substring(0, cls.lastIndexOf(":") + 1);
-    String clsFile = modules + clsFileName;
+    final int idx = cls.lastIndexOf(':') + 1;
+    String clsFile = cls.substring(0, idx) + cls.substring(idx).replace('.', '/') + ".class";
     FoundFile file = ModulePathSourceLocator.v().lookUpInModulePath(clsFile);
     return file == null ? null : new AsmClassSource(cls, file);
   }
@@ -61,11 +65,10 @@ public class AsmModuleClassProvider implements ClassProvider {
     InputStream d = null;
     try {
       d = file.inputStream();
-
       new ClassReader(d).accept(visitor, ClassReader.SKIP_FRAMES);
       return moduleName[0];
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.debug(e.getMessage(), e);
     } finally {
       try {
         if (d != null) {
@@ -73,13 +76,12 @@ public class AsmModuleClassProvider implements ClassProvider {
           d = null;
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        logger.debug(e.getMessage(), e);
       }
       if (file != null) {
         file.close();
         file = null;
       }
-
     }
     return null;
   }

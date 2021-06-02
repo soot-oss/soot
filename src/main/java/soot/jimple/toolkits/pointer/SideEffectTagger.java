@@ -38,8 +38,10 @@ import soot.G;
 import soot.PhaseOptions;
 import soot.Scene;
 import soot.Singletons;
+import soot.Unit;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Edge;
 
 public class SideEffectTagger extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(SideEffectTagger.class);
@@ -60,7 +62,7 @@ public class SideEffectTagger extends BodyTransformer {
   boolean optionNaive = false;
   private CallGraph cg;
 
-  protected class UniqueRWSets {
+  protected class UniqueRWSets implements Iterable<RWSet> {
     protected ArrayList<RWSet> l = new ArrayList<RWSet>();
 
     RWSet getUnique(RWSet s) {
@@ -76,7 +78,8 @@ public class SideEffectTagger extends BodyTransformer {
       return s;
     }
 
-    Iterator<RWSet> iterator() {
+    @Override
+    public Iterator<RWSet> iterator() {
       return l.iterator();
     }
 
@@ -96,6 +99,7 @@ public class SideEffectTagger extends BodyTransformer {
     G.v().Union_factory = new UnionFactory() {
       // ReallyCheapRasUnion ru = new ReallyCheapRasUnion();
       // public Union newUnion() { return new RasUnion(); }
+      @Override
       public Union newUnion() {
         return new MemoryEfficientRasUnion();
       }
@@ -112,11 +116,11 @@ public class SideEffectTagger extends BodyTransformer {
       if (optionNaive) {
         throw new RuntimeException("shouldn't get here");
       }
-      Iterator it = cg.edgesOutOf(s);
+      Iterator<Edge> it = cg.edgesOutOf(s);
       if (!it.hasNext()) {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
       }
-      ArrayList ret = new ArrayList();
+      ArrayList<Edge> ret = new ArrayList<Edge>();
       while (it.hasNext()) {
         ret.add(it.next());
       }
@@ -126,7 +130,8 @@ public class SideEffectTagger extends BodyTransformer {
     }
   }
 
-  protected void internalTransform(Body body, String phaseName, Map options) {
+  @Override
+  protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
     initializationStuff(phaseName);
     SideEffectAnalysis sea = Scene.v().getSideEffectAnalysis();
     optionNaive = PhaseOptions.getBoolean(options, "naive");
@@ -136,9 +141,9 @@ public class SideEffectTagger extends BodyTransformer {
     HashMap<Object, RWSet> stmtToReadSet = new HashMap<Object, RWSet>();
     HashMap<Object, RWSet> stmtToWriteSet = new HashMap<Object, RWSet>();
     UniqueRWSets sets = new UniqueRWSets();
-    boolean justDoTotallyConservativeThing = body.getMethod().getName().equals("<clinit>");
-    for (Iterator stmtIt = body.getUnits().iterator(); stmtIt.hasNext();) {
-      final Stmt stmt = (Stmt) stmtIt.next();
+    final boolean justDoTotallyConservativeThing = "<clinit>".equals(body.getMethod().getName());
+    for (Unit next : body.getUnits()) {
+      final Stmt stmt = (Stmt) next;
       if (justDoTotallyConservativeThing || (optionNaive && stmt.containsInvokeExpr())) {
         stmtToReadSet.put(stmt, sets.getUnique(new FullRWSet()));
         stmtToWriteSet.put(stmt, sets.getUnique(new FullRWSet()));
@@ -151,12 +156,8 @@ public class SideEffectTagger extends BodyTransformer {
       }
     }
     DependenceGraph graph = new DependenceGraph();
-    for (Iterator<RWSet> outerIt = sets.iterator(); outerIt.hasNext();) {
-      final RWSet outer = outerIt.next();
-
-      for (Iterator<RWSet> innerIt = sets.iterator(); innerIt.hasNext();) {
-
-        final RWSet inner = innerIt.next();
+    for (RWSet outer : sets) {
+      for (RWSet inner : sets) {
         if (inner == outer) {
           break;
         }
@@ -168,14 +169,9 @@ public class SideEffectTagger extends BodyTransformer {
       }
     }
     body.getMethod().addTag(graph);
-    for (Iterator stmtIt = body.getUnits().iterator(); stmtIt.hasNext();) {
-      final Stmt stmt = (Stmt) stmtIt.next();
-      Object key;
-      if (optionNaive && stmt.containsInvokeExpr()) {
-        key = stmt;
-      } else {
-        key = keyFor(stmt);
-      }
+    for (Unit next : body.getUnits()) {
+      final Stmt stmt = (Stmt) next;
+      Object key = (optionNaive && stmt.containsInvokeExpr()) ? stmt : keyFor(stmt);
       RWSet read = stmtToReadSet.get(key);
       RWSet write = stmtToWriteSet.get(key);
       if (read != null || write != null) {

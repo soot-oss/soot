@@ -23,7 +23,6 @@ package soot.jimple.toolkits.pointer;
  */
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import soot.G;
@@ -53,16 +52,18 @@ import soot.jimple.Stmt;
 //  StaticFieldRef
 
 public class PASideEffectTester implements SideEffectTester {
-  PointsToAnalysis pa = Scene.v().getPointsToAnalysis();
-  SideEffectAnalysis sea = Scene.v().getSideEffectAnalysis();
-  HashMap<Unit, RWSet> unitToRead;
-  HashMap<Unit, RWSet> unitToWrite;
-  HashMap<Local, PointsToSet> localToReachingObjects;
-  SootMethod currentMethod;
+
+  private final PointsToAnalysis pa = Scene.v().getPointsToAnalysis();
+  private final SideEffectAnalysis sea = Scene.v().getSideEffectAnalysis();
+  private HashMap<Unit, RWSet> unitToRead;
+  private HashMap<Unit, RWSet> unitToWrite;
+  private HashMap<Local, PointsToSet> localToReachingObjects;
+  private SootMethod currentMethod;
 
   public PASideEffectTester() {
     if (G.v().Union_factory == null) {
       G.v().Union_factory = new UnionFactory() {
+        @Override
         public Union newUnion() {
           return FullObjectSet.v();
         }
@@ -71,12 +72,13 @@ public class PASideEffectTester implements SideEffectTester {
   }
 
   /** Call this when starting to analyze a new method to setup the cache. */
+  @Override
   public void newMethod(SootMethod m) {
-    unitToRead = new HashMap<Unit, RWSet>();
-    unitToWrite = new HashMap<Unit, RWSet>();
-    localToReachingObjects = new HashMap<Local, PointsToSet>();
-    currentMethod = m;
-    sea.findNTRWSets(currentMethod);
+    this.unitToRead = new HashMap<Unit, RWSet>();
+    this.unitToWrite = new HashMap<Unit, RWSet>();
+    this.localToReachingObjects = new HashMap<Local, PointsToSet>();
+    this.currentMethod = m;
+    this.sea.findNTRWSets(m);
   }
 
   protected RWSet readSet(Unit u) {
@@ -106,6 +108,7 @@ public class PASideEffectTester implements SideEffectTester {
   /**
    * Returns true if the unit can read from v. Does not deal with expressions; deals with Refs.
    */
+  @Override
   public boolean unitCanReadFrom(Unit u, Value v) {
     return valueTouchesRWSet(readSet(u), v, u.getUseBoxes());
   }
@@ -113,13 +116,13 @@ public class PASideEffectTester implements SideEffectTester {
   /**
    * Returns true if the unit can read from v. Does not deal with expressions; deals with Refs.
    */
+  @Override
   public boolean unitCanWriteTo(Unit u, Value v) {
     return valueTouchesRWSet(writeSet(u), v, u.getDefBoxes());
   }
 
-  protected boolean valueTouchesRWSet(RWSet s, Value v, List boxes) {
-    for (Iterator useIt = v.getUseBoxes().iterator(); useIt.hasNext();) {
-      final ValueBox use = (ValueBox) useIt.next();
+  protected boolean valueTouchesRWSet(RWSet s, Value v, List<ValueBox> boxes) {
+    for (ValueBox use : v.getUseBoxes()) {
       if (valueTouchesRWSet(s, use.getValue(), boxes)) {
         return true;
       }
@@ -127,30 +130,23 @@ public class PASideEffectTester implements SideEffectTester {
     // This doesn't really make any sense, but we need to return something.
     if (v instanceof Constant) {
       return false;
-    }
-
-    if (v instanceof Expr) {
+    } else if (v instanceof Expr) {
       throw new RuntimeException("can't deal with expr");
     }
 
-    for (Iterator boxIt = boxes.iterator(); boxIt.hasNext();) {
-
-      final ValueBox box = (ValueBox) boxIt.next();
-      Value boxed = box.getValue();
-      if (boxed.equivTo(v)) {
+    for (ValueBox box : boxes) {
+      if (box.getValue().equivTo(v)) {
         return true;
       }
     }
 
     if (v instanceof Local) {
       return false;
-    }
-
-    if (v instanceof InstanceFieldRef) {
-      InstanceFieldRef ifr = (InstanceFieldRef) v;
+    } else if (v instanceof InstanceFieldRef) {
       if (s == null) {
         return false;
       }
+      InstanceFieldRef ifr = (InstanceFieldRef) v;
       PointsToSet o1 = s.getBaseForField(ifr.getField());
       if (o1 == null) {
         return false;
@@ -160,10 +156,7 @@ public class PASideEffectTester implements SideEffectTester {
         return false;
       }
       return o1.hasNonEmptyIntersection(o2);
-    }
-
-    if (v instanceof ArrayRef) {
-      ArrayRef ar = (ArrayRef) v;
+    } else if (v instanceof ArrayRef) {
       if (s == null) {
         return false;
       }
@@ -171,18 +164,17 @@ public class PASideEffectTester implements SideEffectTester {
       if (o1 == null) {
         return false;
       }
+      ArrayRef ar = (ArrayRef) v;
       PointsToSet o2 = reachingObjects((Local) ar.getBase());
       if (o2 == null) {
         return false;
       }
       return o1.hasNonEmptyIntersection(o2);
-    }
-
-    if (v instanceof StaticFieldRef) {
-      StaticFieldRef sfr = (StaticFieldRef) v;
+    } else if (v instanceof StaticFieldRef) {
       if (s == null) {
         return false;
       }
+      StaticFieldRef sfr = (StaticFieldRef) v;
       return s.getGlobals().contains(sfr.getField());
     }
 

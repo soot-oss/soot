@@ -32,21 +32,24 @@ import soot.MethodOrMethodContext;
  * @author Ondrej Lhotak
  */
 public final class Targets implements Iterator<MethodOrMethodContext> {
-  Iterator<Edge> edges;
+  final Iterator<Edge> edges;
 
   public Targets(Iterator<Edge> edges) {
     this.edges = edges;
   }
 
+  @Override
   public boolean hasNext() {
     return edges.hasNext();
   }
 
+  @Override
   public MethodOrMethodContext next() {
     Edge e = edges.next();
     return e.getTgt();
   }
 
+  @Override
   public void remove() {
     throw new UnsupportedOperationException();
   }

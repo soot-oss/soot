@@ -41,6 +41,8 @@ public final class Kind implements Numberable {
   public static final Kind SPECIAL = new Kind("SPECIAL");
   /** Implicit call to static initializer. */
   public static final Kind CLINIT = new Kind("CLINIT");
+  /** Fake edges from our generic callback model. */
+  public static final Kind GENERIC_FAKE = new Kind("GENERIC_FAKE");
   /** Implicit call to Thread.run() due to Thread.start() call. */
   public static final Kind THREAD = new Kind("THREAD");
   /**
@@ -102,7 +104,8 @@ public final class Kind implements Numberable {
   }
 
   public boolean isFake() {
-    return this == THREAD || this == EXECUTOR || this == ASYNCTASK || this == PRIVILEGED || this == HANDLER;
+    return this == THREAD || this == EXECUTOR || this == ASYNCTASK || this == PRIVILEGED || this == HANDLER
+        || this == GENERIC_FAKE;
   }
 
   /** Returns true if the call is due to an explicit invoke statement. */

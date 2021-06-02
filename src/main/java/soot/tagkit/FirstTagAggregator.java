@@ -30,19 +30,13 @@ import soot.Unit;
  * A tag aggregator that associates a tag with the <b>first</b> instruction that is tagged with it.
  */
 public abstract class FirstTagAggregator extends TagAggregator {
-  /** Decide whether this tag should be aggregated by this aggregator. */
-  public abstract boolean wantTag(Tag t);
-
-  /** Return name of the resulting aggregated tag. */
-  public abstract String aggregatedName();
 
   /** Decide whether this tag should be aggregated by this aggregator. */
   @Override
   public void considerTag(Tag t, Unit u, LinkedList<Tag> tags, LinkedList<Unit> units) {
-    if (units.size() > 0 && units.getLast() == u) {
-      return;
+    if (units.size() <= 0 || units.getLast() != u) {
+      units.add(u);
+      tags.add(t);
     }
-    units.add(u);
-    tags.add(t);
   }
 }
