@@ -23,6 +23,7 @@ package soot.jimple.internal;
  */
 
 import soot.Type;
+import soot.Unit;
 import soot.Value;
 import soot.jimple.EqExpr;
 import soot.jimple.ExprSwitch;
@@ -30,25 +31,29 @@ import soot.jimple.Jimple;
 import soot.util.Switch;
 
 public class JEqExpr extends AbstractJimpleIntBinopExpr implements EqExpr {
+
   public JEqExpr(Value op1, Value op2) {
     super(op1, op2);
   }
 
+  @Override
   public final String getSymbol() {
     return " == ";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseEqExpr(this);
   }
 
-  Object makeBafInst(Type opType) {
+  @Override
+  protected Unit makeBafInst(Type opType) {
     throw new RuntimeException("unsupported conversion: " + this);
+    // return Baf.v().newEqInst(this.getOp1().getType()); }
   }
-  // return Baf.v().newEqInst(this.getOp1().getType()); }
 
+  @Override
   public Object clone() {
     return new JEqExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
   }
-
 }

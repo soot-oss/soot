@@ -40,24 +40,12 @@ import soot.jimple.TableSwitchStmt;
 import soot.util.Switch;
 
 public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchStmt {
-  int lowIndex;
-  int highIndex;
 
-  // This method is necessary to deal with constructor-must-be-first-ism.
-  private static UnitBox[] getTargetBoxesArray(List<? extends Unit> targets) {
-    UnitBox[] targetBoxes = new UnitBox[targets.size()];
-    for (int i = 0; i < targetBoxes.length; i++) {
-      targetBoxes[i] = Jimple.v().newStmtBox(targets.get(i));
-    }
-    return targetBoxes;
-  }
-
-  public Object clone() {
-    return new JTableSwitchStmt(Jimple.cloneIfNecessary(getKey()), lowIndex, highIndex, getTargets(), getDefaultTarget());
-  }
+  protected int lowIndex;
+  protected int highIndex;
 
   public JTableSwitchStmt(Value key, int lowIndex, int highIndex, List<? extends Unit> targets, Unit defaultTarget) {
-    this(Jimple.v().newImmediateBox(key), lowIndex, highIndex, getTargetBoxesArray(targets),
+    this(Jimple.v().newImmediateBox(key), lowIndex, highIndex, getTargetBoxesArray(targets, Jimple.v()::newStmtBox),
         Jimple.v().newStmtBox(defaultTarget));
   }
 
@@ -77,33 +65,43 @@ public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchS
     this.highIndex = highIndex;
   }
 
+  @Override
+  public Object clone() {
+    return new JTableSwitchStmt(Jimple.cloneIfNecessary(getKey()), lowIndex, highIndex, getTargets(), getDefaultTarget());
+  }
+
+  @Override
   public String toString() {
-    StringBuffer buffer = new StringBuffer();
-    String endOfLine = " ";
+    final char endOfLine = ' ';
+    StringBuilder buf = new StringBuilder(Jimple.TABLESWITCH + "(");
 
-    buffer.append(Jimple.TABLESWITCH + "(" + keyBox.getValue().toString() + ")" + endOfLine);
-
-    buffer.append("{" + endOfLine);
+    buf.append(keyBox.getValue().toString()).append(')').append(endOfLine);
+    buf.append('{').append(endOfLine);
 
     // In this for-loop, we cannot use "<=" since 'i' would wrap around.
     // The case for "i == highIndex" is handled separately after the loop.
-    for (int i = lowIndex; i < highIndex; i++) {
-      Unit target = getTarget(i - lowIndex);
-      buffer.append(
-          "    " + Jimple.CASE + " " + i + ": " + Jimple.GOTO + " " + (target == this ? "self" : target) + ";" + endOfLine);
+    final int low = lowIndex, high = highIndex;
+    for (int i = low; i < high; i++) {
+      buf.append("    " + Jimple.CASE + " ").append(i).append(": " + Jimple.GOTO + " ");
+      Unit target = getTarget(i - low);
+      buf.append(target == this ? "self" : target).append(';').append(endOfLine);
     }
-    Unit target = getTarget(highIndex - lowIndex);
-    buffer.append("    " + Jimple.CASE + " " + highIndex + ": " + Jimple.GOTO + " " + (target == this ? "self" : target)
-        + ";" + endOfLine);
+    {
+      buf.append("    " + Jimple.CASE + " ").append(high).append(": " + Jimple.GOTO + " ");
+      Unit target = getTarget(high - low);
+      buf.append(target == this ? "self" : target).append(';').append(endOfLine);
+    }
+    {
+      Unit target = getDefaultTarget();
+      buf.append("    " + Jimple.DEFAULT + ": " + Jimple.GOTO + " ");
+      buf.append(target == this ? "self" : target).append(';').append(endOfLine);
+    }
+    buf.append('}');
 
-    target = getDefaultTarget();
-    buffer.append("    " + Jimple.DEFAULT + ": " + Jimple.GOTO + " " + (target == this ? "self" : target) + ";" + endOfLine);
-
-    buffer.append("}");
-
-    return buffer.toString();
+    return buf.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Jimple.TABLESWITCH);
     up.literal("(");
@@ -114,16 +112,12 @@ public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchS
     up.newline();
     // In this for-loop, we cannot use "<=" since 'i' would wrap around.
     // The case for "i == highIndex" is handled separately after the loop.
-    for (int i = lowIndex; i < highIndex; i++) {
+    final int high = highIndex;
+    for (int i = lowIndex; i < high; i++) {
       printCaseTarget(up, i);
     }
-    printCaseTarget(up, highIndex);
-
-    up.literal("    ");
-    up.literal(Jimple.DEFAULT);
-    up.literal(": ");
-    up.literal(Jimple.GOTO);
-    up.literal(" ");
+    printCaseTarget(up, high);
+    up.literal("    " + Jimple.DEFAULT + ": " + Jimple.GOTO + " ");
     defaultTargetBox.toString(up);
     up.literal(";");
     up.newline();
@@ -131,51 +125,52 @@ public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchS
   }
 
   private void printCaseTarget(UnitPrinter up, int targetIndex) {
-    up.literal("    ");
-    up.literal(Jimple.CASE);
-    up.literal(" ");
+    up.literal("    " + Jimple.CASE + " ");
     up.literal(Integer.toString(targetIndex));
-    up.literal(": ");
-    up.literal(Jimple.GOTO);
-    up.literal(" ");
+    up.literal(": " + Jimple.GOTO + " ");
     targetBoxes[targetIndex - lowIndex].toString(up);
     up.literal(";");
     up.newline();
   }
 
+  @Override
   public void setLowIndex(int lowIndex) {
     this.lowIndex = lowIndex;
   }
 
+  @Override
   public void setHighIndex(int highIndex) {
     this.highIndex = highIndex;
   }
 
+  @Override
   public int getLowIndex() {
     return lowIndex;
   }
 
+  @Override
   public int getHighIndex() {
     return highIndex;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((StmtSwitch) sw).caseTableSwitchStmt(this);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
-    List<PlaceholderInst> targetPlaceholders = new ArrayList<PlaceholderInst>();
-
     ((ConvertToBaf) getKey()).convertToBaf(context, out);
 
-    for (Unit target : getTargets()) {
-      targetPlaceholders.add(Baf.v().newPlaceholderInst(target));
+    final Baf vaf = Baf.v();
+    final List<Unit> targets = getTargets();
+    List<PlaceholderInst> targetPlaceholders = new ArrayList<PlaceholderInst>(targets.size());
+    for (Unit target : targets) {
+      targetPlaceholders.add(vaf.newPlaceholderInst(target));
     }
 
-    Unit u = Baf.v().newTableSwitchInst(Baf.v().newPlaceholderInst(getDefaultTarget()), lowIndex, highIndex,
-        targetPlaceholders);
+    Unit u = vaf.newTableSwitchInst(vaf.newPlaceholderInst(getDefaultTarget()), lowIndex, highIndex, targetPlaceholders);
     u.addAllTagsOf(this);
     out.add(u);
   }
-
 }
