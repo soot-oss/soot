@@ -63,8 +63,8 @@ public class TrapUnitGraph extends UnitGraph {
   /**
    * Constructs the graph from a given Body instance.
    *
-   * @param the
-   *          Body instance from which the graph is built.
+   * @param body
+   *          the Body instance from which the graph is built.
    */
   public TrapUnitGraph(Body body) {
     super(body);
@@ -103,10 +103,9 @@ public class TrapUnitGraph extends UnitGraph {
    */
   protected void buildExceptionalEdges(Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds) {
     for (Trap trap : body.getTraps()) {
+      Unit catcher = trap.getHandlerUnit();
       Unit first = trap.getBeginUnit();
       Unit last = unitChain.getPredOf(trap.getEndUnit());
-      Unit catcher = trap.getHandlerUnit();
-
       for (Iterator<Unit> unitIt = unitChain.iterator(first, last); unitIt.hasNext();) {
         Unit trapped = unitIt.next();
         addEdge(unitToSuccs, unitToPreds, trapped, catcher);

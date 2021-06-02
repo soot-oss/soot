@@ -27,35 +27,42 @@ import soot.baf.InstSwitch;
 import soot.util.Switch;
 
 public class BExitMonitorInst extends AbstractInst implements ExitMonitorInst {
+
   public BExitMonitorInst() {
   }
 
-  public int getInCount() {
-    return 1;
-  }
-
-  public int getInMachineCount() {
-    return 1;
-  }
-
-  public int getOutCount() {
-    return 0;
-  }
-
-  public int getOutMachineCount() {
-    return 0;
-  }
-
-  final public String getName() {
-    return "exitmonitor";
-  }
-
-  public void apply(Switch sw) {
-    ((InstSwitch) sw).caseExitMonitorInst(this);
-  }
-
+  @Override
   public Object clone() {
     return new BExitMonitorInst();
   }
 
+  @Override
+  public int getInCount() {
+    return 1;
+  }
+
+  @Override
+  public int getInMachineCount() {
+    return 1;
+  }
+
+  @Override
+  public int getOutCount() {
+    return 0;
+  }
+
+  @Override
+  public int getOutMachineCount() {
+    return 0;
+  }
+
+  @Override
+  final public String getName() {
+    return "exitmonitor";
+  }
+
+  @Override
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseExitMonitorInst(this);
+  }
 }

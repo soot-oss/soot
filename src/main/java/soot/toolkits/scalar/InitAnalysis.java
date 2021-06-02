@@ -27,7 +27,7 @@ import soot.Local;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.graph.DirectedBodyGraph;
 
 /**
  * An analysis to check whether or not local variables have been initialised.
@@ -36,13 +36,15 @@ import soot.toolkits.graph.UnitGraph;
  * @author Eric Bodden
  */
 public class InitAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Local>> {
-  FlowSet<Local> allLocals;
 
-  public InitAnalysis(UnitGraph g) {
+  protected final FlowSet<Local> allLocals = new ArraySparseSet<Local>();
+
+  public InitAnalysis(DirectedBodyGraph<Unit> g) {
     super(g);
-    allLocals = new ArraySparseSet<Local>();
+
+    FlowSet<Local> allLocalsRef = this.allLocals;
     for (Local loc : g.getBody().getLocals()) {
-      allLocals.add(loc);
+      allLocalsRef.add(loc);
     }
 
     doAnalysis();
@@ -81,5 +83,4 @@ public class InitAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Local>> {
   protected void copy(FlowSet<Local> source, FlowSet<Local> dest) {
     source.copy(dest);
   }
-
 }

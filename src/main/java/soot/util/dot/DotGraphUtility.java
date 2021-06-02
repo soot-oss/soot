@@ -24,6 +24,7 @@ package soot.util.dot;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,10 +119,10 @@ public class DotGraphUtility {
   }
 
   public static void renderLine(OutputStream out, String content, int indent) throws IOException {
-    for (int i = 0; i < indent; i++) {
-      out.write(' ');
-    }
-    content += "\n";
-    out.write(content.getBytes());
+    char[] indentChars = new char[indent];
+    Arrays.fill(indentChars, ' ');
+    StringBuilder sb = new StringBuilder();
+    sb.append(indentChars).append(content).append('\n');
+    out.write(sb.toString().getBytes());
   }
 }

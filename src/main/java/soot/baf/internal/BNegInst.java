@@ -29,34 +29,42 @@ import soot.baf.NegInst;
 import soot.util.Switch;
 
 public class BNegInst extends AbstractOpTypeInst implements NegInst {
+
   public BNegInst(Type opType) {
     super(opType);
   }
 
-  public int getInCount() {
-    return 1;
-  }
-
-  public int getOutCount() {
-    return 1;
-  }
-
+  @Override
   public Object clone() {
     return new BNegInst(getOpType());
   }
 
+  @Override
+  public int getInCount() {
+    return 1;
+  }
+
+  @Override
+  public int getOutCount() {
+    return 1;
+  }
+
+  @Override
   public int getInMachineCount() {
     return AbstractJasminClass.sizeOfType(getOpType());
   }
 
+  @Override
   public int getOutMachineCount() {
     return AbstractJasminClass.sizeOfType(getOpType());
   }
 
+  @Override
   public final String getName() {
     return "neg";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseNegInst(this);
   }

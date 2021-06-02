@@ -29,68 +29,82 @@ import soot.baf.NewMultiArrayInst;
 import soot.util.Switch;
 
 public class BNewMultiArrayInst extends AbstractInst implements NewMultiArrayInst {
-  int dimensionCount;
 
+  int dimensionCount;
   ArrayType baseType;
 
   public BNewMultiArrayInst(ArrayType opType, int dimensionCount) {
     this.dimensionCount = dimensionCount;
-    baseType = opType;
+    this.baseType = opType;
   }
 
-  public int getInCount() {
-    return dimensionCount;
-  }
-
-  public int getOutCount() {
-    return 1;
-  }
-
-  public int getInMachineCount() {
-    return dimensionCount;
-  }
-
-  public int getOutMachineCount() {
-    return 1;
-  }
-
+  @Override
   public Object clone() {
     return new BNewMultiArrayInst(getBaseType(), getDimensionCount());
   }
 
+  @Override
+  public int getInCount() {
+    return dimensionCount;
+  }
+
+  @Override
+  public int getOutCount() {
+    return 1;
+  }
+
+  @Override
+  public int getInMachineCount() {
+    return dimensionCount;
+  }
+
+  @Override
+  public int getOutMachineCount() {
+    return 1;
+  }
+
+  @Override
   final public String getName() {
     return "newmultiarray";
   }
 
+  @Override
   final String getParameters() {
     return " " + dimensionCount;
   }
 
+  @Override
   protected void getParameters(UnitPrinter up) {
     up.literal(" ");
-    up.literal(new Integer(dimensionCount).toString());
+    up.literal(Integer.toString(dimensionCount));
   }
 
+  @Override
   public ArrayType getBaseType() {
     return baseType;
   }
 
+  @Override
   public void setBaseType(ArrayType type) {
-    baseType = type;
+    this.baseType = type;
   }
 
+  @Override
   public int getDimensionCount() {
     return dimensionCount;
   }
 
+  @Override
   public void setDimensionCount(int x) {
-    x = dimensionCount;
+    this.dimensionCount = x;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseNewMultiArrayInst(this);
   }
 
+  @Override
   public boolean containsNewExpr() {
     return true;
   }

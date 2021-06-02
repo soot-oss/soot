@@ -23,6 +23,7 @@ package soot.jimple;
  */
 
 public abstract class AbstractConstantSwitch<T> implements ConstantSwitch {
+
   T result;
 
   @Override
@@ -74,11 +75,11 @@ public abstract class AbstractConstantSwitch<T> implements ConstantSwitch {
   public void defaultCase(Object v) {
   }
 
-  public T getResult() {
-    return result;
-  }
-
   public void setResult(T result) {
     this.result = result;
+  }
+
+  public T getResult() {
+    return result;
   }
 }

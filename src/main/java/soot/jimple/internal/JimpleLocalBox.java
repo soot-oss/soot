@@ -26,10 +26,12 @@ import soot.AbstractValueBox;
 import soot.Value;
 
 public class JimpleLocalBox extends AbstractValueBox {
+
   public JimpleLocalBox(Value value) {
     setValue(value);
   }
 
+  @Override
   public boolean canContainValue(Value value) {
     return value instanceof JimpleLocal;
   }

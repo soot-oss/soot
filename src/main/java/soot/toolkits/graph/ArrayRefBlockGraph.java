@@ -22,7 +22,6 @@ package soot.toolkits.graph;
  * #L%
  */
 
-import java.util.Iterator;
 import java.util.Set;
 
 import soot.Body;
@@ -48,8 +47,8 @@ public class ArrayRefBlockGraph extends BlockGraph {
    * constructor taking the <tt>BriefUnitGraph</tt> as a parameter, as a minor optimization.
    * </p>
    *
-   * @param the
-   *          Body instance from which the graph is built.
+   * @param body
+   *          the Body instance from which the graph is built.
    */
   public ArrayRefBlockGraph(Body body) {
     this(new BriefUnitGraph(body));
@@ -93,6 +92,7 @@ public class ArrayRefBlockGraph extends BlockGraph {
    *
    * @return the {@link Set} of {@link Unit}s in <tt>unitGraph</tt> which are block leaders.
    */
+  @Override
   protected Set<Unit> computeLeaders(UnitGraph unitGraph) {
     Body body = unitGraph.getBody();
     if (body != mBody) {
@@ -101,8 +101,7 @@ public class ArrayRefBlockGraph extends BlockGraph {
     }
     Set<Unit> leaders = super.computeLeaders(unitGraph);
 
-    for (Iterator<Unit> it = body.getUnits().iterator(); it.hasNext();) {
-      Unit unit = it.next();
+    for (Unit unit : body.getUnits()) {
       if (((unit instanceof Stmt) && ((Stmt) unit).containsArrayRef())
           || ((unit instanceof Inst) && ((Inst) unit).containsArrayRef())) {
         leaders.add(unit);
