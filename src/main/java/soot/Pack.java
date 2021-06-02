@@ -63,8 +63,7 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
     PhaseOptions.v().getPM().notifyAddPack();
     for (Transform tr : opts) {
       if (tr.getPhaseName().equals(phaseName)) {
-
-        opts.add(opts.indexOf(t) + 1, tr);
+        opts.add(opts.indexOf(tr) + 1, t);
         return;
       }
     }
@@ -75,7 +74,7 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
     PhaseOptions.v().getPM().notifyAddPack();
     for (Transform tr : opts) {
       if (tr.getPhaseName().equals(phaseName)) {
-        opts.add(opts.indexOf(t), tr);
+        opts.add(opts.indexOf(tr), t);
         return;
       }
     }
