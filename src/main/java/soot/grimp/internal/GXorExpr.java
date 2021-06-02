@@ -29,24 +29,28 @@ import soot.jimple.XorExpr;
 import soot.util.Switch;
 
 public class GXorExpr extends AbstractGrimpIntLongBinopExpr implements XorExpr {
+
   public GXorExpr(Value op1, Value op2) {
     super(op1, op2);
   }
 
+  @Override
   public final String getSymbol() {
     return " ^ ";
   }
 
+  @Override
   public final int getPrecedence() {
     return 450;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseXorExpr(this);
   }
 
+  @Override
   public Object clone() {
     return new GXorExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
   }
-
 }

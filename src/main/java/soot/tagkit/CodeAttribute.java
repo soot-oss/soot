@@ -44,14 +44,15 @@ import soot.options.Options;
  */
 public class CodeAttribute extends JasminAttribute {
   private static final Logger logger = LoggerFactory.getLogger(CodeAttribute.class);
+
   protected List<Unit> mUnits;
   protected List<Tag> mTags;
 
+  private final String name;
   private byte[] value;
 
-  private String name = "CodeAtribute";
-
   public CodeAttribute() {
+    this("CodeAtribute");
   }
 
   /** Creates an attribute object with the given name. */
@@ -67,21 +68,25 @@ public class CodeAttribute extends JasminAttribute {
   }
 
   /** Returns the name. */
+  @Override
   public String toString() {
     return name;
   }
 
   /** Returns the attribute name. */
+  @Override
   public String getName() {
     return name;
   }
 
   /** Only used by SOOT to read in an existing attribute without interpret it. */
+  @Override
   public void setValue(byte[] v) {
     this.value = v;
   }
 
   /** Also only used as setValue(). */
+  @Override
   public byte[] getValue() throws AttributeValueException {
     if (value == null) {
       throw new AttributeValueException();
@@ -93,37 +98,27 @@ public class CodeAttribute extends JasminAttribute {
   /** Generates Jasmin Value String */
   @Override
   public String getJasminValue(Map<Unit, String> instToLabel) {
-    // some benchmarks fail because of the returned string larger than
-    // the possible buffer size.
-    StringBuffer buf = new StringBuffer();
-
     if (mTags.size() != mUnits.size()) {
       throw new RuntimeException("Sizes must match!");
     }
 
-    Iterator<Tag> tagIt = mTags.iterator();
+    // some benchmarks fail because of the returned string larger than the possible buffer size.
+    StringBuilder buf = new StringBuilder();
     Iterator<Unit> unitIt = mUnits.iterator();
-
-    while (tagIt.hasNext()) {
+    for (Tag tag : mTags) {
       Unit unit = unitIt.next();
-      Tag tag = tagIt.next();
-
-      buf.append("%" + instToLabel.get(unit) + "%" + new String(Base64.encode((tag).getValue())));
+      buf.append('%').append(instToLabel.get(unit));
+      buf.append('%').append(new String(Base64.encode(tag.getValue())));
     }
-
     return buf.toString();
   }
 
   /** Returns a list of unit boxes that have tags attached. */
   public List<UnitBox> getUnitBoxes() {
     List<UnitBox> unitBoxes = new ArrayList<UnitBox>(mUnits.size());
-
-    Iterator<Unit> it = mUnits.iterator();
-
-    while (it.hasNext()) {
-      unitBoxes.add(Baf.v().newInstBox(it.next()));
+    for (Unit next : mUnits) {
+      unitBoxes.add(Baf.v().newInstBox(next));
     }
-
     return unitBoxes;
   }
 
@@ -134,45 +129,28 @@ public class CodeAttribute extends JasminAttribute {
     }
 
     List<byte[]> attributeHunks = new LinkedList<byte[]>();
-    int attributeSize = 0;
-
+    int attributeSize = 0, tablesize = 0;
+    boolean isLabel = attr.startsWith("%");
     StringTokenizer st = new StringTokenizer(attr, "%");
-    boolean isLabel = false;
-    if (attr.startsWith("%")) {
-      isLabel = true;
-    }
-
-    int tablesize = 0;
-
-    byte[] pcArray;
     while (st.hasMoreTokens()) {
       String token = st.nextToken();
       if (isLabel) {
         Integer pc = labelToPc.get(token);
-
         if (pc == null) {
           throw new RuntimeException("PC is null, the token is " + token);
         }
 
-        int pcvalue = pc.intValue();
+        int pcvalue = pc;
         if (pcvalue > 65535) {
           throw new RuntimeException("PC great than 65535, the token is " + token + " : " + pcvalue);
         }
 
-        pcArray = new byte[2];
-
-        pcArray[1] = (byte) (pcvalue & 0x0FF);
-
-        pcArray[0] = (byte) ((pcvalue >> 8) & 0x0FF);
-
-        attributeHunks.add(pcArray);
+        attributeHunks.add(new byte[] { (byte) (pcvalue & 0x0FF), (byte) ((pcvalue >> 8) & 0x0FF) });
         attributeSize += 2;
         tablesize++;
       } else {
-
         byte[] hunk = Base64.decode(token.toCharArray());
         attributeSize += hunk.length;
-
         attributeHunks.add(hunk);
       }
       isLabel = !isLabel;
@@ -186,16 +164,14 @@ public class CodeAttribute extends JasminAttribute {
       attributeValue[1] = (byte) (tablesize & 0x0FF);
     }
     int index = 2;
-    Iterator<byte[]> it = attributeHunks.iterator();
-    while (it.hasNext()) {
-      byte[] hunk = it.next();
+    for (byte[] hunk : attributeHunks) {
       for (byte element : hunk) {
         attributeValue[index++] = element;
       }
     }
 
-    if (index != (attributeSize)) {
-      throw new RuntimeException("Index does not euqal to attrubute size :" + index + " -- " + attributeSize);
+    if (index != attributeSize) {
+      throw new RuntimeException("Index does not euqal to attrubute size : " + index + " -- " + attributeSize);
     }
 
     if (Options.v().verbose()) {

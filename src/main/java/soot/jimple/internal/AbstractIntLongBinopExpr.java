@@ -30,26 +30,38 @@ import soot.LongType;
 import soot.ShortType;
 import soot.Type;
 import soot.UnknownType;
-import soot.Value;
+import soot.ValueBox;
 
 @SuppressWarnings("serial")
-abstract public class AbstractIntLongBinopExpr extends AbstractBinopExpr {
+public abstract class AbstractIntLongBinopExpr extends AbstractBinopExpr {
 
-  public static boolean isIntLikeType(Type t) {
-    return t.equals(IntType.v()) || t.equals(ByteType.v()) || t.equals(ShortType.v()) || t.equals(CharType.v())
-        || t.equals(BooleanType.v());
+  protected AbstractIntLongBinopExpr(ValueBox op1Box, ValueBox op2Box) {
+    super(op1Box, op2Box);
   }
 
-  public Type getType() {
-    Value op1 = op1Box.getValue();
-    Value op2 = op2Box.getValue();
+  public static boolean isIntLikeType(Type t) {
+    return IntType.v().equals(t) || ByteType.v().equals(t) || ShortType.v().equals(t) || CharType.v().equals(t)
+        || BooleanType.v().equals(t);
+  }
 
-    if (isIntLikeType(op1.getType()) && isIntLikeType(op2.getType())) {
-      return IntType.v();
-    } else if (op1.getType().equals(LongType.v()) && op2.getType().equals(LongType.v())) {
-      return LongType.v();
-    } else {
-      return UnknownType.v();
+  @Override
+  public Type getType() {
+    final Type t1 = op1Box.getValue().getType();
+    final Type t2 = op2Box.getValue().getType();
+
+    final IntType tyInt = IntType.v();
+    final ByteType tyByte = ByteType.v();
+    final ShortType tyShort = ShortType.v();
+    final CharType tyChar = CharType.v();
+    final BooleanType tyBool = BooleanType.v();
+    if ((tyInt.equals(t1) || tyByte.equals(t1) || tyShort.equals(t1) || tyChar.equals(t1) || tyBool.equals(t1))
+        && (tyInt.equals(t2) || tyByte.equals(t2) || tyShort.equals(t2) || tyChar.equals(t2) || tyBool.equals(t2))) {
+      return tyInt;
     }
+    final LongType tyLong = LongType.v();
+    if (tyLong.equals(t1) && tyLong.equals(t2)) {
+      return tyLong;
+    }
+    return UnknownType.v();
   }
 }

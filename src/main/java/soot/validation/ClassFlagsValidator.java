@@ -53,5 +53,4 @@ public enum ClassFlagsValidator implements ClassValidator {
   public boolean isBasicValidator() {
     return true;
   }
-
 }

@@ -40,15 +40,16 @@ import soot.toolkits.scalar.FlowSet;
  * we can't delay the computation to one of the successors.
  */
 public class LatestComputation {
-  private Map<Unit, FlowSet<EquivalentValue>> unitToLatest;
+
+  private final Map<Unit, FlowSet<EquivalentValue>> unitToLatest;
 
   /**
    * given a DelayabilityAnalysis and the computations of each unit, calculates the latest computation-point for each
    * expression. the <code>equivRhsMap</code> could be calculated on the fly, but it is <b>very</b> likely that it already
    * exists (as similar maps are used for calculating Earliestness, Delayed,...
    *
-   * @param dg
-   *          a ExceptionalUnitGraph
+   * @param unitGraph
+   *          a UnitGraph
    * @param delayed
    *          the delayability-analysis of the same graph.
    * @param equivRhsMap
@@ -67,8 +68,8 @@ public class LatestComputation {
    * the shared set allows more efficient set-operations, when they the computation is merged with other
    * analyses/computations.
    *
-   * @param dg
-   *          a ExceptionalUnitGraph
+   * @param unitGraph
+   *          a UnitGraph
    * @param delayed
    *          the delayability-analysis of the same graph.
    * @param equivRhsMap
@@ -78,7 +79,7 @@ public class LatestComputation {
    */
   public LatestComputation(UnitGraph unitGraph, DelayabilityAnalysis delayed, Map<Unit, EquivalentValue> equivRhsMap,
       BoundedFlowSet<EquivalentValue> set) {
-    unitToLatest = new HashMap<Unit, FlowSet<EquivalentValue>>(unitGraph.size() + 1, 0.7f);
+    this.unitToLatest = new HashMap<Unit, FlowSet<EquivalentValue>>(unitGraph.size() + 1, 0.7f);
 
     for (Unit currentUnit : unitGraph) {
       /* create a new Earliest-list for each unit */
@@ -113,7 +114,7 @@ public class LatestComputation {
    * returns the set of expressions, that have their latest computation just before <code>node</code>.
    *
    * @param node
-   *          an Object of the flow-graph (in our case always a unit).
+   *          an Object of the flow-graph (in our case always a Unit).
    * @return a FlowSet containing the expressions.
    */
   public FlowSet<EquivalentValue> getFlowBefore(Object node) {

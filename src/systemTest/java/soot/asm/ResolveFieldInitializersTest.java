@@ -25,11 +25,14 @@ package soot.asm;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+
 import soot.Scene;
 import soot.SootClass;
 import soot.testing.framework.AbstractTestingFramework;
 
 /** @author Manuel Benz at 20.02.20 */
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class ResolveFieldInitializersTest extends AbstractTestingFramework {
 
   private static final String TEST_TARGET_CLASS = "soot.asm.ResolveFieldInitializers";

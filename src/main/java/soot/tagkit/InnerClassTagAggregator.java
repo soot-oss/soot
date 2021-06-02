@@ -23,7 +23,6 @@ package soot.tagkit;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 
 import soot.G;
@@ -46,11 +45,10 @@ public class InnerClassTagAggregator extends SceneTransformer {
     return "InnerClasses";
   }
 
+  @Override
   public void internalTransform(String phaseName, Map<String, String> options) {
-    Iterator<SootClass> it = Scene.v().getApplicationClasses().iterator();
-    while (it.hasNext()) {
+    for (SootClass nextSc : Scene.v().getApplicationClasses()) {
       ArrayList<InnerClassTag> list = new ArrayList<InnerClassTag>();
-      SootClass nextSc = it.next();
       for (Tag t : nextSc.getTags()) {
         if (t instanceof InnerClassTag) {
           list.add((InnerClassTag) t);

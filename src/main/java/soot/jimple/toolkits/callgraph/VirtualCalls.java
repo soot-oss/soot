@@ -42,25 +42,25 @@ import soot.SootMethodRef;
 import soot.Type;
 import soot.options.CGOptions;
 import soot.toolkits.scalar.Pair;
-import soot.util.Chain;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
-import soot.util.NumberedString;
 import soot.util.queue.ChunkedQueue;
 
 /**
  * Resolves virtual calls.
  *
  * @author Ondrej Lhotak
- * @author Manuel Benz 22.10.19 - Delegate dispatch behavior to FastHierarchy to have one common
- *     place for extension
+ * @author Manuel Benz 22.10.19 - Delegate dispatch behavior to FastHierarchy to have one common place for extension
  */
 public class VirtualCalls {
   private static final Logger LOGGER = LoggerFactory.getLogger(VirtualCalls.class);
 
-  private CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
+  private final CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
 
-  public VirtualCalls(Singletons.Global g) {}
+  protected MultiMap<Pair<Type, SootMethodRef>, Pair<Type, SootMethodRef>> baseToPossibleSubTypes = new HashMultiMap<>();
+
+  public VirtualCalls(Singletons.Global g) {
+  }
 
   public static VirtualCalls v() {
     return G.v().soot_jimple_toolkits_callgraph_VirtualCalls();
@@ -73,20 +73,18 @@ public class VirtualCalls {
   public SootMethod resolveSpecial(SootMethodRef calleeRef, SootMethod container, boolean appOnly) {
     SootMethod callee = calleeRef.resolve();
     /* cf. JVM spec, invokespecial instruction */
-    if (container.getDeclaringClass().getType() != callee.getDeclaringClass().getType()
-        && Scene.v()
-            .getOrMakeFastHierarchy()
-            .canStoreType(
-                container.getDeclaringClass().getType(), callee.getDeclaringClass().getType())
-        && !callee.getName().equals(SootMethod.constructorName)
-        && !callee.getName().equals(SootMethod.staticInitializerName)
+    final SootClass containerCls = container.getDeclaringClass();
+    final SootClass calleeCls = callee.getDeclaringClass();
+    if (containerCls.getType() != calleeCls.getType()
+        && Scene.v().getOrMakeFastHierarchy().canStoreType(containerCls.getType(), calleeCls.getType())
+        && !SootMethod.constructorName.equals(callee.getName()) && !SootMethod.staticInitializerName.equals(callee.getName())
         // default interface methods are explicitly dispatched to the default
         // method with a specialinvoke instruction (i.e. do not dispatch to an
         // overwritten version of that method)
-        && !callee.getDeclaringClass().isInterface()) {
-      //The invokespecial instruction is used to invoke instance initialization methods as well 
-      //as private methods and methods of a superclass of the current class.
-      return resolveNonSpecial(container.getDeclaringClass().getSuperclass().getType(), calleeRef, appOnly);
+        && !calleeCls.isInterface()) {
+      // The invokespecial instruction is used to invoke instance initialization methods as well
+      // as private methods and methods of a superclass of the current class.
+      return resolveNonSpecial(containerCls.getSuperclass().getType(), calleeRef, appOnly);
     } else {
       return callee;
     }
@@ -97,59 +95,33 @@ public class VirtualCalls {
   }
 
   public SootMethod resolveNonSpecial(RefType t, SootMethodRef callee, boolean appOnly) {
-    SootMethod ret = null;
-    NumberedString calleeSubSig = callee.getSubSignature();
     SootClass cls = t.getSootClass();
     if (appOnly && cls.isLibraryClass()) {
       return null;
+    } else if (!cls.isInterface()) {
+      return Scene.v().getOrMakeFastHierarchy().resolveConcreteDispatch(cls, callee);
+    } else {
+      return null;
     }
-
-    if (!cls.isInterface()) {
-      ret = Scene.v().getOrMakeFastHierarchy().resolveConcreteDispatch(cls, callee);
-    }
-    return ret;
   }
 
-  protected MultiMap<Pair<Type, SootMethodRef>, Pair<Type, SootMethodRef>> baseToPossibleSubTypes =
-      new HashMultiMap<>();
-
-  public void resolve(
-      Type t,
-      Type declaredType,
-      SootMethodRef callee,
-      SootMethod container,
+  public void resolve(Type t, Type declaredType, SootMethodRef callee, SootMethod container,
       ChunkedQueue<SootMethod> targets) {
     resolve(t, declaredType, null, callee, container, targets);
   }
 
-  public void resolve(
-      Type t,
-      Type declaredType,
-      SootMethodRef callee,
-      SootMethod container,
-      ChunkedQueue<SootMethod> targets,
-      boolean appOnly) {
+  public void resolve(Type t, Type declaredType, SootMethodRef callee, SootMethod container,
+      ChunkedQueue<SootMethod> targets, boolean appOnly) {
     resolve(t, declaredType, null, callee, container, targets, appOnly);
   }
 
-  public void resolve(
-      Type t,
-      Type declaredType,
-      Type sigType,
-      SootMethodRef callee,
-      SootMethod container,
+  public void resolve(Type t, Type declaredType, Type sigType, SootMethodRef callee, SootMethod container,
       ChunkedQueue<SootMethod> targets) {
     resolve(t, declaredType, sigType, callee, container, targets, false);
   }
 
-  public void resolve(
-      Type t,
-      Type declaredType,
-      Type sigType,
-      SootMethodRef callee,
-      SootMethod container,
-      ChunkedQueue<SootMethod> targets,
-      boolean appOnly) {
+  public void resolve(Type t, Type declaredType, Type sigType, SootMethodRef callee, SootMethod container,
+      ChunkedQueue<SootMethod> targets, boolean appOnly) {
     if (declaredType instanceof ArrayType) {
       declaredType = RefType.v("java.lang.Object");
     }
@@ -162,11 +134,9 @@ public class VirtualCalls {
     FastHierarchy fastHierachy = Scene.v().getOrMakeFastHierarchy();
     if (declaredType != null && !fastHierachy.canStoreType(t, declaredType)) {
       return;
-    }
-    if (sigType != null && !fastHierachy.canStoreType(t, sigType)) {
+    } else if (sigType != null && !fastHierachy.canStoreType(t, sigType)) {
       return;
-    }
-    if (t instanceof RefType) {
+    } else if (t instanceof RefType) {
       SootMethod target = resolveNonSpecial((RefType) t, callee, appOnly);
       if (target != null) {
         targets.add(target);
@@ -185,34 +155,24 @@ public class VirtualCalls {
        *
        * Since Java has no multiple inheritance call by signature resolution is only activated if the base is an interface.
        */
-      if (options.library() == CGOptions.library_signature_resolution
-          && base.getSootClass().isInterface()) {
+      if (options.library() == CGOptions.library_signature_resolution && base.getSootClass().isInterface()) {
         LOGGER.warn("Deprecated library dispatch is conducted. The results might be unsound...");
         resolveLibrarySignature(declaredType, sigType, callee, container, targets, appOnly, base);
       } else {
-        for (SootMethod dispatch :
-            Scene.v()
-                .getOrMakeFastHierarchy()
-                .resolveAbstractDispatch(base.getSootClass(), callee)) {
+        for (SootMethod dispatch : Scene.v().getOrMakeFastHierarchy().resolveAbstractDispatch(base.getSootClass(), callee)) {
           targets.add(dispatch);
         }
       }
     } else if (t instanceof NullType) {
+      return;
     } else {
       throw new RuntimeException("oops " + t);
     }
   }
 
-  public void resolveSuperType(
-      Type t,
-      Type declaredType,
-      SootMethodRef callee,
-      ChunkedQueue<SootMethod> targets,
+  public void resolveSuperType(Type t, Type declaredType, SootMethodRef callee, ChunkedQueue<SootMethod> targets,
       boolean appOnly) {
-    if (declaredType == null) {
-      return;
-    }
-    if (t == null) {
+    if (declaredType == null || t == null) {
       return;
     }
     if (declaredType instanceof ArrayType) {
@@ -222,10 +182,7 @@ public class VirtualCalls {
       t = RefType.v("java.lang.Object");
     }
     if (declaredType instanceof RefType) {
-      RefType parent = (RefType) declaredType;
-      SootClass parentClass = parent.getSootClass();
       RefType child;
-      SootClass childClass;
       if (t instanceof AnySubType) {
         child = ((AnySubType) t).getBase();
       } else if (t instanceof RefType) {
@@ -233,9 +190,8 @@ public class VirtualCalls {
       } else {
         return;
       }
-      childClass = child.getSootClass();
-      FastHierarchy fastHierachy = Scene.v().getOrMakeFastHierarchy();
-      if (fastHierachy.canStoreClass(childClass, parentClass)) {
+      FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
+      if (fh.canStoreClass(child.getSootClass(), ((RefType) declaredType).getSootClass())) {
         SootMethod target = resolveNonSpecial(child, callee, appOnly);
         if (target != null) {
           targets.add(target);
@@ -245,14 +201,8 @@ public class VirtualCalls {
   }
 
   @Deprecated
-  protected void resolveLibrarySignature(
-      Type declaredType,
-      Type sigType,
-      SootMethodRef callee,
-      SootMethod container,
-      ChunkedQueue<SootMethod> targets,
-      boolean appOnly,
-      RefType base) {
+  protected void resolveLibrarySignature(Type declaredType, Type sigType, SootMethodRef callee, SootMethod container,
+      ChunkedQueue<SootMethod> targets, boolean appOnly, RefType base) {
     // This is an old piece of code from before the refactoring of dispatch behavior to
     // FastHierarchy
     // This cannot handle default interfaces and it's questionable if the logic makes sense. The
@@ -260,7 +210,7 @@ public class VirtualCalls {
     // overloading in this case) and co-variance for return values is already managed by the
     // FastHierarchy
 
-    FastHierarchy fastHierachy = Scene.v().getOrMakeFastHierarchy();
+    FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
 
     assert (declaredType instanceof RefType);
     Pair<Type, SootMethodRef> pair = new Pair<Type, SootMethodRef>(base, callee);
@@ -271,7 +221,7 @@ public class VirtualCalls {
       if (types != null) {
         for (Pair<Type, SootMethodRef> tuple : types) {
           Type st = tuple.getO1();
-          if (!fastHierachy.canStoreType(st, declaredType)) {
+          if (!fh.canStoreType(st, declaredType)) {
             resolve(st, st, sigType, callee, container, targets, appOnly);
           } else {
             resolve(st, declaredType, sigType, callee, container, targets, appOnly);
@@ -286,12 +236,9 @@ public class VirtualCalls {
     Type declaredReturnType = callee.getReturnType();
     List<Type> declaredParamTypes = callee.getParameterTypes();
     String declaredName = callee.getName();
-
-    Chain<SootClass> classes = Scene.v().getClasses();
-    for (SootClass sc : classes) {
+    for (SootClass sc : Scene.v().getClasses()) {
       for (SootMethod sm : sc.getMethods()) {
         if (!sm.isAbstract()) {
-
           // method name has to match
           if (!sm.getName().equals(declaredName)) {
             continue;
@@ -299,7 +246,7 @@ public class VirtualCalls {
 
           // the return type has to be a the declared return
           // type or a sub type of it
-          if (!fastHierachy.canStoreType(sm.getReturnType(), declaredReturnType)) {
+          if (!fh.canStoreType(sm.getReturnType(), declaredReturnType)) {
             continue;
           }
           List<Type> paramTypes = sm.getParameterTypes();
@@ -311,7 +258,7 @@ public class VirtualCalls {
           }
           boolean check = true;
           for (int i = 0; i < paramTypes.size(); i++) {
-            if (!fastHierachy.canStoreType(declaredParamTypes.get(i), paramTypes.get(i))) {
+            if (!fh.canStoreType(declaredParamTypes.get(i), paramTypes.get(i))) {
               check = false;
               break;
             }
@@ -319,7 +266,7 @@ public class VirtualCalls {
 
           if (check) {
             Type st = sc.getType();
-            if (!fastHierachy.canStoreType(st, declaredType)) {
+            if (!fh.canStoreType(st, declaredType)) {
               // final classes can not be extended and
               // therefore not used in library client
               if (!sc.isFinal()) {

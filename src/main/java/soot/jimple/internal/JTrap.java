@@ -38,18 +38,17 @@ public class JTrap extends AbstractTrap {
     super(exception, beginStmt, endStmt, handlerStmt);
   }
 
+  @Override
   public Object clone() {
     return new JTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());
   }
 
+  @Override
   public String toString() {
-    StringBuffer buf = new StringBuffer("Trap :");
-    buf.append("\nbegin  : ");
-    buf.append(getBeginUnit());
-    buf.append("\nend    : ");
-    buf.append(getEndUnit());
-    buf.append("\nhandler: ");
-    buf.append(getHandlerUnit());
-    return new String(buf);
+    StringBuilder buf = new StringBuilder("Trap :");
+    buf.append("\nbegin  : ").append(getBeginUnit());
+    buf.append("\nend    : ").append(getEndUnit());
+    buf.append("\nhandler: ").append(getHandlerUnit());
+    return buf.toString();
   }
 }

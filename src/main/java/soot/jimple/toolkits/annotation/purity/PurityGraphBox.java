@@ -24,20 +24,27 @@ package soot.jimple.toolkits.annotation.purity;
 
 /**
  * Simple box class that encapsulates a reference to a PurityGraph.
- * 
  */
 public class PurityGraphBox {
+
   public PurityGraph g;
 
   PurityGraphBox() {
-    g = new PurityGraph();
+    this.g = new PurityGraph();
   }
 
+  @Override
   public int hashCode() {
     return g.hashCode();
   }
 
+  @Override
   public boolean equals(Object o) {
-    return g.equals(((PurityGraphBox) o).g);
+    if (o instanceof PurityGraphBox) {
+      PurityGraphBox oo = (PurityGraphBox) o;
+      return this.g.equals(oo.g);
+    } else {
+      return false;
+    }
   }
 }
