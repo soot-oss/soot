@@ -1,4 +1,4 @@
-package soot.jimple;
+package soot;
 
 /*-
  * #%L
@@ -21,7 +21,6 @@ package soot.jimple;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import soot.NopUnit;
 
-public interface NopStmt extends NopUnit, Stmt {
+public interface NopUnit extends Unit {
 }

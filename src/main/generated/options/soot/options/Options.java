@@ -1990,6 +1990,7 @@ public class Options extends OptionsBase {
                     + padVal("bb.pho", "Peephole optimizer")
                     + padVal("bb.ule", "Unused local eliminator")
                     + padVal("bb.lp", "Local packer: minimizes number of locals")
+                    + padVal("bb.ne", "Nop eliminator")
                 + padOpt("bop", "Baf optimization pack")
                 + padOpt("tag", "Tag aggregator: turns tags into attributes")
                     + padVal("tag.ln", "Line number aggregator")
@@ -2897,6 +2898,12 @@ public class Options extends OptionsBase {
                     + padOpt("enabled (true)", "")
                     + padOpt("unsplit-original-locals (false)", "");
 
+        if (phaseName.equals("bb.ne"))
+            return "Phase " + phaseName + ":\n"
+                    + "\nThe Nop Eliminator removes nop instructions from the method."
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (true)", "");
+
         if (phaseName.equals("bop"))
             return "Phase " + phaseName + ":\n"
                     + "\nThe Baf Optimization pack performs optimizations on BafBodys \n(currently there are no optimizations performed specifically on \nBafBodys, and the pack is empty). It is run only if the output \nformat is baf or b or asm or a, or if class files are being \noutput and the Via Grimp option has not been specified."
@@ -3662,6 +3669,11 @@ public class Options extends OptionsBase {
                     "unsplit-original-locals"
             );
 
+        if (phaseName.equals("bb.ne"))
+            return String.join(" ", 
+                    "enabled"
+            );
+
         if (phaseName.equals("bop"))
             return String.join(" ", 
                     "enabled"
@@ -4314,6 +4326,10 @@ public class Options extends OptionsBase {
                     + "enabled:true "
                     + "unsplit-original-locals:false ";
 
+        if (phaseName.equals("bb.ne"))
+            return ""
+                    + "enabled:true ";
+
         if (phaseName.equals("bop"))
             return ""
                     + "enabled:false ";
@@ -4467,6 +4483,7 @@ public class Options extends OptionsBase {
                 || phaseName.equals("bb.pho")
                 || phaseName.equals("bb.ule")
                 || phaseName.equals("bb.lp")
+                || phaseName.equals("bb.ne")
                 || phaseName.equals("bop")
                 || phaseName.equals("tag")
                 || phaseName.equals("tag.ln")
@@ -4688,6 +4705,8 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase bb.ule");
         if (!PackManager.v().hasPhase("bb.lp"))
             G.v().out.println("Warning: Options exist for non-existent phase bb.lp");
+        if (!PackManager.v().hasPhase("bb.ne"))
+            G.v().out.println("Warning: Options exist for non-existent phase bb.ne");
         if (!PackManager.v().hasPhase("bop"))
             G.v().out.println("Warning: Options exist for non-existent phase bop");
         if (!PackManager.v().hasPhase("tag"))

@@ -178,6 +178,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite bbbb_phoChild = bbbb_phoCreate(getPageContainer());
 		Composite bbbb_uleChild = bbbb_uleCreate(getPageContainer());
 		Composite bbbb_lpChild = bbbb_lpCreate(getPageContainer());
+		Composite bbbb_neChild = bbbb_neCreate(getPageContainer());
 		Composite tagtag_lnChild = tagtag_lnCreate(getPageContainer());
 		Composite tagtag_anChild = tagtag_anCreate(getPageContainer());
 		Composite tagtag_depChild = tagtag_depCreate(getPageContainer());
@@ -903,6 +904,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("bb", "bb.lp", getbbbb_lpunsplit_original_locals_widget(), "unsplit-original-locals");
 		getbbbb_lpenabled_widget().getButton().addSelectionListener(this);
 		getbbbb_lpunsplit_original_locals_widget().getButton().addSelectionListener(this);
+
+		makeNewEnableGroup("bb", "bb.ne");
+		addToEnableGroup("bb", "bb.ne", getbbbb_neenabled_widget(), "enabled");
+		getbbbb_neenabled_widget().getButton().addSelectionListener(this);
 
 		makeNewEnableGroup("bop");
 		addToEnableGroup("bop", getbopenabled_widget(), "enabled");
@@ -3115,6 +3120,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_lpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getbbbb_neenabled_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getbbbb_neenabled_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getbopenabled_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -4349,6 +4360,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 			
 			subSectParent = bb_bb_lp_branch;
+			
+			
+			SootOption bb_bb_ne_branch = new SootOption("Nop Eliminator", "bbbb_ne");
+			subParent.addChild(bb_bb_ne_branch);
+
+
+			
+
+			
+			subSectParent = bb_bb_ne_branch;
 			
 			
 			//Baf Optimization
@@ -8145,6 +8166,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getbbbb_lpunsplit_original_locals_widget() {
 		return bbbb_lpunsplit_original_locals_widget;
+	}	
+	
+	private BooleanOptionWidget bbbb_neenabled_widget;
+	
+	private void setbbbb_neenabled_widget(BooleanOptionWidget widget) {
+		bbbb_neenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getbbbb_neenabled_widget() {
+		return bbbb_neenabled_widget;
 	}	
 	
 	private BooleanOptionWidget bopenabled_widget;
@@ -16647,6 +16678,47 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupbbbb_lp;
+	}
+
+
+
+	private Composite bbbb_neCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupbbbb_ne = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupbbbb_ne.setLayout(layout);
+	
+	 	editGroupbbbb_ne.setText("Nop Eliminator");
+	 	
+		editGroupbbbb_ne.setData("id", "bbbb_ne");
+		
+		String descbbbb_ne = "Nop eliminator";	
+		if (descbbbb_ne.length() > 0) {
+			Label descLabelbbbb_ne = new Label(editGroupbbbb_ne, SWT.WRAP);
+			descLabelbbbb_ne.setText(descbbbb_ne);
+		}
+		OptionData [] data;	
+		
+		
+		
+
+		defKey = "p phase-option"+" "+"bb.ne"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setbbbb_neenabled_widget(new BooleanOptionWidget(editGroupbbbb_ne, SWT.NONE, new OptionData("Enabled", "p phase-option", "bb.ne","enabled", "\n", defaultBool)));
+
+
+		return editGroupbbbb_ne;
 	}
 
 
