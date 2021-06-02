@@ -23,28 +23,32 @@ package soot.jimple.toolkits.callgraph;
  */
 
 import java.util.Iterator;
+import soot.Unit;
 
 /**
  * Adapts an iterator over a collection of Edge's to be an iterator over the source units of the edges.
  * 
  * @author Ondrej Lhotak
  */
-public final class Units implements Iterator {
-  Iterator edges;
+public final class Units implements Iterator<Unit> {
+  final Iterator<Edge> edges;
 
-  public Units(Iterator edges) {
+  public Units(Iterator<Edge> edges) {
     this.edges = edges;
   }
 
+  @Override
   public boolean hasNext() {
     return edges.hasNext();
   }
 
-  public Object next() {
-    Edge e = (Edge) edges.next();
+  @Override
+  public Unit next() {
+    Edge e = edges.next();
     return e.srcUnit();
   }
 
+  @Override
   public void remove() {
     throw new UnsupportedOperationException();
   }

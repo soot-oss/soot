@@ -26,6 +26,7 @@ package soot.jimple.toolkits.typing.fast;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import soot.Local;
 import soot.Type;
@@ -34,40 +35,45 @@ import soot.Type;
  * @author Ben Bellamy
  */
 public class Typing {
+
   protected HashMap<Local, Type> map;
 
   public Typing(Collection<Local> vs) {
-    map = new HashMap<Local, Type>(vs.size());
-    final BottomType bottomType = BottomType.v();
-    for (Local v : vs) {
-      this.map.put(v, bottomType);
-    }
+    this.map = new HashMap<Local, Type>(vs.size());
   }
 
   public Typing(Typing tg) {
     this.map = new HashMap<Local, Type>(tg.map);
   }
 
+  public Map<Local, Type> getMap() {
+    return map;
+  }
+
   public Type get(Local v) {
-    return this.map.get(v);
+    Type t = this.map.get(v);
+    return (t == null) ? BottomType.v() : t;
   }
 
   public Type set(Local v, Type t) {
-    return this.map.put(v, t);
+    return (t instanceof BottomType) ? null : this.map.put(v, t);
+  }
+
+  public Collection<Local> getAllLocals() {
+    return map.keySet();
   }
 
   @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append('{');
-    for (Local v : this.map.keySet()) {
-      sb.append(v);
+    for (Map.Entry<Local, Type> e : this.map.entrySet()) {
+      sb.append(e.getKey());
       sb.append(':');
-      sb.append(this.get(v));
+      sb.append(e.getValue());
       sb.append(',');
     }
     sb.append('}');
     return sb.toString();
   }
-
 }

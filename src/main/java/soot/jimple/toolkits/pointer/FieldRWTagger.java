@@ -35,10 +35,13 @@ import soot.G;
 import soot.PhaseOptions;
 import soot.Scene;
 import soot.Singletons;
+import soot.Unit;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Edge;
 
 public class FieldRWTagger extends BodyTransformer {
+
   public FieldRWTagger(Singletons.Global g) {
   }
 
@@ -56,23 +59,23 @@ public class FieldRWTagger extends BodyTransformer {
   boolean optionNaive = false;
   private CallGraph cg;
 
-  protected class UniqueRWSets {
-    protected ArrayList<RWSet> l = new ArrayList<RWSet>();
+  protected class UniqueRWSets implements Iterable<RWSet> {
+    protected final ArrayList<RWSet> l = new ArrayList<RWSet>();
 
     RWSet getUnique(RWSet s) {
-      if (s == null) {
-        return s;
-      }
-      for (RWSet ret : l) {
-        if (ret.isEquivTo(s)) {
-          return ret;
+      if (s != null) {
+        for (RWSet ret : l) {
+          if (ret.isEquivTo(s)) {
+            return ret;
+          }
         }
+        l.add(s);
       }
-      l.add(s);
       return s;
     }
 
-    Iterator<RWSet> iterator() {
+    @Override
+    public Iterator<RWSet> iterator() {
       return l.iterator();
     }
 
@@ -91,6 +94,7 @@ public class FieldRWTagger extends BodyTransformer {
   protected void initializationStuff(String phaseName) {
     if (G.v().Union_factory == null) {
       G.v().Union_factory = new UnionFactory() {
+        @Override
         public Union newUnion() {
           return FullObjectSet.v();
         }
@@ -107,11 +111,11 @@ public class FieldRWTagger extends BodyTransformer {
       if (optionNaive) {
         throw new RuntimeException("shouldn't get here");
       }
-      Iterator it = cg.edgesOutOf(s);
+      Iterator<Edge> it = cg.edgesOutOf(s);
       if (!it.hasNext()) {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
       }
-      ArrayList ret = new ArrayList();
+      ArrayList<Edge> ret = new ArrayList<Edge>();
       while (it.hasNext()) {
         ret.add(it.next());
       }
@@ -121,7 +125,8 @@ public class FieldRWTagger extends BodyTransformer {
     }
   }
 
-  protected void internalTransform(Body body, String phaseName, Map options) {
+  @Override
+  protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
     initializationStuff(phaseName);
     SideEffectAnalysis sea = new SideEffectAnalysis(DumbPointerAnalysis.v(), Scene.v().getCallGraph());
     sea.findNTRWSets(body.getMethod());
@@ -129,9 +134,9 @@ public class FieldRWTagger extends BodyTransformer {
     HashMap<Object, RWSet> stmtToWriteSet = new HashMap<Object, RWSet>();
     UniqueRWSets sets = new UniqueRWSets();
     optionDontTag = PhaseOptions.getBoolean(options, "dont-tag");
-    boolean justDoTotallyConservativeThing = body.getMethod().getName().equals("<clinit>");
-    for (Iterator stmtIt = body.getUnits().iterator(); stmtIt.hasNext();) {
-      final Stmt stmt = (Stmt) stmtIt.next();
+    final boolean justDoTotallyConservativeThing = "<clinit>".equals(body.getMethod().getName());
+    for (Unit u : body.getUnits()) {
+      final Stmt stmt = (Stmt) u;
       if (!stmt.containsInvokeExpr()) {
         continue;
       }

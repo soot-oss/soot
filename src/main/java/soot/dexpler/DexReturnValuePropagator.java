@@ -30,6 +30,7 @@ import java.util.Set;
 
 import soot.Body;
 import soot.BodyTransformer;
+import soot.G;
 import soot.Local;
 import soot.Unit;
 import soot.Value;
@@ -53,7 +54,7 @@ public class DexReturnValuePropagator extends BodyTransformer {
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
     ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, DalvikThrowAnalysis.v(), true);
-    LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(graph);
+    LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph);
     LocalUses localUses = null;
     LocalCreation localCreation = null;
 

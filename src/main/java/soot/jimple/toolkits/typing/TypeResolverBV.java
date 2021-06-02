@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
+import soot.G;
 import soot.IntType;
 import soot.Local;
 import soot.LongType;
@@ -856,7 +857,7 @@ public class TypeResolverBV {
   }
 
   private void split_new() {
-    LocalDefs defs = LocalDefs.Factory.newLocalDefs(stmtBody);
+    LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(stmtBody);
     PatchingChain<Unit> units = stmtBody.getUnits();
     Stmt[] stmts = new Stmt[units.size()];
 

@@ -38,7 +38,6 @@ import soot.toolkits.graph.MutableEdgeLabelledDirectedGraph;
  *
  * @author Hossein Sadat-Mohtasham May 2009
  */
-
 public interface ProgramDependenceGraph extends MutableEdgeLabelledDirectedGraph<PDGNode, String> {
 
   /**
@@ -106,6 +105,6 @@ public interface ProgramDependenceGraph extends MutableEdgeLabelledDirectedGraph
    *
    * @return A human readable description of the PDG.
    */
+  @Override
   public String toString();
-
 }

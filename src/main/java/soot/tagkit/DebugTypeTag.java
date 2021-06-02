@@ -27,6 +27,8 @@ package soot.tagkit;
  */
 public class DebugTypeTag extends SignatureTag {
 
+  public static final String NAME = "DebugTypeTag";
+
   public DebugTypeTag(String signature) {
     super(signature);
   }
@@ -36,10 +38,9 @@ public class DebugTypeTag extends SignatureTag {
     return "DebugType: " + getSignature();
   }
 
-  /** Returns the tag name. */
   @Override
   public String getName() {
-    return "DebugTypeTag";
+    return NAME;
   }
 
   @Override
@@ -47,7 +48,6 @@ public class DebugTypeTag extends SignatureTag {
     return "DebugType";
   }
 
-  /** Returns the tag raw data. */
   @Override
   public byte[] getValue() {
     throw new RuntimeException("DebugTypeTag has no value for bytecode");

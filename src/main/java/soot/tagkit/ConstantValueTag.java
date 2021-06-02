@@ -35,12 +35,6 @@ public abstract class ConstantValueTag implements Tag {
   }
 
   @Override
-  public String getName() {
-    String className = getClass().getName();
-    return className.substring(className.lastIndexOf('.') + 1);
-  }
-
-  @Override
   public byte[] getValue() {
     return bytes;
   }

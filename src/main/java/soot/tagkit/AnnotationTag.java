@@ -34,6 +34,8 @@ import java.util.List;
  */
 public class AnnotationTag implements Tag {
 
+  public static final String NAME = "AnnotationTag";
+
   // type - the question here is the class of the type is potentially
   // not loaded -- Does it need to be ??? - If it does then this may
   // be something difficult (if just passing the attributes through
@@ -105,10 +107,9 @@ public class AnnotationTag implements Tag {
     }
   }
 
-  /** Returns the tag name. */
   @Override
   public String getName() {
-    return "AnnotationTag";
+    return NAME;
   }
 
   public String getInfo() {
@@ -119,7 +120,6 @@ public class AnnotationTag implements Tag {
     return type;
   }
 
-  /** Returns the tag raw data. */
   @Override
   public byte[] getValue() {
     throw new RuntimeException("AnnotationTag has no value for bytecode");

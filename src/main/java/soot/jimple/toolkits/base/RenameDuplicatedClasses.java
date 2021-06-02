@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,7 +40,6 @@ import soot.SceneTransformer;
 import soot.Singletons;
 import soot.SootClass;
 import soot.options.Options;
-import soot.util.Chain;
 
 /**
  * A scene transformer that renames the duplicated class names.
@@ -56,11 +54,11 @@ import soot.util.Chain;
  * 0015AE7C27688D45F79170DCEA16131CE557912A1A0C5F3B6B0465EE0774A452) in the Genome project contains duplicated class names.
  * When transforming the app to classes, some classes are missing and consequently case problems for other analysis tools
  * that relay on Soot (e.g., Error: class com.adwo.adsdk.s read in from a classfile in which com.adwo.adsdk.S was expected).
- *
- *
  */
 public class RenameDuplicatedClasses extends SceneTransformer {
   private static final Logger logger = LoggerFactory.getLogger(RenameDuplicatedClasses.class);
+
+  private static final String FIXED_CLASS_NAME_SPERATOR = "-";
 
   public RenameDuplicatedClasses(Singletons.Global g) {
   }
@@ -69,8 +67,6 @@ public class RenameDuplicatedClasses extends SceneTransformer {
     return G.v().soot_jimple_toolkits_base_RenameDuplicatedClasses();
   }
 
-  private static final String FIXED_CLASS_NAME_SPERATOR = "-";
-
   @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
     // If the file system is case sensitive, no need to rename the classes
@@ -78,21 +74,17 @@ public class RenameDuplicatedClasses extends SceneTransformer {
       return;
     }
 
-    String fixedClassNamesStr = PhaseOptions.getString(options, "fixedClassNames");
-    String[] classNames = fixedClassNamesStr.split(FIXED_CLASS_NAME_SPERATOR);
-    List<String> fixedClassNames = Arrays.asList(classNames);
+    final Set<String> fixedClassNames =
+        new HashSet<>(Arrays.asList(PhaseOptions.getString(options, "fixedClassNames").split(FIXED_CLASS_NAME_SPERATOR)));
     duplicatedCheck(fixedClassNames);
 
     if (Options.v().verbose()) {
       logger.debug("The fixed class names are: " + fixedClassNames);
     }
 
-    Chain<SootClass> sootClasses = Scene.v().getClasses();
-    Map<String, String> lowerCaseClassNameToReal = new HashMap<String, String>();
-
     int count = 0;
-
-    for (Iterator<SootClass> iter = sootClasses.snapshotIterator(); iter.hasNext();) {
+    Map<String, String> lowerCaseClassNameToReal = new HashMap<String, String>();
+    for (Iterator<SootClass> iter = Scene.v().getClasses().snapshotIterator(); iter.hasNext();) {
       SootClass sootClass = iter.next();
       String className = sootClass.getName();
 
@@ -115,7 +107,7 @@ public class RenameDuplicatedClasses extends SceneTransformer {
     }
   }
 
-  public void duplicatedCheck(List<String> classNames) {
+  public void duplicatedCheck(Iterable<String> classNames) {
     Set<String> classNameSet = new HashSet<String>();
     for (String className : classNames) {
       if (classNameSet.contains(className.toLowerCase())) {
@@ -132,27 +124,17 @@ public class RenameDuplicatedClasses extends SceneTransformer {
    * @return
    */
   public boolean isFileSystemCaseSensitive() {
-    File dir = new File(".");
-    File[] files = dir.listFiles();
-    if (files == null) {
-      return false;
-    }
-
-    for (File file : files) {
-      if (file.isFile()) {
-        String lowerCaseFilePath = file.getAbsolutePath().toLowerCase();
-        String upperCaseFilePath = file.getAbsolutePath().toUpperCase();
-
-        File lowerCaseFile = new File(lowerCaseFilePath);
-        File upperCaseFile = new File(upperCaseFilePath);
-
-        if (!(lowerCaseFile.exists() && upperCaseFile.exists())) {
-          return true;
+    File[] allFiles = (new File(".")).listFiles();
+    if (allFiles != null) {
+      for (File f : allFiles) {
+        if (f.isFile()) {
+          if (!(new File(f.getAbsolutePath().toLowerCase())).exists()
+              || !(new File(f.getAbsolutePath().toUpperCase())).exists()) {
+            return true;
+          }
         }
-
       }
     }
-
     return false;
   }
 }

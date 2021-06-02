@@ -33,12 +33,14 @@ import soot.jimple.NewMultiArrayExpr;
 import soot.jimple.NullConstant;
 import soot.jimple.StringConstant;
 
+/** an ExprBox which can only contain object-looking references */
 public class ObjExprBox extends ExprBox {
-  /* an ExprBox which can only contain object-looking references */
+
   public ObjExprBox(Value value) {
     super(value);
   }
 
+  @Override
   public boolean canContainValue(Value value) {
     return value instanceof ConcreteRef || value instanceof InvokeExpr || value instanceof NewArrayExpr
         || value instanceof NewMultiArrayExpr || value instanceof Local || value instanceof NullConstant

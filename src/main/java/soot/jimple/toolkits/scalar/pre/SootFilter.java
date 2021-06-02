@@ -29,12 +29,10 @@ import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.ConcreteRef;
-import soot.jimple.Constant;
 import soot.jimple.DivExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.LengthExpr;
 import soot.jimple.RemExpr;
-import soot.jimple.UnopExpr;
 
 /**
  * Allows easy filtering/wrapping of Soot objects. Operations that are done very often are grouped here.
@@ -49,10 +47,7 @@ public class SootFilter {
    * @return the EquivalentValue containing val.
    */
   public static EquivalentValue equiVal(Value val) {
-    if (val == null) {
-      return null;
-    }
-    return new EquivalentValue(val);
+    return (val != null) ? new EquivalentValue(val) : null;
   }
 
   /**
@@ -63,11 +58,7 @@ public class SootFilter {
    * @return the RHS-Value of <code>unit</code> or <code>null</code> if <code>unit</code> wasn't an assignment-stmt.
    */
   public static Value rhs(Unit unit) {
-    if (unit instanceof AssignStmt) {
-      return ((AssignStmt) unit).getRightOp();
-    } else {
-      return null;
-    }
+    return (unit instanceof AssignStmt) ? ((AssignStmt) unit).getRightOp() : null;
   }
 
   /**
@@ -78,13 +69,7 @@ public class SootFilter {
    * @return <code>val</code> if it is a binary expression. otherwise <code>null</code>.
    */
   public static Value binop(Value val) {
-    if (val == null) {
-      return null;
-    }
-    if (val instanceof BinopExpr) {
-      return val;
-    }
-    return null;
+    return (val instanceof BinopExpr) ? val : null;
   }
 
   /**
@@ -108,13 +93,7 @@ public class SootFilter {
    * @return the <code>val</code> if it was a concrete reference. otherwise <code>null</code>.
    */
   public static Value concreteRef(Value val) {
-    if (val == null) {
-      return null;
-    }
-    if (val instanceof ConcreteRef) {
-      return val;
-    }
-    return null;
+    return (val instanceof ConcreteRef) ? val : null;
   }
 
   /**
@@ -126,14 +105,7 @@ public class SootFilter {
    * @return <code>val</code> if val doesn't throw any exception, or <code>null</code> otherwise.
    */
   public static Value noExceptionThrowing(Value val) {
-    if (val == null) {
-      return null;
-    }
-    if (!throwsException(val)) {
-      return val;
-    } else {
-      return null;
-    }
+    return (val != null && !throwsException(val)) ? val : null;
   }
 
   /**
@@ -159,22 +131,6 @@ public class SootFilter {
   }
 
   /**
-   * filters out Invokes.<br>
-   * returns <code>null</code> if <code>val</code> is null.
-   *
-   * @param val
-   *          the Value to inspect
-   * @return <code>val</code>, if val is not an invoke, <code>null</code> otherwise.
-   */
-  public static Value noInvoke(Value val) {
-    if (val == null || isInvoke(val)) {
-      return null;
-    } else {
-      return val;
-    }
-  }
-
-  /**
    * returns true, if <code>val</code> is an invoke.
    *
    * @param val
@@ -183,10 +139,19 @@ public class SootFilter {
    */
   public static boolean isInvoke(Value val) {
     val = getEquivalentValueRoot(val);
-    if (val instanceof InvokeExpr) {
-      return true;
-    }
-    return false;
+    return (val instanceof InvokeExpr);
+  }
+
+  /**
+   * filters out Invokes.<br>
+   * returns <code>null</code> if <code>val</code> is null.
+   *
+   * @param val
+   *          the Value to inspect
+   * @return <code>val</code>, if val is not an invoke, <code>null</code> otherwise.
+   */
+  public static Value noInvoke(Value val) {
+    return (val != null && !isInvoke(val)) ? val : null;
   }
 
   /**
@@ -198,11 +163,7 @@ public class SootFilter {
    * @return <code>val</code>, if it is a Local, <code>null</code> otherwise.
    */
   public static Value local(Value val) {
-    if (val != null && isLocal(val)) {
-      return val;
-    } else {
-      return null;
-    }
+    return (val != null && isLocal(val)) ? val : null;
   }
 
   /**
@@ -214,11 +175,7 @@ public class SootFilter {
    * @return <code>val</code>, if it is not a Local, <code>null</code> otherwise.
    */
   public static Value noLocal(Value val) {
-    if (val != null && !isLocal(val)) {
-      return val;
-    } else {
-      return null;
-    }
+    return (val != null && !isLocal(val)) ? val : null;
   }
 
   /**
@@ -238,9 +195,6 @@ public class SootFilter {
    * @return val, if val is not an EquivalentValue, or the deepest Value otherwise.
    */
   public static Value getEquivalentValueRoot(Value val) {
-    if (val == null) {
-      return null;
-    }
     /*
      * extract the Value, if val is an EquivalentValue. One of the reasons, why testing for "instanceof" is sometimes not a
      * good idea.
@@ -252,18 +206,11 @@ public class SootFilter {
   }
 
   /**
-   * a (probably) conservative way of telling, if a Value throws an exception or not.
+   * a (probably) conservative way of telling if a Value throws an exception or not.
    */
   public static boolean throwsException(Value val) {
     val = getEquivalentValueRoot(val);
-
     /* i really hope i did not forget any... */
-    if (val instanceof BinopExpr || val instanceof UnopExpr || val instanceof Local || val instanceof Constant) {
-      if (val instanceof DivExpr || val instanceof RemExpr || val instanceof LengthExpr) {
-        return true;
-      }
-      return false;
-    }
-    return true;
+    return val instanceof DivExpr || val instanceof RemExpr || val instanceof LengthExpr;
   }
 }

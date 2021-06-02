@@ -24,7 +24,6 @@ package soot.xml;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,49 +51,47 @@ public class JavaAttribute {
   }
 
   public int startLn() {
-    return startLn;
+    return this.startLn;
   }
 
   public void startLn(int x) {
-    startLn = x;
+    this.startLn = x;
   }
 
   public ArrayList<Tag> tags() {
-    return tags;
-  }
-
-  public ArrayList<PosColorAttribute> vbAttrs() {
-    return vbAttrs;
+    return this.tags;
   }
 
   public void addTag(Tag t) {
+    ArrayList<Tag> tags = this.tags;
     if (tags == null) {
-      tags = new ArrayList<Tag>();
+      this.tags = tags = new ArrayList<Tag>();
     }
     tags.add(t);
   }
 
+  public ArrayList<PosColorAttribute> vbAttrs() {
+    return this.vbAttrs;
+  }
+
   public void addVbAttr(PosColorAttribute vbAttr) {
+    ArrayList<PosColorAttribute> vbAttrs = this.vbAttrs;
     if (vbAttrs == null) {
-      vbAttrs = new ArrayList<PosColorAttribute>();
+      this.vbAttrs = vbAttrs = new ArrayList<PosColorAttribute>();
     }
     vbAttrs.add(vbAttr);
   }
 
   public boolean hasColorTag() {
     if (tags != null) {
-      Iterator<Tag> it = tags.iterator();
-      while (it.hasNext()) {
-        Tag t = it.next();
+      for (Tag t : tags) {
         if (t instanceof ColorTag) {
           return true;
         }
       }
     }
     if (vbAttrs != null) {
-      Iterator<PosColorAttribute> vbIt = vbAttrs.iterator();
-      while (vbIt.hasNext()) {
-        PosColorAttribute t = vbIt.next();
+      for (PosColorAttribute t : vbAttrs) {
         if (t.hasColor()) {
           return true;
         }
@@ -105,7 +102,7 @@ public class JavaAttribute {
 
   private void printAttributeTag(Tag t) {
     if (t instanceof LineNumberTag) {
-      int lnNum = (new Integer(((LineNumberTag) t).toString())).intValue();
+      int lnNum = ((LineNumberTag) t).getLineNumber();
       printJavaLnAttr(lnNum, lnNum);
     } else if (t instanceof JimpleLineNumberTag) {
       JimpleLineNumberTag jlnTag = (JimpleLineNumberTag) t;
@@ -119,7 +116,6 @@ public class JavaAttribute {
       LinkTag lt = (LinkTag) t;
       Host h = lt.getLink();
       printLinkAttr(formatForXML(lt.toString()), getJimpleLnOfHost(h), getJavaLnOfHost(h), lt.getClassName());
-
     } else if (t instanceof StringTag) {
       printTextAttr(formatForXML(((StringTag) t).toString()));
     } else if (t instanceof SourcePositionTag) {
@@ -177,11 +173,7 @@ public class JavaAttribute {
     writerOut.println("<red>" + r + "</red>");
     writerOut.println("<green>" + g + "</green>");
     writerOut.println("<blue>" + b + "</blue>");
-    if (fg) {
-      writerOut.println("<fg>1</fg>");
-    } else {
-      writerOut.println("<fg>0</fg>");
-    }
+    writerOut.println(fg ? "<fg>1</fg>" : "<fg>0</fg>");
   }
 
   private void endPrintValBoxAttr() {
@@ -192,15 +184,12 @@ public class JavaAttribute {
   public void printAllTags(PrintWriter writer) {
     this.writerOut = writer;
     if (tags != null) {
-      Iterator<Tag> it = tags.iterator();
-      while (it.hasNext()) {
-        printAttributeTag(it.next());
+      for (Tag t : tags) {
+        printAttributeTag(t);
       }
     }
     if (vbAttrs != null) {
-      Iterator<PosColorAttribute> vbIt = vbAttrs.iterator();
-      while (vbIt.hasNext()) {
-        PosColorAttribute attr = vbIt.next();
+      for (PosColorAttribute attr : vbAttrs) {
         if (attr.hasColor()) {
           startPrintValBoxAttr();
           printSourcePositionAttr(attr.javaStartPos(), attr.javaEndPos());
@@ -215,9 +204,8 @@ public class JavaAttribute {
   // prints only tags related to strings and links (no pos tags)
   public void printInfoTags(PrintWriter writer) {
     this.writerOut = writer;
-    Iterator<Tag> it = tags.iterator();
-    while (it.hasNext()) {
-      printAttributeTag(it.next());
+    for (Tag t : tags) {
+      printAttributeTag(t);
     }
   }
 
@@ -229,24 +217,18 @@ public class JavaAttribute {
   }
 
   private int getJavaLnOfHost(Host h) {
-    Iterator<Tag> it = h.getTags().iterator();
-    while (it.hasNext()) {
-      Tag t = it.next();
-      // logger.debug(""+t.getClass().toString());
+    for (Tag t : h.getTags()) {
       if (t instanceof SourceLnPosTag) {
-        // logger.debug("t is LineNumberTag");
         return ((SourceLnPosTag) t).startLn();
       } else if (t instanceof LineNumberTag) {
-        return (new Integer(((LineNumberTag) t).toString())).intValue();
+        return ((LineNumberTag) t).getLineNumber();
       }
     }
     return 0;
   }
 
   private int getJimpleLnOfHost(Host h) {
-    Iterator<Tag> it = h.getTags().iterator();
-    while (it.hasNext()) {
-      Tag t = it.next();
+    for (Tag t : h.getTags()) {
       if (t instanceof JimpleLineNumberTag) {
         return ((JimpleLineNumberTag) t).getStartLineNumber();
       }

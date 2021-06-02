@@ -27,13 +27,14 @@ package soot.tagkit;
  */
 public class LoopInvariantTag extends StringTag {
 
+  public static final String NAME = "LoopInvariantTag";
+
   public LoopInvariantTag(String s) {
     super(s);
   }
 
-  /** Returns the tag name. */
   @Override
   public String getName() {
-    return "LoopInvariantTag";
+    return NAME;
   }
 }

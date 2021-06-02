@@ -24,6 +24,8 @@ package soot.tagkit;
 
 public class KeyTag implements Tag {
 
+  public static final String NAME = "KeyTag";
+
   private final int red;
   private final int green;
   private final int blue;
@@ -113,7 +115,7 @@ public class KeyTag implements Tag {
 
   @Override
   public String getName() {
-    return "KeyTag";
+    return NAME;
   }
 
   @Override

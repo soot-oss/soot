@@ -24,6 +24,8 @@ package soot.tagkit;
 
 public class JimpleLineNumberTag implements Tag {
 
+  public static final String NAME = "JimpleLineNumberTag";
+
   /* it is a value representing line number. */
   private final int startLineNumber;
   private final int endLineNumber;
@@ -52,7 +54,7 @@ public class JimpleLineNumberTag implements Tag {
 
   @Override
   public String getName() {
-    return "JimpleLineNumberTag";
+    return NAME;
   }
 
   @Override

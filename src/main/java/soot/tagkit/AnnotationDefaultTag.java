@@ -27,6 +27,8 @@ package soot.tagkit;
  */
 public class AnnotationDefaultTag implements Tag {
 
+  public static final String NAME = "AnnotationDefaultTag";
+
   private final AnnotationElem defaultVal;
 
   public AnnotationDefaultTag(AnnotationElem def) {
@@ -38,10 +40,9 @@ public class AnnotationDefaultTag implements Tag {
     return "Annotation Default: " + defaultVal;
   }
 
-  /** Returns the tag name. */
   @Override
   public String getName() {
-    return "AnnotationDefaultTag";
+    return NAME;
   }
 
   public String getInfo() {
@@ -52,7 +53,6 @@ public class AnnotationDefaultTag implements Tag {
     return defaultVal;
   }
 
-  /** Returns the tag raw data. */
   @Override
   public byte[] getValue() {
     throw new RuntimeException("AnnotationDefaultTag has no value for bytecode");
