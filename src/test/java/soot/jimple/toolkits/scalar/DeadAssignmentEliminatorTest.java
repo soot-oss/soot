@@ -1,5 +1,11 @@
 package soot.jimple.toolkits.scalar;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,18 +30,24 @@ package soot.jimple.toolkits.scalar;
 
 import org.junit.Before;
 import org.junit.Test;
-import soot.*;
+
+import soot.ArrayType;
+import soot.DoubleType;
+import soot.G;
+import soot.IntType;
+import soot.Local;
+import soot.Modifier;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Unit;
+import soot.UnitPatchingChain;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.NullConstant;
 import soot.options.Options;
 import soot.util.Chain;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for the dead assignment eliminator.
@@ -58,13 +70,54 @@ public class DeadAssignmentEliminatorTest {
   }
 
   /**
+   * Tests if the eliminator keeps array length expression which might cause NPEs.
+   */
+  @Test
+  public void keepArrayLength() {
+    // create test method and body
+    SootClass cl = new SootClass("TestClass", Modifier.PUBLIC);
+    SootMethod method = new SootMethod("testMethod", Collections.singletonList(RefType.v("java.lang.Object")),
+        ArrayType.v(IntType.v(), 1), Modifier.PUBLIC);
+    cl.addMethod(method);
+    JimpleBody body = Jimple.v().newBody(method);
+    method.setActiveBody(body);
+
+    // create locals
+    Chain<Local> locals = body.getLocals();
+    Local a = Jimple.v().newLocal("a", ArrayType.v(IntType.v(), 1));
+    locals.add(a);
+    Local b = Jimple.v().newLocal("b", IntType.v());
+    locals.add(b);
+
+    // create code
+    UnitPatchingChain units = body.getUnits();
+    Unit identity0 = Jimple.v().newIdentityStmt(a, Jimple.v().newParameterRef(RefType.v("java.lang.Object"), 0));
+    units.add(identity0);
+    Unit cast0 = Jimple.v().newAssignStmt(b, Jimple.v().newLengthExpr(a));
+    units.add(cast0);
+    Unit ret = Jimple.v().newReturnStmt(b);
+    units.add(ret);
+
+    // execute transform
+    DeadAssignmentEliminator.v().internalTransform(body, "testPhase", Collections.emptyMap());
+
+    // check resulting code (length statement should be preserved)
+    Iterator<Unit> it = units.iterator();
+    assertEquals(identity0, it.next());
+    assertEquals(cast0, it.next());
+    assertEquals(ret, it.next());
+    assertEquals(3, units.size());
+  }
+
+  /**
    * Tests if the eliminator keeps casts which can throw ClassCastExceptions.
    */
   @Test
   public void keepEssentialCast() {
     // create test method and body
     SootClass cl = new SootClass("TestClass", Modifier.PUBLIC);
-    SootMethod method = new SootMethod("testMethod", Collections.singletonList(RefType.v("java.lang.Object")), ArrayType.v(IntType.v(), 1), Modifier.PUBLIC);
+    SootMethod method = new SootMethod("testMethod", Collections.singletonList(RefType.v("java.lang.Object")),
+        ArrayType.v(IntType.v(), 1), Modifier.PUBLIC);
     cl.addMethod(method);
     JimpleBody body = Jimple.v().newBody(method);
     method.setActiveBody(body);
@@ -75,9 +128,9 @@ public class DeadAssignmentEliminatorTest {
     locals.add(a);
     Local b = Jimple.v().newLocal("b", IntType.v());
     locals.add(b);
-    Local c =  Jimple.v().newLocal("c", IntType.v());
+    Local c = Jimple.v().newLocal("c", IntType.v());
     locals.add(c);
-    Local d =  Jimple.v().newLocal("d", IntType.v());
+    Local d = Jimple.v().newLocal("d", IntType.v());
     locals.add(d);
 
     // create code
@@ -123,7 +176,7 @@ public class DeadAssignmentEliminatorTest {
     locals.add(a);
     Local b = Jimple.v().newLocal("b", IntType.v());
     locals.add(b);
-    Local c =  Jimple.v().newLocal("c", IntType.v());
+    Local c = Jimple.v().newLocal("c", IntType.v());
     locals.add(c);
     Local d = Jimple.v().newLocal("d", DoubleType.v());
     locals.add(d);
