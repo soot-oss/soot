@@ -33,7 +33,6 @@ import soot.ShortType;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.UnknownType;
-import soot.Value;
 import soot.ValueBox;
 import soot.jimple.ExprSwitch;
 import soot.jimple.Jimple;
@@ -42,52 +41,65 @@ import soot.util.Switch;
 
 @SuppressWarnings("serial")
 public abstract class AbstractNegExpr extends AbstractUnopExpr implements NegExpr {
+
   protected AbstractNegExpr(ValueBox opBox) {
     super(opBox);
   }
 
   /** Compares the specified object with this one for structural equality. */
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractNegExpr) {
-      return opBox.getValue().equivTo(((AbstractNegExpr) o).opBox.getValue());
+      return this.opBox.getValue().equivTo(((AbstractNegExpr) o).opBox.getValue());
     }
     return false;
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return opBox.getValue().equivHashCode();
   }
 
-  public abstract Object clone();
-
+  @Override
   public String toString() {
     return Jimple.NEG + " " + opBox.getValue().toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    up.literal(Jimple.NEG);
-    up.literal(" ");
+    up.literal(Jimple.NEG + " ");
     opBox.toString(up);
   }
 
+  @Override
   public Type getType() {
-    Value op = opBox.getValue();
+    final Type type = opBox.getValue().getType();
 
-    if (op.getType().equals(IntType.v()) || op.getType().equals(ByteType.v()) || op.getType().equals(ShortType.v())
-        || op.getType().equals(BooleanType.v()) || op.getType().equals(CharType.v())) {
-      return IntType.v();
-    } else if (op.getType().equals(LongType.v())) {
-      return LongType.v();
-    } else if (op.getType().equals(DoubleType.v())) {
-      return DoubleType.v();
-    } else if (op.getType().equals(FloatType.v())) {
-      return FloatType.v();
-    } else {
-      return UnknownType.v();
+    final IntType tyInt = IntType.v();
+    final ByteType tyByte = ByteType.v();
+    final ShortType tyShort = ShortType.v();
+    final CharType tyChar = CharType.v();
+    final BooleanType tyBool = BooleanType.v();
+    if (tyInt.equals(type) || tyByte.equals(type) || tyShort.equals(type) || tyChar.equals(type) || tyBool.equals(type)) {
+      return tyInt;
     }
+    final LongType tyLong = LongType.v();
+    if (tyLong.equals(type)) {
+      return tyLong;
+    }
+    final DoubleType tyDouble = DoubleType.v();
+    if (tyDouble.equals(type)) {
+      return tyDouble;
+    }
+    final FloatType tyFloat = FloatType.v();
+    if (tyFloat.equals(type)) {
+      return tyFloat;
+    }
+    return UnknownType.v();
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseNegExpr(this);
   }

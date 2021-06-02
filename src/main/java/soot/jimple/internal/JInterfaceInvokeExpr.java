@@ -25,6 +25,7 @@ package soot.jimple.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import soot.SootClass;
 import soot.SootMethodRef;
@@ -33,31 +34,34 @@ import soot.ValueBox;
 import soot.jimple.Jimple;
 
 public class JInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr {
+
   public JInterfaceInvokeExpr(Value base, SootMethodRef methodRef, List<? extends Value> args) {
     super(Jimple.v().newLocalBox(base), methodRef, new ValueBox[args.size()]);
 
     // Check that the method's class is resolved enough
+    final SootClass declaringClass = methodRef.declaringClass();
     // CheckLevel returns without doing anything because we can be not 'done' resolving
-    methodRef.declaringClass().checkLevelIgnoreResolving(SootClass.HIERARCHY);
+    declaringClass.checkLevelIgnoreResolving(SootClass.HIERARCHY);
     // now check if the class is valid
-    if (!methodRef.declaringClass().isInterface() && !methodRef.declaringClass().isPhantom()) {
-      throw new RuntimeException("Trying to create interface invoke expression for non-interface type: "
-          + methodRef.declaringClass() + " Use JVirtualInvokeExpr or JSpecialInvokeExpr instead!");
+    if (!declaringClass.isInterface() && !declaringClass.isPhantom()) {
+      throw new RuntimeException("Trying to create interface invoke expression for non-interface type: " + declaringClass
+          + " Use JVirtualInvokeExpr or JSpecialInvokeExpr instead!");
     }
 
-    for (int i = 0; i < args.size(); i++) {
-      this.argBoxes[i] = Jimple.v().newImmediateBox(args.get(i));
+    final Jimple jimp = Jimple.v();
+    for (ListIterator<? extends Value> it = args.listIterator(); it.hasNext();) {
+      Value v = it.next();
+      this.argBoxes[it.previousIndex()] = jimp.newImmediateBox(v);
     }
   }
 
+  @Override
   public Object clone() {
-    List<Value> argList = new ArrayList<Value>(getArgCount());
-
-    for (int i = 0; i < getArgCount(); i++) {
-      argList.add(i, Jimple.cloneIfNecessary(getArg(i)));
+    final int count = getArgCount();
+    List<Value> clonedArgs = new ArrayList<Value>(count);
+    for (int i = 0; i < count; i++) {
+      clonedArgs.add(Jimple.cloneIfNecessary(getArg(i)));
     }
-
-    return new JInterfaceInvokeExpr(Jimple.cloneIfNecessary(getBase()), methodRef, argList);
+    return new JInterfaceInvokeExpr(Jimple.cloneIfNecessary(getBase()), methodRef, clonedArgs);
   }
-
 }

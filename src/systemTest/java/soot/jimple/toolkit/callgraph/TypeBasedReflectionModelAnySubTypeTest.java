@@ -26,12 +26,12 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNot.not;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 
 import soot.Kind;
 import soot.RefType;
@@ -44,6 +44,7 @@ import soot.options.Options;
 import soot.testing.framework.AbstractTestingFramework;
 
 
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class TypeBasedReflectionModelAnySubTypeTest extends AbstractTestingFramework {
   private static final String[] INTERFACE_INVOKEES = new String[] {
       "<soot.jimple.toolkit.callgraph.SubImplementation: void invokeTarget(java.lang.String)>",

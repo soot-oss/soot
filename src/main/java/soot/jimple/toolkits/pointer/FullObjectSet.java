@@ -34,26 +34,23 @@ import soot.Type;
 import soot.jimple.ClassConstant;
 
 public class FullObjectSet extends Union {
-  public FullObjectSet(Singletons.Global g) {
-    this(RefType.v("java.lang.Object"));
-  }
+
+  private final Set<Type> types;
 
   public static FullObjectSet v() {
     return G.v().soot_jimple_toolkits_pointer_FullObjectSet();
   }
 
   public static FullObjectSet v(RefType t) {
-    if (t.getClassName().equals("java.lang.Object")) {
-      return v();
-    }
-    return new FullObjectSet(t);
+    return ("java.lang.Object".equals(t.getClassName())) ? v() : new FullObjectSet(t);
   }
 
-  private final Set<Type> types;
+  public FullObjectSet(Singletons.Global g) {
+    this(RefType.v("java.lang.Object"));
+  }
 
   private FullObjectSet(RefType declaredType) {
-    Type type = AnySubType.v(declaredType);
-    types = Collections.singleton(type);
+    this.types = Collections.singleton(AnySubType.v(declaredType));
   }
 
   public Type type() {
@@ -61,11 +58,13 @@ public class FullObjectSet extends Union {
   }
 
   /** Returns true if this set contains no run-time objects. */
+  @Override
   public boolean isEmpty() {
     return false;
   }
 
   /** Returns true if this set is a subset of other. */
+  @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     return other != null;
   }
@@ -79,21 +78,21 @@ public class FullObjectSet extends Union {
   /**
    * Adds all objects in s into this union of sets, returning true if this union was changed.
    */
+  @Override
   public boolean addAll(PointsToSet s) {
     return false;
   }
 
+  @Override
   public Set<String> possibleStringConstants() {
     return null;
   }
 
+  @Override
   public Set<ClassConstant> possibleClassConstants() {
     return null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   public int depth() {
     return 0;
   }

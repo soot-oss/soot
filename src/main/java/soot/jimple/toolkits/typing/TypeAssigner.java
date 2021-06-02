@@ -50,6 +50,7 @@ import soot.Singletons;
 import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
+import soot.Value;
 import soot.ValueBox;
 import soot.jimple.ArrayRef;
 import soot.jimple.FieldRef;
@@ -88,42 +89,49 @@ public class TypeAssigner extends BodyTransformer {
       throw new NullPointerException();
     }
 
-    Date start = new Date();
-
+    final Date start;
     if (Options.v().verbose()) {
+      start = new Date();
       logger.debug("[TypeAssigner] typing system started on " + start);
+    } else {
+      start = null;
     }
 
-    JBTROptions opt = new JBTROptions(options);
+    final JBTROptions opt = new JBTROptions(options);
+    final JimpleBody jb = (JimpleBody) b;
 
-    /*
-     * Setting this guard to true enables comparison of the original and new type assigners. This will be slow since type
-     * assignment will always happen twice. The actual types used for Jimple are determined by the use-old-type-assigner
-     * option.
-     *
-     * Each comparison is written as a separate semicolon-delimited line to the standard output, and the first field is
-     * always 'cmp' for use in grep. The format is:
-     *
-     * cmp;Method Name;Stmt Count;Old Inference Time (ms); New Inference Time (ms);Typing Comparison
-     *
-     * The Typing Comparison field compares the old and new typings: -2 - Old typing contains fewer variables (BAD!) -1 - Old
-     * typing is tighter (BAD!) 0 - Typings are equal 1 - New typing is tighter 2 - New typing contains fewer variables 3 -
-     * Typings are incomparable (inspect manually)
-     *
-     * In a final release this guard, and anything in the first branch, would probably be removed.
-     */
+    //
+    // Setting this guard to true enables comparison of the original and new type assigners.
+    // This will be slow since type assignment will always happen twice. The actual types
+    // used for Jimple are determined by the use-old-type-assigner option.
+    //
+    // Each comparison is written as a separate semicolon-delimited line to the standard
+    // output, and the first field is always 'cmp' for use in grep. The format is:
+    //
+    // cmp;Method Name;Stmt Count;Old Inference Time (ms); New Inference Time (ms);Typing Comparison
+    //
+    // The Typing Comparison field compares the old and new typings:
+    // -2 = Old typing contains fewer variables (BAD!)
+    // -1 = Old typing is tighter (BAD!)
+    // 0 = Typings are equal
+    // 1 = New typing is tighter
+    // 2 = New typing contains fewer variables
+    // 3 = Typings are incomparable (inspect manually)
+    //
+    // In a final release this guard, and anything in the first branch, would probably be removed.
+    //
     if (opt.compare_type_assigners()) {
-      compareTypeAssigners(b, opt.use_older_type_assigner());
+      compareTypeAssigners(jb, opt.use_older_type_assigner());
     } else {
       if (opt.use_older_type_assigner()) {
-        TypeResolver.resolve((JimpleBody) b, Scene.v());
+        soot.jimple.toolkits.typing.TypeResolver.resolve(jb, Scene.v());
       } else {
-        (new soot.jimple.toolkits.typing.fast.TypeResolver((JimpleBody) b)).inferTypes();
+        (new soot.jimple.toolkits.typing.fast.TypeResolver(jb)).inferTypes();
       }
     }
 
-    Date finish = new Date();
     if (Options.v().verbose()) {
+      Date finish = new Date();
       long runtime = finish.getTime() - start.getTime();
       long mins = runtime / 60000;
       long secs = (runtime % 60000) / 1000;
@@ -131,10 +139,10 @@ public class TypeAssigner extends BodyTransformer {
     }
 
     if (!opt.ignore_nullpointer_dereferences()) {
-      replaceNullType(b);
+      replaceNullType(jb);
     }
 
-    if (typingFailed((JimpleBody) b)) {
+    if (typingFailed(jb)) {
       throw new RuntimeException("type inference failed!");
     }
   }
@@ -148,14 +156,12 @@ public class TypeAssigner extends BodyTransformer {
    * @param b
    */
   protected static void replaceNullType(Body b) {
-    List<Local> localsToRemove = new ArrayList<Local>();
-    boolean hasNullType = false;
-
     // check if any local has null_type
+    boolean hasNullType = false;
     for (Local l : b.getLocals()) {
       if (l.getType() instanceof NullType) {
-        localsToRemove.add(l);
         hasNullType = true;
+        break;
       }
     }
 
@@ -166,7 +172,7 @@ public class TypeAssigner extends BodyTransformer {
 
     // force to propagate null constants
     Map<String, String> opts = PhaseOptions.v().getPhaseOptions("jop.cpf");
-    if (!opts.containsKey("enabled") || !opts.get("enabled").equals("true")) {
+    if (!opts.containsKey("enabled") || !"true".equals(opts.get("enabled"))) {
       logger.warn("Cannot run TypeAssigner.replaceNullType(Body). Try to enable jop.cfg.");
       return;
     }
@@ -174,23 +180,22 @@ public class TypeAssigner extends BodyTransformer {
 
     List<Unit> unitToReplaceByException = new ArrayList<Unit>();
     for (Unit u : b.getUnits()) {
+      Stmt s = (Stmt) u;
       for (ValueBox vb : u.getUseBoxes()) {
-        if (vb.getValue() instanceof Local && ((Local) vb.getValue()).getType() instanceof NullType) {
-
-          Local l = (Local) vb.getValue();
-          Stmt s = (Stmt) u;
+        Value value = vb.getValue();
+        if (value instanceof Local && value.getType() instanceof NullType) {
 
           boolean replace = false;
           if (s.containsArrayRef()) {
             ArrayRef r = s.getArrayRef();
-            if (r.getBase() == l) {
+            if (r.getBase() == value) {
               replace = true;
             }
           } else if (s.containsFieldRef()) {
             FieldRef r = s.getFieldRef();
             if (r instanceof InstanceFieldRef) {
               InstanceFieldRef ir = (InstanceFieldRef) r;
-              if (ir.getBase() == l) {
+              if (ir.getBase() == value) {
                 replace = true;
               }
             }
@@ -198,7 +203,7 @@ public class TypeAssigner extends BodyTransformer {
             InvokeExpr ie = s.getInvokeExpr();
             if (ie instanceof InstanceInvokeExpr) {
               InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
-              if (iie.getBase() == l) {
+              if (iie.getBase() == value) {
                 replace = true;
               }
             }
@@ -223,9 +228,9 @@ public class TypeAssigner extends BodyTransformer {
 
   }
 
-  private void compareTypeAssigners(Body b, boolean useOlderTypeAssigner) {
-    JimpleBody jb = (JimpleBody) b, oldJb, newJb;
+  private void compareTypeAssigners(JimpleBody jb, boolean useOlderTypeAssigner) {
     int size = jb.getUnits().size();
+    JimpleBody oldJb, newJb;
     long oldTime, newTime;
     if (useOlderTypeAssigner) {
       // Use old type assigner last
@@ -234,14 +239,14 @@ public class TypeAssigner extends BodyTransformer {
       (new soot.jimple.toolkits.typing.fast.TypeResolver(newJb)).inferTypes();
       newTime = System.currentTimeMillis() - newTime;
       oldTime = System.currentTimeMillis();
-      TypeResolver.resolve(jb, Scene.v());
+      soot.jimple.toolkits.typing.TypeResolver.resolve(jb, Scene.v());
       oldTime = System.currentTimeMillis() - oldTime;
       oldJb = jb;
     } else {
       // Use new type assigner last
       oldJb = (JimpleBody) jb.clone();
       oldTime = System.currentTimeMillis();
-      TypeResolver.resolve(oldJb, Scene.v());
+      soot.jimple.toolkits.typing.TypeResolver.resolve(oldJb, Scene.v());
       oldTime = System.currentTimeMillis() - oldTime;
       newTime = System.currentTimeMillis();
       (new soot.jimple.toolkits.typing.fast.TypeResolver(jb)).inferTypes();
@@ -263,17 +268,12 @@ public class TypeAssigner extends BodyTransformer {
 
   private boolean typingFailed(JimpleBody b) {
     // Check to see if any locals are untyped
-    {
-      Iterator<Local> localIt = b.getLocals().iterator();
-
-      final UnknownType unknownType = UnknownType.v();
-      final ErroneousType errornousType = ErroneousType.v();
-      while (localIt.hasNext()) {
-        Local l = localIt.next();
-
-        if (l.getType().equals(unknownType) || l.getType().equals(errornousType)) {
-          return true;
-        }
+    final UnknownType unknownType = UnknownType.v();
+    final ErroneousType erroneousType = ErroneousType.v();
+    for (Local l : b.getLocals()) {
+      Type t = l.getType();
+      if (unknownType.equals(t) || erroneousType.equals(t)) {
+        return true;
       }
     }
 
@@ -290,8 +290,8 @@ public class TypeAssigner extends BodyTransformer {
 
       if (soot.jimple.toolkits.typing.fast.TypeResolver.typesEqual(ta, tb)) {
         continue;
-      } else if (true && ((ta instanceof CharType && (tb instanceof ByteType || tb instanceof ShortType))
-          || (tb instanceof CharType && (ta instanceof ByteType || ta instanceof ShortType)))) {
+      } else if ((ta instanceof CharType && (tb instanceof ByteType || tb instanceof ShortType))
+          || (tb instanceof CharType && (ta instanceof ByteType || ta instanceof ShortType))) {
         continue;
       } else if (soot.jimple.toolkits.typing.fast.AugHierarchy.ancestor_(ta, tb)) {
         if (r == -1) {

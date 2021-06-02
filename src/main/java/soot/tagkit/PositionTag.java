@@ -23,6 +23,9 @@ package soot.tagkit;
  */
 
 public class PositionTag implements Tag {
+
+  public static final String NAME = "PositionTag";
+
   /* it is a value representing end offset. */
   private final int endOffset;
 
@@ -30,9 +33,8 @@ public class PositionTag implements Tag {
   private final int startOffset;
 
   public PositionTag(int start, int end) {
-    startOffset = start;
-    endOffset = end;
-
+    this.startOffset = start;
+    this.endOffset = end;
   }
 
   public int getEndOffset() {
@@ -43,17 +45,18 @@ public class PositionTag implements Tag {
     return startOffset;
   }
 
+  @Override
   public String getName() {
-    return "PositionTag";
+    return NAME;
   }
 
+  @Override
   public byte[] getValue() {
-    byte[] v = new byte[2];
-    return v;
+    return new byte[2];
   }
 
+  @Override
   public String toString() {
     return "Jimple pos tag: spos: " + startOffset + " epos: " + endOffset;
   }
-
 }

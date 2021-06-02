@@ -34,27 +34,30 @@ package soot.jimple.toolkits.annotation.tags;
  * @see NullCheckTag
  */
 public class ArrayNullCheckTag implements OneByteCodeTag {
-  private final static String NAME = "ArrayNullCheckTag";
 
-  private byte value = 0;
+  public static final String NAME = "ArrayNullCheckTag";
+
+  private byte value;
 
   public ArrayNullCheckTag() {
+    this.value = 0;
   }
 
   public ArrayNullCheckTag(byte v) {
-    value = v;
+    this.value = v;
   }
 
+  @Override
   public String getName() {
     return NAME;
   }
 
+  @Override
   public byte[] getValue() {
-    byte[] bv = new byte[1];
-    bv[0] = value;
-    return bv;
+    return new byte[] { value };
   }
 
+  @Override
   public String toString() {
     return Byte.toString(value);
   }

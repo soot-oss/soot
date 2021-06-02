@@ -24,7 +24,8 @@ package soot.xml;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
+import java.util.function.Predicate;
 
 import soot.Body;
 import soot.SootClass;
@@ -32,7 +33,6 @@ import soot.SootField;
 import soot.SootMethod;
 import soot.Unit;
 import soot.ValueBox;
-import soot.jimple.spark.ondemand.genericutil.Predicate;
 import soot.tagkit.Host;
 import soot.tagkit.JimpleLineNumberTag;
 import soot.tagkit.KeyTag;
@@ -45,15 +45,19 @@ public class TagCollector {
   private final ArrayList<Key> keys;
 
   public TagCollector() {
-    attributes = new ArrayList<Attribute>();
-    keys = new ArrayList<Key>();
+    this.attributes = new ArrayList<Attribute>();
+    this.keys = new ArrayList<Key>();
   }
 
   public boolean isEmpty() {
     return attributes.isEmpty() && keys.isEmpty();
   }
 
-  /** Convenience function for <code>collectTags(sc, true)</code>. */
+  /**
+   * Convenience function for <code>collectTags(sc, true)</code>.
+   * 
+   * @param sc
+   */
   public void collectTags(SootClass sc) {
     collectTags(sc, true);
   }
@@ -64,6 +68,7 @@ public class TagCollector {
    *
    * @param sc
    *          The class from which to collect the tags.
+   * @param includeBodies
    */
   public void collectTags(SootClass sc, boolean includeBodies) {
     // tag the class
@@ -77,12 +82,9 @@ public class TagCollector {
     // tag methods
     for (SootMethod sm : sc.getMethods()) {
       collectMethodTags(sm);
-
-      if (!includeBodies || !sm.hasActiveBody()) {
-        continue;
+      if (includeBodies && sm.hasActiveBody()) {
+        collectBodyTags(sm.getActiveBody());
       }
-      Body b = sm.getActiveBody();
-      collectBodyTags(b);
     }
   }
 
@@ -98,9 +100,7 @@ public class TagCollector {
   }
 
   public void printKeys(PrintWriter writerOut) {
-    Iterator<Key> it = keys.iterator();
-    while (it.hasNext()) {
-      Key k = it.next();
+    for (Key k : keys) {
       k.print(writerOut);
     }
   }
@@ -112,14 +112,14 @@ public class TagCollector {
   }
 
   private void collectHostTags(Host h) {
-    Predicate<Tag> p = Predicate.truePred();
-    collectHostTags(h, p);
+    collectHostTags(h, t -> true);
   }
 
   private void collectHostTags(Host h, Predicate<Tag> include) {
-    if (!h.getTags().isEmpty()) {
+    List<Tag> tags = h.getTags();
+    if (!tags.isEmpty()) {
       Attribute a = new Attribute();
-      for (Tag t : h.getTags()) {
+      for (Tag t : tags) {
         if (include.test(t)) {
           a.addTag(t);
         }
@@ -132,12 +132,7 @@ public class TagCollector {
     // All classes are tagged with their source files which
     // is not worth outputing because it can be inferred from
     // other information (like the name of the XML file).
-    Predicate<Tag> noSFTags = new Predicate<Tag>() {
-      public boolean test(Tag t) {
-        return !(t instanceof SourceFileTag);
-      }
-    };
-    collectHostTags(sc, noSFTags);
+    collectHostTags(sc, t -> !(t instanceof SourceFileTag));
   }
 
   public void collectFieldTags(SootField sf) {
@@ -183,10 +178,7 @@ public class TagCollector {
   }
 
   public void printTags(PrintWriter writerOut) {
-
-    Iterator<Attribute> it = attributes.iterator();
-    while (it.hasNext()) {
-      Attribute a = it.next();
+    for (Attribute a : attributes) {
       // System.out.println("will print attr: "+a);
       a.print(writerOut);
     }

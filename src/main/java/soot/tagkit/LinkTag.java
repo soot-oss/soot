@@ -25,10 +25,12 @@ package soot.tagkit;
 /**
  * Represents a tag that just has a string to be printed with the code.
  */
-
 public class LinkTag extends StringTag {
-  Host link;
-  String className;
+
+  public static final String NAME = "LinkTag";
+
+  private final Host link;
+  private final String className;
 
   public LinkTag(String string, Host link, String className, String type) {
     super(string, type);
@@ -42,10 +44,6 @@ public class LinkTag extends StringTag {
     this.className = className;
   }
 
-  public String toString() {
-    return s;
-  }
-
   public String getClassName() {
     return className;
   }
@@ -54,13 +52,13 @@ public class LinkTag extends StringTag {
     return link;
   }
 
-  /** Returns the tag name. */
+  @Override
   public String getName() {
-    return "StringTag";
+    return NAME;
   }
 
-  /** Returns the tag raw data. */
+  @Override
   public byte[] getValue() {
-    throw new RuntimeException("StringTag has no value for bytecode");
+    throw new RuntimeException("LinkTag has no value for bytecode");
   }
 }

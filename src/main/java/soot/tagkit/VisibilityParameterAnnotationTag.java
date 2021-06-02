@@ -25,46 +25,57 @@ package soot.tagkit;
 import java.util.ArrayList;
 
 /**
- * Represents the visibility of an annotation attribute attatched to a class, field, method or method param (only one of
- * these each) has one or more annotations for Java 1.5.
+ * Represents the visibility of an annotation attribute attached to a class, field, method or method param (only one of these
+ * each) has one or more annotations for Java 1.5.
  */
-
 public class VisibilityParameterAnnotationTag implements Tag {
 
-  private int num_params;
-  private int kind;
+  public static final String NAME = "VisibilityParameterAnnotationTag";
+
+  private final int num_params;
+  private final int kind;
   private ArrayList<VisibilityAnnotationTag> visibilityAnnotations;
 
+  /**
+   * NOTE: any parameter without annotations has a {@code null} entry in the list
+   * 
+   * @param num
+   *          total number of parameters
+   * @param kind
+   *          one of {@link soot.tagkit.AnnotationConstants}
+   */
   public VisibilityParameterAnnotationTag(int num, int kind) {
     this.num_params = num;
     this.kind = kind;
   }
 
-  // should also print here number of annotations and perhaps the annotations themselves
+  @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer("Visibility Param Annotation: num params: " + num_params + " kind: " + kind);
+    // should also print here number of annotations and perhaps the annotations themselves
+    StringBuilder sb = new StringBuilder("Visibility Param Annotation: num params: ");
+    sb.append(num_params).append(" kind: ").append(kind);
     if (visibilityAnnotations != null) {
       for (VisibilityAnnotationTag tag : visibilityAnnotations) {
-        sb.append("\n");
+        sb.append('\n');
         if (tag != null) {
           sb.append(tag.toString());
         }
       }
     }
-    sb.append("\n");
+    sb.append('\n');
     return sb.toString();
   }
 
-  /** Returns the tag name. */
+  @Override
   public String getName() {
-    return "VisibilityParameterAnnotationTag";
+    return NAME;
   }
 
   public String getInfo() {
     return "VisibilityParameterAnnotation";
   }
 
-  /** Returns the tag raw data. */
+  @Override
   public byte[] getValue() {
     throw new RuntimeException("VisibilityParameterAnnotationTag has no value for bytecode");
   }
@@ -82,5 +93,9 @@ public class VisibilityParameterAnnotationTag implements Tag {
 
   public int getKind() {
     return kind;
+  }
+
+  public int getNumParams() {
+    return num_params;
   }
 }

@@ -29,6 +29,7 @@ import soot.Unit;
  * Utility class used to package a Local and a Unit together.
  */
 public class LocalUnitPair {
+
   Local local;
   Unit unit;
 
@@ -52,15 +53,17 @@ public class LocalUnitPair {
    *          another LocalUnitPair
    * @return true if other contains the same objects as this.
    */
+  @Override
   public boolean equals(Object other) {
-    if (other instanceof LocalUnitPair && ((LocalUnitPair) other).local == this.local
-        && ((LocalUnitPair) other).unit == this.unit) {
-      return true;
+    if (other instanceof LocalUnitPair) {
+      LocalUnitPair temp = (LocalUnitPair) other;
+      return temp.local == this.local && temp.unit == this.unit;
     } else {
       return false;
     }
   }
 
+  @Override
   public int hashCode() {
     return local.hashCode() * 101 + unit.hashCode() + 17;
   }
