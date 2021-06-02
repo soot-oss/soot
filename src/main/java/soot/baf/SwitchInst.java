@@ -1,4 +1,4 @@
-package soot.baf.internal;
+package soot.baf;
 
 /*-
  * #%L
@@ -22,42 +22,28 @@ package soot.baf.internal;
  * #L%
  */
 
-import soot.RefType;
-import soot.Type;
-import soot.UnitPrinter;
+import java.util.List;
 
-public abstract class AbstractRefTypeInst extends AbstractInst {
+import soot.Unit;
+import soot.UnitBox;
 
-  Type opType;
+public interface SwitchInst extends Inst {
 
-  protected AbstractRefTypeInst(RefType opType) {
-    this.opType = opType;
-  }
+  public Unit getDefaultTarget();
 
-  public Type getOpType() {
-    return opType;
-  }
+  public void setDefaultTarget(Unit defTarget);
 
-  public void setOpType(Type t) {
-    opType = t;
-  }
+  public UnitBox getDefaultTargetBox();
 
-  public RefType getBaseType() {
-    return (RefType) opType;
-  }
+  public int getTargetCount();
 
-  public void setBaseType(RefType type) {
-    this.opType = type;
-  }
+  public List<Unit> getTargets();
 
-  @Override
-  String getParameters() {
-    return " " + opType.toString();
-  }
+  public Unit getTarget(int index);
 
-  @Override
-  protected void getParameters(UnitPrinter up) {
-    up.literal(" ");
-    up.type(opType);
-  }
+  public void setTarget(int index, Unit target);
+
+  public void setTargets(List<Unit> targets);
+
+  public UnitBox getTargetBox(int index);
 }
