@@ -45,7 +45,6 @@ import soot.jimple.NumericConstant;
 import soot.jimple.StringConstant;
 import soot.options.Options;
 import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.graph.Orderer;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
@@ -64,6 +63,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
     return G.v().soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder();
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     int numFolded = 0;
     int numPropagated = 0;
@@ -73,14 +73,11 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
     }
 
     UnitGraph g = new ExceptionalUnitGraph(b);
-    LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(g);
+    LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(g);
 
     // Perform a constant/local propagation pass.
-    Orderer<Unit> orderer = new PseudoTopologicalOrderer<Unit>();
-
     // go through each use box in each statement
-    for (Unit u : orderer.newList(g, false)) {
-
+    for (Unit u : (new PseudoTopologicalOrderer<Unit>()).newList(g, false)) {
       // propagation pass
       for (ValueBox useBox : u.getUseBoxes()) {
         Value value = useBox.getValue();
@@ -124,7 +121,5 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
     if (Options.v().verbose()) {
       logger.debug("[" + b.getMethod().getName() + "]     Propagated: " + numPropagated + ", Folded:  " + numFolded);
     }
-
-  } // optimizeConstants
-
+  }
 }

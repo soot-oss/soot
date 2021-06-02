@@ -25,15 +25,25 @@ package soot.asm;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Iterator;
 import java.util.Optional;
+
+import org.junit.Assert;
 import org.junit.Test;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+
 import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
+import soot.UnitPatchingChain;
+import soot.jimple.Jimple;
+import soot.jimple.NopStmt;
 import soot.options.Options;
 import soot.testing.framework.AbstractTestingFramework;
+import soot.util.HashChain;
 
 /** @author Manuel Benz at 13.02.20 */
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class AsmMethodSourceTest extends AbstractTestingFramework {
 
   private static final String TEST_TARGET_CLASS = "soot.asm.LineNumberExtraction";
@@ -50,23 +60,51 @@ public class AsmMethodSourceTest extends AbstractTestingFramework {
   public void iterator() {
     // statements at the beginning of a for loop should have the line number as for the branching
     // statement and not the last line number after the branch that leads outside the loop
-    SootMethod target =
-        prepareTarget(
-            methodSigFromComponents(TEST_TARGET_CLASS, "void", "iterator"), TEST_TARGET_CLASS);
+    SootMethod target = prepareTarget(methodSigFromComponents(TEST_TARGET_CLASS, "void", "iterator"), TEST_TARGET_CLASS);
 
     Body body = target.retrieveActiveBody();
 
-    Optional<Unit> unit =
-        body.getUnits().stream()
-            .filter(
-                u ->
-                    u.toString()
-                        .equals(
-                            "object = interfaceinvoke l1.<java.util.Iterator: java.lang.Object next()>()"))
-            .findFirst();
+    Optional<Unit> unit = body.getUnits().stream()
+        .filter(u -> u.toString().contains("<java.util.Iterator: java.lang.Object next()>()")).findFirst();
 
     assertTrue(unit.isPresent());
 
     assertEquals(31, unit.get().getJavaSourceStartLineNumber());
+
+  }
+
+  @Test
+  public void testInner() {
+    NopStmt[] nops = new NopStmt[6];
+    for (int i = 0; i < nops.length; i++) {
+      nops[i] = Jimple.v().newNopStmt();
+    }
+    UnitPatchingChain chainNew = new UnitPatchingChain(new HashChain<Unit>());
+    UnitContainer container = new UnitContainer(nops[0], new UnitContainer(nops[1], new UnitContainer(nops[2]), nops[3]),
+        nops[4], new UnitContainer(nops[5]));
+    AsmMethodSource.emitUnits(container, chainNew);
+    UnitPatchingChain chainOld = new UnitPatchingChain(new HashChain<Unit>());
+    oldEmitImplementation(container, chainOld);
+
+    assertEquals(chainOld.size(), chainNew.size());
+    Iterator<Unit> itO = chainOld.iterator();
+    Iterator<Unit> itN = chainNew.iterator();
+    while (itO.hasNext()) {
+      Unit oo = itO.next();
+      Unit nn = itN.next();
+      if (oo != nn) {
+        Assert.fail();
+      }
+    }
+  }
+
+  private void oldEmitImplementation(Unit u, UnitPatchingChain c) {
+    if (u instanceof UnitContainer) {
+      for (Unit uu : ((UnitContainer) u).units) {
+        oldEmitImplementation(uu, c);
+      }
+    } else {
+      c.add(u);
+    }
   }
 }

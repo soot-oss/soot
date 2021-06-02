@@ -156,11 +156,13 @@ public class DoubleConstant extends RealConstant {
   @Override
   public String toString() {
     String doubleString = Double.toString(value);
-
-    if (doubleString.equals("NaN") || doubleString.equals("Infinity") || doubleString.equals("-Infinity")) {
-      return "#" + doubleString;
-    } else {
-      return doubleString;
+    switch (doubleString) {
+      case "NaN":
+      case "Infinity":
+      case "-Infinity":
+        return "#" + doubleString;
+      default:
+        return doubleString;
     }
   }
 
@@ -187,5 +189,4 @@ public class DoubleConstant extends RealConstant {
       throw new IllegalArgumentException("DoubleConstant expected");
     }
   }
-
 }

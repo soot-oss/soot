@@ -26,6 +26,8 @@
 
 package soot.tagkit;
 
+import java.util.Arrays;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -59,6 +61,33 @@ package soot.tagkit;
  */
 public class Base64 {
 
+  //
+  // code characters for values 0..63
+  //
+  private static final char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".toCharArray();
+
+  //
+  // lookup table for converting base64 characters to value in range 0..63
+  //
+  private static final byte[] codes = new byte[256];
+
+  static {
+    for (int i = 0; i < 256; i++) {
+      codes[i] = -1;
+    }
+    for (int i = 'A'; i <= 'Z'; i++) {
+      codes[i] = (byte) (i - 'A');
+    }
+    for (int i = 'a'; i <= 'z'; i++) {
+      codes[i] = (byte) (26 + i - 'a');
+    }
+    for (int i = '0'; i <= '9'; i++) {
+      codes[i] = (byte) (52 + i - '0');
+    }
+    codes['+'] = 62;
+    codes['/'] = 63;
+  }
+
   /**
    * returns an array of base64-encoded characters to represent the passed data array.
    *
@@ -66,7 +95,7 @@ public class Base64 {
    *          the array of bytes to encode
    * @return base64-coded character array.
    */
-  static public char[] encode(byte[] data) {
+  public static char[] encode(byte[] data) {
     char[] out = new char[((data.length + 2) / 3) * 4];
 
     //
@@ -106,7 +135,7 @@ public class Base64 {
    * As of version 1.2 this method will properly handle input containing junk characters (newlines and the like) rather than
    * throwing an error. It does this by pre-parsing the input and generating from that a count of VALID input characters.
    **/
-  static public byte[] decode(char[] data) {
+  public static byte[] decode(char[] data) {
     // as our input could contain non-BASE64 data (newlines,
     // whitespace of any sort, whatever) we must first adjust
     // our count of USABLE data so that...
@@ -169,31 +198,4 @@ public class Base64 {
 
     return out;
   }
-
-  //
-  // code characters for values 0..63
-  //
-  private static final char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".toCharArray();
-
-  //
-  // lookup table for converting base64 characters to value in range 0..63
-  //
-  private static final byte[] codes = new byte[256];
-  static {
-    for (int i = 0; i < 256; i++) {
-      codes[i] = -1;
-    }
-    for (int i = 'A'; i <= 'Z'; i++) {
-      codes[i] = (byte) (i - 'A');
-    }
-    for (int i = 'a'; i <= 'z'; i++) {
-      codes[i] = (byte) (26 + i - 'a');
-    }
-    for (int i = '0'; i <= '9'; i++) {
-      codes[i] = (byte) (52 + i - '0');
-    }
-    codes['+'] = 62;
-    codes['/'] = 63;
-  }
-
 }

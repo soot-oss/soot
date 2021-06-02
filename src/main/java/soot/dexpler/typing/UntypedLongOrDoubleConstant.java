@@ -45,11 +45,13 @@ public class UntypedLongOrDoubleConstant extends UntypedConstant {
     return new UntypedLongOrDoubleConstant(value);
   }
 
+  @Override
   public boolean equals(Object c) {
     return c instanceof UntypedLongOrDoubleConstant && ((UntypedLongOrDoubleConstant) c).value == this.value;
   }
 
   /** Returns a hash code for this DoubleConstant object. */
+  @Override
   public int hashCode() {
     return (int) (value ^ (value >>> 32));
   }
@@ -72,5 +74,4 @@ public class UntypedLongOrDoubleConstant extends UntypedConstant {
       throw new RuntimeException("error: expected Double type or Long type. Got " + t);
     }
   }
-
 }

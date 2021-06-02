@@ -57,7 +57,7 @@ public class ModuleRefType extends RefType {
   public static RefType v(String className, Optional<String> moduleName) {
     String module = null;
     if (moduleName.isPresent()) {
-      module = ModuleUtil.v().findModuleThatExports(className, moduleName.get());
+      module = ModuleUtil.v().declaringModule(className, moduleName.get());
     }
     if (!moduleName.isPresent() && Options.v().verbose()) {
       G.v().out.println("[WARN] ModuleRefType called with empty module for: " + className);

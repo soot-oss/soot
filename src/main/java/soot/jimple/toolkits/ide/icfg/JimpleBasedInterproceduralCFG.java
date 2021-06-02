@@ -68,8 +68,8 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
       super(new EdgePredicate() {
         @Override
         public boolean want(Edge e) {
-          return e.kind().isExplicit() || e.kind().isThread() || e.kind().isExecutor() || e.kind().isAsyncTask()
-              || e.kind().isClinit() || e.kind().isPrivileged() || (includeReflectiveCalls && e.kind().isReflection());
+          return e.kind().isExplicit() || e.kind().isFake() || e.kind().isClinit()
+              || (includeReflectiveCalls && e.kind().isReflection());
         }
       });
     }

@@ -68,6 +68,7 @@ public class CoffiClassSource extends ClassSource {
     this.foundFile = null;
   }
 
+  @Override
   public Dependencies resolve(SootClass sc) {
     if (Options.v().verbose()) {
       logger.debug("resolving [from .class]: " + className);
@@ -92,7 +93,7 @@ public class CoffiClassSource extends ClassSource {
       return;
     }
 
-    soot.tagkit.SourceFileTag tag = null;
+    soot.tagkit.SourceFileTag tag;
     if (sc.hasTag("SourceFileTag")) {
       tag = (soot.tagkit.SourceFileTag) sc.getTag("SourceFileTag");
     } else {

@@ -40,7 +40,7 @@ public class ModuleUtilTest {
         moduleScene.addClassSilent(moduleA);
 
 
-        String foundModule = moduleUtil.findModuleThatExports("de.upb", "moduleA");
+        String foundModule = moduleUtil.declaringModule("de.upb", "moduleA");
         Assert.assertEquals("moduleA", foundModule);
     }
 
@@ -58,7 +58,7 @@ public class ModuleUtilTest {
         moduleScene.addClassSilent(moduleB);
 
         ModuleUtil moduleUtil = ModuleUtil.v();
-        String foundModule = moduleUtil.findModuleThatExports("de.upb.A", "moduleB");
+        String foundModule = moduleUtil.declaringModule("de.upb.A", "moduleB");
         Assert.assertEquals("moduleA", foundModule);
 
     }
@@ -83,7 +83,7 @@ public class ModuleUtilTest {
         moduleScene.addClassSilent(moduleC);
 
         ModuleUtil moduleUtil = ModuleUtil.v();
-        String foundModule = moduleUtil.findModuleThatExports("de.upb.A", "moduleC");
+        String foundModule = moduleUtil.declaringModule("de.upb.A", "moduleC");
         Assert.assertEquals("moduleA", foundModule);
 
     }
@@ -113,7 +113,7 @@ public class ModuleUtilTest {
         moduleScene.addClassSilent(moduleD);
 
         ModuleUtil moduleUtil = ModuleUtil.v();
-        String foundModule = moduleUtil.findModuleThatExports("de.upb.A", "moduleD");
+        String foundModule = moduleUtil.declaringModule("de.upb.A", "moduleD");
         // output should be D, because module C, does NOT REQUIERS TRANSITIVE module B
         Assert.assertEquals("moduleA", foundModule);
 
@@ -144,7 +144,7 @@ public class ModuleUtilTest {
         moduleScene.addClassSilent(moduleD);
 
         ModuleUtil moduleUtil = ModuleUtil.v();
-        String foundModule = moduleUtil.findModuleThatExports("de.upb.A", "moduleD");
+        String foundModule = moduleUtil.declaringModule("de.upb.A", "moduleD");
         // output should be D, because module C, does NOT REQUIERS TRANSITIVE module B
         Assert.assertEquals("moduleD", foundModule);
 

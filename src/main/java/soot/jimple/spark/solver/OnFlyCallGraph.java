@@ -1,5 +1,8 @@
 package soot.jimple.spark.solver;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -45,6 +48,7 @@ import soot.jimple.toolkits.callgraph.ContextManager;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.OnFlyCallGraphBuilder;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
+import soot.options.Options;
 import soot.util.queue.QueueReader;
 
 /**
@@ -59,6 +63,7 @@ public class OnFlyCallGraph {
   protected final QueueReader<MethodOrMethodContext> reachablesReader;
   protected final QueueReader<Edge> callEdges;
   protected final CallGraph callGraph;
+  private static final Logger logger = LoggerFactory.getLogger(OnFlyCallGraph.class);
 
   public ReachableMethods reachableMethods() {
     return reachableMethods;
@@ -107,7 +112,16 @@ public class OnFlyCallGraph {
     while (reachablesReader.hasNext()) {
       MethodOrMethodContext m = reachablesReader.next();
       MethodPAG mpag = MethodPAG.v(pag, m.method());
-      mpag.build();
+      try {
+        mpag.build();
+      } catch (Exception e) {
+        String msg = String.format("An error occurred while processing %s in callgraph", mpag.getMethod());
+        if (Options.v().allow_cg_errors()) {
+          logger.error(msg, e);
+        } else {
+          throw new RuntimeException(msg, e);
+        }
+      }
       mpag.addToPAG(m.context());
     }
   }

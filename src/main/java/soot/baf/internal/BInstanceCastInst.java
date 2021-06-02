@@ -34,47 +34,53 @@ public class BInstanceCastInst extends AbstractInst implements InstanceCastInst 
   protected Type castType;
 
   public BInstanceCastInst(Type opType) {
-
     if (!(opType instanceof RefType) && !(opType instanceof ArrayType)) {
       throw new RuntimeException("invalid InstanceCastInst: " + opType);
     }
-    castType = opType;
+    this.castType = opType;
   }
 
+  @Override
+  public Object clone() {
+    return new BInstanceCastInst(castType);
+  }
+
+  @Override
   public int getInCount() {
     return 1;
   }
 
-  public Object clone() {
-
-    return new BInstanceCastInst(castType);
-
-  }
-
+  @Override
   public int getInMachineCount() {
     return 1;
   }
 
+  @Override
   public int getOutCount() {
     return 1;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 1;
   }
 
+  @Override
   final public String getName() {
     return "checkcast";
   }
 
+  @Override
   public Type getCastType() {
     return castType;
   }
 
+  @Override
   public void setCastType(Type t) {
     castType = t;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseInstanceCastInst(this);
   }
