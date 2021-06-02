@@ -31,5 +31,6 @@ import java.util.Iterator;
  */
 public interface IterableNumberer<E> extends Numberer<E>, Iterable<E> {
   /** Returns an iterator over all objects added to the numberer. */
+  @Override
   Iterator<E> iterator();
 }
