@@ -34,6 +34,7 @@ import soot.Modifier;
 import soot.Scene;
 import soot.Singletons;
 import soot.SootMethod;
+import soot.SootMethodRef;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
@@ -49,7 +50,6 @@ import soot.jimple.Stmt;
  * Attention: This is not really a body transformer. It checks the current body, but modifies the invocation target.
  *
  * @author Steven Arzt
- *
  */
 public class MethodStaticnessCorrector extends AbstractStaticnessCorrector {
   private static final Logger logger = LoggerFactory.getLogger(MethodStaticnessCorrector.class);
@@ -70,13 +70,15 @@ public class MethodStaticnessCorrector extends AbstractStaticnessCorrector {
         if (s.containsInvokeExpr()) {
           InvokeExpr iexpr = s.getInvokeExpr();
           if (iexpr instanceof StaticInvokeExpr) {
-            if (isClassLoaded(iexpr.getMethodRef().declaringClass())) {
-              SootMethod target = Scene.v().grabMethod(iexpr.getMethodRef().getSignature());
+            SootMethodRef methodRef = iexpr.getMethodRef();
+            if (isClassLoaded(methodRef.declaringClass())) {
+              SootMethod target = Scene.v().grabMethod(methodRef.getSignature());
               if (target != null && !target.isStatic()) {
                 if (canBeMadeStatic(target)) {
                   // Remove the this-assignment to prevent
                   // 'this-assignment in a static method!' exception
-                  target.getActiveBody().getUnits().remove(target.getActiveBody().getThisUnit());
+                  Body targetBody = target.getActiveBody();
+                  targetBody.getUnits().remove(targetBody.getThisUnit());
                   target.setModifiers(target.getModifiers() | Modifier.STATIC);
                   logger.warn(target.getName() + " changed into a static method");
                 }
@@ -96,19 +98,18 @@ public class MethodStaticnessCorrector extends AbstractStaticnessCorrector {
    * @return True if the given method can be made static, otherwise false
    */
   private boolean canBeMadeStatic(SootMethod target) {
-    if (target.hasActiveBody()) {
-      Body body = target.getActiveBody();
-      Value thisLocal = body.getThisLocal();
-      for (Unit u : body.getUnits()) {
-        for (ValueBox vb : u.getUseBoxes()) {
-          if (vb.getValue() == thisLocal) {
-            return false;
-          }
+    if (!target.hasActiveBody()) {
+      return false;
+    }
+    Body body = target.getActiveBody();
+    Value thisLocal = body.getThisLocal();
+    for (Unit u : body.getUnits()) {
+      for (ValueBox vb : u.getUseBoxes()) {
+        if (vb.getValue() == thisLocal) {
+          return false;
         }
       }
-      return true;
     }
-    return false;
+    return true;
   }
-
 }

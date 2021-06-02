@@ -29,20 +29,24 @@ import java.util.Iterator;
  * Provides an implementation of a flow universe, wrapping arrays.
  */
 public class ArrayFlowUniverse<E> implements FlowUniverse<E> {
-  E[] elements;
+
+  protected final E[] elements;
 
   public ArrayFlowUniverse(E[] elements) {
     this.elements = elements;
   }
 
+  @Override
   public int size() {
     return elements.length;
   }
 
+  @Override
   public Iterator<E> iterator() {
     return Arrays.asList(elements).iterator();
   }
 
+  @Override
   public E[] toArray() {
     return elements;
   }

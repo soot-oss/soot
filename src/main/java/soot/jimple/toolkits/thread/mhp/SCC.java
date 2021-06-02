@@ -31,9 +31,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 
 import soot.toolkits.graph.DirectedGraph;
+import soot.util.FastStack;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -95,7 +95,7 @@ public class SCC<T> {
 
   private void visitNode(DirectedGraph<T> g, T s) {
     gray.add(s);
-    Stack<Pair<T, Iterator<T>>> stack = new Stack<>();
+    FastStack<Pair<T, Iterator<T>>> stack = new FastStack<>();
     stack.push(new Pair<>(s, g.getSuccsOf(s).iterator()));
     next: while (!stack.isEmpty()) {
 
@@ -119,7 +119,7 @@ public class SCC<T> {
     scc.add(s);
     gray.add(s);
 
-    Stack<Iterator<T>> stack = new Stack<>();
+    FastStack<Iterator<T>> stack = new FastStack<>();
     stack.push(g.getPredsOf(s).iterator());
 
     next: while (!stack.isEmpty()) {

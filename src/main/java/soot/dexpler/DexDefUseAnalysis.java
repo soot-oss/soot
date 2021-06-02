@@ -48,13 +48,13 @@ import soot.toolkits.scalar.LocalDefs;
 public class DexDefUseAnalysis implements LocalDefs {
 
   private final Body body;
-  private Map<Local, Set<Unit>> localToUses = new HashMap<Local, Set<Unit>>();
-  private Map<Local, Set<Unit>> localToDefs = new HashMap<Local, Set<Unit>>();
-  private Map<Local, Set<Unit>> localToDefsWithAliases = new HashMap<Local, Set<Unit>>();
+  private final Map<Local, Set<Unit>> localToUses = new HashMap<Local, Set<Unit>>();
+  private final Map<Local, Set<Unit>> localToDefs = new HashMap<Local, Set<Unit>>();
+  private final Map<Local, Set<Unit>> localToDefsWithAliases = new HashMap<Local, Set<Unit>>();
 
+  protected Map<Local, Integer> localToNumber = new HashMap<>();
   protected BitSet[] localToDefsBits;
   protected BitSet[] localToUsesBits;
-  protected Map<Local, Integer> localToNumber = new HashMap<>();
   protected List<Unit> unitList;
 
   public DexDefUseAnalysis(Body body) {
@@ -80,11 +80,10 @@ public class DexDefUseAnalysis implements LocalDefs {
       if (u instanceof DefinitionStmt) {
         Value val = ((DefinitionStmt) u).getLeftOp();
         if (val instanceof Local) {
-          final int localIdx = localToNumber.get(val);
+          final int localIdx = localToNumber.get((Local) val);
           BitSet bs = localToDefsBits[localIdx];
           if (bs == null) {
-            bs = new BitSet();
-            localToDefsBits[localIdx] = bs;
+            localToDefsBits[localIdx] = bs = new BitSet();
           }
           bs.set(i);
         }
@@ -94,11 +93,10 @@ public class DexDefUseAnalysis implements LocalDefs {
       for (ValueBox vb : u.getUseBoxes()) {
         Value val = vb.getValue();
         if (val instanceof Local) {
-          final int localIdx = localToNumber.get(val);
+          final int localIdx = localToNumber.get((Local) val);
           BitSet bs = localToUsesBits[localIdx];
           if (bs == null) {
-            bs = new BitSet();
-            localToUsesBits[localIdx] = bs;
+            localToUsesBits[localIdx] = bs = new BitSet();
           }
           bs.set(i);
         }
@@ -133,12 +131,11 @@ public class DexDefUseAnalysis implements LocalDefs {
   protected Set<Unit> collectDefinitionsWithAliases(Local l) {
     Set<Unit> defs = localToDefsWithAliases.get(l);
     if (defs == null) {
-      Set<Local> seenLocals = new HashSet<Local>();
       defs = new HashSet<Unit>();
 
+      Set<Local> seenLocals = new HashSet<Local>();
       List<Local> newLocals = new ArrayList<Local>();
       newLocals.add(l);
-
       while (!newLocals.isEmpty()) {
         Local curLocal = newLocals.remove(0);
 
@@ -202,5 +199,4 @@ public class DexDefUseAnalysis implements LocalDefs {
     }
     return new ArrayList<>(defs);
   }
-
 }

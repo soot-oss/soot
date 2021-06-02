@@ -43,8 +43,7 @@ public enum OuterClassValidator implements ClassValidator {
   @Override
   public void validate(SootClass sc, List<ValidationException> exceptions) {
     Set<SootClass> outerClasses = new HashSet<SootClass>();
-    SootClass curClass = sc;
-    while (curClass != null) {
+    for (SootClass curClass = sc; curClass != null;) {
       if (!outerClasses.add(curClass)) {
         exceptions.add(new ValidationException(curClass, "Circular outer class chain"));
         break;
@@ -57,5 +56,4 @@ public enum OuterClassValidator implements ClassValidator {
   public boolean isBasicValidator() {
     return true;
   }
-
 }

@@ -57,7 +57,8 @@ import soot.toolkits.scalar.FlowSet;
  * @see DownSafetyAnalysis
  */
 public class EarliestnessComputation {
-  private Map<Unit, FlowSet<EquivalentValue>> unitToEarliest;
+
+  private final Map<Unit, FlowSet<EquivalentValue>> unitToEarliest;
 
   /**
    * given an UpSafetyAnalysis and a DownSafetyAnalysis, performs the earliest-computation.<br>
@@ -94,7 +95,7 @@ public class EarliestnessComputation {
    */
   public EarliestnessComputation(UnitGraph unitGraph, UpSafetyAnalysis upSafe, DownSafetyAnalysis downSafe,
       SideEffectTester sideEffect, FlowSet<EquivalentValue> set) {
-    unitToEarliest = new HashMap<Unit, FlowSet<EquivalentValue>>(unitGraph.size() + 1, 0.7f);
+    this.unitToEarliest = new HashMap<Unit, FlowSet<EquivalentValue>>(unitGraph.size() + 1, 0.7f);
 
     for (Unit currentUnit : unitGraph) {
       /* create a new Earliest-list for each unit */
@@ -165,7 +166,7 @@ public class EarliestnessComputation {
    * returns the FlowSet of expressions, that have their earliest computation just before <code>node</code>.
    *
    * @param node
-   *          a Object of the flow-graph (in our case always a unit).
+   *          a Object of the flow-graph (in our case always a Unit).
    * @return a FlowSet containing the expressions.
    */
   public FlowSet<EquivalentValue> getFlowBefore(Object node) {

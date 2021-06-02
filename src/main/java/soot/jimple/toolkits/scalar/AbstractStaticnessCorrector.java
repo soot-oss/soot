@@ -32,15 +32,14 @@ import soot.Type;
  * instance or vice versa.
  *
  * @author Steven Arzt
- *
  */
 public abstract class AbstractStaticnessCorrector extends BodyTransformer {
 
-  protected boolean isClassLoaded(SootClass sc) {
+  protected static boolean isClassLoaded(SootClass sc) {
     return sc.resolvingLevel() >= SootClass.SIGNATURES;
   }
 
-  protected boolean isTypeLoaded(Type tp) {
+  protected static boolean isTypeLoaded(Type tp) {
     if (tp instanceof RefType) {
       RefType rt = (RefType) tp;
       if (rt.hasSootClass()) {
@@ -49,5 +48,4 @@ public abstract class AbstractStaticnessCorrector extends BodyTransformer {
     }
     return false;
   }
-
 }
