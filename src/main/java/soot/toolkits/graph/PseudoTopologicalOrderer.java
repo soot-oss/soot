@@ -35,118 +35,119 @@ import java.util.Set;
  * @author Marc Berndl
  */
 public class PseudoTopologicalOrderer<N> implements Orderer<N> {
+
   public static final boolean REVERSE = true;
 
-  private Set<N> visited;
+  private static class ReverseOrderBuilder<N> {
 
-  private int[] indexStack;
+    private final DirectedGraph<N> graph;
+    private final int graphSize;
+    private final int[] indexStack;
+    private final N[] stmtStack;
+    private final Set<N> visited;
+    private final N[] order;
+    private int orderLength;
 
-  private N[] stmtStack;
-  private N[] order;
-  private int orderLength;
+    /**
+     * @param g
+     *          a DirectedGraph instance we want to order the nodes for.
+     */
+    public ReverseOrderBuilder(DirectedGraph<N> g) {
+      this.graph = g;
+      final int n = g.size();
+      this.graphSize = n;
+      this.visited = Collections.newSetFromMap(new IdentityHashMap<N, Boolean>(n * 2 + 1));
+      this.indexStack = new int[n];
+      @SuppressWarnings("unchecked")
+      N[] tempStmtStack = (N[]) new Object[n];
+      this.stmtStack = tempStmtStack;
+      @SuppressWarnings("unchecked")
+      N[] tempOrder = (N[]) new Object[n];
+      this.order = tempOrder;
+      this.orderLength = 0;
+    }
+
+    /**
+     * Orders in pseudo-topological order.
+     * 
+     * @param reverse
+     *          specify if we want reverse pseudo-topological ordering, or not.
+     * @return an ordered list of the graph's nodes.
+     */
+    public List<N> computeOrder(boolean reverse) {
+      // Visit each node
+      for (N s : graph) {
+        if (visited.add(s)) {
+          visitNode(s);
+        }
+        if (orderLength == graphSize) {
+          break;
+        }
+      }
+
+      if (reverse) {
+        reverseArray(order);
+      }
+      return Arrays.asList(order);
+    }
+
+    // Unfortunately, the nice recursive solution fails
+    // because of stack overflows
+    // Fill in the 'order' list with a pseudo topological order
+    // list of statements starting at s. Simulates recursion with a stack.
+    private void visitNode(N startStmt) {
+      int last = 0;
+
+      stmtStack[last] = startStmt;
+      indexStack[last++] = -1;
+      while (last > 0) {
+        int toVisitIndex = ++indexStack[last - 1];
+        N toVisitNode = stmtStack[last - 1];
+
+        List<N> succs = graph.getSuccsOf(toVisitNode);
+        if (toVisitIndex >= succs.size()) {
+          // Visit this node now that we ran out of children
+          order[orderLength++] = toVisitNode;
+
+          last--;
+        } else {
+          N childNode = succs.get(toVisitIndex);
+
+          if (visited.add(childNode)) {
+            stmtStack[last] = childNode;
+            indexStack[last++] = -1;
+          }
+        }
+      }
+    }
+
+    /**
+     * Reverses the order of the elements in the specified array.
+     * 
+     * @param array
+     */
+    private static <T> void reverseArray(T[] array) {
+      final int max = array.length >> 1;
+      for (int i = 0, j = array.length - 1; i < max; i++, j--) {
+        T temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+      }
+    }
+  }
 
   private boolean mIsReversed = false;
-
-  private DirectedGraph<N> graph;
 
   public PseudoTopologicalOrderer() {
   }
 
   /**
-   * Reverses the order of the elements in the specified array.
-   * 
-   * @param array
-   */
-  private static <T> void reverseArray(T[] array) {
-    final int max = array.length >> 1;
-    for (int i = 0, j = array.length - 1; i < max; i++, j--) {
-      T temp = array[i];
-      array[i] = array[j];
-      array[j] = temp;
-    }
-  }
-
-  /**
    * {@inheritDoc}
    */
+  @Override
   public List<N> newList(DirectedGraph<N> g, boolean reverse) {
     this.mIsReversed = reverse;
-    return computeOrder(g, !mIsReversed);
-  }
-
-  /**
-   * Orders in pseudo-topological order.
-   * 
-   * @param g
-   *          a DirectedGraph instance we want to order the nodes for.
-   * @return an ordered list of the graph's nodes.
-   */
-
-  @SuppressWarnings("unchecked")
-  protected final List<N> computeOrder(DirectedGraph<N> g, boolean reverse) {
-    final int n = g.size();
-    visited = Collections.newSetFromMap(new IdentityHashMap<N, Boolean>(n * 2 + 1));// new HashMap((3 * g.size()) / 2, 0.7f);
-    indexStack = new int[n];
-    stmtStack = (N[]) new Object[n];
-    order = (N[]) new Object[n];
-    graph = g;
-    orderLength = 0;
-
-    // Visit each node
-    for (N s : g) {
-      if (visited.add(s)) {
-        visitNode(s);
-      }
-
-      if (orderLength == n) {
-        break;
-      }
-    }
-
-    if (reverse) {
-      reverseArray(order);
-    }
-
-    List<N> o = Arrays.asList(order);
-
-    indexStack = null;
-    stmtStack = null;
-    visited = null;
-    order = null;
-
-    return o;
-  }
-
-  // Unfortunately, the nice recursive solution fails
-  // because of stack overflows
-
-  // Fill in the 'order' list with a pseudo topological order
-  // list of statements starting at s. Simulates recursion with a stack.
-
-  protected final void visitNode(N startStmt) {
-    int last = 0;
-
-    stmtStack[last] = startStmt;
-    indexStack[last++] = -1;
-    while (last > 0) {
-      int toVisitIndex = ++indexStack[last - 1];
-      N toVisitNode = stmtStack[last - 1];
-
-      List<N> succs = graph.getSuccsOf(toVisitNode);
-      if (toVisitIndex >= succs.size()) {
-        // Visit this node now that we ran out of children
-        order[orderLength++] = toVisitNode;
-
-        last--;
-      } else {
-        N childNode = succs.get(toVisitIndex);
-
-        if (visited.add(childNode)) {
-          stmtStack[last] = childNode;
-          indexStack[last++] = -1;
-        }
-      }
-    }
+    return (new ReverseOrderBuilder<N>(g)).computeOrder(!reverse);
   }
 
   // deprecated methods and constructors follow
@@ -156,7 +157,7 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
    */
   @Deprecated
   public PseudoTopologicalOrderer(boolean isReversed) {
-    mIsReversed = isReversed;
+    this.mIsReversed = isReversed;
   }
 
   /**
@@ -167,13 +168,13 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
    */
   @Deprecated
   public List<N> newList(DirectedGraph<N> g) {
-    return computeOrder(g, !mIsReversed);
+    return (new ReverseOrderBuilder<N>(g)).computeOrder(!mIsReversed);
   }
 
   /**
    * Set the ordering for the orderer.
    * 
-   * @param isReverse
+   * @param isReversed
    *          specify if we want reverse pseudo-topological ordering, or not.
    * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
    */
@@ -192,5 +193,4 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
   public boolean isReverseOrder() {
     return mIsReversed;
   }
-
 }
