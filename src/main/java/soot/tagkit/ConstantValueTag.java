@@ -27,22 +27,21 @@ import java.util.Arrays;
 import soot.jimple.Constant;
 
 public abstract class ConstantValueTag implements Tag {
-  protected byte[] bytes; // encoded constant
 
-  protected ConstantValueTag() {
+  protected final byte[] bytes; // encoded constant
+
+  protected ConstantValueTag(byte[] bytes) {
+    this.bytes = bytes;
   }
 
-  public String getName() {
-    String className = getClass().getName();
-    return className.substring(className.lastIndexOf('.') + 1);
-  }
-
+  @Override
   public byte[] getValue() {
     return bytes;
   }
 
   public abstract Constant getConstant();
 
+  @Override
   public abstract String toString();
 
   @Override
@@ -58,17 +57,10 @@ public abstract class ConstantValueTag implements Tag {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (obj == null || this.getClass() != obj.getClass()) {
       return false;
     }
     ConstantValueTag other = (ConstantValueTag) obj;
-    if (!Arrays.equals(bytes, other.bytes)) {
-      return false;
-    }
-    return true;
+    return Arrays.equals(bytes, other.bytes);
   }
-
 }

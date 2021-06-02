@@ -28,6 +28,7 @@ package soot.toolkits.scalar;
  * @author Eric Bodden
  */
 public class BinaryIdentitySet<T> {
+
   protected final T o1;
   protected final T o2;
   protected final int hashCode;
@@ -38,14 +39,14 @@ public class BinaryIdentitySet<T> {
     this.hashCode = computeHashCode();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int hashCode() {
     return hashCode;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   private int computeHashCode() {
     int result = 1;
     // must be commutative
@@ -57,27 +58,17 @@ public class BinaryIdentitySet<T> {
   /**
    * {@inheritDoc}
    */
-  @SuppressWarnings("unchecked")
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
+    if (obj == null || this.getClass() != obj.getClass()) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final BinaryIdentitySet other = (BinaryIdentitySet) obj;
+    final BinaryIdentitySet<?> other = (BinaryIdentitySet<?>) obj;
     // must be commutative
-    if (o1 != other.o1 && o1 != other.o2) {
-      return false;
-    }
-    if (o2 != other.o2 && o2 != other.o1) {
-      return false;
-    }
-    return true;
+    return (this.o1 == other.o1 || this.o1 == other.o2) && (this.o2 == other.o2 || this.o2 == other.o1);
   }
 
   public T getO1() {
@@ -88,6 +79,7 @@ public class BinaryIdentitySet<T> {
     return o2;
   }
 
+  @Override
   public String toString() {
     return "IdentityPair " + o1 + "," + o2;
   }

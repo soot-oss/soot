@@ -27,12 +27,13 @@ import soot.grimp.Grimp;
 import soot.jimple.internal.JExitMonitorStmt;
 
 public class GExitMonitorStmt extends JExitMonitorStmt {
+
   public GExitMonitorStmt(Value op) {
     super(((Grimp.v())).newExprBox(op));
   }
 
+  @Override
   public Object clone() {
     return new GExitMonitorStmt(Grimp.cloneIfNecessary(getOp()));
   }
-
 }

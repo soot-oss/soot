@@ -32,13 +32,14 @@ import java.util.List;
  * @author Navindra Umanee
  **/
 public class DominatorNode<N> {
+
   protected N gode;
   protected DominatorNode<N> parent;
   protected List<DominatorNode<N>> children;
 
   protected DominatorNode(N gode) {
     this.gode = gode;
-    children = new ArrayList<DominatorNode<N>>();
+    this.children = new ArrayList<DominatorNode<N>>();
   }
 
   /**
@@ -95,6 +96,7 @@ public class DominatorNode<N> {
     return children.isEmpty();
   }
 
+  @Override
   public String toString() {
     // *** FIXME: Print info about parent and children
     return gode.toString();

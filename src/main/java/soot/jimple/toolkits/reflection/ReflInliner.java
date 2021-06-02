@@ -46,13 +46,15 @@ public class ReflInliner {
 
   public static void main(String[] args) {
     PackManager.v().getPack("wjpp").add(new Transform("wjpp.inlineReflCalls", new ReflectiveCallsInliner()));
-    Scene.v().addBasicClass(Object.class.getName());
-    Scene.v().addBasicClass(SootSig.class.getName(), SootClass.BODIES);
-    Scene.v().addBasicClass(UnexpectedReflectiveCall.class.getName(), SootClass.BODIES);
-    Scene.v().addBasicClass(IUnexpectedReflectiveCallHandler.class.getName(), SootClass.BODIES);
-    Scene.v().addBasicClass(DefaultHandler.class.getName(), SootClass.BODIES);
-    Scene.v().addBasicClass(OpaquePredicate.class.getName(), SootClass.BODIES);
-    Scene.v().addBasicClass(ReflectiveCalls.class.getName(), SootClass.BODIES);
+    final Scene scene = Scene.v();
+    scene.addBasicClass(Object.class.getName());
+    scene.addBasicClass(SootSig.class.getName(), SootClass.BODIES);
+    scene.addBasicClass(UnexpectedReflectiveCall.class.getName(), SootClass.BODIES);
+    scene.addBasicClass(IUnexpectedReflectiveCallHandler.class.getName(), SootClass.BODIES);
+    scene.addBasicClass(DefaultHandler.class.getName(), SootClass.BODIES);
+    scene.addBasicClass(OpaquePredicate.class.getName(), SootClass.BODIES);
+    scene.addBasicClass(ReflectiveCalls.class.getName(), SootClass.BODIES);
+
     ArrayList<String> argList = new ArrayList<String>(Arrays.asList(args));
     argList.add("-w");
     argList.add("-p");
@@ -80,7 +82,6 @@ public class ReflInliner {
   }
 
   private static void usage() {
-    logger.debug("" + Options.v().getUsage());
+    logger.debug(Options.v().getUsage());
   }
-
 }

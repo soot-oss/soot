@@ -22,22 +22,30 @@ package soot.util;
  * #L%
  */
 
+import java.lang.reflect.Array;
 import java.util.Iterator;
 
 /**
- * A java.util.Map-like map with Numberable objects as the keys.
+ * A java.util.Map with Numberable objects as the keys.
  *
  * @author Ondrej Lhotak
  */
+public final class SmallNumberedMap<K extends Numberable, V> implements INumberedMap<K, V> {
 
-public final class SmallNumberedMap<T> implements INumberedMap<Numberable, T> {
+  private K[] array = newArray(Numberable.class, 8);
+  private V[] values = newArray(Object.class, 8);
+  private int size = 0;
 
   public SmallNumberedMap() {
-    //
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <T> T[] newArray(Class<? super T> componentType, int length) {
+    return (T[]) Array.newInstance(componentType, length);
   }
 
   @Override
-  public boolean put(Numberable key, T value) {
+  public boolean put(K key, V value) {
     int pos = findPosition(key);
     if (array[pos] == key) {
       if (values[pos] == value) {
@@ -57,12 +65,12 @@ public final class SmallNumberedMap<T> implements INumberedMap<Numberable, T> {
   }
 
   @Override
-  public T get(Numberable key) {
-    return (T) values[findPosition(key)];
+  public V get(K key) {
+    return values[findPosition(key)];
   }
 
   @Override
-  public void remove(Numberable key) {
+  public void remove(K key) {
     int pos = findPosition(key);
     if (array[pos] == key) {
       array[pos] = null;
@@ -71,10 +79,12 @@ public final class SmallNumberedMap<T> implements INumberedMap<Numberable, T> {
     }
   }
 
-  /** Returns the number of non-null values in this map. */
+  /**
+   * Returns the number of non-null values in this map.
+   */
   public int nonNullSize() {
     int ret = 0;
-    for (Object element : values) {
+    for (V element : values) {
       if (element != null) {
         ret++;
       }
@@ -83,27 +93,31 @@ public final class SmallNumberedMap<T> implements INumberedMap<Numberable, T> {
   }
 
   @Override
-  public Iterator<Numberable> keyIterator() {
-    return new KeyIterator(this);
+  public Iterator<K> keyIterator() {
+    return new SmallNumberedMapIterator<K>(array);
   }
 
-  /** Returns an iterator over the non-null values. */
-  public Iterator<T> iterator() {
-    return new ValueIterator(this);
+  /**
+   * Returns an iterator over the non-null values.
+   */
+  public Iterator<V> iterator() {
+    return new SmallNumberedMapIterator<V>(values);
   }
 
-  abstract class SmallNumberedMapIterator<C> implements Iterator<C> {
-    SmallNumberedMap<C> map;
-    int cur = 0;
+  private class SmallNumberedMapIterator<C> implements Iterator<C> {
+    private final C[] data;
+    private int cur;
 
-    SmallNumberedMapIterator(SmallNumberedMap<C> map) {
-      this.map = map;
+    SmallNumberedMapIterator(C[] data) {
+      this.data = data;
+      this.cur = 0;
       seekNext();
     }
 
     protected final void seekNext() {
+      V[] temp = SmallNumberedMap.this.values;
       try {
-        while (map.values[cur] == null) {
+        while (temp[cur] == null) {
           cur++;
         }
       } catch (ArrayIndexOutOfBoundsException e) {
@@ -111,78 +125,50 @@ public final class SmallNumberedMap<T> implements INumberedMap<Numberable, T> {
       }
     }
 
+    @Override
+    public final void remove() {
+      SmallNumberedMap.this.array[cur - 1] = null;
+      SmallNumberedMap.this.values[cur - 1] = null;
+    }
+
+    @Override
     public final boolean hasNext() {
       return cur != -1;
     }
 
-    public abstract C next();
-  }
-
-  class KeyIterator extends SmallNumberedMapIterator<Numberable> {
-    KeyIterator(SmallNumberedMap map) {
-      super(map);
-    }
-
-    public final Numberable next() {
-      Numberable ret = array[cur];
+    @Override
+    public final C next() {
+      C ret = data[cur];
       cur++;
       seekNext();
       return ret;
     }
-
-    @Override
-    public void remove() {
-      array[cur - 1] = null;
-      values[cur - 1] = null;
-    }
   }
 
-  class ValueIterator extends SmallNumberedMapIterator<T> {
-    ValueIterator(SmallNumberedMap<T> map) {
-      super(map);
-    }
-
-    public final T next() {
-      Object ret = values[cur];
-      cur++;
-      seekNext();
-      return (T) ret;
-    }
-
-    @Override
-    public void remove() {
-      array[cur - 1] = null;
-      values[cur - 1] = null;
-    }
-  }
-
-  /* Private stuff. */
-
-  private final int findPosition(Numberable o) {
+  private int findPosition(K o) {
     int number = o.getNumber();
     if (number == 0) {
       throw new RuntimeException("unnumbered");
     }
     number = number & (array.length - 1);
     while (true) {
-      if (array[number] == o) {
-        return number;
-      }
-      if (array[number] == null) {
+      K key = array[number];
+      if (key == o || key == null) {
         return number;
       }
       number = (number + 1) & (array.length - 1);
     }
   }
 
-  private final void doubleSize() {
-    Numberable[] oldArray = array;
-    Object[] oldValues = values;
-    int newLength = array.length * 2;
-    values = new Object[newLength];
-    array = new Numberable[newLength];
-    for (int i = 0; i < oldArray.length; i++) {
-      Numberable element = oldArray[i];
+  private void doubleSize() {
+    K[] oldArray = array;
+    V[] oldValues = values;
+    final int oldLength = oldArray.length;
+    final int newLength = oldLength * 2;
+    array = newArray(Numberable.class, newLength);
+    values = newArray(Object.class, newLength);
+    for (int i = 0; i < oldLength; i++) {
+      K element = oldArray[i];
       if (element != null) {
         int pos = findPosition(element);
         array[pos] = element;
@@ -190,9 +176,4 @@ public final class SmallNumberedMap<T> implements INumberedMap<Numberable, T> {
       }
     }
   }
-
-  private Numberable[] array = new Numberable[8];
-  private Object[] values = new Object[8];
-  private int size = 0;
-
 }

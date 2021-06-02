@@ -41,7 +41,6 @@ import soot.BooleanType;
 import soot.ByteType;
 import soot.IntegerType;
 import soot.Local;
-import soot.PatchingChain;
 import soot.ShortType;
 import soot.Type;
 import soot.Unit;
@@ -53,13 +52,14 @@ import soot.jimple.Stmt;
  **/
 public class TypeResolver {
   private static final Logger logger = LoggerFactory.getLogger(TypeResolver.class);
+  private static final boolean DEBUG = false;
+  private static final boolean IMPERFORMANT_TYPE_CHECK = false;
+
   /** All type variable instances **/
   private final List<TypeVariable> typeVariableList = new ArrayList<TypeVariable>();
 
   /** Hashtable: [TypeNode or Local] -> TypeVariable **/
   private final Map<Object, TypeVariable> typeVariableMap = new HashMap<Object, TypeVariable>();
-
-  private final JimpleBody stmtBody;
 
   final TypeVariable BOOLEAN = typeVariable(ClassHierarchy.v().BOOLEAN);
   final TypeVariable BYTE = typeVariable(ClassHierarchy.v().BYTE);
@@ -71,12 +71,41 @@ public class TypeResolver {
   final TypeVariable R0_127 = typeVariable(ClassHierarchy.v().R0_127);
   final TypeVariable R0_32767 = typeVariable(ClassHierarchy.v().R0_32767);
 
-  private static final boolean DEBUG = false;
-  private static final boolean IMPERFORMANT_TYPE_CHECK = false;
+  private final JimpleBody stmtBody;
 
   // categories for type variables (solved = hard, unsolved = soft)
   private Collection<TypeVariable> unsolved;
   private Collection<TypeVariable> solved;
+
+  private TypeResolver(JimpleBody stmtBody) {
+    this.stmtBody = stmtBody;
+  }
+
+  public static void resolve(JimpleBody stmtBody) {
+    if (DEBUG) {
+      logger.debug("" + stmtBody.getMethod());
+    }
+
+    try {
+      TypeResolver resolver = new TypeResolver(stmtBody);
+      resolver.resolve_step_1();
+    } catch (TypeException e1) {
+      if (DEBUG) {
+        logger.debug("[integer] Step 1 Exception-->" + e1.getMessage());
+      }
+
+      try {
+        TypeResolver resolver = new TypeResolver(stmtBody);
+        resolver.resolve_step_2();
+      } catch (TypeException e2) {
+        StringWriter st = new StringWriter();
+        PrintWriter pw = new PrintWriter(st);
+        logger.error(e2.getMessage(), e2);
+        pw.close();
+        throw new RuntimeException(st.toString());
+      }
+    }
+  }
 
   /** Get type variable for the given local. **/
   TypeVariable typeVariable(Local local) {
@@ -131,36 +160,6 @@ public class TypeResolver {
     typeVariableList.set(id, result);
 
     return result;
-  }
-
-  private TypeResolver(JimpleBody stmtBody) {
-    this.stmtBody = stmtBody;
-  }
-
-  public static void resolve(JimpleBody stmtBody) {
-    if (DEBUG) {
-      logger.debug("" + stmtBody.getMethod());
-    }
-
-    try {
-      TypeResolver resolver = new TypeResolver(stmtBody);
-      resolver.resolve_step_1();
-    } catch (TypeException e1) {
-      if (DEBUG) {
-        logger.debug("[integer] Step 1 Exception-->" + e1.getMessage());
-      }
-
-      try {
-        TypeResolver resolver = new TypeResolver(stmtBody);
-        resolver.resolve_step_2();
-      } catch (TypeException e2) {
-        StringWriter st = new StringWriter();
-        PrintWriter pw = new PrintWriter(st);
-        logger.error(e2.getMessage(), e2);
-        pw.close();
-        throw new RuntimeException(st.toString());
-      }
-    }
   }
 
   private void debug_vars(String message) {
@@ -242,31 +241,22 @@ public class TypeResolver {
   }
 
   private void merge_single_constraints() throws TypeException {
-    boolean modified = true;
-
-    while (modified) {
+    for (boolean modified = true; modified;) {
       modified = false;
       refresh_solved();
 
       for (TypeVariable var : unsolved) {
-
-        List<TypeVariable> children_to_remove = new LinkedList<TypeVariable>();
-        TypeNode lca = null;
-
         var.fixChildren();
 
+        TypeNode lca = null;
+        List<TypeVariable> children_to_remove = new LinkedList<TypeVariable>();
         for (TypeVariable child : var.children()) {
 
           TypeNode type = child.type();
 
           if (type != null) {
             children_to_remove.add(child);
-
-            if (lca == null) {
-              lca = type;
-            } else {
-              lca = lca.lca_1(type);
-            }
+            lca = (lca == null) ? type : lca.lca_1(type);
           }
         }
 
@@ -281,7 +271,6 @@ public class TypeResolver {
           }
 
           for (TypeVariable child : children_to_remove) {
-
             var.removeChild(child);
           }
 
@@ -301,23 +290,16 @@ public class TypeResolver {
 
       if (!modified) {
         for (TypeVariable var : unsolved) {
-          List<TypeVariable> parents_to_remove = new LinkedList<TypeVariable>();
-          TypeNode gcd = null;
-
           var.fixParents();
 
+          TypeNode gcd = null;
+          List<TypeVariable> parents_to_remove = new LinkedList<TypeVariable>();
           for (TypeVariable parent : var.parents()) {
-
             TypeNode type = parent.type();
 
             if (type != null) {
               parents_to_remove.add(parent);
-
-              if (gcd == null) {
-                gcd = type;
-              } else {
-                gcd = gcd.gcd_1(type);
-              }
+              gcd = (gcd == null) ? type : gcd.gcd_1(type);
             }
           }
 
@@ -325,7 +307,6 @@ public class TypeResolver {
             for (TypeVariable parent : parents_to_remove) {
               var.removeParent(parent);
             }
-
             var.addParent(typeVariable(gcd));
           }
 
@@ -343,26 +324,32 @@ public class TypeResolver {
 
       if (!modified) {
         for (TypeVariable var : unsolved) {
-          if (var.type() == null && var.inv_approx() != null && var.inv_approx().type() != null) {
-            if (DEBUG) {
-              logger.debug("*** I->" + var.inv_approx().type() + " *** " + var);
-            }
+          if (var.type() == null) {
+            final TypeNode inv_approx = var.inv_approx();
+            if (inv_approx != null && inv_approx.type() != null) {
+              if (DEBUG) {
+                logger.debug("*** I->" + inv_approx.type() + " *** " + var);
+              }
 
-            var.union(typeVariable(var.inv_approx()));
-            modified = true;
+              var.union(typeVariable(inv_approx));
+              modified = true;
+            }
           }
         }
       }
 
       if (!modified) {
         for (TypeVariable var : unsolved) {
-          if (var.type() == null && var.approx() != null && var.approx().type() != null) {
-            if (DEBUG) {
-              logger.debug("*** A->" + var.approx().type() + " *** " + var);
-            }
+          if (var.type() == null) {
+            final TypeNode approx = var.approx();
+            if (approx != null && approx.type() != null) {
+              if (DEBUG) {
+                logger.debug("*** A->" + approx.type() + " *** " + var);
+              }
 
-            var.union(typeVariable(var.approx()));
-            modified = true;
+              var.union(typeVariable(approx));
+              modified = true;
+            }
           }
         }
       }
@@ -408,16 +395,15 @@ public class TypeResolver {
   }
 
   private void assign_types_1() throws TypeException {
-    for (Iterator<Local> localIt = stmtBody.getLocals().iterator(); localIt.hasNext();) {
-      final Local local = localIt.next();
-
+    for (Local local : stmtBody.getLocals()) {
       if (local.getType() instanceof IntegerType) {
         TypeVariable var = typeVariable(local);
+        TypeNode type = var.type();
 
-        if (var.type() == null || var.type().type() == null) {
+        if (type == null || type.type() == null) {
           TypeVariable.error("Type Error(21):  Variable without type");
         } else {
-          local.setType(var.type().type());
+          local.setType(type.type());
         }
 
         if (DEBUG) {
@@ -431,22 +417,24 @@ public class TypeResolver {
   }
 
   private void assign_types_2() throws TypeException {
-    for (Iterator<Local> localIt = stmtBody.getLocals().iterator(); localIt.hasNext();) {
-      final Local local = localIt.next();
-
+    for (Local local : stmtBody.getLocals()) {
       if (local.getType() instanceof IntegerType) {
         TypeVariable var = typeVariable(local);
+        TypeNode inv_approx = var.inv_approx();
 
-        if (var.inv_approx() != null && var.inv_approx().type() != null) {
-          local.setType(var.inv_approx().type());
-        } else if (var.approx().type() != null) {
-          local.setType(var.approx().type());
-        } else if (var.approx() == ClassHierarchy.v().R0_1) {
-          local.setType(BooleanType.v());
-        } else if (var.approx() == ClassHierarchy.v().R0_127) {
-          local.setType(ByteType.v());
+        if (inv_approx != null && inv_approx.type() != null) {
+          local.setType(inv_approx.type());
         } else {
-          local.setType(ShortType.v());
+          TypeNode approx = var.approx();
+          if (approx.type() != null) {
+            local.setType(approx.type());
+          } else if (approx == ClassHierarchy.v().R0_1) {
+            local.setType(BooleanType.v());
+          } else if (approx == ClassHierarchy.v().R0_127) {
+            local.setType(ByteType.v());
+          } else {
+            local.setType(ShortType.v());
+          }
         }
       }
     }
@@ -454,23 +442,17 @@ public class TypeResolver {
 
   private void check_constraints() throws TypeException {
     ConstraintChecker checker = new ConstraintChecker(this, false);
-    StringBuffer s = null;
+    StringBuilder s = DEBUG ? new StringBuilder("Checking:\n") : null;
 
-    if (DEBUG) {
-      s = new StringBuffer("Checking:\n");
-    }
-
-    for (Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext();) {
-
-      final Stmt stmt = (Stmt) stmtIt.next();
+    for (Unit stmt : stmtBody.getUnits()) {
       if (DEBUG) {
-        s.append(" " + stmt + "\n");
+        s.append(' ').append(stmt).append('\n');
       }
       try {
-        checker.check(stmt, stmtBody);
+        checker.check((Stmt) stmt, stmtBody);
       } catch (TypeException e) {
         if (DEBUG) {
-          logger.debug("" + s);
+          logger.debug(s.toString());
         }
         throw e;
       }
@@ -479,24 +461,18 @@ public class TypeResolver {
 
   private void check_and_fix_constraints() throws TypeException {
     ConstraintChecker checker = new ConstraintChecker(this, true);
-    StringBuffer s = null;
-    PatchingChain<Unit> units = stmtBody.getUnits();
-    Stmt[] stmts = new Stmt[units.size()];
-    units.toArray(stmts);
+    StringBuilder s = DEBUG ? new StringBuilder("Checking:\n") : null;
 
-    if (DEBUG) {
-      s = new StringBuffer("Checking:\n");
-    }
-
-    for (Stmt stmt : stmts) {
+    for (Iterator<Unit> it = stmtBody.getUnits().snapshotIterator(); it.hasNext();) {
+      Unit stmt = it.next();
       if (DEBUG) {
-        s.append(" " + stmt + "\n");
+        s.append(' ').append(stmt).append('\n');
       }
       try {
-        checker.check(stmt, stmtBody);
+        checker.check((Stmt) stmt, stmtBody);
       } catch (TypeException e) {
         if (DEBUG) {
-          logger.debug("" + s);
+          logger.debug(s.toString());
         }
         throw e;
       }
@@ -504,30 +480,27 @@ public class TypeResolver {
   }
 
   private void compute_approximate_types() throws TypeException {
-    TreeSet<TypeVariable> workList = new TreeSet<TypeVariable>();
-
-    for (TypeVariable var : typeVariableList) {
-
-      if (var.type() != null) {
-        workList.add(var);
+    {
+      TreeSet<TypeVariable> workList = new TreeSet<TypeVariable>();
+      for (TypeVariable var : typeVariableList) {
+        if (var.type() != null) {
+          workList.add(var);
+        }
       }
+      TypeVariable.computeApprox(workList);
     }
 
-    TypeVariable.computeApprox(workList);
-
-    workList = new TreeSet<TypeVariable>();
-
-    for (TypeVariable var : typeVariableList) {
-
-      if (var.type() != null) {
-        workList.add(var);
+    {
+      TreeSet<TypeVariable> workList = new TreeSet<TypeVariable>();
+      for (TypeVariable var : typeVariableList) {
+        if (var.type() != null) {
+          workList.add(var);
+        }
       }
+      TypeVariable.computeInvApprox(workList);
     }
 
-    TypeVariable.computeInvApprox(workList);
-
     for (TypeVariable var : typeVariableList) {
-
       if (var.approx() == null) {
         var.union(INT);
       }
@@ -539,7 +512,6 @@ public class TypeResolver {
     Set<TypeVariable> solved_set = new TreeSet<TypeVariable>();
 
     for (TypeVariable var : typeVariableList) {
-
       if (var.type() == null) {
         unsolved_set.add(var);
       } else {
@@ -556,7 +528,6 @@ public class TypeResolver {
     Set<TypeVariable> solved_set = new TreeSet<TypeVariable>(solved);
 
     for (TypeVariable var : unsolved) {
-
       if (var.type() == null) {
         unsolved_set.add(var);
       } else {

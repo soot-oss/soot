@@ -37,27 +37,25 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 public class ReachableMethods {
-  protected CallGraph cg;
-  protected Iterator<Edge> edgeSource;
+
   protected final ChunkedQueue<MethodOrMethodContext> reachables = new ChunkedQueue<>();
   protected final Set<MethodOrMethodContext> set = new HashSet<>();
-  protected QueueReader<MethodOrMethodContext> unprocessedMethods;
   protected final QueueReader<MethodOrMethodContext> allReachables = reachables.reader();
+  protected QueueReader<MethodOrMethodContext> unprocessedMethods;
+  protected Iterator<Edge> edgeSource;
+  protected CallGraph cg;
   protected Filter filter;
-
-  public ReachableMethods(CallGraph graph, Iterator<? extends MethodOrMethodContext> entryPoints) {
-    this(graph, entryPoints, null);
-  }
 
   public ReachableMethods(CallGraph graph, Iterator<? extends MethodOrMethodContext> entryPoints, Filter filter) {
     this.filter = filter;
     this.cg = graph;
     addMethods(entryPoints);
-    unprocessedMethods = reachables.reader();
-    this.edgeSource = graph.listener();
-    if (filter != null) {
-      this.edgeSource = filter.wrap(this.edgeSource);
-    }
+    this.unprocessedMethods = reachables.reader();
+    this.edgeSource = (filter == null) ? graph.listener() : filter.wrap(graph.listener());
+  }
+
+  public ReachableMethods(CallGraph graph, Iterator<? extends MethodOrMethodContext> entryPoints) {
+    this(graph, entryPoints, null);
   }
 
   public ReachableMethods(CallGraph graph, Collection<? extends MethodOrMethodContext> entryPoints) {
@@ -84,7 +82,7 @@ public class ReachableMethods {
       Edge e = edgeSource.next();
       if (e != null) {
         MethodOrMethodContext srcMethod = e.getSrc();
-        if (!e.isInvalid() && srcMethod != null && set.contains(srcMethod)) {
+        if (srcMethod != null && !e.isInvalid() && set.contains(srcMethod)) {
           addMethod(e.getTgt());
         }
       }
@@ -115,12 +113,16 @@ public class ReachableMethods {
     return reachables.reader();
   }
 
-  /** Returns true iff method is reachable. */
+  /**
+   * Returns true iff method is reachable.
+   */
   public boolean contains(MethodOrMethodContext m) {
     return set.contains(m);
   }
 
-  /** Returns the number of methods that are reachable. */
+  /**
+   * Returns the number of methods that are reachable.
+   */
   public int size() {
     return set.size();
   }

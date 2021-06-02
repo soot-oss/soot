@@ -53,7 +53,7 @@ public class CFGOptionMatcher {
     }
   };
 
-  private CFGOption[] options;
+  private final CFGOption[] options;
 
   /**
    * Creates a CFGOptionMatcher.
@@ -115,8 +115,7 @@ public class CFGOptionMatcher {
    *          <code>rightMargin</code>.
    */
   public String help(int initialIndent, int rightMargin, int hangingIndent) {
-
-    StringBuffer newLineBuf = new StringBuffer(2 + rightMargin);
+    StringBuilder newLineBuf = new StringBuilder(2 + rightMargin);
     newLineBuf.append('\n');
     if (hangingIndent < 0) {
       hangingIndent = 0;
@@ -126,7 +125,7 @@ public class CFGOptionMatcher {
     }
     String newLine = newLineBuf.toString();
 
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     int lineLength = 0;
     for (int i = 0; i < initialIndent; i++) {
       lineLength++;

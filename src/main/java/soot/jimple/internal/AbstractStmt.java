@@ -37,46 +37,56 @@ import soot.jimple.Stmt;
 
 @SuppressWarnings("serial")
 public abstract class AbstractStmt extends AbstractUnit implements Stmt, ConvertToBaf {
+
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     Unit u = Baf.v().newNopInst();
     out.add(u);
     u.addAllTagsOf(this);
   }
 
+  @Override
   public boolean containsInvokeExpr() {
     return false;
   }
 
+  @Override
   public InvokeExpr getInvokeExpr() {
     throw new RuntimeException("getInvokeExpr() called with no invokeExpr present!");
   }
 
+  @Override
   public ValueBox getInvokeExprBox() {
     throw new RuntimeException("getInvokeExprBox() called with no invokeExpr present!");
   }
 
+  @Override
   public boolean containsArrayRef() {
     return false;
   }
 
+  @Override
   public ArrayRef getArrayRef() {
     throw new RuntimeException("getArrayRef() called with no ArrayRef present!");
   }
 
+  @Override
   public ValueBox getArrayRefBox() {
     throw new RuntimeException("getArrayRefBox() called with no ArrayRef present!");
   }
 
+  @Override
   public boolean containsFieldRef() {
     return false;
   }
 
+  @Override
   public FieldRef getFieldRef() {
     throw new RuntimeException("getFieldRef() called with no FieldRef present!");
   }
 
+  @Override
   public ValueBox getFieldRefBox() {
     throw new RuntimeException("getFieldRefBox() called with no FieldRef present!");
   }
-
 }

@@ -47,7 +47,6 @@ import soot.Singletons;
  * @see Peephole
  * @see ExamplePeephole
  */
-
 public class PeepholeOptimizer extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(PeepholeOptimizer.class);
 
@@ -64,9 +63,10 @@ public class PeepholeOptimizer extends BodyTransformer {
 
   private final Map<String, Class<?>> peepholeMap = new HashMap<String, Class<?>>();
 
-  /** The method that drives the optimizations. */
   /* This is the public interface to PeepholeOptimizer */
-
+  /**
+   * The method that drives the optimizations.
+   */
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
     if (!peepholesLoaded) {
@@ -110,7 +110,7 @@ public class PeepholeOptimizer extends BodyTransformer {
             Class<?> peepholeClass;
             if ((peepholeClass = peepholeMap.get(peepholeName)) == null) {
               try {
-                peepholeClass = Class.forName(packageName + "." + peepholeName);
+                peepholeClass = Class.forName(packageName + '.' + peepholeName);
               } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e.toString());
               }

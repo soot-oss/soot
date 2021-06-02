@@ -45,12 +45,39 @@ import soot.jimple.toolkits.callgraph.TransitiveTargets;
 
 /** Generates side-effect information from a PointsToAnalysis. */
 public class SideEffectAnalysis {
-  PointsToAnalysis pa;
-  CallGraph cg;
-  Map<SootMethod, MethodRWSet> methodToNTReadSet = new HashMap<SootMethod, MethodRWSet>();
-  Map<SootMethod, MethodRWSet> methodToNTWriteSet = new HashMap<SootMethod, MethodRWSet>();
-  int rwsetcount = 0;
-  TransitiveTargets tt;
+
+  private final Map<SootMethod, MethodRWSet> methodToNTReadSet = new HashMap<SootMethod, MethodRWSet>();
+  private final Map<SootMethod, MethodRWSet> methodToNTWriteSet = new HashMap<SootMethod, MethodRWSet>();
+  private final PointsToAnalysis pa;
+  private final CallGraph cg;
+  private final TransitiveTargets tt;
+
+  private SideEffectAnalysis(PointsToAnalysis pa, CallGraph cg, TransitiveTargets tt) {
+    if (G.v().Union_factory == null) {
+      G.v().Union_factory = new UnionFactory() {
+        @Override
+        public Union newUnion() {
+          return FullObjectSet.v();
+        }
+      };
+    }
+    this.pa = pa;
+    this.cg = cg;
+    this.tt = tt;
+  }
+
+  public SideEffectAnalysis(PointsToAnalysis pa, CallGraph cg) {
+    this(pa, cg, new TransitiveTargets(cg));
+  }
+
+  public SideEffectAnalysis(PointsToAnalysis pa, CallGraph cg, Filter filter) {
+    // This constructor allows customization of call graph edges to
+    // consider via the use of a transitive targets filter.
+    // For example, using the NonClinitEdgesPred, you can create a
+    // SideEffectAnalysis that will ignore static initializers
+    // - R. Halpert 2006-12-02
+    this(pa, cg, new TransitiveTargets(cg, filter));
+  }
 
   public void findNTRWSets(SootMethod method) {
     if (methodToNTReadSet.containsKey(method) && methodToNTWriteSet.containsKey(method)) {
@@ -59,8 +86,8 @@ public class SideEffectAnalysis {
 
     MethodRWSet read = null;
     MethodRWSet write = null;
-    for (Iterator<Unit> sIt = method.retrieveActiveBody().getUnits().iterator(); sIt.hasNext();) {
-      final Stmt s = (Stmt) sIt.next();
+    for (Unit next : method.retrieveActiveBody().getUnits()) {
+      final Stmt s = (Stmt) next;
       RWSet ntr = ntReadSet(method, s);
       if (ntr != null) {
         if (read == null) {
@@ -90,48 +117,17 @@ public class SideEffectAnalysis {
     return methodToNTWriteSet.get(method);
   }
 
-  private SideEffectAnalysis() {
-    if (G.v().Union_factory == null) {
-      G.v().Union_factory = new UnionFactory() {
-        public Union newUnion() {
-          return FullObjectSet.v();
-        }
-      };
-    }
-  }
-
-  public SideEffectAnalysis(PointsToAnalysis pa, CallGraph cg) {
-    this();
-    this.pa = pa;
-    this.cg = cg;
-    this.tt = new TransitiveTargets(cg);
-  }
-
-  public SideEffectAnalysis(PointsToAnalysis pa, CallGraph cg, Filter filter) {
-    // This constructor allows customization of call graph edges to
-    // consider via the use of a transitive targets filter.
-    // For example, using the NonClinitEdgesPred, you can create a
-    // SideEffectAnalysis that will ignore static initializers
-    // - R. Halpert 2006-12-02
-    this();
-    this.pa = pa;
-    this.cg = cg;
-    this.tt = new TransitiveTargets(cg, filter);
-  }
-
   private RWSet ntReadSet(SootMethod method, Stmt stmt) {
     if (stmt instanceof AssignStmt) {
-      AssignStmt a = (AssignStmt) stmt;
-      Value r = a.getRightOp();
-      return addValue(r, method, stmt);
+      return addValue(((AssignStmt) stmt).getRightOp(), method, stmt);
+    } else {
+      return null;
     }
-    return null;
   }
 
   public RWSet readSet(SootMethod method, Stmt stmt) {
     RWSet ret = null;
-    Iterator<MethodOrMethodContext> targets = tt.iterator(stmt);
-    while (targets.hasNext()) {
+    for (Iterator<MethodOrMethodContext> targets = tt.iterator(stmt); targets.hasNext();) {
       SootMethod target = (SootMethod) targets.next();
       if (target.isNative()) {
         if (ret == null) {
@@ -150,24 +146,23 @@ public class SideEffectAnalysis {
     }
     if (ret == null) {
       return ntReadSet(method, stmt);
+    } else {
+      ret.union(ntReadSet(method, stmt));
+      return ret;
     }
-    ret.union(ntReadSet(method, stmt));
-    return ret;
   }
 
   private RWSet ntWriteSet(SootMethod method, Stmt stmt) {
     if (stmt instanceof AssignStmt) {
-      AssignStmt a = (AssignStmt) stmt;
-      Value l = a.getLeftOp();
-      return addValue(l, method, stmt);
+      return addValue(((AssignStmt) stmt).getLeftOp(), method, stmt);
+    } else {
+      return null;
     }
-    return null;
   }
 
   public RWSet writeSet(SootMethod method, Stmt stmt) {
     RWSet ret = null;
-    Iterator<MethodOrMethodContext> targets = tt.iterator(stmt);
-    while (targets.hasNext()) {
+    for (Iterator<MethodOrMethodContext> targets = tt.iterator(stmt); targets.hasNext();) {
       SootMethod target = (SootMethod) targets.next();
       if (target.isNative()) {
         if (ret == null) {
@@ -186,9 +181,10 @@ public class SideEffectAnalysis {
     }
     if (ret == null) {
       return ntWriteSet(method, stmt);
+    } else {
+      ret.union(ntWriteSet(method, stmt));
+      return ret;
     }
-    ret.union(ntWriteSet(method, stmt));
-    return ret;
   }
 
   protected RWSet addValue(Value v, SootMethod m, Stmt s) {
@@ -211,6 +207,7 @@ public class SideEffectAnalysis {
     return ret;
   }
 
+  @Override
   public String toString() {
     return "SideEffectAnalysis: PA=" + pa + " CG=" + cg;
   }

@@ -31,12 +31,14 @@ import java.util.AbstractList;
  */
 @Deprecated
 public class SingletonList<E> extends AbstractList<E> {
-  private E e;
+
+  private final E e;
 
   public SingletonList(E e) {
     this.e = e;
   }
 
+  @Override
   public E get(int index) {
     if (index != 0) {
       throw new IndexOutOfBoundsException();
@@ -45,6 +47,7 @@ public class SingletonList<E> extends AbstractList<E> {
     }
   }
 
+  @Override
   public int size() {
     return 1;
   }
