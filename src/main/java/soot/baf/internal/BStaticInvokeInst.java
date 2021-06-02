@@ -30,34 +30,35 @@ import soot.baf.StaticInvokeInst;
 import soot.util.Switch;
 
 public class BStaticInvokeInst extends AbstractInvokeInst implements StaticInvokeInst {
+
   public BStaticInvokeInst(SootMethodRef methodRef) {
     if (!methodRef.isStatic()) {
       throw new RuntimeException("wrong static-ness");
     }
-    this.methodRef = methodRef;
+    super.methodRef = methodRef;
   }
 
-  public int getInCount() {
-    return methodRef.parameterTypes().size();
-
-  }
-
+  @Override
   public Object clone() {
     return new BStaticInvokeInst(methodRef);
   }
 
-  public int getOutCount() {
-    if (methodRef.returnType() instanceof VoidType) {
-      return 0;
-    } else {
-      return 1;
-    }
+  @Override
+  public int getInCount() {
+    return methodRef.getParameterTypes().size();
   }
 
+  @Override
+  public int getOutCount() {
+    return (methodRef.getReturnType() instanceof VoidType) ? 0 : 1;
+  }
+
+  @Override
   public String getName() {
     return "staticinvoke";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseStaticInvokeInst(this);
   }

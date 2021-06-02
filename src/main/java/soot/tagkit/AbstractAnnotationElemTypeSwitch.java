@@ -29,73 +29,62 @@ public abstract class AbstractAnnotationElemTypeSwitch<T> implements IAnnotation
   @Override
   public void caseAnnotationAnnotationElem(AnnotationAnnotationElem v) {
     defaultCase(v);
-
   }
 
   @Override
   public void caseAnnotationArrayElem(AnnotationArrayElem v) {
     defaultCase(v);
-
   }
 
   @Override
   public void caseAnnotationBooleanElem(AnnotationBooleanElem v) {
     defaultCase(v);
-
   }
 
   @Override
   public void caseAnnotationClassElem(AnnotationClassElem v) {
     defaultCase(v);
-
   }
 
   @Override
   public void caseAnnotationDoubleElem(AnnotationDoubleElem v) {
     defaultCase(v);
-
   }
 
   @Override
   public void caseAnnotationEnumElem(AnnotationEnumElem v) {
     defaultCase(v);
-
   }
 
   @Override
   public void caseAnnotationFloatElem(AnnotationFloatElem v) {
     defaultCase(v);
-
   }
 
   @Override
   public void caseAnnotationIntElem(AnnotationIntElem v) {
     defaultCase(v);
-
   }
 
   @Override
   public void caseAnnotationLongElem(AnnotationLongElem v) {
     defaultCase(v);
-
   }
 
   @Override
   public void caseAnnotationStringElem(AnnotationStringElem v) {
     defaultCase(v);
-
   }
 
   @Override
-  public void defaultCase(Object object) {
-
-  }
-
-  public T getResult() {
-    return result;
+  public void defaultCase(Object obj) {
   }
 
   public void setResult(T result) {
     this.result = result;
+  }
+
+  public T getResult() {
+    return result;
   }
 }

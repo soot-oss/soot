@@ -28,19 +28,25 @@ package soot.util.dot;
  * @author Feng Qian
  */
 public class DotGraphAttribute {
-  String id;
-  String value;
+
+  private final String id;
+  private final String value;
 
   public DotGraphAttribute(String id, String v) {
     this.id = id;
     this.value = v;
   }
 
+  @Override
   public String toString() {
-    StringBuffer line = new StringBuffer();
-    line.append(this.id);
-    line.append("=");
-    line.append(this.value);
-    return new String(line);
+    return this.id + '=' + this.value;
+  }
+
+  public String getID() {
+    return this.id;
+  }
+
+  public String getValue() {
+    return this.value;
   }
 }

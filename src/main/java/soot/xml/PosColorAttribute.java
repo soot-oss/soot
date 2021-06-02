@@ -38,82 +38,78 @@ public class PosColorAttribute {
   }
 
   public ColorAttribute color() {
-    return color;
+    return this.color;
   }
 
   public void color(ColorAttribute c) {
-    color = c;
+    this.color = c;
   }
 
   public int jimpleStartPos() {
-    return jimpleStartPos;
+    return this.jimpleStartPos;
   }
 
   public void jimpleStartPos(int x) {
-    jimpleStartPos = x;
+    this.jimpleStartPos = x;
   }
 
   public int jimpleEndPos() {
-    return jimpleEndPos;
+    return this.jimpleEndPos;
   }
 
   public void jimpleEndPos(int x) {
-    jimpleEndPos = x;
+    this.jimpleEndPos = x;
   }
 
   public int javaStartPos() {
-    return javaStartPos;
+    return this.javaStartPos;
   }
 
   public void javaStartPos(int x) {
-    javaStartPos = x;
+    this.javaStartPos = x;
   }
 
   public int javaEndPos() {
-    return javaEndPos;
+    return this.javaEndPos;
   }
 
   public void javaEndPos(int x) {
-    javaEndPos = x;
+    this.javaEndPos = x;
   }
 
   public int jimpleStartLn() {
-    return jimpleStartLn;
+    return this.jimpleStartLn;
   }
 
   public void jimpleStartLn(int x) {
-    jimpleStartLn = x;
+    this.jimpleStartLn = x;
   }
 
   public int jimpleEndLn() {
-    return jimpleEndLn;
+    return this.jimpleEndLn;
   }
 
   public void jimpleEndLn(int x) {
-    jimpleEndLn = x;
+    this.jimpleEndLn = x;
   }
 
   public int javaStartLn() {
-    return javaStartLn;
+    return this.javaStartLn;
   }
 
   public void javaStartLn(int x) {
-    javaStartLn = x;
+    this.javaStartLn = x;
   }
 
   public int javaEndLn() {
-    return javaEndLn;
+    return this.javaEndLn;
   }
 
   public void javaEndLn(int x) {
-    javaEndLn = x;
+    this.javaEndLn = x;
   }
 
   public boolean hasColor() {
-    if (color() != null) {
-      return true;
-    } else {
-      return false;
-    }
+    return color() != null;
   }
 }

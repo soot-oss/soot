@@ -65,5 +65,4 @@ public class BriefUnitGraph extends UnitGraph {
 
     soot.util.PhaseDumper.v().dumpGraph(this, body);
   }
-
 }

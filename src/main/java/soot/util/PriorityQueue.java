@@ -48,8 +48,20 @@ import org.slf4j.LoggerFactory;
  * @param <E>
  *          the type of elements held in the universe
  */
-abstract public class PriorityQueue<E> extends AbstractQueue<E> {
+public abstract class PriorityQueue<E> extends AbstractQueue<E> {
   private static final Logger logger = LoggerFactory.getLogger(PriorityQueue.class);
+
+  private final List<? extends E> universe;
+  private final Map<E, Integer> ordinalMap;
+  final int N;
+  int min = Integer.MAX_VALUE;
+
+  PriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
+    assert ordinalMap.size() == universe.size();
+    this.universe = universe;
+    this.ordinalMap = ordinalMap;
+    this.N = universe.size();
+  }
 
   abstract class Itr implements Iterator<E> {
     long expected = getExpected();
@@ -92,11 +104,6 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
     }
   }
 
-  final List<? extends E> universe;
-  final int N;
-  int min = Integer.MAX_VALUE;
-  private Map<E, Integer> ordinalMap;
-
   int getOrdinal(Object o) {
     if (o == null) {
       throw new NullPointerException();
@@ -105,7 +112,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
     if (i == null) {
       throw new NoSuchElementException();
     }
-    return i.intValue();
+    return i;
   }
 
   /**
@@ -191,12 +198,13 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
       if (o.equals(peek())) {
         remove(min);
         return true;
+      } else {
+        return remove(getOrdinal(o));
       }
-      return remove(getOrdinal(o));
     } catch (NoSuchElementException e) {
-      logger.debug("" + e.getMessage());
+      logger.debug(e.getMessage());
+      return false;
     }
-    return false;
   }
 
   /**
@@ -211,13 +219,13 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
     try {
       if (o.equals(peek())) {
         return true;
+      } else {
+        return contains(getOrdinal(o));
       }
-
-      return contains(getOrdinal(o));
     } catch (NoSuchElementException e) {
-      logger.debug("" + e.getMessage());
+      logger.debug(e.getMessage());
+      return false;
     }
-    return false;
   }
 
   /**
@@ -229,16 +237,10 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
     return min >= N;
   }
 
-  PriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
-    assert ordinalMap.size() == universe.size();
-    this.universe = universe;
-    this.ordinalMap = ordinalMap;
-    this.N = universe.size();
-  }
-
   /**
    * Creates a new full priority queue
    *
+   * @param <E>
    * @param universe
    * @return
    */
@@ -249,6 +251,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
   /**
    * Creates a new empty priority queue
    *
+   * @param <E>
    * @param universe
    * @return
    */
@@ -259,6 +262,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
   /**
    * Creates a new full priority queue
    *
+   * @param <E>
    * @param universe
    * @return
    */
@@ -271,6 +275,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
   /**
    * Creates a new empty priority queue
    *
+   * @param <E>
    * @param universe
    * @return
    */
@@ -285,7 +290,6 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
         throw new IllegalArgumentException("duplicate key found");
       }
     }
-
     return newPriorityQueue(universe, ordinalMap);
   }
 
@@ -326,12 +330,13 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
   }
 
   private static <E> PriorityQueue<E> newPriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
-    if (universe.size() <= SmallPriorityQueue.MAX_CAPACITY) {
+    final int universeSize = universe.size();
+    if (universeSize <= SmallPriorityQueue.MAX_CAPACITY) {
       return new SmallPriorityQueue<E>(universe, ordinalMap);
-    }
-    if (universe.size() <= MediumPriorityQueue.MAX_CAPACITY) {
+    } else if (universeSize <= MediumPriorityQueue.MAX_CAPACITY) {
       return new MediumPriorityQueue<E>(universe, ordinalMap);
+    } else {
+      return new LargePriorityQueue<E>(universe, ordinalMap);
     }
-    return new LargePriorityQueue<E>(universe, ordinalMap);
   }
 }
