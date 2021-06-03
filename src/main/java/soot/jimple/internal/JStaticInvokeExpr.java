@@ -25,6 +25,7 @@ package soot.jimple.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import soot.SootMethodRef;
 import soot.Value;
@@ -32,22 +33,24 @@ import soot.ValueBox;
 import soot.jimple.Jimple;
 
 public class JStaticInvokeExpr extends AbstractStaticInvokeExpr {
+
   public JStaticInvokeExpr(SootMethodRef methodRef, List<? extends Value> args) {
     super(methodRef, new ValueBox[args.size()]);
 
-    for (int i = 0; i < args.size(); i++) {
-      this.argBoxes[i] = Jimple.v().newImmediateBox(args.get(i));
+    final Jimple jimp = Jimple.v();
+    for (ListIterator<? extends Value> it = args.listIterator(); it.hasNext();) {
+      Value v = it.next();
+      this.argBoxes[it.previousIndex()] = jimp.newImmediateBox(v);
     }
-
   }
 
+  @Override
   public Object clone() {
-    List<Value> clonedArgs = new ArrayList<Value>(getArgCount());
-
-    for (int i = 0; i < getArgCount(); i++) {
-      clonedArgs.add(i, getArg(i));
+    final int count = getArgCount();
+    List<Value> clonedArgs = new ArrayList<Value>(count);
+    for (int i = 0; i < count; i++) {
+      clonedArgs.add(Jimple.cloneIfNecessary(getArg(i)));
     }
-
     return new JStaticInvokeExpr(methodRef, clonedArgs);
   }
 }

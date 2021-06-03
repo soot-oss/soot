@@ -94,5 +94,4 @@ public enum IdentityStatementsValidator implements BodyValidator {
   public boolean isBasicValidator() {
     return true;
   }
-
 }

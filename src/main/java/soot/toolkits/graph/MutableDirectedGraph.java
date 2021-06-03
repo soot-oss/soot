@@ -26,8 +26,9 @@ import java.util.List;
 
 /**
  * Defines a DirectedGraph which is modifiable. Provides an interface to add/delete nodes and edges.
+ * 
+ * @param <N>
  */
-
 public interface MutableDirectedGraph<N> extends DirectedGraph<N> {
   /**
    * Adds an edge to the graph between 2 nodes. If the edge is already present no change is made.

@@ -1023,6 +1023,23 @@ public class Options extends OptionsBase {
                 phaseOptions.add(phaseOption);
             }
             else if (false
+                || option.equals("t")
+                || option.equals("num-threads")
+            ) {
+                if (!hasMoreOptions()) {
+                    G.v().out.println("No value given for option -" + option);
+                    return false;
+                }
+
+                String value = nextOption();
+                if(num_threads == -1)
+                    num_threads = Integer.valueOf(value);
+                else {
+                    G.v().out.println("Duplicate values " + num_threads + " and " + value + " for option -" + option);
+                    return false;
+                }
+            }
+            else if (false
                 || option.equals("O")
                 || option.equals("optimize")
             ) {
@@ -1627,6 +1644,10 @@ public class Options extends OptionsBase {
     public void set_field_type_mismatches(int setting) { field_type_mismatches = setting; }
     private int field_type_mismatches = 0;
 
+    public int num_threads() { return num_threads; }
+    public void set_num_threads(int setting) { num_threads = setting; }
+    private int num_threads = -1;
+
     public boolean via_grimp() { return via_grimp; }
     private boolean via_grimp = false;
     public void set_via_grimp(boolean setting) { via_grimp = setting; }
@@ -1871,6 +1892,7 @@ public class Options extends OptionsBase {
                     + padVal("jb.dtr", "Reduces chains of catch-all traps")
                     + padVal("jb.ese", "Removes empty switch statements")
                     + padVal("jb.ls", "Local splitter: one local per DU-UD web")
+                    + padVal("jb.sils", "Splits primitive locals used as different types")
                     + padVal("jb.a", "Aggregator: removes some unnecessary copies")
                     + padVal("jb.ule", "Unused local eliminator")
                     + padVal("jb.tr", "Assigns types to locals")
@@ -1885,6 +1907,7 @@ public class Options extends OptionsBase {
                     + padVal("jb.tt", "Trap Tightener")
                 + padOpt("jj", "Creates a JimpleBody for each method directly from source")
                     + padVal("jj.ls", "Local splitter: one local per DU-UD web")
+                    + padVal("jj.sils", "Splits primitive locals used as different types")
                     + padVal("jj.a", "Aggregator: removes some unnecessary copies")
                     + padVal("jj.ule", "Unused local eliminator")
                     + padVal("jj.tr", "Assigns types to locals")
@@ -1967,6 +1990,7 @@ public class Options extends OptionsBase {
                     + padVal("bb.pho", "Peephole optimizer")
                     + padVal("bb.ule", "Unused local eliminator")
                     + padVal("bb.lp", "Local packer: minimizes number of locals")
+                    + padVal("bb.ne", "Nop eliminator")
                 + padOpt("bop", "Baf optimization pack")
                 + padOpt("tag", "Tag aggregator: turns tags into attributes")
                     + padVal("tag.ln", "Line number aggregator")
@@ -2006,6 +2030,12 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jb.ls"))
             return "Phase " + phaseName + ":\n"
                     + "\nThe Local Splitter identifies DU-UD webs for local variables and \nintroduces new variables so that each disjoint web is associated \nwith a single local."
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (true)", "");
+
+        if (phaseName.equals("jb.sils"))
+            return "Phase " + phaseName + ":\n"
+                    + "\n"
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (true)", "");
 
@@ -2105,6 +2135,12 @@ public class Options extends OptionsBase {
                     + "\nThe Local Splitter identifies DU-UD webs for local variables and \nintroduces new variables so that each disjoint web is associated \nwith a single local."
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (false)", "");
+
+        if (phaseName.equals("jj.sils"))
+            return "Phase " + phaseName + ":\n"
+                    + "\n"
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (true)", "");
 
         if (phaseName.equals("jj.a"))
             return "Phase " + phaseName + ":\n"
@@ -2862,6 +2898,12 @@ public class Options extends OptionsBase {
                     + padOpt("enabled (true)", "")
                     + padOpt("unsplit-original-locals (false)", "");
 
+        if (phaseName.equals("bb.ne"))
+            return "Phase " + phaseName + ":\n"
+                    + "\nThe Nop Eliminator removes nop instructions from the method."
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (true)", "");
+
         if (phaseName.equals("bop"))
             return "Phase " + phaseName + ":\n"
                     + "\nThe Baf Optimization pack performs optimizations on BafBodys \n(currently there are no optimizations performed specifically on \nBafBodys, and the pack is empty). It is run only if the output \nformat is baf or b or asm or a, or if class files are being \noutput and the Via Grimp option has not been specified."
@@ -2957,6 +2999,11 @@ public class Options extends OptionsBase {
                     "enabled"
             );
 
+        if (phaseName.equals("jb.sils"))
+            return String.join(" ", 
+                    "enabled"
+            );
+
         if (phaseName.equals("jb.a"))
             return String.join(" ", 
                     "enabled",
@@ -3036,6 +3083,11 @@ public class Options extends OptionsBase {
             );
 
         if (phaseName.equals("jj.ls"))
+            return String.join(" ", 
+                    "enabled"
+            );
+
+        if (phaseName.equals("jj.sils"))
             return String.join(" ", 
                     "enabled"
             );
@@ -3617,6 +3669,11 @@ public class Options extends OptionsBase {
                     "unsplit-original-locals"
             );
 
+        if (phaseName.equals("bb.ne"))
+            return String.join(" ", 
+                    "enabled"
+            );
+
         if (phaseName.equals("bop"))
             return String.join(" ", 
                     "enabled"
@@ -3698,6 +3755,10 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:true ";
 
+        if (phaseName.equals("jb.sils"))
+            return ""
+                    + "enabled:true ";
+
         if (phaseName.equals("jb.a"))
             return ""
                     + "enabled:true "
@@ -3766,6 +3827,10 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jj.ls"))
             return ""
                     + "enabled:false ";
+
+        if (phaseName.equals("jj.sils"))
+            return ""
+                    + "enabled:true ";
 
         if (phaseName.equals("jj.a"))
             return ""
@@ -4261,6 +4326,10 @@ public class Options extends OptionsBase {
                     + "enabled:true "
                     + "unsplit-original-locals:false ";
 
+        if (phaseName.equals("bb.ne"))
+            return ""
+                    + "enabled:true ";
+
         if (phaseName.equals("bop"))
             return ""
                     + "enabled:false ";
@@ -4316,6 +4385,7 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jb.dtr")
                 || phaseName.equals("jb.ese")
                 || phaseName.equals("jb.ls")
+                || phaseName.equals("jb.sils")
                 || phaseName.equals("jb.a")
                 || phaseName.equals("jb.ule")
                 || phaseName.equals("jb.tr")
@@ -4330,6 +4400,7 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jb.tt")
                 || phaseName.equals("jj")
                 || phaseName.equals("jj.ls")
+                || phaseName.equals("jj.sils")
                 || phaseName.equals("jj.a")
                 || phaseName.equals("jj.ule")
                 || phaseName.equals("jj.tr")
@@ -4412,6 +4483,7 @@ public class Options extends OptionsBase {
                 || phaseName.equals("bb.pho")
                 || phaseName.equals("bb.ule")
                 || phaseName.equals("bb.lp")
+                || phaseName.equals("bb.ne")
                 || phaseName.equals("bop")
                 || phaseName.equals("tag")
                 || phaseName.equals("tag.ln")
@@ -4437,6 +4509,8 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jb.ese");
         if (!PackManager.v().hasPhase("jb.ls"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.ls");
+        if (!PackManager.v().hasPhase("jb.sils"))
+            G.v().out.println("Warning: Options exist for non-existent phase jb.sils");
         if (!PackManager.v().hasPhase("jb.a"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.a");
         if (!PackManager.v().hasPhase("jb.ule"))
@@ -4465,6 +4539,8 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jj");
         if (!PackManager.v().hasPhase("jj.ls"))
             G.v().out.println("Warning: Options exist for non-existent phase jj.ls");
+        if (!PackManager.v().hasPhase("jj.sils"))
+            G.v().out.println("Warning: Options exist for non-existent phase jj.sils");
         if (!PackManager.v().hasPhase("jj.a"))
             G.v().out.println("Warning: Options exist for non-existent phase jj.a");
         if (!PackManager.v().hasPhase("jj.ule"))
@@ -4629,6 +4705,8 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase bb.ule");
         if (!PackManager.v().hasPhase("bb.lp"))
             G.v().out.println("Warning: Options exist for non-existent phase bb.lp");
+        if (!PackManager.v().hasPhase("bb.ne"))
+            G.v().out.println("Warning: Options exist for non-existent phase bb.ne");
         if (!PackManager.v().hasPhase("bop"))
             G.v().out.println("Warning: Options exist for non-existent phase bop");
         if (!PackManager.v().hasPhase("tag"))

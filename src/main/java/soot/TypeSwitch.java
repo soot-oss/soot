@@ -24,6 +24,7 @@ package soot;
 
 /** Implements Switchable on base Java types. */
 public class TypeSwitch<T> implements ITypeSwitch {
+
   T result;
 
   @Override
@@ -106,13 +107,14 @@ public class TypeSwitch<T> implements ITypeSwitch {
     defaultCase(t);
   }
 
+  @Override
   public void defaultCase(Type t) {
   }
 
   /**
    * @deprecated Replaced by defaultCase(Type)
    * @see #defaultCase(Type)
-   **/
+   */
   @Deprecated
   @Override
   public void caseDefault(Type t) {

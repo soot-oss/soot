@@ -110,14 +110,12 @@ public class LogicalOperationsTest extends AbstractASMBackendTest {
       mv.visitVarInsn(ALOAD, 0);
       mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "i2", "I");
       mv.visitInsn(ICONST_M1);
-      mv.visitInsn(NOP);
       mv.visitInsn(IXOR);
       mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/LogicalOperations", "i1", "I");
       mv.visitVarInsn(ALOAD, 0);
       mv.visitVarInsn(ALOAD, 0);
       mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "i2", "I");
       mv.visitInsn(ICONST_M1);
-      mv.visitInsn(NOP);
       mv.visitInsn(IXOR);
       mv.visitInsn(I2L);
       mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/LogicalOperations", "l1", "J");

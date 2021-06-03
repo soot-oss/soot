@@ -635,7 +635,8 @@ public final class LambdaMetaFactory {
         // In the example, the map values are of type Object because of generic erasure, but we're
         // still dealing with
         // booleans semantically.
-        if (from == Scene.v().getObjectType()) {
+        // Actually, the wrapper type could be also be other types if wirdcards (?) are used in generic code. 
+        if (wrapper.wrapperTypes.get(from) == null) {
           // Insert the cast
           RefType boxedType = wrapper.primitiveTypes.get(to);
           Local castLocal = lc.generateLocal(boxedType);

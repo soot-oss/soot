@@ -22,7 +22,10 @@ package soot.jimple;
  * #L%
  */
 
-public abstract class AbstractRefSwitch implements RefSwitch {
+public abstract class AbstractRefSwitch<T> implements RefSwitch {
+
+  T result;
+
   @Override
   public void caseArrayRef(ArrayRef v) {
     defaultCase(v);
@@ -55,5 +58,13 @@ public abstract class AbstractRefSwitch implements RefSwitch {
 
   @Override
   public void defaultCase(Object obj) {
+  }
+
+  public void setResult(T result) {
+    this.result = result;
+  }
+
+  public T getResult() {
+    return result;
   }
 }
