@@ -615,8 +615,7 @@ public class OnFlyCallGraphBuilder {
       final VirtualCalls virtualCalls = VirtualCalls.v();
       final Scene sc = Scene.v();
       final FastHierarchy fh = sc.getOrMakeFastHierarchy();
-      for (Iterator<VirtualCallSite> siteIt = rcvrToCallSites.iterator(); siteIt.hasNext();) {
-        final VirtualCallSite site = siteIt.next();
+      for (final VirtualCallSite site : rcvrToCallSites) {
         if (skipSite(site, fh, type)) {
           continue;
         }
@@ -846,7 +845,6 @@ public class OnFlyCallGraphBuilder {
       final Stmt s = (Stmt) u;
       if (s.containsInvokeExpr()) {
         InvokeExpr ie = s.getInvokeExpr();
-
         if (ie instanceof InstanceInvokeExpr) {
           InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
           Local receiver = (Local) iie.getBase();
@@ -878,8 +876,11 @@ public class OnFlyCallGraphBuilder {
                 }
 
                 if (wrapperObject != null && receiverToSites.get(wrapperObject) != null) {
-                  for (Iterator<VirtualCallSite> siteIt = receiverToSites.get(wrapperObject).iterator(); siteIt.hasNext();) {
-                    final VirtualCallSite site = siteIt.next();
+                  // addVirtualCallSite() may change receiverToSites, which may lead to a ConcurrentModificationException
+                  // I'm not entirely sure whether we ought to deal with the new call sites that are being added, instead of
+                  // just working on a snapshot, though.
+                  List<VirtualCallSite> callSites = new ArrayList<>(receiverToSites.get(wrapperObject));
+                  for (final VirtualCallSite site : callSites) {
                     if (w.registrationSignature == site.subSig()) {
                       for (RegisteredHandlerTarget target : w.targets) {
                         Value runnable = iie.getArg(t.argIndex);
@@ -1038,6 +1039,9 @@ public class OnFlyCallGraphBuilder {
   }
 
   private void addEdge(SootMethod src, Stmt stmt, SootMethod tgt, Kind kind) {
+    if (src.equals(tgt) && src.isStaticInitializer()) { 
+      return; 
+    }
     cicg.addEdge(new Edge(src, stmt, tgt, kind));
   }
 

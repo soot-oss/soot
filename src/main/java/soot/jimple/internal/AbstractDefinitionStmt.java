@@ -32,8 +32,9 @@ import soot.jimple.DefinitionStmt;
 
 @SuppressWarnings("serial")
 public abstract class AbstractDefinitionStmt extends AbstractStmt implements DefinitionStmt {
-  public final ValueBox leftBox;
-  public final ValueBox rightBox;
+
+  protected final ValueBox leftBox;
+  protected final ValueBox rightBox;
 
   protected AbstractDefinitionStmt(ValueBox leftBox, ValueBox rightBox) {
     this.leftBox = leftBox;

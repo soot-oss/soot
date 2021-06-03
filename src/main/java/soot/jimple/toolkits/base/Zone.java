@@ -23,12 +23,14 @@ package soot.jimple.toolkits.base;
  */
 
 public class Zone {
-  private String name;
+
+  private final String name;
 
   public Zone(String name) {
     this.name = name;
   }
 
+  @Override
   public String toString() {
     return "<zone: " + name + ">";
   }

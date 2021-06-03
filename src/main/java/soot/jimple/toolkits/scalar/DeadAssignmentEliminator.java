@@ -62,6 +62,7 @@ import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
+import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
@@ -166,12 +167,13 @@ public class DeadAssignmentEliminator extends BodyTransformer {
             Value v = ce.getOp();
             isEssential = !(v instanceof NullConstant) && t instanceof RefLikeType;
           } else if (rhs instanceof InvokeExpr || rhs instanceof ArrayRef || rhs instanceof NewExpr
-              || rhs instanceof NewArrayExpr || rhs instanceof NewMultiArrayExpr) {
+              || rhs instanceof NewArrayExpr || rhs instanceof NewMultiArrayExpr || rhs instanceof LengthExpr) {
             // ArrayRef : can have side effects (like throwing a null pointer exception)
             // InvokeExpr : can have side effects (like throwing a null pointer exception)
             // NewArrayExpr : can throw exception
             // NewMultiArrayExpr : can throw exception
             // NewExpr : can trigger class initialization
+            // LengthExpr : can throw exception
             isEssential = true;
           } else if (rhs instanceof FieldRef) {
             // Can trigger class initialization
@@ -235,7 +237,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
       // Add all the statements which are used to compute values
       // for the essential statements, recursively
 
-      final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(b);
+      final LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(b);
 
       if (!allEssential) {
         Set<Unit> essential = new HashSet<Unit>(units.size());

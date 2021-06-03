@@ -33,36 +33,40 @@ import soot.jimple.InstanceInvokeExpr;
 
 @SuppressWarnings("serial")
 public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr implements InstanceInvokeExpr {
-  final protected ValueBox baseBox;
+
+  protected final ValueBox baseBox;
 
   protected AbstractInstanceInvokeExpr(SootMethodRef methodRef, ValueBox baseBox, ValueBox[] argBoxes) {
     super(methodRef, argBoxes);
     this.baseBox = baseBox;
   }
 
+  @Override
   public Value getBase() {
     return baseBox.getValue();
   }
 
+  @Override
   public ValueBox getBaseBox() {
     return baseBox;
   }
 
+  @Override
   public void setBase(Value base) {
     baseBox.setValue(base);
   }
 
   @Override
   public List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<ValueBox>();
+    List<ValueBox> list = new ArrayList<ValueBox>(baseBox.getValue().getUseBoxes());
+    list.add(baseBox);
+
     if (argBoxes != null) {
       Collections.addAll(list, argBoxes);
       for (ValueBox element : argBoxes) {
         list.addAll(element.getValue().getUseBoxes());
       }
     }
-    list.addAll(baseBox.getValue().getUseBoxes());
-    list.add(baseBox);
 
     return list;
   }

@@ -63,5 +63,4 @@ public enum InvokeArgumentValidator implements BodyValidator {
   public boolean isBasicValidator() {
     return true;
   }
-
 }

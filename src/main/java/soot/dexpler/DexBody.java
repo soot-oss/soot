@@ -516,7 +516,7 @@ public class DexBody {
       paramLocals.add(thisLocal);
       if (IDalvikTyper.ENABLE_DVKTYPER) {
         DalvikTyper.v()
-            .setType(idStmt.leftBox, jBody.getMethod().getDeclaringClass().getType(), false);
+            .setType(idStmt.getLeftOpBox(), jBody.getMethod().getDeclaringClass().getType(), false);
       }
     }
     {
@@ -556,7 +556,7 @@ public class DexBody {
         add(idStmt);
         paramLocals.add(gen);
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-          DalvikTyper.v().setType(idStmt.leftBox, t, false);
+          DalvikTyper.v().setType(idStmt.getLeftOpBox(), t, false);
         }
 
         // some parameters may be encoded on two registers.

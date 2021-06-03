@@ -25,6 +25,7 @@ package soot.grimp.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import soot.SootMethod;
 import soot.SootMethodRef;
@@ -38,165 +39,177 @@ import soot.jimple.Jimple;
 import soot.jimple.internal.AbstractInvokeExpr;
 import soot.util.Switch;
 
-@SuppressWarnings({ "serial", "rawtypes", "unchecked" })
+@SuppressWarnings("serial")
 public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInvokeExpr {
-  protected ValueBox[] bsmArgBoxes;
-  private SootMethodRef bsmRef;
 
-  protected int tag;
+  protected final SootMethodRef bsmRef;
+  protected final ValueBox[] bsmArgBoxes;
+  protected final int tag;
 
-  public GDynamicInvokeExpr(SootMethodRef bootStrapMethodRef, List<Value> bootstrapArgs, SootMethodRef methodRef, int tag,
-      List args) {
-    super(methodRef, new ValueBox[args.size()]);
+  public GDynamicInvokeExpr(SootMethodRef bootStrapMethodRef, List<? extends Value> bootstrapArgs, SootMethodRef methodRef,
+      int tag, List<? extends Value> methodArgs) {
+    super(methodRef, new ValueBox[methodArgs.size()]);
+
     this.bsmRef = bootStrapMethodRef;
+    this.bsmArgBoxes = new ValueBox[bootstrapArgs.size()];
     this.tag = tag;
-    for (int i = 0; i < args.size(); i++) {
-      this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
+
+    final Grimp grmp = Grimp.v();
+    for (ListIterator<? extends Value> it = bootstrapArgs.listIterator(); it.hasNext();) {
+      Value v = it.next();
+      this.bsmArgBoxes[it.previousIndex()] = grmp.newExprBox(v);
     }
-    for (int i = 0; i < bootstrapArgs.size(); i++) {
-      this.bsmArgBoxes[i] = Grimp.v().newExprBox((Value) bootstrapArgs.get(i));
+    for (ListIterator<? extends Value> it = methodArgs.listIterator(); it.hasNext();) {
+      Value v = it.next();
+      this.argBoxes[it.previousIndex()] = grmp.newExprBox(v);
     }
   }
 
+  @Override
   public Object clone() {
-    ArrayList clonedArgs = new ArrayList(getArgCount());
-
-    for (int i = 0; i < getArgCount(); i++) {
-      clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+    List<Value> clonedBsmArgs = new ArrayList<Value>(bsmArgBoxes.length);
+    for (ValueBox box : bsmArgBoxes) {
+      clonedBsmArgs.add(box.getValue());
     }
 
-    ArrayList clonedBsmArgs = new ArrayList(getBootstrapArgCount());
-    for (int i = 0; i < getBootstrapArgCount(); i++) {
-      clonedBsmArgs.add(i, getBootstrapArg(i));
+    final int count = getArgCount();
+    List<Value> clonedArgs = new ArrayList<Value>(count);
+    for (int i = 0; i < count; i++) {
+      clonedArgs.add(Grimp.cloneIfNecessary(getArg(i)));
     }
 
     return new GDynamicInvokeExpr(bsmRef, clonedBsmArgs, methodRef, tag, clonedArgs);
   }
 
-  public Value getBootstrapArg(int i) {
-    return bsmArgBoxes[i].getValue();
-  }
-
+  @Override
   public int getBootstrapArgCount() {
     return bsmArgBoxes.length;
   }
 
+  @Override
+  public Value getBootstrapArg(int i) {
+    return bsmArgBoxes[i].getValue();
+  }
+
+  @Override
+  public List<Value> getBootstrapArgs() {
+    List<Value> l = new ArrayList<Value>();
+    for (ValueBox element : bsmArgBoxes) {
+      l.add(element.getValue());
+    }
+    return l;
+  }
+
+  @Override
+  public SootMethodRef getBootstrapMethodRef() {
+    return bsmRef;
+  }
+
+  public SootMethod getBootstrapMethod() {
+    return bsmRef.resolve();
+  }
+
+  @Override
+  public int getHandleTag() {
+    return tag;
+  }
+
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseDynamicInvokeExpr(this);
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof GDynamicInvokeExpr) {
       GDynamicInvokeExpr ie = (GDynamicInvokeExpr) o;
-      if (!(getMethod().equals(ie.getMethod())
-          && (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+      if ((this.argBoxes == null ? 0 : this.argBoxes.length) != (ie.argBoxes == null ? 0 : ie.argBoxes.length)
+          || this.bsmArgBoxes.length != ie.bsmArgBoxes.length || !this.getMethod().equals(ie.getMethod())
+          || !this.methodRef.equals(ie.methodRef) || !this.bsmRef.equals(ie.bsmRef)) {
         return false;
       }
-      if (argBoxes != null) {
-        for (ValueBox element : argBoxes) {
-          if (!(element.getValue().equivTo(element.getValue()))) {
+      int i = 0;
+      for (ValueBox element : this.bsmArgBoxes) {
+        if (!element.getValue().equivTo(ie.getBootstrapArg(i))) {
+          return false;
+        }
+        i++;
+      }
+      if (this.argBoxes != null) {
+        i = 0;
+        for (ValueBox element : this.argBoxes) {
+          if (!element.getValue().equivTo(ie.getArg(i))) {
             return false;
           }
+          i++;
         }
-      }
-      if (!methodRef.equals(ie.methodRef)) {
-        return false;
-      }
-      if (!bsmRef.equals(ie.bsmRef)) {
-        return false;
       }
       return true;
     }
     return false;
   }
 
+  @Override
   public int equivHashCode() {
-    return getMethod().equivHashCode();
+    return getBootstrapMethod().equivHashCode() * getMethod().equivHashCode() * 17;
   }
 
-  public SootMethodRef getBootstrapMethodRef() {
-    return bsmRef;
-  }
-
-  public List<Value> getBootstrapArgs() {
-    List l = new ArrayList();
-    for (ValueBox element : bsmArgBoxes) {
-      l.add(element.getValue());
-    }
-
-    return l;
-  }
-
+  @Override
   public String toString() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buf = new StringBuilder(Jimple.DYNAMICINVOKE + " \"");
 
-    buffer.append(Jimple.DYNAMICINVOKE);
-    buffer.append(" \"");
-    buffer.append(methodRef.name()); // quoted method name (can be any UTF8 string)
-    buffer.append("\" <");
-    buffer
-        .append(SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()));
-    buffer.append(">(");
+    buf.append(methodRef.name()); // quoted method name (can be any UTF8 string)
+    buf.append("\" <");
+    buf.append(SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()));
+    buf.append(">(");
 
     if (argBoxes != null) {
-      for (int i = 0; i < argBoxes.length; i++) {
+      for (int i = 0, e = argBoxes.length; i < e; i++) {
         if (i != 0) {
-          buffer.append(", ");
+          buf.append(", ");
         }
-
-        buffer.append(argBoxes[i].getValue().toString());
+        buf.append(argBoxes[i].getValue().toString());
       }
     }
+    buf.append(") ");
 
-    buffer.append(") ");
-
-    buffer.append(bsmRef.getSignature());
-    buffer.append("(");
-    for (int i = 0; i < bsmArgBoxes.length; i++) {
+    buf.append(bsmRef.getSignature());
+    buf.append('(');
+    for (int i = 0, e = bsmArgBoxes.length; i < e; i++) {
       if (i != 0) {
-        buffer.append(", ");
+        buf.append(", ");
       }
-
-      buffer.append(bsmArgBoxes[i].getValue().toString());
+      buf.append(bsmArgBoxes[i].getValue().toString());
     }
-    buffer.append(")");
+    buf.append(')');
 
-    return buffer.toString();
+    return buf.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    up.literal(Jimple.DYNAMICINVOKE);
-    up.literal(" \"" + methodRef.name() + "\" <"
+    up.literal(Jimple.DYNAMICINVOKE + " \"" + methodRef.name() + "\" <"
         + SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType())
         + ">(");
 
     if (argBoxes != null) {
-      for (int i = 0; i < argBoxes.length; i++) {
+      for (int i = 0, e = argBoxes.length; i < e; i++) {
         if (i != 0) {
           up.literal(", ");
         }
-
         argBoxes[i].toString(up);
       }
     }
-
     up.literal(") ");
+
     up.methodRef(bsmRef);
     up.literal("(");
-
-    for (int i = 0; i < bsmArgBoxes.length; i++) {
+    for (int i = 0, e = bsmArgBoxes.length; i < e; i++) {
       if (i != 0) {
         up.literal(", ");
       }
-
       bsmArgBoxes[i].toString(up);
     }
-
     up.literal(")");
-  }
-
-  @Override
-  public int getHandleTag() {
-    return tag;
   }
 }

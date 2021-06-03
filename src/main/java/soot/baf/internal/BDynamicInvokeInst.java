@@ -23,6 +23,7 @@ package soot.baf.internal;
  * #L%
  */
 
+import java.util.Iterator;
 import java.util.List;
 
 import soot.SootMethod;
@@ -35,92 +36,98 @@ import soot.baf.InstSwitch;
 import soot.jimple.Jimple;
 import soot.util.Switch;
 
-@SuppressWarnings({ "serial", "unchecked" })
+@SuppressWarnings("serial")
 public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInvokeInst {
+
   protected final SootMethodRef bsmRef;
   private final List<Value> bsmArgs;
   protected int tag;
 
   public BDynamicInvokeInst(SootMethodRef bsmMethodRef, List<Value> bsmArgs, SootMethodRef methodRef, int tag) {
+    super.methodRef = methodRef;
     this.bsmRef = bsmMethodRef;
     this.bsmArgs = bsmArgs;
-    this.methodRef = methodRef;
     this.tag = tag;
   }
 
-  public int getInCount() {
-    return methodRef.parameterTypes().size();
-
-  }
-
+  @Override
   public Object clone() {
     return new BDynamicInvokeInst(bsmRef, bsmArgs, methodRef, tag);
   }
 
-  public int getOutCount() {
-    if (methodRef.returnType() instanceof VoidType) {
-      return 0;
-    } else {
-      return 1;
-    }
+  @Override
+  public int getInCount() {
+    return methodRef.getParameterTypes().size();
   }
 
+  @Override
+  public int getOutCount() {
+    return (methodRef.getReturnType() instanceof VoidType) ? 0 : 1;
+  }
+
+  @Override
   public SootMethodRef getBootstrapMethodRef() {
     return bsmRef;
   }
 
+  @Override
   public List<Value> getBootstrapArgs() {
     return bsmArgs;
   }
 
+  @Override
   public String getName() {
     return "dynamicinvoke";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseDynamicInvokeInst(this);
   }
 
+  @Override
   public String toString() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
 
-    buffer.append(Jimple.DYNAMICINVOKE);
-    buffer.append(" \"");
-    buffer.append(methodRef.name()); // quoted method name (can be any UTF8 string)
+    buffer.append(Jimple.DYNAMICINVOKE + " \"");
+    buffer.append(methodRef.getName()); // quoted method name (can be any UTF8 string)
     buffer.append("\" <");
-    buffer
-        .append(SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType()));
-    buffer.append(">");
+    buffer.append(
+        SootMethod.getSubSignature(""/* no method name here */, methodRef.getParameterTypes(), methodRef.getReturnType()));
+    buffer.append('>');
     buffer.append(bsmRef.getSignature());
-    buffer.append("(");
-    for (int i = 0; i < bsmArgs.size(); i++) {
-      if (i != 0) {
+    buffer.append('(');
+
+    for (Iterator<Value> it = bsmArgs.iterator(); it.hasNext();) {
+      Value v = it.next();
+      buffer.append(v.toString());
+      if (it.hasNext()) {
         buffer.append(", ");
       }
-
-      buffer.append(bsmArgs.get(i).toString());
     }
-    buffer.append(")");
+    buffer.append(')');
 
     return buffer.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    up.literal(Jimple.DYNAMICINVOKE);
-    up.literal(" \"" + methodRef.name() + "\" <"
-        + SootMethod.getSubSignature(""/* no method name here */, methodRef.parameterTypes(), methodRef.returnType())
-        + "> ");
+    up.literal(Jimple.DYNAMICINVOKE + " \"");
+    up.literal(methodRef.getName());
+    up.literal("\" <");
+    up.literal(
+        SootMethod.getSubSignature(""/* no method name here */, methodRef.getParameterTypes(), methodRef.getReturnType()));
+    up.literal("> ");
     up.methodRef(bsmRef);
     up.literal("(");
 
-    for (int i = 0; i < bsmArgs.size(); i++) {
-      if (i != 0) {
+    for (Iterator<Value> it = bsmArgs.iterator(); it.hasNext();) {
+      Value v = it.next();
+      v.toString(up);
+      if (it.hasNext()) {
         up.literal(", ");
       }
-
-      bsmArgs.get(i).toString(up);
     }
-
     up.literal(")");
   }
 

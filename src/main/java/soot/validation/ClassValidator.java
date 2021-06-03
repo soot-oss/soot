@@ -29,15 +29,16 @@ import soot.SootClass;
 /**
  * Implement this interface if you want to provide your own class validator
  */
-public interface ClassValidator {
+public interface ClassValidator extends Validator<SootClass> {
   /**
    * Validates the given class and saves all validation errors in the given list.
    * 
-   * @param body
+   * @param sc
    *          the class to check
    * @param exceptions
    *          the list of exceptions
    */
+  @Override
   public void validate(SootClass sc, List<ValidationException> exceptions);
 
   /**
@@ -47,5 +48,6 @@ public interface ClassValidator {
    * 
    * @return whether this validator is a basic validator
    */
+  @Override
   public boolean isBasicValidator();
 }

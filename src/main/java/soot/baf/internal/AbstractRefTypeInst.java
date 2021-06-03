@@ -27,6 +27,7 @@ import soot.Type;
 import soot.UnitPrinter;
 
 public abstract class AbstractRefTypeInst extends AbstractInst {
+
   Type opType;
 
   protected AbstractRefTypeInst(RefType opType) {
@@ -49,10 +50,12 @@ public abstract class AbstractRefTypeInst extends AbstractInst {
     this.opType = type;
   }
 
+  @Override
   String getParameters() {
     return " " + opType.toString();
   }
 
+  @Override
   protected void getParameters(UnitPrinter up) {
     up.literal(" ");
     up.type(opType);
