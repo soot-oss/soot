@@ -1905,6 +1905,7 @@ public class Options extends OptionsBase {
                     + padVal("jb.ne", "Nop eliminator")
                     + padVal("jb.uce", "Unreachable code eliminator")
                     + padVal("jb.tt", "Trap Tightener")
+                    + padVal("jb.cbf", "Conditional branch folder")
                 + padOpt("jj", "Creates a JimpleBody for each method directly from source")
                     + padVal("jj.ls", "Local splitter: one local per DU-UD web")
                     + padVal("jj.sils", "Splits primitive locals used as different types")
@@ -2122,6 +2123,12 @@ public class Options extends OptionsBase {
                     + "\nThe Trap Tightener changes the area protected by each exception \nhandler, so that it begins with the first instruction in the old \nprotected area which is actually capable of throwing an \nexception caught by the handler, and ends just after the last \ninstruction in the old protected area which can throw an \nexception caught by the handler. This reduces the chance of \nproducing unverifiable code as a byproduct of pruning \nexceptional control flow within CFGs."
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (false)", "");
+
+        if (phaseName.equals("jb.cbf"))
+            return "Phase " + phaseName + ":\n"
+                    + "\nThe Conditional Branch Folder statically evaluates the \nconditional expression of Jimple if statements. If the condition \nis identically true or false, the Folder replaces the \nconditional branch statement with an unconditional goto \nstatement."
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (true)", "");
 
         if (phaseName.equals("jj"))
             return "Phase " + phaseName + ":\n"
@@ -3076,6 +3083,11 @@ public class Options extends OptionsBase {
                     "enabled"
             );
 
+        if (phaseName.equals("jb.cbf"))
+            return String.join(" ", 
+                    "enabled"
+            );
+
         if (phaseName.equals("jj"))
             return String.join(" ", 
                     "enabled",
@@ -3819,6 +3831,10 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:false ";
 
+        if (phaseName.equals("jb.cbf"))
+            return ""
+                    + "enabled:true ";
+
         if (phaseName.equals("jj"))
             return ""
                     + "enabled:true "
@@ -4398,6 +4414,7 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jb.ne")
                 || phaseName.equals("jb.uce")
                 || phaseName.equals("jb.tt")
+                || phaseName.equals("jb.cbf")
                 || phaseName.equals("jj")
                 || phaseName.equals("jj.ls")
                 || phaseName.equals("jj.sils")
@@ -4535,6 +4552,8 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jb.uce");
         if (!PackManager.v().hasPhase("jb.tt"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.tt");
+        if (!PackManager.v().hasPhase("jb.cbf"))
+            G.v().out.println("Warning: Options exist for non-existent phase jb.cbf");
         if (!PackManager.v().hasPhase("jj"))
             G.v().out.println("Warning: Options exist for non-existent phase jj");
         if (!PackManager.v().hasPhase("jj.ls"))

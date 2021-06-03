@@ -1011,6 +1011,21 @@ public class AntTask extends MatchingTask {
       
         }
     
+        public Object createp_jb_cbf() {
+            Object ret = new PhaseOptjb_cbf();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjb_cbf {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jb.cbf");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
         public Object createp_jj() {
             Object ret = new PhaseOptjj();
             phaseopts.add(ret);

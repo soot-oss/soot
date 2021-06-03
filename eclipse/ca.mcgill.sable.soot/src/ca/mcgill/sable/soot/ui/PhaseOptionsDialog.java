@@ -99,6 +99,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite jbjb_neChild = jbjb_neCreate(getPageContainer());
 		Composite jbjb_uceChild = jbjb_uceCreate(getPageContainer());
 		Composite jbjb_ttChild = jbjb_ttCreate(getPageContainer());
+		Composite jbjb_cbfChild = jbjb_cbfCreate(getPageContainer());
 		Composite jjjj_lsChild = jjjj_lsCreate(getPageContainer());
 		Composite jjjj_silsChild = jjjj_silsCreate(getPageContainer());
 		Composite jjjj_aChild = jjjj_aCreate(getPageContainer());
@@ -327,6 +328,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		makeNewEnableGroup("jb", "jb.tt");
 		addToEnableGroup("jb", "jb.tt", getjbjb_ttenabled_widget(), "enabled");
 		getjbjb_ttenabled_widget().getButton().addSelectionListener(this);
+
+		makeNewEnableGroup("jb", "jb.cbf");
+		addToEnableGroup("jb", "jb.cbf", getjbjb_cbfenabled_widget(), "enabled");
+		getjbjb_cbfenabled_widget().getButton().addSelectionListener(this);
 
 		makeNewEnableGroup("jj");
 		addToEnableGroup("jj", getjjenabled_widget(), "enabled");
@@ -1601,6 +1606,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_ttenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getjbjb_cbfenabled_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_cbfenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getjjenabled_widget().getButton().getSelection();
 		defBoolRes = true;
@@ -3516,6 +3527,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 			
 			subSectParent = jb_jb_tt_branch;
+			
+			
+			SootOption jb_jb_cbf_branch = new SootOption("Conditional Branch Folder", "jbjb_cbf");
+			subParent.addChild(jb_jb_cbf_branch);
+
+
+			
+
+			
+			subSectParent = jb_jb_cbf_branch;
 			
 			
 			//Java To Jimple Body Creation
@@ -5560,6 +5581,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getjbjb_ttenabled_widget() {
 		return jbjb_ttenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_cbfenabled_widget;
+	
+	private void setjbjb_cbfenabled_widget(BooleanOptionWidget widget) {
+		jbjb_cbfenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_cbfenabled_widget() {
+		return jbjb_cbfenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jjenabled_widget;
@@ -10479,6 +10510,47 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupjbjb_tt;
+	}
+
+
+
+	private Composite jbjb_cbfCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjbjb_cbf = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjbjb_cbf.setLayout(layout);
+	
+	 	editGroupjbjb_cbf.setText("Conditional Branch Folder");
+	 	
+		editGroupjbjb_cbf.setData("id", "jbjb_cbf");
+		
+		String descjbjb_cbf = "Conditional branch folder";	
+		if (descjbjb_cbf.length() > 0) {
+			Label descLabeljbjb_cbf = new Label(editGroupjbjb_cbf, SWT.WRAP);
+			descLabeljbjb_cbf.setText(descjbjb_cbf);
+		}
+		OptionData [] data;	
+		
+		
+		
+
+		defKey = "p phase-option"+" "+"jb.cbf"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setjbjb_cbfenabled_widget(new BooleanOptionWidget(editGroupjbjb_cbf, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.cbf","enabled", "\n", defaultBool)));
+
+
+		return editGroupjbjb_cbf;
 	}
 
 

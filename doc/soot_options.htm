@@ -60,6 +60,8 @@
                            </a></li>
                      <li><a href="#phase_1_16">Trap Tightener (jb.tt)
                            </a></li>
+                     <li><a href="#phase_1_17">Conditional Branch Folder (jb.cbf)
+                           </a></li>
                   </ul>
                </li>
                <li><a href="#phase_2">Java To Jimple Body Creation (jj)
@@ -1731,6 +1733,28 @@
             <br>
             (default value:
             <span class="value">false</span>
+            )
+            
+            <p></p>
+         </li>
+      </ul>
+      <h2><a name="phase_1_17">Conditional Branch Folder (jb.cbf)
+            </a></h2>
+      <p>
+         The Conditional Branch Folder statically evaluates the
+         conditional expression of Jimple if statements. If the
+         condition is identically true or
+         false, the Folder replaces the conditional branch
+         statement with an unconditional goto statement.
+         
+      </p>
+      <h4>Accepted phase options:</h4>
+      <ul>
+         <li><b>Enabled</b>
+            (enabled)
+            <br>
+            (default value:
+            <span class="value">true</span>
             )
             
             <p></p>
