@@ -141,7 +141,8 @@ public abstract class AbstractASMBackend {
     if (activeBody instanceof JimpleBody) {
       body = PackManager.v().convertJimpleBodyToBaf(method);
     } else {
-      throw new RuntimeException("ASM-backend can only translate Baf- and JimpleBodies!");
+      throw new RuntimeException("ASM-backend can only translate Baf and Jimple bodies! Found "
+          + (activeBody == null ? "null" : activeBody.getClass().getName()) + '.');
     }
 
     bafBodyCache.put(method, body);
@@ -539,6 +540,7 @@ public abstract class AbstractASMBackend {
   protected void generateAnnotationElems(AnnotationVisitor av, Collection<AnnotationElem> elements, boolean addName) {
     if (av != null) {
       for (AnnotationElem elem : elements) {
+        assert (elem != null);
         if (elem instanceof AnnotationEnumElem) {
           AnnotationEnumElem enumElem = (AnnotationEnumElem) elem;
           av.visitEnum(enumElem.getName(), enumElem.getTypeName(), enumElem.getConstantName());
@@ -568,6 +570,11 @@ public abstract class AbstractASMBackend {
               case 'S':
                 val = (short) value;
                 break;
+              case 'C':
+                val = (char) value;
+                break;
+              default:
+                assert false : "Unexpected kind: " + intElem.getKind() + " (in " + intElem + ")";
             }
           } else if (elem instanceof AnnotationBooleanElem) {
             AnnotationBooleanElem booleanElem = (AnnotationBooleanElem) elem;
