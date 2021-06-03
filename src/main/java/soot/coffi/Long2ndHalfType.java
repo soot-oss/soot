@@ -27,6 +27,7 @@ import soot.Singletons;
 import soot.Type;
 
 public class Long2ndHalfType extends Type {
+
   public Long2ndHalfType(Singletons.Global g) {
   }
 
@@ -38,6 +39,7 @@ public class Long2ndHalfType extends Type {
     return otherType instanceof Long2ndHalfType;
   }
 
+  @Override
   public String toString() {
     return "long2ndhalf";
   }
