@@ -35,49 +35,74 @@ import soot.baf.InstSwitch;
 import soot.util.Switch;
 
 public class BIdentityInst extends AbstractInst implements IdentityInst {
+
   ValueBox leftBox;
   ValueBox rightBox;
+  List<ValueBox> defBoxes;
 
-  List defBoxes;
-
-  public Value getLeftOp() {
-    return leftBox.getValue();
+  protected BIdentityInst(ValueBox localBox, ValueBox identityValueBox) {
+    this.leftBox = localBox;
+    this.rightBox = identityValueBox;
+    this.defBoxes = Collections.singletonList(localBox);
   }
 
+  public BIdentityInst(Value local, Value identityValue) {
+    this(Baf.v().newLocalBox(local), Baf.v().newIdentityRefBox(identityValue));
+  }
+
+  @Override
+  public Object clone() {
+    return new BIdentityInst(getLeftOp(), getRightOp());
+  }
+
+  @Override
   public int getInCount() {
     return 0;
   }
 
+  @Override
   public int getInMachineCount() {
     return 0;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
+  public Value getLeftOp() {
+    return leftBox.getValue();
+  }
+
+  @Override
   public Value getRightOp() {
     return rightBox.getValue();
   }
 
+  @Override
   public ValueBox getLeftOpBox() {
     return leftBox;
   }
 
+  @Override
   public ValueBox getRightOpBox() {
     return rightBox;
   }
 
-  public List getDefBoxes() {
+  @Override
+  public List<ValueBox> getDefBoxes() {
     return defBoxes;
   }
 
-  public List getUseBoxes() {
-    List list = new ArrayList();
+  @Override
+  public List<ValueBox> getUseBoxes() {
+    List<ValueBox> list = new ArrayList<ValueBox>();
 
     list.addAll(rightBox.getValue().getUseBoxes());
     list.add(rightBox);
@@ -86,43 +111,34 @@ public class BIdentityInst extends AbstractInst implements IdentityInst {
     return list;
   }
 
-  public BIdentityInst(Value local, Value identityValue) {
-    this(Baf.v().newLocalBox(local), Baf.v().newIdentityRefBox(identityValue));
-  }
-
-  protected BIdentityInst(ValueBox localBox, ValueBox identityValueBox) {
-    this.leftBox = localBox;
-    this.rightBox = identityValueBox;
-
-    defBoxes = Collections.singletonList(leftBox);
-  }
-
-  public Object clone() {
-    return new BIdentityInst(getLeftOp(), getRightOp());
-  }
-
+  @Override
   public String toString() {
     return leftBox.getValue().toString() + " := " + rightBox.getValue().toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     leftBox.toString(up);
     up.literal(" := ");
     rightBox.toString(up);
   }
 
+  @Override
   final public String getName() {
     return ":=";
   }
 
+  @Override
   public void setLeftOp(Value local) {
     leftBox.setValue(local);
   }
 
+  @Override
   public void setRightOp(Value identityRef) {
     rightBox.setValue(identityRef);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseIdentityInst(this);
   }

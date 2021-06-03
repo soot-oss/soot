@@ -184,10 +184,17 @@ public class EntryPoints {
     // Do not create an actual list, since this method gets called quite
     // often
     // Instead, callers usually just want to iterate over the result.
-    final SootMethod initStart = cl.getMethodUnsafe(sigClinit);
-    if (initStart == null) {
+    SootMethod init = cl.getMethodUnsafe(sigClinit);
+    SootClass superClass  = cl.getSuperclassUnsafe();
+    // check super classes until finds a constructor or no super class there anymore.  
+    while (init == null && superClass != null) { 
+      init = superClass.getMethodUnsafe(sigClinit);
+      superClass = superClass.getSuperclassUnsafe();
+    }
+    if (init == null) {
       return Collections.emptyList();
     }
+    SootMethod initStart = init; 
     return new Iterable<SootMethod>() {
 
       @Override

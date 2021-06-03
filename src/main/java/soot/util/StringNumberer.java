@@ -32,10 +32,10 @@ import java.util.Map;
  *
  * @author Ondrej Lhotak
  */
-
 @ThreadSafe
 public class StringNumberer extends ArrayNumberer<NumberedString> {
-  private Map<String, NumberedString> stringToNumbered = new HashMap<String, NumberedString>(1024);
+
+  private final Map<String, NumberedString> stringToNumbered = new HashMap<String, NumberedString>(1024);
 
   public synchronized NumberedString findOrAdd(String s) {
     NumberedString ret = stringToNumbered.get(s);
@@ -50,5 +50,4 @@ public class StringNumberer extends ArrayNumberer<NumberedString> {
   public NumberedString find(String s) {
     return stringToNumbered.get(s);
   }
-
 }

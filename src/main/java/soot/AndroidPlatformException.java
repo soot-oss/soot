@@ -26,7 +26,6 @@ package soot;
  * Exception that is thrown when Soot cannot find the correct platform API version for a DEX or APK file
  * 
  * @author Steven Arzt
- *
  */
 public class AndroidPlatformException extends RuntimeException {
 
@@ -52,5 +51,4 @@ public class AndroidPlatformException extends RuntimeException {
   public AndroidPlatformException(Throwable cause) {
     super(cause);
   }
-
 }

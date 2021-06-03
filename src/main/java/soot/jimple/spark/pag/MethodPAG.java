@@ -281,7 +281,7 @@ public final class MethodPAG {
     if (method.getNumberedSubSignature().equals(sigCanonicalize)) {
       SootClass cl = method.getDeclaringClass();
       while (cl != null) {
-        if (cl.equals(Scene.v().getSootClass("java.io.FileSystem"))) {
+        if (cl.equals(Scene.v().getSootClassUnsafe("java.io.FileSystem"))) {
           addInEdge(pag.nodeFactory().caseCanonicalPath(), nodeFactory.caseRet());
         }
         cl = cl.getSuperclassUnsafe();

@@ -53,6 +53,8 @@ import soot.util.MultiMap;
  *         for overwritten return types
  */
 public class FastHierarchy {
+  protected static int USE_INTERVALS_BOUNDARY = 100;
+
   protected Table<SootClass, String, SootMethod> typeToVtbl = HashBasedTable.create();
 
   /**
@@ -369,8 +371,8 @@ public class FastHierarchy {
       }
     } else {
       final Set<SootClass> impl = getAllImplementersOfInterface(parent);
-      if (impl.size() > 1000) {
-        // If we have more than 1000 entries it is quite time consuming to check each and every
+      if (impl.size() > USE_INTERVALS_BOUNDARY) {
+        // If we have more than 100 entries it is quite time consuming to check each and every
         // implementing class
         // if it is the "child" class. Therefore we use an alternative implementation which just
         // checks the client
@@ -411,23 +413,26 @@ public class FastHierarchy {
    * @return
    */
   protected boolean canStoreClassClassic(final SootClass child, final SootClass parent) {
-    SootClass sc = child;
     final boolean parentIsInterface = parent.isInterface();
-    while (sc != null) {
-      if (sc == parent) {
-        // We finally found the correct class/interface
-        return true;
-      }
-      if (parentIsInterface) {
-        // Interfaces can only extend other interfaces - therefore we only have to consider the
-        // interfaces of the child class if parent is an interface.
-        for (SootClass interf : sc.getInterfaces()) {
-          if (canStoreClassClassic(interf, parent)) {
-            return true;
+    ArrayDeque<SootClass> children = new ArrayDeque<>();
+    children.add(child);
+    SootClass p;
+    while ((p = children.poll()) != null) {
+      SootClass sc = p;
+      while (sc != null) {
+        if (sc == parent) {
+          return true;
+        }
+        if (parentIsInterface) {
+          for (SootClass interf : sc.getInterfaces()) {
+            if (interf == parent) {
+              return true;
+            }
+            children.push(interf);
           }
         }
+        sc = sc.getSuperclassUnsafe();
       }
-      sc = sc.getSuperclassUnsafe();
     }
     return false;
   }

@@ -26,7 +26,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
+
+import soot.util.FastStack;
 
 /**
  * Identifies and provides an interface to query the strongly-connected components of DirectedGraph instances.
@@ -45,7 +46,7 @@ public class StronglyConnectedComponentsFast<N> {
 
   protected int index = 0;
   protected Map<N, Integer> indexForNode, lowlinkForNode;
-  protected Stack<N> s;
+  protected FastStack<N> s;
   protected DirectedGraph<N> g;
 
   /**
@@ -55,7 +56,7 @@ public class StronglyConnectedComponentsFast<N> {
    */
   public StronglyConnectedComponentsFast(DirectedGraph<N> g) {
     this.g = g;
-    this.s = new Stack<N>();
+    this.s = new FastStack<N>();
     this.indexForNode = new HashMap<N, Integer>();
     this.lowlinkForNode = new HashMap<N, Integer>();
 

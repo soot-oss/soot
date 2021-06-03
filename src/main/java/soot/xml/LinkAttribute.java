@@ -24,10 +24,10 @@ package soot.xml;
 
 public class LinkAttribute {
 
-  private String info;
-  private int jimpleLink;
-  private int javaLink;
-  private String className;
+  private final String info;
+  private final int jimpleLink;
+  private final int javaLink;
+  private final String className;
   private final boolean isJimpleLink;
   private final boolean isJavaLink;
   private final String analysisType;
@@ -37,36 +37,36 @@ public class LinkAttribute {
     this.jimpleLink = jimpleLink;
     this.javaLink = javaLink;
     this.className = className;
-    isJimpleLink = true;
-    isJavaLink = true;
-    analysisType = type;
+    this.isJimpleLink = true;
+    this.isJavaLink = true;
+    this.analysisType = type;
   }
 
   public String info() {
-    return info;
+    return this.info;
   }
 
   public int jimpleLink() {
-    return jimpleLink;
+    return this.jimpleLink;
   }
 
   public int javaLink() {
-    return javaLink;
+    return this.javaLink;
   }
 
   public String className() {
-    return className;
+    return this.className;
   }
 
   public boolean isJimpleLink() {
-    return isJimpleLink;
+    return this.isJimpleLink;
   }
 
   public boolean isJavaLink() {
-    return isJavaLink;
+    return this.isJavaLink;
   }
 
   public String analysisType() {
-    return analysisType;
+    return this.analysisType;
   }
 }

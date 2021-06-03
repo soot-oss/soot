@@ -192,7 +192,7 @@ public class Options extends OptionsBase {
                 }<xsl:text/>
         </xsl:for-each>
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    G.v().out.println(String.format("Invalid value %s given for option -%s", value, option));
                     return false;
                 }
             }<xsl:text/>

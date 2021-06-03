@@ -33,7 +33,6 @@ import org.objectweb.asm.util.TraceClassVisitor;
  *
  */
 
-
 public class ArithmeticTest extends AbstractASMBackendTest {
 
   @Override

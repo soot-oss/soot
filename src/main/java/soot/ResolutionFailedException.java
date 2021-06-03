@@ -25,11 +25,8 @@ package soot;
 /**
  * Exception thrown when resolving a method or field reference fails.
  */
-
 public class ResolutionFailedException extends RuntimeException {
-  /**
-  * 
-  */
+
   private static final long serialVersionUID = -5920478779446526550L;
 
   protected ResolutionFailedException(String message) {

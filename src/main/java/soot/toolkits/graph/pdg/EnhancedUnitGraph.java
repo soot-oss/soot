@@ -25,7 +25,6 @@ package soot.toolkits.graph.pdg;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 
 import soot.Body;
@@ -40,7 +39,6 @@ import soot.toolkits.graph.UnitGraph;
 import soot.util.Chain;
 
 /**
- *
  * This class represents a control flow graph which behaves like an ExceptionalUnitGraph and BriefUnitGraph when there are no
  * exception handling construct in the method; at the presence of such constructs, the CFG is constructed from a brief graph
  * by adding a concise representation of the exceptional flow as well as START/STOP auxiliary nodes. In a nutshell, the
@@ -48,37 +46,28 @@ import soot.util.Chain;
  * region analysis.
  *
  * @author Hossein Sadat-Mohtasham
- *
  */
-
 public class EnhancedUnitGraph extends UnitGraph {
 
   // This keeps a map from the beginning of each guarded block
   // to the corresponding special EHNopStmt.
-  // protected Hashtable<GuardedBlock, Unit> try2nop = null;
-  protected Hashtable<Unit, Unit> try2nop = null;
+  protected final Hashtable<Unit, Unit> try2nop = new Hashtable<Unit, Unit>();
   // Keep the real header of the handler block
-  protected Hashtable<Unit, Unit> handler2header = null;
+  protected final Hashtable<Unit, Unit> handler2header = new Hashtable<Unit, Unit>();
 
   public EnhancedUnitGraph(Body body) {
     super(body);
 
-    // try2nop = new Hashtable<GuardedBlock, Unit>();
-    try2nop = new Hashtable<Unit, Unit>();
-    handler2header = new Hashtable<Unit, Unit>();
-
     // there could be a maximum of traps.size() of nop
     // units added to the CFG plus potentially START/STOP nodes.
-    int size = unitChain.size() + body.getTraps().size() + 2;
-
+    int size = (unitChain.size() + body.getTraps().size() + 2);
     unitToSuccs = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
     unitToPreds = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
 
     // Initialize all units in the unitToSuccs and unitsToPreds
-
     for (Unit u : body.getUnits()) {
-      unitToSuccs.put(u,new ArrayList<>());
-      unitToPreds.put(u,new ArrayList<>());
+      unitToSuccs.put(u, new ArrayList<>());
+      unitToPreds.put(u, new ArrayList<>());
     }
 
     /*
@@ -95,7 +84,6 @@ public class EnhancedUnitGraph extends UnitGraph {
     /**
      * Remove bogus heads (these are useless goto's)
      */
-
     removeBogusHeads();
     buildHeadsAndTails();
   }
@@ -103,7 +91,6 @@ public class EnhancedUnitGraph extends UnitGraph {
   /**
    * This method adds a STOP node to the graph, if necessary, to make the CFG single-tailed.
    */
-
   protected void handleMultipleReturns() {
     if (this.getTails().size() > 1) {
       Unit stop = new ExitStmt();
@@ -133,7 +120,6 @@ public class EnhancedUnitGraph extends UnitGraph {
   /**
    * This method removes all the heads in the CFG except the one that corresponds to the first unit in the method.
    */
-
   protected void removeBogusHeads() {
     Chain<Unit> units = body.getUnits();
     Unit trueHead = units.getFirst();
@@ -153,7 +139,6 @@ public class EnhancedUnitGraph extends UnitGraph {
               if (pred == head) {
                 tobeRemoved.add(pred);
               }
-
             }
             predOfSuccs.removeAll(tobeRemoved);
           }
@@ -174,14 +159,10 @@ public class EnhancedUnitGraph extends UnitGraph {
     MHGDominatorTree<Unit> dom = new MHGDominatorTree<Unit>(new MHGDominatorsFinder<Unit>(this));
     MHGDominatorTree<Unit> pdom = new MHGDominatorTree<Unit>(new MHGPostDominatorsFinder<Unit>(this));
 
-    // this keeps a map from the entry of a try-catch-block to a selected
-    // merge point
+    // this keeps a map from the entry of a try-catch-block to a selected merge point
     Hashtable<Unit, Unit> x2mergePoint = new Hashtable<Unit, Unit>();
 
-    List<Unit> tails = this.getTails();
-
-    TailsLoop: for (Iterator<Unit> itr = tails.iterator(); itr.hasNext();) {
-      Unit tail = itr.next();
+    TailsLoop: for (Unit tail : this.getTails()) {
       if (!(tail instanceof ThrowStmt)) {
         continue;
       }
@@ -218,19 +199,16 @@ public class EnhancedUnitGraph extends UnitGraph {
       xpdomDode = pdom.getDode(xgode);
 
       Unit mergePoint = null;
-
       if (x2mergePoint.containsKey(xgode)) {
         mergePoint = x2mergePoint.get(xgode);
       } else {
         // Now get all the children of x in the dom
-
         List<DominatorNode<Unit>> domChilds = dom.getChildrenOf(x);
 
         Unit child1god = null;
         Unit child2god = null;
 
-        for (Iterator<DominatorNode<Unit>> domItr = domChilds.iterator(); domItr.hasNext();) {
-          DominatorNode<Unit> child = domItr.next();
+        for (DominatorNode<Unit> child : domChilds) {
           Unit childGode = child.getGode();
           DominatorNode<Unit> childpdomDode = pdom.getDode(childGode);
 
@@ -253,7 +231,6 @@ public class EnhancedUnitGraph extends UnitGraph {
           } else if (child2god == null) {
             child2god = childGode;
           }
-
         }
 
         if (mergePoint == null) {
@@ -272,12 +249,11 @@ public class EnhancedUnitGraph extends UnitGraph {
               comParent = comParent.getParent();
             }
           } else if (child1god != null || child2god != null) {
-
             DominatorNode<Unit> y = null;
-
             if (child1god != null) {
               y = pdom.getDode(child1god);
-            } else if (child2god != null) {
+            } else {
+              assert (child2god != null);
               y = pdom.getDode(child2god);
             }
 
@@ -295,11 +271,7 @@ public class EnhancedUnitGraph extends UnitGraph {
               }
               yDodeInDom = dom.getDode(y.getGode());
             }
-            if (y != null) {
-              mergePoint = y.getGode();
-            } else {
-              mergePoint = initialY.getGode();
-            }
+            mergePoint = y == null ? initialY.getGode() : y.getGode();
           }
         }
 
@@ -329,7 +301,6 @@ public class EnhancedUnitGraph extends UnitGraph {
               }
 
               DominatorNode<Unit> y = pdom.getDode(u);
-
               while (dom.isDominatorOf(x, y)) {
                 y = y.getParent();
                 // If this is a case where the childs of a
@@ -374,31 +345,25 @@ public class EnhancedUnitGraph extends UnitGraph {
         this.unitToPreds.put(mergePoint, mergePreds);
       }
       mergePreds.add(tail);
-
     }
-
   }
 
   /**
    * Add an exceptional flow edge for each handler from the corresponding auxiliary nop node to the beginning of the handler.
    */
   protected void addAuxiliaryExceptionalEdges() {
-
     // Do some preparation for each trap in the method
-    for (Iterator<Trap> trapIt = body.getTraps().iterator(); trapIt.hasNext();) {
-      Trap trap = trapIt.next();
-
-      /**
-       * Find the real header of this handler block
-       *
-       */
-      Unit handler = trap.getHandlerUnit();
+    for (Trap trap : body.getTraps()) {
+      // Find the real header of this handler block
+      final Unit handler = trap.getHandlerUnit();
 
       Unit pred = handler;
-      while (this.unitToPreds.get(pred).size() > 0) {
-        pred = this.unitToPreds.get(pred).get(0);
+      {
+        List<Unit> preds;
+        while (!(preds = this.unitToPreds.get(pred)).isEmpty()) {
+          pred = preds.get(0);
+        }
       }
-
       handler2header.put(handler, pred);
       /***********/
 
@@ -410,23 +375,17 @@ public class EnhancedUnitGraph extends UnitGraph {
        * ehnop = try2nop.get(gb); else { ehnop = new EHNopStmt(); try2nop.put(gb, ehnop); }
        */
 
-      Unit ehnop;
-      if (try2nop.containsKey(trap.getBeginUnit())) {
-        ehnop = try2nop.get(trap.getBeginUnit());
-      } else {
-        ehnop = new EHNopStmt();
-        try2nop.put(trap.getBeginUnit(), ehnop);
+      Unit trapBegin = trap.getBeginUnit();
+      if (!try2nop.containsKey(trapBegin)) {
+        try2nop.put(trapBegin, new EHNopStmt());
       }
-
     }
 
     // Only add a nop once
     Hashtable<Unit, Boolean> nop2added = new Hashtable<Unit, Boolean>();
 
     // Now actually add the edge
-    AddExceptionalEdge: for (Iterator<Trap> trapIt = body.getTraps().iterator(); trapIt.hasNext();) {
-
-      Trap trap = trapIt.next();
+    AddExceptionalEdge: for (Trap trap : body.getTraps()) {
       Unit b = trap.getBeginUnit();
       Unit handler = trap.getHandlerUnit();
       handler = handler2header.get(handler);
@@ -440,22 +399,18 @@ public class EnhancedUnitGraph extends UnitGraph {
        * The work-around is to not process a trap that has already an edge pointing to it.
        *
        */
-
       if (this.unitToPreds.containsKey(handler)) {
-        List<Unit> handlerPreds = this.unitToPreds.get(handler);
-        for (Iterator<Unit> preditr = handlerPreds.iterator(); preditr.hasNext();) {
-          if (try2nop.containsValue(preditr.next())) {
+        for (Unit u : this.unitToPreds.get(handler)) {
+          if (try2nop.containsValue(u)) {
             continue AddExceptionalEdge;
           }
         }
-
       } else {
         continue;
       }
 
       // GuardedBlock gb = new GuardedBlock(b, e);
       Unit ehnop = try2nop.get(b);
-
       if (!nop2added.containsKey(ehnop)) {
         List<Unit> predsOfB = getPredsOf(b);
         List<Unit> predsOfehnop = new ArrayList<Unit>(predsOfB);
@@ -472,9 +427,9 @@ public class EnhancedUnitGraph extends UnitGraph {
         }
 
         predsOfB.clear();
-        predsOfB.add((Unit) ehnop);
+        predsOfB.add(ehnop);
 
-        this.unitToPreds.put((Unit) ehnop, predsOfehnop);
+        this.unitToPreds.put(ehnop, predsOfehnop);
       }
 
       List<Unit> succsOfehnop = this.unitToSuccs.get(ehnop);
@@ -495,17 +450,15 @@ public class EnhancedUnitGraph extends UnitGraph {
         this.unitToPreds.put(handler, predsOfhandler);
       }
 
-      predsOfhandler.add((Unit) ehnop);
+      predsOfhandler.add(ehnop);
 
       Chain<Unit> units = body.getUnits().getNonPatchingChain();
-
       if (!units.contains(ehnop)) {
-        units.insertBefore((Unit) ehnop, b);
+        units.insertBefore(ehnop, b);
       }
 
       nop2added.put(ehnop, Boolean.TRUE);
     }
-
   }
 }
 
@@ -514,7 +467,6 @@ public class EnhancedUnitGraph extends UnitGraph {
  * later updates.
  *
  * @author Hossein Sadat-Mohtasham
- *
  */
 class GuardedBlock {
 
@@ -525,6 +477,7 @@ class GuardedBlock {
     this.end = e;
   }
 
+  @Override
   public int hashCode() {
     // Following Joshua Bloch's recipe in "Effective Java", Item 8:
     int result = 17;
@@ -533,6 +486,7 @@ class GuardedBlock {
     return result;
   }
 
+  @Override
   public boolean equals(Object rhs) {
     if (rhs == this) {
       return true;
@@ -541,89 +495,87 @@ class GuardedBlock {
       return false;
     }
     GuardedBlock rhsGB = (GuardedBlock) rhs;
-    return ((this.start == rhsGB.start) && (this.end == rhsGB.end));
+    return (this.start == rhsGB.start) && (this.end == rhsGB.end);
   }
 }
 
 /**
- *
+ * This class represents a special nop statement that marks the beginning of a try block at the Jimple level. This is going
+ * to be used in the CFG enhancement.
+ * 
  * @author Hossein Sadat-Mohtasham Feb 2010
- *
- *         This class represents a special nop statement that marks the beginning of a try block at the Jimple level. This is
- *         going to be used in the CFG enhancement.
- *
  */
-
 @SuppressWarnings("serial")
 class EHNopStmt extends JNopStmt {
   public EHNopStmt() {
   }
 
+  @Override
   public Object clone() {
     return new EHNopStmt();
   }
 
+  @Override
   public boolean fallsThrough() {
     return true;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }
-
 }
 
 /**
+ * This class represents a special nop statement that marks the beginning of method body at the Jimple level. This is going
+ * to be used in the CFG enhancement.
  *
  * @author Hossein Sadat-Mohtasham Feb 2010
- *
- *         This class represents a special nop statement that marks the beginning of method body at the Jimple level. This is
- *         going to be used in the CFG enhancement.
- *
  */
 @SuppressWarnings("serial")
 class EntryStmt extends JNopStmt {
   public EntryStmt() {
   }
 
+  @Override
   public Object clone() {
     return new EntryStmt();
   }
 
+  @Override
   public boolean fallsThrough() {
     return true;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }
-
 }
 
 /**
+ * This class represents a special nop statement that marks the exit of method body at the Jimple level. This is going to be
+ * used in the CFG enhancement.
  *
  * @author Hossein Sadat-Mohtasham Feb 2010
- *
- *         This class represents a special nop statement that marks the exit of method body at the Jimple level. This is
- *         going to be used in the CFG enhancement.
- *
  */
-
 @SuppressWarnings("serial")
 class ExitStmt extends JNopStmt {
   public ExitStmt() {
   }
 
+  @Override
   public Object clone() {
     return new ExitStmt();
   }
 
+  @Override
   public boolean fallsThrough() {
     return true;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }
-
 }

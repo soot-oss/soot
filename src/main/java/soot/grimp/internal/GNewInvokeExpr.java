@@ -25,13 +25,13 @@ package soot.grimp.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import soot.RefType;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.Value;
-import soot.ValueBox;
 import soot.grimp.Grimp;
 import soot.grimp.GrimpValueSwitch;
 import soot.grimp.NewInvokeExpr;
@@ -40,113 +40,108 @@ import soot.jimple.internal.AbstractInvokeExpr;
 import soot.util.Switch;
 
 public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr, Precedence {
-  RefType type;
 
-  public GNewInvokeExpr(RefType type, SootMethodRef methodRef, List args) {
+  protected RefType type;
+
+  public GNewInvokeExpr(RefType type, SootMethodRef methodRef, List<? extends Value> args) {
     super(methodRef, new ExprBox[args.size()]);
 
     if (methodRef != null && methodRef.isStatic()) {
       throw new RuntimeException("wrong static-ness");
     }
 
-    this.methodRef = methodRef;
     this.type = type;
 
-    for (int i = 0; i < args.size(); i++) {
-      this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
+    final Grimp grmp = Grimp.v();
+    for (ListIterator<? extends Value> it = args.listIterator(); it.hasNext();) {
+      Value v = it.next();
+      this.argBoxes[it.previousIndex()] = grmp.newExprBox(v);
     }
   }
 
-  /*
-   * protected GNewInvokeExpr(RefType type, ExprBox[] argBoxes) { this.type = type; this.argBoxes = argBoxes; }
-   */
-
+  @Override
   public RefType getBaseType() {
     return type;
   }
 
+  @Override
   public void setBaseType(RefType type) {
     this.type = type;
   }
 
+  @Override
   public Type getType() {
     return type;
   }
 
+  @Override
   public int getPrecedence() {
     return 850;
   }
 
+  @Override
   public String toString() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buf = new StringBuilder("new ");
 
-    buffer.append("new " + type.toString() + "(");
-
+    buf.append(type.toString()).append('(');
     if (argBoxes != null) {
-      for (int i = 0; i < argBoxes.length; i++) {
+      for (int i = 0, e = argBoxes.length; i < e; i++) {
         if (i != 0) {
-          buffer.append(", ");
+          buf.append(", ");
         }
-
-        buffer.append(argBoxes[i].getValue().toString());
+        buf.append(argBoxes[i].getValue().toString());
       }
     }
+    buf.append(')');
 
-    buffer.append(")");
-
-    return buffer.toString();
+    return buf.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    up.literal("new");
-    up.literal(" ");
+    up.literal("new ");
     up.type(type);
     up.literal("(");
-
     if (argBoxes != null) {
-      for (int i = 0; i < argBoxes.length; i++) {
+      for (int i = 0, e = argBoxes.length; i < e; i++) {
         if (i != 0) {
           up.literal(", ");
         }
-
         argBoxes[i].toString(up);
       }
     }
-
     up.literal(")");
   }
 
+  @Override
   public void apply(Switch sw) {
     ((GrimpValueSwitch) sw).caseNewInvokeExpr(this);
   }
 
+  @Override
   public Object clone() {
-    ArrayList clonedArgs = new ArrayList(getArgCount());
-
-    for (int i = 0; i < getArgCount(); i++) {
-      clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
-
+    final int count = getArgCount();
+    List<Value> clonedArgs = new ArrayList<Value>(count);
+    for (int i = 0; i < count; i++) {
+      clonedArgs.add(Grimp.cloneIfNecessary(getArg(i)));
     }
-
     return new GNewInvokeExpr(getBaseType(), methodRef, clonedArgs);
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof GNewInvokeExpr) {
       GNewInvokeExpr ie = (GNewInvokeExpr) o;
-      if (!(getMethod().equals(ie.getMethod())
-          && (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+      if ((this.argBoxes == null ? 0 : this.argBoxes.length) != (ie.argBoxes == null ? 0 : ie.argBoxes.length)
+          || !this.getMethod().equals(ie.getMethod()) || !this.type.equals(ie.type)) {
         return false;
       }
-      if (argBoxes != null) {
-        for (ValueBox element : argBoxes) {
-          if (!(element.getValue().equivTo(element.getValue()))) {
+      if (this.argBoxes != null) {
+        for (int i = 0, e = this.argBoxes.length; i < e; i++) {
+          if (!this.argBoxes[i].getValue().equivTo(ie.argBoxes[i].getValue())) {
             return false;
           }
         }
-      }
-      if (!type.equals(ie.type)) {
-        return false;
       }
       return true;
     }
@@ -154,6 +149,7 @@ public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr,
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return getMethod().equivHashCode();
   }
