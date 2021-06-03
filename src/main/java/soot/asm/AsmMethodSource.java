@@ -1,5 +1,27 @@
 package soot.asm;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
@@ -271,28 +293,6 @@ import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
 import soot.util.Chain;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
 /**
  * Generates Jimple bodies from bytecode.
  *
@@ -302,14 +302,17 @@ final class AsmMethodSource implements MethodSource {
   private static final Logger logger = LoggerFactory.getLogger(AsmMethodSource.class);
 
   private static final Operand DWORD_DUMMY = new Operand(null, null);
-  private final String module;
+
   private static final String METAFACTORY_SIGNATURE = "<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite "
-      + "metafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType," + ""
+      + "metafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType,"
       + "java.lang.invoke.MethodType,java.lang.invoke.MethodHandle,java.lang.invoke.MethodType)>";
+
   private static final String ALT_METAFACTORY_SIGNATURE = "<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite "
       + "altMetafactory(java.lang.invoke.MethodHandles$Lookup,"
       + "java.lang.String,java.lang.invoke.MethodType,java.lang.Object[])>";
+
   /* -const fields- */
+  private final String module;
   private final int maxLocals;
   private final InsnList instructions;
   private final List<LocalVariableNode> localVars;
@@ -317,6 +320,7 @@ final class AsmMethodSource implements MethodSource {
   private final Set<LabelNode> inlineExceptionLabels = new LinkedHashSet<LabelNode>();
   private final Map<LabelNode, Unit> inlineExceptionHandlers = new LinkedHashMap<LabelNode, Unit>();
   private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
+
   /* -state fields- */
   private int nextLocal;
   private Map<Integer, Local> locals;
@@ -811,50 +815,65 @@ final class AsmMethodSource implements MethodSource {
       }
     }
 
-    if (op == DUP) {
-      // val -> val, val
-      push(dupd);
-      push(dupd);
-    } else if (op == DUP_X1) {
-      // val2, val1 -> val1, val2, val1
-      // value1, value2 must not be of type double or long
-      Operand o2 = popImmediate();
-      push(dupd);
-      push(o2);
-      push(dupd);
-    } else if (op == DUP_X2) {
-      // value3, value2, value1 -> value1, value3, value2, value1
-      Operand o2 = popImmediate();
-      Operand o3 = peek() == DWORD_DUMMY ? pop() : popImmediate();
-      push(dupd);
-      push(o3);
-      push(o2);
-      push(dupd);
-    } else if (op == DUP2) {
-      // value2, value1 -> value2, value1, value2, value1
-      push(dupd2);
-      push(dupd);
-      push(dupd2);
-      push(dupd);
-    } else if (op == DUP2_X1) {
-      // value3, value2, value1 -> value2, value1, value3, value2, value1
-      // Attention: value2 may be
-      Operand o2 = popImmediate();
-      push(dupd2);
-      push(dupd);
-      push(o2);
-      push(dupd2);
-      push(dupd);
-    } else if (op == DUP2_X2) {
-      // (value4, value3), (value2, value1) -> (value2, value1), (value4, value3), (value2, value1)
-      Operand o2 = popImmediate();
-      Operand o2h = peek() == DWORD_DUMMY ? pop() : popImmediate();
-      push(dupd2);
-      push(dupd);
-      push(o2h);
-      push(o2);
-      push(dupd2);
-      push(dupd);
+    switch (op) {
+      case DUP: {
+        // val -> val, val
+        push(dupd);
+        push(dupd);
+        break;
+      }
+      case DUP_X1: {
+        // val2, val1 -> val1, val2, val1
+        // value1, value2 must not be of type double or long
+        Operand o2 = popImmediate();
+        push(dupd);
+        push(o2);
+        push(dupd);
+        break;
+      }
+      case DUP_X2: {
+        // value3, value2, value1 -> value1, value3, value2, value1
+        Operand o2 = popImmediate();
+        Operand o3 = peek() == DWORD_DUMMY ? pop() : popImmediate();
+        push(dupd);
+        push(o3);
+        push(o2);
+        push(dupd);
+        break;
+      }
+      case DUP2: {
+        // value2, value1 -> value2, value1, value2, value1
+        push(dupd2);
+        push(dupd);
+        push(dupd2);
+        push(dupd);
+        break;
+      }
+      case DUP2_X1: {
+        // value3, value2, value1 -> value2, value1, value3, value2, value1
+        // Attention: value2 may be
+        Operand o2 = popImmediate();
+        push(dupd2);
+        push(dupd);
+        push(o2);
+        push(dupd2);
+        push(dupd);
+        break;
+      }
+      case DUP2_X2: {
+        // (value4, value3), (value2, value1) -> (value2, value1), (value4, value3), (value2, value1)
+        Operand o2 = popImmediate();
+        Operand o2h = peek() == DWORD_DUMMY ? pop() : popImmediate();
+        push(dupd2);
+        push(dupd);
+        push(o2h);
+        push(o2);
+        push(dupd2);
+        push(dupd);
+        break;
+      }
+      default:
+        break;
     }
   }
 
@@ -970,22 +989,38 @@ final class AsmMethodSource implements MethodSource {
     Operand opr;
     if (out == null) {
       Type totype;
-      if (op == I2L || op == F2L || op == D2L) {
-        totype = LongType.v();
-      } else if (op == L2I || op == F2I || op == D2I) {
-        totype = IntType.v();
-      } else if (op == I2F || op == L2F || op == D2F) {
-        totype = FloatType.v();
-      } else if (op == I2D || op == L2D || op == F2D) {
-        totype = DoubleType.v();
-      } else if (op == I2B) {
-        totype = ByteType.v();
-      } else if (op == I2S) {
-        totype = ShortType.v();
-      } else if (op == I2C) {
-        totype = CharType.v();
-      } else {
-        throw new AssertionError("Unknonw prim cast op: " + op);
+      switch (op) {
+        case I2L:
+        case F2L:
+        case D2L:
+          totype = LongType.v();
+          break;
+        case L2I:
+        case F2I:
+        case D2I:
+          totype = IntType.v();
+          break;
+        case I2F:
+        case L2F:
+        case D2F:
+          totype = FloatType.v();
+          break;
+        case I2D:
+        case L2D:
+        case F2D:
+          totype = DoubleType.v();
+          break;
+        case I2B:
+          totype = ByteType.v();
+          break;
+        case I2S:
+          totype = ShortType.v();
+          break;
+        case I2C:
+          totype = CharType.v();
+          break;
+        default:
+          throw new AssertionError("Unknonw prim cast op: " + op);
       }
       Operand val = fromd ? popImmediateDual() : popImmediate();
       CastExpr cast = Jimple.v().newCastExpr(val.stackOrValue(), totype);
@@ -1174,48 +1209,66 @@ final class AsmMethodSource implements MethodSource {
       if (op >= IF_ICMPEQ && op <= IF_ACMPNE) {
         Operand val1 = popImmediate();
         Value v1 = val1.stackOrValue();
-        if (op == IF_ICMPEQ) {
-          cond = Jimple.v().newEqExpr(v1, v);
-        } else if (op == IF_ICMPNE) {
-          cond = Jimple.v().newNeExpr(v1, v);
-        } else if (op == IF_ICMPLT) {
-          cond = Jimple.v().newLtExpr(v1, v);
-        } else if (op == IF_ICMPGE) {
-          cond = Jimple.v().newGeExpr(v1, v);
-        } else if (op == IF_ICMPGT) {
-          cond = Jimple.v().newGtExpr(v1, v);
-        } else if (op == IF_ICMPLE) {
-          cond = Jimple.v().newLeExpr(v1, v);
-        } else if (op == IF_ACMPEQ) {
-          cond = Jimple.v().newEqExpr(v1, v);
-        } else if (op == IF_ACMPNE) {
-          cond = Jimple.v().newNeExpr(v1, v);
-        } else {
-          throw new AssertionError("Unknown if op: " + op);
+        switch (op) {
+          case IF_ICMPEQ:
+            cond = Jimple.v().newEqExpr(v1, v);
+            break;
+          case IF_ICMPNE:
+            cond = Jimple.v().newNeExpr(v1, v);
+            break;
+          case IF_ICMPLT:
+            cond = Jimple.v().newLtExpr(v1, v);
+            break;
+          case IF_ICMPGE:
+            cond = Jimple.v().newGeExpr(v1, v);
+            break;
+          case IF_ICMPGT:
+            cond = Jimple.v().newGtExpr(v1, v);
+            break;
+          case IF_ICMPLE:
+            cond = Jimple.v().newLeExpr(v1, v);
+            break;
+          case IF_ACMPEQ:
+            cond = Jimple.v().newEqExpr(v1, v);
+            break;
+          case IF_ACMPNE:
+            cond = Jimple.v().newNeExpr(v1, v);
+            break;
+          default:
+            throw new AssertionError("Unknown if op: " + op);
         }
         val1.addBox(cond.getOp1Box());
         val.addBox(cond.getOp2Box());
         frame.boxes(cond.getOp2Box(), cond.getOp1Box());
         frame.in(val, val1);
       } else {
-        if (op == IFEQ) {
-          cond = Jimple.v().newEqExpr(v, IntConstant.v(0));
-        } else if (op == IFNE) {
-          cond = Jimple.v().newNeExpr(v, IntConstant.v(0));
-        } else if (op == IFLT) {
-          cond = Jimple.v().newLtExpr(v, IntConstant.v(0));
-        } else if (op == IFGE) {
-          cond = Jimple.v().newGeExpr(v, IntConstant.v(0));
-        } else if (op == IFGT) {
-          cond = Jimple.v().newGtExpr(v, IntConstant.v(0));
-        } else if (op == IFLE) {
-          cond = Jimple.v().newLeExpr(v, IntConstant.v(0));
-        } else if (op == IFNULL) {
-          cond = Jimple.v().newEqExpr(v, NullConstant.v());
-        } else if (op == IFNONNULL) {
-          cond = Jimple.v().newNeExpr(v, NullConstant.v());
-        } else {
-          throw new AssertionError("Unknown if op: " + op);
+        switch (op) {
+          case IFEQ:
+            cond = Jimple.v().newEqExpr(v, IntConstant.v(0));
+            break;
+          case IFNE:
+            cond = Jimple.v().newNeExpr(v, IntConstant.v(0));
+            break;
+          case IFLT:
+            cond = Jimple.v().newLtExpr(v, IntConstant.v(0));
+            break;
+          case IFGE:
+            cond = Jimple.v().newGeExpr(v, IntConstant.v(0));
+            break;
+          case IFGT:
+            cond = Jimple.v().newGtExpr(v, IntConstant.v(0));
+            break;
+          case IFLE:
+            cond = Jimple.v().newLeExpr(v, IntConstant.v(0));
+            break;
+          case IFNULL:
+            cond = Jimple.v().newEqExpr(v, NullConstant.v());
+            break;
+          case IFNONNULL:
+            cond = Jimple.v().newNeExpr(v, NullConstant.v());
+            break;
+          default:
+            throw new AssertionError("Unknown if op: " + op);
         }
         val.addBox(cond.getOp1Box());
         frame.boxes(cond.getOp1Box());
@@ -1329,12 +1382,11 @@ final class AsmMethodSource implements MethodSource {
       if (clsName.charAt(0) == '[') {
         clsName = "java.lang.Object";
       }
-      SootClass cls = this.getClassFromScene(clsName);
-
-      List<Type> sigTypes
-          = AsmUtil.toJimpleDesc(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+      List<Type> sigTypes =
+          AsmUtil.toJimpleDesc(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
       returnType = sigTypes.remove(sigTypes.size() - 1);
-      SootMethodRef ref = Scene.v().makeMethodRef(cls, insn.name, sigTypes, returnType, !instance);
+      SootMethodRef ref =
+          Scene.v().makeMethodRef(this.getClassFromScene(clsName), insn.name, sigTypes, returnType, !instance);
       int nrArgs = sigTypes.size();
       final Operand[] args;
       List<Value> argList = Collections.emptyList();
@@ -1366,14 +1418,18 @@ final class AsmMethodSource implements MethodSource {
       } else {
         Local base = (Local) args[args.length - 1].stackOrValue();
         InstanceInvokeExpr iinvoke;
-        if (op == INVOKESPECIAL) {
-          iinvoke = Jimple.v().newSpecialInvokeExpr(base, ref, argList);
-        } else if (op == INVOKEVIRTUAL) {
-          iinvoke = Jimple.v().newVirtualInvokeExpr(base, ref, argList);
-        } else if (op == INVOKEINTERFACE) {
-          iinvoke = Jimple.v().newInterfaceInvokeExpr(base, ref, argList);
-        } else {
-          throw new AssertionError("Unknown invoke op:" + op);
+        switch (op) {
+          case INVOKESPECIAL:
+            iinvoke = Jimple.v().newSpecialInvokeExpr(base, ref, argList);
+            break;
+          case INVOKEVIRTUAL:
+            iinvoke = Jimple.v().newVirtualInvokeExpr(base, ref, argList);
+            break;
+          case INVOKEINTERFACE:
+            iinvoke = Jimple.v().newInterfaceInvokeExpr(base, ref, argList);
+            break;
+          default:
+            throw new AssertionError("Unknown invoke op:" + op);
         }
         boxes[boxes.length - 1] = iinvoke.getBaseBox();
         args[args.length - 1].addBox(boxes[boxes.length - 1]);
@@ -1437,9 +1493,7 @@ final class AsmMethodSource implements MethodSource {
       for (Object bsmArg : insn.bsmArgs) {
         bsmMethodArgs.add(toSootValue(bsmArg));
       }
-
       // create ref to actual method
-      SootClass bclass = Scene.v().getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
 
       // Generate parameters & returnType & parameterTypes
       Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
@@ -1464,26 +1518,23 @@ final class AsmMethodSource implements MethodSource {
       returnType = types[types.length - 1];
 
       SootMethodRef bootstrap_model = null;
-
       if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "model-lambdametafactory")) {
         String bsmMethodRefStr = bsmMethodRef.toString();
         if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE)) {
           SootClass enclosingClass = body.getMethod().getDeclaringClass();
-          bootstrap_model
-              = LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types, enclosingClass);
+          bootstrap_model =
+              LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types, enclosingClass);
         }
       }
 
       InvokeExpr indy;
-
       if (bootstrap_model != null) {
         indy = Jimple.v().newStaticInvokeExpr(bootstrap_model, methodArgs);
       } else {
         // if not mimicking the LambdaMetaFactory, we model invokeDynamic method refs as static
-        // method references
-        // of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
+        // method references of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
+        SootClass bclass = Scene.v().getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
         SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);
-
         indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmMethodArgs, methodRef, insn.bsm.getTag(), methodArgs);
       }
 
@@ -1621,8 +1672,8 @@ final class AsmMethodSource implements MethodSource {
     Operand[] out = frame.out();
     Operand opr;
     if (out == null) {
-      Type t
-          = AsmUtil.toJimpleRefType(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+      Optional<String> module = Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName);
+      Type t = AsmUtil.toJimpleRefType(insn.desc, module);
       Value val;
       if (op == NEW) {
         val = Jimple.v().newNewExpr((RefType) t);
@@ -1630,20 +1681,27 @@ final class AsmMethodSource implements MethodSource {
         Operand op1 = popImmediate();
         Value v1 = op1.stackOrValue();
         ValueBox vb;
-        if (op == ANEWARRAY) {
-          NewArrayExpr expr = Jimple.v().newNewArrayExpr(t, v1);
-          vb = expr.getSizeBox();
-          val = expr;
-        } else if (op == CHECKCAST) {
-          CastExpr expr = Jimple.v().newCastExpr(v1, t);
-          vb = expr.getOpBox();
-          val = expr;
-        } else if (op == INSTANCEOF) {
-          InstanceOfExpr expr = Jimple.v().newInstanceOfExpr(v1, t);
-          vb = expr.getOpBox();
-          val = expr;
-        } else {
-          throw new AssertionError("Unknown type op: " + op);
+        switch (op) {
+          case ANEWARRAY: {
+            NewArrayExpr expr = Jimple.v().newNewArrayExpr(t, v1);
+            vb = expr.getSizeBox();
+            val = expr;
+            break;
+          }
+          case CHECKCAST: {
+            CastExpr expr = Jimple.v().newCastExpr(v1, t);
+            vb = expr.getOpBox();
+            val = expr;
+            break;
+          }
+          case INSTANCEOF: {
+            InstanceOfExpr expr = Jimple.v().newInstanceOfExpr(v1, t);
+            vb = expr.getOpBox();
+            val = expr;
+            break;
+          }
+          default:
+            throw new AssertionError("Unknown type op: " + op);
         }
         op1.addBox(vb);
         frame.in(op1);
@@ -1916,11 +1974,9 @@ final class AsmMethodSource implements MethodSource {
 
   private boolean checkInlineExceptionHandler(LabelNode ln) {
     // If this label is reachable through an exception and through normal
-    // code, we have to split the exceptional case (with the exception on
-    // the stack) from the normal fall-through case without anything on the
-    // stack.
-    for (Iterator<AbstractInsnNode> it = instructions.iterator(); it.hasNext();) {
-      AbstractInsnNode node = it.next();
+    // code, we have to split the exceptional case (with the exception on the
+    // stack) from the normal fall-through case without anything on the stack.
+    for (AbstractInsnNode node : instructions) {
       if (node instanceof JumpInsnNode) {
         if (((JumpInsnNode) node).label == ln) {
           inlineExceptionLabels.add(ln);
@@ -2123,7 +2179,8 @@ final class AsmMethodSource implements MethodSource {
     if (!m.isConcrete()) {
       return null;
     }
-    JimpleBody jb = Jimple.v().newBody(m);
+    final Jimple jimp = Jimple.v();
+    JimpleBody jb = jimp.newBody(m);
     /* initialize */
     int nrInsn = instructions.size();
     nextLocal = maxLocals;
@@ -2135,7 +2192,7 @@ final class AsmMethodSource implements MethodSource {
     body = jb;
     /* retrieve all trap handlers */
     for (TryCatchBlockNode tc : tryCatchBlocks) {
-      trapHandlers.put(tc.handler, Jimple.v().newStmtBox(null));
+      trapHandlers.put(tc.handler, jimp.newStmtBox(null));
     }
     /* convert instructions */
     try {
