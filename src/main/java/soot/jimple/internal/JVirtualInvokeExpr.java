@@ -46,9 +46,9 @@ public class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr {
       sc.checkLevelIgnoreResolving(SootClass.HIERARCHY);
       // now check if the class is valid
       if (sc.isInterface()) {
-        String path = sc.hasTag("SourceFileTag") ? ((SourceFileTag) sc.getTag("SourceFileTag")).getAbsolutePath() : "uknown";
+        SourceFileTag tag = (SourceFileTag) sc.getTag(SourceFileTag.NAME);
         throw new RuntimeException("Trying to create virtual invoke expression for interface type (" + sc.getName()
-            + " in file " + path + "). Use JInterfaceInvokeExpr instead!");
+            + " in file " + (tag != null ? tag.getAbsolutePath() : "unknown") + "). Use JInterfaceInvokeExpr instead!");
       }
     }
 

@@ -518,7 +518,7 @@ final class AsmMethodSource implements MethodSource {
 
   void setUnit(AbstractInsnNode insn, Unit u) {
     if (Options.v().keep_line_number() && lastLineNumber >= 0) {
-      Tag lineTag = u.getTag("LineNumberTag");
+      Tag lineTag = u.getTag(LineNumberTag.NAME);
       if (lineTag == null) {
         lineTag = new LineNumberTag(lastLineNumber);
         u.addTag(lineTag);

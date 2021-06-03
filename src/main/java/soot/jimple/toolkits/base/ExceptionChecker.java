@@ -48,6 +48,7 @@ import soot.jimple.InvokeStmt;
 import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
 import soot.tagkit.SourceLnPosTag;
+import soot.tagkit.ThrowCreatedByCompilerTag;
 import soot.util.NumberedString;
 
 public class ExceptionChecker extends BodyTransformer {
@@ -83,7 +84,7 @@ public class ExceptionChecker extends BodyTransformer {
     }
     if (reporter != null) {
       reporter.reportError(new ExceptionCheckerError(b.getMethod(), opType.getSootClass(), ts,
-          (SourceLnPosTag) ts.getOpBox().getTag("SourceLnPosTag")));
+          (SourceLnPosTag) ts.getOpBox().getTag(SourceLnPosTag.NAME)));
     }
   }
 
@@ -124,7 +125,7 @@ public class ExceptionChecker extends BodyTransformer {
 
   // is the throw created by the compiler
   protected boolean isThrowFromCompiler(ThrowStmt ts) {
-    return ts.hasTag("ThrowCreatedByCompilerTag");
+    return ts.hasTag(ThrowCreatedByCompilerTag.NAME);
   }
 
   // is the throw caught inside the method
@@ -215,11 +216,11 @@ public class ExceptionChecker extends BodyTransformer {
         }
         if (reporter != null) {
           if (s instanceof InvokeStmt) {
-            reporter
-                .reportError(new ExceptionCheckerError(b.getMethod(), sc, s, (SourceLnPosTag) s.getTag("SourceLnPosTag")));
+            reporter.reportError(
+                new ExceptionCheckerError(b.getMethod(), sc, s, (SourceLnPosTag) s.getTag(SourceLnPosTag.NAME)));
           } else if (s instanceof AssignStmt) {
             reporter.reportError(new ExceptionCheckerError(b.getMethod(), sc, s,
-                (SourceLnPosTag) ((AssignStmt) s).getRightOpBox().getTag("SourceLnPosTag")));
+                (SourceLnPosTag) ((AssignStmt) s).getRightOpBox().getTag(SourceLnPosTag.NAME)));
           }
         }
       }

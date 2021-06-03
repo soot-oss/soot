@@ -274,8 +274,7 @@ public class DavaPrinter {
         continue;
       }
 
-      final Type fieldType = f.getType();
-
+      Type fieldType = f.getType();
       String qualifiers = (Modifier.toString(f.getModifiers()) + " "
           + RemoveFullyQualifiedName.getReducedName(importList, fieldType.toString(), fieldType)).trim();
 
@@ -287,37 +286,7 @@ public class DavaPrinter {
       }
 
       if (f.isFinal() && f.isStatic()) {
-        if (fieldType instanceof DoubleType && f.hasTag("DoubleConstantValueTag")) {
-          double val = ((DoubleConstantValueTag) f.getTag("DoubleConstantValueTag")).getDoubleValue();
-          out.println("    " + declaration + " = " + val + ';');
-        } else if (fieldType instanceof FloatType && f.hasTag("FloatConstantValueTag")) {
-          float val = ((FloatConstantValueTag) f.getTag("FloatConstantValueTag")).getFloatValue();
-          out.println("    " + declaration + " = " + val + "f;");
-        } else if (fieldType instanceof LongType && f.hasTag("LongConstantValueTag")) {
-          long val = ((LongConstantValueTag) f.getTag("LongConstantValueTag")).getLongValue();
-          out.println("    " + declaration + " = " + val + "l;");
-        } else if (fieldType instanceof CharType && f.hasTag("IntegerConstantValueTag")) {
-          int val = ((IntegerConstantValueTag) f.getTag("IntegerConstantValueTag")).getIntValue();
-          out.println("    " + declaration + " = '" + ((char) val) + "';");
-        } else if (fieldType instanceof BooleanType && f.hasTag("IntegerConstantValueTag")) {
-          int val = ((IntegerConstantValueTag) f.getTag("IntegerConstantValueTag")).getIntValue();
-          if (val == 0) {
-            out.println("    " + declaration + " = false;");
-          } else {
-            out.println("    " + declaration + " = true;");
-          }
-        } else if ((fieldType instanceof IntType || fieldType instanceof ByteType || fieldType instanceof ShortType)
-            && f.hasTag("IntegerConstantValueTag")) {
-          int val = ((IntegerConstantValueTag) f.getTag("IntegerConstantValueTag")).getIntValue();
-          out.println("    " + declaration + " = " + val + ';');
-        } else if (f.hasTag("StringConstantValueTag")) {
-          String val = ((StringConstantValueTag) f.getTag("StringConstantValueTag")).getStringValue();
-          out.println("    " + declaration + " = \"" + val + "\";");
-        } else {
-          // System.out.println("Couldnt find type of
-          // field"+f.getDeclaration());
-          out.println("    " + declaration + ';');
-        }
+        printTags(f, declaration, out);
       } else {
         out.println("    " + declaration + ';');
       }
@@ -382,6 +351,55 @@ public class DavaPrinter {
     }
 
     out.println("}");
+  }
+
+  private void printTags(SootField f, String declaration, PrintWriter out) {
+    Type fieldType = f.getType();
+    if (fieldType instanceof DoubleType) {
+      DoubleConstantValueTag t = (DoubleConstantValueTag) f.getTag(DoubleConstantValueTag.NAME);
+      if (t != null) {
+        out.println("    " + declaration + " = " + t.getDoubleValue() + ';');
+        return;
+      }
+    } else if (fieldType instanceof FloatType) {
+      FloatConstantValueTag t = (FloatConstantValueTag) f.getTag(FloatConstantValueTag.NAME);
+      if (t != null) {
+        out.println("    " + declaration + " = " + t.getFloatValue() + "f;");
+        return;
+      }
+    } else if (fieldType instanceof LongType) {
+      LongConstantValueTag t = (LongConstantValueTag) f.getTag(LongConstantValueTag.NAME);
+      if (t != null) {
+        out.println("    " + declaration + " = " + t.getLongValue() + "l;");
+        return;
+      }
+    } else if (fieldType instanceof CharType) {
+      IntegerConstantValueTag t = (IntegerConstantValueTag) f.getTag(IntegerConstantValueTag.NAME);
+      if (t != null) {
+        out.println("    " + declaration + " = '" + ((char) t.getIntValue()) + "';");
+        return;
+      }
+    } else if (fieldType instanceof BooleanType) {
+      IntegerConstantValueTag t = (IntegerConstantValueTag) f.getTag(IntegerConstantValueTag.NAME);
+      if (t != null) {
+        out.println("    " + declaration + (t.getIntValue() == 0 ? " = false;" : " = true;"));
+        return;
+      }
+    } else if (fieldType instanceof IntType || fieldType instanceof ByteType || fieldType instanceof ShortType) {
+      IntegerConstantValueTag t = (IntegerConstantValueTag) f.getTag(IntegerConstantValueTag.NAME);
+      if (t != null) {
+        out.println("    " + declaration + " = " + t.getIntValue() + ';');
+        return;
+      }
+    } else {
+      StringConstantValueTag t = (StringConstantValueTag) f.getTag(StringConstantValueTag.NAME);
+      if (t != null) {
+        out.println("    " + declaration + " = \"" + t.getStringValue() + "\";");
+        return;
+      }
+    }
+    // System.out.println("Couldn't find type of field: " + f.getDeclaration());
+    out.println("    " + declaration + ';');
   }
 
   /**

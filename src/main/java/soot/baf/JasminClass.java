@@ -303,7 +303,7 @@ public class JasminClass extends AbstractJasminClass {
   }
 
   void emitInst(Inst inst) {
-    LineNumberTag lnTag = (LineNumberTag) inst.getTag("LineNumberTag");
+    LineNumberTag lnTag = (LineNumberTag) inst.getTag(LineNumberTag.NAME);
     if (lnTag != null) {
       emit(".line " + lnTag.getLineNumber());
     }
