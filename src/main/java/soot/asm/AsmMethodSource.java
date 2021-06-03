@@ -390,7 +390,8 @@ final class AsmMethodSource implements MethodSource {
       if (localVars != null) {
         name = null;
         for (LocalVariableNode lvn : localVars) {
-          if (lvn.index == idx) {
+          // Ignore LocalVariableNode which don't cover any real units
+          if (lvn.index == idx && lvn.start != lvn.end) {
             name = lvn.name;
             break;
           }
