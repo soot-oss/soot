@@ -30,6 +30,8 @@ import soot.Unit;
  */
 public class UnitValidationException extends ValidationException {
 
+  private static final long serialVersionUID = 1L;
+
   /**
    * Creates a new ValidationException.
    *
@@ -63,12 +65,9 @@ public class UnitValidationException extends ValidationException {
 
   private static String formatMsg(String s, Unit u, Body b) {
     StringBuilder sb = new StringBuilder();
-    sb.append(s + "\n");
-    sb.append("in unit: " + u + "\n");
-    sb.append("in body: \n " + b + "\n");
+    sb.append(s).append('\n');
+    sb.append("in unit: ").append(u).append('\n');
+    sb.append("in body: \n ").append(b).append('\n');
     return sb.toString();
   }
-
-  private static final long serialVersionUID = 1L;
-
 }
