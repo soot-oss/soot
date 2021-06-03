@@ -29,6 +29,7 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class BooleanType extends PrimType implements IntegerType {
+
   public BooleanType(Singletons.Global g) {
   }
 
@@ -36,18 +37,22 @@ public class BooleanType extends PrimType implements IntegerType {
     return G.v().soot_BooleanType();
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public int hashCode() {
     return 0x1C4585DA;
   }
 
+  @Override
   public String toString() {
     return "boolean";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseBooleanType(this);
   }

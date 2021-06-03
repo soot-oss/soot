@@ -28,6 +28,7 @@ import soot.Type;
 import soot.util.Switch;
 
 public class WordType extends Type {
+
   public WordType(Singletons.Global g) {
   }
 
@@ -35,18 +36,22 @@ public class WordType extends Type {
     return G.v().soot_baf_WordType();
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public int hashCode() {
     return 0xB747239F;
   }
 
+  @Override
   public String toString() {
     return "word";
   }
 
+  @Override
   public void apply(Switch sw) {
     throw new RuntimeException("invalid switch case");
   }
