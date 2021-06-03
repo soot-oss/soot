@@ -35,6 +35,7 @@ import soot.G;
 import soot.Singletons;
 import soot.SootClass;
 import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.tagkit.SourceFileTag;
 
 public class DexResolver {
 
@@ -88,7 +89,7 @@ public class DexResolver {
    */
   protected static void addSourceFileTag(SootClass sc, String fileName) {
     soot.tagkit.SourceFileTag tag = null;
-    if (sc.hasTag("SourceFileTag")) {
+    if (sc.hasTag(SourceFileTag.NAME)) {
       return; // do not add tag if original class already has debug
       // information
     } else {

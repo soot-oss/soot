@@ -24,7 +24,6 @@ package soot.dava.toolkits.base.AST.transformations;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import soot.BooleanType;
@@ -66,18 +65,21 @@ import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.jimple.Stmt;
 import soot.jimple.internal.JimpleLocal;
+import soot.tagkit.DoubleConstantValueTag;
+import soot.tagkit.FloatConstantValueTag;
+import soot.tagkit.IntegerConstantValueTag;
+import soot.tagkit.LongConstantValueTag;
+import soot.tagkit.StringConstantValueTag;
 
 /**
  * Maintained by: Nomair A. Naeem
  */
-
 /**
  * CHANGE LOG: 30th January 2006: Class was created to get rid of the field might not be initialized error that used to show
  * up when recompiling decompiled code Will be throughly covered in "Programmer Friendly Code" Sable Tech Report (2006)
  *
  */
-
-/*
+/**
  * This class makes sure there is an initialization of all final variables (static or non static). If we cant guarantee
  * initialization (may be initialized on multiple paths but not all) then we remove the final keyword
  */
@@ -97,7 +99,7 @@ public class FinalFieldDefinition {
     sootClass = sootMethod.getDeclaringClass();
 
     String subSignature = sootMethod.getName();
-    if (!(subSignature.compareTo("<clinit>") == 0 || subSignature.compareTo("<init>") == 0)) {
+    if (subSignature.compareTo("<clinit>") != 0 && subSignature.compareTo("<init>") != 0) {
       // dont care about these since we want only static block and
       // constructors
       // System.out.println("\n\nName"+sootMethod.getName()+"
@@ -107,17 +109,14 @@ public class FinalFieldDefinition {
 
     // create a list of interesting vars
     ArrayList<SootField> interesting = findFinalFields();
-    if (interesting.size() == 0) {
+    if (interesting.isEmpty()) {
       // no final fields of interest
       return;
     }
 
     cancelFinalModifier = new ArrayList<SootField>();
     analyzeMethod(node, interesting);
-
-    Iterator<SootField> it = cancelFinalModifier.iterator();
-    while (it.hasNext()) {
-      SootField field = it.next();
+    for (SootField field : cancelFinalModifier) {
       field.setModifiers((soot.Modifier.FINAL ^ 0xFFFF) & field.getModifiers());
     }
   }
@@ -133,10 +132,7 @@ public class FinalFieldDefinition {
 
     // first thing is to get a list of all final fields in the class
     ArrayList<SootField> interestingFinalFields = new ArrayList<SootField>();
-
-    Iterator fieldIt = sootClass.getFields().iterator();
-    while (fieldIt.hasNext()) {
-      SootField tempField = (SootField) fieldIt.next();
+    for (SootField tempField : sootClass.getFields()) {
       if (tempField.isFinal()) {
 
         // if its static final and method is static add
@@ -145,7 +141,7 @@ public class FinalFieldDefinition {
         }
 
         // if its non static and final and method is constructor add
-        if ((!tempField.isStatic()) && sootMethod.getName().compareTo("<init>") == 0) {
+        if (!tempField.isStatic() && sootMethod.getName().compareTo("<init>") == 0) {
           interestingFinalFields.add(tempField);
         }
       }
@@ -156,26 +152,23 @@ public class FinalFieldDefinition {
   public void analyzeMethod(ASTMethodNode node, List<SootField> varsOfInterest) {
     MustMayInitialize must = new MustMayInitialize(node, MustMayInitialize.MUST);
 
-    Iterator<SootField> it = varsOfInterest.iterator();
-    while (it.hasNext()) {
-      SootField interest = it.next();
-
+    for (SootField interest : varsOfInterest) {
       // check for constant value tags
       Type fieldType = interest.getType();
-      if (fieldType instanceof DoubleType && interest.hasTag("DoubleConstantValueTag")) {
+      if (fieldType instanceof DoubleType && interest.hasTag(DoubleConstantValueTag.NAME)) {
         continue;
-      } else if (fieldType instanceof FloatType && interest.hasTag("FloatConstantValueTag")) {
+      } else if (fieldType instanceof FloatType && interest.hasTag(FloatConstantValueTag.NAME)) {
         continue;
-      } else if (fieldType instanceof LongType && interest.hasTag("LongConstantValueTag")) {
+      } else if (fieldType instanceof LongType && interest.hasTag(LongConstantValueTag.NAME)) {
         continue;
-      } else if (fieldType instanceof CharType && interest.hasTag("IntegerConstantValueTag")) {
+      } else if (fieldType instanceof CharType && interest.hasTag(IntegerConstantValueTag.NAME)) {
         continue;
-      } else if (fieldType instanceof BooleanType && interest.hasTag("IntegerConstantValueTag")) {
+      } else if (fieldType instanceof BooleanType && interest.hasTag(IntegerConstantValueTag.NAME)) {
         continue;
       } else if ((fieldType instanceof IntType || fieldType instanceof ByteType || fieldType instanceof ShortType)
-          && interest.hasTag("IntegerConstantValueTag")) {
+          && interest.hasTag(IntegerConstantValueTag.NAME)) {
         continue;
-      } else if (interest.hasTag("StringConstantValueTag")) {
+      } else if (interest.hasTag(StringConstantValueTag.NAME)) {
         continue;
       }
 
@@ -231,11 +224,11 @@ public class FinalFieldDefinition {
     // might be able to add
 
     boolean done = false;
-    if (body.size() != 0) {
+    if (!body.isEmpty()) {
       ASTNode lastNode = (ASTNode) body.get(body.size() - 1);
       if (lastNode instanceof ASTStatementSequenceNode) {
         List<AugmentedStmt> stmts = ((ASTStatementSequenceNode) lastNode).getStatements();
-        if (stmts.size() != 0) {
+        if (!stmts.isEmpty()) {
           Stmt s = stmts.get(0).get_Stmt();
           if (!(s instanceof DVariableDeclarationStmt)) {
             // can add statement here
@@ -333,7 +326,7 @@ public class FinalFieldDefinition {
 
       List allUses = varUses.getUsesForField(field);
 
-      if (allUses != null && allUses.size() != 0) {
+      if (allUses != null && !allUses.isEmpty()) {
         /*
          * if the number of uses is not 0 then we dont want to get into trying to delay initialization just before
          * assignment. Easier to remove "final"
@@ -360,8 +353,8 @@ public class FinalFieldDefinition {
          *
          * MethodCallFinder myMethodCallFinder = new MethodCallFinder( (GAssignStmt) defs.get(0));
          * node.apply(myMethodCallFinder); if (myMethodCallFinder.anyMethodCalls()) { // there was some method call after the
-         * definition stmt so // we cant continue // remove the final modifier and leave
-         * //System.out.println("Method invoked somewhere after definition"); cancelFinalModifier.add(field); return; }
+         * definition stmt so // we cant continue // remove the final modifier and leave //System.out.println(
+         * "Method invoked somewhere after definition"); cancelFinalModifier.add(field); return; }
          */
 
         // Creating STMT0
@@ -454,8 +447,8 @@ public class FinalFieldDefinition {
 
         // the def is at (GAssignStmt) defs.get(0)
         // its parent is ASTStatementSequence and its parent is now needed
-        soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder parentFinder
-            = new soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder();
+        soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder parentFinder =
+            new soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder();
         node.apply(parentFinder);
 
         Object parent = parentFinder.getParentOf(defs.get(0));
@@ -483,15 +476,12 @@ public class FinalFieldDefinition {
           boolean notResolved = false;
           // look for grandParent in parentOfGrandParent
           ASTNode ancestor = (ASTNode) parentOfGrandParent;
-          List<Object> ancestorBodies = ancestor.get_SubBodies();
-          Iterator<Object> it = ancestorBodies.iterator();
-          while (it.hasNext()) {
-            List<ASTStatementSequenceNode> ancestorSubBody = null;
-
+          for (Object next : ancestor.get_SubBodies()) {
+            List<ASTStatementSequenceNode> ancestorSubBody;
             if (ancestor instanceof ASTTryNode) {
-              ancestorSubBody = (List<ASTStatementSequenceNode>) ((ASTTryNode.container) it.next()).o;
+              ancestorSubBody = (List<ASTStatementSequenceNode>) ((ASTTryNode.container) next).o;
             } else {
-              ancestorSubBody = (List<ASTStatementSequenceNode>) it.next();
+              ancestorSubBody = (List<ASTStatementSequenceNode>) next;
             }
 
             if (ancestorSubBody.indexOf(grandParent) > -1) {
@@ -536,7 +526,6 @@ public class FinalFieldDefinition {
               }
               break;// break the loop going through subBodies
             } // if ancestor was found
-
           } // next subBody
           if (notResolved) {
             // meaning we still dont have must initialization
@@ -571,6 +560,7 @@ class MethodCallFinder extends DepthFirstAdapter {
     this.def = def;
   }
 
+  @Override
   public void outDefinitionStmt(DefinitionStmt s) {
     if (s instanceof GAssignStmt) {
       if (((GAssignStmt) s).equals(def)) {
@@ -580,6 +570,7 @@ class MethodCallFinder extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void inInvokeExpr(InvokeExpr ie) {
     // System.out.println("In invoke Expr");
     if (foundIt) {
@@ -595,5 +586,4 @@ class MethodCallFinder extends DepthFirstAdapter {
     return anyMethodCalls;
     // return false;
   }
-
 }

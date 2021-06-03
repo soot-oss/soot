@@ -99,7 +99,7 @@ public class PolymorphicMethodRef extends SootMethodRefImpl {
     // same name and refined signature
     for (SootMethod candidateMethod : getDeclaringClass().getMethods()) {
       if (candidateMethod.getName().equals(getName())) {
-        Tag annotationsTag = candidateMethod.getTag("VisibilityAnnotationTag");
+        Tag annotationsTag = candidateMethod.getTag(VisibilityAnnotationTag.NAME);
         if (annotationsTag != null) {
           for (AnnotationTag annotation : ((VisibilityAnnotationTag) annotationsTag).getAnnotations()) {
             // check the annotation's type

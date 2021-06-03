@@ -56,6 +56,7 @@ import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.Attribute;
 import soot.tagkit.Base64;
+import soot.tagkit.DeprecatedTag;
 import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.EnclosingMethodTag;
 import soot.tagkit.FloatConstantValueTag;
@@ -66,10 +67,12 @@ import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.SignatureTag;
 import soot.tagkit.SourceFileTag;
 import soot.tagkit.StringConstantValueTag;
+import soot.tagkit.SyntheticTag;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
 import soot.toolkits.graph.Block;
+import soot.util.StringTools;
 
 public abstract class AbstractJasminClass {
   private static final Logger logger = LoggerFactory.getLogger(AbstractJasminClass.class);
@@ -238,7 +241,7 @@ public abstract class AbstractJasminClass {
     if (tag.hasAnnotations()) {
       for (AnnotationTag annot : tag.getAnnotations()) {
         sb.append(".annotation ");
-        sb.append(soot.util.StringTools.getQuotedStringOf(annot.getType())).append('\n');
+        sb.append(StringTools.getQuotedStringOf(annot.getType())).append('\n');
         for (AnnotationElem ae : annot.getElems()) {
           sb.append(getElemAttr(ae));
         }
@@ -289,7 +292,7 @@ public abstract class AbstractJasminClass {
     switch (elem.getKind()) {
       case 'Z': {
         result.append(".bool_kind ");
-        result.append("\"").append(elem.getName()).append("\" ");
+        result.append('"').append(elem.getName()).append("\" ");
         if (elem instanceof AnnotationIntElem) {
           result.append(((AnnotationIntElem) elem).getValue());
         } else {
@@ -300,79 +303,79 @@ public abstract class AbstractJasminClass {
       }
       case 'S': {
         result.append(".short_kind ");
-        result.append("\"").append(elem.getName()).append("\" ");
+        result.append('"').append(elem.getName()).append("\" ");
         result.append(((AnnotationIntElem) elem).getValue());
         result.append('\n');
         break;
       }
       case 'B': {
         result.append(".byte_kind ");
-        result.append("\"").append(elem.getName()).append("\" ");
+        result.append('"').append(elem.getName()).append("\" ");
         result.append(((AnnotationIntElem) elem).getValue());
         result.append('\n');
         break;
       }
       case 'C': {
         result.append(".char_kind ");
-        result.append("\"").append(elem.getName()).append("\" ");
+        result.append('"').append(elem.getName()).append("\" ");
         result.append(((AnnotationIntElem) elem).getValue());
         result.append('\n');
         break;
       }
       case 'I': {
         result.append(".int_kind ");
-        result.append("\"").append(elem.getName()).append("\" ");
+        result.append('"').append(elem.getName()).append("\" ");
         result.append(((AnnotationIntElem) elem).getValue());
         result.append('\n');
         break;
       }
       case 'J': {
         result.append(".long_kind ");
-        result.append("\"").append(elem.getName()).append("\" ");
+        result.append('"').append(elem.getName()).append("\" ");
         result.append(((AnnotationLongElem) elem).getValue());
         result.append('\n');
         break;
       }
       case 'F': {
         result.append(".float_kind ");
-        result.append("\"").append(elem.getName()).append("\" ");
+        result.append('"').append(elem.getName()).append("\" ");
         result.append(((AnnotationFloatElem) elem).getValue());
         result.append('\n');
         break;
       }
       case 'D': {
         result.append(".doub_kind ");
-        result.append("\"").append(elem.getName()).append("\" ");
+        result.append('"').append(elem.getName()).append("\" ");
         result.append(((AnnotationDoubleElem) elem).getValue());
         result.append('\n');
         break;
       }
       case 's': {
         result.append(".str_kind ");
-        result.append("\"").append(elem.getName()).append("\" ");
-        result.append(soot.util.StringTools.getQuotedStringOf(((AnnotationStringElem) elem).getValue()));
+        result.append('"').append(elem.getName()).append("\" ");
+        result.append(StringTools.getQuotedStringOf(((AnnotationStringElem) elem).getValue()));
         result.append('\n');
         break;
       }
       case 'e': {
         result.append(".enum_kind ");
-        result.append("\"").append(elem.getName()).append("\" ");
-        result.append(soot.util.StringTools.getQuotedStringOf(((AnnotationEnumElem) elem).getTypeName()));
+        result.append('"').append(elem.getName()).append("\" ");
+        result.append(StringTools.getQuotedStringOf(((AnnotationEnumElem) elem).getTypeName()));
         result.append(' ');
-        result.append(soot.util.StringTools.getQuotedStringOf(((AnnotationEnumElem) elem).getConstantName()));
+        result.append(StringTools.getQuotedStringOf(((AnnotationEnumElem) elem).getConstantName()));
         result.append('\n');
         break;
       }
       case 'c': {
         result.append(".cls_kind ");
-        result.append("\"").append(elem.getName()).append("\" ");
-        result.append(soot.util.StringTools.getQuotedStringOf(((AnnotationClassElem) elem).getDesc()));
+        result.append('"').append(elem.getName()).append("\" ");
+        result.append(StringTools.getQuotedStringOf(((AnnotationClassElem) elem).getDesc()));
         result.append('\n');
         break;
       }
       case '[': {
         result.append(".arr_kind ");
-        result.append("\"").append(elem.getName()).append("\" ");
+        result.append('"').append(elem.getName()).append("\" ");
         result.append('\n');
         AnnotationArrayElem arrayElem = (AnnotationArrayElem) elem;
         for (int i = 0; i < arrayElem.getNumValues(); i++) {
@@ -384,10 +387,10 @@ public abstract class AbstractJasminClass {
       }
       case '@': {
         result.append(".ann_kind ");
-        result.append("\"").append(elem.getName()).append("\"\n");
+        result.append('"').append(elem.getName()).append("\"\n");
         AnnotationTag annot = ((AnnotationAnnotationElem) elem).getValue();
         result.append(".annotation ");
-        result.append(soot.util.StringTools.getQuotedStringOf(annot.getType())).append('\n');
+        result.append(StringTools.getQuotedStringOf(annot.getType())).append('\n');
         for (AnnotationElem ae : annot.getElems()) {
           result.append(getElemAttr(ae));
         }
@@ -418,15 +421,15 @@ public abstract class AbstractJasminClass {
       int modifiers = sootClass.getModifiers();
 
       if (!Options.v().no_output_source_file_attribute()) {
-        Tag tag = sootClass.getTag("SourceFileTag");
+        SourceFileTag tag = (SourceFileTag) sootClass.getTag(SourceFileTag.NAME);
         if (tag != null) {
-          String srcName = ((SourceFileTag) tag).getSourceFile();
+          String srcName = tag.getSourceFile();
           // Since Jasmin fails on backslashes and only Windows uses backslashes,
           // but also accepts forward slashes, we transform it.
           if (File.separatorChar == '\\') {
             srcName = srcName.replace('\\', '/');
           }
-          srcName = soot.util.StringTools.getEscapedStringOf(srcName);
+          srcName = StringTools.getEscapedStringOf(srcName);
 
           // if 'srcName' starts with a digit, Jasmin throws an
           // 'Badly formatted number' error. When analyzing an Android
@@ -481,21 +484,21 @@ public abstract class AbstractJasminClass {
     }
 
     // emit synthetic attributes
-    if (sootClass.hasTag("SyntheticTag") || Modifier.isSynthetic(sootClass.getModifiers())) {
+    if (sootClass.hasTag(SyntheticTag.NAME) || Modifier.isSynthetic(sootClass.getModifiers())) {
       emit(".synthetic\n");
     }
     // emit inner class attributes
     if (!Options.v().no_output_inner_classes_attribute()) {
-      InnerClassAttribute ica = (InnerClassAttribute) sootClass.getTag("InnerClassAttribute");
+      InnerClassAttribute ica = (InnerClassAttribute) sootClass.getTag(InnerClassAttribute.NAME);
       if (ica != null) {
         List<InnerClassTag> specs = ica.getSpecs();
         if (!specs.isEmpty()) {
           emit(".inner_class_attr ");
           for (InnerClassTag ict : specs) {
             StringBuilder str = new StringBuilder(".inner_class_spec_attr ");
-            str.append("\"").append(ict.getInnerClass()).append("\" ");
-            str.append("\"").append(ict.getOuterClass()).append("\" ");
-            str.append("\"").append(ict.getShortName()).append("\" ");
+            str.append('"').append(ict.getInnerClass()).append("\" ");
+            str.append('"').append(ict.getOuterClass()).append("\" ");
+            str.append('"').append(ict.getShortName()).append("\" ");
             str.append(Modifier.toString(ict.getAccessFlags()));
             str.append(" .end .inner_class_spec_attr");
             emit(str.toString());
@@ -504,25 +507,29 @@ public abstract class AbstractJasminClass {
         }
       }
     }
-    if (sootClass.hasTag("EnclosingMethodTag")) {
-      EnclosingMethodTag eMethTag = (EnclosingMethodTag) sootClass.getTag("EnclosingMethodTag");
-      StringBuilder encMeth = new StringBuilder(".enclosing_method_attr ");
-      encMeth.append("\"").append(eMethTag.getEnclosingClass()).append("\" ");
-      encMeth.append("\"").append(eMethTag.getEnclosingMethod()).append("\" ");
-      encMeth.append("\"").append(eMethTag.getEnclosingMethodSig()).append("\"\n");
-      emit(encMeth.toString());
+    {
+      EnclosingMethodTag eMethTag = (EnclosingMethodTag) sootClass.getTag(EnclosingMethodTag.NAME);
+      if (eMethTag != null) {
+        StringBuilder encMeth = new StringBuilder(".enclosing_method_attr ");
+        encMeth.append('"').append(eMethTag.getEnclosingClass()).append("\" ");
+        encMeth.append('"').append(eMethTag.getEnclosingMethod()).append("\" ");
+        encMeth.append('"').append(eMethTag.getEnclosingMethodSig()).append("\"\n");
+        emit(encMeth.toString());
+      }
     }
     // emit deprecated attributes
-    if (sootClass.hasTag("DeprecatedTag")) {
+    if (sootClass.hasTag(DeprecatedTag.NAME)) {
       emit(".deprecated\n");
     }
-    if (sootClass.hasTag("SignatureTag")) {
-      SignatureTag sigTag = (SignatureTag) sootClass.getTag("SignatureTag");
-      emit(".signature_attr " + "\"" + sigTag.getSignature() + "\"\n");
+    {
+      SignatureTag sigTag = (SignatureTag) sootClass.getTag(SignatureTag.NAME);
+      if (sigTag != null) {
+        emit(".signature_attr " + "\"" + sigTag.getSignature() + "\"\n");
+      }
     }
 
     for (Tag t : sootClass.getTags()) {
-      if ("VisibilityAnnotationTag".equals(t.getName())) {
+      if (VisibilityAnnotationTag.NAME.equals(t.getName())) {
         emit(getVisibilityAnnotationAttr((VisibilityAnnotationTag) t));
       }
     }
@@ -535,43 +542,49 @@ public abstract class AbstractJasminClass {
         fieldString.append(" \"").append(field.getName()).append("\" ");
         fieldString.append(jasminDescriptorOf(field.getType()));
 
-        if (field.hasTag("StringConstantValueTag")) {
-          fieldString.append(" = ");
-          StringConstantValueTag val = (StringConstantValueTag) field.getTag("StringConstantValueTag");
-          fieldString.append(soot.util.StringTools.getQuotedStringOf(val.getStringValue()));
-        } else if (field.hasTag("IntegerConstantValueTag")) {
-          fieldString.append(" = ");
-          IntegerConstantValueTag val = (IntegerConstantValueTag) field.getTag("IntegerConstantValueTag");
-          fieldString.append(val.getIntValue());
-        } else if (field.hasTag("LongConstantValueTag")) {
-          fieldString.append(" = ");
-          LongConstantValueTag val = (LongConstantValueTag) field.getTag("LongConstantValueTag");
-          fieldString.append(val.getLongValue());
-        } else if (field.hasTag("FloatConstantValueTag")) {
-          fieldString.append(" = ");
-          FloatConstantValueTag val = (FloatConstantValueTag) field.getTag("FloatConstantValueTag");
-          fieldString.append(floatToString(val.getFloatValue()));
-        } else if (field.hasTag("DoubleConstantValueTag")) {
-          fieldString.append(" = ");
-          DoubleConstantValueTag val = (DoubleConstantValueTag) field.getTag("DoubleConstantValueTag");
-          fieldString.append(doubleToString(val.getDoubleValue()));
+        TAG_LOOP: for (Tag t : field.getTags()) {
+          switch (t.getName()) {
+            case StringConstantValueTag.NAME:
+              fieldString.append(" = ");
+              fieldString.append(StringTools.getQuotedStringOf(((StringConstantValueTag) t).getStringValue()));
+              break TAG_LOOP;
+            case IntegerConstantValueTag.NAME:
+              fieldString.append(" = ");
+              fieldString.append(((IntegerConstantValueTag) t).getIntValue());
+              break TAG_LOOP;
+            case LongConstantValueTag.NAME:
+              fieldString.append(" = ");
+              fieldString.append(((LongConstantValueTag) t).getLongValue());
+              break TAG_LOOP;
+            case FloatConstantValueTag.NAME:
+              fieldString.append(" = ");
+              fieldString.append(floatToString(((FloatConstantValueTag) t).getFloatValue()));
+              break TAG_LOOP;
+            case DoubleConstantValueTag.NAME:
+              fieldString.append(" = ");
+              fieldString.append(doubleToString(((DoubleConstantValueTag) t).getDoubleValue()));
+              break TAG_LOOP;
+          }
         }
-        if (field.hasTag("SyntheticTag") || Modifier.isSynthetic(field.getModifiers())) {
+
+        if (field.hasTag(SyntheticTag.NAME) || Modifier.isSynthetic(field.getModifiers())) {
           fieldString.append(" .synthetic");
         }
 
         fieldString.append('\n');
-        if (field.hasTag("DeprecatedTag")) {
+        if (field.hasTag(DeprecatedTag.NAME)) {
           fieldString.append(".deprecated\n");
         }
-        if (field.hasTag("SignatureTag")) {
-          fieldString.append(".signature_attr ");
-          SignatureTag sigTag = (SignatureTag) field.getTag("SignatureTag");
-          fieldString.append("\"").append(sigTag.getSignature()).append("\"\n");
+        {
+          SignatureTag sigTag = (SignatureTag) field.getTag(SignatureTag.NAME);
+          if (sigTag != null) {
+            fieldString.append(".signature_attr ");
+            fieldString.append('"').append(sigTag.getSignature()).append("\"\n");
+          }
         }
 
         for (Tag t : field.getTags()) {
-          if ("VisibilityAnnotationTag".equals(t.getName())) {
+          if (VisibilityAnnotationTag.NAME.equals(t.getName())) {
             fieldString.append(getVisibilityAnnotationAttr((VisibilityAnnotationTag) t));
           }
         }
@@ -652,26 +665,30 @@ public abstract class AbstractJasminClass {
     for (SootClass exceptClass : method.getExceptions()) {
       emit(".throws " + exceptClass.getName());
     }
-    if (method.hasTag("SyntheticTag") || Modifier.isSynthetic(method.getModifiers())) {
+    if (method.hasTag(SyntheticTag.NAME) || Modifier.isSynthetic(method.getModifiers())) {
       emit(".synthetic");
     }
-    if (method.hasTag("DeprecatedTag")) {
+    if (method.hasTag(DeprecatedTag.NAME)) {
       emit(".deprecated");
     }
-    if (method.hasTag("SignatureTag")) {
-      SignatureTag sigTag = (SignatureTag) method.getTag("SignatureTag");
-      emit(".signature_attr " + "\"" + sigTag.getSignature() + "\"");
+    {
+      SignatureTag sigTag = (SignatureTag) method.getTag(SignatureTag.NAME);
+      if (sigTag != null) {
+        emit(".signature_attr " + "\"" + sigTag.getSignature() + "\"");
+      }
     }
-    if (method.hasTag("AnnotationDefaultTag")) {
-      AnnotationDefaultTag annotDefTag = (AnnotationDefaultTag) method.getTag("AnnotationDefaultTag");
-      emit(".annotation_default " + getElemAttr(annotDefTag.getDefaultVal()) + ".end .annotation_default");
+    {
+      AnnotationDefaultTag annotDefTag = (AnnotationDefaultTag) method.getTag(AnnotationDefaultTag.NAME);
+      if (annotDefTag != null) {
+        emit(".annotation_default " + getElemAttr(annotDefTag.getDefaultVal()) + ".end .annotation_default");
+      }
     }
 
     for (Tag t : method.getTags()) {
       String name = t.getName();
-      if ("VisibilityAnnotationTag".equals(name)) {
+      if (VisibilityAnnotationTag.NAME.equals(name)) {
         emit(getVisibilityAnnotationAttr((VisibilityAnnotationTag) t));
-      } else if ("VisibilityParameterAnnotationTag".equals(name)) {
+      } else if (VisibilityParameterAnnotationTag.NAME.equals(name)) {
         emit(getVisibilityParameterAnnotationAttr((VisibilityParameterAnnotationTag) t));
       }
     }

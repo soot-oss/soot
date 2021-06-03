@@ -29,8 +29,8 @@ public class ArrayCheckTag implements OneByteCodeTag {
 
   public static final String NAME = "ArrayCheckTag";
 
-  private boolean lowerCheck;
-  private boolean upperCheck;
+  private final boolean lowerCheck;
+  private final boolean upperCheck;
 
   /**
    * A tag represents two bounds checks of an array reference. The value 'true' indicates check needed.

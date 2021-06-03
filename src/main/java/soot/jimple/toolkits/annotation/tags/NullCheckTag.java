@@ -30,7 +30,7 @@ public class NullCheckTag implements OneByteCodeTag {
 
   public static final String NAME = "NullCheckTag";
 
-  private byte value;
+  private final byte value;
 
   public NullCheckTag(boolean needCheck) {
     if (needCheck) {

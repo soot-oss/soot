@@ -146,12 +146,12 @@ public class AbstractHost implements Host {
   public int getJavaSourceStartLineNumber() {
     if (line <= 0) {
       // get line from source
-      SourceLnPosTag tag = (SourceLnPosTag) getTag(SourceLnPosTag.IDENTIFIER);
+      SourceLnPosTag tag = (SourceLnPosTag) getTag(SourceLnPosTag.NAME);
       if (tag != null) {
         line = tag.startLn();
       } else {
         // get line from bytecode
-        LineNumberTag tag2 = (LineNumberTag) getTag(LineNumberTag.IDENTIFIER);
+        LineNumberTag tag2 = (LineNumberTag) getTag(LineNumberTag.NAME);
         line = (tag2 == null) ? -1 : tag2.getLineNumber();
       }
     }
@@ -162,7 +162,7 @@ public class AbstractHost implements Host {
   public int getJavaSourceStartColumnNumber() {
     if (col <= 0) {
       // get line from source
-      SourceLnPosTag tag = (SourceLnPosTag) getTag(SourceLnPosTag.IDENTIFIER);
+      SourceLnPosTag tag = (SourceLnPosTag) getTag(SourceLnPosTag.NAME);
       col = (tag == null) ? -1 : tag.startPos();
     }
     return col;

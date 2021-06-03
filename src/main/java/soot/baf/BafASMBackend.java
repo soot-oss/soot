@@ -280,8 +280,8 @@ public class BafASMBackend extends AbstractASMBackend {
    *          The unit for which to write out the tags
    */
   protected void generateTagsForUnit(MethodVisitor mv, Unit u) {
-    if (u.hasTag("LineNumberTag")) {
-      LineNumberTag lnt = (LineNumberTag) u.getTag("LineNumberTag");
+    LineNumberTag lnt = (LineNumberTag) u.getTag(LineNumberTag.NAME);
+    if (lnt != null) {
       Label l;
       if (branchTargetLabels.containsKey(u)) {
         l = branchTargetLabels.get(u);

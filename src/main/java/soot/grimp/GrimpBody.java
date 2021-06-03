@@ -56,6 +56,9 @@ import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.StmtBox;
 import soot.options.Options;
+import soot.tagkit.LineNumberTag;
+import soot.tagkit.SourceLnPosTag;
+import soot.tagkit.Tag;
 import soot.util.Chain;
 
 /**
@@ -204,11 +207,13 @@ public class GrimpBody extends StmtBody {
       if (updateStmtBox.getUnit() != null) {
         updates.add(updateStmtBox.getUnit());
       }
-      if (oldStmt.hasTag("LineNumberTag")) {
-        newStmt.addTag(oldStmt.getTag("LineNumberTag"));
+      final Tag lnTag = oldStmt.getTag(LineNumberTag.NAME);
+      if (lnTag != null) {
+        newStmt.addTag(lnTag);
       }
-      if (oldStmt.hasTag("SourceLnPosTag")) {
-        newStmt.addTag(oldStmt.getTag("SourceLnPosTag"));
+      final Tag slpTag = oldStmt.getTag(SourceLnPosTag.NAME);
+      if (slpTag != null) {
+        newStmt.addTag(slpTag);
       }
     }
 

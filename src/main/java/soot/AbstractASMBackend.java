@@ -197,7 +197,8 @@ public abstract class AbstractASMBackend {
   }
 
   private static boolean containsGenericSignatureTag(Host h) {
-    return h.hasTag(SignatureTag.NAME) && ((SignatureTag) h.getTag(SignatureTag.NAME)).getSignature().contains("<");
+    SignatureTag t = (SignatureTag) h.getTag(SignatureTag.NAME);
+    return t != null && t.getSignature().indexOf('<') >= 0;
   }
 
   /**
@@ -247,9 +248,11 @@ public abstract class AbstractASMBackend {
     generateClassHeader();
 
     // Retrieve information about the source of the class
-    if (!Options.v().no_output_source_file_attribute() && sc.hasTag(SourceFileTag.NAME)) {
-      String srcName = ((SourceFileTag) sc.getTag(SourceFileTag.NAME)).getSourceFile();
-      cv.visitSource(srcName, null); // TODO Correct value for the debug argument
+    if (!Options.v().no_output_source_file_attribute()) {
+      SourceFileTag t = (SourceFileTag) sc.getTag(SourceFileTag.NAME);
+      if (t != null) {
+        cv.visitSource(t.getSourceFile(), null); // TODO Correct value for the debug argument
+      }
     }
 
     // Retrieve information about outer class if present
@@ -311,11 +314,8 @@ public abstract class AbstractASMBackend {
       descBuilder.append(')');
       descBuilder.append(toTypeDesc(sm.getReturnType()));
 
-      String sig = null;
-      if (sm.hasTag(SignatureTag.NAME)) {
-        SignatureTag genericSignature = (SignatureTag) sm.getTag(SignatureTag.NAME);
-        sig = genericSignature.getSignature();
-      }
+      SignatureTag sigTag = (SignatureTag) sm.getTag(SignatureTag.NAME);
+      String sig = sigTag == null ? null : sigTag.getSignature();
 
       List<SootClass> exceptionList = sm.getExceptionsUnsafe();
       String[] exceptions;
@@ -378,11 +378,10 @@ public abstract class AbstractASMBackend {
       }
       String name = f.getName();
       String desc = toTypeDesc(f.getType());
-      String sig = null;
-      if (f.hasTag(SignatureTag.NAME)) {
-        SignatureTag genericSignature = (SignatureTag) f.getTag(SignatureTag.NAME);
-        sig = genericSignature.getSignature();
-      }
+
+      SignatureTag sigTag = (SignatureTag) f.getTag(SignatureTag.NAME);
+      String sig = sigTag == null ? null : sigTag.getSignature();
+
       Object value = getDefaultValue(f);
       int access = getModifiers(f.getModifiers(), f);
       FieldVisitor fv = cv.visitField(access, name, desc, sig, value);
@@ -413,8 +412,8 @@ public abstract class AbstractASMBackend {
    */
   protected void generateInnerClassReferences() {
     if (!Options.v().no_output_inner_classes_attribute()) {
-      if (sc.hasTag(InnerClassAttribute.NAME)) {
-        InnerClassAttribute ica = (InnerClassAttribute) sc.getTag(InnerClassAttribute.NAME);
+      InnerClassAttribute ica = (InnerClassAttribute) sc.getTag(InnerClassAttribute.NAME);
+      if (ica != null) {
         List<InnerClassTag> sortedTags = new ArrayList<InnerClassTag>(ica.getSpecs());
         Collections.sort(sortedTags, new SootInnerClassComparator());
         writeInnerClassTags(sortedTags);
@@ -607,16 +606,19 @@ public abstract class AbstractASMBackend {
     String outerClassName = slashify(sc.getOuterClass().getName());
     String enclosingMethod = null;
     String enclosingMethodSig = null;
-    if (sc.hasTag(EnclosingMethodTag.NAME)) {
-      EnclosingMethodTag emTag = (EnclosingMethodTag) sc.getTag(EnclosingMethodTag.NAME);
+    EnclosingMethodTag emTag = (EnclosingMethodTag) sc.getTag(EnclosingMethodTag.NAME);
+    if (emTag != null) {
       if (!sc.hasOuterClass()) {
         outerClassName = slashify(emTag.getEnclosingClass());
       }
       enclosingMethod = emTag.getEnclosingMethod();
       enclosingMethodSig = emTag.getEnclosingMethodSig();
     }
-    if (!sc.hasOuterClass() && sc.hasTag(OuterClassTag.NAME)) {
-      outerClassName = slashify(((OuterClassTag) sc.getTag(OuterClassTag.NAME)).getName());
+    if (!sc.hasOuterClass()) {
+      OuterClassTag oct = (OuterClassTag) sc.getTag(OuterClassTag.NAME);
+      if (oct != null) {
+        outerClassName = slashify(oct.getName());
+      }
     }
     cv.visitOuterClass(outerClassName, enclosingMethod, enclosingMethodSig);
   }
@@ -633,10 +635,9 @@ public abstract class AbstractASMBackend {
     // Retrieve class-name
     String className = slashify(sc.getName());
     // Retrieve generics
-    String signature = null;
-    if (sc.hasTag(SignatureTag.NAME)) {
-      signature = ((SignatureTag) sc.getTag(SignatureTag.NAME)).getSignature();
-    }
+    SignatureTag sigTag = (SignatureTag) sc.getTag(SignatureTag.NAME);
+    String sig = sigTag == null ? null : sigTag.getSignature();
+
     /*
      * Retrieve super-class. If no super-class is explicitly given, the default is java.lang.Object, except for the class
      * java.lang.Object itself, which does not have any super classes.
@@ -655,7 +656,7 @@ public abstract class AbstractASMBackend {
       ++i;
     }
 
-    cv.visit(javaVersion, modifier, className, signature, superClass, interfaces);
+    cv.visit(javaVersion, modifier, className, sig, superClass, interfaces);
   }
 
   /**
