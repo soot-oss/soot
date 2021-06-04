@@ -26,13 +26,19 @@ import java.util.Set;
 
 import soot.SootField;
 
-/** Implements a tag that holds a list of fields read by a call. */
+/**
+ * Implements a tag that holds a list of fields read by a call.
+ */
 public class FieldReadTag extends FieldRWTag {
+
+  public static final String NAME = "FieldReadTag";
+
   FieldReadTag(Set<SootField> fields) {
     super(fields);
   }
 
+  @Override
   public String getName() {
-    return "FieldReadTag";
+    return NAME;
   }
 }

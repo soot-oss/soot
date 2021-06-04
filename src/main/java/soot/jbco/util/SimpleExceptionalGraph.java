@@ -23,7 +23,6 @@ package soot.jbco.util;
  */
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +44,6 @@ public class SimpleExceptionalGraph extends TrapUnitGraph {
   public SimpleExceptionalGraph(Body body) {
     super(body);
     int size = unitChain.size();
-
     unitToSuccs = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
     unitToPreds = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
     buildUnexceptionalEdges(unitToSuccs, unitToPreds);
@@ -54,13 +52,10 @@ public class SimpleExceptionalGraph extends TrapUnitGraph {
     buildHeadsAndTails();
   }
 
-  protected void buildSimpleExceptionalEdges(Map unitToSuccs, Map unitToPreds) {
-    for (Iterator<Trap> trapIt = body.getTraps().iterator(); trapIt.hasNext();) {
-      Trap trap = trapIt.next();
-
+  protected void buildSimpleExceptionalEdges(Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds) {
+    for (Trap trap : body.getTraps()) {
       Unit handler = trap.getHandlerUnit();
-      for (Iterator predIt = ((List) unitToPreds.get(trap.getBeginUnit())).iterator(); predIt.hasNext();) {
-        Unit pred = (Unit) predIt.next();
+      for (Unit pred : unitToPreds.get(trap.getBeginUnit())) {
         addEdge(unitToSuccs, unitToPreds, pred, handler);
       }
     }

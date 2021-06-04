@@ -22,18 +22,12 @@ package soot.jimple.toolkits.typing.integer;
  * #L%
  */
 
-import java.util.HashMap;
-import java.util.Map;
-
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
 import soot.G;
 import soot.IntType;
-import soot.PrimType;
-import soot.RefType;
 import soot.ShortType;
-import soot.Singletons;
 import soot.Singletons.Global;
 import soot.Type;
 
@@ -44,7 +38,6 @@ import soot.Type;
  * This class is primarily used by the TypeResolver class, to optimize its computation.
  **/
 public class ClassHierarchy {
-
 
   public ClassHierarchy(Global g) {
   }
@@ -59,12 +52,9 @@ public class ClassHierarchy {
   public final TypeNode CHAR = new TypeNode(3, CharType.v());
   public final TypeNode INT = new TypeNode(4, IntType.v());
   public final TypeNode TOP = new TypeNode(5, null);
-  public final TypeNode R0_1 = new TypeNode(6, null); // eventually becomes
-  // boolean
-  public final TypeNode R0_127 = new TypeNode(7, null); // eventually becomes
-  // byte
-  public final TypeNode R0_32767 = new TypeNode(8, null); // eventually
-  // becomes short
+  public final TypeNode R0_1 = new TypeNode(6, null); // eventually becomes boolean
+  public final TypeNode R0_127 = new TypeNode(7, null); // eventually becomes byte
+  public final TypeNode R0_32767 = new TypeNode(8, null); // eventually becomes short
 
   private final boolean[][] ancestors_1 = { { false, false, false, false, false, true, false, false, false, },
       { false, false, true, false, true, true, false, false, false, },
@@ -138,20 +128,15 @@ public class ClassHierarchy {
   public TypeNode typeNode(Type type) {
     if (type instanceof IntType) {
       return INT;
-    }
-    else if (type instanceof BooleanType) {
+    } else if (type instanceof BooleanType) {
       return BOOLEAN;
-    }
-    else if (type instanceof ByteType) {
+    } else if (type instanceof ByteType) {
       return BYTE;
-    }
-    else if (type instanceof ShortType) {
+    } else if (type instanceof ShortType) {
       return SHORT;
-    }
-    else if (type instanceof CharType) {
+    } else if (type instanceof CharType) {
       return CHAR;
-    }
-    else {
+    } else {
       throw new InternalTypingException(type);
     }
   }
@@ -198,5 +183,4 @@ public class ClassHierarchy {
   public TypeNode gcd_2(int t1, int t2) {
     return gcd_2[convert(t1)][convert(t2)];
   }
-
 }

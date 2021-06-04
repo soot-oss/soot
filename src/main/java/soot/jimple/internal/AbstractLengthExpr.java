@@ -33,38 +33,42 @@ import soot.util.Switch;
 
 @SuppressWarnings("serial")
 public abstract class AbstractLengthExpr extends AbstractUnopExpr implements LengthExpr {
+
   protected AbstractLengthExpr(ValueBox opBox) {
     super(opBox);
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractLengthExpr) {
-      return opBox.getValue().equivTo(((AbstractLengthExpr) o).opBox.getValue());
+      return this.opBox.getValue().equivTo(((AbstractLengthExpr) o).opBox.getValue());
     }
     return false;
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return opBox.getValue().equivHashCode();
   }
 
-  public abstract Object clone();
-
+  @Override
   public String toString() {
     return Jimple.LENGTHOF + " " + opBox.getValue().toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    up.literal(Jimple.LENGTHOF);
-    up.literal(" ");
+    up.literal(Jimple.LENGTHOF + " ");
     opBox.toString(up);
   }
 
+  @Override
   public Type getType() {
     return IntType.v();
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseLengthExpr(this);
   }

@@ -34,6 +34,7 @@ import soot.SourceLocator;
  */
 public class AsmClassProvider implements ClassProvider {
 
+  @Override
   public ClassSource find(String cls) {
     String clsFile = cls.replace('.', '/') + ".class";
     FoundFile file = SourceLocator.v().lookupInClassPath(clsFile);

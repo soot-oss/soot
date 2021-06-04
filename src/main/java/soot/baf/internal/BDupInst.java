@@ -22,8 +22,6 @@ package soot.baf.internal;
  * #L%
  */
 
-import java.util.Iterator;
-
 import soot.AbstractJasminClass;
 import soot.Type;
 import soot.baf.DupInst;
@@ -31,47 +29,42 @@ import soot.util.Switch;
 
 public abstract class BDupInst extends AbstractInst implements DupInst {
 
+  @Override
   public int getInCount() {
     return getUnderTypes().size() + getOpTypes().size();
   }
 
+  @Override
   public int getInMachineCount() {
     int count = 0;
-
-    Iterator<Type> underTypesIt = getUnderTypes().iterator();
-    while (underTypesIt.hasNext()) {
-      count += AbstractJasminClass.sizeOfType(underTypesIt.next());
+    for (Type t : getUnderTypes()) {
+      count += AbstractJasminClass.sizeOfType(t);
     }
-
-    Iterator<Type> opTypesIt = getOpTypes().iterator();
-    while (opTypesIt.hasNext()) {
-      count += AbstractJasminClass.sizeOfType(opTypesIt.next());
+    for (Type t : getOpTypes()) {
+      count += AbstractJasminClass.sizeOfType(t);
     }
-
     return count;
   }
 
+  @Override
   public int getOutCount() {
     return getUnderTypes().size() + 2 * getOpTypes().size();
   }
 
+  @Override
   public int getOutMachineCount() {
     int count = 0;
-
-    Iterator<Type> underTypesIt = getUnderTypes().iterator();
-    while (underTypesIt.hasNext()) {
-      count += AbstractJasminClass.sizeOfType(underTypesIt.next());
+    for (Type t : getUnderTypes()) {
+      count += AbstractJasminClass.sizeOfType(t);
     }
-
-    Iterator<Type> opTypesIt = getOpTypes().iterator();
-    while (opTypesIt.hasNext()) {
-      count += 2 * AbstractJasminClass.sizeOfType(opTypesIt.next());
+    for (Type t : getOpTypes()) {
+      count += 2 * AbstractJasminClass.sizeOfType(t);
     }
     return count;
   }
 
+  @Override
   public void apply(Switch sw) {
     throw new RuntimeException();
   }
-
 }

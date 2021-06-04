@@ -32,38 +32,43 @@ import soot.baf.InstSwitch;
 import soot.util.Switch;
 
 public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst {
+
   private final Type mOp1Type;
   private final Type mOp2Type;
   private final Type mUnder1Type;
   private final Type mUnder2Type;
 
   public BDup2_x2Inst(Type aOp1Type, Type aOp2Type, Type aUnder1Type, Type aUnder2Type) {
-    mOp1Type = Baf.getDescriptorTypeOf(aOp1Type);
-    mOp2Type = Baf.getDescriptorTypeOf(aOp2Type);
-    mUnder1Type = Baf.getDescriptorTypeOf(aUnder1Type);
-    mUnder2Type = Baf.getDescriptorTypeOf(aUnder2Type);
+    this.mOp1Type = Baf.getDescriptorTypeOf(aOp1Type);
+    this.mOp2Type = Baf.getDescriptorTypeOf(aOp2Type);
+    this.mUnder1Type = Baf.getDescriptorTypeOf(aUnder1Type);
+    this.mUnder2Type = Baf.getDescriptorTypeOf(aUnder2Type);
   }
 
+  @Override
   public Type getOp1Type() {
     return mOp1Type;
   }
 
+  @Override
   public Type getOp2Type() {
     return mOp2Type;
   }
 
+  @Override
   public Type getUnder1Type() {
     return mUnder1Type;
   }
 
+  @Override
   public Type getUnder2Type() {
     return mUnder2Type;
   }
 
+  @Override
   public List<Type> getOpTypes() {
     List<Type> res = new ArrayList<Type>();
     res.add(mOp1Type);
-
     // 07-20-2006 Michael Batchelder
     // previously did not handle all types of dup2_x2 Now, will take null as mOp2Type, so don't add to overtypes if it is
     // null
@@ -73,10 +78,10 @@ public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst {
     return res;
   }
 
+  @Override
   public List<Type> getUnderTypes() {
     List<Type> res = new ArrayList<Type>();
     res.add(mUnder1Type);
-
     // 07-20-2006 Michael Batchelder
     // previously did not handle all types of dup2_x2 Now, will take null as mUnder2Type, so don't add to undertypes if it is
     // null
@@ -86,14 +91,17 @@ public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst {
     return res;
   }
 
+  @Override
   final public String getName() {
     return "dup2_x2";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseDup2_x2Inst(this);
   }
 
+  @Override
   public String toString() {
     // 07-20-2006 Michael Batchelder
     // previously did not handle all types of dup2_x2 Now, will take null as either mOp2Type or null as mUnder2Type to handle

@@ -98,7 +98,7 @@ public final class ModuleUtil {
    *          the module from which the request is made
    * @return the module's name that exports the class to the given module
    */
-  public final String findModuleThatExports(String className, String toModuleName) {
+  public final String declaringModule(String className, String toModuleName) {
 
     if (className.equalsIgnoreCase(SootModuleInfo.MODULE_INFO)) {
       return toModuleName;

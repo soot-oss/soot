@@ -22,51 +22,45 @@ package soot.baf.internal;
  * #L%
  */
 
-import soot.ArrayType;
-import soot.NullType;
-import soot.RefType;
 import soot.Type;
 import soot.UnitBox;
 import soot.UnitPrinter;
 import soot.baf.Baf;
 
 public abstract class AbstractOpTypeBranchInst extends AbstractBranchInst {
+
   protected Type opType;
 
   AbstractOpTypeBranchInst(Type opType, UnitBox targetBox) {
     super(targetBox);
-    if (opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType) {
-      opType = RefType.v();
-    }
-
-    this.opType = opType;
+    setOpType(opType);
   }
 
+  public Type getOpType() {
+    return this.opType;
+  }
+
+  public void setOpType(Type t) {
+    this.opType = Baf.getDescriptorTypeOf(t);
+  }
+
+  @Override
   public int getInCount() {
     return 2;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
-  public Type getOpType() {
-    return opType;
-  }
-
-  public void setOpType(Type t) {
-    opType = t;
-    if (opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType) {
-      opType = RefType.v();
-    }
-  }
-
+  @Override
   public String toString() {
     // do stuff with opType later.
     return getName() + "." + Baf.bafDescriptorOf(opType) + " " + getTarget();
-
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(getName());
     up.literal(".");

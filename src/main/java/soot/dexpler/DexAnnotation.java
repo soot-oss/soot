@@ -98,7 +98,7 @@ import soot.toDex.SootToDexUtils;
  *
  */
 public class DexAnnotation {
-  
+
   private static final Logger logger = LoggerFactory.getLogger(DexAnnotation.class);
 
   public static final String JAVA_DEPRECATED = "java.lang.Deprecated";
@@ -121,7 +121,6 @@ public class DexAnnotation {
   /**
    * Converts Class annotations from Dexlib to Jimple.
    *
-   * @param h
    * @param classDef
    */
   // .annotation "Ldalvik/annotation/AnnotationDefault;"
@@ -131,7 +130,6 @@ public class DexAnnotation {
   // .annotation "Ldalvik/annotation/MemberClasses;"
   // .annotation "Ldalvik/annotation/Signature;"
   // .annotation "Ldalvik/annotation/Throws;"
-
   public void handleClassAnnotation(ClassDef classDef) {
     Set<? extends Annotation> aSet = classDef.getAnnotations();
     if (aSet == null || aSet.isEmpty()) {
@@ -149,7 +147,7 @@ public class DexAnnotation {
         if (t instanceof InnerClassTag) {
           if (ica == null) {
             // Do we already have an InnerClassAttribute?
-            ica = (InnerClassAttribute) clazz.getTag("InnerClassAttribute");
+            ica = (InnerClassAttribute) clazz.getTag(InnerClassAttribute.NAME);
             // If not, create one
             if (ica == null) {
               ica = new InnerClassAttribute();
@@ -357,8 +355,8 @@ public class DexAnnotation {
     }
 
     if (doParam) {
-      VisibilityParameterAnnotationTag tag
-          = new VisibilityParameterAnnotationTag(parameters.size(), AnnotationConstants.RUNTIME_VISIBLE);
+      VisibilityParameterAnnotationTag tag =
+          new VisibilityParameterAnnotationTag(parameters.size(), AnnotationConstants.RUNTIME_VISIBLE);
       for (MethodParameter p : parameters) {
         List<Tag> tags = handleAnnotation(p.getAnnotations(), null);
 

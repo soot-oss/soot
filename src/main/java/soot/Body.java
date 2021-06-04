@@ -29,7 +29,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -71,48 +70,60 @@ import soot.validation.ValueBoxesValidator;
 @SuppressWarnings("serial")
 public abstract class Body extends AbstractHost implements Serializable {
   private static final Logger logger = LoggerFactory.getLogger(Body.class);
-  /** The method associated with this Body. */
+
+  /**
+   * The method associated with this Body.
+   */
   protected transient SootMethod method = null;
 
-  /** The chain of locals for this Body. */
-  protected Chain<Local> localChain = new HashChain<Local>();
+  /**
+   * The chain of locals for this Body.
+   */
+  protected Chain<Local> localChain = new HashChain<>();
 
-  /** The chain of traps for this Body. */
-  protected Chain<Trap> trapChain = new HashChain<Trap>();
+  /**
+   * The chain of traps for this Body.
+   */
+  protected Chain<Trap> trapChain = new HashChain<>();
 
-  /** The chain of units for this Body. */
-  protected UnitPatchingChain unitChain = new UnitPatchingChain(new HashChain<Unit>());
+  /**
+   * The chain of units for this Body.
+   */
+  protected UnitPatchingChain unitChain = new UnitPatchingChain(new HashChain<>());
 
-  private static BodyValidator[] validators;
+  /**
+   * Lazy initialized array containing some validators in order to validate the Body.
+   */
+  private static class LazyValidatorsSingleton {
+    static final BodyValidator[] V = new BodyValidator[] { LocalsValidator.v(), TrapsValidator.v(), UnitBoxesValidator.v(),
+        UsesValidator.v(), ValueBoxesValidator.v(), /* CheckInitValidator.v(), */ CheckTypesValidator.v(),
+        CheckVoidLocalesValidator.v(), CheckEscapingValidator.v() };
 
-  /** Creates a deep copy of this Body. */
+    private LazyValidatorsSingleton() {
+    }
+  }
+
+  /**
+   * Creates a deep copy of this Body.
+   *
+   * @return
+   */
   @Override
   abstract public Object clone();
 
   /**
-   * Returns an array containing some validators in order to validate the JimpleBody
-   *
-   * @return the array containing validators
-   */
-  private synchronized static BodyValidator[] getValidators() {
-    if (validators == null) {
-      validators = new BodyValidator[] { LocalsValidator.v(), TrapsValidator.v(), UnitBoxesValidator.v(), UsesValidator.v(),
-          ValueBoxesValidator.v(),
-          // CheckInitValidator.v(),
-          CheckTypesValidator.v(), CheckVoidLocalesValidator.v(), CheckEscapingValidator.v() };
-    }
-    return validators;
-  };
-
-  /**
    * Creates a Body associated to the given method. Used by subclasses during initialization. Creation of a Body is triggered
    * by e.g. Jimple.v().newBody(options).
+   *
+   * @param m
    */
   protected Body(SootMethod m) {
     this.method = m;
   }
 
-  /** Creates an extremely empty Body. The Body is not associated to any method. */
+  /**
+   * Creates an extremely empty Body. The Body is not associated to any method.
+   */
   protected Body() {
   }
 
@@ -129,92 +140,101 @@ public abstract class Body extends AbstractHost implements Serializable {
   }
 
   /**
+   * Returns the method associated with this Body.
+   *
+   * @return the method that owns this body.
+   */
+  public SootMethod getMethodUnsafe() {
+    return method;
+  }
+
+  /**
    * Sets the method associated with this Body.
    *
    * @param method
    *          the method that owns this body.
-   *
    */
   public void setMethod(SootMethod method) {
     this.method = method;
   }
 
-  /** Returns the number of locals declared in this body. */
+  /**
+   * Returns the number of locals declared in this body.
+   *
+   * @return
+   */
   public int getLocalCount() {
     return localChain.size();
   }
 
-  /** Copies the contents of the given Body into this one. */
+  /**
+   * Copies the contents of the given Body into this one.
+   *
+   * @param b
+   *
+   * @return
+   */
   public Map<Object, Object> importBodyContentsFrom(Body b) {
-    HashMap<Object, Object> bindings = new HashMap<Object, Object>();
+    HashMap<Object, Object> bindings = new HashMap<>();
 
-    {
-      // Clone units in body's statement list
-      for (Unit original : b.getUnits()) {
-        Unit copy = (Unit) original.clone();
+    // Clone units in body's statement list
+    for (Unit original : b.getUnits()) {
+      Unit copy = (Unit) original.clone();
 
-        copy.addAllTagsOf(original);
+      copy.addAllTagsOf(original);
 
-        // Add cloned unit to our unitChain.
-        unitChain.addLast(copy);
+      // Add cloned unit to our unitChain.
+      unitChain.addLast(copy);
 
-        // Build old <-> new map to be able to patch up references to other units
-        // within the cloned units. (these are still refering to the original
-        // unit objects).
-        bindings.put(original, copy);
-      }
+      // Build old <-> new map to be able to patch up references to other units
+      // within the cloned units. (these are still refering to the original
+      // unit objects).
+      bindings.put(original, copy);
     }
 
-    {
-      // Clone trap units.
-      for (Trap original : b.getTraps()) {
-        Trap copy = (Trap) original.clone();
+    // Clone trap units.
+    for (Trap original : b.getTraps()) {
+      Trap copy = (Trap) original.clone();
 
-        // Add cloned unit to our trap list.
-        trapChain.addLast(copy);
+      // Add cloned unit to our trap list.
+      trapChain.addLast(copy);
 
-        // Store old <-> new mapping.
-        bindings.put(original, copy);
-      }
+      // Store old <-> new mapping.
+      bindings.put(original, copy);
     }
 
-    {
-      // Clone local units.
-      for (Local original : b.getLocals()) {
-        Local copy = (Local) original.clone();
+    // Clone local units.
+    for (Local original : b.getLocals()) {
+      Local copy = (Local) original.clone();
 
-        // Add cloned unit to our trap list.
-        localChain.addLast(copy);
+      // Add cloned unit to our trap list.
+      localChain.addLast(copy);
 
-        // Build old <-> new mapping.
-        bindings.put(original, copy);
-      }
+      // Build old <-> new mapping.
+      bindings.put(original, copy);
     }
 
-    {
-      // Patch up references within units using our (old <-> new) map.
-      for (UnitBox box : getAllUnitBoxes()) {
-        Unit newObject, oldObject = box.getUnit();
-
-        // if we have a reference to an old object, replace it
-        // it's clone.
-        if ((newObject = (Unit) bindings.get(oldObject)) != null) {
-          box.setUnit(newObject);
-        }
-
+    // Patch up references within units using our (old <-> new) map.
+    for (UnitBox box : getAllUnitBoxes()) {
+      Unit newObject = (Unit) bindings.get(box.getUnit());
+      // if we have a reference to an old object, replace it with its clone.
+      if (newObject != null) {
+        box.setUnit(newObject);
       }
     }
 
     {
       // backpatching all local variables.
       for (ValueBox vb : getUseBoxes()) {
-        if (vb.getValue() instanceof Local) {
-          vb.setValue((Value) bindings.get(vb.getValue()));
+        Value val = vb.getValue();
+        if (val instanceof Local) {
+          vb.setValue((Value) bindings.get(val));
         }
       }
       for (ValueBox vb : getDefBoxes()) {
-        if (vb.getValue() instanceof Local) {
-          vb.setValue((Value) bindings.get(vb.getValue()));
+        Value val = vb.getValue();
+        if (val instanceof Local) {
+          vb.setValue((Value) bindings.get(val));
         }
       }
     }
@@ -222,16 +242,18 @@ public abstract class Body extends AbstractHost implements Serializable {
   }
 
   protected void runValidation(BodyValidator validator) {
-    final List<ValidationException> exceptionList = new ArrayList<ValidationException>();
+    final List<ValidationException> exceptionList = new ArrayList<>();
     validator.validate(this, exceptionList);
     if (!exceptionList.isEmpty()) {
       throw exceptionList.get(0);
     }
   }
 
-  /** Verifies a few sanity conditions on the contents on this body. */
+  /**
+   * Verifies a few sanity conditions on the contents on this body.
+   */
   public void validate() {
-    List<ValidationException> exceptionList = new ArrayList<ValidationException>();
+    List<ValidationException> exceptionList = new ArrayList<>();
     validate(exceptionList);
     if (!exceptionList.isEmpty()) {
       throw exceptionList.get(0);
@@ -246,7 +268,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    */
   public void validate(List<ValidationException> exceptionList) {
     final boolean runAllValidators = Options.v().debug() || Options.v().validate();
-    for (BodyValidator validator : getValidators()) {
+    for (BodyValidator validator : LazyValidatorsSingleton.V) {
       if (!validator.isBasicValidator() && !runAllValidators) {
         continue;
       }
@@ -254,42 +276,68 @@ public abstract class Body extends AbstractHost implements Serializable {
     }
   }
 
-  /** Verifies that a ValueBox is not used in more than one place. */
+  /**
+   * Verifies that a ValueBox is not used in more than one place.
+   */
   public void validateValueBoxes() {
     runValidation(ValueBoxesValidator.v());
   }
 
-  /** Verifies that each Local of getUseAndDefBoxes() is in this body's locals Chain. */
+  /**
+   * Verifies that each Local of {@link #getUseAndDefBoxes()} is in this body's locals Chain.
+   */
   public void validateLocals() {
     runValidation(LocalsValidator.v());
   }
 
-  /** Verifies that the begin, end and handler units of each trap are in this body. */
+  /**
+   * Verifies that the begin, end and handler units of each trap are in this body.
+   */
   public void validateTraps() {
     runValidation(TrapsValidator.v());
   }
 
-  /** Verifies that the UnitBoxes of this Body all point to a Unit contained within this body. */
+  /**
+   * Verifies that the UnitBoxes of this Body all point to a Unit contained within this body.
+   */
   public void validateUnitBoxes() {
     runValidation(UnitBoxesValidator.v());
   }
 
-  /** Verifies that each use in this Body has a def. */
+  /**
+   * Verifies that each use in this Body has a def.
+   */
   public void validateUses() {
     runValidation(UsesValidator.v());
   }
 
-  /** Returns a backed chain of the locals declared in this Body. */
+  public void checkInit() {
+    runValidation(CheckInitValidator.v());
+  }
+
+  /**
+   * Returns a backed chain of the locals declared in this Body.
+   *
+   * @return
+   */
   public Chain<Local> getLocals() {
     return localChain;
   }
 
-  /** Returns a backed view of the traps found in this Body. */
+  /**
+   * Returns a backed view of the traps found in this Body.
+   *
+   * @return
+   */
   public Chain<Trap> getTraps() {
     return trapChain;
   }
 
-  /** Return unit containing the \@this-assignment **/
+  /**
+   * Return unit containing the \@this-assignment
+   *
+   * @return
+   */
   public Unit getThisUnit() {
     for (Unit u : getUnits()) {
       if (u instanceof IdentityStmt && ((IdentityStmt) u).getRightOp() instanceof ThisRef) {
@@ -300,24 +348,36 @@ public abstract class Body extends AbstractHost implements Serializable {
     throw new RuntimeException("couldn't find this-assignment!" + " in " + getMethod());
   }
 
-  /** Return LHS of the first identity stmt assigning from \@this. **/
+  /**
+   * Return LHS of the first identity stmt assigning from \@this.
+   *
+   * @return
+   */
   public Local getThisLocal() {
     return (Local) (((IdentityStmt) getThisUnit()).getLeftOp());
   }
 
-  /** Return LHS of the first identity stmt assigning from \@parameter i. **/
+  /**
+   * Return LHS of the first identity stmt assigning from \@parameter i.
+   *
+   * @param i
+   *
+   * @return
+   */
   public Local getParameterLocal(int i) {
     for (Unit s : getUnits()) {
-      if (s instanceof IdentityStmt && ((IdentityStmt) s).getRightOp() instanceof ParameterRef) {
+      if (s instanceof IdentityStmt) {
         IdentityStmt is = (IdentityStmt) s;
-        ParameterRef pr = (ParameterRef) is.getRightOp();
-        if (pr.getIndex() == i) {
-          return (Local) is.getLeftOp();
+        Value rightOp = is.getRightOp();
+        if (rightOp instanceof ParameterRef) {
+          ParameterRef pr = (ParameterRef) rightOp;
+          if (pr.getIndex() == i) {
+            return (Local) is.getLeftOp();
+          }
         }
       }
     }
-
-    throw new RuntimeException("couldn't find parameterref" + i + "! in " + getMethod());
+    throw new RuntimeException("couldn't find parameterref" + i + " in " + getMethod());
   }
 
   /**
@@ -325,42 +385,67 @@ public abstract class Body extends AbstractHost implements Serializable {
    *
    * @return a list of size as per <code>getMethod().getParameterCount()</code> with all elements ordered as per the
    *         parameter index.
+   *
    * @throws RuntimeException
    *           if a parameterref is missing
    */
   public List<Local> getParameterLocals() {
     final int numParams = getMethod().getParameterCount();
-    final List<Local> retVal = new ArrayList<Local>(numParams);
-
-    // Parameters are zero-indexed, so the keeping of the index is safe
+    Local[] res = new Local[numParams];
+    int numFound = 0;
     for (Unit u : getUnits()) {
       if (u instanceof IdentityStmt) {
-        IdentityStmt is = ((IdentityStmt) u);
-        if (is.getRightOp() instanceof ParameterRef) {
-          ParameterRef pr = (ParameterRef) is.getRightOp();
-          retVal.add(pr.getIndex(), (Local) is.getLeftOp());
+        IdentityStmt is = (IdentityStmt) u;
+        Value rightOp = is.getRightOp();
+        if (rightOp instanceof ParameterRef) {
+          int idx = ((ParameterRef) rightOp).getIndex();
+          if (res[idx] != null) {
+            throw new RuntimeException("duplicate parameterref" + idx + " in " + getMethod());
+          }
+          res[idx] = (Local) is.getLeftOp();
+          numFound++;
+          if (numFound >= numParams) {
+            break;
+          }
         }
       }
     }
-    if (retVal.size() != numParams) {
-      throw new RuntimeException("couldn't find parameterref! in " + getMethod());
+    if (numFound != numParams) {
+      for (int i = 0; i < numParams; i++) {
+        if (res[i] == null) {
+          throw new RuntimeException("couldn't find parameterref" + i + " in " + getMethod());
+        }
+      }
+      throw new RuntimeException("couldn't find parameterref? in " + getMethod());
     }
-    return retVal;
+    return Arrays.asList(res);
   }
 
   /**
    * Returns the list of parameter references used in this body. The list is as long as the number of parameters declared in
    * the associated method's signature. The list may have <code>null</code> entries for parameters not referenced in the
    * body. The returned list is of fixed size.
+   *
+   * @return
    */
   public List<Value> getParameterRefs() {
-    Value[] res = new Value[getMethod().getParameterCount()];
-    for (Unit s : getUnits()) {
-      if (s instanceof IdentityStmt) {
-        Value rightOp = ((IdentityStmt) s).getRightOp();
+    final int numParams = getMethod().getParameterCount();
+    Value[] res = new Value[numParams];
+    int numFound = 0;
+    for (Unit u : getUnits()) {
+      if (u instanceof IdentityStmt) {
+        Value rightOp = ((IdentityStmt) u).getRightOp();
         if (rightOp instanceof ParameterRef) {
-          ParameterRef parameterRef = (ParameterRef) rightOp;
-          res[parameterRef.getIndex()] = parameterRef;
+          ParameterRef pr = (ParameterRef) rightOp;
+          int idx = pr.getIndex();
+          if (res[idx] != null) {
+            throw new RuntimeException("duplicate parameterref" + idx + " in " + getMethod());
+          }
+          res[idx] = pr;
+          numFound++;
+          if (numFound >= numParams) {
+            break;
+          }
         }
       }
     }
@@ -390,36 +475,23 @@ public abstract class Body extends AbstractHost implements Serializable {
    * This method is typically used for pointer patching, eg when the unit chain is cloned.
    *
    * @return A list of all the UnitBoxes held by this body's units.
+   *
    * @see UnitBox
    * @see #getUnitBoxes(boolean)
    * @see Unit#getUnitBoxes()
    * @see soot.shimple.PhiExpr#getUnitBoxes()
-   **/
+   */
   public List<UnitBox> getAllUnitBoxes() {
-    ArrayList<UnitBox> unitBoxList = new ArrayList<UnitBox>();
-    {
-      Iterator<Unit> it = unitChain.iterator();
-      while (it.hasNext()) {
-        Unit item = it.next();
-        unitBoxList.addAll(item.getUnitBoxes());
-      }
+    ArrayList<UnitBox> unitBoxList = new ArrayList<>();
+    for (Unit item : unitChain) {
+      unitBoxList.addAll(item.getUnitBoxes());
     }
-
-    {
-      Iterator<Trap> it = trapChain.iterator();
-      while (it.hasNext()) {
-        Trap item = it.next();
-        unitBoxList.addAll(item.getUnitBoxes());
-      }
+    for (Trap item : trapChain) {
+      unitBoxList.addAll(item.getUnitBoxes());
     }
-
-    {
-      Iterator<Tag> it = getTags().iterator();
-      while (it.hasNext()) {
-        Tag t = it.next();
-        if (t instanceof CodeAttribute) {
-          unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
-        }
+    for (Tag t : getTags()) {
+      if (t instanceof CodeAttribute) {
+        unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
       }
     }
 
@@ -435,46 +507,28 @@ public abstract class Body extends AbstractHost implements Serializable {
    * If branchTarget is false, returns the result of iterating through the non-branching Units in this body and querying them
    * for their UnitBoxes. Any such UnitBoxes (typically from PhiExpr) contain a Unit that indicates the end of a CFG block.
    *
+   * @param branchTarget
+   *
    * @return a list of all the UnitBoxes held by this body's branching units.
    *
    * @see UnitBox
    * @see #getAllUnitBoxes()
    * @see Unit#getUnitBoxes()
    * @see soot.shimple.PhiExpr#getUnitBoxes()
-   **/
+   */
   public List<UnitBox> getUnitBoxes(boolean branchTarget) {
-    ArrayList<UnitBox> unitBoxList = new ArrayList<UnitBox>();
-    {
-      Iterator<Unit> it = unitChain.iterator();
-      while (it.hasNext()) {
-        Unit item = it.next();
-        if (branchTarget) {
-          if (item.branches()) {
-            unitBoxList.addAll(item.getUnitBoxes());
-          }
-        } else {
-          if (!item.branches()) {
-            unitBoxList.addAll(item.getUnitBoxes());
-          }
-        }
-      }
-    }
-
-    {
-      Iterator<Trap> it = trapChain.iterator();
-      while (it.hasNext()) {
-        Trap item = it.next();
+    ArrayList<UnitBox> unitBoxList = new ArrayList<>();
+    for (Unit item : unitChain) {
+      if (item.branches() == branchTarget) {
         unitBoxList.addAll(item.getUnitBoxes());
       }
     }
-
-    {
-      Iterator<Tag> it = getTags().iterator();
-      while (it.hasNext()) {
-        Tag t = it.next();
-        if (t instanceof CodeAttribute) {
-          unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
-        }
+    for (Trap item : trapChain) {
+      unitBoxList.addAll(item.getUnitBoxes());
+    }
+    for (Tag t : getTags()) {
+      if (t instanceof CodeAttribute) {
+        unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
       }
     }
 
@@ -491,14 +545,10 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @see Unit#getUseBoxes
    * @see ValueBox
    * @see Value
-   *
    */
   public List<ValueBox> getUseBoxes() {
-    ArrayList<ValueBox> useBoxList = new ArrayList<ValueBox>();
-
-    Iterator<Unit> it = unitChain.iterator();
-    while (it.hasNext()) {
-      Unit item = it.next();
+    ArrayList<ValueBox> useBoxList = new ArrayList<>();
+    for (Unit item : unitChain) {
       useBoxList.addAll(item.getUseBoxes());
     }
     return useBoxList;
@@ -516,11 +566,8 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @see Value
    */
   public List<ValueBox> getDefBoxes() {
-    ArrayList<ValueBox> defBoxList = new ArrayList<ValueBox>();
-
-    Iterator<Unit> it = unitChain.iterator();
-    while (it.hasNext()) {
-      Unit item = it.next();
+    ArrayList<ValueBox> defBoxList = new ArrayList<>();
+    for (Unit item : unitChain) {
       defBoxList.addAll(item.getDefBoxes());
     }
     return defBoxList;
@@ -537,19 +584,12 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @see Value
    */
   public List<ValueBox> getUseAndDefBoxes() {
-    ArrayList<ValueBox> useAndDefBoxList = new ArrayList<ValueBox>();
-
-    Iterator<Unit> it = unitChain.iterator();
-    while (it.hasNext()) {
-      Unit item = it.next();
+    ArrayList<ValueBox> useAndDefBoxList = new ArrayList<>();
+    for (Unit item : unitChain) {
       useAndDefBoxList.addAll(item.getUseBoxes());
       useAndDefBoxList.addAll(item.getDefBoxes());
     }
     return useAndDefBoxList;
-  }
-
-  public void checkInit() {
-    runValidation(CheckInitValidator.v());
   }
 
   /**
@@ -558,19 +598,16 @@ public abstract class Body extends AbstractHost implements Serializable {
   @Override
   public String toString() {
     ByteArrayOutputStream streamOut = new ByteArrayOutputStream();
-    PrintWriter writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
-    try {
+    try (PrintWriter writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)))) {
       Printer.v().printTo(this, writerOut);
+      writerOut.flush();
     } catch (RuntimeException e) {
       logger.error(e.getMessage(), e);
     }
-    writerOut.flush();
-    writerOut.close();
     return streamOut.toString();
   }
 
   public long getModificationCount() {
     return localChain.getModificationCount() + unitChain.getModificationCount() + trapChain.getModificationCount();
   }
-
 }

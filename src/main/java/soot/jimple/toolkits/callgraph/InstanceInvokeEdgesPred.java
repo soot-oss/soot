@@ -28,7 +28,11 @@ package soot.jimple.toolkits.callgraph;
  * @author Ondrej Lhotak
  */
 public class InstanceInvokeEdgesPred implements EdgePredicate {
-  /** Returns true iff the edge e is wanted. */
+
+  /**
+   * Returns true iff the edge e is wanted.
+   */
+  @Override
   public boolean want(Edge e) {
     return e.isInstance();
   }

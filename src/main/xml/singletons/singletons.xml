@@ -67,6 +67,8 @@
   <class>soot.jimple.toolkits.scalar.LocalNameStandardizer</class>
   <class>soot.toolkits.scalar.LocalPacker</class>
   <class>soot.toolkits.scalar.LocalSplitter</class>
+  <class>soot.toolkits.scalar.SharedInitializationLocalSplitter</class>
+  <class>soot.toolkits.scalar.FlowSensitiveConstantPropagator</class>
   <class>soot.coffi.Long2ndHalfType</class>
   <class>soot.LongType</class>
   <class>soot.dava.toolkits.base.misc.MonitorConverter</class>
@@ -176,4 +178,5 @@
   <class>soot.jbco.jimpleTransformations.MethodRenamer</class>
   <class>soot.LambdaMetaFactory</class>
   <class>soot.jbco.jimpleTransformations.FieldRenamer</class>
+  <class>soot.toolkits.scalar.LocalDefsFactory</class>
 </singletons>

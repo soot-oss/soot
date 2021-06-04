@@ -29,68 +29,59 @@ import java.util.ArrayDeque;
 import soot.util.Switch;
 
 /**
- * A class that models Java's reference types. RefTypes are parametrized by a class name. Two RefType are equal iff they are
- * parametrized by the same class name as a String.
+ * A class that models Java's reference types. RefTypes are parameterized by a class name. Two RefType are equal iff they are
+ * parameterized by the same class name as a String.
  */
-
 @SuppressWarnings("serial")
 public class RefType extends RefLikeType implements Comparable<RefType> {
+
+  /**
+   * the class name that parameterizes this RefType
+   */
+  private String className;
+  private AnySubType anySubType;
+  protected volatile SootClass sootClass;
+
   public RefType(Singletons.Global g) {
-    className = "";
+    this.className = "";
+  }
+
+  protected RefType(String className) {
+    if (!className.isEmpty()) {
+      if (className.charAt(0) == '[') {
+        throw new RuntimeException("Attempt to create RefType whose name starts with [ --> " + className);
+      }
+      if (className.indexOf('/') >= 0) {
+        throw new RuntimeException("Attempt to create RefType containing a / --> " + className);
+      }
+      if (className.indexOf(';') >= 0) {
+        throw new RuntimeException("Attempt to create RefType containing a ; --> " + className);
+      }
+    }
+    this.className = className;
   }
 
   public static RefType v() {
     if (ModuleUtil.module_mode()) {
       return G.v().soot_ModuleRefType();
+    } else {
+      return G.v().soot_RefType();
     }
-    return G.v().soot_RefType();
-  }
-
-  /** the class name that parameterizes this RefType */
-  private String className;
-
-  public String getClassName() {
-    return className;
-  }
-
-  protected volatile SootClass sootClass;
-  private AnySubType anySubType;
-
-  protected RefType(String className) {
-    if (className.startsWith("[")) {
-      throw new RuntimeException("Attempt to create RefType whose name starts with [ --> " + className);
-    }
-    if (className.indexOf("/") >= 0) {
-      throw new RuntimeException("Attempt to create RefType containing a / --> " + className);
-    }
-    if (className.indexOf(";") >= 0) {
-      throw new RuntimeException("Attempt to create RefType containing a ; --> " + className);
-    }
-    this.className = className;
   }
 
   /**
    * Create a RefType for a class.
    *
    * @param className
-   *          The name of the class used to parametrize the created RefType.
+   *          The name of the class used to parameterize the created RefType.
    * @return a RefType for the given class name.
    */
   public static RefType v(String className) {
-
     if (ModuleUtil.module_mode()) {
       return ModuleRefType.v(className);
-    }
-    RefType rt = Scene.v().getRefTypeUnsafe(className);
-    if (rt == null) {
+    } else {
       return Scene.v().getOrAddRefType(className);
     }
-    return rt;
-
-  }
-
-  public int compareTo(RefType t) {
-    return this.toString().compareTo(t.toString());
   }
 
   /**
@@ -103,8 +94,18 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
   public static RefType v(SootClass c) {
     if (ModuleUtil.module_mode()) {
       return ModuleRefType.v(c.getName(), Optional.fromNullable(c.moduleName));
+    } else {
+      return v(c.getName());
     }
-    return v(c.getName());
+  }
+
+  public String getClassName() {
+    return className;
+  }
+
+  @Override
+  public int compareTo(RefType t) {
+    return this.toString().compareTo(t.toString());
   }
 
   /**
@@ -139,15 +140,17 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
   }
 
   /**
-   * 2 RefTypes are considered equal if they are parametrized by the same class name String.
+   * Two RefTypes are considered equal if they are parameterized by the same class name String.
    *
    * @param t
-   *          an object to test for equality. @ return true if t is a RefType parametrized by the same name as this.
+   *          an object to test for equality. @ return true if t is a RefType parameterized by the same name as this.
    */
+  @Override
   public boolean equals(Object t) {
     return ((t instanceof RefType) && className.equals(((RefType) t).className));
   }
 
+  @Override
   public String toString() {
     return className;
   }
@@ -160,15 +163,20 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     return Scene.v().quotedNameOf(className);
   }
 
+  @Override
   public int hashCode() {
     return className.hashCode();
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseRefType(this);
   }
 
-  /** Returns the least common superclass of this type and other. */
+  /**
+   * Returns the least common superclass of this type and other.
+   */
+  @Override
   public Type merge(Type other, Scene cm) {
     if (other.equals(UnknownType.v()) || this.equals(other)) {
       return this;
@@ -180,62 +188,47 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
     {
       // Return least common superclass
-
-      SootClass thisClass = cm.getSootClass(this.className);
-      SootClass otherClass = cm.getSootClass(((RefType) other).className);
-      SootClass javalangObject = cm.getObjectType().getSootClass();
+      final SootClass javalangObject = cm.getObjectType().getSootClass();
 
       ArrayDeque<SootClass> thisHierarchy = new ArrayDeque<>();
       ArrayDeque<SootClass> otherHierarchy = new ArrayDeque<>();
 
       // Build thisHierarchy
-      {
-        SootClass sootClass = thisClass;
-
-        // This should never be null, so we could also use "while
-        // (true)"; but better be safe than sorry.
-        while (sootClass != null) {
-          thisHierarchy.addFirst(sootClass);
-          if (sootClass == javalangObject) {
-            break;
-          }
-
-          sootClass = sootClass.getSuperclassUnsafe();
-          if (sootClass == null) {
-            sootClass = javalangObject;
-          }
+      // This should never be null, so we could also use "while
+      // (true)"; but better be safe than sorry.
+      for (SootClass sc = cm.getSootClass(this.className); sc != null;) {
+        thisHierarchy.addFirst(sc);
+        if (sc == javalangObject) {
+          break;
+        }
+        sc = sc.getSuperclassUnsafe();
+        if (sc == null) {
+          sc = javalangObject;
         }
       }
 
       // Build otherHierarchy
-      {
-        SootClass sootClass = otherClass;
-
-        // This should never be null, so we could also use "while
-        // (true)"; but better be safe than sorry.
-        while (sootClass != null) {
-          otherHierarchy.addFirst(sootClass);
-          if (sootClass == javalangObject) {
-            break;
-          }
-
-          sootClass = sootClass.getSuperclassUnsafe();
-          if (sootClass == null) {
-            sootClass = javalangObject;
-          }
+      // This should never be null, so we could also use "while
+      // (true)"; but better be safe than sorry.
+      for (SootClass sc = cm.getSootClass(((RefType) other).className); sc != null;) {
+        otherHierarchy.addFirst(sc);
+        if (sc == javalangObject) {
+          break;
+        }
+        sc = sc.getSuperclassUnsafe();
+        if (sc == null) {
+          sc = javalangObject;
         }
       }
 
       // Find least common superclass
       {
         SootClass commonClass = null;
-
         while (!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty()
             && otherHierarchy.getFirst() == thisHierarchy.getFirst()) {
           commonClass = otherHierarchy.removeFirst();
           thisHierarchy.removeFirst();
         }
-
         if (commonClass == null) {
           throw new RuntimeException("Could not find a common superclass for " + this + " and " + other);
         }
@@ -243,12 +236,12 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
         return commonClass.getType();
       }
     }
-
   }
 
+  @Override
   public Type getArrayElementType() {
-    if (className.equals("java.lang.Object") || className.equals("java.io.Serializable")
-        || className.equals("java.lang.Cloneable")) {
+    if ("java.lang.Object".equals(className) || "java.io.Serializable".equals(className)
+        || "java.lang.Cloneable".equals(className)) {
       return RefType.v("java.lang.Object");
     }
     throw new RuntimeException("Attempt to get array base type of a non-array");
@@ -262,8 +255,8 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     this.anySubType = anySubType;
   }
 
+  @Override
   public boolean isAllowedInFinalCode() {
     return true;
   }
-
 }

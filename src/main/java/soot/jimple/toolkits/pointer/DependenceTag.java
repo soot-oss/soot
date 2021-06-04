@@ -25,7 +25,9 @@ package soot.jimple.toolkits.pointer;
 import soot.tagkit.Tag;
 
 public class DependenceTag implements Tag {
-  private final static String NAME = "DependenceTag";
+
+  public static final String NAME = "DependenceTag";
+
   protected short read = -1;
   protected short write = -1;
   protected boolean callsNative = false;
@@ -44,10 +46,12 @@ public class DependenceTag implements Tag {
     write = s;
   }
 
+  @Override
   public String getName() {
     return NAME;
   }
 
+  @Override
   public byte[] getValue() {
     byte[] ret = new byte[5];
     ret[0] = (byte) ((read >> 8) & 0xff);
@@ -58,16 +62,17 @@ public class DependenceTag implements Tag {
     return ret;
   }
 
+  @Override
   public String toString() {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     if (callsNative) {
       buf.append("SECallsNative\n");
     }
     if (read >= 0) {
-      buf.append("SEReads : " + read + "\n");
+      buf.append("SEReads : ").append(read).append('\n');
     }
     if (write >= 0) {
-      buf.append("SEWrites: " + write + "\n");
+      buf.append("SEWrites: ").append(write).append('\n');
     }
     return buf.toString();
   }

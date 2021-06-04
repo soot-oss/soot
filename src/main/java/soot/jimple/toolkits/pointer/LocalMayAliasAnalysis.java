@@ -42,11 +42,11 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
  */
 public class LocalMayAliasAnalysis extends ForwardFlowAnalysis<Unit, Set<Set<Value>>> {
 
-  private Body body;
+  private final Body body;
 
   public LocalMayAliasAnalysis(UnitGraph graph) {
     super(graph);
-    body = graph.getBody();
+    this.body = graph.getBody();
     doAnalysis();
   }
 
@@ -137,8 +137,7 @@ public class LocalMayAliasAnalysis extends ForwardFlowAnalysis<Unit, Set<Set<Val
    * Returns true if v1 and v2 may alias before u.
    */
   public boolean mayAlias(Value v1, Value v2, Unit u) {
-    Set<Set<Value>> res = getFlowBefore(u);
-    for (Set<Value> set : res) {
+    for (Set<Value> set : getFlowBefore(u)) {
       if (set.contains(v1) && set.contains(v2)) {
         return true;
       }
@@ -151,8 +150,7 @@ public class LocalMayAliasAnalysis extends ForwardFlowAnalysis<Unit, Set<Set<Val
    */
   public Set<Value> mayAliases(Value v, Unit u) {
     Set<Value> res = new HashSet<Value>();
-    Set<Set<Value>> flow = getFlowBefore(u);
-    for (Set<Value> set : flow) {
+    for (Set<Value> set : getFlowBefore(u)) {
       if (set.contains(v)) {
         res.addAll(set);
       }
@@ -166,8 +164,7 @@ public class LocalMayAliasAnalysis extends ForwardFlowAnalysis<Unit, Set<Set<Val
   public Set<Value> mayAliasesAtExit(Value v) {
     Set<Value> res = new HashSet<Value>();
     for (Unit u : graph.getTails()) {
-      Set<Set<Value>> flow = getFlowAfter(u);
-      for (Set<Value> set : flow) {
+      for (Set<Value> set : getFlowAfter(u)) {
         if (set.contains(v)) {
           res.addAll(set);
         }

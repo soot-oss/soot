@@ -1138,22 +1138,22 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
   }
 
   @SuppressWarnings("unchecked")
-  protected Set<SootMethod> getCallTargets(PointsToSetInternal p2Set, NumberedString methodStr, Type receiverType,
+  protected Set<SootMethod> getCallTargets(PointsToSetInternal p2Set, SootMethod callee, Type receiverType,
       Set<SootMethod> possibleTargets) {
-    List<Object> args = Arrays.asList(p2Set, methodStr, receiverType, possibleTargets);
+    List<Object> args = Arrays.asList(p2Set, callee, receiverType, possibleTargets);
     if (callTargetsArgCache.containsKey(args)) {
       return callTargetsArgCache.get(args);
     }
     Set<Type> types = p2Set.possibleTypes();
     Set<SootMethod> ret = new HashSet<SootMethod>();
     for (Type type : types) {
-      ret.addAll(getCallTargetsForType(type, methodStr, receiverType, possibleTargets));
+      ret.addAll(getCallTargetsForType(type, callee, receiverType, possibleTargets));
     }
     callTargetsArgCache.put(args, ret);
     return ret;
   }
 
-  protected Set<SootMethod> getCallTargetsForType(Type type, NumberedString methodStr, Type receiverType,
+  protected Set<SootMethod> getCallTargetsForType(Type type, SootMethod callee, Type receiverType,
       Set<SootMethod> possibleTargets) {
     if (!pag.getTypeManager().castNeverFails(type, receiverType)) {
       return Collections.<SootMethod>emptySet();
@@ -1176,7 +1176,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     }
     RefType refType = (RefType) type;
     SootMethod targetMethod = null;
-    targetMethod = VirtualCalls.v().resolveNonSpecial(refType, methodStr);
+    targetMethod = VirtualCalls.v().resolveNonSpecial(refType, callee.makeRef());
     return Collections.<SootMethod>singleton(targetMethod);
 
   }
@@ -1597,7 +1597,6 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     final VarNode receiver = csInfo.getReceiverForVirtCallSite(callSite);
     final Type receiverType = receiver.getType();
     final SootMethod invokedMethod = csInfo.getInvokedMethod(callSite);
-    final NumberedString methodSig = invokedMethod.getNumberedSubSignature();
     final Set<SootMethod> allTargets = csInfo.getCallSiteTargets(callSite);
     if (!refineCallGraph) {
       callGraphStack.pop();
@@ -1638,7 +1637,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
       Node[] newNodes = pag.allocInvLookup(curVar);
       for (int i = 0; i < newNodes.length; i++) {
         AllocNode allocNode = (AllocNode) newNodes[i];
-        for (SootMethod method : getCallTargetsForType(allocNode.getType(), methodSig, receiverType, allTargets)) {
+        for (SootMethod method : getCallTargetsForType(allocNode.getType(), invokedMethod, receiverType, allTargets)) {
           callSiteToResolvedTargets.put(callSiteAndContext, method);
         }
       }
@@ -1692,7 +1691,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
             boolean skipMatch = false;
             if (oneMatch) {
               PointsToSetInternal matchSrcPTo = matchSrc.getP2Set();
-              Set<SootMethod> matchSrcCallTargets = getCallTargets(matchSrcPTo, methodSig, receiverType, allTargets);
+              Set<SootMethod> matchSrcCallTargets = getCallTargets(matchSrcPTo, invokedMethod, receiverType, allTargets);
               if (matchSrcCallTargets.size() <= 1) {
                 skipMatch = true;
                 for (SootMethod method : matchSrcCallTargets) {

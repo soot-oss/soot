@@ -29,6 +29,7 @@ import soot.jimple.IdentityRef;
  * Interface for different methods of printing out a Unit.
  */
 public interface UnitPrinter {
+
   public void startUnit(Unit u);
 
   public void endUnit(Unit u);

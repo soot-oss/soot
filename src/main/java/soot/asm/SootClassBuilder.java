@@ -115,7 +115,7 @@ public class SootClassBuilder extends ClassVisitor {
 
   @Override
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-
+    setJavaVersion(version);
     /*
      * check if class is a module-info, if not add the module information to it
      */
@@ -134,7 +134,7 @@ public class SootClassBuilder extends ClassVisitor {
     }
     // FIXME: ad -- throw excpetion again
     // throw new RuntimeException("Class names not equal! "+name+" != "+klass.getName());
-    klass.setModifiers(access & ~Opcodes.ACC_SUPER);
+    klass.setModifiers(filterASMFlags(access) & ~Opcodes.ACC_SUPER);
     if (superName != null) {
       superName = AsmUtil.toQualifiedName(superName);
       addDep(makeRefType(superName));
@@ -153,8 +153,15 @@ public class SootClassBuilder extends ClassVisitor {
     }
   }
 
+  private void setJavaVersion(int version) {
+    if (Options.v().derive_java_version()) {
+      Options.v().set_java_version(Math.max(Options.v().java_version(), AsmUtil.byteCodeToJavaVersion(version)));
+    }
+  }
+
   @Override
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+    access = filterASMFlags(access);
     soot.Type type = AsmUtil.toJimpleType(desc, Optional.fromNullable(this.klass.moduleName));
     addDep(type);
     SootField field = Scene.v().makeSootField(name, type, access);
@@ -182,8 +189,13 @@ public class SootClassBuilder extends ClassVisitor {
     return new FieldBuilder(field, this);
   }
 
+  public static int filterASMFlags(int access) {
+    return access & ~Opcodes.ACC_DEPRECATED & ~Opcodes.ACC_RECORD;
+  }
+
   @Override
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+    access = filterASMFlags(access);
     List<SootClass> thrownExceptions;
     if (exceptions == null || exceptions.length == 0) {
       thrownExceptions = Collections.emptyList();
@@ -228,7 +240,6 @@ public class SootClassBuilder extends ClassVisitor {
       String innerClassName = AsmUtil.toQualifiedName(name);
 
       deps.add(makeRefType(innerClassName));
-
     }
   }
 

@@ -25,14 +25,12 @@ package soot;
 import soot.util.Switch;
 
 /**
- * A class that models Java's array types. ArrayTypes are parametrized by a Type and and an integer representing the array's
- * dimension count.. Two ArrayType are 'equal' if they are parametrized equally.
- *
- *
- *
+ * A class that models Java's array types. ArrayTypes are parameterized by a Type and and an integer representing the array's
+ * dimension count. Two ArrayType are 'equal' if they are parameterized equally.
  */
 @SuppressWarnings("serial")
 public class ArrayType extends RefLikeType {
+
   /**
    * baseType can be any type except for an array type, null and void
    *
@@ -42,12 +40,14 @@ public class ArrayType extends RefLikeType {
    */
   public final Type baseType;
 
-  /** dimension count for the array type */
+  /**
+   * dimension count for the array type
+   */
   public final int numDimensions;
 
   private ArrayType(Type baseType, int numDimensions) {
     if (!(baseType instanceof PrimType || baseType instanceof RefType || baseType instanceof NullType)) {
-      throw new RuntimeException("oops,  base type must be PrimType or RefType but not '" + baseType + "'");
+      throw new RuntimeException("oops, base type must be PrimType or RefType but not '" + baseType + "'");
     }
     if (numDimensions < 1) {
       throw new RuntimeException("attempt to create array with " + numDimensions + " dimensions");
@@ -57,20 +57,20 @@ public class ArrayType extends RefLikeType {
   }
 
   /**
-   * Creates an ArrayType parametrized by a given Type and dimension count.
+   * Creates an ArrayType parameterized by a given Type and dimension count.
    *
    * @param baseType
-   *          a Type to parametrize the ArrayType
+   *          a Type to parameterize the ArrayType
    * @param numDimensions
-   *          the dimension count to parametrize the ArrayType.
-   * @return an ArrayType parametrized accrodingly.
+   *          the dimension count to parameterize the ArrayType.
+   * @return an ArrayType parameterized accordingly.
    */
   public static ArrayType v(Type baseType, int numDimensions) {
     if (numDimensions < 0) {
       throw new RuntimeException("Invalid number of array dimensions: " + numDimensions);
     }
 
-    int orgDimensions = numDimensions;
+    final int orgDimensions = numDimensions;
     Type elementType = baseType;
     while (numDimensions > 0) {
       ArrayType ret = elementType.getArrayType();
@@ -86,19 +86,15 @@ public class ArrayType extends RefLikeType {
   }
 
   /**
-   * Two ArrayType are 'equal' if they are parametrized identically. (ie have same Type and dimension count.
+   * Two ArrayType are 'equal' if they are parameterized identically. (ie have same Type and dimension count.
    *
    * @param t
    *          object to test for equality
-   * @return true if t is an ArrayType and is parametrized identically to this.
+   * @return true if t is an ArrayType and is parameterized identically to this.
    */
+  @Override
   public boolean equals(Object t) {
     return t == this;
-    /*
-     * if(t instanceof ArrayType) { ArrayType arrayType = (ArrayType) t;
-     *
-     * return this.numDimensions == arrayType.numDimensions && this.baseType.equals(arrayType.baseType); } else return false;
-     */
   }
 
   public void toString(UnitPrinter up) {
@@ -109,36 +105,35 @@ public class ArrayType extends RefLikeType {
     }
   }
 
+  @Override
   public String toString() {
-    StringBuffer buffer = new StringBuffer();
-
+    StringBuilder buffer = new StringBuilder();
     buffer.append(baseType.toString());
-
     for (int i = 0; i < numDimensions; i++) {
       buffer.append("[]");
     }
-
     return buffer.toString();
   }
 
-  /** Returns a textual representation, quoted as needed, of this type for serialization, e.g. to .jimple format */
+  /**
+   * Returns a textual representation, quoted as needed, of this type for serialization, e.g. to .jimple format
+   */
   @Override
   public String toQuotedString() {
     StringBuilder buffer = new StringBuilder();
-
     buffer.append(baseType.toQuotedString());
-
     for (int i = 0; i < numDimensions; i++) {
       buffer.append("[]");
     }
-
     return buffer.toString();
   }
 
+  @Override
   public int hashCode() {
     return baseType.hashCode() + 0x432E0341 * numDimensions;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseArrayType(this);
   }
@@ -149,6 +144,7 @@ public class ArrayType extends RefLikeType {
    * RefLikeType. If t is an array, then the answer is the same as getElementType(). But t could also be Object,
    * Serializable, or Cloneable, which can all hold any array, so then the answer is Object.
    */
+  @Override
   public Type getArrayElementType() {
     return getElementType();
   }
@@ -165,12 +161,13 @@ public class ArrayType extends RefLikeType {
     }
   }
 
+  @Override
   public ArrayType makeArrayType() {
     return ArrayType.v(baseType, numDimensions + 1);
   }
 
+  @Override
   public boolean isAllowedInFinalCode() {
     return true;
   }
-
 }

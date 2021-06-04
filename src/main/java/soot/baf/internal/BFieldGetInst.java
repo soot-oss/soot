@@ -31,6 +31,7 @@ import soot.baf.InstSwitch;
 import soot.util.Switch;
 
 public class BFieldGetInst extends AbstractInst implements FieldGetInst {
+
   SootFieldRef fieldRef;
 
   public BFieldGetInst(SootFieldRef fieldRef) {
@@ -40,51 +41,63 @@ public class BFieldGetInst extends AbstractInst implements FieldGetInst {
     this.fieldRef = fieldRef;
   }
 
-  public int getInCount() {
-    return 1;
-  }
-
+  @Override
   public Object clone() {
     return new BFieldGetInst(fieldRef);
   }
 
+  @Override
+  public int getInCount() {
+    return 1;
+  }
+
+  @Override
   public int getInMachineCount() {
     return 1;
   }
 
+  @Override
   public int getOutCount() {
     return 1;
   }
 
+  @Override
   public int getOutMachineCount() {
     return AbstractJasminClass.sizeOfType(fieldRef.type());
   }
 
+  @Override
   final public String getName() {
     return "fieldget";
   }
 
+  @Override
   final String getParameters() {
     return " " + fieldRef.getSignature();
   }
 
+  @Override
   protected void getParameters(UnitPrinter up) {
     up.literal(" ");
     up.fieldRef(fieldRef);
   }
 
+  @Override
   public SootFieldRef getFieldRef() {
     return fieldRef;
   }
 
+  @Override
   public SootField getField() {
     return fieldRef.resolve();
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseFieldGetInst(this);
   }
 
+  @Override
   public boolean containsFieldRef() {
     return true;
   }

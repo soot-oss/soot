@@ -4,7 +4,7 @@ package soot.lambdaMetaFactory;
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 2018 Manuel Benz
+ * Copyright (C) 2019 Manuel Benz
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,18 +22,16 @@ package soot.lambdaMetaFactory;
  * #L%
  */
 
-import org.junit.Rule;
 import org.junit.Test;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
 import soot.SootMethod;
 import soot.testing.framework.AbstractTestingFramework;
 
 /**
  * @author Manuel Benz created on 2018-12-18
  */
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class LambdaMetaFactoryAdaptTest extends AbstractTestingFramework {
 
   @Test

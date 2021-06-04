@@ -209,8 +209,8 @@ public class LoopInvariantFinder extends BodyTransformer {
     } else {
       // if loops are nested it might be invariant in one of them
       // so remove tag
-      // if (s.hasTag("LoopInvariantTag")) {
-      // s.removeTag("LoopInvariantTag");
+      // if (s.hasTag(LoopInvariantTag.NAME)) {
+      // s.removeTag(LoopInvariantTag.NAME);
       // }
     }
   }

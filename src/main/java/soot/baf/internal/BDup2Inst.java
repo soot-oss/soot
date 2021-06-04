@@ -24,7 +24,6 @@ package soot.baf.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import soot.Type;
 import soot.baf.Baf;
 import soot.baf.Dup2Inst;
@@ -37,18 +36,21 @@ public class BDup2Inst extends BDupInst implements Dup2Inst {
   private final Type mOp2Type;
 
   public BDup2Inst(Type aOp1Type, Type aOp2Type) {
-    mOp1Type = Baf.getDescriptorTypeOf(aOp1Type);
-    mOp2Type = Baf.getDescriptorTypeOf(aOp2Type);
+    this.mOp1Type = Baf.getDescriptorTypeOf(aOp1Type);
+    this.mOp2Type = Baf.getDescriptorTypeOf(aOp2Type);
   }
 
+  @Override
   public Type getOp1Type() {
     return mOp1Type;
   }
 
+  @Override
   public Type getOp2Type() {
     return mOp2Type;
   }
 
+  @Override
   public List<Type> getOpTypes() {
     List<Type> res = new ArrayList<Type>();
     res.add(mOp1Type);
@@ -56,20 +58,23 @@ public class BDup2Inst extends BDupInst implements Dup2Inst {
     return res;
   }
 
+  @Override
   public List<Type> getUnderTypes() {
     return new ArrayList<Type>();
   }
 
+  @Override
   final public String getName() {
     return "dup2";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseDup2Inst(this);
   }
 
+  @Override
   public String toString() {
     return "dup2." + Baf.bafDescriptorOf(mOp1Type) + Baf.bafDescriptorOf(mOp2Type);
   }
-
 }
