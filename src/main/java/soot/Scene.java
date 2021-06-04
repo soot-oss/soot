@@ -97,18 +97,18 @@ public class Scene {
   @SuppressWarnings("unchecked")
   protected final Set<String>[] basicclasses = new Set[4];
 
-  protected final Chain<SootClass> classes = new HashChain<SootClass>();
-  protected final Chain<SootClass> applicationClasses = new HashChain<SootClass>();
-  protected final Chain<SootClass> libraryClasses = new HashChain<SootClass>();
-  protected final Chain<SootClass> phantomClasses = new HashChain<SootClass>();
+  protected Chain<SootClass> classes = new HashChain<SootClass>();
+  protected Chain<SootClass> applicationClasses = new HashChain<SootClass>();
+  protected Chain<SootClass> libraryClasses = new HashChain<SootClass>();
+  protected Chain<SootClass> phantomClasses = new HashChain<SootClass>();
 
-  protected final IterableNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
-  protected final Numberer<Unit> unitNumberer = new MapNumberer<Unit>();
-  protected final StringNumberer subSigNumberer = new StringNumberer();
-  protected final IterableNumberer<SootClass> classNumberer;
-  protected final Numberer<SparkField> fieldNumberer;
-  protected final IterableNumberer<SootMethod> methodNumberer;
-  protected final IterableNumberer<Local> localNumberer;
+  protected IterableNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
+  protected Numberer<Unit> unitNumberer = new MapNumberer<Unit>();
+  protected StringNumberer subSigNumberer = new StringNumberer();
+  protected IterableNumberer<SootClass> classNumberer;
+  protected Numberer<SparkField> fieldNumberer;
+  protected IterableNumberer<SootMethod> methodNumberer;
+  protected IterableNumberer<Local> localNumberer;
   protected Numberer<Context> contextNumberer;
 
   protected Hierarchy activeHierarchy;
@@ -622,8 +622,8 @@ public class Scene {
         androidAPIVersion = defaultSdkVersion;
       }
     } else if (androidJars != null && !androidJars.isEmpty()) {
-      List<String> classPathEntries =
-          new ArrayList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
+      List<String> classPathEntries
+          = new ArrayList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
       classPathEntries.addAll(Options.v().process_dir());
 
       String targetApk = "";
