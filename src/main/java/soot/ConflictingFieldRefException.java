@@ -27,7 +27,6 @@ package soot;
  * declares a field "fld: type2". In other words, this exception denotes a mismatch in expected and declared type.
  *
  * @author Steven Arzt
- *
  */
 public class ConflictingFieldRefException extends RuntimeException {
 
@@ -46,5 +45,4 @@ public class ConflictingFieldRefException extends RuntimeException {
     return String.format("Existing field %s does not match expected field type %s", existingField.toString(),
         requestedType.toString());
   }
-
 }

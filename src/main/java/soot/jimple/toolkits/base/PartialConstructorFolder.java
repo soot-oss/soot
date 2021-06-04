@@ -44,6 +44,7 @@ import soot.jimple.JimpleBody;
 import soot.jimple.NewExpr;
 import soot.jimple.SpecialInvokeExpr;
 import soot.options.Options;
+import soot.tagkit.SourceLnPosTag;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
@@ -140,7 +141,7 @@ public class PartialConstructorFolder extends BodyTransformer {
             // insert new one here
             units.insertBefore(constructStmt, use);
 
-            constructStmt.addTag(u.getTag("SourceLnPosTag"));
+            constructStmt.addTag(u.getTag(SourceLnPosTag.NAME));
           }
         }
         if (madeNewInvokeExpr) {

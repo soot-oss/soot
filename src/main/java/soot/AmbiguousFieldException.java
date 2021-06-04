@@ -26,7 +26,6 @@ package soot;
  * Exception that is thrown when a field is accessed through an ambiguous name
  * 
  * @author Steven Arzt
- *
  */
 public class AmbiguousFieldException extends RuntimeException {
 
@@ -35,5 +34,4 @@ public class AmbiguousFieldException extends RuntimeException {
   public AmbiguousFieldException(String fieldName, String className) {
     super(String.format("Ambiguous field name %s in class %s", fieldName, className));
   }
-
 }

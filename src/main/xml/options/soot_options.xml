@@ -2031,6 +2031,25 @@
                         <default>false</default>
                     </boolopt>
                 </sub_phase>
+                <sub_phase>
+                    <name>Conditional Branch Folder</name>
+                    <alias>jb.cbf</alias>
+                    <short_desc>Conditional branch folder</short_desc>
+                    <long_desc>
+                        The Conditional Branch Folder statically evaluates the
+                        conditional expression of Jimple <tt>if</tt> statements. If the
+                        condition is identically <tt>true</tt> or
+                        <tt>false</tt>, the Folder replaces the conditional branch
+                        statement with an unconditional <tt>goto</tt> statement.
+                    </long_desc>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>true</default>
+                        <short_desc/>
+                        <long_desc/>
+                    </boolopt>
+                </sub_phase>
             </phase>
             <phase>
                 <name>Java To Jimple Body Creation</name>

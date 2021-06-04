@@ -61,6 +61,7 @@ import soot.util.Chain;
 import soot.util.IterableSet;
 
 public class DavaPrinter {
+
   public DavaPrinter(Singletons.Global g) {
   }
 
@@ -69,13 +70,11 @@ public class DavaPrinter {
   }
 
   private void printStatementsInBody(Body body, java.io.PrintWriter out) {
-
     if (Options.v().verbose()) {
       System.out.println("Printing " + body.getMethod().getName());
     }
 
-    Chain<Unit> units = ((DavaBody) body).getUnits();
-
+    Chain<Unit> units = body.getUnits();
     if (units.size() != 1) {
       throw new RuntimeException("DavaBody AST doesn't have single root.");
     }
@@ -86,14 +85,12 @@ public class DavaPrinter {
   }
 
   public void printTo(SootClass cl, PrintWriter out) {
-
-    // IterableSet packagesUsed = new IterableSet();
-    IterableSet importList = new IterableSet();
+    // IterableSet<String> packagesUsed = new IterableSet<String>();
+    IterableSet<String> importList = new IterableSet<String>();
     {
-      String curPackage = cl.getJavaPackageName();
-
-      if (!curPackage.equals("")) {
-        out.println("package " + curPackage + ";");
+      final String curPackage = cl.getJavaPackageName();
+      if (!curPackage.isEmpty()) {
+        out.println("package " + curPackage + ';');
         out.println();
       }
 
@@ -103,30 +100,25 @@ public class DavaPrinter {
         // packagesUsed.add(superClass.getJavaPackageName());
       }
 
-      Iterator<SootClass> interfaceIt = cl.getInterfaces().iterator();
-      while (interfaceIt.hasNext()) {
-        String interfacePackage = ((SootClass) interfaceIt.next()).toString();
-
+      for (SootClass sc : cl.getInterfaces()) {
+        String interfacePackage = sc.toString();
         if (!importList.contains(interfacePackage)) {
           importList.add(interfacePackage);
         }
-
         // if (!packagesUsed.contains(interfacePackage))
         // packagesUsed.add(interfacePackage);
       }
 
-      Iterator<SootMethod> methodIt = cl.methodIterator();
-      while (methodIt.hasNext()) {
-        SootMethod dm = (SootMethod) methodIt.next();
+      for (Iterator<SootMethod> methodIt = cl.methodIterator(); methodIt.hasNext();) {
+        SootMethod dm = methodIt.next();
 
         if (dm.hasActiveBody()) {
           // packagesUsed = packagesUsed.union(((DavaBody) dm.getActiveBody()).get_PackagesUsed());
           importList = importList.union(((DavaBody) dm.getActiveBody()).getImportList());
         }
 
-        Iterator<SootClass> eit = dm.getExceptions().iterator();
-        while (eit.hasNext()) {
-          String thrownPackage = eit.next().toString();
+        for (SootClass sc : dm.getExceptions()) {
+          String thrownPackage = sc.toString();
           if (!importList.contains(thrownPackage)) {
             importList.add(thrownPackage);
           }
@@ -134,11 +126,7 @@ public class DavaPrinter {
           // if (!packagesUsed.contains(thrownPackage))
           // packagesUsed.add(thrownPackage);
         }
-
-        Iterator<Type> pit = dm.getParameterTypes().iterator();
-        while (pit.hasNext()) {
-          Type t = (Type) pit.next();
-
+        for (Type t : dm.getParameterTypes()) {
           if (t instanceof RefType) {
             String paramPackage = ((RefType) t).getSootClass().toString();
 
@@ -164,34 +152,25 @@ public class DavaPrinter {
         }
       }
 
-      Iterator<SootField> fieldIt = cl.getFields().iterator();
-      while (fieldIt.hasNext()) {
-        SootField f = (SootField) fieldIt.next();
-
-        if (f.isPhantom()) {
-          continue;
-        }
-
-        Type t = f.getType();
-
-        if (t instanceof RefType) {
-          String fieldPackage = ((RefType) t).getSootClass().toString();
-
-          if (!importList.contains(fieldPackage)) {
-            importList.add(fieldPackage);
+      for (SootField f : cl.getFields()) {
+        if (!f.isPhantom()) {
+          Type t = f.getType();
+          if (t instanceof RefType) {
+            String fieldPackage = ((RefType) t).getSootClass().toString();
+            if (!importList.contains(fieldPackage)) {
+              importList.add(fieldPackage);
+            }
           }
         }
       }
 
-      Iterator<String> pit = importList.iterator();
       List<String> toImport = new ArrayList<String>();
-      while (pit.hasNext()) {
+      for (String temp : importList) {
         /*
          * dont import any file which has currentPackage.className dont import any file which starts with java.lang
          */
-        String temp = (String) pit.next();
         // System.out.println("temp is "+temp);
-        if (temp.indexOf("java.lang") > -1) {
+        if (temp.contains("java.lang")) {
           // problem is that we need to import sub packages java.lang.ref
           // for instance if the type is java.lang.ref.WeakReference
           String tempClassName = RemoveFullyQualifiedName.getClassName(temp);
@@ -201,7 +180,7 @@ public class DavaPrinter {
           }
         }
 
-        if (curPackage.length() > 0 && temp.indexOf(curPackage) > -1) {
+        if (!curPackage.isEmpty() && temp.contains(curPackage)) {
           // System.out.println("here "+temp);
           continue;
         }
@@ -212,16 +191,12 @@ public class DavaPrinter {
 
         // System.out.println("printing"+);
         toImport.add(temp);
-
       }
-
       /*
        * Check that we are not importing two classes with the same last name If yes then remove explicit import and import
        * the whole package else output explicit import statement
        */
-      Iterator it = toImport.iterator();
-      while (it.hasNext()) {
-        String temp = (String) it.next();
+      for (String temp : toImport) {
         if (RemoveFullyQualifiedName.containsMultiple(toImport.iterator(), temp, null)) {
           // there are atleast two imports with this className
           // import package add *
@@ -235,18 +210,13 @@ public class DavaPrinter {
           if (temp.lastIndexOf('.') == -1) {
             // dot not found this is a class belonging to this package so dont add
           } else {
-            out.println("import " + temp + ";");
+            out.println("import " + temp + ';');
           }
         }
       }
-      boolean addNewLine = false;
-      addNewLine = true;
 
-      // out.println("import " + temp + ";");
-
-      if (addNewLine) {
-        out.println();
-      }
+      // out.println("import " + temp + ';');
+      out.println();
 
       /*
        * if (!packagesUsed.isEmpty()) out.println();
@@ -260,37 +230,27 @@ public class DavaPrinter {
 
     // Print class name + modifiers
     {
-      String classPrefix = "";
-
-      classPrefix = classPrefix + " " + Modifier.toString(cl.getModifiers());
-      classPrefix = classPrefix.trim();
-
+      String classPrefix = Modifier.toString(cl.getModifiers()).trim();
       if (!cl.isInterface()) {
-        classPrefix = classPrefix + " class";
-        classPrefix = classPrefix.trim();
+        classPrefix = (classPrefix + " class").trim();
       }
-
       out.print(classPrefix + " " + cl.getShortJavaStyleName());
     }
 
     // Print extension
-    if (cl.hasSuperclass() && !(cl.getSuperclass().getName().equals("java.lang.Object"))) {
-
+    if (cl.hasSuperclass()) {
       String superClassName = cl.getSuperclass().getName();
-
-      // Nomair Naeem 8th Feb 2006
-      // also check if the super class name is not a fully qualified
-      // name. in which case if the package is imported no need for
-      // the long name
-
-      superClassName = RemoveFullyQualifiedName.getReducedName(importList, superClassName, cl.getType());
-      out.print(" extends " + superClassName + "");
+      if (!"java.lang.Object".equals(superClassName)) {
+        // Nomair Naeem 8th Feb 2006
+        // Also check if the super class name is not a fully qualified name,
+        // in which case if the package is imported no need for the long name.
+        out.print(" extends " + RemoveFullyQualifiedName.getReducedName(importList, superClassName, cl.getType()));
+      }
     }
 
     // Print interfaces
     {
       Iterator<SootClass> interfaceIt = cl.getInterfaces().iterator();
-
       if (interfaceIt.hasNext()) {
         if (cl.isInterface()) {
           out.print(" extends ");
@@ -298,10 +258,9 @@ public class DavaPrinter {
           out.print(" implements ");
         }
 
-        out.print("" + (interfaceIt.next()).getName() + "");
-
+        out.print(interfaceIt.next().getName());
         while (interfaceIt.hasNext()) {
-          out.print(", " + (interfaceIt.next()).getName() + "");
+          out.print(", " + interfaceIt.next().getName());
         }
       }
     }
@@ -310,100 +269,39 @@ public class DavaPrinter {
     out.println("{");
 
     // Print fields
-    {
-      Iterator<SootField> fieldIt = cl.getFields().iterator();
-      if (fieldIt.hasNext()) {
-        while (fieldIt.hasNext()) {
-          SootField f = fieldIt.next();
+    for (SootField f : cl.getFields()) {
+      if (f.isPhantom()) {
+        continue;
+      }
 
-          if (f.isPhantom()) {
-            continue;
-          }
+      Type fieldType = f.getType();
+      String qualifiers = (Modifier.toString(f.getModifiers()) + " "
+          + RemoveFullyQualifiedName.getReducedName(importList, fieldType.toString(), fieldType)).trim();
 
-          String declaration = null;
+      String declaration;
+      if (qualifiers.isEmpty()) {
+        declaration = Scene.v().quotedNameOf(f.getName());
+      } else {
+        declaration = qualifiers + " " + Scene.v().quotedNameOf(f.getName());
+      }
 
-          Type fieldType = f.getType();
-
-          String qualifiers = Modifier.toString(f.getModifiers()) + " ";
-
-          qualifiers += RemoveFullyQualifiedName.getReducedName(importList, fieldType.toString(), fieldType);
-
-          qualifiers = qualifiers.trim();
-
-          if (qualifiers.equals("")) {
-            declaration = Scene.v().quotedNameOf(f.getName());
-          } else {
-            declaration = qualifiers + " " + Scene.v().quotedNameOf(f.getName()) + "";
-          }
-
-          if (f.isFinal() && f.isStatic()) {
-
-            if (fieldType instanceof DoubleType && f.hasTag("DoubleConstantValueTag")) {
-
-              double val = ((DoubleConstantValueTag) f.getTag("DoubleConstantValueTag")).getDoubleValue();
-              out.println("    " + declaration + " = " + val + ";");
-
-            } else if (fieldType instanceof FloatType && f.hasTag("FloatConstantValueTag")) {
-
-              float val = ((FloatConstantValueTag) f.getTag("FloatConstantValueTag")).getFloatValue();
-              out.println("    " + declaration + " = " + val + "f;");
-
-            } else if (fieldType instanceof LongType && f.hasTag("LongConstantValueTag")) {
-
-              long val = ((LongConstantValueTag) f.getTag("LongConstantValueTag")).getLongValue();
-              out.println("    " + declaration + " = " + val + "l;");
-
-            } else if (fieldType instanceof CharType && f.hasTag("IntegerConstantValueTag")) {
-
-              int val = ((IntegerConstantValueTag) f.getTag("IntegerConstantValueTag")).getIntValue();
-              out.println("    " + declaration + " = '" + ((char) val) + "';");
-
-            } else if (fieldType instanceof BooleanType && f.hasTag("IntegerConstantValueTag")) {
-
-              int val = ((IntegerConstantValueTag) f.getTag("IntegerConstantValueTag")).getIntValue();
-
-              if (val == 0) {
-                out.println("    " + declaration + " = false;");
-              } else {
-                out.println("    " + declaration + " = true;");
-              }
-
-            } else if ((fieldType instanceof IntType || fieldType instanceof ByteType || fieldType instanceof ShortType)
-                && f.hasTag("IntegerConstantValueTag")) {
-
-              int val = ((IntegerConstantValueTag) f.getTag("IntegerConstantValueTag")).getIntValue();
-              out.println("    " + declaration + " = " + val + ";");
-
-            } else if (f.hasTag("StringConstantValueTag")) {
-
-              String val = ((StringConstantValueTag) f.getTag("StringConstantValueTag")).getStringValue();
-              out.println("    " + declaration + " = \"" + val + "\";");
-
-            } else {
-              // System.out.println("Couldnt find type of
-              // field"+f.getDeclaration());
-              out.println("    " + declaration + ";");
-            }
-          } // field is static final
-          else {
-            out.println("    " + declaration + ";");
-          }
-        }
+      if (f.isFinal() && f.isStatic()) {
+        printTags(f, declaration, out);
+      } else {
+        out.println("    " + declaration + ';');
       }
     }
 
     // Print methods
     {
       Iterator<SootMethod> methodIt = cl.methodIterator();
-
       if (methodIt.hasNext()) {
         if (cl.getMethodCount() != 0) {
           out.println();
         }
 
-        while (methodIt.hasNext()) {
-          SootMethod method = (SootMethod) methodIt.next();
-
+        do { // condition is already checked
+          SootMethod method = methodIt.next();
           if (method.isPhantom()) {
             continue;
           }
@@ -428,7 +326,7 @@ public class DavaPrinter {
               out.println();
             }
           }
-        }
+        } while (methodIt.hasNext());
       }
     }
 
@@ -443,11 +341,9 @@ public class DavaPrinter {
     if (G.v().SootClassNeedsDavaSuperHandlerClass.contains(cl)) {
       out.println("\n    private static class DavaSuperHandler{");
       out.println("         java.util.Vector myVector = new java.util.Vector();");
-
       out.println("\n         public Object get(int pos){");
       out.println("            return myVector.elementAt(pos);");
       out.println("         }");
-
       out.println("\n         public void store(Object obj){");
       out.println("            myVector.add(obj);");
       out.println("         }");
@@ -455,6 +351,55 @@ public class DavaPrinter {
     }
 
     out.println("}");
+  }
+
+  private void printTags(SootField f, String declaration, PrintWriter out) {
+    Type fieldType = f.getType();
+    if (fieldType instanceof DoubleType) {
+      DoubleConstantValueTag t = (DoubleConstantValueTag) f.getTag(DoubleConstantValueTag.NAME);
+      if (t != null) {
+        out.println("    " + declaration + " = " + t.getDoubleValue() + ';');
+        return;
+      }
+    } else if (fieldType instanceof FloatType) {
+      FloatConstantValueTag t = (FloatConstantValueTag) f.getTag(FloatConstantValueTag.NAME);
+      if (t != null) {
+        out.println("    " + declaration + " = " + t.getFloatValue() + "f;");
+        return;
+      }
+    } else if (fieldType instanceof LongType) {
+      LongConstantValueTag t = (LongConstantValueTag) f.getTag(LongConstantValueTag.NAME);
+      if (t != null) {
+        out.println("    " + declaration + " = " + t.getLongValue() + "l;");
+        return;
+      }
+    } else if (fieldType instanceof CharType) {
+      IntegerConstantValueTag t = (IntegerConstantValueTag) f.getTag(IntegerConstantValueTag.NAME);
+      if (t != null) {
+        out.println("    " + declaration + " = '" + ((char) t.getIntValue()) + "';");
+        return;
+      }
+    } else if (fieldType instanceof BooleanType) {
+      IntegerConstantValueTag t = (IntegerConstantValueTag) f.getTag(IntegerConstantValueTag.NAME);
+      if (t != null) {
+        out.println("    " + declaration + (t.getIntValue() == 0 ? " = false;" : " = true;"));
+        return;
+      }
+    } else if (fieldType instanceof IntType || fieldType instanceof ByteType || fieldType instanceof ShortType) {
+      IntegerConstantValueTag t = (IntegerConstantValueTag) f.getTag(IntegerConstantValueTag.NAME);
+      if (t != null) {
+        out.println("    " + declaration + " = " + t.getIntValue() + ';');
+        return;
+      }
+    } else {
+      StringConstantValueTag t = (StringConstantValueTag) f.getTag(StringConstantValueTag.NAME);
+      if (t != null) {
+        out.println("    " + declaration + " = \"" + t.getStringValue() + "\";");
+        return;
+      }
+    }
+    // System.out.println("Couldn't find type of field: " + f.getDeclaration());
+    out.println("    " + declaration + ';');
   }
 
   /**
@@ -467,28 +412,20 @@ public class DavaPrinter {
   private void printTo(Body b, PrintWriter out) {
     b.validate();
 
-    String decl = b.getMethod().getDavaDeclaration();
-
-    {
-      out.println("    " + decl);
-      for (Iterator<Tag> tIt = b.getMethod().getTags().iterator(); tIt.hasNext();) {
-        final Tag t = tIt.next();
-        if (Options.v().print_tags_in_output()) {
-          out.println(t);
-        }
+    out.println("    " + b.getMethod().getDavaDeclaration());
+    if (Options.v().print_tags_in_output()) {
+      for (Tag t : b.getMethod().getTags()) {
+        out.println(t);
       }
-      out.println("    {");
-
-      /*
-       * The locals are now printed out from within the toString method of ASTMethodNode Nomair A Naeem 10-MARCH-2005
-       */
-      // printLocalsInBody(b, out);
     }
+    out.println("    {");
+
+    /*
+     * The locals are now printed out from within the toString method of ASTMethodNode Nomair A Naeem 10-MARCH-2005
+     */
+    // printLocalsInBody(b, out);
 
     printStatementsInBody(b, out);
-
     out.println("    }");
-
   }
-
 }

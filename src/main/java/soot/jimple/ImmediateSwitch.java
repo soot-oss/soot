@@ -1,4 +1,4 @@
-package soot;
+package soot.jimple;
 
 /*-
  * #%L
@@ -22,16 +22,8 @@ package soot;
  * #L%
  */
 
-/**
- * Exception that is thrown when a method is accessed through an ambiguous name
- * 
- * @author Steven Arzt
- */
-public class AmbiguousMethodException extends RuntimeException {
+import soot.Local;
 
-  private static final long serialVersionUID = -3200937620978653123L;
-
-  public AmbiguousMethodException(String methodName, String className) {
-    super(String.format("Ambiguous method name %s in class %s", methodName, className));
-  }
+public interface ImmediateSwitch extends ConstantSwitch {
+  public abstract void caseLocal(Local l);
 }

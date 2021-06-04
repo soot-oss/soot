@@ -23,15 +23,16 @@ package soot;
  */
 
 import soot.tagkit.AbstractHost;
-import soot.tagkit.Tag;
 
 /**
  * Reference implementation for ValueBox; just add a canContainValue method.
  */
 @SuppressWarnings("serial")
 public abstract class AbstractValueBox extends AbstractHost implements ValueBox {
-  Value value;
 
+  protected Value value;
+
+  @Override
   public void setValue(Value value) {
     if (value == null) {
       throw new IllegalArgumentException("value may not be null");
@@ -43,16 +44,19 @@ public abstract class AbstractValueBox extends AbstractHost implements ValueBox 
     }
   }
 
+  @Override
   public Value getValue() {
     return value;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.startValueBox(this);
     value.toString(up);
     up.endValueBox(this);
   }
 
+  @Override
   public String toString() {
     return getClass().getSimpleName() + "(" + value + ")";
   }
