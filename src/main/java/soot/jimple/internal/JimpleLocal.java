@@ -39,8 +39,10 @@ import soot.util.Numberer;
 import soot.util.Switch;
 
 public class JimpleLocal implements Local, ConvertToBaf {
+
   protected String name;
-  Type type;
+  protected Type type;
+  private volatile int number = 0;
 
   /** Constructs a JimpleLocal of the given name and type. */
   public JimpleLocal(String name, Type type) {
@@ -139,6 +141,4 @@ public class JimpleLocal implements Local, ConvertToBaf {
   public void setNumber(int number) {
     this.number = number;
   }
-
-  private volatile int number = 0;
 }

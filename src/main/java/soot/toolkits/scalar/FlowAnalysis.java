@@ -154,14 +154,11 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
           assert g.getHeads().size() == 1;
           D head = g.getHeads().get(0);
 
+          // collect all 'goto' statements to catch the 'goto' from the infinite loop
           Set<D> visitedNodes = new HashSet<D>();
           List<D> workList = new ArrayList<D>();
-          D current = null;
-
-          // collect all 'goto' statements to catch the 'goto'
-          // from the infinite loop
           workList.add(head);
-          while (!workList.isEmpty()) {
+          for (D current; !workList.isEmpty();) {
             current = workList.remove(0);
             visitedNodes.add(current);
 
@@ -182,9 +179,7 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
           if (entries.isEmpty()) {
             throw new RuntimeException("error: backward analysis on an empty entry set.");
           }
-
         }
-
       }
 
       visitEntry(visited, superEntry, entries);
@@ -236,9 +231,9 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
       }
     }
 
-    @SuppressWarnings("unchecked")
     private <D, F> Entry<D, F>[] visitEntry(Map<D, Entry<D, F>> visited, Entry<D, F> v, List<D> out) {
-      int n = out.size();
+      final int n = out.size();
+      @SuppressWarnings("unchecked")
       Entry<D, F>[] a = new Entry[n];
 
       assert (out instanceof RandomAccess);
@@ -401,16 +396,16 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
   }
 
   /** Maps graph nodes to OUT sets. */
-  protected Map<N, A> unitToAfterFlow;
+  protected final Map<N, A> unitToAfterFlow;
 
   /** Filtered: Maps graph nodes to OUT sets. */
-  protected Map<N, A> filterUnitToAfterFlow = Collections.emptyMap();
+  protected Map<N, A> filterUnitToAfterFlow;
 
   /** Constructs a flow analysis on the given <code>DirectedGraph</code>. */
   public FlowAnalysis(DirectedGraph<N> graph) {
     super(graph);
-
-    unitToAfterFlow = new IdentityHashMap<N, A>(graph.size() * 2 + 1);
+    this.unitToAfterFlow = new IdentityHashMap<N, A>(graph.size() * 2 + 1);
+    this.filterUnitToAfterFlow = Collections.emptyMap();
   }
 
   /**
@@ -592,5 +587,4 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
     flowThrough(d.inFlow, d.data, d.outFlow);
     return true;
   }
-
 }

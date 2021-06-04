@@ -1662,6 +1662,16 @@
                     </long_desc>
                 </sub_phase>
                 <sub_phase>
+                    <name>Shared Initialization Local Splitter</name>
+                    <alias>jb.sils</alias>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>true</default>
+                    </boolopt>
+                    <short_desc>Splits primitive locals used as different types</short_desc>
+                </sub_phase>
+                <sub_phase>
                     <name>Jimple Local Aggregator</name>
                     <alias>jb.a</alias>
                     <short_desc>Aggregator: removes some unnecessary copies</short_desc>
@@ -2021,6 +2031,25 @@
                         <default>false</default>
                     </boolopt>
                 </sub_phase>
+                <sub_phase>
+                    <name>Conditional Branch Folder</name>
+                    <alias>jb.cbf</alias>
+                    <short_desc>Conditional branch folder</short_desc>
+                    <long_desc>
+                        The Conditional Branch Folder statically evaluates the
+                        conditional expression of Jimple <tt>if</tt> statements. If the
+                        condition is identically <tt>true</tt> or
+                        <tt>false</tt>, the Folder replaces the conditional branch
+                        statement with an unconditional <tt>goto</tt> statement.
+                    </long_desc>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>true</default>
+                        <short_desc/>
+                        <long_desc/>
+                    </boolopt>
+                </sub_phase>
             </phase>
             <phase>
                 <name>Java To Jimple Body Creation</name>
@@ -2064,6 +2093,16 @@
                         introduces new variables so that each disjoint web is associated
                         with a single local.
                     </long_desc>
+                </sub_phase>
+                <sub_phase>
+                    <name>Shared Initialization Local Splitter</name>
+                    <alias>jj.sils</alias>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>true</default>
+                    </boolopt>
+                    <short_desc>Splits primitive locals used as different types</short_desc>
                 </sub_phase>
                 <sub_phase>
                     <name>Jimple Local Aggregator</name>
@@ -6620,6 +6659,19 @@ This locking scheme aims to achieve simple fine-grained locking.
                         </long_desc>
                     </boolopt>
                 </sub_phase>
+                <sub_phase>
+                    <name>Nop Eliminator</name>
+                    <alias>bb.ne</alias>
+                    <short_desc>Nop eliminator</short_desc>
+                    <long_desc>
+                        The Nop Eliminator removes <tt>nop</tt> instructions from the method.
+                    </long_desc>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>true</default>
+                    </boolopt>
+                </sub_phase>
             </phase>
             <phase>
                 <name>Baf Optimization</name>
@@ -6866,6 +6918,18 @@ This locking scheme aims to achieve simple fine-grained locking.
 
 
         </phaseopt>
+        <intopt>
+            <name>Class transformation parallelism</name>
+            <alias>t</alias>
+            <alias>num-threads</alias>
+            <set_arg_label>num</set_arg_label>
+            <short_desc>Force Soot to use <use_arg_label/> threads when transforming classes.
+            </short_desc>
+            <long_desc>
+                Force Soot to use <use_arg_label/> threads to transform classes in parallel.
+                The default behavior is to use one thread per processor.
+            </long_desc>
+        </intopt>
         <macroopt>
             <name>Optimize</name>
             <alias>O</alias>

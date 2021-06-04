@@ -28,48 +28,59 @@ import soot.baf.NewArrayInst;
 import soot.util.Switch;
 
 public class BNewArrayInst extends AbstractInst implements NewArrayInst {
+
   protected Type baseType;
 
   public BNewArrayInst(Type opType) {
-    baseType = opType;
+    this.baseType = opType;
   }
 
-  public int getInCount() {
-    return 1;
-  }
-
-  public int getOutCount() {
-    return 1;
-  }
-
+  @Override
   public Object clone() {
     return new BNewArrayInst(baseType);
   }
 
+  @Override
+  public int getInCount() {
+    return 1;
+  }
+
+  @Override
+  public int getOutCount() {
+    return 1;
+  }
+
+  @Override
   public int getInMachineCount() {
     return 1;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 1;
   }
 
+  @Override
   final public String getName() {
     return "newarray";
   }
 
+  @Override
   public Type getBaseType() {
     return baseType;
   }
 
+  @Override
   public void setBaseType(Type type) {
     baseType = type;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseNewArrayInst(this);
   }
 
+  @Override
   public boolean containsNewExpr() {
     return true;
   }

@@ -36,18 +36,22 @@ public class ErroneousType extends Type {
     return G.v().soot_ErroneousType();
   }
 
+  @Override
   public int hashCode() {
     return 0x92473FFF;
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public String toString() {
     return "<error>";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseErroneousType(this);
   }

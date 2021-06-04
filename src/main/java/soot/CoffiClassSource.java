@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import soot.javaToJimple.IInitialResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
+import soot.tagkit.SourceFileTag;
 
 /**
  * A class source for resolving from .class files through coffi.
@@ -93,11 +94,9 @@ public class CoffiClassSource extends ClassSource {
       return;
     }
 
-    soot.tagkit.SourceFileTag tag;
-    if (sc.hasTag("SourceFileTag")) {
-      tag = (soot.tagkit.SourceFileTag) sc.getTag("SourceFileTag");
-    } else {
-      tag = new soot.tagkit.SourceFileTag();
+    SourceFileTag tag = (SourceFileTag) sc.getTag(SourceFileTag.NAME);
+    if (tag == null) {
+      tag = new SourceFileTag();
       sc.addTag(tag);
     }
 

@@ -24,7 +24,6 @@ package soot.tagkit;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 // extended by SootClass, SootField, SootMethod, Scene
@@ -41,57 +40,76 @@ public class AbstractHost implements Host {
   // use lazy instantiation (in addTag) instead
   protected List<Tag> mTagList = null;
 
-  /** get the list of tags. This list should not be modified! */
+  /**
+   * Get the {@link List} of {@link Tag Tags} on {@code this} {@link Host}. This list should not be modified!
+   * 
+   * @return
+   */
   @Override
   public List<Tag> getTags() {
     return (mTagList == null) ? Collections.<Tag>emptyList() : mTagList;
   }
 
-  /** remove the tag named <code>aName</code> */
+  /**
+   * Remove the {@link Tag} named {@code aName} from {@code this} {@link Host}.
+   * 
+   * @param aName
+   */
   @Override
   public void removeTag(String aName) {
-    int tagIndex;
-    if ((tagIndex = searchForTag(aName)) != -1) {
+    int tagIndex = searchForTag(aName);
+    if (tagIndex != -1) {
       mTagList.remove(tagIndex);
     }
   }
 
-  /** search for tag named <code>aName</code> */
+  /**
+   * Search for {@link Tag} named {@code aName}.
+   */
   private int searchForTag(String aName) {
-    if (mTagList == null) {
-      return -1;
-    }
-
-    int i = 0;
-    Iterator<Tag> it = mTagList.iterator();
-    while (it.hasNext()) {
-      Tag tag = it.next();
-      if (tag != null && tag.getName().equals(aName)) {
-        return i;
+    if (mTagList != null) {
+      int i = 0;
+      for (Tag tag : mTagList) {
+        if (tag != null && tag.getName().equals(aName)) {
+          return i;
+        }
+        i++;
       }
-      i++;
     }
     return -1;
   }
 
-  /** get the Tag object named <code>aName</code> */
+  /**
+   * Return the {@link Tag} named {@code aName} from {@code this} {@link Host} or {@code null} if there is no such
+   * {@link Tag}.
+   * 
+   * @param aName
+   * 
+   * @return
+   */
   @Override
   public Tag getTag(String aName) {
-    int tagIndex;
-    if ((tagIndex = searchForTag(aName)) != -1) {
-      return mTagList.get(tagIndex);
-    }
-
-    return null;
+    int tagIndex = searchForTag(aName);
+    return (tagIndex == -1) ? null : mTagList.get(tagIndex);
   }
 
-  /** look if this host has a tag named <code>aName</code> */
+  /**
+   * Check if {@code this} {@link Host} has a {@link Tag} named {@code aName}.
+   * 
+   * @param aName
+   * 
+   * @return
+   */
   @Override
   public boolean hasTag(String aName) {
     return (searchForTag(aName) != -1);
   }
 
-  /** add tag <code>t</code> to this host */
+  /**
+   * Add the given {@link Tag} to {@code this} {@link Host}.
+   * 
+   * @param t
+   */
   @Override
   public void addTag(Tag t) {
     if (mTagList == null) {
@@ -100,42 +118,41 @@ public class AbstractHost implements Host {
     mTagList.add(t);
   }
 
-  /** Removes all the tags from this host. */
+  /**
+   * Removes all the tags from {@code this} {@link Host}.
+   */
   @Override
   public void removeAllTags() {
     mTagList = null;
   }
 
-  /** Adds all the tags from h to this host. */
+  /**
+   * Adds all the tags from the given {@link Host} to {@code this} {@link Host}.
+   * 
+   * @param h
+   */
   @Override
   public void addAllTagsOf(Host h) {
     List<Tag> tags = h.getTags();
-    if (tags.isEmpty()) {
-      return;
+    if (!tags.isEmpty()) {
+      if (mTagList == null) {
+        mTagList = new ArrayList<Tag>(tags.size());
+      }
+      mTagList.addAll(tags);
     }
-
-    if (mTagList == null) {
-      mTagList = new ArrayList<Tag>(tags.size());
-    }
-
-    mTagList.addAll(tags);
   }
 
   @Override
   public int getJavaSourceStartLineNumber() {
     if (line <= 0) {
       // get line from source
-      SourceLnPosTag tag = (SourceLnPosTag) getTag(SourceLnPosTag.IDENTIFIER);
+      SourceLnPosTag tag = (SourceLnPosTag) getTag(SourceLnPosTag.NAME);
       if (tag != null) {
         line = tag.startLn();
       } else {
         // get line from bytecode
-        LineNumberTag tag2 = (LineNumberTag) getTag(LineNumberTag.IDENTIFIER);
-        if (tag2 != null) {
-          line = tag2.getLineNumber();
-        } else {
-          line = -1;
-        }
+        LineNumberTag tag2 = (LineNumberTag) getTag(LineNumberTag.NAME);
+        line = (tag2 == null) ? -1 : tag2.getLineNumber();
       }
     }
     return line;
@@ -145,12 +162,8 @@ public class AbstractHost implements Host {
   public int getJavaSourceStartColumnNumber() {
     if (col <= 0) {
       // get line from source
-      SourceLnPosTag tag = (SourceLnPosTag) getTag("SourceLnPosTag");
-      if (tag != null) {
-        col = tag.startPos();
-      } else {
-        col = -1;
-      }
+      SourceLnPosTag tag = (SourceLnPosTag) getTag(SourceLnPosTag.NAME);
+      col = (tag == null) ? -1 : tag.startPos();
     }
     return col;
   }

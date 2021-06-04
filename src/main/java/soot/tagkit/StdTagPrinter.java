@@ -21,10 +21,15 @@ package soot.tagkit;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-/** Default tag printer. */
+/**
+ * Default tag printer.
+ */
 public class StdTagPrinter implements TagPrinter {
-  /** Prints out the given tag. */
+
+  /**
+   * Prints out the given tag.
+   */
+  @Override
   public String print(String aClassName, String aFieldOrMtdSignature, Tag aTag) {
     return aTag.toString();
   }

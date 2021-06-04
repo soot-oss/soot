@@ -99,8 +99,8 @@ public class MethodHandle extends Constant {
     this.methodRef = null;
   }
 
-  public static MethodHandle v(SootMethodRef ref, int tag) {
-    return new MethodHandle(ref, tag);
+  public static MethodHandle v(SootMethodRef ref, int kind) {
+    return new MethodHandle(ref, kind);
   }
 
   public static MethodHandle v(SootFieldRef ref, int kind) {
@@ -177,6 +177,6 @@ public class MethodHandle extends Constant {
       return false;
     }
     MethodHandle other = (MethodHandle) obj;
-    return Objects.equals(methodRef, other.methodRef) && Objects.equals(fieldRef, other.fieldRef);
+    return Objects.equals(this.methodRef, other.methodRef) && Objects.equals(this.fieldRef, other.fieldRef);
   }
 }

@@ -29,6 +29,8 @@ import java.util.List;
  * An inverted graph of a directed graph.
  *
  * @author Eric Bodden
+ * 
+ * @param <N>
  */
 public class InverseGraph<N> implements DirectedGraph<N> {
 
@@ -41,6 +43,7 @@ public class InverseGraph<N> implements DirectedGraph<N> {
   /**
    * {@inheritDoc}
    */
+  @Override
   public List<N> getHeads() {
     return g.getTails();
   }
@@ -48,6 +51,7 @@ public class InverseGraph<N> implements DirectedGraph<N> {
   /**
    * {@inheritDoc}
    */
+  @Override
   public List<N> getPredsOf(N s) {
     return g.getSuccsOf(s);
   }
@@ -55,6 +59,7 @@ public class InverseGraph<N> implements DirectedGraph<N> {
   /**
    * {@inheritDoc}
    */
+  @Override
   public List<N> getSuccsOf(N s) {
     return g.getPredsOf(s);
   }
@@ -62,6 +67,7 @@ public class InverseGraph<N> implements DirectedGraph<N> {
   /**
    * {@inheritDoc}
    */
+  @Override
   public List<N> getTails() {
     return g.getHeads();
   }
@@ -69,6 +75,7 @@ public class InverseGraph<N> implements DirectedGraph<N> {
   /**
    * {@inheritDoc}
    */
+  @Override
   public Iterator<N> iterator() {
     return g.iterator();
   }
@@ -76,8 +83,8 @@ public class InverseGraph<N> implements DirectedGraph<N> {
   /**
    * {@inheritDoc}
    */
+  @Override
   public int size() {
     return g.size();
   }
-
 }

@@ -33,30 +33,30 @@ import soot.jimple.ThisRef;
  * UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf
  */
 public class BriefUnitPrinter extends LabeledUnitPrinter {
+
+  private boolean baf;
+
   public BriefUnitPrinter(Body body) {
     super(body);
   }
 
-  private boolean baf;
-
+  @Override
   public void startUnit(Unit u) {
     super.startUnit(u);
-    if (u instanceof Stmt) {
-      baf = false;
-    } else {
-      baf = true;
-    }
+    baf = !(u instanceof Stmt);
   }
 
+  @Override
   public void methodRef(SootMethodRef m) {
     handleIndent();
     if (!baf && m.resolve().isStatic()) {
-      output.append(m.declaringClass().getName());
+      output.append(m.getDeclaringClass().getName());
       literal(".");
     }
     output.append(m.name());
   }
 
+  @Override
   public void fieldRef(SootFieldRef f) {
     handleIndent();
     if (baf || f.resolve().isStatic()) {
@@ -66,6 +66,7 @@ public class BriefUnitPrinter extends LabeledUnitPrinter {
     output.append(f.name());
   }
 
+  @Override
   public void identityRef(IdentityRef r) {
     handleIndent();
     if (r instanceof ThisRef) {
@@ -82,22 +83,27 @@ public class BriefUnitPrinter extends LabeledUnitPrinter {
 
   private boolean eatSpace = false;
 
+  @Override
   public void literal(String s) {
     handleIndent();
-    if (eatSpace && s.equals(" ")) {
+    if (eatSpace && " ".equals(s)) {
       eatSpace = false;
       return;
     }
     eatSpace = false;
     if (!baf) {
-      if (false || s.equals(Jimple.STATICINVOKE) || s.equals(Jimple.VIRTUALINVOKE) || s.equals(Jimple.INTERFACEINVOKE)) {
-        eatSpace = true;
-        return;
+      switch (s) {
+        case Jimple.STATICINVOKE:
+        case Jimple.VIRTUALINVOKE:
+        case Jimple.INTERFACEINVOKE:
+          eatSpace = true;
+          return;
       }
     }
     output.append(s);
   }
 
+  @Override
   public void type(Type t) {
     handleIndent();
     output.append(t.toString());

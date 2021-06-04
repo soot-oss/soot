@@ -22,9 +22,6 @@ package soot.jimple.toolkits.typing;
  * #L%
  */
 
-import java.util.Iterator;
-import java.util.List;
-
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -33,6 +30,7 @@ import soot.Local;
 import soot.LongType;
 import soot.NullType;
 import soot.RefType;
+import soot.SootField;
 import soot.SootMethodRef;
 import soot.TrapManager;
 import soot.Type;
@@ -102,15 +100,15 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
 
 class ConstraintCollector extends AbstractStmtSwitch {
-  private TypeResolver resolver;
-  private boolean uses; // if true, include use constraints
+
+  private final TypeResolver resolver;
+  private final boolean uses; // if true, include use constraints
 
   private JimpleBody stmtBody;
 
   public ConstraintCollector(TypeResolver resolver, boolean uses) {
     this.resolver = resolver;
     this.uses = uses;
-
   }
 
   public void collect(Stmt stmt, JimpleBody stmtBody) {
@@ -126,9 +124,9 @@ class ConstraintCollector extends AbstractStmtSwitch {
     // Handle the parameters
     SootMethodRef method = ie.getMethodRef();
     for (int i = 0; i < ie.getArgCount(); i++) {
-      if (ie.getArg(i) instanceof Local) {
-        Local local = (Local) ie.getArg(i);
-        TypeVariable localType = resolver.typeVariable(local);
+      Value arg = ie.getArg(i);
+      if (arg instanceof Local) {
+        TypeVariable localType = resolver.typeVariable((Local) arg);
         localType.addParent(resolver.typeVariable(method.parameterType(i)));
       }
     }
@@ -137,26 +135,21 @@ class ConstraintCollector extends AbstractStmtSwitch {
       InterfaceInvokeExpr invoke = (InterfaceInvokeExpr) ie;
       Value base = invoke.getBase();
       if (base instanceof Local) {
-        Local local = (Local) base;
-        TypeVariable localType = resolver.typeVariable(local);
+        TypeVariable localType = resolver.typeVariable((Local) base);
         localType.addParent(resolver.typeVariable(method.declaringClass()));
       }
     } else if (ie instanceof SpecialInvokeExpr) {
       SpecialInvokeExpr invoke = (SpecialInvokeExpr) ie;
       Value base = invoke.getBase();
-
       if (base instanceof Local) {
-        Local local = (Local) base;
-        TypeVariable localType = resolver.typeVariable(local);
+        TypeVariable localType = resolver.typeVariable((Local) base);
         localType.addParent(resolver.typeVariable(method.declaringClass()));
       }
     } else if (ie instanceof VirtualInvokeExpr) {
       VirtualInvokeExpr invoke = (VirtualInvokeExpr) ie;
       Value base = invoke.getBase();
-
       if (base instanceof Local) {
-        Local local = (Local) base;
-        TypeVariable localType = resolver.typeVariable(local);
+        TypeVariable localType = resolver.typeVariable((Local) base);
         localType.addParent(resolver.typeVariable(method.declaringClass()));
       }
     } else if (ie instanceof StaticInvokeExpr) {
@@ -176,17 +169,20 @@ class ConstraintCollector extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseBreakpointStmt(BreakpointStmt stmt) {
     // Do nothing
   }
 
+  @Override
   public void caseInvokeStmt(InvokeStmt stmt) {
     handleInvokeExpr(stmt.getInvokeExpr());
   }
 
+  @Override
   public void caseAssignStmt(AssignStmt stmt) {
-    Value l = stmt.getLeftOp();
-    Value r = stmt.getRightOp();
+    final Value l = stmt.getLeftOp();
+    final Value r = stmt.getRightOp();
 
     TypeVariable left = null;
     TypeVariable right = null;
@@ -195,8 +191,8 @@ class ConstraintCollector extends AbstractStmtSwitch {
 
     if (l instanceof ArrayRef) {
       ArrayRef ref = (ArrayRef) l;
-      Value base = ref.getBase();
       Value index = ref.getIndex();
+      Value base = ref.getBase();
 
       TypeVariable baseType = resolver.typeVariable((Local) base);
       baseType.makeElement();
@@ -214,14 +210,13 @@ class ConstraintCollector extends AbstractStmtSwitch {
 
       if (uses) {
         TypeVariable baseType = resolver.typeVariable((Local) ref.getBase());
-        baseType.addParent(resolver.typeVariable(ref.getField().getDeclaringClass()));
-
-        left = resolver.typeVariable(ref.getField().getType());
+        SootField field = ref.getField();
+        baseType.addParent(resolver.typeVariable(field.getDeclaringClass()));
+        left = resolver.typeVariable(field.getType());
       }
     } else if (l instanceof StaticFieldRef) {
       if (uses) {
         StaticFieldRef ref = (StaticFieldRef) l;
-
         left = resolver.typeVariable(ref.getField().getType());
       }
     } else {
@@ -232,8 +227,8 @@ class ConstraintCollector extends AbstractStmtSwitch {
 
     if (r instanceof ArrayRef) {
       ArrayRef ref = (ArrayRef) r;
-      Value base = ref.getBase();
       Value index = ref.getIndex();
+      Value base = ref.getBase();
 
       TypeVariable baseType = resolver.typeVariable((Local) base);
       baseType.makeElement();
@@ -261,10 +256,9 @@ class ConstraintCollector extends AbstractStmtSwitch {
     } else if (r instanceof BinopExpr) {
       // ******** BINOP EXPR ********
 
-      BinopExpr be = (BinopExpr) r;
-
-      Value lv = be.getOp1();
-      Value rv = be.getOp2();
+      final BinopExpr be = (BinopExpr) r;
+      final Value lv = be.getOp1();
+      final Value rv = be.getOp2();
 
       TypeVariable lop;
       TypeVariable rop;
@@ -344,7 +338,6 @@ class ConstraintCollector extends AbstractStmtSwitch {
       }
     } else if (r instanceof CastExpr) {
       CastExpr ce = (CastExpr) r;
-
       right = resolver.typeVariable(ce.getCastType());
     } else if (r instanceof InstanceOfExpr) {
       right = resolver.typeVariable(IntType.v());
@@ -358,10 +351,9 @@ class ConstraintCollector extends AbstractStmtSwitch {
       NewArrayExpr nae = (NewArrayExpr) r;
 
       Type baseType = nae.getBaseType();
-
       if (baseType instanceof ArrayType) {
-        right
-            = resolver.typeVariable(ArrayType.v(((ArrayType) baseType).baseType, ((ArrayType) baseType).numDimensions + 1));
+        ArrayType arrTy = (ArrayType) baseType;
+        right = resolver.typeVariable(ArrayType.v(arrTy.baseType, arrTy.numDimensions + 1));
       } else {
         right = resolver.typeVariable(ArrayType.v(baseType, 1));
       }
@@ -375,7 +367,6 @@ class ConstraintCollector extends AbstractStmtSwitch {
       }
     } else if (r instanceof NewExpr) {
       NewExpr na = (NewExpr) r;
-
       right = resolver.typeVariable(na.getBaseType());
     } else if (r instanceof NewMultiArrayExpr) {
       NewMultiArrayExpr nmae = (NewMultiArrayExpr) r;
@@ -392,30 +383,27 @@ class ConstraintCollector extends AbstractStmtSwitch {
         }
       }
     } else if (r instanceof LengthExpr) {
-      LengthExpr le = (LengthExpr) r;
-
       if (uses) {
-        if (le.getOp() instanceof Local) {
-          resolver.typeVariable((Local) le.getOp()).makeElement();
+        Value op = ((LengthExpr) r).getOp();
+        if (op instanceof Local) {
+          resolver.typeVariable((Local) op).makeElement();
         }
       }
-
       right = resolver.typeVariable(IntType.v());
     } else if (r instanceof NegExpr) {
-      NegExpr ne = (NegExpr) r;
-
-      if (ne.getOp() instanceof Local) {
-        right = resolver.typeVariable((Local) ne.getOp());
-      } else if (ne.getOp() instanceof DoubleConstant) {
+      Value op = ((NegExpr) r).getOp();
+      if (op instanceof Local) {
+        right = resolver.typeVariable((Local) op);
+      } else if (op instanceof DoubleConstant) {
         right = resolver.typeVariable(DoubleType.v());
-      } else if (ne.getOp() instanceof FloatConstant) {
+      } else if (op instanceof FloatConstant) {
         right = resolver.typeVariable(FloatType.v());
-      } else if (ne.getOp() instanceof IntConstant) {
+      } else if (op instanceof IntConstant) {
         right = resolver.typeVariable(IntType.v());
-      } else if (ne.getOp() instanceof LongConstant) {
+      } else if (op instanceof LongConstant) {
         right = resolver.typeVariable(LongType.v());
       } else {
-        throw new RuntimeException("Unhandled neg expression operand type: " + ne.getOp().getClass());
+        throw new RuntimeException("Unhandled neg expression operand type: " + op.getClass());
       }
     } else if (r instanceof Local) {
       right = resolver.typeVariable((Local) r);
@@ -441,63 +429,60 @@ class ConstraintCollector extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseIdentityStmt(IdentityStmt stmt) {
-    Value l = stmt.getLeftOp();
-    Value r = stmt.getRightOp();
+    final Value l = stmt.getLeftOp();
+    final Value r = stmt.getRightOp();
 
     if (l instanceof Local) {
       TypeVariable left = resolver.typeVariable((Local) l);
 
-      if (!(r instanceof CaughtExceptionRef)) {
-        TypeVariable right = resolver.typeVariable(r.getType());
-        right.addParent(left);
-      } else {
-        List<RefType> exceptionTypes = TrapManager.getExceptionTypesOf(stmt, stmtBody);
-        Iterator<RefType> typeIt = exceptionTypes.iterator();
-
-        while (typeIt.hasNext()) {
-          Type t = typeIt.next();
-
+      if (r instanceof CaughtExceptionRef) {
+        for (Type t : TrapManager.getExceptionTypesOf(stmt, stmtBody)) {
           resolver.typeVariable(t).addParent(left);
         }
-
         if (uses) {
           left.addParent(resolver.typeVariable(RefType.v("java.lang.Throwable")));
         }
+      } else {
+        TypeVariable right = resolver.typeVariable(r.getType());
+        right.addParent(left);
       }
     }
   }
 
+  @Override
   public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
     if (uses) {
-      if (stmt.getOp() instanceof Local) {
-        TypeVariable op = resolver.typeVariable((Local) stmt.getOp());
-
-        op.addParent(resolver.typeVariable(RefType.v("java.lang.Object")));
+      Value op = stmt.getOp();
+      if (op instanceof Local) {
+        TypeVariable var = resolver.typeVariable((Local) op);
+        var.addParent(resolver.typeVariable(RefType.v("java.lang.Object")));
       }
     }
   }
 
+  @Override
   public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
     if (uses) {
-      if (stmt.getOp() instanceof Local) {
-        TypeVariable op = resolver.typeVariable((Local) stmt.getOp());
-
-        op.addParent(resolver.typeVariable(RefType.v("java.lang.Object")));
+      Value op = stmt.getOp();
+      if (op instanceof Local) {
+        TypeVariable var = resolver.typeVariable((Local) op);
+        var.addParent(resolver.typeVariable(RefType.v("java.lang.Object")));
       }
     }
   }
 
+  @Override
   public void caseGotoStmt(GotoStmt stmt) {
   }
 
+  @Override
   public void caseIfStmt(IfStmt stmt) {
     if (uses) {
-      ConditionExpr cond = (ConditionExpr) stmt.getCondition();
-
-      BinopExpr expr = cond;
-      Value lv = expr.getOp1();
-      Value rv = expr.getOp2();
+      final ConditionExpr expr = (ConditionExpr) stmt.getCondition();
+      final Value lv = expr.getOp1();
+      final Value rv = expr.getOp2();
 
       TypeVariable lop;
       TypeVariable rop;
@@ -550,46 +535,53 @@ class ConstraintCollector extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
     if (uses) {
       Value key = stmt.getKey();
-
       if (key instanceof Local) {
-        resolver.typeVariable((Local) key).addParent(resolver.typeVariable(IntType.v()));
+        TypeVariable var = resolver.typeVariable((Local) key);
+        var.addParent(resolver.typeVariable(IntType.v()));
       }
     }
   }
 
+  @Override
   public void caseNopStmt(NopStmt stmt) {
   }
 
+  @Override
   public void caseReturnStmt(ReturnStmt stmt) {
     if (uses) {
-      if (stmt.getOp() instanceof Local) {
-        resolver.typeVariable((Local) stmt.getOp()).addParent(resolver.typeVariable(stmtBody.getMethod().getReturnType()));
+      Value op = stmt.getOp();
+      if (op instanceof Local) {
+        TypeVariable var = resolver.typeVariable((Local) op);
+        var.addParent(resolver.typeVariable(stmtBody.getMethod().getReturnType()));
       }
     }
   }
 
+  @Override
   public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
   }
 
+  @Override
   public void caseTableSwitchStmt(TableSwitchStmt stmt) {
     if (uses) {
       Value key = stmt.getKey();
-
       if (key instanceof Local) {
         resolver.typeVariable((Local) key).addParent(resolver.typeVariable(IntType.v()));
       }
     }
   }
 
+  @Override
   public void caseThrowStmt(ThrowStmt stmt) {
     if (uses) {
-      if (stmt.getOp() instanceof Local) {
-        TypeVariable op = resolver.typeVariable((Local) stmt.getOp());
-
-        op.addParent(resolver.typeVariable(RefType.v("java.lang.Throwable")));
+      Value op = stmt.getOp();
+      if (op instanceof Local) {
+        TypeVariable var = resolver.typeVariable((Local) op);
+        var.addParent(resolver.typeVariable(RefType.v("java.lang.Throwable")));
       }
     }
   }

@@ -43,9 +43,7 @@ import soot.Unit;
  * used in actual analyses. The approximation works not by duplicating the old {@link CompleteBlockGraph}'s logic, but by
  * using {@link ClassicCompleteUnitGraph} as the basis for dividing {@link Unit}s into {@link Block}s.
  * </p>
- *
  */
-
 public class ClassicCompleteBlockGraph extends BlockGraph {
   /**
    * <p>

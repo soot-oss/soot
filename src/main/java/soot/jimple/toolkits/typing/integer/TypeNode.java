@@ -102,27 +102,23 @@ class TypeNode {
     return ClassHierarchy.v().gcd_2(id, typeNode.id);
   }
 
+  @Override
   public String toString() {
     if (type != null) {
       return type + "(" + id + ")";
     }
 
-    if (this == ClassHierarchy.v().TOP) {
-      return "TOP" + "(" + id + ")";
+    final ClassHierarchy classHierarchy = ClassHierarchy.v();
+    if (this == classHierarchy.TOP) {
+      return "TOP(" + id + ")";
+    } else if (this == classHierarchy.R0_1) {
+      return "R0_1(" + id + ")";
+    } else if (this == classHierarchy.R0_127) {
+      return "R0_127(" + id + ")";
+    } else if (this == classHierarchy.R0_32767) {
+      return "R0_32767(" + id + ")";
+    } else {
+      return "ERROR!!!!";
     }
-
-    if (this == ClassHierarchy.v().R0_1) {
-      return "R0_1" + "(" + id + ")";
-    }
-
-    if (this == ClassHierarchy.v().R0_127) {
-      return "R0_127" + "(" + id + ")";
-    }
-
-    if (this == ClassHierarchy.v().R0_32767) {
-      return "R0_32767" + "(" + id + ")";
-    }
-
-    return "ERROR!!!!";
   }
 }

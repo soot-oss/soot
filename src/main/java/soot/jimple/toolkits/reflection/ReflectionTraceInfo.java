@@ -52,7 +52,7 @@ public class ReflectionTraceInfo {
   public enum Kind {
     ClassForName, ClassNewInstance, ConstructorNewInstance, MethodInvoke, FieldSet, FieldGet
   }
-  
+
   protected final Map<SootMethod, Set<String>> classForNameReceivers;
   protected final Map<SootMethod, Set<String>> classNewInstanceReceivers;
   protected final Map<SootMethod, Set<String>> constructorNewInstanceReceivers;
@@ -219,7 +219,7 @@ public class ReflectionTraceInfo {
 
   private boolean coversLineNumber(int lineNumber, Host host) {
     {
-      SourceLnPosTag tag = (SourceLnPosTag) host.getTag("SourceLnPosTag");
+      SourceLnPosTag tag = (SourceLnPosTag) host.getTag(SourceLnPosTag.NAME);
       if (tag != null) {
         if (tag.startLn() <= lineNumber && tag.endLn() >= lineNumber) {
           return true;
@@ -227,7 +227,7 @@ public class ReflectionTraceInfo {
       }
     }
     {
-      LineNumberTag tag = (LineNumberTag) host.getTag("LineNumberTag");
+      LineNumberTag tag = (LineNumberTag) host.getTag(LineNumberTag.NAME);
       if (tag != null) {
         if (tag.getLineNumber() == lineNumber) {
           return true;

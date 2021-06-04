@@ -27,14 +27,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapNumberer<T> implements Numberer<T> {
-  Map<T, Integer> map = new HashMap<T, Integer>();
-  ArrayList<T> al = new ArrayList<T>();
+
+  final Map<T, Integer> map = new HashMap<T, Integer>();
+  final ArrayList<T> al = new ArrayList<T>();
   int nextIndex = 1;
+
+  public MapNumberer() {
+    al.add(null);
+  }
 
   @Override
   public void add(T o) {
     if (!map.containsKey(o)) {
-      map.put(o, new Integer(nextIndex));
+      map.put(o, nextIndex);
       al.add(o);
       nextIndex++;
     }
@@ -54,16 +59,13 @@ public class MapNumberer<T> implements Numberer<T> {
     if (i == null) {
       throw new RuntimeException("couldn't find " + o);
     }
-    return i.intValue();
+    return i;
   }
 
   @Override
   public int size() {
+    /* subtract 1 for null */
     return nextIndex - 1;
-    /* subtract 1 for null */ }
-
-  public MapNumberer() {
-    al.add(null);
   }
 
   public boolean contains(Object o) {
@@ -75,8 +77,9 @@ public class MapNumberer<T> implements Numberer<T> {
     Integer i = map.remove(o);
     if (i == null) {
       return false;
+    } else {
+      al.set(i, null);
+      return true;
     }
-    al.set(i, null);
-    return true;
   }
 }

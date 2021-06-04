@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
+import soot.NopUnit;
 import soot.Singletons;
 import soot.Trap;
 import soot.Unit;
@@ -63,7 +64,7 @@ public class NopEliminator extends BodyTransformer {
     // Just do one trivial pass.
     for (Iterator<Unit> stmtIt = units.snapshotIterator(); stmtIt.hasNext();) {
       Unit u = stmtIt.next();
-      if (u instanceof NopStmt) {
+      if (u instanceof NopUnit) {
         // Hack: do not remove nop, if is is used for a Trap which
         // is at the very end of the code.
         boolean keepNop = false;

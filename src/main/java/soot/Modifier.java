@@ -26,7 +26,6 @@ package soot;
  * A class that provides static methods and constants to represent and work with with Java modifiers (ie public, final,...)
  * Represents Java modifiers as int constants that can be packed and combined by bitwise operations and methods to query
  * these.
- *
  */
 public class Modifier {
   public static final int ABSTRACT = 0x0400;
@@ -135,7 +134,7 @@ public class Modifier {
    * @return a textual representation of the modifiers.
    */
   public static String toString(int m) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
 
     if (isPublic(m)) {
       buffer.append("public ");
@@ -189,7 +188,6 @@ public class Modifier {
       buffer.append("interface ");
     }
 
-    return (buffer.toString()).trim();
+    return buffer.toString().trim();
   }
-
 }

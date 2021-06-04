@@ -32,28 +32,41 @@ import soot.LongType;
 import soot.ShortType;
 import soot.Type;
 import soot.UnknownType;
-import soot.Value;
+import soot.ValueBox;
 
 @SuppressWarnings("serial")
 public abstract class AbstractFloatBinopExpr extends AbstractBinopExpr {
+
+  protected AbstractFloatBinopExpr(ValueBox op1Box, ValueBox op2Box) {
+    super(op1Box, op2Box);
+  }
+
+  @Override
   public Type getType() {
-    Value op1 = op1Box.getValue();
-    Value op2 = op2Box.getValue();
-    Type op1t = op1.getType();
-    Type op2t = op2.getType();
-    if ((op1t.equals(IntType.v()) || op1t.equals(ByteType.v()) || op1t.equals(ShortType.v()) || op1t.equals(CharType.v())
-        || op1t.equals(BooleanType.v()))
-        && (op2t.equals(IntType.v()) || op2t.equals(ByteType.v()) || op2t.equals(ShortType.v()) || op2t.equals(CharType.v())
-            || op2t.equals(BooleanType.v()))) {
-      return IntType.v();
-    } else if (op1t.equals(LongType.v()) || op2t.equals(LongType.v())) {
-      return LongType.v();
-    } else if (op1t.equals(DoubleType.v()) || op2t.equals(DoubleType.v())) {
-      return DoubleType.v();
-    } else if (op1t.equals(FloatType.v()) || op2t.equals(FloatType.v())) {
-      return FloatType.v();
-    } else {
-      return UnknownType.v();
+    final Type t1 = op1Box.getValue().getType();
+    final Type t2 = op2Box.getValue().getType();
+
+    final IntType tyInt = IntType.v();
+    final ByteType tyByte = ByteType.v();
+    final ShortType tyShort = ShortType.v();
+    final CharType tyChar = CharType.v();
+    final BooleanType tyBool = BooleanType.v();
+    if ((tyInt.equals(t1) || tyByte.equals(t1) || tyShort.equals(t1) || tyChar.equals(t1) || tyBool.equals(t1))
+        && (tyInt.equals(t2) || tyByte.equals(t2) || tyShort.equals(t2) || tyChar.equals(t2) || tyBool.equals(t2))) {
+      return tyInt;
     }
+    final LongType tyLong = LongType.v();
+    if (tyLong.equals(t1) || tyLong.equals(t2)) {
+      return tyLong;
+    }
+    final DoubleType tyDouble = DoubleType.v();
+    if (tyDouble.equals(t1) || tyDouble.equals(t2)) {
+      return tyDouble;
+    }
+    final FloatType tyFloat = FloatType.v();
+    if (tyFloat.equals(t1) || tyFloat.equals(t2)) {
+      return tyFloat;
+    }
+    return UnknownType.v();
   }
 }

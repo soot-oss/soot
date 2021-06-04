@@ -23,6 +23,7 @@ package soot.dava.toolkits.base.finders;
  * #L%
  */
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,7 +36,6 @@ import org.slf4j.LoggerFactory;
 import soot.G;
 import soot.Local;
 import soot.Singletons;
-import soot.Unit;
 import soot.dava.Dava;
 import soot.dava.DavaBody;
 import soot.dava.RetriggerAnalysisException;
@@ -72,6 +72,7 @@ public class CycleFinder implements FactFinder {
     return G.v().soot_dava_toolkits_base_finders_CycleFinder();
   }
 
+  @Override
   public void find(DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException {
     Dava.v().log("CycleFinder::find()");
 
@@ -79,7 +80,7 @@ public class CycleFinder implements FactFinder {
     List<List<AugmentedStmt>> component_list = build_component_list(wasg);
 
     // loop through all nestings
-    while (component_list.isEmpty() == false) {
+    while (!component_list.isEmpty()) {
 
       IterableSet<AugmentedStmt> node_list = new IterableSet<AugmentedStmt>();
 
@@ -93,7 +94,6 @@ public class CycleFinder implements FactFinder {
 
         // if more than one entry points found
         if (entry_points.size() > 1) {
-
           LinkedList<AugmentedStmt> asgEntryPoints = new LinkedList<AugmentedStmt>();
           for (AugmentedStmt au : entry_points) {
             asgEntryPoints.addLast(asg.get_AugStmt(au.get_Stmt()));
@@ -109,13 +109,13 @@ public class CycleFinder implements FactFinder {
         }
 
         // gets to this code only if each SCC has one entry point?
-        AugmentedStmt entry_point = (AugmentedStmt) entry_points.getFirst();
-        AugmentedStmt characterizing_stmt = find_CharacterizingStmt(entry_point, node_list, wasg), succ_stmt = null;
-
+        AugmentedStmt succ_stmt = null;
+        AugmentedStmt entry_point = entry_points.getFirst();
+        AugmentedStmt characterizing_stmt = find_CharacterizingStmt(entry_point, node_list, wasg);
         if (characterizing_stmt != null) {
           for (AugmentedStmt au : characterizing_stmt.bsuccs) {
             succ_stmt = au;
-            if (node_list.contains(succ_stmt) == false) {
+            if (!node_list.contains(succ_stmt)) {
               break;
             }
           }
@@ -124,15 +124,13 @@ public class CycleFinder implements FactFinder {
         wasg.calculate_Reachability(succ_stmt, new HashSet<AugmentedStmt>(), entry_point);
         IterableSet<AugmentedStmt> cycle_body = get_CycleBody(entry_point, succ_stmt, asg, wasg);
 
-        SETCycleNode newNode = null;
-
         if (characterizing_stmt != null) {
           checkExceptionLoop: for (ExceptionNode en : body.get_ExceptionFacts()) {
             IterableSet<AugmentedStmt> tryBody = en.get_TryBody();
 
             if (tryBody.contains(asg.get_AugStmt(characterizing_stmt.get_Stmt()))) {
               for (AugmentedStmt cbas : cycle_body) {
-                if (tryBody.contains(cbas) == false) {
+                if (!tryBody.contains(cbas)) {
                   characterizing_stmt = null;
                   break checkExceptionLoop;
                 }
@@ -141,36 +139,17 @@ public class CycleFinder implements FactFinder {
           }
         }
 
-        /*
-         * if (tryBody.contains( asg.get_AugStmt( characterizing_stmt.get_Stmt()))) {
-         *
-         * if (checkExceptionNodes.contains( en) == false) checkExceptionNodes.add( en);
-         *
-         * Iterator cbit = cycle_body.snapshotIterator(); while (cbit.hasNext()) { AugmentedStmt cbas = (AugmentedStmt)
-         * cbit.next();
-         *
-         * if (tryBody.contains( cbas) == false) cycle_body.remove( cbas); } } }
-         *
-         * enlit = checkExceptionNodes.iterator(); exceptionNestingLoop: while (enlit.hasNext()) { ExceptionNode en =
-         * (ExceptionNode) enlit.next();
-         *
-         * Iterator cbit = cycle_body.iterator(); while (cbit.hasNext()) { AugmentedStmt cbas = (AugmentedStmt) cbit.next();
-         *
-         * if (en.get_TryBody().contains( cbas) == false) { characterizing_stmt = null; break exceptionNestingLoop; } } } }
-         */
-
         // unconditional loop
+        SETCycleNode newNode;
         if (characterizing_stmt == null) {
           wasg.remove_AugmentedStmt(entry_point);
           newNode = new SETUnconditionalWhileNode(cycle_body);
-        }
-
-        else {
+        } else {
           body.consume_Condition(asg.get_AugStmt(characterizing_stmt.get_Stmt()));
           wasg.remove_AugmentedStmt(characterizing_stmt);
 
           IfStmt condition = (IfStmt) characterizing_stmt.get_Stmt();
-          if (cycle_body.contains(asg.get_AugStmt(condition.getTarget())) == false) {
+          if (!cycle_body.contains(asg.get_AugStmt(condition.getTarget()))) {
             condition.setCondition(ConditionFlipper.flip((ConditionExpr) condition.getCondition()));
           }
 
@@ -181,10 +160,7 @@ public class CycleFinder implements FactFinder {
                 asg.get_AugStmt(entry_point.get_Stmt()), cycle_body);
           }
         }
-
-        if (newNode != null) {
-          SET.nest(newNode);
-        }
+        SET.nest(newNode);
       }
 
       component_list = build_component_list(wasg);
@@ -196,43 +172,37 @@ public class CycleFinder implements FactFinder {
    */
   private IterableSet<AugmentedStmt> get_EntryPoint(IterableSet<AugmentedStmt> nodeList) {
     IterableSet<AugmentedStmt> entryPoints = new IterableSet<AugmentedStmt>();
-
     for (AugmentedStmt as : nodeList) {
       for (AugmentedStmt po : as.cpreds) {
-        if (nodeList.contains(po) == false) {
+        if (!nodeList.contains(po)) {
           entryPoints.add(as);
           break;
         }
       }
     }
-
     return entryPoints;
   }
 
   private List<List<AugmentedStmt>> build_component_list(AugmentedStmtGraph asg) {
     List<List<AugmentedStmt>> c_list = new LinkedList<List<AugmentedStmt>>();
 
-    StronglyConnectedComponentsFast<AugmentedStmt> scc = new StronglyConnectedComponentsFast<AugmentedStmt>(asg);
-
     // makes sure that all scc's with only one statement in them are removed
     /*
      * 26th Jan 2006 Nomair A. Naeem This could be potentially bad since self loops will also get removed Adding code to
      * check for self loop (a stmt is a self loop if its pred and succ contain the stmt itself
      */
-    for (List<AugmentedStmt> wcomp : scc.getComponents()) {
-      if (wcomp.size() > 1) {
+    for (List<AugmentedStmt> wcomp : (new StronglyConnectedComponentsFast<AugmentedStmt>(asg)).getComponents()) {
+      final int size = wcomp.size();
+      if (size > 1) {
         c_list.add(wcomp);
-      } else if (wcomp.size() == 1) {
+      } else if (size == 1) {
         // this is a scc of one augmented stmt
         // We should add those which are self loops
         AugmentedStmt as = wcomp.get(0);
+        if (as.cpreds.contains(as) && as.csuccs.contains(as)) {
+          // "as" has a predecssor and successor which is as i.e. it is a self loop
 
-        if (as.cpreds.contains(as) && (as.csuccs.contains(as))) {
-          // "as" has a predecssor and successor which is as i.e. it
-          // is a self loop
-
-          List<AugmentedStmt> currentComponent = null;
-          currentComponent = new StationaryArrayList<AugmentedStmt>();
+          List<AugmentedStmt> currentComponent = new StationaryArrayList<AugmentedStmt>();
           currentComponent.add(as);
           // System.out.println("Special add of"+as);
           c_list.add(currentComponent);
@@ -247,12 +217,10 @@ public class CycleFinder implements FactFinder {
     /*
      * Check whether we are a while loop.
      */
-
     if (entry_point.get_Stmt() instanceof IfStmt) {
-
       // see if there's a successor who's not in the strict loop set
       for (AugmentedStmt au : entry_point.bsuccs) {
-        if (sc_component.contains(au) == false) {
+        if (!sc_component.contains(au)) {
           return entry_point;
         }
       }
@@ -268,15 +236,14 @@ public class CycleFinder implements FactFinder {
 
     // Get the set of all candidates.
     for (AugmentedStmt pas : entry_point.bpreds) {
-      if ((pas.get_Stmt() instanceof GotoStmt) && (pas.bpreds.size() == 1)) {
-        pas = (AugmentedStmt) pas.bpreds.get(0);
+      final Stmt pasStmt = pas.get_Stmt();
+      if ((pasStmt instanceof GotoStmt) && (pas.bpreds.size() == 1)) {
+        pas = pas.bpreds.get(0);
       }
 
-      if ((sc_component.contains(pas)) && (pas.get_Stmt() instanceof IfStmt)) {
-
+      if ((sc_component.contains(pas)) && (pasStmt instanceof IfStmt)) {
         for (AugmentedStmt spas : pas.bsuccs) {
-          if (sc_component.contains(spas) == false) {
-
+          if (!sc_component.contains(spas)) {
             candidates.add(pas);
             candSuccMap.put(pas, spas);
             blockers.add(spas);
@@ -300,7 +267,7 @@ public class CycleFinder implements FactFinder {
      */
 
     if (candidates.size() == 1) {
-      return (AugmentedStmt) candidates.getFirst();
+      return candidates.getFirst();
     }
 
     // Take the candidate(s) whose successor has maximal reachability from
@@ -310,9 +277,8 @@ public class CycleFinder implements FactFinder {
 
     IterableSet<AugmentedStmt> max_Reach_Set = null;
     int reachSize = 0;
-
     for (AugmentedStmt as : candidates) {
-      int current_reach_size = ((AugmentedStmt) candSuccMap.get(as)).get_Reachers().intersection(candidates).size();
+      int current_reach_size = candSuccMap.get(as).get_Reachers().intersection(candidates).size();
 
       if (current_reach_size > reachSize) {
         max_Reach_Set = new IterableSet<AugmentedStmt>();
@@ -330,7 +296,7 @@ public class CycleFinder implements FactFinder {
       throw new RuntimeException("Did not find a suitable candidate");
     }
     if (candidates.size() == 1) {
-      return (AugmentedStmt) candidates.getFirst();
+      return candidates.getFirst();
     }
 
     // Find a single source shortest path from the entry point to any of the
@@ -341,14 +307,12 @@ public class CycleFinder implements FactFinder {
     worklist.addLast(entry_point);
     touchSet.add(entry_point);
 
-    while (worklist.isEmpty() == false) {
-
+    while (!worklist.isEmpty()) {
       for (AugmentedStmt so : worklist.removeFirst().csuccs) {
         if (candidates.contains(so)) {
           return so;
         }
-
-        if ((sc_component.contains(so)) && (touchSet.contains(so) == false)) {
+        if (sc_component.contains(so) && !touchSet.contains(so)) {
           worklist.addLast(so);
           touchSet.add(so);
         }
@@ -367,7 +331,7 @@ public class CycleFinder implements FactFinder {
     worklist.add(entry_point);
     cycle_body.add(asg_ep);
 
-    while (worklist.isEmpty() == false) {
+    while (!worklist.isEmpty()) {
       AugmentedStmt as = worklist.removeFirst();
 
       for (AugmentedStmt wsas : as.csuccs) {
@@ -377,20 +341,12 @@ public class CycleFinder implements FactFinder {
           continue;
         }
 
-        /*
-         * if (sas.get_Dominators().contains( asg_ep) == false) { logger.debug(""+ wsas + " not dominated by " + asg_ep);
-         * logger.debug(""+ "doms"); Iterator dit = sas.get_Dominators().iterator(); while (dit.hasNext()) logger.debug(""+
-         * "    " + dit.next()); logger.debug("preds"); dit = sas.cpreds.iterator(); while (dit.hasNext()) logger.debug(""+
-         * "    " + dit.next()); }
-         */
-
-        if ((cycle_body.contains(sas) == false) && (sas.get_Dominators().contains(asg_ep))) {
-
-          if ((boundary_stmt != null) && ((wsas.get_Reachers().contains(boundary_stmt)) || (wsas == boundary_stmt))) {
+        if (!cycle_body.contains(sas) && sas.get_Dominators().contains(asg_ep)) {
+          if ((boundary_stmt != null) && (wsas.get_Reachers().contains(boundary_stmt) || (wsas == boundary_stmt))) {
             continue;
           }
 
-          // logger.debug(""+ sas);
+          // logger.debug(sas);
 
           worklist.add(wsas);
           cycle_body.add(sas);
@@ -403,36 +359,26 @@ public class CycleFinder implements FactFinder {
 
   private void fix_MultiEntryPoint(DavaBody body, AugmentedStmtGraph asg, LinkedList<AugmentedStmt> entry_points,
       IterableSet<AugmentedStmt> scc) {
-    AugmentedStmt naturalEntryPoint = get_NaturalEntryPoint(entry_points, scc);
-    Local controlLocal = body.get_ControlLocal();
 
-    Unit defaultTarget = naturalEntryPoint.get_Stmt();
-    LinkedList<AugmentedStmt> targets = new LinkedList<AugmentedStmt>();
+    final AugmentedStmt naturalEntryPoint = get_NaturalEntryPoint(entry_points, scc);
+    final Local controlLocal = body.get_ControlLocal();
 
     /*
-     * Nomair A Naeem, Micheal Batchelder 5 th April 2005 shouldnt send empty targets list to constructor of GTableSwitch
-     * since then it just creates an empty array to hold the targets.. we intend to fill these in later using the setTarget
-     * method
-     *
-     * hence the hack is to just send in null fully aware that they are going to be changed to the target we want within the
-     * following while loop
+     * Nomair A Naeem, Micheal Batchelder 5 th April 2005 shouldn't send empty targets list to constructor of GTableSwitch
+     * since then it just creates an empty array to hold the targets. We intend to fill these in later using the setTarget
+     * method. Hence the hack is to just send an array filled with 'null' values, fully aware that they are going to be
+     * changed to the target we want within the following while loop.
      */
-    for (int i = 0; i < entry_points.size(); i++) {
-      targets.add(null);
-      /* 5th April End code change */
-    }
-
-    TableSwitchStmt tss = new GTableSwitchStmt(controlLocal, 0, entry_points.size() - 2, targets, defaultTarget);
+    TableSwitchStmt tss = new GTableSwitchStmt(controlLocal, 0, entry_points.size() - 2,
+        Collections.nCopies(entry_points.size(), null), naturalEntryPoint.get_Stmt());
     AugmentedStmt dispatchStmt = new AugmentedStmt(tss);
 
-    IterableSet<AugmentedStmt> predecessorSet = new IterableSet<AugmentedStmt>(),
-        indirectionStmtSet = new IterableSet<AugmentedStmt>(), directionStmtSet = new IterableSet<AugmentedStmt>();
+    IterableSet<AugmentedStmt> predecessorSet = new IterableSet<AugmentedStmt>();
+    IterableSet<AugmentedStmt> indirectionStmtSet = new IterableSet<AugmentedStmt>();
+    IterableSet<AugmentedStmt> directionStmtSet = new IterableSet<AugmentedStmt>();
 
     int count = 0;
-    Iterator<AugmentedStmt> epit = entry_points.iterator();
-    while (epit.hasNext()) {
-      AugmentedStmt entryPoint = epit.next();
-
+    for (AugmentedStmt entryPoint : entry_points) {
       GotoStmt gotoStmt = new JGotoStmt(entryPoint.get_Stmt());
       AugmentedStmt indirectionStmt = new AugmentedStmt(gotoStmt);
 
@@ -448,13 +394,12 @@ public class CycleFinder implements FactFinder {
       asg.add_AugmentedStmt(indirectionStmt);
 
       LinkedList<AugmentedStmt> toRemove = new LinkedList<AugmentedStmt>();
-
       for (AugmentedStmt pas : entryPoint.cpreds) {
-        if ((pas == indirectionStmt) || ((entryPoint != naturalEntryPoint) && (scc.contains(pas)))) {
+        if ((pas == indirectionStmt) || ((entryPoint != naturalEntryPoint) && scc.contains(pas))) {
           continue;
         }
 
-        if (scc.contains(pas) == false) {
+        if (!scc.contains(pas)) {
           predecessorSet.add(pas);
         }
 
@@ -500,7 +445,7 @@ public class CycleFinder implements FactFinder {
       IterableSet<AugmentedStmt> tryBody = en.get_TryBody();
 
       for (AugmentedStmt au : entry_points) {
-        if (tryBody.contains(au) == false) {
+        if (!tryBody.contains(au)) {
           continue exceptionFactLoop;
         }
       }
@@ -509,7 +454,7 @@ public class CycleFinder implements FactFinder {
       en.add_TryStmt(dispatchStmt);
 
       for (AugmentedStmt au : predecessorSet) {
-        if (tryBody.contains(au) == false) {
+        if (!tryBody.contains(au)) {
           continue exceptionFactLoop;
         }
       }
@@ -522,14 +467,10 @@ public class CycleFinder implements FactFinder {
     AugmentedStmt best_candidate = null;
     int minScore = 0;
 
-    Iterator<AugmentedStmt> epit = entry_points.iterator();
-    while (epit.hasNext()) {
-      AugmentedStmt entryPoint = epit.next();
+    for (AugmentedStmt entryPoint : entry_points) {
       HashSet<AugmentedStmt> touchSet = new HashSet<AugmentedStmt>(), backTargets = new HashSet<AugmentedStmt>();
-
       touchSet.add(entryPoint);
       DFS(entryPoint, touchSet, backTargets, scc);
-
       if ((best_candidate == null) || (backTargets.size() < minScore)) {
         minScore = touchSet.size();
         best_candidate = entryPoint;
@@ -542,12 +483,12 @@ public class CycleFinder implements FactFinder {
   private void DFS(AugmentedStmt as, HashSet<AugmentedStmt> touchSet, HashSet<AugmentedStmt> backTargets,
       IterableSet<AugmentedStmt> scc) {
     for (AugmentedStmt sas : as.csuccs) {
-      if (scc.contains(sas) == false) {
+      if (!scc.contains(sas)) {
         continue;
       }
 
       if (touchSet.contains(sas)) {
-        if (backTargets.contains(sas) == false) {
+        if (!backTargets.contains(sas)) {
           backTargets.add(sas);
         }
       } else {
@@ -566,11 +507,9 @@ public class CycleFinder implements FactFinder {
 
     if (src instanceof IfStmt) {
       IfStmt ifs = (IfStmt) src;
-
       if (ifs.getTarget() == oldDst) {
         ifs.setTarget(newDst);
       }
-
       return;
     }
 
@@ -582,7 +521,7 @@ public class CycleFinder implements FactFinder {
         return;
       }
 
-      for (int i = tss.getLowIndex(); i <= tss.getHighIndex(); i++) {
+      for (int i = tss.getLowIndex(), e = tss.getHighIndex(); i <= e; i++) {
         if (tss.getTarget(i) == oldDst) {
           tss.setTarget(i, newDst);
           return;
@@ -598,7 +537,7 @@ public class CycleFinder implements FactFinder {
         return;
       }
 
-      for (int i = 0; i < lss.getTargetCount(); i++) {
+      for (int i = 0, e = lss.getTargetCount(); i < e; i++) {
         if (lss.getTarget(i) == oldDst) {
           lss.setTarget(i, newDst);
           return;

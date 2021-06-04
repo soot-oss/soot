@@ -76,20 +76,20 @@ public class ClassHierarchy {
 
     G.v().ClassHierarchy_classHierarchyMap.put(scene, this);
 
-    NULL = typeNode(NullType.v());
-    OBJECT = typeNode(RefType.v("java.lang.Object"));
+    this.NULL = typeNode(NullType.v());
+    this.OBJECT = typeNode(RefType.v("java.lang.Object"));
 
     // hack for J2ME library which does not have Cloneable and Serializable
     // reported by Stephen Chen
     if (!Options.v().j2me()) {
-      CLONEABLE = typeNode(RefType.v("java.lang.Cloneable"));
-      SERIALIZABLE = typeNode(RefType.v("java.io.Serializable"));
+      this.CLONEABLE = typeNode(RefType.v("java.lang.Cloneable"));
+      this.SERIALIZABLE = typeNode(RefType.v("java.io.Serializable"));
     } else {
-      CLONEABLE = null;
-      SERIALIZABLE = null;
+      this.CLONEABLE = null;
+      this.SERIALIZABLE = null;
     }
 
-    INT = typeNode(IntType.v());
+    this.INT = typeNode(IntType.v());
   }
 
   /** Get the class hierarchy for the given scene. **/
@@ -115,7 +115,6 @@ public class ClassHierarchy {
 
     type = transform.toInt(type);
     TypeNode typeNode = typeNodeMap.get(type);
-
     if (typeNode == null) {
       int id = typeNodeList.size();
       typeNodeList.add(null);
@@ -130,21 +129,20 @@ public class ClassHierarchy {
   }
 
   /** Returns a string representation of this object **/
+  @Override
   public String toString() {
-    StringBuffer s = new StringBuffer();
-    boolean colon = false;
+    StringBuilder s = new StringBuilder("ClassHierarchy:{");
 
-    s.append("ClassHierarchy:{");
+    boolean colon = false;
     for (TypeNode typeNode : typeNodeList) {
       if (colon) {
-        s.append(",");
+        s.append(',');
       } else {
         colon = true;
       }
-
       s.append(typeNode);
     }
-    s.append("}");
+    s.append('}');
 
     return s.toString();
   }
@@ -152,76 +150,74 @@ public class ClassHierarchy {
   /**
    * Transforms boolean, byte, short and char into int.
    **/
-  private static class ToInt extends TypeSwitch {
-    private Type result;
+  private static class ToInt extends TypeSwitch<Type> {
     private final Type intType = IntType.v();
 
-    private ToInt() {
-    }
-
     /** Transform boolean, byte, short and char into int. **/
-    Type toInt(Type type) {
+    public Type toInt(Type type) {
       type.apply(this);
-      return result;
+      return getResult();
     }
 
+    @Override
     public void caseBooleanType(BooleanType type) {
-      result = intType;
+      setResult(intType);
     }
 
+    @Override
     public void caseByteType(ByteType type) {
-      result = intType;
+      setResult(intType);
     }
 
+    @Override
     public void caseShortType(ShortType type) {
-      result = intType;
+      setResult(intType);
     }
 
+    @Override
     public void caseCharType(CharType type) {
-      result = intType;
+      setResult(intType);
     }
 
+    @Override
     public void defaultCase(Type type) {
-      result = type;
+      setResult(type);
     }
   }
 
   /**
    * Creates new TypeNode instances usign the appropriate constructor.
    **/
-  private static class ConstructorChooser extends TypeSwitch {
+  private static class ConstructorChooser extends TypeSwitch<TypeNode> {
     private int id;
     private ClassHierarchy hierarchy;
 
-    private TypeNode result;
-
-    ConstructorChooser() {
-    }
-
     /** Create a new TypeNode instance for the type parameter. **/
-    TypeNode typeNode(int id, Type type, ClassHierarchy hierarchy) {
+    public TypeNode typeNode(int id, Type type, ClassHierarchy hierarchy) {
       if (type == null || hierarchy == null) {
         throw new InternalTypingException();
       }
-
       this.id = id;
       this.hierarchy = hierarchy;
 
       type.apply(this);
 
-      return result;
+      return getResult();
     }
 
+    @Override
     public void caseRefType(RefType type) {
-      result = new TypeNode(id, type, hierarchy);
+      setResult(new TypeNode(id, type, hierarchy));
     }
 
+    @Override
     public void caseArrayType(ArrayType type) {
-      result = new TypeNode(id, type, hierarchy);
+      setResult(new TypeNode(id, type, hierarchy));
     }
 
+    @Override
     public void defaultCase(Type type) {
-      result = new TypeNode(id, type, hierarchy);
+      setResult(new TypeNode(id, type, hierarchy));
     }
   }
 }
