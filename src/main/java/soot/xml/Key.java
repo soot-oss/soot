@@ -33,38 +33,38 @@ public class Key {
   private String aType;
 
   public Key(int r, int g, int b, String k) {
-    red = r;
-    green = g;
-    blue = b;
-    key = k;
+    this.red = r;
+    this.green = g;
+    this.blue = b;
+    this.key = k;
   }
 
   public int red() {
-    return red;
+    return this.red;
   }
 
   public int green() {
-    return green;
+    return this.green;
   }
 
   public int blue() {
-    return blue;
+    return this.blue;
   }
 
   public String key() {
-    return key;
+    return this.key;
+  }
+
+  public String aType() {
+    return this.aType;
+  }
+
+  public void aType(String s) {
+    this.aType = s;
   }
 
   public void print(PrintWriter writerOut) {
     writerOut.println("<key red=\"" + red() + "\" green=\"" + green() + "\" blue=\"" + blue() + "\" key=\"" + key()
         + "\" aType=\"" + aType() + "\"/>");
-  }
-
-  public String aType() {
-    return aType;
-  }
-
-  public void aType(String s) {
-    aType = s;
   }
 }

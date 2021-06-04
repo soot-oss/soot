@@ -221,7 +221,7 @@ public class ModulePathSourceLocator extends SourceLocator {
         path = Paths.get(aPath);
         break;
       case jrt:
-        path = Paths.get(URI.create(aPath)).resolve("modules");
+        path = getRootModulesPathOfJDK();
         break;
       case unknown:
         break;
@@ -258,6 +258,15 @@ public class ModulePathSourceLocator extends SourceLocator {
     }
     return mapModuleClasses;
 
+  }
+
+  public static Path getRootModulesPathOfJDK() {
+    Path p = Paths.get(URI.create("jrt:/"));
+    if (p.endsWith("modules")) {
+      return p;
+    }
+    //Due to a bug in some JDKs, p not necessarily points to modules directly: https://bugs.openjdk.java.net/browse/JDK-8227076
+    return p.resolve("modules");
   }
 
   /**
@@ -662,7 +671,10 @@ public class ModulePathSourceLocator extends SourceLocator {
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 
-          String fileName = aPath.relativize(file).toString().replace(File.separatorChar, '.');
+          // Note that some FileSystem implementations used by Path use even on Windows
+          // "/" as path separator. Therefore we have to use the file-system specific path separator
+          // instead of the system specific one (File.separatorChar).
+          String fileName = aPath.relativize(file).toString().replace(file.getFileSystem().getSeparator(), ".");
 
           if (fileName.endsWith(".class")) {
             int index = fileName.lastIndexOf(".class");

@@ -33,11 +33,11 @@ public class InvokeCallSite extends AbstractCallSite {
   public static final int MUST_NOT_BE_NULL = 1;
   public static final int MAY_BE_NULL = -1;
 
-  private InstanceInvokeExpr iie;
-  private Local argArray;
-  private Local base;
-  private int nullnessCode;
-  private ArrayTypes reachingTypes;
+  private final InstanceInvokeExpr iie;
+  private final Local argArray;
+  private final Local base;
+  private final int nullnessCode;
+  private final ArrayTypes reachingTypes;
 
   public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base) {
     this(stmt, container, iie, base, (Local) null, 0);
@@ -50,6 +50,7 @@ public class InvokeCallSite extends AbstractCallSite {
     this.base = base;
     this.argArray = argArray;
     this.nullnessCode = nullnessCode;
+    this.reachingTypes = null;
   }
 
   public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, ArrayTypes reachingArgTypes,
@@ -57,15 +58,23 @@ public class InvokeCallSite extends AbstractCallSite {
     super(stmt, container);
     this.iie = iie;
     this.base = base;
-    this.nullnessCode = nullnessCode;
     this.argArray = null;
+    this.nullnessCode = nullnessCode;
     this.reachingTypes = reachingArgTypes;
   }
 
+  /**
+   * @deprecated use {@link #getStmt()}
+   */
+  @Deprecated
   public Stmt stmt() {
     return stmt;
   }
 
+  /**
+   * @deprecated use {@link #getContainer()}
+   */
+  @Deprecated
   public SootMethod container() {
     return container;
   }
@@ -94,5 +103,4 @@ public class InvokeCallSite extends AbstractCallSite {
   public String toString() {
     return stmt.toString();
   }
-
 }

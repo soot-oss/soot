@@ -5,24 +5,26 @@ Currently, Soot follows the [git-flow branching model](http://nvie.com/posts/a-s
 All our nightly tests and builds operate on develop branch.
 
 ## Pull Request  
-> Note: If you already have a fork of Soot and need to merge our formatting changes, [this](https://github.com/Sable/soot/wiki/Merging-changes-after-introduction-of-formatting-guidelines) might help.
+> Note: If you already have a fork of Soot and need to merge our formatting changes, [this](https://github.com/soot-oss/soot/wiki/Merging-changes-after-introduction-of-formatting-guidelines) might help.
 
-To fix a problem in Soot or to contribute to Soot you can fork the Soot project on GitHub. This will generate a personal cloned repository for you to work on. To reincorporate your changes into Soot after they have been completed and tested, just send us a [pull request](https://help.github.com/articles/using-pull-requests). This will allow us to review your changes and merge them into the develop branch.
+To fix a problem in Soot or to contribute to Soot you can fork the Soot project on GitHub. This will generate a personal cloned repository for you to work on. To reincorporate your changes into Soot after they have been completed and tested, just send us a [pull request](https://help.github.com/articles/using-pull-requests). This will allow us to review your changes and merge them into the develop branch. In your pull request, please include: 
+1. A description of the changes you made
+2. Tests regarding your changes 
 
 ### Style guidelines
 
 Pull requests will have to conform to our coding style guidelines which are _as close as possible_* to the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html). Our build server will reject pull requests that do not comply with our guidelines.
 
 Tutorials on how to apply automatic formatting and style enhancements can be found here:
-* [Eclipse](https://github.com/Sable/soot/wiki/Formatting-for-Eclipse)
-* [IntelliJ Idea](https://github.com/Sable/soot/wiki/Formatting-for-IntelliJ)
+* [Eclipse](https://github.com/soot-oss/soot/wiki/Formatting-for-Eclipse)
+* [IntelliJ Idea](https://github.com/soot-oss/soot/wiki/Formatting-for-IntelliJ)
 
 Compliance with our guidelines is ensured by the Maven Checkstyle plugin. One can run the checks by invoking `mvn checkstyle:check`. Also, the check is bound to the Maven's `verify` phase. 
 Our build server will reject pull requests with existing violations. 
 
 ### License header
 
-Newly created classes will have to have a [correct license header](https://github.com/Sable/soot/wiki/License-Header) right after the _package declaration_ of the class. Our build server will reject pull requests with missing license headers. The license check can be run locally by invoking `mvn license:check-file-header` or during the `verify` phase.
+Newly created classes will have to have a [correct license header](https://github.com/soot-oss/soot/wiki/License-Header) right after the _package declaration_ of the class. Our build server will reject pull requests with missing license headers. The license check can be run locally by invoking `mvn license:check-file-header` or during the `verify` phase.
 
 **Make sure that `mvn clean verify` terminates successfully before setting up a pull request or committing to the repository directly!**
 

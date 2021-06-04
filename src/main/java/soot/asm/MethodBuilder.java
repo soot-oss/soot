@@ -25,7 +25,9 @@ package soot.asm;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
@@ -34,7 +36,6 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.TypePath;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
-
 import soot.ArrayType;
 import soot.RefType;
 import soot.SootMethod;
@@ -42,6 +43,7 @@ import soot.Type;
 import soot.tagkit.AnnotationConstants;
 import soot.tagkit.AnnotationDefaultTag;
 import soot.tagkit.AnnotationTag;
+import soot.tagkit.ParamNamesTag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityLocalVariableAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
@@ -60,11 +62,29 @@ class MethodBuilder extends JSRInlinerAdapter {
   private List<VisibilityAnnotationTag> invisibleLocalVarAnnotations;
   private final SootMethod method;
   private final SootClassBuilder scb;
+  private final String[] parameterNames;
+  private final Map<Integer, Integer> slotToParameter;
 
   MethodBuilder(SootMethod method, SootClassBuilder scb, String desc, String[] ex) {
     super(Opcodes.ASM6, null, method.getModifiers(), method.getName(), desc, null, ex);
     this.method = method;
     this.scb = scb;
+    this.parameterNames = new String[method.getParameterCount()];
+    this.slotToParameter = createSlotToParameterMap();
+  }
+
+  private Map<Integer, Integer> createSlotToParameterMap() {
+    final int paramCount = method.getParameterCount();
+    Map<Integer, Integer> slotMap = new HashMap<>(paramCount);
+    int curSlot = method.isStatic() ? 0 : 1;
+    for (int i = 0; i < paramCount; i++) {
+      slotMap.put(curSlot, i);
+      curSlot++;
+      if (AsmUtil.isDWord(method.getParameterType(i))) {
+        curSlot++;
+      }
+    }
+    return slotMap;
   }
 
   private TagBuilder getTagBuilder() {
@@ -93,6 +113,18 @@ class MethodBuilder extends JSRInlinerAdapter {
   @Override
   public void visitAttribute(Attribute attr) {
     getTagBuilder().visitAttribute(attr);
+  }
+
+  @Override
+  public void visitLocalVariable(String name, String descriptor, String signature, Label start, Label end, int index) {
+    super.visitLocalVariable(name, descriptor, signature, start, end, index);
+
+    if (name != null && !name.isEmpty() && index > 0) {
+      Integer paramIdx = slotToParameter.get(index);
+      if (paramIdx != null) {
+        parameterNames[paramIdx] = name;
+      }
+    }
   }
 
   @Override
@@ -245,16 +277,41 @@ class MethodBuilder extends JSRInlinerAdapter {
       method.addTag(tag);
     }
     if (invisibleLocalVarAnnotations != null) {
-      VisibilityLocalVariableAnnotationTag tag = new VisibilityLocalVariableAnnotationTag(visibleLocalVarAnnotations.size(),
-          AnnotationConstants.RUNTIME_INVISIBLE);
+      VisibilityLocalVariableAnnotationTag tag = new VisibilityLocalVariableAnnotationTag(
+          invisibleLocalVarAnnotations.size(), AnnotationConstants.RUNTIME_INVISIBLE);
       for (VisibilityAnnotationTag vat : invisibleLocalVarAnnotations) {
         tag.addVisibilityAnnotation(vat);
       }
       method.addTag(tag);
+    }
+    if (!isFullyEmpty(parameterNames)) {
+      method.addTag(new ParamNamesTag(parameterNames));
     }
     if (method.isConcrete()) {
       method.setSource(
           new AsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks, scb.getKlass().moduleName));
     }
   }
+
+  /**
+   * Gets whether the given array is fully empty, i.e., contains only <code>null</code> values
+   * 
+   * @param array
+   *          The array to check
+   * @return True if the given arry contains only <code>null</code> values, false otherwise
+   */
+  private boolean isFullyEmpty(String[] array) {
+    for (int i = 0; i < array.length; i++) {
+      if (array[i] != null && !array[i].isEmpty()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return method.toString();
+  }
+
 }

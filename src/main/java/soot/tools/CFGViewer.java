@@ -22,6 +22,7 @@ package soot.tools;
  * #L%
  */
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,6 @@ import soot.PackManager;
 import soot.PhaseOptions;
 import soot.SootMethod;
 import soot.Transform;
-import soot.Unit;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
@@ -75,6 +75,7 @@ public class CFGViewer extends BodyTransformer {
   // from method name to the class
   // name declaring the method.
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     initialize(options);
     SootMethod meth = b.getMethod();
@@ -219,18 +220,17 @@ public class CFGViewer extends BodyTransformer {
   }
 
   protected void print_cfg(Body body) {
-    DirectedGraph<Unit> graph = graphtype.buildGraph(body);
-    DotGraph canvas = graphtype.drawGraph(drawer, graph, body);
-
+    String filename = soot.SourceLocator.v().getOutputDir();
+    if (!filename.isEmpty()) {
+      filename = filename + File.separator;
+    }
     String methodname = body.getMethod().getSubSignature();
     String classname = body.getMethod().getDeclaringClass().getName().replaceAll("\\$", "\\.");
-    String filename = soot.SourceLocator.v().getOutputDir();
-    if (filename.length() > 0) {
-      filename = filename + java.io.File.separator;
-    }
-    filename = filename + classname + " " + methodname.replace(java.io.File.separatorChar, '.') + DotGraph.DOT_EXTENSION;
-
+    filename = filename + classname + " " + methodname.replace(File.separatorChar, '.') + DotGraph.DOT_EXTENSION;
     logger.debug("Generate dot file in " + filename);
+
+    DirectedGraph<?> graph = graphtype.buildGraph(body);
+    DotGraph canvas = graphtype.drawGraph(drawer, graph, body);
     canvas.plot(filename);
   }
 }

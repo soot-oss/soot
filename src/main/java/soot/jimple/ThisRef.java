@@ -32,27 +32,29 @@ import soot.ValueBox;
 import soot.util.Switch;
 
 public class ThisRef implements IdentityRef {
+
   RefType thisType;
 
   public ThisRef(RefType thisType) {
     this.thisType = thisType;
   }
 
+  @Override
   public boolean equivTo(Object o) {
-    if (o instanceof ThisRef) {
-      return thisType.equals(((ThisRef) o).thisType);
-    }
-    return false;
+    return (o instanceof ThisRef) && this.thisType.equals(((ThisRef) o).thisType);
   }
 
+  @Override
   public int equivHashCode() {
     return thisType.hashCode();
   }
 
+  @Override
   public String toString() {
     return "@this: " + thisType;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.identityRef(this);
   }
@@ -62,16 +64,18 @@ public class ThisRef implements IdentityRef {
     return Collections.emptyList();
   }
 
+  @Override
   public Type getType() {
     return thisType;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((RefSwitch) sw).caseThisRef(this);
   }
 
+  @Override
   public Object clone() {
     return new ThisRef(thisType);
   }
-
 }

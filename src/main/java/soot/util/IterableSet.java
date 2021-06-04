@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Set;
 
 public class IterableSet<T> extends HashChain<T> implements Set<T> {
+
   public IterableSet(Collection<T> c) {
     super();
     addAll(c);
@@ -35,52 +36,47 @@ public class IterableSet<T> extends HashChain<T> implements Set<T> {
     super();
   }
 
+  @Override
   public boolean add(T o) {
     if (o == null) {
       throw new IllegalArgumentException("Cannot add \"null\" to an IterableSet.");
     }
-
     if (contains(o)) {
       return false;
     }
-
     return super.add(o);
   }
 
+  @Override
   public boolean remove(Object o) {
-    if ((o == null) || (contains(o) == false)) {
+    if (o == null || !contains(o)) {
       return false;
     }
-
     return super.remove(o);
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o == null) {
       return false;
     }
-
     if (this == o) {
       return true;
     }
 
-    if ((o instanceof IterableSet) == false) {
+    if (!(o instanceof IterableSet)) {
       return false;
     }
 
-    @SuppressWarnings("unchecked")
-    IterableSet<T> other = (IterableSet<T>) o;
-
-    if (size() != other.size()) {
+    IterableSet<?> other = (IterableSet<?>) o;
+    if (this.size() != other.size()) {
       return false;
     }
-
     for (T t : this) {
       if (!other.contains(t)) {
         return false;
       }
     }
-
     return true;
   }
 
@@ -94,6 +90,7 @@ public class IterableSet<T> extends HashChain<T> implements Set<T> {
     return code;
   }
 
+  @Override
   public Object clone() {
     IterableSet<T> s = new IterableSet<T>();
     s.addAll(this);
@@ -105,16 +102,14 @@ public class IterableSet<T> extends HashChain<T> implements Set<T> {
       throw new IllegalArgumentException("Cannot set compare an IterableSet with \"null\".");
     }
 
-    if (size() > other.size()) {
+    if (this.size() > other.size()) {
       return false;
     }
-
     for (T t : this) {
       if (!other.contains(t)) {
         return false;
       }
     }
-
     return true;
   }
 
@@ -123,16 +118,14 @@ public class IterableSet<T> extends HashChain<T> implements Set<T> {
       throw new IllegalArgumentException("Cannot set compare an IterableSet with \"null\".");
     }
 
-    if (size() < other.size()) {
+    if (this.size() < other.size()) {
       return false;
     }
-
     for (T t : other) {
       if (!contains(t)) {
         return false;
       }
     }
-
     return true;
   }
 
@@ -141,10 +134,9 @@ public class IterableSet<T> extends HashChain<T> implements Set<T> {
       throw new IllegalArgumentException("Cannot set compare an IterableSet with \"null\".");
     }
 
-    if (size() >= other.size()) {
+    if (this.size() >= other.size()) {
       return false;
     }
-
     return isSubsetOf(other);
   }
 
@@ -153,10 +145,9 @@ public class IterableSet<T> extends HashChain<T> implements Set<T> {
       throw new IllegalArgumentException("Cannot set compare an IterableSet with \"null\".");
     }
 
-    if (size() <= other.size()) {
+    if (this.size() <= other.size()) {
       return false;
     }
-
     return isSupersetOf(other);
   }
 
@@ -165,9 +156,9 @@ public class IterableSet<T> extends HashChain<T> implements Set<T> {
       throw new IllegalArgumentException("Cannot set intersect an IterableSet with \"null\".");
     }
 
-    if (other.size() < size()) {
+    if (other.size() < this.size()) {
       for (T t : other) {
-        if (contains(t)) {
+        if (this.contains(t)) {
           return true;
         }
       }
@@ -178,7 +169,6 @@ public class IterableSet<T> extends HashChain<T> implements Set<T> {
         }
       }
     }
-
     return false;
   }
 
@@ -188,10 +178,9 @@ public class IterableSet<T> extends HashChain<T> implements Set<T> {
     }
 
     IterableSet<T> c = new IterableSet<T>();
-
-    if (other.size() < size()) {
+    if (other.size() < this.size()) {
       for (T t : other) {
-        if (contains(t)) {
+        if (this.contains(t)) {
           c.add(t);
         }
       }
@@ -211,21 +200,17 @@ public class IterableSet<T> extends HashChain<T> implements Set<T> {
     }
 
     IterableSet<T> c = new IterableSet<T>();
-
     c.addAll(this);
     c.addAll(other);
-
     return c;
   }
 
+  @Override
   public String toString() {
-    StringBuffer b = new StringBuffer();
-
+    StringBuilder b = new StringBuilder();
     for (T t : this) {
-      b.append(t.toString());
-      b.append("\n");
+      b.append(t.toString()).append('\n');
     }
-
     return b.toString();
   }
 

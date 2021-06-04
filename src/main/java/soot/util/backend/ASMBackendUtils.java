@@ -51,6 +51,7 @@ import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.StringConstantValueTag;
+import soot.tagkit.Tag;
 
 /**
  * Utility class for ASM-based back-ends.
@@ -73,8 +74,7 @@ public class ASMBackendUtils {
     }
     return s.replace('.', '/');
   }
-  
-  
+
   /**
    * Compute type description for methods, comprising parameter types and return type.
    *
@@ -83,14 +83,16 @@ public class ASMBackendUtils {
    * @return Method type description
    */
   public static String toTypeDesc(SootMethodRef m) {
-    return toTypeDesc(m.parameterTypes(),m.returnType());
+    return toTypeDesc(m.parameterTypes(), m.returnType());
   }
 
   /**
    * Compute type description for methods, comprising parameter types and return type.
    * 
-   * @param parameterTypes The parameters for some method
-   * @param returnType The return type for some method
+   * @param parameterTypes
+   *          The parameters for some method
+   * @param returnType
+   *          The return type for some method
    * @return Method type description
    */
   public static String toTypeDesc(List<Type> parameterTypes, Type returnType) {
@@ -115,53 +117,65 @@ public class ASMBackendUtils {
     final StringBuilder sb = new StringBuilder(1);
     type.apply(new TypeSwitch() {
 
+      @Override
       public void defaultCase(Type t) {
         throw new RuntimeException("Invalid type " + t.toString());
       }
 
+      @Override
       public void caseDoubleType(DoubleType t) {
         sb.append('D');
       }
 
+      @Override
       public void caseFloatType(FloatType t) {
         sb.append('F');
       }
 
+      @Override
       public void caseIntType(IntType t) {
         sb.append('I');
       }
 
+      @Override
       public void caseByteType(ByteType t) {
         sb.append('B');
       }
 
+      @Override
       public void caseShortType(ShortType t) {
         sb.append('S');
       }
 
+      @Override
       public void caseCharType(CharType t) {
         sb.append('C');
       }
 
+      @Override
       public void caseBooleanType(BooleanType t) {
         sb.append('Z');
       }
 
+      @Override
       public void caseLongType(LongType t) {
         sb.append('J');
       }
 
+      @Override
       public void caseArrayType(ArrayType t) {
         sb.append('[');
         t.getElementType().apply(this);
       }
 
+      @Override
       public void caseRefType(RefType t) {
         sb.append('L');
         sb.append(slashify(t.getClassName()));
         sb.append(';');
       }
 
+      @Override
       public void caseVoidType(VoidType t) {
         sb.append('V');
       }
@@ -177,21 +191,22 @@ public class ASMBackendUtils {
    * @return Default value or <code>null</code> if there is no default value.
    */
   public static Object getDefaultValue(SootField field) {
-    if (field.hasTag("StringConstantValueTag")) {
-      /*
-       * Default value for string may only be returned if the field is of type String or a sub-type.
-       */
-      if (acceptsStringInitialValue(field)) {
-        return ((StringConstantValueTag) field.getTag("StringConstantValueTag")).getStringValue();
+    for (Tag t : field.getTags()) {
+      switch (t.getName()) {
+        case IntegerConstantValueTag.NAME:
+          return ((IntegerConstantValueTag) t).getIntValue();
+        case LongConstantValueTag.NAME:
+          return ((LongConstantValueTag) t).getLongValue();
+        case FloatConstantValueTag.NAME:
+          return ((FloatConstantValueTag) t).getFloatValue();
+        case DoubleConstantValueTag.NAME:
+          return ((DoubleConstantValueTag) t).getDoubleValue();
+        case StringConstantValueTag.NAME:
+          // Default value for string may only be returned if the field is of type String or a sub-type.
+          if (acceptsStringInitialValue(field)) {
+            return ((StringConstantValueTag) t).getStringValue();
+          }
       }
-    } else if (field.hasTag("IntegerConstantValueTag")) {
-      return ((IntegerConstantValueTag) field.getTag("IntegerConstantValueTag")).getIntValue();
-    } else if (field.hasTag("LongConstantValueTag")) {
-      return ((LongConstantValueTag) field.getTag("LongConstantValueTag")).getLongValue();
-    } else if (field.hasTag("FloatConstantValueTag")) {
-      return ((FloatConstantValueTag) field.getTag("FloatConstantValueTag")).getFloatValue();
-    } else if (field.hasTag("DoubleConstantValueTag")) {
-      return ((DoubleConstantValueTag) field.getTag("DoubleConstantValueTag")).getDoubleValue();
     }
     return null;
   }

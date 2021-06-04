@@ -26,7 +26,6 @@ package soot.baf;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -134,6 +133,7 @@ import soot.jimple.ThisRef;
 import soot.jimple.internal.IdentityRefBox;
 
 public class Baf {
+
   public Baf(Singletons.Global g) {
   }
 
@@ -143,16 +143,15 @@ public class Baf {
 
   public static Type getDescriptorTypeOf(Type opType) {
     if (opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType) {
-      opType = RefType.v();
+      return RefType.v();
+    } else {
+      return opType;
     }
-
-    return opType;
   }
 
   /**
    * Constructs a Local with the given name and type.
    */
-
   public Local newLocal(String name, Type t) {
     return new BafLocal(name, t);
   }
@@ -160,7 +159,6 @@ public class Baf {
   /**
    * Constructs a new BTrap for the given exception on the given Unit range with the given Unit handler.
    */
-
   public Trap newTrap(SootClass exception, Unit beginUnit, Unit endUnit, Unit handlerUnit) {
     return new BTrap(exception, beginUnit, endUnit, handlerUnit);
   }
@@ -168,7 +166,6 @@ public class Baf {
   /**
    * Constructs a ExitMonitorInst() grammar chunk
    */
-
   public ExitMonitorInst newExitMonitorInst() {
     return new BExitMonitorInst();
   }
@@ -176,7 +173,6 @@ public class Baf {
   /**
    * Constructs a EnterMonitorInst() grammar chunk.
    */
-
   public EnterMonitorInst newEnterMonitorInst() {
     return new BEnterMonitorInst();
   }
@@ -224,7 +220,6 @@ public class Baf {
   /**
    * Constructs a ThisRef(RefType) grammar chunk.
    */
-
   public ThisRef newThisRef(RefType t) {
     return new ThisRef(t);
   }
@@ -232,7 +227,6 @@ public class Baf {
   /**
    * Constructs a ParameterRef(SootMethod, int) grammar chunk.
    */
-
   public ParameterRef newParameterRef(Type paramType, int number) {
     return new ParameterRef(paramType, number);
   }
@@ -482,74 +476,90 @@ public class Baf {
     return new BIncInst(aLocal, aConstant);
   }
 
-  public LookupSwitchInst newLookupSwitchInst(Unit defaultTarget, List<IntConstant> lookupValues, List targets) {
+  public LookupSwitchInst newLookupSwitchInst(Unit defaultTarget, List<IntConstant> lookupValues,
+      List<? extends Unit> targets) {
     return new BLookupSwitchInst(defaultTarget, lookupValues, targets);
   }
 
-  public TableSwitchInst newTableSwitchInst(Unit defaultTarget, int lowIndex, int highIndex, List targets) {
+  public TableSwitchInst newTableSwitchInst(Unit defaultTarget, int lowIndex, int highIndex, List<? extends Unit> targets) {
     return new BTableSwitchInst(defaultTarget, lowIndex, highIndex, targets);
   }
 
   public static String bafDescriptorOf(Type type) {
-    TypeSwitch sw;
-
-    type.apply(sw = new TypeSwitch() {
+    TypeSwitch<String> sw = new TypeSwitch<String>() {
+      @Override
       public void caseBooleanType(BooleanType t) {
         setResult("b");
       }
 
+      @Override
       public void caseByteType(ByteType t) {
         setResult("b");
       }
 
+      @Override
       public void caseCharType(CharType t) {
         setResult("c");
       }
 
+      @Override
       public void caseDoubleType(DoubleType t) {
         setResult("d");
       }
 
+      @Override
       public void caseFloatType(FloatType t) {
         setResult("f");
       }
 
+      @Override
       public void caseIntType(IntType t) {
         setResult("i");
       }
 
+      @Override
       public void caseLongType(LongType t) {
         setResult("l");
       }
 
+      @Override
       public void caseShortType(ShortType t) {
         setResult("s");
       }
 
-      public void defaultCase(Type t) {
-        throw new RuntimeException("Invalid type: " + t);
-      }
-
+      @Override
       public void caseRefType(RefType t) {
         setResult("r");
       }
 
-    });
+      @Override
+      public void defaultCase(Type t) {
+        throw new RuntimeException("Invalid type: " + t);
+      }
+    };
 
-    return (String) sw.getResult();
+    type.apply(sw);
+
+    return sw.getResult();
   }
 
-  /** Returns an empty BafBody associated with method m. */
+  /**
+   * Returns an empty BafBody associated with method m.
+   */
   public BafBody newBody(SootMethod m) {
     return new BafBody(m);
   }
 
-  /** Returns a BafBody constructed from b. */
+  /**
+   * Returns a BafBody constructed from b.
+   */
   public BafBody newBody(JimpleBody b) {
     return new BafBody(b, Collections.<String, String>emptyMap());
   }
 
-  /** Returns a BafBody constructed from b. */
+  /**
+   * Returns a BafBody constructed from b.
+   */
   public BafBody newBody(JimpleBody b, String phase) {
     Map<String, String> options = PhaseOptions.v().getPhaseOptions(phase);
     return new BafBody(b, options);

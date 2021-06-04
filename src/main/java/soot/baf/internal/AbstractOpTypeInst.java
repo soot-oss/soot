@@ -23,22 +23,16 @@ package soot.baf.internal;
  */
 
 import soot.AbstractJasminClass;
-import soot.ArrayType;
-import soot.NullType;
-import soot.RefType;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.baf.Baf;
 
 public abstract class AbstractOpTypeInst extends AbstractInst {
+
   protected Type opType;
 
   protected AbstractOpTypeInst(Type opType) {
-    if (opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType) {
-      opType = RefType.v();
-    }
-
-    this.opType = opType;
+    setOpType(opType);
   }
 
   public Type getOpType() {
@@ -46,17 +40,16 @@ public abstract class AbstractOpTypeInst extends AbstractInst {
   }
 
   public void setOpType(Type t) {
-    opType = t;
-    if (opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType) {
-      opType = RefType.v();
-    }
+    this.opType = Baf.getDescriptorTypeOf(t);
   }
 
   /* override AbstractInst's toString with our own, including types */
+  @Override
   public String toString() {
     return getName() + "." + Baf.bafDescriptorOf(opType) + getParameters();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(getName());
     up.literal(".");
@@ -64,8 +57,8 @@ public abstract class AbstractOpTypeInst extends AbstractInst {
     getParameters(up);
   }
 
+  @Override
   public int getOutMachineCount() {
     return AbstractJasminClass.sizeOfType(getOpType());
   }
-
 }

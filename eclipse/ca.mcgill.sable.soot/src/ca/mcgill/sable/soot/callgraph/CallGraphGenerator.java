@@ -242,7 +242,7 @@ public class CallGraphGenerator {
 		
 		try{
 			IEditorPart part = page.openEditor(new FileEditorInput((IFile)fileToOpen), org.eclipse.jdt.ui.JavaUI.ID_CU_EDITOR);
-			SourceLnPosTag methTag = (SourceLnPosTag)meth.getTag("SourceLnPosTag");
+			SourceLnPosTag methTag = (SourceLnPosTag)meth.getTag(SourceLnPosTag.NAME);
 			if (methTag != null){
 				
 				int selOffset = ((AbstractTextEditor)part).getDocumentProvider().getDocument(part.getEditorInput()).getLineOffset(methTag.startLn()-1);

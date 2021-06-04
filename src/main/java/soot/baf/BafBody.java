@@ -40,20 +40,81 @@ import soot.Trap;
 import soot.Type;
 import soot.Unit;
 import soot.UnitBox;
-import soot.UnknownType;
 import soot.baf.internal.BafLocal;
 import soot.jimple.ConvertToBaf;
 import soot.jimple.JimpleBody;
 import soot.jimple.JimpleToBafContext;
-import soot.jimple.Stmt;
 import soot.options.Options;
 
 public class BafBody extends Body {
   private static final Logger logger = LoggerFactory.getLogger(BafBody.class);
-  private JimpleToBafContext jimpleToBafContext;
+
+  private final JimpleToBafContext jimpleToBafContext;
+
+  public BafBody(JimpleBody jimpleBody, Map<String, String> options) {
+    super(jimpleBody.getMethod());
+
+    if (Options.v().verbose()) {
+      logger.debug("[" + getMethod().getName() + "] Constructing BafBody...");
+    }
+
+    JimpleToBafContext context = new JimpleToBafContext(jimpleBody.getLocalCount());
+    this.jimpleToBafContext = context;
+    // Convert all locals
+    for (Local l : jimpleBody.getLocals()) {
+      Type t = l.getType();
+      t = (DoubleType.v().equals(t) || LongType.v().equals(t)) ? DoubleWordType.v() : WordType.v();
+
+      BafLocal newLocal = (BafLocal) Baf.v().newLocal(l.getName(), t);
+      context.setBafLocalOfJimpleLocal(l, newLocal);
+
+      // We cannot use the context for the purpose of saving the old Jimple locals, because
+      // some transformers in the bb-pack, which is called at the end of the method
+      // copy the locals, thus invalidating the information in a map.
+      newLocal.setOriginalLocal(l);
+      getLocals().add(newLocal);
+    }
+    assert (getLocals().size() == jimpleBody.getLocalCount());
+
+    Map<Unit, Unit> origToFirstConverted = new HashMap<Unit, Unit>();
+
+    // Convert all jimple instructions
+    for (Unit u : jimpleBody.getUnits()) {
+      List<Unit> conversionList = new ArrayList<Unit>();
+
+      context.setCurrentUnit(u);
+      ((ConvertToBaf) u).convertToBaf(context, conversionList);
+
+      origToFirstConverted.put(u, conversionList.get(0));
+      getUnits().addAll(conversionList);
+    }
+
+    // Change all place holders
+    for (UnitBox box : getAllUnitBoxes()) {
+      Unit unit = box.getUnit();
+      if (unit instanceof PlaceholderInst) {
+        Unit source = ((PlaceholderInst) unit).getSource();
+        box.setUnit(origToFirstConverted.get(source));
+      }
+    }
+
+    // Convert all traps
+    for (Trap trap : jimpleBody.getTraps()) {
+      getTraps().add(Baf.v().newTrap(trap.getException(), origToFirstConverted.get(trap.getBeginUnit()),
+          origToFirstConverted.get(trap.getEndUnit()), origToFirstConverted.get(trap.getHandlerUnit())));
+    }
+
+    PackManager.v().getPack("bb").apply(this);
+  }
+
+  // clone constructor
+  BafBody(SootMethod m) {
+    super(m);
+    this.jimpleToBafContext = null;
+  }
 
   public JimpleToBafContext getContext() {
-    return jimpleToBafContext;
+    return this.jimpleToBafContext;
   }
 
   @Override
@@ -61,79 +122,5 @@ public class BafBody extends Body {
     Body b = new BafBody(getMethod());
     b.importBodyContentsFrom(this);
     return b;
-  }
-
-  BafBody(SootMethod m) {
-    super(m);
-  }
-
-  public BafBody(JimpleBody body, Map<String, String> options) {
-    super(body.getMethod());
-
-    if (Options.v().verbose()) {
-      logger.debug("[" + getMethod().getName() + "] Constructing BafBody...");
-    }
-
-    JimpleBody jimpleBody = (JimpleBody) body;
-
-    JimpleToBafContext context = new JimpleToBafContext(jimpleBody.getLocalCount());
-    this.jimpleToBafContext = context;
-    // Convert all locals
-    {
-      for (Local l : jimpleBody.getLocals()) {
-        Type t = l.getType();
-        Local newLocal = Baf.v().newLocal(l.getName(), UnknownType.v());
-
-        if (t.equals(DoubleType.v()) || t.equals(LongType.v())) {
-          newLocal.setType(DoubleWordType.v());
-        } else {
-          newLocal.setType(WordType.v());
-        }
-
-        context.setBafLocalOfJimpleLocal(l, newLocal);
-
-        // We cannot use the context for the purpose of saving the old Jimple locals, because
-        // some transformers in the bb-pack, which is called at the end of the method
-        // copy the locals, thus invalidating the information in a map.
-        ((BafLocal) newLocal).setOriginalLocal(l);
-        getLocals().add(newLocal);
-      }
-    }
-
-    Map<Stmt, Unit> stmtToFirstInstruction = new HashMap<Stmt, Unit>();
-
-    // Convert all jimple instructions
-    {
-      for (Unit u : jimpleBody.getUnits()) {
-        Stmt s = (Stmt) u;
-        List<Unit> conversionList = new ArrayList<Unit>();
-
-        context.setCurrentUnit(s);
-        ((ConvertToBaf) s).convertToBaf(context, conversionList);
-
-        stmtToFirstInstruction.put(s, conversionList.get(0));
-        getUnits().addAll(conversionList);
-      }
-    }
-
-    // Change all place holders
-    {
-      for (UnitBox box : getAllUnitBoxes()) {
-        if (box.getUnit() instanceof PlaceholderInst) {
-          Unit source = ((PlaceholderInst) box.getUnit()).getSource();
-          box.setUnit(stmtToFirstInstruction.get(source));
-        }
-      }
-    }
-
-    // Convert all traps
-    {
-      for (Trap trap : jimpleBody.getTraps()) {
-        getTraps().add(Baf.v().newTrap(trap.getException(), stmtToFirstInstruction.get(trap.getBeginUnit()),
-            stmtToFirstInstruction.get(trap.getEndUnit()), stmtToFirstInstruction.get(trap.getHandlerUnit())));
-      }
-    }
-
-    PackManager.v().getPack("bb").apply(this);
   }
 }

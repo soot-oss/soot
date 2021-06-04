@@ -26,10 +26,11 @@ package soot.jimple.toolkits.annotation.tags;
  * Implementation of the Tag interface for array bounds checks.
  */
 public class ArrayCheckTag implements OneByteCodeTag {
-  private final static String NAME = "ArrayCheckTag";
 
-  private boolean lowerCheck = true;
-  private boolean upperCheck = true;
+  public static final String NAME = "ArrayCheckTag";
+
+  private final boolean lowerCheck;
+  private final boolean upperCheck;
 
   /**
    * A tag represents two bounds checks of an array reference. The value 'true' indicates check needed.
@@ -42,20 +43,16 @@ public class ArrayCheckTag implements OneByteCodeTag {
   /**
    * Returns back the check information in binary form, which will be written into the class file.
    */
+  @Override
   public byte[] getValue() {
-    byte[] value = new byte[1];
-
-    value[0] = 0;
-
+    byte b = 0;
     if (lowerCheck) {
-      value[0] |= 0x01;
+      b |= 0x01;
     }
-
     if (upperCheck) {
-      value[0] |= 0x02;
+      b |= 0x02;
     }
-
-    return value;
+    return new byte[] { b };
   }
 
   /**
@@ -72,10 +69,12 @@ public class ArrayCheckTag implements OneByteCodeTag {
     return lowerCheck;
   }
 
+  @Override
   public String getName() {
     return NAME;
   }
 
+  @Override
   public String toString() {
     return (lowerCheck ? "[potentially unsafe lower bound]" : "[safe lower bound]") + ""
         + (upperCheck ? "[potentially unsafe upper bound]" : "[safe upper bound]");

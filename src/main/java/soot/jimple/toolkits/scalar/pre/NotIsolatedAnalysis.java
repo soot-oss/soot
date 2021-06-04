@@ -36,16 +36,17 @@ import soot.toolkits.scalar.FlowSet;
 /**
  * Performs a Not-Isolated-analysis on the given graph, which is basically the same as an Isolated-analysis (we just return
  * the complement, as it's easier to calculate it). A computation is isolated, if it can only be used at the current
- * computation-point. In other words: if the result of the computation will not be used later on the computation is
- * isolated.<br>
+ * computation-point. In other words: if the result of the computation will not be used later on the computation is isolated.
+ * <br>
  * The Latest-analysis helps us in finding isolated computations, as they show us points, where a precedent computation can't
  * be used anymore. In completely other words: we search the interval "latest"-"computation". a computation in this interval
  * would not be isolated.
  */
 public class NotIsolatedAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<EquivalentValue>> {
-  private LatestComputation unitToLatest;
-  private Map<Unit, EquivalentValue> unitToGen;
-  private FlowSet<EquivalentValue> set;
+
+  private final LatestComputation unitToLatest;
+  private final Map<Unit, EquivalentValue> unitToGen;
+  private final FlowSet<EquivalentValue> set;
 
   /**
    * Automatically performs the Isolation-analysis on the graph <code>dg</code> using the Latest-computation
@@ -83,8 +84,8 @@ public class NotIsolatedAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equi
       BoundedFlowSet<EquivalentValue> set) {
     super(dg);
     this.set = set;
-    unitToGen = equivRhsMap;
-    unitToLatest = latest;
+    this.unitToGen = equivRhsMap;
+    this.unitToLatest = latest;
     doAnalysis();
   }
 

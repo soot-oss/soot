@@ -64,4 +64,34 @@ public class ChunkedQueue<E> {
     return new QueueReader<E>((E[]) q, index);
   }
 
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("[");
+    boolean isFirst = true;
+
+    int idx = index;
+    Object[] curArray = q;
+    while (idx < curArray.length) {
+      Object curObj = curArray[idx];
+      if (curObj == null) {
+        break;
+      }
+      if (isFirst) {
+        isFirst = false;
+      } else {
+        sb.append(", ");
+      }
+      if (curObj instanceof Object[]) {
+        curArray = (Object[]) curObj;
+        idx = 0;
+      } else {
+        sb.append(curObj.toString());
+        idx++;
+      }
+    }
+    sb.append("]");
+    return sb.toString();
+  }
+
 }

@@ -44,15 +44,15 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
  * every path from START to the given program-point.
  */
 public class UpSafetyAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<EquivalentValue>> {
-  private SideEffectTester sideEffect;
 
-  private Map<Unit, EquivalentValue> unitToGenerateMap;
-
-  private BoundedFlowSet<EquivalentValue> set;
+  private final SideEffectTester sideEffect;
+  private final Map<Unit, EquivalentValue> unitToGenerateMap;
+  private final BoundedFlowSet<EquivalentValue> set;
 
   /**
    * This constructor should not be used, and will throw a runtime-exception!
    */
+  @Deprecated
   public UpSafetyAnalysis(DirectedGraph<Unit> dg) {
     /* we have to add super(dg). otherwise Javac complains. */
     super(dg);
@@ -118,23 +118,22 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equivale
       out.add(add, out);
     }
 
-    { /* Perform kill */
-      // iterate over things (avail) in out set.
-      for (Iterator<EquivalentValue> outIt = out.iterator(); outIt.hasNext();) {
-        EquivalentValue equiVal = outIt.next();
-        Value avail = equiVal.getValue();
-        if (avail instanceof FieldRef) {
-          if (sideEffect.unitCanWriteTo(u, avail)) {
+    /* Perform kill */
+    // iterate over things (avail) in out set.
+    for (Iterator<EquivalentValue> outIt = out.iterator(); outIt.hasNext();) {
+      EquivalentValue equiVal = outIt.next();
+      Value avail = equiVal.getValue();
+      if (avail instanceof FieldRef) {
+        if (sideEffect.unitCanWriteTo(u, avail)) {
+          outIt.remove();
+        }
+      } else {
+        // iterate over uses in each avail.
+        for (ValueBox useBox : avail.getUseBoxes()) {
+          Value use = useBox.getValue();
+          if (sideEffect.unitCanWriteTo(u, use)) {
             outIt.remove();
-          }
-        } else {
-          // iterate over uses in each avail.
-          for (ValueBox useBox : avail.getUseBoxes()) {
-            Value use = useBox.getValue();
-            if (sideEffect.unitCanWriteTo(u, use)) {
-              outIt.remove();
-              break;
-            }
+            break;
           }
         }
       }

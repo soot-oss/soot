@@ -30,10 +30,11 @@ import soot.DoubleType;
 import soot.FloatType;
 import soot.G;
 import soot.Singletons;
+import soot.Type;
 import soot.Unit;
+import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
-import soot.jimple.Constant;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
@@ -43,7 +44,6 @@ import soot.jimple.IntConstant;
  * transformed to a = 42f;
  *
  * @author Steven Arzt
- *
  */
 public class ConstantCastEliminator extends BodyTransformer {
 
@@ -60,23 +60,22 @@ public class ConstantCastEliminator extends BodyTransformer {
     for (Unit u : b.getUnits()) {
       if (u instanceof AssignStmt) {
         AssignStmt assign = (AssignStmt) u;
-        if (assign.getRightOp() instanceof CastExpr) {
-          CastExpr ce = (CastExpr) assign.getRightOp();
-          if (ce.getOp() instanceof Constant) {
-            // a = (float) 42
-            if (ce.getType() instanceof FloatType && ce.getOp() instanceof IntConstant) {
-              IntConstant it = (IntConstant) ce.getOp();
-              assign.setRightOp(FloatConstant.v(it.value));
-            }
-            // a = (double) 42
-            else if (ce.getType() instanceof DoubleType && ce.getOp() instanceof IntConstant) {
-              IntConstant it = (IntConstant) ce.getOp();
-              assign.setRightOp(DoubleConstant.v(it.value));
+        Value rightOp = assign.getRightOp();
+        if (rightOp instanceof CastExpr) {
+          CastExpr ce = (CastExpr) rightOp;
+          Value castOp = ce.getOp();
+          if (castOp instanceof IntConstant) {
+            Type castType = ce.getType();
+            if (castType instanceof FloatType) {
+              // a = (float) 42
+              assign.setRightOp(FloatConstant.v(((IntConstant) castOp).value));
+            } else if (castType instanceof DoubleType) {
+              // a = (double) 42
+              assign.setRightOp(DoubleConstant.v(((IntConstant) castOp).value));
             }
           }
         }
       }
     }
   }
-
 }

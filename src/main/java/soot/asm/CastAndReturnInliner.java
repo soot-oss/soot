@@ -24,7 +24,6 @@ package soot.asm;
 
 import java.util.Iterator;
 import java.util.Map;
-
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Trap;

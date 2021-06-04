@@ -40,6 +40,7 @@ import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
+import soot.dexpler.tags.ObjectOpTag;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -129,7 +130,7 @@ public class DexIfTransformer extends AbstractNullTransformer {
               } else if (r instanceof ArrayRef) {
                 ArrayRef ar = (ArrayRef) r;
                 if (ar.getType() instanceof UnknownType) {
-                  usedAsObject = stmt.hasTag("ObjectOpTag"); // isObject
+                  usedAsObject = stmt.hasTag(ObjectOpTag.NAME); // isObject
                   // (findArrayType
                   // (g,
                   // localDefs,
@@ -274,7 +275,7 @@ public class DexIfTransformer extends AbstractNullTransformer {
                   } else if (l instanceof ArrayRef) {
                     Type aType = ((ArrayRef) l).getType();
                     if (aType instanceof UnknownType) {
-                      usedAsObject = stmt.hasTag("ObjectOpTag"); // isObject(
+                      usedAsObject = stmt.hasTag(ObjectOpTag.NAME); // isObject(
                       // findArrayType(g,
                       // localDefs,
                       // localUses,

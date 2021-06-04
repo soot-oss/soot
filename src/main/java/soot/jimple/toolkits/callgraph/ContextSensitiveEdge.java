@@ -34,6 +34,7 @@ import soot.jimple.Stmt;
  * @author Ondrej Lhotak
  */
 public interface ContextSensitiveEdge {
+
   /**
    * The context at the source of the call.
    */
@@ -58,12 +59,14 @@ public interface ContextSensitiveEdge {
    */
   public Context tgtCtxt();
 
-  /** The target method of the call edge. */
+  /**
+   * The target method of the call edge.
+   */
   public SootMethod tgt();
 
   /**
    * The kind of edge. Note: kind should not be tested by other classes; instead, accessors such as isExplicit() should be
    * added.
-   **/
+   */
   public Kind kind();
 }

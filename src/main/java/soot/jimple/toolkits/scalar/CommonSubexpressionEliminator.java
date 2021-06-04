@@ -24,7 +24,6 @@ package soot.jimple.toolkits.scalar;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,7 +45,6 @@ import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.NaiveSideEffectTester;
-import soot.jimple.Stmt;
 import soot.jimple.toolkits.pointer.PASideEffectTester;
 import soot.options.Options;
 import soot.tagkit.StringTag;
@@ -62,7 +60,6 @@ import soot.util.Chain;
  * It is also slow because the flow universe is explicitly created; it need not be. A better implementation would implicitly
  * compute the kill sets at every node.
  */
-
 public class CommonSubexpressionEliminator extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(CommonSubexpressionEliminator.class);
 
@@ -74,17 +71,17 @@ public class CommonSubexpressionEliminator extends BodyTransformer {
   }
 
   /** Common subexpression eliminator. */
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    int counter = 0;
+    final Chain<Local> locals = b.getLocals();
 
     // Sigh. check for name collisions.
-    Iterator<Local> localsIt = b.getLocals().iterator();
-    Set<String> localNames = new HashSet<String>(b.getLocals().size());
-    while (localsIt.hasNext()) {
-      localNames.add((localsIt.next()).getName());
+    Set<String> localNames = new HashSet<String>(locals.size());
+    for (Local loc : locals) {
+      localNames.add(loc.getName());
     }
 
-    SideEffectTester sideEffect;
+    final SideEffectTester sideEffect;
     if (Scene.v().hasCallGraph() && !PhaseOptions.getBoolean(options, "naive-side-effect")) {
       sideEffect = new PASideEffectTester();
     } else {
@@ -100,51 +97,41 @@ public class CommonSubexpressionEliminator extends BodyTransformer {
     AvailableExpressions ae = // new SlowAvailableExpressions(b);
         new FastAvailableExpressions(b, sideEffect);
 
-    Chain<Unit> units = b.getUnits();
-    Iterator<Unit> unitsIt = units.snapshotIterator();
-    while (unitsIt.hasNext()) {
-      Stmt s = (Stmt) unitsIt.next();
-
-      if (s instanceof AssignStmt) {
-        Chain availExprs = ae.getAvailableEquivsBefore(s);
+    int counter = 0;
+    final Chain<Unit> units = b.getUnits();
+    for (Iterator<Unit> unitsIt = units.snapshotIterator(); unitsIt.hasNext();) {
+      Unit u = unitsIt.next();
+      if (u instanceof AssignStmt) {
         // logger.debug("availExprs: "+availExprs);
-        Value v = ((AssignStmt) s).getRightOp();
+        Value v = ((AssignStmt) u).getRightOp();
         EquivalentValue ev = new EquivalentValue(v);
 
-        if (availExprs.contains(ev)) {
+        if (ae.getAvailableEquivsBefore(u).contains(ev)) {
           // now we need to track down the containing stmt.
-          List availPairs = ae.getAvailablePairsBefore(s);
-          // logger.debug("availPairs: "+availPairs);
-          Iterator availIt = availPairs.iterator();
-          while (availIt.hasNext()) {
-            UnitValueBoxPair up = (UnitValueBoxPair) availIt.next();
+          for (UnitValueBoxPair up : ae.getAvailablePairsBefore(u)) {
             if (up.getValueBox().getValue().equivTo(v)) {
               // create a local for temp storage.
               // (we could check to see that the def must-reach, I guess...)
-              String newName = "$cseTmp" + counter;
-              counter++;
-
-              while (localNames.contains(newName)) {
+              String newName;
+              do {
                 newName = "$cseTmp" + counter;
                 counter++;
-              }
+              } while (localNames.contains(newName));
 
               Local l = Jimple.v().newLocal(newName, Type.toMachineType(v.getType()));
-
-              b.getLocals().add(l);
+              locals.add(l);
 
               // I hope it's always an AssignStmt -- Jimple should guarantee this.
               AssignStmt origCalc = (AssignStmt) up.getUnit();
-              Value origLHS = origCalc.getLeftOp();
+              Unit copier = Jimple.v().newAssignStmt(origCalc.getLeftOp(), l);
 
               origCalc.setLeftOp(l);
 
-              Unit copier = Jimple.v().newAssignStmt(origLHS, l);
               units.insertAfter(copier, origCalc);
 
-              ((AssignStmt) s).setRightOp(l);
+              ((AssignStmt) u).setRightOp(l);
               copier.addTag(new StringTag("Common sub-expression"));
-              s.addTag(new StringTag("Common sub-expression"));
+              u.addTag(new StringTag("Common sub-expression"));
               // logger.debug("added tag to : "+copier);
               // logger.debug("added tag to : "+s);
             }

@@ -22,8 +22,6 @@ package soot;
  * #L%
  */
 
-import java.util.Iterator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,18 +38,18 @@ public class BodyPack extends Pack {
     super(name);
   }
 
+  @Override
   protected void internalApply(Body b) {
-    for (Iterator<Transform> tIt = this.iterator(); tIt.hasNext();) {
-      final Transform t = tIt.next();
-      if (Options.v().interactive_mode()) {
+    final boolean interactive_mode = Options.v().interactive_mode();
+    for (Transform t : this) {
+      if (interactive_mode) {
         // logger.debug("sending transform: "+t.getPhaseName()+" for body: "+b+" for body pack: "+this.getPhaseName());
         InteractionHandler.v().handleNewAnalysis(t, b);
       }
       t.apply(b);
-      if (Options.v().interactive_mode()) {
+      if (interactive_mode) {
         InteractionHandler.v().handleTransformDone(t, b);
       }
     }
   }
-
 }
