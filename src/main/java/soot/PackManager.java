@@ -948,7 +948,7 @@ public class PackManager {
         }
       }
 
-      if (!m.isConcrete() || !m.hasActiveBody()) {
+      if (!m.isConcrete()) {
         continue;
       }
 
@@ -958,6 +958,8 @@ public class PackManager {
         // whole shimple or not?
         {
           Body body = m.retrieveActiveBody();
+          if (!m.hasActiveBody())
+              continue;
           if (body instanceof ShimpleBody) {
             sBody = (ShimpleBody) body;
             if (!sBody.isSSA()) {
