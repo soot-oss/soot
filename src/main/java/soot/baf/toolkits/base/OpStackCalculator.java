@@ -129,6 +129,9 @@ import soot.toolkits.graph.BriefUnitGraph;
 import soot.util.Chain;
 
 /**
+ * Emulates the operation of the JVM stack to compute the expected types of the objects on the stack at each {@link Unit} in
+ * a {@link BafBody}.
+ * 
  * @author Michael Batchelder
  * @author Timothy Hoffman
  */
@@ -138,7 +141,9 @@ public class OpStackCalculator {
   private static class StackEffectSwitch implements InstSwitch {
 
     public boolean shouldThrow = true;
+    // Types popped from the stack by the instruction
     public Type[] remove_types = null;
+    // Types pushed to the stack by the instruction
     public Type[] add_types = null;
 
     private static RefLikeType arrayRefType() {
@@ -480,19 +485,19 @@ public class OpStackCalculator {
 
     @Override
     public void caseShlInst(ShlInst i) {
-      remove_types = new Type[] { i.getOpType(), i.getOpType() };
+      remove_types = new Type[] { i.getOpType(), IntType.v() };
       add_types = new Type[] { i.getOpType() };
     }
 
     @Override
     public void caseShrInst(ShrInst i) {
-      remove_types = new Type[] { i.getOpType(), i.getOpType() };
+      remove_types = new Type[] { i.getOpType(), IntType.v() };
       add_types = new Type[] { i.getOpType() };
     }
 
     @Override
     public void caseUshrInst(UshrInst i) {
-      remove_types = new Type[] { i.getOpType(), i.getOpType() };
+      remove_types = new Type[] { i.getOpType(), IntType.v() };
       add_types = new Type[] { i.getOpType() };
     }
 
@@ -622,8 +627,12 @@ public class OpStackCalculator {
     }
   }
 
+  /**
+   * @param b
+   * @return {@link Map} of each {@link Unit} to the VM operand stack types prior to executing the {@link Unit}
+   */
   protected static Map<Unit, Stack<Type>> calculateStacks(BafBody b) {
-    Map<Unit, Stack<Type>> results = new IdentityHashMap<Unit, Stack<Type>>();
+    Map<Unit, Stack<Type>> results = new IdentityHashMap<>();
 
     final StackEffectSwitch sw = new StackEffectSwitch();
     final BriefUnitGraph bug = new BriefUnitGraph(b);
@@ -631,12 +640,12 @@ public class OpStackCalculator {
       RefType handlerExc = isHandlerUnit(b.getTraps(), h);
       Stack<Type> stack = results.get(h);
       if (stack == null) {
-        stack = new Stack<Type>();
+        stack = new Stack<>();
         if (handlerExc != null) {
           stack.push(handlerExc);
         }
         results.put(h, stack);
-        List<Unit> worklist = new ArrayList<Unit>();
+        List<Unit> worklist = new ArrayList<>();
         worklist.add(h);
         while (!worklist.isEmpty()) {
           Inst inst = (Inst) worklist.remove(0);
@@ -674,11 +683,12 @@ public class OpStackCalculator {
     @SuppressWarnings("unchecked")
     Stack<Type> clone = (Stack<Type>) st.clone();
 
-    if (sw.remove_types != null) {
-      if (sw.remove_types.length > clone.size()) {
+    final Type[] remove_types = sw.remove_types;
+    if (remove_types != null) {
+      if (remove_types.length > clone.size()) {
         StringBuilder exc = new StringBuilder();
         exc.append("Expecting values on stack: ");
-        for (Type element : sw.remove_types) {
+        for (Type element : remove_types) {
           String type = element.toString();
           if (type.trim().isEmpty()) {
             type = element instanceof RefLikeType ? "L" : "U";
@@ -700,12 +710,10 @@ public class OpStackCalculator {
           logger.debug(exc.toString());
         }
       }
-      for (int i = sw.remove_types.length - 1; i >= 0; i--) {
+      for (int i = remove_types.length - 1; i >= 0; i--) {
         try {
           Type t = clone.pop();
-//          if (!checkTypes(t, sw.remove_types[i])) {
-//            System.out.println("Incompatible types: " + t + " : " + sw.remove_types[i]);
-//          }
+          assert (typesAreCompatible(t, remove_types[i])); // ensure consistency
         } catch (Exception exc) {
           return null;
         }
@@ -720,28 +728,28 @@ public class OpStackCalculator {
 
     return clone;
   }
-//
-//  private static boolean checkTypes(Type t1, Type t2) {
-//    if (t1 == t2) {
-//      return true;
-//    }
-//    if (t1 instanceof RefLikeType && t2 instanceof RefLikeType) {
-//      return true;
-//    }
-//    if (t1 instanceof IntegerType && t2 instanceof IntegerType) {
-//      return true;
-//    }
-//    if (t1 instanceof LongType && t2 instanceof LongType) {
-//      return true;
-//    }
-//    if (t1 instanceof DoubleType && t2 instanceof DoubleType) {
-//      return true;
-//    }
-//    if (t1 instanceof FloatType && t2 instanceof FloatType) {
-//      return true;
-//    }
-//    return false;
-//  }
+
+  private static boolean typesAreCompatible(Type t1, Type t2) {
+    if (t1 == t2) {
+      return true;
+    }
+    if (t1 instanceof RefLikeType && t2 instanceof RefLikeType) {
+      return true;
+    }
+    if (t1 instanceof IntegerType && t2 instanceof IntegerType) {
+      return true;
+    }
+    if (t1 instanceof LongType && t2 instanceof LongType) {
+      return true;
+    }
+    if (t1 instanceof DoubleType && t2 instanceof DoubleType) {
+      return true;
+    }
+    if (t1 instanceof FloatType && t2 instanceof FloatType) {
+      return true;
+    }
+    return false;
+  }
 
   private static RefType isHandlerUnit(Chain<Trap> traps, Unit h) {
     for (Trap t : traps) {
@@ -756,7 +764,7 @@ public class OpStackCalculator {
     try {
       sw.shouldThrow = false;
 
-      Map<Unit, Integer> indexes = new HashMap<Unit, Integer>();
+      Map<Unit, Integer> indexes = new HashMap<>();
       {
         int count = 0;
         for (Iterator<Unit> it = units.snapshotIterator(); it.hasNext();) {
@@ -765,23 +773,27 @@ public class OpStackCalculator {
       }
       for (Iterator<Unit> it = units.snapshotIterator(); it.hasNext();) {
         Unit unit = it.next();
-        String s = "";
-        if (unit instanceof TargetArgInst) {
-          Unit t = ((TargetArgInst) unit).getTarget();
-          s = indexes.get(t).toString();
-        } else if (unit instanceof TableSwitchInst) {
-          TableSwitchInst tswi = (TableSwitchInst) unit;
-          s += "\r\tdefault: " + tswi.getDefaultTarget() + "  " + indexes.get(tswi.getDefaultTarget());
-          int index = 0;
-          for (int x = tswi.getLowIndex(), e = tswi.getHighIndex(); x <= e; x++) {
-            s += "\r\t " + x + ": " + tswi.getTarget(index) + "  " + indexes.get(tswi.getTarget(index++));
-          }
-        }
+        StringBuilder s = new StringBuilder();
+
         try {
-          s = indexes.get(unit) + " " + unit + "  " + s + "   [";
+          s.append(indexes.get(unit)).append(' ').append(unit).append("  ");
         } catch (Exception e) {
           logger.debug("Error in OpStackCalculator trying to find index of unit");
         }
+
+        if (unit instanceof TargetArgInst) {
+          s.append(indexes.get(((TargetArgInst) unit).getTarget()));
+        } else if (unit instanceof TableSwitchInst) {
+          TableSwitchInst tswi = (TableSwitchInst) unit;
+          s.append("\r\tdefault: ").append(tswi.getDefaultTarget());
+          s.append("  ").append(indexes.get(tswi.getDefaultTarget()));
+          int index = 0;
+          for (int x = tswi.getLowIndex(), e = tswi.getHighIndex(); x <= e; x++) {
+            s.append("\r\t ").append(x).append(": ").append(tswi.getTarget(index));
+            s.append("  ").append(indexes.get(tswi.getTarget(index++)));
+          }
+        }
+        s.append("   [");
         Stack<Type> stack = stacks.get(unit);
         if (stack != null) {
           unit.apply(sw);
@@ -791,12 +803,13 @@ public class OpStackCalculator {
             return;
           }
           for (int i = 0, e = stack.size(); i < e; i++) {
-            s += printType(stack.get(i));
+            s.append(printType(stack.get(i)));
           }
         } else {
-          s += "***missing***";
+          s.append("***missing***");
         }
-        System.out.println(s + "]");
+        s.append(']');
+        System.out.println(s);
       }
     } finally {
       sw.shouldThrow = true;
@@ -819,10 +832,10 @@ public class OpStackCalculator {
     }
   }
 
-  public static void printUnits(PatchingChain<Unit> u, String msg) {
+  private static void printUnits(PatchingChain<Unit> u, String msg) {
     System.out.println("\r\r***********  " + msg);
 
-    HashMap<Unit, Integer> numbers = new HashMap<Unit, Integer>();
+    HashMap<Unit, Integer> numbers = new HashMap<>();
     {
       int i = 0;
       for (Iterator<Unit> it = u.snapshotIterator(); it.hasNext();) {
@@ -832,29 +845,25 @@ public class OpStackCalculator {
     for (Iterator<Unit> udit = u.snapshotIterator(); udit.hasNext();) {
       final Unit unit = udit.next();
       final Integer numb = numbers.get(unit);
-      if (numb == 149) {
-        System.out.println("hi");
-      }
-
       if (unit instanceof TargetArgInst) {
         TargetArgInst ti = (TargetArgInst) unit;
         if (ti.getTarget() == null) {
           System.out.println(unit + " null null null null null null null null null");
           continue;
         }
-        System.out.println(numb.toString() + " " + unit + "   #" + numbers.get(ti.getTarget()).toString());
+        System.out.println(numb + " " + unit + "   #" + numbers.get(ti.getTarget()));
         continue;
       } else if (unit instanceof TableSwitchInst) {
         TableSwitchInst tswi = (TableSwitchInst) unit;
-        System.out.println(numb.toString() + " SWITCH:");
-        System.out.println("\tdefault: " + tswi.getDefaultTarget() + "  " + numbers.get(tswi.getDefaultTarget()).toString());
+        System.out.println(numb + " SWITCH:");
+        System.out.println("\tdefault: " + tswi.getDefaultTarget() + "  " + numbers.get(tswi.getDefaultTarget()));
         int idx = 0;
         for (int x = tswi.getLowIndex(), e = tswi.getHighIndex(); x <= e; x++) {
-          System.out.println("\t " + x + ": " + tswi.getTarget(idx) + "  " + numbers.get(tswi.getTarget(idx++)).toString());
+          System.out.println("\t " + x + ": " + tswi.getTarget(idx) + "  " + numbers.get(tswi.getTarget(idx++)));
         }
         continue;
       }
-      System.out.println(numb.toString() + " " + unit);
+      System.out.println(numb + " " + unit);
     }
   }
 
