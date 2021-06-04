@@ -660,7 +660,7 @@ public class PackManager {
       threadNum = Runtime.getRuntime().availableProcessors();
     }
     CountingThreadPoolExecutor executor =
-        new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+            new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     while (classes.hasNext()) {
       final SootClass c = classes.next();
@@ -696,9 +696,9 @@ public class PackManager {
     // concurrently. Otherwise, we need to synchronize for not destroying
     // the shared output stream.
     int threadNum = Options.v().output_format() == Options.output_format_class && jarFile == null
-        ? Runtime.getRuntime().availableProcessors() : 1;
+            ? Runtime.getRuntime().availableProcessors() : 1;
     CountingThreadPoolExecutor executor =
-        new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+            new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     while (classes.hasNext()) {
       final SootClass c = classes.next();
@@ -748,7 +748,7 @@ public class PackManager {
   /* post process for DAVA */
   private void postProcessDAVA() {
     final boolean transformations =
-        PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("db.transformations"), "enabled");
+            PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("db.transformations"), "enabled");
 
     /*
      * apply analyses etc
@@ -944,7 +944,7 @@ public class PackManager {
       if (DEBUG) {
         if (!m.getExceptions().isEmpty()) {
           System.out.println("PackManager printing out jimple body exceptions for method " + m.toString() + " "
-              + m.getExceptions().toString());
+                  + m.getExceptions().toString());
         }
       }
 
@@ -958,11 +958,13 @@ public class PackManager {
         // whole shimple or not?
         {
           Body body = m.retrieveActiveBody();
-          if (body != null && body instanceof ShimpleBody) {
+          if (body instanceof ShimpleBody) {
             sBody = (ShimpleBody) body;
             if (!sBody.isSSA()) {
               sBody.rebuild();
             }
+          } else {
+            sBody = Shimple.v().newBody(body);
           }
         }
 
@@ -991,7 +993,6 @@ public class PackManager {
         getPack("jop").apply(body);
         getPack("jap").apply(body);
         if (tc != null) {
-          // System.out.println("collecting body tags");
           tc.collectBodyTags(body);
         }
       }
@@ -1007,12 +1008,12 @@ public class PackManager {
 
     if (tc != null) {
       processXMLForClass(c, tc);
-      // System.out.println("processed xml for class");
     }
 
     if (produceDava) {
       for (SootMethod m : c.getMethods()) {
         if (!m.isConcrete() || !m.hasActiveBody()) {
+          //note: abnormal class can have a concrete method without body.
           continue;
         }
         // all the work done in decompilation is done in DavaBody which
@@ -1233,7 +1234,7 @@ public class PackManager {
     // The old coffi front-end is not thread-safe
     int threadNum = Options.v().coffi() ? 1 : Runtime.getRuntime().availableProcessors();
     CountingThreadPoolExecutor executor =
-        new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+            new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     for (Iterator<SootClass> clIt = reachableClasses(); clIt.hasNext();) {
       SootClass cl = clIt.next();
