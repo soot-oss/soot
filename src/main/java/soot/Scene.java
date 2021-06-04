@@ -1800,6 +1800,10 @@ public class Scene {
             classNames.add(signatureToClass(target));
           } else if (kind.equals("Field.set*") || kind.equals("Field.get*")) {
             classNames.add(signatureToClass(target));
+          } else if (kind.equals("Array.newInstance")) {
+            // do nothing
+          } else if (kind.equals("Method.getModifiers") || kind.equals("Method.getName")) {
+            classNames.add(signatureToClass(target));
           } else {
             throw new RuntimeException("Unknown entry kind: " + kind);
           }
