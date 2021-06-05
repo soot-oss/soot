@@ -2207,6 +2207,37 @@ final class AsmMethodSource implements MethodSource {
     emitTraps();
     emitUnits();
 
+    // When preserving original names, use the local variable table for guidance.
+    // The LocalVariableTable from the input bytecode may contain two weird cases
+    // which can cause the loss of original local names, or worse, the appearance
+    // of the '#' character in local names in the output LocalVariableTable (some
+    // JVM implementations will give an error when trying to execute a method
+    // whose LocalVariableTable contains names with the '#' character).
+    // 1. When the LocalVariableTable associates different names with the same
+    // local variable index at different points in the method body, the
+    // "locals" Map would end up preserving only one of those names as the
+    // designated local name for that index. This leaves it up to the
+    // SharedInitializationLocalSplitter and LocalSplitter to then split that
+    // single Local back into distinct Locals, but at that time, information
+    // about the other original name(s) has been ignored (and the
+    // LocalVariableTable which contains that information is no longer
+    // available) so the best it can do is append "#x" (where x is a unique
+    // integer) to the end of the current name. In the end, those locals may
+    // be combined back into a single Local by the LocalPacker using
+    // whichever name was originally chosen by the "locals" Map here. In the
+    // worst case however, the LocalPacker cannot combine them back into a
+    // single Local (see the "Icky fix" in LocalPacker) and ends up keeping
+    // the '#' character in the Local name which leads to a problem if the
+    // "write-local-annotations" Soot option is also because the names
+    // containing a '#' character will end up in the output bytecode.
+    // 2. When the LocalVariableTable associates different indices with the same
+    // name at the same code location, we end up again with a case where the
+    // LocalPacker cannot remove the '#' character from local names.
+    //
+    // Thus, this block of code checks for these ambiguous cases while the
+    // LocalVariableTable is still available, and assigns a unique name to each
+    // local that is based on the original name from the LocalVariableTable and
+    // does not use the '#' character.
     if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "use-original-names")) {
       // Group LocalVariableNode by index to find any that are associated with
       // different names at different points in the method. For each such
