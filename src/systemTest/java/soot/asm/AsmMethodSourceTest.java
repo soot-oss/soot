@@ -108,7 +108,7 @@ public class AsmMethodSourceTest extends AbstractTestingFramework {
   }
 
   /**
-   *  This is case pahse jb.sils is disabled.
+   *  This is the case phase jb.sils is disabled.
    *  see the case phase jb.sils is enabled in {@link SilsTest#testSilsEnabled()}
    */
   @Test

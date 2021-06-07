@@ -52,7 +52,7 @@ public class SilsTest extends AbstractTestingFramework {
     }
 
     /**
-     *  This is case pahse jb.sils is enabled (default).
+     *  This is the case phase jb.sils is enabled (default).
      *  see the case phase jb.sils is disabled in {@link AsmMethodSourceTest#testSilsDisabled()}
      */
     @Ignore
