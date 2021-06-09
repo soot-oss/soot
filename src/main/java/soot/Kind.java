@@ -128,76 +128,146 @@ public final class Kind implements Numberable {
   }
 
   public boolean passesParameters() {
-    return isExplicit() || this == THREAD || this == EXECUTOR || this == ASYNCTASK || this == FINALIZE || this == PRIVILEGED
-        || this == NEWINSTANCE || this == INVOKE_FINALIZE || this == REFL_INVOKE || this == REFL_CONSTR_NEWINSTANCE
-        || this == REFL_CLASS_NEWINSTANCE;
+    return passesParameters(this);
   }
 
   public boolean isFake() {
-    return this == THREAD || this == EXECUTOR || this == ASYNCTASK || this == PRIVILEGED || this == HANDLER
-        || this == GENERIC_FAKE;
+    return isFake(this);
   }
 
   /**
    * Returns true if the call is due to an explicit invoke statement.
    */
   public boolean isExplicit() {
-    return isInstance() || isStatic();
+    return isExplicit(this);
   }
 
   /**
    * Returns true if the call is due to an explicit instance invoke statement.
    */
   public boolean isInstance() {
-    return this == VIRTUAL || this == INTERFACE || this == SPECIAL;
+    return isInstance(this);
   }
 
   /**
    * Returns true if the call is due to an explicit virtual invoke statement.
    */
   public boolean isVirtual() {
-    return this == VIRTUAL;
+    return isVirtual(this);
   }
 
   public boolean isSpecial() {
-    return this == SPECIAL;
+    return isSpecial(this);
   }
 
   /**
    * Returns true if the call is to static initializer.
    */
   public boolean isClinit() {
-    return this == CLINIT;
+    return isClinit(this);
   }
 
   /**
    * Returns true if the call is due to an explicit static invoke statement.
    */
   public boolean isStatic() {
-    return this == STATIC;
+    return isStatic(this);
   }
 
   public boolean isThread() {
-    return this == THREAD;
+    return isThread(this);
   }
 
   public boolean isExecutor() {
-    return this == EXECUTOR;
+    return isExecutor(this);
   }
 
   public boolean isAsyncTask() {
-    return this == ASYNCTASK;
+    return isAsyncTask(this);
   }
 
   public boolean isPrivileged() {
-    return this == PRIVILEGED;
+    return isPrivileged(this);
   }
 
   public boolean isReflection() {
-    return this == REFL_CLASS_NEWINSTANCE || this == REFL_CONSTR_NEWINSTANCE || this == REFL_INVOKE;
+    return isReflection(this);
   }
 
   public boolean isReflInvoke() {
-    return this == REFL_INVOKE;
+    return isReflInvoke(this);
+  }
+
+  public static boolean passesParameters(Kind k) {
+    return isExplicit(k) || k == THREAD || k == EXECUTOR || k == ASYNCTASK || k == FINALIZE || k == PRIVILEGED
+        || k == NEWINSTANCE || k == INVOKE_FINALIZE || k == REFL_INVOKE || k == REFL_CONSTR_NEWINSTANCE
+        || k == REFL_CLASS_NEWINSTANCE;
+  }
+
+  public static boolean isFake(Kind k) {
+    return k == THREAD || k == EXECUTOR || k == ASYNCTASK || k == PRIVILEGED || k == HANDLER || k == GENERIC_FAKE;
+  }
+
+  /**
+   * Returns true if the call is due to an explicit invoke statement.
+   */
+  public static boolean isExplicit(Kind k) {
+    return isInstance(k) || isStatic(k);
+  }
+
+  /**
+   * Returns true if the call is due to an explicit instance invoke statement.
+   */
+  public static boolean isInstance(Kind k) {
+    return k == VIRTUAL || k == INTERFACE || k == SPECIAL;
+  }
+
+  /**
+   * Returns true if the call is due to an explicit virtual invoke statement.
+   */
+  public static boolean isVirtual(Kind k) {
+    return k == VIRTUAL;
+  }
+
+  public static boolean isSpecial(Kind k) {
+    return k == SPECIAL;
+  }
+
+  /**
+   * Returns true if the call is to static initializer.
+   */
+  public static boolean isClinit(Kind k) {
+    return k == CLINIT;
+  }
+
+  /**
+   * Returns true if the call is due to an explicit static invoke statement.
+   */
+  public static boolean isStatic(Kind k) {
+    return k == STATIC;
+  }
+
+  public static boolean isThread(Kind k) {
+    return k == THREAD;
+  }
+
+  public static boolean isExecutor(Kind k) {
+    return k == EXECUTOR;
+  }
+
+  public static boolean isAsyncTask(Kind k) {
+    return k == ASYNCTASK;
+  }
+
+  public static boolean isPrivileged(Kind k) {
+    return k == PRIVILEGED;
+  }
+
+  public static boolean isReflection(Kind k) {
+    return k == REFL_CLASS_NEWINSTANCE || k == REFL_CONSTR_NEWINSTANCE || k == REFL_INVOKE;
+  }
+
+  public static boolean isReflInvoke(Kind k) {
+    return k == REFL_INVOKE;
   }
 }
