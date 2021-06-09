@@ -60,6 +60,8 @@ public class AntTask extends MatchingTask {
   
         private Path process_dir = null;
   
+        private Path process_jar_dir = null;
+  
         private Path dump_body = null;
   
         private Path dump_cfg = null;
@@ -81,6 +83,8 @@ public class AntTask extends MatchingTask {
         if( phase_help != null ) addPath("-phase-help", phase_help);
   
         if( process_dir != null ) addPath("-process-dir", process_dir);
+  
+        if( process_jar_dir != null ) addPath("-process-jar-dir", process_jar_dir);
   
         if( dump_body != null ) addPath("-dump-body", dump_body);
   
@@ -226,6 +230,18 @@ public class AntTask extends MatchingTask {
             if(process_dir == null )
                 process_dir = new Path(getProject());
             return process_dir.createPath();
+        }
+  
+        public void setprocess_jar_dir(Path arg) {
+            if(process_jar_dir == null )
+                process_jar_dir = new Path(getProject());
+            process_jar_dir = appendToPath(process_jar_dir, arg);
+        }
+
+        public Path createprocess_jar_dir() {
+            if(process_jar_dir == null )
+                process_jar_dir = new Path(getProject());
+            return process_jar_dir.createPath();
         }
   
         public void setderive_java_version(boolean arg) {

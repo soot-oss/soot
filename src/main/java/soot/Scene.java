@@ -329,8 +329,22 @@ public class Scene {
       } else if (Options.v().prepend_classpath()) {
         cp += File.pathSeparatorChar + defaultClassPath();
       }
+      List<String> dirs = new LinkedList<String>();
+      dirs.addAll(Options.v().process_dir());
+      // Add process-jar-dirs
+      List<String> jarDirs = Options.v().process_jar_dir();
+      if (!jarDirs.isEmpty()) {
+        for (String jarDirName : jarDirs) {
+          File jarDir = new File(jarDirName);
+          File[] contents = jarDir.listFiles();
+          for (File f : contents) {
+            if (f.getAbsolutePath().endsWith(".jar")) {
+              dirs.add(f.getAbsolutePath());
+            }
+          }
+        }
+      }
       // Add process-dirs (if applicable)
-      List<String> dirs = Options.v().process_dir();
       if (!dirs.isEmpty()) {
         StringBuilder pds = new StringBuilder();
         for (String path : dirs) {

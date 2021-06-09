@@ -1218,6 +1218,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionsprocess_dir_widget().getAlias(), stringRes);
 		}
+		stringRes = getInput_Optionsprocess_jar_dir_widget().getText().getText();
+		defStringRes = "";
+
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionsprocess_jar_dir_widget().getAlias(), stringRes);
+		}
 		stringRes = getInput_Optionsandroid_jars_widget().getText().getText();
 		defStringRes = "";
 
@@ -4874,6 +4880,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public ListOptionWidget getInput_Optionsprocess_dir_widget() {
 		return Input_Optionsprocess_dir_widget;
+	}	
+	
+	
+
+	private ListOptionWidget Input_Optionsprocess_jar_dir_widget;
+	
+	private void setInput_Optionsprocess_jar_dir_widget(ListOptionWidget widget) {
+		Input_Optionsprocess_jar_dir_widget = widget;
+	}
+	
+	public ListOptionWidget getInput_Optionsprocess_jar_dir_widget() {
+		return Input_Optionsprocess_jar_dir_widget;
 	}	
 	
 	
@@ -8989,6 +9007,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setInput_Optionsprocess_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-path process-dir", "\nAdd all classes found in DIR to the set of argument classes \nwhich is analyzed and transformed by Soot. You can specify the \noption more than once, to add argument classes from multiple \ndirectories. You can also state JAR files. If subdirectories of \nDIR contain .class or .jimple files, Soot assumes that the \nsubdirectory names correspond to components of the classes' \npackage names. If DIR contains subA/subB/MyClass.class, for \ninstance, then Soot assumes MyClass is in package subA.subB.", defaultString)));
+		
+
+		defKey = ""+" "+""+" "+"process-jar-dir";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getArrayDef(defKey);	
+		} else {
+			defaultString = "";
+		}
+
+		setInput_Optionsprocess_jar_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-jar-dir", "\nAdd all classes found in JAR files found in DIR to the set of \nargument classes which is analyzed and transformed by Soot. You \ncan specify the option more than once, to add argument classes \nfrom multiple directories.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"cp soot-class-path soot-classpath";
