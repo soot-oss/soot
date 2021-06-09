@@ -631,7 +631,7 @@ public class OpStackCalculator {
    * @param b
    * @return {@link Map} of each {@link Unit} to the VM operand stack types prior to executing the {@link Unit}
    */
-  protected static Map<Unit, Stack<Type>> calculateStacks(BafBody b) {
+  public static Map<Unit, Stack<Type>> calculateStacks(BafBody b) {
     Map<Unit, Stack<Type>> results = new IdentityHashMap<>();
 
     final StackEffectSwitch sw = new StackEffectSwitch();
