@@ -1879,21 +1879,27 @@ public class Scene {
   }
 
   public boolean isExcluded(SootClass sc) {
-    String name = sc.getName();
+    return isExcluded(sc.getName());
+  }
+
+  public boolean isExcluded(String className) {
     for (String pkg : excludedPackages) {
-      if (name.equals(pkg)
-          || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && name.startsWith(pkg.substring(0, pkg.length() - 1)))) {
-        return !isIncluded(sc);
+      if (className.equals(pkg)
+          || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && className.startsWith(pkg.substring(0, pkg.length() - 1)))) {
+        return !isIncluded(className);
       }
     }
     return false;
   }
 
   public boolean isIncluded(SootClass sc) {
-    String name = sc.getName();
-    for (String inc : Options.v().include()) {
-      if (name.equals(inc)
-          || ((inc.endsWith(".*") || inc.endsWith("$*")) && name.startsWith(inc.substring(0, inc.length() - 1)))) {
+    return isIncluded(sc.getName());
+  }
+
+  public boolean isIncluded(String className) {
+    for (String pkg : Options.v().include()) {
+      if (className.equals(pkg)
+          || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && className.startsWith(pkg.substring(0, pkg.length() - 1)))) {
         return true;
       }
     }
