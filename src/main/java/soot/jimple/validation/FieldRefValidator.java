@@ -54,8 +54,8 @@ public enum FieldRefValidator implements BodyValidator {
       return;
     }
 
-    for (Unit unit : body.getUnits().getNonPatchingChain()) {
-      Stmt s = (Stmt) unit;
+    for (Unit u : body.getUnits().getNonPatchingChain()) {
+      Stmt s = (Stmt) u;
       if (!s.containsFieldRef()) {
         continue;
       }
@@ -66,13 +66,12 @@ public enum FieldRefValidator implements BodyValidator {
         try {
           SootField field = v.getField();
           if (field == null) {
-            exceptions.add(new UnitValidationException(unit, body, "Resolved field is null: " + fr.toString()));
+            exceptions.add(new UnitValidationException(u, body, "Resolved field is null: " + fr.toString()));
           } else if (!field.isStatic() && !field.isPhantom()) {
-            exceptions
-                .add(new UnitValidationException(unit, body, "Trying to get a static field which is non-static: " + v));
+            exceptions.add(new UnitValidationException(u, body, "Used StaticFieldRef for a non-static field: " + v));
           }
         } catch (ResolutionFailedException e) {
-          exceptions.add(new UnitValidationException(unit, body, "Trying to get a static field which is non-static: " + v));
+          exceptions.add(new UnitValidationException(u, body, "Unable to resolve FieldRef " + v + ": " + e.getMessage()));
         }
       } else if (fr instanceof InstanceFieldRef) {
         InstanceFieldRef v = (InstanceFieldRef) fr;
@@ -80,12 +79,12 @@ public enum FieldRefValidator implements BodyValidator {
         try {
           SootField field = v.getField();
           if (field == null) {
-            exceptions.add(new UnitValidationException(unit, body, "Resolved field is null: " + fr.toString()));
+            exceptions.add(new UnitValidationException(u, body, "Resolved field is null: " + fr.toString()));
           } else if (field.isStatic() && !field.isPhantom()) {
-            exceptions.add(new UnitValidationException(unit, body, "Trying to get an instance field which is static: " + v));
+            exceptions.add(new UnitValidationException(u, body, "Used InstanceFieldRef for a static field: " + v));
           }
         } catch (ResolutionFailedException e) {
-          exceptions.add(new UnitValidationException(unit, body, "Trying to get an instance field which is static: " + v));
+          exceptions.add(new UnitValidationException(u, body, "Unable to resolve FieldRef " + v + ": " + e.getMessage()));
         }
       } else {
         throw new AssertionError("unknown field ref: " + fr);
