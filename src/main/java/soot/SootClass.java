@@ -351,6 +351,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * Returns the field of this class with the given subsignature. If such a field does not exist, an exception is thrown.
    */
   public SootField getField(String subsignature) {
+    // NOTE: getFieldUnsafe(String) calls checkLevel(SIGNATURES)
     SootField sf = getFieldUnsafe(subsignature);
     if (sf == null) {
       throw new RuntimeException("No field " + subsignature + " in class " + getName());
@@ -377,7 +378,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * Does this class declare a field with the given subsignature?
    */
   public boolean declaresField(String subsignature) {
-    checkLevel(SIGNATURES);
+    // NOTE: getFieldUnsafe(String) calls checkLevel(SIGNATURES)
     return getFieldUnsafe(subsignature) != null;
   }
 
@@ -386,6 +387,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * exception is thrown.
    */
   public SootMethod getMethod(NumberedString subsignature) {
+    // NOTE: getMethodUnsafe(NumberedString) calls checkLevel(SIGNATURES)
     SootMethod ret = getMethodUnsafe(subsignature);
     if (ret == null) {
       throw new RuntimeException("No method " + subsignature + " in class " + getName());
@@ -407,7 +409,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * Does this class declare a method with the given subsignature?
    */
   public boolean declaresMethod(NumberedString subsignature) {
-    // NOTE: getMethodUnsafe(..) calls checkLevel(SIGNATURES);
+    // NOTE: getMethodUnsafe(NumberedString) calls checkLevel(SIGNATURES)
     return getMethodUnsafe(subsignature) != null;
   }
 
@@ -416,7 +418,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * exception is thrown.
    */
   public SootMethod getMethod(String subsignature) {
-    checkLevel(SIGNATURES);
+    // NOTE: getMethodUnsafe(NumberedString) calls checkLevel(SIGNATURES)
     NumberedString numberedString = Scene.v().getSubSigNumberer().find(subsignature);
     if (numberedString == null) {
       throw new RuntimeException("No method " + subsignature + " in class " + getName());
@@ -429,7 +431,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * null is returned.
    */
   public SootMethod getMethodUnsafe(String subsignature) {
-    checkLevel(SIGNATURES);
+    // NOTE: getMethodUnsafe(NumberedString) calls checkLevel(SIGNATURES)
     NumberedString numberedString = Scene.v().getSubSigNumberer().find(subsignature);
     return numberedString == null ? null : getMethodUnsafe(numberedString);
   }
@@ -438,7 +440,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * Does this class declare a method with the given subsignature?
    */
   public boolean declaresMethod(String subsignature) {
-    checkLevel(SIGNATURES);
+    // NOTE: getMethodUnsafe(NumberedString) calls checkLevel(SIGNATURES)
     NumberedString numberedString = Scene.v().getSubSigNumberer().find(subsignature);
     return numberedString == null ? false : declaresMethod(numberedString);
   }
@@ -530,8 +532,8 @@ public class SootClass extends AbstractHost implements Numberable {
       return sm;
     }
 
-    throw new RuntimeException(
-        "Class " + getName() + " doesn't have method " + name + "(" + parameterTypes + ") : " + returnType);
+    throw new RuntimeException("Class " + getName() + " doesn't have method \""
+        + SootMethod.getSubSignature(name, parameterTypes, returnType) + "\"");
   }
 
   /**
@@ -804,12 +806,14 @@ public class SootClass extends AbstractHost implements Numberable {
    * Add the given class to the list of interfaces which are directly implemented by this class.
    */
   public void addInterface(SootClass interfaceClass) {
-    checkLevel(HIERARCHY);
+    // NOTE: implementsInterface(String) calls checkLevel(HIERARCHY)
     if (implementsInterface(interfaceClass.getName())) {
-      throw new RuntimeException("duplicate interface: " + interfaceClass.getName());
+      throw new RuntimeException("duplicate interface on class " + this.getName() + ": " + interfaceClass.getName());
     }
     if (this.interfaces == null) {
-      this.interfaces = new HashChain<SootClass>();
+      // Use a small initial size to reduce excess memory usage in the HashChain
+      // because classes tend to implement only a small number of interfaces.
+      this.interfaces = new HashChain<>(2);
     }
     this.interfaces.add(interfaceClass);
   }
@@ -818,9 +822,9 @@ public class SootClass extends AbstractHost implements Numberable {
    * Removes the given class from the list of interfaces which are directly implemented by this class.
    */
   public void removeInterface(SootClass interfaceClass) {
-    checkLevel(HIERARCHY);
+    // NOTE: implementsInterface(String) calls checkLevel(HIERARCHY)
     if (!implementsInterface(interfaceClass.getName())) {
-      throw new RuntimeException("no such interface: " + interfaceClass.getName());
+      throw new RuntimeException("no such interface on class " + this.getName() + ": " + interfaceClass.getName());
     }
     interfaces.remove(interfaceClass);
     if (interfaces.isEmpty()) {
