@@ -4,7 +4,7 @@ package soot.toolkits.scalar;
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 2020 Manuel Benz
+ * Copyright (C) 2020 Timothy Hoffman
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
