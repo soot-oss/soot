@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 
 import soot.Body;
 import soot.SootMethod;
@@ -37,6 +38,7 @@ import soot.validation.ValidationException;
 /**
  * @author Timothy Hoffman
  */
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class AsmMethodSourceOrigNamesTest extends AbstractTestingFramework {
 
   @Override
