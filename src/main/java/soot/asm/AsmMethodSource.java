@@ -2261,7 +2261,6 @@ final class AsmMethodSource implements MethodSource {
         for (Map.Entry<Integer, Collection<LocalVariableNode>> e : groups.asMap().entrySet()) {
           Collection<LocalVariableNode> vals = e.getValue();
           if (vals.size() > 1) {
-//            System.out.println("Body of " + m + " before: " + jb);
             final Integer localNum = e.getKey();
             final Local chosen = this.locals.get(localNum);
             final String chosenName = chosen.getName();
@@ -2318,8 +2317,6 @@ final class AsmMethodSource implements MethodSource {
                   Local old = newLocals.put(localNum, name, newLocal);
                   assert (old == null);
                 }
-                // System.out.println("Might replace local '" + chosen + "' with '" + newLocal 
-                // + "' from " + uStart + " to " + uEnd + " in " + m);
                 for (Iterator<Unit> it = jbUnits.iterator(uStart, uEnd); it.hasNext();) {
                   Unit u = it.next();
                   for (ValueBox box : u.getUseAndDefBoxes()) {
@@ -2344,7 +2341,6 @@ final class AsmMethodSource implements MethodSource {
                 r.getKey().setValue(r.getValue());
               }
             }
-//            System.out.println("Body of " + m + " after: " + jb);
           }
         }
       }
