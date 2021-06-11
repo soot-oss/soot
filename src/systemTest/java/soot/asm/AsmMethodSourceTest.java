@@ -27,12 +27,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 
 import soot.Body;
+import soot.Local;
 import soot.SootMethod;
 import soot.Unit;
 import soot.UnitPatchingChain;
@@ -51,6 +54,7 @@ public class AsmMethodSourceTest extends AbstractTestingFramework {
   @Override
   protected void setupSoot() {
     Options.v().setPhaseOption("jb", "use-original-names:true");
+    Options.v().setPhaseOption("jb.sils", "enabled:false");
     Options.v().setPhaseOption("jb.tr", "ignore-nullpointer-dereferences:true");
     Options.v().set_keep_line_number(true);
     Options.v().setPhaseOption("cg.cha", "on");
@@ -71,6 +75,35 @@ public class AsmMethodSourceTest extends AbstractTestingFramework {
 
     assertEquals(31, unit.get().getJavaSourceStartLineNumber());
 
+  }
+
+  @Test
+  public void localNaming() {
+    // This test ensures that local names are preserved in the Jimple code.
+    final String className = "soot.asm.LocalNaming";
+    final String[] params = { "java.lang.String", "java.lang.Integer", "byte[]", "java.lang.StringBuilder" };
+    SootMethod target = prepareTarget(methodSigFromComponents(className, "void", "localNaming", params), className);
+
+    Body body = target.retrieveActiveBody();
+    Set<String> localNames = body.getLocals().stream().map(Local::getName).collect(Collectors.toSet());
+
+    // System.out.println("Body = " + body);
+    // System.out.println("localNames = " + localNames);
+
+    // All expected Local names are present
+    assertTrue(localNames.contains("alpha"));
+    assertTrue(localNames.contains("beta"));
+    assertTrue(localNames.contains("gamma"));
+    assertTrue(localNames.contains("delta"));
+    assertTrue(localNames.contains("epsilon"));
+    assertTrue(localNames.contains("zeta"));
+    assertTrue(localNames.contains("eta"));
+    assertTrue(localNames.contains("theta"));
+    assertTrue(localNames.contains("iota"));
+    assertTrue(localNames.contains("omega"));
+
+    // No Local name contains "$stack"
+    assertTrue(localNames.stream().allMatch(n -> !n.contains("$stack")));
   }
 
   @Test
