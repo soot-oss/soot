@@ -22,7 +22,6 @@ package soot.jimple.toolkits.typing;
  * #L%
  */
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -33,33 +32,26 @@ import org.slf4j.LoggerFactory;
 
 class StronglyConnectedComponents {
   private static final Logger logger = LoggerFactory.getLogger(StronglyConnectedComponents.class);
-  List<TypeVariable> variables;
-  Set<TypeVariable> black;
-  List<TypeVariable> finished;
-
-  List<List<TypeVariable>> forest = new LinkedList<List<TypeVariable>>();
-  List<TypeVariable> current_tree;
-
   private static final boolean DEBUG = false;
+
+  private final Set<TypeVariable> black = new TreeSet<TypeVariable>();
+  private final List<TypeVariable> finished = new LinkedList<TypeVariable>();
+
+  private List<TypeVariable> current_tree;
 
   public static void merge(List<TypeVariable> typeVariableList) throws TypeException {
     new StronglyConnectedComponents(typeVariableList);
   }
 
   private StronglyConnectedComponents(List<TypeVariable> typeVariableList) throws TypeException {
-    variables = typeVariableList;
-
-    black = new TreeSet<TypeVariable>();
-    finished = new LinkedList<TypeVariable>();
-
-    for (TypeVariable var : variables) {
+    for (TypeVariable var : typeVariableList) {
       if (!black.add(var)) {
         dfsg_visit(var);
       }
     }
 
-    black = new TreeSet<TypeVariable>();
-
+    black.clear();
+    List<List<TypeVariable>> forest = new LinkedList<List<TypeVariable>>();
     for (TypeVariable var : finished) {
       if (!black.add(var)) {
         current_tree = new LinkedList<TypeVariable>();
@@ -68,19 +60,12 @@ class StronglyConnectedComponents {
       }
     }
 
-    for (Iterator<List<TypeVariable>> i = forest.iterator(); i.hasNext();) {
-      List<TypeVariable> list = i.next();
+    for (List<TypeVariable> list : forest) {
+      StringBuilder s = DEBUG ? new StringBuilder("scc:\n") : null;
       TypeVariable previous = null;
-      StringBuffer s = null;
-      if (DEBUG) {
-        s = new StringBuffer("scc:\n");
-      }
-
-      for (Iterator<TypeVariable> j = list.iterator(); j.hasNext();) {
-        TypeVariable current = j.next();
-
+      for (TypeVariable current : list) {
         if (DEBUG) {
-          s.append(" " + current + "\n");
+          s.append(' ').append(current).append('\n');
         }
 
         if (previous == null) {
@@ -90,7 +75,7 @@ class StronglyConnectedComponents {
             previous = previous.union(current);
           } catch (TypeException e) {
             if (DEBUG) {
-              logger.debug("" + s);
+              logger.debug(s.toString());
             }
             throw e;
           }
@@ -100,23 +85,17 @@ class StronglyConnectedComponents {
   }
 
   private void dfsg_visit(TypeVariable var) {
-    List<TypeVariable> parents = var.parents();
-
-    for (TypeVariable parent : parents) {
+    for (TypeVariable parent : var.parents()) {
       if (!black.add(parent)) {
         dfsg_visit(parent);
       }
     }
-
     finished.add(0, var);
   }
 
   private void dfsgt_visit(TypeVariable var) {
     current_tree.add(var);
-
-    List<TypeVariable> children = var.children();
-
-    for (TypeVariable child : children) {
+    for (TypeVariable child : var.children()) {
       if (!black.add(child)) {
         dfsgt_visit(child);
       }

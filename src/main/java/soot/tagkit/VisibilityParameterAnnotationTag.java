@@ -94,4 +94,8 @@ public class VisibilityParameterAnnotationTag implements Tag {
   public int getKind() {
     return kind;
   }
+
+  public int getNumParams() {
+    return num_params;
+  }
 }

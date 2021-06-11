@@ -86,6 +86,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite jbjb_dtrChild = jbjb_dtrCreate(getPageContainer());
 		Composite jbjb_eseChild = jbjb_eseCreate(getPageContainer());
 		Composite jbjb_lsChild = jbjb_lsCreate(getPageContainer());
+		Composite jbjb_silsChild = jbjb_silsCreate(getPageContainer());
 		Composite jbjb_aChild = jbjb_aCreate(getPageContainer());
 		Composite jbjb_uleChild = jbjb_uleCreate(getPageContainer());
 		Composite jbjb_trChild = jbjb_trCreate(getPageContainer());
@@ -98,7 +99,9 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite jbjb_neChild = jbjb_neCreate(getPageContainer());
 		Composite jbjb_uceChild = jbjb_uceCreate(getPageContainer());
 		Composite jbjb_ttChild = jbjb_ttCreate(getPageContainer());
+		Composite jbjb_cbfChild = jbjb_cbfCreate(getPageContainer());
 		Composite jjjj_lsChild = jjjj_lsCreate(getPageContainer());
+		Composite jjjj_silsChild = jjjj_silsCreate(getPageContainer());
 		Composite jjjj_aChild = jjjj_aCreate(getPageContainer());
 		Composite jjjj_uleChild = jjjj_uleCreate(getPageContainer());
 		Composite jjjj_trChild = jjjj_trCreate(getPageContainer());
@@ -176,6 +179,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite bbbb_phoChild = bbbb_phoCreate(getPageContainer());
 		Composite bbbb_uleChild = bbbb_uleCreate(getPageContainer());
 		Composite bbbb_lpChild = bbbb_lpCreate(getPageContainer());
+		Composite bbbb_neChild = bbbb_neCreate(getPageContainer());
 		Composite tagtag_lnChild = tagtag_lnCreate(getPageContainer());
 		Composite tagtag_anChild = tagtag_anCreate(getPageContainer());
 		Composite tagtag_depChild = tagtag_depCreate(getPageContainer());
@@ -249,6 +253,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("jb", "jb.ls", getjbjb_lsenabled_widget(), "enabled");
 		getjbjb_lsenabled_widget().getButton().addSelectionListener(this);
 
+		makeNewEnableGroup("jb", "jb.sils");
+		addToEnableGroup("jb", "jb.sils", getjbjb_silsenabled_widget(), "enabled");
+		getjbjb_silsenabled_widget().getButton().addSelectionListener(this);
+
 		makeNewEnableGroup("jb", "jb.a");
 		addToEnableGroup("jb", "jb.a", getjbjb_aenabled_widget(), "enabled");
 		addToEnableGroup("jb", "jb.a", getjbjb_aonly_stack_locals_widget(), "only-stack-locals");
@@ -321,6 +329,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("jb", "jb.tt", getjbjb_ttenabled_widget(), "enabled");
 		getjbjb_ttenabled_widget().getButton().addSelectionListener(this);
 
+		makeNewEnableGroup("jb", "jb.cbf");
+		addToEnableGroup("jb", "jb.cbf", getjbjb_cbfenabled_widget(), "enabled");
+		getjbjb_cbfenabled_widget().getButton().addSelectionListener(this);
+
 		makeNewEnableGroup("jj");
 		addToEnableGroup("jj", getjjenabled_widget(), "enabled");
 		addToEnableGroup("jj", getjjuse_original_names_widget(), "use-original-names");
@@ -330,6 +342,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		makeNewEnableGroup("jj", "jj.ls");
 		addToEnableGroup("jj", "jj.ls", getjjjj_lsenabled_widget(), "enabled");
 		getjjjj_lsenabled_widget().getButton().addSelectionListener(this);
+
+		makeNewEnableGroup("jj", "jj.sils");
+		addToEnableGroup("jj", "jj.sils", getjjjj_silsenabled_widget(), "enabled");
+		getjjjj_silsenabled_widget().getButton().addSelectionListener(this);
 
 		makeNewEnableGroup("jj", "jj.a");
 		addToEnableGroup("jj", "jj.a", getjjjj_aenabled_widget(), "enabled");
@@ -894,6 +910,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		getbbbb_lpenabled_widget().getButton().addSelectionListener(this);
 		getbbbb_lpunsplit_original_locals_widget().getButton().addSelectionListener(this);
 
+		makeNewEnableGroup("bb", "bb.ne");
+		addToEnableGroup("bb", "bb.ne", getbbbb_neenabled_widget(), "enabled");
+		getbbbb_neenabled_widget().getButton().addSelectionListener(this);
+
 		makeNewEnableGroup("bop");
 		addToEnableGroup("bop", getbopenabled_widget(), "enabled");
 		getbopenabled_widget().getButton().addSelectionListener(this);
@@ -1144,6 +1164,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsallow_phantom_elms_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getInput_Optionsallow_cg_errors_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsallow_cg_errors_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getInput_Optionsno_bodies_for_excluded_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -1353,6 +1379,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getProcessing_Optionsplugin_widget().getAlias(), stringRes);
 		}
+		stringRes = getProcessing_Optionsnum_threads_widget().getText().getText();
+		defStringRes = "";
+
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getProcessing_Optionsnum_threads_widget().getAlias(), stringRes);
+		}
 		stringRes = getProcessing_Optionswrong_staticness_widget().getSelectedAlias();
 		defStringRes = "fixstrict";
 
@@ -1424,6 +1456,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_lsenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getjbjb_silsenabled_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_silsenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getjbjb_aenabled_widget().getButton().getSelection();
 		defBoolRes = true;
@@ -1569,6 +1607,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_ttenabled_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getjbjb_cbfenabled_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_cbfenabled_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getjjenabled_widget().getButton().getSelection();
 		defBoolRes = true;
 
@@ -1586,6 +1630,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_lsenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getjjjj_silsenabled_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_silsenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getjjjj_aenabled_widget().getButton().getSelection();
 		defBoolRes = true;
@@ -3081,6 +3131,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_lpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getbbbb_neenabled_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getbbbb_neenabled_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getbopenabled_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -3343,6 +3399,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			subSectParent = jb_jb_ls_branch;
 			
 			
+			SootOption jb_jb_sils_branch = new SootOption("Shared Initialization Local Splitter", "jbjb_sils");
+			subParent.addChild(jb_jb_sils_branch);
+
+
+			
+
+			
+			subSectParent = jb_jb_sils_branch;
+			
+			
 			SootOption jb_jb_a_branch = new SootOption("Jimple Local Aggregator", "jbjb_a");
 			subParent.addChild(jb_jb_a_branch);
 
@@ -3463,6 +3529,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			subSectParent = jb_jb_tt_branch;
 			
 			
+			SootOption jb_jb_cbf_branch = new SootOption("Conditional Branch Folder", "jbjb_cbf");
+			subParent.addChild(jb_jb_cbf_branch);
+
+
+			
+
+			
+			subSectParent = jb_jb_cbf_branch;
+			
+			
 			//Java To Jimple Body Creation
 			SootOption jj_branch = new SootOption("Java To Jimple Body Creation", "jj");
 			parent.addChild(jj_branch);
@@ -3478,6 +3554,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 			
 			subSectParent = jj_jj_ls_branch;
+			
+			
+			SootOption jj_jj_sils_branch = new SootOption("Shared Initialization Local Splitter", "jjjj_sils");
+			subParent.addChild(jj_jj_sils_branch);
+
+
+			
+
+			
+			subSectParent = jj_jj_sils_branch;
 			
 			
 			SootOption jj_jj_a_branch = new SootOption("Jimple Local Aggregator", "jjjj_a");
@@ -4297,6 +4383,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			subSectParent = bb_bb_lp_branch;
 			
 			
+			SootOption bb_bb_ne_branch = new SootOption("Nop Eliminator", "bbbb_ne");
+			subParent.addChild(bb_bb_ne_branch);
+
+
+			
+
+			
+			subSectParent = bb_bb_ne_branch;
+			
+			
 			//Baf Optimization
 			SootOption bop_branch = new SootOption("Baf Optimization", "bop");
 			parent.addChild(bop_branch);
@@ -4709,6 +4805,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return Input_Optionsallow_phantom_elms_widget;
 	}	
 	
+	private BooleanOptionWidget Input_Optionsallow_cg_errors_widget;
+	
+	private void setInput_Optionsallow_cg_errors_widget(BooleanOptionWidget widget) {
+		Input_Optionsallow_cg_errors_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsallow_cg_errors_widget() {
+		return Input_Optionsallow_cg_errors_widget;
+	}	
+	
 	private BooleanOptionWidget Input_Optionsno_bodies_for_excluded_widget;
 	
 	private void setInput_Optionsno_bodies_for_excluded_widget(BooleanOptionWidget widget) {
@@ -5088,6 +5194,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	
 	
+	private StringOptionWidget Processing_Optionsnum_threads_widget;
+	
+	private void setProcessing_Optionsnum_threads_widget(StringOptionWidget widget) {
+		Processing_Optionsnum_threads_widget = widget;
+	}
+	
+	public StringOptionWidget getProcessing_Optionsnum_threads_widget() {
+		return Processing_Optionsnum_threads_widget;
+	}
+	
+	
+	
 	private MultiOptionWidget Processing_Optionswrong_staticness_widget;
 	
 	private void setProcessing_Optionswrong_staticness_widget(MultiOptionWidget widget) {
@@ -5213,6 +5331,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getjbjb_lsenabled_widget() {
 		return jbjb_lsenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_silsenabled_widget;
+	
+	private void setjbjb_silsenabled_widget(BooleanOptionWidget widget) {
+		jbjb_silsenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_silsenabled_widget() {
+		return jbjb_silsenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_aenabled_widget;
@@ -5455,6 +5583,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return jbjb_ttenabled_widget;
 	}	
 	
+	private BooleanOptionWidget jbjb_cbfenabled_widget;
+	
+	private void setjbjb_cbfenabled_widget(BooleanOptionWidget widget) {
+		jbjb_cbfenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_cbfenabled_widget() {
+		return jbjb_cbfenabled_widget;
+	}	
+	
 	private BooleanOptionWidget jjenabled_widget;
 	
 	private void setjjenabled_widget(BooleanOptionWidget widget) {
@@ -5483,6 +5621,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getjjjj_lsenabled_widget() {
 		return jjjj_lsenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_silsenabled_widget;
+	
+	private void setjjjj_silsenabled_widget(BooleanOptionWidget widget) {
+		jjjj_silsenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_silsenabled_widget() {
+		return jjjj_silsenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jjjj_aenabled_widget;
@@ -8051,6 +8199,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return bbbb_lpunsplit_original_locals_widget;
 	}	
 	
+	private BooleanOptionWidget bbbb_neenabled_widget;
+	
+	private void setbbbb_neenabled_widget(BooleanOptionWidget widget) {
+		bbbb_neenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getbbbb_neenabled_widget() {
+		return bbbb_neenabled_widget;
+	}	
+	
 	private BooleanOptionWidget bopenabled_widget;
 	
 	private void setbopenabled_widget(BooleanOptionWidget widget) {
@@ -8714,6 +8872,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setInput_Optionsallow_phantom_elms_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom Elements in Non-Phantom Classes", "", "","allow-phantom-elms", "\nAllow non-phantom classes to contain phantom fields and methods \nwhen allow-phantom-refs is enabled. This can be used to add \nmissing methods and fields to a class that may not exactly match \na similar class used by other classes.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"allow-cg-errors";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setInput_Optionsallow_cg_errors_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Errors during callgraph construction", "", "","allow-cg-errors", "\nAllow the callgraph construction to continue even if there are \nerrors. Errors are logged instead.", defaultBool)));
 
 		defKey = ""+" "+""+" "+"no-bodies-for-excluded";
 		defKey = defKey.trim();
@@ -9454,6 +9623,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		setProcessing_Optionsplugin_widget(new ListOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Plugin Configuration",  "", "","plugin", "\nLoads the plugin configuration FILE and registers all plugins. \nMake sure that the option is specified before you try to pass \noptions to the loaded plugins.", defaultString)));
 		
 
+		defKey = ""+" "+""+" "+"t num-threads";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		} else {
+			defaultString = "";
+		}
+
+		setProcessing_Optionsnum_threads_widget(new StringOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Class transformation parallelism",  "", "","t num-threads", "\nForce Soot to use NUM threads to transform classes in parallel. \nThe default behavior is to use one thread per processor.", defaultString)));
+		
+
 
 		return editGroupProcessing_Options;
 	}
@@ -9664,6 +9845,47 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupjbjb_ls;
+	}
+
+
+
+	private Composite jbjb_silsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjbjb_sils = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjbjb_sils.setLayout(layout);
+	
+	 	editGroupjbjb_sils.setText("Shared Initialization Local Splitter");
+	 	
+		editGroupjbjb_sils.setData("id", "jbjb_sils");
+		
+		String descjbjb_sils = "Splits primitive locals used as different types";	
+		if (descjbjb_sils.length() > 0) {
+			Label descLabeljbjb_sils = new Label(editGroupjbjb_sils, SWT.WRAP);
+			descLabeljbjb_sils.setText(descjbjb_sils);
+		}
+		OptionData [] data;	
+		
+		
+		
+
+		defKey = "p phase-option"+" "+"jb.sils"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setjbjb_silsenabled_widget(new BooleanOptionWidget(editGroupjbjb_sils, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.sils","enabled", "\n", defaultBool)));
+
+
+		return editGroupjbjb_sils;
 	}
 
 
@@ -10292,6 +10514,47 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 
+	private Composite jbjb_cbfCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjbjb_cbf = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjbjb_cbf.setLayout(layout);
+	
+	 	editGroupjbjb_cbf.setText("Conditional Branch Folder");
+	 	
+		editGroupjbjb_cbf.setData("id", "jbjb_cbf");
+		
+		String descjbjb_cbf = "Conditional branch folder";	
+		if (descjbjb_cbf.length() > 0) {
+			Label descLabeljbjb_cbf = new Label(editGroupjbjb_cbf, SWT.WRAP);
+			descLabeljbjb_cbf.setText(descjbjb_cbf);
+		}
+		OptionData [] data;	
+		
+		
+		
+
+		defKey = "p phase-option"+" "+"jb.cbf"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setjbjb_cbfenabled_widget(new BooleanOptionWidget(editGroupjbjb_cbf, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.cbf","enabled", "\n", defaultBool)));
+
+
+		return editGroupjbjb_cbf;
+	}
+
+
+
 	private Composite jjCreate(Composite parent) {
 		String defKey;
 		String defaultString;
@@ -10381,6 +10644,47 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupjjjj_ls;
+	}
+
+
+
+	private Composite jjjj_silsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjjjj_sils = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjjjj_sils.setLayout(layout);
+	
+	 	editGroupjjjj_sils.setText("Shared Initialization Local Splitter");
+	 	
+		editGroupjjjj_sils.setData("id", "jjjj_sils");
+		
+		String descjjjj_sils = "Splits primitive locals used as different types";	
+		if (descjjjj_sils.length() > 0) {
+			Label descLabeljjjj_sils = new Label(editGroupjjjj_sils, SWT.WRAP);
+			descLabeljjjj_sils.setText(descjjjj_sils);
+		}
+		OptionData [] data;	
+		
+		
+		
+
+		defKey = "p phase-option"+" "+"jj.sils"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setjjjj_silsenabled_widget(new BooleanOptionWidget(editGroupjjjj_sils, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.sils","enabled", "\n", defaultBool)));
+
+
+		return editGroupjjjj_sils;
 	}
 
 
@@ -16446,6 +16750,47 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupbbbb_lp;
+	}
+
+
+
+	private Composite bbbb_neCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupbbbb_ne = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupbbbb_ne.setLayout(layout);
+	
+	 	editGroupbbbb_ne.setText("Nop Eliminator");
+	 	
+		editGroupbbbb_ne.setData("id", "bbbb_ne");
+		
+		String descbbbb_ne = "Nop eliminator";	
+		if (descbbbb_ne.length() > 0) {
+			Label descLabelbbbb_ne = new Label(editGroupbbbb_ne, SWT.WRAP);
+			descLabelbbbb_ne.setText(descbbbb_ne);
+		}
+		OptionData [] data;	
+		
+		
+		
+
+		defKey = "p phase-option"+" "+"bb.ne"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setbbbb_neenabled_widget(new BooleanOptionWidget(editGroupbbbb_ne, SWT.NONE, new OptionData("Enabled", "p phase-option", "bb.ne","enabled", "\n", defaultBool)));
+
+
+		return editGroupbbbb_ne;
 	}
 
 

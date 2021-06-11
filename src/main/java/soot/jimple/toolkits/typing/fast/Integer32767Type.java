@@ -42,10 +42,12 @@ public class Integer32767Type extends PrimType implements IntegerType {
   public Integer32767Type(Singletons.Global g) {
   }
 
+  @Override
   public String toString() {
     return "[0..32767]";
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }

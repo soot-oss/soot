@@ -29,24 +29,28 @@ import soot.jimple.RemExpr;
 import soot.util.Switch;
 
 public class GRemExpr extends AbstractGrimpFloatBinopExpr implements RemExpr {
+
   public GRemExpr(Value op1, Value op2) {
     super(op1, op2);
   }
 
+  @Override
   public final String getSymbol() {
     return " % ";
   }
 
+  @Override
   public final int getPrecedence() {
     return 800;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseRemExpr(this);
   }
 
+  @Override
   public Object clone() {
     return new GRemExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
   }
-
 }

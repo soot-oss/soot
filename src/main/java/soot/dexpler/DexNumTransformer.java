@@ -41,6 +41,8 @@ import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
+import soot.dexpler.tags.DoubleOpTag;
+import soot.dexpler.tags.FloatOpTag;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -151,7 +153,6 @@ public class DexNumTransformer extends DexTransformer {
               usedAsFloatingPoint = false;
               doBreak = true;
             }
-
           }
 
           @Override
@@ -218,7 +219,7 @@ public class DexNumTransformer extends DexTransformer {
                 doBreak = true;
                 return;
               } else if (r instanceof CastExpr) {
-                usedAsFloatingPoint = stmt.hasTag("FloatOpTag") || stmt.hasTag("DoubleOpTag");
+                usedAsFloatingPoint = stmt.hasTag(FloatOpTag.NAME) || stmt.hasTag(DoubleOpTag.NAME);
                 doBreak = true;
                 return;
               } else if (r instanceof Local && r == l) {
@@ -240,7 +241,6 @@ public class DexNumTransformer extends DexTransformer {
                   return;
                 }
               }
-
             }
 
             @Override
@@ -267,15 +267,11 @@ public class DexNumTransformer extends DexTransformer {
           replaceWithFloatingPoint(u);
         }
       } // end if
-
     }
   }
 
   protected boolean examineBinopExpr(Unit u) {
-    if (u.hasTag("FloatOpTag") || u.hasTag("DoubleOpTag")) {
-      return true;
-    }
-    return false;
+    return u.hasTag(FloatOpTag.NAME) || u.hasTag(DoubleOpTag.NAME);
   }
 
   private boolean isFloatingPointLike(Type t) {
@@ -325,7 +321,5 @@ public class DexNumTransformer extends DexTransformer {
         s.setRightOp(DoubleConstant.v(Double.longBitsToDouble(vVal)));
       }
     }
-
   }
-
 }

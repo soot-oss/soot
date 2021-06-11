@@ -282,6 +282,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-allow-phantom-elms");
         }
   
+        public void setallow_cg_errors(boolean arg) {
+            if(arg) addArg("-allow-cg-errors");
+        }
+  
         public void setno_bodies_for_excluded(boolean arg) {
             if(arg) addArg("-no-bodies-for-excluded");
         }
@@ -740,6 +744,21 @@ public class AntTask extends MatchingTask {
       
         }
     
+        public Object createp_jb_sils() {
+            Object ret = new PhaseOptjb_sils();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjb_sils {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jb.sils");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
         public Object createp_jb_a() {
             Object ret = new PhaseOptjb_a();
             phaseopts.add(ret);
@@ -992,6 +1011,21 @@ public class AntTask extends MatchingTask {
       
         }
     
+        public Object createp_jb_cbf() {
+            Object ret = new PhaseOptjb_cbf();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjb_cbf {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jb.cbf");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
         public Object createp_jj() {
             Object ret = new PhaseOptjj();
             phaseopts.add(ret);
@@ -1023,6 +1057,21 @@ public class AntTask extends MatchingTask {
           public void setenabled(boolean arg) {
             addArg("-p");
             addArg("jj.ls");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_jj_sils() {
+            Object ret = new PhaseOptjj_sils();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjj_sils {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jj.sils");
             addArg("enabled:"+(arg?"true":"false"));
           }
       
@@ -3256,6 +3305,21 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("bb.lp");
             addArg("unsplit-original-locals:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_bb_ne() {
+            Object ret = new PhaseOptbb_ne();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptbb_ne {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("bb.ne");
+            addArg("enabled:"+(arg?"true":"false"));
           }
       
         }

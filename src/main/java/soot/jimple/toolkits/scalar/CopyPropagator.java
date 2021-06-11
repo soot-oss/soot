@@ -291,13 +291,13 @@ public class CopyPropagator extends BodyTransformer {
   private static boolean copyLineTags(ValueBox useBox, Host host) {
     boolean res = false;
 
-    Tag tag = host.getTag(SourceLnPosTag.IDENTIFIER);
+    Tag tag = host.getTag(SourceLnPosTag.NAME);
     if (tag != null) {
       useBox.addTag(tag);
       res = true;
     }
 
-    tag = host.getTag(LineNumberTag.IDENTIFIER);
+    tag = host.getTag(LineNumberTag.NAME);
     if (tag != null) {
       useBox.addTag(tag);
       res = true;

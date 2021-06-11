@@ -38,20 +38,20 @@ import soot.jimple.Stmt;
 
 public class TypePromotionUseVisitor implements IUseVisitor {
   private static final Logger logger = LoggerFactory.getLogger(TypePromotionUseVisitor.class);
-  private JimpleBody jb;
-  private Typing tg;
-
-  public boolean fail;
-  public boolean typingChanged;
 
   private final ByteType byteType = ByteType.v();
   private final Integer32767Type integer32767Type = Integer32767Type.v();
   private final Integer127Type integer127Type = Integer127Type.v();
 
+  private final JimpleBody jb;
+  private final Typing tg;
+
+  public boolean fail;
+  public boolean typingChanged;
+
   public TypePromotionUseVisitor(JimpleBody jb, Typing tg) {
     this.jb = jb;
     this.tg = tg;
-
     this.fail = false;
     this.typingChanged = false;
   }

@@ -56,5 +56,12 @@ interface ITypeSwitch extends soot.util.Switch {
 
   void caseErroneousType(ErroneousType t);
 
+  void defaultCase(Type t);
+
+  /**
+   * @deprecated Replaced by defaultCase(Type)
+   * @see #defaultCase(Type)
+   */
+  @Deprecated
   void caseDefault(Type t);
 }

@@ -29,6 +29,7 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class ShortType extends PrimType implements IntegerType {
+
   public ShortType(Singletons.Global g) {
   }
 
@@ -36,18 +37,22 @@ public class ShortType extends PrimType implements IntegerType {
     return G.v().soot_ShortType();
   }
 
+  @Override
   public int hashCode() {
     return 0x8B817DD3;
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public String toString() {
     return "short";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseShortType(this);
   }

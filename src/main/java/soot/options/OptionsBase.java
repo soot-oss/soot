@@ -23,11 +23,9 @@ package soot.options;
  */
 
 import java.util.Deque;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
-import soot.HasPhaseOptions;
 import soot.Pack;
 import soot.PackManager;
 import soot.PhaseOptions;
@@ -41,36 +39,39 @@ import soot.plugins.internal.PluginLoader;
  */
 abstract class OptionsBase {
 
+  private final Deque<String> options = new LinkedList<>();
+  protected LinkedList<String> classes = new LinkedList<String>();
+
   private String pad(int initial, String opts, int tab, String desc) {
-    StringBuffer b = new StringBuffer();
+    StringBuilder b = new StringBuilder();
     for (int i = 0; i < initial; i++) {
-      b.append(" ");
+      b.append(' ');
     }
     b.append(opts);
     int i;
     if (tab <= opts.length()) {
-      b.append("\n");
+      b.append('\n');
       i = 0;
     } else {
       i = opts.length() + initial;
     }
     for (; i <= tab; i++) {
-      b.append(" ");
+      b.append(' ');
     }
     for (StringTokenizer t = new StringTokenizer(desc); t.hasMoreTokens();) {
       String s = t.nextToken();
       if (i + s.length() > 78) {
-        b.append("\n");
+        b.append('\n');
         i = 0;
         for (; i <= tab; i++) {
-          b.append(" ");
+          b.append(' ');
         }
       }
       b.append(s);
-      b.append(" ");
+      b.append(' ');
       i += s.length() + 1;
     }
-    b.append("\n");
+    b.append('\n');
     return b.toString();
   }
 
@@ -83,19 +84,16 @@ abstract class OptionsBase {
   }
 
   protected String getPhaseUsage() {
-    StringBuffer b = new StringBuffer();
+    StringBuilder b = new StringBuilder();
     b.append("\nPhases and phase options:\n");
     for (Pack p : PackManager.v().allPacks()) {
       b.append(padOpt(p.getPhaseName(), p.getDeclaredOptions()));
-      for (Iterator<Transform> phIt = p.iterator(); phIt.hasNext();) {
-        final HasPhaseOptions ph = (HasPhaseOptions) phIt.next();
+      for (Transform ph : p) {
         b.append(padVal(ph.getPhaseName(), ph.getDeclaredOptions()));
       }
     }
     return b.toString();
   }
-
-  private final Deque<String> options = new LinkedList<>();
 
   protected void pushOption(String option) {
     options.push(option);
@@ -108,8 +106,6 @@ abstract class OptionsBase {
   protected String nextOption() {
     return options.removeFirst();
   }
-
-  protected LinkedList<String> classes = new LinkedList<String>();
 
   public LinkedList<String> classes() {
     return classes;
@@ -126,7 +122,7 @@ abstract class OptionsBase {
    *          the plugin parameter value.
    * @return {@code true} on success.
    */
-  protected boolean loadPluginConfiguration(final String file) {
+  protected boolean loadPluginConfiguration(String file) {
     return PluginLoader.load(file);
   }
 }

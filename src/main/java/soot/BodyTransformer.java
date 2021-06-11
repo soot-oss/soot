@@ -29,10 +29,9 @@ import java.util.Map;
  * An abstract class which acts on a Body. This class provides a harness and acts as an interface for classes that wish to
  * transform a Body. Subclasses provide the actual Body transformation implementation.
  */
-
 public abstract class BodyTransformer extends Transformer {
 
-  private Map<String, String> enabledOnlyMap = Collections.singletonMap("enabled", "true");
+  private static final Map<String, String> enabledOnlyMap = Collections.singletonMap("enabled", "true");
 
   /**
    * Called by clients of the transformation. Acts as a generic interface for BodyTransformers. Calls internalTransform with
@@ -44,11 +43,9 @@ public abstract class BodyTransformer extends Transformer {
    *          phaseName for the transform. Used to retrieve options from the Scene.
    */
   public final void transform(Body b, String phaseName, Map<String, String> options) {
-    if (!PhaseOptions.getBoolean(options, "enabled")) {
-      return;
+    if (PhaseOptions.getBoolean(options, "enabled")) {
+      internalTransform(b, phaseName, options);
     }
-
-    internalTransform(b, phaseName, options);
   }
 
   public final void transform(Body b, String phaseName) {

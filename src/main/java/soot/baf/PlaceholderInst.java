@@ -26,25 +26,29 @@ import soot.Unit;
 import soot.baf.internal.AbstractInst;
 
 public class PlaceholderInst extends AbstractInst {
-  private Unit source;
 
-  public final String getName() {
-    return "<placeholder>";
-  }
-
-  public String toString() {
-    return "<placeholder: " + source.toString() + ">";
-  }
+  private final Unit source;
 
   PlaceholderInst(Unit source) {
     this.source = source;
   }
 
+  @Override
   public Object clone() {
     return new PlaceholderInst(getSource());
   }
 
   public Unit getSource() {
     return source;
+  }
+
+  @Override
+  public final String getName() {
+    return "<placeholder>";
+  }
+
+  @Override
+  public String toString() {
+    return "<placeholder: " + source.toString() + ">";
   }
 }

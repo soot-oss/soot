@@ -34,37 +34,44 @@ import soot.jimple.StmtSwitch;
 import soot.util.Switch;
 
 public class JNopStmt extends AbstractStmt implements NopStmt {
+
   public JNopStmt() {
   }
 
+  @Override
   public Object clone() {
     return new JNopStmt();
   }
 
+  @Override
   public String toString() {
     return Jimple.NOP;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(Jimple.NOP);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((StmtSwitch) sw).caseNopStmt(this);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     Unit u = Baf.v().newNopInst();
     u.addAllTagsOf(this);
     out.add(u);
   }
 
+  @Override
   public boolean fallsThrough() {
     return true;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }
-
 }
