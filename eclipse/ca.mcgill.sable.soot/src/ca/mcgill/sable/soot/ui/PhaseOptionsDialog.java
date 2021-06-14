@@ -9018,7 +9018,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultString = "";
 		}
 
-		setInput_Optionsprocess_jar_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-jar-dir", "\nAdd all classes found in JAR files found in DIR to the set of \nargument classes which is analyzed and transformed by Soot. You \ncan specify the option more than once, to add argument classes \nfrom multiple directories.", defaultString)));
+		setInput_Optionsprocess_jar_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process JAR Directory",  "", "","process-jar-dir", "\nAdd all classes found in JAR files found in DIR to the set of \nargument classes which is analyzed and transformed by Soot. You \ncan specify the option more than once, to add argument classes \nfrom multiple directories.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"cp soot-class-path soot-classpath";
