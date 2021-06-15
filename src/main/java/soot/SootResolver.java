@@ -173,7 +173,7 @@ public class SootResolver {
         if (resolveEverything) {
           // Whole program mode
           boolean onlySignatures = sc.isPhantom()
-              || (no_bodies_for_excluded && scene.isExcluded(sc) && !scene.getBasicClasses().contains(sc.getName()));
+              || (no_bodies_for_excluded && scene.isExcluded(sc) && !scene.isBasicClass(sc.getName()));
           if (onlySignatures) {
             bringToSignatures(sc);
             sc.setPhantomClass();
