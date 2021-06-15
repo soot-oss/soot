@@ -89,23 +89,21 @@ Thanks!
 
 # How to use Soot's Java 9 Features?
 
-If you want to run Soot with Java > 8, you are done. Just run it as usal.
-If you want to execute Soot with Java 8 but analyze Java >8 Projects or vice versa, see below.
-
 ## Use from Source Code
 To load modules in Soot's `ModuleScene` from java:
 ```.java
-// configure Soot's options
+// configure Soot's options, refer to example configurations below
 Options.v().set_soot_modulepath(modulePath);
 
 
 // load classes from modules into Soot
+// Here, getClassUnderModulePath() expects the module path to be set using the Options class as seen above
 Map<String, List<String>> map = ModulePathSourceLocator.v().getClassUnderModulePath(modulePath);
 for (String module : map.keySet()) {
    for (String klass : map.get(module)) {
        logger.info("Loaded Class: " + klass + "\n");
        loadClass(klass, false, module);
-
+       // the loadClass() method is defined below
    }
 }
 
@@ -123,31 +121,32 @@ public static SootClass loadClass(String name, boolean main, String module) {
 }
 
 ```
-
+ModuleUtil.module_mode() helps you check whether you have modules enabled in Soot. This is done based on whether the module path is set using the Options class.
 
 ### Example Configurations: Java 8, Java >= 9 Classpath, Java >= 9 Modulepath
 
 ```.java
 
-if(java < 9 ) {
+if(java < 9 ) { // when you have a target benchmark with Java < 9 and hence no modules
     Options.v().set_prepend_classpath(true);
     Options.v().set_process_dir(Arrays.asList(applicationClassPath().split(File.pathSeparator)));
-    Options.v().set_claspath(sootClassPath();
+    Options.v().set_soot_classpath(sootClassPath());
 }
 
-if(java >= 9 && USE_CLASSPATH){
+if(java >= 9 && USE_CLASSPATH) { // when you have a target benchmark with Java >= 9 and do not want module support
     Options.v().set_soot_classpath("VIRTUAL_FS_FOR_JDK" + File.pathSeparator + sootClassPath());
     Options.v().set_process_dir(Arrays.asList(applicationClassPath().split(File.pathSeparator)));
 }
 
 
-if(java>=9 && USE_MODULEPATH){
+if(java>=9 && USE_MODULEPATH) { // when you have a target benchmark with Java >= 9 and want module support
     Options.v().set_prepend_classpath(true);
-    Options.v().set_soot_modulepath(ootClassPath());
+    Options.v().set_soot_modulepath(sootClassPath());
     Options.v().set_process_dir(Arrays.asList(applicationClassPath().split(File.pathSeparator)));
 }
 
 ```
+In the above examples, applicationClassPath() should be replaced with the path to the application classes for analysis by Soot and sootClassPath() should be replaced with the Soot classpath.
 
 ## Use from the Command Line
 To execute Soot using Java 1.9, but analyzing a classpath run, just as before:
