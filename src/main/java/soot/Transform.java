@@ -110,6 +110,9 @@ public class Transform implements HasPhaseOptions {
   }
 
   public void apply(Body b) {
+    if (b == null) {
+      return;
+    }
     Map<String, String> options = PhaseOptions.v().getPhaseOptions(phaseName);
     if (PhaseOptions.getBoolean(options, "enabled")) {
       if (Options.v().verbose()) {
