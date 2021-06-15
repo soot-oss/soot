@@ -568,6 +568,23 @@
                 </p>
             </long_desc>
         </listopt>
+        <listopt>
+            <name>Process JAR Directory</name>
+            <alias>process-jar-dir</alias>
+            <set_arg_label>dir</set_arg_label>
+            <short_desc>Process all classes found in JAR files found in
+                <use_arg_label/>
+            </short_desc>
+            <long_desc>
+                <p>
+                    Add all classes found in JAR files found in
+                    <use_arg_label/>
+                    to the set of argument classes
+                    which is analyzed and transformed by Soot. You can specify the
+                    option more than once, to add argument classes from multiple directories.
+                </p>
+            </long_desc>
+        </listopt>
         <boolopt>
             <name>Derive Java version from input</name>
             <alias>derive-java-version</alias>
