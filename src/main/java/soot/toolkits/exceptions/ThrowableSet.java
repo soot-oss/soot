@@ -1060,66 +1060,68 @@ public class ThrowableSet {
      *          guarantees that the constructor may only be called from {@link Singletons}.
      */
     public Manager(Singletons.Global g) {
-      // First ensure the Exception classes are represented in Soot.
+      // First ensure the Exception classes are represented in Soot. Note that Soot supports multiple target platforms such
+      // as .net, which may use different exception classes. In that case, we just use null for the Java exception types.
+      final Scene scene = Scene.v();
 
       // Runtime errors:
-      RUNTIME_EXCEPTION = Scene.v().getRefType("java.lang.RuntimeException");
-      ARITHMETIC_EXCEPTION = Scene.v().getRefType("java.lang.ArithmeticException");
-      ARRAY_STORE_EXCEPTION = Scene.v().getRefType("java.lang.ArrayStoreException");
-      CLASS_CAST_EXCEPTION = Scene.v().getRefType("java.lang.ClassCastException");
-      ILLEGAL_MONITOR_STATE_EXCEPTION = Scene.v().getRefType("java.lang.IllegalMonitorStateException");
-      INDEX_OUT_OF_BOUNDS_EXCEPTION = Scene.v().getRefType("java.lang.IndexOutOfBoundsException");
-      ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION = Scene.v().getRefType("java.lang.ArrayIndexOutOfBoundsException");
-      NEGATIVE_ARRAY_SIZE_EXCEPTION = Scene.v().getRefType("java.lang.NegativeArraySizeException");
-      NULL_POINTER_EXCEPTION = Scene.v().getRefType("java.lang.NullPointerException");
+      RUNTIME_EXCEPTION = scene.getRefTypeUnsafe("java.lang.RuntimeException");
+      ARITHMETIC_EXCEPTION = scene.getRefTypeUnsafe("java.lang.ArithmeticException");
+      ARRAY_STORE_EXCEPTION = scene.getRefTypeUnsafe("java.lang.ArrayStoreException");
+      CLASS_CAST_EXCEPTION = scene.getRefTypeUnsafe("java.lang.ClassCastException");
+      ILLEGAL_MONITOR_STATE_EXCEPTION = scene.getRefTypeUnsafe("java.lang.IllegalMonitorStateException");
+      INDEX_OUT_OF_BOUNDS_EXCEPTION = scene.getRefTypeUnsafe("java.lang.IndexOutOfBoundsException");
+      ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION = scene.getRefTypeUnsafe("java.lang.ArrayIndexOutOfBoundsException");
+      NEGATIVE_ARRAY_SIZE_EXCEPTION = scene.getRefTypeUnsafe("java.lang.NegativeArraySizeException");
+      NULL_POINTER_EXCEPTION = scene.getRefTypeUnsafe("java.lang.NullPointerException");
 
-      INSTANTIATION_ERROR = Scene.v().getRefType("java.lang.InstantiationError");
+      INSTANTIATION_ERROR = scene.getRefType("java.lang.InstantiationError");
 
       EMPTY = registerSetIfNew(null, null);
 
       Set<RefLikeType> allThrowablesSet = new HashSet<>();
-      allThrowablesSet.add(AnySubType.v(Scene.v().getRefType("java.lang.Throwable")));
+      allThrowablesSet.add(AnySubType.v(scene.getRefType("java.lang.Throwable")));
       ALL_THROWABLES = registerSetIfNew(allThrowablesSet, null);
 
       Set<RefLikeType> vmErrorSet = new HashSet<>();
-      vmErrorSet.add(Scene.v().getRefType("java.lang.InternalError"));
-      vmErrorSet.add(Scene.v().getRefType("java.lang.OutOfMemoryError"));
-      vmErrorSet.add(Scene.v().getRefType("java.lang.StackOverflowError"));
-      vmErrorSet.add(Scene.v().getRefType("java.lang.UnknownError"));
+      vmErrorSet.add(scene.getRefTypeUnsafe("java.lang.InternalError"));
+      vmErrorSet.add(scene.getRefTypeUnsafe("java.lang.OutOfMemoryError"));
+      vmErrorSet.add(scene.getRefTypeUnsafe("java.lang.StackOverflowError"));
+      vmErrorSet.add(scene.getRefTypeUnsafe("java.lang.UnknownError"));
 
       // The Java library's deprecated Thread.stop(Throwable) method
       // would actually allow _any_ Throwable to be delivered
       // asynchronously, not just java.lang.ThreadDeath.
-      vmErrorSet.add(Scene.v().getRefType("java.lang.ThreadDeath"));
+      vmErrorSet.add(scene.getRefTypeUnsafe("java.lang.ThreadDeath"));
 
       VM_ERRORS = registerSetIfNew(vmErrorSet, null);
 
       Set<RefLikeType> resolveClassErrorSet = new HashSet<>();
-      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.ClassCircularityError"));
+      resolveClassErrorSet.add(scene.getRefType("java.lang.ClassCircularityError"));
       // We add AnySubType(ClassFormatError) so that we can
       // avoid adding its subclass,
       // UnsupportedClassVersionError, explicitly. This is a
       // hack to allow Soot to analyze older class libraries
       // (UnsupportedClassVersionError was added in JDK 1.2).
       if (!Options.v().j2me()) {
-        resolveClassErrorSet.add(AnySubType.v(Scene.v().getRefType("java.lang.ClassFormatError")));
+        resolveClassErrorSet.add(AnySubType.v(Scene.v().getRefTypeUnsafe("java.lang.ClassFormatError")));
       }
 
-      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.IllegalAccessError"));
-      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.IncompatibleClassChangeError"));
-      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.LinkageError"));
-      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.NoClassDefFoundError"));
-      resolveClassErrorSet.add(Scene.v().getRefType("java.lang.VerifyError"));
+      resolveClassErrorSet.add(scene.getRefTypeUnsafe("java.lang.IllegalAccessError"));
+      resolveClassErrorSet.add(scene.getRefTypeUnsafe("java.lang.IncompatibleClassChangeError"));
+      resolveClassErrorSet.add(scene.getRefTypeUnsafe("java.lang.LinkageError"));
+      resolveClassErrorSet.add(scene.getRefTypeUnsafe("java.lang.NoClassDefFoundError"));
+      resolveClassErrorSet.add(scene.getRefTypeUnsafe("java.lang.VerifyError"));
       RESOLVE_CLASS_ERRORS = registerSetIfNew(resolveClassErrorSet, null);
 
       Set<RefLikeType> resolveFieldErrorSet = new HashSet<>(resolveClassErrorSet);
-      resolveFieldErrorSet.add(Scene.v().getRefType("java.lang.NoSuchFieldError"));
+      resolveFieldErrorSet.add(scene.getRefTypeUnsafe("java.lang.NoSuchFieldError"));
       RESOLVE_FIELD_ERRORS = registerSetIfNew(resolveFieldErrorSet, null);
 
       Set<RefLikeType> resolveMethodErrorSet = new HashSet<>(resolveClassErrorSet);
-      resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.AbstractMethodError"));
-      resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.NoSuchMethodError"));
-      resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.UnsatisfiedLinkError"));
+      resolveMethodErrorSet.add(scene.getRefTypeUnsafe("java.lang.AbstractMethodError"));
+      resolveMethodErrorSet.add(scene.getRefTypeUnsafe("java.lang.NoSuchMethodError"));
+      resolveMethodErrorSet.add(scene.getRefTypeUnsafe("java.lang.UnsatisfiedLinkError"));
       RESOLVE_METHOD_ERRORS = registerSetIfNew(resolveMethodErrorSet, null);
 
       // The static initializers of a newly loaded class might
@@ -1128,7 +1130,7 @@ public class ThrowableSet {
       // ExceptionInInitializerError):
       //
       Set<RefLikeType> initializationErrorSet = new HashSet<>();
-      initializationErrorSet.add(AnySubType.v(Scene.v().getRefType("java.lang.Error")));
+      initializationErrorSet.add(AnySubType.v(scene.getRefTypeUnsafe("java.lang.Error")));
       INITIALIZATION_ERRORS = registerSetIfNew(initializationErrorSet, null);
     }
 
