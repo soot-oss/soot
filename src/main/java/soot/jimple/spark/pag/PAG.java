@@ -1359,7 +1359,11 @@ public class PAG implements PointsToAnalysis {
       argNode = srcmpag.parameterize(argNode, srcContext);
       argNode = argNode.getReplacement();
 
+      //target method's argument number may be less than source method, i.e. AsyncTask.execute(1) vs onPreExecute(0)
+      //check for param return here, or NPE in paramTypes will be thrown
       Node parm = tgtnf.caseParm(i);
+      if (parm == null)
+        continue;
       parm = tgtmpag.parameterize(parm, tgtContext);
       parm = parm.getReplacement();
 
