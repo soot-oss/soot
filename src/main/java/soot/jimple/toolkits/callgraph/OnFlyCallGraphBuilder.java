@@ -159,28 +159,6 @@ public class OnFlyCallGraphBuilder {
 
   protected final NumberedString sigFinalize;
   protected final NumberedString sigInit;
-  protected final NumberedString sigStart;
-  protected final NumberedString sigRun;
-  protected final NumberedString sigExecute;
-  protected final NumberedString sigExecutorExecute;
-  protected final NumberedString sigHandlerPost;
-  protected final NumberedString sigHandlerPostAtFrontOfQueue;
-  protected final NumberedString sigRunOnUiThread;// Method from android.app.Activity
-
-  // type based reflection resolution state
-  protected final NumberedString sigHandlerPostAtTime;
-  protected final NumberedString sigHandlerPostAtTimeWithToken;
-  protected final NumberedString sigHandlerPostDelayed;
-  protected final NumberedString sigHandlerSendEmptyMessage;
-  protected final NumberedString sigHandlerSendEmptyMessageAtTime;
-  protected final NumberedString sigHandlerSendEmptyMessageDelayed;
-  protected final NumberedString sigHandlerSendMessage;
-  protected final NumberedString sigHandlerSendMessageAtFrontOfQueue;
-  protected final NumberedString sigHandlerSendMessageAtTime;
-  protected final NumberedString sigHandlerSendMessageDelayed;
-  protected final NumberedString sigHandlerHandleMessage;
-  protected final NumberedString sigObjRun;
-  protected final NumberedString sigDoInBackground;
   protected final NumberedString sigForName;
 
   protected final RefType clRunnable = RefType.v("java.lang.Runnable");
@@ -229,26 +207,6 @@ public class OnFlyCallGraphBuilder {
       final StringNumberer nmbr = sc.getSubSigNumberer();
       this.sigFinalize = nmbr.findOrAdd("void finalize()");
       this.sigInit = nmbr.findOrAdd("void <init>()");
-      this.sigStart = nmbr.findOrAdd("void start()");
-      this.sigRun = nmbr.findOrAdd("void run()");
-      this.sigExecute = nmbr.findOrAdd("android.os.AsyncTask execute(java.lang.Object[])");
-      this.sigExecutorExecute = nmbr.findOrAdd("void execute(java.lang.Runnable)");
-      this.sigHandlerPost = nmbr.findOrAdd("boolean post(java.lang.Runnable)");
-      this.sigHandlerPostAtFrontOfQueue = nmbr.findOrAdd("boolean postAtFrontOfQueue(java.lang.Runnable)");
-      this.sigRunOnUiThread = nmbr.findOrAdd("void runOnUiThread(java.lang.Runnable)");
-      this.sigHandlerPostAtTime = nmbr.findOrAdd("boolean postAtTime(java.lang.Runnable,long)");
-      this.sigHandlerPostAtTimeWithToken = nmbr.findOrAdd("boolean postAtTime(java.lang.Runnable,java.lang.Object,long)");
-      this.sigHandlerPostDelayed = nmbr.findOrAdd("boolean postDelayed(java.lang.Runnable,long)");
-      this.sigHandlerSendEmptyMessage = nmbr.findOrAdd("boolean sendEmptyMessage(int)");
-      this.sigHandlerSendEmptyMessageAtTime = nmbr.findOrAdd("boolean sendEmptyMessageAtTime(int,long)");
-      this.sigHandlerSendEmptyMessageDelayed = nmbr.findOrAdd("boolean sendEmptyMessageDelayed(int,long)");
-      this.sigHandlerSendMessage = nmbr.findOrAdd("boolean postAtTime(java.lang.Runnable,long)");
-      this.sigHandlerSendMessageAtFrontOfQueue = nmbr.findOrAdd("boolean sendMessageAtFrontOfQueue(android.os.Message)");
-      this.sigHandlerSendMessageAtTime = nmbr.findOrAdd("boolean sendMessageAtTime(android.os.Message,long)");
-      this.sigHandlerSendMessageDelayed = nmbr.findOrAdd("boolean sendMessageDelayed(android.os.Message,long)");
-      this.sigHandlerHandleMessage = nmbr.findOrAdd("void handleMessage(android.os.Message)");
-      this.sigObjRun = nmbr.findOrAdd("java.lang.Object run()");
-      this.sigDoInBackground = nmbr.findOrAdd("java.lang.Object doInBackground(java.lang.Object[])");
       this.sigForName = nmbr.findOrAdd("java.lang.Class forName(java.lang.String)");
     }
     {
