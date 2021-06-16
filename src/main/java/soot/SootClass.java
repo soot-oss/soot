@@ -811,9 +811,15 @@ public class SootClass extends AbstractHost implements Numberable {
       throw new RuntimeException("duplicate interface on class " + this.getName() + ": " + interfaceClass.getName());
     }
     if (this.interfaces == null) {
-      // Use a small initial size to reduce excess memory usage in the HashChain
-      // because classes tend to implement only a small number of interfaces.
-      this.interfaces = new HashChain<>(2);
+      // Use a small initial size to reduce excess memory usage in the HashChain.
+      // The HashChain uses an underlying ConcurrentHashMap whose default table
+      // size is 16. However, classes tend to implement very few interfaces in
+      // practice (often just 1) which can lead to a significant wasted memory
+      // allocation when the default table size is used. Using an initial table
+      // size of 4 allows up to 2 interfaces to be added before the table is
+      // resized (an initial table size smaller than 4 will be resized up to 4
+      // when the first element is added due to the load factor in the map).
+      this.interfaces = new HashChain<>(4);
     }
     this.interfaces.add(interfaceClass);
   }
