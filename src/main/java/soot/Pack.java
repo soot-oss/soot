@@ -135,4 +135,20 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
   public String getDefaultOptions() {
     return soot.options.Options.getDefaultOptionsForPhase(getPhaseName());
   }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(name);
+    sb.append(" { ");
+    for (int i = 0 ; i < opts.size() ; i++) {
+      sb.append(opts.get(i).getPhaseName());
+      if (i < opts.size() - 1) {
+        sb.append(",");
+      }
+      sb.append(" ");
+    }
+    sb.append(" }");
+    return sb.toString();
+  }
 }
