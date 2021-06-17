@@ -91,7 +91,12 @@ import soot.options.Options;
 public class ThrowableSet {
 
   private static final boolean INSTRUMENTING = false;
-  private final SootClass JAVA_LANG_OBJECT_CLASS = Scene.v().getObjectType().getSootClass();
+
+  // This pattern allows for the field to be static but to delay it's
+  // initialization until it's first use.
+  private static final class LazyInit {
+    static final SootClass JAVA_LANG_OBJECT_CLASS = Scene.v().getObjectType().getSootClass();
+  }
 
   /**
    * Set of exception types included within the set.
@@ -201,9 +206,9 @@ public class ThrowableSet {
    *
    * @return a set containing <code>e</code> as well as the exceptions in this set.
    *
-   * @throws {@link
-   *           ThrowableSet.IllegalStateException} if this <code>ThrowableSet</code> is the result of a
-   *           {@link #whichCatchableAs(RefType)} operation and, thus, unable to represent the addition of <code>e</code>.
+   * @throws IllegalStateException
+   *           if this <code>ThrowableSet</code> is the result of a {@link #whichCatchableAs(RefType)} operation and, thus,
+   *           unable to represent the addition of <code>e</code>.
    */
   public ThrowableSet add(RefType e) throws ThrowableSet.AlreadyHasExclusionsException {
     if (INSTRUMENTING) {
@@ -275,7 +280,7 @@ public class ThrowableSet {
 
   private boolean hasNoHierarchy(RefType type) {
     final SootClass sootClass = type.getSootClass();
-    return !(sootClass.hasSuperclass() || JAVA_LANG_OBJECT_CLASS == sootClass);
+    return !(sootClass.hasSuperclass() || LazyInit.JAVA_LANG_OBJECT_CLASS == sootClass);
   }
 
   /**
