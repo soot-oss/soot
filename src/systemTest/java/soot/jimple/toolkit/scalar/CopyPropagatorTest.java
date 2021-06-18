@@ -21,7 +21,6 @@ package soot.jimple.toolkit.scalar;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,13 +30,7 @@ import org.junit.Test;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 
 import soot.Body;
-import soot.PackManager;
-import soot.SootClass;
 import soot.SootMethod;
-import soot.baf.Baf;
-import soot.baf.BafASMBackend;
-import soot.baf.BafBody;
-import soot.jimple.JimpleBody;
 import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.options.Options;
@@ -80,38 +73,6 @@ public class CopyPropagatorTest extends AbstractTestingFramework {
       System.out.println("[transform](after test-cp-2) " + b);
     }
     DeadAssignmentEliminator.v().transform(b, "test-dae", options);
-  }
-
-  private static Class<?> generateClass(SootClass sc) {
-    // First, convert all method Body instances to BafBody
-    for (SootMethod m : sc.getMethods()) {
-      convertBodyToBaf(m);
-    }
-    // Then use ASM to generate a byte[] for the classfile
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    new BafASMBackend(sc, Options.v().java_version()).generateClassFile(os);
-    final byte[] classBytes = os.toByteArray();
-
-    // NOTE: "new ClassLoader" ensures every class loaded is distinct.
-    return new ClassLoader() {
-      @Override
-      public Class findClass(String name) {
-        return defineClass(name, classBytes, 0, classBytes.length);
-      }
-    }.findClass(TEST_TARGET_CLASS);
-  }
-
-  private static void convertBodyToBaf(SootMethod m) {
-    Body b = m.retrieveActiveBody();
-    if (b instanceof ShimpleBody) {
-      b = ((ShimpleBody) b).toJimpleBody();
-    }
-    Assert.assertTrue(b instanceof JimpleBody);
-    // Convert body to Jimple, then to Baf
-    BafBody bafBody = Baf.v().newBody((JimpleBody) b);
-    PackManager.v().getPack("bop").apply(bafBody);
-    PackManager.v().getPack("tag").apply(bafBody);
-    m.setActiveBody(bafBody);
   }
 
   @Test
