@@ -333,8 +333,6 @@ public class SootMethodRefImpl implements SootMethodRef {
     result = prime * result + ((name == null) ? 0 : name.hashCode());
     result = prime * result + ((parameterTypes == null) ? 0 : parameterTypes.hashCode());
     result = prime * result + ((returnType == null) ? 0 : returnType.hashCode());
-    NumberedString subsig = getSubSignature();
-    result = prime * result + ((subsig == null) ? 0 : subsig.hashCode());
     return result;
   }
 
@@ -376,14 +374,6 @@ public class SootMethodRefImpl implements SootMethodRef {
         return false;
       }
     } else if (!this.returnType.equals(other.returnType)) {
-      return false;
-    }
-    NumberedString subsig = this.getSubSignature();
-    if (subsig == null) {
-      if (other.getSubSignature() != null) {
-        return false;
-      }
-    } else if (!subsig.equals(other.getSubSignature())) {
       return false;
     }
     return true;
