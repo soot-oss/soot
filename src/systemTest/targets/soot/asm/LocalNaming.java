@@ -48,4 +48,22 @@ public class LocalNaming {
     PrintStream omega = System.out;
     omega.println(delta);
   }
+
+  static class Config{
+    static int getD(){
+      return 0;
+    }
+    static int getF(){
+      return 1;
+    }
+  }
+
+  public void test(){
+    int d = Config.getD();
+    int f = Config.getF();
+    int[] arr = new int[2];
+    arr[0] = d;
+    arr[1] = f;
+    System.out.println(arr);
+  }
 }
