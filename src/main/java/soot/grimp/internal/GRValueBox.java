@@ -30,14 +30,17 @@ import soot.jimple.Constant;
 import soot.jimple.Expr;
 
 public class GRValueBox extends AbstractValueBox {
+
   public GRValueBox(Value value) {
     setValue(value);
   }
 
+  @Override
   public boolean canContainValue(Value value) {
     return value instanceof Local || value instanceof Constant || value instanceof ConcreteRef || value instanceof Expr;
   }
 
+  @Override
   public Object clone() {
     throw new RuntimeException();
   }

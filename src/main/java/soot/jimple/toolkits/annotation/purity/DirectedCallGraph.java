@@ -86,12 +86,12 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
     MultiMap<SootMethod, SootMethod> s = new HashMultiMap<SootMethod, SootMethod>();
     MultiMap<SootMethod, SootMethod> p = new HashMultiMap<SootMethod, SootMethod>();
 
-    // simple breadth-first visit
-    Set<SootMethod> remain = new HashSet<SootMethod>(filteredHeads);
-    int nb = 0;
     if (verbose) {
       logger.debug("[AM] dumping method dependencies");
     }
+    // simple breadth-first visit
+    int nb = 0;
+    Set<SootMethod> remain = new HashSet<SootMethod>(filteredHeads);
     while (!remain.isEmpty()) {
       Set<SootMethod> newRemain = new HashSet<SootMethod>();
       for (SootMethod m : remain) {

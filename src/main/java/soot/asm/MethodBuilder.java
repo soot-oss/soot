@@ -219,7 +219,7 @@ class MethodBuilder extends JSRInlinerAdapter {
       addDeps(t);
     }
 
-    scb.addDep(AsmUtil.toBaseType(owner, Optional.fromNullable(this.scb.getKlass().moduleName)));
+    scb.addDep(AsmUtil.toJimpleRefType(owner, Optional.fromNullable(this.scb.getKlass().moduleName)));
   }
 
   @Override

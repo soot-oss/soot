@@ -29,6 +29,7 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class UnknownType extends Type {
+
   public UnknownType(Singletons.Global g) {
   }
 
@@ -36,23 +37,30 @@ public class UnknownType extends Type {
     return G.v().soot_UnknownType();
   }
 
+  @Override
   public int hashCode() {
     return 0x5CAE5357;
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public String toString() {
     return "unknown";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseUnknownType(this);
   }
 
-  /** Returns the least common superclass of this type and other. */
+  /**
+   * Returns the least common superclass of this type and other.
+   */
+  @Override
   public Type merge(Type other, Scene cm) {
     if (other instanceof RefType) {
       return other;

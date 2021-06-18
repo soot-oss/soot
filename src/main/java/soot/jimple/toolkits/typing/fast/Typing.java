@@ -35,10 +35,11 @@ import soot.Type;
  * @author Ben Bellamy
  */
 public class Typing {
+
   protected HashMap<Local, Type> map;
 
   public Typing(Collection<Local> vs) {
-    map = new HashMap<Local, Type>(vs.size());
+    this.map = new HashMap<Local, Type>(vs.size());
   }
 
   public Typing(Typing tg) {
@@ -51,17 +52,11 @@ public class Typing {
 
   public Type get(Local v) {
     Type t = this.map.get(v);
-    if (t == null) {
-      return BottomType.v();
-    }
-    return t;
+    return (t == null) ? BottomType.v() : t;
   }
 
   public Type set(Local v, Type t) {
-    if (t instanceof BottomType) {
-      return null;
-    }
-    return this.map.put(v, t);
+    return (t instanceof BottomType) ? null : this.map.put(v, t);
   }
 
   public Collection<Local> getAllLocals() {
@@ -70,16 +65,15 @@ public class Typing {
 
   @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append('{');
-    for (Local v : this.map.keySet()) {
-      sb.append(v);
+    for (Map.Entry<Local, Type> e : this.map.entrySet()) {
+      sb.append(e.getKey());
       sb.append(':');
-      sb.append(this.get(v));
+      sb.append(e.getValue());
       sb.append(',');
     }
     sb.append('}');
     return sb.toString();
   }
-
 }

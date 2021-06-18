@@ -27,6 +27,7 @@ import soot.Singletons;
 import soot.Type;
 
 public class UnusuableType extends Type {
+
   public UnusuableType(Singletons.Global g) {
   }
 
@@ -38,6 +39,7 @@ public class UnusuableType extends Type {
     return otherType instanceof UnusuableType;
   }
 
+  @Override
   public String toString() {
     return "unusuable";
   }

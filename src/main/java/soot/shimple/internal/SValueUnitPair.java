@@ -31,34 +31,39 @@ import soot.toolkits.scalar.ValueUnitPair;
  * value.
  *
  * @author Navindra Umanee
- **/
+ */
 public class SValueUnitPair extends ValueUnitPair implements SUnitBox {
+
+  protected boolean unitChanged;
+
   public SValueUnitPair(Value value, Unit unit) {
     super(value, unit);
     setUnitChanged(true);
   }
 
+  @Override
   public boolean isBranchTarget() {
     return false;
   }
 
+  @Override
   public void setUnit(Unit u) {
     super.setUnit(u);
     setUnitChanged(true);
   }
 
-  protected boolean unitChanged = false;
-
   /**
    * @see SUnitBox#isUnitChanged()
-   **/
+   */
+  @Override
   public boolean isUnitChanged() {
     return unitChanged;
   }
 
   /**
    * @see SUnitBox#setUnitChanged(boolean)
-   **/
+   */
+  @Override
   public void setUnitChanged(boolean unitChanged) {
     this.unitChanged = unitChanged;
   }

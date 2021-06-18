@@ -26,6 +26,8 @@ package soot.toolkits.graph;
  * DirectedGraph which can be reversed and re-reversed.
  *
  * @author Navindra Umanee
+ * 
+ * @param <N>
  **/
 public interface ReversibleGraph<N> extends MutableDirectedGraph<N> {
   /**

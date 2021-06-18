@@ -27,12 +27,13 @@ import soot.grimp.Grimp;
 import soot.jimple.internal.AbstractLengthExpr;
 
 public class GLengthExpr extends AbstractLengthExpr {
+
   public GLengthExpr(Value op) {
     super(Grimp.v().newObjExprBox(op));
   }
 
+  @Override
   public Object clone() {
     return new GLengthExpr(Grimp.cloneIfNecessary(getOp()));
   }
-
 }

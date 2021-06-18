@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import soot.Scene;
+import soot.tagkit.EnclosingTag;
+import soot.tagkit.QualifyingTag;
 
 public class Util {
 
@@ -272,7 +274,7 @@ public class Util {
     soot.Local correctLocal = null;
     while (stmtsIt.hasNext()) {
       soot.jimple.Stmt s = (soot.jimple.Stmt) stmtsIt.next();
-      if (s instanceof soot.jimple.IdentityStmt && (s.hasTag("EnclosingTag") || s.hasTag("QualifyingTag"))) {
+      if (s instanceof soot.jimple.IdentityStmt && (s.hasTag(EnclosingTag.NAME) || s.hasTag(QualifyingTag.NAME))) {
         Iterator it = s.getDefBoxes().iterator();
         while (it.hasNext()) {
           soot.ValueBox vb = (soot.ValueBox) it.next();
@@ -291,7 +293,7 @@ public class Util {
     Iterator stmtsIt = body.getUnits().iterator();
     while (stmtsIt.hasNext()) {
       soot.jimple.Stmt s = (soot.jimple.Stmt) stmtsIt.next();
-      if (s instanceof soot.jimple.IdentityStmt && (s.hasTag("EnclosingTag") || s.hasTag("QualifyingTag"))) {
+      if (s instanceof soot.jimple.IdentityStmt && (s.hasTag(EnclosingTag.NAME) || s.hasTag(QualifyingTag.NAME))) {
         Iterator it = s.getDefBoxes().iterator();
         while (it.hasNext()) {
           soot.ValueBox vb = (soot.ValueBox) it.next();

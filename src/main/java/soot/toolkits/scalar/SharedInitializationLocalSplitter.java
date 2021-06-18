@@ -1,5 +1,27 @@
 package soot.toolkits.scalar;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1999 Phong Co
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,42 +50,21 @@ import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.options.Options;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.util.Chain;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 1999 Phong Co
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
 //@formatter:off
 /**
- *
- * With the following code <code>
- * $u2#6 = 0; interfaceinvoke $u5#30.<Foo: void setMomentary(android.view.View,boolean)>($u4, $u2#6);
+ * There is a problem with the following code <code>
+ * $u2#6 = 0;
+ * interfaceinvoke $u5#30.<Foo: void setMomentary(android.view.View,boolean)>($u4, $u2#6);
  * interfaceinvoke $u5#56.<Foo: void setSelectedIndex(android.view.View,int)>($u4, $u2#6);
  * </code>
  *
- * there is a problem since $u2#6 will be boolean as well as int. A cast from boolean to int or vice versa is not valid in
- * Java. The local splitter does not split the local since it would require the introduction of a new initialization
- * statement. Therefore, we split for each usage of a constant variable, such as: <code>
+ * since $u2#6 will be boolean as well as int. A cast from boolean to int or vice versa is not valid in Java. The local
+ * splitter does not split the local since it would require the introduction of a new initialization statement. Therefore, we
+ * split for each usage of a constant variable, such as: <code>
  * $u2#6 = 0;
  * $u2#6_2 = 0; 
  * interfaceinvoke $u5#30.<Foo: void setMomentary(android.view.View,boolean)>($u4, $u2#6);
@@ -95,9 +96,10 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     return G.v().soot_toolkits_scalar_SharedInitializationLocalSplitter();
   }
 
-  static class Cluster {
-    List<Unit> constantInitializers;
-    private Unit use;
+  private static final class Cluster {
+
+    protected final List<Unit> constantInitializers;
+    protected final Unit use;
 
     public Cluster(Unit use, List<Unit> constantInitializers) {
       this.use = use;
@@ -109,7 +111,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       StringBuilder sb = new StringBuilder();
       sb.append("Constant intializers:\n");
       for (Unit r : constantInitializers) {
-        sb.append("\n - " + toStringUnit(r));
+        sb.append("\n - ").append(toStringUnit(r));
       }
       return sb.toString();
     }
@@ -117,7 +119,6 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     private String toStringUnit(Unit u) {
       return u + " (" + System.identityHashCode(u) + ")";
     }
-
   }
 
   @Override
@@ -148,35 +149,31 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     DeadAssignmentEliminator.v().transform(body);
     CopyPropagator.v().transform(body);
 
-    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
-
+    final ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
+    final MultiMap<Local, Cluster> clustersPerLocal = new HashMultiMap<Local, Cluster>();
 
-    MultiMap<Local, Cluster> clustersPerLocal = new HashMultiMap<Local, Cluster>();
-
-    for (Unit s : body.getUnits()) {
-      nextUse: for (ValueBox useBox : s.getUseBoxes()) {
+    final Chain<Unit> units = body.getUnits();
+    for (Unit s : units) {
+      for (ValueBox useBox : s.getUseBoxes()) {
         Value v = useBox.getValue();
         if (v instanceof Local) {
           Local luse = (Local) v;
           List<Unit> allAffectingDefs = defs.getDefsOfAt(luse, s);
-          for (Unit def : allAffectingDefs) {
-            if (def instanceof IdentityStmt) {
-              continue nextUse;
-            }
-
-            AssignStmt assign = (AssignStmt) def;
-            if (!(assign.getRightOp() instanceof Constant)) {
-              // Make sure we are only affected by constant definitions
-              continue nextUse;
-            }
+          if (allAffectingDefs.isEmpty()) {
+            continue;
           }
-          Cluster c = new Cluster(s, allAffectingDefs);
-          clustersPerLocal.put(luse, c);
+          // Make sure we are only affected by Constant definitions via AssignStmt
+          if (!allAffectingDefs.stream()
+              .allMatch(u -> (u instanceof AssignStmt) && (((AssignStmt) u).getRightOp() instanceof Constant))) {
+            continue;
+          }
+          clustersPerLocal.put(luse, new Cluster(s, allAffectingDefs));
         }
       }
     }
 
+    final Chain<Local> locals = body.getLocals();
     int w = 0;
     for (Local lcl : clustersPerLocal.keySet()) {
       Set<Cluster> clusters = clustersPerLocal.get(lcl);
@@ -187,15 +184,16 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       for (Cluster cluster : clusters) {
         // we have an overlap, we need to split.
         Local newLocal = (Local) lcl.clone();
+        newLocal.setName(newLocal.getName() + '_' + ++w);
+        locals.add(newLocal);
+
         for (Unit u : cluster.constantInitializers) {
           AssignStmt assign = (AssignStmt) u;
-          AssignStmt newAssign = Jimple.v().newAssignStmt(newLocal, (Value) assign.getRightOp());
-          body.getUnits().insertAfter(newAssign, assign);
+          AssignStmt newAssign = Jimple.v().newAssignStmt(newLocal, assign.getRightOp());
+          units.insertAfter(newAssign, assign);
           CopyPropagator.copyLineTags(newAssign.getUseBoxes().get(0), assign);
         }
 
-        newLocal.setName(newLocal.getName() + '_' + ++w);
-        body.getLocals().add(newLocal);
         replaceLocalsInUnitUses(cluster.use, lcl, newLocal);
       }
     }
@@ -208,5 +206,4 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       }
     }
   }
-
 }

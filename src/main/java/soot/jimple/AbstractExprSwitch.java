@@ -23,6 +23,7 @@ package soot.jimple;
  */
 
 public abstract class AbstractExprSwitch<T> implements ExprSwitch {
+
   T result;
 
   @Override

@@ -26,6 +26,9 @@ import soot.util.Switch;
 
 @SuppressWarnings("serial")
 public class AnySubType extends RefLikeType {
+
+  private RefType base;
+
   private AnySubType(RefType base) {
     this.base = base;
   }
@@ -41,14 +44,17 @@ public class AnySubType extends RefLikeType {
     return base.getAnySubType();
   }
 
+  @Override
   public String toString() {
     return "Any_subtype_of_" + base;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseAnySubType(this);
   }
 
+  @Override
   public Type getArrayElementType() {
     throw new RuntimeException("Attempt to get array base type of a non-array");
   }
@@ -60,6 +66,4 @@ public class AnySubType extends RefLikeType {
   public void setBase(RefType base) {
     this.base = base;
   }
-
-  private RefType base;
 }

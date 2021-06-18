@@ -24,7 +24,6 @@ package soot.dava.toolkits.base.AST.interProcedural;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import soot.PhaseOptions;
 import soot.Scene;
@@ -46,6 +45,7 @@ import soot.dava.toolkits.base.renamer.infoGatheringAnalysis;
 import soot.util.Chain;
 
 public class InterProceduralAnalyses {
+
   public static boolean DEBUG = false;
 
   /*
@@ -54,7 +54,7 @@ public class InterProceduralAnalyses {
    * All interproceduralAnalyses should be applied in here
    */
   public static void applyInterProceduralAnalyses() {
-    Chain classes = Scene.v().getApplicationClasses();
+    Chain<SootClass> classes = Scene.v().getApplicationClasses();
 
     if (DEBUG) {
       System.out.println("\n\nInvoking redundantFielduseEliminator");
@@ -65,42 +65,30 @@ public class InterProceduralAnalyses {
     if (DEBUG) {
       finder.printConstantValueFields();
     }
-
     /*
      * The code above this gathers interprocedural information the code below this USES the interprocedural results
      */
-    Iterator it = classes.iterator();
-    while (it.hasNext()) {
+    for (SootClass s : classes) {
       // go though all the methods
-      SootClass s = (SootClass) it.next();
-      Iterator methodIt = s.methodIterator();
-      while (methodIt.hasNext()) {
-        SootMethod m = (SootMethod) methodIt.next();
-        /*
-         * Adding try block to handle RuntimeException no active body found
-         */
-        DavaBody body = null;
-        if (m.hasActiveBody()) {
-          body = (DavaBody) m.getActiveBody();
-        } else {
+      for (Iterator<SootMethod> methodIt = s.methodIterator(); methodIt.hasNext();) {
+        SootMethod m = methodIt.next();
+        if (!m.hasActiveBody()) {
           continue;
         }
-        ASTNode AST = (ASTNode) body.getUnits().getFirst();
 
+        DavaBody body = (DavaBody) m.getActiveBody();
+        ASTNode AST = (ASTNode) body.getUnits().getFirst();
         if (!(AST instanceof ASTMethodNode)) {
           continue;
         }
 
-        Map options = PhaseOptions.v().getPhaseOptions("db.deobfuscate");
-        boolean deobfuscate = PhaseOptions.getBoolean(options, "enabled");
-        // System.out.println("force is "+force);
+        boolean deobfuscate = PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("db.deobfuscate"), "enabled");
         if (deobfuscate) {
           if (DEBUG) {
             System.out.println("\nSTART CP Class:" + s.getName() + " Method: " + m.getName());
           }
-          CPApplication CPApp = new CPApplication((ASTMethodNode) AST, constantValueFields,
-              finder.getClassNameFieldNameToSootFieldMapping());
-          AST.apply(CPApp);
+          AST.apply(
+              new CPApplication((ASTMethodNode) AST, constantValueFields, finder.getClassNameFieldNameToSootFieldMapping()));
 
           if (DEBUG) {
             System.out.println("DONE CP for " + m.getName());
@@ -134,26 +122,19 @@ public class InterProceduralAnalyses {
         }
 
         // renaming should be applied as the last stage
-        options = PhaseOptions.v().getPhaseOptions("db.renamer");
-        boolean renamer = PhaseOptions.getBoolean(options, "enabled");
-        // System.out.println("renaming is"+renamer);
-        if (renamer) {
+        if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("db.renamer"), "enabled")) {
           applyRenamerAnalyses(AST, body);
         }
 
         // remove returns from void methods
         VoidReturnRemover.cleanClass(s);
-
       }
-
     }
   }
 
   /*
    * If there is any interprocedural information required it should be passed as argument to this method and then the renamer
    * can make use of it.
-   *
-   *
    */
   private static void applyRenamerAnalyses(ASTNode AST, DavaBody body) {
     // intra procedural heuristic gathering
@@ -164,4 +145,6 @@ public class InterProceduralAnalyses {
     renamer.rename();
   }
 
+  private InterProceduralAnalyses() {
+  }
 }

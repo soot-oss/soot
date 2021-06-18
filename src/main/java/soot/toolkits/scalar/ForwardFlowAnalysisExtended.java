@@ -42,7 +42,6 @@ import soot.toolkits.graph.PseudoTopologicalOrderer;
  * interactive analysis infrastructure of Soot either.
  *
  * @author Steven Arzt
- *
  */
 public abstract class ForwardFlowAnalysisExtended<N, A> {
   /** Maps graph nodes to IN sets. */
@@ -111,10 +110,7 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
 
   public A getFromMap(Map<N, Map<N, A>> map, N s, N t) {
     Map<N, A> m = map.get(s);
-    if (m == null) {
-      return null;
-    }
-    return m.get(t);
+    return (m != null) ? m.get(t) : null;
   }
 
   public void putToMap(Map<N, Map<N, A>> map, N s, N t, A val) {
@@ -179,14 +175,11 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
           // Compute and store beforeFlow
           {
             final Iterator<N> it = graph.getPredsOf(s).iterator();
-
             if (it.hasNext()) {
               copy(getFromMap(unitToAfterFlow, it.next(), s), beforeFlow);
-
               while (it.hasNext()) {
                 mergeInto(s, beforeFlow, getFromMap(unitToAfterFlow, it.next(), s));
               }
-
               if (head.get(k)) {
                 mergeInto(s, beforeFlow, entryInitialFlow());
               }
@@ -218,9 +211,9 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
 
   /** Accessor function returning value of IN set for s. */
   public A getFlowBefore(N s) {
-    final Iterator<N> it = graph.getPredsOf(s).iterator();
     A beforeFlow = null;
 
+    final Iterator<N> it = graph.getPredsOf(s).iterator();
     if (it.hasNext()) {
       beforeFlow = getFromMap(unitToAfterFlow, it.next(), s);
       while (it.hasNext()) {
@@ -229,5 +222,4 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
     }
     return beforeFlow;
   }
-
 }

@@ -491,7 +491,7 @@ public class OnFlyCallGraphBuilder {
       SootClass baseClass = ((RefType) bType).getSootClass();
       for (Iterator<SootMethod> mIt = getPublicMethodIterator(baseClass, at); mIt.hasNext();) {
         SootMethod sm = mIt.next();
-        cm.addVirtualEdge(ics.container(), ics.stmt(), sm, Kind.REFL_INVOKE, null);
+        cm.addVirtualEdge(ics.getContainer(), ics.getStmt(), sm, Kind.REFL_INVOKE, null);
       }
     }
   }
@@ -620,8 +620,9 @@ public class OnFlyCallGraphBuilder {
           continue;
         }
 
-        if (site.iie() instanceof SpecialInvokeExpr && !site.kind().isFake()) {
-          SootMethod target = virtualCalls.resolveSpecial(site.iie().getMethodRef(), site.container(), appOnly);
+        final InstanceInvokeExpr iie = site.iie();
+        if (iie instanceof SpecialInvokeExpr && !site.kind().isFake()) {
+          SootMethod target = virtualCalls.resolveSpecial(iie.getMethodRef(), site.getContainer(), appOnly);
           // if the call target resides in a phantom class then "target" will be null;
           // simply do not add the target in that case
           if (target != null) {
@@ -651,11 +652,11 @@ public class OnFlyCallGraphBuilder {
               }
             }
           } else {
-            ref = site.stmt().getInvokeExpr().getMethodRef();
+            ref = site.getStmt().getInvokeExpr().getMethodRef();
           }
 
           if (ref != null) {
-            virtualCalls.resolve(type, receiver.getType(), ref, site.container(), targetsQueue, appOnly);
+            virtualCalls.resolve(type, receiver.getType(), ref, site.getContainer(), targetsQueue, appOnly);
             if (!targets.hasNext() && options.resolve_all_abstract_invokes()) {
               /*
                * In the situation where we find nothing to resolve an invoke to in the first call, this might be because the
@@ -671,13 +672,14 @@ public class OnFlyCallGraphBuilder {
                * Where as, it used to not resolve any targets in this situation, I want to at least resolve the method in the
                * parent class if there is one (as this is technically a possibility and the only information we have).
                */
-              virtualCalls.resolveSuperType(type, receiver.getType(), site.iie().getMethodRef(), targetsQueue, appOnly);
+              virtualCalls.resolveSuperType(type, receiver.getType(), iie.getMethodRef(), targetsQueue, appOnly);
             }
           }
         }
         while (targets.hasNext()) {
           SootMethod target = targets.next();
-          cm.addVirtualEdge(MethodContext.v(site.container(), srcContext), site.stmt(), target, site.kind(), typeContext);
+          cm.addVirtualEdge(MethodContext.v(site.getContainer(), srcContext), site.getStmt(), target, site.kind(),
+              typeContext);
         }
       }
     }
@@ -724,7 +726,7 @@ public class OnFlyCallGraphBuilder {
             sootcls.setLibraryClass();
           }
           for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
-            cm.addStaticEdge(MethodContext.v(site.container(), srcContext), site.stmt(), clinit, Kind.CLINIT);
+            cm.addStaticEdge(MethodContext.v(site.getContainer(), srcContext), site.getStmt(), clinit, Kind.CLINIT);
           }
         } else if (options.verbose()) {
           logger.warn("Class " + constant + " is a dynamic class and was not specified as such; graph will be incomplete!");
@@ -733,7 +735,7 @@ public class OnFlyCallGraphBuilder {
     } else if (options.verbose()) {
       for (Iterator<VirtualCallSite> siteIt = stringConstToSites.get(l).iterator(); siteIt.hasNext();) {
         final VirtualCallSite site = siteIt.next();
-        logger.warn("Method " + site.container() + " is reachable, and calls Class.forName on a non-constant"
+        logger.warn("Method " + site.getContainer() + " is reachable, and calls Class.forName on a non-constant"
             + " String; graph will be incomplete! Use safe-forname option for a conservative result.");
       }
     }
@@ -1039,6 +1041,9 @@ public class OnFlyCallGraphBuilder {
   }
 
   private void addEdge(SootMethod src, Stmt stmt, SootMethod tgt, Kind kind) {
+    if (src.equals(tgt) && src.isStaticInitializer()) { 
+      return; 
+    }
     cicg.addEdge(new Edge(src, stmt, tgt, kind));
   }
 

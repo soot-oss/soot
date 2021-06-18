@@ -132,7 +132,7 @@ public class DexClassLoader {
     // In contrast to Java, Dalvik associates the InnerClassAttribute
     // with the inner class, not the outer one. We need to copy the
     // tags over to correspond to the Soot semantics.
-    InnerClassAttribute ica = (InnerClassAttribute) sc.getTag("InnerClassAttribute");
+    InnerClassAttribute ica = (InnerClassAttribute) sc.getTag(InnerClassAttribute.NAME);
     if (ica != null) {
       Iterator<InnerClassTag> innerTagIt = ica.getSpecs().iterator();
       while (innerTagIt.hasNext()) {
@@ -174,16 +174,14 @@ public class DexClassLoader {
           }
 
           // Get the InnerClassAttribute of the outer class
-          InnerClassAttribute icat = (InnerClassAttribute) osc.getTag("InnerClassAttribute");
+          InnerClassAttribute icat = (InnerClassAttribute) osc.getTag(InnerClassAttribute.NAME);
           if (icat == null) {
             icat = new InnerClassAttribute();
             osc.addTag(icat);
           }
 
           // Transfer the tag from the inner class to the outer class
-          InnerClassTag newt
-              = new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(), ict.getShortName(), ict.getAccessFlags());
-          icat.add(newt);
+          icat.add(new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(), ict.getShortName(), ict.getAccessFlags()));
 
           // Remove the tag from the inner class as inner classes do
           // not have these tags in the Java / Soot semantics. The
@@ -193,7 +191,7 @@ public class DexClassLoader {
           // Add the InnerClassTag to the inner class. This tag will
           // be put in an InnerClassAttribute
           // within the PackManager in method handleInnerClasses().
-          if (!sc.hasTag("InnerClassTag")) {
+          if (!sc.hasTag(InnerClassTag.NAME)) {
             if (((InnerClassTag) t).getInnerClass().replaceAll("/", ".").equals(sc.toString())) {
               sc.addTag(t);
             }

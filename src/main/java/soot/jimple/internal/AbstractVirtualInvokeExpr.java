@@ -40,6 +40,7 @@ import soot.util.Switch;
 @SuppressWarnings("serial")
 public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeExpr
     implements VirtualInvokeExpr, ConvertToBaf {
+
   protected AbstractVirtualInvokeExpr(ValueBox baseBox, SootMethodRef methodRef, ValueBox[] argBoxes) {
     super(methodRef, baseBox, argBoxes);
     if (methodRef.isStatic()) {
@@ -47,16 +48,17 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
     }
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractVirtualInvokeExpr) {
       AbstractVirtualInvokeExpr ie = (AbstractVirtualInvokeExpr) o;
-      if (!(baseBox.getValue().equivTo(ie.baseBox.getValue()) && getMethod().equals(ie.getMethod())
-          && (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length))) {
+      if ((this.argBoxes == null ? 0 : this.argBoxes.length) != (ie.argBoxes == null ? 0 : ie.argBoxes.length)
+          || !this.getMethod().equals(ie.getMethod()) || !this.baseBox.getValue().equivTo(ie.baseBox.getValue())) {
         return false;
       }
-      if (argBoxes != null) {
-        for (int i = 0; i < argBoxes.length; i++) {
-          if (!(argBoxes[i]).getValue().equivTo(ie.argBoxes[i].getValue())) {
+      if (this.argBoxes != null) {
+        for (int i = 0, e = this.argBoxes.length; i < e; i++) {
+          if (!this.argBoxes[i].getValue().equivTo(ie.argBoxes[i].getValue())) {
             return false;
           }
         }
@@ -69,57 +71,53 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
   /**
    * Returns a hash code for this object, consistent with structural equality.
    */
+  @Override
   public int equivHashCode() {
     return baseBox.getValue().equivHashCode() * 101 + getMethod().equivHashCode() * 17;
   }
 
-  public abstract Object clone();
-
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseVirtualInvokeExpr(this);
   }
 
+  @Override
   public String toString() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buf = new StringBuilder(Jimple.VIRTUALINVOKE + " ");
 
-    buffer.append(Jimple.VIRTUALINVOKE + " " + baseBox.getValue().toString() + "." + methodRef.getSignature() + "(");
-
+    buf.append(baseBox.getValue().toString()).append('.').append(methodRef.getSignature()).append('(');
     if (argBoxes != null) {
-      for (int i = 0; i < argBoxes.length; i++) {
+      for (int i = 0, e = argBoxes.length; i < e; i++) {
         if (i != 0) {
-          buffer.append(", ");
+          buf.append(", ");
         }
-
-        buffer.append(argBoxes[i].getValue().toString());
+        buf.append(argBoxes[i].getValue().toString());
       }
     }
+    buf.append(')');
 
-    buffer.append(")");
-
-    return buffer.toString();
+    return buf.toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
-    up.literal(Jimple.VIRTUALINVOKE);
-    up.literal(" ");
+    up.literal(Jimple.VIRTUALINVOKE + " ");
     baseBox.toString(up);
     up.literal(".");
     up.methodRef(methodRef);
     up.literal("(");
-
     if (argBoxes != null) {
-      for (int i = 0; i < argBoxes.length; i++) {
+      for (int i = 0, e = argBoxes.length; i < e; i++) {
         if (i != 0) {
           up.literal(", ");
         }
-
         argBoxes[i].toString(up);
       }
     }
-
     up.literal(")");
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     ((ConvertToBaf) (getBase())).convertToBaf(context, out);
 

@@ -29,22 +29,27 @@ import soot.jimple.MulExpr;
 import soot.util.Switch;
 
 public class GMulExpr extends AbstractGrimpFloatBinopExpr implements MulExpr {
+
   public GMulExpr(Value op1, Value op2) {
     super(op1, op2);
   }
 
+  @Override
   public final String getSymbol() {
     return " * ";
   }
 
+  @Override
   public final int getPrecedence() {
     return 800;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseMulExpr(this);
   }
 
+  @Override
   public Object clone() {
     return new GMulExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
   }

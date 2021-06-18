@@ -24,7 +24,7 @@ package soot.tagkit;
 
 public class LineNumberTag implements Tag {
 
-  public static final String IDENTIFIER = "LineNumberTag";
+  public static final String NAME = "LineNumberTag";
 
   /* it is a u2 value representing line number. */
   protected int line_number;
@@ -35,7 +35,7 @@ public class LineNumberTag implements Tag {
 
   @Override
   public String getName() {
-    return IDENTIFIER;
+    return NAME;
   }
 
   @Override

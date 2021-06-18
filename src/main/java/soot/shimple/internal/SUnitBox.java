@@ -28,7 +28,7 @@ import soot.UnitBox;
  * Extension of UnitBox to provide some extra information needed by SPatchingChain.
  *
  * @author Navindra Umanee
- **/
+ */
 public interface SUnitBox extends UnitBox {
   /**
    * Indicates whether the contents of the UnitBox may have been changed. Returns true if setUnit(Unit) has been called
@@ -36,7 +36,7 @@ public interface SUnitBox extends UnitBox {
    *
    * <p>
    * Needed for Shimple internal Unit chain patching.
-   **/
+   */
   public boolean isUnitChanged();
 
   /**
@@ -46,6 +46,6 @@ public interface SUnitBox extends UnitBox {
    * Needed for Shimple internal Unit chain patching.
    *
    * @see #isUnitChanged()
-   **/
+   */
   public void setUnitChanged(boolean unitChanged);
 }

@@ -29,6 +29,7 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class FloatType extends PrimType {
+
   public FloatType(Singletons.Global g) {
   }
 
@@ -36,18 +37,22 @@ public class FloatType extends PrimType {
     return G.v().soot_FloatType();
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public int hashCode() {
     return 0xA84373FA;
   }
 
+  @Override
   public String toString() {
     return "float";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseFloatType(this);
   }
