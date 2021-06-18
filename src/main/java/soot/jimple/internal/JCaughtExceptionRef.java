@@ -34,38 +34,47 @@ import soot.jimple.RefSwitch;
 import soot.util.Switch;
 
 public class JCaughtExceptionRef implements CaughtExceptionRef {
+
   public JCaughtExceptionRef() {
   }
 
+  @Override
   public boolean equivTo(Object c) {
     return c instanceof CaughtExceptionRef;
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return 1729;
   }
 
+  @Override
   public Object clone() {
     return new JCaughtExceptionRef();
   }
 
+  @Override
   public String toString() {
     return "@caughtexception";
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.identityRef(this);
   }
 
+  @Override
   public final List<ValueBox> getUseBoxes() {
     return Collections.emptyList();
   }
 
+  @Override
   public Type getType() {
     return RefType.v("java.lang.Throwable");
   }
 
+  @Override
   public void apply(Switch sw) {
     ((RefSwitch) sw).caseCaughtExceptionRef(this);
   }

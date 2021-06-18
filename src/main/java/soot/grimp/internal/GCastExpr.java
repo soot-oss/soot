@@ -29,29 +29,28 @@ import soot.grimp.Precedence;
 import soot.jimple.internal.AbstractCastExpr;
 
 public class GCastExpr extends AbstractCastExpr implements Precedence {
+
   public GCastExpr(Value op, Type type) {
     super(Grimp.v().newExprBox(op), type);
   }
 
+  @Override
   public int getPrecedence() {
     return 850;
   }
 
-  private String toString(String leftString, Value op, String opString) {
-    String rightOp = opString;
-
-    if (op instanceof Precedence && ((Precedence) op).getPrecedence() < getPrecedence()) {
-      rightOp = "(" + rightOp + ")";
-    }
-    return leftString + rightOp;
-  }
-
+  @Override
   public String toString() {
-    return toString("(" + getCastType().toString() + ") ", getOp(), getOp().toString());
+    final Value op = getOp();
+    String opString = op.toString();
+    if (op instanceof Precedence && ((Precedence) op).getPrecedence() < getPrecedence()) {
+      opString = "(" + opString + ")";
+    }
+    return "(" + getCastType().toString() + ") " + opString;
   }
 
+  @Override
   public Object clone() {
     return new GCastExpr(Grimp.cloneIfNecessary(getOp()), getCastType());
   }
-
 }

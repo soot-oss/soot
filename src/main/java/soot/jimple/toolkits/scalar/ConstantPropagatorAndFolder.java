@@ -73,7 +73,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
     }
 
     UnitGraph g = new ExceptionalUnitGraph(b);
-    LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(g);
+    LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(g);
 
     // Perform a constant/local propagation pass.
     // go through each use box in each statement

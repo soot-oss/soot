@@ -27,10 +27,12 @@ import soot.Value;
 import soot.jimple.InvokeExpr;
 
 public class InvokeExprBox extends AbstractValueBox {
+
   public InvokeExprBox(Value value) {
     setValue(value);
   }
 
+  @Override
   public boolean canContainValue(Value value) {
     return value instanceof InvokeExpr;
   }

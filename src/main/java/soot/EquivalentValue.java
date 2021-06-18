@@ -32,32 +32,28 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class EquivalentValue implements Value {
-  Value e;
 
-  public EquivalentValue(Value e) {
-    if (e instanceof EquivalentValue) {
-      e = ((EquivalentValue) e).e;
-    }
-    this.e = e;
+  private final Value e;
+
+  public EquivalentValue(Value v) {
+    this.e = (v instanceof EquivalentValue) ? ((EquivalentValue) v).e : v;
   }
 
+  @Override
   public boolean equals(Object o) {
-    if (o instanceof EquivalentValue) {
-      o = ((EquivalentValue) o).e;
-    }
-    return e.equivTo(o);
+    return e.equivTo((o instanceof EquivalentValue) ? ((EquivalentValue) o).e : o);
   }
 
   /**
    * compares the encapsulated value with <code>v</code>, using <code>equivTo</code>
-   **/
+   */
   public boolean equivToValue(Value v) {
     return e.equivTo(v);
   }
 
   /**
    * compares the encapsulated value with <code>v</code>, using <code>equals</code>
-   **/
+   */
   public boolean equalsToValue(Value v) {
     return e.equals(v);
   }
@@ -65,16 +61,18 @@ public class EquivalentValue implements Value {
   /**
    * @deprecated
    * @see #getValue()
-   **/
+   */
   @Deprecated
   public Value getDeepestValue() {
     return getValue();
   }
 
+  @Override
   public int hashCode() {
     return e.equivHashCode();
   }
 
+  @Override
   public String toString() {
     return e.toString();
   }
@@ -86,31 +84,37 @@ public class EquivalentValue implements Value {
   /*********************************/
   /* implement the Value-interface */
   /*********************************/
+  @Override
   public List<ValueBox> getUseBoxes() {
     return e.getUseBoxes();
   }
 
+  @Override
   public Type getType() {
     return e.getType();
   }
 
+  @Override
   public Object clone() {
-    EquivalentValue equiVal = new EquivalentValue((Value) e.clone());
-    return equiVal;
+    return new EquivalentValue((Value) e.clone());
   }
 
+  @Override
   public boolean equivTo(Object o) {
     return e.equivTo(o);
   }
 
+  @Override
   public int equivHashCode() {
     return e.equivHashCode();
   }
 
+  @Override
   public void apply(Switch sw) {
     e.apply(sw);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     e.toString(up);
   }

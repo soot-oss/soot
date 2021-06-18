@@ -21,6 +21,7 @@ package soot.baf;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+import soot.NopUnit;
 
-public interface NopInst extends NoArgInst {
+public interface NopInst extends NopUnit, NoArgInst {
 }

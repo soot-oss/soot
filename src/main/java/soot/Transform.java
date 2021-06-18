@@ -35,7 +35,10 @@ import soot.util.PhaseDumper;
  */
 public class Transform implements HasPhaseOptions {
   private static final Logger logger = LoggerFactory.getLogger(Transform.class);
-  final private boolean DEBUG;
+
+  private final boolean DEBUG;
+  private String declaredOpts;
+  private String defaultOpts;
   final String phaseName;
   final Transformer t;
 
@@ -45,6 +48,7 @@ public class Transform implements HasPhaseOptions {
     this.t = t;
   }
 
+  @Override
   public String getPhaseName() {
     return phaseName;
   }
@@ -53,9 +57,7 @@ public class Transform implements HasPhaseOptions {
     return t;
   }
 
-  private String declaredOpts;
-  private String defaultOpts;
-
+  @Override
   public String getDeclaredOptions() {
     if (declaredOpts != null) {
       return declaredOpts;
@@ -63,6 +65,7 @@ public class Transform implements HasPhaseOptions {
     return Options.getDeclaredOptionsForPhase(phaseName);
   }
 
+  @Override
   public String getDefaultOptions() {
     if (defaultOpts != null) {
       return defaultOpts;
@@ -107,6 +110,9 @@ public class Transform implements HasPhaseOptions {
   }
 
   public void apply(Body b) {
+    if (b == null) {
+      return;
+    }
     Map<String, String> options = PhaseOptions.v().getPhaseOptions(phaseName);
     if (PhaseOptions.getBoolean(options, "enabled")) {
       if (Options.v().verbose()) {
@@ -128,5 +134,4 @@ public class Transform implements HasPhaseOptions {
   public String toString() {
     return phaseName;
   }
-
 }

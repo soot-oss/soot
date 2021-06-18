@@ -42,10 +42,12 @@ public class Integer127Type extends PrimType implements IntegerType {
   public Integer127Type(Singletons.Global g) {
   }
 
+  @Override
   public String toString() {
     return "[0..127]";
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }

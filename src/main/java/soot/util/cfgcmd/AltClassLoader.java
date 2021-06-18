@@ -52,21 +52,25 @@ public class AltClassLoader extends ClassLoader {
 
   private final static boolean DEBUG = false;
 
-  private String[] locations; // Locations in the alternate
-  // classpath.
-  private final Map<String, Class<?>> alreadyFound = new HashMap<String, Class<?>>(); // Maps from already loaded
-  // classnames to their
-  // Class objects.
+  /**
+   * Locations in the alternate classpath.
+   */
+  private String[] locations;
 
-  private final Map<String, String> nameToMangledName = new HashMap<String, String>();// Maps from the names
-  // of classes to be
-  // loaded from the alternate
-  // classpath to mangled
-  // names to use for them.
+  /**
+   * Maps from already loaded classnames to their Class objects.
+   */
+  private final Map<String, Class<?>> alreadyFound = new HashMap<String, Class<?>>();
 
-  private final Map<String, String> mangledNameToName = new HashMap<String, String>();// Maps from the mangled names
-  // of classes back to their
-  // original names.
+  /**
+   * Maps from the names of classes to be loaded from the alternate classpath to mangled names to use for them.
+   */
+  private final Map<String, String> nameToMangledName = new HashMap<String, String>();
+
+  /**
+   * Maps from the mangled names of classes back to their original names.
+   */
+  private final Map<String, String> mangledNameToName = new HashMap<String, String>();
 
   /**
    * Constructs an <code>AltClassLoader</code> for inclusion in Soot's global variable manager, {@link G}.
@@ -90,7 +94,7 @@ public class AltClassLoader extends ClassLoader {
   /**
    * Sets the list of locations in the alternate classpath.
    *
-   * @param classPath
+   * @param altClassPath
    *          A list of directories and jar files to search for class files, delimited by {@link File#pathSeparator}.
    */
   public void setAltClassPath(String altClassPath) {
@@ -99,8 +103,7 @@ public class AltClassLoader extends ClassLoader {
       String location = tokens.nextToken();
       locationList.add(location);
     }
-    locations = new String[locationList.size()];
-    locations = locationList.toArray(locations);
+    locations = locationList.toArray(new String[locationList.size()]);
   }
 
   /**
@@ -135,9 +138,10 @@ public class AltClassLoader extends ClassLoader {
   private static String mangleName(String origName) throws IllegalArgumentException {
     final char dot = '.';
     final char dotReplacement = '_';
-    StringBuffer mangledName = new StringBuffer(origName);
+    final int lastDot = origName.lastIndexOf(dot);
+
+    StringBuilder mangledName = new StringBuilder(origName);
     int replacements = 0;
-    int lastDot = origName.lastIndexOf(dot);
     for (int nextDot = lastDot; (nextDot = origName.lastIndexOf(dot, nextDot - 1)) >= 0;) {
       mangledName.setCharAt(nextDot, dotReplacement);
       replacements++;
@@ -170,6 +174,7 @@ public class AltClassLoader extends ClassLoader {
    *           if the class cannot be loaded.
    *
    */
+  @Override
   protected Class<?> findClass(String maybeMangledName) throws ClassNotFoundException {
     if (DEBUG) {
       logger.debug("AltClassLoader.findClass(" + maybeMangledName + ')');
@@ -188,14 +193,12 @@ public class AltClassLoader extends ClassLoader {
 
     for (String element : locations) {
       String path = element + pathTail;
-      try {
-        FileInputStream stream = new FileInputStream(path);
+      try (FileInputStream stream = new FileInputStream(path)) {
         byte[] classBytes = new byte[stream.available()];
         stream.read(classBytes);
         replaceAltClassNames(classBytes);
         result = defineClass(maybeMangledName, classBytes, 0, classBytes.length);
         alreadyFound.put(maybeMangledName, result);
-        stream.close();
         return result;
       } catch (java.io.IOException e) {
         // Try the next location.
@@ -221,6 +224,7 @@ public class AltClassLoader extends ClassLoader {
    * @throws ClassNotFoundException
    *           if the class cannot be loaded.
    */
+  @Override
   public Class<?> loadClass(String name) throws ClassNotFoundException {
     if (DEBUG) {
       logger.debug("AltClassLoader.loadClass(" + name + ")");
@@ -246,10 +250,8 @@ public class AltClassLoader extends ClassLoader {
    */
   private void replaceAltClassNames(byte[] classBytes) {
     for (Map.Entry<String, String> entry : nameToMangledName.entrySet()) {
-      String origName = entry.getKey();
-      origName = origName.replace('.', '/');
-      String mangledName = entry.getValue();
-      mangledName = mangledName.replace('.', '/');
+      String origName = entry.getKey().replace('.', '/');
+      String mangledName = entry.getValue().replace('.', '/');
       findAndReplace(classBytes, stringToUtf8Pattern(origName), stringToUtf8Pattern(mangledName));
       findAndReplace(classBytes, stringToTypeStringPattern(origName), stringToTypeStringPattern(mangledName));
     }
@@ -266,9 +268,7 @@ public class AltClassLoader extends ClassLoader {
     result[0] = CONSTANT_Utf8;
     result[1] = (byte) (length & 0xff00);
     result[2] = (byte) (length & 0x00ff);
-    for (int i = 0; i < length; i++) {
-      result[i + 3] = origBytes[i];
-    }
+    System.arraycopy(origBytes, 0, result, 3, length);
     return result;
   }
 
@@ -280,9 +280,7 @@ public class AltClassLoader extends ClassLoader {
     int length = origBytes.length;
     byte[] result = new byte[length + 2];
     result[0] = (byte) 'L';
-    for (int i = 0; i < length; i++) {
-      result[i + 1] = origBytes[i];
-    }
+    System.arraycopy(origBytes, 0, result, 1, length);
     result[length + 1] = (byte) ';';
     return result;
   }
@@ -362,5 +360,4 @@ public class AltClassLoader extends ClassLoader {
       AltClassLoader.v().loadClass(argv[i]);
     }
   }
-
 }

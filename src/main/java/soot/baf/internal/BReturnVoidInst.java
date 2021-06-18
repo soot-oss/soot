@@ -27,39 +27,47 @@ import soot.baf.ReturnVoidInst;
 import soot.util.Switch;
 
 public class BReturnVoidInst extends AbstractInst implements ReturnVoidInst {
+
   public BReturnVoidInst() {
   }
 
-  public int getInCount() {
-    return 0;
-  }
-
+  @Override
   public Object clone() {
     return new BReturnVoidInst();
   }
 
+  @Override
+  public int getInCount() {
+    return 0;
+  }
+
+  @Override
   public int getInMachineCount() {
     return 0;
   }
 
+  @Override
   public int getOutCount() {
     return 0;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 0;
   }
 
+  @Override
   final public String getName() {
     return "return";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseReturnVoidInst(this);
   }
 
+  @Override
   public boolean fallsThrough() {
     return false;
   }
-
 }

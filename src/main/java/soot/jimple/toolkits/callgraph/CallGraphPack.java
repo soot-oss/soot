@@ -38,10 +38,12 @@ import soot.options.CGOptions;
  * has been built.
  */
 public class CallGraphPack extends RadioScenePack {
+
   public CallGraphPack(String name) {
     super(name);
   }
 
+  @Override
   protected void internalApply() {
     CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions(this));
     if (!Scene.v().hasCustomEntryPoints()) {
@@ -55,10 +57,11 @@ public class CallGraphPack extends RadioScenePack {
         Scene.v().setEntryPoints(entryPoints);
       }
     }
+
     super.internalApply();
-    ClinitElimTransformer trimmer = new ClinitElimTransformer();
 
     if (options.trim_clinit()) {
+      ClinitElimTransformer trimmer = new ClinitElimTransformer();
       for (SootClass cl : Scene.v().getClasses(SootClass.BODIES)) {
         for (SootMethod m : cl.getMethods()) {
           if (m.isConcrete() && m.hasActiveBody()) {

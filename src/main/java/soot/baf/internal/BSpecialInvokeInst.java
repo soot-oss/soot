@@ -29,29 +29,35 @@ import soot.baf.SpecialInvokeInst;
 import soot.util.Switch;
 
 public class BSpecialInvokeInst extends AbstractInvokeInst implements SpecialInvokeInst {
+
   public BSpecialInvokeInst(SootMethodRef methodRef) {
     if (methodRef.isStatic()) {
       throw new RuntimeException("wrong static-ness");
     }
-    this.methodRef = methodRef;
+    super.methodRef = methodRef;
   }
 
-  public int getInCount() {
-    return super.getInCount() + 1;
-  }
-
-  public int getInMachineCount() {
-    return super.getInMachineCount() + 1;
-  }
-
+  @Override
   public Object clone() {
     return new BSpecialInvokeInst(methodRef);
   }
 
+  @Override
+  public int getInCount() {
+    return super.getInCount() + 1;
+  }
+
+  @Override
+  public int getInMachineCount() {
+    return super.getInMachineCount() + 1;
+  }
+
+  @Override
   public String getName() {
     return "specialinvoke";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseSpecialInvokeInst(this);
   }

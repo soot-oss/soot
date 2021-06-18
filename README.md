@@ -6,6 +6,13 @@ We are regularly applying for funding to help us maintain Soot. You can help us 
 
 Also many thanks to [![JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)](https://www.ej-technologies.com/products/jprofiler/overview.html) for supporting Soot with a free-to-use open source license!
 
+# Thanks to our Sponsors...
+... for supporting the further Development of Soot!
+Amazon Web Services is a Gold Sponsor. [![AWS](https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/150px-Amazon_Web_Services_Logo.svg.png)]()
+
+[Read more here about how to become a sponsor on your own.](https://github.com/sponsors/soot-oss)
+
+
 # Soot supports Java 9 modules now!
 Try and get involved in Soot's Java 9 bleeding edge developement.
 ## What works and is tested?
@@ -39,6 +46,22 @@ For detailed information please also consider the Soot's [JavaDoc and Options](h
 
 # Including Soot in your Project
 
+A Soot release is currently built for each commit to the `master` branch. You can include Soot as
+a dependency via Maven, Gradle, SBT, etc using the following coordinates:
+
+
+```.xml
+<dependencies>
+  <dependency>
+    <groupId>org.soot-oss</groupId>
+    <artifactId>soot</artifactId>
+    <version>4.2.1</version>
+  </dependency>
+</dependencies>
+```
+
+You can also obtain older builds of the `master` branch. A complete listing of builds can be found on [Maven Central](https://repo.maven.apache.org/maven2/org/soot-oss/soot/).
+
 A Soot SNAPSHOT is currently built for each commit to the `develop` branch. You can include Soot as 
 a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 
@@ -66,7 +89,7 @@ You can also obtain older builds of the `develop` branch. A complete listing of 
 
 # How do I obtain Soot without Maven?
 **We recommend using Soot with Maven**
-
+You can obtain the latest release build of Soot [directly](https://repo1.maven.org/maven2/org/soot-oss/soot/).
 You can obtain the latest SNAPSHOT build of Soot [directly](https://oss.sonatype.org/content/repositories/snapshots/org/soot-oss/soot/).
 
 The `soot-<RELEASE>-jar-with-dependencies.jar` file is an all-in-one file that also contains all the required libraries. 
@@ -104,17 +127,18 @@ If you want to execute Soot with Java 8 but analyze Java >8 Projects or vice ver
 ## Use from Source Code
 To load modules in Soot's `ModuleScene` from java:
 ```.java
-// configure Soot's options
+// configure Soot's options, refer to example configurations below
 Options.v().set_soot_modulepath(modulePath);
 
 
 // load classes from modules into Soot
+// Here, getClassUnderModulePath() expects the module path to be set using the Options class as seen above
 Map<String, List<String>> map = ModulePathSourceLocator.v().getClassUnderModulePath(modulePath);
 for (String module : map.keySet()) {
    for (String klass : map.get(module)) {
        logger.info("Loaded Class: " + klass + "\n");
        loadClass(klass, false, module);
-
+       // the loadClass() method is defined below
    }
 }
 
@@ -132,31 +156,32 @@ public static SootClass loadClass(String name, boolean main, String module) {
 }
 
 ```
-
+ModuleUtil.module_mode() helps you check whether you have modules enabled in Soot. This is done based on whether the module path is set using the Options class.
 
 ### Example Configurations: Java 8, Java >= 9 Classpath, Java >= 9 Modulepath
 
 ```.java
 
-if(java < 9 ) {
+if(java < 9 ) { // when you have a target benchmark with Java < 9 and hence no modules
     Options.v().set_prepend_classpath(true);
     Options.v().set_process_dir(Arrays.asList(applicationClassPath().split(File.pathSeparator)));
-    Options.v().set_claspath(sootClassPath();
+    Options.v().set_soot_classpath(sootClassPath());
 }
 
-if(java >= 9 && USE_CLASSPATH){
+if(java >= 9 && USE_CLASSPATH) { // when you have a target benchmark with Java >= 9 and do not want module support
     Options.v().set_soot_classpath("VIRTUAL_FS_FOR_JDK" + File.pathSeparator + sootClassPath());
     Options.v().set_process_dir(Arrays.asList(applicationClassPath().split(File.pathSeparator)));
 }
 
 
-if(java>=9 && USE_MODULEPATH){
+if(java>=9 && USE_MODULEPATH) { // when you have a target benchmark with Java >= 9 and want module support
     Options.v().set_prepend_classpath(true);
-    Options.v().set_soot_modulepath(ootClassPath());
+    Options.v().set_soot_modulepath(sootClassPath());
     Options.v().set_process_dir(Arrays.asList(applicationClassPath().split(File.pathSeparator)));
 }
 
 ```
+In the above examples, applicationClassPath() should be replaced with the path to the application classes for analysis by Soot and sootClassPath() should be replaced with the Soot classpath.
 
 ## Use from the Command Line
 To execute Soot using Java 1.9, but analyzing a classpath run, just as before:

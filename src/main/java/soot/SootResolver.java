@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -47,6 +46,7 @@ import soot.util.MultiMap;
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver {
   private static final Logger logger = LoggerFactory.getLogger(SootResolver.class);
+
   /** Maps each resolved class to a list of all references in it. */
   protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<SootClass, Type>();
 
@@ -78,15 +78,23 @@ public class SootResolver {
         }
       });
 
-      program.options().initOptions();
-      program.options().addKeyValueOption("-classpath");
-      program.options().setValueForOption(Scene.v().getSootClassPath(), "-classpath");
-      if (Options.v().src_prec() == Options.src_prec_java) {
-        program.setSrcPrec(Program.SRC_PREC_JAVA);
-      } else if (Options.v().src_prec() == Options.src_prec_class) {
-        program.setSrcPrec(Program.SRC_PREC_CLASS);
-      } else if (Options.v().src_prec() == Options.src_prec_only_class) {
-        program.setSrcPrec(Program.SRC_PREC_CLASS);
+      final soot.JastAddJ.Options options = program.options();
+      options.initOptions();
+      options.addKeyValueOption("-classpath");
+      options.setValueForOption(Scene.v().getSootClassPath(), "-classpath");
+
+      switch (Options.v().src_prec()) {
+        case Options.src_prec_java:
+          program.setSrcPrec(Program.SRC_PREC_JAVA);
+          break;
+        case Options.src_prec_class:
+          program.setSrcPrec(Program.SRC_PREC_CLASS);
+          break;
+        case Options.src_prec_only_class:
+          program.setSrcPrec(Program.SRC_PREC_CLASS);
+          break;
+        default:
+          break;
       }
       program.initPaths();
     }
@@ -95,17 +103,20 @@ public class SootResolver {
   public static SootResolver v() {
     if (ModuleUtil.module_mode()) {
       return G.v().soot_SootModuleResolver();
+    } else {
+      return G.v().soot_SootResolver();
     }
-    return G.v().soot_SootResolver();
   }
 
   /** Returns true if we are resolving all class refs recursively. */
   protected boolean resolveEverything() {
-    if (Options.v().on_the_fly()) {
+    final Options opts = Options.v();
+    if (opts.on_the_fly()) {
       return false;
+    } else {
+      return (opts.whole_program() || opts.whole_shimple() || opts.full_resolver()
+          || opts.output_format() == Options.output_format_dava);
     }
-    return (Options.v().whole_program() || Options.v().whole_shimple() || Options.v().full_resolver()
-        || Options.v().output_format() == Options.output_format_dava);
   }
 
   /**
@@ -113,20 +124,20 @@ public class SootResolver {
    * will be resolved into this SootClass.
    */
   public SootClass makeClassRef(String className) {
-    if (Scene.v().containsClass(className)) {
-      return Scene.v().getSootClass(className);
-    }
-
-    SootClass newClass;
-    if (className.endsWith(SootModuleInfo.MODULE_INFO)) {
-      newClass = new SootModuleInfo(className, null);
+    final Scene scene = Scene.v();
+    if (scene.containsClass(className)) {
+      return scene.getSootClass(className);
     } else {
-      newClass = new SootClass(className);
+      SootClass newClass;
+      if (className.endsWith(SootModuleInfo.MODULE_INFO)) {
+        newClass = new SootModuleInfo(className, null);
+      } else {
+        newClass = new SootClass(className);
+      }
+      newClass.setResolvingLevel(SootClass.DANGLING);
+      scene.addClass(newClass);
+      return newClass;
     }
-    newClass.setResolvingLevel(SootClass.DANGLING);
-    Scene.v().addClass(newClass);
-
-    return newClass;
   }
 
   /**
@@ -143,7 +154,7 @@ public class SootResolver {
     } catch (SootClassNotFoundException e) {
       // remove unresolved class and rethrow
       if (resolvedClass != null) {
-        assert resolvedClass.resolvingLevel() == SootClass.DANGLING;
+        assert (resolvedClass.resolvingLevel() == SootClass.DANGLING);
         Scene.v().removeClass(resolvedClass);
       }
       throw e;
@@ -152,12 +163,17 @@ public class SootResolver {
 
   /** Resolve all classes on toResolveWorklist. */
   protected void processResolveWorklist() {
+    final Scene scene = Scene.v();
+    final boolean resolveEverything = resolveEverything();
+    final boolean no_bodies_for_excluded = Options.v().no_bodies_for_excluded();
     for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
-      while (!worklist[i].isEmpty()) {
-        SootClass sc = worklist[i].pop();
-        if (resolveEverything()) { // Whole program mode
-          boolean onlySignatures = sc.isPhantom() || (Options.v().no_bodies_for_excluded() && Scene.v().isExcluded(sc)
-              && !Scene.v().getBasicClasses().contains(sc.getName()));
+      Deque<SootClass> currWorklist = worklist[i];
+      while (!currWorklist.isEmpty()) {
+        SootClass sc = currWorklist.pop();
+        if (resolveEverything) {
+          // Whole program mode
+          boolean onlySignatures = sc.isPhantom()
+              || (no_bodies_for_excluded && scene.isExcluded(sc) && !scene.isBasicClass(sc.getName()));
           if (onlySignatures) {
             bringToSignatures(sc);
             sc.setPhantomClass();
@@ -184,6 +200,9 @@ public class SootResolver {
           }
         }
       }
+      // The ArrayDeque can grow particularly large but the implementation will
+      // never shrink the backing array, leaving a possibly large memory leak.
+      worklist[i] = new ArrayDeque<SootClass>(0);
     }
   }
 
@@ -231,22 +250,21 @@ public class SootResolver {
       is = SourceLocator.v().getClassSource(className);
     }
     try {
-      boolean modelAsPhantomRef = is == null;
+      boolean modelAsPhantomRef = (is == null);
       if (modelAsPhantomRef) {
         if (!Scene.v().allowsPhantomRefs()) {
           String suffix = "";
-          if (className.equals("java.lang.Object")) {
+          if ("java.lang.Object".equals(className)) {
             suffix = " Try adding rt.jar to Soot's classpath, e.g.:\n" + "java -cp sootclasses.jar soot.Main -cp "
                 + ".:/path/to/jdk/jre/lib/rt.jar <other options>";
-          } else if (className.equals("javax.crypto.Cipher")) {
+          } else if ("javax.crypto.Cipher".equals(className)) {
             suffix = " Try adding jce.jar to Soot's classpath, e.g.:\n" + "java -cp sootclasses.jar soot.Main -cp "
                 + ".:/path/to/jdk/jre/lib/rt.jar:/path/to/jdk/jre/lib/jce.jar <other options>";
           }
           throw new SootClassNotFoundException(
               "couldn't find class: " + className + " (is your soot-class-path set properly?)" + suffix);
         } else {
-          // logger.warn("" + className + " is a
-          // phantom class!");
+          // logger.warn(className + " is a phantom class!");
           sc.setPhantomClass();
         }
       } else {
@@ -344,22 +362,17 @@ public class SootResolver {
       if (references != null) {
         // This must be an iterator, not a for-all since the underlying
         // collection may change as we go
-        Iterator<Type> it = references.iterator();
-        while (it.hasNext()) {
-          final Type t = it.next();
+        for (Type t : references) {
           addToResolveWorklist(t, SootClass.HIERARCHY);
         }
       }
     }
-
     {
       Collection<Type> references = classToTypesSignature.get(sc);
       if (references != null) {
         // This must be an iterator, not a for-all since the underlying
         // collection may change as we go
-        Iterator<Type> it = references.iterator();
-        while (it.hasNext()) {
-          final Type t = it.next();
+        for (Type t : references) {
           addToResolveWorklist(t, SootClass.SIGNATURES);
         }
       }
