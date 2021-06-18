@@ -178,11 +178,18 @@ public class SootMethodRefImpl implements SootMethodRef {
   @Override
   public SootMethod resolve() {
     SootMethod cached = this.resolveCache;
-    if (cached == null) { // Use the cached SootMethod if available
+    // Use the cached SootMethod if available and still valid
+    if (cached == null || !isValidResolve(cached)) {
       cached = resolve(null);
       this.resolveCache = cached;
     }
     return cached;
+  }
+
+  private boolean isValidResolve(SootMethod m) {
+    return (this.isStatic() == m.isStatic()) && this.getDeclaringClass().equals(m.getDeclaringClass())
+        && this.getName().equals(m.getName()) && this.getReturnType().equals(m.getReturnType())
+        && this.getParameterTypes().equals(m.getParameterTypes());
   }
 
   @Override
