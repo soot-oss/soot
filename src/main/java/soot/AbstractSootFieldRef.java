@@ -104,11 +104,17 @@ public class AbstractSootFieldRef implements SootFieldRef {
   @Override
   public SootField resolve() {
     SootField cached = this.resolveCache;
-    if (cached == null) { // Use the cached SootField if available
+    // Use the cached SootField if available and still valid
+    if (cached == null || !isValidResolve(cached)) {
       cached = resolve(null);
       this.resolveCache = cached;
     }
     return cached;
+  }
+
+  private boolean isValidResolve(SootField f) {
+    return (this.isStatic() == f.isStatic()) && this.declaringClass().equals(f.getDeclaringClass())
+        && this.name().equals(f.getName()) && this.type().equals(f.getType());
   }
 
   private SootField checkStatic(SootField ret) {
