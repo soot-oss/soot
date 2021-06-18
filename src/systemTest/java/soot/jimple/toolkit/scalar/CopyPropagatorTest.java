@@ -63,10 +63,6 @@ public class CopyPropagatorTest extends AbstractTestingFramework {
 
     // Skip optimizations after eliminating Phi nodes
     opts.setPhaseOption("shimple", "node-elim-opt:false");
-
-    // TODO: maybe don't need to keep these (I'll see)
-    opts.setPhaseOption("jb", "use-original-names:true");
-    opts.setPhaseOption("jb.sils", "enabled:false");
   }
 
   private static void transform(Body b) {
