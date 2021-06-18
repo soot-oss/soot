@@ -57,17 +57,23 @@ public class UnreachableCodeEliminatorTest extends AbstractTestingFramework {
   }
 
   @Test
-  public void nullAssignment() {
+  public void unitBoxConsistency() {
     SootMethod target =
         prepareTarget(methodSigFromComponents(TEST_TARGET_CLASS, "void", "unreachableTrap"), TEST_TARGET_CLASS);
 
     Body body = target.retrieveActiveBody();
+
+    // There is 1 Trap before the optimization.
+    Assert.assertEquals(1, body.getTraps().size());
 
     // Assert that the set of boxes obtained from all units equals the set
     // obtained by checking Unit#getBoxesPointingToThis() on all units.
     Assert.assertEquals(new HashSet<>(getAllUnitBoxes(body)), new HashSet<>(getAllBoxesPointingToUnits(body)));
 
     UnreachableCodeEliminator.v().transform(body);
+
+    // There are no Traps after the optimization.
+    Assert.assertEquals(0, body.getTraps().size());
 
     // Assert that the set of boxes obtained from all units equals the set
     // obtained by checking Unit#getBoxesPointingToThis() on all units.
