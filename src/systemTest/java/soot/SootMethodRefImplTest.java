@@ -53,8 +53,8 @@ public class SootMethodRefImplTest extends AbstractTestingFramework {
     Assert.assertEquals(Arrays.asList("<init>", "m1", "m2"),
         clas.getMethods().stream().map(SootMethod::getName).sorted().collect(Collectors.toList()));
 
-    // Ensure the previous valid of SootMethodRefImpl#resolveCache is
-    // not used if the referenced method itself is modified.
+    // Ensure the previous value of SootMethodRefImpl#resolveCache
+    // is not used if the referenced method itself is modified.
     final Body b = m1.retrieveActiveBody();
     final SootMethodRef mRef = getMethodRef(b);
     Assert.assertEquals("m2", mRef.getName());
@@ -83,7 +83,7 @@ public class SootMethodRefImplTest extends AbstractTestingFramework {
     Assert.assertNotSame(origM, newM);
     Assert.assertEquals("m2", newM.getName());
 
-    // There are now 4 methods since
+    // There are now 4 methods since resolving "m2" created it again.
     Assert.assertEquals(Arrays.asList("<init>", "m1", "m2", "newMethodName"),
         clas.getMethods().stream().map(SootMethod::getName).sorted().collect(Collectors.toList()));
   }
