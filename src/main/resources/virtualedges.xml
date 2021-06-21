@@ -112,13 +112,16 @@
 	
 	
 	<!-- Android AsyncTask -->
-	<edge type="ASYNCTASK">
-		<source invoketype="instance" subsignature="android.os.AsyncTask execute(java.lang.Object[])" />
-		<targets>
-			<direct subsignature="java.lang.Object doInBackground(java.lang.Object[])" target="base"/>
-		</targets>
-	</edge>
-	
+    <edge type="ASYNCTASK">
+        <source invoketype="instance" subsignature="android.os.AsyncTask execute(java.lang.Object[])" />
+        <targets>
+            <direct subsignature="void onPreExecute()" target="base"/>
+            <direct subsignature="java.lang.Object doInBackground(java.lang.Object[])" target="base"/>
+            <direct subsignature="void onProgressUpdate(java.lang.Object[])" target="base"/>
+            <direct subsignature="void onPostExecute(java.lang.Object)" target="base"/>
+        </targets>
+    </edge>
+
 	<!-- doPriviledged -->
 	<edge type="PRIVILEDGED">
 		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)&gt;" />

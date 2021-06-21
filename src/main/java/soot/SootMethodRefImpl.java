@@ -32,20 +32,17 @@ import soot.jimple.AssignStmt;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
-import soot.jimple.NewExpr;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StringConstant;
 import soot.options.Options;
 import soot.util.NumberedString;
 
 /**
- * Representation of a reference to a method as it appears in a class file. Note that the method
- * directly referred to may not actually exist; the actual target of the reference is determined
- * according to the resolution procedure in the Java Virtual Machine Specification, 2nd ed, section
- * 5.4.3.3.
+ * Representation of a reference to a method as it appears in a class file. Note that the method directly referred to may not
+ * actually exist; the actual target of the reference is determined according to the resolution procedure in the Java Virtual
+ * Machine Specification, 2nd ed, section 5.4.3.3.
  *
- * @author Manuel Benz 22.10.19 - Delegate method resolution behavior to FastHierarchy to have one
- *     common place for extension
+ * @author Manuel Benz 22.10.19 - Delegate method resolution behavior to FastHierarchy to have one common place for extension
  */
 public class SootMethodRefImpl implements SootMethodRef {
 
@@ -53,26 +50,29 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   private final SootClass declaringClass;
   private final String name;
-  protected List<Type> parameterTypes;
+  private final List<Type> parameterTypes;
   private final Type returnType;
   private final boolean isStatic;
+
+  private SootMethod resolveCache = null;
 
   /**
    * Constructor.
    *
-   * @param declaringClass the declaring class. Must not be {@code null}
-   * @param name the method name. Must not be {@code null}
-   * @param parameterTypes the types of parameters. May be {@code null}
-   * @param returnType the type of return value. Must not be {@code null}
-   * @param isStatic the static modifier value
-   * @throws IllegalArgumentException is thrown when {@code declaringClass}, or {@code name}, or
-   *     {@code returnType} is null
+   * @param declaringClass
+   *          the declaring class. Must not be {@code null}
+   * @param name
+   *          the method name. Must not be {@code null}
+   * @param parameterTypes
+   *          the types of parameters. May be {@code null}
+   * @param returnType
+   *          the type of return value. Must not be {@code null}
+   * @param isStatic
+   *          the static modifier value
+   * @throws IllegalArgumentException
+   *           is thrown when {@code declaringClass}, or {@code name}, or {@code returnType} is null
    */
-  public SootMethodRefImpl(
-      SootClass declaringClass,
-      String name,
-      List<Type> parameterTypes,
-      Type returnType,
+  public SootMethodRefImpl(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType,
       boolean isStatic) {
     if (declaringClass == null) {
       throw new IllegalArgumentException("Attempt to create SootMethodRef with null class");
@@ -86,10 +86,9 @@ public class SootMethodRefImpl implements SootMethodRef {
 
     this.declaringClass = declaringClass;
     this.name = name;
+    // initialize with unmodifiable collection
     this.parameterTypes =
-        (parameterTypes == null) // initialize with unmodifiable collection
-            ? Collections.emptyList()
-            : Collections.unmodifiableList(new ArrayList<>(parameterTypes));
+        (parameterTypes == null) ? Collections.emptyList() : Collections.unmodifiableList(new ArrayList<>(parameterTypes));
     this.returnType = returnType;
     this.isStatic = isStatic;
   }
@@ -141,9 +140,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   @Override
   public NumberedString getSubSignature() {
-    return Scene.v()
-        .getSubSigNumberer()
-        .findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
+    return Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
   }
 
   @Override
@@ -166,17 +163,8 @@ public class SootMethodRefImpl implements SootMethodRef {
     private static final long serialVersionUID = 5430199603403917938L;
 
     public ClassResolutionFailedException() {
-      super(
-          "Class "
-              + declaringClass
-              + " doesn't have method "
-              + name
-              + "("
-              + (parameterTypes == null ? "" : parameterTypes)
-              + ")"
-              + " : "
-              + returnType
-              + "; failed to resolve in superclasses and interfaces");
+      super("Class " + declaringClass + " doesn't have method " + name + "(" + (parameterTypes == null ? "" : parameterTypes)
+          + ")" + " : " + returnType + "; failed to resolve in superclasses and interfaces");
     }
 
     @Override
@@ -189,7 +177,19 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   @Override
   public SootMethod resolve() {
-    return resolve(null);
+    SootMethod cached = this.resolveCache;
+    // Use the cached SootMethod if available and still valid
+    if (cached == null || !isValidResolve(cached)) {
+      cached = resolve(null);
+      this.resolveCache = cached;
+    }
+    return cached;
+  }
+
+  private boolean isValidResolve(SootMethod m) {
+    return (this.isStatic() == m.isStatic()) && this.getDeclaringClass().equals(m.getDeclaringClass())
+        && this.getName().equals(m.getName()) && this.getReturnType().equals(m.getReturnType())
+        && this.getParameterTypes().equals(m.getParameterTypes());
   }
 
   @Override
@@ -198,38 +198,29 @@ public class SootMethodRefImpl implements SootMethodRef {
   }
 
   private void checkStatic(SootMethod method) {
-    if ((Options.v().wrong_staticness() == Options.wrong_staticness_fail
-            || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict)
-        && method.isStatic() != isStatic()
-        && !method.isPhantom()) {
-      throw new ResolutionFailedException(
-          "Resolved " + this + " to " + method + " which has wrong static-ness");
+    final int opt = Options.v().wrong_staticness();
+    if ((opt == Options.wrong_staticness_fail || opt == Options.wrong_staticness_fixstrict)
+        && method.isStatic() != isStatic() && !method.isPhantom()) {
+      throw new ResolutionFailedException("Resolved " + this + " to " + method + " which has wrong static-ness");
     }
   }
 
   protected SootMethod tryResolve(final StringBuilder trace) {
-
     // let's do a dispatch and allow abstract method for resolution
     // we do not have a base object for call so we just take the type of the declaring class
-    SootMethod resolved =
-        Scene.v()
-            .getOrMakeFastHierarchy()
-            .resolveMethod(declaringClass, declaringClass, name, parameterTypes, returnType, true);
+    SootMethod resolved = Scene.v().getOrMakeFastHierarchy().resolveMethod(declaringClass, declaringClass, name,
+        parameterTypes, returnType, true);
 
     if (resolved != null) {
       checkStatic(resolved);
       return resolved;
-    }
-    
-    else if (Scene.v().allowsPhantomRefs()) {
-      //Try to resolve in the current class and the interface, 
-      //if not found check for phantom class in the superclass.
-      SootClass selectedClass = declaringClass;
-      while (selectedClass != null) {
+    } else if (Scene.v().allowsPhantomRefs()) {
+      // Try to resolve in the current class and the interface,
+      // if not found check for phantom class in the superclass.
+      for (SootClass selectedClass = declaringClass; selectedClass != null;) {
         if (selectedClass.isPhantom()) {
-          SootMethod phantomMethod
-              = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() 
-                          ? Modifier.STATIC : 0);
+          SootMethod phantomMethod =
+              Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
           phantomMethod.setPhantom(true);
           phantomMethod = selectedClass.getOrAddMethod(phantomMethod);
           checkStatic(phantomMethod);
@@ -252,9 +243,7 @@ public class SootMethodRefImpl implements SootMethodRef {
         classToAddTo = declaringClass;
       }
 
-      SootMethod method =
-          Scene.v()
-              .makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
+      SootMethod method = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
       method.setPhantom(true);
       method = classToAddTo.getOrAddMethod(method);
       checkStatic(method);
@@ -270,19 +259,13 @@ public class SootMethodRefImpl implements SootMethodRef {
       return resolved;
     }
 
-    // when allowing phantom refs we also allow for references to
-    // non-existing methods;
-    // we simply create the methods on the fly; the method body will throw
-    // an appropriate error just in case the code *is* actually reached at runtime
-    boolean treatAsPhantomClass = Options.v().allow_phantom_refs();
-
-    // declaring class of dynamic invocations not known at compile time, treat as
-    // phantom class regardless if phantom classes are enabled
-    if (declaringClass.getName().equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
-      treatAsPhantomClass = true;
-    }
-
-    if (treatAsPhantomClass) {
+    // When allowing phantom refs we also allow for references to non-existing
+    // methods. We simply create the methods on the fly. The method body will
+    // throw an appropriate error just in case the code *is* actually reached
+    // at runtime. Furthermore, the declaring class of dynamic invocations is
+    // not known at compile time, treat as phantom class regardless if phantom
+    // classes are enabled or not.
+    if (Options.v().allow_phantom_refs() || SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME.equals(declaringClass.getName())) {
       return createUnresolvedErrorMethod(declaringClass);
     }
 
@@ -301,19 +284,20 @@ public class SootMethodRefImpl implements SootMethodRef {
   /**
    * Creates a method body that throws an "unresolved compilation error" message
    *
-   * @param declaringClass The class that was supposed to contain the method
+   * @param declaringClass
+   *          The class that was supposed to contain the method
    * @return The created SootMethod
    */
   private SootMethod createUnresolvedErrorMethod(SootClass declaringClass) {
-    SootMethod m =
-        Scene.v()
-            .makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
+    final Jimple jimp = Jimple.v();
+
+    SootMethod m = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
     int modifiers = Modifier.PUBLIC; // we don't know who will be calling us
     if (isStatic()) {
       modifiers |= Modifier.STATIC;
     }
     m.setModifiers(modifiers);
-    JimpleBody body = Jimple.v().newBody(m);
+    JimpleBody body = jimp.newBody(m);
     m.setActiveBody(body);
 
     final LocalGenerator lg = new LocalGenerator(body);
@@ -324,29 +308,20 @@ public class SootMethodRefImpl implements SootMethodRef {
 
     // exc = new Error
     RefType runtimeExceptionType = RefType.v("java.lang.Error");
-    NewExpr newExpr = Jimple.v().newNewExpr(runtimeExceptionType);
     Local exceptionLocal = lg.generateLocal(runtimeExceptionType);
-    AssignStmt assignStmt = Jimple.v().newAssignStmt(exceptionLocal, newExpr);
+    AssignStmt assignStmt = jimp.newAssignStmt(exceptionLocal, jimp.newNewExpr(runtimeExceptionType));
     body.getUnits().add(assignStmt);
 
     // exc.<init>(message)
-    SootMethodRef cref =
-        Scene.v()
-            .makeConstructorRef(
-                runtimeExceptionType.getSootClass(),
-                Collections.<Type>singletonList(RefType.v("java.lang.String")));
-    SpecialInvokeExpr constructorInvokeExpr =
-        Jimple.v()
-            .newSpecialInvokeExpr(
-                exceptionLocal,
-                cref,
-                StringConstant.v(
-                    "Unresolved compilation error: Method " + getSignature() + " does not exist!"));
-    InvokeStmt initStmt = Jimple.v().newInvokeStmt(constructorInvokeExpr);
+    SootMethodRef cref = Scene.v().makeConstructorRef(runtimeExceptionType.getSootClass(),
+        Collections.<Type>singletonList(RefType.v("java.lang.String")));
+    SpecialInvokeExpr constructorInvokeExpr = jimp.newSpecialInvokeExpr(exceptionLocal, cref,
+        StringConstant.v("Unresolved compilation error: Method " + getSignature() + " does not exist!"));
+    InvokeStmt initStmt = jimp.newInvokeStmt(constructorInvokeExpr);
     body.getUnits().insertAfter(initStmt, assignStmt);
 
     // throw exc
-    body.getUnits().insertAfter(Jimple.v().newThrowStmt(exceptionLocal), initStmt);
+    body.getUnits().insertAfter(jimp.newThrowStmt(exceptionLocal), initStmt);
 
     return declaringClass.getOrAddMethod(m);
   }
@@ -360,13 +335,11 @@ public class SootMethodRefImpl implements SootMethodRef {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    NumberedString subsig = getSubSignature();
     result = prime * result + ((declaringClass == null) ? 0 : declaringClass.hashCode());
     result = prime * result + (isStatic ? 1231 : 1237);
     result = prime * result + ((name == null) ? 0 : name.hashCode());
     result = prime * result + ((parameterTypes == null) ? 0 : parameterTypes.hashCode());
     result = prime * result + ((returnType == null) ? 0 : returnType.hashCode());
-    result = prime * result + ((subsig == null) ? 0 : subsig.hashCode());
     return result;
   }
 
@@ -375,51 +348,39 @@ public class SootMethodRefImpl implements SootMethodRef {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (obj == null || this.getClass() != obj.getClass()) {
       return false;
     }
     SootMethodRefImpl other = (SootMethodRefImpl) obj;
-    if (declaringClass == null) {
+    if (this.isStatic != other.isStatic) {
+      return false;
+    }
+    if (this.declaringClass == null) {
       if (other.declaringClass != null) {
         return false;
       }
-    } else if (!declaringClass.equals(other.declaringClass)) {
+    } else if (!this.declaringClass.equals(other.declaringClass)) {
       return false;
     }
-    if (isStatic != other.isStatic) {
-      return false;
-    }
-    if (name == null) {
+    if (this.name == null) {
       if (other.name != null) {
         return false;
       }
-    } else if (!name.equals(other.name)) {
+    } else if (!this.name.equals(other.name)) {
       return false;
     }
-    if (parameterTypes == null) {
+    if (this.parameterTypes == null) {
       if (other.parameterTypes != null) {
         return false;
       }
-    } else if (!parameterTypes.equals(other.parameterTypes)) {
+    } else if (!this.parameterTypes.equals(other.parameterTypes)) {
       return false;
     }
-    if (returnType == null) {
+    if (this.returnType == null) {
       if (other.returnType != null) {
         return false;
       }
-    } else if (!returnType.equals(other.returnType)) {
-      return false;
-    }
-    NumberedString subsig = getSubSignature();
-
-    if (subsig == null) {
-      if (other.getSubSignature() != null) {
-        return false;
-      }
-    } else if (!subsig.equals(other.getSubSignature())) {
+    } else if (!this.returnType.equals(other.returnType)) {
       return false;
     }
     return true;
