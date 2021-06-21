@@ -25,8 +25,10 @@ package soot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeStmt;
@@ -86,11 +88,20 @@ public class SootMethodRefImpl implements SootMethodRef {
 
     this.declaringClass = declaringClass;
     this.name = name;
-    // initialize with unmodifiable collection
-    this.parameterTypes =
-        (parameterTypes == null) ? Collections.emptyList() : Collections.unmodifiableList(new ArrayList<>(parameterTypes));
+    this.parameterTypes = createParameterTypeList(parameterTypes);
     this.returnType = returnType;
     this.isStatic = isStatic;
+  }
+
+  // Not everbody likes creating a copy of the parameter type list. If you're careful, you can
+  // safe precious CPU cycles and a bit of memory.
+  protected List<Type> createParameterTypeList(List<Type> parameterTypes) {
+    // initialize with unmodifiable collection
+    if (parameterTypes == null) {
+      return Collections.emptyList();
+    } else {
+      return Collections.unmodifiableList(new ArrayList<>(parameterTypes));
+    }
   }
 
   @Override
@@ -219,8 +230,8 @@ public class SootMethodRefImpl implements SootMethodRef {
       // if not found check for phantom class in the superclass.
       for (SootClass selectedClass = declaringClass; selectedClass != null;) {
         if (selectedClass.isPhantom()) {
-          SootMethod phantomMethod =
-              Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
+          SootMethod phantomMethod
+              = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
           phantomMethod.setPhantom(true);
           phantomMethod = selectedClass.getOrAddMethod(phantomMethod);
           checkStatic(phantomMethod);
