@@ -1015,8 +1015,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
         result = result.add(mgr.RESOLVE_CLASS_ERRORS);
       }
       Value count = expr.getSize();
-      if ((!(count instanceof IntConstant))
-          || (((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO))) {
+      if ((!(count instanceof IntConstant)) || (((IntConstant) count).isLessThan(INT_CONSTANT_ZERO))) {
         result = result.add(mgr.NEGATIVE_ARRAY_SIZE_EXCEPTION);
       }
       result = result.add(mightThrow(count));
@@ -1026,8 +1025,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
       result = result.add(mgr.RESOLVE_CLASS_ERRORS);
       for (int i = 0; i < expr.getSizeCount(); i++) {
         Value count = expr.getSize(i);
-        if ((!(count instanceof IntConstant))
-            || (((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO))) {
+        if ((!(count instanceof IntConstant)) || (((IntConstant) count).isLessThan(INT_CONSTANT_ZERO))) {
           result = result.add(mgr.NEGATIVE_ARRAY_SIZE_EXCEPTION);
         }
         result = result.add(mightThrow(count));
