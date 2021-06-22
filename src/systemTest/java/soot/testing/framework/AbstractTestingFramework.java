@@ -256,22 +256,35 @@ public abstract class AbstractTestingFramework {
    * @return
    */
   public static Class<?> generateClass(SootClass sc) {
-    // First, convert all method Body instances to BafBody
-    for (SootMethod m : sc.getMethods()) {
-      convertBodyToBaf(m);
-    }
-    // Then use ASM to generate a byte[] for the classfile
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    new BafASMBackend(sc, Options.v().java_version()).generateClassFile(os);
-    final byte[] classBytes = os.toByteArray();
-
-    // NOTE: "new ClassLoader" ensures every class loaded is distinct even when they have the same name
+    final byte[] classBytes = generateBytecode(sc);
+    // Using a new ClassLoader instance for each call to this method ensures every
+    // class loaded is a distinct Class instance, even when they have the same name.
     return new ClassLoader() {
       @Override
       public Class findClass(String name) {
         return defineClass(name, classBytes, 0, classBytes.length);
       }
     }.findClass(sc.getName());
+  }
+
+  /**
+   * Convert the given {@link SootClass} to JVM bytecode.
+   * 
+   * @param sc
+   * @return
+   */
+  public static byte[] generateBytecode(SootClass sc) {
+    // First, convert all method Body instances to BafBody
+    for (SootMethod m : sc.getMethods()) {
+      if (m.isConcrete()) {
+        convertBodyToBaf(m);
+      }
+    }
+
+    // Then use ASM to generate a byte[] for the classfile
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    new BafASMBackend(sc, Options.v().java_version()).generateClassFile(os);
+    return os.toByteArray();
   }
 
   /**
