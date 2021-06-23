@@ -14422,7 +14422,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultBool = false;
 		}
 
-		setshimpleextended_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Extended SSA (SSI)", "p phase-option", "shimple","extended", "\nIf enabled, Shimple will created extended SSA (SSI) form.", defaultBool)));
+		setshimpleextended_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Extended SSA (SSI)", "p phase-option", "shimple","extended", "\nIf enabled, Shimple will create extended SSA (SSI) form.", defaultBool)));
 
 		defKey = "p phase-option"+" "+"shimple"+" "+"debug";
 		defKey = defKey.trim();
