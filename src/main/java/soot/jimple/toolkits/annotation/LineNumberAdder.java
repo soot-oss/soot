@@ -34,7 +34,6 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
 import soot.jimple.IdentityStmt;
-import soot.jimple.Stmt;
 import soot.tagkit.LineNumberTag;
 import soot.util.Chain;
 
@@ -60,9 +59,9 @@ public class LineNumberAdder extends SceneTransformer {
           continue;
         }
         Chain<Unit> units = meth.retrieveActiveBody().getUnits();
-        Stmt s = (Stmt) units.getFirst();
+        Unit s = units.getFirst();
         while (s instanceof IdentityStmt) {
-          s = (Stmt) units.getSuccOf(s);
+          s = units.getSuccOf(s);
         }
         LineNumberTag tag = (LineNumberTag) s.getTag(LineNumberTag.NAME);
         if (tag != null) {
@@ -74,9 +73,9 @@ public class LineNumberAdder extends SceneTransformer {
           continue;
         }
         Chain<Unit> units = meth.retrieveActiveBody().getUnits();
-        Stmt s = (Stmt) units.getFirst();
+        Unit s = units.getFirst();
         while (s instanceof IdentityStmt) {
-          s = (Stmt) units.getSuccOf(s);
+          s = units.getSuccOf(s);
         }
         LineNumberTag tag = (LineNumberTag) s.getTag(LineNumberTag.NAME);
         if (tag != null) {

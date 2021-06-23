@@ -23,12 +23,14 @@ package soot.asm;
  */
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Trap;
 import soot.Unit;
 import soot.UnitBox;
+import soot.UnitPatchingChain;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.GotoStmt;
@@ -51,8 +53,8 @@ public class CastAndReturnInliner extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    Iterator<Unit> it = body.getUnits().snapshotIterator();
-    while (it.hasNext()) {
+    final UnitPatchingChain units = body.getUnits();
+    for (Iterator<Unit> it = units.snapshotIterator(); it.hasNext();) {
       Unit u = it.next();
       if (u instanceof GotoStmt) {
         GotoStmt gtStmt = (GotoStmt) u;
@@ -61,7 +63,7 @@ public class CastAndReturnInliner extends BodyTransformer {
           if (assign.getRightOp() instanceof CastExpr) {
             CastExpr ce = (CastExpr) assign.getRightOp();
             // We have goto that ends up at a cast statement
-            Unit nextStmt = body.getUnits().getSuccOf(assign);
+            Unit nextStmt = units.getSuccOf(assign);
             if (nextStmt instanceof ReturnStmt) {
               ReturnStmt retStmt = (ReturnStmt) nextStmt;
               if (retStmt.getOp() == assign.getLeftOp()) {
@@ -77,10 +79,11 @@ public class CastAndReturnInliner extends BodyTransformer {
                   }
                 }
 
-                while (!gtStmt.getBoxesPointingToThis().isEmpty()) {
-                  gtStmt.getBoxesPointingToThis().get(0).setUnit(newStmt);
+                final List<UnitBox> boxesRefGtStmt = gtStmt.getBoxesPointingToThis();
+                while (!boxesRefGtStmt.isEmpty()) {
+                  boxesRefGtStmt.get(0).setUnit(newStmt);
                 }
-                body.getUnits().swapWith(gtStmt, newStmt);
+                units.swapWith(gtStmt, newStmt);
               }
             }
           }
@@ -88,5 +91,4 @@ public class CastAndReturnInliner extends BodyTransformer {
       }
     }
   }
-
 }

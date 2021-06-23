@@ -329,8 +329,22 @@ public class Scene {
       } else if (Options.v().prepend_classpath()) {
         cp += File.pathSeparatorChar + defaultClassPath();
       }
+      List<String> dirs = new LinkedList<String>();
+      dirs.addAll(Options.v().process_dir());
+      // Add process-jar-dirs
+      List<String> jarDirs = Options.v().process_jar_dir();
+      if (!jarDirs.isEmpty()) {
+        for (String jarDirName : jarDirs) {
+          File jarDir = new File(jarDirName);
+          File[] contents = jarDir.listFiles();
+          for (File f : contents) {
+            if (f.getAbsolutePath().endsWith(".jar")) {
+              dirs.add(f.getAbsolutePath());
+            }
+          }
+        }
+      }
       // Add process-dirs (if applicable)
-      List<String> dirs = Options.v().process_dir();
       if (!dirs.isEmpty()) {
         StringBuilder pds = new StringBuilder();
         for (String path : dirs) {
@@ -1879,21 +1893,27 @@ public class Scene {
   }
 
   public boolean isExcluded(SootClass sc) {
-    String name = sc.getName();
+    return isExcluded(sc.getName());
+  }
+
+  public boolean isExcluded(String className) {
     for (String pkg : excludedPackages) {
-      if (name.equals(pkg)
-          || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && name.startsWith(pkg.substring(0, pkg.length() - 1)))) {
-        return !isIncluded(sc);
+      if (className.equals(pkg)
+          || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && className.startsWith(pkg.substring(0, pkg.length() - 1)))) {
+        return !isIncluded(className);
       }
     }
     return false;
   }
 
   public boolean isIncluded(SootClass sc) {
-    String name = sc.getName();
-    for (String inc : Options.v().include()) {
-      if (name.equals(inc)
-          || ((inc.endsWith(".*") || inc.endsWith("$*")) && name.startsWith(inc.substring(0, inc.length() - 1)))) {
+    return isIncluded(sc.getName());
+  }
+
+  public boolean isIncluded(String className) {
+    for (String pkg : Options.v().include()) {
+      if (className.equals(pkg)
+          || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && className.startsWith(pkg.substring(0, pkg.length() - 1)))) {
         return true;
       }
     }

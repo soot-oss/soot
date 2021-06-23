@@ -1,3 +1,5 @@
+package soot;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -19,7 +21,6 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package soot;
 
 import com.google.common.base.Optional;
 
@@ -34,7 +35,7 @@ import java.util.Set;
 import soot.dava.toolkits.base.misc.PackageNamer;
 
 /**
- * Represetns a Module-Info file
+ * Represents a Module-Info file.
  * 
  * @author Andreas Dann
  */
@@ -42,27 +43,20 @@ public class SootModuleInfo extends SootClass {
 
   public static final String MODULE_INFO_FILE = "module-info.class";
   public static final String MODULE_INFO = "module-info";
-  private HashSet<String> modulePackages = new HashSet<>();
 
   private static final String ALL_MODULES = "EVERYONE_MODULE";
 
-  public boolean isAutomaticModule() {
-    return isAutomaticModule;
-  }
+  private final HashSet<String> modulePackages = new HashSet<>();
 
-  public void setAutomaticModule(boolean automaticModule) {
-    isAutomaticModule = automaticModule;
-  }
+  private final Map<SootModuleInfo, Integer> requiredModules = new HashMap<>();
+
+  // TODO: change String to SootClassReference
+  private final Map<String, List<String>> exportedPackages = new HashMap<>();
+
+  // TODO: change String to SootClassReference
+  private final Map<String, List<String>> openedPackages = new HashMap<>();
 
   private boolean isAutomaticModule;
-
-  private Map<SootModuleInfo, Integer> requiredModules = new HashMap<SootModuleInfo, Integer>();
-
-  // TODO: change String to SootClassReference
-  private Map<String, List<String>> exportedPackages = new HashMap<String, List<String>>();
-
-  // TODO: change String to SootClassReference
-  private Map<String, List<String>> openedPackages = new HashMap<String, List<String>>();
 
   public SootModuleInfo(String name, int modifiers, String moduleName) {
     super(name, modifiers, moduleName);
@@ -75,6 +69,14 @@ public class SootModuleInfo extends SootClass {
   public SootModuleInfo(String name, String moduleName, boolean isAutomatic) {
     super(name, moduleName);
     this.isAutomaticModule = isAutomatic;
+  }
+
+  public boolean isAutomaticModule() {
+    return isAutomaticModule;
+  }
+
+  public void setAutomaticModule(boolean automaticModule) {
+    isAutomaticModule = automaticModule;
   }
 
   private Map<String, List<String>> getExportedPackages() {
@@ -130,23 +132,23 @@ public class SootModuleInfo extends SootClass {
   }
 
   public void addExportedPackage(String packaze, String... exportedToModules) {
-    String packageName = PackageNamer.v().get_FixedPackageName(packaze).replace("/", ".");
-    List<String> qualifiedExports = Collections.singletonList(SootModuleInfo.ALL_MODULES);
+    List<String> qualifiedExports;
     if (exportedToModules != null && exportedToModules.length > 0) {
       qualifiedExports = Arrays.asList(exportedToModules);
+    } else {
+      qualifiedExports = Collections.singletonList(SootModuleInfo.ALL_MODULES);
     }
-    exportedPackages.put(packageName, qualifiedExports);
-
+    exportedPackages.put(PackageNamer.v().get_FixedPackageName(packaze).replace('/', '.'), qualifiedExports);
   }
 
   public void addOpenedPackage(String packaze, String... openedToModules) {
-    String packageName = PackageNamer.v().get_FixedPackageName(packaze).replace("/", ".");
-    List<String> qualifiedOpens = Collections.singletonList(SootModuleInfo.ALL_MODULES);
+    List<String> qualifiedOpens;
     if (openedToModules != null && openedToModules.length > 0) {
       qualifiedOpens = Arrays.asList(openedToModules);
+    } else {
+      qualifiedOpens = Collections.singletonList(SootModuleInfo.ALL_MODULES);
     }
-    openedPackages.put(packageName, qualifiedOpens);
-
+    openedPackages.put(PackageNamer.v().get_FixedPackageName(packaze).replace('/', '.'), qualifiedOpens);
   }
 
   public String getModuleName() {
@@ -182,12 +184,11 @@ public class SootModuleInfo extends SootClass {
   }
 
   public boolean opensPackage(String packaze, String toModule) {
-
-    if (packaze.equalsIgnoreCase(SootModuleInfo.MODULE_INFO)) {
+    if (SootModuleInfo.MODULE_INFO.equalsIgnoreCase(packaze)) {
       return true;
     }
 
-    /// all packages are exported/open to self
+    // all packages are exported/open to self
     if (this.getModuleName().equals(toModule)) {
       return this.modulePackages.contains(packaze);
     }
@@ -205,16 +206,11 @@ public class SootModuleInfo extends SootClass {
     if (qualifiedOpens.contains(ALL_MODULES)) {
       return true;
     }
-    if (toModule != ALL_MODULES && qualifiedOpens.contains(toModule)) {
-      return true;
-    }
-
-    return false;
+    return (toModule != ALL_MODULES) && qualifiedOpens.contains(toModule);
   }
 
   public boolean exportsPackage(String packaze, String toModule) {
-
-    if (packaze.equalsIgnoreCase(SootModuleInfo.MODULE_INFO)) {
+    if (SootModuleInfo.MODULE_INFO.equalsIgnoreCase(packaze)) {
       return true;
     }
 
@@ -236,24 +232,18 @@ public class SootModuleInfo extends SootClass {
     if (qualifiedExport.contains(ALL_MODULES)) {
       return true;
     }
-    if (toModule != ALL_MODULES && qualifiedExport.contains(toModule)) {
-      return true;
-    }
-
-    return false;
+    return (toModule != ALL_MODULES) && qualifiedExport.contains(toModule);
   }
 
   public Set<SootModuleInfo> getRequiredPublicModules() {
     Set<SootModuleInfo> requiredPublic = new HashSet<>();
     // check if exported packages is "requires public"
     for (Map.Entry<SootModuleInfo, Integer> entry : this.requiredModules.entrySet()) {
-      if ((entry.getValue() & Modifier.REQUIRES_TRANSITIVE) != 0) // check if module is reexported via "requires public"
-      {
+      // check if module is reexported via "requires public"
+      if ((entry.getValue() & Modifier.REQUIRES_TRANSITIVE) != 0) {
         requiredPublic.add(entry.getKey());
       }
-
     }
-
     return requiredPublic;
   }
 
@@ -264,5 +254,4 @@ public class SootModuleInfo extends SootClass {
   public boolean moduleContainsPackage(String packageName) {
     return this.modulePackages.contains(packageName);
   }
-
 }

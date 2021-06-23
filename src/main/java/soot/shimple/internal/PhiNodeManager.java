@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -140,7 +141,7 @@ public class PhiNodeManager {
 
         // initialise worklist
         {
-          assert workList.isEmpty();
+          assert (workList.isEmpty());
           List<Block> def_points = e.getValue();
           // if the local is only defined once, no need for phi nodes
           if (def_points.size() == 1) {
@@ -385,12 +386,10 @@ public class PhiNodeManager {
       PhiExpr phi = Shimple.getPhiExpr(unit);
       if (phi != null) {
         Local lhsLocal = Shimple.getLhsLocal(unit);
-        for (int i = 0, e = phi.getArgCount(); i < e; i++) {
-          Value phiValue = phi.getValue(i);
-          equivStmts.add(jimp.newAssignStmt(lhsLocal, phiValue));
-          predBoxes.add(phi.getArgBox(i));
+        for (ValueUnitPair vup : phi.getArgs()) {
+          predBoxes.add(vup);
+          equivStmts.add(jimp.newAssignStmt(lhsLocal, vup.getValue()));
         }
-
         phiNodes.add(unit);
       }
     }
@@ -399,13 +398,12 @@ public class PhiNodeManager {
       throw new RuntimeException("Assertion failed.");
     }
 
-    /* Avoid Concurrent Modification exceptions. */
-    for (int i = 0, e = equivStmts.size(); i < e; i++) {
-      AssignStmt stmt = equivStmts.get(i);
-      Unit pred = predBoxes.get(i).getUnit();
+    for (ListIterator<ValueUnitPair> it = predBoxes.listIterator(); it.hasNext();) {
+      Unit pred = it.next().getUnit();
       if (pred == null) {
         throw new RuntimeException("Assertion failed.");
       }
+      AssignStmt stmt = equivStmts.get(it.previousIndex());
 
       // if we need to insert the copy statement *before* an
       // instruction that happens to be *using* the Local being
@@ -426,8 +424,7 @@ public class PhiNodeManager {
 
         if (needPriming) {
           body.getLocals().add(savedLocal);
-          AssignStmt copyStmt = jimp.newAssignStmt(savedLocal, lhsLocal);
-          units.insertBefore(copyStmt, pred);
+          units.insertBefore(jimp.newAssignStmt(savedLocal, lhsLocal), pred);
         }
 
         // this is all we really wanted to do!

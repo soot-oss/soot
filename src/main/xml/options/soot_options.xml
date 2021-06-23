@@ -542,8 +542,9 @@
             <alias>process-path</alias>
             <alias>process-dir</alias>
             <set_arg_label>dir</set_arg_label>
-            <short_desc>Process all classes found in
-                <use_arg_label/>
+            <short_desc>
+                Process all classes found in <use_arg_label/> 
+                (but not classes within JAR files in <use_arg_label/>, use <tt>process-jar-dir</tt> for that)
             </short_desc>
             <long_desc>
                 <p>
@@ -565,6 +566,23 @@
                     contains <tt>subA/subB/MyClass.class</tt>, for
                     instance, then Soot assumes <tt>MyClass</tt> is in package
                     <tt>subA.subB</tt>.
+                </p>
+            </long_desc>
+        </listopt>
+        <listopt>
+            <name>Process JAR Directory</name>
+            <alias>process-jar-dir</alias>
+            <set_arg_label>dir</set_arg_label>
+            <short_desc>Process all classes found in JAR files found in
+                <use_arg_label/>
+            </short_desc>
+            <long_desc>
+                <p>
+                    Add all classes found in JAR files found in
+                    <use_arg_label/>
+                    to the set of argument classes
+                    which is analyzed and transformed by Soot. You can specify the
+                    option more than once, to add argument classes from multiple directories.
                 </p>
             </long_desc>
         </listopt>
@@ -5171,7 +5189,7 @@ This locking scheme aims to achieve simple fine-grained locking.
                     <default>false</default>
                     <short_desc>Compute extended SSA (SSI) form.</short_desc>
                     <long_desc>
-                        If enabled, Shimple will created extended SSA (SSI) form.
+                        If enabled, Shimple will create extended SSA (SSI) form.
                     </long_desc>
                 </boolopt>
                 <boolopt>
@@ -7166,7 +7184,7 @@ This locking scheme aims to achieve simple fine-grained locking.
                 <p>
                     <code>-trim-cfgs</code>
                     is shorthand for <code>-throw-analysis
-                    unit -omit-excepting-unit-edges -p jb.tt enabled:true</code>.
+                        unit -omit-excepting-unit-edges -p jb.tt enabled:true</code>.
                 </p>
             </long_desc>
         </macroopt>
