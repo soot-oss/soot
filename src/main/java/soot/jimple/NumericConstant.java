@@ -23,6 +23,9 @@ package soot.jimple;
  */
 
 public abstract class NumericConstant extends Constant {
+
+  private static final long serialVersionUID = -2757437961775194243L;
+
   // PTC 1999/06/28
   public abstract NumericConstant add(NumericConstant c);
 
@@ -37,6 +40,8 @@ public abstract class NumericConstant extends Constant {
   public abstract NumericConstant equalEqual(NumericConstant c);
 
   public abstract NumericConstant notEqual(NumericConstant c);
+
+  public abstract boolean isLessThan(NumericConstant c);
 
   public abstract NumericConstant lessThan(NumericConstant c);
 

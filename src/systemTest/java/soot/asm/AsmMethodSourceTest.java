@@ -82,6 +82,7 @@ public class AsmMethodSourceTest extends AbstractTestingFramework {
     // This test ensures that local names are preserved in the Jimple code.
     final String className = "soot.asm.LocalNaming";
     final String[] params = { "java.lang.String", "java.lang.Integer", "byte[]", "java.lang.StringBuilder" };
+    Options.v().setPhaseOption("jb.sils", "enabled:false");
     SootMethod target = prepareTarget(methodSigFromComponents(className, "void", "localNaming", params), className);
 
     Body body = target.retrieveActiveBody();
@@ -104,6 +105,23 @@ public class AsmMethodSourceTest extends AbstractTestingFramework {
 
     // No Local name contains "$stack"
     assertTrue(localNames.stream().allMatch(n -> !n.contains("$stack")));
+  }
+
+  /**
+   *  This is the case phase jb.sils is disabled.
+   *  see the case phase jb.sils is enabled in {@link SilsTest#testSilsEnabled()}
+   */
+  @Test
+  public void testSilsDisabled() {
+    final String className = "soot.asm.LocalNaming";
+    final String[] params = {};
+    SootMethod target = prepareTarget(methodSigFromComponents(className, "void", "test", params), className);
+    Body body = target.retrieveActiveBody();
+    Set<String> localNames = body.getLocals().stream().map(Local::getName).collect(Collectors.toSet());
+    // test if all expected Local names are present
+    assertTrue(localNames.contains("d"));
+    assertTrue(localNames.contains("f"));
+    assertTrue(localNames.contains("arr"));
   }
 
   @Test

@@ -958,6 +958,9 @@ public class PackManager {
         // whole shimple or not?
         {
           Body body = m.retrieveActiveBody();
+          if (!m.hasActiveBody()) {
+            continue;
+          }
           if (body instanceof ShimpleBody) {
             sBody = (ShimpleBody) body;
             if (!sBody.isSSA()) {
@@ -993,30 +996,30 @@ public class PackManager {
         getPack("jop").apply(body);
         getPack("jap").apply(body);
         if (tc != null) {
-          // System.out.println("collecting body tags");
           tc.collectBodyTags(body);
         }
       }
 
       // getPack("cfg").apply(m.retrieveActiveBody());
-
-      if (produceGrimp) {
-        GrimpBody newBody = Grimp.v().newBody(m.getActiveBody(), "gb");
-        m.setActiveBody(newBody);
-        getPack("gop").apply(newBody);
-      } else if (produceBaf) {
-        m.setActiveBody(convertJimpleBodyToBaf(m));
+      if (m.hasActiveBody()) {
+        if (produceGrimp) {
+          GrimpBody newBody = Grimp.v().newBody(m.getActiveBody(), "gb");
+          m.setActiveBody(newBody);
+          getPack("gop").apply(newBody);
+        } else if (produceBaf) {
+          m.setActiveBody(convertJimpleBodyToBaf(m));
+        }
       }
     }
 
     if (tc != null) {
       processXMLForClass(c, tc);
-      // System.out.println("processed xml for class");
     }
 
     if (produceDava) {
       for (SootMethod m : c.getMethods()) {
-        if (!m.isConcrete()) {
+        if (!m.isConcrete() || !m.hasActiveBody()) {
+          //note: abnormal class can have a concrete method without body.
           continue;
         }
         // all the work done in decompilation is done in DavaBody which

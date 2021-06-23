@@ -904,7 +904,7 @@ public class FastHierarchy {
 
   /**
    * Searches the given class for a method that is signature polymorphic according to the given facts, i.e., matches name and
-   * parameter types and ensures that the return type is a an equal or subtype of the given mehtod's subtype.
+   * parameter types and ensures that the return type is a an equal or subtype of the given method's subtype.
    *
    * @param concreteType
    * @return

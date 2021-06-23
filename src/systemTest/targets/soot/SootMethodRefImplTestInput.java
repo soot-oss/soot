@@ -1,10 +1,10 @@
-package soot.asm;
+package soot;
 
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 2020 Timothy Hoffman
+ * Copyright (C) 2021 Timothy Hoffman
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,48 +22,18 @@ package soot.asm;
  * #L%
  */
 
-import java.io.PrintStream;
-
 /**
- * 
  * @author Timothy Hoffman
  */
-public class LocalNaming {
+public class SootMethodRefImplTestInput {
 
-  public void localNaming(String alpha, Integer beta, byte[] gamma, StringBuilder delta) {
-    byte epsilon = 23;
-    gamma[0] = epsilon;
-
-    delta.append(alpha);
-    delta.append(beta);
-
-    long zeta = (long) 'Z';
-    long iota = zeta * 2L;
-    Long eta = Long.valueOf(iota);
-    long theta = eta;
-
-    delta.append(zeta);
-    delta.append(theta);
-
-    PrintStream omega = System.out;
-    omega.println(delta);
+  public SootMethodRefImplTestInput() {
   }
 
-  static class Config{
-    static int getD(){
-      return 0;
-    }
-    static int getF(){
-      return 1;
-    }
+  public void m1() {
+    m2();
   }
 
-  public void test(){
-    int d = Config.getD();
-    int f = Config.getF();
-    int[] arr = new int[2];
-    arr[0] = d;
-    arr[1] = f;
-    System.out.println(arr);
+  public void m2() {
   }
 }
