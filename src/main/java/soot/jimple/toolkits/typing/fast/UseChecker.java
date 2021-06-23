@@ -274,11 +274,11 @@ public class UseChecker extends AbstractStmtSwitch {
 
       // try to force Type integrity
       final ArrayType at;
-      if (this.tg.get(base) instanceof ArrayType) {
-        at = (ArrayType) this.tg.get(base);
+      final Type bt = this.tg.get(base);
+      if (bt instanceof ArrayType) {
+        at = (ArrayType) bt;
       } else {
         Type et = null;
-        Type bt = this.tg.get(base);
 
         // If we have a type of java.lang.Object and access it like an object,
         // this could lead to any kind of object, so we have to look at the uses.

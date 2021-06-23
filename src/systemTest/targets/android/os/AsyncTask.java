@@ -1,48 +1,45 @@
-package soot.jimple;
+package android.os;
 
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * Copyright (C) 2021 Qidan He
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+//A Mock for android.os.AsyncTask
 
-import soot.Unit;
-import soot.UnitPrinter;
-import soot.ValueBox;
+public abstract class AsyncTask<Params, Progress, Result> {
+    protected Result doInBackground(Params... params) {
+        return null;
+    }
 
-public interface Stmt extends Unit {
+    protected void onPostExecute(Result result) {
 
-  public boolean containsInvokeExpr();
+    }
 
-  public InvokeExpr getInvokeExpr();
+    protected void onPreExecute() {
 
-  public ValueBox getInvokeExprBox();
+    }
 
-  public boolean containsArrayRef();
+    protected void onProgressUpdate(Progress... values) {
+    }
 
-  public ArrayRef getArrayRef();
-
-  public ValueBox getArrayRefBox();
-
-  public boolean containsFieldRef();
-
-  public FieldRef getFieldRef();
-
-  public ValueBox getFieldRefBox();
+    public final AsyncTask<Params, Progress, Result> execute(Params... params) {
+        return null;
+    }
 }

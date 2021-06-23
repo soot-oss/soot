@@ -559,7 +559,15 @@
          </tr>
          <tr>
             <td><tt>-process-path <var>dir</var></tt><br><tt>-process-dir <var>dir</var></tt><br></td>
-            <td colspan="2">Process all classes found in
+            <td colspan="2">
+               Process all classes found in <var>dir</var> 
+               (but not classes within JAR files in <var>dir</var>, use process-jar-dir for that)
+               
+            </td>
+         </tr>
+         <tr>
+            <td><tt>-process-jar-dir <var>dir</var></tt><br></td>
+            <td colspan="2">Process all classes found in JAR files found in
                <var>dir</var>
                
             </td>
@@ -5370,7 +5378,7 @@
             )
             
             <p>
-               If enabled, Shimple will created extended SSA (SSI) form.
+               If enabled, Shimple will create extended SSA (SSI) form.
                
             </p>
          </li>
