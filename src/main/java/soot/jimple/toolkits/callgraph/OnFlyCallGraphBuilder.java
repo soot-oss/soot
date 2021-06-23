@@ -621,7 +621,7 @@ public class OnFlyCallGraphBuilder {
         }
 
         final InstanceInvokeExpr iie = site.iie();
-        if (iie instanceof SpecialInvokeExpr && !site.kind().isFake()) {
+        if (iie instanceof SpecialInvokeExpr && !Kind.isFake(site.kind())) {
           SootMethod target = virtualCalls.resolveSpecial(iie.getMethodRef(), site.getContainer(), appOnly);
           // if the call target resides in a phantom class then "target" will be null;
           // simply do not add the target in that case
@@ -648,7 +648,7 @@ public class OnFlyCallGraphBuilder {
                   }
                 }
                 ref = sc.makeMethodRef(receiverClass, methodName, params, sc.getTypeUnsafe(returnType),
-                    site.kind().isStatic());
+                    Kind.isStatic(site.kind()));
               }
             }
           } else {
