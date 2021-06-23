@@ -30,6 +30,8 @@ package soot.jimple;
  */
 public abstract class RealConstant extends NumericConstant {
 
+  private static final long serialVersionUID = -5624501180441017529L;
+
   /**
    * Performs the indicated floating point comparison. For {@code NaN} comparisons {@code -1} is returned.
    *

@@ -64,7 +64,7 @@ public class MethodThrowableSetTest {
     Options.v().set_src_prec(Options.src_prec_only_class);
     Options.v().set_allow_phantom_refs(true);
     Options.v().set_output_format(Options.output_format_none);
-
+    Options.v().set_drop_bodies_after_load(false);
     Scene.v().addBasicClass(TARGET_CLASS);
     Scene.v().loadNecessaryClasses();
 

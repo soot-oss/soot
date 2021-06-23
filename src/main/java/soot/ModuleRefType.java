@@ -1,3 +1,5 @@
+package soot;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -19,7 +21,6 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package soot;
 
 import com.google.common.base.Optional;
 

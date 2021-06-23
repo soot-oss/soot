@@ -137,7 +137,7 @@ public class SynchronizerManager {
       // Add a unique field named [__]class$name
       String n = "class$" + sc.getName().replace('.', '$');
       while (sc.declaresFieldByName(n)) {
-        n = "_" + n;
+        n = '_' + n;
       }
 
       classCacher = Scene.v().makeSootField(n, RefType.v("java.lang.Class"), Modifier.STATIC);
@@ -159,7 +159,7 @@ public class SynchronizerManager {
       if (!oops) {
         break;
       }
-      lName = "_" + lName;
+      lName = '_' + lName;
     }
 
     final Jimple jimp = Jimple.v();
@@ -193,7 +193,7 @@ public class SynchronizerManager {
    */
   public SootMethod getClassFetcherFor(final SootClass c, boolean createNewAsShimple) {
     final String prefix = '<' + c.getName().replace('.', '$') + ": java.lang.Class ";
-    for (String methodName = "class$"; true; methodName = "_" + methodName) {
+    for (String methodName = "class$"; true; methodName = '_' + methodName) {
       SootMethod m = c.getMethodByNameUnsafe(methodName);
       if (m == null) {
         return createClassFetcherFor(c, methodName, createNewAsShimple);

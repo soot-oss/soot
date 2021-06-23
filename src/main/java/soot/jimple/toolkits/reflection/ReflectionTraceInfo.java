@@ -72,16 +72,17 @@ public class ReflectionTraceInfo {
       throw new InternalError("Trace based refection model enabled but no trace file given!?");
     } else {
       try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(logFile)))) {
-        Set<String> ignoredKinds = new HashSet<String>();
+        final Scene sc = Scene.v();
+        final Set<String> ignoredKinds = new HashSet<String>();
         for (String line; (line = reader.readLine()) != null;) {
-          if (line.length() == 0) {
+          if (line.isEmpty()) {
             continue;
           }
-          String[] portions = line.split(";", -1);
-          String kind = portions[0];
-          String target = portions[1];
-          String source = portions[2];
-          int lineNumber = portions[3].length() == 0 ? -1 : Integer.parseInt(portions[3]);
+          final String[] portions = line.split(";", -1);
+          final String kind = portions[0];
+          final String target = portions[1];
+          final String source = portions[2];
+          final int lineNumber = portions[3].length() == 0 ? -1 : Integer.parseInt(portions[3]);
 
           for (SootMethod sourceMethod : inferSource(source, lineNumber)) {
             switch (kind) {
@@ -102,7 +103,7 @@ public class ReflectionTraceInfo {
                 break;
               }
               case "Method.invoke": {
-                if (!Scene.v().containsMethod(target)) {
+                if (!sc.containsMethod(target)) {
                   throw new RuntimeException("Unknown method for signature: " + target);
                 }
                 Set<String> receiverNames = methodInvokeReceivers.get(sourceMethod);
@@ -113,7 +114,7 @@ public class ReflectionTraceInfo {
                 break;
               }
               case "Constructor.newInstance": {
-                if (!Scene.v().containsMethod(target)) {
+                if (!sc.containsMethod(target)) {
                   throw new RuntimeException("Unknown method for signature: " + target);
                 }
                 Set<String> receiverNames = constructorNewInstanceReceivers.get(sourceMethod);
@@ -124,7 +125,7 @@ public class ReflectionTraceInfo {
                 break;
               }
               case "Field.set*": {
-                if (!Scene.v().containsField(target)) {
+                if (!sc.containsField(target)) {
                   throw new RuntimeException("Unknown method for signature: " + target);
                 }
                 Set<String> receiverNames = fieldSetReceivers.get(sourceMethod);
@@ -135,7 +136,7 @@ public class ReflectionTraceInfo {
                 break;
               }
               case "Field.get*": {
-                if (!Scene.v().containsField(target)) {
+                if (!sc.containsField(target)) {
                   throw new RuntimeException("Unknown method for signature: " + target);
                 }
                 Set<String> receiverNames = fieldGetReceivers.get(sourceMethod);
