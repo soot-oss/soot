@@ -135,44 +135,44 @@ public final class Edge implements Invalidable {
    * Returns true if the call is due to an explicit invoke statement.
    */
   public boolean isExplicit() {
-    return kind.isExplicit();
+    return Kind.isExplicit(this.kind);
   }
 
   /**
    * Returns true if the call is due to an explicit instance invoke statement.
    */
   public boolean isInstance() {
-    return kind.isInstance();
+    return Kind.isInstance(this.kind);
   }
 
   public boolean isVirtual() {
-    return kind.isVirtual();
+    return Kind.isVirtual(this.kind);
   }
 
   public boolean isSpecial() {
-    return kind.isSpecial();
+    return Kind.isSpecial(this.kind);
   }
 
   /**
    * Returns true if the call is to static initializer.
    */
   public boolean isClinit() {
-    return kind.isClinit();
+    return Kind.isClinit(this.kind);
   }
 
   /**
    * Returns true if the call is due to an explicit static invoke statement.
    */
   public boolean isStatic() {
-    return kind.isStatic();
+    return Kind.isStatic(this.kind);
   }
 
   public boolean isThreadRunCall() {
-    return kind.isThread();
+    return Kind.isThread(this.kind);
   }
 
   public boolean passesParameters() {
-    return kind.passesParameters();
+    return Kind.passesParameters(this.kind);
   }
 
   @Override
@@ -194,7 +194,7 @@ public final class Edge implements Invalidable {
     if (invalid) {
       return 0;
     }
-    int ret = (tgt.hashCode() + 20) + kind.getNumber();
+    int ret = (tgt.hashCode() + 20) + (kind == null ? 0 : kind.getNumber());
     if (src != null) {
       ret = ret * 32 + src.hashCode();
     }
@@ -215,7 +215,7 @@ public final class Edge implements Invalidable {
 
   @Override
   public String toString() {
-    return kind.toString() + " edge: " + srcUnit + " in " + src + " ==> " + tgt;
+    return String.valueOf(this.kind) + " edge: " + srcUnit + " in " + src + " ==> " + tgt;
   }
 
   private Edge nextByUnit = this;
