@@ -298,6 +298,19 @@ public class Options extends OptionsBase {
                 process_dir.add(value);
             }
             else if (false
+                    || option.equals("process-jar-dir")
+            ) {
+                if (!hasMoreOptions()) {
+                    G.v().out.println("No value given for option -" + option);
+                    return false;
+                }
+
+                String value = nextOption();
+                if (process_jar_dir == null)
+                    process_jar_dir = new LinkedList<>();
+                process_jar_dir.add(value);
+            }
+            else if (false
                     || option.equals("no-derive-java-version")
             )
                 derive_java_version = false;
@@ -1488,6 +1501,12 @@ public class Options extends OptionsBase {
     public void set_process_dir(List<String> setting) { process_dir = setting; }
     private List<String> process_dir = null;
 
+    public List<String> process_jar_dir() {
+        return process_jar_dir == null ? Collections.emptyList() : process_jar_dir;
+    }
+    public void set_process_jar_dir(List<String> setting) { process_jar_dir = setting; }
+    private List<String> process_jar_dir = null;
+
     public boolean derive_java_version() { return derive_java_version; }
     private boolean derive_java_version = true;
     public void set_derive_java_version(boolean setting) { derive_java_version = setting; }
@@ -1764,7 +1783,8 @@ public class Options extends OptionsBase {
                 + padOpt("-ice, -ignore-classpath-errors", "Ignores invalid entries on the Soot classpath.")
                 + padOpt("-process-multiple-dex", "Process all DEX files found in APK.")
                 + padOpt("-search-dex-in-archives", "Also includes Jar and Zip files when searching for DEX files under the provided classpath.")
-                + padOpt("-process-path ARG -process-dir ARG", "Process all classes found in ARG")
+                + padOpt("-process-path ARG -process-dir ARG", "Process all classes found in ARG (but not classes within JAR files in ARG , use process-jar-dir for that)")
+                + padOpt("-process-jar-dir ARG", "Process all classes found in JAR files found in ARG")
                 + padOpt("-derive-java-version", "Java version for output and internal processing will be derived from the given input classes")
                 + padOpt("-oaat", "From the process-dir, processes one class at a time.")
                 + padOpt("-android-jars ARG", "Use ARG as the path for finding the android.jar file")
