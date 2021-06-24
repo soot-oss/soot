@@ -51,9 +51,21 @@ public class PhiNodeTestInput {
     return success;
   }
 
+  public Class<?> hasMethod() {
+    Class<?> clazz = null;
+    try {
+      if (clazz == null) {
+        clazz = PhiNodeTestInput.class;
+      }
+      clazz.getDeclaredMethod("toString");
+    } catch (NoSuchMethodException ex) {
+    }
+    return clazz;
+  }
+
   /**
    * Run this test from the command line as "java -cp soot\target\systemTest-target-classes soot.shimple.PhiNodeTestInput"
-   * and observe that it runs without error and prints "false" to the command line.
+   * and observe that it runs without error and prints "false" and then "true" to the command line.
    *
    * @param args
    *
@@ -61,5 +73,6 @@ public class PhiNodeTestInput {
    */
   public static void main(String[] args) throws Exception {
     System.out.println(new PhiNodeTestInput().sync());
+    System.out.println(new PhiNodeTestInput().hasMethod() == PhiNodeTestInput.class);
   }
 }
