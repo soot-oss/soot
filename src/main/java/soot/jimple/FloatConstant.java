@@ -31,6 +31,8 @@ import soot.util.Switch;
  */
 public class FloatConstant extends RealConstant {
 
+  private static final long serialVersionUID = 8670501761494749605L;
+
   public final float value;
 
   private FloatConstant(float value) {
@@ -95,6 +97,12 @@ public class FloatConstant extends RealConstant {
   public NumericConstant notEqual(NumericConstant c) {
     assertInstanceOf(c);
     return IntConstant.v(Float.compare(this.value, ((FloatConstant) c).value) != 0 ? 1 : 0);
+  }
+
+  @Override
+  public boolean isLessThan(NumericConstant c) {
+    assertInstanceOf(c);
+    return Float.compare(this.value, ((FloatConstant) c).value) < 0;
   }
 
   @Override
