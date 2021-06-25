@@ -72,6 +72,9 @@ import soot.jimple.NullConstant;
 import soot.jimple.RemExpr;
 import soot.jimple.Stmt;
 import soot.options.Options;
+import soot.shimple.ShimpleBody;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.FullExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
@@ -237,7 +240,8 @@ public class DeadAssignmentEliminator extends BodyTransformer {
       // Add all the statements which are used to compute values
       // for the essential statements, recursively
 
-      final LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(b);
+      final LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory()
+          .newLocalDefs(b instanceof ShimpleBody ? new FullExceptionalUnitGraph(b) : new ExceptionalUnitGraph(b));
 
       if (!allEssential) {
         Set<Unit> essential = new HashSet<Unit>(units.size());
