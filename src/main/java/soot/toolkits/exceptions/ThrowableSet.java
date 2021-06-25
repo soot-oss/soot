@@ -87,7 +87,6 @@ import soot.options.Options;
  * with a given name.
  * </p>
  */
-
 public class ThrowableSet {
 
   private static final boolean INSTRUMENTING = false;
@@ -126,24 +125,23 @@ public class ThrowableSet {
    * @param exclude
    *          The set of {@link AnySubType} objects representing the types to be excluded from the set.
    */
-  protected ThrowableSet(Set<RefLikeType> include, Set<AnySubType> exclude) {
+  private ThrowableSet(Set<RefLikeType> include, Set<AnySubType> exclude) {
     exceptionsIncluded = getImmutable(include);
     exceptionsExcluded = getImmutable(exclude);
-    // We don't need to clone include and exclude to guarantee
-    // immutability since ThrowableSet(Set,Set) is private to this
-    // class, where it is only called (via
-    // Manager.v().registerSetIfNew()) with arguments which the
+    // We don't need to clone include and exclude to guarantee immutability
+    // since ThrowableSet(Set,Set) is private to this class, where it is only
+    // called (via Manager.v().registerSetIfNew()) with arguments which the
     // callers do not subsequently modify.
   }
 
   private static <T> Set<T> getImmutable(Set<T> in) {
-    if ((null == in) || in.isEmpty()) {
+    if (in == null || in.isEmpty()) {
       return Collections.emptySet();
-    }
-    if (1 == in.size()) {
+    } else if (in.size() == 1) {
       return Collections.singleton(in.iterator().next());
+    } else {
+      return Collections.unmodifiableSet(in);
     }
-    return Collections.unmodifiableSet(in);
   }
 
   /**
@@ -540,14 +538,7 @@ public class ThrowableSet {
         }
       }
     }
-
-    ThrowableSet result = null;
-    if (changes > 0) {
-      result = Manager.v().registerSetIfNew(resultSet, this.exceptionsExcluded);
-    } else {
-      result = this;
-    }
-    return result;
+    return (changes > 0) ? Manager.v().registerSetIfNew(resultSet, this.exceptionsExcluded) : this;
   }
 
   /**
@@ -575,14 +566,7 @@ public class ThrowableSet {
         }
       }
     }
-
-    ThrowableSet result = null;
-    if (changes > 0) {
-      result = Manager.v().registerSetIfNew(resultSet, this.exceptionsExcluded);
-    } else {
-      result = this;
-    }
-    return result;
+    return (changes > 0) ? Manager.v().registerSetIfNew(resultSet, this.exceptionsExcluded) : this;
   }
 
   /**
@@ -651,7 +635,7 @@ public class ThrowableSet {
 
     if (exceptionsIncluded.contains(catcher)) {
       if (INSTRUMENTING) {
-        if (exceptionsExcluded.size() == 0) {
+        if (exceptionsExcluded.isEmpty()) {
           Manager.v().catchableAsFromMap++;
         } else {
           Manager.v().catchableAsFromSearch++;
@@ -660,7 +644,7 @@ public class ThrowableSet {
       return true;
     } else {
       if (INSTRUMENTING) {
-        if (exceptionsExcluded.size() == 0) {
+        if (exceptionsExcluded.isEmpty()) {
           Manager.v().catchableAsFromSearch++;
         }
       }
@@ -676,13 +660,11 @@ public class ThrowableSet {
         } else {
           RefType thrownBase = ((AnySubType) thrownType).getBase();
           if (catcherHasNoHierarchy) {
-            if (thrownBase.equals(catcher) || thrownBase.getClassName().equals("java.lang.Throwable")) {
+            if (thrownBase.equals(catcher) || "java.lang.Throwable".equals(thrownBase.getClassName())) {
               return true;
             }
-          }
-          // At runtime, thrownType might be instantiated by any
-          // of thrownBase's subtypes, so:
-          else if (h.canStoreType(thrownBase, catcher) || h.canStoreType(catcher, thrownBase)) {
+          } else if (h.canStoreType(thrownBase, catcher) || h.canStoreType(catcher, thrownBase)) {
+            // At runtime, thrownType might be instantiated by any of thrownBase's subtypes
             return true;
           }
         }
@@ -765,7 +747,7 @@ public class ThrowableSet {
           if (base.equals(catcher)) {
             caughtIncluded = addExceptionToSet(inclusion, caughtIncluded);
           } else {
-            if (base.getClassName().equals("java.lang.Throwable")) {
+            if ("java.lang.Throwable".equals(base.getClassName())) {
               caughtIncluded = addExceptionToSet(catcher, caughtIncluded);
             }
             uncaughtIncluded = addExceptionToSet(inclusion, uncaughtIncluded);
@@ -823,7 +805,7 @@ public class ThrowableSet {
    */
   @Override
   public String toString() {
-    StringBuffer buffer = new StringBuffer(this.toBriefString());
+    StringBuilder buffer = new StringBuilder(this.toBriefString());
     buffer.append(":\n  ");
     for (RefLikeType ei : exceptionsIncluded) {
       buffer.append('+');
@@ -887,7 +869,7 @@ public class ThrowableSet {
 
     Collection<RefLikeType> vmErrorThrowables = ThrowableSet.Manager.v().VM_ERRORS.exceptionsIncluded;
     boolean containsAllVmErrors = s.containsAll(vmErrorThrowables);
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
 
     if (containsAllVmErrors) {
       buf.append(connector);
@@ -1166,7 +1148,8 @@ public class ThrowableSet {
      * @return a <code>ThrowableSet</code> representing the set of exceptions corresponding to <code>include</code> -
      *         <code>exclude</code>.
      */
-    protected ThrowableSet registerSetIfNew(Set<RefLikeType> include, Set<AnySubType> exclude) {
+    private ThrowableSet registerSetIfNew(Set<RefLikeType> include, Set<AnySubType> exclude) {
+      //NOTE: This method must be private in accordance with the comment in the ThrowableSet constructor.
       if (INSTRUMENTING) {
         registrationCalls++;
       }
@@ -1186,9 +1169,7 @@ public class ThrowableSet {
      * @return a string listing the counts.
      */
     public String reportInstrumentation() {
-      int setCount = registry.size();
-
-      StringBuffer buf = new StringBuffer("registeredSets: ").append(setCount).append("\naddsOfRefType: ")
+      StringBuilder buf = new StringBuilder("registeredSets: ").append(registry.size()).append("\naddsOfRefType: ")
           .append(addsOfRefType).append("\naddsOfAnySubType: ").append(addsOfAnySubType).append("\naddsOfSet: ")
           .append(addsOfSet).append("\naddsInclusionFromMap: ").append(addsInclusionFromMap)
           .append("\naddsInclusionFromMemo: ").append(addsInclusionFromMemo).append("\naddsInclusionFromSearch: ")
@@ -1223,8 +1204,9 @@ public class ThrowableSet {
    * The return type for {@link ThrowableSet#whichCatchableAs(RefType)}, consisting of a pair of ThrowableSets.
    */
   public static class Pair {
-    private ThrowableSet caught;
-    private ThrowableSet uncaught;
+
+    private final ThrowableSet caught;
+    private final ThrowableSet uncaught;
 
     /**
      * Constructs a <code>ThrowableSet.Pair</code>.
@@ -1275,10 +1257,7 @@ public class ThrowableSet {
         return false;
       }
       Pair tsp = (Pair) o;
-      if (this.caught.equals(tsp.caught) && this.uncaught.equals(tsp.uncaught)) {
-        return true;
-      }
-      return false;
+      return this.caught.equals(tsp.caught) && this.uncaught.equals(tsp.uncaught);
     }
 
     @Override
@@ -1292,7 +1271,6 @@ public class ThrowableSet {
 
   /**
    * Comparator used to implement sortedThrowableIterator().
-   *
    */
   private static class ThrowableComparator<T extends RefLikeType> implements java.util.Comparator<T> {
 
@@ -1327,6 +1305,5 @@ public class ThrowableSet {
         return t1.toString().compareTo(t2.toString());
       }
     }
-
   }
 }
