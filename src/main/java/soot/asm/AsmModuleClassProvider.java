@@ -1,3 +1,5 @@
+package soot.asm;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -19,7 +21,6 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package soot.asm;
 
 import java.io.IOException;
 import java.io.InputStream;

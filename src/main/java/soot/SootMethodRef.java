@@ -55,7 +55,10 @@ public interface SootMethodRef extends SootMethodInterface {
    */
   public @Deprecated Type returnType();
 
-  public boolean isStatic();
+  /**
+   * Use {@link #getParameterType(int)} instead
+   */
+  public @Deprecated Type parameterType(int i);
 
   /**
    * Gets whether this method reference points to a constructor
@@ -63,17 +66,10 @@ public interface SootMethodRef extends SootMethodInterface {
    * @return True if this reference points to a constructor, false otherwise
    */
   public default boolean isConstructor() {
-    return getReturnType() == VoidType.v() && getName().equals("<init>");
+    return getReturnType() == VoidType.v() && "<init>".equals(getName());
   }
 
   public NumberedString getSubSignature();
-
-  public String getSignature();
-
-  /**
-   * Use {@link #getParameterType(int)} instead
-   */
-  public @Deprecated Type parameterType(int i);
 
   /**
    * Resolves this method call, i.e., finds the method to which this reference points. This method does not handle virtual

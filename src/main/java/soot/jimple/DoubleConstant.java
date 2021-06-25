@@ -31,6 +31,8 @@ import soot.util.Switch;
  */
 public class DoubleConstant extends RealConstant {
 
+  private static final long serialVersionUID = -6890604195758898783L;
+
   public final double value;
 
   private DoubleConstant(double value) {
@@ -96,6 +98,12 @@ public class DoubleConstant extends RealConstant {
   public NumericConstant notEqual(NumericConstant c) {
     assertInstanceOf(c);
     return IntConstant.v(Double.compare(this.value, ((DoubleConstant) c).value) != 0 ? 1 : 0);
+  }
+
+  @Override
+  public boolean isLessThan(NumericConstant c) {
+    assertInstanceOf(c);
+    return Double.compare(this.value, ((DoubleConstant) c).value) < 0;
   }
 
   @Override
