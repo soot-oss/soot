@@ -38,9 +38,8 @@ import soot.Local;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.options.Options;
-import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.FullExceptionalUnitGraph;
 import soot.util.ArraySet;
 
 /**
@@ -58,10 +57,9 @@ public class FastColorer {
   public static <G> void unsplitAssignColorsToLocals(Body unitBody, Map<Local, G> localToGroup,
       Map<Local, Integer> localToColor, Map<G, Integer> groupToColorCount) {
 
-    // To understand why a pedantic throw analysis is required, see comment
-    // in assignColorsToLocals method
-    final ExceptionalUnitGraph unitGraph =
-        new ExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
+    // Build a FullExceptionalUnitGraph to prevent JVM bytecode verifier errors
+    // like "java.lang.VerifyError: Incompatible argument to function".
+    final ExceptionalUnitGraph unitGraph = new FullExceptionalUnitGraph(unitBody);
     final UnitInterferenceGraph intGraph =
         new UnitInterferenceGraph(unitBody, localToGroup, new SimpleLiveLocals(unitGraph), unitGraph);
 
@@ -150,10 +148,9 @@ public class FastColorer {
   public static <G> void assignColorsToLocals(Body unitBody, Map<Local, G> localToGroup, Map<Local, Integer> localToColor,
       Map<G, Integer> groupToColorCount) {
 
-    // Build a CFG using a pedantic throw analysis to prevent JVM
-    // "java.lang.VerifyError: Incompatible argument to function" errors.
-    final ExceptionalUnitGraph unitGraph =
-        new ExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
+    // Build a FullExceptionalUnitGraph to prevent JVM bytecode verifier errors
+    // like "java.lang.VerifyError: Incompatible argument to function".
+    final ExceptionalUnitGraph unitGraph = new FullExceptionalUnitGraph(unitBody);
     final UnitInterferenceGraph intGraph =
         new UnitInterferenceGraph(unitBody, localToGroup, new SimpleLiveLocals(unitGraph), unitGraph);
 

@@ -51,9 +51,8 @@ public class FullExceptionalUnitGraph extends ExceptionalUnitGraph {
 
   public FullExceptionalUnitGraph(Body body) {
     super(body);
-    // Set the 'omitExceptingUnitEdges' parameter to false and use a ThrowAnalysis
-    // based on the PedanticThrowAnalysis so that all units (except for AssignStmt)
-    // will have an edge into exception handler blocks.
+    // Set 'omitExceptingUnitEdges' as false and use PedanticThrowAnalysis
+    // so that all units will have an edge into exception handler blocks.
     initialize(PedanticThrowAnalysis.v(), false);
   }
 
