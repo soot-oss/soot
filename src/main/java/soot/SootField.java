@@ -33,6 +33,7 @@ import soot.util.Numberable;
  * Soot representation of a Java field. Can be declared to belong to a SootClass.
  */
 public class SootField extends AbstractHost implements ClassMember, SparkField, Numberable, PaddleField {
+
   protected String name;
   protected Type type;
   protected int modifiers;
@@ -254,5 +255,10 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
   public SootFieldRef makeRef() {
     return Scene.v().makeFieldRef(declaringClass, name, type, isStatic());
+  }
+
+  public boolean isValidResolve(SootFieldRef f) {
+    return (this.isStatic() == f.isStatic()) && this.getDeclaringClass().equals(f.declaringClass())
+        && this.getName().equals(f.name()) && this.getType().equals(f.type());
   }
 }
