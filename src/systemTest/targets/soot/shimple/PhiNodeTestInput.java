@@ -21,8 +21,11 @@ package soot.shimple;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Timothy Hoffman
@@ -61,6 +64,18 @@ public class PhiNodeTestInput {
     } catch (NoSuchMethodException ex) {
     }
     return clazz;
+  }
+
+  public InputStream readProp() {
+    InputStream is = null;
+    try {
+      synchronized (this) {
+        File f = new File("in.properties");
+        is = new FileInputStream(f);
+      }
+    } catch (FileNotFoundException ex) {
+    }
+    return is;
   }
 
   /**
