@@ -58,7 +58,6 @@ import soot.validation.ValidationException;
 public class PhiNodeTest extends AbstractTestingFramework {
 
   private static final boolean DEBUG_PRINT = false;
-  private static final boolean USE_ASM_VERIFIER = false;
 
   @Override
   protected void setupSoot() {
@@ -194,9 +193,14 @@ public class PhiNodeTest extends AbstractTestingFramework {
     final String rtJar = rtJar();
     final boolean isModuleJar = isModuleJar(rtJar);
 
-    final List<String> cls = new ArrayList<>(185);
+    // Run both ASM and JVM verifier on these classes.
+    final List<String> cls = new ArrayList<>(148);
+    // Run only the ASM verifier on these classes because they cannot
+    // be loaded successfully via the generateClass(..) method.
+    final List<String> clsASM = new ArrayList<>(37);
     if (!isModuleJar) {
       // These are not present in JDK 11
+      //
       cls.add("com.sun.corba.se.impl.corba.ServerRequestImpl");
       cls.add("com.sun.corba.se.impl.corba.TCUtility");
       cls.add("com.sun.corba.se.impl.dynamicany.DynEnumImpl");
@@ -253,19 +257,16 @@ public class PhiNodeTest extends AbstractTestingFramework {
       cls.add("sun.misc.URLClassPath");
       cls.add("sun.rmi.transport.proxy.HttpSendSocket");
       cls.add("sun.tracing.ProviderSkeleton");
-      if (USE_ASM_VERIFIER) {
-        // These cannot be loaded successfully via the generateClass(..) method so
-        // only include them if the ASM verifier is used instead of Class loading.
-        cls.add("com.sun.corba.se.impl.dynamicany.DynAnyComplexImpl");
-        cls.add("com.sun.corba.se.impl.dynamicany.DynUnionImpl");
-        cls.add("com.sun.corba.se.impl.encoding.CDRInputStream_1_0");
-        cls.add("com.sun.corba.se.impl.transport.SelectorImpl");
-        cls.add("com.sun.xml.internal.bind.v2.runtime.property.SingleElementLeafProperty");
-        cls.add("java.awt.KeyboardFocusManager$5");
-        cls.add("java.util.ServiceLoader$LazyIterator");
-        cls.add("javax.xml.bind.ContextFinder");
-        cls.add("sun.management.Agent");
-      }
+      //
+      clsASM.add("com.sun.corba.se.impl.dynamicany.DynAnyComplexImpl");
+      clsASM.add("com.sun.corba.se.impl.dynamicany.DynUnionImpl");
+      clsASM.add("com.sun.corba.se.impl.encoding.CDRInputStream_1_0");
+      clsASM.add("com.sun.corba.se.impl.transport.SelectorImpl");
+      clsASM.add("com.sun.xml.internal.bind.v2.runtime.property.SingleElementLeafProperty");
+      clsASM.add("java.awt.KeyboardFocusManager$5");
+      clsASM.add("java.util.ServiceLoader$LazyIterator");
+      clsASM.add("javax.xml.bind.ContextFinder");
+      clsASM.add("sun.management.Agent");
     }
     cls.add("com.sun.imageio.plugins.png.PNGImageReader");
     cls.add("com.sun.jmx.remote.util.EnvHelp");
@@ -359,50 +360,50 @@ public class PhiNodeTest extends AbstractTestingFramework {
     cls.add("sun.security.util.KeyUtil");
     cls.add("sun.swing.SwingUtilities2");
     cls.add("sun.tools.jar.Main");
-    if (USE_ASM_VERIFIER) {
-      // These cannot be loaded successfully via the generateClass(..) method so
-      // only include them if the ASM verifier is used instead of Class loading.
-      cls.add("com.sun.org.apache.xalan.internal.xsltc.compiler.FunctionCall");
-      cls.add("java.awt.Font");
-      cls.add("java.awt.datatransfer.SystemFlavorMap");
-      cls.add("java.awt.font.TextLayout");
-      cls.add("java.beans.Beans");
-      cls.add("java.beans.PropertyDescriptor");
-      cls.add("java.io.FileDescriptor");
-      cls.add("java.lang.CharacterName");
-      cls.add("java.lang.ClassLoader");
-      cls.add("java.net.DefaultDatagramSocketImplFactory");
-      cls.add("java.net.InetAddress");
-      cls.add("java.net.ServerSocket");
-      cls.add("java.net.SocketPermission");
-      cls.add("java.net.URL");
-      cls.add("java.net.URLConnection");
-      cls.add("java.net.URLDecoder");
-      cls.add("java.net.URLEncoder");
-      cls.add("java.security.Security");
-      cls.add("java.time.Month");
-      cls.add("java.time.MonthDay");
-      cls.add("java.time.Year");
-      cls.add("java.time.YearMonth");
-      cls.add("java.util.Formatter");
-      cls.add("java.util.concurrent.CyclicBarrier");
-      cls.add("java.util.jar.Pack200");
-      cls.add("java.util.logging.FileHandler");
-      cls.add("java.util.prefs.AbstractPreferences");
-      cls.add("javax.security.auth.kerberos.KerberosTicket");
-    }
-    final int NUM_CLASSES = cls.size();
+    //
+    clsASM.add("com.sun.org.apache.xalan.internal.xsltc.compiler.FunctionCall");
+    clsASM.add("java.awt.Font");
+    clsASM.add("java.awt.datatransfer.SystemFlavorMap");
+    clsASM.add("java.awt.font.TextLayout");
+    clsASM.add("java.beans.Beans");
+    clsASM.add("java.beans.PropertyDescriptor");
+    clsASM.add("java.io.FileDescriptor");
+    clsASM.add("java.lang.CharacterName");
+    clsASM.add("java.lang.ClassLoader");
+    clsASM.add("java.net.DefaultDatagramSocketImplFactory");
+    clsASM.add("java.net.InetAddress");
+    clsASM.add("java.net.ServerSocket");
+    clsASM.add("java.net.SocketPermission");
+    clsASM.add("java.net.URL");
+    clsASM.add("java.net.URLConnection");
+    clsASM.add("java.net.URLDecoder");
+    clsASM.add("java.net.URLEncoder");
+    clsASM.add("java.security.Security");
+    clsASM.add("java.time.Month");
+    clsASM.add("java.time.MonthDay");
+    clsASM.add("java.time.Year");
+    clsASM.add("java.time.YearMonth");
+    clsASM.add("java.util.Formatter");
+    clsASM.add("java.util.concurrent.CyclicBarrier");
+    clsASM.add("java.util.jar.Pack200");
+    clsASM.add("java.util.logging.FileHandler");
+    clsASM.add("java.util.prefs.AbstractPreferences");
+    clsASM.add("javax.security.auth.kerberos.KerberosTicket");
+
+    final int NUM_CLASSES = cls.size() + clsASM.size();
 
     // Run initial pass to ensure they are valid when processed without using Shimple form.
     {
-      int success = testStdLibRun(rtJar, cls, false);
-      Assert.assertEquals("ORIGINAL classes (total " + NUM_CLASSES + ") with errors!", 0, NUM_CLASSES - success);
+      int pass1 = testStdLibRun(rtJar, cls, false, false);
+      int pass2 = testStdLibRun(rtJar, clsASM, false, true);
+      Assert.assertEquals("ORIGINAL classes (total " + NUM_CLASSES + ") with errors!", 0, NUM_CLASSES - pass1 - pass2);
     }
 
     // Reset Soot and process the classes but use Shimple this time to trigger bug.
     {
-      int success = testStdLibRun(rtJar, cls, true);
-      Assert.assertEquals("MODIFIED classes (total " + NUM_CLASSES + ") with errors!", 0, NUM_CLASSES - success);
+      int pass1 = testStdLibRun(rtJar, cls, true, false);
+      int pass2 = testStdLibRun(rtJar, clsASM, true, true);
+      Assert.assertEquals("MODIFIED classes (total " + NUM_CLASSES + ") with errors!", 0, NUM_CLASSES - pass1 - pass2);
     }
   }
 
@@ -415,7 +416,7 @@ public class PhiNodeTest extends AbstractTestingFramework {
     return (rtJar == null);
   }
 
-  private int testStdLibRun(String rtJar, List<String> checkClasses, boolean useShimple) {
+  private int testStdLibRun(String rtJar, List<String> checkClasses, boolean useShimple, boolean onlyASM) {
     final Scene scene = customSetupLib(rtJar, checkClasses, useShimple);
     int success = 0;
     for (String name : checkClasses) {
@@ -424,13 +425,16 @@ public class PhiNodeTest extends AbstractTestingFramework {
         Assert.assertNotNull(sc);
         Assert.assertEquals(name, sc.getName());
 
-        if (USE_ASM_VERIFIER) {
+        {
+          // Run ASM verifier and ensure the message is empty
           byte[] c = generateBytecode(sc);
           StringWriter stringWriter = new StringWriter();
           CheckClassAdapter.verify(new ClassReader(c), false, new PrintWriter(stringWriter));
           String verifyMsg = stringWriter.toString();
           Assert.assertTrue(verifyMsg, verifyMsg.isEmpty());
-        } else {
+        }
+
+        if (!onlyASM) {
           // If the generated bytecode does not pass JVM bytecode verifier,
           // then an exception will occur when trying to obtain "declared"
           // fields, methods, constructors, etc.
