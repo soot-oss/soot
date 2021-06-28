@@ -28,6 +28,8 @@ import soot.util.Switch;
 
 public class LongConstant extends ArithmeticConstant {
 
+  private static final long serialVersionUID = 1008501511477295944L;
+
   public final long value;
 
   private LongConstant(long value) {
@@ -104,6 +106,14 @@ public class LongConstant extends ArithmeticConstant {
       throw new IllegalArgumentException("LongConstant expected");
     }
     return IntConstant.v((this.value != ((LongConstant) c).value) ? 1 : 0);
+  }
+
+  @Override
+  public boolean isLessThan(NumericConstant c) {
+    if (!(c instanceof LongConstant)) {
+      throw new IllegalArgumentException("LongConstant expected");
+    }
+    return this.value < ((LongConstant) c).value;
   }
 
   @Override

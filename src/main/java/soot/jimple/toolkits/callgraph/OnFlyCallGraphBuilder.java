@@ -159,28 +159,6 @@ public class OnFlyCallGraphBuilder {
 
   protected final NumberedString sigFinalize;
   protected final NumberedString sigInit;
-  protected final NumberedString sigStart;
-  protected final NumberedString sigRun;
-  protected final NumberedString sigExecute;
-  protected final NumberedString sigExecutorExecute;
-  protected final NumberedString sigHandlerPost;
-  protected final NumberedString sigHandlerPostAtFrontOfQueue;
-  protected final NumberedString sigRunOnUiThread;// Method from android.app.Activity
-
-  // type based reflection resolution state
-  protected final NumberedString sigHandlerPostAtTime;
-  protected final NumberedString sigHandlerPostAtTimeWithToken;
-  protected final NumberedString sigHandlerPostDelayed;
-  protected final NumberedString sigHandlerSendEmptyMessage;
-  protected final NumberedString sigHandlerSendEmptyMessageAtTime;
-  protected final NumberedString sigHandlerSendEmptyMessageDelayed;
-  protected final NumberedString sigHandlerSendMessage;
-  protected final NumberedString sigHandlerSendMessageAtFrontOfQueue;
-  protected final NumberedString sigHandlerSendMessageAtTime;
-  protected final NumberedString sigHandlerSendMessageDelayed;
-  protected final NumberedString sigHandlerHandleMessage;
-  protected final NumberedString sigObjRun;
-  protected final NumberedString sigDoInBackground;
   protected final NumberedString sigForName;
 
   protected final RefType clRunnable = RefType.v("java.lang.Runnable");
@@ -229,26 +207,6 @@ public class OnFlyCallGraphBuilder {
       final StringNumberer nmbr = sc.getSubSigNumberer();
       this.sigFinalize = nmbr.findOrAdd("void finalize()");
       this.sigInit = nmbr.findOrAdd("void <init>()");
-      this.sigStart = nmbr.findOrAdd("void start()");
-      this.sigRun = nmbr.findOrAdd("void run()");
-      this.sigExecute = nmbr.findOrAdd("android.os.AsyncTask execute(java.lang.Object[])");
-      this.sigExecutorExecute = nmbr.findOrAdd("void execute(java.lang.Runnable)");
-      this.sigHandlerPost = nmbr.findOrAdd("boolean post(java.lang.Runnable)");
-      this.sigHandlerPostAtFrontOfQueue = nmbr.findOrAdd("boolean postAtFrontOfQueue(java.lang.Runnable)");
-      this.sigRunOnUiThread = nmbr.findOrAdd("void runOnUiThread(java.lang.Runnable)");
-      this.sigHandlerPostAtTime = nmbr.findOrAdd("boolean postAtTime(java.lang.Runnable,long)");
-      this.sigHandlerPostAtTimeWithToken = nmbr.findOrAdd("boolean postAtTime(java.lang.Runnable,java.lang.Object,long)");
-      this.sigHandlerPostDelayed = nmbr.findOrAdd("boolean postDelayed(java.lang.Runnable,long)");
-      this.sigHandlerSendEmptyMessage = nmbr.findOrAdd("boolean sendEmptyMessage(int)");
-      this.sigHandlerSendEmptyMessageAtTime = nmbr.findOrAdd("boolean sendEmptyMessageAtTime(int,long)");
-      this.sigHandlerSendEmptyMessageDelayed = nmbr.findOrAdd("boolean sendEmptyMessageDelayed(int,long)");
-      this.sigHandlerSendMessage = nmbr.findOrAdd("boolean postAtTime(java.lang.Runnable,long)");
-      this.sigHandlerSendMessageAtFrontOfQueue = nmbr.findOrAdd("boolean sendMessageAtFrontOfQueue(android.os.Message)");
-      this.sigHandlerSendMessageAtTime = nmbr.findOrAdd("boolean sendMessageAtTime(android.os.Message,long)");
-      this.sigHandlerSendMessageDelayed = nmbr.findOrAdd("boolean sendMessageDelayed(android.os.Message,long)");
-      this.sigHandlerHandleMessage = nmbr.findOrAdd("void handleMessage(android.os.Message)");
-      this.sigObjRun = nmbr.findOrAdd("java.lang.Object run()");
-      this.sigDoInBackground = nmbr.findOrAdd("java.lang.Object doInBackground(java.lang.Object[])");
       this.sigForName = nmbr.findOrAdd("java.lang.Class forName(java.lang.String)");
     }
     {
@@ -491,7 +449,7 @@ public class OnFlyCallGraphBuilder {
       SootClass baseClass = ((RefType) bType).getSootClass();
       for (Iterator<SootMethod> mIt = getPublicMethodIterator(baseClass, at); mIt.hasNext();) {
         SootMethod sm = mIt.next();
-        cm.addVirtualEdge(ics.container(), ics.stmt(), sm, Kind.REFL_INVOKE, null);
+        cm.addVirtualEdge(ics.getContainer(), ics.getStmt(), sm, Kind.REFL_INVOKE, null);
       }
     }
   }
@@ -620,8 +578,9 @@ public class OnFlyCallGraphBuilder {
           continue;
         }
 
-        if (site.iie() instanceof SpecialInvokeExpr && !site.kind().isFake()) {
-          SootMethod target = virtualCalls.resolveSpecial(site.iie().getMethodRef(), site.container(), appOnly);
+        final InstanceInvokeExpr iie = site.iie();
+        if (iie instanceof SpecialInvokeExpr && !Kind.isFake(site.kind())) {
+          SootMethod target = virtualCalls.resolveSpecial(iie.getMethodRef(), site.getContainer(), appOnly);
           // if the call target resides in a phantom class then "target" will be null;
           // simply do not add the target in that case
           if (target != null) {
@@ -647,15 +606,15 @@ public class OnFlyCallGraphBuilder {
                   }
                 }
                 ref = sc.makeMethodRef(receiverClass, methodName, params, sc.getTypeUnsafe(returnType),
-                    site.kind().isStatic());
+                    Kind.isStatic(site.kind()));
               }
             }
           } else {
-            ref = site.stmt().getInvokeExpr().getMethodRef();
+            ref = site.getStmt().getInvokeExpr().getMethodRef();
           }
 
           if (ref != null) {
-            virtualCalls.resolve(type, receiver.getType(), ref, site.container(), targetsQueue, appOnly);
+            virtualCalls.resolve(type, receiver.getType(), ref, site.getContainer(), targetsQueue, appOnly);
             if (!targets.hasNext() && options.resolve_all_abstract_invokes()) {
               /*
                * In the situation where we find nothing to resolve an invoke to in the first call, this might be because the
@@ -671,13 +630,14 @@ public class OnFlyCallGraphBuilder {
                * Where as, it used to not resolve any targets in this situation, I want to at least resolve the method in the
                * parent class if there is one (as this is technically a possibility and the only information we have).
                */
-              virtualCalls.resolveSuperType(type, receiver.getType(), site.iie().getMethodRef(), targetsQueue, appOnly);
+              virtualCalls.resolveSuperType(type, receiver.getType(), iie.getMethodRef(), targetsQueue, appOnly);
             }
           }
         }
         while (targets.hasNext()) {
           SootMethod target = targets.next();
-          cm.addVirtualEdge(MethodContext.v(site.container(), srcContext), site.stmt(), target, site.kind(), typeContext);
+          cm.addVirtualEdge(MethodContext.v(site.getContainer(), srcContext), site.getStmt(), target, site.kind(),
+              typeContext);
         }
       }
     }
@@ -724,7 +684,7 @@ public class OnFlyCallGraphBuilder {
             sootcls.setLibraryClass();
           }
           for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
-            cm.addStaticEdge(MethodContext.v(site.container(), srcContext), site.stmt(), clinit, Kind.CLINIT);
+            cm.addStaticEdge(MethodContext.v(site.getContainer(), srcContext), site.getStmt(), clinit, Kind.CLINIT);
           }
         } else if (options.verbose()) {
           logger.warn("Class " + constant + " is a dynamic class and was not specified as such; graph will be incomplete!");
@@ -733,7 +693,7 @@ public class OnFlyCallGraphBuilder {
     } else if (options.verbose()) {
       for (Iterator<VirtualCallSite> siteIt = stringConstToSites.get(l).iterator(); siteIt.hasNext();) {
         final VirtualCallSite site = siteIt.next();
-        logger.warn("Method " + site.container() + " is reachable, and calls Class.forName on a non-constant"
+        logger.warn("Method " + site.getContainer() + " is reachable, and calls Class.forName on a non-constant"
             + " String; graph will be incomplete! Use safe-forname option for a conservative result.");
       }
     }

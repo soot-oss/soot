@@ -187,6 +187,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -1849,6 +1850,9 @@ final class AsmMethodSource implements MethodSource {
   }
 
   private void convert() {
+    if (instructions == null || instructions.size() == 0) {
+      return;
+    }
     ArrayDeque<Edge> worklist = new ArrayDeque<Edge>();
     for (LabelNode ln : trapHandlers.keySet()) {
       if (checkInlineExceptionHandler(ln)) {
@@ -2177,11 +2181,11 @@ final class AsmMethodSource implements MethodSource {
 
   @Override
   public Body getBody(SootMethod m, String phaseName) {
-    if (!m.isConcrete()) {
+    if (!m.isConcrete() || instructions == null || instructions.size() == 0) {
       return null;
     }
     final Jimple jimp = Jimple.v();
-    JimpleBody jb = jimp.newBody(m);
+    final JimpleBody jb = jimp.newBody(m);
     /* initialize */
     int nrInsn = instructions.size();
     nextLocal = maxLocals;
@@ -2207,121 +2211,8 @@ final class AsmMethodSource implements MethodSource {
     emitTraps();
     emitUnits();
 
-    // When preserving original names, use the local variable table for guidance.
-    // The LocalVariableTable from the input bytecode may contain two weird cases
-    // which can cause the loss of original local names, or worse, the appearance
-    // of the '#' character in local names in the output LocalVariableTable (some
-    // JVM implementations will give an error when trying to execute a method
-    // whose LocalVariableTable contains names with the '#' character).
-    // 1. When the LocalVariableTable associates different names with the same
-    // local variable index at different points in the method body, the
-    // "locals" Map would end up preserving only one of those names as the
-    // designated local name for that index. This leaves it up to the
-    // SharedInitializationLocalSplitter and LocalSplitter to then split that
-    // single Local back into distinct Locals, but at that time, information
-    // about the other original name(s) has been ignored (and the
-    // LocalVariableTable which contains that information is no longer
-    // available) so the best it can do is append "#x" (where x is a unique
-    // integer) to the end of the current name. In the end, those locals may
-    // be combined back into a single Local by the LocalPacker using
-    // whichever name was originally chosen by the "locals" Map here. In the
-    // worst case however, the LocalPacker cannot combine them back into a
-    // single Local (see the "Icky fix" in LocalPacker) and ends up keeping
-    // the '#' character in the Local name which leads to a problem if the
-    // "write-local-annotations" Soot option is also because the names
-    // containing a '#' character will end up in the output bytecode.
-    // 2. When the LocalVariableTable associates different indices with the same
-    // name at the same code location, we end up again with a case where the
-    // LocalPacker cannot remove the '#' character from local names.
-    //
-    // Thus, this block of code checks for these ambiguous cases while the
-    // LocalVariableTable is still available, and assigns a unique name to each
-    // local that is based on the original name from the LocalVariableTable and
-    // does not use the '#' character.
     if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "use-original-names")) {
-      // Group LocalVariableNode by index to find any that are associated with
-      // different names at different points in the method. For each such
-      // occurrence, determine which name was chosen via "locals.get(i)" and,
-      // in the range of Units specified for all other names, replace that
-      // chosen Local with a new Local.
-      Multimap<Integer, LocalVariableNode> groups = LinkedListMultimap.create(this.localVars.size());
-      for (LocalVariableNode lvn : this.localVars) {
-        if (lvn.start != lvn.end) { // these are ignored by getLocal(int)
-          groups.put(lvn.index, lvn);
-        }
-      }
-      final Chain<Local> jbLocals = jb.getLocals();
-      final Chain<Unit> jbUnits = jb.getUnits();
-      // NOTE: When creating new variables, group by both name and index because
-      // the LocalVariableTable allows multiple local variable indices to
-      // have the same name simultaneously but they must be distinguished here.
-      Table<Integer, String, Local> newLocals = null;
-      for (Map.Entry<Integer, Collection<LocalVariableNode>> e : groups.asMap().entrySet()) {
-        Collection<LocalVariableNode> vals = e.getValue();
-        if (vals.size() > 1) {
-          final Integer localNum = e.getKey();
-          final Local chosen = this.locals.get(localNum);
-          final String chosenName = chosen.getName();
-          for (LocalVariableNode lvn : vals) {
-            final String name = lvn.name;
-            if (!chosenName.equals(name)) {
-              // Get the next real instruction after 'start'
-              // NOTE: Although it seems obvious to use lvn.start.getNext() as
-              // the initial instruction to check, the bytecode generated by
-              // some compilers has the start PC one instruction late it seems.
-              Unit uStart;
-              for (AbstractInsnNode i = lvn.start.getPrevious(); (uStart = units.get(i)) == null;) {
-                i = i.getNext();
-              }
-              // Get the previous real instruction before 'end'
-              Unit uEnd;
-              for (AbstractInsnNode i = lvn.end.getPrevious(); (uEnd = units.get(i)) == null;) {
-                i = i.getPrevious();
-              }
-              if (newLocals == null) {
-                newLocals = HashBasedTable.create(this.maxLocals, 1);
-              }
-              Local newLocal = newLocals.get(localNum, name);
-              if (newLocal == null) {
-                newLocal = jimp.newLocal(name, UnknownType.v());
-                jbLocals.add(newLocal);
-                Local old = newLocals.put(localNum, name, newLocal);
-                assert (old == null);
-              }
-              // System.out.println("Replace '" + chosen + "' with '" + newLocal + "' from " + uStart + " to " + uEnd);
-              for (Iterator<Unit> it = jbUnits.iterator(uStart, uEnd); it.hasNext();) {
-                Unit s = it.next();
-                for (ValueBox box : s.getUseBoxes()) {
-                  Value val = box.getValue();
-                  if (val == chosen) {
-                    box.setValue(newLocal);
-                  }
-                }
-                for (ValueBox box : s.getDefBoxes()) {
-                  Value val = box.getValue();
-                  if (val == chosen) {
-                    box.setValue(newLocal);
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      // In the end, check if any locals (not just from those that were newly added)
-      // have the same name. If so, append a unique id so that each is different.
-      Multimap<String, Local> nameToLocal = LinkedListMultimap.create(jbLocals.size());
-      for (Local l : jbLocals) {
-        nameToLocal.put(l.getName(), l);
-      }
-      for (Collection<Local> locs : nameToLocal.asMap().values()) {
-        if (locs.size() > 1) {
-          int num = 0;
-          for (Local l : locs) {
-            l.setName(l.getName() + '_' + (++num));
-          }
-        }
-      }
+      tryCorrectingLocalNames(jimp, jb);
     }
 
     /* clean up */
@@ -2348,6 +2239,157 @@ final class AsmMethodSource implements MethodSource {
     }
 
     return jb;
+  }
+
+  /**
+   * When preserving original names, try to use the local variable table for guidance. The LocalVariableTable from the input
+   * bytecode may contain two weird cases which can cause the loss of original local names, or worse, the appearance of the
+   * '#' character in local names in the output LocalVariableTable (some JVM implementations will give an error when trying
+   * to execute a method whose LocalVariableTable contains names with the '#' character).
+   * <ol>
+   * <li>When the LocalVariableTable associates different names with the same local variable index at different points in the
+   * method body, the "locals" Map would end up preserving only one of those names as the designated local name for that
+   * index. This leaves it up to the SharedInitializationLocalSplitter and LocalSplitter to then split that single Local back
+   * into distinct Locals, but at that time, information about the other original name(s) has been ignored (and the
+   * LocalVariableTable which contains that information is no longer available) so the best it can do is append "#x" (where x
+   * is a unique integer) to the end of the current name. In the end, those locals may be combined back into a single Local
+   * by the LocalPacker using whichever name was originally chosen by the "locals" Map here. In the worst case however, the
+   * LocalPacker cannot combine them back into a single Local (see the "Icky fix" in LocalPacker) and ends up keeping the '#'
+   * character in the Local name which leads to a problem if the "write-local-annotations" Soot option is also because the
+   * names containing a '#' character will end up in the output bytecode.</li>
+   * <li>When the LocalVariableTable associates different indices with the same name at the same code location, we end up
+   * again with a case where the LocalPacker cannot remove the '#' character from local names.</li>
+   * </ol>
+   *
+   * Thus, this method checks for these ambiguous cases while the LocalVariableTable is still available, and assigns a unique
+   * name to each local that is based on the original name from the LocalVariableTable and does not use the '#' character.
+   */
+  private void tryCorrectingLocalNames(final Jimple jimp, final JimpleBody jb) {
+    final Chain<Local> jbLocals = jb.getLocals();
+    final int sizeLVT = this.localVars.size();
+    if (sizeLVT > 0) {
+      // Group LocalVariableNode by index to find any that are associated with
+      // different names at different points in the method. For each such
+      // occurrence, determine which name was chosen via "locals.get(i)" and,
+      // in the range of Units specified for all other names, replace that
+      // chosen Local with a new Local.
+      Multimap<Integer, LocalVariableNode> groups = LinkedListMultimap.create(sizeLVT);
+      for (LocalVariableNode lvn : this.localVars) {
+        if (lvn.start != lvn.end) { // these are ignored by getLocal(int)
+          groups.put(lvn.index, lvn);
+        }
+      }
+      // NOTE: When creating new variables, group by both name and index because
+      // the LocalVariableTable allows multiple local variable indices to
+      // have the same name simultaneously but they must be distinguished here.
+      final Chain<Unit> jbUnits = jb.getUnits();
+      Table<Integer, String, Local> newLocals = null;
+      for (Map.Entry<Integer, Collection<LocalVariableNode>> e : groups.asMap().entrySet()) {
+        Collection<LocalVariableNode> lvns = e.getValue();
+        if (lvns.size() > 1) {
+          final Integer localNum = e.getKey();
+          final Local chosen = this.locals.get(localNum);
+          final String chosenName = chosen.getName();
+          final Type chosenType = chosen.getType();
+          // Detect inconsistencies in the LocalVariableTable.
+          // 1. If there exists any use of local variable 'chosen' outside of a
+          // range defined by one of the LocalVariableNode in 'vals', then it is
+          // not safe to make any replacements of 'chosen' because it is not
+          // clear which actual variable should be used at a location outside of
+          // the defined ranges (unless a use-def analysis is applied but that
+          // is left for future implementation).
+          // 2. If any of the LocalVariableNode in 'vals' cover any of the same
+          // units, then they are ambiguous and cannot be used.
+          //
+          // To implement these checks, first collect all ValueBoxes in the body
+          // that reference the chosen Local. Then, as each LocalVariableNode is
+          // processed, map each ValueBox to the new Local that it should hold.
+          // If any ValueBox is found more than once or not found at all, then
+          // one of the inconsistency cases mentioned above exists and thus no
+          // changes should be made.
+          IdentityHashMap<ValueBox, Local> boxToNewLoc = new IdentityHashMap<>();
+          for (Unit u : jbUnits) {
+            for (ValueBox box : u.getUseAndDefBoxes()) {
+              Value val = box.getValue();
+              if (val == chosen) {
+                Local old = boxToNewLoc.put(box, null);
+                assert (old == null);// each box appears only once
+              }
+            }
+          }
+          boolean isConsistent = true;
+          LV_LOOP: for (LocalVariableNode lvn : lvns) {
+            final String name = lvn.name;
+            if (!chosenName.equals(name)) {
+              // Get the next real instruction after 'start'
+              // NOTE: Although it seems obvious to use lvn.start.getNext() as
+              // the initial instruction to check, the bytecode generated by
+              // some compilers has the start PC one instruction late it seems.
+              Unit uStart;
+              for (AbstractInsnNode i = lvn.start.getPrevious(); (uStart = units.get(i)) == null;) {
+                i = i.getNext();
+              }
+              // Get the previous real instruction before 'end'
+              Unit uEnd;
+              for (AbstractInsnNode i = lvn.end.getPrevious(); (uEnd = units.get(i)) == null;) {
+                i = i.getPrevious();
+              }
+              if (newLocals == null) {
+                newLocals = HashBasedTable.create(this.maxLocals, 1);
+              }
+              Local newLocal = newLocals.get(localNum, name);
+              if (newLocal == null) {
+                newLocal = jimp.newLocal(name, chosenType);
+                Local old = newLocals.put(localNum, name, newLocal);
+                assert (old == null);
+              }
+              for (Iterator<Unit> it = jbUnits.iterator(uStart, uEnd); it.hasNext();) {
+                Unit u = it.next();
+                for (ValueBox box : u.getUseAndDefBoxes()) {
+                  Value val = box.getValue();
+                  if (val == chosen) {
+                    assert (boxToNewLoc.containsKey(box));// it was found at the start
+                    Local conflict = boxToNewLoc.put(box, newLocal);
+                    if (conflict != null) {
+                      isConsistent = false;
+                      break LV_LOOP;
+                    }
+                  }
+                }
+              }
+            }
+          }
+          // Finally, replace the locals only if both consistency conditions pass.
+          HashSet<Local> newLocalSet = new HashSet<>(boxToNewLoc.values());
+          if (isConsistent && !newLocalSet.contains(null)) {
+            jbLocals.addAll(newLocalSet);
+            for (Map.Entry<ValueBox, Local> r : boxToNewLoc.entrySet()) {
+              r.getKey().setValue(r.getValue());
+            }
+          }
+        }
+      }
+    }
+    // In the end, ensure the names of locals (not just from those that were newly added) are unique.
+    ensureUniqueNames(jbLocals);
+  }
+
+  /**
+   * If any locals have the same name, append a unique id so that each is different.
+   */
+  private void ensureUniqueNames(Chain<Local> jbLocals) {
+    Multimap<String, Local> nameToLocal = LinkedListMultimap.create(jbLocals.size());
+    for (Local l : jbLocals) {
+      nameToLocal.put(l.getName(), l);
+    }
+    for (Collection<Local> locs : nameToLocal.asMap().values()) {
+      if (locs.size() > 1) {
+        int num = 0;
+        for (Local l : locs) {
+          l.setName(l.getName() + '_' + (++num));
+        }
+      }
+    }
   }
 
   private final class Edge {
