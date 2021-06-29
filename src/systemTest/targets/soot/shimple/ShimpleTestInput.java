@@ -30,7 +30,7 @@ import java.io.InputStream;
 /**
  * @author Timothy Hoffman
  */
-public class PhiNodeTestInput {
+public class ShimpleTestInput {
 
   public boolean sync() throws Exception {
     boolean success = false;
@@ -58,7 +58,7 @@ public class PhiNodeTestInput {
     Class<?> clazz = null;
     try {
       if (clazz == null) {
-        clazz = PhiNodeTestInput.class;
+        clazz = ShimpleTestInput.class;
       }
       clazz.getDeclaredMethod("toString");
     } catch (NoSuchMethodException ex) {
@@ -79,7 +79,7 @@ public class PhiNodeTestInput {
   }
 
   /**
-   * Run this test from the command line as "java -cp soot\target\systemTest-target-classes soot.shimple.PhiNodeTestInput"
+   * Run this test from the command line as "java -cp soot\target\systemTest-target-classes soot.shimple.ShimpleTestInput"
    * and observe that it runs without error and prints "false" and then "true" to the command line.
    *
    * @param args
@@ -87,7 +87,7 @@ public class PhiNodeTestInput {
    * @throws Exception
    */
   public static void main(String[] args) throws Exception {
-    System.out.println(new PhiNodeTestInput().sync());
-    System.out.println(new PhiNodeTestInput().hasMethod() == PhiNodeTestInput.class);
+    System.out.println(new ShimpleTestInput().sync());
+    System.out.println(new ShimpleTestInput().hasMethod() == ShimpleTestInput.class);
   }
 }

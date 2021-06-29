@@ -55,9 +55,11 @@ import soot.validation.ValidationException;
  * @author Timothy Hoffman
  */
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
-public class PhiNodeTest extends AbstractTestingFramework {
+public class Shimple1Test extends AbstractTestingFramework {
 
   private static final boolean DEBUG_PRINT = false;
+
+  private static final String TEST_CLASS = "soot.shimple.ShimpleTestInput";
 
   @Override
   protected void setupSoot() {
@@ -72,15 +74,14 @@ public class PhiNodeTest extends AbstractTestingFramework {
   }
 
   @Test
-  public void testComplexPhi_A() throws Exception {
-    final String TEST_CLASS = "soot.shimple.PhiNodeTestInput";
+  public void testComplexPhi_1A() throws Exception {
     final String TEST_METHOD = "sync";
 
     SootMethod m = prepareTarget(methodSigFromComponents(TEST_CLASS, "boolean", TEST_METHOD), TEST_CLASS);
 
     Body b = m.retrieveActiveBody();
     if (DEBUG_PRINT) {
-      System.out.println("[testComplexPhi_A] " + b.getClass().getName() + " = " + b);
+      System.out.println("[testComplexPhi_1A] " + b.getClass().getName() + " = " + b);
     }
     Assert.assertTrue(b instanceof JimpleBody);
 
@@ -109,15 +110,14 @@ public class PhiNodeTest extends AbstractTestingFramework {
   }
 
   @Test
-  public void testComplexPhi_B() throws Exception {
-    final String TEST_CLASS = "soot.shimple.PhiNodeTestInput";
+  public void testComplexPhi_1B() throws Exception {
     final String TEST_METHOD = "hasMethod";
 
     SootMethod m = prepareTarget(methodSigFromComponents(TEST_CLASS, "java.lang.Class", TEST_METHOD), TEST_CLASS);
 
     Body b = m.retrieveActiveBody();
     if (DEBUG_PRINT) {
-      System.out.println("[testComplexPhi_B] " + b.getClass().getName() + " = " + b);
+      System.out.println("[testComplexPhi_1B] " + b.getClass().getName() + " = " + b);
     }
     Assert.assertTrue(b instanceof JimpleBody);
 
@@ -146,15 +146,14 @@ public class PhiNodeTest extends AbstractTestingFramework {
   }
 
   @Test
-  public void testComplexPhi_C() throws Exception {
-    final String TEST_CLASS = "soot.shimple.PhiNodeTestInput";
+  public void testComplexPhi_1C() throws Exception {
     final String TEST_METHOD = "readProp";
 
     SootMethod m = prepareTarget(methodSigFromComponents(TEST_CLASS, "java.io.InputStream", TEST_METHOD), TEST_CLASS);
 
     Body b = m.retrieveActiveBody();
     if (DEBUG_PRINT) {
-      System.out.println("[testComplexPhi_C] " + b.getClass().getName() + " = " + b);
+      System.out.println("[testComplexPhi_1C] " + b.getClass().getName() + " = " + b);
     }
     Assert.assertTrue(b instanceof JimpleBody);
 
