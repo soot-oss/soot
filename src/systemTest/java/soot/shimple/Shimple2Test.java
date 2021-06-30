@@ -43,7 +43,7 @@ import soot.validation.ValidationException;
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class Shimple2Test extends AbstractTestingFramework {
 
-  private static final boolean DEBUG_PRINT = true;
+  private static final boolean DEBUG_PRINT = false;
 
   private static final String TEST_CLASS = "soot.shimple.ShimpleTestInput";
 
