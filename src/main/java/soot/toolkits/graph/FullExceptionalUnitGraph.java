@@ -50,10 +50,35 @@ import soot.util.Chain;
 public class FullExceptionalUnitGraph extends ExceptionalUnitGraph {
 
   public FullExceptionalUnitGraph(Body body) {
-    super(body);
     // Set 'omitExceptingUnitEdges' as false and use PedanticThrowAnalysis
     // so that all units will have an edge into exception handler blocks.
-    initialize(PedanticThrowAnalysis.v(), false);
+    this(body, PedanticThrowAnalysis.v(), false);
+  }
+
+  /**
+   * IMPORTANT: This constructor should be used with care because the {@link ThrowAnalysis} should normally be
+   * {@link PedanticThrowAnalysis} for the most accurate result (this is what the recommended constructor
+   * {@link #FullExceptionalUnitGraph(soot.Body)} uses).
+   * 
+   * @param body
+   * @param ta
+   */
+  public FullExceptionalUnitGraph(Body body, ThrowAnalysis ta) {
+    this(body, ta, false);
+  }
+
+  /**
+   * IMPORTANT: This constructor should be used with care because the {@link ThrowAnalysis} should normally be
+   * {@link PedanticThrowAnalysis} and 'omitExceptingUnitEdges' should normally be 'false' for the most accurate result (this
+   * is what the recommended constructor {@link #FullExceptionalUnitGraph(soot.Body)} uses).
+   * 
+   * @param body
+   * @param ta
+   * @param omitExceptingUnitEdges
+   */
+  public FullExceptionalUnitGraph(Body body, ThrowAnalysis ta, boolean omitExceptingUnitEdges) {
+    super(body);
+    initialize(ta, omitExceptingUnitEdges);
   }
 
   @Override
