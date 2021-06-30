@@ -54,8 +54,8 @@ public class Shimple2Test extends AbstractTestingFramework {
     // Ensure Shimple form is generated to trigger the bug
     opts.set_via_shimple(true);
 
-    // Enable Jimple optimization pack to demonstrate that some combination of
-    // optimizations can still cause a java.lang.VerifyError.
+    // Enable Jimple optimization pack to demonstrate that both the DeadAssignmentEliminator and CopyPropagator can still
+    // cause a java.lang.VerifyError when the exception table contains subsumed exceptions and -via-shimple was used.
     opts.setPhaseOption("jop", "enabled:true");
 
     if (DEBUG_PRINT) {
