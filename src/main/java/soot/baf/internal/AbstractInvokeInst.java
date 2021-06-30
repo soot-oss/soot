@@ -29,7 +29,7 @@ import soot.Type;
 import soot.UnitPrinter;
 import soot.VoidType;
 
-abstract class AbstractInvokeInst extends AbstractInst {
+public abstract class AbstractInvokeInst extends AbstractInst {
 
   SootMethodRef methodRef;
 
