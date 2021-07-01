@@ -149,20 +149,19 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
   
           // Collect all 'goto' statements to capture the 'goto' from infinite loop(s)
           HashSet<D> visitedNodes = new HashSet<D>();
-          LinkedList<D> workList = new LinkedList<D>();
-          workList.addAll(g.getHeads());
-          for (D current; !workList.isEmpty();) {
-            current = workList.remove(0);
-            visitedNodes.add(current);
-  
-            // only add 'goto' statements
-            if (current instanceof GotoInst || current instanceof GotoStmt) {
-              extraEntries.add(current);
-            }
-  
-            for (D next : g.getSuccsOf(current)) {
-              if (!visitedNodes.contains(next)) {
-                workList.add(next);
+          LinkedList<D> workList = new LinkedList<D>(g.getHeads());
+          while (!workList.isEmpty()) {
+            D current = workList.remove(0);
+            if (visitedNodes.add(current)) {
+              // only add 'goto' statements
+              if (current instanceof GotoStmt || current instanceof GotoInst) {
+                extraEntries.add(current);
+              }
+
+              for (D next : g.getSuccsOf(current)) {
+                if (!visitedNodes.contains(next)) {
+                  workList.add(next);
+                }
               }
             }
           }
@@ -173,6 +172,8 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
           entries.addAll(actualEntries);
           entries.addAll(extraEntries);
         }
+        assert (!entries.isEmpty());
+        assert (entries.stream().distinct().count() == entries.size());
       }
       
       visitEntry(visited, superEntry, entries);
