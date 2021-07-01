@@ -48,13 +48,10 @@ import soot.util.NumberedString;
 import soot.util.StringNumberer;
 
 /**
- * 
  * Utility class used by {@link OnFlyCallGraphBuilder} for finding functions at which to place virtual callgraph edges.
- * Function signatures are configurable in virtualedges.xml.
- * 
+ * Function signatures are configurable in {@link #SUMMARIESFILE}.
  * 
  * @author Julius Naeumann
- *
  */
 public class VirtualEdgesSummaries {
 
@@ -110,13 +107,14 @@ public class VirtualEdgesSummaries {
           edg.targets.addAll(parseWrapperTargets(targetsElement));
           if (edg.source instanceof InstanceinvokeSource) {
             InstanceinvokeSource inst = (InstanceinvokeSource) edg.source;
+            NumberedString subsig = inst.subSignature;
 
             // don't overwrite existing definition
-            VirtualEdge existing = instanceinvokeEdges.get(inst.subSignature);
+            VirtualEdge existing = instanceinvokeEdges.get(subsig);
             if (existing != null) {
               existing.targets.addAll(edg.targets);
             } else {
-              instanceinvokeEdges.put(inst.subSignature, edg);
+              instanceinvokeEdges.put(subsig, edg);
             }
           }
           if (edg.source instanceof StaticinvokeSource) {
