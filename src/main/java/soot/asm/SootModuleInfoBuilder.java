@@ -1,3 +1,5 @@
+package soot.asm;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -19,7 +21,6 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package soot.asm;
 
 import com.google.common.base.Optional;
 
@@ -32,15 +33,15 @@ import soot.SootModuleInfo;
 import soot.SootModuleResolver;
 
 /**
- * Builds Soot's reprerenstation for a module-info class
+ * Builds Soot's representation for a module-info class.
  * 
  * @author Andreas Dann
  */
 public class SootModuleInfoBuilder extends ModuleVisitor {
-  private final SootClassBuilder scb;
-  private SootModuleInfo klass;
 
-  private String name;
+  private final SootClassBuilder scb;
+  private final SootModuleInfo klass;
+  private final String name;
 
   public SootModuleInfoBuilder(String name, SootModuleInfo klass, SootClassBuilder scb) {
     super(Opcodes.ASM8);
@@ -68,6 +69,5 @@ public class SootModuleInfoBuilder extends ModuleVisitor {
     if (packaze != null) {
       klass.addOpenedPackage(packaze, modules);
     }
-
   }
 }
