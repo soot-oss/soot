@@ -23,6 +23,7 @@ package soot;
  * #L%
  */
 
+import java.util.Objects;
 import soot.jimple.paddle.PaddleField;
 import soot.jimple.spark.pag.SparkField;
 import soot.options.Options;
@@ -258,7 +259,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
   }
 
   public boolean isValidResolve(SootFieldRef f) {
-    return (this.isStatic() == f.isStatic()) && this.getDeclaringClass().equals(f.declaringClass())
-        && this.getName().equals(f.name()) && this.getType().equals(f.type());
+    return (this.isStatic() == f.isStatic()) && Objects.equals(this.getDeclaringClass(), f.declaringClass())
+        && Objects.equals(this.getName(), f.name()) && Objects.equals(this.getType(), f.type());
   }
 }
