@@ -119,7 +119,7 @@ public class BafBody extends Body {
 
   @Override
   public Object clone() {
-    Body b = new BafBody(getMethod());
+    Body b = new BafBody(getMethodUnsafe());
     b.importBodyContentsFrom(this);
     return b;
   }

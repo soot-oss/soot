@@ -25,16 +25,24 @@ package soot.jimple.validation;
 import java.util.List;
 
 import soot.Body;
+import soot.SootMethod;
 import soot.Unit;
 import soot.VoidType;
+import soot.baf.GotoInst;
+import soot.baf.ReturnInst;
+import soot.baf.ReturnVoidInst;
+import soot.baf.ThrowInst;
 import soot.jimple.GotoStmt;
-import soot.jimple.RetStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.ThrowStmt;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
+/**
+ * Checks that this Body actually contains a throw or return statement, and that the return statement is of the appropriate
+ * type (i.e. void/non-void).
+ */
 public enum ReturnStatementsValidator implements BodyValidator {
   INSTANCE;
 
@@ -42,46 +50,41 @@ public enum ReturnStatementsValidator implements BodyValidator {
     return INSTANCE;
   }
 
-  /**
-   * Checks the following invariants on this Jimple body:
-   * <ol>
-   * <li>this-references may only occur in instance methods
-   * <li>this-references may only occur as the first statement in a method, if they occur at all
-   * <li>param-references must precede all statements that are not themselves param-references or this-references, if they
-   * occur at all
-   * </ol>
-   */
   @Override
   public void validate(Body body, List<ValidationException> exceptions) {
-    // Checks that this Jimple body actually contains a return statement, and that the return statement
-    // is of the appropriate type (i.e. void/non-void)
+    final SootMethod method = body.getMethod();
+
+    // Checks that this Body actually contains a throw or return statement, and
+    // that the return statement is of the appropriate type (i.e. void/non-void)
     for (Unit u : body.getUnits()) {
-      if ((u instanceof RetStmt) || (u instanceof ThrowStmt)) {
+      if (u instanceof ThrowStmt || u instanceof ThrowInst) {
         return;
-      } else if (u instanceof ReturnStmt && !(body.getMethod().getReturnType() instanceof VoidType)) {
-        return;
-      } else if (u instanceof ReturnVoidStmt && body.getMethod().getReturnType() instanceof VoidType) {
-        return;
+      } else if (u instanceof ReturnStmt || u instanceof ReturnInst) {
+        if (!(method.getReturnType() instanceof VoidType)) {
+          return;
+        }
+      } else if (u instanceof ReturnVoidStmt || u instanceof ReturnVoidInst) {
+        if (method.getReturnType() instanceof VoidType) {
+          return;
+        }
       }
     }
 
-    // A method can have an infinite loop
-    // and no return statement:
-    //
-    // public class Infinite {
+    // A method can have an infinite loop and no return statement:
     // public static void main(String[] args) {
-    // int i = 0; while (true) {i += 1;} } }
+    // int i = 0; while (true) {i += 1;}
+    // }
     //
     // Only check that the execution cannot fall off the code.
     Unit last = body.getUnits().getLast();
-    if (last instanceof GotoStmt || last instanceof ThrowStmt) {
+    if (last instanceof GotoStmt || last instanceof GotoInst || last instanceof ThrowStmt || last instanceof ThrowInst) {
       return;
     }
 
-    exceptions.add(new ValidationException(body.getMethod(), "The method does not contain a return statement," +
-            " or the return statement is not of the appropriate type",
-        "Body of method " + body.getMethod().getSignature() + " does not contain a return statement," +
-                " or the return statement is not of the appropriate type"));
+    exceptions.add(new ValidationException(method,
+        "The method does not contain a return statement, or the return statement is not of the appropriate type",
+        "Body of method " + method.getSignature()
+            + " does not contain a return statement, or the return statement is not of the appropriate type"));
   }
 
   @Override
