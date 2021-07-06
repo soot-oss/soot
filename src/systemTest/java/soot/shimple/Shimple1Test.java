@@ -455,10 +455,6 @@ public class Shimple1Test extends AbstractTestingFramework {
     return success;
   }
 
-  /**
-   * 
-   * @param classPath
-   */
   private Scene customSetupLib(String rtJar, List<String> classNames, boolean useShimple) {
     G.reset();
 
