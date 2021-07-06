@@ -96,7 +96,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 
   // caching currently does not work because it adds fields to Class, Method and Constructor,
   // but such fields cannot currently be added using the Instrumentation API
-  private final boolean useCaching = false;
+  private static final boolean useCaching = false;
 
   private ReflectionTraceInfo RTI;
   private SootMethodRef UNINTERPRETED_METHOD;
@@ -106,7 +106,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
   private SootClass reflectiveCallsClass;
 
   @Override
-  protected void internalTransform(String phaseName, @SuppressWarnings("rawtypes") Map options) {
+  protected void internalTransform(String phaseName, Map<String, String> options) {
     if (!this.initialized) {
       final CGOptions cgOptions = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
       this.RTI = new ReflectionTraceInfo(cgOptions.reflection_log());
@@ -118,9 +118,10 @@ public class ReflectiveCallsInliner extends SceneTransformer {
       scene.getSootClass(OpaquePredicate.class.getName()).setApplicationClass();
       scene.getSootClass(ReflectiveCalls.class.getName()).setApplicationClass();
 
-      this.reflectiveCallsClass = new SootClass("soot.rtlib.tamiflex.ReflectiveCallsWrapper", Modifier.PUBLIC);
+      SootClass reflectiveCallsClass = new SootClass("soot.rtlib.tamiflex.ReflectiveCallsWrapper", Modifier.PUBLIC);
       scene.addClass(reflectiveCallsClass);
-      this.reflectiveCallsClass.setApplicationClass();
+      reflectiveCallsClass.setApplicationClass();
+      this.reflectiveCallsClass = reflectiveCallsClass;
 
       this.UNINTERPRETED_METHOD = scene.makeMethodRef(scene.getSootClass("soot.rtlib.tamiflex.OpaquePredicate"), "getFalse",
           Collections.emptyList(), BooleanType.v(), true);
@@ -136,14 +137,14 @@ public class ReflectiveCallsInliner extends SceneTransformer {
       this.initialized = true;
     }
 
+    final boolean validate = Options.v().validate();
     for (SootMethod m : RTI.methodsContainingReflectiveCalls()) {
-      m.retrieveActiveBody();
-      Body b = m.getActiveBody();
+      Body b = m.retrieveActiveBody();
       {
         Set<String> classForNameClassNames = RTI.classForNameClassNames(m);
         if (!classForNameClassNames.isEmpty()) {
           inlineRelectiveCalls(m, classForNameClassNames, ReflectionTraceInfo.Kind.ClassForName);
-          if (Options.v().validate()) {
+          if (validate) {
             b.validate();
           }
         }
@@ -152,7 +153,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         Set<String> classNewInstanceClassNames = RTI.classNewInstanceClassNames(m);
         if (!classNewInstanceClassNames.isEmpty()) {
           inlineRelectiveCalls(m, classNewInstanceClassNames, ReflectionTraceInfo.Kind.ClassNewInstance);
-          if (Options.v().validate()) {
+          if (validate) {
             b.validate();
           }
         }
@@ -161,7 +162,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         Set<String> constructorNewInstanceSignatures = RTI.constructorNewInstanceSignatures(m);
         if (!constructorNewInstanceSignatures.isEmpty()) {
           inlineRelectiveCalls(m, constructorNewInstanceSignatures, ReflectionTraceInfo.Kind.ConstructorNewInstance);
-          if (Options.v().validate()) {
+          if (validate) {
             b.validate();
           }
         }
@@ -170,7 +171,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         Set<String> methodInvokeSignatures = RTI.methodInvokeSignatures(m);
         if (!methodInvokeSignatures.isEmpty()) {
           inlineRelectiveCalls(m, methodInvokeSignatures, ReflectionTraceInfo.Kind.MethodInvoke);
-          if (Options.v().validate()) {
+          if (validate) {
             b.validate();
           }
         }
@@ -179,7 +180,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         Set<String> fieldSetSignatures = RTI.fieldSetSignatures(m);
         if (!fieldSetSignatures.isEmpty()) {
           inlineRelectiveCalls(m, fieldSetSignatures, ReflectionTraceInfo.Kind.FieldSet);
-          if (Options.v().validate()) {
+          if (validate) {
             b.validate();
           }
         }
@@ -188,7 +189,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         Set<String> fieldGetSignatures = RTI.fieldGetSignatures(m);
         if (!fieldGetSignatures.isEmpty()) {
           inlineRelectiveCalls(m, fieldGetSignatures, ReflectionTraceInfo.Kind.FieldGet);
-          if (Options.v().validate()) {
+          if (validate) {
             b.validate();
           }
         }
@@ -211,7 +212,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
     final SootClass reflCallsClass = scene.getSootClass("soot.rtlib.tamiflex.ReflectiveCalls");
     final Body body = reflCallsClass.getMethodByName(SootMethod.staticInitializerName).retrieveActiveBody();
     final LocalGenerator localGen = new LocalGenerator(body);
-    final Chain<Unit> newUnits = new HashChain<Unit>();
+    final Chain<Unit> newUnits = new HashChain<>();
     final SootClass sootClassSet = scene.getSootClass("java.util.Set");
     final RefType refTypeSet = sootClassSet.getType();
     final SootMethodRef addMethodRef = sootClassSet.getMethodByName("add").makeRef();
@@ -313,7 +314,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
     final Chain<Unit> units = body.getUnits();
     final Unit firstStmt = units.getPredOf(body.getFirstNonIdentityStmt());
 
-    final Chain<Unit> newUnits = new HashChain<Unit>();
+    final Chain<Unit> newUnits = new HashChain<>();
     final BooleanType bt = BooleanType.v();
     final Jimple jimp = Jimple.v();
 
@@ -355,7 +356,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
     // for all units
     for (Iterator<Unit> iter = units.snapshotIterator(); iter.hasNext();) {
       Stmt s = (Stmt) iter.next();
-      Chain<Unit> newUnits = new HashChain<Unit>();
+      Chain<Unit> newUnits = new HashChain<>();
 
       // if we have an invoke expression, test to see if it is a
       // reflective invoke expression
@@ -443,7 +444,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 
           SootMethod newMethod = createNewMethod(callKind, target, fieldSetGetType);
 
-          List<Value> args = new LinkedList<Value>();
+          List<Value> args = new LinkedList<>();
           switch (callKind) {
             case ClassForName:
             case ClassNewInstance:
@@ -497,7 +498,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
   }
 
   private SootMethod createNewMethod(Kind callKind, String target, Type fieldSetGetType) {
-    List<Type> parameterTypes = new LinkedList<Type>();
+    List<Type> parameterTypes = new LinkedList<>();
     Type returnType = null;
     switch (callKind) {
       case ClassForName:
