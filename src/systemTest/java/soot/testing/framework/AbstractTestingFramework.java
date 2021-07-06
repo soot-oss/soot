@@ -312,4 +312,50 @@ public abstract class AbstractTestingFramework {
       m.setActiveBody(bafBody);
     }
   }
+
+  /**
+   * @param sc
+   * @param className
+   * @param resolvingLevel
+   *          one of the constants defined in {@link SootClass}
+   *
+   * @return the {@link SootClass} with the given name
+   *
+   * @see SootClass#DANGLING
+   * @see SootClass#HIERARCHY
+   * @see SootClass#SIGNATURES
+   * @see SootClass#BODIES
+   */
+  public static SootClass getOrResolveSootClass(Scene sc, String className, int resolvingLevel) {
+    Assert.assertNotNull(className);
+    if (sc.containsClass(className)) {
+      SootClass retVal = sc.getSootClass(className);
+      if (retVal.resolvingLevel() >= resolvingLevel && !retVal.isPhantom()) {
+        assertResolvePostConditions(retVal, resolvingLevel);
+        return retVal;
+      } else {
+        // The forceResolve(..) will not make any change if the class is
+        // phantom or the resolving level is already high enough, so ensure
+        // those two conditions will be false before trying the resolution.
+        retVal.setResolvingLevel(SootClass.DANGLING);
+        retVal.setLibraryClass();
+      }
+    }
+    SootClass retVal = sc.forceResolve(className, resolvingLevel);
+    retVal.setApplicationClass();
+    assertResolvePostConditions(retVal, resolvingLevel);
+    return retVal;
+  }
+
+  private static void assertResolvePostConditions(SootClass c, int expectLvl) {
+    Assert.assertNotNull(c);
+    Assert.assertFalse("phantom class: " + c, c.isPhantom());
+    Assert.assertTrue("insufficiently resolved: (" + c.resolvingLevel() + ") " + c, c.resolvingLevel() >= expectLvl);
+
+    for (SootMethod m : c.getMethods()) {
+      Assert.assertFalse("phantom method: " + m, m.isPhantom());
+      Assert.assertTrue("concrete method without method body/source: " + m,
+          !m.isConcrete() || m.hasActiveBody() || m.getSource() != null);
+    }
+  }
 }
