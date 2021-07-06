@@ -936,6 +936,13 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
         returnType, isStatic());
   }
 
+  public boolean isValidResolve(SootMethodRef ref) {
+    SootClass decl = this.getDeclaringClass();
+    return (this.isStatic() == ref.isStatic()) && decl != null && decl.equals(ref.getDeclaringClass())
+        && this.getName().equals(ref.getName()) && this.getReturnType().equals(ref.getReturnType())
+        && this.getParameterTypes().equals(ref.getParameterTypes());
+  }
+
   @Override
   public int getJavaSourceStartLineNumber() {
     super.getJavaSourceStartLineNumber();
