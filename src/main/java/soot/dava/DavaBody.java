@@ -273,7 +273,7 @@ public class DavaBody extends Body {
   }
 
   public Object clone() {
-    Body b = Dava.v().newBody(getMethod());
+    Body b = Dava.v().newBody(getMethodUnsafe());
     b.importBodyContentsFrom(this);
     return b;
   }

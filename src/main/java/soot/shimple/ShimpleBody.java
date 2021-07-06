@@ -196,7 +196,7 @@ public class ShimpleBody extends StmtBody {
    */
   @Override
   public Object clone() {
-    Body b = Shimple.v().newBody(getMethod());
+    Body b = Shimple.v().newBody(getMethodUnsafe());
     b.importBodyContentsFrom(this);
     return b;
   }
