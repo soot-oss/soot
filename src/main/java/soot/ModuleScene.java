@@ -41,7 +41,7 @@ import soot.util.Chain;
 import soot.util.HashChain;
 
 /**
- * Manages the SootClasses of the application being analyzed for Java 9 modules
+ * Manages the SootClasses of the application being analyzed for Java 9 modules.
  *
  * @author Andreas Dann
  */
@@ -53,7 +53,7 @@ public class ModuleScene extends Scene {
    * that holds the corresponding RefType since multiple modules may contain the same class this is a map (for fast look ups)
    * TODO: evaluate if Guava's multimap is faster
    */
-  private final Map<String, Map<String, RefType>> nameToClass = new HashMap<String, Map<String, RefType>>();
+  private final Map<String, Map<String, RefType>> nameToClass = new HashMap<>();
 
   // instead of using a class path, java 9 uses a module path
   private String modulePath = null;
@@ -174,7 +174,7 @@ public class ModuleScene extends Scene {
 
     Map<String, RefType> map = nameToClass.get(className);
     if (map == null) {
-      nameToClass.put(className, map = new HashMap<String, RefType>());
+      nameToClass.put(className, map = new HashMap<>());
     }
     map.put(c.moduleName, c.getType());
 
@@ -268,13 +268,10 @@ public class ModuleScene extends Scene {
     /*
      * if(Options.v().time()) Main.v().resolveTimer.start();
      */
-
     setPhantomRefs(true);
     SootClass toReturn = SootModuleResolver.v().resolveClass(className, desiredLevel, moduleName);
     setPhantomRefs(false);
-
     return toReturn;
-
     /*
      * if(Options.v().time()) Main.v().resolveTimer.end();
      */
@@ -388,7 +385,7 @@ public class ModuleScene extends Scene {
     final String className = type.getClassName();
     Map<String, RefType> map = nameToClass.get(className);
     if (map == null) {
-      nameToClass.put(className, map = new HashMap<String, RefType>());
+      nameToClass.put(className, map = new HashMap<>());
     }
     map.put(((ModuleRefType) type).getModuleName(), type);
   }
@@ -476,18 +473,19 @@ public class ModuleScene extends Scene {
   public void loadNecessaryClasses() {
     loadBasicClasses();
 
-    for (String name : Options.v().classes()) {
+    final Options opts = Options.v();
+    for (String name : opts.classes()) {
       loadNecessaryClass(name);
     }
 
     loadDynamicClasses();
 
-    if (Options.v().oaat()) {
-      if (Options.v().process_dir().isEmpty()) {
+    if (opts.oaat()) {
+      if (opts.process_dir().isEmpty()) {
         throw new IllegalArgumentException("If switch -oaat is used, then also -process-dir must be given.");
       }
     } else {
-      for (String path : Options.v().process_dir()) {
+      for (String path : opts.process_dir()) {
         for (Map.Entry<String, List<String>> entry : ModulePathSourceLocator.v().getClassUnderModulePath(path).entrySet()) {
           for (String cl : entry.getValue()) {
             SootClass theClass = loadClassAndSupport(cl, Optional.fromNullable(entry.getKey()));
@@ -503,10 +501,10 @@ public class ModuleScene extends Scene {
 
   @Override
   public void loadDynamicClasses() {
-    final ArrayList<SootClass> dynamicClasses = new ArrayList<SootClass>();
+    final ArrayList<SootClass> dynamicClasses = new ArrayList<>();
     final Options opts = Options.v();
 
-    final Map<String, List<String>> temp = new HashMap<String, List<String>>();
+    final Map<String, List<String>> temp = new HashMap<>();
     temp.put(null, opts.dynamic_class());
 
     final ModulePathSourceLocator msloc = ModulePathSourceLocator.v();
@@ -538,16 +536,16 @@ public class ModuleScene extends Scene {
     this.dynamicClasses = dynamicClasses;
   }
 
-  /*
+  /**
    * Generate classes to process, adding or removing package marked by command line options.
    */
   @Override
   protected void prepareClasses() {
     final List<String> optionsClasses = Options.v().classes();
     // Remove/add all classes from packageInclusionMask as per -i option
-    Chain<SootClass> processedClasses = new HashChain<SootClass>();
+    Chain<SootClass> processedClasses = new HashChain<>();
     while (true) {
-      Chain<SootClass> unprocessedClasses = new HashChain<SootClass>(getClasses());
+      Chain<SootClass> unprocessedClasses = new HashChain<>(getClasses());
       unprocessedClasses.removeAll(processedClasses);
       if (unprocessedClasses.isEmpty()) {
         break;

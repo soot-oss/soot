@@ -25,15 +25,17 @@ package soot.jimple.validation;
 import java.util.List;
 
 import soot.Body;
+import soot.IdentityUnit;
+import soot.SootMethod;
 import soot.Unit;
-import soot.jimple.IdentityStmt;
+import soot.Value;
 import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
 /**
- * This validator checks whether each ParameterRef and ThisRef is used exactly once.
+ * This {@link BodyValidator} checks whether each {@link ParameterRef} and {@link ThisRef} is used exactly once.
  *
  * @author Marc Miltenberger
  */
@@ -44,23 +46,21 @@ public enum IdentityValidator implements BodyValidator {
     return INSTANCE;
   }
 
-  /**
-   * Checks whether each ParameterRef and ThisRef is used exactly once.
-   */
   @Override
   public void validate(Body body, List<ValidationException> exceptions) {
-    boolean hasThisLocal = false;
-    int paramCount = body.getMethod().getParameterCount();
-    boolean[] parameterRefs = new boolean[paramCount];
+    final SootMethod method = body.getMethod();
+    final int paramCount = method.getParameterCount();
+    final boolean[] parameterRefs = new boolean[paramCount];
 
+    boolean hasThisLocal = false;
     for (Unit u : body.getUnits()) {
-      if (u instanceof IdentityStmt) {
-        IdentityStmt id = (IdentityStmt) u;
-        if (id.getRightOp() instanceof ThisRef) {
+      if (u instanceof IdentityUnit) {
+        final IdentityUnit id = (IdentityUnit) u;
+        final Value rhs = id.getRightOp();
+        if (rhs instanceof ThisRef) {
           hasThisLocal = true;
-        }
-        if (id.getRightOp() instanceof ParameterRef) {
-          ParameterRef ref = (ParameterRef) id.getRightOp();
+        } else if (rhs instanceof ParameterRef) {
+          ParameterRef ref = (ParameterRef) rhs;
           if (ref.getIndex() < 0 || ref.getIndex() >= paramCount) {
             if (paramCount == 0) {
               exceptions
@@ -80,9 +80,9 @@ public enum IdentityValidator implements BodyValidator {
       }
     }
 
-    if (!body.getMethod().isStatic() && !hasThisLocal) {
+    if (!method.isStatic() && !hasThisLocal) {
       exceptions.add(new ValidationException(body,
-          String.format("The method %s is not static, but does not have a this local", body.getMethod().getSignature())));
+          String.format("The method %s is not static, but does not have a this local", method.getSignature())));
     }
 
     for (int i = 0; i < paramCount; i++) {
