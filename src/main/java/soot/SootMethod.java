@@ -937,7 +937,8 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   }
 
   public boolean isValidResolve(SootMethodRef ref) {
-    return (this.isStatic() == ref.isStatic()) && this.getDeclaringClass().equals(ref.getDeclaringClass())
+    SootClass decl = this.getDeclaringClass();
+    return (this.isStatic() == ref.isStatic()) && decl != null && decl.equals(ref.getDeclaringClass())
         && this.getName().equals(ref.getName()) && this.getReturnType().equals(ref.getReturnType())
         && this.getParameterTypes().equals(ref.getParameterTypes());
   }
