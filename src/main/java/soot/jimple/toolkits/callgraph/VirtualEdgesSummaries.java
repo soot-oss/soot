@@ -33,6 +33,8 @@ import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -58,6 +60,8 @@ public class VirtualEdgesSummaries {
   private final HashMap<NumberedString, VirtualEdge> instanceinvokeEdges;
   private final HashMap<String, VirtualEdge> staticinvokeEdges;
   private final HashMap<NumberedString, VirtualEdge> registerfunctionsToEdges;
+
+  private static final Logger logger = LoggerFactory.getLogger(VirtualEdgesSummaries.class);
 
   public VirtualEdgesSummaries() {
     this.instanceinvokeEdges = new HashMap<>();
@@ -128,10 +132,10 @@ public class VirtualEdgesSummaries {
       }
 
     } catch (IOException | ParserConfigurationException | SAXException e1) {
-      e1.printStackTrace();
+      logger.error("An error occurred while reading in virtual edge summaries", e1);
     }
-    System.out.println(String.format("Found %d instanceinvoke , %d staticinvoke edge descriptions",
-        instanceinvokeEdges.size(), staticinvokeEdges.size()));
+    logger.debug("Found %d instanceinvoke, %d staticinvoke edge descriptions", instanceinvokeEdges.size(),
+        staticinvokeEdges.size());
   }
 
   public VirtualEdge getVirtualEdgesMatchingSubSig(NumberedString subsig) {
