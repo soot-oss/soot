@@ -4,12 +4,7 @@ package soot.asm;
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 2012 Andreas Dann
- *
- * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
- * Security Reliability and Trust (SnT) - All rights reserved
- * Alexandre Bartel
- *
+ * Copyright (C) 2021 hluwa
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
