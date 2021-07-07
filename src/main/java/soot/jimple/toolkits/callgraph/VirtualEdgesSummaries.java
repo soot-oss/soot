@@ -254,18 +254,22 @@ public class VirtualEdgesSummaries {
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (obj == null)
+      }
+      if (obj == null) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       StaticinvokeSource other = (StaticinvokeSource) obj;
       if (signature == null) {
         if (other.signature != null)
           return false;
-      } else if (!signature.equals(other.signature))
+      } else if (!signature.equals(other.signature)) {
         return false;
+      }
       return true;
     }
   }
@@ -341,17 +345,22 @@ public class VirtualEdgesSummaries {
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (obj == null)
+      }
+      if (obj == null) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       VirtualEdgeTarget other = (VirtualEdgeTarget) obj;
-      if (argIndex != other.argIndex)
+      if (argIndex != other.argIndex) {
         return false;
-      if (isBase != other.isBase)
+      }
+      if (isBase != other.isBase) {
         return false;
+      }
       return true;
     }
   }
@@ -403,18 +412,23 @@ public class VirtualEdgesSummaries {
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (!super.equals(obj))
+      }
+      if (!super.equals(obj)) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       DirectTarget other = (DirectTarget) obj;
       if (targetMethod == null) {
-        if (other.targetMethod != null)
+        if (other.targetMethod != null) {
           return false;
-      } else if (!targetMethod.equals(other.targetMethod))
+        }
+      } else if (!targetMethod.equals(other.targetMethod)) {
         return false;
+      }
       return true;
     }
   }
@@ -455,23 +469,30 @@ public class VirtualEdgesSummaries {
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (!super.equals(obj))
+      }
+      if (!super.equals(obj)) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       WrapperTarget other = (WrapperTarget) obj;
       if (registrationSignature == null) {
-        if (other.registrationSignature != null)
+        if (other.registrationSignature != null) {
           return false;
-      } else if (!registrationSignature.equals(other.registrationSignature))
+        }
+      } else if (!registrationSignature.equals(other.registrationSignature)) {
         return false;
+      }
       if (targets == null) {
-        if (other.targets != null)
+        if (other.targets != null) {
           return false;
-      } else if (!targets.equals(other.targets))
+        }
+      } else if (!targets.equals(other.targets)) {
         return false;
+      }
       return true;
     }
   }
