@@ -265,8 +265,9 @@ public class VirtualEdgesSummaries {
       }
       StaticinvokeSource other = (StaticinvokeSource) obj;
       if (signature == null) {
-        if (other.signature != null)
+        if (other.signature != null) {
           return false;
+        }
       } else if (!signature.equals(other.signature)) {
         return false;
       }
@@ -299,18 +300,23 @@ public class VirtualEdgesSummaries {
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (obj == null)
+      }
+      if (obj == null) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       InstanceinvokeSource other = (InstanceinvokeSource) obj;
       if (subSignature == null) {
-        if (other.subSignature != null)
+        if (other.subSignature != null) {
           return false;
-      } else if (!subSignature.equals(other.subSignature))
+        }
+      } else if (!subSignature.equals(other.subSignature)) {
         return false;
+      }
       return true;
     }
   }
