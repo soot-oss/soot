@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
@@ -937,9 +938,9 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   }
 
   public boolean isValidResolve(SootMethodRef ref) {
-    return (this.isStatic() == ref.isStatic()) && this.getDeclaringClass().equals(ref.getDeclaringClass())
-        && this.getName().equals(ref.getName()) && this.getReturnType().equals(ref.getReturnType())
-        && this.getParameterTypes().equals(ref.getParameterTypes());
+    return (this.isStatic() == ref.isStatic()) && Objects.equals(this.getDeclaringClass(), ref.getDeclaringClass())
+        && Objects.equals(this.getName(), ref.getName()) && Objects.equals(this.getReturnType(), ref.getReturnType())
+        && Objects.equals(this.getParameterTypes(), ref.getParameterTypes());
   }
 
   @Override

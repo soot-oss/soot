@@ -76,7 +76,7 @@ public class GrimpBody extends StmtBody {
 
   @Override
   public Object clone() {
-    Body b = Grimp.v().newBody(getMethod());
+    Body b = Grimp.v().newBody(getMethodUnsafe());
     b.importBodyContentsFrom(this);
     return b;
   }
