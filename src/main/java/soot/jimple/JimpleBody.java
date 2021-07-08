@@ -92,7 +92,7 @@ public class JimpleBody extends StmtBody {
    */
   @Override
   public Object clone() {
-    Body b = new JimpleBody(getMethod());
+    Body b = new JimpleBody(getMethodUnsafe());
     b.importBodyContentsFrom(this);
     return b;
   }

@@ -124,7 +124,7 @@ public class LocalPacker extends BodyTransformer {
       List<Local> originalLocals = new ArrayList<Local>(bodyLocalsRef);
       bodyLocalsRef.clear();
 
-      Set<String> usedLocalNames = new HashSet<>();
+      final Set<String> usedLocalNames = new HashSet<>();
       for (Local original : originalLocals) {
         Type group = localToGroup.get(original);
         GroupIntPair pair = new GroupIntPair(group, localToColor.get(original));
@@ -156,6 +156,8 @@ public class LocalPacker extends BodyTransformer {
             } else {
               // just leave it alone for now
             }
+          } else {
+            usedLocalNames.add(name);
           }
 
           groupIntToLocal.put(pair, newLocal);

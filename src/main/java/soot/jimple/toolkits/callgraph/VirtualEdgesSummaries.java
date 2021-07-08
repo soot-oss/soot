@@ -28,7 +28,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -241,6 +243,36 @@ public class VirtualEdgesSummaries {
     public String toString() {
       return signature;
     }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((signature == null) ? 0 : signature.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      StaticinvokeSource other = (StaticinvokeSource) obj;
+      if (signature == null) {
+        if (other.signature != null) {
+          return false;
+        }
+      } else if (!signature.equals(other.signature)) {
+        return false;
+      }
+      return true;
+    }
   }
 
   public static class InstanceinvokeSource extends VirtualEdgeSource {
@@ -257,24 +289,153 @@ public class VirtualEdgesSummaries {
     public String toString() {
       return subSignature.toString();
     }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((subSignature == null) ? 0 : subSignature.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      InstanceinvokeSource other = (InstanceinvokeSource) obj;
+      if (subSignature == null) {
+        if (other.subSignature != null) {
+          return false;
+        }
+      } else if (!subSignature.equals(other.subSignature)) {
+        return false;
+      }
+      return true;
+    }
   }
 
   public static abstract class VirtualEdgeTarget {
     boolean isBase;
     int argIndex;
 
+    public VirtualEdgeTarget() {
+      this.isBase = true;
+      this.argIndex = -1;
+    }
+
+    public VirtualEdgeTarget(int argIndex) {
+      this.isBase = false;
+      this.argIndex = argIndex;
+    }
+
     @Override
     public String toString() {
       return isBase ? "base" : String.format("argument %d", argIndex);
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + argIndex;
+      result = prime * result + (isBase ? 1231 : 1237);
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      VirtualEdgeTarget other = (VirtualEdgeTarget) obj;
+      if (argIndex != other.argIndex) {
+        return false;
+      }
+      if (isBase != other.isBase) {
+        return false;
+      }
+      return true;
     }
   }
 
   public static class DirectTarget extends VirtualEdgeTarget {
     NumberedString targetMethod;
 
+    DirectTarget() {
+      // internal use only
+    }
+
+    /**
+     * Creates a new direct method invocation on an object passed to the original source as an argument. For example,
+     * <code>foo.do(x)></code> could invoke <code>x.bar()</code> as a callback.
+     * 
+     * @param targetMethod
+     *          The target method that is invoked on the argument object
+     * @param argIndex
+     *          The index of the argument that receives the target object
+     */
+    public DirectTarget(NumberedString targetMethod, int argIndex) {
+      super(argIndex);
+      this.targetMethod = targetMethod;
+    }
+
+    /**
+     * Creates a new direct method invocation on the base object of the original source. For example, <code>foo.do()></code>
+     * could invoke <code>foo.bar()</code> as a callback.
+     * 
+     * @param targetMethod
+     *          The target method that is invoked on the base object
+     */
+    public DirectTarget(NumberedString targetMethod) {
+      this.targetMethod = targetMethod;
+    }
+
     @Override
     public String toString() {
       return String.format("Direct to %s on %s", targetMethod.toString(), super.toString());
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result + ((targetMethod == null) ? 0 : targetMethod.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (!super.equals(obj)) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      DirectTarget other = (DirectTarget) obj;
+      if (targetMethod == null) {
+        if (other.targetMethod != null) {
+          return false;
+        }
+      } else if (!targetMethod.equals(other.targetMethod)) {
+        return false;
+      }
+      return true;
     }
   }
 
@@ -302,6 +463,44 @@ public class VirtualEdgesSummaries {
           sb.toString());
 
     }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result + ((registrationSignature == null) ? 0 : registrationSignature.hashCode());
+      result = prime * result + ((targets == null) ? 0 : targets.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (!super.equals(obj)) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      WrapperTarget other = (WrapperTarget) obj;
+      if (registrationSignature == null) {
+        if (other.registrationSignature != null) {
+          return false;
+        }
+      } else if (!registrationSignature.equals(other.registrationSignature)) {
+        return false;
+      }
+      if (targets == null) {
+        if (other.targets != null) {
+          return false;
+        }
+      } else if (!targets.equals(other.targets)) {
+        return false;
+      }
+      return true;
+    }
   }
 
   public static class VirtualEdge {
@@ -310,7 +509,43 @@ public class VirtualEdgesSummaries {
      */
     Kind edgeType;
     VirtualEdgeSource source;
-    ArrayList<VirtualEdgeTarget> targets;
+    List<VirtualEdgeTarget> targets;
+
+    VirtualEdge() {
+      // internal use only
+    }
+
+    public VirtualEdge(Kind edgeType, VirtualEdgeSource source, VirtualEdgeTarget target) {
+      this(edgeType, source, new ArrayList<>(Collections.singletonList(target)));
+    }
+
+    public VirtualEdge(Kind edgeType, VirtualEdgeSource source, List<VirtualEdgeTarget> targets) {
+      this.edgeType = edgeType;
+      this.source = source;
+      this.targets = targets;
+    }
+
+    public Kind getEdgeType() {
+      return edgeType;
+    }
+
+    public VirtualEdgeSource getSource() {
+      return source;
+    }
+
+    public List<VirtualEdgeTarget> getTargets() {
+      return targets;
+    }
+
+    /**
+     * Adds the given targets to this edge summary
+     * 
+     * @param newTargets
+     *          The targets to add
+     */
+    public void addTargets(List<VirtualEdgeTarget> newTargets) {
+      this.targets.addAll(newTargets);
+    }
 
     @Override
     public String toString() {
@@ -320,5 +555,6 @@ public class VirtualEdgesSummaries {
       }
       return String.format("%s %s => %s", edgeType, source.toString(), sb.toString());
     }
+
   }
 }
