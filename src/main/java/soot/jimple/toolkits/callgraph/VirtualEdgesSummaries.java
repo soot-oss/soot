@@ -30,7 +30,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -557,4 +559,14 @@ public class VirtualEdgesSummaries {
     }
 
   }
+
+  public Set<VirtualEdge> getAllVirtualEdges() {
+    Set<VirtualEdge> allEdges
+        = new HashSet<>(instanceinvokeEdges.size() + registerfunctionsToEdges.size() + staticinvokeEdges.size());
+    allEdges.addAll(instanceinvokeEdges.values());
+    allEdges.addAll(registerfunctionsToEdges.values());
+    allEdges.addAll(staticinvokeEdges.values());
+    return allEdges;
+  }
+
 }
