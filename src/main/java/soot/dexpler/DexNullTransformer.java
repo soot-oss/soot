@@ -118,8 +118,8 @@ public class DexNullTransformer extends AbstractNullTransformer {
           }
           doBreak = true;
           return;
-        } else if (r instanceof StringConstant || r instanceof NewExpr ||
-            r instanceof NewArrayExpr || r instanceof ClassConstant) {
+        } else if (r instanceof StringConstant || r instanceof NewExpr || r instanceof NewArrayExpr
+            || r instanceof ClassConstant) {
           usedAsObject = true;
           doBreak = true;
           return;
@@ -368,6 +368,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
     // Check for inlined zero values
     AbstractStmtSwitch inlinedZeroValues = new AbstractStmtSwitch() {
       final NullConstant nullConstant = NullConstant.v();
+      Set<Value> objects = null;
 
       @Override
       public void caseAssignStmt(AssignStmt stmt) {
@@ -388,7 +389,10 @@ public class DexNullTransformer extends AbstractNullTransformer {
         // Case a[0] = 0
         if (stmt.getLeftOp() instanceof ArrayRef && isConstZero(stmt.getRightOp())) {
           ArrayRef ar = (ArrayRef) stmt.getLeftOp();
-          if (isObjectArray(ar.getBase(), body) || stmt.hasTag(ObjectOpTag.NAME)) {
+          if (objects == null) {
+            objects = getObjectArray(body);
+          }
+          if (objects.contains(ar.getBase()) || stmt.hasTag(ObjectOpTag.NAME)) {
             stmt.setRightOp(nullConstant);
           }
         }
@@ -450,28 +454,28 @@ public class DexNullTransformer extends AbstractNullTransformer {
     }
   }
 
-  private boolean isObjectArray(Value v, Body body) {
+  private static Set<Value> getObjectArray(Body body) {
+    Set<Value> objArrays = new HashSet<Value>();
     for (Unit u : body.getUnits()) {
       if (u instanceof AssignStmt) {
         AssignStmt assign = (AssignStmt) u;
-        if (assign.getLeftOp() == v) {
-          if (assign.getRightOp() instanceof NewArrayExpr) {
-            NewArrayExpr nea = (NewArrayExpr) assign.getRightOp();
-            if (isObject(nea.getBaseType())) {
-              return true;
-            }
-          } else if (assign.getRightOp() instanceof FieldRef) {
-            FieldRef fr = (FieldRef) assign.getRightOp();
-            if (fr.getType() instanceof ArrayType) {
-              if (isObject(((ArrayType) fr.getType()).getArrayElementType())) {
-                return true;
-              }
+        if (assign.getRightOp() instanceof NewArrayExpr) {
+          NewArrayExpr nea = (NewArrayExpr) assign.getRightOp();
+          if (isObject(nea.getBaseType())) {
+            objArrays.add(assign.getLeftOp());
+          }
+        } else if (assign.getRightOp() instanceof FieldRef) {
+          FieldRef fr = (FieldRef) assign.getRightOp();
+          if (fr.getType() instanceof ArrayType) {
+            if (isObject(((ArrayType) fr.getType()).getArrayElementType())) {
+              objArrays.add(assign.getLeftOp());
             }
           }
         }
+
       }
     }
-    return false;
+    return objArrays;
   }
 
   /**
