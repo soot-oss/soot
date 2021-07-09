@@ -97,9 +97,10 @@ public class VirtualEdgesSummaries {
             case "ASYNCTASK":
               edg.edgeType = Kind.ASYNCTASK;
               break;
-            case "PRIVILEDGED":
+            case "PRIVILEGED":
               edg.edgeType = Kind.PRIVILEGED;
               break;
+            case "GENERIC_FAKE":
             default:
               edg.edgeType = Kind.GENERIC_FAKE;
               break;
@@ -241,6 +242,10 @@ public class VirtualEdgesSummaries {
       this.signature = signature;
     }
 
+    public String getSignature() {
+      return signature;
+    }
+
     @Override
     public String toString() {
       return signature;
@@ -292,6 +297,10 @@ public class VirtualEdgesSummaries {
       return subSignature.toString();
     }
 
+    public NumberedString getSubSignature() {
+      return subSignature;
+    }
+
     @Override
     public int hashCode() {
       final int prime = 31;
@@ -340,6 +349,14 @@ public class VirtualEdgesSummaries {
     @Override
     public String toString() {
       return isBase ? "base" : String.format("argument %d", argIndex);
+    }
+
+    public boolean isBase() {
+      return isBase;
+    }
+
+    public int getArgIndex() {
+      return argIndex;
     }
 
     @Override
@@ -403,6 +420,10 @@ public class VirtualEdgesSummaries {
      */
     public DirectTarget(NumberedString targetMethod) {
       this.targetMethod = targetMethod;
+    }
+
+    public NumberedString getTargetMethod() {
+      return targetMethod;
     }
 
     @Override

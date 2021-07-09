@@ -122,26 +122,26 @@
         </targets>
     </edge>
 
-	<!-- doPriviledged -->
-	<edge type="PRIVILEDGED">
+	<!-- doPrivileged -->
+	<edge type="PRIVILEGED">
 		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)&gt;" />
 		<targets>
 			<direct subsignature="java.lang.Object run()" target-position="argument" index="0" />
 		</targets>
 	</edge>
-	<edge type="PRIVILEDGED">
+	<edge type="PRIVILEGED">
 		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)&gt;" />
 		<targets>
 			<direct subsignature="java.lang.Object run()" target-position="argument" index="0" />
 		</targets>
 	</edge>
-	<edge type="PRIVILEDGED">
+	<edge type="PRIVILEGED">
 		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)&gt;" />
 		<targets>
 			<direct subsignature="java.lang.Object run()" target-position="argument" index="0" />
 		</targets>
 	</edge>
-	<edge type="PRIVILEDGED">
+	<edge type="PRIVILEGED">
 		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)&gt;" />
 		<targets>
 			<direct subsignature="java.lang.Object run()" target-position="argument" index="0" />
