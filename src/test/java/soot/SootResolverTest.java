@@ -50,7 +50,7 @@ import soot.options.Options;
  * but the argument passed into the method {@link Scene#getTypeUnsafe(String)} may be <b>quoted</b>, just like: <br/>
  * <li>1. "sun.reflect.'annotation'.AnnotationType"</li> <br/>
  * <li>2. "java.lang.'annotation'.Annotation" </li> <br/>
- * But {@link Scene#getTypeUnsafe(String)} will return null if the argument passed into is <b>quoted<b/>, it will lead to <br/>
+ * But {@link Scene#getTypeUnsafe(String)} will return null if the argument passed into is <b>quoted</b>, it will lead to <br/>
  * Soot crashing with NullPointerException or IllegalArgumentException somewhere, just like 'test3' failing to pass the test <br/>
  * with IllegalArgumentException
  *
