@@ -868,8 +868,9 @@ public class OnFlyCallGraphBuilder {
         targetLocal = (Local) runnable;
       }
     }
-    if (targetLocal == null)
+    if (targetLocal == null) {
       return;
+    }
 
     if (target instanceof DirectTarget) {
       // A direct target means that we need to build an edge from the call site to a method on the current base object or a

@@ -344,20 +344,26 @@ public class VirtualEdgesSummaries {
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (obj == null)
+      }
+      if (obj == null) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       VirtualEdgeTarget other = (VirtualEdgeTarget) obj;
-      if (argIndex != other.argIndex)
+      if (argIndex != other.argIndex) {
         return false;
+      }
       if (targetMethod == null) {
-        if (other.targetMethod != null)
+        if (other.targetMethod != null) {
           return false;
-      } else if (!targetMethod.equals(other.targetMethod))
+        }
+      } else if (!targetMethod.equals(other.targetMethod)) {
         return false;
+      }
       return true;
     }
   }
@@ -504,18 +510,23 @@ public class VirtualEdgesSummaries {
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (!super.equals(obj))
+      }
+      if (!super.equals(obj)) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       IndirectTarget other = (IndirectTarget) obj;
       if (targets == null) {
-        if (other.targets != null)
+        if (other.targets != null) {
           return false;
-      } else if (!targets.equals(other.targets))
+        }
+      } else if (!targets.equals(other.targets)) {
         return false;
+      }
       return true;
     }
   }
@@ -571,6 +582,52 @@ public class VirtualEdgesSummaries {
         sb.append(t.toString()).append(' ');
       }
       return String.format("%s %s => %s", edgeType, source.toString(), sb.toString());
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((edgeType == null) ? 0 : edgeType.hashCode());
+      result = prime * result + ((source == null) ? 0 : source.hashCode());
+      result = prime * result + ((targets == null) ? 0 : targets.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      VirtualEdge other = (VirtualEdge) obj;
+      if (edgeType == null) {
+        if (other.edgeType != null) {
+          return false;
+        }
+      } else if (!edgeType.equals(other.edgeType)) {
+        return false;
+      }
+      if (source == null) {
+        if (other.source != null) {
+          return false;
+        }
+      } else if (!source.equals(other.source)) {
+        return false;
+      }
+      if (targets == null) {
+        if (other.targets != null) {
+          return false;
+        }
+      } else if (!targets.equals(other.targets)) {
+        return false;
+      }
+      return true;
     }
 
   }
