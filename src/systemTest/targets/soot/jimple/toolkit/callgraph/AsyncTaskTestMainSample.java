@@ -26,8 +26,9 @@ import android.os.AsyncTask;
 
 public class AsyncTaskTestMainSample {
 
+    AsyncTask task;
     public void target1() {
-        new LongOperation().execute("stub");
+        task = new LongOperation().execute("stub");
     }
 }
 
