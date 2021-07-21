@@ -1,3 +1,5 @@
+package soot;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -19,7 +21,6 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package soot;
 
 import com.google.common.base.Optional;
 
@@ -66,7 +67,7 @@ public class ModulePathSourceLocator extends SourceLocator {
   private final HashMap<String, Path> moduleNameToPath = new HashMap<String, Path>();
   private Set<String> classesToLoad;
   private List<String> modulePath;
-  private int next = 0;
+  private int nextPathEntry = 0;
 
   public ModulePathSourceLocator(Singletons.Global g) {
     super(g);
@@ -86,8 +87,6 @@ public class ModulePathSourceLocator extends SourceLocator {
    * Given a class name, uses the soot-module-path to return a ClassSource for the given class.
    */
   public ClassSource getClassSource(String className, Optional<String> moduleName) {
-    String appendToPath = moduleName.isPresent() ? moduleName.get() + ":" : "";
-
     {
       Set<String> classesToLoad = this.classesToLoad;
       if (classesToLoad == null) {
@@ -107,9 +106,10 @@ public class ModulePathSourceLocator extends SourceLocator {
     }
 
     JarException ex = null;
+    String searchFor = moduleName.isPresent() ? moduleName.get() + ':' + className : className;
     for (ClassProvider cp : classProviders) {
       try {
-        ClassSource ret = cp.find(appendToPath + className);
+        ClassSource ret = cp.find(searchFor);
         if (ret != null) {
           return ret;
         }
@@ -145,10 +145,6 @@ public class ModulePathSourceLocator extends SourceLocator {
   @Override
   public void additionalClassLoader(ClassLoader c) {
     additionalClassLoaders.add(c);
-  }
-
-  private boolean modulePathHasNextEntry() {
-    return this.next < this.modulePath.size();
   }
 
   @Override
@@ -203,21 +199,15 @@ public class ModulePathSourceLocator extends SourceLocator {
   public Map<String, List<String>> getClassUnderModulePath(String aPath) {
     Path path;
     switch (getClassSourceType(aPath)) {
-      case jar:
-        path = Paths.get(aPath);
-        break;
-      case zip:
-        path = Paths.get(aPath);
-        break;
-      case directory:
-        path = Paths.get(aPath);
-        break;
       case jrt:
         path = getRootModulesPathOfJDK();
         break;
       case unknown:
         path = null;
         break;
+      case jar:
+      case zip:
+      case directory:
       default:
         path = Paths.get(aPath);
         break;
@@ -541,9 +531,10 @@ public class ModulePathSourceLocator extends SourceLocator {
     if (pathToModule != null) {
       return pathToModule;
     }
-    while (modulePathHasNextEntry()) {
-      getClassUnderModulePath(modulePath.get(next));
-      next++;
+    // Check if any new entries have been added to the modulePath that can be searched.
+    while (nextPathEntry < modulePath.size()) {
+      getClassUnderModulePath(modulePath.get(nextPathEntry));
+      nextPathEntry++;
       pathToModule = moduleNameToPath.get(moduleName);
       if (pathToModule != null) {
         return pathToModule;
@@ -638,7 +629,7 @@ public class ModulePathSourceLocator extends SourceLocator {
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
         // Note that some FileSystem implementations used by Path use even on Windows
         // "/" as path separator. Therefore we have to use the file-system specific path
-        //  separator instead of the system specific one (File.separatorChar).
+        // separator instead of the system specific one (File.separatorChar).
         String fileName = aPath.relativize(file).toString().replace(file.getFileSystem().getSeparator(), ".");
         if (fileName.endsWith(".class")) {
           classes.add(fileName.substring(0, fileName.lastIndexOf(".class")));
