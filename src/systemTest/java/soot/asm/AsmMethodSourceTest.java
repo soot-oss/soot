@@ -22,9 +22,6 @@ package soot.asm;
  * #L%
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
@@ -53,11 +50,12 @@ public class AsmMethodSourceTest extends AbstractTestingFramework {
 
   @Override
   protected void setupSoot() {
-    Options.v().setPhaseOption("jb", "use-original-names:true");
-    Options.v().setPhaseOption("jb.sils", "enabled:false");
-    Options.v().setPhaseOption("jb.tr", "ignore-nullpointer-dereferences:true");
-    Options.v().set_keep_line_number(true);
-    Options.v().setPhaseOption("cg.cha", "on");
+    final Options opts = Options.v();
+    opts.setPhaseOption("jb", "use-original-names:true");
+    opts.setPhaseOption("jb.sils", "enabled:false");
+    opts.setPhaseOption("jb.tr", "ignore-nullpointer-dereferences:true");
+    opts.setPhaseOption("cg", "enabled:false");
+    opts.set_keep_line_number(true);
   }
 
   @Test
@@ -71,10 +69,9 @@ public class AsmMethodSourceTest extends AbstractTestingFramework {
     Optional<Unit> unit = body.getUnits().stream()
         .filter(u -> u.toString().contains("<java.util.Iterator: java.lang.Object next()>()")).findFirst();
 
-    assertTrue(unit.isPresent());
+    Assert.assertTrue(unit.isPresent());
 
-    assertEquals(31, unit.get().getJavaSourceStartLineNumber());
-
+    Assert.assertEquals(31, unit.get().getJavaSourceStartLineNumber());
   }
 
   @Test
@@ -82,34 +79,28 @@ public class AsmMethodSourceTest extends AbstractTestingFramework {
     // This test ensures that local names are preserved in the Jimple code.
     final String className = "soot.asm.LocalNaming";
     final String[] params = { "java.lang.String", "java.lang.Integer", "byte[]", "java.lang.StringBuilder" };
-    Options.v().setPhaseOption("jb.sils", "enabled:false");
     SootMethod target = prepareTarget(methodSigFromComponents(className, "void", "localNaming", params), className);
-
     Body body = target.retrieveActiveBody();
     Set<String> localNames = body.getLocals().stream().map(Local::getName).collect(Collectors.toSet());
 
-    // System.out.println("Body = " + body);
-    // System.out.println("localNames = " + localNames);
-
     // All expected Local names are present
-    assertTrue(localNames.contains("alpha"));
-    assertTrue(localNames.contains("beta"));
-    assertTrue(localNames.contains("gamma"));
-    assertTrue(localNames.contains("delta"));
-    assertTrue(localNames.contains("epsilon"));
-    assertTrue(localNames.contains("zeta"));
-    assertTrue(localNames.contains("eta"));
-    assertTrue(localNames.contains("theta"));
-    assertTrue(localNames.contains("iota"));
-    assertTrue(localNames.contains("omega"));
+    Assert.assertTrue(localNames.contains("alpha"));
+    Assert.assertTrue(localNames.contains("beta"));
+    Assert.assertTrue(localNames.contains("gamma"));
+    Assert.assertTrue(localNames.contains("delta"));
+    Assert.assertTrue(localNames.contains("epsilon"));
+    Assert.assertTrue(localNames.contains("zeta"));
+    Assert.assertTrue(localNames.contains("eta"));
+    Assert.assertTrue(localNames.contains("theta"));
+    Assert.assertTrue(localNames.contains("iota"));
+    Assert.assertTrue(localNames.contains("omega"));
 
     // No Local name contains "$stack"
-    assertTrue(localNames.stream().allMatch(n -> !n.contains("$stack")));
+    Assert.assertTrue(localNames.stream().allMatch(n -> !n.contains("$stack")));
   }
 
   /**
-   *  This is the case phase jb.sils is disabled.
-   *  see the case phase jb.sils is enabled in {@link SilsTest#testSilsEnabled()}
+   * This is the case phase jb.sils is disabled. see the case phase jb.sils is enabled in {@link SilsTest#testSilsEnabled()}
    */
   @Test
   public void testSilsDisabled() {
@@ -119,9 +110,9 @@ public class AsmMethodSourceTest extends AbstractTestingFramework {
     Body body = target.retrieveActiveBody();
     Set<String> localNames = body.getLocals().stream().map(Local::getName).collect(Collectors.toSet());
     // test if all expected Local names are present
-    assertTrue(localNames.contains("d"));
-    assertTrue(localNames.contains("f"));
-    assertTrue(localNames.contains("arr"));
+    Assert.assertTrue(localNames.contains("d"));
+    Assert.assertTrue(localNames.contains("f"));
+    Assert.assertTrue(localNames.contains("arr"));
   }
 
   @Test
@@ -137,7 +128,7 @@ public class AsmMethodSourceTest extends AbstractTestingFramework {
     UnitPatchingChain chainOld = new UnitPatchingChain(new HashChain<Unit>());
     oldEmitImplementation(container, chainOld);
 
-    assertEquals(chainOld.size(), chainNew.size());
+    Assert.assertEquals(chainOld.size(), chainNew.size());
     Iterator<Unit> itO = chainOld.iterator();
     Iterator<Unit> itN = chainNew.iterator();
     while (itO.hasNext()) {
