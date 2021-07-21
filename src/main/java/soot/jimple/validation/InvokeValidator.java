@@ -51,12 +51,12 @@ public enum InvokeValidator implements BodyValidator {
     final SootClass objClass = Scene.v().getObjectType().getSootClass();
     for (Unit unit : body.getUnits()) {
       if (unit instanceof Stmt) {
-        Stmt statement = (Stmt) unit;
+        final Stmt statement = (Stmt) unit;
         if (statement.containsInvokeExpr()) {
-          InvokeExpr ie = statement.getInvokeExpr();
-          SootMethodRef methodRef = ie.getMethodRef();
+          final InvokeExpr ie = statement.getInvokeExpr();
+          final SootMethodRef methodRef = ie.getMethodRef();
           try {
-            SootMethod method = methodRef.resolve();
+            final SootMethod method = methodRef.resolve();
             if (!method.isPhantom()) {
               if (method.isStaticInitializer()) {
                 exceptions.add(new ValidationException(unit, "Calling <clinit> methods is not allowed."));
@@ -65,10 +65,10 @@ public enum InvokeValidator implements BodyValidator {
                   exceptions.add(new ValidationException(unit, "Should use staticinvoke for static methods."));
                 }
               } else {
-                SootClass clazzDeclaring = method.getDeclaringClass();
+                final SootClass clazzDeclaring = method.getDeclaringClass();
                 if (clazzDeclaring.isInterface()) {
                   if (!(ie instanceof InterfaceInvokeExpr)) {
-                    // There are case where the Java bytecode verifier allows an
+                    // There are cases where the Java bytecode verifier allows an
                     // invokevirtual or invokespecial to target an interface method.
                     if (!(ie instanceof VirtualInvokeExpr || ie instanceof SpecialInvokeExpr)) {
                       exceptions.add(new ValidationException(unit,
@@ -84,8 +84,8 @@ public enum InvokeValidator implements BodyValidator {
                   // invokeinterface can be used to invoke the base Object methods
                   if (!(ie instanceof InterfaceInvokeExpr || ie instanceof VirtualInvokeExpr
                       || ie instanceof SpecialInvokeExpr)) {
-                    exceptions
-                        .add(new ValidationException(unit, "Should use interfaceinvoke, virtualinvoke, or specialinvoke."));
+                    exceptions.add(new ValidationException(unit,
+                        "Should use interface/virtual/specialinvoke for java.lang.Object methods."));
                   }
                 } else {
                   // NOTE: beyond constructors, there's not a rule to separate
