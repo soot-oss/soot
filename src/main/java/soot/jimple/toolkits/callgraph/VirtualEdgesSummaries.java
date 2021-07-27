@@ -28,11 +28,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -55,15 +62,12 @@ public class VirtualEdgesSummaries {
 
   private static final String SUMMARIESFILE = "virtualedges.xml";
 
-  private final HashMap<NumberedString, VirtualEdge> instanceinvokeEdges;
-  private final HashMap<String, VirtualEdge> staticinvokeEdges;
-  private final HashMap<NumberedString, VirtualEdge> registerfunctionsToEdges;
+  private final HashMap<NumberedString, VirtualEdge> instanceinvokeEdges = new HashMap<>();
+  private final HashMap<String, VirtualEdge> staticinvokeEdges = new HashMap<>();
+
+  private static final Logger logger = LoggerFactory.getLogger(VirtualEdgesSummaries.class);
 
   public VirtualEdgesSummaries() {
-    this.instanceinvokeEdges = new HashMap<>();
-    this.staticinvokeEdges = new HashMap<>();
-    this.registerfunctionsToEdges = new HashMap<>();
-
     Path summariesFile = Paths.get(SUMMARIESFILE);
     try (InputStream in = Files.exists(summariesFile) ? Files.newInputStream(summariesFile)
         : ModuleUtil.class.getResourceAsStream("/" + SUMMARIESFILE)) {
@@ -89,9 +93,10 @@ public class VirtualEdgesSummaries {
             case "ASYNCTASK":
               edg.edgeType = Kind.ASYNCTASK;
               break;
-            case "PRIVILEDGED":
+            case "PRIVILEGED":
               edg.edgeType = Kind.PRIVILEGED;
               break;
+            case "GENERIC_FAKE":
             default:
               edg.edgeType = Kind.GENERIC_FAKE;
               break;
@@ -99,8 +104,7 @@ public class VirtualEdgesSummaries {
           edg.source = parseEdgeSource((Element) (edge.getElementsByTagName("source").item(0)));
           edg.targets = new ArrayList<VirtualEdgesSummaries.VirtualEdgeTarget>();
           Element targetsElement = (Element) edge.getElementsByTagName("targets").item(0);
-          edg.targets.addAll(parseDirectEdgeTargets(targetsElement));
-          edg.targets.addAll(parseWrapperTargets(targetsElement));
+          edg.targets.addAll(parseEdgeTargets(targetsElement));
           if (edg.source instanceof InstanceinvokeSource) {
             InstanceinvokeSource inst = (InstanceinvokeSource) edg.source;
             NumberedString subsig = inst.subSignature;
@@ -117,21 +121,14 @@ public class VirtualEdgesSummaries {
             StaticinvokeSource stat = (StaticinvokeSource) edg.source;
             staticinvokeEdges.put(stat.signature, edg);
           }
-          for (VirtualEdgeTarget t : edg.targets) {
-            if (t instanceof WrapperTarget) {
-              WrapperTarget target = (WrapperTarget) t;
-              registerfunctionsToEdges.put(target.registrationSignature, edg);
-            }
-          }
-
         }
       }
 
     } catch (IOException | ParserConfigurationException | SAXException e1) {
-      e1.printStackTrace();
+      logger.error("An error occurred while reading in virtual edge summaries", e1);
     }
-    System.out.println(String.format("Found %d instanceinvoke , %d staticinvoke edge descriptions",
-        instanceinvokeEdges.size(), staticinvokeEdges.size()));
+    logger.debug("Found %d instanceinvoke, %d staticinvoke edge descriptions", instanceinvokeEdges.size(),
+        staticinvokeEdges.size());
   }
 
   public VirtualEdge getVirtualEdgesMatchingSubSig(NumberedString subsig) {
@@ -140,10 +137,6 @@ public class VirtualEdgesSummaries {
 
   public VirtualEdge getVirtualEdgesMatchingFunction(String signature) {
     return staticinvokeEdges.get(signature);
-  }
-
-  public VirtualEdge getVirtualEdgesForPotentialRegisterFunction(NumberedString subsig) {
-    return registerfunctionsToEdges.get(subsig);
   }
 
   private static VirtualEdgeSource parseEdgeSource(Element source) {
@@ -157,64 +150,45 @@ public class VirtualEdgesSummaries {
     }
   }
 
-  private static ArrayList<DirectTarget> parseDirectEdgeTargets(Element targetsElement) {
-    ArrayList<DirectTarget> targets = new ArrayList<>();
+  private static List<VirtualEdgeTarget> parseEdgeTargets(Element targetsElement) {
+    List<VirtualEdgeTarget> targets = new ArrayList<>();
     final StringNumberer nmbr = Scene.v().getSubSigNumberer();
-    NodeList children = targetsElement.getElementsByTagName("direct");
+    NodeList children = targetsElement.getChildNodes();
     for (int i = 0, e = children.getLength(); i < e; i++) {
       if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
         Element targetElement = (Element) children.item(i);
-        DirectTarget target = new DirectTarget();
 
-        target.targetMethod = nmbr.findOrAdd(targetElement.getAttribute("subsignature"));
-        if ("argument".equals(targetElement.getAttribute("target-position"))) {
-          target.isBase = false;
-          target.argIndex = Integer.valueOf(targetElement.getAttribute("index"));
-        } else {
-          target.isBase = true;
-          target.argIndex = -1;
+        switch (targetElement.getTagName()) {
+          case "direct": {
+            NumberedString subsignature = nmbr.findOrAdd(targetElement.getAttribute("subsignature"));
+            if ("argument".equals(targetElement.getAttribute("target-position"))) {
+              int argIdx = Integer.valueOf(targetElement.getAttribute("index"));
+              targets.add(new DirectTarget(subsignature, argIdx));
+            } else {
+              targets.add(new DirectTarget(subsignature));
+            }
+            break;
+          }
+          case "indirect": {
+            // Parse the attributes of the current target
+            IndirectTarget target;
+            NumberedString subsignature = nmbr.findOrAdd(targetElement.getAttribute("subsignature"));
+            if ("argument".equals(targetElement.getAttribute("target-position"))) {
+              int argIdx = Integer.valueOf(targetElement.getAttribute("index"));
+              target = new IndirectTarget(subsignature, argIdx);
+            } else {
+              target = new IndirectTarget(subsignature);
+            }
+
+            // Parse child targets, since we have a chain of target methods to track back to the point where the actual
+            // callback
+            // was originally registered
+            target.addTargets(parseEdgeTargets(targetElement));
+
+            targets.add(target);
+            break;
+          }
         }
-        targets.add(target);
-      }
-    }
-    return targets;
-  }
-
-  private static ArrayList<RegisteredHandlerTarget> parseRegisteredTargets(Element registermethodsElement) {
-    ArrayList<RegisteredHandlerTarget> targets = new ArrayList<>();
-    final StringNumberer nmbr = Scene.v().getSubSigNumberer();
-    NodeList children = registermethodsElement.getElementsByTagName("registered-handler");
-    for (int i = 0, e = children.getLength(); i < e; i++) {
-      if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
-        Element targetElement = (Element) children.item(i);
-        RegisteredHandlerTarget target = new RegisteredHandlerTarget();
-        target.targetMethod = nmbr.findOrAdd(targetElement.getAttribute("target-subsignature"));
-        target.argIndex = Integer.valueOf(targetElement.getAttribute("target-argument-index"));
-        targets.add(target);
-      }
-    }
-    return targets;
-  }
-
-  private static ArrayList<WrapperTarget> parseWrapperTargets(Element targetsElement) {
-    ArrayList<WrapperTarget> targets = new ArrayList<>();
-    final StringNumberer nmbr = Scene.v().getSubSigNumberer();
-    NodeList children = targetsElement.getElementsByTagName("callback-wrapper");
-    for (int i = 0, e = children.getLength(); i < e; i++) {
-      if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
-        Element targetElement = (Element) children.item(i);
-        WrapperTarget target = new WrapperTarget();
-
-        target.registrationSignature = nmbr.findOrAdd(targetElement.getAttribute("registration-subsignature"));
-        target.targets = parseRegisteredTargets((Element) targetElement.getElementsByTagName("handlers").item(0));
-        if ("argument".equals(targetElement.getAttribute("wrapper-position"))) {
-          target.isBase = false;
-          target.argIndex = Integer.valueOf(targetElement.getAttribute("wrapper-argument-index"));
-        } else {
-          target.isBase = true;
-          target.argIndex = -1;
-        }
-        targets.add(target);
       }
     }
     return targets;
@@ -233,9 +207,43 @@ public class VirtualEdgesSummaries {
       this.signature = signature;
     }
 
+    public String getSignature() {
+      return signature;
+    }
+
     @Override
     public String toString() {
       return signature;
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((signature == null) ? 0 : signature.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      StaticinvokeSource other = (StaticinvokeSource) obj;
+      if (signature == null) {
+        if (other.signature != null) {
+          return false;
+        }
+      } else if (!signature.equals(other.signature)) {
+        return false;
+      }
+      return true;
     }
   }
 
@@ -253,50 +261,273 @@ public class VirtualEdgesSummaries {
     public String toString() {
       return subSignature.toString();
     }
+
+    public NumberedString getSubSignature() {
+      return subSignature;
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((subSignature == null) ? 0 : subSignature.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      InstanceinvokeSource other = (InstanceinvokeSource) obj;
+      if (subSignature == null) {
+        if (other.subSignature != null) {
+          return false;
+        }
+      } else if (!subSignature.equals(other.subSignature)) {
+        return false;
+      }
+      return true;
+    }
   }
 
   public static abstract class VirtualEdgeTarget {
-    boolean isBase;
-    int argIndex;
+
+    protected int argIndex;
+    protected NumberedString targetMethod;
+
+    VirtualEdgeTarget() {
+      // internal use only
+    }
+
+    public VirtualEdgeTarget(NumberedString targetMethod) {
+      this.argIndex = -1;
+      this.targetMethod = targetMethod;
+    }
+
+    public VirtualEdgeTarget(NumberedString targetMethod, int argIndex) {
+      this.argIndex = argIndex;
+      this.targetMethod = targetMethod;
+    }
 
     @Override
     public String toString() {
-      return isBase ? "base" : String.format("argument %d", argIndex);
+      return isBase() ? "base" : String.format("argument %d", argIndex);
+    }
+
+    public boolean isBase() {
+      return argIndex == -1;
+    }
+
+    public int getArgIndex() {
+      return argIndex;
+    }
+
+    public NumberedString getTargetMethod() {
+      return targetMethod;
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + argIndex;
+      result = prime * result + ((targetMethod == null) ? 0 : targetMethod.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      VirtualEdgeTarget other = (VirtualEdgeTarget) obj;
+      if (argIndex != other.argIndex) {
+        return false;
+      }
+      if (targetMethod == null) {
+        if (other.targetMethod != null) {
+          return false;
+        }
+      } else if (!targetMethod.equals(other.targetMethod)) {
+        return false;
+      }
+      return true;
     }
   }
 
   public static class DirectTarget extends VirtualEdgeTarget {
-    NumberedString targetMethod;
+
+    DirectTarget() {
+      // internal use only
+    }
+
+    /**
+     * Creates a new direct method invocation on an object passed to the original source as an argument. For example,
+     * <code>foo.do(x)></code> could invoke <code>x.bar()</code> as a callback.
+     * 
+     * @param targetMethod
+     *          The target method that is invoked on the argument object
+     * @param argIndex
+     *          The index of the argument that receives the target object
+     */
+    public DirectTarget(NumberedString targetMethod, int argIndex) {
+      super(targetMethod, argIndex);
+    }
+
+    /**
+     * Creates a new direct method invocation on the base object of the original source. For example, <code>foo.do()></code>
+     * could invoke <code>foo.bar()</code> as a callback.
+     * 
+     * @param targetMethod
+     *          The target method that is invoked on the base object
+     */
+    public DirectTarget(NumberedString targetMethod) {
+      super(targetMethod);
+    }
 
     @Override
     public String toString() {
       return String.format("Direct to %s on %s", targetMethod.toString(), super.toString());
     }
-  }
-
-  public static class RegisteredHandlerTarget {
-    int argIndex;
-    NumberedString targetMethod;
 
     @Override
-    public String toString() {
-      return String.format("Register to %s passed at %d", targetMethod.toString(), argIndex);
+    public int hashCode() {
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result + ((targetMethod == null) ? 0 : targetMethod.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (!super.equals(obj)) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      DirectTarget other = (DirectTarget) obj;
+      if (targetMethod == null) {
+        if (other.targetMethod != null) {
+          return false;
+        }
+      } else if (!targetMethod.equals(other.targetMethod)) {
+        return false;
+      }
+      return true;
     }
   }
 
-  public static class WrapperTarget extends VirtualEdgeTarget {
-    NumberedString registrationSignature;
-    ArrayList<RegisteredHandlerTarget> targets;
+  public static class IndirectTarget extends VirtualEdgeTarget {
+    List<VirtualEdgeTarget> targets = new ArrayList<>();
+
+    IndirectTarget() {
+      // internal use only
+    }
+
+    /**
+     * Creates a new direct method invocation. The signature of this indirect target references a method that was called
+     * earlier, and which received the object on which the callback is invoked. This constructor assumes that the earlier
+     * method has created an object which is passed the current method as an argument.
+     * 
+     * @param targetMethod
+     *          The method with which the original callback was registered
+     * @param argIndex
+     *          The index of the argument that holds the object that holds the callback or next step of the indirect
+     *          invocation
+     */
+    public IndirectTarget(NumberedString targetMethod, int argIndex) {
+      super(targetMethod, argIndex);
+    }
+
+    /**
+     * Creates a new indirect target as an indirection from a method that was previously considered a source
+     * 
+     * @param source
+     *          The source from which to create the indirect target
+     */
+    public IndirectTarget(InstanceinvokeSource source) {
+      super(source.subSignature);
+    }
+
+    /**
+     * Creates a new direct method invocation. The signature of this indirect target references a method that was called
+     * earlier, and which received the object on which the callback is invoked.
+     * 
+     * @param targetMethod
+     *          The method with which the original callback was registered
+     */
+    public IndirectTarget(NumberedString targetMethod) {
+      super(targetMethod);
+    }
+
+    public void addTarget(VirtualEdgeTarget target) {
+      targets.add(target);
+    }
+
+    public void addTargets(Collection<? extends VirtualEdgeTarget> targets) {
+      this.targets.addAll(targets);
+    }
+
+    public List<VirtualEdgeTarget> getTargets() {
+      return targets;
+    }
 
     @Override
     public String toString() {
       StringBuilder sb = new StringBuilder();
-      for (RegisteredHandlerTarget t : targets) {
+      for (VirtualEdgeTarget t : targets) {
         sb.append('(').append(t.toString()).append(") ");
       }
-      return String.format("(Instances passed to <?: %s> on %s => %s)", registrationSignature.toString(), super.toString(),
+      return String.format("(Instances passed to <?: %s> on %s => %s)", targetMethod.toString(), super.toString(),
           sb.toString());
 
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result + ((targets == null) ? 0 : targets.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (!super.equals(obj)) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      IndirectTarget other = (IndirectTarget) obj;
+      if (targets == null) {
+        if (other.targets != null) {
+          return false;
+        }
+      } else if (!targets.equals(other.targets)) {
+        return false;
+      }
+      return true;
     }
   }
 
@@ -306,7 +537,43 @@ public class VirtualEdgesSummaries {
      */
     Kind edgeType;
     VirtualEdgeSource source;
-    ArrayList<VirtualEdgeTarget> targets;
+    List<VirtualEdgeTarget> targets;
+
+    VirtualEdge() {
+      // internal use only
+    }
+
+    public VirtualEdge(Kind edgeType, VirtualEdgeSource source, VirtualEdgeTarget target) {
+      this(edgeType, source, new ArrayList<>(Collections.singletonList(target)));
+    }
+
+    public VirtualEdge(Kind edgeType, VirtualEdgeSource source, List<VirtualEdgeTarget> targets) {
+      this.edgeType = edgeType;
+      this.source = source;
+      this.targets = targets;
+    }
+
+    public Kind getEdgeType() {
+      return edgeType;
+    }
+
+    public VirtualEdgeSource getSource() {
+      return source;
+    }
+
+    public List<VirtualEdgeTarget> getTargets() {
+      return targets;
+    }
+
+    /**
+     * Adds the given targets to this edge summary
+     * 
+     * @param newTargets
+     *          The targets to add
+     */
+    public void addTargets(List<VirtualEdgeTarget> newTargets) {
+      this.targets.addAll(newTargets);
+    }
 
     @Override
     public String toString() {
@@ -316,5 +583,60 @@ public class VirtualEdgesSummaries {
       }
       return String.format("%s %s => %s", edgeType, source.toString(), sb.toString());
     }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((edgeType == null) ? 0 : edgeType.hashCode());
+      result = prime * result + ((source == null) ? 0 : source.hashCode());
+      result = prime * result + ((targets == null) ? 0 : targets.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      VirtualEdge other = (VirtualEdge) obj;
+      if (edgeType == null) {
+        if (other.edgeType != null) {
+          return false;
+        }
+      } else if (!edgeType.equals(other.edgeType)) {
+        return false;
+      }
+      if (source == null) {
+        if (other.source != null) {
+          return false;
+        }
+      } else if (!source.equals(other.source)) {
+        return false;
+      }
+      if (targets == null) {
+        if (other.targets != null) {
+          return false;
+        }
+      } else if (!targets.equals(other.targets)) {
+        return false;
+      }
+      return true;
+    }
+
   }
+
+  public Set<VirtualEdge> getAllVirtualEdges() {
+    Set<VirtualEdge> allEdges = new HashSet<>(instanceinvokeEdges.size() + staticinvokeEdges.size());
+    allEdges.addAll(instanceinvokeEdges.values());
+    allEdges.addAll(staticinvokeEdges.values());
+    return allEdges;
+  }
+
 }

@@ -1069,8 +1069,10 @@ public class PAG implements PointsToAnalysis {
     MethodPAG tgtmpag = MethodPAG.v(this, e.tgt());
     Pair<Node, Node> pval;
 
-    if (e.isExplicit() || e.kind() == Kind.THREAD || e.kind() == Kind.ASYNCTASK) {
+    if (e.isExplicit() || e.kind() == Kind.THREAD) {
       addCallTarget(srcmpag, tgtmpag, (Stmt) e.srcUnit(), e.srcCtxt(), e.tgtCtxt(), e);
+    } else if (e.kind() == Kind.ASYNCTASK) {
+      addCallTarget(srcmpag, tgtmpag, (Stmt) e.srcUnit(), e.srcCtxt(), e.tgtCtxt(), e, false);
     } else if (e.kind() == Kind.EXECUTOR) {
       InvokeExpr ie = e.srcStmt().getInvokeExpr();
       boolean virtualCall = callAssigns.containsKey(ie);
@@ -1341,6 +1343,15 @@ public class PAG implements PointsToAnalysis {
    * call site, without actually connecting them to any target method.
    **/
   public void addCallTarget(MethodPAG srcmpag, MethodPAG tgtmpag, Stmt s, Context srcContext, Context tgtContext, Edge e) {
+    addCallTarget(srcmpag, tgtmpag, s, srcContext, tgtContext, e, true);
+  }
+
+  /**
+   * Adds method target as a possible target of the invoke expression in s. If target is null, only creates the nodes for the
+   * call site, without actually connecting them to any target method.
+   **/
+  public void addCallTarget(MethodPAG srcmpag, MethodPAG tgtmpag, Stmt s, Context srcContext, Context tgtContext, Edge e,
+      boolean propagateReturn) {
     MethodNodeFactory srcnf = srcmpag.nodeFactory();
     MethodNodeFactory tgtnf = tgtmpag.nodeFactory();
     InvokeExpr ie = s.getInvokeExpr();
@@ -1359,8 +1370,8 @@ public class PAG implements PointsToAnalysis {
       argNode = srcmpag.parameterize(argNode, srcContext);
       argNode = argNode.getReplacement();
 
-      //target method's argument number may be less than source method, i.e. AsyncTask.execute(1) vs onPreExecute(0)
-      //check for param return here, or NPE in paramTypes will be thrown
+      // target method's argument number may be less than source method, i.e. AsyncTask.execute(1) vs onPreExecute(0)
+      // check for param return here, or NPE in paramTypes will be thrown
       Node parm = tgtnf.caseParm(i);
       if (parm == null) {
         continue;
@@ -1392,7 +1403,7 @@ public class PAG implements PointsToAnalysis {
         virtualCallsToReceivers.put(ie, baseNode);
       }
     }
-    if (s instanceof AssignStmt) {
+    if (propagateReturn && s instanceof AssignStmt) {
       Value dest = ((AssignStmt) s).getLeftOp();
       if (dest.getType() instanceof RefLikeType && !(dest instanceof NullConstant)) {
 

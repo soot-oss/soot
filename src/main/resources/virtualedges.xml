@@ -115,33 +115,37 @@
     <edge type="ASYNCTASK">
         <source invoketype="instance" subsignature="android.os.AsyncTask execute(java.lang.Object[])" />
         <targets>
-            <direct subsignature="void onPreExecute()" target="base"/>
             <direct subsignature="java.lang.Object doInBackground(java.lang.Object[])" target="base"/>
+        </targets>
+    </edge>
+    <edge>
+        <source invoketype="instance" subsignature="android.os.AsyncTask execute(java.lang.Object[])" />
+        <targets>
+            <direct subsignature="void onPreExecute()" target="base"/>
             <direct subsignature="void onProgressUpdate(java.lang.Object[])" target="base"/>
             <direct subsignature="void onPostExecute(java.lang.Object)" target="base"/>
         </targets>
     </edge>
-
-	<!-- doPriviledged -->
-	<edge type="PRIVILEDGED">
+	<!-- doPrivileged -->
+	<edge type="PRIVILEGED">
 		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)&gt;" />
 		<targets>
 			<direct subsignature="java.lang.Object run()" target-position="argument" index="0" />
 		</targets>
 	</edge>
-	<edge type="PRIVILEDGED">
+	<edge type="PRIVILEGED">
 		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)&gt;" />
 		<targets>
 			<direct subsignature="java.lang.Object run()" target-position="argument" index="0" />
 		</targets>
 	</edge>
-	<edge type="PRIVILEDGED">
+	<edge type="PRIVILEGED">
 		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)&gt;" />
 		<targets>
 			<direct subsignature="java.lang.Object run()" target-position="argument" index="0" />
 		</targets>
 	</edge>
-	<edge type="PRIVILEDGED">
+	<edge type="PRIVILEGED">
 		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)&gt;" />
 		<targets>
 			<direct subsignature="java.lang.Object run()" target-position="argument" index="0" />
@@ -153,18 +157,21 @@
 	<edge>
 		<source invoketype="instance" subsignature="com.android.volley.Request add(com.android.volley.Request)" />
 		<targets>
-			<callback-wrapper wrapper-position="argument" wrapper-argument-index="0" registration-subsignature="void &lt;init&gt;(int,java.lang.String,com.android.volley.Response$Listener,com.android.volley.Response$ErrorListener)">
-				<handlers>
-					<registered-handler target-argument-index="1" target-subsignature="void onResponse(android.graphics.Bitmap)"  />
-				</handlers>
-			</callback-wrapper>
-			<callback-wrapper wrapper-position="argument" wrapper-argument-index="0" registration-subsignature="void &lt;init&gt;(java.lang.String,com.android.volley.Response$Listener,int,int,android.graphics.Bitmap$Config,com.android.volley.Response$ErrorListener)">
-				<handlers>
-					<registered-handler target-argument-index="1" target-subsignature="void onResponse(android.graphics.Bitmap)"  />
-				</handlers>
-			</callback-wrapper>
+			<indirect target-position="argument" index="0" subsignature="void &lt;init&gt;(int,java.lang.String,com.android.volley.Response$ErrorListener)">
+				<direct subsignature="void onErrorResponse(com.android.volley.VolleyError)" target-position="argument" index="2" />
+			</indirect>
+			<indirect target-position="argument" index="0" subsignature="void &lt;init&gt;(java.lang.String,com.android.volley.Response$ErrorListener)">
+				<direct subsignature="void onErrorResponse(com.android.volley.VolleyError)" target-position="argument" index="2" />
+			</indirect>
+			<indirect target-position="argument" index="0" subsignature="void &lt;init&gt;(int,java.lang.String,com.android.volley.Response$Listener,com.android.volley.Response$ErrorListener)">
+				<direct subsignature="void onResponse(java.lang.Object)" target-position="argument" index="2" />
+				<direct subsignature="void onErrorResponse(com.android.volley.VolleyError)" target-position="argument" index="3" />
+			</indirect>
+			<indirect target-position="argument" index="0" subsignature="void &lt;init&gt;(java.lang.String,com.android.volley.Response$Listener,com.android.volley.Response$ErrorListener)">
+				<direct subsignature="void onResponse(java.lang.Object)" target-position="argument" index="1" />
+				<direct subsignature="void onErrorResponse(com.android.volley.VolleyError)" target-position="argument" index="2" />
+			</indirect>
 		</targets>
-		
 	</edge>
 	
 	<!-- callback summaries automatically detected from real-world applications. previously, soot failed to add any edges into these callback functions. -->
@@ -381,14 +388,6 @@
         <source invoketype="instance" subsignature="io.reactivex.Maybe filter(io.reactivex.functions.Predicate)" />
         <targets>
             <direct subsignature="boolean test(java.lang.Object)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    
-    <!-- Android volley -->
-    <edge>
-        <source invoketype="instance" subsignature="com.android.volley.Request add(com.android.volley.Request)" />
-        <targets>
-            <direct subsignature="java.util.Map getParams()" target-position="argument" index="0" />
         </targets>
     </edge>
     
