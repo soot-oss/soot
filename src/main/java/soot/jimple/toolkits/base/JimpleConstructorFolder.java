@@ -21,7 +21,6 @@ package soot.jimple.toolkits.base;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -54,9 +53,35 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 import soot.util.Chain;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
+import soot.util.PhaseDumper;
 
+/**
+ * This {@link BodyTransformer} pushes all {@link NewExpr} down the {@link Unit} {@link Chain} so that it is the statement
+ * directly before the invoke of the {@code <init>} function.
+ */
 public class JimpleConstructorFolder extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(JimpleConstructorFolder.class);
+
+  private static final boolean DEBUG_DUMP_BODIES = false;
+
+  public JimpleConstructorFolder() {
+  }
+
+  static Value rhs(Stmt s) {
+    return ((AssignStmt) s).getRightOp();
+  }
+
+  static Value lhs(Stmt s) {
+    return ((AssignStmt) s).getLeftOp();
+  }
+
+  static Local rhsLocal(Stmt s) {
+    return (Local) rhs(s);
+  }
+
+  static Local lhsLocal(Stmt s) {
+    return (Local) lhs(s);
+  }
 
   static boolean isNew(Stmt s) {
     return (s instanceof AssignStmt) && (rhs(s) instanceof NewExpr);
@@ -67,7 +92,7 @@ public class JimpleConstructorFolder extends BodyTransformer {
       InvokeExpr expr = ((InvokeStmt) s).getInvokeExpr();
       if (expr instanceof SpecialInvokeExpr) {
         SpecialInvokeExpr sie = (SpecialInvokeExpr) expr;
-        return SootMethod.constructorName.equals(sie.getMethodRef().name());
+        return SootMethod.constructorName.equals(sie.getMethodRef().getName());
       }
     }
     return false;
@@ -89,25 +114,10 @@ public class JimpleConstructorFolder extends BodyTransformer {
     return (s instanceof AssignStmt) && (rhs(s) instanceof Local) && (lhs(s) instanceof Local);
   }
 
-  static Value rhs(Stmt s) {
-    return ((AssignStmt) s).getRightOp();
-  }
-
-  static Value lhs(Stmt s) {
-    return ((AssignStmt) s).getLeftOp();
-  }
-
-  static Local rhsLocal(Stmt s) {
-    return (Local) rhs(s);
-  }
-
-  static Local lhsLocal(Stmt s) {
-    return (Local) lhs(s);
-  }
-
   private static class Fact {
-    private Map<Local, Stmt> varToStmt = new HashMap<Local, Stmt>();
-    private MultiMap<Stmt, Local> stmtToVar = new HashMultiMap<Stmt, Local>();
+
+    private Map<Local, Stmt> varToStmt = new HashMap<>();
+    private MultiMap<Stmt, Local> stmtToVar = new HashMultiMap<>();
     private Stmt alloc = null;
 
     public void add(Local l, Stmt s) {
@@ -139,13 +149,13 @@ public class JimpleConstructorFolder extends BodyTransformer {
     }
 
     public void copyFrom(Fact in) {
-      this.varToStmt = new HashMap<Local, Stmt>(in.varToStmt);
-      this.stmtToVar = new HashMultiMap<Stmt, Local>(in.stmtToVar);
+      this.varToStmt = new HashMap<>(in.varToStmt);
+      this.stmtToVar = new HashMultiMap<>(in.stmtToVar);
       this.alloc = in.alloc;
     }
 
     public void mergeFrom(Fact in1, Fact in2) {
-      this.varToStmt = new HashMap<Local, Stmt>();
+      this.varToStmt = new HashMap<>();
 
       for (Map.Entry<Local, Stmt> e : in1.varToStmt.entrySet()) {
         Local l = e.getKey();
@@ -159,7 +169,8 @@ public class JimpleConstructorFolder extends BodyTransformer {
         add(e.getKey(), e.getValue());
       }
 
-      this.alloc = (in1.alloc != null && in1.alloc.equals(in2.alloc)) ? in1.alloc : null;
+      Stmt alloc1 = in1.alloc;
+      this.alloc = (alloc1 != null && alloc1.equals(in2.alloc)) ? alloc1 : null;
     }
 
     @Override
@@ -187,6 +198,7 @@ public class JimpleConstructorFolder extends BodyTransformer {
   }
 
   private class Analysis extends ForwardFlowAnalysis<Unit, Fact> {
+
     public Analysis(DirectedGraph<Unit> graph) {
       super(graph);
       doAnalysis();
@@ -230,15 +242,12 @@ public class JimpleConstructorFolder extends BodyTransformer {
     }
   }
 
-  /**
-   * This method pushes all newExpr down to be the stmt directly before every invoke of the init
-   */
   @Override
   public void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    JimpleBody body = (JimpleBody) b;
-
-    // PhaseDumper.v().dumpBody(body, "constructorfolder.in");
-
+    final JimpleBody body = (JimpleBody) b;
+    if (DEBUG_DUMP_BODIES) {
+      PhaseDumper.v().dumpBody(body, "constructorfolder.in");
+    }
     if (Options.v().verbose()) {
       logger.debug("[" + body.getMethod().getName() + "] Folding Jimple constructors...");
     }
@@ -269,30 +278,35 @@ public class JimpleConstructorFolder extends BodyTransformer {
       }
     }
 
+    final Jimple jimp = Jimple.v();
     for (Iterator<Unit> it = units.snapshotIterator(); it.hasNext();) {
       Stmt s = (Stmt) it.next();
-      Fact before = analysis.getFlowBefore(s);
 
       // throw out copies of uninitialized variables
       if (isCopy(s)) {
+        final Fact before = analysis.getFlowBefore(s);
         if (before.get(rhsLocal(s)) != null) {
           units.remove(s);
         }
       } else if (analysis.getFlowAfter(s).alloc() != null) {
         // insert the new just before the constructor
+        final Fact before = analysis.getFlowBefore(s);
         final Local baseS = base(s);
-        Stmt newStmt = before.get(baseS);
+        final Stmt newStmt = before.get(baseS);
         setBase(s, lhsLocal(newStmt));
         units.insertBefore(newStmt, s);
 
         // add necessary copies
         for (Local l : before.get(newStmt)) {
           if (!baseS.equals(l)) {
-            units.insertAfter(Jimple.v().newAssignStmt(l, baseS), s);
+            units.insertAfter(jimp.newAssignStmt(l, baseS), s);
           }
         }
       }
     }
-    // PhaseDumper.v().dumpBody(body, "constructorfolder.out");
+
+    if (DEBUG_DUMP_BODIES) {
+      PhaseDumper.v().dumpBody(body, "constructorfolder.out");
+    }
   }
 }

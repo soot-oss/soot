@@ -98,10 +98,9 @@ import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.annotation.nullcheck.NullnessAnalysis;
 import soot.jimple.toolkits.callgraph.ConstantArrayAnalysis.ArrayTypes;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.DirectTarget;
-import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.RegisteredHandlerTarget;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.IndirectTarget;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdge;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdgeTarget;
-import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.WrapperTarget;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo;
 import soot.options.CGOptions;
 import soot.options.Options;
@@ -401,7 +400,7 @@ public class OnFlyCallGraphBuilder {
           assert (!baseClass.isInterface());
           for (Iterator<SootMethod> mIt = getPublicNullaryMethodIterator(baseClass); mIt.hasNext();) {
             SootMethod sm = mIt.next();
-            cm.addVirtualEdge(ics.container(), ics.stmt(), sm, Kind.REFL_INVOKE, null);
+            cm.addVirtualEdge(ics.getContainer(), ics.getStmt(), sm, Kind.REFL_INVOKE, null);
           }
         }
       } else {
@@ -810,48 +809,11 @@ public class OnFlyCallGraphBuilder {
           Local receiver = (Local) iie.getBase();
           NumberedString subSig = iie.getMethodRef().getSubSignature();
           addVirtualCallSite(s, m, receiver, iie, subSig, Edge.ieToKind(iie));
+
           VirtualEdge virtualEdge = virtualEdgeSummaries.getVirtualEdgesMatchingSubSig(subSig);
           if (virtualEdge != null) {
             for (VirtualEdgeTarget t : virtualEdge.targets) {
-              if (t instanceof DirectTarget) {
-                DirectTarget directTarget = (DirectTarget) t;
-                if (t.isBase) {
-                  addVirtualCallSite(s, m, receiver, iie, directTarget.targetMethod, virtualEdge.edgeType);
-                } else {
-                  Value runnable = iie.getArg(t.argIndex);
-                  if (runnable instanceof Local) {
-                    addVirtualCallSite(s, m, (Local) runnable, iie, directTarget.targetMethod, virtualEdge.edgeType);
-                  }
-                }
-              } else if (t instanceof WrapperTarget) {
-                WrapperTarget w = (WrapperTarget) t;
-                Local wrapperObject = null;
-                if (t.isBase) {
-                  wrapperObject = receiver;
-                } else {
-                  Value runnable = iie.getArg(t.argIndex);
-                  if (runnable instanceof Local) {
-                    wrapperObject = (Local) runnable;
-                  }
-                }
-
-                if (wrapperObject != null && receiverToSites.get(wrapperObject) != null) {
-                  // addVirtualCallSite() may change receiverToSites, which may lead to a ConcurrentModificationException
-                  // I'm not entirely sure whether we ought to deal with the new call sites that are being added, instead of
-                  // just working on a snapshot, though.
-                  List<VirtualCallSite> callSites = new ArrayList<>(receiverToSites.get(wrapperObject));
-                  for (final VirtualCallSite site : callSites) {
-                    if (w.registrationSignature == site.subSig()) {
-                      for (RegisteredHandlerTarget target : w.targets) {
-                        Value runnable = iie.getArg(t.argIndex);
-                        if (runnable instanceof Local) {
-                          addVirtualCallSite(s, m, (Local) runnable, iie, target.targetMethod, virtualEdge.edgeType);
-                        }
-                      }
-                    }
-                  }
-                }
-              }
+              processVirtualEdgeSummary(m, s, receiver, t, virtualEdge.edgeType);
             }
           }
         } else if (ie instanceof DynamicInvokeExpr) {
@@ -868,7 +830,7 @@ public class OnFlyCallGraphBuilder {
               for (VirtualEdgeTarget t : virtualEdge.targets) {
                 if (t instanceof DirectTarget) {
                   DirectTarget directTarget = (DirectTarget) t;
-                  if (t.isBase) {
+                  if (t.isBase()) {
                     // this should not happen
                   } else {
                     Value runnable = ie.getArg(t.argIndex);
@@ -882,6 +844,57 @@ public class OnFlyCallGraphBuilder {
           } else if (!Options.v().ignore_resolution_errors()) {
             throw new InternalError(
                 "Unresolved target " + ie.getMethod() + ". Resolution error should have occured earlier.");
+          }
+        }
+      }
+    }
+  }
+
+  protected void processVirtualEdgeSummary(SootMethod m, final Stmt s, Local receiver, VirtualEdgeTarget target,
+      Kind edgeType) {
+    processVirtualEdgeSummary(m, s, s, receiver, target, edgeType);
+  }
+
+  protected void processVirtualEdgeSummary(SootMethod callSiteMethod, Stmt callSite, final Stmt curStmt, Local receiver,
+      VirtualEdgeTarget target, Kind edgeType) {
+    // Get the target object referenced by this edge summary
+    InvokeExpr ie = curStmt.getInvokeExpr();
+    Local targetLocal = null;
+    if (target.isBase()) {
+      targetLocal = receiver;
+    } else {
+      Value runnable = ie.getArg(target.argIndex);
+      if (runnable instanceof Local) {
+        targetLocal = (Local) runnable;
+      }
+    }
+    if (targetLocal == null) {
+      return;
+    }
+
+    if (target instanceof DirectTarget) {
+      // A direct target means that we need to build an edge from the call site to a method on the current base object or a
+      // parameter argument
+      DirectTarget directTarget = (DirectTarget) target;
+      addVirtualCallSite(callSite, callSiteMethod, targetLocal, (InstanceInvokeExpr) ie, directTarget.targetMethod,
+          edgeType);
+    } else if (target instanceof IndirectTarget) {
+      // For an indirect target, we need to find out where the base object or a specific parameter argument was
+      // constructed. We then either have a direct target on that statement, or again an indirect one for searching further
+      // up in the code.
+      IndirectTarget w = (IndirectTarget) target;
+
+      // addVirtualCallSite() may change receiverToSites, which may lead to a ConcurrentModificationException
+      // I'm not entirely sure whether we ought to deal with the new call sites that are being added, instead of
+      // just working on a snapshot, though.
+      List<VirtualCallSite> indirectSites = new ArrayList<>(receiverToSites.get(targetLocal));
+      for (final VirtualCallSite site : indirectSites) {
+        if (w.getTargetMethod().equals(site.subSig())) {
+          for (VirtualEdgeTarget siteTarget : w.getTargets()) {
+            Stmt siteStmt = site.getStmt();
+            if (siteStmt.containsInvokeExpr()) {
+              processVirtualEdgeSummary(callSiteMethod, callSite, siteStmt, receiver, siteTarget, edgeType);
+            }
           }
         }
       }
@@ -999,8 +1012,8 @@ public class OnFlyCallGraphBuilder {
   }
 
   private void addEdge(SootMethod src, Stmt stmt, SootMethod tgt, Kind kind) {
-    if (src.equals(tgt) && src.isStaticInitializer()) { 
-      return; 
+    if (src.equals(tgt) && src.isStaticInitializer()) {
+      return;
     }
     cicg.addEdge(new Edge(src, stmt, tgt, kind));
   }

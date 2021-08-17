@@ -55,7 +55,6 @@ import org.slf4j.LoggerFactory;
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
-
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
@@ -86,6 +85,7 @@ public class Scene {
   private static final Logger logger = LoggerFactory.getLogger(Scene.class);
 
   private static final int defaultSdkVersion = 15;
+  private static final Pattern arrayPattern = Pattern.compile("([^\\[\\]]*)(.*)");
 
   protected final Map<String, RefType> nameToClass = new ConcurrentHashMap<String, RefType>();
 
@@ -782,9 +782,8 @@ public class Scene {
       }
     }
 
-    if (!javaGEQ9
-        && (Options.v().whole_program() || Options.v().whole_shimple()
-            || Options.v().output_format() == Options.output_format_dava)) {
+    if (!javaGEQ9 && (Options.v().whole_program() || Options.v().whole_shimple()
+        || Options.v().output_format() == Options.output_format_dava)) {
       // add jce.jar, which is necessary for whole program mode
       // (java.security.Signature from rt.jar imports javax.crypto.Cipher from jce.jar)
       sb.append(File.pathSeparatorChar).append(javaHome).append(File.separatorChar).append("lib").append(File.separatorChar)
@@ -1079,7 +1078,15 @@ public class Scene {
    * @return The Type if it can be resolved and null otherwise
    */
   public Type getTypeUnsafe(String arg, boolean phantomNonExist) {
-    String type = arg.replaceAll("([^\\[\\]]*)(.*)", "$1");
+    String type = arg;
+    int arrayCount = -1;
+    if (arg.contains("[")) {
+      Matcher m = arrayPattern.matcher(arg);
+      if (m.matches()) {
+        type = m.group(1);
+        arrayCount = m.group(2).length() / 2;
+      }
+    }
     Type result = getRefTypeUnsafe(type);
     if (result == null) {
       switch (type) {
@@ -1119,11 +1126,8 @@ public class Scene {
       }
     }
 
-    if (result != null) {
-      int arrayCount = arg.contains("[") ? arg.replaceAll("([^\\[\\]]*)(.*)", "$2").length() / 2 : 0;
-      if (arrayCount != 0) {
-        result = ArrayType.v(result, arrayCount);
-      }
+    if (result != null && arrayCount > 0) {
+      result = ArrayType.v(result, arrayCount);
     }
     return result;
   }
