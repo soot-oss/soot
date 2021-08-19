@@ -644,7 +644,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
   private void replaceInGraph(PDGNode newnode, PDGNode oldnode) {
     this.addNode(newnode);
 
-    HashMutablePDG graph = (HashMutablePDG) this.clone();
+    HashMutableEdgeLabelledDirectedGraph<PDGNode, String> graph = clone();
     for (PDGNode succ : graph.getSuccsOf(oldnode)) {
       for (Object label : graph.getLabelsForEdges(oldnode, succ)) {
         this.addEdge(newnode, succ, label.toString());
