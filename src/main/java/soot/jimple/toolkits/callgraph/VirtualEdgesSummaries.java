@@ -127,7 +127,7 @@ public class VirtualEdgesSummaries {
     } catch (IOException | ParserConfigurationException | SAXException e1) {
       logger.error("An error occurred while reading in virtual edge summaries", e1);
     }
-    logger.debug("Found %d instanceinvoke, %d staticinvoke edge descriptions", instanceinvokeEdges.size(),
+    logger.debug("Found {} instanceinvoke, {} staticinvoke edge descriptions", instanceinvokeEdges.size(),
         staticinvokeEdges.size());
   }
 
