@@ -1,6 +1,5 @@
 package soot;
 
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -953,9 +952,10 @@ public class FastHierarchy {
 
           @Override
           public Type next() {
+            Type old = crt;
             crt = null;
             hasNext();
-            return crt;
+            return old;
           }
 
         };
