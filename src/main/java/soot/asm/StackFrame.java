@@ -23,6 +23,7 @@ package soot.asm;
  */
 
 import java.util.ArrayList;
+
 import soot.Local;
 import soot.Unit;
 import soot.ValueBox;
@@ -97,17 +98,7 @@ final class StackFrame {
     out = oprs;
   }
 
-  private boolean alreadyExists(Unit prev, Object left, Object right) {
-    if (prev instanceof AssignStmt) {
-      AssignStmt prevAsign = (AssignStmt) prev;
-      if (prevAsign.getLeftOp().equivTo(left) && prevAsign.getRightOp().equivTo(right)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-    /**
+  /**
    * Merges the specified operands with the operands used by this frame.
    *
    * @param oprs
@@ -138,13 +129,13 @@ final class StackFrame {
           Unit prev = src.getUnit(newOp.insn);
           boolean merge = true;
           if (prev instanceof UnitContainer) {
-            for (Unit t: ((UnitContainer) prev).units) {
-              if (alreadyExists(t,stack,newOp.stackOrValue())) {
+            for (Unit t : ((UnitContainer) prev).units) {
+              if (AsmUtil.alreadyExists(t, stack, newOp.stackOrValue())) {
                 merge = false;
                 break;
               }
             }
-          } else if (alreadyExists(prev,stack,newOp.stackOrValue())) {
+          } else if (AsmUtil.alreadyExists(prev, stack, newOp.stackOrValue())) {
             merge = false;
           }
           if (merge) {

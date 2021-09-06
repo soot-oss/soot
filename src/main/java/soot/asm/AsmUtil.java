@@ -1,5 +1,10 @@
 package soot.asm;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.objectweb.asm.Opcodes;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,9 +28,7 @@ package soot.asm;
  */
 
 import com.google.common.base.Optional;
-import java.util.ArrayList;
-import java.util.List;
-import org.objectweb.asm.Opcodes;
+
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -41,7 +44,9 @@ import soot.RefType;
 import soot.ShortType;
 import soot.SootClass;
 import soot.Type;
+import soot.Unit;
 import soot.VoidType;
+import soot.jimple.AssignStmt;
 import soot.options.Options;
 
 /**
@@ -62,7 +67,8 @@ public class AsmUtil {
   /**
    * Determines if a type is a dword type.
    *
-   * @param type the type to check.
+   * @param type
+   *          the type to check.
    * @return {@code true} if its a dword type.
    */
   public static boolean isDWord(Type type) {
@@ -72,7 +78,8 @@ public class AsmUtil {
   /**
    * Converts an internal class name to a Type.
    *
-   * @param internal internal name.
+   * @param internal
+   *          internal name.
    * @return type
    */
   public static Type toBaseType(String internal, Optional<String> moduleName) {
@@ -120,7 +127,8 @@ public class AsmUtil {
   /**
    * Converts an internal class name to a fully qualified name.
    *
-   * @param internal internal name.
+   * @param internal
+   *          internal name.
    * @return fully qualified name.
    */
   public static String toQualifiedName(String internal) {
@@ -130,7 +138,8 @@ public class AsmUtil {
   /**
    * Converts a fully qualified class name to an internal name.
    *
-   * @param qual fully qualified class name.
+   * @param qual
+   *          fully qualified class name.
    * @return internal name.
    */
   public static String toInternalName(String qual) {
@@ -140,7 +149,8 @@ public class AsmUtil {
   /**
    * Determines and returns the internal name of a class.
    *
-   * @param cls the class.
+   * @param cls
+   *          the class.
    * @return corresponding internal name.
    */
   public static String toInternalName(SootClass cls) {
@@ -150,7 +160,8 @@ public class AsmUtil {
   /**
    * Converts a type descriptor to a Jimple reference type.
    *
-   * @param desc the descriptor.
+   * @param desc
+   *          the descriptor.
    * @return the reference type.
    */
   public static Type toJimpleRefType(String desc, Optional<String> moduleName) {
@@ -160,7 +171,8 @@ public class AsmUtil {
   /**
    * Converts a type descriptor to a Jimple type.
    *
-   * @param desc the descriptor.
+   * @param desc
+   *          the descriptor.
    * @return equivalent Jimple type.
    */
   public static Type toJimpleType(String desc, Optional<String> moduleName) {
@@ -216,22 +228,20 @@ public class AsmUtil {
   }
 
   /**
-   * Converts a method signature to a list of types, with the last entry in the returned list
-   * denoting the return type.
+   * Converts a method signature to a list of types, with the last entry in the returned list denoting the return type.
    *
-   * @param desc method signature.
+   * @param desc
+   *          method signature.
    * @return list of types.
    */
   public static List<Type> toJimpleDesc(String desc, Optional<String> moduleName) {
     ArrayList<Type> types = new ArrayList<Type>(2);
     int len = desc.length();
     int idx = 0;
-    all:
-    while (idx != len) {
+    all: while (idx != len) {
       int nrDims = 0;
       Type baseType = null;
-      this_type:
-      while (idx != len) {
+      this_type: while (idx != len) {
         char c = desc.charAt(idx++);
         switch (c) {
           case '(':
@@ -297,7 +307,8 @@ public class AsmUtil {
     }
   }
 
-  private AsmUtil() {}
+  private AsmUtil() {
+  }
 
   public static int byteCodeToJavaVersion(int bytecodeVersion) {
     int javaVersion;
@@ -381,4 +392,15 @@ public class AsmUtil {
 
     return bytecodeVersion;
   }
+
+  static boolean alreadyExists(Unit prev, Object left, Object right) {
+    if (prev instanceof AssignStmt) {
+      AssignStmt prevAsign = (AssignStmt) prev;
+      if (prevAsign.getLeftOp().equivTo(left) && prevAsign.getRightOp().equivTo(right)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }
