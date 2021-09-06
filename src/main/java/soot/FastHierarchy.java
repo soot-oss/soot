@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import soot.jimple.spark.internal.TypeManager;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
@@ -942,6 +943,9 @@ public class FastHierarchy {
             Type c = null;
             while (it.hasNext()) {
               c = it.next();
+              if (TypeManager.isUnresolved(c)) {
+                continue;
+              }
               if (canStoreType(nt, c)) {
                 crt = c;
                 return true;
