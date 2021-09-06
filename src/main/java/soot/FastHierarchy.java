@@ -916,4 +916,51 @@ public class FastHierarchy {
     Set<SootClass> ret = classToSubclasses.get(c);
     return (ret == null) ? Collections.emptySet() : ret;
   }
+
+  /**
+   * Returns a list of types which can be used to store the given type
+   * 
+   * @param nt
+   *          the given type
+   * @return the list of types which can be used to store the given type
+   */
+  public Iterable<Type> canStoreTypeList(final Type nt) {
+    return new Iterable<Type>() {
+
+      @Override
+      public Iterator<Type> iterator() {
+        Iterator<Type> it = Scene.v().getTypeNumberer().iterator();
+        return new Iterator<Type>() {
+
+          Type crt = null;
+
+          @Override
+          public boolean hasNext() {
+            if (crt != null) {
+              return true;
+            }
+            Type c = null;
+            while (it.hasNext()) {
+              c = it.next();
+              if (canStoreType(nt, c)) {
+                crt = c;
+                return true;
+              }
+            }
+            return false;
+          }
+
+          @Override
+          public Type next() {
+            Type old = crt;
+            crt = null;
+            hasNext();
+            return old;
+          }
+
+        };
+      }
+    };
+  }
+
 }
