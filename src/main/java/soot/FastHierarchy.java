@@ -1,5 +1,18 @@
 package soot;
 
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,19 +37,6 @@ package soot;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
 
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
@@ -916,4 +916,50 @@ public class FastHierarchy {
     Set<SootClass> ret = classToSubclasses.get(c);
     return (ret == null) ? Collections.emptySet() : ret;
   }
+
+  /**
+   * Returns a list of types which can be used to store the given type
+   * 
+   * @param nt
+   *          the given type
+   * @return the list of types which can be used to store the given type
+   */
+  public Iterable<Type> canStoreTypeList(final Type nt) {
+    return new Iterable<Type>() {
+
+      @Override
+      public Iterator<Type> iterator() {
+        Iterator<Type> it = Scene.v().getTypeNumberer().iterator();
+        return new Iterator<Type>() {
+
+          Type crt = null;
+
+          @Override
+          public boolean hasNext() {
+            if (crt != null) {
+              return true;
+            }
+            Type c = null;
+            while (it.hasNext()) {
+              c = it.next();
+              if (canStoreType(nt, c)) {
+                crt = c;
+                return true;
+              }
+            }
+            return false;
+          }
+
+          @Override
+          public Type next() {
+            crt = null;
+            hasNext();
+            return crt;
+          }
+
+        };
+      }
+    };
+  }
+
 }
