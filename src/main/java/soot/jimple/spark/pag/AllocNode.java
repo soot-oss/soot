@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import soot.AnySubType;
 import soot.Context;
 import soot.PhaseOptions;
 import soot.RefType;
@@ -71,6 +72,12 @@ public class AllocNode extends Node implements Context {
   AllocNode(PAG pag, Object newExpr, Type t, SootMethod m) {
     super(pag, t);
     this.method = m;
+    if (t instanceof AnySubType) {
+      AnySubType o = (AnySubType) t;
+      if (o.getBase().toString().equals("java.lang.Object"))
+        System.out.println();
+      System.out.println();
+    }
     if (t instanceof RefType) {
       RefType rt = (RefType) t;
       if (rt.getSootClass().isAbstract()) {
