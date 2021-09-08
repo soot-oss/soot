@@ -22,12 +22,13 @@ package soot;
  * #L%
  */
 
+
+import com.google.common.base.Joiner;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.google.common.base.Joiner;
 
 import soot.util.NumberedString;
 
@@ -56,8 +57,9 @@ public class MethodSubSignature {
   public MethodSubSignature(NumberedString subsig) {
     this.numberedSubSig = subsig;
     Matcher m = PATTERN_METHOD_SUBSIG.matcher(subsig.toString());
-    if (!m.matches())
+    if (!m.matches()) {
       throw new IllegalArgumentException("Not a valid subsignature: " + subsig);
+    }
 
     Scene sc = Scene.v();
     methodName = m.group(2);
@@ -119,25 +121,33 @@ public class MethodSubSignature {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     MethodSubSignature other = (MethodSubSignature) obj;
     if (methodName == null) {
-      if (other.methodName != null)
+      if (other.methodName != null) {
         return false;
-    } else if (!methodName.equals(other.methodName))
+      }
+    } else if (!methodName.equals(other.methodName)) {
       return false;
-    if (!parameterTypes.equals(other.parameterTypes))
+    }
+    if (!parameterTypes.equals(other.parameterTypes)) {
       return false;
+    }
     if (returnType == null) {
-      if (other.returnType != null)
+      if (other.returnType != null) {
         return false;
-    } else if (!returnType.equals(other.returnType))
+      }
+    } else if (!returnType.equals(other.returnType)) {
       return false;
+    }
     return true;
   }
 
