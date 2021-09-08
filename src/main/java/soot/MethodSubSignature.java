@@ -22,7 +22,6 @@ package soot;
  * #L%
  */
 
-
 import com.google.common.base.Joiner;
 
 import java.util.ArrayList;
