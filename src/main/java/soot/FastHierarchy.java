@@ -58,7 +58,7 @@ public class FastHierarchy {
 
   protected static final int USE_INTERVALS_BOUNDARY = 100;
 
-  protected Table<SootClass, String, SootMethod> typeToVtbl = HashBasedTable.create();
+  protected Table<SootClass, NumberedString, SootMethod> typeToVtbl = HashBasedTable.create();
 
   /**
    * This map holds all key,value pairs such that value.getSuperclass() == key. This is one of the three maps that hold the
@@ -777,6 +777,31 @@ public class FastHierarchy {
    *          declaring class of the method to resolve
    * @param name
    *          Name of the method to resolve
+   * @param subsignature
+   *          The subsignature (can be null) to speed up the resolving process.
+   * @return The concrete method o.f() to call
+   */
+  public SootMethod resolveMethod(SootClass baseType, SootClass declaringClass, String name, List<Type> parameterTypes,
+      Type returnType, boolean allowAbstract, NumberedString subsignature) {
+    return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>(),
+        subsignature);
+  }
+
+  /**
+   * Conducts the actual dispatch by searching up the baseType's superclass hierarchy and interface hierarchy if the
+   * sourcecode level is beyond Java 7 (due to default interface methods.) Given an object of actual type C (o = new C()),
+   * returns the method which will be called on an o.f() invocation.
+   *
+   * <p>
+   * If abstract methods are allowed, it will just resolve to the first method found according to javas method resolution
+   * process: https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-5.html#jvms-5.4.3.3
+   *
+   * @param baseType
+   *          The type C
+   * @param declaringClass
+   *          declaring class of the method to resolve
+   * @param name
+   *          Name of the method to resolve
    * @param ignoreList
    *          A set of classes that should be ignored during dispatch. This set will also be modified since every traversed
    *          class/interface will be added. This is required for the abstract dispatch to not do additional resolving effort
@@ -788,11 +813,12 @@ public class FastHierarchy {
   private SootMethod resolveMethod(final SootClass baseType, final SootClass declaringClass, final String name,
       final List<Type> parameterTypes, final Type returnType, final boolean allowAbstract, final Set<SootClass> ignoreList,
       NumberedString subsignature) {
-    final String methodSignature;
+    final NumberedString methodSignature;
     if (subsignature == null) {
-      methodSignature = SootMethod.getSubSignature(name, parameterTypes, returnType);
+      methodSignature
+          = Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
     } else {
-      methodSignature = subsignature.getString();
+      methodSignature = subsignature;
     }
 
     {

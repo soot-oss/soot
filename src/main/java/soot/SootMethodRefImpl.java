@@ -226,7 +226,7 @@ public class SootMethodRefImpl implements SootMethodRef {
     // let's do a dispatch and allow abstract method for resolution
     // we do not have a base object for call so we just take the type of the declaring class
     SootMethod resolved = Scene.v().getOrMakeFastHierarchy().resolveMethod(declaringClass, declaringClass, name,
-        parameterTypes, returnType, true);
+        parameterTypes, returnType, true, this.getSubSignature());
 
     if (resolved != null) {
       checkStatic(resolved);
