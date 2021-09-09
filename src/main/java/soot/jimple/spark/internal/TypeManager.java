@@ -99,7 +99,14 @@ public final class TypeManager {
     }
     while (allocNodeListener.hasNext()) {
       AllocNode n = allocNodeListener.next();
-      for (final Type t : Scene.v().getTypeNumberer()) {
+      Type nt = n.getType();
+      Iterable<Type> types;
+      if (nt instanceof NullType || nt instanceof AnySubType) {
+        types = Scene.v().getTypeNumberer();
+      } else {
+        types = Scene.v().getOrMakeFastHierarchy().canStoreTypeList(nt);
+      }
+      for (final Type t : types) {
         if (!(t instanceof RefLikeType)) {
           continue;
         }
@@ -109,19 +116,19 @@ public final class TypeManager {
         if (isUnresolved(t)) {
           continue;
         }
-        if (castNeverFails(n.getType(), t)) {
-          BitVector mask = typeMask.get(t);
-          if (mask == null) {
-            typeMask.put(t, mask = new BitVector());
-            for (final AllocNode an : pag.getAllocNodeNumberer()) {
-              if (castNeverFails(an.getType(), t)) {
-                mask.set(an.getNumber());
-              }
+
+        BitVector mask = typeMask.get(t);
+        if (mask == null) {
+          typeMask.put(t, mask = new BitVector());
+          for (final AllocNode an : pag.getAllocNodeNumberer()) {
+            if (castNeverFails(an.getType(), t)) {
+              mask.set(an.getNumber());
             }
-            continue;
           }
-          mask.set(n.getNumber());
+          continue;
         }
+        mask.set(n.getNumber());
+
       }
     }
     BitVector ret = (BitVector) typeMask.get(type);

@@ -35,8 +35,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +56,7 @@ import soot.Local;
 import soot.LongType;
 import soot.MethodContext;
 import soot.MethodOrMethodContext;
+import soot.MethodSubSignature;
 import soot.NullType;
 import soot.PackManager;
 import soot.PhaseOptions;
@@ -126,9 +125,6 @@ public class OnFlyCallGraphBuilder {
 
   // NOTE: this field must be static to avoid adding the transformation again if the call graph is rebuilt.
   static boolean registeredGuardsTransformation = false;
-
-  private static final Pattern PATTERN_METHOD_SUBSIG
-      = Pattern.compile("(?<returnType>.*?) (?<methodName>.*?)\\((?<parameters>.*?)\\)");
 
   private static final PrimType[] CHAR_NARROWINGS;
   private static final PrimType[] INT_NARROWINGS;
@@ -592,22 +588,10 @@ public class OnFlyCallGraphBuilder {
           // Fake edges map to a different method signature, e.g., from execute(a) to a.run()
           if (receiverType instanceof RefType) {
             SootClass receiverClass = ((RefType) receiverType).getSootClass();
-            Matcher m = PATTERN_METHOD_SUBSIG.matcher(site.subSig().toString());
-            if (m.matches()) {
-              String methodName = m.group("methodName");
-              String returnType = m.group("returnType");
-              if (methodName != null && returnType != null) {
-                List<Type> params = new ArrayList<>();
-                String parameters = m.group("parameters");
-                if (parameters != null && !parameters.isEmpty()) {
-                  for (String p : parameters.split(",")) {
-                    params.add(sc.getTypeUnsafe(p.trim()));
-                  }
-                }
-                ref = sc.makeMethodRef(receiverClass, methodName, params, sc.getTypeUnsafe(returnType),
-                    Kind.isStatic(site.kind()));
-              }
-            }
+
+            MethodSubSignature subsig = site.subSig();
+            ref = sc.makeMethodRef(receiverClass, subsig.methodName, subsig.parameterTypes, subsig.getReturnType(),
+                Kind.isStatic(site.kind()));
           } else {
             ref = site.getStmt().getInvokeExpr().getMethodRef();
           }
@@ -777,7 +761,7 @@ public class OnFlyCallGraphBuilder {
     baseToInvokeSite.put(l, ics);
   }
 
-  private void addVirtualCallSite(Stmt s, SootMethod m, Local receiver, InstanceInvokeExpr iie, NumberedString subSig,
+  private void addVirtualCallSite(Stmt s, SootMethod m, Local receiver, InstanceInvokeExpr iie, MethodSubSignature subSig,
       Kind kind) {
     List<VirtualCallSite> sites = receiverToSites.get(receiver);
     if (sites == null) {
@@ -807,8 +791,8 @@ public class OnFlyCallGraphBuilder {
         if (ie instanceof InstanceInvokeExpr) {
           InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
           Local receiver = (Local) iie.getBase();
-          NumberedString subSig = iie.getMethodRef().getSubSignature();
-          addVirtualCallSite(s, m, receiver, iie, subSig, Edge.ieToKind(iie));
+          MethodSubSignature subSig = new MethodSubSignature(iie.getMethodRef());
+          addVirtualCallSite(s, m, receiver, iie, new MethodSubSignature(iie.getMethodRef()), Edge.ieToKind(iie));
 
           VirtualEdge virtualEdge = virtualEdgeSummaries.getVirtualEdgesMatchingSubSig(subSig);
           if (virtualEdge != null) {
