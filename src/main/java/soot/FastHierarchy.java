@@ -42,6 +42,7 @@ import soot.jimple.spark.internal.TypeManager;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
+import soot.util.NumberedString;
 
 /**
  * Represents the class hierarchy. It is closely linked to a Scene, and must be recreated if the Scene changes.
@@ -736,7 +737,7 @@ public class FastHierarchy {
    */
   private SootMethod resolveMethod(SootClass baseType, SootMethodRef m, boolean allowAbstract, Set<SootClass> ignoreList) {
     return resolveMethod(baseType, m.getDeclaringClass(), m.getName(), m.getParameterTypes(), m.getReturnType(),
-        allowAbstract, ignoreList);
+        allowAbstract, ignoreList, m.getSubSignature());
   }
 
   /**
@@ -758,7 +759,7 @@ public class FastHierarchy {
    */
   public SootMethod resolveMethod(SootClass baseType, SootClass declaringClass, String name, List<Type> parameterTypes,
       Type returnType, boolean allowAbstract) {
-    return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>());
+    return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>(), null);
   }
 
   /**
@@ -780,12 +781,20 @@ public class FastHierarchy {
    *          A set of classes that should be ignored during dispatch. This set will also be modified since every traversed
    *          class/interface will be added. This is required for the abstract dispatch to not do additional resolving effort
    *          by resolving the same classes multiple times.
+   * @param subsignature
+   *          The subsignature (can be null) to speed up the resolving process.
    * @return The concrete method o.f() to call
    */
   private SootMethod resolveMethod(final SootClass baseType, final SootClass declaringClass, final String name,
-      final List<Type> parameterTypes, final Type returnType, final boolean allowAbstract, final Set<SootClass> ignoreList) {
+      final List<Type> parameterTypes, final Type returnType, final boolean allowAbstract, final Set<SootClass> ignoreList,
+      NumberedString subsignature) {
+    final String methodSignature;
+    if (subsignature == null) {
+      methodSignature = SootMethod.getSubSignature(name, parameterTypes, returnType);
+    } else {
+      methodSignature = subsignature.getString();
+    }
 
-    final String methodSignature = SootMethod.getSubSignature(name, parameterTypes, returnType);
     {
       SootMethod resolvedMethod = typeToVtbl.get(baseType, methodSignature);
       if (resolvedMethod != null) {

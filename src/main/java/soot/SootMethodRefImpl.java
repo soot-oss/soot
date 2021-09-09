@@ -58,6 +58,8 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   private SootMethod resolveCache = null;
 
+  private NumberedString subsig;
+
   /**
    * Constructor.
    *
@@ -151,7 +153,17 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   @Override
   public NumberedString getSubSignature() {
-    return Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
+    if (subsig != null) {
+      return subsig;
+    }
+    if (resolveCache != null) {
+      subsig = resolveCache.getNumberedSubSignature();
+      return subsig;
+    }
+
+    // This method is expensive, so it makes sense to cache the result
+    subsig = Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
+    return subsig;
   }
 
   @Override

@@ -47,9 +47,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import soot.Kind;
+import soot.MethodSubSignature;
 import soot.ModuleUtil;
 import soot.Scene;
-import soot.util.NumberedString;
 import soot.util.StringNumberer;
 
 /**
@@ -62,7 +62,7 @@ public class VirtualEdgesSummaries {
 
   private static final String SUMMARIESFILE = "virtualedges.xml";
 
-  private final HashMap<NumberedString, VirtualEdge> instanceinvokeEdges = new HashMap<>();
+  private final HashMap<MethodSubSignature, VirtualEdge> instanceinvokeEdges = new HashMap<>();
   private final HashMap<String, VirtualEdge> staticinvokeEdges = new HashMap<>();
 
   private static final Logger logger = LoggerFactory.getLogger(VirtualEdgesSummaries.class);
@@ -107,7 +107,7 @@ public class VirtualEdgesSummaries {
           edg.targets.addAll(parseEdgeTargets(targetsElement));
           if (edg.source instanceof InstanceinvokeSource) {
             InstanceinvokeSource inst = (InstanceinvokeSource) edg.source;
-            NumberedString subsig = inst.subSignature;
+            MethodSubSignature subsig = inst.subSignature;
 
             // don't overwrite existing definition
             VirtualEdge existing = instanceinvokeEdges.get(subsig);
@@ -131,7 +131,7 @@ public class VirtualEdgesSummaries {
         staticinvokeEdges.size());
   }
 
-  public VirtualEdge getVirtualEdgesMatchingSubSig(NumberedString subsig) {
+  public VirtualEdge getVirtualEdgesMatchingSubSig(MethodSubSignature subsig) {
     return instanceinvokeEdges.get(subsig);
   }
 
@@ -160,7 +160,8 @@ public class VirtualEdgesSummaries {
 
         switch (targetElement.getTagName()) {
           case "direct": {
-            NumberedString subsignature = nmbr.findOrAdd(targetElement.getAttribute("subsignature"));
+            MethodSubSignature subsignature
+                = new MethodSubSignature(nmbr.findOrAdd(targetElement.getAttribute("subsignature")));
             if ("argument".equals(targetElement.getAttribute("target-position"))) {
               int argIdx = Integer.valueOf(targetElement.getAttribute("index"));
               targets.add(new DirectTarget(subsignature, argIdx));
@@ -172,7 +173,8 @@ public class VirtualEdgesSummaries {
           case "indirect": {
             // Parse the attributes of the current target
             IndirectTarget target;
-            NumberedString subsignature = nmbr.findOrAdd(targetElement.getAttribute("subsignature"));
+            MethodSubSignature subsignature
+                = new MethodSubSignature(nmbr.findOrAdd(targetElement.getAttribute("subsignature")));
             if ("argument".equals(targetElement.getAttribute("target-position"))) {
               int argIdx = Integer.valueOf(targetElement.getAttribute("index"));
               target = new IndirectTarget(subsignature, argIdx);
@@ -251,10 +253,10 @@ public class VirtualEdgesSummaries {
     /**
      * The method subsignature at which to insert this edge.
      */
-    NumberedString subSignature;
+    MethodSubSignature subSignature;
 
     public InstanceinvokeSource(String subSignature) {
-      this.subSignature = Scene.v().getSubSigNumberer().findOrAdd(subSignature);
+      this.subSignature = new MethodSubSignature(Scene.v().getSubSigNumberer().findOrAdd(subSignature));
     }
 
     @Override
@@ -262,7 +264,7 @@ public class VirtualEdgesSummaries {
       return subSignature.toString();
     }
 
-    public NumberedString getSubSignature() {
+    public MethodSubSignature getSubSignature() {
       return subSignature;
     }
 
@@ -300,18 +302,18 @@ public class VirtualEdgesSummaries {
   public static abstract class VirtualEdgeTarget {
 
     protected int argIndex;
-    protected NumberedString targetMethod;
+    protected MethodSubSignature targetMethod;
 
     VirtualEdgeTarget() {
       // internal use only
     }
 
-    public VirtualEdgeTarget(NumberedString targetMethod) {
+    public VirtualEdgeTarget(MethodSubSignature targetMethod) {
       this.argIndex = -1;
       this.targetMethod = targetMethod;
     }
 
-    public VirtualEdgeTarget(NumberedString targetMethod, int argIndex) {
+    public VirtualEdgeTarget(MethodSubSignature targetMethod, int argIndex) {
       this.argIndex = argIndex;
       this.targetMethod = targetMethod;
     }
@@ -329,7 +331,7 @@ public class VirtualEdgesSummaries {
       return argIndex;
     }
 
-    public NumberedString getTargetMethod() {
+    public MethodSubSignature getTargetMethod() {
       return targetMethod;
     }
 
@@ -383,7 +385,7 @@ public class VirtualEdgesSummaries {
      * @param argIndex
      *          The index of the argument that receives the target object
      */
-    public DirectTarget(NumberedString targetMethod, int argIndex) {
+    public DirectTarget(MethodSubSignature targetMethod, int argIndex) {
       super(targetMethod, argIndex);
     }
 
@@ -394,7 +396,7 @@ public class VirtualEdgesSummaries {
      * @param targetMethod
      *          The target method that is invoked on the base object
      */
-    public DirectTarget(NumberedString targetMethod) {
+    public DirectTarget(MethodSubSignature targetMethod) {
       super(targetMethod);
     }
 
@@ -452,7 +454,7 @@ public class VirtualEdgesSummaries {
      *          The index of the argument that holds the object that holds the callback or next step of the indirect
      *          invocation
      */
-    public IndirectTarget(NumberedString targetMethod, int argIndex) {
+    public IndirectTarget(MethodSubSignature targetMethod, int argIndex) {
       super(targetMethod, argIndex);
     }
 
@@ -473,7 +475,7 @@ public class VirtualEdgesSummaries {
      * @param targetMethod
      *          The method with which the original callback was registered
      */
-    public IndirectTarget(NumberedString targetMethod) {
+    public IndirectTarget(MethodSubSignature targetMethod) {
       super(targetMethod);
     }
 
