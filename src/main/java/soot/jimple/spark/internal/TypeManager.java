@@ -87,7 +87,13 @@ public final class TypeManager {
     }
     RefType rt = (RefType) type;
     if (!rt.hasSootClass()) {
-      return true;
+      // try to resolve sootClass one more time.
+      SootClass c = Scene.v().forceResolve(rt.getClassName(), SootClass.HIERARCHY);
+      if (c == null) {
+        return true;
+      } else {
+        rt.setSootClass(c);
+      }
     }
     SootClass cl = rt.getSootClass();
     return cl.resolvingLevel() < SootClass.HIERARCHY;
