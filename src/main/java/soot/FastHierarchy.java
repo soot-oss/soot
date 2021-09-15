@@ -286,9 +286,10 @@ public class FastHierarchy {
       if (!(parent instanceof RefLikeType)) {
         throw new RuntimeException("Unhandled type " + parent);
       } else if (parent instanceof ArrayType) {
-        Type base = ((AnySubType) child).getBase();
-        // From Java Language Spec 2nd ed., Chapter 10, Arrays
-        return base == rtObject || base == rtSerializable || base == rtCloneable;
+        // SA, 2021-09-15. Someone previously misinterpreted the Java Language Spec here. All array types implement
+        // Serializable and Cloneable, and that allows you to assign an array Foo[] to a variable of type Serializable.
+        // However, it doesn't work the other way round. You can't assign a Serializable to a variable of type Foo[].
+        return false;
       } else {
         Deque<SootClass> worklist = new ArrayDeque<SootClass>();
         SootClass base = ((AnySubType) child).getBase().getSootClass();
@@ -298,17 +299,17 @@ public class FastHierarchy {
           worklist.add(base);
         }
         final SootClass parentClass = ((RefType) parent).getSootClass();
-        Set<SootClass> workset = new HashSet<>();
-        while (true) {
-          SootClass cl = worklist.poll();
-          if (cl == null) {
-            break;
-          } else if (!workset.add(cl)) {
-            continue;
-          } else if (cl.isConcrete() && canStoreClass(cl, parentClass)) {
-            return true;
+        {
+          Set<SootClass> workset = new HashSet<>();
+          SootClass cl;
+          while ((cl = worklist.poll()) != null) {
+            if (!workset.add(cl)) {
+              continue;
+            } else if (cl.isConcrete() && canStoreClass(cl, parentClass)) {
+              return true;
+            }
+            worklist.addAll(getSubclassesOf(cl));
           }
-          worklist.addAll(getSubclassesOf(cl));
         }
         return false;
       }
