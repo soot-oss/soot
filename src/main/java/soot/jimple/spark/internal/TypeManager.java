@@ -44,6 +44,7 @@ import soot.TypeSwitch;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
+import soot.jimple.toolkits.typing.fast.WeakObjectType;
 import soot.util.ArrayNumberer;
 import soot.util.BitVector;
 import soot.util.LargeNumberedMap;
@@ -87,13 +88,17 @@ public final class TypeManager {
     }
     RefType rt = (RefType) type;
     if (!rt.hasSootClass()) {
-      // try to resolve sootClass one more time.
-      SootClass c = Scene.v().forceResolve(rt.getClassName(), SootClass.HIERARCHY);
-      if (c == null) {
-        return true;
-      } else {
-        rt.setSootClass(c);
+      if (rt instanceof WeakObjectType) {
+        // try to resolve sootClass one more time.
+        SootClass c = Scene.v().forceResolve(rt.getClassName(), SootClass.HIERARCHY);
+        if (c == null) {
+          return true;
+        } else {
+          rt.setSootClass(c);
+        }
       }
+      else
+        return true;
     }
     SootClass cl = rt.getSootClass();
     return cl.resolvingLevel() < SootClass.HIERARCHY;
