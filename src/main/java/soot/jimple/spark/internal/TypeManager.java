@@ -97,8 +97,9 @@ public final class TypeManager {
           rt.setSootClass(c);
         }
       }
-      else
+      else {
         return true;
+      }
     }
     SootClass cl = rt.getSootClass();
     return cl.resolvingLevel() < SootClass.HIERARCHY;
