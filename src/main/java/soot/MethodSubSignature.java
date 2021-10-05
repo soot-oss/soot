@@ -1,5 +1,10 @@
 package soot;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,17 +29,12 @@ package soot;
 
 import com.google.common.base.Joiner;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import soot.jimple.Stmt;
 import soot.util.NumberedString;
 
 /**
- * Allows one-time parsing of method subsignatures.
- * Note that these method sub signatures are resolved, i.e. 
- * we resolve the complete types upon construction.
+ * Allows one-time parsing of method subsignatures. Note that these method sub signatures are resolved, i.e. we resolve the
+ * complete types upon construction.
  * 
  * @author Marc Miltenberger
  */
@@ -82,6 +82,17 @@ public class MethodSubSignature {
         = new NumberedString(returnType + " " + methodName + "(" + Joiner.on(',').join(parameterTypes) + ")");
   }
 
+  /**
+   * Creates a new instance of the {@link MethodSubSignature} class based on a call site. The subsignature of the callee will
+   * be taken from the method referenced at the call site.
+   * 
+   * @param callSite
+   *          The call site
+   */
+  public MethodSubSignature(Stmt callSite) {
+    this(callSite.getInvokeExpr().getMethodRef().getSubSignature());
+  }
+
   public String getMethodName() {
     return methodName;
   }
@@ -99,9 +110,10 @@ public class MethodSubSignature {
   }
 
   /**
-   * Tries to find the exact method in a class. Returns null
-   * if cannot be found
-   * @param c the class
+   * Tries to find the exact method in a class. Returns null if cannot be found
+   * 
+   * @param c
+   *          the class
    * @return the method (or null)
    */
   public SootMethod getInClassUnsafe(SootClass c) {
