@@ -1,10 +1,5 @@
 package soot;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -28,6 +23,11 @@ import java.util.regex.Pattern;
  */
 
 import com.google.common.base.Joiner;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import soot.jimple.Stmt;
 import soot.util.NumberedString;
