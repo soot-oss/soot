@@ -50,6 +50,7 @@ import soot.Kind;
 import soot.MethodSubSignature;
 import soot.ModuleUtil;
 import soot.Scene;
+import soot.jimple.Stmt;
 import soot.util.StringNumberer;
 
 /**
@@ -255,8 +256,25 @@ public class VirtualEdgesSummaries {
      */
     MethodSubSignature subSignature;
 
+    /**
+     * Creates a new instance of the {@link InstanceinvokeSource} class based on a method that is being invoked on the
+     * current object instance
+     * 
+     * @param subSignature
+     *          The subsignature of the method that is invoked
+     */
     public InstanceinvokeSource(String subSignature) {
       this.subSignature = new MethodSubSignature(Scene.v().getSubSigNumberer().findOrAdd(subSignature));
+    }
+
+    /**
+     * Convenience constructor that extracts the subsignature of the callee from a call site statement
+     * 
+     * @param invokeStmt
+     *          The statement at the call site
+     */
+    public InstanceinvokeSource(Stmt invokeStmt) {
+      this(invokeStmt.getInvokeExpr().getMethodRef().getSubSignature().getString());
     }
 
     @Override
