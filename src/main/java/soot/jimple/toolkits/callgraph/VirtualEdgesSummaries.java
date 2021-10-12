@@ -63,8 +63,8 @@ public class VirtualEdgesSummaries {
 
   private static final String SUMMARIESFILE = "virtualedges.xml";
 
-  private final HashMap<MethodSubSignature, VirtualEdge> instanceinvokeEdges = new HashMap<>();
-  private final HashMap<String, VirtualEdge> staticinvokeEdges = new HashMap<>();
+  protected final HashMap<MethodSubSignature, VirtualEdge> instanceinvokeEdges = new HashMap<>();
+  protected final HashMap<String, VirtualEdge> staticinvokeEdges = new HashMap<>();
 
   private static final Logger logger = LoggerFactory.getLogger(VirtualEdgesSummaries.class);
 
