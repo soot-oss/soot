@@ -190,7 +190,7 @@ public class OnFlyCallGraphBuilder {
   protected final QueueReader<MethodOrMethodContext> worklist;
   protected final ContextManager cm;
 
-  protected final VirtualEdgesSummaries virtualEdgeSummaries = new VirtualEdgesSummaries();
+  protected final VirtualEdgesSummaries virtualEdgeSummaries = initializeEdgeSummaries();
 
   protected NullnessAnalysis nullnessCache = null;
   protected ConstantArrayAnalysis arrayCache = null;
@@ -237,6 +237,16 @@ public class OnFlyCallGraphBuilder {
 
   public OnFlyCallGraphBuilder(ContextManager cm, ReachableMethods rm) {
     this(cm, rm, false);
+  }
+
+  /**
+   * Initializes the edge summaries that model callbacks in library classes. Custom implementations may override this method
+   * to supply a specialized summary provider.
+   * 
+   * @return A provider object for virtual edge summaries
+   */
+  protected VirtualEdgesSummaries initializeEdgeSummaries() {
+    return new VirtualEdgesSummaries();
   }
 
   public ContextManager getContextManager() {
