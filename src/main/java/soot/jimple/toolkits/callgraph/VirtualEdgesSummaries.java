@@ -47,9 +47,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import soot.Kind;
+import soot.MethodSubSignature;
 import soot.ModuleUtil;
 import soot.Scene;
-import soot.util.NumberedString;
+import soot.jimple.Stmt;
 import soot.util.StringNumberer;
 
 /**
@@ -62,8 +63,8 @@ public class VirtualEdgesSummaries {
 
   private static final String SUMMARIESFILE = "virtualedges.xml";
 
-  private final HashMap<NumberedString, VirtualEdge> instanceinvokeEdges = new HashMap<>();
-  private final HashMap<String, VirtualEdge> staticinvokeEdges = new HashMap<>();
+  protected final HashMap<MethodSubSignature, VirtualEdge> instanceinvokeEdges = new HashMap<>();
+  protected final HashMap<String, VirtualEdge> staticinvokeEdges = new HashMap<>();
 
   private static final Logger logger = LoggerFactory.getLogger(VirtualEdgesSummaries.class);
 
@@ -107,7 +108,7 @@ public class VirtualEdgesSummaries {
           edg.targets.addAll(parseEdgeTargets(targetsElement));
           if (edg.source instanceof InstanceinvokeSource) {
             InstanceinvokeSource inst = (InstanceinvokeSource) edg.source;
-            NumberedString subsig = inst.subSignature;
+            MethodSubSignature subsig = inst.subSignature;
 
             // don't overwrite existing definition
             VirtualEdge existing = instanceinvokeEdges.get(subsig);
@@ -127,11 +128,11 @@ public class VirtualEdgesSummaries {
     } catch (IOException | ParserConfigurationException | SAXException e1) {
       logger.error("An error occurred while reading in virtual edge summaries", e1);
     }
-    logger.debug("Found %d instanceinvoke, %d staticinvoke edge descriptions", instanceinvokeEdges.size(),
+    logger.debug("Found {} instanceinvoke, {} staticinvoke edge descriptions", instanceinvokeEdges.size(),
         staticinvokeEdges.size());
   }
 
-  public VirtualEdge getVirtualEdgesMatchingSubSig(NumberedString subsig) {
+  public VirtualEdge getVirtualEdgesMatchingSubSig(MethodSubSignature subsig) {
     return instanceinvokeEdges.get(subsig);
   }
 
@@ -160,7 +161,8 @@ public class VirtualEdgesSummaries {
 
         switch (targetElement.getTagName()) {
           case "direct": {
-            NumberedString subsignature = nmbr.findOrAdd(targetElement.getAttribute("subsignature"));
+            MethodSubSignature subsignature
+                = new MethodSubSignature(nmbr.findOrAdd(targetElement.getAttribute("subsignature")));
             if ("argument".equals(targetElement.getAttribute("target-position"))) {
               int argIdx = Integer.valueOf(targetElement.getAttribute("index"));
               targets.add(new DirectTarget(subsignature, argIdx));
@@ -172,7 +174,8 @@ public class VirtualEdgesSummaries {
           case "indirect": {
             // Parse the attributes of the current target
             IndirectTarget target;
-            NumberedString subsignature = nmbr.findOrAdd(targetElement.getAttribute("subsignature"));
+            MethodSubSignature subsignature
+                = new MethodSubSignature(nmbr.findOrAdd(targetElement.getAttribute("subsignature")));
             if ("argument".equals(targetElement.getAttribute("target-position"))) {
               int argIdx = Integer.valueOf(targetElement.getAttribute("index"));
               target = new IndirectTarget(subsignature, argIdx);
@@ -251,10 +254,27 @@ public class VirtualEdgesSummaries {
     /**
      * The method subsignature at which to insert this edge.
      */
-    NumberedString subSignature;
+    MethodSubSignature subSignature;
 
+    /**
+     * Creates a new instance of the {@link InstanceinvokeSource} class based on a method that is being invoked on the
+     * current object instance
+     * 
+     * @param subSignature
+     *          The subsignature of the method that is invoked
+     */
     public InstanceinvokeSource(String subSignature) {
-      this.subSignature = Scene.v().getSubSigNumberer().findOrAdd(subSignature);
+      this.subSignature = new MethodSubSignature(Scene.v().getSubSigNumberer().findOrAdd(subSignature));
+    }
+
+    /**
+     * Convenience constructor that extracts the subsignature of the callee from a call site statement
+     * 
+     * @param invokeStmt
+     *          The statement at the call site
+     */
+    public InstanceinvokeSource(Stmt invokeStmt) {
+      this(invokeStmt.getInvokeExpr().getMethodRef().getSubSignature().getString());
     }
 
     @Override
@@ -262,7 +282,7 @@ public class VirtualEdgesSummaries {
       return subSignature.toString();
     }
 
-    public NumberedString getSubSignature() {
+    public MethodSubSignature getSubSignature() {
       return subSignature;
     }
 
@@ -300,18 +320,18 @@ public class VirtualEdgesSummaries {
   public static abstract class VirtualEdgeTarget {
 
     protected int argIndex;
-    protected NumberedString targetMethod;
+    protected MethodSubSignature targetMethod;
 
     VirtualEdgeTarget() {
       // internal use only
     }
 
-    public VirtualEdgeTarget(NumberedString targetMethod) {
+    public VirtualEdgeTarget(MethodSubSignature targetMethod) {
       this.argIndex = -1;
       this.targetMethod = targetMethod;
     }
 
-    public VirtualEdgeTarget(NumberedString targetMethod, int argIndex) {
+    public VirtualEdgeTarget(MethodSubSignature targetMethod, int argIndex) {
       this.argIndex = argIndex;
       this.targetMethod = targetMethod;
     }
@@ -329,7 +349,7 @@ public class VirtualEdgesSummaries {
       return argIndex;
     }
 
-    public NumberedString getTargetMethod() {
+    public MethodSubSignature getTargetMethod() {
       return targetMethod;
     }
 
@@ -383,7 +403,7 @@ public class VirtualEdgesSummaries {
      * @param argIndex
      *          The index of the argument that receives the target object
      */
-    public DirectTarget(NumberedString targetMethod, int argIndex) {
+    public DirectTarget(MethodSubSignature targetMethod, int argIndex) {
       super(targetMethod, argIndex);
     }
 
@@ -394,7 +414,7 @@ public class VirtualEdgesSummaries {
      * @param targetMethod
      *          The target method that is invoked on the base object
      */
-    public DirectTarget(NumberedString targetMethod) {
+    public DirectTarget(MethodSubSignature targetMethod) {
       super(targetMethod);
     }
 
@@ -452,7 +472,7 @@ public class VirtualEdgesSummaries {
      *          The index of the argument that holds the object that holds the callback or next step of the indirect
      *          invocation
      */
-    public IndirectTarget(NumberedString targetMethod, int argIndex) {
+    public IndirectTarget(MethodSubSignature targetMethod, int argIndex) {
       super(targetMethod, argIndex);
     }
 
@@ -473,7 +493,7 @@ public class VirtualEdgesSummaries {
      * @param targetMethod
      *          The method with which the original callback was registered
      */
-    public IndirectTarget(NumberedString targetMethod) {
+    public IndirectTarget(MethodSubSignature targetMethod) {
       super(targetMethod);
     }
 

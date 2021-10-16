@@ -21,7 +21,6 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
@@ -158,6 +157,7 @@ import static org.objectweb.asm.Opcodes.T_FLOAT;
 import static org.objectweb.asm.Opcodes.T_INT;
 import static org.objectweb.asm.Opcodes.T_LONG;
 import static org.objectweb.asm.Opcodes.T_SHORT;
+
 import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
 import static org.objectweb.asm.tree.AbstractInsnNode.IINC_INSN;
@@ -1384,11 +1384,11 @@ final class AsmMethodSource implements MethodSource {
       if (clsName.charAt(0) == '[') {
         clsName = "java.lang.Object";
       }
-      List<Type> sigTypes =
-          AsmUtil.toJimpleDesc(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+      List<Type> sigTypes
+          = AsmUtil.toJimpleDesc(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
       returnType = sigTypes.remove(sigTypes.size() - 1);
-      SootMethodRef ref =
-          Scene.v().makeMethodRef(this.getClassFromScene(clsName), insn.name, sigTypes, returnType, !instance);
+      SootMethodRef ref
+          = Scene.v().makeMethodRef(this.getClassFromScene(clsName), insn.name, sigTypes, returnType, !instance);
       int nrArgs = sigTypes.size();
       final Operand[] args;
       List<Value> argList = Collections.emptyList();
@@ -1524,8 +1524,8 @@ final class AsmMethodSource implements MethodSource {
         String bsmMethodRefStr = bsmMethodRef.toString();
         if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE)) {
           SootClass enclosingClass = body.getMethod().getDeclaringClass();
-          bootstrap_model =
-              LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types, enclosingClass);
+          bootstrap_model
+              = LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types, enclosingClass);
         }
       }
 
@@ -1835,8 +1835,13 @@ final class AsmMethodSource implements MethodSource {
           throw new AssertionError("Multiple un-equal stacks!");
         }
         for (int j = 0; j != stackss.length; j++) {
-          if (!stackTemp.get(j).equivTo(stackss[j])) {
-            throw new AssertionError("Multiple un-equal stacks!");
+          Operand tempOp = stackTemp.get(j);
+          Operand stackOp = stackss[j];
+          if (!tempOp.equivTo(stackOp)) {
+            // We need to merge the two operands. We have a join point, where the two paths have stacks of the same size, but
+            // with different locals. Since the execution contains on the same statements after the join point, we must make
+            // sure that they can operate on the same locals, regardless of which path the execution came from.
+            merge(tempOp, stackOp);
           }
         }
         continue;
@@ -1847,6 +1852,39 @@ final class AsmMethodSource implements MethodSource {
       edge.stack = new ArrayList<Operand>(stack);
       conversionWorklist.add(edge);
     } while (i <= lastIdx && (tgt = tgts.get(i++)) != null);
+  }
+
+  /**
+   * Merges the given operands, i.e., the second operand will receive assignments to the stack locals of the first operand so
+   * that both operands become compatible.
+   * 
+   * @param firstOp
+   */
+  private void merge(Operand firstOp, Operand secondOp) {
+    if (secondOp.stack != null) {
+      if (firstOp.stack == null) {
+        Local stack = secondOp.stack;
+        firstOp.stack = stack;
+        AssignStmt as = Jimple.v().newAssignStmt(stack, firstOp.stackOrValue());
+        setUnit(firstOp.insn, as);
+      } else {
+        // Both operands have a stack local. We need to create an assignment to a temporary variable.
+        Local stack = firstOp.stack;
+        AssignStmt as = Jimple.v().newAssignStmt(stack, secondOp.stackOrValue());
+        mergeUnits(secondOp.insn, as);
+        secondOp.addBox(as.getRightOpBox());
+        secondOp.stack = stack;
+      }
+    } else {
+      if (firstOp.stack != null) {
+        Local stack = firstOp.stack;
+        secondOp.stack = stack;
+        AssignStmt as = Jimple.v().newAssignStmt(stack, secondOp.stackOrValue());
+        setUnit(secondOp.insn, as);
+      } else {
+        throw new RuntimeException("Cannot merge operands, since neither has a stack local. Bummer.");
+      }
+    }
   }
 
   private void convert() {

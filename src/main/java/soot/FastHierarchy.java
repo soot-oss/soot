@@ -38,9 +38,11 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import soot.jimple.spark.internal.TypeManager;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
+import soot.util.NumberedString;
 
 /**
  * Represents the class hierarchy. It is closely linked to a Scene, and must be recreated if the Scene changes.
@@ -56,7 +58,7 @@ public class FastHierarchy {
 
   protected static final int USE_INTERVALS_BOUNDARY = 100;
 
-  protected Table<SootClass, String, SootMethod> typeToVtbl = HashBasedTable.create();
+  protected Table<SootClass, NumberedString, SootMethod> typeToVtbl = HashBasedTable.create();
 
   /**
    * This map holds all key,value pairs such that value.getSuperclass() == key. This is one of the three maps that hold the
@@ -284,9 +286,10 @@ public class FastHierarchy {
       if (!(parent instanceof RefLikeType)) {
         throw new RuntimeException("Unhandled type " + parent);
       } else if (parent instanceof ArrayType) {
-        Type base = ((AnySubType) child).getBase();
-        // From Java Language Spec 2nd ed., Chapter 10, Arrays
-        return base == rtObject || base == rtSerializable || base == rtCloneable;
+        // SA, 2021-09-15. Someone previously misinterpreted the Java Language Spec here. All array types implement
+        // Serializable and Cloneable, and that allows you to assign an array Foo[] to a variable of type Serializable.
+        // However, it doesn't work the other way round. You can't assign a Serializable to a variable of type Foo[].
+        return false;
       } else {
         Deque<SootClass> worklist = new ArrayDeque<SootClass>();
         SootClass base = ((AnySubType) child).getBase().getSootClass();
@@ -296,17 +299,17 @@ public class FastHierarchy {
           worklist.add(base);
         }
         final SootClass parentClass = ((RefType) parent).getSootClass();
-        Set<SootClass> workset = new HashSet<>();
-        while (true) {
-          SootClass cl = worklist.poll();
-          if (cl == null) {
-            break;
-          } else if (!workset.add(cl)) {
-            continue;
-          } else if (cl.isConcrete() && canStoreClass(cl, parentClass)) {
-            return true;
+        {
+          Set<SootClass> workset = new HashSet<>();
+          SootClass cl;
+          while ((cl = worklist.poll()) != null) {
+            if (!workset.add(cl)) {
+              continue;
+            } else if (cl.isConcrete() && canStoreClass(cl, parentClass)) {
+              return true;
+            }
+            worklist.addAll(getSubclassesOf(cl));
           }
-          worklist.addAll(getSubclassesOf(cl));
         }
         return false;
       }
@@ -735,7 +738,7 @@ public class FastHierarchy {
    */
   private SootMethod resolveMethod(SootClass baseType, SootMethodRef m, boolean allowAbstract, Set<SootClass> ignoreList) {
     return resolveMethod(baseType, m.getDeclaringClass(), m.getName(), m.getParameterTypes(), m.getReturnType(),
-        allowAbstract, ignoreList);
+        allowAbstract, ignoreList, m.getSubSignature());
   }
 
   /**
@@ -757,7 +760,32 @@ public class FastHierarchy {
    */
   public SootMethod resolveMethod(SootClass baseType, SootClass declaringClass, String name, List<Type> parameterTypes,
       Type returnType, boolean allowAbstract) {
-    return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>());
+    return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>(), null);
+  }
+
+  /**
+   * Conducts the actual dispatch by searching up the baseType's superclass hierarchy and interface hierarchy if the
+   * sourcecode level is beyond Java 7 (due to default interface methods.) Given an object of actual type C (o = new C()),
+   * returns the method which will be called on an o.f() invocation.
+   *
+   * <p>
+   * If abstract methods are allowed, it will just resolve to the first method found according to javas method resolution
+   * process: https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-5.html#jvms-5.4.3.3
+   *
+   * @param baseType
+   *          The type C
+   * @param declaringClass
+   *          declaring class of the method to resolve
+   * @param name
+   *          Name of the method to resolve
+   * @param subsignature
+   *          The subsignature (can be null) to speed up the resolving process.
+   * @return The concrete method o.f() to call
+   */
+  public SootMethod resolveMethod(SootClass baseType, SootClass declaringClass, String name, List<Type> parameterTypes,
+      Type returnType, boolean allowAbstract, NumberedString subsignature) {
+    return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>(),
+        subsignature);
   }
 
   /**
@@ -779,12 +807,21 @@ public class FastHierarchy {
    *          A set of classes that should be ignored during dispatch. This set will also be modified since every traversed
    *          class/interface will be added. This is required for the abstract dispatch to not do additional resolving effort
    *          by resolving the same classes multiple times.
+   * @param subsignature
+   *          The subsignature (can be null) to speed up the resolving process.
    * @return The concrete method o.f() to call
    */
   private SootMethod resolveMethod(final SootClass baseType, final SootClass declaringClass, final String name,
-      final List<Type> parameterTypes, final Type returnType, final boolean allowAbstract, final Set<SootClass> ignoreList) {
+      final List<Type> parameterTypes, final Type returnType, final boolean allowAbstract, final Set<SootClass> ignoreList,
+      NumberedString subsignature) {
+    final NumberedString methodSignature;
+    if (subsignature == null) {
+      methodSignature
+          = Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
+    } else {
+      methodSignature = subsignature;
+    }
 
-    final String methodSignature = SootMethod.getSubSignature(name, parameterTypes, returnType);
     {
       SootMethod resolvedMethod = typeToVtbl.get(baseType, methodSignature);
       if (resolvedMethod != null) {
@@ -916,4 +953,54 @@ public class FastHierarchy {
     Set<SootClass> ret = classToSubclasses.get(c);
     return (ret == null) ? Collections.emptySet() : ret;
   }
+
+  /**
+   * Returns a list of types which can be used to store the given type
+   * 
+   * @param nt
+   *          the given type
+   * @return the list of types which can be used to store the given type
+   */
+  public Iterable<Type> canStoreTypeList(final Type nt) {
+    return new Iterable<Type>() {
+
+      @Override
+      public Iterator<Type> iterator() {
+        Iterator<Type> it = Scene.v().getTypeNumberer().iterator();
+        return new Iterator<Type>() {
+
+          Type crt = null;
+
+          @Override
+          public boolean hasNext() {
+            if (crt != null) {
+              return true;
+            }
+            Type c = null;
+            while (it.hasNext()) {
+              c = it.next();
+              if (TypeManager.isUnresolved(c)) {
+                continue;
+              }
+              if (canStoreType(nt, c)) {
+                crt = c;
+                return true;
+              }
+            }
+            return false;
+          }
+
+          @Override
+          public Type next() {
+            Type old = crt;
+            crt = null;
+            hasNext();
+            return old;
+          }
+
+        };
+      }
+    };
+  }
+
 }
