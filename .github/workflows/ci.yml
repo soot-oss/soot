@@ -148,7 +148,7 @@ jobs:
           cp ./doc/soot_options.css ${docdir}/options
 
       - name: Deploy JavaDoc to GH pages
-          uses: JamesIves/github-pages-deploy-action@4.1.5
-          with:
-            branch: gh-pages # The branch the action should deploy to.
-            folder: build/docs/ # The folder the action should deploy.
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: build/docs/ # The folder the action should deploy.
