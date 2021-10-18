@@ -4,7 +4,7 @@
 	<edge type="THREAD">
 		<source invoketype="instance" subsignature="void start()" />
 		<targets>
-			<direct subsignature="void run()" target="base"/>
+			<direct subsignature="void run()" target-position="base"/>
 		</targets>
 	</edge>
 	
@@ -58,43 +58,43 @@
 	<edge type="HANDLER">
 		<source invoketype="instance" subsignature="boolean sendEmptyMessage(int)" />
 		<targets>
-			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+			<direct subsignature="void handleMessage(android.os.Message)" target-position="base"/>
 		</targets>
 	</edge>
 	<edge type="HANDLER">
 		<source invoketype="instance" subsignature="boolean sendEmptyMessageAtTime(int,long)" />
 		<targets>
-			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+			<direct subsignature="void handleMessage(android.os.Message)" target-position="base"/>
 		</targets>
 	</edge>
 	<edge type="HANDLER">
 		<source invoketype="instance" subsignature="boolean sendEmptyMessageDelayed(int,long)" />
 		<targets>
-			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+			<direct subsignature="void handleMessage(android.os.Message)" target-position="base"/>
 		</targets>
 	</edge>
 	<edge type="HANDLER">
 		<source invoketype="instance" subsignature="boolean postAtTime(java.lang.Runnable,long)" />
 		<targets>
-			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+			<direct subsignature="void handleMessage(android.os.Message)" target-position="base"/>
 		</targets>
 	</edge>
 	<edge type="HANDLER">
 		<source invoketype="instance" subsignature="boolean sendMessageAtFrontOfQueue(android.os.Message)" />
 		<targets>
-			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+			<direct subsignature="void handleMessage(android.os.Message)" target-position="base"/>
 		</targets>
 	</edge>
 	<edge type="HANDLER">
 		<source invoketype="instance" subsignature="boolean sendMessageAtTime(android.os.Message,long)" />
 		<targets>
-			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+			<direct subsignature="void handleMessage(android.os.Message)" target-position="base"/>
 		</targets>
 	</edge>
 	<edge type="HANDLER">
 		<source invoketype="instance" subsignature="boolean sendMessageDelayed(android.os.Message,long)" />
 		<targets>
-			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+			<direct subsignature="void handleMessage(android.os.Message)" target-position="base"/>
 		</targets>
 	</edge>
 	<edge>
@@ -115,15 +115,15 @@
     <edge type="ASYNCTASK">
         <source invoketype="instance" subsignature="android.os.AsyncTask execute(java.lang.Object[])" />
         <targets>
-            <direct subsignature="java.lang.Object doInBackground(java.lang.Object[])" target="base"/>
+            <direct subsignature="java.lang.Object doInBackground(java.lang.Object[])" target-position="base"/>
         </targets>
     </edge>
     <edge>
         <source invoketype="instance" subsignature="android.os.AsyncTask execute(java.lang.Object[])" />
         <targets>
-            <direct subsignature="void onPreExecute()" target="base"/>
-            <direct subsignature="void onProgressUpdate(java.lang.Object[])" target="base"/>
-            <direct subsignature="void onPostExecute(java.lang.Object)" target="base"/>
+            <direct subsignature="void onPreExecute()" target-position="base"/>
+            <direct subsignature="void onProgressUpdate(java.lang.Object[])" target-position="base"/>
+            <direct subsignature="void onPostExecute(java.lang.Object)" target-position="base"/>
         </targets>
     </edge>
 	<!-- doPrivileged -->

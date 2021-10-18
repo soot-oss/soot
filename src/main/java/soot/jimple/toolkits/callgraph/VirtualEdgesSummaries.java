@@ -22,6 +22,8 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
+import com.google.common.collect.Iterables;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -32,9 +34,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -60,11 +64,12 @@ import soot.util.StringNumberer;
  * @author Julius Naeumann
  */
 public class VirtualEdgesSummaries {
+  public static final int BASE_INDEX = -1;
 
   private static final String SUMMARIESFILE = "virtualedges.xml";
 
-  protected final HashMap<MethodSubSignature, VirtualEdge> instanceinvokeEdges = new HashMap<>();
-  protected final HashMap<String, VirtualEdge> staticinvokeEdges = new HashMap<>();
+  protected final HashMap<MethodSubSignature, VirtualEdge> instanceinvokeEdges = new LinkedHashMap<>();
+  protected final HashMap<String, VirtualEdge> staticinvokeEdges = new LinkedHashMap<>();
 
   private static final Logger logger = LoggerFactory.getLogger(VirtualEdgesSummaries.class);
 
@@ -130,6 +135,90 @@ public class VirtualEdgesSummaries {
     }
     logger.debug("Found {} instanceinvoke, {} staticinvoke edge descriptions", instanceinvokeEdges.size(),
         staticinvokeEdges.size());
+
+  }
+
+  public Document toXMLDocument() throws ParserConfigurationException {
+
+    DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+
+    DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+
+    Document document = documentBuilder.newDocument();
+
+    Element root = document.createElement("virtualedges");
+    document.appendChild(root);
+
+    for (VirtualEdge edge : Iterables.concat(instanceinvokeEdges.values(), staticinvokeEdges.values())) {
+      Node e = edgeToXML(document, edge);
+      root.appendChild(e);
+    }
+
+    return document;
+
+  }
+
+  private static Element edgeToXML(Document doc, VirtualEdge edge) {
+    Element node = doc.createElement("edge");
+    node.setAttribute("type", edge.edgeType.name());
+    Element source = doc.createElement("source");
+    node.appendChild(source);
+
+    if (edge.source instanceof StaticinvokeSource) {
+      StaticinvokeSource inv = (StaticinvokeSource) edge.source;
+      source.setAttribute("invoketype", "static");
+      source.setAttribute("signature", inv.signature);
+
+    } else if (edge.source instanceof InstanceinvokeSource) {
+      InstanceinvokeSource inv = (InstanceinvokeSource) edge.source;
+      source.setAttribute("invoketype", "instance");
+      source.setAttribute("subsignature", inv.subSignature.toString());
+
+    } else {
+      if (edge.source == null) {
+        throw new IllegalArgumentException("Unsupported null source type");
+      } else {
+        throw new IllegalArgumentException("Unsupported source type " + edge.source.getClass());
+      }
+    }
+
+    Element targets = doc.createElement("targets");
+    node.appendChild(targets);
+    for (VirtualEdgeTarget e : edge.targets) {
+      Element target = edgeTargetToXML(doc, e);
+      targets.appendChild(target);
+    }
+    return node;
+  }
+
+  private static Element edgeTargetToXML(Document doc, VirtualEdgeTarget e) {
+    Element target;
+    if (e instanceof DirectTarget) {
+      target = doc.createElement("direct");
+    } else if (e instanceof IndirectTarget) {
+      target = doc.createElement("indirect");
+
+      IndirectTarget id = (IndirectTarget) e;
+      for (VirtualEdgeTarget i : id.targets) {
+        target.appendChild(edgeTargetToXML(doc, i));
+      }
+
+    } else {
+      if (e == null) {
+        throw new IllegalArgumentException("Unsupported null edge type");
+      } else {
+        throw new IllegalArgumentException("Unsupported source type " + e.getClass());
+      }
+    }
+
+    target.setAttribute("subsignature", e.targetMethod.toString());
+    if (e.isBase()) {
+      target.setAttribute("target-position", "base");
+    } else {
+      target.setAttribute("index", String.valueOf(e.argIndex));
+      target.setAttribute("target-position", "argument");
+    }
+    return target;
   }
 
   public VirtualEdge getVirtualEdgesMatchingSubSig(MethodSubSignature subsig) {
@@ -163,11 +252,19 @@ public class VirtualEdgesSummaries {
           case "direct": {
             MethodSubSignature subsignature
                 = new MethodSubSignature(nmbr.findOrAdd(targetElement.getAttribute("subsignature")));
-            if ("argument".equals(targetElement.getAttribute("target-position"))) {
-              int argIdx = Integer.valueOf(targetElement.getAttribute("index"));
-              targets.add(new DirectTarget(subsignature, argIdx));
-            } else {
-              targets.add(new DirectTarget(subsignature));
+
+            String tpos = targetElement.getAttribute("target-position");
+            switch (tpos) {
+              case "argument":
+                int argIdx = Integer.valueOf(targetElement.getAttribute("index"));
+                targets.add(new DirectTarget(subsignature, argIdx));
+                break;
+              case "base":
+                targets.add(new DirectTarget(subsignature));
+                break;
+              default:
+                throw new IllegalArgumentException("Unsupported target position " + tpos);
+
             }
             break;
           }
@@ -176,12 +273,20 @@ public class VirtualEdgesSummaries {
             IndirectTarget target;
             MethodSubSignature subsignature
                 = new MethodSubSignature(nmbr.findOrAdd(targetElement.getAttribute("subsignature")));
-            if ("argument".equals(targetElement.getAttribute("target-position"))) {
-              int argIdx = Integer.valueOf(targetElement.getAttribute("index"));
-              target = new IndirectTarget(subsignature, argIdx);
-            } else {
-              target = new IndirectTarget(subsignature);
+            String tpos = targetElement.getAttribute("target-position");
+            switch (tpos) {
+              case "argument":
+                int argIdx = Integer.valueOf(targetElement.getAttribute("index"));
+                target = new IndirectTarget(subsignature, argIdx);
+                break;
+              case "base":
+                target = new IndirectTarget(subsignature);
+                break;
+              default:
+                throw new IllegalArgumentException("Unsupported target position " + tpos);
+
             }
+            targets.add(target);
 
             // Parse child targets, since we have a chain of target methods to track back to the point where the actual
             // callback
@@ -327,7 +432,7 @@ public class VirtualEdgesSummaries {
     }
 
     public VirtualEdgeTarget(MethodSubSignature targetMethod) {
-      this.argIndex = -1;
+      this.argIndex = BASE_INDEX;
       this.targetMethod = targetMethod;
     }
 
@@ -342,7 +447,7 @@ public class VirtualEdgesSummaries {
     }
 
     public boolean isBase() {
-      return argIndex == -1;
+      return argIndex == BASE_INDEX;
     }
 
     public int getArgIndex() {
