@@ -169,7 +169,7 @@
                     <dependency>
                         <groupId>net.sf.saxon</groupId>
                         <artifactId>Saxon-HE</artifactId>
-                        <version>10.6</version>
+                        <version>9.8.0-8</version>
                     </dependency>
                 </dependencies>
             </plugin>
