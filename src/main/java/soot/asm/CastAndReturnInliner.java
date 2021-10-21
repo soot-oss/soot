@@ -25,8 +25,10 @@ package soot.asm;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
+import soot.Local;
 import soot.Trap;
 import soot.Unit;
 import soot.UnitBox;
@@ -34,6 +36,7 @@ import soot.UnitPatchingChain;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.GotoStmt;
+import soot.jimple.Jimple;
 import soot.jimple.ReturnStmt;
 
 /**
@@ -62,6 +65,7 @@ public class CastAndReturnInliner extends BodyTransformer {
           AssignStmt assign = (AssignStmt) gtStmt.getTarget();
           if (assign.getRightOp() instanceof CastExpr) {
             CastExpr ce = (CastExpr) assign.getRightOp();
+
             // We have goto that ends up at a cast statement
             Unit nextStmt = units.getSuccOf(assign);
             if (nextStmt instanceof ReturnStmt) {
@@ -69,7 +73,7 @@ public class CastAndReturnInliner extends BodyTransformer {
               if (retStmt.getOp() == assign.getLeftOp()) {
                 // We need to replace the GOTO with the return
                 ReturnStmt newStmt = (ReturnStmt) retStmt.clone();
-                newStmt.setOp(ce.getOp());
+                Local a = (Local) ce.getOp();
 
                 for (Trap t : body.getTraps()) {
                   for (UnitBox ubox : t.getUnitBoxes()) {
@@ -78,12 +82,18 @@ public class CastAndReturnInliner extends BodyTransformer {
                     }
                   }
                 }
+                Jimple j = Jimple.v();
+                Local n = j.newLocal(a.getName() + "_ret", ce.getCastType());
+                body.getLocals().add(n);
+                newStmt.setOp(n);
 
                 final List<UnitBox> boxesRefGtStmt = gtStmt.getBoxesPointingToThis();
                 while (!boxesRefGtStmt.isEmpty()) {
                   boxesRefGtStmt.get(0).setUnit(newStmt);
                 }
                 units.swapWith(gtStmt, newStmt);
+                ce = (CastExpr) ce.clone();
+                units.insertBefore(j.newAssignStmt(n, ce), newStmt);
               }
             }
           }
