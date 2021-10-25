@@ -116,12 +116,7 @@ public class VirtualEdgesSummaries {
             MethodSubSignature subsig = inst.subSignature;
 
             // don't overwrite existing definition
-            VirtualEdge existing = instanceinvokeEdges.get(subsig);
-            if (existing != null) {
-              existing.targets.addAll(edg.targets);
-            } else {
-              instanceinvokeEdges.put(subsig, edg);
-            }
+            addInstanceInvoke(edg, subsig);
           }
           if (edg.source instanceof StaticinvokeSource) {
             StaticinvokeSource stat = (StaticinvokeSource) edg.source;
@@ -138,8 +133,28 @@ public class VirtualEdgesSummaries {
 
   }
 
-  public Document toXMLDocument() throws ParserConfigurationException {
+  protected void addInstanceInvoke(VirtualEdge edg, MethodSubSignature subsig) {
+    VirtualEdge existing = instanceinvokeEdges.get(subsig);
+    if (existing != null) {
+      existing.targets.addAll(edg.targets);
+    } else {
+      instanceinvokeEdges.put(subsig, edg);
+    }
+  }
 
+  public VirtualEdgesSummaries(Collection<VirtualEdge> edges) {
+    for (VirtualEdge vi : edges) {
+      if (vi.source instanceof InstanceinvokeSource) {
+        InstanceinvokeSource inst = (InstanceinvokeSource) vi.source;
+        addInstanceInvoke(vi, inst.subSignature);
+      } else if (vi.source instanceof StaticinvokeSource) {
+        StaticinvokeSource stat = (StaticinvokeSource) vi.source;
+        staticinvokeEdges.put(stat.signature, vi);
+      }
+    }
+  }
+
+  public Document toXMLDocument() throws ParserConfigurationException {
     DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
 
     DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
