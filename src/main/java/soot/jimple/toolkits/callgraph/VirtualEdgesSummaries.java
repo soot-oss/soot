@@ -1,29 +1,5 @@
 package soot.jimple.toolkits.callgraph;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 2003 Ondrej Lhotak
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
-import com.google.common.collect.Iterables;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -49,6 +25,30 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+import com.google.common.collect.Iterables;
 
 import soot.Kind;
 import soot.MethodSubSignature;
@@ -108,7 +108,7 @@ public class VirtualEdgesSummaries {
               break;
           }
           edg.source = parseEdgeSource((Element) (edge.getElementsByTagName("source").item(0)));
-          edg.targets = new ArrayList<VirtualEdgesSummaries.VirtualEdgeTarget>();
+          edg.targets = new HashSet<VirtualEdgesSummaries.VirtualEdgeTarget>();
           Element targetsElement = (Element) edge.getElementsByTagName("targets").item(0);
           edg.targets.addAll(parseEdgeTargets(targetsElement));
           if (edg.source instanceof InstanceinvokeSource) {
@@ -545,31 +545,17 @@ public class VirtualEdgesSummaries {
 
     @Override
     public int hashCode() {
-      final int prime = 31;
-      int result = super.hashCode();
-      result = prime * result + ((targetMethod == null) ? 0 : targetMethod.hashCode());
-      return result;
+      return super.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj) {
+      if (this == obj)
         return true;
-      }
-      if (!super.equals(obj)) {
+      if (!super.equals(obj))
         return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if (getClass() != obj.getClass())
         return false;
-      }
-      DirectTarget other = (DirectTarget) obj;
-      if (targetMethod == null) {
-        if (other.targetMethod != null) {
-          return false;
-        }
-      } else if (!targetMethod.equals(other.targetMethod)) {
-        return false;
-      }
       return true;
     }
   }
@@ -677,7 +663,7 @@ public class VirtualEdgesSummaries {
      */
     Kind edgeType;
     VirtualEdgeSource source;
-    List<VirtualEdgeTarget> targets;
+    Set<VirtualEdgeTarget> targets;
 
     VirtualEdge() {
       // internal use only
@@ -687,10 +673,10 @@ public class VirtualEdgesSummaries {
       this(edgeType, source, new ArrayList<>(Collections.singletonList(target)));
     }
 
-    public VirtualEdge(Kind edgeType, VirtualEdgeSource source, List<VirtualEdgeTarget> targets) {
+    public VirtualEdge(Kind edgeType, VirtualEdgeSource source, Collection<VirtualEdgeTarget> targets) {
       this.edgeType = edgeType;
       this.source = source;
-      this.targets = targets;
+      this.targets = new HashSet<>(targets);
     }
 
     public Kind getEdgeType() {
@@ -701,7 +687,7 @@ public class VirtualEdgesSummaries {
       return source;
     }
 
-    public List<VirtualEdgeTarget> getTargets() {
+    public Set<VirtualEdgeTarget> getTargets() {
       return targets;
     }
 
@@ -711,7 +697,7 @@ public class VirtualEdgesSummaries {
      * @param newTargets
      *          The targets to add
      */
-    public void addTargets(List<VirtualEdgeTarget> newTargets) {
+    public void addTargets(Collection<VirtualEdgeTarget> newTargets) {
       this.targets.addAll(newTargets);
     }
 
