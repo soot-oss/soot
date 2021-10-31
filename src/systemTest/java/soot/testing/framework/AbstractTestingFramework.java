@@ -181,7 +181,7 @@ public abstract class AbstractTestingFramework {
    */
   protected List<String> getExcludes() {
     List<String> excludeList = new ArrayList<>();
-    excludeList.add("java.*");
+    //excludeList.add("java.*");
     excludeList.add("sun.*");
     excludeList.add("android.*");
     excludeList.add("org.apache.*");
