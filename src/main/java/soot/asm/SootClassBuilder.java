@@ -80,7 +80,7 @@ public class SootClassBuilder extends ClassVisitor {
    *          Soot class to build.
    */
   protected SootClassBuilder(SootClass klass) {
-    super(Opcodes.ASM8);
+    super(Opcodes.ASM9);
     this.klass = klass;
     this.deps = new HashSet<>();
   }
