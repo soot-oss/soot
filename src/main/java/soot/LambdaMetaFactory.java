@@ -51,7 +51,7 @@ import soot.tagkit.ArtificialEntityTag;
 import soot.util.Chain;
 import soot.util.HashChain;
 
-public final class LambdaMetaFactory {
+public class LambdaMetaFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(LambdaMetaFactory.class);
 
   private final Wrapper wrapper;
