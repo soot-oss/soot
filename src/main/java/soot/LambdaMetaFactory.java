@@ -24,6 +24,7 @@ package soot;
  */
 
 import com.google.common.base.Optional;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,8 +33,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import soot.asm.AsmUtil;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.ClassConstant;
@@ -162,8 +165,8 @@ public final class LambdaMetaFactory {
       String dummyName = "<init>".equals(implMethodName) ? "init" : implMethodName;
       // XXX: $ causes confusion in inner class inference; remove for now
       dummyName = dummyName.replace('$', '_');
-      String prefix =
-          (enclosingClassname == null || enclosingClassname.isEmpty()) ? "soot.dummy." : enclosingClassname + "$";
+      String prefix
+          = (enclosingClassname == null || enclosingClassname.isEmpty()) ? "soot.dummy." : enclosingClassname + "$";
       className = prefix + dummyName + "__" + uniqSupply();
     } else {
       className = "soot.dummy.lambda" + uniqSupply();
@@ -234,6 +237,17 @@ public final class LambdaMetaFactory {
       m.retrieveActiveBody();
     }
 
+    invalidateClassHierarchy(tclass);
+
+    return tboot.makeRef();
+  }
+
+  /**
+   * Invalidates the class hierarchy due to some newly added class.
+   * 
+   * @param tclass
+   */
+  protected void invalidateClassHierarchy(SootClass tclass) {
     // The hierarchy has to be rebuilt after adding the MetaFactory implementation.
     // soot.FastHierarchy.canStoreClass will otherwise fail due to not having an interval set for
     // the class. This eventually
@@ -241,8 +255,6 @@ public final class LambdaMetaFactory {
     // actually implements.
     // This, in turn, leads to missing edges in the call graph.
     Scene.v().releaseFastHierarchy();
-
-    return tboot.makeRef();
   }
 
   /**
@@ -265,8 +277,8 @@ public final class LambdaMetaFactory {
   private void addDispatch(String name, SootClass tclass, MethodType implMethodType, MethodType instantiatedMethodType,
       List<SootField> capFields, MethodHandle implMethod) {
     ThunkMethodSource ms = new ThunkMethodSource(capFields, implMethodType, implMethod, instantiatedMethodType);
-    SootMethod m =
-        Scene.v().makeSootMethod(name, implMethodType.getParameterTypes(), implMethodType.getReturnType(), Modifier.PUBLIC);
+    SootMethod m = Scene.v().makeSootMethod(name, implMethodType.getParameterTypes(), implMethodType.getReturnType(),
+        Modifier.PUBLIC);
     tclass.addMethod(m);
     m.setSource(ms);
   }
@@ -550,7 +562,7 @@ public final class LambdaMetaFactory {
         // In the example, the map values are of type Object because of generic erasure, but we're
         // still dealing with
         // booleans semantically.
-        // Actually, the wrapper type could be also be other types if wirdcards (?) are used in generic code. 
+        // Actually, the wrapper type could be also be other types if wirdcards (?) are used in generic code.
         if (wrapper.wrapperTypes.get(from) == null) {
           // Insert the cast
           RefType boxedType = wrapper.primitiveTypes.get((PrimType) to);
