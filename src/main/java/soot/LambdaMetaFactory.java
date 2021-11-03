@@ -226,11 +226,6 @@ public class LambdaMetaFactory {
       addDispatch(name, tclass, bridgeType, instantiatedMethodType, capFields, implMethod);
     }
 
-    Scene.v().addClass(tclass);
-    if (enclosingClass.isApplicationClass()) {
-      tclass.setApplicationClass();
-    }
-
     for (SootMethod m : tclass.getMethods()) {
       // There is no reason not to load the bodies directly. After all,
       // we are introducing new classes while loading bodies.
@@ -238,6 +233,9 @@ public class LambdaMetaFactory {
     }
 
     invalidateClassHierarchy(tclass);
+    if (enclosingClass.isApplicationClass()) {
+      tclass.setApplicationClass();
+    }
 
     return tboot.makeRef();
   }
@@ -248,6 +246,8 @@ public class LambdaMetaFactory {
    * @param tclass
    */
   protected void invalidateClassHierarchy(SootClass tclass) {
+    Scene.v().addClass(tclass);
+
     // The hierarchy has to be rebuilt after adding the MetaFactory implementation.
     // soot.FastHierarchy.canStoreClass will otherwise fail due to not having an interval set for
     // the class. This eventually
