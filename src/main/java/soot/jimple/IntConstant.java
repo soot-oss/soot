@@ -32,11 +32,26 @@ public class IntConstant extends ArithmeticConstant {
 
   public final int value;
 
+  private static final int MAX_CACHE = 128;
+  private static final int MIN_CACHE = -127;
+  private static final int ABS_MIN_CACHE = Math.abs(MIN_CACHE);
+  private static final IntConstant[] CACHED = new IntConstant[MAX_CACHE + ABS_MIN_CACHE];
+
   protected IntConstant(int value) {
     this.value = value;
   }
 
   public static IntConstant v(int value) {
+    if (value > MIN_CACHE && value < MAX_CACHE) {
+      int idx = value + ABS_MIN_CACHE;
+      IntConstant c = CACHED[idx];
+      if (c != null) {
+        return c;
+      }
+      c = new IntConstant(value);
+      CACHED[idx] = c;
+      return c;
+    }
     return new IntConstant(value);
   }
 
