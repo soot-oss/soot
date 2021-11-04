@@ -43,10 +43,10 @@ public class DoubleConstant extends RealConstant {
   }
 
   public static DoubleConstant v(double value) {
-    if (value == 0) {
+    if (Double.compare(value, 0D) == 0) {
       return ZERO;
     }
-    if (value == 1) {
+    if (Double.compare(value, 1D) == 0) {
       return ONE;
     }
     return new DoubleConstant(value);
