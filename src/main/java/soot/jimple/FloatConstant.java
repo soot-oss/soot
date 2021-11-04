@@ -43,10 +43,10 @@ public class FloatConstant extends RealConstant {
   }
 
   public static FloatConstant v(float value) {
-    if (value == 0) {
+    if (Float.compare(value, 0F) == 0) {
       return ZERO;
     }
-    if (value == 1) {
+    if (Float.compare(value, 1F) == 0) {
       return ONE;
     }
     return new FloatConstant(value);
