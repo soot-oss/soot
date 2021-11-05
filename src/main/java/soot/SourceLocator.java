@@ -625,7 +625,7 @@ public class SourceLocator {
     return null;
   }
 
-  private FoundFile lookupInDir(String dir, String fileName) {
+  protected FoundFile lookupInDir(String dir, String fileName) {
     File f = new File(dir, fileName);
     if (f.exists() && f.canRead()) {
       return new FoundFile(f);
