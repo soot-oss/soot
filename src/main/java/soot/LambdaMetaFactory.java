@@ -232,7 +232,7 @@ public class LambdaMetaFactory {
       m.retrieveActiveBody();
     }
 
-    invalidateClassHierarchy(tclass);
+    addClassAndInvalidateHierarchy(tclass);
     if (enclosingClass.isApplicationClass()) {
       tclass.setApplicationClass();
     }
@@ -245,7 +245,7 @@ public class LambdaMetaFactory {
    * 
    * @param tclass
    */
-  protected void invalidateClassHierarchy(SootClass tclass) {
+  protected void addClassAndInvalidateHierarchy(SootClass tclass) {
     Scene.v().addClass(tclass);
     // The hierarchy has to be rebuilt after adding the MetaFactory implementation.
     // soot.FastHierarchy.canStoreClass will otherwise fail due to not having an interval set for
