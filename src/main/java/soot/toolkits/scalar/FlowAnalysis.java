@@ -248,19 +248,15 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
     private <D, F> Entry<D, F> getEntryOf(Map<D, Entry<D, F>> visited, D d, Entry<D, F> v) {
       // either we reach a new node or a merge node, the latter one is rare
       // so put and restore should be better that a lookup
-      // putIfAbsent would be the ideal strategy
 
       // add and restore if required
       Entry<D, F> newEntry = new Entry<D, F>(d, v);
-      Entry<D, F> oldEntry = visited.put(d, newEntry);
+      Entry<D, F> oldEntry = visited.putIfAbsent(d, newEntry);
 
       // no restore required
       if (oldEntry == null) {
         return newEntry;
       }
-
-      // false prediction, restore the entry
-      visited.put(d, oldEntry);
 
       // adding self ref (real strongly connected with itself)
       if (oldEntry == v) {
