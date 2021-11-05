@@ -226,11 +226,6 @@ public class LambdaMetaFactory {
       addDispatch(name, tclass, bridgeType, instantiatedMethodType, capFields, implMethod);
     }
 
-    Scene.v().addClass(tclass);
-    if (enclosingClass.isApplicationClass()) {
-      tclass.setApplicationClass();
-    }
-
     for (SootMethod m : tclass.getMethods()) {
       // There is no reason not to load the bodies directly. After all,
       // we are introducing new classes while loading bodies.
@@ -238,6 +233,9 @@ public class LambdaMetaFactory {
     }
 
     invalidateClassHierarchy(tclass);
+    if (enclosingClass.isApplicationClass()) {
+      tclass.setApplicationClass();
+    }
 
     return tboot.makeRef();
   }
@@ -248,6 +246,7 @@ public class LambdaMetaFactory {
    * @param tclass
    */
   protected void invalidateClassHierarchy(SootClass tclass) {
+    Scene.v().addClass(tclass);
     // The hierarchy has to be rebuilt after adding the MetaFactory implementation.
     // soot.FastHierarchy.canStoreClass will otherwise fail due to not having an interval set for
     // the class. This eventually
@@ -728,7 +727,8 @@ public class LambdaMetaFactory {
           final SootClass calledClass = methodRef.getDeclaringClass();
           // It can be the case that the method is not in the same class (or a super class).
           // As such, we need a virtual call in these cases.
-          if (Scene.v().getOrMakeFastHierarchy().canStoreClass(currentClass, calledClass)) {
+          if (currentClass == calledClass
+              || Scene.v().getOrMakeFastHierarchy().canStoreClass(currentClass.getSuperclass(), calledClass)) {
             return Jimple.v().newSpecialInvokeExpr(args.get(0), methodRef, rest(args));
           } else {
             SootMethod m = implMethod.getMethodRef().resolve();
