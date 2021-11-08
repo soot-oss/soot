@@ -32,6 +32,7 @@ import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
 import soot.Local;
+import soot.Scene;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.AssignStmt;
@@ -90,7 +91,7 @@ public class DexReturnValuePropagator extends BodyTransformer {
               }
               if (localUses.getUsesOf(assign).size() == 1) {
                 if (localCreation == null) {
-                  localCreation = new LocalCreation(body.getLocals(), "ret");
+                  localCreation = Scene.v().createLocalCreation(body.getLocals(), "ret");
                 }
                 Local newLocal = localCreation.newLocal(leftOp.getType());
                 assign.setLeftOp(newLocal);

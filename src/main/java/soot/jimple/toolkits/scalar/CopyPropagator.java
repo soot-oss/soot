@@ -101,6 +101,7 @@ public class CopyPropagator extends BodyTransformer {
    */
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> opts) {
+
     if (Options.v().verbose()) {
       logger.debug("[" + b.getMethod().getName() + "] Propagating copies...");
     }
@@ -149,10 +150,10 @@ public class CopyPropagator extends BodyTransformer {
             // We force propagating nulls. If a target can only be
             // null due to typing, we always inline that constant.
             if (!(l.getType() instanceof NullType)) {
-              if (options.only_regular_locals() && l.getName().startsWith("$")) {
+              if (options.only_regular_locals() && l.isStackLocal()) {
                 continue;
               }
-              if (options.only_stack_locals() && !l.getName().startsWith("$")) {
+              if (options.only_stack_locals() && !l.isStackLocal()) {
                 continue;
               }
             }

@@ -128,8 +128,7 @@ public class Aggregator extends BodyTransformer {
       }
       final Local lhsLocal = (Local) lhs;
       if (onlyStackVars) {
-        String lhsLocalName = lhsLocal.getName();
-        if (lhsLocalName.isEmpty() || lhsLocalName.charAt(0) != '$') {
+        if (!lhsLocal.isStackLocal()) {
           continue;
         }
       }

@@ -24,6 +24,7 @@ package soot.baf.internal;
 
 import java.util.Collections;
 import java.util.List;
+
 import soot.Local;
 import soot.Type;
 import soot.UnitPrinter;
@@ -119,5 +120,10 @@ public class BafLocal implements Local {
   @Override
   public final void setNumber(int number) {
     this.number = number;
+  }
+
+  @Override
+  public boolean isStackLocal() {
+    return true;
   }
 }

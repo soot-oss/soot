@@ -148,16 +148,19 @@ public class LocalPacker extends BodyTransformer {
           //
           // If we have a split local, let's find a better name for it
           String name = newLocal.getName();
-          int signIndex = name.indexOf('#');
-          if (signIndex >= 0) {
-            String newName = name.substring(0, signIndex);
-            if (usedLocalNames.add(newName)) {
-              newLocal.setName(newName);
+          if (name != null) {
+            int signIndex = name.indexOf('#');
+            if (signIndex >= 0) {
+              String newName = name.substring(0, signIndex);
+              if (usedLocalNames.add(newName)) {
+                newLocal.setName(newName);
+              } else {
+                // just leave it alone for now
+              }
             } else {
-              // just leave it alone for now
+              usedLocalNames.add(name);
+
             }
-          } else {
-            usedLocalNames.add(name);
           }
 
           groupIntToLocal.put(pair, newLocal);

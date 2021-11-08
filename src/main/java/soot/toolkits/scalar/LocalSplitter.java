@@ -168,7 +168,10 @@ public class LocalSplitter extends BodyTransformer {
         }
 
         Local newLocal = (Local) oldLocal.clone();
-        newLocal.setName(newLocal.getName() + '#' + (++w)); // renaming should not be done here
+        String name = newLocal.getName();
+        if (name != null) {
+          newLocal.setName(name + '#' + (++w)); // renaming should not be done here
+        }
         body.getLocals().add(newLocal);
 
         Deque<Unit> queue = new ArrayDeque<Unit>();
