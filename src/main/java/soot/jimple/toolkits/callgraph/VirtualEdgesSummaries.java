@@ -24,6 +24,8 @@ package soot.jimple.toolkits.callgraph;
 
 import com.google.common.collect.Iterables;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -73,64 +75,92 @@ public class VirtualEdgesSummaries {
 
   private static final Logger logger = LoggerFactory.getLogger(VirtualEdgesSummaries.class);
 
+  /**
+   * Creates a default instance of the {@link VirtualEdgesSummaries} and loads the summaries from the
+   * <code>virtualedges.xml</code> that comes with Soot.
+   */
   public VirtualEdgesSummaries() {
     Path summariesFile = Paths.get(SUMMARIESFILE);
     try (InputStream in = Files.exists(summariesFile) ? Files.newInputStream(summariesFile)
         : ModuleUtil.class.getResourceAsStream("/" + SUMMARIESFILE)) {
-
-      Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
-      doc.getDocumentElement().normalize();
-
-      NodeList edges = doc.getElementsByTagName("edge");
-      for (int i = 0, e = edges.getLength(); i < e; i++) {
-        if (edges.item(i).getNodeType() == Node.ELEMENT_NODE) {
-          Element edge = (Element) edges.item(i);
-          VirtualEdge edg = new VirtualEdge();
-          switch (edge.getAttribute("type")) {
-            case "THREAD":
-              edg.edgeType = Kind.THREAD;
-              break;
-            case "EXECUTOR":
-              edg.edgeType = Kind.EXECUTOR;
-              break;
-            case "HANDLER":
-              edg.edgeType = Kind.HANDLER;
-              break;
-            case "ASYNCTASK":
-              edg.edgeType = Kind.ASYNCTASK;
-              break;
-            case "PRIVILEGED":
-              edg.edgeType = Kind.PRIVILEGED;
-              break;
-            case "GENERIC_FAKE":
-            default:
-              edg.edgeType = Kind.GENERIC_FAKE;
-              break;
-          }
-          edg.source = parseEdgeSource((Element) (edge.getElementsByTagName("source").item(0)));
-          edg.targets = new ArrayList<VirtualEdgesSummaries.VirtualEdgeTarget>();
-          Element targetsElement = (Element) edge.getElementsByTagName("targets").item(0);
-          edg.targets.addAll(parseEdgeTargets(targetsElement));
-          if (edg.source instanceof InstanceinvokeSource) {
-            InstanceinvokeSource inst = (InstanceinvokeSource) edg.source;
-            MethodSubSignature subsig = inst.subSignature;
-
-            // don't overwrite existing definition
-            addInstanceInvoke(edg, subsig);
-          }
-          if (edg.source instanceof StaticinvokeSource) {
-            StaticinvokeSource stat = (StaticinvokeSource) edg.source;
-            staticinvokeEdges.put(stat.signature, edg);
-          }
-        }
-      }
-
+      loadSummaries(in);
     } catch (IOException | ParserConfigurationException | SAXException e1) {
       logger.error("An error occurred while reading in virtual edge summaries", e1);
     }
+  }
+
+  /**
+   * Creates a new instance of the {@link VirtualEdgesSummaries} class and loads the summaries from the given input file
+   * 
+   * @param summariesFile
+   *          The file from which to load the virtual edge summaries
+   */
+  public VirtualEdgesSummaries(File summariesFile) {
+    try (InputStream in = new FileInputStream(summariesFile)) {
+      loadSummaries(in);
+    } catch (IOException | ParserConfigurationException | SAXException e1) {
+      logger.error("An error occurred while reading in virtual edge summaries", e1);
+    }
+  }
+
+  /**
+   * Loads the edge summaries from the given stream
+   * 
+   * @param in
+   *          The {@link InputStream} from which to load the summaries
+   * @throws SAXException
+   * @throws IOException
+   * @throws ParserConfigurationException
+   */
+  protected void loadSummaries(InputStream in) throws SAXException, IOException, ParserConfigurationException {
+    Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
+    doc.getDocumentElement().normalize();
+
+    NodeList edges = doc.getElementsByTagName("edge");
+    for (int i = 0, e = edges.getLength(); i < e; i++) {
+      if (edges.item(i).getNodeType() == Node.ELEMENT_NODE) {
+        Element edge = (Element) edges.item(i);
+        VirtualEdge edg = new VirtualEdge();
+        switch (edge.getAttribute("type")) {
+          case "THREAD":
+            edg.edgeType = Kind.THREAD;
+            break;
+          case "EXECUTOR":
+            edg.edgeType = Kind.EXECUTOR;
+            break;
+          case "HANDLER":
+            edg.edgeType = Kind.HANDLER;
+            break;
+          case "ASYNCTASK":
+            edg.edgeType = Kind.ASYNCTASK;
+            break;
+          case "PRIVILEGED":
+            edg.edgeType = Kind.PRIVILEGED;
+            break;
+          case "GENERIC_FAKE":
+          default:
+            edg.edgeType = Kind.GENERIC_FAKE;
+            break;
+        }
+        edg.source = parseEdgeSource((Element) (edge.getElementsByTagName("source").item(0)));
+        edg.targets = new ArrayList<VirtualEdgesSummaries.VirtualEdgeTarget>();
+        Element targetsElement = (Element) edge.getElementsByTagName("targets").item(0);
+        edg.targets.addAll(parseEdgeTargets(targetsElement));
+        if (edg.source instanceof InstanceinvokeSource) {
+          InstanceinvokeSource inst = (InstanceinvokeSource) edg.source;
+          MethodSubSignature subsig = inst.subSignature;
+
+          // don't overwrite existing definition
+          addInstanceInvoke(edg, subsig);
+        }
+        if (edg.source instanceof StaticinvokeSource) {
+          StaticinvokeSource stat = (StaticinvokeSource) edg.source;
+          staticinvokeEdges.put(stat.signature, edg);
+        }
+      }
+    }
     logger.debug("Found {} instanceinvoke, {} staticinvoke edge descriptions", instanceinvokeEdges.size(),
         staticinvokeEdges.size());
-
   }
 
   protected void addInstanceInvoke(VirtualEdge edg, MethodSubSignature subsig) {
