@@ -35,11 +35,20 @@ public class DoubleConstant extends RealConstant {
 
   public final double value;
 
+  public static final DoubleConstant ZERO = new DoubleConstant(0);
+  public static final DoubleConstant ONE = new DoubleConstant(1);
+
   private DoubleConstant(double value) {
     this.value = value;
   }
 
   public static DoubleConstant v(double value) {
+    if (Double.compare(value, 0D) == 0) {
+      return ZERO;
+    }
+    if (Double.compare(value, 1D) == 0) {
+      return ONE;
+    }
     return new DoubleConstant(value);
   }
 

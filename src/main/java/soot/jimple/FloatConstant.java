@@ -33,6 +33,9 @@ public class FloatConstant extends RealConstant {
 
   private static final long serialVersionUID = 8670501761494749605L;
 
+  public static final FloatConstant ZERO = new FloatConstant(0);
+  public static final FloatConstant ONE = new FloatConstant(1);
+
   public final float value;
 
   private FloatConstant(float value) {
@@ -40,6 +43,12 @@ public class FloatConstant extends RealConstant {
   }
 
   public static FloatConstant v(float value) {
+    if (Float.compare(value, 0F) == 0) {
+      return ZERO;
+    }
+    if (Float.compare(value, 1F) == 0) {
+      return ONE;
+    }
     return new FloatConstant(value);
   }
 

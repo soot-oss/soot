@@ -143,7 +143,7 @@ public class VirtualEdgesSummaries {
             break;
         }
         edg.source = parseEdgeSource((Element) (edge.getElementsByTagName("source").item(0)));
-        edg.targets = new ArrayList<VirtualEdgesSummaries.VirtualEdgeTarget>();
+        edg.targets = new HashSet<VirtualEdgeTarget>();
         Element targetsElement = (Element) edge.getElementsByTagName("targets").item(0);
         edg.targets.addAll(parseEdgeTargets(targetsElement));
         if (edg.source instanceof InstanceinvokeSource) {
@@ -575,10 +575,7 @@ public class VirtualEdgesSummaries {
 
     @Override
     public int hashCode() {
-      final int prime = 31;
-      int result = super.hashCode();
-      result = prime * result + ((targetMethod == null) ? 0 : targetMethod.hashCode());
-      return result;
+      return super.hashCode();
     }
 
     @Override
@@ -590,14 +587,6 @@ public class VirtualEdgesSummaries {
         return false;
       }
       if (getClass() != obj.getClass()) {
-        return false;
-      }
-      DirectTarget other = (DirectTarget) obj;
-      if (targetMethod == null) {
-        if (other.targetMethod != null) {
-          return false;
-        }
-      } else if (!targetMethod.equals(other.targetMethod)) {
         return false;
       }
       return true;
@@ -707,7 +696,7 @@ public class VirtualEdgesSummaries {
      */
     Kind edgeType;
     VirtualEdgeSource source;
-    List<VirtualEdgeTarget> targets;
+    Set<VirtualEdgeTarget> targets;
 
     VirtualEdge() {
       // internal use only
@@ -717,10 +706,10 @@ public class VirtualEdgesSummaries {
       this(edgeType, source, new ArrayList<>(Collections.singletonList(target)));
     }
 
-    public VirtualEdge(Kind edgeType, VirtualEdgeSource source, List<VirtualEdgeTarget> targets) {
+    public VirtualEdge(Kind edgeType, VirtualEdgeSource source, Collection<VirtualEdgeTarget> targets) {
       this.edgeType = edgeType;
       this.source = source;
-      this.targets = targets;
+      this.targets = new HashSet<>(targets);
     }
 
     public Kind getEdgeType() {
@@ -731,7 +720,7 @@ public class VirtualEdgesSummaries {
       return source;
     }
 
-    public List<VirtualEdgeTarget> getTargets() {
+    public Set<VirtualEdgeTarget> getTargets() {
       return targets;
     }
 
@@ -741,7 +730,7 @@ public class VirtualEdgesSummaries {
      * @param newTargets
      *          The targets to add
      */
-    public void addTargets(List<VirtualEdgeTarget> newTargets) {
+    public void addTargets(Collection<VirtualEdgeTarget> newTargets) {
       this.targets.addAll(newTargets);
     }
 

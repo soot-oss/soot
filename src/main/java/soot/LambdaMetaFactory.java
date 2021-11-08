@@ -24,6 +24,7 @@ package soot;
  */
 
 import com.google.common.base.Optional;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,8 +33,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import soot.asm.AsmUtil;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.ClassConstant;
@@ -48,7 +51,7 @@ import soot.tagkit.ArtificialEntityTag;
 import soot.util.Chain;
 import soot.util.HashChain;
 
-public final class LambdaMetaFactory {
+public class LambdaMetaFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(LambdaMetaFactory.class);
 
   private final Wrapper wrapper;
@@ -162,8 +165,8 @@ public final class LambdaMetaFactory {
       String dummyName = "<init>".equals(implMethodName) ? "init" : implMethodName;
       // XXX: $ causes confusion in inner class inference; remove for now
       dummyName = dummyName.replace('$', '_');
-      String prefix =
-          (enclosingClassname == null || enclosingClassname.isEmpty()) ? "soot.dummy." : enclosingClassname + "$";
+      String prefix
+          = (enclosingClassname == null || enclosingClassname.isEmpty()) ? "soot.dummy." : enclosingClassname + "$";
       className = prefix + dummyName + "__" + uniqSupply();
     } else {
       className = "soot.dummy.lambda" + uniqSupply();
@@ -223,17 +226,27 @@ public final class LambdaMetaFactory {
       addDispatch(name, tclass, bridgeType, instantiatedMethodType, capFields, implMethod);
     }
 
-    Scene.v().addClass(tclass);
-    if (enclosingClass.isApplicationClass()) {
-      tclass.setApplicationClass();
-    }
-
     for (SootMethod m : tclass.getMethods()) {
       // There is no reason not to load the bodies directly. After all,
       // we are introducing new classes while loading bodies.
       m.retrieveActiveBody();
     }
 
+    addClassAndInvalidateHierarchy(tclass);
+    if (enclosingClass.isApplicationClass()) {
+      tclass.setApplicationClass();
+    }
+
+    return tboot.makeRef();
+  }
+
+  /**
+   * Invalidates the class hierarchy due to some newly added class.
+   * 
+   * @param tclass
+   */
+  protected void addClassAndInvalidateHierarchy(SootClass tclass) {
+    Scene.v().addClass(tclass);
     // The hierarchy has to be rebuilt after adding the MetaFactory implementation.
     // soot.FastHierarchy.canStoreClass will otherwise fail due to not having an interval set for
     // the class. This eventually
@@ -241,8 +254,6 @@ public final class LambdaMetaFactory {
     // actually implements.
     // This, in turn, leads to missing edges in the call graph.
     Scene.v().releaseFastHierarchy();
-
-    return tboot.makeRef();
   }
 
   /**
@@ -265,8 +276,8 @@ public final class LambdaMetaFactory {
   private void addDispatch(String name, SootClass tclass, MethodType implMethodType, MethodType instantiatedMethodType,
       List<SootField> capFields, MethodHandle implMethod) {
     ThunkMethodSource ms = new ThunkMethodSource(capFields, implMethodType, implMethod, instantiatedMethodType);
-    SootMethod m =
-        Scene.v().makeSootMethod(name, implMethodType.getParameterTypes(), implMethodType.getReturnType(), Modifier.PUBLIC);
+    SootMethod m = Scene.v().makeSootMethod(name, implMethodType.getParameterTypes(), implMethodType.getReturnType(),
+        Modifier.PUBLIC);
     tclass.addMethod(m);
     m.setSource(ms);
   }
@@ -550,7 +561,7 @@ public final class LambdaMetaFactory {
         // In the example, the map values are of type Object because of generic erasure, but we're
         // still dealing with
         // booleans semantically.
-        // Actually, the wrapper type could be also be other types if wirdcards (?) are used in generic code. 
+        // Actually, the wrapper type could be also be other types if wirdcards (?) are used in generic code.
         if (wrapper.wrapperTypes.get(from) == null) {
           // Insert the cast
           RefType boxedType = wrapper.primitiveTypes.get((PrimType) to);
@@ -716,7 +727,8 @@ public final class LambdaMetaFactory {
           final SootClass calledClass = methodRef.getDeclaringClass();
           // It can be the case that the method is not in the same class (or a super class).
           // As such, we need a virtual call in these cases.
-          if (Scene.v().getOrMakeFastHierarchy().canStoreClass(currentClass, calledClass)) {
+          if (currentClass == calledClass
+              || Scene.v().getOrMakeFastHierarchy().canStoreClass(currentClass.getSuperclass(), calledClass)) {
             return Jimple.v().newSpecialInvokeExpr(args.get(0), methodRef, rest(args));
           } else {
             SootMethod m = implMethod.getMethodRef().resolve();

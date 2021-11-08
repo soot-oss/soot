@@ -138,9 +138,7 @@ public class FastHierarchy {
     if (c.isInterface()) {
       throw new RuntimeException("Attempt to dfs visit interface " + c);
     }
-    if (!classToInterval.containsKey(c)) {
-      classToInterval.put(c, r);
-    }
+    classToInterval.putIfAbsent(c, r);
     return start;
   }
 

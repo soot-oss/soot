@@ -32,11 +32,20 @@ public class LongConstant extends ArithmeticConstant {
 
   public final long value;
 
+  public static final LongConstant ZERO = new LongConstant(0);
+  public static final LongConstant ONE = new LongConstant(1);
+
   private LongConstant(long value) {
     this.value = value;
   }
 
   public static LongConstant v(long value) {
+    if (value == 0) {
+      return ZERO;
+    }
+    if (value == 1) {
+      return ONE;
+    }
     return new LongConstant(value);
   }
 
