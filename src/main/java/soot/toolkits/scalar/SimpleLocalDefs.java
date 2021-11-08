@@ -152,6 +152,7 @@ public class SimpleLocalDefs implements LocalDefs {
           continue;
         }
 
+        localRange[i + 1] = j;
         this.locals.put(locals[i], i);
 
         if (currUnitList.size() >= 2) {
