@@ -251,27 +251,32 @@ public class AsmMethodSource implements MethodSource {
     Integer i = idx;
     Local l = locals.get(i);
     if (l == null) {
-      String name;
-      if (localVars != null) {
-        name = null;
-        for (LocalVariableNode lvn : localVars) {
-          // Ignore LocalVariableNode which don't cover any real units
-          if (lvn.index == idx && lvn.start != lvn.end) {
-            name = lvn.name;
-            break;
-          }
-        }
-        /* normally for try-catch blocks */
-        if (name == null) {
-          name = "l" + idx;
-        }
-      } else {
-        name = "l" + idx;
-      }
+      String name = getLocalName(idx);
       l = Jimple.v().newLocal(name, UnknownType.v());
       locals.put(i, l);
     }
     return l;
+  }
+
+  protected String getLocalName(int idx) {
+    String name;
+    if (localVars != null) {
+      name = null;
+      for (LocalVariableNode lvn : localVars) {
+        // Ignore LocalVariableNode which don't cover any real units
+        if (lvn.index == idx && lvn.start != lvn.end) {
+          name = lvn.name;
+          break;
+        }
+      }
+      /* normally for try-catch blocks */
+      if (name == null) {
+        name = "l" + idx;
+      }
+    } else {
+      name = "l" + idx;
+    }
+    return name;
   }
 
   private void push(Operand opr) {

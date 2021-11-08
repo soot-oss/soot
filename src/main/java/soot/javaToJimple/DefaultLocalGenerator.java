@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import soot.LocalGenerator;
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
@@ -35,6 +34,7 @@ import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
 import soot.Local;
+import soot.LocalGenerator;
 import soot.LongType;
 import soot.RefLikeType;
 import soot.ShortType;

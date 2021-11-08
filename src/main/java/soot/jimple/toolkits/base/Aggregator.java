@@ -128,7 +128,7 @@ public class Aggregator extends BodyTransformer {
       }
       final Local lhsLocal = (Local) lhs;
       if (onlyStackVars) {
-        if (lhsLocal.isStackLocal()) {
+        if (!lhsLocal.isStackLocal()) {
           continue;
         }
       }
