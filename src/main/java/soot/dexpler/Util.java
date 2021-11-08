@@ -41,6 +41,7 @@ import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
 import soot.Local;
+import soot.LocalGenerator;
 import soot.LongType;
 import soot.RefType;
 import soot.Scene;
@@ -48,7 +49,6 @@ import soot.ShortType;
 import soot.Type;
 import soot.Unit;
 import soot.VoidType;
-import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
@@ -239,7 +239,7 @@ public class Util {
     jBody.getLocals().clear();
     jBody.getTraps().clear();
 
-    final LocalGenerator lg = new LocalGenerator(jBody);
+    final LocalGenerator lg = Scene.v().createLocalGenerator(jBody);
 
     for (Unit u : idStmts) {
       jBody.getUnits().add(u);
@@ -285,7 +285,7 @@ public class Util {
    * class for instance) exceptionType: e.g., "java.lang.RuntimeException"
    */
   public static void addExceptionAfterUnit(Body b, String exceptionType, Unit u, String m) {
-    LocalCreation lc = new LocalCreation(b.getLocals());
+    LocalCreation lc = Scene.v().createLocalCreation(b.getLocals());
     Local l = lc.newLocal(RefType.v(exceptionType));
 
     List<Unit> newUnits = new ArrayList<Unit>();

@@ -56,6 +56,7 @@ public class CastAndReturnInliner extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
+
     final UnitPatchingChain units = body.getUnits();
     for (Iterator<Unit> it = units.snapshotIterator(); it.hasNext();) {
       Unit u = it.next();

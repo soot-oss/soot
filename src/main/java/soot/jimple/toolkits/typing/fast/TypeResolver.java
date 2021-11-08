@@ -41,14 +41,15 @@ import soot.ByteType;
 import soot.G;
 import soot.IntegerType;
 import soot.Local;
+import soot.LocalGenerator;
 import soot.PatchingChain;
 import soot.PrimType;
 import soot.RefType;
+import soot.Scene;
 import soot.ShortType;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
-import soot.javaToJimple.LocalGenerator;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
@@ -88,7 +89,7 @@ public class TypeResolver {
     this.jb = jb;
     this.assignments = new ArrayList<DefinitionStmt>();
     this.depends = new HashMap<Local, BitSet>(jb.getLocalCount());
-    this.localGenerator = new LocalGenerator(jb);
+    this.localGenerator = Scene.v().createLocalGenerator(jb);
     this.initAssignments();
   }
 

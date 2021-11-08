@@ -141,4 +141,10 @@ public class JimpleLocal implements Local, ConvertToBaf {
   public void setNumber(int number) {
     this.number = number;
   }
+
+  @Override
+  public boolean isStackLocal() {
+    String n = getName();
+    return n != null && n.charAt(0) == '$';
+  }
 }

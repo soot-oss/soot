@@ -132,7 +132,8 @@ public class LazyCodeMotion extends BodyTransformer {
 
     /* if a more precise sideeffect-tester comes out, please change it here! */
     final SideEffectTester sideEffect;
-    if (Scene.v().hasCallGraph() && !options.naive_side_effect()) {
+    final Scene sc = Scene.v();
+    if (sc.hasCallGraph() && !options.naive_side_effect()) {
       sideEffect = new PASideEffectTester();
     } else {
       sideEffect = new NaiveSideEffectTester();
@@ -164,7 +165,7 @@ public class LazyCodeMotion extends BodyTransformer {
     final DelayabilityAnalysis delay = new DelayabilityAnalysis(graph, earliest, unitToEquivRhs, set);
     final LatestComputation latest = new LatestComputation(graph, delay, unitToEquivRhs, set);
     final NotIsolatedAnalysis notIsolated = new NotIsolatedAnalysis(graph, latest, unitToEquivRhs, set);
-    final LocalCreation localCreation = new LocalCreation(b.getLocals(), PREFIX);
+    final LocalCreation localCreation = sc.createLocalCreation(b.getLocals(), PREFIX);
 
     /* debug */
     /*

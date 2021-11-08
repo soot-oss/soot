@@ -152,7 +152,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
         }
 
         if (lhs instanceof Local
-            && (!eliminateOnlyStackLocals || ((Local) lhs).getName().startsWith("$") || lhs.getType() instanceof NullType)) {
+            && (!eliminateOnlyStackLocals || ((Local) lhs).isStackLocal() || lhs.getType() instanceof NullType)) {
 
           isEssential = false;
 

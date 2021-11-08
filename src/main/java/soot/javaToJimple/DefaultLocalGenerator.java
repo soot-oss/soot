@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import soot.LocalGenerator;
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
@@ -46,7 +47,7 @@ import soot.jimple.toolkits.typing.fast.Integer1Type;
 import soot.jimple.toolkits.typing.fast.Integer32767Type;
 import soot.util.Chain;
 
-public class LocalGenerator {
+public class DefaultLocalGenerator extends LocalGenerator {
 
   protected final Chain<Local> locals;
   protected Set<String> names;
@@ -64,13 +65,12 @@ public class LocalGenerator {
   private int tempChar = -1;
   private int tempUnknownType = -1;
 
-  public LocalGenerator(Body b) {
+  public DefaultLocalGenerator(Body b) {
     this.locals = b.getLocals();
     this.names = null;
     this.expectedModCount = -1;// init with invalid mod count
   }
 
-  /** generates a new soot local given the type */
   public Local generateLocal(Type type) {
     Supplier<String> nameGen;
     if (type instanceof IntType || type instanceof Integer1Type || type instanceof Integer127Type
@@ -170,16 +170,16 @@ public class LocalGenerator {
 
   // this should be used for generated locals only
   protected Local createLocal(String name, Type sootType) {
-    assert (expectedModCount == locals.getModificationCount());//pre-condition
-    assert (!names.contains(name));//pre-condition
+    assert (expectedModCount == locals.getModificationCount());// pre-condition
+    assert (!names.contains(name));// pre-condition
 
     Local sootLocal = Jimple.v().newLocal(name, sootType);
     locals.add(sootLocal);
     expectedModCount++;
     names.add(name);
 
-    assert (expectedModCount == locals.getModificationCount());//post-condition
-    assert (names.contains(name));//post-condition
+    assert (expectedModCount == locals.getModificationCount());// post-condition
+    assert (names.contains(name));// post-condition
 
     return sootLocal;
   }

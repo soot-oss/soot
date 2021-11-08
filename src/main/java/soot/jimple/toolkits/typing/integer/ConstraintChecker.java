@@ -31,14 +31,15 @@ import soot.ByteType;
 import soot.IntType;
 import soot.IntegerType;
 import soot.Local;
+import soot.LocalGenerator;
 import soot.NullType;
+import soot.Scene;
 import soot.ShortType;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
 import soot.UnitPatchingChain;
 import soot.Value;
-import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
@@ -117,7 +118,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
   public void check(Stmt stmt, JimpleBody stmtBody) throws TypeException {
     try {
       this.stmtBody = stmtBody;
-      this.localGenerator = new LocalGenerator(stmtBody);
+      this.localGenerator = Scene.v().createLocalGenerator(stmtBody);
       stmt.apply(this);
     } catch (RuntimeTypeException e) {
       logger.error(e.getMessage(), e);

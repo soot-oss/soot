@@ -55,7 +55,9 @@ import org.slf4j.LoggerFactory;
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
+
 import soot.dexpler.DalvikThrowAnalysis;
+import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
 import soot.jimple.spark.pag.SparkField;
@@ -64,6 +66,8 @@ import soot.jimple.toolkits.callgraph.ContextSensitiveCallGraph;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
 import soot.jimple.toolkits.pointer.SideEffectAnalysis;
+import soot.jimple.toolkits.scalar.DefaultLocalCreation;
+import soot.jimple.toolkits.scalar.LocalCreation;
 import soot.options.CGOptions;
 import soot.options.Options;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
@@ -2082,5 +2086,17 @@ public class Scene {
    */
   public CallGraph internalMakeCallGraph() {
     return new CallGraph();
+  }
+
+  public LocalGenerator createLocalGenerator(Body stmtBody) {
+    return new DefaultLocalGenerator(stmtBody);
+  }
+
+  public LocalCreation createLocalCreation(Chain<Local> locals) {
+    return new DefaultLocalCreation(locals);
+  }
+
+  public LocalCreation createLocalCreation(Chain<Local> locals, String prefix) {
+    return new DefaultLocalCreation(locals, prefix);
   }
 }
