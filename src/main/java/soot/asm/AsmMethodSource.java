@@ -21,6 +21,7 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
@@ -1906,7 +1907,7 @@ public class AsmMethodSource implements MethodSource {
     }
     worklist.add(new Edge(instructions.getFirst(), new ArrayList<Operand>()));
     conversionWorklist = worklist;
-    edges = HashBasedTable.create(1, 1);
+    edges = HashBasedTable.create(instructions.size(), 1);
 
     do {
       Edge edge = worklist.pollLast();
@@ -2307,7 +2308,7 @@ public class AsmMethodSource implements MethodSource {
    * Thus, this method checks for these ambiguous cases while the LocalVariableTable is still available, and assigns a unique
    * name to each local that is based on the original name from the LocalVariableTable and does not use the '#' character.
    */
-  private void tryCorrectingLocalNames(final Jimple jimp, final JimpleBody jb) {
+  protected void tryCorrectingLocalNames(final Jimple jimp, final JimpleBody jb) {
     final Chain<Local> jbLocals = jb.getLocals();
     final int sizeLVT = this.localVars.size();
     if (sizeLVT > 0) {
