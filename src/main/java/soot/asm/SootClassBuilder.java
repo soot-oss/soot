@@ -97,7 +97,7 @@ public class SootClassBuilder extends ClassVisitor {
     return klass;
   }
 
-  void addDep(String s) {
+  protected void addDep(String s) {
     addDep(makeRefType(AsmUtil.baseTypeName(s)));
   }
 
@@ -107,7 +107,7 @@ public class SootClassBuilder extends ClassVisitor {
    * @param s
    *          name, or type of class.
    */
-  void addDep(Type s) {
+  protected void addDep(Type s) {
     deps.add(s);
   }
 

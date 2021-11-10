@@ -47,6 +47,7 @@ import soot.jimple.AssignStmt;
 import soot.jimple.CmpgExpr;
 import soot.jimple.CmplExpr;
 import soot.jimple.Constant;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
 import soot.jimple.IdentityStmt;
@@ -314,6 +315,14 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
 
     public BetterConstantPropagator(DirectedGraph<Unit> graph) {
       super(graph);
+    }
+
+    @Override
+    protected boolean omissible(Unit n) {
+      if (!(n instanceof DefinitionStmt)) {
+        return true;
+      }
+      return super.omissible(n);
     }
 
     @Override
