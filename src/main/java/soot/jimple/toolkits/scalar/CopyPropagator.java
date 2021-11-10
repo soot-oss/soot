@@ -111,7 +111,7 @@ public class CopyPropagator extends BodyTransformer {
     }
 
     // Count number of definitions for each local.
-    Map<Local, Integer> localToDefCount = new HashMap<Local, Integer>();
+    Map<Local, Integer> localToDefCount = new HashMap<Local, Integer>(b.getLocalCount() * 2 + 1);
     for (Unit u : b.getUnits()) {
       if (u instanceof DefinitionStmt) {
         Value leftOp = ((DefinitionStmt) u).getLeftOp();
