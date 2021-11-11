@@ -38,7 +38,7 @@ import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 
 // StartJoinFinder written by Richard L. Halpert, 2006-12-04
 // This can be used as an alternative to PegGraph and PegChain
@@ -83,7 +83,8 @@ public class StartJoinFinder {
           Body b = method.retrieveActiveBody();
 
           // run the intraprocedural analysis
-          StartJoinAnalysis sja = new StartJoinAnalysis(new ExceptionalUnitGraph(b), method, callGraph, pag);
+          StartJoinAnalysis sja
+              = new StartJoinAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b), method, callGraph, pag);
 
           // Add to interprocedural results
           startStatements.addAll(sja.getStartStatements());

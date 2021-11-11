@@ -64,6 +64,7 @@ import soot.tagkit.Tag;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.LocalBitSetPacker;
 
 //@formatter:off
@@ -119,8 +120,9 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
     final LocalBitSetPacker localPacker = new LocalBitSetPacker(body);
     localPacker.pack();
 
-    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
-    BetterConstantPropagator bcp = new BetterConstantPropagator(graph);
+    ExceptionalUnitGraph graph
+        = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
+    BetterConstantPropagator bcp = createBetterConstantPropagator(graph);
     bcp.doAnalysis();
     boolean propagatedThrow = false;
     for (Unit u : body.getUnits()) {
@@ -176,13 +178,21 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
     DexNullArrayRefTransformer.v().transform(body);
   }
 
+  protected BetterConstantPropagator createBetterConstantPropagator(ExceptionalUnitGraph graph) {
+    return new BetterConstantPropagator(graph);
+  }
+
   private static boolean expectsRealValue(Value op) {
     return op instanceof CmpgExpr || op instanceof CmplExpr;
   }
 
-  private static class ConstantState {
-    BitSet nonConstant = new BitSet();
-    Map<Local, Constant> constants = new HashMap<>();
+  protected static class ConstantState {
+    public BitSet nonConstant = new BitSet();
+    public Map<Local, Constant> constants = createMap();
+
+    protected Map<Local, Constant> createMap() {
+      return new HashMap<>();
+    }
 
     public Constant getConstant(Local l) {
       Constant r = constants.get(l);
@@ -292,7 +302,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
 
     public void clear() {
       nonConstant.clear();
-      constants = new HashMap<>();
+      constants = createMap();
     }
 
     public void mergeInto(ConstantState in) {
@@ -311,7 +321,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
 
   }
 
-  private class BetterConstantPropagator extends ForwardFlowAnalysis<Unit, ConstantState> {
+  protected class BetterConstantPropagator extends ForwardFlowAnalysis<Unit, ConstantState> {
 
     public BetterConstantPropagator(DirectedGraph<Unit> graph) {
       super(graph);
@@ -373,7 +383,17 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
 
     @Override
     protected void copy(ConstantState source, ConstantState dest) {
+      if (source == dest) {
+        return;
+      }
       source.copyTo(dest);
+    }
+
+    @Override
+    protected void copyFreshToExisting(ConstantState in, ConstantState dest) {
+      // in is fresh, so we can directly reuse the inputs
+      dest.constants = in.constants;
+      dest.nonConstant = in.nonConstant;
     }
 
   }

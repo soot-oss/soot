@@ -82,7 +82,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
    *          The underlying body we want to make a graph for.
    */
   public ExceptionalBlockGraph(Body body) {
-    this(new ExceptionalUnitGraph(body));
+    this(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body));
   }
 
   /**

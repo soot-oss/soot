@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import soot.Body;
 import soot.SootMethod;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 
 // EncapsulatedObjectAnalysis written by Richard L. Halpert, 2006-12-26
 // Checks if all methods of a class are "object-pure", meaning that
@@ -65,7 +65,8 @@ public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
             initMethod = method;
           }
           Body b = method.retrieveActiveBody();
-          EncapsulatedMethodAnalysis ema = new EncapsulatedMethodAnalysis(new ExceptionalUnitGraph(b));
+          EncapsulatedMethodAnalysis ema
+              = new EncapsulatedMethodAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
           if (ema.isPure()) {
             mayBePureMethods.add(method);
           }

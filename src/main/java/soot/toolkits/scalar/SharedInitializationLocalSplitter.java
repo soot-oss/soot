@@ -42,7 +42,6 @@ import soot.dexpler.DexNullArrayRefTransformer;
 import soot.dexpler.DexNullThrowTransformer;
 import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
-import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
 import soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder;
 import soot.jimple.toolkits.scalar.CopyPropagator;
@@ -50,6 +49,7 @@ import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.options.Options;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.Chain;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
@@ -149,7 +149,8 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     DeadAssignmentEliminator.v().transform(body);
     CopyPropagator.v().transform(body);
 
-    final ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
+    final ExceptionalUnitGraph graph
+        = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
     final MultiMap<Local, Cluster> clustersPerLocal = new HashMultiMap<Local, Cluster>();
 

@@ -47,7 +47,7 @@ import soot.Value;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 
 public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<Unit, SootMethod> {
 
@@ -127,7 +127,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   }
 
   protected DirectedGraph<Unit> makeGraph(Body body) {
-    return enableExceptions ? new ExceptionalUnitGraph(body) : new BriefUnitGraph(body);
+    return enableExceptions ? ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body) : new BriefUnitGraph(body);
   }
 
   protected Set<Unit> getCallsFromWithinMethod(SootMethod m) {

@@ -692,6 +692,44 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     }
 
     @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((throwables == null) ? 0 : throwables.hashCode());
+      result = prime * result + ((trap == null) ? 0 : trap.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      ExceptionDest other = (ExceptionDest) obj;
+      if (throwables == null) {
+        if (other.throwables != null) {
+          return false;
+        }
+      } else if (!throwables.equals(other.throwables)) {
+        return false;
+      }
+      if (trap == null) {
+        if (other.trap != null) {
+          return false;
+        }
+      } else if (!trap.equals(other.trap)) {
+        return false;
+      }
+      return true;
+    }
+
+    @Override
     public Trap getTrap() {
       return trap;
     }

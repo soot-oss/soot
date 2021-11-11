@@ -54,10 +54,10 @@ import soot.util.Switch;
 public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
 
   @SuppressWarnings("serial")
-  private static class LinkedVariableBox extends VariableBox {
+  public static class LinkedVariableBox extends VariableBox {
     ValueBox otherBox = null;
 
-    private LinkedVariableBox(Value v) {
+    public LinkedVariableBox(Value v) {
       super(v);
     }
 
@@ -75,10 +75,10 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
   }
 
   @SuppressWarnings("serial")
-  private static class LinkedRValueBox extends RValueBox {
+  public static class LinkedRValueBox extends RValueBox {
     ValueBox otherBox = null;
 
-    private LinkedRValueBox(Value v) {
+    public LinkedRValueBox(Value v) {
       super(v);
     }
 
@@ -109,6 +109,12 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
 
   protected JAssignStmt(ValueBox variableBox, ValueBox rvalueBox) {
     super(variableBox, rvalueBox);
+    if (leftBox instanceof LinkedVariableBox) {
+      ((LinkedVariableBox) leftBox).setOtherBox(rightBox);
+    }
+    if (rightBox instanceof LinkedRValueBox) {
+      ((LinkedRValueBox) rightBox).setOtherBox(leftBox);
+    }
   }
 
   @Override

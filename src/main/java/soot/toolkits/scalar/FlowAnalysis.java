@@ -575,12 +575,29 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
         return false;
       }
       // copy back the result, as it has changed
-      copy(out, d.outFlow);
+      copyFreshToExisting(out, d.outFlow);
       return true;
     }
 
     // no back-references, just calculate "flowThrough"
     flowThrough(d.inFlow, d.data, d.outFlow);
     return true;
+  }
+
+  /**
+   * Copies a *fresh* copy of in to dest. The input is not referenced somewhere else. This allows subclasses for a smarter
+   * and faster copying.
+   * 
+   * @param in
+   * @param dest
+   */
+  protected void copyFreshToExisting(A in, A dest) {
+    if (in instanceof FlowSet && dest instanceof FlowSet) {
+      FlowSet<?> fin = (FlowSet<?>) in;
+      FlowSet fdest = (FlowSet) dest;
+      fin.copyFreshToExisting(fdest);
+    } else {
+      copy(in, dest);
+    }
   }
 }

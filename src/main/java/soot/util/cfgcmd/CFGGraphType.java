@@ -39,6 +39,7 @@ import soot.toolkits.graph.CompleteUnitGraph;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalBlockGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.TrapUnitGraph;
 import soot.toolkits.graph.ZonedBlockGraph;
 import soot.util.dot.DotGraph;
@@ -129,7 +130,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
   public static final CFGGraphType EXCEPTIONAL_UNIT_GRAPH = new CFGGraphType("ExceptionalUnitGraph") {
     @Override
     public DirectedGraph<?> buildGraph(Body b) {
-      return new ExceptionalUnitGraph(b);
+      return ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
     }
 
     @Override
