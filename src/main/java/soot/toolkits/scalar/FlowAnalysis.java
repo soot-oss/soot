@@ -594,8 +594,8 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
   protected void copyFreshToExisting(A in, A dest) {
     if (in instanceof FlowSet && dest instanceof FlowSet) {
       FlowSet<?> fin = (FlowSet<?>) in;
-      FlowSet<?> fdest = (FlowSet<?>) dest;
-      fin.copyFreshToExisting(null);
+      FlowSet fdest = (FlowSet) dest;
+      fin.copyFreshToExisting(fdest);
     } else {
       copy(in, dest);
     }
