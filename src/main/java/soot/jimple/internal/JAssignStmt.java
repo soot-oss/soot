@@ -109,8 +109,12 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
 
   protected JAssignStmt(ValueBox variableBox, ValueBox rvalueBox) {
     super(variableBox, rvalueBox);
-    ((LinkedVariableBox) leftBox).setOtherBox(rightBox);
-    ((LinkedRValueBox) rightBox).setOtherBox(leftBox);
+    if (leftBox instanceof LinkedVariableBox) {
+      ((LinkedVariableBox) leftBox).setOtherBox(rightBox);
+    }
+    if (rightBox instanceof LinkedRValueBox) {
+      ((LinkedRValueBox) rightBox).setOtherBox(leftBox);
+    }
   }
 
   @Override
