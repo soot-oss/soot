@@ -1785,7 +1785,7 @@ public class Options extends OptionsBase {
                 + padOpt("-search-dex-in-archives", "Also includes Jar and Zip files when searching for DEX files under the provided classpath.")
                 + padOpt("-process-path ARG -process-dir ARG", "Process all classes found in ARG (but not classes within JAR files in ARG , use process-jar-dir for that)")
                 + padOpt("-process-jar-dir ARG", "Process all classes found in JAR files found in ARG")
-                + padOpt("-no-derive-java-version", "Java version for output and internal processing will not be derived from the given input classes")
+                + padOpt("-derive-java-version", "Java version for output and internal processing will be derived from the given input classes")
                 + padOpt("-oaat", "From the process-dir, processes one class at a time.")
                 + padOpt("-android-jars ARG", "Use ARG as the path for finding the android.jar file")
                 + padOpt("-force-android-jar ARG", "Force Soot to use ARG as the path for the android.jar file.")
@@ -1806,7 +1806,7 @@ public class Options extends OptionsBase {
                 + padOpt("-main-class ARG", "Sets the main class for whole-program analysis.")
                 + padOpt("-polyglot", "Use Java 1.4 Polyglot frontend instead of JastAdd")
                 + padOpt("-permissive-resolving", "Use alternative sources when classes cannot be found using the normal resolving strategy")
-                + padOpt("-no-drop-bodies-after-load", "Do not drop the method source after it has served its purpose of loading the method body")
+                + padOpt("-drop-bodies-after-load", "Drop the method source after it has served its purpose of loading the method body")
                 + "\nOutput Options:\n"
                 + padOpt("-d ARG -output-dir ARG", "Store output files in ARG")
                 + padOpt("-f ARG -output-format ARG", "Set output format for Soot")
@@ -1849,7 +1849,7 @@ public class Options extends OptionsBase {
                 + padOpt("-no-output-inner-classes-attribute", "Don't output inner classes attribute in class files")
                 + padOpt("-dump-body ARG", "Dump the internal representation of each method before and after phase ARG")
                 + padOpt("-dump-cfg ARG", "Dump the internal representation of each CFG constructed during phase ARG")
-                + padOpt("-no-show-exception-dests", "Do not include exception destination edges as well as CFG edges in dumped CFGs")
+                + padOpt("-show-exception-dests", "Include exception destination edges as well as CFG edges in dumped CFGs")
                 + padOpt("-gzip", "GZip IR output files")
                 + padOpt("-force-overwrite", "Force Overwrite Output Files")
                 + "\nProcessing Options:\n"

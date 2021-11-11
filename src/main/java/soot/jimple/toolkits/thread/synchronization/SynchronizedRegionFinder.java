@@ -52,6 +52,7 @@ import soot.jimple.toolkits.pointer.Union;
 import soot.jimple.toolkits.pointer.UnionFactory;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
@@ -99,7 +100,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
     if (graph instanceof ExceptionalUnitGraph) {
       egraph = (ExceptionalUnitGraph) graph;
     } else {
-      egraph = new ExceptionalUnitGraph(b);
+      egraph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
     }
 
     slu = LocalUses.Factory.newLocalUses(egraph);

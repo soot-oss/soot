@@ -45,6 +45,7 @@ import soot.options.PurityOptions;
 import soot.tagkit.GenericAttribute;
 import soot.tagkit.StringTag;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.dot.DotGraph;
 
 public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalysis<PurityGraphBox> {
@@ -186,7 +187,7 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
         if (opts.verbose()) {
           logger.debug("  |- " + method);
         }
-        ExceptionalUnitGraph graph = new ExceptionalUnitGraph(method.retrieveActiveBody());
+        ExceptionalUnitGraph graph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(method.retrieveActiveBody());
         PurityIntraproceduralAnalysis r = new PurityIntraproceduralAnalysis(graph, this);
         r.drawAsOneDot("Intra_", method.toString());
         r.copyResult(new PurityGraphBox());
@@ -290,7 +291,7 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
 
   @Override
   protected void analyseMethod(SootMethod method, PurityGraphBox dst) {
-    new PurityIntraproceduralAnalysis(new ExceptionalUnitGraph(method.retrieveActiveBody()), this).copyResult(dst);
+    new PurityIntraproceduralAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(method.retrieveActiveBody()), this).copyResult(dst);
   }
 
   /**

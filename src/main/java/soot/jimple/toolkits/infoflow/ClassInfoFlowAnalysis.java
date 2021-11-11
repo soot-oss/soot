@@ -49,7 +49,7 @@ import soot.jimple.Ref;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.jimple.ThisRef;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.HashMutableDirectedGraph;
 import soot.toolkits.graph.MemoryEfficientGraph;
 import soot.toolkits.graph.MutableDirectedGraph;
@@ -97,7 +97,7 @@ public class ClassInfoFlowAnalysis {
       // Then do smart version that does follow invoke expressions, if possible
       if (method.isConcrete()) {
         Body b = method.retrieveActiveBody();
-        UnitGraph g = new ExceptionalUnitGraph(b);
+        UnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
         SmartMethodInfoFlowAnalysis smdfa = new SmartMethodInfoFlowAnalysis(g, dfa);
 
         methodToInfoFlowAnalysis.put(method, smdfa);
@@ -130,7 +130,7 @@ public class ClassInfoFlowAnalysis {
       if (method.isConcrete() && doFullAnalysis)// && method.getDeclaringClass().isApplicationClass())
       {
         Body b = method.retrieveActiveBody();
-        UnitGraph g = new ExceptionalUnitGraph(b);
+        UnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
         SmartMethodInfoFlowAnalysis smdfa = new SmartMethodInfoFlowAnalysis(g, dfa);
 
         methodToInfoFlowAnalysis.put(method, smdfa);
@@ -186,7 +186,7 @@ public class ClassInfoFlowAnalysis {
     }
 
     Body b = sm.retrieveActiveBody();
-    UnitGraph g = new ExceptionalUnitGraph(b);
+    UnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
     HashSet<EquivalentValue> fieldsStaticsParamsAccessed = new HashSet<EquivalentValue>();
 
     // Get list of fields, globals, and parameters that are accessed

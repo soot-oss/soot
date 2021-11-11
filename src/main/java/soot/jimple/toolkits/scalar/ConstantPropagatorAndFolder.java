@@ -44,7 +44,7 @@ import soot.jimple.NullConstant;
 import soot.jimple.NumericConstant;
 import soot.jimple.StringConstant;
 import soot.options.Options;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
@@ -72,7 +72,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
       logger.debug("[" + b.getMethod().getName() + "] Propagating and folding constants...");
     }
 
-    UnitGraph g = new ExceptionalUnitGraph(b);
+    UnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
     LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(g);
 
     // Perform a constant/local propagation pass.

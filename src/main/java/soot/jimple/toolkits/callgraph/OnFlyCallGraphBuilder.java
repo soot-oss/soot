@@ -105,6 +105,7 @@ import soot.options.CGOptions;
 import soot.options.Options;
 import soot.options.SparkOptions;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.HashMultiMap;
 import soot.util.IterableNumberer;
 import soot.util.LargeNumberedMap;
@@ -743,7 +744,7 @@ public class OnFlyCallGraphBuilder {
       ics = new InvokeCallSite(s, container, d, l);
     } else {
       if (analysisKey != container) {
-        ExceptionalUnitGraph graph = new ExceptionalUnitGraph(container.getActiveBody());
+        ExceptionalUnitGraph graph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(container.getActiveBody());
         nullnessCache = new NullnessAnalysis(graph);
         arrayCache = new ConstantArrayAnalysis(graph, container.getActiveBody());
         analysisKey = container;
