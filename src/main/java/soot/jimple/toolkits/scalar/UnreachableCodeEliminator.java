@@ -45,7 +45,7 @@ import soot.options.Options;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.Chain;
 
 public class UnreachableCodeEliminator extends BodyTransformer {
@@ -83,7 +83,7 @@ public class UnreachableCodeEliminator extends BodyTransformer {
     final Chain<Unit> units = body.getUnits();
     final int origSize = units.size();
     final Set<Unit> reachable = origSize == 0 ? Collections.emptySet()
-        : reachable(units.getFirst(), new ExceptionalUnitGraph(body, throwAnalysis, false));
+        : reachable(units.getFirst(), ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, false));
 
     // Now eliminate empty traps. (and unreachable handlers)
     //

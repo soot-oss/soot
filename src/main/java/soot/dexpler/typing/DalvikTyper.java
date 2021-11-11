@@ -106,7 +106,7 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.UnopExpr;
 import soot.jimple.UshrExpr;
 import soot.tagkit.Tag;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.SimpleLocalDefs;
 import soot.toolkits.scalar.SimpleLocalUses;
@@ -413,7 +413,7 @@ public class DalvikTyper implements IDalvikTyper {
     if (!todoUnits.isEmpty()) {
 
       // propagate array types
-      UnitGraph ug = new ExceptionalUnitGraph(b);
+      UnitGraph ug = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
       SimpleLocalDefs sld = new SimpleLocalDefs(ug);
       SimpleLocalUses slu = new SimpleLocalUses(b, sld);
 

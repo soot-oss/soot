@@ -36,7 +36,7 @@ import soot.jimple.Jimple;
 import soot.jimple.NeExpr;
 import soot.jimple.NullConstant;
 import soot.jimple.Stmt;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.Chain;
 
@@ -66,7 +66,8 @@ public class NullCheckEliminator extends BodyTransformer {
     do {
       changed = false;
 
-      final NullnessAnalysis analysis = analysisFactory.newAnalysis(new ExceptionalUnitGraph(body));
+      final NullnessAnalysis analysis
+          = analysisFactory.newAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body));
       final Chain<Unit> units = body.getUnits();
       for (Unit u = units.getFirst(); u != null; u = units.getSuccOf(u)) {
         if (u instanceof IfStmt) {

@@ -52,6 +52,7 @@ import soot.jimple.Stmt;
 import soot.jimple.StmtBody;
 import soot.options.Options;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
@@ -113,7 +114,7 @@ public class Aggregator extends BodyTransformer {
     boolean hadAggregation = false;
 
     final Chain<Unit> units = body.getUnits();
-    final ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
+    final ExceptionalUnitGraph graph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body);
     final LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph);
     final LocalUses localUses = LocalUses.Factory.newLocalUses(body, localDefs);
 

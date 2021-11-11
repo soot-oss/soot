@@ -43,6 +43,15 @@ public class JNewMultiArrayExpr extends AbstractNewMultiArrayExpr {
     }
   }
 
+  public JNewMultiArrayExpr(ArrayType type, ValueBox[] sizes) {
+    super(type, sizes);
+
+    for (int i = 0; i < sizes.length; i++) {
+      ValueBox v = sizes[i];
+      sizeBoxes[i] = v;
+    }
+  }
+
   @Override
   public Object clone() {
     final ValueBox[] boxes = this.sizeBoxes;

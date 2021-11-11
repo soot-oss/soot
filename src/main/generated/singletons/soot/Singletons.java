@@ -174,6 +174,20 @@ public class Singletons {
     	instance_soot_Main = null;
     }
 
+    private soot.toolkits.graph.ExceptionalUnitGraphFactory instance_soot_toolkits_graph_ExceptionalUnitGraphFactory;
+    public soot.toolkits.graph.ExceptionalUnitGraphFactory soot_toolkits_graph_ExceptionalUnitGraphFactory() {
+        if (instance_soot_toolkits_graph_ExceptionalUnitGraphFactory == null) {
+	       	synchronized (this) {
+		        if (instance_soot_toolkits_graph_ExceptionalUnitGraphFactory == null)
+	        		instance_soot_toolkits_graph_ExceptionalUnitGraphFactory = new soot.toolkits.graph.ExceptionalUnitGraphFactory(g);
+	       	}
+       	}
+        return instance_soot_toolkits_graph_ExceptionalUnitGraphFactory;
+    }
+    protected void release_soot_toolkits_graph_ExceptionalUnitGraphFactory() {
+    	instance_soot_toolkits_graph_ExceptionalUnitGraphFactory = null;
+    }
+
     private soot.tagkit.TagManager instance_soot_tagkit_TagManager;
     public soot.tagkit.TagManager soot_tagkit_TagManager() {
         if (instance_soot_tagkit_TagManager == null) {

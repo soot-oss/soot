@@ -243,7 +243,6 @@ public class SimpleLocalDefs implements LocalDefs {
       }
     }
 
-    @Override
     protected FlowBitSet newInitialFlow() {
       return new FlowBitSet();
     }
