@@ -63,7 +63,8 @@ public class AvailExprTagger extends BodyTransformer {
     if (options.kind() == AETOptions.kind_optimistic) {
       new SlowAvailableExpressionsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
     } else {
-      new PessimisticAvailableExpressionsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b), b.getMethod(), sideEffect);
+      new PessimisticAvailableExpressionsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b), b.getMethod(),
+          sideEffect);
     }
   }
 }

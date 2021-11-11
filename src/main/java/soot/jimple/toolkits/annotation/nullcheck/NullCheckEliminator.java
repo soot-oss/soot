@@ -66,7 +66,8 @@ public class NullCheckEliminator extends BodyTransformer {
     do {
       changed = false;
 
-      final NullnessAnalysis analysis = analysisFactory.newAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body));
+      final NullnessAnalysis analysis
+          = analysisFactory.newAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body));
       final Chain<Unit> units = body.getUnits();
       for (Unit u = units.getFirst(); u != null; u = units.getSuccOf(u)) {
         if (u instanceof IfStmt) {

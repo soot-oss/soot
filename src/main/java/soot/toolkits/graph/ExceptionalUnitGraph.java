@@ -702,23 +702,30 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (obj == null)
+      }
+      if (obj == null) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       ExceptionDest other = (ExceptionDest) obj;
       if (throwables == null) {
-        if (other.throwables != null)
+        if (other.throwables != null) {
           return false;
-      } else if (!throwables.equals(other.throwables))
+        }
+      } else if (!throwables.equals(other.throwables)) {
         return false;
+      }
       if (trap == null) {
-        if (other.trap != null)
+        if (other.trap != null) {
           return false;
-      } else if (!trap.equals(other.trap))
+        }
+      } else if (!trap.equals(other.trap)) {
         return false;
+      }
       return true;
     }
 

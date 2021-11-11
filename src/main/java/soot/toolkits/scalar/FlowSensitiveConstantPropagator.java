@@ -383,8 +383,9 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
 
     @Override
     protected void copy(ConstantState source, ConstantState dest) {
-      if (source == dest)
+      if (source == dest) {
         return;
+      }
       source.copyTo(dest);
     }
 

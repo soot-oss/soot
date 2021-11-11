@@ -65,7 +65,8 @@ public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
             initMethod = method;
           }
           Body b = method.retrieveActiveBody();
-          EncapsulatedMethodAnalysis ema = new EncapsulatedMethodAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
+          EncapsulatedMethodAnalysis ema
+              = new EncapsulatedMethodAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
           if (ema.isPure()) {
             mayBePureMethods.add(method);
           }

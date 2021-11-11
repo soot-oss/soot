@@ -56,7 +56,8 @@ public class NullPointerColorer extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    BranchedRefVarsAnalysis analysis = new BranchedRefVarsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
+    BranchedRefVarsAnalysis analysis
+        = new BranchedRefVarsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
 
     for (Unit s : b.getUnits()) {
       FlowSet<RefIntPair> beforeSet = analysis.getFlowBefore(s);

@@ -124,7 +124,8 @@ class ArrayBoundsCheckerAnalysis {
       logger.debug("ArrayBoundsCheckerAnalysis started on  " + thismethod.getName());
     }
 
-    ailanalysis = new ArrayIndexLivenessAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body), fieldin, arrayin, csin, rectarray);
+    ailanalysis = new ArrayIndexLivenessAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body), fieldin,
+        arrayin, csin, rectarray);
 
     if (fieldin) {
       this.localToFieldRef = ailanalysis.getLocalToFieldRef();

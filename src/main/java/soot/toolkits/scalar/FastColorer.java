@@ -61,10 +61,10 @@ public class FastColorer {
 
     // To understand why a pedantic throw analysis is required, see comment
     // in assignColorsToLocals method
-    final ExceptionalUnitGraph unitGraph =
-        ExceptionalUnitGraphFactory.createExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
-    final UnitInterferenceGraph intGraph =
-        new UnitInterferenceGraph(unitBody, localToGroup, new SimpleLiveLocals(unitGraph), unitGraph);
+    final ExceptionalUnitGraph unitGraph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(unitBody,
+        PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
+    final UnitInterferenceGraph intGraph
+        = new UnitInterferenceGraph(unitBody, localToGroup, new SimpleLiveLocals(unitGraph), unitGraph);
 
     Map<Local, String> localToOriginalName = new HashMap<Local, String>();
 
@@ -153,10 +153,10 @@ public class FastColorer {
 
     // Build a CFG using a pedantic throw analysis to prevent JVM
     // "java.lang.VerifyError: Incompatible argument to function" errors.
-    final ExceptionalUnitGraph unitGraph =
-        ExceptionalUnitGraphFactory.createExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
-    final UnitInterferenceGraph intGraph =
-        new UnitInterferenceGraph(unitBody, localToGroup, new SimpleLiveLocals(unitGraph), unitGraph);
+    final ExceptionalUnitGraph unitGraph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(unitBody,
+        PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
+    final UnitInterferenceGraph intGraph
+        = new UnitInterferenceGraph(unitBody, localToGroup, new SimpleLiveLocals(unitGraph), unitGraph);
 
     // Sort the locals first to maximize the locals per color. We first
     // assign those locals that have many conflicts and then assign the

@@ -24,17 +24,14 @@ package soot.jimple.toolkits.annotation.purity;
 
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.Body;
 import soot.Local;
 import soot.RefLikeType;
 import soot.SootMethod;
 import soot.Type;
-import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
@@ -291,7 +288,8 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
 
   @Override
   protected void analyseMethod(SootMethod method, PurityGraphBox dst) {
-    new PurityIntraproceduralAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(method.retrieveActiveBody()), this).copyResult(dst);
+    new PurityIntraproceduralAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(method.retrieveActiveBody()),
+        this).copyResult(dst);
   }
 
   /**

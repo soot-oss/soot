@@ -105,7 +105,8 @@ public class LocalSplitter extends BodyTransformer {
     localPacker.pack();
 
     // Go through the definitions, building the webs
-    ExceptionalUnitGraph graph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
+    ExceptionalUnitGraph graph
+        = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
 
     // run in panic mode on first split (maybe change this depending on the input source)
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);

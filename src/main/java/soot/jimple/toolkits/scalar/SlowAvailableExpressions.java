@@ -57,7 +57,8 @@ public class SlowAvailableExpressions implements AvailableExpressions {
     this.unitToEquivsAfter = new HashMap<Unit, Chain<EquivalentValue>>(units.size() * 2 + 1, 0.7f);
     this.unitToEquivsBefore = new HashMap<Unit, Chain<EquivalentValue>>(units.size() * 2 + 1, 0.7f);
 
-    SlowAvailableExpressionsAnalysis analysis = new SlowAvailableExpressionsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
+    SlowAvailableExpressionsAnalysis analysis
+        = new SlowAvailableExpressionsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
     for (Unit s : units) {
       {
         List<UnitValueBoxPair> pairsBefore = new ArrayList<UnitValueBoxPair>();

@@ -83,7 +83,8 @@ public class StartJoinFinder {
           Body b = method.retrieveActiveBody();
 
           // run the intraprocedural analysis
-          StartJoinAnalysis sja = new StartJoinAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b), method, callGraph, pag);
+          StartJoinAnalysis sja
+              = new StartJoinAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b), method, callGraph, pag);
 
           // Add to interprocedural results
           startStatements.addAll(sja.getStartStatements());

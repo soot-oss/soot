@@ -44,7 +44,8 @@ public enum CheckInitValidator implements BodyValidator {
 
   @Override
   public void validate(Body body, List<ValidationException> exception) {
-    ExceptionalUnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, ThrowAnalysisFactory.checkInitThrowAnalysis(), false);
+    ExceptionalUnitGraph g
+        = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, ThrowAnalysisFactory.checkInitThrowAnalysis(), false);
 
     InitAnalysis analysis = new InitAnalysis(g);
     for (Unit s : body.getUnits()) {
