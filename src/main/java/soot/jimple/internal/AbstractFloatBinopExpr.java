@@ -22,17 +22,9 @@ package soot.jimple.internal;
  * #L%
  */
 
-import soot.BooleanType;
-import soot.ByteType;
-import soot.CharType;
-import soot.DoubleType;
-import soot.FloatType;
-import soot.IntType;
-import soot.LongType;
-import soot.ShortType;
-import soot.Type;
-import soot.UnknownType;
-import soot.ValueBox;
+import soot.*;
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.options.Options;
 
 @SuppressWarnings("serial")
 public abstract class AbstractFloatBinopExpr extends AbstractBinopExpr {
@@ -66,6 +58,26 @@ public abstract class AbstractFloatBinopExpr extends AbstractBinopExpr {
     final FloatType tyFloat = FloatType.v();
     if (tyFloat.equals(t1) || tyFloat.equals(t2)) {
       return tyFloat;
+    }
+
+    // in dotnet enums are value types, such as myBool = 1 is allowed in CIL
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      if (t1 instanceof RefType) {
+        SootClass sootClass = ((RefType) t1).getSootClass();
+        if (sootClass != null) {
+          SootClass superclass = sootClass.getSuperclass();
+          if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM))
+            return tyInt;
+        }
+      }
+      if (t2 instanceof RefType) {
+        SootClass sootClass = ((RefType) t2).getSootClass();
+        if (sootClass != null) {
+          SootClass superclass = sootClass.getSuperclass();
+          if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM))
+            return tyInt;
+        }
+      }
     }
     return UnknownType.v();
   }

@@ -35,19 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import soot.ArrayType;
-import soot.BooleanType;
-import soot.ByteType;
-import soot.G;
-import soot.IntegerType;
-import soot.Local;
-import soot.PatchingChain;
-import soot.PrimType;
-import soot.RefType;
-import soot.ShortType;
-import soot.Type;
-import soot.Unit;
-import soot.Value;
+import soot.*;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -467,7 +455,7 @@ public class TypeResolver {
               && (((RefType) told).getSootClass().isPhantom() || ((RefType) t_).getSootClass().isPhantom())
               && (stmt.getRightOp() instanceof CaughtExceptionRef)) {
             if (throwable == null) {
-              throwable = Collections.<Type>singleton(RefType.v("java.lang.Throwable"));
+              throwable = Collections.<Type>singleton(Scene.v().getBaseExceptionType());
             }
             lcas = throwable;
           } else {

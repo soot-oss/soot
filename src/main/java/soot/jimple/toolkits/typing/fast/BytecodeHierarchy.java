@@ -57,7 +57,7 @@ public class BytecodeHierarchy implements IHierarchy {
     leafs.add(new AncestryTreeNode(null, root));
 
     LinkedList<AncestryTreeNode> r = new LinkedList<AncestryTreeNode>();
-    final RefType objectType = RefType.v("java.lang.Object");
+    final RefType objectType = Scene.v().getObjectType();
     while (!leafs.isEmpty()) {
       AncestryTreeNode node = leafs.remove();
       if (TypeResolver.typesEqual(node.type, objectType)) {
@@ -132,10 +132,10 @@ public class BytecodeHierarchy implements IHierarchy {
       LinkedList<Type> r = new LinkedList<Type>();
       if (ts.isEmpty()) {
         if (useWeakObjectType) {
-          r.add(new WeakObjectType("java.lang.Object"));
+          r.add(new WeakObjectType(Scene.v().getObjectType().toString()));
         } else {
           // From Java Language Spec 2nd ed., Chapter 10, Arrays
-          r.add(RefType.v("java.lang.Object"));
+          r.add(RefType.v(Scene.v().getObjectType().toString()));
           r.add(RefType.v("java.io.Serializable"));
           r.add(RefType.v("java.lang.Cloneable"));
         }
@@ -156,7 +156,7 @@ public class BytecodeHierarchy implements IHierarchy {
        * Do not consider Object to be a subtype of Serializable or Cloneable (it can appear this way if phantom-refs is
        * enabled and rt.jar is not available) otherwise an infinite loop can result.
        */
-      if (!TypeResolver.typesEqual(RefType.v("java.lang.Object"), rt)) {
+      if (!TypeResolver.typesEqual(Scene.v().getObjectType(), rt)) {
         RefType refSerializable = RefType.v("java.io.Serializable");
         if (ancestor_(refSerializable, rt)) {
           r.add(refSerializable);
@@ -168,7 +168,7 @@ public class BytecodeHierarchy implements IHierarchy {
       }
 
       if (r.isEmpty()) {
-        r.add(RefType.v("java.lang.Object"));
+        r.add(Scene.v().getObjectType());
       }
       return r;
     } else {
@@ -205,7 +205,7 @@ public class BytecodeHierarchy implements IHierarchy {
       // kludge on a kludge on a kludge...
       // syed - 05/06/2009
       if (r.isEmpty()) {
-        r.add(RefType.v("java.lang.Object"));
+        r.add(Scene.v().getObjectType());
       }
       return r;
     }

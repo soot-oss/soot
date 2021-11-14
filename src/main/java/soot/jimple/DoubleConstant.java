@@ -35,7 +35,7 @@ public class DoubleConstant extends RealConstant {
 
   public final double value;
 
-  private DoubleConstant(double value) {
+  protected DoubleConstant(double value) {
     this.value = value;
   }
 

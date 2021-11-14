@@ -31,6 +31,10 @@ public class AnnotationStringElem extends AnnotationElem {
 
   private final String value;
 
+  public AnnotationStringElem(String s, String name) {
+    this(s, 's', name);
+  }
+
   public AnnotationStringElem(String s, char kind, String name) {
     super(kind, name);
     this.value = s;

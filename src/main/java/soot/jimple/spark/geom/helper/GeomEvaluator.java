@@ -243,7 +243,7 @@ public class GeomEvaluator {
         } else if (t instanceof AnySubType) {
           t = ((AnySubType) t).getBase();
         } else if (t instanceof ArrayType) {
-          t = RefType.v("java.lang.Object");
+          t = Scene.v().getObjectType();
         }
 
         try {

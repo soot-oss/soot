@@ -81,6 +81,12 @@ public class GrimpBody extends StmtBody {
     return b;
   }
 
+  @Override
+  public Object clone(boolean noLocalsClone) {
+    // not implemented
+    return null;
+  }
+
   /**
    * Constructs a GrimpBody from the given Body.
    */

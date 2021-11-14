@@ -1303,7 +1303,7 @@ public class OnFlyCallGraphBuilder {
           case "print":
             // logger.error(exc.getMessage(), exc);
             VirtualInvokeExpr printStackTraceExpr = jimp.newVirtualInvokeExpr(exceptionLocal, Scene.v()
-                .getSootClass("java.lang.Throwable").getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
+                .getSootClass(Scene.v().getBaseExceptionType().toString()).getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
             units.insertAfter(jimp.newInvokeStmt(printStackTraceExpr), initStmt);
             break;
           case "throw":
@@ -1360,7 +1360,7 @@ public class OnFlyCallGraphBuilder {
             return;
           }
           SootClass superclass = currClass.getSuperclass();
-          if (superclass.isPhantom() || "java.lang.Object".equals(superclass.getName())) {
+          if (superclass.isPhantom() || Scene.v().getObjectType().toString().equals(superclass.getName())) {
             methodIterator = null;
             return;
           } else {

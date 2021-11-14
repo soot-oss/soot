@@ -22,12 +22,7 @@ package soot.jimple.toolkits.pointer.representations;
  * #L%
  */
 
-import soot.AnySubType;
-import soot.G;
-import soot.PhaseOptions;
-import soot.RefType;
-import soot.Singletons;
-import soot.Type;
+import soot.*;
 import soot.options.CGOptions;
 
 public class TypeConstants {
@@ -51,7 +46,7 @@ public class TypeConstants {
   public TypeConstants(Singletons.Global g) {
     int jdkver = new CGOptions(PhaseOptions.v().getPhaseOptions("cg")).jdkver();
 
-    OBJECTCLASS = RefType.v("java.lang.Object");
+    OBJECTCLASS = Scene.v().getObjectType();
 
     STRINGCLASS = RefType.v("java.lang.String");
 
@@ -63,7 +58,7 @@ public class TypeConstants {
 
     CLASSCLASS = RefType.v("java.lang.Class");
 
-    LEASTCLASS = AnySubType.v(RefType.v("java.lang.Object"));
+    LEASTCLASS = AnySubType.v(Scene.v().getObjectType());
 
     FIELDCLASS = RefType.v("java.lang.reflect.Field");
 

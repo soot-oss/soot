@@ -1172,7 +1172,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
       // we'll invoke the java.lang.Object method in this
       // case
       // Assert.chk(varNodeType.toString().equals("java.lang.Object"));
-      type = Scene.v().getSootClass("java.lang.Object").getType();
+      type = Scene.v().getSootClass(Scene.v().getObjectType().toString()).getType();
     }
     RefType refType = (RefType) type;
     SootMethod targetMethod = null;

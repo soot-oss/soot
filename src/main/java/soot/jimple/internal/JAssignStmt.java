@@ -103,7 +103,9 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
 
     if (!leftBox.canContainValue(variable) || !rightBox.canContainValue(rvalue)) {
       throw new RuntimeException(
-          "Illegal assignment statement. Make sure that either left side or right hand side has a local or constant.");
+          "Illegal assignment statement. Make sure that either left side or right hand side has a local or constant." +
+              "Variable is class " +  variable.getClass().getName() + "(" + leftBox.canContainValue(variable) + ")" +
+                  " and rvalue is class " + rvalue.getClass().getName() + "(" + rightBox.canContainValue(rvalue) + ").");
     }
   }
 

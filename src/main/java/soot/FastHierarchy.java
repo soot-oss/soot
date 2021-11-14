@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import soot.dotnet.types.DotnetBasicTypes;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
@@ -99,6 +100,12 @@ public class FastHierarchy {
   protected final RefType rtObject;
   protected final RefType rtSerializable;
   protected final RefType rtCloneable;
+  protected final RefType cilArray;
+  protected final RefType cilIcomparable1;
+  protected final RefType cilIcomparable;
+  protected final RefType cilIconvertible;
+  protected final RefType cilIequatable1;
+  protected final RefType cilIformattable;
 
   protected class Interval {
     int lower;
@@ -151,12 +158,19 @@ public class FastHierarchy {
     this.rtObject = sc.getObjectType();
     this.rtSerializable = RefType.v("java.io.Serializable");
     this.rtCloneable = RefType.v("java.lang.Cloneable");
+    this.cilArray = RefType.v(DotnetBasicTypes.SYSTEM_ARRAY);
+    // for CIL prim type structs, which implement these interfaces
+    this.cilIcomparable = RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE);
+    this.cilIcomparable1 = RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE_1);
+    this.cilIconvertible = RefType.v(DotnetBasicTypes.SYSTEM_ICONVERTIBLE);
+    this.cilIequatable1 = RefType.v(DotnetBasicTypes.SYSTEM_IEQUATABLE_1);
+    this.cilIformattable = RefType.v(DotnetBasicTypes.SYSTEM_IFORMATTABLE);
 
     /* First build the inverse maps. */
     buildInverseMaps();
 
     /* Now do a dfs traversal to get the Interval numbers. */
-    int r = dfsVisit(0, sc.getSootClass("java.lang.Object"));
+    int r = dfsVisit(0, sc.getObjectType().getSootClass());
     /*
      * also have to traverse for all phantom classes because they also can be roots of the type hierarchy
      */
@@ -282,9 +296,12 @@ public class FastHierarchy {
       }
     } else if (child instanceof AnySubType) {
       if (!(parent instanceof RefLikeType)) {
-        throw new RuntimeException("Unhandled type " + parent);
+        throw new RuntimeException("Unhandled type " + parent + "! Type " + child + " cannot be stored in type " + parent);
       } else if (parent instanceof ArrayType) {
         Type base = ((AnySubType) child).getBase();
+        // System.Array base class of arrays in CIL
+        if (Options.v().src_prec() == Options.src_prec_dotnet)
+          return base == cilArray;
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
         return base == rtObject || base == rtSerializable || base == rtCloneable;
       } else {
@@ -312,6 +329,9 @@ public class FastHierarchy {
       }
     } else if (child instanceof ArrayType) {
       if (parent instanceof RefType) {
+        // base class System.Array for all arrays
+        if (Options.v().src_prec() == Options.src_prec_dotnet)
+          return parent == cilArray;
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
         return parent == rtObject || parent == rtSerializable || parent == rtCloneable;
       } else if (parent instanceof ArrayType) {
@@ -331,6 +351,8 @@ public class FastHierarchy {
           }
         } else if (achild.numDimensions > aparent.numDimensions) {
           final Type pBaseType = aparent.baseType;
+          if (Options.v().src_prec() == Options.src_prec_dotnet)
+            return pBaseType == cilArray;
           return pBaseType == rtObject || pBaseType == rtSerializable || pBaseType == rtCloneable;
         } else {
           return false;
@@ -338,7 +360,15 @@ public class FastHierarchy {
       } else {
         return false;
       }
-    } else {
+    } else if (Options.v().src_prec() == Options.src_prec_dotnet
+            && child instanceof PrimType
+            && parent instanceof RefType) {
+      // only dotnet
+      // if right type prim type struct which implements these interfaces
+      return parent == cilIcomparable || parent == cilIcomparable1 || parent == cilIconvertible
+              || parent == cilIformattable || parent == cilIequatable1;
+    }
+    else {
       return false;
     }
   }
@@ -485,7 +515,7 @@ public class FastHierarchy {
       } else if (t instanceof ArrayType) {
         SootMethod concreteM;
         try {
-          concreteM = resolveConcreteDispatch(RefType.v("java.lang.Object").getSootClass(), m);
+          concreteM = resolveConcreteDispatch(sc.getObjectType().getSootClass(), m);
         } catch (Exception e) {
           concreteM = null;
         }

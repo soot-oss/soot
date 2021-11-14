@@ -22,14 +22,12 @@ package soot;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-
+import soot.dotnet.members.DotnetMethod;
+import soot.options.Options;
 import soot.util.NumberedString;
 import soot.util.StringNumberer;
+
+import java.util.*;
 
 /**
  * Returns the various potential entry points of a Java program.
@@ -50,7 +48,12 @@ public class EntryPoints {
 
   public EntryPoints(Singletons.Global g) {
     final StringNumberer subSigNumberer = Scene.v().getSubSigNumberer();
-    sigMain = subSigNumberer.findOrAdd("void main(java.lang.String[])");
+
+    if (Options.v().src_prec() == Options.src_prec_dotnet)
+      sigMain = subSigNumberer.findOrAdd(DotnetMethod.MAIN_METHOD_SIGNATURE);
+    else
+      sigMain = subSigNumberer.findOrAdd("void main(java.lang.String[])");
+
     sigFinalize = subSigNumberer.findOrAdd("void finalize()");
     sigExit = subSigNumberer.findOrAdd("void exit()");
     sigClinit = subSigNumberer.findOrAdd("void <clinit>()");
@@ -98,6 +101,11 @@ public class EntryPoints {
   /** Returns only the entry points invoked implicitly by the VM. */
   public List<SootMethod> implicit() {
     List<SootMethod> ret = new ArrayList<SootMethod>();
+
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return ret;
+    }
+
     addMethod(ret, "<java.lang.System: void initializeSystemClass()>");
     addMethod(ret, "<java.lang.ThreadGroup: void <init>()>");
     // addMethod( ret, "<java.lang.ThreadGroup: void
@@ -178,7 +186,9 @@ public class EntryPoints {
   public List<SootMethod> mainsOfApplicationClasses() {
     List<SootMethod> ret = new ArrayList<SootMethod>();
     for (SootClass cl : Scene.v().getApplicationClasses()) {
-      SootMethod m = cl.getMethodUnsafe("void main(java.lang.String[])");
+      SootMethod m = Options.v().src_prec() == Options.src_prec_dotnet ?
+              cl.getMethodUnsafe(DotnetMethod.MAIN_METHOD_SIGNATURE) :
+              cl.getMethodUnsafe("void main(java.lang.String[])");
       if (m != null && m.isConcrete()) {
         ret.add(m);
       }

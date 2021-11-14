@@ -621,7 +621,7 @@ public class TypeResolver {
       TypeVariable var = typeVariable(local);
 
       if (var == null) {
-        local.setType(RefType.v("java.lang.Object"));
+        local.setType(Scene.v().getObjectType());
       } else if (var.depth() == 0) {
         if (var.type() == null) {
           TypeVariable.error("Type Error(5):  Variable without type");
@@ -664,7 +664,7 @@ public class TypeResolver {
       TypeVariable var = typeVariable(local);
 
       if (var == null || var.approx() == null || var.approx().type() == null) {
-        local.setType(RefType.v("java.lang.Object"));
+        local.setType(Scene.v().getObjectType());
       } else {
         local.setType(var.approx().type());
       }
