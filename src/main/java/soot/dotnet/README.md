@@ -9,6 +9,10 @@ Run Soot with following parameters as example:
 ```
 -allow-phantom-refs
 -src-prec dotnet
+# ignore unsafe methods 
+-no-resolve-all-dotnet-methods
+# create empty Jimple Body if error occurs while jimplifying
+-ignore-methodsource-error
 -verbose
 -debug
 -debug-resolver

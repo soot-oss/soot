@@ -33,10 +33,10 @@ public class AssemblyFile extends File {
         super(fullyQualifiedAssemblyPathFilename);
         this.fullyQualifiedAssemblyPathFilename = fullyQualifiedAssemblyPathFilename;
         this.pathNativeHost = Options.v().dotnet_nativehost_path();
-        // this.pathNativeHost  = "/Users/thomasschmeiduch/Documents/Git/UNI/soot-dotnet/src/Soot.Dotnet.NativeHost/bin/Debug/libNativeHost.dylib";
+        // this.pathNativeHost  = "/Users/user/soot-dotnet/src/Soot.Dotnet.NativeHost/bin/Debug/libNativeHost.dylib";
 
         // load JNI library
-        //System.load("/Users/thomasschmeiduch/RiderProjects/Soot.Dotnet/NativeHost/bin/Debug/lib" + "NativeHost" + ".dylib");
+        //System.load("/Users/user/Soot.Dotnet/NativeHost/bin/Debug/lib" + "NativeHost" + ".dylib");
         System.loadLibrary("NativeHost");
     }
 
