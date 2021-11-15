@@ -75,6 +75,7 @@ import soot.Type;
 import soot.Unit;
 import soot.UnitPatchingChain;
 import soot.Value;
+import soot.dotnet.members.DotnetMethod;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.DynamicInvokeExpr;
@@ -205,7 +206,10 @@ public class OnFlyCallGraphBuilder {
     final Scene sc = Scene.v();
     {
       final StringNumberer nmbr = sc.getSubSigNumberer();
-      this.sigFinalize = nmbr.findOrAdd("void finalize()");
+      if (Options.v().src_prec() == Options.src_prec_dotnet)
+        this.sigFinalize = nmbr.findOrAdd("void " + DotnetMethod.DESTRUCTOR_NAME + "()");
+      else
+        this.sigFinalize = nmbr.findOrAdd("void finalize()");
       this.sigInit = nmbr.findOrAdd("void <init>()");
       this.sigForName = nmbr.findOrAdd("java.lang.Class forName(java.lang.String)");
     }

@@ -49,12 +49,14 @@ public class EntryPoints {
   public EntryPoints(Singletons.Global g) {
     final StringNumberer subSigNumberer = Scene.v().getSubSigNumberer();
 
-    if (Options.v().src_prec() == Options.src_prec_dotnet)
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
       sigMain = subSigNumberer.findOrAdd(DotnetMethod.MAIN_METHOD_SIGNATURE);
-    else
+      sigFinalize = subSigNumberer.findOrAdd("void " + DotnetMethod.DESTRUCTOR_NAME + "()");
+    } else {
       sigMain = subSigNumberer.findOrAdd("void main(java.lang.String[])");
+      sigFinalize = subSigNumberer.findOrAdd("void finalize()");
+    }
 
-    sigFinalize = subSigNumberer.findOrAdd("void finalize()");
     sigExit = subSigNumberer.findOrAdd("void exit()");
     sigClinit = subSigNumberer.findOrAdd("void <clinit>()");
     sigInit = subSigNumberer.findOrAdd("void <init>()");

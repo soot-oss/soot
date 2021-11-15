@@ -335,6 +335,7 @@ public class DotnetMethod extends AbstractDotnetMember {
     public static final String CONSTRUCTOR_NAME = ".ctor";
     public static final String JAVA_STATIC_CONSTRUCTOR_NAME = "<clinit>";
     public static final String JAVA_CONSTRUCTOR_NAME = "<init>";
+    public static final String DESTRUCTOR_NAME = "Finalize";
 
     public static final String MAIN_METHOD_SIGNATURE = "void Main(" + DotnetBasicTypes.SYSTEM_STRING + "[])";
 }
