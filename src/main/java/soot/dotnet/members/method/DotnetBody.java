@@ -24,25 +24,25 @@ public class DotnetBody {
      * Get method signature of this method body
      * @return method signature
      */
-    public DotnetMethod getMethodSignature() {
-        return methodSignature;
+    public DotnetMethod getDotnetMethodSig() {
+        return dotnetMethodSig;
     }
 
-    private final DotnetMethod methodSignature;
+    private final DotnetMethod dotnetMethodSig;
 
     public DotnetBody(DotnetMethod methodSignature, ProtoIlInstructions.IlFunctionMsg ilFunctionMsg) {
-        this.methodSignature = methodSignature;
+        this.dotnetMethodSig = methodSignature;
         this.ilFunctionMsg = ilFunctionMsg;
         blockEntryPointsManager = new BlockEntryPointsManager();
     }
 
     public void jimplify(JimpleBody jb) {
         this.jb = jb;
-        variableManager = new DotnetBodyVariableManager(this.jb);
+        variableManager = new DotnetBodyVariableManager(this, this.jb);
 
         // resolve initial variable assignments
         addThisStmt();
-        variableManager.fillMethodParameter(methodSignature.getParameterDefinitions());
+        variableManager.fillMethodParameter();
         variableManager.addInitLocalVariables(ilFunctionMsg.getVariablesList());
 
         // Resolve .NET Method Body -> BlockContainer -> Block -> IL Instruction
@@ -54,9 +54,9 @@ public class DotnetBody {
     }
 
     private void addThisStmt() {
-        if (methodSignature.isStatic())
+        if (dotnetMethodSig.isStatic())
             return;
-        RefType thisType = methodSignature.getDeclaringClass().getType();
+        RefType thisType = dotnetMethodSig.getDeclaringClass().getType();
         Local l = Jimple.v().newLocal("this", thisType);
         IdentityStmt identityStmt = Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef(thisType));
         this.jb.getLocals().add(l);
@@ -90,6 +90,13 @@ public class DotnetBody {
             IdentityStmt identityStmt = Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef(thisType));
             b.getLocals().add(l);
             b.getUnits().add(identityStmt);
+        }
+        // parameters
+        for (int i = 0; i < m.getParameterCount(); i++) {
+            Type parameterType = m.getParameterType(i);
+            Local paramLocal = Jimple.v().newLocal("arg"+i, parameterType);
+            b.getLocals().add(paramLocal);
+            b.getUnits().add(Jimple.v().newIdentityStmt(paramLocal, Jimple.v().newParameterRef(parameterType, i)));
         }
         if (m.getReturnType() instanceof VoidType)
             b.getUnits().add(Jimple.v().newReturnVoidStmt());

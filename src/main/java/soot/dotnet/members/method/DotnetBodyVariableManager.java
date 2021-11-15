@@ -1,6 +1,7 @@
 package soot.dotnet.members.method;
 
 import soot.*;
+import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetBasicTypes;
@@ -23,26 +24,37 @@ import java.util.List;
  */
 public class DotnetBodyVariableManager {
 
+    private final DotnetBody dotnetBody;
     private final Body mainJb;
     public final LocalGenerator localGenerator;
     private final HashSet<String> localsToCast = new HashSet<>();
 
-    public DotnetBodyVariableManager(Body mainJb) {
+    public DotnetBodyVariableManager(DotnetBody dotnetBody, Body mainJb) {
+        this.dotnetBody = dotnetBody;
         this.mainJb = mainJb;
         localGenerator = new LocalGenerator(mainJb);
     }
 
     /**
      * Add parameters of the .NET method to the Jimple Body
+     */
+    public void fillMethodParameter() {
+        DotnetMethod dotnetMethodSig = dotnetBody.getDotnetMethodSig();
+        fillMethodParameter(mainJb, dotnetMethodSig.getParameterDefinitions());
+    }
+
+    /**
+     * Add parameters of the .NET method to the Jimple Body
+     * @param jb
      * @param parameters
      */
-    public void fillMethodParameter(List<ProtoAssemblyAllTypes.ParameterDefinition> parameters) {
+    public void fillMethodParameter(Body jb, List<ProtoAssemblyAllTypes.ParameterDefinition> parameters) {
         // parameters
         for (int i = 0; i < parameters.size(); i++) {
             ProtoAssemblyAllTypes.ParameterDefinition parameter = parameters.get(i);
             Local paramLocal = Jimple.v().newLocal(parameter.getParameterName(), DotnetTypeFactory.toSootType(parameter.getType()));
-            mainJb.getLocals().add(paramLocal);
-            mainJb.getUnits().add(Jimple.v().newIdentityStmt(paramLocal, Jimple.v().newParameterRef(DotnetTypeFactory.toSootType(parameter.getType()), i)));
+            jb.getLocals().add(paramLocal);
+            jb.getUnits().add(Jimple.v().newIdentityStmt(paramLocal, Jimple.v().newParameterRef(DotnetTypeFactory.toSootType(parameter.getType()), i)));
         }
     }
 

@@ -158,14 +158,16 @@ public class DotnetMethod extends AbstractDotnetMember {
         JimpleBody b = Jimple.v().newBody(sootMethod);
         try {
             if (ilFunctionMsg == null)
-                throw new RuntimeException("Could not resolve JimpleBody for " + dotnetMethodType.name() + " " + sootMethod.getName() + " declared in class " + declaringClass.getName());
+                throw new RuntimeException("Could not resolve JimpleBody for " + dotnetMethodType.name() + " " +
+                        sootMethod.getName() + " declared in class " + declaringClass.getName());
 
             // add the body of this code item
             DotnetBody methodBody = new DotnetBody(this, ilFunctionMsg);
             methodBody.jimplify(b);
 
         } catch (Exception e) {
-            logger.warn("Error while generating jimple body of " + dotnetMethodType.name() + " " + sootMethod.getName() + " declared in class " + declaringClass.getName() + "!");
+            logger.warn("Error while generating jimple body of " + dotnetMethodType.name() + " " + sootMethod.getName() +
+                    " declared in class " + declaringClass.getName() + "!");
             logger.warn(e.getMessage());
             if (Options.v().ignore_methodsource_error()) {
                 logger.warn("Ignore errors in generation due to the set parameter. Generate empty Jimple Body.");
