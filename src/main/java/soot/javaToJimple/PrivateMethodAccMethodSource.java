@@ -25,6 +25,9 @@ package soot.javaToJimple;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import soot.LocalGenerator;
+import soot.Scene;
+
 public class PrivateMethodAccMethodSource implements soot.MethodSource {
 
   public PrivateMethodAccMethodSource(polyglot.types.MethodInstance methInst) {
@@ -51,7 +54,7 @@ public class PrivateMethodAccMethodSource implements soot.MethodSource {
   public soot.Body getBody(soot.SootMethod sootMethod, String phaseName) {
 
     soot.Body body = soot.jimple.Jimple.v().newBody(sootMethod);
-    LocalGenerator lg = new LocalGenerator(body);
+    LocalGenerator lg = Scene.v().createLocalGenerator(body);
 
     soot.Local base = null;
     ArrayList methParams = new ArrayList();

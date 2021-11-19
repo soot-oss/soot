@@ -10,6 +10,7 @@
   <class>soot.jimple.toolkits.invoke.SynchronizerManager</class>
   <class>soot.jimple.toolkits.typing.integer.ClassHierarchy</class>
   <class>soot.Main</class>
+  <class>soot.toolkits.graph.ExceptionalUnitGraphFactory</class>
   <class>soot.tagkit.TagManager</class>
   <class>soot.jimple.toolkits.pointer.representations.Environment</class>
   <class>soot.jimple.toolkits.pointer.representations.TypeConstants</class>

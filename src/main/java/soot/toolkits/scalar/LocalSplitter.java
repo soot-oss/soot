@@ -46,6 +46,7 @@ import soot.ValueBox;
 import soot.options.Options;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.LocalBitSetPacker;
 
 /**
@@ -104,7 +105,8 @@ public class LocalSplitter extends BodyTransformer {
     localPacker.pack();
 
     // Go through the definitions, building the webs
-    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
+    ExceptionalUnitGraph graph
+        = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
 
     // run in panic mode on first split (maybe change this depending on the input source)
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
@@ -168,7 +170,10 @@ public class LocalSplitter extends BodyTransformer {
         }
 
         Local newLocal = (Local) oldLocal.clone();
-        newLocal.setName(newLocal.getName() + '#' + (++w)); // renaming should not be done here
+        String name = newLocal.getName();
+        if (name != null) {
+          newLocal.setName(name + '#' + (++w)); // renaming should not be done here
+        }
         body.getLocals().add(newLocal);
 
         Deque<Unit> queue = new ArrayDeque<Unit>();

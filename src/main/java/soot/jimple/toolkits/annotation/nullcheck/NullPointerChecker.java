@@ -49,7 +49,7 @@ import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.toolkits.annotation.tags.NullCheckTag;
 import soot.options.Options;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.Chain;
 
 /*
@@ -85,10 +85,11 @@ public class NullPointerChecker extends BodyTransformer {
       logger.debug("[npc] Null pointer check for " + body.getMethod().getName() + " started on " + start);
     }
 
-    final BranchedRefVarsAnalysis analysis = new BranchedRefVarsAnalysis(new ExceptionalUnitGraph(body));
+    final BranchedRefVarsAnalysis analysis
+        = new BranchedRefVarsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body));
 
-    final SootMethod increase =
-        isProfiling ? Scene.v().loadClassAndSupport("MultiCounter").getMethod("void increase(int)") : null;
+    final SootMethod increase
+        = isProfiling ? Scene.v().loadClassAndSupport("MultiCounter").getMethod("void increase(int)") : null;
 
     final Chain<Unit> units = body.getUnits();
     for (Iterator<Unit> stmtIt = units.snapshotIterator(); stmtIt.hasNext();) {

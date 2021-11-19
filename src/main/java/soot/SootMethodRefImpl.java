@@ -29,7 +29,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.javaToJimple.LocalGenerator;
+import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
@@ -317,7 +317,7 @@ public class SootMethodRefImpl implements SootMethodRef {
     JimpleBody body = jimp.newBody(m);
     m.setActiveBody(body);
 
-    final LocalGenerator lg = new LocalGenerator(body);
+    final LocalGenerator lg = Scene.v().createLocalGenerator(body);
 
     // For producing valid Jimple code, we need to access all parameters.
     // Otherwise, methods like "getThisLocal()" will fail.

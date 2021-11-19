@@ -38,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.asm.AsmUtil;
-import soot.javaToJimple.LocalGenerator;
 import soot.jimple.ClassConstant;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
@@ -369,8 +368,8 @@ public class LambdaMetaFactory {
         }
       }
 
-      // rename locals consistent with JimpleBodyPack
-      LocalNameStandardizer.v().transform(jb);
+      // rename locals consistent with JimpleBodyPack, at least when it is activated
+      LocalNameStandardizer.v().transform(jb, "jb.lns", PhaseOptions.v().getPhaseOptions("jb.lns"));
       return jb;
     }
 
@@ -384,7 +383,7 @@ public class LambdaMetaFactory {
     private void getInitBody(SootClass tclass, JimpleBody jb) {
       final Jimple jimp = Jimple.v();
       PatchingChain<Unit> us = jb.getUnits();
-      LocalGenerator lc = new LocalGenerator(jb);
+      LocalGenerator lc = Scene.v().createLocalGenerator(jb);
 
       // @this
       Local l = lc.generateLocal(tclass.getType());
@@ -418,7 +417,7 @@ public class LambdaMetaFactory {
     private void getBootstrapBody(SootClass tclass, JimpleBody jb) {
       final Jimple jimp = Jimple.v();
       PatchingChain<Unit> us = jb.getUnits();
-      LocalGenerator lc = new LocalGenerator(jb);
+      LocalGenerator lc = Scene.v().createLocalGenerator(jb);
 
       List<Value> capValues = new ArrayList<Value>();
       List<Type> capTypes = new ArrayList<Type>();
@@ -446,7 +445,7 @@ public class LambdaMetaFactory {
     private void getInvokeBody(SootClass tclass, JimpleBody jb) {
       final Jimple jimp = Jimple.v();
       PatchingChain<Unit> us = jb.getUnits();
-      LocalGenerator lc = new LocalGenerator(jb);
+      LocalGenerator lc = Scene.v().createLocalGenerator(jb);
 
       // @this
       Local this_ = lc.generateLocal(tclass.getType());

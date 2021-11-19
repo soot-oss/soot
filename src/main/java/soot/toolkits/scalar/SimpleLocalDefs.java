@@ -152,6 +152,7 @@ public class SimpleLocalDefs implements LocalDefs {
           continue;
         }
 
+        localRange[i + 1] = j;
         this.locals.put(locals[i], i);
 
         if (currUnitList.size() >= 2) {
@@ -242,7 +243,6 @@ public class SimpleLocalDefs implements LocalDefs {
       }
     }
 
-    @Override
     protected FlowBitSet newInitialFlow() {
       return new FlowBitSet();
     }

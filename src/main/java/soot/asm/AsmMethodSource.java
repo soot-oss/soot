@@ -21,6 +21,7 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
@@ -299,7 +300,7 @@ import soot.util.Chain;
  *
  * @author Aaloan Miftah
  */
-final class AsmMethodSource implements MethodSource {
+public class AsmMethodSource implements MethodSource {
   private static final Logger logger = LoggerFactory.getLogger(AsmMethodSource.class);
 
   private static final Operand DWORD_DUMMY = new Operand(null, null);
@@ -323,8 +324,8 @@ final class AsmMethodSource implements MethodSource {
   private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
 
   /* -state fields- */
-  private int nextLocal;
-  private Map<Integer, Local> locals;
+  protected int nextLocal;
+  protected Map<Integer, Local> locals;
   private Multimap<LabelNode, UnitBox> labels;
   private Map<AbstractInsnNode, Unit> units;
   private ArrayList<Operand> stack;
@@ -335,8 +336,8 @@ final class AsmMethodSource implements MethodSource {
   private Table<AbstractInsnNode, AbstractInsnNode, Edge> edges;
   private ArrayDeque<Edge> conversionWorklist;
 
-  AsmMethodSource(int maxLocals, InsnList insns, List<LocalVariableNode> localVars, List<TryCatchBlockNode> tryCatchBlocks,
-      String module) {
+  public AsmMethodSource(int maxLocals, InsnList insns, List<LocalVariableNode> localVars,
+      List<TryCatchBlockNode> tryCatchBlocks, String module) {
     this.maxLocals = maxLocals;
     this.instructions = insns;
     this.localVars = localVars;
@@ -387,27 +388,32 @@ final class AsmMethodSource implements MethodSource {
     Integer i = idx;
     Local l = locals.get(i);
     if (l == null) {
-      String name;
-      if (localVars != null) {
-        name = null;
-        for (LocalVariableNode lvn : localVars) {
-          // Ignore LocalVariableNode which don't cover any real units
-          if (lvn.index == idx && lvn.start != lvn.end) {
-            name = lvn.name;
-            break;
-          }
-        }
-        /* normally for try-catch blocks */
-        if (name == null) {
-          name = "l" + idx;
-        }
-      } else {
-        name = "l" + idx;
-      }
+      String name = getLocalName(idx);
       l = Jimple.v().newLocal(name, UnknownType.v());
       locals.put(i, l);
     }
     return l;
+  }
+
+  protected String getLocalName(int idx) {
+    String name;
+    if (localVars != null) {
+      name = null;
+      for (LocalVariableNode lvn : localVars) {
+        // Ignore LocalVariableNode which don't cover any real units
+        if (lvn.index == idx && lvn.start != lvn.end) {
+          name = lvn.name;
+          break;
+        }
+      }
+      /* normally for try-catch blocks */
+      if (name == null) {
+        name = "l" + idx;
+      }
+    } else {
+      name = "l" + idx;
+    }
+    return name;
   }
 
   private void push(Operand opr) {
@@ -547,7 +553,7 @@ final class AsmMethodSource implements MethodSource {
     }
   }
 
-  Local newStackLocal() {
+  protected Local newStackLocal() {
     Integer idx = nextLocal++;
     Local l = Jimple.v().newLocal("$stack" + idx, UnknownType.v());
     locals.put(idx, l);
@@ -1901,7 +1907,7 @@ final class AsmMethodSource implements MethodSource {
     }
     worklist.add(new Edge(instructions.getFirst(), new ArrayList<Operand>()));
     conversionWorklist = worklist;
-    edges = HashBasedTable.create(1, 1);
+    edges = HashBasedTable.create(instructions.size(), 1);
 
     do {
       Edge edge = worklist.pollLast();
@@ -2302,7 +2308,7 @@ final class AsmMethodSource implements MethodSource {
    * Thus, this method checks for these ambiguous cases while the LocalVariableTable is still available, and assigns a unique
    * name to each local that is based on the original name from the LocalVariableTable and does not use the '#' character.
    */
-  private void tryCorrectingLocalNames(final Jimple jimp, final JimpleBody jb) {
+  protected void tryCorrectingLocalNames(final Jimple jimp, final JimpleBody jb) {
     final Chain<Local> jbLocals = jb.getLocals();
     final int sizeLVT = this.localVars.size();
     if (sizeLVT > 0) {

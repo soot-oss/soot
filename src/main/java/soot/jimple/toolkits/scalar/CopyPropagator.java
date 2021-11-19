@@ -57,7 +57,7 @@ import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLnPosTag;
 import soot.tagkit.Tag;
 import soot.toolkits.exceptions.ThrowAnalysis;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
@@ -101,6 +101,7 @@ public class CopyPropagator extends BodyTransformer {
    */
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> opts) {
+
     if (Options.v().verbose()) {
       logger.debug("[" + b.getMethod().getName() + "] Propagating copies...");
     }
@@ -110,7 +111,7 @@ public class CopyPropagator extends BodyTransformer {
     }
 
     // Count number of definitions for each local.
-    Map<Local, Integer> localToDefCount = new HashMap<Local, Integer>();
+    Map<Local, Integer> localToDefCount = new HashMap<Local, Integer>(b.getLocalCount() * 2 + 1);
     for (Unit u : b.getUnits()) {
       if (u instanceof DefinitionStmt) {
         Value leftOp = ((DefinitionStmt) u).getLeftOp();
@@ -136,9 +137,14 @@ public class CopyPropagator extends BodyTransformer {
       int fastCopyPropagationCount = 0;
       int slowCopyPropagationCount = 0;
 
-      UnitGraph graph = new ExceptionalUnitGraph(b, throwAnalysis, forceOmitExceptingUnitEdges);
+      UnitGraph graph
+          = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b, throwAnalysis, forceOmitExceptingUnitEdges);
       LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph);
       CPOptions options = new CPOptions(opts);
+      boolean onlyRegularLocals = options.only_regular_locals();
+      boolean onlyStackLocals = options.only_stack_locals();
+      boolean allLocals = onlyRegularLocals && onlyStackLocals;
+
       // Perform a local propagation pass.
       for (Unit u : (new PseudoTopologicalOrderer<Unit>()).newList(graph, false)) {
         for (ValueBox useBox : u.getUseBoxes()) {
@@ -148,11 +154,11 @@ public class CopyPropagator extends BodyTransformer {
 
             // We force propagating nulls. If a target can only be
             // null due to typing, we always inline that constant.
-            if (!(l.getType() instanceof NullType)) {
-              if (options.only_regular_locals() && l.getName().startsWith("$")) {
+            if (!allLocals && !(l.getType() instanceof NullType)) {
+              if (onlyRegularLocals && l.isStackLocal()) {
                 continue;
               }
-              if (options.only_stack_locals() && !l.getName().startsWith("$")) {
+              if (onlyStackLocals && !l.isStackLocal()) {
                 continue;
               }
             }

@@ -97,7 +97,7 @@ public class SootClassBuilder extends ClassVisitor {
     return klass;
   }
 
-  void addDep(String s) {
+  protected void addDep(String s) {
     addDep(makeRefType(AsmUtil.baseTypeName(s)));
   }
 
@@ -107,7 +107,7 @@ public class SootClassBuilder extends ClassVisitor {
    * @param s
    *          name, or type of class.
    */
-  void addDep(Type s) {
+  protected void addDep(Type s) {
     deps.add(s);
   }
 
@@ -213,7 +213,11 @@ public class SootClassBuilder extends ClassVisitor {
     if (signature != null) {
       method.addTag(new SignatureTag(signature));
     }
-    return new MethodBuilder(klass.getOrAddMethod(method), this, desc, exceptions);
+    return createMethodBuilder(klass.getOrAddMethod(method), desc, exceptions);
+  }
+
+  protected MethodVisitor createMethodBuilder(SootMethod sootMethod, String desc, String[] exceptions) {
+    return new MethodBuilder(sootMethod, this, desc, exceptions);
   }
 
   @Override

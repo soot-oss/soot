@@ -53,6 +53,7 @@ import soot.FloatType;
 import soot.IntType;
 import soot.Kind;
 import soot.Local;
+import soot.LocalGenerator;
 import soot.LongType;
 import soot.MethodContext;
 import soot.MethodOrMethodContext;
@@ -74,7 +75,6 @@ import soot.Type;
 import soot.Unit;
 import soot.UnitPatchingChain;
 import soot.Value;
-import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.FieldRef;
@@ -105,6 +105,7 @@ import soot.options.CGOptions;
 import soot.options.Options;
 import soot.options.SparkOptions;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.HashMultiMap;
 import soot.util.IterableNumberer;
 import soot.util.LargeNumberedMap;
@@ -743,7 +744,7 @@ public class OnFlyCallGraphBuilder {
       ics = new InvokeCallSite(s, container, d, l);
     } else {
       if (analysisKey != container) {
-        ExceptionalUnitGraph graph = new ExceptionalUnitGraph(container.getActiveBody());
+        ExceptionalUnitGraph graph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(container.getActiveBody());
         nullnessCache = new NullnessAnalysis(graph);
         arrayCache = new ConstantArrayAnalysis(graph, container.getActiveBody());
         analysisKey = container;
@@ -1291,7 +1292,7 @@ public class OnFlyCallGraphBuilder {
         final Jimple jimp = Jimple.v();
         final Body body = container.getActiveBody();
         final UnitPatchingChain units = body.getUnits();
-        final LocalGenerator lg = new LocalGenerator(body);
+        final LocalGenerator lg = Scene.v().createLocalGenerator(body);
 
         // exc = new Error
         RefType runtimeExceptionType = RefType.v("java.lang.Error");

@@ -51,7 +51,7 @@ import soot.Trap;
 import soot.Type;
 import soot.Unit;
 import soot.ValueBox;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.LiveLocals;
 import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.util.Chain;
@@ -249,7 +249,7 @@ public class XMLPrinter {
         new String[] { String.valueOf(labelCount++), currentLabel, cleanMethodName });
 
     // include any analysis which will be used in the xml output
-    final LiveLocals sll = new SimpleLiveLocals(new ExceptionalUnitGraph(body));
+    final LiveLocals sll = new SimpleLiveLocals(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body));
 
     // lists
     ArrayList<String> useList = new ArrayList<String>();

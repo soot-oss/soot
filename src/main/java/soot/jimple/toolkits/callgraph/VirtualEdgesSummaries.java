@@ -795,6 +795,10 @@ public class VirtualEdgesSummaries {
 
   }
 
+  public boolean isEmpty() {
+    return instanceinvokeEdges.isEmpty() && staticinvokeEdges.isEmpty();
+  }
+
   public Set<VirtualEdge> getAllVirtualEdges() {
     Set<VirtualEdge> allEdges = new HashSet<>(instanceinvokeEdges.size() + staticinvokeEdges.size());
     allEdges.addAll(instanceinvokeEdges.values());
