@@ -637,11 +637,15 @@ public class VirtualEdgesSummaries {
     }
 
     public void addTarget(VirtualEdgeTarget target) {
-      targets.add(target);
+      if (!targets.contains(target)) {
+        targets.add(target);
+      }
     }
 
     public void addTargets(Collection<? extends VirtualEdgeTarget> targets) {
-      this.targets.addAll(targets);
+      for (VirtualEdgeTarget target : targets) {
+        addTarget(target);
+      }
     }
 
     public List<VirtualEdgeTarget> getTargets() {
