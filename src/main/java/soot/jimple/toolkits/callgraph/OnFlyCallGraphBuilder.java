@@ -857,7 +857,7 @@ public class OnFlyCallGraphBuilder {
     Local targetLocal = null;
     if (target.isBase()) {
       targetLocal = receiver;
-    } else if (target.argIndex >= ie.getArgCount()) {
+    } else if (target.argIndex < ie.getArgCount()) {
       Value runnable = ie.getArg(target.argIndex);
       if (runnable instanceof Local) {
         targetLocal = (Local) runnable;
