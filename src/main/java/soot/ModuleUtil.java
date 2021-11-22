@@ -52,7 +52,7 @@ import soot.options.Options;
  *
  * @author Andreas Dann
  */
-public final class ModuleUtil {
+public class ModuleUtil {
   private static final Logger logger = LoggerFactory.getLogger(ModuleUtil.class);
 
   /*
@@ -211,8 +211,9 @@ public final class ModuleUtil {
   private static List<String> parseJavaBasePackage() {
     List<String> packages = new ArrayList<>();
     Path excludeFile = Paths.get(JAVABASEFILE);
-    try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.exists(excludeFile)
-        ? Files.newInputStream(excludeFile) : ModuleUtil.class.getResourceAsStream('/' + JAVABASEFILE)))) {
+    try (BufferedReader reader
+        = new BufferedReader(new InputStreamReader(Files.exists(excludeFile) ? Files.newInputStream(excludeFile)
+            : ModuleUtil.class.getResourceAsStream('/' + JAVABASEFILE)))) {
       for (String line; (line = reader.readLine()) != null;) {
         packages.add(line);
       }
