@@ -130,8 +130,9 @@ public class DefaultTypingStrategy implements ITypingStrategy {
   public void finalizeTypes(Typing tp) {
     for (Local l : tp.getAllLocals()) {
       Type t = tp.get(l);
-      if (!t.isAllowedInFinalCode())
+      if (!t.isAllowedInFinalCode()) {
         tp.set(l, t.getDefaultFinalType());
+      }
     }
   }
 
