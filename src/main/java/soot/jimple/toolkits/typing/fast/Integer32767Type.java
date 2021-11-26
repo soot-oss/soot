@@ -28,7 +28,9 @@ import soot.G;
 import soot.IntegerType;
 import soot.PrimType;
 import soot.RefType;
+import soot.ShortType;
 import soot.Singletons;
+import soot.Type;
 
 /**
  * @author Ben Bellamy
@@ -61,4 +63,10 @@ public class Integer32767Type extends PrimType implements IntegerType {
   public boolean isAllowedInFinalCode() {
     return false;
   }
+
+  @Override
+  public Type getDefaultFinalType() {
+    return ShortType.v();
+  }
+
 }

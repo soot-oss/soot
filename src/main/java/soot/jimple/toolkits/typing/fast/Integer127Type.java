@@ -1,5 +1,7 @@
 package soot.jimple.toolkits.typing.fast;
 
+import soot.ByteType;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -29,6 +31,7 @@ import soot.IntegerType;
 import soot.PrimType;
 import soot.RefType;
 import soot.Singletons;
+import soot.Type;
 
 /**
  * @author Ben Bellamy
@@ -61,4 +64,10 @@ public class Integer127Type extends PrimType implements IntegerType {
   public boolean isAllowedInFinalCode() {
     return false;
   }
+
+  @Override
+  public Type getDefaultFinalType() {
+    return ByteType.v();
+  }
+
 }
