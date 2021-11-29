@@ -39,7 +39,7 @@ jobs:
         java-version: '8'
     - name: Build and test Java 8
       run: |
-        mvn -B clean -DskipTests package -PJava8 -PDeploy
+        mvn -B clean -DskipTests package -PJava8 -Pdeploy
       
     # has to happen in same job, so that the documention was already created (would require another checkout and maven run otherwise)
     - name: Get Version
