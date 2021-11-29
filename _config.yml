@@ -1,7 +1,0 @@
-highlighter: rouge
-baseurl: /soot
-
-title: Soot
-description: Soot - A framework for analyzing and transforming Java and Android applications
-show_downloads: false
-theme: jekyll-theme-slate
