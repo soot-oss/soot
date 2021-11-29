@@ -49,7 +49,7 @@ jobs:
     - name: Organize documentation files for upload
       shell: bash
       env:
-        docdir: ./build/docs/
+        docdir: ./build/docs
         releasedir: ${docdir}/${{ steps.version.outputs.version }}
       run: |
         mkdir -p ${releasedir}/jdoc
