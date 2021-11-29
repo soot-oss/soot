@@ -25,7 +25,7 @@ package soot.tagkit;
 /**
  * Represents the deprecated attribute used by fields, methods and classes
  * 
- * The two attributes <code>forRemoval</code> and <code>since</code> can only occur in classes loaded from Android DEX code.
+ * The two attributes <code>forRemoval</code> and <code>since</code> were introduced with Java 9.
  */
 public class DeprecatedTag implements Tag {
 
@@ -60,20 +60,10 @@ public class DeprecatedTag implements Tag {
     return "Deprecated";
   }
 
-  /**
-   * Only possible for Android DEX code
-   * 
-   * @return
-   */
   public Boolean getForRemoval() {
     return forRemoval;
   }
 
-  /**
-   * Only possible for Android DEX code
-   * 
-   * @return
-   */
   public String getSince() {
     return since;
   }
