@@ -27,22 +27,44 @@ jobs:
           mvn -B clean license:check-file-header -Dlicence-check.failOnMissingHeader=true
     
   BuildAndTest:
-    name: Build and Test with java ${{ matrix.java_version }}
+    name: Build and Test with java 8
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java_version: ['8', '9', '11']
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Use Java ${{ matrix.java_version }}
+    - name: Use Java 8
       uses: actions/setup-java@v1
       with:
-        java-version: ${{ matrix.java_version }}
-    - name: Build and test Java ${{ matrix.java_version }}
+        java-version: '8'
+    - name: Build and test Java 8
       run: |
-        mvn -B clean test -PJava${{ matrix.java_version }}
+        mvn -B clean -DskipTests package -PJava8 -PDeploy
+      
+    # has to happen in same job, so that the documention was already created (would require another checkout and maven run otherwise)
+    - name: Get Version
+      id: version
+      run: echo ::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+
+    - name: Organize documentation files for upload
+      shell: bash
+      env:
+        docdir: ./build/docs/${{ steps.version.outputs.version }}
+      run: |
+        mkdir -p ${docdir}/jdoc
+        unzip ./target/sootclasses-trunk-javadoc.jar -d ${docdir}/jdoc/
+        mkdir -p ${docdir}options
+        cp ./doc/soot_options.htm ${docdir}/options
+        cp ./doc/soot_options.css ${docdir}/options
+        cp ./doc/index.html ${docdir}/
+
+
+    - name: Deploy JavaDoc to GH pages
+      uses: JamesIves/github-pages-deploy-action@4.1.5
+      with:
+        branch: gh-pages # The branch the action should deploy to.
+        folder: build/docs/ # The folder the action should deploy.
+
         
   DeployArtifacts:
     name: Deploy artifacts to Maven Central
