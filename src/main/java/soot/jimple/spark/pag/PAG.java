@@ -1091,9 +1091,9 @@ public class PAG implements PointsToAnalysis {
 
       addEdge(parm, thiz);
       pval = addInterproceduralAssignment(parm, thiz, e);
-      callToMethod.put(ie, srcmpag.getMethod());
 
       if (callAssigns != null) {
+        callToMethod.put(ie, srcmpag.getMethod());
         boolean virtualCall = callAssigns.containsKey(ie);
         callAssigns.put(ie, pval);
         if (virtualCall) {
