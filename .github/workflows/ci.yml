@@ -50,8 +50,8 @@ jobs:
       shell: bash
       env:
         docdir: ./build/docs
-        releasedir: ${docdir}/${{ steps.version.outputs.version }}
       run: |
+        export releasedir=${docdir}/${{ steps.version.outputs.version }} # env variables cannot contain other env variables
         mkdir -p ${releasedir}/jdoc
         unzip ./target/sootclasses-trunk-javadoc.jar -d ${releasedir}/jdoc/
         mkdir -p ${releasedir}/options
@@ -97,7 +97,7 @@ jobs:
       - name: Organize documentation files for upload
         shell: bash
         env:
-          docdir: ./build/docs/
+          docdir: ./build/docs
           releasedir: ${docdir}/${{ steps.version.outputs.version }}
         run: |
           mkdir -p ${releasedir}/jdoc
