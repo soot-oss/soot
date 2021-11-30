@@ -1102,8 +1102,6 @@ public class PAG implements PointsToAnalysis {
       }
     } else if (e.kind() == Kind.HANDLER) {
       InvokeExpr ie = e.srcStmt().getInvokeExpr();
-      boolean virtualCall = callAssigns.containsKey(ie);
-      assert virtualCall == true;
 
       Node base = srcmpag.nodeFactory().getNode(((VirtualInvokeExpr) ie).getBase());
       base = srcmpag.parameterize(base, e.srcCtxt());
@@ -1116,6 +1114,8 @@ public class PAG implements PointsToAnalysis {
       addEdge(base, thiz);
       pval = addInterproceduralAssignment(base, thiz, e);
       if (callAssigns != null) {
+        boolean virtualCall = callAssigns.containsKey(ie);
+        assert virtualCall == true;
         callAssigns.put(ie, pval);
         callToMethod.put(ie, srcmpag.getMethod());
         virtualCallsToReceivers.put(ie, base);
