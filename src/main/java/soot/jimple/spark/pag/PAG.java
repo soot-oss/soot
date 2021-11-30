@@ -1094,8 +1094,7 @@ public class PAG implements PointsToAnalysis {
 
       if (callAssigns != null) {
         callToMethod.put(ie, srcmpag.getMethod());
-        boolean virtualCall = callAssigns.containsKey(ie);
-        callAssigns.put(ie, pval);
+        boolean virtualCall = !callAssigns.put(ie, pval);
         if (virtualCall) {
           virtualCallsToReceivers.putIfAbsent(ie, parm);
         }
@@ -1114,9 +1113,8 @@ public class PAG implements PointsToAnalysis {
       addEdge(base, thiz);
       pval = addInterproceduralAssignment(base, thiz, e);
       if (callAssigns != null) {
-        boolean virtualCall = callAssigns.containsKey(ie);
+        boolean virtualCall = !callAssigns.put(ie, pval);
         assert virtualCall == true;
-        callAssigns.put(ie, pval);
         callToMethod.put(ie, srcmpag.getMethod());
         virtualCallsToReceivers.put(ie, base);
       }
@@ -1423,8 +1421,7 @@ public class PAG implements PointsToAnalysis {
       addEdge(baseNode, thisRef);
       Pair<Node, Node> pval = addInterproceduralAssignment(baseNode, thisRef, e);
       if (callAssigns != null) {
-        boolean virtualCall = callAssigns.containsKey(ie);
-        callAssigns.put(ie, pval);
+        boolean virtualCall = !callAssigns.put(ie, pval);
         callToMethod.put(ie, srcmpag.getMethod());
         if (virtualCall) {
           virtualCallsToReceivers.putIfAbsent(ie, baseNode);
