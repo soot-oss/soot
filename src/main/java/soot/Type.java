@@ -119,4 +119,13 @@ public abstract class Type implements Switchable, Serializable, Numberable {
   public final void setNumber(int number) {
     this.number = number;
   }
+
+  /**
+   * If this type is not allowed in final code, this method provides a replacement type that is allowed in final code
+   * 
+   * @return The replacement type
+   */
+  public Type getDefaultFinalType() {
+    return this;
+  }
 }

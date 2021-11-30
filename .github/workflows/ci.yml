@@ -135,4 +135,24 @@ jobs:
             mkdir -p ${basedir}/options
             cp ${file_prefix}-soot_options.htm ${basedir}/options
             rm ${file_prefix}-soot_options.htm
-      
+
+      - name: Organize documentation files for upload
+        if: false
+        shell: bash
+        env:
+          docdir: ./build/docs/{{ steps.version.outputs.version }}
+        run: |
+          mkdir -p ${docdir}/jdoc
+          unzip ./target/sootclasses-trunk-javadoc.jar -d ${docdir}/jdoc/
+          mkdir -p ${docdir}options
+          cp ./doc/soot_options.htm ${docdir}/options
+          cp ./doc/soot_options.css ${docdir}/options
+          cp ./doc/index.html ${docdir}/
+
+
+      - name: Deploy JavaDoc to GH pages
+        if: false
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: build/docs/ # The folder the action should deploy.

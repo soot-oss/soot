@@ -63,4 +63,13 @@ public interface ITypingStrategy {
    *          the hierarchy
    */
   public void minimize(List<Typing> tgs, IHierarchy h);
+
+  /**
+   * Finalizes the given types, i.e., converts intermediate types such as [0..1] to final types such as <code>boolean</code>.
+   * 
+   * @param tp
+   *          The typing to finalize
+   */
+  public void finalizeTypes(Typing tp);
+
 }
