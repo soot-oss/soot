@@ -26,7 +26,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -113,6 +112,11 @@ public class PAG implements PointsToAnalysis {
     typeManager = new TypeManager(this);
     if (!opts.ignore_types()) {
       typeManager.setFastHierarchy(() -> Scene.v().getOrMakeFastHierarchy());
+    }
+    if (opts.cs_demand()) {
+      virtualCallsToReceivers = new HashMap<InvokeExpr, Node>();
+      callToMethod = new HashMap<InvokeExpr, SootMethod>();
+      callAssigns = new HashMultiMap<InvokeExpr, Pair<Node, Node>>();
     }
     switch (opts.set_impl()) {
       case SparkOptions.set_impl_hash:
@@ -1053,18 +1057,12 @@ public class PAG implements PointsToAnalysis {
   public Pair<Node, Node> addInterproceduralAssignment(Node from, Node to, Edge e) {
     Pair<Node, Node> val = new Pair<Node, Node>(from, to);
     if (runGeomPTA) {
-      if (assign2edges == null) {
-        assign2edges = new HashMultiMap<>();
-      }
       assign2edges.put(val, e);
     }
     return val;
   }
 
   public Set<Edge> lookupEdgesForAssignment(Pair<Node, Node> val) {
-    if (assign2edges == null) {
-      return Collections.emptySet();
-    }
     return assign2edges.get(val);
   }
 
@@ -1093,8 +1091,19 @@ public class PAG implements PointsToAnalysis {
 
       addEdge(parm, thiz);
       pval = addInterproceduralAssignment(parm, thiz, e);
+      callToMethod.put(ie, srcmpag.getMethod());
+
+      if (callAssigns != null) {
+        boolean virtualCall = callAssigns.containsKey(ie);
+        callAssigns.put(ie, pval);
+        if (virtualCall) {
+          virtualCallsToReceivers.putIfAbsent(ie, parm);
+        }
+      }
     } else if (e.kind() == Kind.HANDLER) {
       InvokeExpr ie = e.srcStmt().getInvokeExpr();
+      boolean virtualCall = callAssigns.containsKey(ie);
+      assert virtualCall == true;
 
       Node base = srcmpag.nodeFactory().getNode(((VirtualInvokeExpr) ie).getBase());
       base = srcmpag.parameterize(base, e.srcCtxt());
@@ -1106,6 +1115,11 @@ public class PAG implements PointsToAnalysis {
 
       addEdge(base, thiz);
       pval = addInterproceduralAssignment(base, thiz, e);
+      if (callAssigns != null) {
+        callAssigns.put(ie, pval);
+        callToMethod.put(ie, srcmpag.getMethod());
+        virtualCallsToReceivers.put(ie, base);
+      }
     } else if (e.kind() == Kind.PRIVILEGED) {
       // Flow from first parameter of doPrivileged() invocation
       // to this of target, and from return of target to the
@@ -1122,6 +1136,10 @@ public class PAG implements PointsToAnalysis {
 
       addEdge(parm, thiz);
       pval = addInterproceduralAssignment(parm, thiz, e);
+      if (callAssigns != null) {
+        callAssigns.put(ie, pval);
+        callToMethod.put(ie, srcmpag.getMethod());
+      }
 
       if (e.srcUnit() instanceof AssignStmt) {
         AssignStmt as = (AssignStmt) e.srcUnit();
@@ -1136,6 +1154,10 @@ public class PAG implements PointsToAnalysis {
 
         addEdge(ret, lhs);
         pval = addInterproceduralAssignment(ret, lhs, e);
+        if (callAssigns != null) {
+          callAssigns.put(ie, pval);
+          callToMethod.put(ie, srcmpag.getMethod());
+        }
       }
     } else if (e.kind() == Kind.FINALIZE) {
       Node srcThis = srcmpag.nodeFactory().caseThis();
@@ -1171,6 +1193,10 @@ public class PAG implements PointsToAnalysis {
       }
 
       pval = addInterproceduralAssignment(newObject, initThis, e);
+      if (callAssigns != null) {
+        callAssigns.put(s.getInvokeExpr(), pval);
+        callToMethod.put(s.getInvokeExpr(), srcmpag.getMethod());
+      }
     } else if (e.kind() == Kind.REFL_INVOKE) {
       // Flow (1) from first parameter of invoke(..) invocation
       // to this of target, (2) from the contents of the second (array)
@@ -1194,6 +1220,10 @@ public class PAG implements PointsToAnalysis {
 
         addEdge(parm0, thiz);
         pval = addInterproceduralAssignment(parm0, thiz, e);
+        if (callAssigns != null) {
+          callAssigns.put(ie, pval);
+          callToMethod.put(ie, srcmpag.getMethod());
+        }
       }
 
       // (2)
@@ -1219,6 +1249,9 @@ public class PAG implements PointsToAnalysis {
 
           addEdge(parm1contents, tgtParmI);
           pval = addInterproceduralAssignment(parm1contents, tgtParmI, e);
+          if (callAssigns != null) {
+            callAssigns.put(ie, pval);
+          }
         }
       }
 
@@ -1239,6 +1272,9 @@ public class PAG implements PointsToAnalysis {
 
         addEdge(ret, lhs);
         pval = addInterproceduralAssignment(ret, lhs, e);
+        if (callAssigns != null) {
+          callAssigns.put(ie, pval);
+        }
       }
     } else if (e.kind() == Kind.REFL_CLASS_NEWINSTANCE || e.kind() == Kind.REFL_CONSTR_NEWINSTANCE) {
       // (1) create a fresh node for the new object
@@ -1300,6 +1336,9 @@ public class PAG implements PointsToAnalysis {
 
             addEdge(parm1contents, tgtParmI);
             pval = addInterproceduralAssignment(parm1contents, tgtParmI, e);
+            if (callAssigns != null) {
+              callAssigns.put(iie, pval);
+            }
           }
         }
       }
@@ -1314,6 +1353,10 @@ public class PAG implements PointsToAnalysis {
       }
 
       pval = addInterproceduralAssignment(newObject, initThis, e);
+      if (callAssigns != null) {
+        callAssigns.put(s.getInvokeExpr(), pval);
+        callToMethod.put(s.getInvokeExpr(), srcmpag.getMethod());
+      }
     } else {
       throw new RuntimeException("Unhandled edge " + e);
     }
@@ -1361,7 +1404,11 @@ public class PAG implements PointsToAnalysis {
       parm = parm.getReplacement();
 
       addEdge(argNode, parm);
-      addInterproceduralAssignment(argNode, parm, e);
+      Pair<Node, Node> pval = addInterproceduralAssignment(argNode, parm, e);
+      if (callAssigns != null) {
+        callAssigns.put(ie, pval);
+        callToMethod.put(ie, srcmpag.getMethod());
+      }
     }
     if (ie instanceof InstanceInvokeExpr) {
       InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
@@ -1374,7 +1421,15 @@ public class PAG implements PointsToAnalysis {
       thisRef = tgtmpag.parameterize(thisRef, tgtContext);
       thisRef = thisRef.getReplacement();
       addEdge(baseNode, thisRef);
-      addInterproceduralAssignment(baseNode, thisRef, e);
+      Pair<Node, Node> pval = addInterproceduralAssignment(baseNode, thisRef, e);
+      if (callAssigns != null) {
+        boolean virtualCall = callAssigns.containsKey(ie);
+        callAssigns.put(ie, pval);
+        callToMethod.put(ie, srcmpag.getMethod());
+        if (virtualCall) {
+          virtualCallsToReceivers.putIfAbsent(ie, baseNode);
+        }
+      }
     }
     if (propagateReturn && s instanceof AssignStmt) {
       Value dest = ((AssignStmt) s).getLeftOp();
@@ -1389,7 +1444,11 @@ public class PAG implements PointsToAnalysis {
         retNode = retNode.getReplacement();
 
         addEdge(retNode, destNode);
-        addInterproceduralAssignment(retNode, destNode, e);
+        Pair<Node, Node> pval = addInterproceduralAssignment(retNode, destNode, e);
+        if (callAssigns != null) {
+          callAssigns.put(ie, pval);
+          callToMethod.put(ie, srcmpag.getMethod());
+        }
       }
     }
   }
@@ -1446,7 +1505,7 @@ public class PAG implements PointsToAnalysis {
   }
 
   private boolean runGeomPTA = false;
-  protected MultiMap<Pair<Node, Node>, Edge> assign2edges;
+  protected MultiMap<Pair<Node, Node>, Edge> assign2edges = new HashMultiMap<>();
   private final Map<Object, LocalVarNode> valToLocalVarNode = new HashMap<>(1000);
   private final Map<Object, GlobalVarNode> valToGlobalVarNode = new HashMap<>(1000);
   private final Map<Object, AllocNode> valToAllocNode = new HashMap<>(1000);
@@ -1465,5 +1524,9 @@ public class PAG implements PointsToAnalysis {
   }
 
   public NativeMethodDriver nativeMethodDriver;
+
+  public HashMultiMap<InvokeExpr, Pair<Node, Node>> callAssigns;
+  public Map<InvokeExpr, SootMethod> callToMethod;
+  public Map<InvokeExpr, Node> virtualCallsToReceivers;
 
 }
