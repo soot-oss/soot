@@ -64,7 +64,15 @@ public class TypeUtils {
     if (type instanceof DoubleType) {
       return 64;
     }
-
+    if (type instanceof Integer127Type) {
+      return 7;
+    }
+    if (type instanceof Integer32767Type) {
+      return 15;
+    }
+    if (type instanceof Integer1Type) {
+      return 1;
+    }
     throw new IllegalArgumentException(type + " not supported.");
   }
 
