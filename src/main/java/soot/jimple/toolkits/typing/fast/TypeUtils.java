@@ -65,10 +65,10 @@ public class TypeUtils {
       return 64;
     }
     if (type instanceof Integer127Type) {
-      return 7;
+      return 8;
     }
     if (type instanceof Integer32767Type) {
-      return 15;
+      return 16;
     }
     if (type instanceof Integer1Type) {
       return 1;
