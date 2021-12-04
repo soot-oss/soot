@@ -61,4 +61,14 @@ public class DoubleType extends PrimType {
   public RefType boxedType() {
     return RefType.v("java.lang.Double");
   }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Double.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return double.class;
+  }
 }

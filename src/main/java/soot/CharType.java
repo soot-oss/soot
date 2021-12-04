@@ -61,4 +61,14 @@ public class CharType extends PrimType implements IntegerType {
   public RefType boxedType() {
     return RefType.v("java.lang.Character");
   }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Character.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return char.class;
+  }
 }

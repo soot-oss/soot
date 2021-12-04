@@ -61,4 +61,15 @@ public class IntType extends PrimType implements IntegerType {
   public RefType boxedType() {
     return RefType.v("java.lang.Integer");
   }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Integer.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return int.class;
+  }
+
 }

@@ -61,4 +61,15 @@ public class ShortType extends PrimType implements IntegerType {
   public RefType boxedType() {
     return RefType.v("java.lang.Short");
   }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Short.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return short.class;
+  }
+
 }

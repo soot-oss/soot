@@ -61,4 +61,14 @@ public class FloatType extends PrimType {
   public RefType boxedType() {
     return RefType.v("java.lang.Float");
   }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Float.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return float.class;
+  }
 }

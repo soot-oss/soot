@@ -61,4 +61,14 @@ public class BooleanType extends PrimType implements IntegerType {
   public RefType boxedType() {
     return RefType.v("java.lang.Boolean");
   }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Boolean.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return boolean.class;
+  }
 }
