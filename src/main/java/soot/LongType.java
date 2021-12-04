@@ -30,6 +30,8 @@ import soot.util.Switch;
 @SuppressWarnings("serial")
 public class LongType extends PrimType {
 
+  public static final int HASHCODE = 0x023DA077;
+
   public LongType(Singletons.Global g) {
   }
 
@@ -44,7 +46,7 @@ public class LongType extends PrimType {
 
   @Override
   public int hashCode() {
-    return 0x023DA077;
+    return HASHCODE;
   }
 
   @Override

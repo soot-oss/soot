@@ -30,6 +30,8 @@ import soot.util.Switch;
 @SuppressWarnings("serial")
 public class FloatType extends PrimType {
 
+  public static final int HASHCODE = 0xA84373FA;
+
   public FloatType(Singletons.Global g) {
   }
 
@@ -44,7 +46,7 @@ public class FloatType extends PrimType {
 
   @Override
   public int hashCode() {
-    return 0xA84373FA;
+    return HASHCODE;
   }
 
   @Override
