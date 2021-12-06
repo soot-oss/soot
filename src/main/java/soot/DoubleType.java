@@ -30,6 +30,8 @@ import soot.util.Switch;
 @SuppressWarnings("serial")
 public class DoubleType extends PrimType {
 
+  public static final int HASHCODE = 0x4B9D7242;
+
   public DoubleType(Singletons.Global g) {
   }
 
@@ -44,7 +46,7 @@ public class DoubleType extends PrimType {
 
   @Override
   public int hashCode() {
-    return 0x4B9D7242;
+    return HASHCODE;
   }
 
   @Override
@@ -60,5 +62,15 @@ public class DoubleType extends PrimType {
   @Override
   public RefType boxedType() {
     return RefType.v("java.lang.Double");
+  }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Double.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return double.class;
   }
 }

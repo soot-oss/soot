@@ -69,4 +69,14 @@ public class Integer32767Type extends PrimType implements IntegerType {
     return ShortType.v();
   }
 
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Integer.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return int.class;
+  }
+
 }

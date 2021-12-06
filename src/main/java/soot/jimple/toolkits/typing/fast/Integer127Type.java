@@ -70,4 +70,14 @@ public class Integer127Type extends PrimType implements IntegerType {
     return ByteType.v();
   }
 
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Integer.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return int.class;
+  }
+
 }
