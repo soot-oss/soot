@@ -882,13 +882,16 @@ public class OnFlyCallGraphBuilder {
       // addVirtualCallSite() may change receiverToSites, which may lead to a ConcurrentModificationException
       // I'm not entirely sure whether we ought to deal with the new call sites that are being added, instead of
       // just working on a snapshot, though.
-      List<VirtualCallSite> indirectSites = new ArrayList<>(receiverToSites.get(targetLocal));
-      for (final VirtualCallSite site : indirectSites) {
-        if (w.getTargetMethod().equals(site.subSig())) {
-          for (VirtualEdgeTarget siteTarget : w.getTargets()) {
-            Stmt siteStmt = site.getStmt();
-            if (siteStmt.containsInvokeExpr()) {
-              processVirtualEdgeSummary(callSiteMethod, callSite, siteStmt, receiver, siteTarget, edgeType);
+
+      List<VirtualCallSite> indirectSites = receiverToSites.get(targetLocal);
+      if (indirectSites != null) {
+        for (final VirtualCallSite site : new ArrayList<>(indirectSites)) {
+          if (w.getTargetMethod().equals(site.subSig())) {
+            for (VirtualEdgeTarget siteTarget : w.getTargets()) {
+              Stmt siteStmt = site.getStmt();
+              if (siteStmt.containsInvokeExpr()) {
+                processVirtualEdgeSummary(callSiteMethod, callSite, siteStmt, receiver, siteTarget, edgeType);
+              }
             }
           }
         }
