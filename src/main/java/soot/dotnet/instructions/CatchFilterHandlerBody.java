@@ -40,9 +40,9 @@ public class CatchFilterHandlerBody {
         jb.getUnits().add(assignStmt);
 
         NopStmt filterCondFalseNop = Jimple.v().newNopStmt(); // jump to end of handler
-        CilBlockContainer handlerFilterContainerBlock = new CilBlockContainer(handlerMsg.getFilter(), dotnetBody);
+        CilBlockContainer handlerFilterContainerBlock = new CilBlockContainer(handlerMsg.getFilter(), dotnetBody, CilBlockContainer.BlockContainerKind.CATCH_FILTER);
         Body handlerFilterContainerBlockBody = handlerFilterContainerBlock.jimplify();
-        CilBlockContainer handlerBlock = new CilBlockContainer(handlerMsg.getBody(), dotnetBody);
+        CilBlockContainer handlerBlock = new CilBlockContainer(handlerMsg.getBody(), dotnetBody, CilBlockContainer.BlockContainerKind.CATCH_HANDLER);
         Body handlerBody = handlerBlock.jimplify();
 
         // replace return stmts with if/goto to skip handler or execute

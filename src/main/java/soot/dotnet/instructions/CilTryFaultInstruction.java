@@ -21,11 +21,11 @@ public class CilTryFaultInstruction extends AbstractCilnstruction {
     @Override
     public void jimplify(Body jb) {
         // try block
-        CilBlockContainer tryContainer = new CilBlockContainer(instruction.getTryBlock(), dotnetBody);
+        CilBlockContainer tryContainer = new CilBlockContainer(instruction.getTryBlock(), dotnetBody, CilBlockContainer.BlockContainerKind.TRY);
         Body tryContainerBlock = tryContainer.jimplify();
 
         // finally block
-        CilBlockContainer faultBlockContainer = new CilBlockContainer(instruction.getFaultBlock(), dotnetBody);
+        CilBlockContainer faultBlockContainer = new CilBlockContainer(instruction.getFaultBlock(), dotnetBody, CilBlockContainer.BlockContainerKind.FAULT);
         Body faultBlockContainerBody = faultBlockContainer.jimplify();
 
         // add fault block to cases, where an exception was thrown

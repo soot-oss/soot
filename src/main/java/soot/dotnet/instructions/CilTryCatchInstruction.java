@@ -27,7 +27,7 @@ public class CilTryCatchInstruction extends AbstractCilnstruction {
         NopStmt gotoEndTryCatchBlockNop = Jimple.v().newNopStmt();
 
         // try block
-        CilBlockContainer tryContainer = new CilBlockContainer(instruction.getTryBlock(), dotnetBody);
+        CilBlockContainer tryContainer = new CilBlockContainer(instruction.getTryBlock(), dotnetBody, CilBlockContainer.BlockContainerKind.TRY);
         Body tryContainerBlock = tryContainer.jimplify();
         if (CilBlockContainer.LastStmtIsNotReturn(tryContainerBlock)) {
             // if last stmt is not return, insert goto stmt

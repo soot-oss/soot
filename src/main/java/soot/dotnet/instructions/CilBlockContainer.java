@@ -4,10 +4,7 @@ import soot.*;
 import soot.dotnet.members.method.BlockEntryPointsManager;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.jimple.Jimple;
-import soot.jimple.ReturnStmt;
-import soot.jimple.ReturnVoidStmt;
-import soot.jimple.ThrowStmt;
+import soot.jimple.*;
 
 import java.util.ArrayList;
 
@@ -17,18 +14,22 @@ import java.util.ArrayList;
 public class CilBlockContainer implements CilInstruction {
 
     private final ProtoIlInstructions.IlBlockContainerMsg blockContainer;
-
-    public DotnetBody getDeclaringDotnetBody() {
-        return dotnetBody;
-    }
-
     private final DotnetBody dotnetBody;
     public final BlockEntryPointsManager blockEntryPointsManager;
+    private final Stmt skipBlockContainerStmt;
+    private final BlockContainerKind blockContainerKind;
 
     public CilBlockContainer(ProtoIlInstructions.IlBlockContainerMsg blockContainer, DotnetBody dotnetBody) {
+        this(blockContainer, dotnetBody, BlockContainerKind.NORMAL);
+    }
+
+    public CilBlockContainer(ProtoIlInstructions.IlBlockContainerMsg blockContainer, DotnetBody dotnetBody, BlockContainerKind blockContainerKind) {
         this.blockContainer = blockContainer;
         this.dotnetBody = dotnetBody;
+        this.blockContainerKind = blockContainerKind;
         this.blockEntryPointsManager = new BlockEntryPointsManager();
+
+        this.skipBlockContainerStmt = Jimple.v().newNopStmt();
     }
 
     @Override
@@ -44,6 +45,9 @@ public class CilBlockContainer implements CilInstruction {
             CilBlock cilBlock = new CilBlock(block, dotnetBody, this);
             cilBlock.jimplify(jb);
         }
+
+        if (isChildBlockContainer())
+            jb.getUnits().add(skipBlockContainerStmt);
 
         // swap labels with nop stmt to the real target
         blockEntryPointsManager.swapGotoEntriesInJBody(jb);
@@ -76,5 +80,38 @@ public class CilBlockContainer implements CilInstruction {
         return unit instanceof ReturnStmt ||
                 unit instanceof ReturnVoidStmt ||
                 unit instanceof ThrowStmt;
+    }
+
+    /**
+     * Define the type of a blockcontainer, if blockcontainer is try block, etc.
+     */
+    public enum BlockContainerKind {
+        NORMAL,
+        TRY,            // try block
+        CATCH_HANDLER,  // catch handler block
+        CATCH_FILTER,   // filter block of a catch handler
+        FAULT,          // fault block
+        FINALLY,        // finally block
+        CHILD
+    }
+
+    public DotnetBody getDeclaringDotnetBody() {
+        return dotnetBody;
+    }
+
+    public boolean isChildBlockContainer() {
+        return !getBlockContainerKind().equals(BlockContainerKind.NORMAL);
+    }
+
+    public BlockContainerKind getBlockContainerKind() {
+        return blockContainerKind;
+    }
+
+    /**
+     * Get the stmt with which this container is skipped (goto)
+     * @return skip stmt
+     */
+    public Stmt getSkipBlockContainerStmt() {
+        return skipBlockContainerStmt;
     }
 }

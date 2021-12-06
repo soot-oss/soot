@@ -44,7 +44,7 @@ public class CatchHandlerBody {
         // handler body
         Unit excStmt = Jimple.v().newIdentityStmt(exceptionVariable, Jimple.v().newCaughtExceptionRef());
         jb.getUnits().add(excStmt);
-        CilBlockContainer handlerBlock = new CilBlockContainer(handlerMsg.getBody(), dotnetBody);
+        CilBlockContainer handlerBlock = new CilBlockContainer(handlerMsg.getBody(), dotnetBody, CilBlockContainer.BlockContainerKind.CATCH_HANDLER);
         Body handlerBody = handlerBlock.jimplify();
         if (lastStmtIsNotReturn(handlerBody)) {
             // if last stmt is not return, insert goto stmt

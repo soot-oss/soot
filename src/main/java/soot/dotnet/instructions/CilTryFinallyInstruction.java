@@ -25,11 +25,11 @@ public class CilTryFinallyInstruction extends AbstractCilnstruction {
     @Override
     public void jimplify(Body jb) {
         // try block
-        CilBlockContainer tryContainer = new CilBlockContainer(instruction.getTryBlock(), dotnetBody);
+        CilBlockContainer tryContainer = new CilBlockContainer(instruction.getTryBlock(), dotnetBody, CilBlockContainer.BlockContainerKind.TRY);
         Body tryContainerBlock = tryContainer.jimplify();
 
         // finally block
-        CilBlockContainer finallyBlockContainer = new CilBlockContainer(instruction.getFinallyBlock(), dotnetBody);
+        CilBlockContainer finallyBlockContainer = new CilBlockContainer(instruction.getFinallyBlock(), dotnetBody, CilBlockContainer.BlockContainerKind.FINALLY);
         Body finallyBlockContainerBody = finallyBlockContainer.jimplify();
 
         // add finally block to all cases

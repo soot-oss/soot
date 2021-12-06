@@ -24,13 +24,20 @@ public class CilSwitchInstruction extends AbstractCilnstruction {
         Value key = cilExpr.jimplifyExpr(jb);
         int lowIndex = (int) instruction.getSwitchSections(0).getLabel();
         int highIndex = (int) instruction.getSwitchSections(instruction.getSwitchSectionsCount() - 1).getLabel();
+
+        // default target
         Unit defaultInstruct = Jimple.v().newNopStmt(); // dummy
         switch (instruction.getDefaultInst().getOpCode()) {
             case BRANCH:
                 cilBlock.getDeclaredBlockContainer().blockEntryPointsManager.gotoTargetsInBody.put(defaultInstruct, instruction.getDefaultInst().getTargetLabel());
                 break;
             case LEAVE:
-                dotnetBody.blockEntryPointsManager.gotoTargetsInBody.put(defaultInstruct, "RETURNLEAVE"); // TODO return label of blockcontainer and block change
+                if (cilBlock.getDeclaredBlockContainer().isChildBlockContainer() && !instruction.getDefaultInst().getTargetLabel().equals("IL_0000")) {
+                    defaultInstruct = cilBlock.getDeclaredBlockContainer().getSkipBlockContainerStmt(); // if child blockcontainer, jump to end of it
+                }
+                else {
+                    dotnetBody.blockEntryPointsManager.gotoTargetsInBody.put(defaultInstruct, "RETURNLEAVE");
+                }
                 break;
             default:
                 throw new RuntimeException("CilSwitchInstruction: Opcode " + instruction.getDefaultInst().getOpCode().name() + " not implemented!");
@@ -39,15 +46,21 @@ public class CilSwitchInstruction extends AbstractCilnstruction {
         List<Unit> targets = new ArrayList<>();
         for (ProtoIlInstructions.IlSwitchSectionMsg section : instruction.getSwitchSectionsList()) {
             NopStmt nopStmt = Jimple.v().newNopStmt(); // dummy target
-            targets.add(nopStmt);
             switch (section.getTargetInstr().getOpCode()) {
                 case BRANCH:
+                    targets.add(nopStmt);
                     // dotnetBody.blockEntryPointsManager.gotoTargetsInBody.put(nopStmt, section.getTargetInstr().getTargetLabel());
                     cilBlock.getDeclaredBlockContainer().blockEntryPointsManager.gotoTargetsInBody.put(nopStmt, section.getTargetInstr().getTargetLabel());
                     break;
                 case LEAVE:
-                    // dotnetBody.blockEntryPointsManager.gotoTargetsInBody.put(nopStmt, "END_" + section.getTargetInstr().getTargetLabel());
-                    dotnetBody.blockEntryPointsManager.gotoTargetsInBody.put(nopStmt, "RETURNLEAVE");
+                    if (cilBlock.getDeclaredBlockContainer().isChildBlockContainer() && !section.getTargetInstr().getTargetLabel().equals("IL_0000")) {
+                        targets.add(cilBlock.getDeclaredBlockContainer().getSkipBlockContainerStmt());
+                    }
+                    else {
+                        targets.add(nopStmt);
+                        // dotnetBody.blockEntryPointsManager.gotoTargetsInBody.put(nopStmt, "END_" + section.getTargetInstr().getTargetLabel());
+                        dotnetBody.blockEntryPointsManager.gotoTargetsInBody.put(nopStmt, "RETURNLEAVE");
+                    }
                     break;
                 default:
                     throw new RuntimeException("CilSwitchInstruction: Opcode " + section.getTargetInstr().getOpCode().name() + " not implemented!");
