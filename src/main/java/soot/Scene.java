@@ -143,8 +143,6 @@ public class Scene {
   private AndroidVersionInfo androidSDKVersionInfo;
   private int androidAPIVersion = -1;
 
-  private int released;
-
   public Scene(Singletons.Global g) {
     setReservedNames();
 
