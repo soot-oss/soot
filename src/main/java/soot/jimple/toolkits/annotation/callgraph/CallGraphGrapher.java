@@ -183,7 +183,7 @@ public class CallGraphGrapher extends SceneTransformer {
     if (sm != null) {
       return sm;
     } else {
-      return (SootMethod) sc.getMethods().get(0);
+      return (SootMethod) sc.getMethods().peek();
     }
   }
 

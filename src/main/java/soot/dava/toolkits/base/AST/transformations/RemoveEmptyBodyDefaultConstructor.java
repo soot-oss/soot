@@ -25,6 +25,7 @@ package soot.dava.toolkits.base.AST.transformations;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import soot.Body;
 import soot.SootClass;
@@ -52,7 +53,7 @@ public class RemoveEmptyBodyDefaultConstructor {
 
   public static void checkAndRemoveDefault(SootClass s) {
     debug("\n\nRemoveEmptyBodyDefaultConstructor----" + s.getName());
-    List methods = s.getMethods();
+    ConcurrentLinkedQueue<SootMethod> methods = s.getMethods();
     Iterator it = methods.iterator();
     List<SootMethod> constructors = new ArrayList<SootMethod>();
 

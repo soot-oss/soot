@@ -24,6 +24,7 @@ package soot.dava.toolkits.base.AST.transformations;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import soot.SootClass;
 import soot.SootMethod;
@@ -40,7 +41,7 @@ import soot.util.Chain;
 public class VoidReturnRemover {
 
   public static void cleanClass(SootClass s) {
-    List methods = s.getMethods();
+    ConcurrentLinkedQueue<SootMethod> methods = s.getMethods();
     Iterator it = methods.iterator();
     while (it.hasNext()) {
       removeReturn((SootMethod) it.next());

@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import soot.BooleanType;
 import soot.ByteType;
@@ -989,7 +990,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
     String toReturn = "preInit";
     int counter = 0;
 
-    List methodList = originalSootClass.getMethods();
+    ConcurrentLinkedQueue<SootMethod> methodList = originalSootClass.getMethods();
 
     boolean done = false; // havent found the name
     while (!done) {

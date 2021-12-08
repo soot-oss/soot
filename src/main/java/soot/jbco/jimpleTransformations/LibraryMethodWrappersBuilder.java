@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -229,9 +230,8 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
         randomClass = availableClasses.get(index);
       }
 
-      final List<SootMethod> methods = randomClass.getMethods();
-      index = Rand.getInt(methods.size());
-      final SootMethod randMethod = methods.get(index);
+      final ConcurrentLinkedQueue<SootMethod> methods = randomClass.getMethods();
+      final SootMethod randMethod = methods.peek();
       methodNewName = randMethod.getName();
     } while (methodNewName.equals(SootMethod.constructorName) || methodNewName.equals(SootMethod.staticInitializerName));
 

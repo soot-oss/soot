@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +83,7 @@ public class SootClass extends AbstractHost implements Numberable {
   protected SmallNumberedMap<NumberedString, SootMethod> subSigToMethods;
   // methodList is just for keeping the methods in a consistent order. It
   // needs to be kept consistent with subSigToMethods.
-  protected List<SootMethod> methodList;
+  protected ConcurrentLinkedQueue<SootMethod> methodList;
   protected Chain<SootClass> interfaces;
 
   protected boolean isInScene;
@@ -517,9 +518,9 @@ public class SootClass extends AbstractHost implements Numberable {
     };
   }
 
-  public List<SootMethod> getMethods() {
+  public ConcurrentLinkedQueue<SootMethod> getMethods() {
     checkLevel(SIGNATURES);
-    return (methodList != null) ? methodList : Collections.emptyList();
+    return (methodList != null) ? methodList : new ConcurrentLinkedQueue();
   }
 
   /**
@@ -676,7 +677,7 @@ public class SootClass extends AbstractHost implements Numberable {
      */
 
     if (methodList == null) {
-      this.methodList = Collections.synchronizedList(new ArrayList<>());
+      this.methodList = new ConcurrentLinkedQueue();
       this.subSigToMethods = new SmallNumberedMap<>();
     }
 
@@ -697,7 +698,7 @@ public class SootClass extends AbstractHost implements Numberable {
     }
 
     if (methodList == null) {
-      this.methodList = Collections.synchronizedList(new ArrayList<>());
+      this.methodList = new ConcurrentLinkedQueue();
       this.subSigToMethods = new SmallNumberedMap<>();
     }
 
