@@ -29,7 +29,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
