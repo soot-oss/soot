@@ -277,8 +277,11 @@ public abstract class DexTransformer extends BodyTransformer {
 
       } else if (baseDef instanceof IdentityStmt) {
         IdentityStmt stmt = (IdentityStmt) baseDef;
-        ArrayType at = (ArrayType) stmt.getRightOp().getType();
-        Type t = at.getArrayElementType();
+        Type t = stmt.getRightOp().getType();
+        if (t instanceof ArrayType) {
+          ArrayType at = (ArrayType) t;
+          t = at.getArrayElementType();
+        }
         if (depth == 0) {
           aType = t;
           break;
