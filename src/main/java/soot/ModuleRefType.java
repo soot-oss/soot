@@ -1,3 +1,5 @@
+package soot;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -19,30 +21,30 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package soot;
 
 import com.google.common.base.Optional;
 
 import java.util.LinkedList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.options.Options;
 
 /**
- * A class that models Java's reference types. RefTypes are parametrized by a class name. Two RefType are equal iff they are
- * parametrized by the same class name as a String. Extends RefType in order to deal with Java 9 modules.
+ * A class that models Java's reference types. RefTypes are parameterized by a class name. Two RefType are equal iff they are
+ * parameterized by the same class name as a String. Extends RefType in order to deal with Java 9 modules.
  * 
  * @author Andreas Dann
  */
 public class ModuleRefType extends RefType {
+  private static final Logger logger = LoggerFactory.getLogger(ModuleRefType.class);
+
+  private String moduleName;
+
   public ModuleRefType(Singletons.Global g) {
     super(g);
   }
-
-  public String getModuleName() {
-    return moduleName;
-  }
-
-  private String moduleName;
 
   protected ModuleRefType(String className, String moduleName) {
     super(className);
@@ -55,23 +57,22 @@ public class ModuleRefType extends RefType {
   }
 
   public static RefType v(String className, Optional<String> moduleName) {
-    String module = null;
-    if (moduleName.isPresent()) {
-      module = ModuleUtil.v().findModuleThatExports(className, moduleName.get());
-    }
-    if (!moduleName.isPresent() && Options.v().verbose()) {
-      G.v().out.println("[WARN] ModuleRefType called with empty module for: " + className);
+    final boolean isPresent = moduleName.isPresent();
+    String module = isPresent ? ModuleUtil.v().declaringModule(className, moduleName.get()) : null;
+
+    if (!isPresent && Options.v().verbose()) {
+      logger.warn("ModuleRefType called with empty module for: " + className);
     }
     RefType rt = ModuleScene.v().getRefTypeUnsafe(className, Optional.fromNullable(module));
     if (rt == null) {
-      if (!moduleName.isPresent()) {
-        rt = new ModuleRefType(className, null);
-      } else {
-        rt = new ModuleRefType(className, module);
-      }
+      rt = new ModuleRefType(className, isPresent ? module : null);
       ModuleScene.v().addRefType(rt);
     }
     return rt;
+  }
+
+  public String getModuleName() {
+    return moduleName;
   }
 
   /**
@@ -92,7 +93,7 @@ public class ModuleRefType extends RefType {
    */
   @Override
   public Type merge(Type other, Scene cm) {
-    if (other.equals(UnknownType.v()) || this.equals(other)) {
+    if (UnknownType.v().equals(other) || this.equals(other)) {
       return this;
     }
 
@@ -102,63 +103,39 @@ public class ModuleRefType extends RefType {
 
     {
       // Return least common superclass
+      final ModuleScene cmMod = (ModuleScene) cm;
 
-      SootClass thisClass = ((ModuleScene) cm).getSootClass(getClassName(), Optional.fromNullable(this.moduleName));
-      SootClass otherClass
-          = ((ModuleScene) cm).getSootClass(((RefType) other).getClassName(), Optional.fromNullable(this.moduleName));
-      SootClass javalangObject = cm.getObjectType().getSootClass();
+      final SootClass javalangObject = cm.getObjectType().getSootClass();
 
       LinkedList<SootClass> thisHierarchy = new LinkedList<>();
       LinkedList<SootClass> otherHierarchy = new LinkedList<>();
 
       // Build thisHierarchy
-      {
-        SootClass SootClass = thisClass;
-
-        for (;;) {
-          thisHierarchy.addFirst(SootClass);
-
-          if (SootClass == javalangObject) {
-            break;
-          }
-
-          if (SootClass.hasSuperclass()) {
-            SootClass = SootClass.getSuperclass();
-          } else {
-            SootClass = javalangObject;
-          }
+      for (SootClass sc = cmMod.getSootClass(getClassName(), Optional.fromNullable(this.moduleName));;) {
+        thisHierarchy.addFirst(sc);
+        if (sc == javalangObject) {
+          break;
         }
+        sc = sc.hasSuperclass() ? sc.getSuperclass() : javalangObject;
       }
 
       // Build otherHierarchy
-      {
-        SootClass SootClass = otherClass;
-
-        for (;;) {
-          otherHierarchy.addFirst(SootClass);
-
-          if (SootClass == javalangObject) {
-            break;
-          }
-
-          if (SootClass.hasSuperclass()) {
-            SootClass = SootClass.getSuperclass();
-          } else {
-            SootClass = javalangObject;
-          }
+      for (SootClass sc = cmMod.getSootClass(((RefType) other).getClassName(), Optional.fromNullable(this.moduleName));;) {
+        otherHierarchy.addFirst(sc);
+        if (sc == javalangObject) {
+          break;
         }
+        sc = sc.hasSuperclass() ? sc.getSuperclass() : javalangObject;
       }
 
       // Find least common superclass
       {
         SootClass commonClass = null;
-
         while (!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty()
             && otherHierarchy.getFirst() == thisHierarchy.getFirst()) {
           commonClass = otherHierarchy.removeFirst();
           thisHierarchy.removeFirst();
         }
-
         if (commonClass == null) {
           throw new RuntimeException("Could not find a common superclass for " + this + " and " + other);
         }
@@ -166,16 +143,17 @@ public class ModuleRefType extends RefType {
         return commonClass.getType();
       }
     }
-
   }
 
   @Override
   public Type getArrayElementType() {
-    if (getClassName().equals("java.lang.Object") || getClassName().equals("java.io.Serializable")
-        || getClassName().equals("java.lang.Cloneable")) {
-      return ModuleRefType.v("java.lang.Object", Optional.of("java.base"));
+    switch (getClassName()) {
+      case "java.lang.Object":
+      case "java.io.Serializable":
+      case "java.lang.Cloneable":
+        return ModuleRefType.v("java.lang.Object", Optional.of("java.base"));
+      default:
+        throw new RuntimeException("Attempt to get array base type of a non-array");
     }
-    throw new RuntimeException("Attempt to get array base type of a non-array");
   }
-
 }

@@ -27,14 +27,15 @@ import java.util.List;
 import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
+import soot.baf.BafBody;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
 /**
- * A basic validator that checks whether the length of the invoke statement's argument list matches the length of the target
- * methods's parameter type list.
+ * A basic {@link BodyValidator} that checks whether the length of the invoke statement's argument list matches the length of
+ * the target method's parameter type list.
  *
  * @author Steven Arzt
  */
@@ -47,13 +48,20 @@ public enum InvokeArgumentValidator implements BodyValidator {
 
   @Override
   public void validate(Body body, List<ValidationException> exceptions) {
-    for (Unit u : body.getUnits()) {
-      Stmt s = (Stmt) u;
-      if (s.containsInvokeExpr()) {
-        InvokeExpr iinvExpr = s.getInvokeExpr();
-        SootMethod callee = iinvExpr.getMethod();
-        if (callee != null && iinvExpr.getArgCount() != callee.getParameterCount()) {
-          exceptions.add(new ValidationException(s, "Invalid number of arguments"));
+    if (body instanceof BafBody) {
+      // NOTE: The AbstractInvokeInst used for invoke expression in the BafBody
+      // does not contain the method arguments, it instead expects them to be
+      // available on the stack when the invoke expression is executed. Thus,
+      // there is no way to check the condition but we must avoid crashing.
+    } else {
+      for (Unit unit : body.getUnits().getNonPatchingChain()) {
+        Stmt s = (Stmt) unit;
+        if (s.containsInvokeExpr()) {
+          InvokeExpr iinvExpr = s.getInvokeExpr();
+          SootMethod callee = iinvExpr.getMethod();
+          if (callee != null && iinvExpr.getArgCount() != callee.getParameterCount()) {
+            exceptions.add(new ValidationException(s, "Invalid number of arguments"));
+          }
         }
       }
     }
@@ -63,5 +71,4 @@ public enum InvokeArgumentValidator implements BodyValidator {
   public boolean isBasicValidator() {
     return true;
   }
-
 }

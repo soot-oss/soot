@@ -22,13 +22,16 @@ package soot.lambdaMetaFactory;
  */
 
 import org.junit.Test;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+
 import soot.testing.framework.AbstractTestingFramework;
 
 /**
- * Reproduces issue 1292: https://github.com/Sable/soot/issues/1292
+ * Reproduces issue 1292: https://github.com/soot-oss/soot/issues/1292
  *
  * @author raintung.li
  */
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class Issue1292Test extends AbstractTestingFramework {
 
   @Test

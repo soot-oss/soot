@@ -40,6 +40,7 @@ import soot.ByteType;
 import soot.CharType;
 import soot.DoubleType;
 import soot.FloatType;
+import soot.G;
 import soot.IntType;
 import soot.IntegerType;
 import soot.Local;
@@ -68,6 +69,7 @@ import soot.jimple.internal.StmtBox;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.FastColorer;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
@@ -106,6 +108,7 @@ public class JasminClass extends AbstractJasminClass {
     super(sootClass);
   }
 
+  @Override
   protected void assignColorsToLocals(Body body) {
     super.assignColorsToLocals(body);
 
@@ -115,23 +118,20 @@ public class JasminClass extends AbstractJasminClass {
     if (Options.v().time()) {
       Timers.v().packTimer.end();
     }
-
   }
 
-  protected void emitMethodBody(SootMethod method)// , Map options)
-  {
+  @Override
+  protected void emitMethodBody(SootMethod method) {
     if (Options.v().time()) {
       Timers.v().buildJasminTimer.end();
     }
 
     Body activeBody = method.getActiveBody();
-
     if (!(activeBody instanceof StmtBody)) {
       throw new RuntimeException("method: " + method.getName() + " has an invalid active body!");
     }
 
     StmtBody body = (StmtBody) activeBody;
-
     body.validate();
 
     // if(body == null)
@@ -140,31 +140,12 @@ public class JasminClass extends AbstractJasminClass {
       Timers.v().buildJasminTimer.start();
     }
 
-    Chain<Unit> units = body.getUnits();
-
-    ExceptionalUnitGraph stmtGraph = null;
-    LocalDefs ld = null;
-    LocalUses lu = null;
-
-    // let's create a u-d web for the ++ peephole optimization.
-
     if (Options.v().verbose()) {
       logger.debug("[" + body.getMethod().getName() + "] Performing peephole optimizations...");
     }
 
-    // boolean disablePeephole = PhaseOptions.getBoolean(options, "no-peephole");
-    boolean disablePeephole = true;
-
-    if (!disablePeephole) {
-      stmtGraph = new ExceptionalUnitGraph(body);
-      ld = LocalDefs.Factory.newLocalDefs(stmtGraph);
-      lu = LocalUses.Factory.newLocalUses(body, ld);
-
-    }
-
-    int stackLimitIndex = -1;
-
     subroutineToReturnAddressSlot = new HashMap<Unit, Integer>(10, 0.7f);
+    Chain<Unit> units = body.getUnits();
 
     // Determine the unitToLabel map
     {
@@ -173,25 +154,22 @@ public class JasminClass extends AbstractJasminClass {
 
       for (UnitBox ubox : body.getUnitBoxes(true)) {
         // Assign a label for each statement reference
-        {
-          StmtBox box = (StmtBox) ubox;
-
-          if (!unitToLabel.containsKey(box.getUnit())) {
-            unitToLabel.put(box.getUnit(), "label" + labelCount++);
-          }
+        StmtBox box = (StmtBox) ubox;
+        if (!unitToLabel.containsKey(box.getUnit())) {
+          unitToLabel.put(box.getUnit(), "label" + labelCount++);
         }
       }
     }
 
     // Emit the exceptions
-    {
-      for (Trap trap : body.getTraps()) {
-        if (trap.getBeginUnit() != trap.getEndUnit()) {
-          emit(".catch " + slashify(trap.getException().getName()) + " from " + unitToLabel.get(trap.getBeginUnit()) + " to "
-              + unitToLabel.get(trap.getEndUnit()) + " using " + unitToLabel.get(trap.getHandlerUnit()));
-        }
+    for (Trap trap : body.getTraps()) {
+      if (trap.getBeginUnit() != trap.getEndUnit()) {
+        emit(".catch " + slashify(trap.getException().getName()) + " from " + unitToLabel.get(trap.getBeginUnit()) + " to "
+            + unitToLabel.get(trap.getEndUnit()) + " using " + unitToLabel.get(trap.getHandlerUnit()));
       }
     }
+
+    int stackLimitIndex = -1;
 
     // Determine where the locals go
     {
@@ -199,8 +177,8 @@ public class JasminClass extends AbstractJasminClass {
       int[] paramSlots = new int[method.getParameterCount()];
       int thisSlot = 0;
       Set<Local> assignedLocals = new HashSet<Local>();
-      Map<GroupIntPair, Integer> groupColorPairToSlot
-          = new HashMap<GroupIntPair, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
+      Map<GroupIntPair, Integer> groupColorPairToSlot =
+          new HashMap<GroupIntPair, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
 
       localToSlot = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
 
@@ -208,13 +186,12 @@ public class JasminClass extends AbstractJasminClass {
 
       // Determine slots for 'this' and parameters
       {
-        List<Type> paramTypes = method.getParameterTypes();
-
         if (!method.isStatic()) {
           thisSlot = 0;
           localCount++;
         }
 
+        List<Type> paramTypes = method.getParameterTypes();
         for (int i = 0; i < paramTypes.size(); i++) {
           paramSlots[i] = localCount;
           localCount += sizeOfType((Type) paramTypes.get(i));
@@ -222,21 +199,18 @@ public class JasminClass extends AbstractJasminClass {
       }
 
       // Handle identity statements
-      {
-        for (Unit u : units) {
-          Stmt s = (Stmt) u;
-
-          if (s instanceof IdentityStmt && ((IdentityStmt) s).getLeftOp() instanceof Local) {
-            Local l = (Local) ((IdentityStmt) s).getLeftOp();
-            IdentityRef identity = (IdentityRef) ((IdentityStmt) s).getRightOp();
-
+      for (Unit u : units) {
+        if (u instanceof IdentityStmt) {
+          IdentityStmt is = (IdentityStmt) u;
+          Value leftOp = is.getLeftOp();
+          if (leftOp instanceof Local) {
             int slot = 0;
 
+            IdentityRef identity = (IdentityRef) is.getRightOp();
             if (identity instanceof ThisRef) {
               if (method.isStatic()) {
                 throw new RuntimeException("Attempting to use 'this' in static method");
               }
-
               slot = thisSlot;
             } else if (identity instanceof ParameterRef) {
               slot = paramSlots[((ParameterRef) identity).getIndex()];
@@ -245,18 +219,13 @@ public class JasminClass extends AbstractJasminClass {
               continue;
             }
 
+            Local l = (Local) leftOp;
             // Make this (group, color) point to the given slot,
             // so that all locals of the same color can be pointed here too
-            {
+            groupColorPairToSlot.put(new GroupIntPair(localToGroup.get(l), localToColor.get(l)), slot);
 
-              GroupIntPair pair = new GroupIntPair(localToGroup.get(l), localToColor.get(l).intValue());
-
-              groupColorPairToSlot.put(pair, new Integer(slot));
-            }
-
-            localToSlot.put(l, new Integer(slot));
+            localToSlot.put(l, slot);
             assignedLocals.add(l);
-
           }
         }
       }
@@ -265,45 +234,51 @@ public class JasminClass extends AbstractJasminClass {
       {
         for (Local local : body.getLocals()) {
           if (!assignedLocals.contains(local)) {
-            GroupIntPair pair = new GroupIntPair(localToGroup.get(local), localToColor.get(local).intValue());
-
             int slot;
-
+            GroupIntPair pair = new GroupIntPair(localToGroup.get(local), localToColor.get(local));
             if (groupColorPairToSlot.containsKey(pair)) {
               // This local should share the same slot as the previous local with
               // the same (group, color);
-
-              slot = groupColorPairToSlot.get(pair).intValue();
+              slot = groupColorPairToSlot.get(pair);
             } else {
               slot = localCount;
               localCount += sizeOfType(local.getType());
-
-              groupColorPairToSlot.put(pair, new Integer(slot));
+              groupColorPairToSlot.put(pair, slot);
             }
 
-            localToSlot.put(local, new Integer(slot));
+            localToSlot.put(local, slot);
             assignedLocals.add(local);
           }
         }
-
-        if (!Modifier.isNative(method.getModifiers()) && !Modifier.isAbstract(method.getModifiers())) {
+        int modifiers = method.getModifiers();
+        if (!Modifier.isNative(modifiers) && !Modifier.isAbstract(modifiers)) {
           emit("    .limit stack ?");
           stackLimitIndex = code.size() - 1;
-
           emit("    .limit locals " + localCount);
         }
       }
     }
 
+    // let's create a u-d web for the ++ peephole optimization.
+    ExceptionalUnitGraph stmtGraph = null;
+    LocalDefs ld = null;
+    LocalUses lu = null;
+
+    // final boolean enablePeephole = !PhaseOptions.getBoolean(options, "no-peephole");
+    final boolean enablePeephole = false;
+    if (enablePeephole) {
+      stmtGraph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body);
+      ld = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(stmtGraph);
+      lu = LocalUses.Factory.newLocalUses(body, ld);
+    }
+
     // Emit code in one pass
     {
-      Iterator<Unit> codeIt = units.iterator();
-
       isEmittingMethodCode = true;
       maxStackHeight = 0;
       isNextGotoAJsr = false;
 
-      while (codeIt.hasNext()) {
+      LOOP: for (Iterator<Unit> codeIt = units.iterator(); codeIt.hasNext();) {
         Stmt s = (Stmt) codeIt.next();
 
         if (unitToLabel.containsKey(s)) {
@@ -315,8 +290,7 @@ public class JasminClass extends AbstractJasminClass {
 
           modifyStackHeight(1); // simulate the pushing of address onto the stack by the jsr
 
-          int slot = localToSlot.get(assignStmt.getLeftOp()).intValue();
-
+          int slot = localToSlot.get(assignStmt.getLeftOp());
           if (slot >= 0 && slot <= 3) {
             emit("astore_" + slot, -1);
           } else {
@@ -324,68 +298,55 @@ public class JasminClass extends AbstractJasminClass {
           }
 
           // emit("astore " + ( ( Integer ) subroutineToReturnAddressSlot.get( s ) ).intValue() );
-
         }
 
-        // Test for postincrement operators ++ and --
-        // We can optimize them further.
-
-        boolean contFlag = false;
-        // this is a fake do, to give us break;
-        do {
-          if (disablePeephole) {
-            break;
-          }
-
+        PEEP: if (enablePeephole) {
+          // Test for postincrement operators ++ and --
+          // We can optimize them further.
           if (!(s instanceof AssignStmt)) {
-            break;
+            break PEEP;
           }
-
-          AssignStmt stmt = (AssignStmt) s;
 
           // sanityCheck: see that we have another statement after s.
           if (!codeIt.hasNext()) {
-            break;
+            break PEEP;
           }
 
-          Stmt ns = (Stmt) (stmtGraph.getSuccsOf(stmt).get(0));
-          if (!(ns instanceof AssignStmt)) {
-            break;
+          AssignStmt nextStmt;
+          Stmt nextNextStmt;
+          {
+            Stmt ns = (Stmt) stmtGraph.getSuccsOf(s).get(0);
+            if (!(ns instanceof AssignStmt)) {
+              break PEEP;
+            }
+            List<Unit> l = stmtGraph.getSuccsOf(ns);
+            if (l.size() != 1) {
+              break PEEP;
+            }
+            nextStmt = (AssignStmt) ns;
+            nextNextStmt = (Stmt) l.get(0);
           }
-          AssignStmt nextStmt = (AssignStmt) ns;
 
-          List<Unit> l = stmtGraph.getSuccsOf(nextStmt);
-          if (l.size() != 1) {
-            break;
-          }
-
-          Stmt nextNextStmt = (Stmt) (l.get(0));
-
-          Value lvalue = stmt.getLeftOp();
+          AssignStmt stmt = (AssignStmt) s;
+          final Value lvalue = stmt.getLeftOp();
           final Value rvalue = stmt.getRightOp();
-
-          if (!(lvalue instanceof Local)) {
-            break;
-          }
 
           // we're looking for this pattern:
           // a: <lvalue> = <rvalue>; <rvalue> = <rvalue> +/- 1; use(<lvalue>);
           // b: <lvalue> = <rvalue>; <rvalue> = <lvalue> +/- 1; use(<lvalue>);
           // case a is emitted when rvalue is a local;
           // case b when rvalue is, eg. a field ref.
-
+          //
           // we use structural equality
           // for rvalue & nextStmt.getLeftOp().
-
           if (!(lvalue instanceof Local) || !nextStmt.getLeftOp().equivTo(rvalue)
               || !(nextStmt.getRightOp() instanceof AddExpr)) {
-            break;
+            break PEEP;
           }
 
           // make sure that nextNextStmt uses the local exactly once
           {
             boolean foundExactlyOnce = false;
-
             for (ValueBox box : nextNextStmt.getUseBoxes()) {
               if (box.getValue() == lvalue) {
                 if (!foundExactlyOnce) {
@@ -396,9 +357,8 @@ public class JasminClass extends AbstractJasminClass {
                 }
               }
             }
-
             if (!foundExactlyOnce) {
-              break;
+              break PEEP;
             }
           }
 
@@ -406,29 +366,22 @@ public class JasminClass extends AbstractJasminClass {
           // of nextNextStmt (what a mess!)
           // this takes care of the extremely pathological case where
           // the thing being incremented is also on the lhs of nns (!)
-          {
-            boolean found = false;
-
-            for (ValueBox box : nextNextStmt.getDefBoxes()) {
-              if (box.getValue().equivTo(rvalue)) {
-                found = true;
-              }
-            }
-
-            if (found) {
-              break;
+          for (ValueBox box : nextNextStmt.getDefBoxes()) {
+            if (box.getValue().equivTo(rvalue)) {
+              break PEEP;
             }
           }
 
           AddExpr addexp = (AddExpr) nextStmt.getRightOp();
-          if (!addexp.getOp1().equivTo(lvalue) && !addexp.getOp1().equivTo(rvalue)) {
-            break;
-          }
-
-          Value added /* tax? */ = addexp.getOp2();
-
-          if (!(added instanceof IntConstant) || ((IntConstant) (added)).value != 1) {
-            break;
+          {
+            Value op1 = addexp.getOp1();
+            if (!op1.equivTo(lvalue) && !op1.equivTo(rvalue)) {
+              break PEEP;
+            }
+            Value op2 = addexp.getOp2();
+            if (!(op2 instanceof IntConstant) || ((IntConstant) (op2)).value != 1) {
+              break PEEP;
+            }
           }
 
           /* check that we have two uses and that these */
@@ -436,14 +389,14 @@ public class JasminClass extends AbstractJasminClass {
           /* LocalDefs tells us this: if there was no use, */
           /* there would be no corresponding def. */
           if (addexp.getOp1().equivTo(lvalue)) {
-            if (lu.getUsesOf(stmt).size() != 2 || ld.getDefsOfAt((Local) lvalue, nextStmt).size() != 1
+            if (lu.getUsesOf(s).size() != 2 || ld.getDefsOfAt((Local) lvalue, nextStmt).size() != 1
                 || ld.getDefsOfAt((Local) lvalue, nextNextStmt).size() != 1) {
-              break;
+              break PEEP;
             }
             plusPlusState = 0;
           } else {
-            if (lu.getUsesOf(stmt).size() != 1 || ld.getDefsOfAt((Local) lvalue, nextNextStmt).size() != 1) {
-              break;
+            if (lu.getUsesOf(s).size() != 1 || ld.getDefsOfAt((Local) lvalue, nextNextStmt).size() != 1) {
+              break PEEP;
             }
             plusPlusState = 10;
           }
@@ -456,8 +409,8 @@ public class JasminClass extends AbstractJasminClass {
 
           /* this should be redundant, but we do it */
           /* just in case. */
-          if (lvalue.getType() != IntType.v()) {
-            break;
+          if (!IntType.v().equals(lvalue.getType())) {
+            break PEEP;
           }
 
           /* our strategy is as follows: eat the */
@@ -478,22 +431,17 @@ public class JasminClass extends AbstractJasminClass {
 
           /* hm. we didn't use local. emit incrementage */
           if (plusPlusHolder != null) {
-            emitStmt(stmt);
+            emitStmt(s);
             emitStmt(nextStmt);
           }
 
           if (currentStackHeight != 0) {
             throw new RuntimeException("Stack has height " + currentStackHeight + " after execution of stmt: " + s);
           }
-          contFlag = true;
           codeIt.next();
           codeIt.next();
-        } while (false);
-        if (contFlag) {
-          continue;
-        }
-
-        // end of peephole opts.
+          continue LOOP;
+        } // end of peephole opts.
 
         // emit this statement
         {
@@ -508,7 +456,8 @@ public class JasminClass extends AbstractJasminClass {
 
       isEmittingMethodCode = false;
 
-      if (!Modifier.isNative(method.getModifiers()) && !Modifier.isAbstract(method.getModifiers())) {
+      int modifiers = method.getModifiers();
+      if (!Modifier.isNative(modifiers) && !Modifier.isAbstract(modifiers)) {
         code.set(stackLimitIndex, "    .limit stack " + maxStackHeight);
       }
     }
@@ -533,7 +482,7 @@ public class JasminClass extends AbstractJasminClass {
       }
       // end of peephole
 
-      if (l.getType().equals(IntType.v())) {
+      if (IntType.v().equals(l.getType())) {
         boolean isValidCase = false;
         int x = 0;
 
@@ -548,80 +497,93 @@ public class JasminClass extends AbstractJasminClass {
         }
 
         if (isValidCase && x >= Short.MIN_VALUE && x <= Short.MAX_VALUE) {
-          emit("iinc " + localToSlot.get(l).intValue() + " " + ((expr instanceof AddExpr) ? x : -x), 0);
+          emit("iinc " + localToSlot.get(l) + " " + ((expr instanceof AddExpr) ? x : -x), 0);
           return;
         }
       }
     }
 
-    lvalue.apply(new AbstractJimpleValueSwitch() {
+    lvalue.apply(new AbstractJimpleValueSwitch<Object>() {
+      @Override
       public void caseArrayRef(ArrayRef v) {
         emitValue(v.getBase());
         emitValue(v.getIndex());
         emitValue(rvalue);
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void caseArrayType(ArrayType t) {
             emit("aastore", -3);
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dastore", -4);
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fastore", -3);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             emit("iastore", -3);
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lastore", -4);
           }
 
+          @Override
           public void caseRefType(RefType t) {
             emit("aastore", -3);
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             emit("bastore", -3);
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             emit("bastore", -3);
           }
 
+          @Override
           public void caseCharType(CharType t) {
             emit("castore", -3);
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             emit("sastore", -3);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid type: " + t);
           }
         });
       }
 
+      @Override
       public void caseInstanceFieldRef(InstanceFieldRef v) {
         emitValue(v.getBase());
         emitValue(rvalue);
 
-        emit("putfield " + slashify(v.getFieldRef().declaringClass().getName()) + "/" + v.getFieldRef().name() + " "
+        emit("putfield " + slashify(v.getFieldRef().declaringClass().getName()) + '/' + v.getFieldRef().name() + ' '
             + jasminDescriptorOf(v.getFieldRef().type()), -1 + -sizeOfType(v.getFieldRef().type()));
       }
 
+      @Override
       public void caseLocal(final Local v) {
-        final int slot = localToSlot.get(v).intValue();
+        final int slot = localToSlot.get(v);
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
           private void handleIntegerType(IntegerType t) {
             emitValue(rvalue);
-
             if (slot >= 0 && slot <= 3) {
               emit("istore_" + slot, -1);
             } else {
@@ -629,29 +591,34 @@ public class JasminClass extends AbstractJasminClass {
             }
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntegerType(t);
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntegerType(t);
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntegerType(t);
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntegerType(t);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntegerType(t);
           }
 
+          @Override
           public void caseArrayType(ArrayType t) {
             emitValue(rvalue);
-
             if (slot >= 0 && slot <= 3) {
               emit("astore_" + slot, -1);
             } else {
@@ -659,9 +626,9 @@ public class JasminClass extends AbstractJasminClass {
             }
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emitValue(rvalue);
-
             if (slot >= 0 && slot <= 3) {
               emit("dstore_" + slot, -2);
             } else {
@@ -669,9 +636,9 @@ public class JasminClass extends AbstractJasminClass {
             }
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emitValue(rvalue);
-
             if (slot >= 0 && slot <= 3) {
               emit("fstore_" + slot, -1);
             } else {
@@ -679,9 +646,9 @@ public class JasminClass extends AbstractJasminClass {
             }
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emitValue(rvalue);
-
             if (slot >= 0 && slot <= 3) {
               emit("lstore_" + slot, -2);
             } else {
@@ -689,9 +656,9 @@ public class JasminClass extends AbstractJasminClass {
             }
           }
 
+          @Override
           public void caseRefType(RefType t) {
             emitValue(rvalue);
-
             if (slot >= 0 && slot <= 3) {
               emit("astore_" + slot, -1);
             } else {
@@ -699,20 +666,18 @@ public class JasminClass extends AbstractJasminClass {
             }
           }
 
+          @Override
           public void caseStmtAddressType(StmtAddressType t) {
             isNextGotoAJsr = true;
             returnAddressSlot = slot;
-
             /*
              * if ( slot >= 0 && slot <= 3) emit("astore_" + slot, ); else emit("astore " + slot, );
-             *
              */
-
           }
 
+          @Override
           public void caseNullType(NullType t) {
             emitValue(rvalue);
-
             if (slot >= 0 && slot <= 3) {
               emit("astore_" + slot, -1);
             } else {
@@ -720,17 +685,19 @@ public class JasminClass extends AbstractJasminClass {
             }
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid local type: " + t);
           }
         });
       }
 
+      @Override
       public void caseStaticFieldRef(StaticFieldRef v) {
         SootFieldRef field = v.getFieldRef();
 
         emitValue(rvalue);
-        emit("putstatic " + slashify(field.declaringClass().getName()) + "/" + field.name() + " "
+        emit("putstatic " + slashify(field.declaringClass().getName()) + '/' + field.name() + ' '
             + jasminDescriptorOf(field.type()), -sizeOfType(v.getFieldRef().type()));
       }
     });
@@ -741,7 +708,7 @@ public class JasminClass extends AbstractJasminClass {
 
     final Value op1 = ((BinopExpr) cond).getOp1();
     final Value op2 = ((BinopExpr) cond).getOp2();
-    final String label = (String) unitToLabel.get(stmt.getTarget());
+    final String label = unitToLabel.get(stmt.getTarget());
 
     // Handle simple subcase where op1 is null
     if (op2 instanceof NullConstant || op1 instanceof NullConstant) {
@@ -758,7 +725,6 @@ public class JasminClass extends AbstractJasminClass {
       } else {
         throw new RuntimeException("invalid condition");
       }
-
       return;
     }
 
@@ -766,31 +732,36 @@ public class JasminClass extends AbstractJasminClass {
     if (op2 instanceof IntConstant && ((IntConstant) op2).value == 0) {
       emitValue(op1);
 
-      cond.apply(new AbstractJimpleValueSwitch() {
+      cond.apply(new AbstractJimpleValueSwitch<Object>() {
+        @Override
         public void caseEqExpr(EqExpr expr) {
           emit("ifeq " + label, -1);
         }
 
+        @Override
         public void caseNeExpr(NeExpr expr) {
           emit("ifne " + label, -1);
         }
 
+        @Override
         public void caseLtExpr(LtExpr expr) {
           emit("iflt " + label, -1);
         }
 
+        @Override
         public void caseLeExpr(LeExpr expr) {
           emit("ifle " + label, -1);
         }
 
+        @Override
         public void caseGtExpr(GtExpr expr) {
           emit("ifgt " + label, -1);
         }
 
+        @Override
         public void caseGeExpr(GeExpr expr) {
           emit("ifge " + label, -1);
         }
-
       });
 
       return;
@@ -800,31 +771,36 @@ public class JasminClass extends AbstractJasminClass {
     if (op1 instanceof IntConstant && ((IntConstant) op1).value == 0) {
       emitValue(op2);
 
-      cond.apply(new AbstractJimpleValueSwitch() {
+      cond.apply(new AbstractJimpleValueSwitch<Object>() {
+        @Override
         public void caseEqExpr(EqExpr expr) {
           emit("ifeq " + label, -1);
         }
 
+        @Override
         public void caseNeExpr(NeExpr expr) {
           emit("ifne " + label, -1);
         }
 
+        @Override
         public void caseLtExpr(LtExpr expr) {
           emit("ifgt " + label, -1);
         }
 
+        @Override
         public void caseLeExpr(LeExpr expr) {
           emit("ifge " + label, -1);
         }
 
+        @Override
         public void caseGtExpr(GtExpr expr) {
           emit("iflt " + label, -1);
         }
 
+        @Override
         public void caseGeExpr(GeExpr expr) {
           emit("ifle " + label, -1);
         }
-
       });
 
       return;
@@ -833,329 +809,398 @@ public class JasminClass extends AbstractJasminClass {
     emitValue(op1);
     emitValue(op2);
 
-    cond.apply(new AbstractJimpleValueSwitch() {
+    cond.apply(new AbstractJimpleValueSwitch<Object>() {
+      @Override
       public void caseEqExpr(EqExpr expr) {
-        op1.getType().apply(new TypeSwitch() {
+        op1.getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void caseIntType(IntType t) {
             emit("if_icmpeq " + label, -2);
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             emit("if_icmpeq " + label, -2);
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             emit("if_icmpeq " + label, -2);
           }
 
+          @Override
           public void caseCharType(CharType t) {
             emit("if_icmpeq " + label, -2);
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             emit("if_icmpeq " + label, -2);
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dcmpg", -3);
             emit("ifeq " + label, -1);
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lcmp", -3);
             emit("ifeq " + label, -1);
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fcmpg", -1);
             emit("ifeq " + label, -1);
           }
 
+          @Override
           public void caseArrayType(ArrayType t) {
             emit("if_acmpeq " + label, -2);
           }
 
+          @Override
           public void caseRefType(RefType t) {
             emit("if_acmpeq " + label, -2);
           }
 
+          @Override
           public void caseNullType(NullType t) {
             emit("if_acmpeq " + label, -2);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("invalid type");
           }
         });
       }
 
+      @Override
       public void caseNeExpr(NeExpr expr) {
-        op1.getType().apply(new TypeSwitch() {
+        op1.getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void caseIntType(IntType t) {
             emit("if_icmpne " + label, -2);
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             emit("if_icmpne " + label, -2);
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             emit("if_icmpne " + label, -2);
           }
 
+          @Override
           public void caseCharType(CharType t) {
             emit("if_icmpne " + label, -2);
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             emit("if_icmpne " + label, -2);
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dcmpg", -3);
             emit("ifne " + label, -1);
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lcmp", -3);
             emit("ifne " + label, -1);
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fcmpg", -1);
             emit("ifne " + label, -1);
           }
 
+          @Override
           public void caseArrayType(ArrayType t) {
             emit("if_acmpne " + label, -2);
           }
 
+          @Override
           public void caseRefType(RefType t) {
             emit("if_acmpne " + label, -2);
           }
 
+          @Override
           public void caseNullType(NullType t) {
             emit("if_acmpne " + label, -2);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("invalid type for NeExpr: " + t);
           }
         });
       }
 
+      @Override
       public void caseLtExpr(LtExpr expr) {
-        op1.getType().apply(new TypeSwitch() {
+        op1.getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void caseIntType(IntType t) {
             emit("if_icmplt " + label, -2);
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             emit("if_icmplt " + label, -2);
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             emit("if_icmplt " + label, -2);
           }
 
+          @Override
           public void caseCharType(CharType t) {
             emit("if_icmplt " + label, -2);
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             emit("if_icmplt " + label, -2);
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dcmpg", -3);
             emit("iflt " + label, -1);
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lcmp", -3);
             emit("iflt " + label, -1);
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fcmpg", -1);
             emit("iflt " + label, -1);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("invalid type");
           }
         });
       }
 
+      @Override
       public void caseLeExpr(LeExpr expr) {
-        op1.getType().apply(new TypeSwitch() {
+        op1.getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void caseIntType(IntType t) {
             emit("if_icmple " + label, -2);
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             emit("if_icmple " + label, -2);
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             emit("if_icmple " + label, -2);
           }
 
+          @Override
           public void caseCharType(CharType t) {
             emit("if_icmple " + label, -2);
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             emit("if_icmple " + label, -2);
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dcmpg", -3);
             emit("ifle " + label, -1);
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lcmp", -3);
             emit("ifle " + label, -1);
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fcmpg", -1);
             emit("ifle " + label, -1);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("invalid type");
           }
         });
       }
 
+      @Override
       public void caseGtExpr(GtExpr expr) {
-        op1.getType().apply(new TypeSwitch() {
+        op1.getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void caseIntType(IntType t) {
             emit("if_icmpgt " + label, -2);
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             emit("if_icmpgt " + label, -2);
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             emit("if_icmpgt " + label, -2);
           }
 
+          @Override
           public void caseCharType(CharType t) {
             emit("if_icmpgt " + label, -2);
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             emit("if_icmpgt " + label, -2);
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dcmpg", -3);
             emit("ifgt " + label, -1);
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lcmp", -3);
             emit("ifgt " + label, -1);
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fcmpg", -1);
             emit("ifgt " + label, -1);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("invalid type");
           }
         });
       }
 
+      @Override
       public void caseGeExpr(GeExpr expr) {
-        op1.getType().apply(new TypeSwitch() {
+        op1.getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void caseIntType(IntType t) {
             emit("if_icmpge " + label, -2);
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             emit("if_icmpge " + label, -2);
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             emit("if_icmpge " + label, -2);
           }
 
+          @Override
           public void caseCharType(CharType t) {
             emit("if_icmpge " + label, -2);
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             emit("if_icmpge " + label, -2);
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dcmpg", -3);
             emit("ifge " + label, -1);
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lcmp", -3);
             emit("ifge " + label, -1);
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fcmpg", -1);
             emit("ifge " + label, -1);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("invalid type");
           }
         });
       }
-
     });
   }
 
   void emitStmt(Stmt stmt) {
-    LineNumberTag lnTag = (LineNumberTag) stmt.getTag("LineNumberTag");
+    LineNumberTag lnTag = (LineNumberTag) stmt.getTag(LineNumberTag.NAME);
     if (lnTag != null) {
       emit(".line " + lnTag.getLineNumber());
     }
-    stmt.apply(new AbstractStmtSwitch() {
+    stmt.apply(new AbstractStmtSwitch<Object>() {
+      @Override
       public void caseAssignStmt(AssignStmt s) {
         emitAssignStmt(s);
       }
 
+      @Override
       public void caseIdentityStmt(IdentityStmt s) {
-        if (s.getRightOp() instanceof CaughtExceptionRef && s.getLeftOp() instanceof Local) {
-          int slot = localToSlot.get(s.getLeftOp()).intValue();
+        if (s.getRightOp() instanceof CaughtExceptionRef) {
+          Value leftOp = s.getLeftOp();
+          if (leftOp instanceof Local) {
+            // simulate the pushing of the exception onto the stack by the jvm
+            modifyStackHeight(1);
 
-          modifyStackHeight(1); // simulate the pushing of the exception onto the
-                                // stack by the jvm
-
-          if (slot >= 0 && slot <= 3) {
-            emit("astore_" + slot, -1);
-          } else {
-            emit("astore " + slot, -1);
+            int slot = localToSlot.get((Local) leftOp);
+            if (slot >= 0 && slot <= 3) {
+              emit("astore_" + slot, -1);
+            } else {
+              emit("astore " + slot, -1);
+            }
           }
         }
       }
 
+      @Override
       public void caseBreakpointStmt(BreakpointStmt s) {
         emit("breakpoint", 0);
       }
 
+      @Override
       public void caseInvokeStmt(InvokeStmt s) {
         emitValue(s.getInvokeExpr());
 
         Type returnType = ((InvokeExpr) s.getInvokeExpr()).getMethodRef().returnType();
-
-        if (!returnType.equals(VoidType.v())) {
+        if (!VoidType.v().equals(returnType)) {
           // Need to do some cleanup because this value is not used.
-
           if (sizeOfType(returnType) == 1) {
             emit("pop", -1);
           } else {
@@ -1164,38 +1209,42 @@ public class JasminClass extends AbstractJasminClass {
         }
       }
 
+      @Override
       public void caseEnterMonitorStmt(EnterMonitorStmt s) {
         emitValue(s.getOp());
         emit("monitorenter", -1);
       }
 
+      @Override
       public void caseExitMonitorStmt(ExitMonitorStmt s) {
         emitValue(s.getOp());
         emit("monitorexit", -1);
       }
 
+      @Override
       public void caseGotoStmt(GotoStmt s) {
         if (isNextGotoAJsr) {
           emit("jsr " + unitToLabel.get(s.getTarget()));
           isNextGotoAJsr = false;
 
-          subroutineToReturnAddressSlot.put(s.getTarget(), new Integer(returnAddressSlot));
+          subroutineToReturnAddressSlot.put(s.getTarget(), returnAddressSlot);
         } else {
           emit("goto " + unitToLabel.get(s.getTarget()));
         }
       }
 
+      @Override
       public void caseIfStmt(IfStmt s) {
         emitIfStmt(s);
       }
 
+      @Override
       public void caseLookupSwitchStmt(LookupSwitchStmt s) {
         emitValue(s.getKey());
         emit("lookupswitch", -1);
 
-        List<IntConstant> lookupValues = s.getLookupValues();
         List<Unit> targets = s.getTargets();
-
+        List<IntConstant> lookupValues = s.getLookupValues();
         for (int i = 0; i < lookupValues.size(); i++) {
           emit("  " + lookupValues.get(i) + " : " + unitToLabel.get(targets.get(i)));
         }
@@ -1203,88 +1252,102 @@ public class JasminClass extends AbstractJasminClass {
         emit("  default : " + unitToLabel.get(s.getDefaultTarget()));
       }
 
+      @Override
       public void caseNopStmt(NopStmt s) {
         emit("nop", 0);
       }
 
+      @Override
       public void caseRetStmt(RetStmt s) {
         emit("ret " + localToSlot.get(s.getStmtAddress()), 0);
       }
 
+      @Override
       public void caseReturnStmt(ReturnStmt s) {
-        emitValue(s.getOp());
-
         Value returnValue = s.getOp();
+        emitValue(returnValue);
 
-        returnValue.getType().apply(new TypeSwitch() {
+        returnValue.getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("invalid return type " + t.toString());
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dreturn", -2);
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("freturn", -1);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             emit("ireturn", -1);
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             emit("ireturn", -1);
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             emit("ireturn", -1);
           }
 
+          @Override
           public void caseCharType(CharType t) {
             emit("ireturn", -1);
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             emit("ireturn", -1);
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lreturn", -2);
           }
 
+          @Override
           public void caseArrayType(ArrayType t) {
             emit("areturn", -1);
           }
 
+          @Override
           public void caseRefType(RefType t) {
             emit("areturn", -1);
           }
 
+          @Override
           public void caseNullType(NullType t) {
             emit("areturn", -1);
           }
-
         });
       }
 
+      @Override
       public void caseReturnVoidStmt(ReturnVoidStmt s) {
         emit("return", 0);
       }
 
+      @Override
       public void caseTableSwitchStmt(TableSwitchStmt s) {
         emitValue(s.getKey());
         emit("tableswitch " + s.getLowIndex() + " ; high = " + s.getHighIndex(), -1);
 
-        List<Unit> targets = s.getTargets();
-
-        for (int i = 0; i < targets.size(); i++) {
-          emit("  " + unitToLabel.get(targets.get(i)));
+        for (Unit t : s.getTargets()) {
+          emit("  " + unitToLabel.get(t));
         }
 
         emit("default : " + unitToLabel.get(s.getDefaultTarget()));
       }
 
+      @Override
       public void caseThrowStmt(ThrowStmt s) {
         emitValue(s.getOp());
         emit("athrow", -1);
@@ -1303,11 +1366,11 @@ public class JasminClass extends AbstractJasminClass {
   Stmt plusPlusIncrementer;
   /* end of plusplus stuff. */
 
-  void emitLocal(Local v) {
-    final int slot = localToSlot.get(v).intValue();
-    final Local vAlias = v;
+  void emitLocal(final Local v) {
+    final int slot = localToSlot.get(v);
 
-    v.getType().apply(new TypeSwitch() {
+    v.getType().apply(new TypeSwitch<Object>() {
+      @Override
       public void caseArrayType(ArrayType t) {
         if (slot >= 0 && slot <= 3) {
           emit("aload_" + slot, 1);
@@ -1316,10 +1379,12 @@ public class JasminClass extends AbstractJasminClass {
         }
       }
 
+      @Override
       public void defaultCase(Type t) {
         throw new RuntimeException("invalid local type to load" + t);
       }
 
+      @Override
       public void caseDoubleType(DoubleType t) {
         if (slot >= 0 && slot <= 3) {
           emit("dload_" + slot, 2);
@@ -1328,6 +1393,7 @@ public class JasminClass extends AbstractJasminClass {
         }
       }
 
+      @Override
       public void caseFloatType(FloatType t) {
         if (slot >= 0 && slot <= 3) {
           emit("fload_" + slot, 1);
@@ -1337,29 +1403,34 @@ public class JasminClass extends AbstractJasminClass {
       }
 
       // add boolean, byte, short, and char type
+      @Override
       public void caseBooleanType(BooleanType t) {
         handleIntegerType(t);
       }
 
+      @Override
       public void caseByteType(ByteType t) {
         handleIntegerType(t);
       }
 
+      @Override
       public void caseShortType(ShortType t) {
         handleIntegerType(t);
       }
 
+      @Override
       public void caseCharType(CharType t) {
         handleIntegerType(t);
       }
 
+      @Override
       public void caseIntType(IntType t) {
         handleIntegerType(t);
       }
 
       // peephole stuff appears here.
       public void handleIntegerType(IntegerType t) {
-        if (vAlias.equals(plusPlusHolder)) {
+        if (v.equals(plusPlusHolder)) {
           switch (plusPlusState) {
             case 0: {
               // ok, we're called upon to emit the
@@ -1434,6 +1505,7 @@ public class JasminClass extends AbstractJasminClass {
       }
       // end of peephole stuff.
 
+      @Override
       public void caseLongType(LongType t) {
         if (slot >= 0 && slot <= 3) {
           emit("lload_" + slot, 2);
@@ -1442,6 +1514,7 @@ public class JasminClass extends AbstractJasminClass {
         }
       }
 
+      @Override
       public void caseRefType(RefType t) {
         if (slot >= 0 && slot <= 3) {
           emit("aload_" + slot, 1);
@@ -1450,6 +1523,7 @@ public class JasminClass extends AbstractJasminClass {
         }
       }
 
+      @Override
       public void caseNullType(NullType t) {
         if (slot >= 0 && slot <= 3) {
           emit("aload_" + slot, 1);
@@ -1461,248 +1535,287 @@ public class JasminClass extends AbstractJasminClass {
   }
 
   void emitValue(Value value) {
-    value.apply(new AbstractGrimpValueSwitch() {
+    value.apply(new AbstractGrimpValueSwitch<Object>() {
+      @Override
       public void caseAddExpr(AddExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
           private void handleIntCase() {
             emit("iadd", -1);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("ladd", -2);
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dadd", -2);
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fadd", -1);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid argument type for add");
           }
         });
-
       }
 
+      @Override
       public void caseAndExpr(AndExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
           private void handleIntCase() {
             emit("iand", -1);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("land", -2);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid argument type for and");
           }
         });
       }
 
+      @Override
       public void caseArrayRef(ArrayRef v) {
         emitValue(v.getBase());
         emitValue(v.getIndex());
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void caseArrayType(ArrayType ty) {
             emit("aaload", -1);
           }
 
+          @Override
           public void caseBooleanType(BooleanType ty) {
             emit("baload", -1);
           }
 
+          @Override
           public void caseByteType(ByteType ty) {
             emit("baload", -1);
           }
 
+          @Override
           public void caseCharType(CharType ty) {
             emit("caload", -1);
           }
 
+          @Override
           public void defaultCase(Type ty) {
             throw new RuntimeException("invalid base type");
           }
 
+          @Override
           public void caseDoubleType(DoubleType ty) {
             emit("daload", 0);
           }
 
+          @Override
           public void caseFloatType(FloatType ty) {
             emit("faload", -1);
           }
 
+          @Override
           public void caseIntType(IntType ty) {
             emit("iaload", -1);
           }
 
+          @Override
           public void caseLongType(LongType ty) {
             emit("laload", 0);
           }
 
+          @Override
           public void caseNullType(NullType ty) {
             emit("aaload", -1);
           }
 
+          @Override
           public void caseRefType(RefType ty) {
             emit("aaload", -1);
           }
 
+          @Override
           public void caseShortType(ShortType ty) {
             emit("saload", -1);
           }
         });
       }
 
+      @Override
       public void caseCastExpr(final CastExpr v) {
+        final Value op = v.getOp();
+        emitValue(op);
+
         final Type toType = v.getCastType();
-        final Type fromType = v.getOp().getType();
-
-        emitValue(v.getOp());
-
         if (toType instanceof RefType) {
           emit("checkcast " + slashify(toType.toString()), 0);
         } else if (toType instanceof ArrayType) {
           emit("checkcast " + jasminDescriptorOf(toType), 0);
         } else {
-          fromType.apply(new TypeSwitch() {
+          op.getType().apply(new TypeSwitch<Object>() {
+            @Override
             public void defaultCase(Type ty) {
-              throw new RuntimeException("invalid fromType " + fromType);
+              throw new RuntimeException("invalid fromType " + op.getType());
             }
 
+            @Override
             public void caseDoubleType(DoubleType ty) {
-              if (toType.equals(IntType.v())) {
+              if (IntType.v().equals(toType)) {
                 emit("d2i", -1);
-              } else if (toType.equals(LongType.v())) {
+              } else if (LongType.v().equals(toType)) {
                 emit("d2l", 0);
-              } else if (toType.equals(FloatType.v())) {
+              } else if (FloatType.v().equals(toType)) {
                 emit("d2f", -1);
               } else {
                 throw new RuntimeException("invalid toType from double: " + toType);
               }
             }
 
+            @Override
             public void caseFloatType(FloatType ty) {
-              if (toType.equals(IntType.v())) {
+              if (IntType.v().equals(toType)) {
                 emit("f2i", 0);
-              } else if (toType.equals(LongType.v())) {
+              } else if (LongType.v().equals(toType)) {
                 emit("f2l", 1);
-              } else if (toType.equals(DoubleType.v())) {
+              } else if (DoubleType.v().equals(toType)) {
                 emit("f2d", 1);
               } else {
                 throw new RuntimeException("invalid toType from float: " + toType);
               }
             }
 
+            @Override
             public void caseIntType(IntType ty) {
               emitIntToTypeCast();
             }
 
+            @Override
             public void caseBooleanType(BooleanType ty) {
               emitIntToTypeCast();
             }
 
+            @Override
             public void caseByteType(ByteType ty) {
               emitIntToTypeCast();
             }
 
+            @Override
             public void caseCharType(CharType ty) {
               emitIntToTypeCast();
             }
 
+            @Override
             public void caseShortType(ShortType ty) {
               emitIntToTypeCast();
             }
 
             private void emitIntToTypeCast() {
-              if (toType.equals(ByteType.v())) {
+              if (ByteType.v().equals(toType)) {
                 emit("i2b", 0);
-              } else if (toType.equals(CharType.v())) {
+              } else if (CharType.v().equals(toType)) {
                 emit("i2c", 0);
-              } else if (toType.equals(ShortType.v())) {
+              } else if (ShortType.v().equals(toType)) {
                 emit("i2s", 0);
-              } else if (toType.equals(FloatType.v())) {
+              } else if (FloatType.v().equals(toType)) {
                 emit("i2f", 0);
-              } else if (toType.equals(LongType.v())) {
+              } else if (LongType.v().equals(toType)) {
                 emit("i2l", 1);
-              } else if (toType.equals(DoubleType.v())) {
+              } else if (DoubleType.v().equals(toType)) {
                 emit("i2d", 1);
-              } else if (toType.equals(IntType.v())) {
-                ; // this shouldn't happen?
-              } else if (toType.equals(BooleanType.v())) {
-                ;
+              } else if (IntType.v().equals(toType)) {
+                // this shouldn't happen?
+              } else if (BooleanType.v().equals(toType)) {
+                // intentionally empty
               } else {
                 throw new RuntimeException("invalid toType from int: " + toType + " " + v.toString());
               }
             }
 
+            @Override
             public void caseLongType(LongType ty) {
-              if (toType.equals(IntType.v())) {
+              if (IntType.v().equals(toType)) {
                 emit("l2i", -1);
-              } else if (toType.equals(FloatType.v())) {
+              } else if (FloatType.v().equals(toType)) {
                 emit("l2f", -1);
-              } else if (toType.equals(DoubleType.v())) {
+              } else if (DoubleType.v().equals(toType)) {
                 emit("l2d", 0);
-              } else if (toType.equals(ByteType.v())) {
+              } else if (ByteType.v().equals(toType)) {
                 emit("l2i", -1);
                 emitIntToTypeCast();
-              } else if (toType.equals(ShortType.v())) {
+              } else if (ShortType.v().equals(toType)) {
                 emit("l2i", -1);
                 emitIntToTypeCast();
-              } else if (toType.equals(CharType.v())) {
+              } else if (CharType.v().equals(toType)) {
                 emit("l2i", -1);
                 emitIntToTypeCast();
-              } else if (toType.equals(BooleanType.v())) {
+              } else if (BooleanType.v().equals(toType)) {
                 emit("l2i", -1);
                 emitIntToTypeCast();
               } else {
@@ -1713,120 +1826,133 @@ public class JasminClass extends AbstractJasminClass {
         }
       }
 
+      @Override
       public void caseCmpExpr(CmpExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
         emit("lcmp", -3);
       }
 
+      @Override
       public void caseCmpgExpr(CmpgExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        if (v.getOp1().getType().equals(FloatType.v())) {
+        if (FloatType.v().equals(v.getOp1().getType())) {
           emit("fcmpg", -1);
         } else {
           emit("dcmpg", -3);
         }
       }
 
+      @Override
       public void caseCmplExpr(CmplExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        if (v.getOp1().getType().equals(FloatType.v())) {
+        if (FloatType.v().equals(v.getOp1().getType())) {
           emit("fcmpl", -1);
         } else {
           emit("dcmpl", -3);
         }
       }
 
+      @Override
       public void caseDivExpr(DivExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
           private void handleIntCase() {
             emit("idiv", -1);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("ldiv", -2);
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("ddiv", -2);
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fdiv", -1);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid argument type for div");
           }
         });
-
       }
 
+      @Override
       public void caseDoubleConstant(DoubleConstant v) {
-        if ((v.value == 0) && ((1.0 / v.value) > 0.0)) {
+        double val = v.value;
+        if ((val == 0) && ((1.0 / val) > 0.0)) {
           emit("dconst_0", 2);
-        } else if (v.value == 1) {
+        } else if (val == 1) {
           emit("dconst_1", 2);
         } else {
-          String s = doubleToString(v);
-          emit("ldc2_w " + s, 2);
+          emit("ldc2_w " + doubleToString(v), 2);
         }
       }
 
+      @Override
       public void caseFloatConstant(FloatConstant v) {
-        if ((v.value == 0) && ((1.0f / v.value) > 0.0f)) {
+        float val = v.value;
+        if ((val == 0) && ((1.0f / val) > 0.0f)) {
           emit("fconst_0", 1);
-        } else if (v.value == 1) {
+        } else if (val == 1) {
           emit("fconst_1", 1);
-        } else if (v.value == 2) {
+        } else if (val == 2) {
           emit("fconst_2", 1);
         } else {
-          String s = floatToString(v);
-          emit("ldc " + s, 1);
+          emit("ldc " + floatToString(v), 1);
         }
       }
 
+      @Override
       public void caseInstanceFieldRef(InstanceFieldRef v) {
         emitValue(v.getBase());
-
-        emit("getfield " + slashify(v.getFieldRef().declaringClass().getName()) + "/" + v.getFieldRef().name() + " "
-            + jasminDescriptorOf(v.getFieldRef().type()), -1 + sizeOfType(v.getFieldRef().type()));
+        SootFieldRef field = v.getFieldRef();
+        emit("getfield " + slashify(field.declaringClass().getName()) + '/' + field.name() + ' '
+            + jasminDescriptorOf(field.type()), -1 + sizeOfType(field.type()));
       }
 
+      @Override
       public void caseInstanceOfExpr(InstanceOfExpr v) {
-        final Type checkType;
-
         emitValue(v.getOp());
 
-        checkType = v.getCheckType();
-
+        Type checkType = v.getCheckType();
         if (checkType instanceof RefType) {
           emit("instanceof " + slashify(checkType.toString()), 0);
         } else if (checkType instanceof ArrayType) {
@@ -1834,25 +1960,27 @@ public class JasminClass extends AbstractJasminClass {
         }
       }
 
+      @Override
       public void caseIntConstant(IntConstant v) {
-        if (v.value == -1) {
+        int val = v.value;
+        if (val == -1) {
           emit("iconst_m1", 1);
-        } else if (v.value >= 0 && v.value <= 5) {
-          emit("iconst_" + v.value, 1);
-        } else if (v.value >= Byte.MIN_VALUE && v.value <= Byte.MAX_VALUE) {
-          emit("bipush " + v.value, 1);
-        } else if (v.value >= Short.MIN_VALUE && v.value <= Short.MAX_VALUE) {
-          emit("sipush " + v.value, 1);
+        } else if (val >= 0 && val <= 5) {
+          emit("iconst_" + val, 1);
+        } else if (val >= Byte.MIN_VALUE && val <= Byte.MAX_VALUE) {
+          emit("bipush " + val, 1);
+        } else if (val >= Short.MIN_VALUE && val <= Short.MAX_VALUE) {
+          emit("sipush " + val, 1);
         } else {
           emit("ldc " + v.toString(), 1);
         }
       }
 
+      @Override
       public void caseInterfaceInvokeExpr(InterfaceInvokeExpr v) {
-        SootMethodRef m = v.getMethodRef();
-
         emitValue(v.getBase());
 
+        SootMethodRef m = v.getMethodRef();
         for (int i = 0; i < m.parameterTypes().size(); i++) {
           emitValue(v.getArg(i));
         }
@@ -1861,82 +1989,99 @@ public class JasminClass extends AbstractJasminClass {
             + (argCountOf(m) + 1), -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
       }
 
+      @Override
       public void caseLengthExpr(LengthExpr v) {
         emitValue(v.getOp());
         emit("arraylength", 0);
       }
 
+      @Override
       public void caseLocal(Local v) {
         emitLocal(v);
       }
 
+      @Override
       public void caseLongConstant(LongConstant v) {
-        if (v.value == 0) {
+        long val = v.value;
+        if (val == 0) {
           emit("lconst_0", 2);
-        } else if (v.value == 1) {
+        } else if (val == 1) {
           emit("lconst_1", 2);
         } else {
           emit("ldc2_w " + v.toString(), 2);
         }
       }
 
+      @Override
       public void caseMulExpr(MulExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
           private void handleIntCase() {
             emit("imul", -1);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lmul", -2);
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dmul", -2);
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fmul", -1);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid argument type for mul");
           }
         });
       }
 
+      @Override
       public void caseLtExpr(LtExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getOp1().getType().apply(new TypeSwitch() {
+        v.getOp1().getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dcmpg", -3);
             emitBooleanBranch("iflt");
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fcmpg", -1);
             emitBooleanBranch("iflt");
@@ -1946,47 +2091,57 @@ public class JasminClass extends AbstractJasminClass {
             emit("if_icmplt", -2);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lcmp", -3);
             emitBooleanBranch("iflt");
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("invalid type");
           }
         });
       }
 
+      @Override
       public void caseLeExpr(LeExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getOp1().getType().apply(new TypeSwitch() {
+        v.getOp1().getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dcmpg", -3);
             emitBooleanBranch("ifle");
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fcmpg", -1);
             emitBooleanBranch("ifle");
@@ -1996,47 +2151,57 @@ public class JasminClass extends AbstractJasminClass {
             emit("if_icmple", -2);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lcmp", -3);
             emitBooleanBranch("ifle");
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("invalid type");
           }
         });
       }
 
+      @Override
       public void caseGtExpr(GtExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getOp1().getType().apply(new TypeSwitch() {
+        v.getOp1().getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dcmpg", -3);
             emitBooleanBranch("ifgt");
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fcmpg", -1);
             emitBooleanBranch("ifgt");
@@ -2046,47 +2211,57 @@ public class JasminClass extends AbstractJasminClass {
             emit("if_icmpgt", -2);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lcmp", -3);
             emitBooleanBranch("ifgt");
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("invalid type");
           }
         });
       }
 
+      @Override
       public void caseGeExpr(GeExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getOp1().getType().apply(new TypeSwitch() {
+        v.getOp1().getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dcmpg", -3);
             emitBooleanBranch("ifge");
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fcmpg", -1);
             emitBooleanBranch("ifge");
@@ -2096,48 +2271,58 @@ public class JasminClass extends AbstractJasminClass {
             emit("if_icmpge", -2);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lcmp", -3);
             emitBooleanBranch("ifge");
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("invalid type");
           }
         });
       }
 
+      @Override
       public void caseNeExpr(NeExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getOp1().getType().apply(new TypeSwitch() {
+        v.getOp1().getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dcmpg", -3);
             emit("iconst_0", 1);
             emitBooleanBranch("if_icmpne");
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fcmpg", -1);
             emit("iconst_0", 1);
@@ -2148,57 +2333,69 @@ public class JasminClass extends AbstractJasminClass {
             emit("if_icmpne", -2);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lcmp", -3);
             emit("iconst_0", 1);
             emitBooleanBranch("if_icmpne");
           }
 
+          @Override
           public void caseArrayType(ArrayType t) {
             emitBooleanBranch("if_acmpne");
           }
 
+          @Override
           public void caseRefType(RefType t) {
             emitBooleanBranch("if_acmpne");
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("invalid type");
           }
         });
       }
 
+      @Override
       public void caseEqExpr(EqExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getOp1().getType().apply(new TypeSwitch() {
+        v.getOp1().getType().apply(new TypeSwitch<Object>() {
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dcmpg", -3);
             emit("iconst_0", 1);
             emitBooleanBranch("if_icmpeq");
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fcmpg", -3);
             emit("iconst_0", 1);
@@ -2209,103 +2406,121 @@ public class JasminClass extends AbstractJasminClass {
             emit("if_icmpeq", -2);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lcmp", -3);
             emit("iconst_0", 1);
             emitBooleanBranch("if_icmpeq");
           }
 
+          @Override
           public void caseArrayType(ArrayType t) {
             emitBooleanBranch("if_acmpeq");
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("invalid type");
           }
         });
       }
 
+      @Override
       public void caseNegExpr(final NegExpr v) {
         emitValue(v.getOp());
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
           private void handleIntCase() {
             emit("ineg", 0);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lneg", 0);
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dneg", 0);
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fneg", 0);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid argument type for neg: " + t + ": " + v);
           }
         });
-
       }
 
+      @Override
       public void caseNewArrayExpr(NewArrayExpr v) {
-        Value size = v.getSize();
+        emitValue(v.getSize());
 
-        emitValue(size);
-
-        if (v.getBaseType() instanceof RefType) {
-          emit("anewarray " + slashify(v.getBaseType().toString()), 0);
-        } else if (v.getBaseType() instanceof ArrayType) {
-          emit("anewarray " + jasminDescriptorOf(v.getBaseType()), 0);
+        Type baseType = v.getBaseType();
+        if (baseType instanceof RefType) {
+          emit("anewarray " + slashify(baseType.toString()), 0);
+        } else if (baseType instanceof ArrayType) {
+          emit("anewarray " + jasminDescriptorOf(baseType), 0);
         } else {
-          emit("newarray " + v.getBaseType().toString(), 0);
+          emit("newarray " + baseType.toString(), 0);
         }
       }
 
+      @Override
       public void caseNewMultiArrayExpr(NewMultiArrayExpr v) {
         for (Value val : v.getSizes()) {
           emitValue(val);
@@ -2315,19 +2530,20 @@ public class JasminClass extends AbstractJasminClass {
         emit("multianewarray " + jasminDescriptorOf(v.getBaseType()) + " " + size, -size + 1);
       }
 
+      @Override
       public void caseNewExpr(NewExpr v) {
         emit("new " + slashify(v.getBaseType().toString()), 1);
       }
 
+      @Override
       public void caseNewInvokeExpr(NewInvokeExpr v) {
         emit("new " + slashify(v.getBaseType().toString()), 1);
         emit("dup", 1);
 
-        SootMethodRef m = v.getMethodRef();
-
         // emitValue(v.getBase());
         // already on the stack
 
+        SootMethodRef m = v.getMethodRef();
         for (int i = 0; i < m.parameterTypes().size(); i++) {
           emitValue(v.getArg(i));
         }
@@ -2336,179 +2552,214 @@ public class JasminClass extends AbstractJasminClass {
             -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
       }
 
+      @Override
       public void caseNullConstant(NullConstant v) {
         emit("aconst_null", 1);
       }
 
+      @Override
       public void caseOrExpr(OrExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
           private void handleIntCase() {
             emit("ior", -1);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lor", -2);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid argument type for or");
           }
         });
       }
 
+      @Override
       public void caseRemExpr(RemExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
           private void handleIntCase() {
             emit("irem", -1);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lrem", -2);
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("drem", -2);
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("frem", -1);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid argument type for rem");
           }
         });
       }
 
+      @Override
       public void caseShlExpr(ShlExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
           private void handleIntCase() {
             emit("ishl", -1);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lshl", -1);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid argument type for shl");
           }
         });
       }
 
+      @Override
       public void caseShrExpr(ShrExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
           private void handleIntCase() {
             emit("ishr", -1);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lshr", -1);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid argument type for shr");
           }
         });
       }
 
+      @Override
       public void caseSpecialInvokeExpr(SpecialInvokeExpr v) {
-        SootMethodRef m = v.getMethodRef();
-
         emitValue(v.getBase());
 
+        SootMethodRef m = v.getMethodRef();
         for (int i = 0; i < m.parameterTypes().size(); i++) {
           emitValue(v.getArg(i));
         }
@@ -2517,9 +2768,9 @@ public class JasminClass extends AbstractJasminClass {
             -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
       }
 
+      @Override
       public void caseStaticInvokeExpr(StaticInvokeExpr v) {
         SootMethodRef m = v.getMethodRef();
-
         for (int i = 0; i < m.parameterTypes().size(); i++) {
           emitValue(v.getArg(i));
         }
@@ -2528,111 +2779,132 @@ public class JasminClass extends AbstractJasminClass {
             -(argCountOf(m)) + sizeOfType(m.returnType()));
       }
 
+      @Override
       public void caseStaticFieldRef(StaticFieldRef v) {
-        emit("getstatic " + slashify(v.getFieldRef().declaringClass().getName()) + "/" + v.getFieldRef().name() + " "
-            + jasminDescriptorOf(v.getFieldRef().type()), sizeOfType(v.getFieldRef().type()));
+        SootFieldRef field = v.getFieldRef();
+        emit("getstatic " + slashify(field.declaringClass().getName()) + "/" + field.name() + " "
+            + jasminDescriptorOf(field.type()), sizeOfType(field.type()));
       }
 
+      @Override
       public void caseStringConstant(StringConstant v) {
         emit("ldc " + v.toString(), 1);
       }
 
+      @Override
       public void caseClassConstant(ClassConstant v) {
         emit("ldc " + v.toInternalString(), 1);
       }
 
+      @Override
       public void caseSubExpr(SubExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
           private void handleIntCase() {
             emit("isub", -1);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lsub", -2);
           }
 
+          @Override
           public void caseDoubleType(DoubleType t) {
             emit("dsub", -2);
           }
 
+          @Override
           public void caseFloatType(FloatType t) {
             emit("fsub", -1);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid argument type for sub");
           }
         });
-
       }
 
+      @Override
       public void caseUshrExpr(UshrExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
           private void handleIntCase() {
             emit("iushr", -1);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lushr", -1);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid argument type for ushr");
           }
         });
       }
 
+      @Override
       public void caseVirtualInvokeExpr(VirtualInvokeExpr v) {
-        SootMethodRef m = v.getMethodRef();
-
         emitValue(v.getBase());
 
+        SootMethodRef m = v.getMethodRef();
         for (int i = 0; i < m.parameterTypes().size(); i++) {
           emitValue(v.getArg(i));
         }
@@ -2641,39 +2913,47 @@ public class JasminClass extends AbstractJasminClass {
             -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
       }
 
+      @Override
       public void caseXorExpr(XorExpr v) {
         emitValue(v.getOp1());
         emitValue(v.getOp2());
 
-        v.getType().apply(new TypeSwitch() {
+        v.getType().apply(new TypeSwitch<Object>() {
           private void handleIntCase() {
             emit("ixor", -1);
           }
 
+          @Override
           public void caseIntType(IntType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseBooleanType(BooleanType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseShortType(ShortType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseCharType(CharType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseByteType(ByteType t) {
             handleIntCase();
           }
 
+          @Override
           public void caseLongType(LongType t) {
             emit("lxor", -2);
           }
 
+          @Override
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid argument type for xor");
           }
@@ -2685,7 +2965,7 @@ public class JasminClass extends AbstractJasminClass {
   public void emitBooleanBranch(String s) {
     int count;
 
-    if (s.indexOf("icmp") != -1 || s.indexOf("acmp") != -1) {
+    if (s.contains("icmp") || s.contains("acmp")) {
       count = -2;
     } else {
       count = -1;
@@ -2698,5 +2978,4 @@ public class JasminClass extends AbstractJasminClass {
     emit("iconst_1", 1);
     emit("label" + labelCount++ + ":");
   }
-
 }

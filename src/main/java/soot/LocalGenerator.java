@@ -1,9 +1,10 @@
-package categories;
+package soot;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * Copyright (C) 2004 Jennifer Lhotak
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,10 +22,7 @@ package categories;
  * #L%
  */
 
-/**
- * @author Andreas Dann
- */
-public interface Java9Test
-
-{
-  /* category marker */ }
+public abstract class LocalGenerator {
+  /** generates a new soot local given the type */
+  public abstract Local generateLocal(Type type);
+}

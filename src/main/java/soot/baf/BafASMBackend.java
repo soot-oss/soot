@@ -86,12 +86,14 @@ import soot.util.Chain;
  * Concrete ASM based bytecode generation backend for the BAF intermediate representation
  *
  * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer, Alex Bertram, Andreas Dann
- *
  */
 public class BafASMBackend extends AbstractASMBackend {
 
   // Contains one Label for every Unit that is the target of a branch or jump
   protected final Map<Unit, Label> branchTargetLabels = new HashMap<Unit, Label>();
+
+  // Contains a mapping of local variables to indices in the local variable stack
+  protected final Map<Local, Integer> localToSlot = new HashMap<Local, Integer>();
 
   /**
    * Returns the ASM Label for a given Unit that is the target of a branch or jump
@@ -103,10 +105,6 @@ public class BafASMBackend extends AbstractASMBackend {
   protected Label getBranchTargetLabel(Unit target) {
     return branchTargetLabels.get(target);
   }
-
-  // Contains a mapping of local variables to indices in the local variable
-  // stack
-  protected final Map<Local, Integer> localToSlot = new HashMap<Local, Integer>();
 
   /**
    * Creates a new BafASMBackend with a given enforced java version
@@ -133,7 +131,7 @@ public class BafASMBackend extends AbstractASMBackend {
 
     // http://hg.openjdk.java.net/jdk8/jdk8/hotspot/file/87ee5ee27509/src/share/vm/classfile/classFileParser.cpp
     if (method.getDeclaringClass().isInterface()) {
-      if (method.isStatic() && !method.isStaticInitializer()) {
+      if (!method.isAbstract()) { // any non-abstract method in an interface requires 1.8
         minVersion = Math.max(minVersion, Options.java_version_1_8);
       }
     }
@@ -146,13 +144,15 @@ public class BafASMBackend extends AbstractASMBackend {
         minVersion = Math.max(minVersion, Options.java_version_1_7);
       }
       if (u instanceof PushInst) {
-        if (((PushInst) u).getConstant() instanceof ClassConstant) {
+        Constant constant = ((PushInst) u).getConstant();
+        if (constant instanceof ClassConstant) {
           minVersion = Math.max(minVersion, Options.java_version_1_5);
         }
-        if (((PushInst) u).getConstant().getType().toQuotedString().equals(PolymorphicMethodRef.METHODHANDLE_SIGNATURE)) {
+        String typeString = constant.getType().toQuotedString();
+        if (PolymorphicMethodRef.METHODHANDLE_SIGNATURE.equals(typeString)) {
           minVersion = Math.max(minVersion, Options.java_version_1_7);
         }
-        if (((PushInst) u).getConstant().getType().toQuotedString().equals(PolymorphicMethodRef.VARHANDLE_SIGNATURE)) {
+        if (PolymorphicMethodRef.VARHANDLE_SIGNATURE.equals(typeString)) {
           minVersion = Math.max(minVersion, Options.java_version_1_9);
         }
       }
@@ -168,8 +168,7 @@ public class BafASMBackend extends AbstractASMBackend {
    */
   @Override
   protected void generateMethodBody(MethodVisitor mv, SootMethod method) {
-    BafBody body = getBafBody(method);
-    Chain<Unit> instructions = body.getUnits();
+    final BafBody body = getBafBody(method);
 
     /*
      * Create a label for each instruction that is the target of some branch
@@ -202,43 +201,38 @@ public class BafASMBackend extends AbstractASMBackend {
     }
 
     /*
-     * Handle local variable slots for the "this"-local and the parameters
+     * Handle local variable slots for the "this"-local and the parameters. For non-static methods the first parameters and
+     * zero-slot is the "this"-local.
      */
-    int localCount = 0;
+    int localCount = method.isStatic() ? 0 : 1;
     int[] paramSlots = new int[method.getParameterCount()];
-    Set<Local> assignedLocals = new HashSet<Local>();
-
-    /*
-     * For non-static methods the first parameters and zero-slot is the "this"-local
-     */
-    if (!method.isStatic()) {
-      ++localCount;
-    }
-
-    for (int i = 0; i < method.getParameterCount(); ++i) {
+    for (int i = 0, e = paramSlots.length; i < e; ++i) {
       paramSlots[i] = localCount;
       localCount += sizeOfType(method.getParameterType(i));
     }
 
+    Set<Local> assignedLocals = new HashSet<Local>();
+    Chain<Unit> instructions = body.getUnits();
     for (Unit u : instructions) {
-      if (u instanceof IdentityInst && ((IdentityInst) u).getLeftOp() instanceof Local) {
-        Local l = (Local) ((IdentityInst) u).getLeftOp();
-        IdentityRef identity = (IdentityRef) ((IdentityInst) u).getRightOp();
-
-        int slot = 0;
-
-        if (identity instanceof ThisRef) {
-          if (method.isStatic()) {
-            throw new RuntimeException("Attempting to use 'this' in static method");
+      if (u instanceof IdentityInst) {
+        Value leftOp = ((IdentityInst) u).getLeftOp();
+        if (leftOp instanceof Local) {
+          int slot = 0;
+          IdentityRef identity = (IdentityRef) ((IdentityInst) u).getRightOp();
+          if (identity instanceof ThisRef) {
+            if (method.isStatic()) {
+              throw new RuntimeException("Attempting to use 'this' in static method");
+            }
+          } else if (identity instanceof ParameterRef) {
+            slot = paramSlots[((ParameterRef) identity).getIndex()];
+          } else {
+            // Exception ref. Skip over this
+            continue;
           }
-        } else if (identity instanceof ParameterRef) {
-          slot = paramSlots[((ParameterRef) identity).getIndex()];
-        } else {
-          // Exception ref. Skip over this
-          continue;
+          Local l = (Local) leftOp;
+          localToSlot.put(l, slot);
+          assignedLocals.add(l);
         }
-        localToSlot.put(l, slot);
-        assignedLocals.add(l);
       }
     }
 
@@ -267,12 +261,10 @@ public class BafASMBackend extends AbstractASMBackend {
         Integer slot = localToSlot.get(local);
         if (slot != null) {
           BafLocal l = (BafLocal) local;
-          if (l.getOriginalLocal() != null) {
-            Local jimpleLocal = l.getOriginalLocal();
-            if (jimpleLocal != null) {
-              mv.visitLocalVariable(jimpleLocal.getName(), toTypeDesc(jimpleLocal.getType()), null, startLabel, endLabel,
-                  slot);
-            }
+          Local jimpleLocal = l.getOriginalLocal();
+          if (jimpleLocal != null) {
+            mv.visitLocalVariable(jimpleLocal.getName(), toTypeDesc(jimpleLocal.getType()), null, startLabel, endLabel,
+                slot);
           }
         }
       }
@@ -288,8 +280,8 @@ public class BafASMBackend extends AbstractASMBackend {
    *          The unit for which to write out the tags
    */
   protected void generateTagsForUnit(MethodVisitor mv, Unit u) {
-    if (u.hasTag("LineNumberTag")) {
-      LineNumberTag lnt = (LineNumberTag) u.getTag("LineNumberTag");
+    LineNumberTag lnt = (LineNumberTag) u.getTag(LineNumberTag.NAME);
+    if (lnt != null) {
       Label l;
       if (branchTargetLabels.containsKey(u)) {
         l = branchTargetLabels.get(u);
@@ -380,7 +372,6 @@ public class BafASMBackend extends AbstractASMBackend {
           public void defaultCase(Type t) {
             throw new RuntimeException("Invalid return type " + t.toString());
           }
-
         });
       }
 
@@ -502,7 +493,7 @@ public class BafASMBackend extends AbstractASMBackend {
         Value l = i.getLeftOp();
         Value r = i.getRightOp();
         if (r instanceof CaughtExceptionRef && l instanceof Local) {
-          mv.visitVarInsn(Opcodes.ASTORE, localToSlot.get(l));
+          mv.visitVarInsn(Opcodes.ASTORE, localToSlot.get((Local) l));
           // asm handles constant opcodes automatically here
         }
       }
@@ -1220,9 +1211,8 @@ public class BafASMBackend extends AbstractASMBackend {
 
       @Override
       public void casePrimitiveCastInst(PrimitiveCastInst i) {
-        Type from = i.getFromType();
         final Type to = i.getToType();
-        from.apply(new TypeSwitch() {
+        i.getFromType().apply(new TypeSwitch() {
 
           @Override
           public void caseBooleanType(BooleanType t) {
@@ -1241,11 +1231,11 @@ public class BafASMBackend extends AbstractASMBackend {
 
           @Override
           public void caseDoubleType(DoubleType t) {
-            if (to.equals(IntType.v())) {
+            if (IntType.v().equals(to)) {
               mv.visitInsn(Opcodes.D2I);
-            } else if (to.equals(LongType.v())) {
+            } else if (LongType.v().equals(to)) {
               mv.visitInsn(Opcodes.D2L);
-            } else if (to.equals(FloatType.v())) {
+            } else if (FloatType.v().equals(to)) {
               mv.visitInsn(Opcodes.D2F);
             } else {
               throw new RuntimeException("invalid to-type from double");
@@ -1254,11 +1244,11 @@ public class BafASMBackend extends AbstractASMBackend {
 
           @Override
           public void caseFloatType(FloatType t) {
-            if (to.equals(IntType.v())) {
+            if (IntType.v().equals(to)) {
               mv.visitInsn(Opcodes.F2I);
-            } else if (to.equals(LongType.v())) {
+            } else if (LongType.v().equals(to)) {
               mv.visitInsn(Opcodes.F2L);
-            } else if (to.equals(DoubleType.v())) {
+            } else if (DoubleType.v().equals(to)) {
               mv.visitInsn(Opcodes.F2D);
             } else {
               throw new RuntimeException("invalid to-type from float");
@@ -1272,11 +1262,11 @@ public class BafASMBackend extends AbstractASMBackend {
 
           @Override
           public void caseLongType(LongType t) {
-            if (to.equals(IntType.v())) {
+            if (IntType.v().equals(to)) {
               mv.visitInsn(Opcodes.L2I);
-            } else if (to.equals(FloatType.v())) {
+            } else if (FloatType.v().equals(to)) {
               mv.visitInsn(Opcodes.L2F);
-            } else if (to.equals(DoubleType.v())) {
+            } else if (DoubleType.v().equals(to)) {
               mv.visitInsn(Opcodes.L2D);
             } else {
               throw new RuntimeException("invalid to-type from long");
@@ -1294,20 +1284,20 @@ public class BafASMBackend extends AbstractASMBackend {
           }
 
           private void emitIntToTypeCast() {
-            if (to.equals(ByteType.v())) {
+            if (ByteType.v().equals(to)) {
               mv.visitInsn(Opcodes.I2B);
-            } else if (to.equals(CharType.v())) {
+            } else if (CharType.v().equals(to)) {
               mv.visitInsn(Opcodes.I2C);
-            } else if (to.equals(ShortType.v())) {
+            } else if (ShortType.v().equals(to)) {
               mv.visitInsn(Opcodes.I2S);
-            } else if (to.equals(FloatType.v())) {
+            } else if (FloatType.v().equals(to)) {
               mv.visitInsn(Opcodes.I2F);
-            } else if (to.equals(LongType.v())) {
+            } else if (LongType.v().equals(to)) {
               mv.visitInsn(Opcodes.I2L);
-            } else if (to.equals(DoubleType.v())) {
+            } else if (DoubleType.v().equals(to)) {
               mv.visitInsn(Opcodes.I2D);
-            } else if (to.equals(IntType.v())) {
-            } else if (to.equals(BooleanType.v())) {
+            } else if (IntType.v().equals(to)) {
+            } else if (BooleanType.v().equals(to)) {
             } else {
               throw new RuntimeException("invalid to-type from int");
             }
@@ -1317,8 +1307,6 @@ public class BafASMBackend extends AbstractASMBackend {
 
       @Override
       public void caseDynamicInvokeInst(DynamicInvokeInst i) {
-        SootMethodRef m = i.getMethodRef();
-        SootMethodRef bsm = i.getBootstrapMethodRef();
         List<Value> args = i.getBootstrapArgs();
         final Object[] argsArray = new Object[args.size()];
         int index = 0;
@@ -1389,6 +1377,8 @@ public class BafASMBackend extends AbstractASMBackend {
           });
           ++index;
         }
+        SootMethodRef m = i.getMethodRef();
+        SootMethodRef bsm = i.getBootstrapMethodRef();
         mv.visitInvokeDynamicInsn(m.name(), toTypeDesc(m), new Handle(i.getHandleTag(),
             slashify(bsm.declaringClass().getName()), bsm.name(), toTypeDesc(bsm), bsm.declaringClass().isInterface()),
             argsArray);
@@ -1956,21 +1946,21 @@ public class BafASMBackend extends AbstractASMBackend {
           mv.visitTypeInsn(Opcodes.ANEWARRAY, toTypeDesc(t));
         } else {
           int type;
-          if (t.equals(BooleanType.v())) {
+          if (BooleanType.v().equals(t)) {
             type = Opcodes.T_BOOLEAN;
-          } else if (t.equals(CharType.v())) {
+          } else if (CharType.v().equals(t)) {
             type = Opcodes.T_CHAR;
-          } else if (t.equals(FloatType.v())) {
+          } else if (FloatType.v().equals(t)) {
             type = Opcodes.T_FLOAT;
-          } else if (t.equals(DoubleType.v())) {
+          } else if (DoubleType.v().equals(t)) {
             type = Opcodes.T_DOUBLE;
-          } else if (t.equals(ByteType.v())) {
+          } else if (ByteType.v().equals(t)) {
             type = Opcodes.T_BYTE;
-          } else if (t.equals(ShortType.v())) {
+          } else if (ShortType.v().equals(t)) {
             type = Opcodes.T_SHORT;
-          } else if (t.equals(IntType.v())) {
+          } else if (IntType.v().equals(t)) {
             type = Opcodes.T_INT;
-          } else if (t.equals(LongType.v())) {
+          } else if (LongType.v().equals(t)) {
             type = Opcodes.T_LONG;
           } else {
             throw new RuntimeException("invalid type");
@@ -1989,10 +1979,11 @@ public class BafASMBackend extends AbstractASMBackend {
         List<IntConstant> values = i.getLookupValues();
         List<Unit> targets = i.getTargets();
 
-        int[] keys = new int[values.size()];
-        Label[] labels = new Label[values.size()];
+        final int size = values.size();
+        int[] keys = new int[size];
+        Label[] labels = new Label[size];
 
-        for (int j = 0; j < values.size(); j++) {
+        for (int j = 0; j < size; j++) {
           keys[j] = values.get(j).value;
           labels[j] = branchTargetLabels.get(targets.get(j));
         }
@@ -2004,9 +1995,10 @@ public class BafASMBackend extends AbstractASMBackend {
       public void caseTableSwitchInst(TableSwitchInst i) {
         List<Unit> targets = i.getTargets();
 
-        Label[] labels = new Label[targets.size()];
+        final int size = targets.size();
+        Label[] labels = new Label[size];
 
-        for (int j = 0; j < targets.size(); j++) {
+        for (int j = 0; j < size; j++) {
           labels[j] = branchTargetLabels.get(targets.get(j));
         }
 
@@ -2022,8 +2014,6 @@ public class BafASMBackend extends AbstractASMBackend {
       public void caseExitMonitorInst(ExitMonitorInst i) {
         mv.visitInsn(Opcodes.MONITOREXIT);
       }
-
     });
   }
-
 }

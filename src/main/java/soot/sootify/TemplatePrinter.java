@@ -52,8 +52,6 @@ public class TemplatePrinter {
   }
 
   private void printTo(SootClass c) {
-    String templateClassName = c.getName().replace('.', '_') + "_Maker";
-
     // imports
     println("import java.util.*;");
     println("import soot.*;");
@@ -63,7 +61,7 @@ public class TemplatePrinter {
 
     // open class
     print("public class ");
-    print(templateClassName);
+    print(c.getName().replace('.', '_') + "_Maker");
     println(" {");
 
     println("private static Local localByName(Body b, String name) {");
@@ -118,9 +116,7 @@ public class TemplatePrinter {
       println("Chain<Unit> units = b.getUnits();");
       StmtTemplatePrinter sw = new StmtTemplatePrinter(this, b.getUnits());
       for (Unit u : b.getUnits()) {
-
         u.apply(sw);
-
       }
 
       // TODO print traps

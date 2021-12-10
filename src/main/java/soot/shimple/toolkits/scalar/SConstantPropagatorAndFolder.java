@@ -23,9 +23,7 @@ package soot.shimple.toolkits.scalar;
  */
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +55,7 @@ import soot.shimple.ShimpleBody;
 import soot.shimple.toolkits.scalar.SEvaluator.BottomConstant;
 import soot.shimple.toolkits.scalar.SEvaluator.MetaConstant;
 import soot.shimple.toolkits.scalar.SEvaluator.TopConstant;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
@@ -88,31 +86,28 @@ public class SConstantPropagatorAndFolder extends BodyTransformer {
   protected ShimpleBody sb;
   protected boolean debug;
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     if (!(b instanceof ShimpleBody)) {
       throw new RuntimeException("SConstantPropagatorAndFolder requires a ShimpleBody.");
     }
-
-    this.sb = (ShimpleBody) b;
-
-    if (!sb.isSSA()) {
-      throw new RuntimeException("ShimpleBody is not in proper SSA form as required by SConstantPropagatorAndFolder."
+    ShimpleBody castBody = (ShimpleBody) b;
+    if (!castBody.isSSA()) {
+      throw new RuntimeException("ShimpleBody is not in proper SSA form as required by SConstantPropagatorAndFolder. "
           + "You may need to rebuild it or use ConstantPropagatorAndFolder instead.");
     }
 
-    boolean pruneCFG = PhaseOptions.getBoolean(options, "prune-cfg");
-    debug = Options.v().debug();
-    debug |= sb.getOptions().debug();
+    this.sb = castBody;
+    this.debug = Options.v().debug() || castBody.getOptions().debug();
 
     if (Options.v().verbose()) {
-      logger.debug("[" + sb.getMethod().getName() + "] Propagating and folding constants (SSA)...");
+      logger.debug("[" + castBody.getMethod().getName() + "] Propagating and folding constants (SSA)...");
     }
 
     // *** FIXME: What happens when Shimple is built with another UnitGraph?
-    SCPFAnalysis scpf = new SCPFAnalysis(new ExceptionalUnitGraph(sb));
-
+    SCPFAnalysis scpf = new SCPFAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(castBody));
     propagateResults(scpf.getResults());
-    if (pruneCFG) {
+    if (PhaseOptions.getBoolean(options, "prune-cfg")) {
       removeStmts(scpf.getDeadStmts());
       replaceStmts(scpf.getStmtsToReplace());
     }
@@ -123,53 +118,41 @@ public class SConstantPropagatorAndFolder extends BodyTransformer {
    * implementation of LocalDefs and LocalUses.
    **/
   protected void propagateResults(Map<Local, Constant> localToConstant) {
-    Chain<Unit> units = sb.getUnits();
-    Collection<Local> locals = sb.getLocals();
     ShimpleLocalDefs localDefs = new ShimpleLocalDefs(sb);
     ShimpleLocalUses localUses = new ShimpleLocalUses(sb);
 
-    Iterator<Local> localsIt = locals.iterator();
-    while (localsIt.hasNext()) {
-      Local local = localsIt.next();
+    for (Local local : sb.getLocals()) {
       Constant constant = localToConstant.get(local);
-
       if (constant instanceof MetaConstant) {
         continue;
       }
-
       // update definition
       {
         DefinitionStmt stmt = (DefinitionStmt) localDefs.getDefsOf(local).get(0);
 
         ValueBox defSrcBox = stmt.getRightOpBox();
-        Value defSrc = defSrcBox.getValue();
+        Value defSrcOld = defSrcBox.getValue();
 
         if (defSrcBox.canContainValue(constant)) {
           defSrcBox.setValue(constant);
 
           // remove dangling pointers
-          if (defSrc instanceof UnitBoxOwner) {
-            ((UnitBoxOwner) defSrc).clearUnitBoxes();
+          if (defSrcOld instanceof UnitBoxOwner) {
+            ((UnitBoxOwner) defSrcOld).clearUnitBoxes();
           }
         } else if (debug) {
           logger.warn("Couldn't propagate constant " + constant + " to box " + defSrcBox.getValue() + " in unit " + stmt);
         }
       }
-
       // update uses
-      {
-        Iterator usesIt = localUses.getUsesOf(local).iterator();
+      for (UnitValueBoxPair pair : localUses.getUsesOf(local)) {
+        ValueBox useBox = pair.getValueBox();
 
-        while (usesIt.hasNext()) {
-          UnitValueBoxPair pair = (UnitValueBoxPair) usesIt.next();
-          ValueBox useBox = pair.getValueBox();
-
-          if (useBox.canContainValue(constant)) {
-            useBox.setValue(constant);
-          } else if (debug) {
-            logger.warn(
-                "Couldn't propagate constant " + constant + " to box " + useBox.getValue() + " in unit " + pair.getUnit());
-          }
+        if (useBox.canContainValue(constant)) {
+          useBox.setValue(constant);
+        } else if (debug) {
+          logger.warn(
+              "Couldn't propagate constant " + constant + " to box " + useBox.getValue() + " in unit " + pair.getUnit());
         }
       }
     }
@@ -179,10 +162,8 @@ public class SConstantPropagatorAndFolder extends BodyTransformer {
    * Removes the given list of fall through IfStmts from the body.
    **/
   protected void removeStmts(List<IfStmt> deadStmts) {
-    Chain units = sb.getUnits();
-    Iterator<IfStmt> deadIt = deadStmts.iterator();
-    while (deadIt.hasNext()) {
-      Unit dead = deadIt.next();
+    Chain<Unit> units = sb.getUnits();
+    for (IfStmt dead : deadStmts) {
       units.remove(dead);
       dead.clearUnitBoxes();
     }
@@ -192,14 +173,11 @@ public class SConstantPropagatorAndFolder extends BodyTransformer {
    * Replaces conditional branches by unconditional branches as given by the mapping.
    **/
   protected void replaceStmts(Map<Stmt, GotoStmt> stmtsToReplace) {
-    Chain units = sb.getUnits();
-    Iterator<Stmt> stmtsIt = stmtsToReplace.keySet().iterator();
-    while (stmtsIt.hasNext()) {
-      // important not to call clearUnitBoxes() on booted since
+    Chain<Unit> units = sb.getUnits();
+    for (Map.Entry<Stmt, GotoStmt> e : stmtsToReplace.entrySet()) {
+      // important not to call clearUnitBoxes() on key since
       // replacement uses the same UnitBox
-      Unit booted = stmtsIt.next();
-      Unit replacement = stmtsToReplace.get(booted);
-      units.swapWith(booted, replacement);
+      units.swapWith(e.getKey(), e.getValue());
     }
   }
 }
@@ -238,23 +216,40 @@ public class SConstantPropagatorAndFolder extends BodyTransformer {
  * Phi node will still assume them to be Top and hence they will not influence the decision as to whether <tt>x</tt> is a
  * constant or not.
  **/
-class SCPFAnalysis extends ForwardBranchedFlowAnalysis {
-  protected FlowSet emptySet;
+class SCPFAnalysis extends ForwardBranchedFlowAnalysis<FlowSet<Object>> {
+  protected final static ArraySparseSet<Object> EMPTY_SET = new ArraySparseSet<Object>();
 
   /**
    * A mapping of the locals to their current assumed constant value (which may be Top or Bottom).
    **/
-  protected Map<Local, Constant> localToConstant;
+  protected final Map<Local, Constant> localToConstant;
 
   /**
    * A map from conditional branches to their possible replacement unit, an unconditional branch.
    **/
-  protected Map<Stmt, GotoStmt> stmtToReplacement;
+  protected final Map<Stmt, GotoStmt> stmtToReplacement;
 
   /**
    * A list of IfStmts that always fall through.
    **/
-  protected List<IfStmt> deadStmts;
+  protected final List<IfStmt> deadStmts;
+
+  public SCPFAnalysis(UnitGraph graph) {
+    super(graph);
+    this.stmtToReplacement = new HashMap<Stmt, GotoStmt>();
+    this.deadStmts = new ArrayList<IfStmt>();
+    this.localToConstant = new HashMap<Local, Constant>(graph.size() * 2 + 1, 0.7f);
+
+    // initialise localToConstant map -- assume all scalars are constant (Top)
+    {
+      Map<Local, Constant> ref = this.localToConstant;
+      for (Local local : graph.getBody().getLocals()) {
+        ref.put(local, TopConstant.v());
+      }
+    }
+
+    doAnalysis();
+  }
 
   /**
    * Returns the localToConstant map.
@@ -277,32 +272,11 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis {
     return stmtToReplacement;
   }
 
-  public SCPFAnalysis(UnitGraph graph) {
-    super(graph);
-    emptySet = new ArraySparseSet();
-    stmtToReplacement = new HashMap<Stmt, GotoStmt>();
-    deadStmts = new ArrayList<IfStmt>();
-
-    // initialise localToConstant map -- assume all scalars are
-    // constant (Top)
-    {
-      Collection<Local> locals = graph.getBody().getLocals();
-      Iterator<Local> localsIt = locals.iterator();
-      localToConstant = new HashMap<Local, Constant>(graph.size() * 2 + 1, 0.7f);
-
-      while (localsIt.hasNext()) {
-        Local local = (Local) localsIt.next();
-        localToConstant.put(local, TopConstant.v());
-      }
-    }
-
-    doAnalysis();
-  }
-
   // *** NOTE: this is here because ForwardBranchedFlowAnalysis does
   // *** not handle exceptional control flow properly in the
   // *** dataflow analysis. this should be removed when
   // *** ForwardBranchedFlowAnalysis is fixed.
+  @Override
   protected boolean treatTrapHandlersAsEntries() {
     return true;
   }
@@ -311,8 +285,9 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis {
    * If a node has empty IN sets we assume that it is not reachable. Hence, we initialise the entry sets to be non-empty to
    * indicate that they are reachable.
    **/
-  protected Object entryInitialFlow() {
-    FlowSet entrySet = (FlowSet) emptySet.emptySet();
+  @Override
+  protected FlowSet<Object> entryInitialFlow() {
+    FlowSet<Object> entrySet = EMPTY_SET.emptySet();
     entrySet.add(TopConstant.v());
     return entrySet;
   }
@@ -320,29 +295,25 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis {
   /**
    * All other nodes are assumed to be unreachable by default.
    **/
-  protected Object newInitialFlow() {
-    return emptySet.emptySet();
+  @Override
+  protected FlowSet<Object> newInitialFlow() {
+    return EMPTY_SET.emptySet();
   }
 
   /**
    * Since we are interested in control flow from all branches, take the union.
    **/
-  protected void merge(Object in1, Object in2, Object out) {
-    FlowSet fin1 = (FlowSet) in1;
-    FlowSet fin2 = (FlowSet) in2;
-    FlowSet fout = (FlowSet) out;
-
-    fin1.union(fin2, fout);
+  @Override
+  protected void merge(FlowSet<Object> in1, FlowSet<Object> in2, FlowSet<Object> out) {
+    in1.union(in2, out);
   }
 
   /**
    * Defer copy to FlowSet.
    **/
-  protected void copy(Object source, Object dest) {
-    FlowSet fource = (FlowSet) source;
-    FlowSet fest = (FlowSet) dest;
-
-    fource.copy(fest);
+  @Override
+  protected void copy(FlowSet<Object> source, FlowSet<Object> dest) {
+    source.copy(dest);
   }
 
   /**
@@ -354,30 +325,26 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis {
    * Pair serves no other purpose than to keep the analysis flowing for as long as needed. The final results are accumulated
    * in the localToConstant map.
    **/
-  protected void flowThrough(Object in, Unit s, List fallOut, List branchOuts) {
-    FlowSet fin = ((FlowSet) in).clone();
-
-    // not reachable
-    if (fin.isEmpty()) {
-      return;
+  @Override
+  protected void flowThrough(FlowSet<Object> in, final Unit s, List<FlowSet<Object>> fallOut,
+      List<FlowSet<Object>> branchOuts) {
+    if (in.isEmpty()) {
+      return; // not reachable
     }
 
-    // If s is a definition, check if any assumptions have to be
-    // corrected.
-    Pair pair = processDefinitionStmt(s);
+    FlowSet<Object> fin = in.clone();
 
+    // If s is a definition, check if any assumptions have to be corrected.
+    Pair<Unit, Constant> pair = processDefinitionStmt(s);
     if (pair != null) {
       fin.add(pair);
     }
 
     // normal, non-branching statement
     if (!s.branches() && s.fallsThrough()) {
-      Iterator fallOutIt = fallOut.iterator();
-      while (fallOutIt.hasNext()) {
-        FlowSet fallSet = (FlowSet) fallOutIt.next();
+      for (FlowSet<Object> fallSet : fallOut) {
         fallSet.union(fin);
       }
-
       return;
     }
 
@@ -386,136 +353,79 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis {
     boolean conservative = true;
     boolean fall = false;
     boolean branch = false;
-    FlowSet oneBranch = null;
+    FlowSet<Object> oneBranch = null;
 
-    IFSTMT: {
-      if (s instanceof IfStmt) {
-        IfStmt ifStmt = (IfStmt) s;
-        Value cond = ifStmt.getCondition();
-        Constant constant = SEvaluator.getFuzzyConstantValueOf(cond, localToConstant);
+    if (s instanceof IfStmt) {
+      IfStmt ifStmt = (IfStmt) s;
+      Constant constant = SEvaluator.getFuzzyConstantValueOf(ifStmt.getCondition(), localToConstant);
 
-        // flow both ways
-        if (constant instanceof BottomConstant) {
-          deadStmts.remove(ifStmt);
-          stmtToReplacement.remove(ifStmt);
-          break IFSTMT;
-        }
-
+      if (constant instanceof TopConstant) {
         // no flow
-        if (constant instanceof TopConstant) {
-          return;
-        }
-
-        /* determine whether to flow through or branch */
-
+        return;
+      } else if (constant instanceof BottomConstant) {
+        // flow both ways
+        deadStmts.remove(ifStmt);
+        stmtToReplacement.remove(ifStmt);
+      } else {
+        // determine whether to flow through or branch
         conservative = false;
 
-        Constant trueC = IntConstant.v(1);
-        Constant falseC = IntConstant.v(0);
-
-        if (constant.equals(trueC)) {
-          branch = true;
-          GotoStmt gotoStmt = Jimple.v().newGotoStmt(ifStmt.getTargetBox());
-          stmtToReplacement.put(ifStmt, gotoStmt);
-        }
-
-        if (constant.equals(falseC)) {
+        if (IntConstant.v(0).equals(constant)) {
           fall = true;
           deadStmts.add(ifStmt);
+        } else if (IntConstant.v(1).equals(constant)) {
+          branch = true;
+          stmtToReplacement.put(ifStmt, Jimple.v().newGotoStmt(ifStmt.getTargetBox()));
+        } else {
+          throw new RuntimeException("IfStmt condition must be 0 or 1! Found: " + constant);
         }
       }
-    } // end IFSTMT
+    } else if (s instanceof TableSwitchStmt) {
+      TableSwitchStmt table = (TableSwitchStmt) s;
+      Constant keyC = SEvaluator.getFuzzyConstantValueOf(table.getKey(), localToConstant);
 
-    TABLESWITCHSTMT: {
-      if (s instanceof TableSwitchStmt) {
-        TableSwitchStmt table = (TableSwitchStmt) s;
-        Value keyV = table.getKey();
-        Constant keyC = SEvaluator.getFuzzyConstantValueOf(keyV, localToConstant);
-
-        // flow all branches
-        if (keyC instanceof BottomConstant) {
-          stmtToReplacement.remove(table);
-          break TABLESWITCHSTMT;
-        }
-
+      if (keyC instanceof TopConstant) {
         // no flow
-        if (keyC instanceof TopConstant) {
-          return;
-        }
-
+        return;
+      } else if (keyC instanceof BottomConstant) {
         // flow all branches
-        if (!(keyC instanceof IntConstant)) {
-          break TABLESWITCHSTMT;
-        }
-
-        /* find the one branch we need to flow to */
-
+        stmtToReplacement.remove(table);
+      } else if (keyC instanceof IntConstant) {
+        // find the one branch we need to flow to
         conservative = false;
 
-        int key = ((IntConstant) keyC).value;
-        int low = table.getLowIndex();
-        int high = table.getHighIndex();
-        int index = key - low;
+        int index = ((IntConstant) keyC).value - table.getLowIndex();
+        UnitBox branchBox =
+            (index < 0 || index > table.getHighIndex()) ? table.getDefaultTargetBox() : table.getTargetBox(index);
 
-        UnitBox branchBox = null;
-        if (index < 0 || index > high) {
-          branchBox = table.getDefaultTargetBox();
-        } else {
-          branchBox = table.getTargetBox(index);
-        }
-
-        GotoStmt gotoStmt = Jimple.v().newGotoStmt(branchBox);
-        stmtToReplacement.put(table, gotoStmt);
-
-        List unitBoxes = table.getUnitBoxes();
-        int setIndex = unitBoxes.indexOf(branchBox);
-        oneBranch = (FlowSet) branchOuts.get(setIndex);
+        stmtToReplacement.put(table, Jimple.v().newGotoStmt(branchBox));
+        oneBranch = branchOuts.get(table.getUnitBoxes().indexOf(branchBox));
+      } else {
+        // flow all branches
       }
-    } // end TABLESWITCHSTMT
+    } else if (s instanceof LookupSwitchStmt) {
+      LookupSwitchStmt lookup = (LookupSwitchStmt) s;
+      Constant keyC = SEvaluator.getFuzzyConstantValueOf(lookup.getKey(), localToConstant);
 
-    LOOKUPSWITCHSTMT: {
-      if (s instanceof LookupSwitchStmt) {
-        LookupSwitchStmt lookup = (LookupSwitchStmt) s;
-        Value keyV = lookup.getKey();
-        Constant keyC = SEvaluator.getFuzzyConstantValueOf(keyV, localToConstant);
-
-        // flow all branches
-        if (keyC instanceof BottomConstant) {
-          stmtToReplacement.remove(lookup);
-          break LOOKUPSWITCHSTMT;
-        }
-
+      if (keyC instanceof TopConstant) {
         // no flow
-        if (keyC instanceof TopConstant) {
-          return;
-        }
-
+        return;
+      } else if (keyC instanceof BottomConstant) {
         // flow all branches
-        if (!(keyC instanceof IntConstant)) {
-          break LOOKUPSWITCHSTMT;
-        }
-
-        /* find the one branch we need to flow to */
-
+        stmtToReplacement.remove(lookup);
+      } else if (keyC instanceof IntConstant) {
+        // find the one branch we need to flow to
         conservative = false;
 
         int index = lookup.getLookupValues().indexOf(keyC);
+        UnitBox branchBox = (index < 0) ? lookup.getDefaultTargetBox() : lookup.getTargetBox(index);
 
-        UnitBox branchBox = null;
-        if (index == -1) {
-          branchBox = lookup.getDefaultTargetBox();
-        } else {
-          branchBox = lookup.getTargetBox(index);
-        }
-
-        GotoStmt gotoStmt = Jimple.v().newGotoStmt(branchBox);
-        stmtToReplacement.put(lookup, gotoStmt);
-
-        List unitBoxes = lookup.getUnitBoxes();
-        int setIndex = unitBoxes.indexOf(branchBox);
-        oneBranch = (FlowSet) branchOuts.get(setIndex);
+        stmtToReplacement.put(lookup, Jimple.v().newGotoStmt(branchBox));
+        oneBranch = branchOuts.get(lookup.getUnitBoxes().indexOf(branchBox));
+      } else {
+        // flow all branches
       }
-    } // end LOOKUPSWITCHSTMT
+    }
 
     // conservative control flow estimates
     if (conservative) {
@@ -524,17 +434,13 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis {
     }
 
     if (fall) {
-      Iterator fallOutIt = fallOut.iterator();
-      while (fallOutIt.hasNext()) {
-        FlowSet fallSet = (FlowSet) fallOutIt.next();
+      for (FlowSet<Object> fallSet : fallOut) {
         fallSet.union(fin);
       }
     }
 
     if (branch) {
-      Iterator branchOutsIt = branchOuts.iterator();
-      while (branchOutsIt.hasNext()) {
-        FlowSet branchSet = (FlowSet) branchOutsIt.next();
+      for (FlowSet<Object> branchSet : branchOuts) {
         branchSet.union(fin);
       }
     }
@@ -545,35 +451,21 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis {
   }
 
   /**
-   * Returns (Unit, Constant) pair if an assumption has changed due to the fact that u is reachable. Else returns null.
+   * Returns (Unit, Constant) Pair if an assumption has changed due to the fact that u is reachable, else returns null.
    **/
-  protected Pair processDefinitionStmt(Unit u) {
-    if (!(u instanceof DefinitionStmt)) {
-      return null;
-    }
-
-    DefinitionStmt dStmt = (DefinitionStmt) u;
-
-    Local local;
-
-    {
+  protected Pair<Unit, Constant> processDefinitionStmt(Unit u) {
+    if (u instanceof DefinitionStmt) {
+      DefinitionStmt dStmt = (DefinitionStmt) u;
       Value value = dStmt.getLeftOp();
-      if (!(value instanceof Local)) {
-        return null;
+      if (value instanceof Local) {
+        Local local = (Local) value;
+        /* update assumptions */
+        if (merge(local, SEvaluator.getFuzzyConstantValueOf(dStmt.getRightOp(), localToConstant))) {
+          return new Pair<>(u, localToConstant.get(local));
+        }
       }
-      local = (Local) value;
     }
-
-    /* update assumptions */
-
-    Value rightOp = dStmt.getRightOp();
-    Constant constant = SEvaluator.getFuzzyConstantValueOf(rightOp, localToConstant);
-
-    if (!merge(local, constant)) {
-      return null;
-    }
-
-    return new Pair(u, localToConstant.get(local));
+    return null;
   }
 
   /**
@@ -582,16 +474,13 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis {
    **/
   protected boolean merge(Local local, Constant constant) {
     Constant current = localToConstant.get(local);
-
     if (current instanceof BottomConstant) {
       return false;
     }
-
     if (current instanceof TopConstant) {
       localToConstant.put(local, constant);
       return true;
     }
-
     if (current.equals(constant)) {
       return false;
     }

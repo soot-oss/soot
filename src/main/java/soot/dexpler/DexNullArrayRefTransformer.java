@@ -49,6 +49,7 @@ import java.util.Map;
 
 import soot.Body;
 import soot.BodyTransformer;
+import soot.G;
 import soot.Local;
 import soot.RefType;
 import soot.Scene;
@@ -67,6 +68,7 @@ import soot.jimple.StringConstant;
 import soot.jimple.toolkits.scalar.LocalCreation;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.LocalDefs;
 
 /**
@@ -87,9 +89,9 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
   }
 
   protected void internalTransform(final Body body, String phaseName, Map<String, String> options) {
-    final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body, DalvikThrowAnalysis.v());
-    final LocalDefs defs = LocalDefs.Factory.newLocalDefs(g);
-    final LocalCreation lc = new LocalCreation(body.getLocals(), "ex");
+    final ExceptionalUnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, DalvikThrowAnalysis.v());
+    final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(g);
+    final LocalCreation lc = Scene.v().createLocalCreation(body.getLocals(), "ex");
 
     boolean changed = false;
     for (Iterator<Unit> unitIt = body.getUnits().snapshotIterator(); unitIt.hasNext();) {

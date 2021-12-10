@@ -26,37 +26,36 @@ package soot.jimple.toolkits.annotation.tags;
  * NullCheckTag contains the null pointer check information. The right third bit of a byte is used to represent whether the
  * null check is needed.
  */
-
 public class NullCheckTag implements OneByteCodeTag {
-  private final static String NAME = "NullCheckTag";
 
-  private byte value = 0;
+  public static final String NAME = "NullCheckTag";
+
+  private final byte value;
 
   public NullCheckTag(boolean needCheck) {
     if (needCheck) {
-      value = 0x04;
+      this.value = 0x04;
+    } else {
+      this.value = 0;
     }
   }
 
+  @Override
   public String getName() {
     return NAME;
   }
 
+  @Override
   public byte[] getValue() {
-    byte[] bv = new byte[1];
-    bv[0] = value;
-    return bv;
+    return new byte[] { value };
   }
 
   public boolean needCheck() {
-    if (value == 0) {
-      return false;
-    } else {
-      return true;
-    }
+    return (value != 0);
   }
 
+  @Override
   public String toString() {
-    return ((value == 0) ? "[not null]" : "[unknown]");
+    return (value == 0) ? "[not null]" : "[unknown]";
   }
 }

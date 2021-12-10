@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import soot.Immediate;
 import soot.Local;
@@ -55,20 +53,24 @@ import soot.toolkits.scalar.BackwardFlowAnalysis;
  *
  * @author Richard L. Halpert Adapted from Eric Bodden's NullnessAnalysis
  */
-public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
+public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis<Unit, NullnessAssumptionAnalysis.AnalysisInfo> {
+
   protected final static Object BOTTOM = new Object() {
+    @Override
     public String toString() {
       return "bottom";
     }
   };
 
   protected final static Object NULL = new Object() {
+    @Override
     public String toString() {
       return "null";
     }
   };
 
   protected final static Object NON_NULL = new Object() {
+    @Override
     public String toString() {
       return "non-null";
     }
@@ -76,6 +78,7 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
 
   // TOP IS MEANINGLESS FOR THIS ANALYSIS: YOU CAN'T ASSUME A VALUE IS NULL AND NON_NULL. BOTTOM IS USED FOR THAT CASE
   protected final static Object TOP = new Object() {
+    @Override
     public String toString() {
       return "top";
     }
@@ -96,10 +99,8 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
   /**
    * {@inheritDoc}
    */
-  protected void flowThrough(Object inValue, Object unit, Object outValue)
-  // protected void flowThrough(Object flowin, Unit u, List fallOut, List branchOuts)
-  {
-    AnalysisInfo in = (AnalysisInfo) inValue;
+  @Override
+  protected void flowThrough(AnalysisInfo in, Unit unit, AnalysisInfo outValue) {
     AnalysisInfo out = new AnalysisInfo(in);
 
     Stmt s = (Stmt) unit;
@@ -114,32 +115,26 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
     // }
     // in case of a monitor statement, we know that the programmer assumes we have a non-null value
     if (s instanceof MonitorStmt) {
-      MonitorStmt monitorStmt = (MonitorStmt) s;
-      out.put(monitorStmt.getOp(), NON_NULL);
+      out.put(((MonitorStmt) s).getOp(), NON_NULL);
     }
 
     // if we have an array ref, set the info for this ref to TOP,
     // cause we need to be conservative here
     if (s.containsArrayRef()) {
-      ArrayRef arrayRef = s.getArrayRef();
-      handleArrayRef(arrayRef, out);
+      handleArrayRef(s.getArrayRef(), out);
     }
     // same for field refs, but also set the receiver object to non-null, if there is one
     if (s.containsFieldRef()) {
-      FieldRef fieldRef = s.getFieldRef();
-      handleFieldRef(fieldRef, out);
+      handleFieldRef(s.getFieldRef(), out);
     }
     // same for invoke expr., also set the receiver object to non-null, if there is one
     if (s.containsInvokeExpr()) {
-      InvokeExpr invokeExpr = s.getInvokeExpr();
-      handleInvokeExpr(invokeExpr, out);
+      handleInvokeExpr(s.getInvokeExpr(), out);
     }
 
     // allow sublasses to define certain values as always-non-null
-    for (Iterator outIter = out.entrySet().iterator(); outIter.hasNext();) {
-      Entry entry = (Entry) outIter.next();
-      Value v = (Value) entry.getKey();
-      if (isAlwaysNonNull(v)) {
+    for (Map.Entry<Value, Object> entry : out.entrySet()) {
+      if (isAlwaysNonNull(entry.getKey())) {
         entry.setValue(NON_NULL);
       }
     }
@@ -148,26 +143,19 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
     if (s instanceof DefinitionStmt) {
       // need to copy the current out set because we need to assign under this assumption;
       // so this copy becomes the in-set to handleRefTypeAssignment
-      AnalysisInfo temp = new AnalysisInfo(out);
       DefinitionStmt defStmt = (DefinitionStmt) s;
       if (defStmt.getLeftOp().getType() instanceof RefLikeType) {
-        handleRefTypeAssignment(defStmt, temp, out);
+        handleRefTypeAssignment(defStmt, new AnalysisInfo(out), out);
       }
     }
 
     // save memory by only retaining information about locals
-    for (Iterator outIter = out.keySet().iterator(); outIter.hasNext();) {
-      Value v = (Value) outIter.next();
+    for (Iterator<Value> outIter = out.keySet().iterator(); outIter.hasNext();) {
+      Value v = outIter.next();
       if (!(v instanceof Local)) {
         outIter.remove();
       }
     }
-    // for (Iterator outBranchIter = outBranch.keySet().iterator(); outBranchIter.hasNext();) {
-    // Value v = (Value) outBranchIter.next();
-    // if(!(v instanceof Local)) {
-    // outBranchIter.remove();
-    // }
-    // }
 
     // now copy the computed info to out
     copy(out, outValue);
@@ -185,42 +173,31 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
   }
 
   private void handleArrayRef(ArrayRef arrayRef, AnalysisInfo out) {
-    Value array = arrayRef.getBase();
     // here we know that the array must point to an object, but the array value might be anything
-    out.put(array, NON_NULL);
-    // out.put(arrayRef, TOP);
+    out.put(arrayRef.getBase(), NON_NULL);
   }
 
   private void handleFieldRef(FieldRef fieldRef, AnalysisInfo out) {
     if (fieldRef instanceof InstanceFieldRef) {
       InstanceFieldRef instanceFieldRef = (InstanceFieldRef) fieldRef;
       // here we know that the receiver must point to an object
-      Value base = instanceFieldRef.getBase();
-      out.put(base, NON_NULL);
+      out.put(instanceFieldRef.getBase(), NON_NULL);
     }
-    // but the referenced object might point to everything
-    // out.put(fieldRef, TOP);
   }
 
   private void handleInvokeExpr(InvokeExpr invokeExpr, AnalysisInfo out) {
     if (invokeExpr instanceof InstanceInvokeExpr) {
       InstanceInvokeExpr instanceInvokeExpr = (InstanceInvokeExpr) invokeExpr;
       // here we know that the receiver must point to an object
-      Value base = instanceInvokeExpr.getBase();
-      out.put(base, NON_NULL);
+      out.put(instanceInvokeExpr.getBase(), NON_NULL);
     }
-    // but the returned object might point to everything
-    // out.put(invokeExpr, TOP);
   }
 
   private void handleRefTypeAssignment(DefinitionStmt assignStmt, AnalysisInfo rhsInfo, AnalysisInfo out) {
-    Value left = assignStmt.getLeftOp();
     Value right = assignStmt.getRightOp();
-
     // unbox casted value
     if (right instanceof JCastExpr) {
-      JCastExpr castExpr = (JCastExpr) right;
-      right = castExpr.getOp();
+      right = ((JCastExpr) right).getOp();
     }
 
     // An assignment invalidates any assumptions of null/non-null for lhs
@@ -228,51 +205,47 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
     rhsInfo.put(right, BOTTOM);
 
     // assign from rhs to lhs
-    out.put(left, rhsInfo.get(right));
+    out.put(assignStmt.getLeftOp(), rhsInfo.get(right));
   }
 
   /**
    * {@inheritDoc}
    */
-  protected void copy(Object source, Object dest) {
-    Map s = (Map) source;
-    Map d = (Map) dest;
-    d.clear();
-    d.putAll(s);
+  @Override
+  protected void copy(AnalysisInfo source, AnalysisInfo dest) {
+    dest.clear();
+    dest.putAll(source);
   }
 
   /**
    * {@inheritDoc}
    */
-  protected Object entryInitialFlow() {
+  @Override
+  protected AnalysisInfo entryInitialFlow() {
     return new AnalysisInfo();
   }
 
   /**
    * {@inheritDoc}
    */
-  protected void merge(Object in1, Object in2, Object out) {
-    AnalysisInfo left = (AnalysisInfo) in1;
-    AnalysisInfo right = (AnalysisInfo) in2;
-    AnalysisInfo res = (AnalysisInfo) out;
+  @Override
+  protected void merge(AnalysisInfo in1, AnalysisInfo in2, AnalysisInfo out) {
+    HashSet<Value> values = new HashSet<Value>();
+    values.addAll(in1.keySet());
+    values.addAll(in2.keySet());
 
-    Set values = new HashSet();
-    values.addAll(left.keySet());
-    values.addAll(right.keySet());
+    out.clear();
 
-    res.clear();
-
-    for (Iterator keyIter = values.iterator(); keyIter.hasNext();) {
-      Value v = (Value) keyIter.next();
-      Set<Object> leftAndRight = new HashSet<Object>();
-      leftAndRight.add(left.get(v));
-      leftAndRight.add(right.get(v));
+    for (Value v : values) {
+      HashSet<Object> leftAndRight = new HashSet<Object>();
+      leftAndRight.add(in1.get(v));
+      leftAndRight.add(in2.get(v));
 
       Object result;
       // This needs to be corrected for assumption *** TODO
       // TOP stays TOP
-      if (leftAndRight.contains(BOTTOM)) // if on either side we know nothing... then together we know nothing for sure
-      {
+      if (leftAndRight.contains(BOTTOM)) {
+        // if on either side we know nothing... then together we know nothing for sure
         result = BOTTOM;
       } else if (leftAndRight.contains(NON_NULL)) {
         if (leftAndRight.contains(NULL)) {
@@ -290,14 +263,15 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
         result = BOTTOM;
       }
 
-      res.put(v, result);
+      out.put(v, result);
     }
   }
 
   /**
    * {@inheritDoc}
    */
-  protected Object newInitialFlow() {
+  @Override
+  protected AnalysisInfo newInitialFlow() {
     return new AnalysisInfo();
   }
 
@@ -312,8 +286,7 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
    * @return true if i is always null right before this statement
    */
   public boolean isAssumedNullBefore(Unit s, Immediate i) {
-    AnalysisInfo ai = (AnalysisInfo) getFlowBefore(s);
-    return ai.get(i) == NULL;
+    return getFlowBefore(s).get(i) == NULL;
   }
 
   /**
@@ -327,8 +300,7 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
    * @return true if i is always non-null right before this statement
    */
   public boolean isAssumedNonNullBefore(Unit s, Immediate i) {
-    AnalysisInfo ai = (AnalysisInfo) getFlowBefore(s);
-    return ai.get(i) == NON_NULL;
+    return getFlowBefore(s).get(i) == NON_NULL;
   }
 
   /**
@@ -337,16 +309,17 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
    *
    * @author Eric Bodden
    */
-  protected static class AnalysisInfo extends HashMap {
+  protected static class AnalysisInfo extends HashMap<Value, Object> {
 
     public AnalysisInfo() {
       super();
     }
 
-    public AnalysisInfo(Map m) {
+    public AnalysisInfo(Map<Value, Object> m) {
       super(m);
     }
 
+    @Override
     public Object get(Object key) {
       Object object = super.get(key);
       if (object == null) {
@@ -354,7 +327,5 @@ public class NullnessAssumptionAnalysis extends BackwardFlowAnalysis {
       }
       return object;
     }
-
   }
-
 }

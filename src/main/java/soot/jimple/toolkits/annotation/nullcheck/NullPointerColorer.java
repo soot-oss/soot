@@ -22,7 +22,6 @@ package soot.jimple.toolkits.annotation.nullcheck;
  * #L%
  */
 
-import java.util.Iterator;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -33,15 +32,16 @@ import soot.BodyTransformer;
 import soot.G;
 import soot.RefLikeType;
 import soot.Singletons;
+import soot.SootClass;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.jimple.Stmt;
+import soot.jimple.toolkits.annotation.tags.NullCheckTag;
 import soot.tagkit.ColorTag;
 import soot.tagkit.KeyTag;
 import soot.tagkit.StringTag;
 import soot.tagkit.Tag;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.FlowSet;
 
 public class NullPointerColorer extends BodyTransformer {
@@ -54,85 +54,65 @@ public class NullPointerColorer extends BodyTransformer {
     return G.v().soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer();
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+    BranchedRefVarsAnalysis analysis
+        = new BranchedRefVarsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
 
-    BranchedRefVarsAnalysis analysis = new BranchedRefVarsAnalysis(new ExceptionalUnitGraph(b));
-
-    Iterator<Unit> it = b.getUnits().iterator();
-
-    while (it.hasNext()) {
-      Stmt s = (Stmt) it.next();
-
-      Iterator<ValueBox> usesIt = s.getUseBoxes().iterator();
-      FlowSet beforeSet = (FlowSet) analysis.getFlowBefore(s);
-
-      while (usesIt.hasNext()) {
-        ValueBox vBox = (ValueBox) usesIt.next();
+    for (Unit s : b.getUnits()) {
+      FlowSet<RefIntPair> beforeSet = analysis.getFlowBefore(s);
+      for (ValueBox vBox : s.getUseBoxes()) {
         addColorTags(vBox, beforeSet, s, analysis);
       }
-
-      Iterator<ValueBox> defsIt = s.getDefBoxes().iterator();
-      FlowSet afterSet = (FlowSet) analysis.getFallFlowAfter(s);
-
-      while (defsIt.hasNext()) {
-        ValueBox vBox = (ValueBox) defsIt.next();
+      FlowSet<RefIntPair> afterSet = analysis.getFallFlowAfter(s);
+      for (ValueBox vBox : s.getDefBoxes()) {
         addColorTags(vBox, afterSet, s, analysis);
       }
     }
 
-    Iterator<Tag> keysIt = b.getMethod().getDeclaringClass().getTags().iterator();
     boolean keysAdded = false;
-    while (keysIt.hasNext()) {
-      Tag next = keysIt.next();
+    final SootClass declaringClass = b.getMethod().getDeclaringClass();
+    for (Tag next : declaringClass.getTags()) {
       if (next instanceof KeyTag) {
-        if (((KeyTag) next).analysisType().equals("NullCheckTag")) {
+        if (NullCheckTag.NAME.equals(((KeyTag) next).analysisType())) {
           keysAdded = true;
         }
       }
     }
     if (!keysAdded) {
-      b.getMethod().getDeclaringClass().addTag(new KeyTag(ColorTag.RED, "Nullness: Null", "NullCheckTag"));
-      b.getMethod().getDeclaringClass().addTag(new KeyTag(ColorTag.GREEN, "Nullness: Not Null", "NullCheckTag"));
-      b.getMethod().getDeclaringClass().addTag(new KeyTag(ColorTag.BLUE, "Nullness: Nullness Unknown", "NullCheckTag"));
+      declaringClass.addTag(new KeyTag(ColorTag.RED, "Nullness: Null", NullCheckTag.NAME));
+      declaringClass.addTag(new KeyTag(ColorTag.GREEN, "Nullness: Not Null", NullCheckTag.NAME));
+      declaringClass.addTag(new KeyTag(ColorTag.BLUE, "Nullness: Nullness Unknown", NullCheckTag.NAME));
     }
   }
 
-  private void addColorTags(ValueBox vBox, FlowSet set, Stmt s, BranchedRefVarsAnalysis analysis) {
-
+  private void addColorTags(ValueBox vBox, FlowSet<RefIntPair> set, Unit u, BranchedRefVarsAnalysis analysis) {
     Value val = vBox.getValue();
     if (val.getType() instanceof RefLikeType) {
       // logger.debug(""+val+": "+val.getClass().toString());
-
-      int vInfo = analysis.anyRefInfo(val, set);
-
-      switch (vInfo) {
-        case 1: {
+      switch (analysis.anyRefInfo(val, set)) {
+        case BranchedRefVarsAnalysis.kNull: {
           // analysis.kNull
-          s.addTag(new StringTag(val + ": Null", "NullCheckTag"));
-          vBox.addTag(new ColorTag(ColorTag.RED, "NullCheckTag"));
+          u.addTag(new StringTag(val + ": Null", NullCheckTag.NAME));
+          vBox.addTag(new ColorTag(ColorTag.RED, NullCheckTag.NAME));
           break;
         }
-        case 2: {
-          // analysis.kNonNull
-          s.addTag(new StringTag(val + ": NonNull", "NullCheckTag"));
-          vBox.addTag(new ColorTag(ColorTag.GREEN, "NullCheckTag"));
+        case BranchedRefVarsAnalysis.kNonNull: {
+          u.addTag(new StringTag(val + ": NonNull", NullCheckTag.NAME));
+          vBox.addTag(new ColorTag(ColorTag.GREEN, NullCheckTag.NAME));
           break;
         }
-        case 99: {
-          // analysis.KTop:
-          s.addTag(new StringTag(val + ": Nullness Unknown", "NullCheckTag"));
-          vBox.addTag(new ColorTag(ColorTag.BLUE, "NullCheckTag"));
+        case BranchedRefVarsAnalysis.kTop: {
+          u.addTag(new StringTag(val + ": Nullness Unknown", NullCheckTag.NAME));
+          vBox.addTag(new ColorTag(ColorTag.BLUE, NullCheckTag.NAME));
           break;
         }
-        case 0: {
-          // analysis.kBottom
-          s.addTag(new StringTag(val + ": Nullness Unknown", "NullCheckTag"));
-          vBox.addTag(new ColorTag(ColorTag.BLUE, "NullCheckTag"));
+        case BranchedRefVarsAnalysis.kBottom: {
+          u.addTag(new StringTag(val + ": Nullness Unknown", NullCheckTag.NAME));
+          vBox.addTag(new ColorTag(ColorTag.BLUE, NullCheckTag.NAME));
           break;
         }
       }
-    } else {
-
     }
   }
 }

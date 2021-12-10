@@ -24,17 +24,14 @@ package soot.jimple.toolkits.annotation.purity;
 
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.Body;
 import soot.Local;
 import soot.RefLikeType;
 import soot.SootMethod;
 import soot.Type;
-import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
@@ -45,6 +42,7 @@ import soot.options.PurityOptions;
 import soot.tagkit.GenericAttribute;
 import soot.tagkit.StringTag;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.dot.DotGraph;
 
 public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalysis<PurityGraphBox> {
@@ -55,7 +53,7 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
   //
   // unanalysed methods assumed pure (& return a new obj)
   // class name prefix / method name
-  static private final String[][] pureMethods = { { "java.lang.", "valueOf" }, { "java.", "equals" }, { "javax.", "equals" },
+  private static final String[][] pureMethods = { { "java.lang.", "valueOf" }, { "java.", "equals" }, { "javax.", "equals" },
       { "sun.", "equals" }, { "java.", "compare" }, { "javax.", "compare" }, { "sun.", "compare" }, { "java.", "getClass" },
       { "javax.", "getClass" }, { "sun.", "getClass" }, { "java.", "hashCode" }, { "javax.", "hashCode" },
       { "sun.", "hashCode" }, { "java.", "toString" }, { "javax.", "toString" }, { "sun.", "toString" },
@@ -77,7 +75,7 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
       { "java.lang.StringIndexOutOfBoundsException", "<init>" } };
 
   // unanalysed methods that modify the whole environment
-  static private final String[][] impureMethods = { { "java.io.", "<init>" }, { "java.io.", "close" },
+  private static final String[][] impureMethods = { { "java.io.", "<init>" }, { "java.io.", "close" },
       { "java.io.", "read" }, { "java.io.", "write" }, { "java.io.", "flush" }, { "java.io.", "flushBuffer" },
       { "java.io.", "print" }, { "java.io.", "println" }, { "java.lang.Runtime",
           "exit" }, /*
@@ -110,7 +108,7 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
                      */ };
 
   // unanalysed methods that alter its arguments, but have no side effect
-  static private final String[][] alterMethods = { { "java.lang.System", "arraycopy" },
+  private static final String[][] alterMethods = { { "java.lang.System", "arraycopy" },
       // these are really huge methods used internally by StringBuffer
       // printing => put here to speed-up the analysis
       { "java.lang.FloatingDecimal", "dtoa" }, { "java.lang.FloatingDecimal", "developLongDigits" },
@@ -120,7 +118,7 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
   /**
    * Filter out some method.
    */
-  static private class Filter implements SootMethodFilter {
+  private static class Filter implements SootMethodFilter {
 
     @Override
     public boolean want(SootMethod method) {
@@ -157,13 +155,15 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
       drawAsOneDot("EmptyCallGraph");
     }
 
-    Date start = new Date();
-    logger.debug("[AM] Analysis began");
-    doAnalysis(opts.verbose());
-    logger.debug("[AM] Analysis finished");
-    Date finish = new Date();
-    long runtime = finish.getTime() - start.getTime();
-    logger.debug("[AM] run time: " + runtime / 1000. + " s");
+    {
+      Date start = new Date();
+      logger.debug("[AM] Analysis began");
+      doAnalysis(opts.verbose());
+      logger.debug("[AM] Analysis finished");
+      Date finish = new Date();
+      long runtime = finish.getTime() - start.getTime();
+      logger.debug("[AM] run time: " + runtime / 1000. + " s");
+    }
 
     if (opts.dump_cg()) {
       logger.debug("[AM] Dumping annotated .dot call-graph");
@@ -181,15 +181,13 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
       // to get a purity graph at each statement, not only summaries
       for (Iterator<SootMethod> it = getAnalysedMethods(); it.hasNext();) {
         SootMethod method = it.next();
-        Body body = method.retrieveActiveBody();
-        ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
         if (opts.verbose()) {
           logger.debug("  |- " + method);
         }
+        ExceptionalUnitGraph graph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(method.retrieveActiveBody());
         PurityIntraproceduralAnalysis r = new PurityIntraproceduralAnalysis(graph, this);
         r.drawAsOneDot("Intra_", method.toString());
-        PurityGraphBox b = new PurityGraphBox();
-        r.copyResult(b);
+        r.copyResult(new PurityGraphBox());
       }
     }
 
@@ -290,9 +288,8 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
 
   @Override
   protected void analyseMethod(SootMethod method, PurityGraphBox dst) {
-    Body body = method.retrieveActiveBody();
-    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
-    new PurityIntraproceduralAnalysis(graph, this).copyResult(dst);
+    new PurityIntraproceduralAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(method.retrieveActiveBody()),
+        this).copyResult(dst);
   }
 
   /**
@@ -334,7 +331,6 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
   @Override
   protected void applySummary(PurityGraphBox src, Stmt stmt, PurityGraphBox summary, PurityGraphBox dst) {
     // extract call info
-    InvokeExpr e = stmt.getInvokeExpr();
     Local ret = null;
     if (stmt instanceof AssignStmt) {
       Local v = (Local) ((AssignStmt) stmt).getLeftOp();
@@ -343,14 +339,14 @@ public class PurityInterproceduralAnalysis extends AbstractInterproceduralAnalys
       }
     }
     Local obj = null;
+    InvokeExpr e = stmt.getInvokeExpr();
     if (!(e instanceof StaticInvokeExpr)) {
       obj = (Local) ((InstanceInvokeExpr) e).getBase();
     }
-    List<Value> args = e.getArgs();
 
     // call methoCall on the PurityGraph
     PurityGraph g = new PurityGraph(src.g);
-    g.methodCall(summary.g, obj, args, ret);
+    g.methodCall(summary.g, obj, e.getArgs(), ret);
     dst.g = g;
   }
 

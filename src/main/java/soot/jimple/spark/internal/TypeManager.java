@@ -44,6 +44,7 @@ import soot.TypeSwitch;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
+import soot.jimple.toolkits.typing.fast.WeakObjectType;
 import soot.util.ArrayNumberer;
 import soot.util.BitVector;
 import soot.util.LargeNumberedMap;
@@ -87,7 +88,18 @@ public final class TypeManager {
     }
     RefType rt = (RefType) type;
     if (!rt.hasSootClass()) {
-      return true;
+      if (rt instanceof WeakObjectType) {
+        // try to resolve sootClass one more time.
+        SootClass c = Scene.v().forceResolve(rt.getClassName(), SootClass.HIERARCHY);
+        if (c == null) {
+          return true;
+        } else {
+          rt.setSootClass(c);
+        }
+      }
+      else {
+        return true;
+      }
     }
     SootClass cl = rt.getSootClass();
     return cl.resolvingLevel() < SootClass.HIERARCHY;
@@ -99,7 +111,14 @@ public final class TypeManager {
     }
     while (allocNodeListener.hasNext()) {
       AllocNode n = allocNodeListener.next();
-      for (final Type t : Scene.v().getTypeNumberer()) {
+      Type nt = n.getType();
+      Iterable<Type> types;
+      if (nt instanceof NullType || nt instanceof AnySubType) {
+        types = Scene.v().getTypeNumberer();
+      } else {
+        types = Scene.v().getOrMakeFastHierarchy().canStoreTypeList(nt);
+      }
+      for (final Type t : types) {
         if (!(t instanceof RefLikeType)) {
           continue;
         }
@@ -109,19 +128,19 @@ public final class TypeManager {
         if (isUnresolved(t)) {
           continue;
         }
-        if (castNeverFails(n.getType(), t)) {
-          BitVector mask = typeMask.get(t);
-          if (mask == null) {
-            typeMask.put(t, mask = new BitVector());
-            for (final AllocNode an : pag.getAllocNodeNumberer()) {
-              if (castNeverFails(an.getType(), t)) {
-                mask.set(an.getNumber());
-              }
+
+        BitVector mask = typeMask.get(t);
+        if (mask == null) {
+          typeMask.put(t, mask = new BitVector());
+          for (final AllocNode an : pag.getAllocNodeNumberer()) {
+            if (castNeverFails(an.getType(), t)) {
+              mask.set(an.getNumber());
             }
-            continue;
           }
-          mask.set(n.getNumber());
+          continue;
         }
+        mask.set(n.getNumber());
+
       }
     }
     BitVector ret = (BitVector) typeMask.get(type);
@@ -208,9 +227,7 @@ public final class TypeManager {
   private LargeNumberedMap<Type, BitVector> typeMask = null;
 
   final public boolean castNeverFails(Type src, Type dst) {
-    if (fh == null) {
-      return true;
-    } else if (dst == null) {
+    if (dst == null) {
       return true;
     } else if (dst == src) {
       return true;
@@ -225,7 +242,11 @@ public final class TypeManager {
     } else if (dst instanceof AnySubType) {
       throw new RuntimeException("oops src=" + src + " dst=" + dst);
     } else {
-      return getFastHierarchy().canStoreType(src, dst);
+      FastHierarchy fh = getFastHierarchy();
+      if (fh == null) {
+        return true;
+      }
+      return fh.canStoreType(src, dst);
     }
   }
 

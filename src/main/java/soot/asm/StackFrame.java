@@ -126,9 +126,23 @@ final class StackFrame {
           src.setUnit(newOp.insn, as);
           newOp.updateBoxes();
         } else {
-          AssignStmt as = Jimple.v().newAssignStmt(stack, newOp.stackOrValue());
-          src.mergeUnits(newOp.insn, as);
-          newOp.addBox(as.getRightOpBox());
+          Unit prev = src.getUnit(newOp.insn);
+          boolean merge = true;
+          if (prev instanceof UnitContainer) {
+            for (Unit t : ((UnitContainer) prev).units) {
+              if (AsmUtil.alreadyExists(t, stack, newOp.stackOrValue())) {
+                merge = false;
+                break;
+              }
+            }
+          } else if (AsmUtil.alreadyExists(prev, stack, newOp.stackOrValue())) {
+            merge = false;
+          }
+          if (merge) {
+            AssignStmt as = Jimple.v().newAssignStmt(stack, newOp.stackOrValue());
+            src.mergeUnits(newOp.insn, as);
+            newOp.addBox(as.getRightOpBox());
+          }
         }
       } else {
         for (int j = 0; j != nrIn; j++) {

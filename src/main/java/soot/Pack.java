@@ -22,18 +22,20 @@ package soot;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-
-import soot.util.Chain;
-import soot.util.HashChain;
 
 /**
  * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key is the phase name.
  */
 public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
-  private String name;
 
+  private final List<Transform> opts = new ArrayList<Transform>();
+  private final String name;
+
+  @Override
   public String getPhaseName() {
     return name;
   }
@@ -42,20 +44,19 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
     this.name = name;
   }
 
-  Chain<Transform> opts = new HashChain<Transform>();
-
+  @Override
   public Iterator<Transform> iterator() {
     return opts.iterator();
   }
 
   public void add(Transform t) {
     if (!t.getPhaseName().startsWith(getPhaseName() + ".")) {
-      throw new RuntimeException("Transforms in pack '" + getPhaseName() + "' must have a phase name " + "that starts with '"
-          + getPhaseName() + ".'.");
+      throw new RuntimeException(
+          "Transforms in pack '" + getPhaseName() + "' must have a phase name that starts with '" + getPhaseName() + ".'.");
     }
     PhaseOptions.v().getPM().notifyAddPack();
     if (get(t.getPhaseName()) != null) {
-      throw new RuntimeException("Phase " + t.getPhaseName() + " already " + "in pack");
+      throw new RuntimeException("Phase " + t.getPhaseName() + " already in pack");
     }
     opts.add(t);
   }
@@ -64,7 +65,7 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
     PhaseOptions.v().getPM().notifyAddPack();
     for (Transform tr : opts) {
       if (tr.getPhaseName().equals(phaseName)) {
-        opts.insertAfter(t, tr);
+        opts.add(opts.indexOf(tr) + 1, t);
         return;
       }
     }
@@ -75,7 +76,7 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
     PhaseOptions.v().getPM().notifyAddPack();
     for (Transform tr : opts) {
       if (tr.getPhaseName().equals(phaseName)) {
-        opts.insertBefore(t, tr);
+        opts.add(opts.indexOf(tr), t);
         return;
       }
     }
@@ -125,11 +126,29 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
     internalApply(b);
   }
 
+  @Override
   public String getDeclaredOptions() {
     return soot.options.Options.getDeclaredOptionsForPhase(getPhaseName());
   }
 
+  @Override
   public String getDefaultOptions() {
     return soot.options.Options.getDefaultOptionsForPhase(getPhaseName());
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(name);
+    sb.append(" { ");
+    for (int i = 0; i < opts.size(); i++) {
+      sb.append(opts.get(i).getPhaseName());
+      if (i < opts.size() - 1) {
+        sb.append(",");
+      }
+      sb.append(" ");
+    }
+    sb.append(" }");
+    return sb.toString();
   }
 }

@@ -38,7 +38,7 @@ import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.Stmt;
 import soot.options.Options;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
@@ -50,10 +50,11 @@ import soot.util.HashChain;
  */
 public class FastAvailableExpressions implements AvailableExpressions {
   private static final Logger logger = LoggerFactory.getLogger(FastAvailableExpressions.class);
-  Map<Unit, List<UnitValueBoxPair>> unitToPairsAfter;
-  Map<Unit, List<UnitValueBoxPair>> unitToPairsBefore;
-  Map<Unit, Chain<EquivalentValue>> unitToEquivsAfter;
-  Map<Unit, Chain<EquivalentValue>> unitToEquivsBefore;
+
+  protected final Map<Unit, List<UnitValueBoxPair>> unitToPairsAfter;
+  protected final Map<Unit, List<UnitValueBoxPair>> unitToPairsBefore;
+  protected final Map<Unit, Chain<EquivalentValue>> unitToEquivsAfter;
+  protected final Map<Unit, Chain<EquivalentValue>> unitToEquivsBefore;
 
   /** Wrapper for AvailableExpressionsAnalysis. */
   public FastAvailableExpressions(Body b, SideEffectTester st) {
@@ -61,34 +62,27 @@ public class FastAvailableExpressions implements AvailableExpressions {
       logger.debug("[" + b.getMethod().getName() + "] Finding available expressions...");
     }
 
-    FastAvailableExpressionsAnalysis analysis
-        = new FastAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b), b.getMethod(), st);
+    final Chain<Unit> units = b.getUnits();
+    this.unitToPairsAfter = new HashMap<Unit, List<UnitValueBoxPair>>(units.size() * 2 + 1, 0.7f);
+    this.unitToPairsBefore = new HashMap<Unit, List<UnitValueBoxPair>>(units.size() * 2 + 1, 0.7f);
+    this.unitToEquivsAfter = new HashMap<Unit, Chain<EquivalentValue>>(units.size() * 2 + 1, 0.7f);
+    this.unitToEquivsBefore = new HashMap<Unit, Chain<EquivalentValue>>(units.size() * 2 + 1, 0.7f);
 
+    FastAvailableExpressionsAnalysis analysis =
+        new FastAvailableExpressionsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b), b.getMethod(), st);
     // Build unitToExprs map
-    {
-      unitToPairsAfter = new HashMap<Unit, List<UnitValueBoxPair>>(b.getUnits().size() * 2 + 1, 0.7f);
-      unitToPairsBefore = new HashMap<Unit, List<UnitValueBoxPair>>(b.getUnits().size() * 2 + 1, 0.7f);
-      unitToEquivsAfter = new HashMap<Unit, Chain<EquivalentValue>>(b.getUnits().size() * 2 + 1, 0.7f);
-      unitToEquivsBefore = new HashMap<Unit, Chain<EquivalentValue>>(b.getUnits().size() * 2 + 1, 0.7f);
-
-      for (Unit s : b.getUnits()) {
-        FlowSet<Value> set = analysis.getFlowBefore(s);
-
+    for (Unit s : units) {
+      FlowSet<Value> set = analysis.getFlowBefore(s);
+      if (set instanceof ToppedSet && ((ToppedSet<Value>) set).isTop()) {
+        throw new RuntimeException("top! on " + s);
+      }
+      {
         List<UnitValueBoxPair> pairsBefore = new ArrayList<UnitValueBoxPair>();
-        List<UnitValueBoxPair> pairsAfter = new ArrayList<UnitValueBoxPair>();
-
         Chain<EquivalentValue> equivsBefore = new HashChain<EquivalentValue>();
-        Chain<EquivalentValue> equivsAfter = new HashChain<EquivalentValue>();
-
-        if (set instanceof ToppedSet && ((ToppedSet<Value>) set).isTop()) {
-          throw new RuntimeException("top! on " + s);
-        }
 
         for (Value v : set) {
           Stmt containingStmt = (Stmt) analysis.rhsToContainingStmt.get(v);
-          UnitValueBoxPair p = new UnitValueBoxPair(containingStmt, ((AssignStmt) containingStmt).getRightOpBox());
-          pairsBefore.add(p);
-
+          pairsBefore.add(new UnitValueBoxPair(containingStmt, ((AssignStmt) containingStmt).getRightOpBox()));
           EquivalentValue ev = new EquivalentValue(v);
           if (!equivsBefore.contains(ev)) {
             equivsBefore.add(ev);
@@ -97,12 +91,14 @@ public class FastAvailableExpressions implements AvailableExpressions {
 
         unitToPairsBefore.put(s, pairsBefore);
         unitToEquivsBefore.put(s, equivsBefore);
+      }
+      {
+        List<UnitValueBoxPair> pairsAfter = new ArrayList<UnitValueBoxPair>();
+        Chain<EquivalentValue> equivsAfter = new HashChain<EquivalentValue>();
 
         for (Value v : analysis.getFlowAfter(s)) {
           Stmt containingStmt = (Stmt) analysis.rhsToContainingStmt.get(v);
-          UnitValueBoxPair p = new UnitValueBoxPair(containingStmt, ((AssignStmt) containingStmt).getRightOpBox());
-          pairsAfter.add(p);
-
+          pairsAfter.add(new UnitValueBoxPair(containingStmt, ((AssignStmt) containingStmt).getRightOpBox()));
           EquivalentValue ev = new EquivalentValue(v);
           if (!equivsAfter.contains(ev)) {
             equivsAfter.add(ev);
@@ -120,21 +116,25 @@ public class FastAvailableExpressions implements AvailableExpressions {
   }
 
   /** Returns a List containing the UnitValueBox pairs corresponding to expressions available before u. */
+  @Override
   public List<UnitValueBoxPair> getAvailablePairsBefore(Unit u) {
     return unitToPairsBefore.get(u);
   }
 
   /** Returns a Chain containing the EquivalentValue objects corresponding to expressions available before u. */
+  @Override
   public Chain<EquivalentValue> getAvailableEquivsBefore(Unit u) {
     return unitToEquivsBefore.get(u);
   }
 
   /** Returns a List containing the EquivalentValue corresponding to expressions available after u. */
+  @Override
   public List<UnitValueBoxPair> getAvailablePairsAfter(Unit u) {
     return unitToPairsAfter.get(u);
   }
 
   /** Returns a List containing the UnitValueBox pairs corresponding to expressions available after u. */
+  @Override
   public Chain<EquivalentValue> getAvailableEquivsAfter(Unit u) {
     return unitToEquivsAfter.get(u);
   }

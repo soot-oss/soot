@@ -22,13 +22,11 @@ package soot.jbco;
  * #L%
  */
 
-import java.util.Iterator;
 import java.util.Map;
 
 import soot.Body;
 import soot.BodyTransformer;
 import soot.PackManager;
-import soot.PatchingChain;
 import soot.Transform;
 import soot.Unit;
 import soot.tagkit.LineNumberTag;
@@ -49,23 +47,20 @@ public class LineNumberGenerator {
     soot.Main.main(argv);
   }
 
-  class BafLineNumberer extends BodyTransformer {
+  protected static class BafLineNumberer extends BodyTransformer {
+
+    @Override
     protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-
       System.out.println("Printing Line Numbers for: " + b.getMethod().getSignature());
-
-      PatchingChain<Unit> units = b.getUnits(); // get the method code
-      Iterator<Unit> it = units.iterator();
-      while (it.hasNext()) { // for each jimple statement or baf instruction
-        Unit u = (Unit) it.next();
-        if (u.hasTag("LineNumberTag")) { // see if a LineNumberTag exists (it will if you use -keep-line-number)
-          LineNumberTag tag = (LineNumberTag) u.getTag(("LineNumberTag"));
+      for (Unit u : b.getUnits()) { // for each jimple statement or baf instruction
+        LineNumberTag tag = (LineNumberTag) u.getTag(LineNumberTag.NAME);
+        if (tag != null) {
+          // see if a LineNumberTag exists (it will if you use -keep-line-number)
           System.out.println(u + " has Line Number: " + tag.getLineNumber()); // print out the unit and line number
         } else {
           System.out.println(u + " has no Line Number");
         }
       }
-
       System.out.println("\n");
     }
   }

@@ -31,6 +31,7 @@ import static soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity.value
 import java.util.HashMap;
 import java.util.Map;
 
+import soot.Body;
 import soot.IntegerType;
 import soot.Local;
 import soot.LongType;
@@ -61,7 +62,6 @@ import soot.toolkits.scalar.LiveLocals;
 // STEP 3: Decide whether it is a backwards or forwards analysis.
 // FORWARDS
 //
-//
 public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityAnalysis.Parity>> {
   public enum Parity {
     TOP, BOTTOM, EVEN, ODD;
@@ -75,35 +75,31 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
     }
   }
 
-  private UnitGraph g;
-
-  private LiveLocals filter;
+  private final Body body;
+  private final LiveLocals filter;
 
   public ParityAnalysis(UnitGraph g, LiveLocals filter) {
     super(g);
-    this.g = g;
-
+    this.body = g.getBody();
     this.filter = filter;
 
     filterUnitToBeforeFlow = new HashMap<Unit, Map<Value, Parity>>();
+    filterUnitToAfterFlow = new HashMap<Unit, Map<Value, Parity>>();
     buildBeforeFilterMap();
 
-    filterUnitToAfterFlow = new HashMap<Unit, Map<Value, Parity>>();
-
     doAnalysis();
-
   }
 
   public ParityAnalysis(UnitGraph g) {
     super(g);
-    this.g = g;
+    this.body = g.getBody();
+    this.filter = null;
 
     doAnalysis();
   }
 
   private void buildBeforeFilterMap() {
-
-    for (Unit s : g.getBody().getUnits()) {
+    for (Unit s : body.getUnits()) {
       // if (!(s instanceof DefinitionStmt)) continue;
       // Value left = ((DefinitionStmt)s).getLeftOp();
       // if (!(left instanceof Local)) continue;
@@ -145,19 +141,18 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
 
       if (inVal2 == null) {
         outMap.put(var1, inVal1);
-      } else if (inVal1.equals(BOTTOM)) {
+      } else if (BOTTOM.equals(inVal1)) {
         outMap.put(var1, inVal2);
-      } else if (inVal2.equals(BOTTOM)) {
+      } else if (BOTTOM.equals(inVal2)) {
         outMap.put(var1, inVal1);
-      } else if ((inVal1.equals(EVEN)) && (inVal2.equals(EVEN))) {
+      } else if (EVEN.equals(inVal1) && EVEN.equals(inVal2)) {
         outMap.put(var1, EVEN);
-      } else if ((inVal1.equals(ODD)) && (inVal2.equals(ODD))) {
+      } else if (ODD.equals(inVal1) && ODD.equals(inVal2)) {
         outMap.put(var1, ODD);
       } else {
         outMap.put(var1, TOP);
       }
     }
-
   }
 
   // STEP 5: Define flow equations.
@@ -187,53 +182,41 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
       Parity resVal1 = getParity(in, ((BinopExpr) val).getOp1());
       Parity resVal2 = getParity(in, ((BinopExpr) val).getOp2());
 
-      if (resVal1.equals(TOP) | resVal2.equals(TOP)) {
+      if (TOP.equals(resVal1) | TOP.equals(resVal2)) {
         return TOP;
-      }
-      if (resVal1.equals(BOTTOM) | resVal2.equals(BOTTOM)) {
+      } else if (BOTTOM.equals(resVal1) | BOTTOM.equals(resVal2)) {
         return BOTTOM;
-      }
-      if (resVal1.equals(resVal2)) {
+      } else if (resVal1.equals(resVal2)) {
         return EVEN;
+      } else {
+        return ODD;
       }
-
-      return ODD;
-    }
-
-    if (val instanceof MulExpr) {
+    } else if (val instanceof MulExpr) {
       Parity resVal1 = getParity(in, ((BinopExpr) val).getOp1());
       Parity resVal2 = getParity(in, ((BinopExpr) val).getOp2());
-      if (resVal1.equals(TOP) | resVal2.equals(TOP)) {
+      if (TOP.equals(resVal1) | TOP.equals(resVal2)) {
         return TOP;
-      }
-      if (resVal1.equals(BOTTOM) | resVal2.equals(BOTTOM)) {
+      } else if (BOTTOM.equals(resVal1) | BOTTOM.equals(resVal2)) {
         return BOTTOM;
-      }
-      if (resVal1.equals(resVal2)) {
+      } else if (resVal1.equals(resVal2)) {
         return resVal1;
+      } else {
+        return EVEN;
       }
-
-      return EVEN;
-    }
-    if (val instanceof IntConstant) {
+    } else if (val instanceof IntConstant) {
       int value = ((IntConstant) val).value;
       return valueOf(value);
-    }
-    if (val instanceof LongConstant) {
+    } else if (val instanceof LongConstant) {
       long value = ((LongConstant) val).value;
       return valueOf(value);
+    } else {
+      Parity p = in.get(val);
+      return (p != null) ? p : TOP;
     }
-
-    Parity p = in.get(val);
-    if (p == null) {
-      return TOP;
-    }
-    return p;
   }
 
   @Override
   protected void flowThrough(Map<Value, Parity> in, Unit s, Map<Value, Parity> out) {
-
     // copy in to out
     out.putAll(in);
 
@@ -241,14 +224,14 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
     // of rightOp and update parity to EVEN, ODD or TOP
 
     // boolean useS = false;
-
     if (s instanceof DefinitionStmt) {
-      Value left = ((DefinitionStmt) s).getLeftOp();
+      DefinitionStmt sDefStmt = (DefinitionStmt) s;
+      Value left = sDefStmt.getLeftOp();
       if (left instanceof Local) {
-        if ((left.getType() instanceof IntegerType) || (left.getType() instanceof LongType)) {
+        Type leftType = left.getType();
+        if ((leftType instanceof IntegerType) || (leftType instanceof LongType)) {
           // useS = true;
-          Value right = ((DefinitionStmt) s).getRightOp();
-          out.put(left, getParity(out, right));
+          out.put(left, getParity(out, sDefStmt.getRightOp()));
         }
       }
     }
@@ -273,7 +256,6 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
   }
 
   private void buildAfterFilterMap(Unit s) {
-
     Map<Value, Parity> map = new HashMap<Value, Parity>();
     for (Local local : filter.getLiveLocalsAfter(s)) {
       map.put(local, BOTTOM);
@@ -292,10 +274,9 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
     /*
      * HashMap initMap = new HashMap();
      *
-     * Chain locals = g.getBody().getLocals(); Iterator it = locals.iterator(); while (it.hasNext()) { initMap.put(it.next(),
+     * Chain locals = body.getLocals(); Iterator it = locals.iterator(); while (it.hasNext()) { initMap.put(it.next(),
      * BOTTOM); } return initMap;
      */
-
     return newInitialFlow();
   }
 
@@ -314,20 +295,16 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
   }
 
   private Map<Value, Parity> updateFilter(Map<Value, Parity> allData, Map<Value, Parity> filterData) {
-
-    if (allData == null) {
-      return filterData;
-    }
-
-    for (Value v : filterData.keySet()) {
-      Parity d = allData.get(v);
-      if (d == null) {
-        filterData.remove(v);
-      } else {
-        filterData.put(v, d);
+    if (allData != null) {
+      for (Value v : filterData.keySet()) {
+        Parity d = allData.get(v);
+        if (d == null) {
+          filterData.remove(v);
+        } else {
+          filterData.put(v, d);
+        }
       }
     }
-
     return filterData;
   }
 
@@ -335,7 +312,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
   protected Map<Value, Parity> newInitialFlow() {
     Map<Value, Parity> initMap = new HashMap<Value, Parity>();
 
-    for (Local l : g.getBody().getLocals()) {
+    for (Local l : body.getLocals()) {
       Type t = l.getType();
       // System.out.println("next local: "+next);
       if ((t instanceof IntegerType) || (t instanceof LongType)) {
@@ -343,7 +320,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
       }
     }
 
-    for (ValueBox vb : g.getBody().getUseAndDefBoxes()) {
+    for (ValueBox vb : body.getUseAndDefBoxes()) {
       Value val = vb.getValue();
       if (val instanceof ArithmeticConstant) {
         initMap.put(val, getParity(initMap, val));
@@ -355,7 +332,5 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
     }
 
     return initMap;
-
   }
-
 }

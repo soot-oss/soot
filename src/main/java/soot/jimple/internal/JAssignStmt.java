@@ -52,11 +52,12 @@ import soot.jimple.SubExpr;
 import soot.util.Switch;
 
 public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
+
   @SuppressWarnings("serial")
-  private static class LinkedVariableBox extends VariableBox {
+  public static class LinkedVariableBox extends VariableBox {
     ValueBox otherBox = null;
 
-    private LinkedVariableBox(Value v) {
+    public LinkedVariableBox(Value v) {
       super(v);
     }
 
@@ -64,24 +65,20 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
       this.otherBox = otherBox;
     }
 
+    @Override
     public boolean canContainValue(Value v) {
       if (super.canContainValue(v)) {
-        if (otherBox == null) {
-          return true;
-        }
-
-        Value o = otherBox.getValue();
-        return (v instanceof Immediate) || (o instanceof Immediate);
+        return (otherBox == null) || (v instanceof Immediate) || (otherBox.getValue() instanceof Immediate);
       }
       return false;
     }
   }
 
   @SuppressWarnings("serial")
-  private static class LinkedRValueBox extends RValueBox {
+  public static class LinkedRValueBox extends RValueBox {
     ValueBox otherBox = null;
 
-    private LinkedRValueBox(Value v) {
+    public LinkedRValueBox(Value v) {
       super(v);
     }
 
@@ -89,14 +86,10 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
       this.otherBox = otherBox;
     }
 
+    @Override
     public boolean canContainValue(Value v) {
       if (super.canContainValue(v)) {
-        if (otherBox == null) {
-          return true;
-        }
-
-        Value o = otherBox.getValue();
-        return (v instanceof Immediate) || (o instanceof Immediate);
+        return (otherBox == null) || (v instanceof Immediate) || (otherBox.getValue() instanceof Immediate);
       }
       return false;
     }
@@ -110,13 +103,18 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
 
     if (!leftBox.canContainValue(variable) || !rightBox.canContainValue(rvalue)) {
       throw new RuntimeException(
-          "Illegal assignment statement.  Make sure that either left side or right hand side has a local or constant.");
+          "Illegal assignment statement. Make sure that either left side or right hand side has a local or constant.");
     }
-
   }
 
   protected JAssignStmt(ValueBox variableBox, ValueBox rvalueBox) {
     super(variableBox, rvalueBox);
+    if (leftBox instanceof LinkedVariableBox) {
+      ((LinkedVariableBox) leftBox).setOtherBox(rightBox);
+    }
+    if (rightBox instanceof LinkedRValueBox) {
+      ((LinkedRValueBox) rightBox).setOtherBox(leftBox);
+    }
   }
 
   @Override
@@ -126,19 +124,14 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
 
   @Override
   public InvokeExpr getInvokeExpr() {
-    if (!containsInvokeExpr()) {
-      throw new RuntimeException("getInvokeExpr() called with no invokeExpr present!");
-    }
-
-    return (InvokeExpr) rightBox.getValue();
+    return (InvokeExpr) getInvokeExprBox().getValue();
   }
 
   @Override
   public ValueBox getInvokeExprBox() {
     if (!containsInvokeExpr()) {
-      throw new RuntimeException("getInvokeExpr() called with no invokeExpr present!");
+      throw new RuntimeException("getInvokeExprBox() called with no invokeExpr present!");
     }
-
     return rightBox;
   }
 
@@ -150,15 +143,7 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
 
   @Override
   public ArrayRef getArrayRef() {
-    if (!containsArrayRef()) {
-      throw new RuntimeException("getArrayRef() called with no ArrayRef present!");
-    }
-
-    if (leftBox.getValue() instanceof ArrayRef) {
-      return (ArrayRef) leftBox.getValue();
-    } else {
-      return (ArrayRef) rightBox.getValue();
-    }
+    return (ArrayRef) getArrayRefBox().getValue();
   }
 
   @Override
@@ -166,12 +151,7 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
     if (!containsArrayRef()) {
       throw new RuntimeException("getArrayRefBox() called with no ArrayRef present!");
     }
-
-    if (leftBox.getValue() instanceof ArrayRef) {
-      return leftBox;
-    } else {
-      return rightBox;
-    }
+    return (leftBox.getValue() instanceof ArrayRef) ? leftBox : rightBox;
   }
 
   @Override
@@ -179,28 +159,17 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
     return ((getLeftOp() instanceof FieldRef) || (getRightOp() instanceof FieldRef));
   }
 
+  @Override
   public FieldRef getFieldRef() {
-    if (!containsFieldRef()) {
-      throw new RuntimeException("getFieldRef() called with no FieldRef present!");
-    }
-
-    if (leftBox.getValue() instanceof FieldRef) {
-      return (FieldRef) leftBox.getValue();
-    } else {
-      return (FieldRef) rightBox.getValue();
-    }
+    return (FieldRef) getFieldRefBox().getValue();
   }
 
+  @Override
   public ValueBox getFieldRefBox() {
     if (!containsFieldRef()) {
       throw new RuntimeException("getFieldRefBox() called with no FieldRef present!");
     }
-
-    if (leftBox.getValue() instanceof FieldRef) {
-      return leftBox;
-    } else {
-      return rightBox;
-    }
+    return (leftBox.getValue() instanceof FieldRef) ? leftBox : rightBox;
   }
 
   @Override
@@ -209,21 +178,24 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
     Value rValue = rightBox.getValue();
     if (rValue instanceof UnitBoxOwner) {
       return ((UnitBoxOwner) rValue).getUnitBoxes();
+    } else {
+      return super.getUnitBoxes();
     }
-
-    return super.getUnitBoxes();
   }
 
+  @Override
   public String toString() {
     return leftBox.getValue().toString() + " = " + rightBox.getValue().toString();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     leftBox.toString(up);
     up.literal(" = ");
     rightBox.toString(up);
   }
 
+  @Override
   public Object clone() {
     return new JAssignStmt(Jimple.cloneIfNecessary(getLeftOp()), Jimple.cloneIfNecessary(getRightOp()));
   }
@@ -238,10 +210,12 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
     getRightOpBox().setValue(rvalue);
   }
 
+  @Override
   public void apply(Switch sw) {
     ((StmtSwitch) sw).caseAssignStmt(this);
   }
 
+  @Override
   public void convertToBaf(final JimpleToBafContext context, final List<Unit> out) {
     final Value lvalue = this.getLeftOp();
     final Value rvalue = this.getRightOp();
@@ -253,7 +227,7 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
       Value op1 = expr.getOp1();
       Value op2 = expr.getOp2();
 
-      if (l.getType().equals(IntType.v())) {
+      if (IntType.v().equals(l.getType())) {
         boolean isValidCase = false;
         int x = 0;
 
@@ -262,15 +236,13 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
           isValidCase = true;
         } else if (expr instanceof AddExpr && op2 == l && op1 instanceof IntConstant) {
           // Note expr can't be a SubExpr because that would be x = 3 - x
-
           x = ((IntConstant) op1).value;
           isValidCase = true;
         }
 
         if (isValidCase && x >= Short.MIN_VALUE && x <= Short.MAX_VALUE) {
-          Unit u
-              = Baf.v().newIncInst(context.getBafLocalOfJimpleLocal(l), IntConstant.v((expr instanceof AddExpr) ? x : -x));
-
+          final Baf baf = Baf.v();
+          Unit u = baf.newIncInst(context.getBafLocalOfJimpleLocal(l), IntConstant.v((expr instanceof AddExpr) ? x : -x));
           u.addAllTagsOf(this);
           out.add(u);
 
@@ -282,6 +254,7 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
     context.setCurrentUnit(this);
 
     lvalue.apply(new AbstractJimpleValueSwitch() {
+      @Override
       public void caseArrayRef(ArrayRef v) {
         ((ConvertToBaf) (v.getBase())).convertToBaf(context, out);
         ((ConvertToBaf) (v.getIndex())).convertToBaf(context, out);
@@ -289,20 +262,20 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
 
         Unit u = Baf.v().newArrayWriteInst(v.getType());
         u.addAllTagsOf(JAssignStmt.this);
-
         out.add(u);
       }
 
+      @Override
       public void caseInstanceFieldRef(InstanceFieldRef v) {
         ((ConvertToBaf) (v.getBase())).convertToBaf(context, out);
         ((ConvertToBaf) rvalue).convertToBaf(context, out);
 
         Unit u = Baf.v().newFieldPutInst(v.getFieldRef());
         u.addAllTagsOf(JAssignStmt.this);
-
         out.add(u);
       }
 
+      @Override
       public void caseLocal(final Local v) {
         ((ConvertToBaf) rvalue).convertToBaf(context, out);
 
@@ -317,17 +290,15 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
 
         Unit u = Baf.v().newStoreInst(v.getType(), context.getBafLocalOfJimpleLocal(v));
         u.addAllTagsOf(JAssignStmt.this);
-
         out.add(u);
-
       }
 
+      @Override
       public void caseStaticFieldRef(StaticFieldRef v) {
         ((ConvertToBaf) rvalue).convertToBaf(context, out);
 
         Unit u = Baf.v().newStaticPutInst(v.getFieldRef());
         u.addAllTagsOf(JAssignStmt.this);
-
         out.add(u);
       }
     });

@@ -31,14 +31,14 @@ package soot.util.queue;
  * @author Ondrej Lhotak
  */
 @SuppressWarnings("unchecked")
-public final class ChunkedQueue<E> {
+public class ChunkedQueue<E> {
 
-  static final Object NULL_CONST = new Object();
-  static final Object DELETED_CONST = new Object();
+  protected static final Object NULL_CONST = new Object();
+  protected static final Object DELETED_CONST = new Object();
 
-  private static final int LENGTH = 60;
-  private Object[] q;
-  private int index;
+  protected static final int LENGTH = 60;
+  protected Object[] q;
+  protected int index;
 
   public ChunkedQueue() {
     q = new Object[LENGTH];
@@ -62,6 +62,36 @@ public final class ChunkedQueue<E> {
   /** Create reader which will read objects from the queue. */
   public QueueReader<E> reader() {
     return new QueueReader<E>((E[]) q, index);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("[");
+    boolean isFirst = true;
+
+    int idx = index;
+    Object[] curArray = q;
+    while (idx < curArray.length) {
+      Object curObj = curArray[idx];
+      if (curObj == null) {
+        break;
+      }
+      if (isFirst) {
+        isFirst = false;
+      } else {
+        sb.append(", ");
+      }
+      if (curObj instanceof Object[]) {
+        curArray = (Object[]) curObj;
+        idx = 0;
+      } else {
+        sb.append(curObj.toString());
+        idx++;
+      }
+    }
+    sb.append("]");
+    return sb.toString();
   }
 
 }

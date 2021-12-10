@@ -12,12 +12,12 @@ package soot.jimple.toolkits.typing.fast;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -38,6 +38,7 @@ import soot.IntegerType;
 import soot.Local;
 import soot.LongType;
 import soot.NullType;
+import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
 import soot.ShortType;
@@ -94,7 +95,8 @@ import soot.jimple.XorExpr;
  * @author Ben Bellamy
  */
 public class AugEvalFunction implements IEvalFunction {
-  private JimpleBody jb;
+
+  private final JimpleBody jb;
 
   public AugEvalFunction(JimpleBody jb) {
     this.jb = jb;
@@ -106,68 +108,42 @@ public class AugEvalFunction implements IEvalFunction {
     } else if (expr instanceof ParameterRef) {
       return ((ParameterRef) expr).getType();
     } else if (expr instanceof Local) {
-      Local ex = (Local) expr;
-      // changed to prevent null pointer exception in case of phantom classes where a null typing is encountered
-      // syed
-      if (tg == null) {
-        return null;
-      } else {
-        return tg.get(ex);
-      }
+      // Changed to prevent null pointer exception in case of phantom classes where a null typing is
+      // encountered. -syed
+      return (tg == null) ? null : tg.get((Local) expr);
     } else if (expr instanceof BinopExpr) {
       BinopExpr be = (BinopExpr) expr;
-
-      Value opl = be.getOp1(), opr = be.getOp2();
-      Type tl = eval_(tg, opl, stmt, jb), tr = eval_(tg, opr, stmt, jb);
-
+      Type tl = eval_(tg, be.getOp1(), stmt, jb), tr = eval_(tg, be.getOp2(), stmt, jb);
       if (expr instanceof CmpExpr || expr instanceof CmpgExpr || expr instanceof CmplExpr) {
         return ByteType.v();
       } else if (expr instanceof GeExpr || expr instanceof GtExpr || expr instanceof LeExpr || expr instanceof LtExpr
           || expr instanceof EqExpr || expr instanceof NeExpr) {
         return BooleanType.v();
       } else if (expr instanceof ShlExpr || expr instanceof ShrExpr || expr instanceof UshrExpr) {
-        // In the JVM, there are op codes for integer and long only:
-        // In Java, the code
-        // short s = 2; s = s << s; does not compile, since s << s is an integer.
-        if (tl instanceof IntegerType) {
-          return IntType.v();
-        } else {
-          return tl;
-        }
+        // In the JVM, there are op codes for integer and long only. In Java, the code
+        // {@code short s = 2; s = s << s;} does not compile, since s << s is an integer.
+        return (tl instanceof IntegerType) ? IntType.v() : tl;
       } else if (expr instanceof AddExpr || expr instanceof SubExpr || expr instanceof MulExpr || expr instanceof DivExpr
           || expr instanceof RemExpr) {
-        if (tl instanceof IntegerType) {
-          return IntType.v();
-        } else {
-          return tl;
-        }
+        return (tl instanceof IntegerType) ? IntType.v() : tl;
       } else if (expr instanceof AndExpr || expr instanceof OrExpr || expr instanceof XorExpr) {
         if (tl instanceof IntegerType && tr instanceof IntegerType) {
           if (tl instanceof BooleanType) {
-            if (tr instanceof BooleanType) {
-              return BooleanType.v();
-            } else {
-              return tr;
-            }
+            return (tr instanceof BooleanType) ? BooleanType.v() : tr;
           } else if (tr instanceof BooleanType) {
             return tl;
           } else {
-            Collection<Type> rs = AugHierarchy.lcas_(tl, tr);
-            // AugHierarchy.lcas_ is single-valued
-            for (Type r : rs) {
-              if (r instanceof BooleanType) {
-                return r;
-              }
-              if (r instanceof IntegerType) {
-                return IntType.v();
-              } else {
-                return r;
-              }
+            Collection<Type> rs = AugHierarchy.lcas_(tl, tr, false);
+            if (rs.isEmpty()) {
+              throw new RuntimeException();
+            } else {
+              // AugHierarchy.lcas_ is single-valued
+              assert (rs.size() == 1);
+              return rs.iterator().next();
             }
-            throw new RuntimeException();
           }
         } else {
-          return tl;
+          return (tl instanceof RefLikeType) ? tr : tl;
         }
       } else {
         throw new RuntimeException("Unhandled binary expression: " + expr);
@@ -175,64 +151,47 @@ public class AugEvalFunction implements IEvalFunction {
     } else if (expr instanceof NegExpr) {
       Type t = eval_(tg, ((NegExpr) expr).getOp(), stmt, jb);
       if (t instanceof IntegerType) {
-        /*
-         * Here I repeat the behaviour of the original type assigner, but is it right? For example, -128 is a byte, but
-         * -(-128) is not! --BRB
-         */
-        if (t instanceof Integer1Type || t instanceof BooleanType || t instanceof Integer127Type || t instanceof ByteType) {
-          return ByteType.v();
-        } else if (t instanceof ShortType || t instanceof Integer32767Type) {
-          return ShortType.v();
-        } else {
-          return IntType.v();
-        }
+        //The "ineg" bytecode causes and implicit widening to int type and produces an int type.
+        return IntType.v();
       } else {
         return t;
       }
     } else if (expr instanceof CaughtExceptionRef) {
-      RefType r = null;
       RefType throwableType = Scene.v().getRefType("java.lang.Throwable");
-
+      RefType r = null;
       for (RefType t : TrapManager.getExceptionTypesOf(stmt, jb)) {
-        if (r == null) {
-          if (t.getSootClass().isPhantom()) {
-            r = throwableType;
-          } else {
-            r = t;
-          }
+        if (t.getSootClass().isPhantom()) {
+          r = throwableType;
+        } else if (r == null) {
+          r = t;
         } else {
-          if (t.getSootClass().isPhantom()) {
-            r = throwableType;
-          } else {
-            /*
-             * In theory, we could have multiple exception types pointing here. The JLS requires the exception parameter be a
-             * *subclass* of Throwable, so we do not need to worry about multiple inheritance.
-             */
-            r = BytecodeHierarchy.lcsc(r, t, throwableType);
-          }
+          /*
+           * In theory, we could have multiple exception types pointing here. The JLS requires the exception parameter be a
+           * *subclass* of Throwable, so we do not need to worry about multiple inheritance.
+           */
+          r = BytecodeHierarchy.lcsc(r, t, throwableType);
         }
       }
-
       if (r == null) {
-        throw new RuntimeException(
-            "Exception reference used other than as the first " + "statement of an exception handler.");
+        throw new RuntimeException("Exception reference used other than as the first statement of an exception handler.");
       }
-
       return r;
     } else if (expr instanceof ArrayRef) {
-      Local av = (Local) ((ArrayRef) expr).getBase();
-      Type at = tg.get(av);
+      Type at = tg.get((Local) ((ArrayRef) expr).getBase());
 
       if (at instanceof ArrayType) {
         return ((ArrayType) at).getElementType();
+      } else if (at instanceof WeakObjectType) {
+        return at;
       } else if (at instanceof RefType) {
-        RefType ref = (RefType) at;
-        if (ref.getSootClass().getName().equals("java.lang.Object")
-            || ref.getSootClass().getName().equals("java.io.Serializable")
-            || ref.getSootClass().getName().equals("java.lang.Cloneable")) {
-          return ref;
-        } else {
-          return BottomType.v();
+        String name = ((RefType) at).getSootClass().getName();
+        switch (name) {
+          case "java.lang.Cloneable":
+          case "java.lang.Object":
+          case "java.io.Serializable":
+            return new WeakObjectType(name);
+          default:
+            return BottomType.v();
         }
       } else {
         return BottomType.v();
@@ -248,7 +207,7 @@ public class AugEvalFunction implements IEvalFunction {
     } else if (expr instanceof LengthExpr) {
       return IntType.v();
     } else if (expr instanceof InvokeExpr) {
-      return ((InvokeExpr) expr).getMethodRef().returnType();
+      return ((InvokeExpr) expr).getMethodRef().getReturnType();
     } else if (expr instanceof NewExpr) {
       return ((NewExpr) expr).getBaseType();
     } else if (expr instanceof FieldRef) {

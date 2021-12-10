@@ -25,6 +25,7 @@ package soot.jimple.internal;
 import soot.IntType;
 import soot.LongType;
 import soot.Type;
+import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
 import soot.baf.Baf;
@@ -34,42 +35,43 @@ import soot.jimple.ShrExpr;
 import soot.util.Switch;
 
 public class JShrExpr extends AbstractJimpleIntLongBinopExpr implements ShrExpr {
+
   public JShrExpr(Value op1, Value op2) {
     super(op1, op2);
   }
 
+  @Override
   public String getSymbol() {
     return " >> ";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseShrExpr(this);
   }
 
-  Object makeBafInst(Type opType) {
+  @Override
+  protected Unit makeBafInst(Type opType) {
     return Baf.v().newShrInst(this.getOp1().getType());
   }
 
+  @Override
   public Type getType() {
-    Value op1 = op1Box.getValue();
-    Value op2 = op2Box.getValue();
-
-    if (!isIntLikeType(op2.getType())) {
-      return UnknownType.v();
+    if (isIntLikeType(op2Box.getValue().getType())) {
+      final Type t1 = op1Box.getValue().getType();
+      if (isIntLikeType(t1)) {
+        return IntType.v();
+      }
+      final LongType tyLong = LongType.v();
+      if (tyLong.equals(t1)) {
+        return tyLong;
+      }
     }
-
-    if (isIntLikeType(op1.getType())) {
-      return IntType.v();
-    }
-    if (op1.getType().equals(LongType.v())) {
-      return LongType.v();
-    }
-
     return UnknownType.v();
   }
 
+  @Override
   public Object clone() {
     return new JShrExpr(Jimple.cloneIfNecessary(getOp1()), Jimple.cloneIfNecessary(getOp2()));
   }
-
 }

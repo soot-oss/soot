@@ -34,6 +34,7 @@ import polyglot.ast.Try;
 import polyglot.util.IdentityKey;
 
 import soot.Local;
+import soot.LocalGenerator;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootField;
@@ -92,7 +93,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
     createBody(sootMethod);
 
-    lg = new LocalGenerator(body);
+    lg = Scene.v().createLocalGenerator(body);
     // create this formal except for static methods
     if (!soot.Modifier.isStatic(sootMethod.getModifiers())) {
 

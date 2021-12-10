@@ -1,3 +1,5 @@
+package soot;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -19,7 +21,6 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package soot;
 
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
@@ -28,9 +29,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,26 +42,29 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.options.Options;
 
 /**
- * A utility class for dealing with java 9 modules and module dependencies
+ * A utility class for dealing with java 9 modules and module dependencies.
  *
  * @author Andreas Dann
  */
-public final class ModuleUtil {
+public class ModuleUtil {
+  private static final Logger logger = LoggerFactory.getLogger(ModuleUtil.class);
 
-  public ModuleUtil(Singletons.Global g) {
-
-  }
-
-  public static ModuleUtil v() {
-
-    return G.v().soot_ModuleUtil();
-  }
+  /*
+   * Soot has hard coded class names as string constants that are now contained in the java.base module, this list serves as
+   * a lookup for these string constants.
+   */
+  private static final List<String> packagesJavaBaseModule = parseJavaBasePackage();
+  private static final String JAVABASEFILE = "javabase.txt";
 
   private final Cache<String, String> modulePackageCache = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(800)
       .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build();
+
   private final LoadingCache<String, ModuleClassNameWrapper> wrapperCache = CacheBuilder.newBuilder().initialCapacity(100)
       .maximumSize(1000).concurrencyLevel(Runtime.getRuntime().availableProcessors())
       .build(new CacheLoader<String, ModuleClassNameWrapper>() {
@@ -71,6 +73,13 @@ public final class ModuleUtil {
           return new ModuleClassNameWrapper(key);
         }
       });
+
+  public ModuleUtil(Singletons.Global g) {
+  }
+
+  public static ModuleUtil v() {
+    return G.v().soot_ModuleUtil();
+  }
 
   public final ModuleClassNameWrapper makeWrapper(String className) {
     try {
@@ -81,7 +90,7 @@ public final class ModuleUtil {
   }
 
   /**
-   * Check if Soot is run with module mode enables
+   * Check if Soot is run with module mode enabled.
    *
    * @return true, if module mode is used
    */
@@ -90,7 +99,7 @@ public final class ModuleUtil {
   }
 
   /**
-   * Finds the module that exports the given class to the given module
+   * Finds the module that exports the given class to the given module.
    *
    * @param className
    *          the requested class
@@ -98,30 +107,32 @@ public final class ModuleUtil {
    *          the module from which the request is made
    * @return the module's name that exports the class to the given module
    */
-  public final String findModuleThatExports(String className, String toModuleName) {
-
-    if (className.equalsIgnoreCase(SootModuleInfo.MODULE_INFO)) {
+  public final String declaringModule(String className, String toModuleName) {
+    if (SootModuleInfo.MODULE_INFO.equalsIgnoreCase(className)) {
       return toModuleName;
     }
-    SootModuleInfo modInfo;
-    if (ModuleScene.v().containsClass(SootModuleInfo.MODULE_INFO, Optional.fromNullable(toModuleName))) {
-      modInfo
-          = (SootModuleInfo) ModuleScene.v().getSootClass(SootModuleInfo.MODULE_INFO, Optional.fromNullable(toModuleName));
-      if (modInfo.resolvingLevel() < SootClass.BODIES) {
+
+    final ModuleScene modSc = ModuleScene.v();
+    final SootModuleInfo modInfo;
+    if (modSc.containsClass(SootModuleInfo.MODULE_INFO, Optional.fromNullable(toModuleName))) {
+      SootClass temp = modSc.getSootClass(SootModuleInfo.MODULE_INFO, Optional.fromNullable(toModuleName));
+      if (temp.resolvingLevel() < SootClass.BODIES) {
         modInfo = (SootModuleInfo) SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES,
             Optional.fromNullable(toModuleName));
+      } else {
+        modInfo = (SootModuleInfo) temp;
       }
     } else {
       modInfo = (SootModuleInfo) SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES,
           Optional.fromNullable(toModuleName));
     }
-
-    String packageName = getPackageName(className);
-
     if (modInfo == null) {
       return null;
     }
-    String moduleName = modulePackageCache.getIfPresent(modInfo.getModuleName() + "/" + packageName);
+
+    final String packageName = getPackageName(className);
+    final String chacheKey = modInfo.getModuleName() + '/' + packageName;
+    String moduleName = modulePackageCache.getIfPresent(chacheKey);
     if (moduleName != null) {
       return moduleName;
     }
@@ -132,112 +143,82 @@ public final class ModuleUtil {
 
     if (modInfo.isAutomaticModule()) {
       // shortcut, an automatic module is allowed to access any other class
-      if (ModuleScene.v().containsClass(className)) {
-        String foundModuleName = ModuleScene.v().getSootClass(className).getModuleInformation().getModuleName();
-        modulePackageCache.put(modInfo.getModuleName() + "/" + packageName, foundModuleName);
+      if (modSc.containsClass(className)) {
+        String foundModuleName = modSc.getSootClass(className).getModuleInformation().getModuleName();
+        modulePackageCache.put(chacheKey, foundModuleName);
         return foundModuleName;
       }
     }
 
     for (SootModuleInfo modInf : modInfo.retrieveRequiredModules().keySet()) {
       if (modInf.exportsPackage(packageName, toModuleName)) {
-        modulePackageCache.put(modInfo.getModuleName() + "/" + packageName, modInf.getModuleName());
+        modulePackageCache.put(chacheKey, modInf.getModuleName());
         return modInf.getModuleName();
       } else {
-    	Set<String> hasCheckedModule = new HashSet<String>();
-     	String tModuleName = checkTransitiveChain(modInf, packageName, toModuleName, hasCheckedModule);
-    	if (tModuleName != null) {
-          modulePackageCache.put(modInfo.getModuleName() + "/" + packageName, tModuleName);
+        String tModuleName = checkTransitiveChain(modInf, packageName, toModuleName, new HashSet<>());
+        if (tModuleName != null) {
+          modulePackageCache.put(chacheKey, tModuleName);
           return tModuleName;
-    	} 
-
+        }
       }
-
     }
     // if the class is not exported by any package, it has to internal to this module
     return toModuleName;
   }
+
   /**
-   * recycle check if exported packages is "requires transitive" case.
-   * "requires transitive" module will transmit, need chain check until transitive finished.
-   * @param modInfo moudleinfo 
-   * @param packageName package name
-   * @param toModuleName defined moduleName
+   * recycle check if exported packages is "requires transitive" case. "requires transitive" module will transmit, need chain
+   * check until transitive finished.
    * 
+   * @param modInfo
+   *          moudleinfo
+   * @param packageName
+   *          package name
+   * @param toModuleName
+   *          defined moduleName
    */
   private String checkTransitiveChain(SootModuleInfo modInfo, String packageName, String toModuleName,
-          Set<String> hasCheckedModule) {
+      Set<String> hasCheckedModule) {
     for (Map.Entry<SootModuleInfo, Integer> entry : modInfo.retrieveRequiredModules().entrySet()) {
       if ((entry.getValue() & Modifier.REQUIRES_TRANSITIVE) != 0) { // check if module is exported via "requires public"
-    	if (hasCheckedModule.contains(entry.getKey().getModuleName())) {
-          continue;
-    	} else {
-          hasCheckedModule.add(entry.getKey().getModuleName());
-    	}
-        if (entry.getKey().exportsPackage(packageName, toModuleName)) {
-          return entry.getKey().getModuleName();
-        } else {
-          return checkTransitiveChain(entry.getKey(), packageName, toModuleName, hasCheckedModule);
+        final SootModuleInfo key = entry.getKey();
+        final String moduleName = key.getModuleName();
+        if (!hasCheckedModule.contains(moduleName)) {
+          hasCheckedModule.add(moduleName);
+          if (key.exportsPackage(packageName, toModuleName)) {
+            return moduleName;
+          } else {
+            return checkTransitiveChain(key, packageName, toModuleName, hasCheckedModule);
+          }
         }
       }
     }
     return null;
   }
 
-
-
   /**
-   * The returns the package name of a full qualified class name
+   * Returns the package name of a full qualified class name.
    *
    * @param className
    *          a full qualified className
    * @return the package name
    */
   private static String getPackageName(String className) {
-    String packageName = "";
     int index = className.lastIndexOf('.');
-    if (index > 0) {
-      packageName = className.substring(0, index);
-    }
-    return packageName;
+    return (index > 0) ? className.substring(0, index) : "";
   }
-
-  /*
-   * In Soot are a hard coded class names as string constants that are now contained in the java.base module, this list
-   * serves as a lookup for these string constant
-   */
-  private static final List<String> packagesJavaBaseModule = parseJavaBasePackage();
-  private static final String JAVABASEFILE = "javabase.txt";
 
   private static List<String> parseJavaBasePackage() {
     List<String> packages = new ArrayList<>();
-    InputStream in = null;
     Path excludeFile = Paths.get(JAVABASEFILE);
-    try {
-      if (!Files.exists(excludeFile)) {
-        // else take the one package
-
-        in = ModuleUtil.class.getResourceAsStream("/" + JAVABASEFILE);
-      } else {
-
-        in = Files.newInputStream(excludeFile);
-
-      }
-    } catch (IOException e1) {
-      e1.printStackTrace();
-    }
-    // read file into stream, try-with-resources
-    try (BufferedReader reader = new BufferedReader(new InputStreamReader(in)))
-
-    {
-      String line;
-      while ((line = reader.readLine()) != null) {
+    try (BufferedReader reader
+        = new BufferedReader(new InputStreamReader(Files.exists(excludeFile) ? Files.newInputStream(excludeFile)
+            : ModuleUtil.class.getResourceAsStream('/' + JAVABASEFILE)))) {
+      for (String line; (line = reader.readLine()) != null;) {
         packages.add(line);
       }
-    } catch (IOException x)
-
-    {
-      G.v().out.println("[WARN] No files specifying the packages of module java.base");
+    } catch (IOException x) {
+      logger.warn("Cannot open file specifying the packages of module 'java.base'", x);
     }
     return packages;
   }
@@ -245,7 +226,7 @@ public final class ModuleUtil {
   /**
    * Wrapper class for backward compatibility with existing soot code In existing soot code classes are resolved based on
    * their name without specifying a module to avoid changing all occurrences of String constants in Soot this classes deals
-   * with these String constants
+   * with these String constants.
    *
    * @author Andreas Dann
    */
@@ -260,17 +241,19 @@ public final class ModuleUtil {
     private static final Pattern qualifiedModuleNamePattern = Pattern.compile(qualifiedModuleName);
 
     private final String className;
-    private String moduleName;
+    private final String moduleName;
 
     private ModuleClassNameWrapper(String className) {
+      if (SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME.equals(className)) {
+        this.className = className;
+        this.moduleName = null;
+        return;
+      }
 
       String refinedClassName = className;
       String refinedModuleName = null;
-      if (className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
-        this.className = refinedClassName;
-        return;
-      } else if (className.contains(":")) {
-        String split[] = className.split(":");
+      if (className.contains(":")) {
+        String[] split = className.split(":");
         if (split.length == 2) {
           // check if first is valid module name
           if (qualifiedModuleNamePattern.matcher(split[0]).matches()) {
@@ -282,11 +265,8 @@ public final class ModuleUtil {
           }
         }
       } else if (fqnClassNamePattern.matcher(className).matches()) {
-        for (String packageName : packagesJavaBaseModule) {
-          if (packageName.equals(ModuleUtil.getPackageName(className))) {
-            refinedModuleName = "java.base";
-            break;
-          }
+        if (packagesJavaBaseModule.contains(ModuleUtil.getPackageName(className))) {
+          refinedModuleName = "java.base";
         }
       }
       this.className = refinedClassName;
@@ -305,7 +285,5 @@ public final class ModuleUtil {
     public Optional<String> getModuleNameOptional() {
       return Optional.fromNullable(this.moduleName);
     }
-
   }
-
 }

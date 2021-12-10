@@ -30,18 +30,35 @@ import soot.util.Numberable;
  * @author Ondrej Lhotak
  */
 public final class Kind implements Numberable {
+
   public static final Kind INVALID = new Kind("INVALID");
-  /** Due to explicit invokestatic instruction. */
+  /**
+   * Due to explicit invokestatic instruction.
+   */
   public static final Kind STATIC = new Kind("STATIC");
-  /** Due to explicit invokevirtual instruction. */
+  /**
+   * Due to explicit invokevirtual instruction.
+   */
   public static final Kind VIRTUAL = new Kind("VIRTUAL");
-  /** Due to explicit invokeinterface instruction. */
+  /**
+   * Due to explicit invokeinterface instruction.
+   */
   public static final Kind INTERFACE = new Kind("INTERFACE");
-  /** Due to explicit invokespecial instruction. */
+  /**
+   * Due to explicit invokespecial instruction.
+   */
   public static final Kind SPECIAL = new Kind("SPECIAL");
-  /** Implicit call to static initializer. */
+  /**
+   * Implicit call to static initializer.
+   */
   public static final Kind CLINIT = new Kind("CLINIT");
-  /** Implicit call to Thread.run() due to Thread.start() call. */
+  /**
+   * Fake edges from our generic callback model.
+   */
+  public static final Kind GENERIC_FAKE = new Kind("GENERIC_FAKE");
+  /**
+   * Implicit call to Thread.run() due to Thread.start() call.
+   */
   public static final Kind THREAD = new Kind("THREAD");
   /**
    * Implicit call to java.lang.Runnable.run() due to Executor.execute() call.
@@ -51,7 +68,9 @@ public final class Kind implements Numberable {
    * Implicit call to AsyncTask.doInBackground() due to AsyncTask.execute() call.
    */
   public static final Kind ASYNCTASK = new Kind("ASYNCTASK");
-  /** Implicit call to java.lang.ref.Finalizer.register from new bytecode. */
+  /**
+   * Implicit call to java.lang.ref.Finalizer.register from new bytecode.
+   */
   public static final Kind FINALIZE = new Kind("FINALIZE");
   /**
    * Implicit call to Handler.handleMessage(android.os.Message) due to Handler.sendxxxxMessagexxxx() call.
@@ -61,107 +80,194 @@ public final class Kind implements Numberable {
    * Implicit call to finalize() from java.lang.ref.Finalizer.invokeFinalizeMethod().
    */
   public static final Kind INVOKE_FINALIZE = new Kind("INVOKE_FINALIZE");
-  /** Implicit call to run() through AccessController.doPrivileged(). */
+  /**
+   * Implicit call to run() through AccessController.doPrivileged().
+   */
   public static final Kind PRIVILEGED = new Kind("PRIVILEGED");
-  /** Implicit call to constructor from java.lang.Class.newInstance(). */
+  /**
+   * Implicit call to constructor from java.lang.Class.newInstance().
+   */
   public static final Kind NEWINSTANCE = new Kind("NEWINSTANCE");
-  /** Due to call to Method.invoke(..). */
+  /**
+   * Due to call to Method.invoke(..).
+   */
   public static final Kind REFL_INVOKE = new Kind("REFL_METHOD_INVOKE");
-  /** Due to call to Constructor.newInstance(..). */
+  /**
+   * Due to call to Constructor.newInstance(..).
+   */
   public static final Kind REFL_CONSTR_NEWINSTANCE = new Kind("REFL_CONSTRUCTOR_NEWINSTANCE");
-  /** Due to call to Class.newInstance(..) when reflection log is enabled. */
+  /**
+   * Due to call to Class.newInstance(..) when reflection log is enabled.
+   */
   public static final Kind REFL_CLASS_NEWINSTANCE = new Kind("REFL_CLASS_NEWINSTANCE");
+
+  private final String name;
+  private int num;
 
   private Kind(String name) {
     this.name = name;
   }
 
-  private final String name;
-  private int num;
-
   public String name() {
     return name;
   }
 
+  @Override
   public int getNumber() {
     return num;
   }
 
+  @Override
   public void setNumber(int num) {
     this.num = num;
   }
 
+  @Override
   public String toString() {
     return name();
   }
 
   public boolean passesParameters() {
-    return isExplicit() || this == THREAD || this == EXECUTOR || this == ASYNCTASK || this == FINALIZE || this == PRIVILEGED
-        || this == NEWINSTANCE || this == INVOKE_FINALIZE || this == REFL_INVOKE || this == REFL_CONSTR_NEWINSTANCE
-        || this == REFL_CLASS_NEWINSTANCE;
+    return passesParameters(this);
   }
 
   public boolean isFake() {
-    return this == THREAD || this == EXECUTOR || this == ASYNCTASK || this == PRIVILEGED || this == HANDLER;
+    return isFake(this);
   }
 
-  /** Returns true if the call is due to an explicit invoke statement. */
+  /**
+   * Returns true if the call is due to an explicit invoke statement.
+   */
   public boolean isExplicit() {
-    return isInstance() || isStatic();
+    return isExplicit(this);
   }
 
   /**
    * Returns true if the call is due to an explicit instance invoke statement.
    */
   public boolean isInstance() {
-    return this == VIRTUAL || this == INTERFACE || this == SPECIAL;
+    return isInstance(this);
   }
 
   /**
    * Returns true if the call is due to an explicit virtual invoke statement.
    */
   public boolean isVirtual() {
-    return this == VIRTUAL;
+    return isVirtual(this);
   }
 
   public boolean isSpecial() {
-    return this == SPECIAL;
+    return isSpecial(this);
   }
 
-  /** Returns true if the call is to static initializer. */
+  /**
+   * Returns true if the call is to static initializer.
+   */
   public boolean isClinit() {
-    return this == CLINIT;
+    return isClinit(this);
   }
 
   /**
    * Returns true if the call is due to an explicit static invoke statement.
    */
   public boolean isStatic() {
-    return this == STATIC;
+    return isStatic(this);
   }
 
   public boolean isThread() {
-    return this == THREAD;
+    return isThread(this);
   }
 
   public boolean isExecutor() {
-    return this == EXECUTOR;
+    return isExecutor(this);
   }
 
   public boolean isAsyncTask() {
-    return this == ASYNCTASK;
+    return isAsyncTask(this);
   }
 
   public boolean isPrivileged() {
-    return this == PRIVILEGED;
+    return isPrivileged(this);
   }
 
   public boolean isReflection() {
-    return this == REFL_CLASS_NEWINSTANCE || this == REFL_CONSTR_NEWINSTANCE || this == REFL_INVOKE;
+    return isReflection(this);
   }
 
   public boolean isReflInvoke() {
-    return this == REFL_INVOKE;
+    return isReflInvoke(this);
   }
 
+  public static boolean passesParameters(Kind k) {
+    return isExplicit(k) || k == THREAD || k == EXECUTOR || k == ASYNCTASK || k == FINALIZE || k == PRIVILEGED
+        || k == NEWINSTANCE || k == INVOKE_FINALIZE || k == REFL_INVOKE || k == REFL_CONSTR_NEWINSTANCE
+        || k == REFL_CLASS_NEWINSTANCE;
+  }
+
+  public static boolean isFake(Kind k) {
+    return k == THREAD || k == EXECUTOR || k == ASYNCTASK || k == PRIVILEGED || k == HANDLER || k == GENERIC_FAKE;
+  }
+
+  /**
+   * Returns true if the call is due to an explicit invoke statement.
+   */
+  public static boolean isExplicit(Kind k) {
+    return isInstance(k) || isStatic(k);
+  }
+
+  /**
+   * Returns true if the call is due to an explicit instance invoke statement.
+   */
+  public static boolean isInstance(Kind k) {
+    return k == VIRTUAL || k == INTERFACE || k == SPECIAL;
+  }
+
+  /**
+   * Returns true if the call is due to an explicit virtual invoke statement.
+   */
+  public static boolean isVirtual(Kind k) {
+    return k == VIRTUAL;
+  }
+
+  public static boolean isSpecial(Kind k) {
+    return k == SPECIAL;
+  }
+
+  /**
+   * Returns true if the call is to static initializer.
+   */
+  public static boolean isClinit(Kind k) {
+    return k == CLINIT;
+  }
+
+  /**
+   * Returns true if the call is due to an explicit static invoke statement.
+   */
+  public static boolean isStatic(Kind k) {
+    return k == STATIC;
+  }
+
+  public static boolean isThread(Kind k) {
+    return k == THREAD;
+  }
+
+  public static boolean isExecutor(Kind k) {
+    return k == EXECUTOR;
+  }
+
+  public static boolean isAsyncTask(Kind k) {
+    return k == ASYNCTASK;
+  }
+
+  public static boolean isPrivileged(Kind k) {
+    return k == PRIVILEGED;
+  }
+
+  public static boolean isReflection(Kind k) {
+    return k == REFL_CLASS_NEWINSTANCE || k == REFL_CONSTR_NEWINSTANCE || k == REFL_INVOKE;
+  }
+
+  public static boolean isReflInvoke(Kind k) {
+    return k == REFL_INVOKE;
+  }
 }

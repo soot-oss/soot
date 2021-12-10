@@ -32,7 +32,7 @@ import soot.util.MultiMap;
  * A map with ordered sets as values, HashMap implementation.
  *
  * @author Navindra Umanee
- **/
+ */
 public class SHashMultiMap<K, V> extends HashMultiMap<K, V> {
 
   private static final long serialVersionUID = -860669798578291979L;
@@ -45,6 +45,7 @@ public class SHashMultiMap<K, V> extends HashMultiMap<K, V> {
     super(m);
   }
 
+  @Override
   protected Set<V> newSet() {
     return new LinkedHashSet<V>(4);
   }

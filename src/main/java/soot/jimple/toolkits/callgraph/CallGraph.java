@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.callgraph;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -58,10 +61,10 @@ public class CallGraph implements Iterable<Edge> {
     if (!edges.add(e)) {
       return false;
     }
-    stream.add(e);
-    Edge position = null;
 
-    position = srcUnitToEdge.get(e.srcUnit());
+    stream.add(e);
+
+    Edge position = srcUnitToEdge.get(e.srcUnit());
     if (position == null) {
       srcUnitToEdge.put(e.srcUnit(), e);
       position = dummy;
@@ -93,12 +96,18 @@ public class CallGraph implements Iterable<Edge> {
    */
   public boolean removeAllEdgesOutOf(Unit u) {
     boolean hasRemoved = false;
+    Set<Edge> edgesToRemove = new HashSet<>();
     for (QueueReader<Edge> edgeRdr = listener(); edgeRdr.hasNext();) {
       Edge e = edgeRdr.next();
       if (e.srcUnit() == u) {
-        removeEdge(e);
+        e.remove();
+        removeEdge(e, false);
+        edgesToRemove.add(e);
         hasRemoved = true;
       }
+    }
+    if (hasRemoved) {
+      reader.remove(edgesToRemove);
     }
     return hasRemoved;
   }
@@ -118,8 +127,11 @@ public class CallGraph implements Iterable<Edge> {
     boolean hasSwapped = false;
     for (Iterator<Edge> edgeRdr = edgesOutOf(out); edgeRdr.hasNext();) {
       Edge e = edgeRdr.next();
+      MethodOrMethodContext src = e.getSrc();
+      MethodOrMethodContext tgt = e.getTgt();
       removeEdge(e);
-      addEdge(new Edge(e.getSrc(), in, e.getTgt()));
+      e.remove();
+      addEdge(new Edge(src, in, tgt));
       hasSwapped = true;
     }
     return hasSwapped;
@@ -129,6 +141,19 @@ public class CallGraph implements Iterable<Edge> {
    * Removes the edge e from the call graph. Returns true iff the edge was originally present in the call graph.
    */
   public boolean removeEdge(Edge e) {
+    return removeEdge(e, true);
+  }
+
+  /**
+   * Removes the edge e from the call graph. Returns true iff the edge was originally present in the call graph.
+   * 
+   * @param e
+   *          the edge
+   * @param removeInEdgeList
+   *          when true (recommended), it is ensured that the edge reader is informed about the removal
+   * @return whether the removal was successful.
+   */
+  public boolean removeEdge(Edge e, boolean removeInEdgeList) {
     if (!edges.remove(e)) {
       return false;
     }
@@ -138,7 +163,7 @@ public class CallGraph implements Iterable<Edge> {
       if (e.nextByUnit().srcUnit() == e.srcUnit()) {
         srcUnitToEdge.put(e.srcUnit(), e.nextByUnit());
       } else {
-        srcUnitToEdge.put(e.srcUnit(), null);
+        srcUnitToEdge.remove(e.srcUnit());
       }
     }
 
@@ -146,7 +171,7 @@ public class CallGraph implements Iterable<Edge> {
       if (e.nextBySrc().getSrc() == e.getSrc()) {
         srcMethodToEdge.put(e.getSrc(), e.nextBySrc());
       } else {
-        srcMethodToEdge.put(e.getSrc(), null);
+        srcMethodToEdge.remove(e.getSrc());
       }
     }
 
@@ -154,10 +179,31 @@ public class CallGraph implements Iterable<Edge> {
       if (e.nextByTgt().getTgt() == e.getTgt()) {
         tgtToEdge.put(e.getTgt(), e.nextByTgt());
       } else {
-        tgtToEdge.put(e.getTgt(), null);
+        tgtToEdge.remove(e.getTgt());
       }
     }
+    // This is an linear operation, so we want to avoid it if possible.
+    if (removeInEdgeList) {
+      reader.remove(e);
+    }
+    return true;
+  }
 
+  /**
+   * Removes the edges from the call graph. Returns true iff one edge was originally present in the call graph.
+   * 
+   * @param edges
+   *          the edges
+   * @return whether the removal was successful.
+   */
+  public boolean removeEdges(Collection<Edge> edges) {
+    if (!edges.removeAll(edges)) {
+      return false;
+    }
+    for (Edge e : edges) {
+      removeEdge(e, false);
+    }
+    reader.remove(edges);
     return true;
   }
 
@@ -198,124 +244,130 @@ public class CallGraph implements Iterable<Edge> {
     return srcMethodToEdge.keySet().iterator();
   }
 
-  /** Returns an iterator over all edges that have u as their source unit. */
+  /**
+   * Returns an iterator over all edges that have u as their source unit.
+   */
   public Iterator<Edge> edgesOutOf(Unit u) {
     return new TargetsOfUnitIterator(u);
   }
 
   class TargetsOfUnitIterator implements Iterator<Edge> {
-    private Edge position = null;
-    private Unit u;
+    private final Unit u;
+    private Edge position;
 
     TargetsOfUnitIterator(Unit u) {
       this.u = u;
       if (u == null) {
         throw new RuntimeException();
       }
-      position = srcUnitToEdge.get(u);
+      this.position = srcUnitToEdge.get(u);
       if (position == null) {
         position = dummy;
       }
     }
 
+    @Override
     public boolean hasNext() {
       if (position.srcUnit() != u) {
         return false;
       }
-      if (position.kind() == Kind.INVALID) {
-        return false;
-      }
-      return true;
+      return position.kind() != Kind.INVALID;
     }
 
+    @Override
     public Edge next() {
       Edge ret = position;
       position = position.nextByUnit();
       return ret;
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
   }
 
-  /** Returns an iterator over all edges that have m as their source method. */
+  /**
+   * Returns an iterator over all edges that have m as their source method.
+   */
   public Iterator<Edge> edgesOutOf(MethodOrMethodContext m) {
     return new TargetsOfMethodIterator(m);
   }
 
   class TargetsOfMethodIterator implements Iterator<Edge> {
-    private Edge position = null;
-    private MethodOrMethodContext m;
+    private final MethodOrMethodContext m;
+    private Edge position;
 
     TargetsOfMethodIterator(MethodOrMethodContext m) {
       this.m = m;
       if (m == null) {
         throw new RuntimeException();
       }
-      position = srcMethodToEdge.get(m);
+      this.position = srcMethodToEdge.get(m);
       if (position == null) {
         position = dummy;
       }
     }
 
+    @Override
     public boolean hasNext() {
       if (position.getSrc() != m) {
         return false;
       }
-      if (position.kind() == Kind.INVALID) {
-        return false;
-      }
-      return true;
+      return position.kind() != Kind.INVALID;
     }
 
+    @Override
     public Edge next() {
       Edge ret = position;
       position = position.nextBySrc();
       return ret;
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
   }
 
-  /** Returns an iterator over all edges that have m as their target method. */
+  /**
+   * Returns an iterator over all edges that have m as their target method.
+   */
   public Iterator<Edge> edgesInto(MethodOrMethodContext m) {
     return new CallersOfMethodIterator(m);
   }
 
   class CallersOfMethodIterator implements Iterator<Edge> {
-    private Edge position = null;
-    private MethodOrMethodContext m;
+    private final MethodOrMethodContext m;
+    private Edge position;
 
     CallersOfMethodIterator(MethodOrMethodContext m) {
       this.m = m;
       if (m == null) {
         throw new RuntimeException();
       }
-      position = tgtToEdge.get(m);
+      this.position = tgtToEdge.get(m);
       if (position == null) {
         position = dummy;
       }
     }
 
+    @Override
     public boolean hasNext() {
       if (position.getTgt() != m) {
         return false;
       }
-      if (position.kind() == Kind.INVALID) {
-        return false;
-      }
-      return true;
+      return position.kind() != Kind.INVALID;
     }
 
+    @Override
     public Edge next() {
       Edge ret = position;
       position = position.nextByTgt();
       return ret;
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
@@ -336,17 +388,19 @@ public class CallGraph implements Iterable<Edge> {
     return stream.reader();
   }
 
+  @Override
   public String toString() {
-    QueueReader<Edge> reader = listener();
-    StringBuffer out = new StringBuffer();
-    while (reader.hasNext()) {
-      Edge e = (Edge) reader.next();
-      out.append(e.toString() + "\n");
+    StringBuilder out = new StringBuilder();
+    for (QueueReader<Edge> reader = listener(); reader.hasNext();) {
+      Edge e = reader.next();
+      out.append(e.toString()).append('\n');
     }
     return out.toString();
   }
 
-  /** Returns the number of edges in the call graph. */
+  /**
+   * Returns the number of edges in the call graph.
+   */
   public int size() {
     return edges.size();
   }

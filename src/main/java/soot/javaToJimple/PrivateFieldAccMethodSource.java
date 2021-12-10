@@ -24,6 +24,9 @@ package soot.javaToJimple;
 
 import java.util.Iterator;
 
+import soot.LocalGenerator;
+import soot.Scene;
+
 public class PrivateFieldAccMethodSource implements soot.MethodSource {
 
   private final soot.Type fieldType;
@@ -41,7 +44,7 @@ public class PrivateFieldAccMethodSource implements soot.MethodSource {
   public soot.Body getBody(soot.SootMethod sootMethod, String phaseName) {
 
     soot.Body body = soot.jimple.Jimple.v().newBody(sootMethod);
-    LocalGenerator lg = new LocalGenerator(body);
+    LocalGenerator lg = Scene.v().createLocalGenerator(body);
 
     soot.Local fieldBase = null;
     // create parameters

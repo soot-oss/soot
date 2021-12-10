@@ -102,7 +102,7 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
    */
   public void java_security_AccessController_getStackAccessControlContext(SootMethod method, ReferenceVariable thisVar,
       ReferenceVariable returnVar, ReferenceVariable params[]) {
-    helper.assignObjectTo(returnVar, Environment.v().getLeastObject());
+    helper.assignObjectTo(returnVar, Environment.v().getAccessControlContext());
   }
 
   /**
@@ -112,6 +112,6 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
    */
   public void java_security_AccessController_getInheritedAccessControlContext(SootMethod method, ReferenceVariable thisVar,
       ReferenceVariable returnVar, ReferenceVariable params[]) {
-    helper.assignObjectTo(returnVar, Environment.v().getLeastObject());
+    helper.assignObjectTo(returnVar, Environment.v().getAccessControlContext());
   }
 }

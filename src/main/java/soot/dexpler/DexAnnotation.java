@@ -98,7 +98,7 @@ import soot.toDex.SootToDexUtils;
  *
  */
 public class DexAnnotation {
-  
+
   private static final Logger logger = LoggerFactory.getLogger(DexAnnotation.class);
 
   public static final String JAVA_DEPRECATED = "java.lang.Deprecated";
@@ -121,7 +121,6 @@ public class DexAnnotation {
   /**
    * Converts Class annotations from Dexlib to Jimple.
    *
-   * @param h
    * @param classDef
    */
   // .annotation "Ldalvik/annotation/AnnotationDefault;"
@@ -131,7 +130,6 @@ public class DexAnnotation {
   // .annotation "Ldalvik/annotation/MemberClasses;"
   // .annotation "Ldalvik/annotation/Signature;"
   // .annotation "Ldalvik/annotation/Throws;"
-
   public void handleClassAnnotation(ClassDef classDef) {
     Set<? extends Annotation> aSet = classDef.getAnnotations();
     if (aSet == null || aSet.isEmpty()) {
@@ -149,7 +147,7 @@ public class DexAnnotation {
         if (t instanceof InnerClassTag) {
           if (ica == null) {
             // Do we already have an InnerClassAttribute?
-            ica = (InnerClassAttribute) clazz.getTag("InnerClassAttribute");
+            ica = (InnerClassAttribute) clazz.getTag(InnerClassAttribute.NAME);
             // If not, create one
             if (ica == null) {
               ica = new InnerClassAttribute();
@@ -635,7 +633,8 @@ public class DexAnnotation {
         return;
       case DALVIK_ANNOTATION_SIGNATURE:
         if (eSize != 1) {
-          throw new RuntimeException("error: expected 1 element for annotation Signature. Got " + eSize + " instead.");
+          throw new RuntimeException(
+              "error: expected 1 element for annotation Signature. Got " + eSize + " instead. Class " + classType);
         }
         arre = (AnnotationArrayElem) getElements(a.getElements()).get(0);
         String sig = "";
@@ -649,10 +648,23 @@ public class DexAnnotation {
         // Do not add annotation tag
         return;
       case JAVA_DEPRECATED:
-        if (eSize != 0) {
-          throw new RuntimeException("error: expected 1 element for annotation Deprecated. Got " + eSize + " instead.");
+        if (eSize > 2) {
+          throw new RuntimeException(
+              "error: expected up to 2 attributes for annotation Deprecated. Got " + eSize + " instead. Class " + classType);
         }
-        t = new DeprecatedTag();
+        Boolean forRemoval = null;
+        String since = null;
+        for (AnnotationElem elem : getElements(a.getElements())) {
+          if ((elem instanceof AnnotationBooleanElem) && "forRemoval".equals(elem.getName())) {
+            forRemoval = ((AnnotationBooleanElem) elem).getValue();
+          } else if ((elem instanceof AnnotationStringElem) && "since".equals(elem.getName())) {
+            since = ((AnnotationStringElem) elem).getValue();
+          } else {
+            throw new RuntimeException(
+                "Unsupported attribute in Deprecated annotation found in class " + classType + " " + elem);
+          }
+        }
+        t = new DeprecatedTag(forRemoval, since);
         AnnotationTag deprecated = new AnnotationTag("Ljava/lang/Deprecated;");
         if (vatg[v] == null) {
           vatg[v] = new VisibilityAnnotationTag(v);
@@ -690,11 +702,10 @@ public class DexAnnotation {
   }
 
   private ArrayList<AnnotationElem> getElements(Set<? extends AnnotationElement> set) {
-    ArrayList<AnnotationElem> aelemList = new ArrayList<AnnotationElem>();
+    ArrayList<AnnotationElem> aelemList = new ArrayList<>();
     for (AnnotationElement ae : set) {
 
-      // Debug.printDbg("element: ", ae.getName() ," ", ae.getValue() ,"
-      // type: ", ae.getClass());
+      logger.trace("element: {}={} type: {}", ae.getName(), ae.getValue(), ae.getClass());
       // Debug.printDbg("value type: ", ae.getValue().getValueType() ,"
       // class: ", ae.getValue().getClass());
 

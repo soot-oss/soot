@@ -53,109 +53,109 @@ public class ReflectionTraceInfo {
     ClassForName, ClassNewInstance, ConstructorNewInstance, MethodInvoke, FieldSet, FieldGet
   }
 
-  protected Map<SootMethod, Set<String>> classForNameReceivers;
-
-  protected Map<SootMethod, Set<String>> classNewInstanceReceivers;
-
-  protected Map<SootMethod, Set<String>> constructorNewInstanceReceivers;
-
-  protected Map<SootMethod, Set<String>> methodInvokeReceivers;
-
-  protected Map<SootMethod, Set<String>> fieldSetReceivers;
-
-  protected Map<SootMethod, Set<String>> fieldGetReceivers;
+  protected final Map<SootMethod, Set<String>> classForNameReceivers;
+  protected final Map<SootMethod, Set<String>> classNewInstanceReceivers;
+  protected final Map<SootMethod, Set<String>> constructorNewInstanceReceivers;
+  protected final Map<SootMethod, Set<String>> methodInvokeReceivers;
+  protected final Map<SootMethod, Set<String>> fieldSetReceivers;
+  protected final Map<SootMethod, Set<String>> fieldGetReceivers;
 
   public ReflectionTraceInfo(String logFile) {
-    classForNameReceivers = new LinkedHashMap<SootMethod, Set<String>>();
-    classNewInstanceReceivers = new LinkedHashMap<SootMethod, Set<String>>();
-    constructorNewInstanceReceivers = new LinkedHashMap<SootMethod, Set<String>>();
-    methodInvokeReceivers = new LinkedHashMap<SootMethod, Set<String>>();
-    fieldSetReceivers = new LinkedHashMap<SootMethod, Set<String>>();
-    fieldGetReceivers = new LinkedHashMap<SootMethod, Set<String>>();
+    this.classForNameReceivers = new LinkedHashMap<SootMethod, Set<String>>();
+    this.classNewInstanceReceivers = new LinkedHashMap<SootMethod, Set<String>>();
+    this.constructorNewInstanceReceivers = new LinkedHashMap<SootMethod, Set<String>>();
+    this.methodInvokeReceivers = new LinkedHashMap<SootMethod, Set<String>>();
+    this.fieldSetReceivers = new LinkedHashMap<SootMethod, Set<String>>();
+    this.fieldGetReceivers = new LinkedHashMap<SootMethod, Set<String>>();
 
     if (logFile == null) {
       throw new InternalError("Trace based refection model enabled but no trace file given!?");
     } else {
-      try {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(logFile)));
-        String line;
-        int lines = 0;
-        Set<String> ignoredKinds = new HashSet<String>();
-        while ((line = reader.readLine()) != null) {
-          if (line.length() == 0) {
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(logFile)))) {
+        final Scene sc = Scene.v();
+        final Set<String> ignoredKinds = new HashSet<String>();
+        for (String line; (line = reader.readLine()) != null;) {
+          if (line.isEmpty()) {
             continue;
           }
-          String[] portions = line.split(";", -1);
-          String kind = portions[0];
-          String target = portions[1];
-          String source = portions[2];
-          int lineNumber = portions[3].length() == 0 ? -1 : Integer.parseInt(portions[3]);
+          final String[] portions = line.split(";", -1);
+          final String kind = portions[0];
+          final String target = portions[1];
+          final String source = portions[2];
+          final int lineNumber = portions[3].length() == 0 ? -1 : Integer.parseInt(portions[3]);
 
-          Set<SootMethod> possibleSourceMethods = inferSource(source, lineNumber);
-          for (SootMethod sourceMethod : possibleSourceMethods) {
-            if (kind.equals("Class.forName")) {
-              Set<String> receiverNames;
-              if ((receiverNames = classForNameReceivers.get(sourceMethod)) == null) {
-                classForNameReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
+          for (SootMethod sourceMethod : inferSource(source, lineNumber)) {
+            switch (kind) {
+              case "Class.forName": {
+                Set<String> receiverNames = classForNameReceivers.get(sourceMethod);
+                if (receiverNames == null) {
+                  classForNameReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
+                }
+                receiverNames.add(target);
+                break;
               }
-              receiverNames.add(target);
-            } else if (kind.equals("Class.newInstance")) {
-              Set<String> receiverNames;
-              if ((receiverNames = classNewInstanceReceivers.get(sourceMethod)) == null) {
-                classNewInstanceReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
+              case "Class.newInstance": {
+                Set<String> receiverNames = classNewInstanceReceivers.get(sourceMethod);
+                if (receiverNames == null) {
+                  classNewInstanceReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
+                }
+                receiverNames.add(target);
+                break;
               }
-              receiverNames.add(target);
-            } else if (kind.equals("Method.invoke")) {
-              if (!Scene.v().containsMethod(target)) {
-                throw new RuntimeException("Unknown method for signature: " + target);
+              case "Method.invoke": {
+                if (!sc.containsMethod(target)) {
+                  throw new RuntimeException("Unknown method for signature: " + target);
+                }
+                Set<String> receiverNames = methodInvokeReceivers.get(sourceMethod);
+                if (receiverNames == null) {
+                  methodInvokeReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
+                }
+                receiverNames.add(target);
+                break;
               }
-
-              Set<String> receiverNames;
-              if ((receiverNames = methodInvokeReceivers.get(sourceMethod)) == null) {
-                methodInvokeReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
+              case "Constructor.newInstance": {
+                if (!sc.containsMethod(target)) {
+                  throw new RuntimeException("Unknown method for signature: " + target);
+                }
+                Set<String> receiverNames = constructorNewInstanceReceivers.get(sourceMethod);
+                if (receiverNames == null) {
+                  constructorNewInstanceReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
+                }
+                receiverNames.add(target);
+                break;
               }
-              receiverNames.add(target);
-            } else if (kind.equals("Constructor.newInstance")) {
-              if (!Scene.v().containsMethod(target)) {
-                throw new RuntimeException("Unknown method for signature: " + target);
+              case "Field.set*": {
+                if (!sc.containsField(target)) {
+                  throw new RuntimeException("Unknown method for signature: " + target);
+                }
+                Set<String> receiverNames = fieldSetReceivers.get(sourceMethod);
+                if (receiverNames == null) {
+                  fieldSetReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
+                }
+                receiverNames.add(target);
+                break;
               }
-
-              Set<String> receiverNames;
-              if ((receiverNames = constructorNewInstanceReceivers.get(sourceMethod)) == null) {
-                constructorNewInstanceReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
+              case "Field.get*": {
+                if (!sc.containsField(target)) {
+                  throw new RuntimeException("Unknown method for signature: " + target);
+                }
+                Set<String> receiverNames = fieldGetReceivers.get(sourceMethod);
+                if (receiverNames == null) {
+                  fieldGetReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
+                }
+                receiverNames.add(target);
+                break;
               }
-              receiverNames.add(target);
-            } else if (kind.equals("Field.set*")) {
-              if (!Scene.v().containsField(target)) {
-                throw new RuntimeException("Unknown method for signature: " + target);
-              }
-
-              Set<String> receiverNames;
-              if ((receiverNames = fieldSetReceivers.get(sourceMethod)) == null) {
-                fieldSetReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
-              }
-              receiverNames.add(target);
-            } else if (kind.equals("Field.get*")) {
-              if (!Scene.v().containsField(target)) {
-                throw new RuntimeException("Unknown method for signature: " + target);
-              }
-
-              Set<String> receiverNames;
-              if ((receiverNames = fieldGetReceivers.get(sourceMethod)) == null) {
-                fieldGetReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
-              }
-              receiverNames.add(target);
-            } else {
-              ignoredKinds.add(kind);
+              default:
+                ignoredKinds.add(kind);
+                break;
             }
           }
-          lines++;
         }
         if (!ignoredKinds.isEmpty()) {
-          logger
-              .debug("Encountered reflective calls entries of the following kinds that\n" + "cannot currently be handled:");
+          logger.debug("Encountered reflective calls entries of the following kinds that\ncannot currently be handled:");
           for (String kind : ignoredKinds) {
-            logger.debug("" + kind);
+            logger.debug(kind);
           }
         }
       } catch (FileNotFoundException e) {
@@ -167,19 +167,20 @@ public class ReflectionTraceInfo {
   }
 
   private Set<SootMethod> inferSource(String source, int lineNumber) {
-    String className = source.substring(0, source.lastIndexOf("."));
-    String methodName = source.substring(source.lastIndexOf(".") + 1);
-    if (!Scene.v().containsClass(className)) {
-      Scene.v().addBasicClass(className, SootClass.BODIES);
-      Scene.v().loadBasicClasses();
-      if (!Scene.v().containsClass(className)) {
+    int dotIndex = source.lastIndexOf('.');
+    String className = source.substring(0, dotIndex);
+    String methodName = source.substring(dotIndex + 1);
+    final Scene scene = Scene.v();
+    if (!scene.containsClass(className)) {
+      scene.addBasicClass(className, SootClass.BODIES);
+      scene.loadBasicClasses();
+      if (!scene.containsClass(className)) {
         throw new RuntimeException("Trace file refers to unknown class: " + className);
       }
     }
 
-    SootClass sootClass = Scene.v().getSootClass(className);
     Set<SootMethod> methodsWithRightName = new LinkedHashSet<SootMethod>();
-    for (SootMethod m : sootClass.getMethods()) {
+    for (SootMethod m : scene.getSootClass(className).getMethods()) {
       if (m.isConcrete() && m.getName().equals(methodName)) {
         methodsWithRightName.add(m);
       }
@@ -219,7 +220,7 @@ public class ReflectionTraceInfo {
 
   private boolean coversLineNumber(int lineNumber, Host host) {
     {
-      SourceLnPosTag tag = (SourceLnPosTag) host.getTag("SourceLnPosTag");
+      SourceLnPosTag tag = (SourceLnPosTag) host.getTag(SourceLnPosTag.NAME);
       if (tag != null) {
         if (tag.startLn() <= lineNumber && tag.endLn() >= lineNumber) {
           return true;
@@ -227,7 +228,7 @@ public class ReflectionTraceInfo {
       }
     }
     {
-      LineNumberTag tag = (LineNumberTag) host.getTag("LineNumberTag");
+      LineNumberTag tag = (LineNumberTag) host.getTag(LineNumberTag.NAME);
       if (tag != null) {
         if (tag.getLineNumber() == lineNumber) {
           return true;
@@ -238,10 +239,8 @@ public class ReflectionTraceInfo {
   }
 
   public Set<String> classForNameClassNames(SootMethod container) {
-    if (!classForNameReceivers.containsKey(container)) {
-      return Collections.emptySet();
-    }
-    return classForNameReceivers.get(container);
+    Set<String> ret = classForNameReceivers.get(container);
+    return (ret != null) ? ret : Collections.emptySet();
   }
 
   public Set<SootClass> classForNameClasses(SootMethod container) {
@@ -253,10 +252,8 @@ public class ReflectionTraceInfo {
   }
 
   public Set<String> classNewInstanceClassNames(SootMethod container) {
-    if (!classNewInstanceReceivers.containsKey(container)) {
-      return Collections.emptySet();
-    }
-    return classNewInstanceReceivers.get(container);
+    Set<String> ret = classNewInstanceReceivers.get(container);
+    return (ret != null) ? ret : Collections.emptySet();
   }
 
   public Set<SootClass> classNewInstanceClasses(SootMethod container) {
@@ -268,10 +265,8 @@ public class ReflectionTraceInfo {
   }
 
   public Set<String> constructorNewInstanceSignatures(SootMethod container) {
-    if (!constructorNewInstanceReceivers.containsKey(container)) {
-      return Collections.emptySet();
-    }
-    return constructorNewInstanceReceivers.get(container);
+    Set<String> ret = constructorNewInstanceReceivers.get(container);
+    return (ret != null) ? ret : Collections.emptySet();
   }
 
   public Set<SootMethod> constructorNewInstanceConstructors(SootMethod container) {
@@ -283,10 +278,8 @@ public class ReflectionTraceInfo {
   }
 
   public Set<String> methodInvokeSignatures(SootMethod container) {
-    if (!methodInvokeReceivers.containsKey(container)) {
-      return Collections.emptySet();
-    }
-    return methodInvokeReceivers.get(container);
+    Set<String> ret = methodInvokeReceivers.get(container);
+    return (ret != null) ? ret : Collections.emptySet();
   }
 
   public Set<SootMethod> methodInvokeMethods(SootMethod container) {
@@ -307,16 +300,12 @@ public class ReflectionTraceInfo {
   }
 
   public Set<String> fieldSetSignatures(SootMethod container) {
-    if (!fieldSetReceivers.containsKey(container)) {
-      return Collections.emptySet();
-    }
-    return fieldSetReceivers.get(container);
+    Set<String> ret = fieldSetReceivers.get(container);
+    return (ret != null) ? ret : Collections.emptySet();
   }
 
   public Set<String> fieldGetSignatures(SootMethod container) {
-    if (!fieldGetReceivers.containsKey(container)) {
-      return Collections.emptySet();
-    }
-    return fieldGetReceivers.get(container);
+    Set<String> ret = fieldGetReceivers.get(container);
+    return (ret != null) ? ret : Collections.emptySet();
   }
 }

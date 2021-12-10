@@ -40,6 +40,7 @@ import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
+import soot.dexpler.tags.ObjectOpTag;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -129,7 +130,7 @@ public class DexIfTransformer extends AbstractNullTransformer {
               } else if (r instanceof ArrayRef) {
                 ArrayRef ar = (ArrayRef) r;
                 if (ar.getType() instanceof UnknownType) {
-                  usedAsObject = stmt.hasTag("ObjectOpTag"); // isObject
+                  usedAsObject = stmt.hasTag(ObjectOpTag.NAME); // isObject
                   // (findArrayType
                   // (g,
                   // localDefs,
@@ -261,20 +262,16 @@ public class DexIfTransformer extends AbstractNullTransformer {
                   Value l = stmt.getLeftOp();
                   if (l instanceof StaticFieldRef && isObject(((StaticFieldRef) l).getFieldRef().type())) {
                     usedAsObject = true;
-                    if (usedAsObject) {
-                      doBreak = true;
-                    }
+                    doBreak = true;
                     return;
                   } else if (l instanceof InstanceFieldRef && isObject(((InstanceFieldRef) l).getFieldRef().type())) {
                     usedAsObject = true;
-                    if (usedAsObject) {
-                      doBreak = true;
-                    }
+                    doBreak = true;
                     return;
                   } else if (l instanceof ArrayRef) {
                     Type aType = ((ArrayRef) l).getType();
                     if (aType instanceof UnknownType) {
-                      usedAsObject = stmt.hasTag("ObjectOpTag"); // isObject(
+                      usedAsObject = stmt.hasTag(ObjectOpTag.NAME); // isObject(
                       // findArrayType(g,
                       // localDefs,
                       // localUses,
@@ -294,19 +291,16 @@ public class DexIfTransformer extends AbstractNullTransformer {
                 if (r instanceof FieldRef) {
                   usedAsObject = true; // isObject(((FieldRef)
                   // r).getFieldRef().type());
-                  if (usedAsObject) {
-                    doBreak = true;
-                  }
+                  doBreak = true;
+
                   return;
                 } else if (r instanceof ArrayRef) {
                   ArrayRef ar = (ArrayRef) r;
                   if (ar.getBase() == l) {
                     usedAsObject = true;
+                    doBreak = true;
                   } else { // used as index
                     usedAsObject = false;
-                  }
-                  if (usedAsObject) {
-                    doBreak = true;
                   }
                   return;
                 } else if (r instanceof StringConstant || r instanceof NewExpr) {

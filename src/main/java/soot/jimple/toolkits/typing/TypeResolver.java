@@ -40,8 +40,10 @@ import org.slf4j.LoggerFactory;
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
+import soot.G;
 import soot.IntType;
 import soot.Local;
+import soot.LocalGenerator;
 import soot.LongType;
 import soot.NullType;
 import soot.PatchingChain;
@@ -50,6 +52,7 @@ import soot.Scene;
 import soot.SootClass;
 import soot.Type;
 import soot.Unit;
+import soot.UnknownType;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
@@ -77,6 +80,7 @@ public class TypeResolver {
   private final Map<Object, TypeVariable> typeVariableMap = new HashMap<Object, TypeVariable>();
 
   private final JimpleBody stmtBody;
+  private final LocalGenerator localGenerator;
 
   final TypeNode NULL;
   private final TypeNode OBJECT;
@@ -168,6 +172,7 @@ public class TypeResolver {
 
   private TypeResolver(JimpleBody stmtBody, Scene scene) {
     this.stmtBody = stmtBody;
+    this.localGenerator = Scene.v().createLocalGenerator(stmtBody);
     hierarchy = ClassHierarchy.classHierarchy(scene);
 
     OBJECT = hierarchy.OBJECT;
@@ -835,7 +840,7 @@ public class TypeResolver {
   }
 
   private void split_new() {
-    LocalDefs defs = LocalDefs.Factory.newLocalDefs(stmtBody);
+    LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(stmtBody);
     PatchingChain<Unit> units = stmtBody.getUnits();
     Stmt[] stmts = new Stmt[units.size()];
 
@@ -863,9 +868,7 @@ public class TypeResolver {
                 } else if (assign.getRightOp() instanceof NewExpr) {
                   // We split the local.
                   // logger.debug("split: [" + assign + "] and [" + stmt + "]");
-                  Local newlocal = Jimple.v().newLocal("tmp", null);
-                  stmtBody.getLocals().add(newlocal);
-
+                  Local newlocal = localGenerator.generateLocal(UnknownType.v());
                   special.setBase(newlocal);
 
                   units.insertAfter(Jimple.v().newAssignStmt(assign.getLeftOp(), newlocal), assign);

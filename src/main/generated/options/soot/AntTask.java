@@ -60,6 +60,8 @@ public class AntTask extends MatchingTask {
   
         private Path process_dir = null;
   
+        private Path process_jar_dir = null;
+  
         private Path dump_body = null;
   
         private Path dump_cfg = null;
@@ -81,6 +83,8 @@ public class AntTask extends MatchingTask {
         if( phase_help != null ) addPath("-phase-help", phase_help);
   
         if( process_dir != null ) addPath("-process-dir", process_dir);
+  
+        if( process_jar_dir != null ) addPath("-process-jar-dir", process_jar_dir);
   
         if( dump_body != null ) addPath("-dump-body", dump_body);
   
@@ -228,6 +232,22 @@ public class AntTask extends MatchingTask {
             return process_dir.createPath();
         }
   
+        public void setprocess_jar_dir(Path arg) {
+            if(process_jar_dir == null )
+                process_jar_dir = new Path(getProject());
+            process_jar_dir = appendToPath(process_jar_dir, arg);
+        }
+
+        public Path createprocess_jar_dir() {
+            if(process_jar_dir == null )
+                process_jar_dir = new Path(getProject());
+            return process_jar_dir.createPath();
+        }
+  
+        public void setderive_java_version(boolean arg) {
+            if(arg) addArg("-derive-java-version");
+        }
+  
         public void setoaat(boolean arg) {
             if(arg) addArg("-oaat");
         }
@@ -276,6 +296,10 @@ public class AntTask extends MatchingTask {
   
         public void setallow_phantom_elms(boolean arg) {
             if(arg) addArg("-allow-phantom-elms");
+        }
+  
+        public void setallow_cg_errors(boolean arg) {
+            if(arg) addArg("-allow-cg-errors");
         }
   
         public void setno_bodies_for_excluded(boolean arg) {
@@ -371,6 +395,12 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "8" )
                 || arg.equals( "1.9" )
                 || arg.equals( "9" )
+                || arg.equals( "1.10" )
+                || arg.equals( "10" )
+                || arg.equals( "1.11" )
+                || arg.equals( "11" )
+                || arg.equals( "1.12" )
+                || arg.equals( "12" )
                 ) {
                 addArg("-java-version");
                 addArg(arg);
@@ -502,6 +532,7 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "pedantic" )
                 || arg.equals( "unit" )
                 || arg.equals( "dalvik" )
+                || arg.equals( "auto-select" )
                 ) {
                 addArg("-throw-analysis");
                 addArg(arg);
@@ -724,6 +755,21 @@ public class AntTask extends MatchingTask {
           public void setenabled(boolean arg) {
             addArg("-p");
             addArg("jb.ls");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_jb_sils() {
+            Object ret = new PhaseOptjb_sils();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjb_sils {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jb.sils");
             addArg("enabled:"+(arg?"true":"false"));
           }
       
@@ -981,6 +1027,21 @@ public class AntTask extends MatchingTask {
       
         }
     
+        public Object createp_jb_cbf() {
+            Object ret = new PhaseOptjb_cbf();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjb_cbf {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jb.cbf");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
         public Object createp_jj() {
             Object ret = new PhaseOptjj();
             phaseopts.add(ret);
@@ -1012,6 +1073,21 @@ public class AntTask extends MatchingTask {
           public void setenabled(boolean arg) {
             addArg("-p");
             addArg("jj.ls");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_jj_sils() {
+            Object ret = new PhaseOptjj_sils();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjj_sils {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jj.sils");
             addArg("enabled:"+(arg?"true":"false"));
           }
       
@@ -3245,6 +3321,21 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("bb.lp");
             addArg("unsplit-original-locals:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_bb_ne() {
+            Object ret = new PhaseOptbb_ne();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptbb_ne {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("bb.ne");
+            addArg("enabled:"+(arg?"true":"false"));
           }
       
         }

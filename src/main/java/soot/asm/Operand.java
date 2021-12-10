@@ -148,4 +148,22 @@ final class Operand {
   public boolean equals(Object other) {
     return other instanceof Operand && equivTo((Operand) other);
   }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    boolean hasStack = false;
+    if (stack != null) {
+      sb.append(stack.toString());
+      hasStack = true;
+    }
+    if (value != null) {
+      if (hasStack) {
+        sb.append(" - ");
+        sb.append(value.toString());
+      }
+    }
+    return sb.toString();
+  }
+
 }

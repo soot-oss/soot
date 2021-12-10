@@ -38,14 +38,14 @@ import soot.toolkits.graph.DirectedGraph;
  */
 public abstract class BranchedFlowAnalysis<N extends Unit, A> extends AbstractFlowAnalysis<N, A> {
   /** Maps graph nodes to OUT sets. */
-  protected Map<Unit, List<A>> unitToAfterFallFlow;
-  protected Map<Unit, List<A>> unitToAfterBranchFlow;
+  protected final Map<Unit, List<A>> unitToAfterFallFlow;
+  protected final Map<Unit, List<A>> unitToAfterBranchFlow;
 
   public BranchedFlowAnalysis(DirectedGraph<N> graph) {
     super(graph);
 
-    unitToAfterFallFlow = new HashMap<Unit, List<A>>(graph.size() * 2 + 1, 0.7f);
-    unitToAfterBranchFlow = new HashMap<Unit, List<A>>(graph.size() * 2 + 1, 0.7f);
+    this.unitToAfterFallFlow = new HashMap<Unit, List<A>>(graph.size() * 2 + 1, 0.7f);
+    this.unitToAfterBranchFlow = new HashMap<Unit, List<A>>(graph.size() * 2 + 1, 0.7f);
   }
 
   /**
@@ -56,16 +56,10 @@ public abstract class BranchedFlowAnalysis<N extends Unit, A> extends AbstractFl
 
   public A getFallFlowAfter(Unit s) {
     List<A> fl = unitToAfterFallFlow.get(s);
-
-    if (fl.isEmpty()) {
-      return newInitialFlow();
-    } else {
-      return fl.get(0);
-    }
+    return fl.isEmpty() ? newInitialFlow() : fl.get(0);
   }
 
   public List<A> getBranchFlowAfter(Unit s) {
-    return (unitToAfterBranchFlow.get(s));
+    return unitToAfterBranchFlow.get(s);
   }
-
 } // end class BranchedFlowAnalysis

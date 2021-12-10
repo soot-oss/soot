@@ -26,8 +26,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -38,6 +40,7 @@ import soot.Scene;
 import soot.Singletons;
 import soot.Timers;
 import soot.Unit;
+import soot.Value;
 import soot.ValueBox;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
@@ -47,7 +50,6 @@ import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.jimple.Stmt;
-import soot.jimple.StmtBody;
 import soot.options.CPOptions;
 import soot.options.Options;
 import soot.tagkit.Host;
@@ -55,11 +57,10 @@ import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLnPosTag;
 import soot.tagkit.Tag;
 import soot.toolkits.exceptions.ThrowAnalysis;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
-import soot.util.Chain;
 
 public class CopyPropagator extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(CopyPropagator.class);
@@ -67,7 +68,8 @@ public class CopyPropagator extends BodyTransformer {
   protected ThrowAnalysis throwAnalysis = null;
   protected boolean forceOmitExceptingUnitEdges = false;
 
-  public CopyPropagator(Singletons.Global g) {}
+  public CopyPropagator(Singletons.Global g) {
+  }
 
   public CopyPropagator(ThrowAnalysis ta) {
     this.throwAnalysis = ta;
@@ -85,44 +87,39 @@ public class CopyPropagator extends BodyTransformer {
   /**
    * Cascaded copy propagator.
    *
-   * <p>If it encounters situations of the form: A: a = ...; B: ... x = a; C:... use (x); where a
-   * has only one definition, and x has only one definition (B), then it can propagate immediately
-   * without checking between B and C for redefinitions of a (namely) A because they cannot occur.
-   * In this case the propagator is global.
+   * <p>
+   * If it encounters situations of the form: A: a = ...; B: ... x = a; C:... use (x); where a has only one definition, and x
+   * has only one definition (B), then it can propagate immediately without checking between B and C for redefinitions of a
+   * (namely) A because they cannot occur. In this case the propagator is global.
    *
-   * <p>Otherwise, if a has multiple definitions then it only checks for redefinitions of Propagates
-   * constants and copies in extended basic blocks.
+   * <p>
+   * Otherwise, if a has multiple definitions then it only checks for redefinitions of Propagates constants and copies in
+   * extended basic blocks.
    *
-   * <p>Does not propagate stack locals when the "only-regular-locals" option is true.
+   * <p>
+   * Does not propagate stack locals when the "only-regular-locals" option is true.
    */
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> opts) {
-    CPOptions options = new CPOptions(opts);
-    StmtBody stmtBody = (StmtBody) b;
-    int fastCopyPropagationCount = 0;
-    int slowCopyPropagationCount = 0;
 
     if (Options.v().verbose()) {
-      logger.debug("[" + stmtBody.getMethod().getName() + "] Propagating copies...");
+      logger.debug("[" + b.getMethod().getName() + "] Propagating copies...");
     }
 
     if (Options.v().time()) {
       Timers.v().propagatorTimer.start();
     }
 
-    Chain<Unit> units = stmtBody.getUnits();
-
-    Map<Local, Integer> localToDefCount = new HashMap<Local, Integer>();
-
     // Count number of definitions for each local.
-    for (Unit u : units) {
-      Stmt s = (Stmt) u;
-      if (s instanceof DefinitionStmt && ((DefinitionStmt) s).getLeftOp() instanceof Local) {
-        Local l = (Local) ((DefinitionStmt) s).getLeftOp();
+    Map<Local, Integer> localToDefCount = new HashMap<Local, Integer>(b.getLocalCount() * 2 + 1);
+    for (Unit u : b.getUnits()) {
+      if (u instanceof DefinitionStmt) {
+        Value leftOp = ((DefinitionStmt) u).getLeftOp();
+        if (leftOp instanceof Local) {
+          Local loc = (Local) leftOp;
 
-        if (!localToDefCount.containsKey(l)) {
-          localToDefCount.put(l, new Integer(1));
-        } else {
-          localToDefCount.put(l, new Integer(localToDefCount.get(l).intValue() + 1));
+          Integer old = localToDefCount.get(loc);
+          localToDefCount.put(loc, (old == null) ? 1 : (old + 1));
         }
       }
     }
@@ -131,47 +128,45 @@ public class CopyPropagator extends BodyTransformer {
       throwAnalysis = Scene.v().getDefaultThrowAnalysis();
     }
 
-    if (forceOmitExceptingUnitEdges == false) {
+    if (!forceOmitExceptingUnitEdges) {
       forceOmitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
     }
 
-    // Go through the definitions, building the webs
-    UnitGraph graph =
-        new ExceptionalUnitGraph(stmtBody, throwAnalysis, forceOmitExceptingUnitEdges);
-
-    LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(graph);
-
-    // Perform a local propagation pass.
     {
-      Iterator<Unit> stmtIt =
-          (new PseudoTopologicalOrderer<Unit>()).newList(graph, false).iterator();
-      while (stmtIt.hasNext()) {
-        Stmt stmt = (Stmt) stmtIt.next();
+      // Go through the definitions, building the webs
+      int fastCopyPropagationCount = 0;
+      int slowCopyPropagationCount = 0;
 
-        for (ValueBox useBox : stmt.getUseBoxes()) {
-          if (useBox.getValue() instanceof Local) {
-            Local l = (Local) useBox.getValue();
+      UnitGraph graph
+          = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b, throwAnalysis, forceOmitExceptingUnitEdges);
+      LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph);
+      CPOptions options = new CPOptions(opts);
+      boolean onlyRegularLocals = options.only_regular_locals();
+      boolean onlyStackLocals = options.only_stack_locals();
+      boolean allLocals = onlyRegularLocals && onlyStackLocals;
+
+      // Perform a local propagation pass.
+      for (Unit u : (new PseudoTopologicalOrderer<Unit>()).newList(graph, false)) {
+        for (ValueBox useBox : u.getUseBoxes()) {
+          Value value = useBox.getValue();
+          if (value instanceof Local) {
+            Local l = (Local) value;
 
             // We force propagating nulls. If a target can only be
             // null due to typing, we always inline that constant.
-            if (!(l.getType() instanceof NullType)) {
-              if (options.only_regular_locals() && l.getName().startsWith("$")) {
+            if (!allLocals && !(l.getType() instanceof NullType)) {
+              if (onlyRegularLocals && l.isStackLocal()) {
                 continue;
               }
-
-              if (options.only_stack_locals() && !l.getName().startsWith("$")) {
+              if (onlyStackLocals && !l.isStackLocal()) {
                 continue;
               }
             }
 
-            List<Unit> defsOfUse = localDefs.getDefsOfAt(l, stmt);
-
-            // We can propagate the definition if we either only
-            // have
-            // one definition or all definitions are side-effect
-            // free
-            // and equal. For starters, we only support constants in
-            // the case of multiple definitions.
+            // We can propagate the definition if we either only have one definition
+            // or all definitions are side-effect free and equal. For starters, we
+            // only support constants in the case of multiple definitions.
+            List<Unit> defsOfUse = localDefs.getDefsOfAt(l, u);
             boolean propagateDef = defsOfUse.size() == 1;
             if (!propagateDef && defsOfUse.size() > 0) {
               boolean agrees = true;
@@ -179,12 +174,12 @@ public class CopyPropagator extends BodyTransformer {
               for (Unit defUnit : defsOfUse) {
                 boolean defAgrees = false;
                 if (defUnit instanceof AssignStmt) {
-                  AssignStmt assign = (AssignStmt) defUnit;
-                  if (assign.getRightOp() instanceof Constant) {
+                  Value rightOp = ((AssignStmt) defUnit).getRightOp();
+                  if (rightOp instanceof Constant) {
                     if (constVal == null) {
-                      constVal = (Constant) assign.getRightOp();
+                      constVal = (Constant) rightOp;
                       defAgrees = true;
-                    } else if (constVal.equals(assign.getRightOp())) {
+                    } else if (constVal.equals(rightOp)) {
                       defAgrees = true;
                     }
                   }
@@ -195,68 +190,58 @@ public class CopyPropagator extends BodyTransformer {
             }
 
             if (propagateDef) {
-              DefinitionStmt def = (DefinitionStmt) defsOfUse.get(0);
+              final DefinitionStmt def = (DefinitionStmt) defsOfUse.get(0);
+              final Value rightOp = def.getRightOp();
 
-              if (def.getRightOp() instanceof Constant) {
-                if (useBox.canContainValue(def.getRightOp())) {
-                  useBox.setValue(def.getRightOp());
+              if (rightOp instanceof Constant) {
+                if (useBox.canContainValue(rightOp)) {
+                  useBox.setValue(rightOp);
                   copyLineTags(useBox, def);
                 }
-              } else if (def.getRightOp() instanceof CastExpr) {
-                CastExpr ce = (CastExpr) def.getRightOp();
+              } else if (rightOp instanceof CastExpr) {
+                CastExpr ce = (CastExpr) rightOp;
                 if (ce.getCastType() instanceof RefLikeType) {
-                  boolean isConstNull =
-                      ce.getOp() instanceof IntConstant && ((IntConstant) ce.getOp()).value == 0;
-                  isConstNull |=
-                      ce.getOp() instanceof LongConstant && ((LongConstant) ce.getOp()).value == 0;
-                  if (isConstNull) {
+                  Value op = ce.getOp();
+                  if ((op instanceof IntConstant && ((IntConstant) op).value == 0)
+                      || (op instanceof LongConstant && ((LongConstant) op).value == 0)) {
                     if (useBox.canContainValue(NullConstant.v())) {
                       useBox.setValue(NullConstant.v());
                       copyLineTags(useBox, def);
                     }
                   }
                 }
-              } else if (def.getRightOp() instanceof Local) {
-                Local m = (Local) def.getRightOp();
-
+              } else if (rightOp instanceof Local) {
+                Local m = (Local) rightOp;
                 if (l != m) {
                   Integer defCount = localToDefCount.get(m);
                   if (defCount == null || defCount == 0) {
                     throw new RuntimeException("Variable " + m + " used without definition!");
-                  }
-
-                  if (defCount == 1) {
+                  } else if (defCount == 1) {
                     useBox.setValue(m);
                     copyLineTags(useBox, def);
                     fastCopyPropagationCount++;
                     continue;
                   }
 
-                  List<Unit> path = graph.getExtendedBasicBlockPathBetween(def, stmt);
+                  List<Unit> path = graph.getExtendedBasicBlockPathBetween(def, u);
                   if (path == null) {
                     // no path in the extended basic block
                     continue;
                   }
 
-                  Iterator<Unit> pathIt = path.iterator();
-
-                  // Skip first node
-                  pathIt.next();
-
-                  // Make sure that m is not redefined along
-                  // path
                   {
                     boolean isRedefined = false;
 
+                    Iterator<Unit> pathIt = path.iterator();
+                    // Skip first node
+                    pathIt.next();
+                    // Make sure that m is not redefined along path
                     while (pathIt.hasNext()) {
                       Stmt s = (Stmt) pathIt.next();
 
-                      if (stmt == s) {
-                        // Don't look at the last
-                        // statement
-                        // since it is evaluated after
-                        // the uses
-
+                      if (u == s) {
+                        // Don't look at the last statement
+                        // since it is evaluated after the uses.
                         break;
                       }
                       if (s instanceof DefinitionStmt) {
@@ -280,17 +265,11 @@ public class CopyPropagator extends BodyTransformer {
           }
         }
       }
-    }
 
-    if (Options.v().verbose()) {
-      logger.debug(
-          "["
-              + stmtBody.getMethod().getName()
-              + "]     Propagated: "
-              + fastCopyPropagationCount
-              + " fast copies  "
-              + slowCopyPropagationCount
-              + " slow copies");
+      if (Options.v().verbose()) {
+        logger.debug("[" + b.getMethod().getName() + "]     Propagated: " + fastCopyPropagationCount + " fast copies  "
+            + slowCopyPropagationCount + " slow copies");
+      }
     }
 
     if (Options.v().time()) {
@@ -298,7 +277,7 @@ public class CopyPropagator extends BodyTransformer {
     }
   }
 
-  private void copyLineTags(ValueBox useBox, DefinitionStmt def) {
+  public static void copyLineTags(ValueBox useBox, DefinitionStmt def) {
     // we might have a def statement which contains a propagated constant itself as right-op. we
     // want to propagate the tags of this constant and not the def statement itself in this case.
     if (!copyLineTags(useBox, def.getRightOpBox())) {
@@ -307,23 +286,24 @@ public class CopyPropagator extends BodyTransformer {
   }
 
   /**
-   * Copies the {@link SourceLnPosTag} and {@link LineNumberTag}s from the given host to the given
-   * valuebox
+   * Copies the {@link SourceLnPosTag} and {@link LineNumberTag}s from the given host to the given ValueBox
    *
-   * @param useBox The box to which the position tags should be copied
-   * @param host The host from which the position tags should be copied
+   * @param useBox
+   *          The box to which the position tags should be copied
+   * @param host
+   *          The host from which the position tags should be copied
    * @return True if a copy was conducted, false otherwise
    */
-  private boolean copyLineTags(ValueBox useBox, Host host) {
+  private static boolean copyLineTags(ValueBox useBox, Host host) {
     boolean res = false;
 
-    Tag tag = host.getTag(SourceLnPosTag.IDENTIFIER);
+    Tag tag = host.getTag(SourceLnPosTag.NAME);
     if (tag != null) {
       useBox.addTag(tag);
       res = true;
     }
 
-    tag = host.getTag(LineNumberTag.IDENTIFIER);
+    tag = host.getTag(LineNumberTag.NAME);
     if (tag != null) {
       useBox.addTag(tag);
       res = true;

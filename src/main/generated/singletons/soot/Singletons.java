@@ -174,6 +174,20 @@ public class Singletons {
     	instance_soot_Main = null;
     }
 
+    private soot.toolkits.graph.ExceptionalUnitGraphFactory instance_soot_toolkits_graph_ExceptionalUnitGraphFactory;
+    public soot.toolkits.graph.ExceptionalUnitGraphFactory soot_toolkits_graph_ExceptionalUnitGraphFactory() {
+        if (instance_soot_toolkits_graph_ExceptionalUnitGraphFactory == null) {
+	       	synchronized (this) {
+		        if (instance_soot_toolkits_graph_ExceptionalUnitGraphFactory == null)
+	        		instance_soot_toolkits_graph_ExceptionalUnitGraphFactory = new soot.toolkits.graph.ExceptionalUnitGraphFactory(g);
+	       	}
+       	}
+        return instance_soot_toolkits_graph_ExceptionalUnitGraphFactory;
+    }
+    protected void release_soot_toolkits_graph_ExceptionalUnitGraphFactory() {
+    	instance_soot_toolkits_graph_ExceptionalUnitGraphFactory = null;
+    }
+
     private soot.tagkit.TagManager instance_soot_tagkit_TagManager;
     public soot.tagkit.TagManager soot_tagkit_TagManager() {
         if (instance_soot_tagkit_TagManager == null) {
@@ -970,6 +984,34 @@ public class Singletons {
     }
     protected void release_soot_toolkits_scalar_LocalSplitter() {
     	instance_soot_toolkits_scalar_LocalSplitter = null;
+    }
+
+    private soot.toolkits.scalar.SharedInitializationLocalSplitter instance_soot_toolkits_scalar_SharedInitializationLocalSplitter;
+    public soot.toolkits.scalar.SharedInitializationLocalSplitter soot_toolkits_scalar_SharedInitializationLocalSplitter() {
+        if (instance_soot_toolkits_scalar_SharedInitializationLocalSplitter == null) {
+	       	synchronized (this) {
+		        if (instance_soot_toolkits_scalar_SharedInitializationLocalSplitter == null)
+	        		instance_soot_toolkits_scalar_SharedInitializationLocalSplitter = new soot.toolkits.scalar.SharedInitializationLocalSplitter(g);
+	       	}
+       	}
+        return instance_soot_toolkits_scalar_SharedInitializationLocalSplitter;
+    }
+    protected void release_soot_toolkits_scalar_SharedInitializationLocalSplitter() {
+    	instance_soot_toolkits_scalar_SharedInitializationLocalSplitter = null;
+    }
+
+    private soot.toolkits.scalar.FlowSensitiveConstantPropagator instance_soot_toolkits_scalar_FlowSensitiveConstantPropagator;
+    public soot.toolkits.scalar.FlowSensitiveConstantPropagator soot_toolkits_scalar_FlowSensitiveConstantPropagator() {
+        if (instance_soot_toolkits_scalar_FlowSensitiveConstantPropagator == null) {
+	       	synchronized (this) {
+		        if (instance_soot_toolkits_scalar_FlowSensitiveConstantPropagator == null)
+	        		instance_soot_toolkits_scalar_FlowSensitiveConstantPropagator = new soot.toolkits.scalar.FlowSensitiveConstantPropagator(g);
+	       	}
+       	}
+        return instance_soot_toolkits_scalar_FlowSensitiveConstantPropagator;
+    }
+    protected void release_soot_toolkits_scalar_FlowSensitiveConstantPropagator() {
+    	instance_soot_toolkits_scalar_FlowSensitiveConstantPropagator = null;
     }
 
     private soot.coffi.Long2ndHalfType instance_soot_coffi_Long2ndHalfType;
@@ -2496,5 +2538,19 @@ public class Singletons {
     }
     protected void release_soot_jbco_jimpleTransformations_FieldRenamer() {
     	instance_soot_jbco_jimpleTransformations_FieldRenamer = null;
+    }
+
+    private soot.toolkits.scalar.LocalDefsFactory instance_soot_toolkits_scalar_LocalDefsFactory;
+    public soot.toolkits.scalar.LocalDefsFactory soot_toolkits_scalar_LocalDefsFactory() {
+        if (instance_soot_toolkits_scalar_LocalDefsFactory == null) {
+	       	synchronized (this) {
+		        if (instance_soot_toolkits_scalar_LocalDefsFactory == null)
+	        		instance_soot_toolkits_scalar_LocalDefsFactory = new soot.toolkits.scalar.LocalDefsFactory(g);
+	       	}
+       	}
+        return instance_soot_toolkits_scalar_LocalDefsFactory;
+    }
+    protected void release_soot_toolkits_scalar_LocalDefsFactory() {
+    	instance_soot_toolkits_scalar_LocalDefsFactory = null;
     }
 }

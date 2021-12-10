@@ -28,18 +28,16 @@ import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.ConstantArrayAnalysis.ArrayTypes;
 
-public class InvokeCallSite {
+public class InvokeCallSite extends AbstractCallSite {
   public static final int MUST_BE_NULL = 0;
   public static final int MUST_NOT_BE_NULL = 1;
   public static final int MAY_BE_NULL = -1;
 
-  private InstanceInvokeExpr iie;
-  private Stmt stmt;
-  private SootMethod container;
-  private Local argArray;
-  private Local base;
-  private int nullnessCode;
-  private ArrayTypes reachingTypes;
+  private final InstanceInvokeExpr iie;
+  private final Local argArray;
+  private final Local base;
+  private final int nullnessCode;
+  private final ArrayTypes reachingTypes;
 
   public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base) {
     this(stmt, container, iie, base, (Local) null, 0);
@@ -47,29 +45,36 @@ public class InvokeCallSite {
 
   public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, Local argArray,
       int nullnessCode) {
-    this.stmt = stmt;
-    this.container = container;
+    super(stmt, container);
     this.iie = iie;
     this.base = base;
     this.argArray = argArray;
     this.nullnessCode = nullnessCode;
+    this.reachingTypes = null;
   }
 
   public InvokeCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, Local base, ArrayTypes reachingArgTypes,
       int nullnessCode) {
-    this.stmt = stmt;
-    this.container = container;
+    super(stmt, container);
     this.iie = iie;
     this.base = base;
-    this.nullnessCode = nullnessCode;
     this.argArray = null;
+    this.nullnessCode = nullnessCode;
     this.reachingTypes = reachingArgTypes;
   }
 
+  /**
+   * @deprecated use {@link #getStmt()}
+   */
+  @Deprecated
   public Stmt stmt() {
     return stmt;
   }
 
+  /**
+   * @deprecated use {@link #getContainer()}
+   */
+  @Deprecated
   public SootMethod container() {
     return container;
   }
@@ -92,5 +97,10 @@ public class InvokeCallSite {
 
   public ArrayTypes reachingTypes() {
     return reachingTypes;
+  }
+
+  @Override
+  public String toString() {
+    return stmt.toString();
   }
 }

@@ -26,16 +26,19 @@ import java.util.AbstractMap;
 import java.util.Set;
 
 public class AbstractUnitAllMapTo<K, V> extends AbstractMap<K, V> {
-  V dest;
+
+  protected V dest;
 
   public AbstractUnitAllMapTo(V dest) {
     this.dest = dest;
   }
 
+  @Override
   public V get(Object key) {
     return dest;
   }
 
+  @Override
   public Set<Entry<K, V>> entrySet() {
     throw new UnsupportedOperationException();
   }

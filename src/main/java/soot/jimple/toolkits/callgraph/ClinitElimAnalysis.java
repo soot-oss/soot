@@ -25,15 +25,17 @@ package soot.jimple.toolkits.callgraph;
 import java.util.Iterator;
 
 import soot.Scene;
-import soot.jimple.Stmt;
+import soot.SootMethod;
+import soot.Unit;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
-public class ClinitElimAnalysis extends ForwardFlowAnalysis {
+public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMethod>> {
 
-  private UnitGraph g;
+  private final CallGraph cg = Scene.v().getCallGraph();
+  private final UnitGraph g;
 
   public ClinitElimAnalysis(UnitGraph g) {
     super(g);
@@ -42,61 +44,48 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis {
     doAnalysis();
   }
 
-  public void merge(Object in1, Object in2, Object out) {
-
-    FlowSet inSet1 = (FlowSet) in1;
-    FlowSet inSet2 = (FlowSet) in2;
-    FlowSet outSet = (FlowSet) out;
-
-    inSet1.intersection(inSet2, outSet);
+  @Override
+  public void merge(FlowSet<SootMethod> in1, FlowSet<SootMethod> in2, FlowSet<SootMethod> out) {
+    in1.intersection(in2, out);
   }
 
-  public void copy(Object src, Object dest) {
+  @Override
+  public void copy(FlowSet<SootMethod> src, FlowSet<SootMethod> dest) {
+    src.copy(dest);
+  }
 
-    FlowSet srcIn = (FlowSet) src;
-    FlowSet destOut = (FlowSet) dest;
-
-    srcIn.copy(destOut);
+  @Override
+  protected void copyFreshToExisting(FlowSet<SootMethod> in, FlowSet<SootMethod> dest) {
+    in.copyFreshToExisting(dest);
   }
 
   // out(s) = in(s) intersect { target methods of s where edge kind is clinit}
-  protected void flowThrough(Object inVal, Object stmt, Object outVal) {
-    FlowSet in = (FlowSet) inVal;
-    FlowSet out = (FlowSet) outVal;
-    Stmt s = (Stmt) stmt;
+  @Override
+  protected void flowThrough(FlowSet<SootMethod> inVal, Unit stmt, FlowSet<SootMethod> outVal) {
+    inVal.copy(outVal);
 
-    in.copy(out);
-
-    CallGraph cg = Scene.v().getCallGraph();
-
-    Iterator edges = cg.edgesOutOf(s);
-
-    while (edges.hasNext()) {
-      Edge e = (Edge) edges.next();
+    for (Iterator<Edge> edges = cg.edgesOutOf(stmt); edges.hasNext();) {
+      Edge e = edges.next();
       if (e.isClinit()) {
-        out.add(e.tgt());
+        outVal.add(e.tgt());
       }
     }
   }
 
-  protected Object entryInitialFlow() {
-
-    return new ArraySparseSet();
-
+  @Override
+  protected FlowSet<SootMethod> entryInitialFlow() {
+    return new ArraySparseSet<SootMethod>();
   }
 
-  protected Object newInitialFlow() {
-    ArraySparseSet set = new ArraySparseSet();
-    CallGraph cg = Scene.v().getCallGraph();
-
-    Iterator mIt = cg.edgesOutOf(g.getBody().getMethod());
-    while (mIt.hasNext()) {
-      Edge edge = (Edge) mIt.next();
+  @Override
+  protected FlowSet<SootMethod> newInitialFlow() {
+    ArraySparseSet<SootMethod> set = new ArraySparseSet<SootMethod>();
+    for (Iterator<Edge> mIt = cg.edgesOutOf(g.getBody().getMethod()); mIt.hasNext();) {
+      Edge edge = mIt.next();
       if (edge.isClinit()) {
         set.add(edge.tgt());
       }
     }
-
     return set;
   }
 }

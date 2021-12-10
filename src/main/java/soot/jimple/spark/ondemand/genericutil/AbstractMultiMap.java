@@ -49,6 +49,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
    * 
    * @see AAA.util.MultiMap#get(K)
    */
+  @Override
   public Set<V> get(K key) {
     Set<V> ret = map.get(key);
     if (ret == null) {
@@ -67,6 +68,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
    * 
    * @see AAA.util.MultiMap#put(K, V)
    */
+  @Override
   public boolean put(K key, V val) {
     Set<V> vals = map.get(key);
     if (vals == null) {
@@ -81,6 +83,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
    * 
    * @see AAA.util.MultiMap#remove(K, V)
    */
+  @Override
   public boolean remove(K key, V val) {
     Set<V> elems = map.get(key);
     if (elems == null) {
@@ -93,6 +96,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
     return ret;
   }
 
+  @Override
   public Set<V> removeAll(K key) {
     return map.remove(key);
   }
@@ -102,6 +106,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
    * 
    * @see AAA.util.MultiMap#keys()
    */
+  @Override
   public Set<K> keySet() {
     return map.keySet();
   }
@@ -111,6 +116,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
    * 
    * @see AAA.util.MultiMap#containsKey(java.lang.Object)
    */
+  @Override
   public boolean containsKey(K key) {
     return map.containsKey(key);
   }
@@ -120,6 +126,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
    * 
    * @see AAA.util.MultiMap#size()
    */
+  @Override
   public int size() {
     int ret = 0;
     for (K key : keySet()) {
@@ -133,6 +140,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
    * 
    * @see AAA.util.MultiMap#toString()
    */
+  @Override
   public String toString() {
     return map.toString();
   }
@@ -142,6 +150,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
    * 
    * @see AAA.util.MultiMap#putAll(K, java.util.Set)
    */
+  @Override
   public boolean putAll(K key, Collection<? extends V> vals) {
     Set<V> edges = map.get(key);
     if (edges == null) {
@@ -151,10 +160,12 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
     return edges.addAll(vals);
   }
 
+  @Override
   public void clear() {
     map.clear();
   }
 
+  @Override
   public boolean isEmpty() {
     return map.isEmpty();
   }

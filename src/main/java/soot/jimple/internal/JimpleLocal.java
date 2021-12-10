@@ -39,13 +39,19 @@ import soot.util.Numberer;
 import soot.util.Switch;
 
 public class JimpleLocal implements Local, ConvertToBaf {
+
   protected String name;
-  Type type;
+  protected Type type;
+  private volatile int number = 0;
 
   /** Constructs a JimpleLocal of the given name and type. */
   public JimpleLocal(String name, Type type) {
     setName(name);
     setType(type);
+    addToNumberer();
+  }
+
+  protected void addToNumberer() {
     Numberer<Local> numberer = Scene.v().getLocalNumberer();
     if (numberer != null) {
       numberer.add(this);
@@ -140,5 +146,9 @@ public class JimpleLocal implements Local, ConvertToBaf {
     this.number = number;
   }
 
-  private volatile int number = 0;
+  @Override
+  public boolean isStackLocal() {
+    String n = getName();
+    return n != null && n.charAt(0) == '$';
+  }
 }
