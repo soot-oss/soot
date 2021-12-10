@@ -56,7 +56,7 @@ public class FastColorer {
     // To understand why a pedantic throw analysis is required, see comment
     // in assignColorsToLocals method
     ExceptionalUnitGraph unitGraph
-        = new ExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
+      = new ExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges(), true);
 
     LiveLocals liveLocals;
     liveLocals = new SimpleLiveLocals(unitGraph);
@@ -170,7 +170,7 @@ public class FastColorer {
     // Build a CFG using a pedantic throw analysis to prevent JVM
     // "java.lang.VerifyError: Incompatible argument to function" errors.
     ExceptionalUnitGraph unitGraph
-        = new ExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
+      = new ExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges(), true);
     LiveLocals liveLocals;
 
     liveLocals = new SimpleLiveLocals(unitGraph);

@@ -94,6 +94,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
   // the
   // same maps as unitToSuccs and
   // unitToPreds.
+  boolean supportVerifier = false;
 
   protected Map<Unit, List<Unit>> unitToExceptionalSuccs;
   protected Map<Unit, List<Unit>> unitToExceptionalPreds;
@@ -132,6 +133,12 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
    */
   public ExceptionalUnitGraph(Body body, ThrowAnalysis throwAnalysis, boolean omitExceptingUnitEdges) {
     super(body);
+    initialize(throwAnalysis, omitExceptingUnitEdges);
+  }
+
+  public ExceptionalUnitGraph(Body body, ThrowAnalysis throwAnalysis, boolean omitExceptingUnitEdges, boolean _supportVerifier) {
+    super(body);
+    this.supportVerifier = _supportVerifier;
     initialize(throwAnalysis, omitExceptingUnitEdges);
   }
 
@@ -288,9 +295,9 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
         }
 
         ThrowableSet.Pair catchableAs = thrownSet.whichCatchableAs(catcher);
-        if (!catchableAs.getCaught().equals(ThrowableSet.Manager.v().EMPTY)) {
+        if (supportVerifier || !catchableAs.getCaught().equals(ThrowableSet.Manager.v().EMPTY)) {
           result = addDestToMap(result, unit, trap, catchableAs.getCaught());
-          unitToUncaughtThrowables.put(unit, catchableAs.getUncaught());
+	  unitToUncaughtThrowables.put(unit, catchableAs.getUncaught());
         } else {
           assert thrownSet.equals(catchableAs.getUncaught()) : "ExceptionalUnitGraph.buildExceptionDests(): "
               + "catchableAs.caught == EMPTY, but catchableAs.uncaught != thrownSet" + System.getProperty("line.separator")
