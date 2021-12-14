@@ -257,7 +257,11 @@ public abstract class AbstractASMBackend {
     }
 
     // Retrieve information about outer class if present
-    if (sc.hasOuterClass() || sc.hasTag(EnclosingMethodTag.NAME) || sc.hasTag(OuterClassTag.NAME)) {
+    // todo issue确认
+//    if (sc.hasOuterClass() || sc.hasTag(EnclosingMethodTag.NAME) || sc.hasTag(OuterClassTag.NAME)) {
+//      generateOuterClassReference();
+//    }
+    if (sc.hasTag(EnclosingMethodTag.NAME)) {
       generateOuterClassReference();
     }
 
