@@ -147,6 +147,8 @@ public class CFGTransform {
             } // end of while methodIterator.hasNext()
             jsonStr.endArray();
 
+            jsonStr.endObject();
+
             try {
                 BufferedWriter out = new BufferedWriter(new FileWriter(jsonFile));
                 out.write(jsonStr.toString());
