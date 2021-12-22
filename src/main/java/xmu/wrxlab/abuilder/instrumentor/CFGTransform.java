@@ -51,11 +51,14 @@ public class CFGTransform {
         if (!cfg.exists()) {
             cfg.mkdir();
         } else {
-            try {
-                FileUtils.cleanDirectory(cfg);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("cfg error");
+            // 只有first为true时才能清空
+            if (ABuilderServerConfig.v().isFirst()) {
+                try {
+                    FileUtils.cleanDirectory(cfg);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("cfg error");
+                }
             }
         }
 
@@ -143,8 +146,6 @@ public class CFGTransform {
                 jsonStr.endObject();
             } // end of while methodIterator.hasNext()
             jsonStr.endArray();
-
-            jsonStr.endObject();
 
             try {
                 BufferedWriter out = new BufferedWriter(new FileWriter(jsonFile));

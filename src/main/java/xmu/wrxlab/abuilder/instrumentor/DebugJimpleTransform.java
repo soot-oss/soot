@@ -36,11 +36,14 @@ public class DebugJimpleTransform {
         if (!debugJimple.exists()) {
             debugJimple.mkdir();
         } else {
-            try {
-                FileUtils.cleanDirectory(debugJimple);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("debugjimple error");
+            // 只有first为true时才能清空
+            if (ABuilderServerConfig.v().isFirst()) {
+                try {
+                    FileUtils.cleanDirectory(debugJimple);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("debugjimple error");
+                }
             }
         }
 
@@ -69,18 +72,6 @@ public class DebugJimpleTransform {
                         Stmt stmt = (Stmt) stmtIt.next();
                         out.write(String.format("[%06d]", getLineNumber(stmt)));
                         out.write(stmt+"\n");
-                        if (curClass.getShortName().contains("MainActivity") &&
-                                curMethod.getName().contains("onDestroy") && stmt instanceof AssignStmt) {
-                            AssignStmt as = (AssignStmt) stmt;
-                            Value left = as.getLeftOp();
-                            System.out.println(left+"###"+left.getType()+"@@"+left.getType().getClass());
-                            if (left instanceof JArrayRef) {
-                                Value base = ((JArrayRef)left).getBase();
-                                Value index = ((JArrayRef)left).getIndex();
-                                System.out.println(base + ": " + base.getClass());
-                                System.out.println(index + ": " + index.getClass());
-                            }
-                        }
                     } // end of while stmtIt.hasNext()
                 } // end of while methodIterator.hasNext()
 

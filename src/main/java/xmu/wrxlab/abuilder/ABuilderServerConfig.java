@@ -7,6 +7,9 @@ public class ABuilderServerConfig {
     private String database;
     private String projectId;
 
+    /** 重要, gradle任务有时会把classes分成多个文件, 调用多次soot, 这里判断是不是第一个, 防止cfg, idToSig等错误的初始化 */
+    private boolean first;
+
     /** 重要, 语句表大小由AntranceInsTransform计算, 由AntranceInsConfigTransform配置 */
     private int stmtTableSize = 99999;
 
@@ -49,6 +52,14 @@ public class ABuilderServerConfig {
 
     public void setStmtTableSize(int stmtTableSize) {
         this.stmtTableSize = stmtTableSize;
+    }
+
+    public boolean isFirst() {
+        return first;
+    }
+
+    public void setFirst(boolean first) {
+        this.first = first;
     }
 
     private static ABuilderServerConfig myConfig = new ABuilderServerConfig();

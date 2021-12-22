@@ -1,0 +1,18 @@
+[全局gradle配置]
+maven {
+            url uri('/home/hzy/softwares/database/abuilder')
+}
+classpath 'xmu.wrxlab:abuilder:1.0.0'
+[app gradle配置]
+apply plugin: 'abuilder'
+abuilder {
+    database "/home/hzy/hzy/projects/xmu_wrxlab/auiauto/database"
+    projectId = "de.rampro.activitydiary_118"
+    mainActivity = "de.rampro.activitydiary.ui.main.MainActivity"
+}
+dependencies {
+    implementation'org.nanohttpd:nanohttpd:2.2.0'
+}
+[manifest配置]
+<uses-permission android:name="android.permission.INTERNET"/>
+android:usesCleartextTraffic="true"

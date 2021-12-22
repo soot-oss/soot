@@ -63,6 +63,7 @@ public class ABuilderServer extends NanoHTTPD {
             String inputPath = params.get("inputPath");
             String outputPath = params.get("outputPath");
             String rmIns = params.get("rmIns");
+            ABuilderServerConfig.v().setFirst(rmIns.equals("0"));
 
             // 1. 将antrance ins拷贝到inputPath下
             System.out.println("[antrance builder server] copy antrance ins to " + inputPath);

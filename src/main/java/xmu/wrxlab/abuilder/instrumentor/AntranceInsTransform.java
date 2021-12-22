@@ -21,8 +21,10 @@ public class AntranceInsTransform {
      * 最终会将logIdSig输出到项目目录的logIdSig.txt中, 用于解码运行时的01日志;
      * sig格式: methodSig@jid@sid@type@value"(jid:语句在函数中的字节码id, sid:语句在文件中的源码行,
      *         type目前只考虑了branch(br), value 0表示false/default分支, >=1表示true/各个case分支),
-     *         特别地, 对于每个函数的入口插桩, 只记录methodSig. */
-    private Map<Integer, String> logIdSig;
+     *         特别地, 对于每个函数的入口插桩, 只记录methodSig.
+     * 重要: gradle插件可能把classes分成多个文件, 多次调用soot, 不记录上次状态的话logIdSig会发生严重错误,
+     * 因此这里用static, 只在first清空(写文件每次也是覆盖写) */
+    private static Map<Integer, String> logIdSig;
     /** AntranceIns: int[] StmtTable */
     private SootField stmtTable;
     /** JimpleLocal r = staticFieldRef AntranceIns: int[] StmtTable */
@@ -40,7 +42,10 @@ public class AntranceInsTransform {
     private final NopStmt nopStmt;
 
     public AntranceInsTransform(ArrayList<SootClass> myClasses, SootClass antranceIns) {
-        logIdSig = new HashMap<>();
+        // 只在first清空
+        if (ABuilderServerConfig.v().isFirst()) {
+            logIdSig = new HashMap<>();
+        }
         stmtTable = antranceIns.getFieldByName("stmtTable");
 
         this.myClasses = myClasses;
