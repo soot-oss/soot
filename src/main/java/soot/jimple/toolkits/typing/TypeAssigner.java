@@ -217,11 +217,6 @@ public class TypeAssigner extends BodyTransformer {
     }
 
     for (Unit u : unitToReplaceByException) {
-      if (b.getMethod().getDeclaringClass().getFieldCount() == 3) {
-        if (b.getMethod().getParameterCount() == 0 && b.toString().contains("android.database.ContentObserver")
-            && u.toString().contains("unregisterContentObserver"))
-          System.out.println();
-      }
       soot.dexpler.Util.addExceptionAfterUnit(b, "java.lang.NullPointerException", u,
           "This statement would have triggered an Exception: " + u);
       b.getUnits().remove(u);
