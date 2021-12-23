@@ -1,5 +1,14 @@
 package soot.toolkits.exceptions;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,15 +32,6 @@ package soot.toolkits.exceptions;
  */
 
 import com.google.common.cache.CacheBuilder;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import soot.AnySubType;
 import soot.FastHierarchy;
@@ -455,6 +455,15 @@ public class ThrowableSet {
       Manager.v().addsExclusionWithoutSearch++;
     }
     return result;
+  }
+
+  /**
+   * Returns true if the throwable set is empty and false otherwise.
+   * 
+   * @return true if the throwable set is empty.
+   */
+  public boolean isEmpty() {
+    return exceptionsIncluded.isEmpty();
   }
 
   /**
