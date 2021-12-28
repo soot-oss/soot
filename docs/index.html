@@ -7,9 +7,21 @@
       (async () => {
         const response = await fetch('https://api.github.com/repos/soot-oss/soot/contents/docs?ref=gh-pages');
         const data = await response.json();
-        let htmlString = '<ul>';
+        let htmlString = '<h1>Soot Documentation</h1>';
+        htmlString += '<ul>'
         for (let file of data) {
-          htmlString += `<li><a href="${file.path}">${file.name}</a></li>`;
+          // do not create an index for html or css files
+          if(file.name.endsWith('.html') || file.name.endsWith('.css') ){
+            continue
+          }
+          htmlString += `<li>`
+          htmlString += `<a href="${file.name}">${file.name}</a>`
+          // create direct links to jdoc and options
+          htmlString += `<ul>`
+          htmlString += `<li><a href="${file.name}/options/soot_options.html">Soot Options</a></li>`;
+          htmlString += `<li><a href="${file.name}/jdoc/index.html">JavaDoc</a></li>`;
+          htmlString += `</ul>`
+          htmlString += `</li>`
         }
         htmlString += '</ul>';
         document.getElementsByTagName('body')[0].innerHTML = htmlString;
