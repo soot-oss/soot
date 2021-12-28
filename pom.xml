@@ -159,7 +159,7 @@
                             <fileMappers>
                                 <fileMapper
                                         implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
-                                    <targetName>soot_options.htm</targetName>
+                                    <targetName>soot_options.html</targetName>
                                 </fileMapper>
                             </fileMappers>
                         </transformationSet>
