@@ -55,7 +55,7 @@ jobs:
         mkdir -p ${releasedir}/jdoc
         unzip ./target/sootclasses-trunk-javadoc.jar -d ${releasedir}/jdoc/
         mkdir -p ${releasedir}/options
-        cp ./doc/soot_options.htm ${releasedir}/options/
+        cp ./doc/soot_options.html ${releasedir}/options/
         cp ./doc/soot_options.css ${releasedir}/options/
         cp ./doc/index.html ${docdir}/
 
@@ -103,7 +103,7 @@ jobs:
           mkdir -p ${releasedir}/jdoc
           unzip ./target/sootclasses-trunk-javadoc.jar -d ${releasedir}/jdoc/
           mkdir -p ${releasedir}/options
-          cp ./doc/soot_options.htm ${releasedir}/options/
+          cp ./doc/soot_options.html ${releasedir}/options/
           cp ./doc/soot_options.css ${releasedir}/options/
           cp ./doc/index.html ${docdir}/
 
