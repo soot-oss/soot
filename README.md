@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/soot-oss/soot/workflows/Soot%20CI/badge.svg?branch=develop)](https://github.com/soot-oss/soot/actions)
+[![Build Status](https://github.com/soot-oss/soot/workflows/Soot%20CI/badge.svg?branch=master)](https://github.com/soot-oss/soot/actions)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/soot-oss/soot) 
 
 # Using Soot? Let us know about it!
@@ -55,7 +55,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
   <dependency>
     <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
-    <version>4.2.1</version>
+    <version>4.3.0</version>
   </dependency>
 </dependencies>
 ```
