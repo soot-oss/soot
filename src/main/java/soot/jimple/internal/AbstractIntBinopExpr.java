@@ -24,9 +24,16 @@ package soot.jimple.internal;
 
 import soot.IntType;
 import soot.Type;
+import soot.ValueBox;
 
 @SuppressWarnings("serial")
-abstract public class AbstractIntBinopExpr extends AbstractBinopExpr {
+public abstract class AbstractIntBinopExpr extends AbstractBinopExpr {
+
+  protected AbstractIntBinopExpr(ValueBox op1Box, ValueBox op2Box) {
+    super(op1Box, op2Box);
+  }
+
+  @Override
   public Type getType() {
     return IntType.v();
   }

@@ -898,7 +898,6 @@ public class GeomPointsTo extends PAG {
   private void getCallTargets(IVarAbstraction pn, SootMethod src, Stmt callsite, ChunkedQueue<SootMethod> targetsQueue) {
     InstanceInvokeExpr iie = (InstanceInvokeExpr) callsite.getInvokeExpr();
     Local receiver = (Local) iie.getBase();
-    NumberedString subSig = iie.getMethodRef().getSubSignature();
 
     // We first build the set of possible call targets
     for (AllocNode an : pn.get_all_points_to_objects()) {
@@ -907,7 +906,7 @@ public class GeomPointsTo extends PAG {
         continue;
       }
 
-      VirtualCalls.v().resolve(type, receiver.getType(), subSig, src, targetsQueue);
+      VirtualCalls.v().resolve(type, receiver.getType(), iie.getMethodRef(), src, targetsQueue);
     }
   }
 

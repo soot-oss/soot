@@ -61,9 +61,9 @@ public class SourceLocator {
   protected List<ClassProvider> classProviders;
   protected List<String> classPath;
   private List<String> sourcePath;
-  private boolean java9Mode = false;
+  protected boolean java9Mode = false;
 
-  private LoadingCache<String, ClassSourceType> pathToSourceType
+  protected final LoadingCache<String, ClassSourceType> pathToSourceType
       = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(500).softValues()
           .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(new CacheLoader<String, ClassSourceType>() {
             @Override
@@ -80,7 +80,7 @@ public class SourceLocator {
                   return ClassSourceType.zip;
                 } else if (path.endsWith(".jar")) {
                   return ClassSourceType.jar;
-                } else if (Scene.isApk(path)) {
+                } else if (Scene.isApk(new File(path))) {
                   return ClassSourceType.apk;
                 } else if (path.endsWith(".dex")) {
                   return ClassSourceType.dex;
@@ -91,7 +91,7 @@ public class SourceLocator {
               return ClassSourceType.directory;
             }
           });
-  private LoadingCache<String, Set<String>> archivePathsToEntriesCache
+  protected final LoadingCache<String, Set<String>> archivePathsToEntriesCache
       = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(500).softValues()
           .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(new CacheLoader<String, Set<String>>() {
             @Override
@@ -625,7 +625,7 @@ public class SourceLocator {
     return null;
   }
 
-  private FoundFile lookupInDir(String dir, String fileName) {
+  protected FoundFile lookupInDir(String dir, String fileName) {
     File f = new File(dir, fileName);
     if (f.exists() && f.canRead()) {
       return new FoundFile(f);

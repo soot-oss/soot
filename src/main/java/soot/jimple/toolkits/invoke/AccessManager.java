@@ -23,13 +23,14 @@ package soot.jimple.toolkits.invoke;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.Collections;
+import java.util.List;
 
 import soot.Body;
 import soot.ClassMember;
 import soot.Hierarchy;
 import soot.Local;
+import soot.LocalGenerator;
 import soot.Modifier;
 import soot.Scene;
 import soot.SootClass;
@@ -39,41 +40,45 @@ import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.VoidType;
-import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.FieldRef;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
+import soot.util.Chain;
 
-/** Methods for checking Java scope and visibiliity requirements. */
+/**
+ * Methods for checking Java scope and visibility requirements.
+ */
 public class AccessManager {
+
   /**
    * Returns true iff target is legally accessible from container. Illegal access occurs when any of the following cases
-   * holds: 1. target is private, but container.declaringClass() != target.declaringClass(); or, 2. target is
-   * package-visible, and its package differs from that of container; or, 3. target is protected, and either: a. container
-   * doesn't belong to target.declaringClass, or any subclass of ;
+   * holds: (1) target is private, but container.declaringClass() != target.declaringClass(); or, (2) target is
+   * package-visible (i.e. default), and its package differs from that of container; or, (3) target is protected and the
+   * package of container differs from the package of target and the container doesn't belong to target.declaringClass or any
+   * subclass.
    */
-  public static boolean isAccessLegal(SootMethod container, ClassMember target) {
-    SootClass targetClass = target.getDeclaringClass();
-    SootClass containerClass = container.getDeclaringClass();
-
+  public static boolean isAccessLegal(final SootMethod container, final ClassMember target) {
+    final SootClass targetClass = target.getDeclaringClass();
     if (!isAccessLegal(container, targetClass)) {
       return false;
     }
 
+    final SootClass containerClass = container.getDeclaringClass();
     // Condition 1 above.
     if (target.isPrivate() && !targetClass.getName().equals(containerClass.getName())) {
       return false;
     }
 
     // Condition 2. Check the package names.
-    if (!target.isPrivate() && !target.isProtected() && !target.isPublic()) {
+    if (!target.isPrivate() && !target.isProtected() && !target.isPublic()) { // i.e. default
       if (!targetClass.getPackageName().equals(containerClass.getPackageName())) {
         return false;
       }
@@ -81,15 +86,12 @@ public class AccessManager {
 
     // Condition 3.
     if (target.isProtected()) {
-      Hierarchy h = Scene.v().getActiveHierarchy();
-
-      // protected means that you can be accessed by your children.
-      // i.e. container must be in a child of target.
-      if (h.isClassSuperclassOfIncluding(targetClass, containerClass)) {
-        return true;
+      // protected means that you can be accessed by your children (i.e.
+      // container is in a child of target) and classes in the same package.
+      if (!targetClass.getPackageName().equals(containerClass.getPackageName())) {
+        Hierarchy h = Scene.v().getActiveHierarchy();
+        return h.isClassSuperclassOfIncluding(targetClass, containerClass);
       }
-
-      return false;
     }
 
     return true;
@@ -98,7 +100,7 @@ public class AccessManager {
   /**
    * Returns true if an access to <code>target</code> is legal from code in <code>container</code>.
    */
-  public static boolean isAccessLegal(SootMethod container, SootClass target) {
+  public static boolean isAccessLegal(final SootMethod container, final SootClass target) {
     return target.isPublic() || container.getDeclaringClass().getPackageName().equals(target.getPackageName());
   }
 
@@ -110,18 +112,18 @@ public class AccessManager {
    * @param stmt
    * @return
    */
-  public static boolean isAccessLegal(SootMethod container, Stmt stmt) {
+  public static boolean isAccessLegal(final SootMethod container, final Stmt stmt) {
     if (stmt.containsInvokeExpr()) {
       return AccessManager.isAccessLegal(container, stmt.getInvokeExpr().getMethod());
     } else if (stmt instanceof AssignStmt) {
       AssignStmt as = (AssignStmt) stmt;
-      if (as.getRightOp() instanceof FieldRef) {
-        FieldRef r = (FieldRef) as.getRightOp();
-        return AccessManager.isAccessLegal(container, r.getField());
+      Value rightOp = as.getRightOp();
+      if (rightOp instanceof FieldRef) {
+        return AccessManager.isAccessLegal(container, ((FieldRef) rightOp).getField());
       }
-      if (as.getLeftOp() instanceof FieldRef) {
-        FieldRef r = (FieldRef) as.getLeftOp();
-        return AccessManager.isAccessLegal(container, r.getField());
+      Value leftOp = as.getLeftOp();
+      if (leftOp instanceof FieldRef) {
+        return AccessManager.isAccessLegal(container, ((FieldRef) leftOp).getField());
       }
     }
     return true;
@@ -135,8 +137,8 @@ public class AccessManager {
    * @param before
    * @param after
    */
-  public static void createAccessorMethods(Body body, Stmt before, Stmt after) {
-    soot.util.Chain units = body.getUnits();
+  public static void createAccessorMethods(final Body body, final Stmt before, final Stmt after) {
+    final Chain<Unit> units = body.getUnits();
 
     if (before != null && !units.contains(before)) {
       throw new RuntimeException();
@@ -145,29 +147,22 @@ public class AccessManager {
       throw new RuntimeException();
     }
 
-    ArrayList<Unit> unitList = new ArrayList<Unit>();
-    unitList.addAll(units);
-
-    boolean bInside = before == null;
-    for (Unit unit : unitList) {
+    boolean bInside = (before == null);
+    for (Unit unit : new ArrayList<Unit>(units)) {
       Stmt s = (Stmt) unit;
 
       if (bInside) {
         if (s == after) {
           return;
         }
-
-        if (!isAccessLegal(body.getMethod(), s)) {
-          createAccessorMethod(body.getMethod(), s);
+        SootMethod m = body.getMethod();
+        if (!isAccessLegal(m, s)) {
+          createAccessorMethod(m, s);
         }
-
-      } else {
-        if (s == before) {
-          bInside = true;
-        }
+      } else if (s == before) {
+        bInside = true;
       }
     }
-
   }
 
   /**
@@ -177,28 +172,20 @@ public class AccessManager {
    * @param setter
    * @return
    */
-  public static String createAccessorName(ClassMember member, boolean setter) {
-    SootClass target = member.getDeclaringClass();
-
-    String name = "access$";
+  public static String createAccessorName(final ClassMember member, final boolean setter) {
+    StringBuilder name = new StringBuilder("access$");
     if (member instanceof SootField) {
+      name.append(setter ? "set$" : "get$");
       SootField f = (SootField) member;
-      if (setter) {
-        name += "set$";
-      } else {
-        name += "get$";
-      }
-      name += f.getName();
+      name.append(f.getName());
     } else {
       SootMethod m = (SootMethod) member;
-      name += m.getName() + "$";
-
-      for (Iterator it = m.getParameterTypes().iterator(); it.hasNext();) {
-        Type type = (Type) it.next();
-        name += type.toString().replaceAll("\\.", "\\$\\$") + "$";
+      name.append(m.getName()).append('$');
+      for (Type type : m.getParameterTypes()) {
+        name.append(type.toString().replaceAll("\\.", "\\$\\$")).append('$');
       }
     }
-    return name;
+    return name.toString();
   }
 
   /**
@@ -208,14 +195,8 @@ public class AccessManager {
    * @param container
    * @param stmt
    */
-  public static void createAccessorMethod(SootMethod container, Stmt stmt) {
-    // System.out.println("Creating accessor method: \n" +
-    // " method: " + container + " \n" +
-    // " stmt: " + stmt);
-
-    Body containerBody = container.getActiveBody();
-    soot.util.Chain containerStmts = containerBody.getUnits();
-    if (!containerStmts.contains(stmt)) {
+  public static void createAccessorMethod(final SootMethod container, final Stmt stmt) {
+    if (!container.getActiveBody().getUnits().contains(stmt)) {
       throw new RuntimeException();
     }
 
@@ -223,293 +204,236 @@ public class AccessManager {
       createInvokeAccessor(container, stmt);
     } else if (stmt instanceof AssignStmt) {
       AssignStmt as = (AssignStmt) stmt;
-      FieldRef ref;
-      if (as.getLeftOp() instanceof FieldRef) {
+      Value leftOp = as.getLeftOp();
+      if (leftOp instanceof FieldRef) {
         // set
-        ref = (FieldRef) as.getLeftOp();
-        createSetAccessor(container, as, ref);
-
-      } else if (as.getRightOp() instanceof FieldRef) {
-        // get
-        ref = (FieldRef) as.getRightOp();
-        createGetAccessor(container, as, ref);
+        createSetAccessor(container, as, (FieldRef) leftOp);
       } else {
-        throw new RuntimeException("Expected class member access");
+        Value rightOp = as.getRightOp();
+        if (rightOp instanceof FieldRef) {
+          // get
+          createGetAccessor(container, as, (FieldRef) rightOp);
+        } else {
+          throw new RuntimeException("Expected class member access");
+        }
       }
     } else {
       throw new RuntimeException("Expected class member access");
     }
   }
 
-  private static void createGetAccessor(SootMethod container, AssignStmt as, FieldRef ref) {
-    java.util.List parameterTypes = new LinkedList();
-    java.util.List<SootClass> thrownExceptions = new LinkedList<SootClass>();
-
-    Body accessorBody = Jimple.v().newBody();
-    soot.util.Chain accStmts = accessorBody.getUnits();
-    LocalGenerator lg = new LocalGenerator(accessorBody);
-
-    Body containerBody = container.getActiveBody();
-    soot.util.Chain containerStmts = containerBody.getUnits();
-
-    SootClass target = ref.getField().getDeclaringClass();
-
-    SootMethod accessor;
-
+  private static void createGetAccessor(final SootMethod container, final AssignStmt as, final FieldRef ref) {
+    final Jimple jimp = Jimple.v();
+    final SootClass target = ref.getField().getDeclaringClass();
     String name = createAccessorName(ref.getField(), false);
-    accessor = target.getMethodByNameUnsafe(name);
+    SootMethod accessor = target.getMethodByNameUnsafe(name);
     if (accessor == null) {
-      Type returnType = ref.getField().getType();
-      Local thisLocal = lg.generateLocal(target.getType());
-      if (ref instanceof InstanceFieldRef) {
-        parameterTypes.add(target.getType());
-        accStmts.addFirst(Jimple.v().newIdentityStmt(thisLocal, Jimple.v().newParameterRef(target.getType(), 0)));
-      }
-      Local l = lg.generateLocal(ref.getField().getType());
-      Value v;
-      if (ref instanceof InstanceFieldRef) {
-        v = Jimple.v().newInstanceFieldRef(thisLocal, ref.getFieldRef());
-      } else {
-        v = Jimple.v().newStaticFieldRef(ref.getFieldRef());
-      }
-      accStmts.add(Jimple.v().newAssignStmt(l, v));
-      accStmts.add(Jimple.v().newReturnStmt(l));
+      final JimpleBody accessorBody = jimp.newBody();
+      final Chain<Unit> accStmts = accessorBody.getUnits();
+      final LocalGenerator lg = Scene.v().createLocalGenerator(accessorBody);
 
-      accessor
-          = Scene.v().makeSootMethod(name, parameterTypes, returnType, Modifier.PUBLIC | Modifier.STATIC, thrownExceptions);
+      List<Type> parameterTypes;
+      final Type targetType = target.getType();
+      final Local thisLocal = lg.generateLocal(targetType);
+      if (ref instanceof InstanceFieldRef) {
+        accStmts.addFirst(jimp.newIdentityStmt(thisLocal, jimp.newParameterRef(targetType, 0)));
+        parameterTypes = Collections.singletonList(targetType);
+      } else {
+        parameterTypes = Collections.emptyList();
+      }
+      final Type refFieldType = ref.getField().getType();
+      Local l = lg.generateLocal(refFieldType);
+      accStmts.add(
+          jimp.newAssignStmt(l, (ref instanceof InstanceFieldRef) ? jimp.newInstanceFieldRef(thisLocal, ref.getFieldRef())
+              : jimp.newStaticFieldRef(ref.getFieldRef())));
+      accStmts.add(jimp.newReturnStmt(l));
+
+      accessor = Scene.v().makeSootMethod(name, parameterTypes, refFieldType, Modifier.PUBLIC | Modifier.STATIC,
+          Collections.emptyList());
+
       accessorBody.setMethod(accessor);
       accessor.setActiveBody(accessorBody);
       target.addMethod(accessor);
     }
-    java.util.List args = new LinkedList();
-    if (ref instanceof InstanceFieldRef) {
-      args.add(((InstanceFieldRef) ref).getBase());
-    }
-    InvokeExpr newExpr = Jimple.v().newStaticInvokeExpr(accessor.makeRef(), args);
 
-    as.setRightOp(newExpr);
+    List<Value> args = (ref instanceof InstanceFieldRef) ? Collections.singletonList(((InstanceFieldRef) ref).getBase())
+        : Collections.emptyList();
+    as.setRightOp(jimp.newStaticInvokeExpr(accessor.makeRef(), args));
   }
 
-  private static void createSetAccessor(SootMethod container, AssignStmt as, FieldRef ref) {
-    java.util.List parameterTypes = new LinkedList();
-    java.util.List<SootClass> thrownExceptions = new LinkedList<SootClass>();
-
-    Body accessorBody = Jimple.v().newBody();
-    soot.util.Chain accStmts = accessorBody.getUnits();
-    LocalGenerator lg = new LocalGenerator(accessorBody);
-
-    Body containerBody = container.getActiveBody();
-    soot.util.Chain containerStmts = containerBody.getUnits();
-
-    SootClass target = ref.getField().getDeclaringClass();
-    SootMethod accessor;
-
-    String name = createAccessorName(ref.getField(), true);
-    accessor = target.getMethodByNameUnsafe(name);
+  private static void createSetAccessor(final SootMethod container, final AssignStmt as, final FieldRef ref) {
+    final Jimple jimp = Jimple.v();
+    final SootClass target = ref.getField().getDeclaringClass();
+    final String name = createAccessorName(ref.getField(), true);
+    SootMethod accessor = target.getMethodByNameUnsafe(name);
     if (accessor == null) {
+      final JimpleBody accessorBody = jimp.newBody();
+      final Chain<Unit> accStmts = accessorBody.getUnits();
+      final LocalGenerator lg = Scene.v().createLocalGenerator(accessorBody);
       Local thisLocal = lg.generateLocal(target.getType());
+      List<Type> parameterTypes = new ArrayList<Type>(2);
       int paramID = 0;
       if (ref instanceof InstanceFieldRef) {
-        accStmts.add(Jimple.v().newIdentityStmt(thisLocal, Jimple.v().newParameterRef(target.getType(), paramID)));
+        accStmts.add(jimp.newIdentityStmt(thisLocal, jimp.newParameterRef(target.getType(), paramID)));
         parameterTypes.add(target.getType());
         paramID++;
       }
       parameterTypes.add(ref.getField().getType());
       Local l = lg.generateLocal(ref.getField().getType());
-      accStmts.add(Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(ref.getField().getType(), paramID)));
+      accStmts.add(jimp.newIdentityStmt(l, jimp.newParameterRef(ref.getField().getType(), paramID)));
       paramID++;
       if (ref instanceof InstanceFieldRef) {
-        accStmts.add(Jimple.v().newAssignStmt(Jimple.v().newInstanceFieldRef(thisLocal, ref.getFieldRef()), l));
+        accStmts.add(jimp.newAssignStmt(jimp.newInstanceFieldRef(thisLocal, ref.getFieldRef()), l));
       } else {
-        accStmts.add(Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(ref.getFieldRef()), l));
+        accStmts.add(jimp.newAssignStmt(jimp.newStaticFieldRef(ref.getFieldRef()), l));
       }
-      accStmts.addLast(Jimple.v().newReturnVoidStmt());
-      Type returnType = VoidType.v();
+      accStmts.addLast(jimp.newReturnVoidStmt());
 
-      accessor
-          = Scene.v().makeSootMethod(name, parameterTypes, returnType, Modifier.PUBLIC | Modifier.STATIC, thrownExceptions);
+      accessor = Scene.v().makeSootMethod(name, parameterTypes, VoidType.v(), Modifier.PUBLIC | Modifier.STATIC,
+          Collections.emptyList());
       accessorBody.setMethod(accessor);
       accessor.setActiveBody(accessorBody);
       target.addMethod(accessor);
     }
+    {
+      ArrayList<Value> args = new ArrayList<Value>(2);
+      if (ref instanceof InstanceFieldRef) {
+        args.add(((InstanceFieldRef) ref).getBase());
+      }
+      args.add(as.getRightOp());
 
-    java.util.List args = new LinkedList();
-    if (ref instanceof InstanceFieldRef) {
-      args.add(((InstanceFieldRef) ref).getBase());
+      Chain<Unit> containerStmts = container.getActiveBody().getUnits();
+      containerStmts.insertAfter(jimp.newInvokeStmt(jimp.newStaticInvokeExpr(accessor.makeRef(), args)), as);
+      containerStmts.remove(as);
     }
-    args.add(as.getRightOp());
-    InvokeExpr newExpr = Jimple.v().newStaticInvokeExpr(accessor.makeRef(), args);
-
-    Stmt newStmt = Jimple.v().newInvokeStmt(newExpr);
-
-    containerStmts.insertAfter(newStmt, as);
-    containerStmts.remove(as);
   }
 
-  private static void createInvokeAccessor(SootMethod container, Stmt stmt) {
-    java.util.List parameterTypes = new LinkedList();
-    java.util.List<SootClass> thrownExceptions = new LinkedList<SootClass>();
-    Type returnType;
-
-    Body accessorBody = Jimple.v().newBody();
-    soot.util.Chain accStmts = accessorBody.getUnits();
-    LocalGenerator lg = new LocalGenerator(accessorBody);
-
-    Body containerBody = container.getActiveBody();
-    soot.util.Chain containerStmts = containerBody.getUnits();
-
-    InvokeExpr expr = stmt.getInvokeExpr();
-    SootMethod method = expr.getMethod();
-    // System.out.println("method: " + method);
-
-    SootClass target = method.getDeclaringClass();
-    // System.out.println("target: " + target);
-
-    // System.out.println("method ref: " + expr.getMethodRef());
-
-    SootMethod accessor;
-
-    String name = createAccessorName(method, true);
-    accessor = target.getMethodByNameUnsafe(name);
+  private static void createInvokeAccessor(final SootMethod container, final Stmt stmt) {
+    final Jimple jimp = Jimple.v();
+    final InvokeExpr expr = stmt.getInvokeExpr();
+    final SootMethod method = expr.getMethod();
+    final SootClass target = method.getDeclaringClass();
+    final String name = createAccessorName(method, true);
+    SootMethod accessor = target.getMethodByNameUnsafe(name);
     if (accessor == null) {
-      java.util.List arguments = new LinkedList();
+      final JimpleBody accessorBody = jimp.newBody();
+      final Chain<Unit> accStmts = accessorBody.getUnits();
+      final LocalGenerator lg = Scene.v().createLocalGenerator(accessorBody);
 
+      List<Type> parameterTypes = new ArrayList<Type>();
       if (expr instanceof InstanceInvokeExpr) {
         parameterTypes.add(target.getType());
       }
-
       parameterTypes.addAll(method.getParameterTypes());
-      returnType = method.getReturnType();
-      thrownExceptions.addAll(method.getExceptions());
 
+      List<Local> arguments = new ArrayList<Local>();
       int paramID = 0;
-      for (java.util.Iterator it = parameterTypes.iterator(); it.hasNext();) {
-        Type type = (Type) it.next();
+      for (Type type : parameterTypes) {
         Local l = lg.generateLocal(type);
-        // System.out.println("local type: " + type);
-        accStmts.add(Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(type, paramID)));
+        accStmts.add(jimp.newIdentityStmt(l, jimp.newParameterRef(type, paramID)));
         arguments.add(l);
         paramID++;
       }
 
-      InvokeExpr accExpr;
-
+      final InvokeExpr accExpr;
       if (expr instanceof StaticInvokeExpr) {
-        accExpr = Jimple.v().newStaticInvokeExpr(method.makeRef(), arguments);
+        accExpr = jimp.newStaticInvokeExpr(method.makeRef(), arguments);
       } else if (expr instanceof VirtualInvokeExpr) {
         Local thisLocal = (Local) arguments.get(0);
         arguments.remove(0);
-        accExpr = Jimple.v().newVirtualInvokeExpr(thisLocal, method.makeRef(), arguments);
+        accExpr = jimp.newVirtualInvokeExpr(thisLocal, method.makeRef(), arguments);
       } else if (expr instanceof SpecialInvokeExpr) {
         Local thisLocal = (Local) arguments.get(0);
         arguments.remove(0);
-        accExpr = Jimple.v().newSpecialInvokeExpr(thisLocal, method.makeRef(), arguments);
+        accExpr = jimp.newSpecialInvokeExpr(thisLocal, method.makeRef(), arguments);
       } else {
-        throw new RuntimeException("");
+        throw new RuntimeException();
       }
 
-      Stmt s;
+      final Stmt s;
+      final Type returnType = method.getReturnType();
       if (returnType instanceof VoidType) {
-        s = Jimple.v().newInvokeStmt(accExpr);
+        s = jimp.newInvokeStmt(accExpr);
         accStmts.add(s);
-        accStmts.add(Jimple.v().newReturnVoidStmt());
+        accStmts.add(jimp.newReturnVoidStmt());
       } else {
         Local resultLocal = lg.generateLocal(returnType);
-        s = Jimple.v().newAssignStmt(resultLocal, accExpr);
+        s = jimp.newAssignStmt(resultLocal, accExpr);
         accStmts.add(s);
-        accStmts.add(Jimple.v().newReturnStmt(resultLocal));
+        accStmts.add(jimp.newReturnStmt(resultLocal));
       }
 
-      accessor
-          = Scene.v().makeSootMethod(name, parameterTypes, returnType, Modifier.PUBLIC | Modifier.STATIC, thrownExceptions);
+      accessor = Scene.v().makeSootMethod(name, parameterTypes, returnType, Modifier.PUBLIC | Modifier.STATIC,
+          method.getExceptions());
       accessorBody.setMethod(accessor);
       accessor.setActiveBody(accessorBody);
       target.addMethod(accessor);
     }
 
-    java.util.List args = new LinkedList();
+    List<Value> args = new ArrayList<Value>();
     if (expr instanceof InstanceInvokeExpr) {
       args.add(((InstanceInvokeExpr) expr).getBase());
     }
     args.addAll(expr.getArgs());
-    InvokeExpr newExpr = Jimple.v().newStaticInvokeExpr(accessor.makeRef(), args);
-
-    stmt.getInvokeExprBox().setValue(newExpr);
+    stmt.getInvokeExprBox().setValue(jimp.newStaticInvokeExpr(accessor.makeRef(), args));
   }
 
   /**
    * Modifies code so that an access to <code>target</code> is legal from code in <code>container</code>.
    *
    * The "accessors" option assumes suitable accessor methods will be created after checking.
-   *
    */
-  public static boolean ensureAccess(SootMethod container, ClassMember target, String options) {
-    boolean accessors = options.equals("accessors");
-    boolean allowChanges = !(options.equals("none"));
-    boolean safeChangesOnly = !(options.equals("unsafe"));
-
-    SootClass targetClass = target.getDeclaringClass();
+  public static boolean ensureAccess(final SootMethod container, final ClassMember target, final String options) {
+    final SootClass targetClass = target.getDeclaringClass();
     if (!ensureAccess(container, targetClass, options)) {
       return false;
     }
-
     if (isAccessLegal(container, target)) {
       return true;
     }
-
-    if (!allowChanges && !accessors) {
+    if (!targetClass.isApplicationClass()) {
       return false;
     }
 
-    // throw new RuntimeException("Not implemented yet!");
-
-    if (target.getDeclaringClass().isApplicationClass()) {
-      if (accessors) {
-        return true;
+    if (options != null) {
+      switch (options) {
+        case "none":
+          return false;
+        case "accessors":
+          return true;
+        case "unsafe":
+          target.setModifiers(target.getModifiers() | Modifier.PUBLIC);
+          return true;
       }
-
-      if (safeChangesOnly) {
-        throw new RuntimeException("Not implemented yet!");
-      }
-
-      target.setModifiers(target.getModifiers() | Modifier.PUBLIC);
-      return true;
-    } else {
-      return false;
     }
+    throw new RuntimeException("Not implemented yet!");
   }
 
   /**
    * Modifies code so that an access to <code>target</code> is legal from code in <code>container</code>.
    */
-  public static boolean ensureAccess(SootMethod container, SootClass target, String options) {
-    boolean accessors = options.equals("accessors");
-    boolean allowChanges = !(options.equals("none"));
-    boolean safeChangesOnly = !(options.equals("unsafe"));
-
+  public static boolean ensureAccess(final SootMethod container, final SootClass target, final String options) {
     if (isAccessLegal(container, target)) {
       return true;
     }
-
-    if (!allowChanges && !accessors) {
-      return false;
+    if (options != null) {
+      switch (options) {
+        case "accessors":
+          return false;
+        case "none":
+          return false;
+        case "unsafe":
+          if (target.isApplicationClass()) {
+            target.setModifiers(target.getModifiers() | Modifier.PUBLIC);
+            return true;
+          } else {
+            return false;
+          }
+      }
     }
-
-    if (safeChangesOnly && !accessors) {
-      throw new RuntimeException("Not implemented yet!");
-    }
-
-    if (accessors) {
-      return false;
-    }
-
-    if (target.isApplicationClass()) {
-
-      target.setModifiers(target.getModifiers() | Modifier.PUBLIC);
-      return true;
-    } else {
-      return false;
-    }
+    throw new RuntimeException("Not implemented yet!");
   }
 
+  private AccessManager() {
+  }
 }

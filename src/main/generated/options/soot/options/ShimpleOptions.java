@@ -72,7 +72,7 @@ public class ShimpleOptions {
      * Extended SSA (SSI) --
      * Compute extended SSA (SSI) form.
      *
-     * If enabled, Shimple will created extended SSA (SSI) form.
+     * If enabled, Shimple will create extended SSA (SSI) form.
      */
     public boolean extended() {
         return soot.PhaseOptions.getBoolean(options, "extended");

@@ -28,13 +28,16 @@ import java.util.List;
 
 /**
  * Represents an inner class attribute which can be attached to implementations of Host. It can be directly used to add
- * attributes to class files
- *
+ * attributes to class files.
  */
 public class InnerClassAttribute implements Tag {
-  private ArrayList<InnerClassTag> list = null;
+
+  public static final String NAME = "InnerClassAttribute";
+
+  private ArrayList<InnerClassTag> list;
 
   public InnerClassAttribute() {
+    this.list = null;
   }
 
   public InnerClassAttribute(ArrayList<InnerClassTag> list) {
@@ -44,28 +47,30 @@ public class InnerClassAttribute implements Tag {
   public String getClassSpecs() {
     if (list == null) {
       return "";
+    } else {
+      StringBuilder sb = new StringBuilder();
+      for (InnerClassTag ict : list) {
+        sb.append(".inner_class_spec_attr ");
+        sb.append(ict.getInnerClass());
+        sb.append(' ');
+        sb.append(ict.getOuterClass());
+        sb.append(' ');
+        sb.append(ict.getShortName());
+        sb.append(' ');
+        sb.append(ict.getAccessFlags());
+        sb.append(' ');
+        sb.append(".end .inner_class_spec_attr ");
+      }
+      return sb.toString();
     }
-
-    StringBuffer sb = new StringBuffer();
-    for (InnerClassTag ict : list) {
-      sb.append(".inner_class_spec_attr ");
-      sb.append(ict.getInnerClass());
-      sb.append(" ");
-      sb.append(ict.getOuterClass());
-      sb.append(" ");
-      sb.append(ict.getShortName());
-      sb.append(" ");
-      sb.append(ict.getAccessFlags());
-      sb.append(" ");
-      sb.append(".end .inner_class_spec_attr ");
-    }
-    return sb.toString();
   }
 
+  @Override
   public String getName() {
-    return "InnerClassAttribute";
+    return NAME;
   }
 
+  @Override
   public byte[] getValue() throws AttributeValueException {
     return new byte[1];
   }
@@ -75,30 +80,30 @@ public class InnerClassAttribute implements Tag {
   }
 
   public void add(InnerClassTag newt) {
-    if (list != null) {
-      String new_inner = newt.getInnerClass();
-      for (InnerClassTag ict : this.list) {
-        String inner = ict.getInnerClass();
-        if (new_inner.equals(inner)) {
-          if (ict.accessFlags != 0 && newt.accessFlags > 0 && ict.accessFlags != newt.accessFlags) {
+    ArrayList<InnerClassTag> this_list = this.list;
+    if (this_list == null) {
+      this.list = this_list = new ArrayList<InnerClassTag>();
+    } else {
+      String newt_inner = newt.getInnerClass();
+      int newt_accessFlags = newt.getAccessFlags();
+      for (InnerClassTag ict : this_list) {
+        if (newt_inner.equals(ict.getInnerClass())) {
+          int ict_accessFlags = ict.getAccessFlags();
+          if (ict_accessFlags != 0 && newt_accessFlags > 0 && ict_accessFlags != newt_accessFlags) {
             throw new RuntimeException("Error: trying to add an InnerClassTag twice with different access flags! ("
-                + ict.accessFlags + " and " + newt.accessFlags + ")");
+                + ict_accessFlags + " and " + newt_accessFlags + ")");
           }
-          if (ict.accessFlags == 0 && newt.accessFlags != 0) {
+          if (ict_accessFlags == 0 && newt_accessFlags != 0) {
             // The Dalvik parser may find an InnerClass annotation without accessFlags in the outer class
             // and then an annotation with the accessFlags in the inner class.
             // When we have more information about the accessFlags we update the InnerClassTag.
-            list.remove(ict);
-            list.add(newt);
+            this_list.remove(ict);
+            this_list.add(newt);
           }
           return;
         }
       }
     }
-
-    if (list == null) {
-      list = new ArrayList<InnerClassTag>();
-    }
-    list.add(newt);
+    this_list.add(newt);
   }
 }

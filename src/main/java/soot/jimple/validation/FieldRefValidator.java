@@ -33,7 +33,6 @@ import soot.jimple.FieldRef;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
-import soot.util.Chain;
 import soot.validation.BodyValidator;
 import soot.validation.UnitValidationException;
 import soot.validation.ValidationException;
@@ -55,9 +54,7 @@ public enum FieldRefValidator implements BodyValidator {
       return;
     }
 
-    Chain<Unit> units = body.getUnits().getNonPatchingChain();
-
-    for (Unit unit : units) {
+    for (Unit unit : body.getUnits().getNonPatchingChain()) {
       Stmt s = (Stmt) unit;
       if (!s.containsFieldRef()) {
         continue;
@@ -91,7 +88,7 @@ public enum FieldRefValidator implements BodyValidator {
           exceptions.add(new UnitValidationException(unit, body, "Trying to get an instance field which is static: " + v));
         }
       } else {
-        throw new RuntimeException("unknown field ref");
+        throw new AssertionError("unknown field ref: " + fr);
       }
     }
   }
@@ -100,5 +97,4 @@ public enum FieldRefValidator implements BodyValidator {
   public boolean isBasicValidator() {
     return true;
   }
-
 }

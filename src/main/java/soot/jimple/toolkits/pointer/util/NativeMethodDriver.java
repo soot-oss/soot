@@ -126,7 +126,7 @@ public class NativeMethodDriver {
     cnameToSim.put("sun.misc.Unsafe", new SunMiscUnsafeNative(helper));
   }
 
-  private final HashMap<String, NativeMethodClass> cnameToSim = new HashMap<String, NativeMethodClass>(100);
+  protected final HashMap<String, NativeMethodClass> cnameToSim = new HashMap<String, NativeMethodClass>(100);
   private final boolean DEBUG = false;
 
   /**
@@ -152,18 +152,19 @@ public class NativeMethodDriver {
       // logger.warn("it is unsafe to simulate the method ");
       // logger.debug(" "+method.toString());
       // throw new NativeMethodNotSupportedException(method);
-      return true;
+      return false;
     } else {
 
       try {
         clsSim.simulateMethod(method, thisVar, returnVar, params);
+        return true;
       } catch (NativeMethodNotSupportedException e) {
         if (DEBUG) {
           logger.warn("it is unsafe to simulate the method ");
           logger.debug("         " + method.toString());
         }
       }
-      return true;
+      return false;
     }
   }
 }

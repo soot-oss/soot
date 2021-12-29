@@ -29,6 +29,9 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class LongType extends PrimType {
+
+  public static final int HASHCODE = 0x023DA077;
+
   public LongType(Singletons.Global g) {
   }
 
@@ -36,18 +39,22 @@ public class LongType extends PrimType {
     return G.v().soot_LongType();
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public int hashCode() {
-    return 0x023DA077;
+    return HASHCODE;
   }
 
+  @Override
   public String toString() {
     return "long";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseLongType(this);
   }
@@ -56,4 +63,15 @@ public class LongType extends PrimType {
   public RefType boxedType() {
     return RefType.v("java.lang.Long");
   }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Long.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return long.class;
+  }
+
 }

@@ -22,10 +22,9 @@ package soot.grimp;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,21 +56,27 @@ import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.StmtBox;
 import soot.options.Options;
+import soot.tagkit.LineNumberTag;
+import soot.tagkit.SourceLnPosTag;
+import soot.tagkit.Tag;
+import soot.util.Chain;
 
-/** Implementation of the Body class for the Grimp IR. */
+/**
+ * Implementation of the Body class for the Grimp IR.
+ */
 public class GrimpBody extends StmtBody {
   private static final Logger logger = LoggerFactory.getLogger(GrimpBody.class);
 
   /**
    * Construct an empty GrimpBody
-   **/
-
+   */
   GrimpBody(SootMethod m) {
     super(m);
   }
 
+  @Override
   public Object clone() {
-    Body b = Grimp.v().newBody(getMethod());
+    Body b = Grimp.v().newBody(getMethodUnsafe());
     b.importBodyContentsFrom(this);
     return b;
   }
@@ -79,7 +84,6 @@ public class GrimpBody extends StmtBody {
   /**
    * Constructs a GrimpBody from the given Body.
    */
-
   GrimpBody(Body body) {
     super(body.getMethod());
 
@@ -87,166 +91,181 @@ public class GrimpBody extends StmtBody {
       logger.debug("[" + getMethod().getName() + "] Constructing GrimpBody...");
     }
 
-    JimpleBody jBody = null;
-
-    if (body instanceof JimpleBody) {
-      jBody = (JimpleBody) body;
-    } else {
+    if (!(body instanceof JimpleBody)) {
       throw new RuntimeException("Can only construct GrimpBody's from JimpleBody's (for now)");
     }
+    final JimpleBody jBody = (JimpleBody) body;
 
-    Iterator<Local> localIt = jBody.getLocals().iterator();
-    while (localIt.hasNext()) {
-      getLocals().add(((localIt.next())));
-      // getLocals().add(((Local)(it.next())).clone());
+    {
+      final Chain<Local> thisLocals = this.getLocals();
+      for (Local loc : jBody.getLocals()) {
+        thisLocals.add(loc);
+        // thisLocals.add((Local)loc.clone());
+      }
     }
 
-    Iterator<Unit> it = jBody.getUnits().iterator();
-
-    final HashMap<Stmt, Stmt> oldToNew = new HashMap<Stmt, Stmt>(getUnits().size() * 2 + 1, 0.7f);
-    List<Unit> updates = new LinkedList<Unit>();
+    final Grimp grimp = Grimp.v();
+    final Chain<Unit> thisUnits = getUnits();
+    final HashMap<Stmt, Stmt> oldToNew = new HashMap<Stmt, Stmt>(thisUnits.size() * 2 + 1, 0.7f);
+    final ArrayList<Unit> updates = new ArrayList<Unit>();
 
     /* we should Grimpify the Stmt's here... */
-    while (it.hasNext()) {
-      Stmt oldStmt = (Stmt) (it.next());
-      final StmtBox newStmtBox = (StmtBox) Grimp.v().newStmtBox(null);
-      final StmtBox updateStmtBox = (StmtBox) Grimp.v().newStmtBox(null);
+    for (Unit u : jBody.getUnits()) {
+      Stmt oldStmt = (Stmt) u;
+      final StmtBox newStmtBox = (StmtBox) grimp.newStmtBox(null);
+      final StmtBox updateStmtBox = (StmtBox) grimp.newStmtBox(null);
 
       /* we can't have a general StmtSwapper on Grimp.v() */
       /* because we need to collect a list of updates */
       oldStmt.apply(new AbstractStmtSwitch() {
+        @Override
         public void caseAssignStmt(AssignStmt s) {
-          newStmtBox.setUnit(Grimp.v().newAssignStmt(s));
+          newStmtBox.setUnit(grimp.newAssignStmt(s));
         }
 
+        @Override
         public void caseIdentityStmt(IdentityStmt s) {
-          newStmtBox.setUnit(Grimp.v().newIdentityStmt(s));
+          newStmtBox.setUnit(grimp.newIdentityStmt(s));
         }
 
+        @Override
         public void caseBreakpointStmt(BreakpointStmt s) {
-          newStmtBox.setUnit(Grimp.v().newBreakpointStmt(s));
+          newStmtBox.setUnit(grimp.newBreakpointStmt(s));
         }
 
+        @Override
         public void caseInvokeStmt(InvokeStmt s) {
-          newStmtBox.setUnit(Grimp.v().newInvokeStmt(s));
+          newStmtBox.setUnit(grimp.newInvokeStmt(s));
         }
 
+        @Override
         public void caseEnterMonitorStmt(EnterMonitorStmt s) {
-          newStmtBox.setUnit(Grimp.v().newEnterMonitorStmt(s));
+          newStmtBox.setUnit(grimp.newEnterMonitorStmt(s));
         }
 
+        @Override
         public void caseExitMonitorStmt(ExitMonitorStmt s) {
-          newStmtBox.setUnit(Grimp.v().newExitMonitorStmt(s));
+          newStmtBox.setUnit(grimp.newExitMonitorStmt(s));
         }
 
+        @Override
         public void caseGotoStmt(GotoStmt s) {
-          newStmtBox.setUnit(Grimp.v().newGotoStmt(s));
+          newStmtBox.setUnit(grimp.newGotoStmt(s));
           updateStmtBox.setUnit(s);
         }
 
+        @Override
         public void caseIfStmt(IfStmt s) {
-          newStmtBox.setUnit(Grimp.v().newIfStmt(s));
+          newStmtBox.setUnit(grimp.newIfStmt(s));
           updateStmtBox.setUnit(s);
         }
 
+        @Override
         public void caseLookupSwitchStmt(LookupSwitchStmt s) {
-          newStmtBox.setUnit(Grimp.v().newLookupSwitchStmt(s));
+          newStmtBox.setUnit(grimp.newLookupSwitchStmt(s));
           updateStmtBox.setUnit(s);
         }
 
+        @Override
         public void caseNopStmt(NopStmt s) {
-          newStmtBox.setUnit(Grimp.v().newNopStmt(s));
+          newStmtBox.setUnit(grimp.newNopStmt(s));
         }
 
+        @Override
         public void caseReturnStmt(ReturnStmt s) {
-          newStmtBox.setUnit(Grimp.v().newReturnStmt(s));
+          newStmtBox.setUnit(grimp.newReturnStmt(s));
         }
 
+        @Override
         public void caseReturnVoidStmt(ReturnVoidStmt s) {
-          newStmtBox.setUnit(Grimp.v().newReturnVoidStmt(s));
+          newStmtBox.setUnit(grimp.newReturnVoidStmt(s));
         }
 
+        @Override
         public void caseTableSwitchStmt(TableSwitchStmt s) {
-          newStmtBox.setUnit(Grimp.v().newTableSwitchStmt(s));
+          newStmtBox.setUnit(grimp.newTableSwitchStmt(s));
           updateStmtBox.setUnit(s);
         }
 
+        @Override
         public void caseThrowStmt(ThrowStmt s) {
-          newStmtBox.setUnit(Grimp.v().newThrowStmt(s));
+          newStmtBox.setUnit(grimp.newThrowStmt(s));
         }
       });
 
       /* map old Expr's to new Expr's. */
-      Stmt newStmt = (Stmt) (newStmtBox.getUnit());
-      Iterator<ValueBox> useBoxesIt;
-      useBoxesIt = newStmt.getUseBoxes().iterator();
-      while (useBoxesIt.hasNext()) {
-        ValueBox b = (useBoxesIt.next());
-        b.setValue(Grimp.v().newExpr(b.getValue()));
+      Stmt newStmt = (Stmt) newStmtBox.getUnit();
+      for (ValueBox box : newStmt.getUseBoxes()) {
+        box.setValue(grimp.newExpr(box.getValue()));
       }
-      useBoxesIt = newStmt.getDefBoxes().iterator();
-      while (useBoxesIt.hasNext()) {
-        ValueBox b = (useBoxesIt.next());
-        b.setValue(Grimp.v().newExpr(b.getValue()));
+      for (ValueBox box : newStmt.getDefBoxes()) {
+        box.setValue(grimp.newExpr(box.getValue()));
       }
 
-      getUnits().add(newStmt);
+      thisUnits.add(newStmt);
       oldToNew.put(oldStmt, newStmt);
       if (updateStmtBox.getUnit() != null) {
         updates.add(updateStmtBox.getUnit());
       }
-      if (oldStmt.hasTag("LineNumberTag")) {
-        newStmt.addTag(oldStmt.getTag("LineNumberTag"));
+      final Tag lnTag = oldStmt.getTag(LineNumberTag.NAME);
+      if (lnTag != null) {
+        newStmt.addTag(lnTag);
       }
-      if (oldStmt.hasTag("SourceLnPosTag")) {
-        newStmt.addTag(oldStmt.getTag("SourceLnPosTag"));
+      final Tag slpTag = oldStmt.getTag(SourceLnPosTag.NAME);
+      if (slpTag != null) {
+        newStmt.addTag(slpTag);
       }
     }
 
     /* fixup stmt's which have had moved targets */
-    it = updates.iterator();
-    while (it.hasNext()) {
-      Stmt stmt = (Stmt) (it.next());
-
-      stmt.apply(new AbstractStmtSwitch() {
+    {
+      final AbstractStmtSwitch tgtUpdateSwitch = new AbstractStmtSwitch() {
+        @Override
         public void caseGotoStmt(GotoStmt s) {
-          GotoStmt newStmt = (GotoStmt) (oldToNew.get(s));
-          newStmt.setTarget(oldToNew.get(newStmt.getTarget()));
+          GotoStmt newStmt = (GotoStmt) oldToNew.get(s);
+          newStmt.setTarget(oldToNew.get((Stmt) newStmt.getTarget()));
         }
 
+        @Override
         public void caseIfStmt(IfStmt s) {
-          IfStmt newStmt = (IfStmt) (oldToNew.get(s));
+          IfStmt newStmt = (IfStmt) oldToNew.get(s);
           newStmt.setTarget(oldToNew.get(newStmt.getTarget()));
         }
 
+        @Override
         public void caseLookupSwitchStmt(LookupSwitchStmt s) {
-          LookupSwitchStmt newStmt = (LookupSwitchStmt) (oldToNew.get(s));
-          newStmt.setDefaultTarget((oldToNew.get(newStmt.getDefaultTarget())));
+          LookupSwitchStmt newStmt = (LookupSwitchStmt) oldToNew.get(s);
+          newStmt.setDefaultTarget(oldToNew.get((Stmt) newStmt.getDefaultTarget()));
           Unit[] newTargList = new Unit[newStmt.getTargetCount()];
-          for (int i = 0; i < newStmt.getTargetCount(); i++) {
-            newTargList[i] = (oldToNew.get(newStmt.getTarget(i)));
+          for (int i = 0; i < newTargList.length; i++) {
+            newTargList[i] = oldToNew.get((Stmt) newStmt.getTarget(i));
           }
           newStmt.setTargets(newTargList);
         }
 
+        @Override
         public void caseTableSwitchStmt(TableSwitchStmt s) {
-          TableSwitchStmt newStmt = (TableSwitchStmt) (oldToNew.get(s));
-          newStmt.setDefaultTarget((oldToNew.get(newStmt.getDefaultTarget())));
+          TableSwitchStmt newStmt = (TableSwitchStmt) oldToNew.get(s);
+          newStmt.setDefaultTarget(oldToNew.get((Stmt) newStmt.getDefaultTarget()));
           int tc = newStmt.getHighIndex() - newStmt.getLowIndex() + 1;
           LinkedList<Unit> newTargList = new LinkedList<Unit>();
           for (int i = 0; i < tc; i++) {
-            newTargList.add(oldToNew.get(newStmt.getTarget(i)));
+            newTargList.add(oldToNew.get((Stmt) newStmt.getTarget(i)));
           }
           newStmt.setTargets(newTargList);
         }
-      });
+      };
+      for (Unit u : updates) {
+        u.apply(tgtUpdateSwitch);
+      }
     }
 
-    Iterator<Trap> trapIt = jBody.getTraps().iterator();
-    while (trapIt.hasNext()) {
-      Trap oldTrap = trapIt.next();
-      getTraps().add(Grimp.v().newTrap(oldTrap.getException(), (oldToNew.get(oldTrap.getBeginUnit())),
-          (oldToNew.get(oldTrap.getEndUnit())), (oldToNew.get(oldTrap.getHandlerUnit()))));
+    {
+      final Chain<Trap> thisTraps = getTraps();
+      for (Trap oldTrap : jBody.getTraps()) {
+        thisTraps.add(grimp.newTrap(oldTrap.getException(), oldToNew.get((Stmt) oldTrap.getBeginUnit()),
+            oldToNew.get((Stmt) oldTrap.getEndUnit()), oldToNew.get((Stmt) oldTrap.getHandlerUnit())));
+      }
     }
 
     PackManager.v().getPack("gb").apply(this);

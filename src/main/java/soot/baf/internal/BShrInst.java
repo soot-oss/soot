@@ -29,34 +29,42 @@ import soot.baf.ShrInst;
 import soot.util.Switch;
 
 public class BShrInst extends AbstractOpTypeInst implements ShrInst {
+
   public BShrInst(Type opType) {
     super(opType);
   }
 
-  public int getInCount() {
-    return 2;
-  }
-
+  @Override
   public Object clone() {
     return new BShrInst(getOpType());
   }
 
+  @Override
+  public int getInCount() {
+    return 2;
+  }
+
+  @Override
   public int getInMachineCount() {
     return AbstractJasminClass.sizeOfType(getOpType()) + 1;
   }
 
+  @Override
   public int getOutCount() {
     return 1;
   }
 
+  @Override
   public int getOutMachineCount() {
     return 1 * AbstractJasminClass.sizeOfType(getOpType());
   }
 
+  @Override
   public final String getName() {
     return "shr";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseShrInst(this);
   }

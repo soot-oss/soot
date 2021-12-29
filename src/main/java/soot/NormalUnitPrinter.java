@@ -31,26 +31,30 @@ import soot.jimple.ThisRef;
  * UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf
  */
 public class NormalUnitPrinter extends LabeledUnitPrinter {
+
   public NormalUnitPrinter(Body body) {
     super(body);
   }
 
+  @Override
   public void type(Type t) {
     handleIndent();
-    String s = t == null ? "<null>" : t.toQuotedString();
-    output.append(s);
+    output.append(t == null ? "<null>" : t.toQuotedString());
   }
 
+  @Override
   public void methodRef(SootMethodRef m) {
     handleIndent();
     output.append(m.getSignature());
   }
 
+  @Override
   public void fieldRef(SootFieldRef f) {
     handleIndent();
     output.append(f.getSignature());
   }
 
+  @Override
   public void identityRef(IdentityRef r) {
     handleIndent();
     if (r instanceof ThisRef) {
@@ -67,6 +71,7 @@ public class NormalUnitPrinter extends LabeledUnitPrinter {
     }
   }
 
+  @Override
   public void literal(String s) {
     handleIndent();
     output.append(s);

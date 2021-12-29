@@ -28,6 +28,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+
 import soot.Modifier;
 import soot.Scene;
 import soot.SootMethod;
@@ -35,6 +37,7 @@ import soot.tagkit.InnerClassTag;
 import soot.tagkit.Tag;
 import soot.testing.framework.AbstractTestingFramework;
 
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class AsmInnerClassTest extends AbstractTestingFramework {
 
   private static final String TEST_TARGET_CLASS = "soot.asm.ScopeFinderTarget";
@@ -54,7 +57,7 @@ public class AsmInnerClassTest extends AbstractTestingFramework {
     assertEquals(2, Scene.v().getApplicationClasses().size());
     assertFalse(target.getDeclaringClass().hasOuterClass());
     assertFalse(target.getDeclaringClass().isInnerClass());
-    InnerClassTag tag = (InnerClassTag) target.getDeclaringClass().getTag("InnerClassTag");
+    InnerClassTag tag = (InnerClassTag) target.getDeclaringClass().getTag(InnerClassTag.NAME);
     // the class has inner classes
     assertNotNull(tag);
   }
@@ -68,7 +71,7 @@ public class AsmInnerClassTest extends AbstractTestingFramework {
     assertEquals(2, Scene.v().getApplicationClasses().size());
     assertTrue(target2.getDeclaringClass().hasOuterClass());
     assertTrue(target2.getDeclaringClass().isInnerClass());
-    InnerClassTag tag2 = (InnerClassTag) target2.getDeclaringClass().getTag("InnerClassTag");
+    InnerClassTag tag2 = (InnerClassTag) target2.getDeclaringClass().getTag(InnerClassTag.NAME);
     assertNotNull(tag2);
     assertEquals("soot/asm/ScopeFinderTarget$Inner", tag2.getInnerClass());
     assertEquals("soot/asm/ScopeFinderTarget", tag2.getOuterClass());

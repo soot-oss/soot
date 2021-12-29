@@ -23,7 +23,6 @@ package soot.jimple.toolkits.pointer;
  */
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import soot.G;
@@ -32,33 +31,28 @@ import soot.SootField;
 
 /** Represents the read or write set of a statement. */
 public class SiteRWSet extends RWSet {
+
   public HashSet<RWSet> sets = new HashSet<RWSet>();
   protected boolean callsNative = false;
 
+  @Override
   public int size() {
     Set globals = getGlobals();
     Set fields = getFields();
     if (globals == null) {
-      if (fields == null) {
-        return 0;
-      } else {
-        return fields.size();
-      }
+      return (fields == null) ? 0 : fields.size();
+    } else if (fields == null) {
+      return globals.size();
     } else {
-      if (fields == null) {
-        return globals.size();
-      } else {
-        return globals.size() + fields.size();
-      }
+      return globals.size() + fields.size();
     }
   }
 
+  @Override
   public String toString() {
+    StringBuilder ret = new StringBuilder("SiteRWSet: ");
     boolean empty = true;
-    final StringBuffer ret = new StringBuffer();
-    ret.append("SiteRWSet: ");
-    for (Iterator<RWSet> keyIt = sets.iterator(); keyIt.hasNext();) {
-      final Object key = keyIt.next();
+    for (RWSet key : sets) {
       ret.append(key.toString());
       empty = false;
     }
@@ -68,10 +62,12 @@ public class SiteRWSet extends RWSet {
     return ret.toString();
   }
 
+  @Override
   public boolean getCallsNative() {
     return callsNative;
   }
 
+  @Override
   public boolean setCallsNative() {
     boolean ret = !callsNative;
     callsNative = true;
@@ -79,8 +75,9 @@ public class SiteRWSet extends RWSet {
   }
 
   /** Returns an iterator over any globals read/written. */
-  public Set getGlobals() {
-    HashSet ret = new HashSet();
+  @Override
+  public Set<Object> getGlobals() {
+    HashSet<Object> ret = new HashSet<Object>();
     for (RWSet s : sets) {
       ret.addAll(s.getGlobals());
     }
@@ -88,8 +85,9 @@ public class SiteRWSet extends RWSet {
   }
 
   /** Returns an iterator over any fields read/written. */
-  public Set getFields() {
-    HashSet ret = new HashSet();
+  @Override
+  public Set<Object> getFields() {
+    HashSet<Object> ret = new HashSet<Object>();
     for (RWSet s : sets) {
       ret.addAll(s.getFields());
     }
@@ -97,14 +95,12 @@ public class SiteRWSet extends RWSet {
   }
 
   /** Returns a set of base objects whose field f is read/written. */
+  @Override
   public PointsToSet getBaseForField(Object f) {
     Union ret = null;
     for (RWSet s : sets) {
       PointsToSet os = s.getBaseForField(f);
-      if (os == null) {
-        continue;
-      }
-      if (os.isEmpty()) {
+      if (os == null || os.isEmpty()) {
         continue;
       }
       if (ret == null) {
@@ -115,6 +111,7 @@ public class SiteRWSet extends RWSet {
     return ret;
   }
 
+  @Override
   public boolean hasNonEmptyIntersection(RWSet oth) {
     if (sets.contains(oth)) {
       return true;
@@ -128,6 +125,7 @@ public class SiteRWSet extends RWSet {
   }
 
   /** Adds the RWSet other into this set. */
+  @Override
   public boolean union(RWSet other) {
     if (other == null) {
       return false;
@@ -142,22 +140,25 @@ public class SiteRWSet extends RWSet {
     return sets.add(other) | ret;
   }
 
+  @Override
   public boolean addGlobal(SootField global) {
     throw new RuntimeException("Not implemented; try MethodRWSet");
   }
 
+  @Override
   public boolean addFieldRef(PointsToSet otherBase, Object field) {
     throw new RuntimeException("Not implemented; try MethodRWSet");
   }
 
+  @Override
   public boolean isEquivTo(RWSet other) {
     if (!(other instanceof SiteRWSet)) {
       return false;
     }
     SiteRWSet o = (SiteRWSet) other;
-    if (o.callsNative != callsNative) {
+    if (o.callsNative != this.callsNative) {
       return false;
     }
-    return o.sets.equals(sets);
+    return o.sets.equals(this.sets);
   }
 }

@@ -26,16 +26,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import soot.Body;
 import soot.G;
 import soot.Scene;
 import soot.SceneTransformer;
 import soot.Singletons;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.Unit;
 import soot.jimple.IdentityStmt;
-import soot.jimple.Stmt;
 import soot.tagkit.LineNumberTag;
+import soot.util.Chain;
 
 public class LineNumberAdder extends SceneTransformer {
 
@@ -46,56 +46,49 @@ public class LineNumberAdder extends SceneTransformer {
     return G.v().soot_jimple_toolkits_annotation_LineNumberAdder();
   }
 
-  public void internalTransform(String phaseName, Map opts) {
-
-    // using a snapshot iterator because Application classes may change if LambdaMetaFactory translates invokedynamic to new
-    // classes; no need to visit new classes
-    Iterator it = Scene.v().getApplicationClasses().snapshotIterator();
-    while (it.hasNext()) {
-      SootClass sc = (SootClass) it.next();
+  @Override
+  public void internalTransform(String phaseName, Map<String, String> opts) {
+    // using a snapshot iterator because Application classes may change if LambdaMetaFactory translates
+    // invokedynamic to new classes; no need to visit new classes
+    for (Iterator<SootClass> it = Scene.v().getApplicationClasses().snapshotIterator(); it.hasNext();) {
+      SootClass sc = it.next();
       // make map of first line to each method
       HashMap<Integer, SootMethod> lineToMeth = new HashMap<Integer, SootMethod>();
-      Iterator methIt = sc.getMethods().iterator();
-      while (methIt.hasNext()) {
-        SootMethod meth = (SootMethod) methIt.next();
+      for (SootMethod meth : sc.getMethods()) {
         if (!meth.isConcrete()) {
           continue;
         }
-        Body body = meth.retrieveActiveBody();
-        Stmt s = (Stmt) body.getUnits().getFirst();
+        Chain<Unit> units = meth.retrieveActiveBody().getUnits();
+        Unit s = units.getFirst();
         while (s instanceof IdentityStmt) {
-          s = (Stmt) body.getUnits().getSuccOf(s);
+          s = units.getSuccOf(s);
         }
-        if (s.hasTag("LineNumberTag")) {
-          LineNumberTag tag = (LineNumberTag) s.getTag("LineNumberTag");
-          lineToMeth.put(new Integer(tag.getLineNumber()), meth);
+        LineNumberTag tag = (LineNumberTag) s.getTag(LineNumberTag.NAME);
+        if (tag != null) {
+          lineToMeth.put(tag.getLineNumber(), meth);
         }
       }
-      Iterator methIt2 = sc.getMethods().iterator();
-      while (methIt2.hasNext()) {
-        SootMethod meth = (SootMethod) methIt2.next();
+      for (SootMethod meth : sc.getMethods()) {
         if (!meth.isConcrete()) {
           continue;
         }
-        Body body = meth.retrieveActiveBody();
-        Stmt s = (Stmt) body.getUnits().getFirst();
+        Chain<Unit> units = meth.retrieveActiveBody().getUnits();
+        Unit s = units.getFirst();
         while (s instanceof IdentityStmt) {
-          s = (Stmt) body.getUnits().getSuccOf(s);
+          s = units.getSuccOf(s);
         }
-        if (s.hasTag("LineNumberTag")) {
-          LineNumberTag tag = (LineNumberTag) s.getTag("LineNumberTag");
+        LineNumberTag tag = (LineNumberTag) s.getTag(LineNumberTag.NAME);
+        if (tag != null) {
           int line_num = tag.getLineNumber() - 1;
           // already taken
-          if (lineToMeth.containsKey(new Integer(line_num))) {
+          if (lineToMeth.containsKey(line_num)) {
             meth.addTag(new LineNumberTag(line_num + 1));
-          }
-          // still available - so use it for this meth
-          else {
+          } else {
+            // still available - so use it for this meth
             meth.addTag(new LineNumberTag(line_num));
           }
         }
       }
-
     }
   }
 }

@@ -39,11 +39,11 @@ import soot.tagkit.VisibilityAnnotationTag;
  */
 public class PolymorphicMethodRef extends SootMethodRefImpl {
 
-  public static String METHODHANDLE_SIGNATURE = "java.lang.invoke.MethodHandle";
+  public static final String METHODHANDLE_SIGNATURE = "java.lang.invoke.MethodHandle";
 
-  public static String VARHANDLE_SIGNATURE = "java.lang.invoke.VarHandle";
+  public static final String VARHANDLE_SIGNATURE = "java.lang.invoke.VarHandle";
 
-  public static String POLYMORPHIC_SIGNATURE = "java/lang/invoke/MethodHandle$PolymorphicSignature";
+  public static final String POLYMORPHIC_SIGNATURE = "java/lang/invoke/MethodHandle$PolymorphicSignature";
 
   /**
    * Check if the declaring class "has the rights" to declare polymorphic methods
@@ -58,8 +58,8 @@ public class PolymorphicMethodRef extends SootMethodRefImpl {
   }
 
   public static boolean handlesClass(String declaringClassName) {
-    return declaringClassName.equals(PolymorphicMethodRef.METHODHANDLE_SIGNATURE)
-        || declaringClassName.equals(PolymorphicMethodRef.VARHANDLE_SIGNATURE);
+    return PolymorphicMethodRef.METHODHANDLE_SIGNATURE.equals(declaringClassName)
+        || PolymorphicMethodRef.VARHANDLE_SIGNATURE.equals(declaringClassName);
   }
 
   /**
@@ -85,27 +85,26 @@ public class PolymorphicMethodRef extends SootMethodRefImpl {
 
   @Override
   public SootMethod resolve() {
-
     SootMethod method = getDeclaringClass().getMethodUnsafe(getName(), getParameterTypes(), getReturnType());
     if (method != null) {
       return method;
     }
 
-    // no method with matching parameter types or return types found
-    // for polymorphic methods, we don't care about the return or parameter types. We just check if a method with the name
-    // exists and has a polymorphic type signature
+    // No method with matching parameter types or return types found for polymorphic methods,
+    // we don't care about the return or parameter types. We just check if a method with the
+    // name exists and has a polymorphic type signature.
 
-    // Note(MB): We cannot use getMethodByName here since the method name is ambiguous after adding the first method with
-    // same name and refined signature
+    // Note(MB): We cannot use getMethodByName here since the method name is ambiguous after
+    // adding the first method with same name and refined signature.
     for (SootMethod candidateMethod : getDeclaringClass().getMethods()) {
       if (candidateMethod.getName().equals(getName())) {
-        Tag annotationsTag = candidateMethod.getTag("VisibilityAnnotationTag");
+        Tag annotationsTag = candidateMethod.getTag(VisibilityAnnotationTag.NAME);
         if (annotationsTag != null) {
           for (AnnotationTag annotation : ((VisibilityAnnotationTag) annotationsTag).getAnnotations()) {
             // check the annotation's type
-            if (annotation.getType().equals("L" + POLYMORPHIC_SIGNATURE + ";")) {
-              // the method is polymorphic, add a fitting method to the MethodHandle or VarHandle class, as the JVM does on
-              // runtime
+            if (('L' + POLYMORPHIC_SIGNATURE + ';').equals(annotation.getType())) {
+              // The method is polymorphic, add a fitting method to the MethodHandle
+              // or VarHandle class, as the JVM does on runtime.
               return addPolyMorphicMethod(candidateMethod);
             }
           }
@@ -117,8 +116,8 @@ public class PolymorphicMethodRef extends SootMethodRefImpl {
   }
 
   private SootMethod addPolyMorphicMethod(SootMethod originalPolyMorphicMethod) {
-    SootMethod newMethod
-        = new SootMethod(getName(), getParameterTypes(), getReturnType(), originalPolyMorphicMethod.modifiers);
+    SootMethod newMethod =
+        new SootMethod(getName(), getParameterTypes(), getReturnType(), originalPolyMorphicMethod.modifiers);
     getDeclaringClass().addMethod(newMethod);
     return newMethod;
   }

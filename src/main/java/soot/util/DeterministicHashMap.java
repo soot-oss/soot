@@ -72,7 +72,6 @@ public class DeterministicHashMap<K, V> extends HashMap<K, V> {
 /**
  * ArraySet which doesn't check that the elements that you insert are previous uncontained.
  */
-
 class TrustingMonotonicArraySet<T> extends AbstractSet<T> {
   private static final int DEFAULT_SIZE = 8;
 
@@ -80,10 +79,11 @@ class TrustingMonotonicArraySet<T> extends AbstractSet<T> {
   private int maxElements;
   private T[] elements;
 
-  @SuppressWarnings("unchecked")
   public TrustingMonotonicArraySet() {
     maxElements = DEFAULT_SIZE;
-    elements = (T[]) new Object[DEFAULT_SIZE];
+    @SuppressWarnings("unchecked")
+    T[] newElements = (T[]) new Object[DEFAULT_SIZE];
+    elements = newElements;
     numElements = 0;
   }
 
@@ -99,17 +99,18 @@ class TrustingMonotonicArraySet<T> extends AbstractSet<T> {
     }
   }
 
+  @Override
   public void clear() {
     numElements = 0;
   }
 
+  @Override
   public boolean contains(Object obj) {
     for (int i = 0; i < numElements; i++) {
       if (elements[i].equals(obj)) {
         return true;
       }
     }
-
     return false;
   }
 
@@ -136,12 +137,14 @@ class TrustingMonotonicArraySet<T> extends AbstractSet<T> {
   }
 
   private class ArrayIterator implements Iterator<T> {
-    int nextIndex;
+
+    private int nextIndex;
 
     ArrayIterator() {
       nextIndex = 0;
     }
 
+    @Override
     public boolean hasNext() {
       return nextIndex < numElements;
     }

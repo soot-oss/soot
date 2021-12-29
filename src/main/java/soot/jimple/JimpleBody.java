@@ -23,8 +23,9 @@ package soot.jimple;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Body;
 import soot.Local;
@@ -48,31 +49,34 @@ import soot.util.Chain;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
-/** Implementation of the Body class for the Jimple IR. */
+/**
+ * Implementation of the Body class for the Jimple IR.
+ */
 public class JimpleBody extends StmtBody {
-  private static BodyValidator[] validators;
+  private static final Logger logger = LoggerFactory.getLogger(JimpleBody.class);
 
   /**
-   * Returns an array containing some validators in order to validate the JimpleBody
-   *
-   * @return the array containing validators
+   * Lazy initialized array containing some validators in order to validate the JimpleBody.
    */
-  private synchronized static BodyValidator[] getValidators() {
-    if (validators == null) {
-      validators = new BodyValidator[] { IdentityStatementsValidator.v(), TypesValidator.v(), ReturnStatementsValidator.v(),
-          InvokeArgumentValidator.v(), FieldRefValidator.v(), NewValidator.v(), JimpleTrapValidator.v(),
-          IdentityValidator.v(), MethodValidator.v()
-          // InvokeValidator.v()
-      };
+  private static class LazyValidatorsSingleton {
+    static final BodyValidator[] V = new BodyValidator[] { IdentityStatementsValidator.v(), TypesValidator.v(),
+        ReturnStatementsValidator.v(), InvokeArgumentValidator.v(), FieldRefValidator.v(), NewValidator.v(),
+        JimpleTrapValidator.v(), IdentityValidator.v(), MethodValidator.v() /* InvokeValidator.v() */ };
+
+    private LazyValidatorsSingleton() {
     }
-    return validators;
-  };
+  }
 
   /**
    * Construct an empty JimpleBody
+   * 
+   * @param m
    */
   public JimpleBody(SootMethod m) {
     super(m);
+    if (Options.v().verbose()) {
+      logger.debug("[" + getMethod().getName() + "] Constructing JimpleBody...");
+    }
   }
 
   /**
@@ -81,10 +85,14 @@ public class JimpleBody extends StmtBody {
   public JimpleBody() {
   }
 
-  /** Clones the current body, making deep copies of the contents. */
+  /**
+   * Clones the current body, making deep copies of the contents.
+   * 
+   * @return
+   */
   @Override
   public Object clone() {
-    Body b = new JimpleBody(getMethod());
+    Body b = new JimpleBody(getMethodUnsafe());
     b.importBodyContentsFrom(this);
     return b;
   }
@@ -111,11 +119,10 @@ public class JimpleBody extends StmtBody {
   public void validate(List<ValidationException> exceptionList) {
     super.validate(exceptionList);
     final boolean runAllValidators = Options.v().debug() || Options.v().validate();
-    for (BodyValidator validator : getValidators()) {
-      if (!validator.isBasicValidator() && !runAllValidators) {
-        continue;
+    for (BodyValidator validator : LazyValidatorsSingleton.V) {
+      if (runAllValidators || validator.isBasicValidator()) {
+        validator.validate(this, exceptionList);
       }
-      validator.validate(this, exceptionList);
     }
   }
 
@@ -123,7 +130,9 @@ public class JimpleBody extends StmtBody {
     runValidation(IdentityStatementsValidator.v());
   }
 
-  /** Inserts usual statements for handling this & parameters into body. */
+  /**
+   * Inserts usual statements for handling this & parameters into body.
+   */
   public void insertIdentityStmts() {
     insertIdentityStmts(getMethod().getDeclaringClass());
   }
@@ -136,8 +145,8 @@ public class JimpleBody extends StmtBody {
    */
   public void insertIdentityStmts(SootClass declaringClass) {
     final Jimple jimple = Jimple.v();
-    final PatchingChain<Unit> unitChain = getUnits();
-    final Chain<Local> localChain = getLocals();
+    final PatchingChain<Unit> unitChain = this.getUnits();
+    final Chain<Local> localChain = this.getLocals();
     Unit lastUnit = null;
 
     // add this-ref before everything else
@@ -171,18 +180,22 @@ public class JimpleBody extends StmtBody {
     }
   }
 
-  /** Returns the first non-identity stmt in this body. */
+  /**
+   * Returns the first non-identity stmt in this body.
+   * 
+   * @return
+   */
   public Stmt getFirstNonIdentityStmt() {
-    Iterator<Unit> it = getUnits().iterator();
-    Object o = null;
-    while (it.hasNext()) {
-      if (!((o = it.next()) instanceof IdentityStmt)) {
+    Unit r = null;
+    for (Unit u : getUnits()) {
+      r = u;
+      if (!(r instanceof IdentityStmt)) {
         break;
       }
     }
-    if (o == null) {
+    if (r == null) {
       throw new RuntimeException("no non-id statements!");
     }
-    return (Stmt) o;
+    return (Stmt) r;
   }
 }

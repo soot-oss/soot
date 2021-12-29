@@ -27,9 +27,9 @@ package soot.tagkit;
  */
 public class SignatureTag implements Tag {
 
-  public static final String NAME = SignatureTag.class.getSimpleName();
+  public static final String NAME = "SignatureTag";
 
-  private String signature;
+  private final String signature;
 
   public SignatureTag(String signature) {
     this.signature = signature;
@@ -39,13 +39,11 @@ public class SignatureTag implements Tag {
     return signature;
   }
 
-  /** Returns the tag name. */
   @Override
   public String getName() {
     return NAME;
   }
 
-  /** Returns the tag raw data. */
   @Override
   public byte[] getValue() {
     throw new RuntimeException(NAME + " has no value for bytecode");
@@ -59,5 +57,4 @@ public class SignatureTag implements Tag {
   public String toString() {
     return "Signature: " + signature;
   }
-
 }

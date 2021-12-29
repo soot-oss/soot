@@ -27,10 +27,12 @@ import soot.grimp.Grimp;
 import soot.jimple.internal.JInvokeStmt;
 
 public class GInvokeStmt extends JInvokeStmt {
+
   public GInvokeStmt(Value c) {
     super(Grimp.v().newInvokeExprBox(c));
   }
 
+  @Override
   public Object clone() {
     return new GInvokeStmt(Grimp.cloneIfNecessary(getInvokeExpr()));
   }

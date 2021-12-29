@@ -35,12 +35,10 @@ import soot.G;
 import soot.PhaseOptions;
 import soot.Scene;
 import soot.Singletons;
-import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.jimple.ArrayRef;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.IntConstant;
@@ -51,9 +49,7 @@ import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.toolkits.annotation.tags.NullCheckTag;
 import soot.options.Options;
-import soot.tagkit.Tag;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.Chain;
 
 /*
@@ -79,128 +75,90 @@ public class NullPointerChecker extends BodyTransformer {
     return G.v().soot_jimple_toolkits_annotation_nullcheck_NullPointerChecker();
   }
 
-  private boolean isProfiling = false;
-
-  private boolean enableOther = true;
-
+  @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    isProfiling = PhaseOptions.getBoolean(options, "profiling");
-    enableOther = !PhaseOptions.getBoolean(options, "onlyarrayref");
+    final boolean isProfiling = PhaseOptions.getBoolean(options, "profiling");
+    final boolean enableOther = !PhaseOptions.getBoolean(options, "onlyarrayref");
 
-    {
-      Date start = new Date();
+    final Date start = new Date();
+    if (Options.v().verbose()) {
+      logger.debug("[npc] Null pointer check for " + body.getMethod().getName() + " started on " + start);
+    }
 
-      if (Options.v().verbose()) {
-        logger.debug("[npc] Null pointer check for " + body.getMethod().getName() + " started on " + start);
-      }
+    final BranchedRefVarsAnalysis analysis
+        = new BranchedRefVarsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body));
 
-      BranchedRefVarsAnalysis analysis = new BranchedRefVarsAnalysis(new ExceptionalUnitGraph(body));
+    final SootMethod increase
+        = isProfiling ? Scene.v().loadClassAndSupport("MultiCounter").getMethod("void increase(int)") : null;
 
-      SootClass counterClass = null;
-      SootMethod increase = null;
+    final Chain<Unit> units = body.getUnits();
+    for (Iterator<Unit> stmtIt = units.snapshotIterator(); stmtIt.hasNext();) {
+      Stmt s = (Stmt) stmtIt.next();
 
-      if (isProfiling) {
-        counterClass = Scene.v().loadClassAndSupport("MultiCounter");
-        increase = counterClass.getMethod("void increase(int)");
-      }
-
-      Chain<Unit> units = body.getUnits();
-
-      Iterator<Unit> stmtIt = units.snapshotIterator();
-
-      while (stmtIt.hasNext()) {
-        Stmt s = (Stmt) stmtIt.next();
-
-        Value obj = null;
-
-        if (s.containsArrayRef()) {
-          ArrayRef aref = s.getArrayRef();
-          obj = aref.getBase();
+      Value obj = null;
+      if (s.containsArrayRef()) {
+        obj = s.getArrayRef().getBase();
+      } else if (enableOther) {
+        // Throw
+        if (s instanceof ThrowStmt) {
+          obj = ((ThrowStmt) s).getOp();
+        } else if (s instanceof MonitorStmt) {
+          // Monitor enter and exit
+          obj = ((MonitorStmt) s).getOp();
         } else {
-          if (enableOther) {
-            // Throw
-            if (s instanceof ThrowStmt) {
-              obj = ((ThrowStmt) s).getOp();
-            } else if (s instanceof MonitorStmt) {
-              // Monitor enter and exit
-              obj = ((MonitorStmt) s).getOp();
-            } else {
-              Iterator<ValueBox> boxIt;
-              boxIt = s.getDefBoxes().iterator();
-              while (boxIt.hasNext()) {
-                ValueBox vBox = (ValueBox) boxIt.next();
-                Value v = vBox.getValue();
-
-                // putfield, and getfield
-                if (v instanceof InstanceFieldRef) {
-                  obj = ((InstanceFieldRef) v).getBase();
-                  break;
-                } else if (v instanceof InstanceInvokeExpr) {
-                  // invokevirtual, invokespecial, invokeinterface
-                  obj = ((InstanceInvokeExpr) v).getBase();
-                  break;
-                } else if (v instanceof LengthExpr) {
-                  // arraylength
-                  obj = ((LengthExpr) v).getOp();
-                  break;
-                }
-              }
-              boxIt = s.getUseBoxes().iterator();
-              while (boxIt.hasNext()) {
-                ValueBox vBox = (ValueBox) boxIt.next();
-                Value v = vBox.getValue();
-
-                // putfield, and getfield
-                if (v instanceof InstanceFieldRef) {
-                  obj = ((InstanceFieldRef) v).getBase();
-                  break;
-                } else if (v instanceof InstanceInvokeExpr) {
-                  // invokevirtual, invokespecial, invokeinterface
-                  obj = ((InstanceInvokeExpr) v).getBase();
-                  break;
-                } else if (v instanceof LengthExpr) {
-                  // arraylength
-                  obj = ((LengthExpr) v).getOp();
-                  break;
-                }
-              }
+          for (ValueBox vBox : s.getDefBoxes()) {
+            Value v = vBox.getValue();
+            // putfield, and getfield
+            if (v instanceof InstanceFieldRef) {
+              obj = ((InstanceFieldRef) v).getBase();
+              break;
+            } else if (v instanceof InstanceInvokeExpr) {
+              // invokevirtual, invokespecial, invokeinterface
+              obj = ((InstanceInvokeExpr) v).getBase();
+              break;
+            } else if (v instanceof LengthExpr) {
+              // arraylength
+              obj = ((LengthExpr) v).getOp();
+              break;
             }
           }
-        }
-
-        // annotate it or now
-        if (obj != null) {
-          FlowSet beforeSet = (FlowSet) analysis.getFlowBefore(s);
-
-          int vInfo = analysis.anyRefInfo(obj, beforeSet);
-
-          boolean needCheck = (vInfo != BranchedRefVarsAnalysis.kNonNull);
-
-          if (isProfiling) {
-            int whichCounter = 5;
-            if (!needCheck) {
-              whichCounter = 6;
+          for (ValueBox vBox : s.getUseBoxes()) {
+            Value v = vBox.getValue();
+            // putfield, and getfield
+            if (v instanceof InstanceFieldRef) {
+              obj = ((InstanceFieldRef) v).getBase();
+              break;
+            } else if (v instanceof InstanceInvokeExpr) {
+              // invokevirtual, invokespecial, invokeinterface
+              obj = ((InstanceInvokeExpr) v).getBase();
+              break;
+            } else if (v instanceof LengthExpr) {
+              // arraylength
+              obj = ((LengthExpr) v).getOp();
+              break;
             }
-
-            units.insertBefore(
-                Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(increase.makeRef(), IntConstant.v(whichCounter))),
-                s);
-          }
-
-          {
-            Tag nullTag = new NullCheckTag(needCheck);
-            s.addTag(nullTag);
           }
         }
       }
 
+      // annotate it or now
+      if (obj != null) {
+        boolean needCheck = (analysis.anyRefInfo(obj, analysis.getFlowBefore(s)) != BranchedRefVarsAnalysis.kNonNull);
+        if (isProfiling) {
+          final int count = needCheck ? 5 : 6;
+          final Jimple jimp = Jimple.v();
+          units.insertBefore(jimp.newInvokeStmt(jimp.newStaticInvokeExpr(increase.makeRef(), IntConstant.v(count))), s);
+        }
+        s.addTag(new NullCheckTag(needCheck));
+      }
+    }
+
+    if (Options.v().verbose()) {
       Date finish = new Date();
-      if (Options.v().verbose()) {
-        long runtime = finish.getTime() - start.getTime();
-        long mins = runtime / 60000;
-        long secs = (runtime % 60000) / 1000;
-        logger.debug("[npc] Null pointer checker finished. It took " + mins + " mins and " + secs + " secs.");
-      }
+      long runtime = finish.getTime() - start.getTime();
+      long mins = runtime / 60000;
+      long secs = (runtime % 60000) / 1000;
+      logger.debug("[npc] Null pointer checker finished. It took " + mins + " mins and " + secs + " secs.");
     }
   }
 }

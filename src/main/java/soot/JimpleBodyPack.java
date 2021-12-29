@@ -33,11 +33,14 @@ import soot.options.Options;
  * is a specific one for the very messy jb phase.
  */
 public class JimpleBodyPack extends BodyPack {
+
   public JimpleBodyPack() {
     super("jb");
   }
 
-  /** Applies the transformations corresponding to the given options. */
+  /**
+   * Applies the transformations corresponding to the given options.
+   */
   private void applyPhaseOptions(JimpleBody b, Map<String, String> opts) {
     JBOptions options = new JBOptions(opts);
 
@@ -45,47 +48,50 @@ public class JimpleBodyPack extends BodyPack {
       PhaseOptions.v().setPhaseOptionIfUnset("jb.lns", "only-stack-locals");
     }
 
-    if (Options.v().time()) {
+    final PackManager pacman = PackManager.v();
+    final boolean time = Options.v().time();
+
+    if (time) {
       Timers.v().splitTimer.start();
     }
 
-    PackManager.v().getTransform("jb.tt").apply(b); // TrapTigthener
-    PackManager.v().getTransform("jb.dtr").apply(b); // DuplicateCatchAllTrapRemover
+    pacman.getTransform("jb.tt").apply(b); // TrapTigthener
+    pacman.getTransform("jb.dtr").apply(b); // DuplicateCatchAllTrapRemover
 
     // UnreachableCodeEliminator: We need to do this before splitting
     // locals for not creating disconnected islands of useless assignments
     // that afterwards mess up type assignment.
-    PackManager.v().getTransform("jb.uce").apply(b);
+    pacman.getTransform("jb.uce").apply(b);
+    pacman.getTransform("jb.ls").apply(b);
+    pacman.getTransform("jb.sils").apply(b);
 
-    PackManager.v().getTransform("jb.ls").apply(b);
-
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().splitTimer.end();
     }
 
-    PackManager.v().getTransform("jb.a").apply(b);
-    PackManager.v().getTransform("jb.ule").apply(b);
+    pacman.getTransform("jb.a").apply(b);
+    pacman.getTransform("jb.ule").apply(b);
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().assignTimer.start();
     }
 
-    PackManager.v().getTransform("jb.tr").apply(b);
+    pacman.getTransform("jb.tr").apply(b);
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().assignTimer.end();
     }
 
     if (options.use_original_names()) {
-      PackManager.v().getTransform("jb.ulp").apply(b);
+      pacman.getTransform("jb.ulp").apply(b);
     }
-    PackManager.v().getTransform("jb.lns").apply(b); // LocalNameStandardizer
-    PackManager.v().getTransform("jb.cp").apply(b); // CopyPropagator
-    PackManager.v().getTransform("jb.dae").apply(b); // DeadAssignmentElimintaor
-    PackManager.v().getTransform("jb.cp-ule").apply(b); // UnusedLocalEliminator
-    PackManager.v().getTransform("jb.lp").apply(b); // LocalPacker
-    PackManager.v().getTransform("jb.ne").apply(b); // NopEliminator
-    PackManager.v().getTransform("jb.uce").apply(b); // UnreachableCodeEliminator: Again, we might have new dead code
+    pacman.getTransform("jb.lns").apply(b); // LocalNameStandardizer
+    pacman.getTransform("jb.cp").apply(b); // CopyPropagator
+    pacman.getTransform("jb.dae").apply(b); // DeadAssignmentElimintaor
+    pacman.getTransform("jb.cp-ule").apply(b); // UnusedLocalEliminator
+    pacman.getTransform("jb.lp").apply(b); // LocalPacker
+    pacman.getTransform("jb.ne").apply(b); // NopEliminator
+    pacman.getTransform("jb.uce").apply(b); // UnreachableCodeEliminator: Again, we might have new dead code
 
     // LocalNameStandardizer: After all these changes, some locals
     // may end up being eliminated. If we want a stable local iteration
@@ -93,14 +99,15 @@ public class JimpleBodyPack extends BodyPack {
     // again after all other changes is required.
     if (options.stabilize_local_names()) {
       PhaseOptions.v().setPhaseOption("jb.lns", "sort-locals:true");
-      PackManager.v().getTransform("jb.lns").apply(b);
+      pacman.getTransform("jb.lns").apply(b);
     }
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().stmtCount += b.getUnits().size();
     }
   }
 
+  @Override
   protected void internalApply(Body b) {
     applyPhaseOptions((JimpleBody) b, PhaseOptions.v().getPhaseOptions(getPhaseName()));
   }

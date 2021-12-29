@@ -34,29 +34,33 @@
                            </a></li>
                      <li><a href="#phase_1_3">Local Splitter (jb.ls)
                            </a></li>
-                     <li><a href="#phase_1_4">Jimple Local Aggregator (jb.a)
+                     <li><a href="#phase_1_4">Shared Initialization Local Splitter (jb.sils)
                            </a></li>
-                     <li><a href="#phase_1_5">Unused Local Eliminator (jb.ule)
+                     <li><a href="#phase_1_5">Jimple Local Aggregator (jb.a)
                            </a></li>
-                     <li><a href="#phase_1_6">Type Assigner (jb.tr)
+                     <li><a href="#phase_1_6">Unused Local Eliminator (jb.ule)
                            </a></li>
-                     <li><a href="#phase_1_7">Unsplit-originals Local Packer (jb.ulp)
+                     <li><a href="#phase_1_7">Type Assigner (jb.tr)
                            </a></li>
-                     <li><a href="#phase_1_8">Local Name Standardizer (jb.lns)
+                     <li><a href="#phase_1_8">Unsplit-originals Local Packer (jb.ulp)
                            </a></li>
-                     <li><a href="#phase_1_9">Copy Propagator (jb.cp)
+                     <li><a href="#phase_1_9">Local Name Standardizer (jb.lns)
                            </a></li>
-                     <li><a href="#phase_1_10">Dead Assignment Eliminator (jb.dae)
+                     <li><a href="#phase_1_10">Copy Propagator (jb.cp)
                            </a></li>
-                     <li><a href="#phase_1_11">Post-copy propagation Unused Local Eliminator (jb.cp-ule)
+                     <li><a href="#phase_1_11">Dead Assignment Eliminator (jb.dae)
                            </a></li>
-                     <li><a href="#phase_1_12">Local Packer (jb.lp)
+                     <li><a href="#phase_1_12">Post-copy propagation Unused Local Eliminator (jb.cp-ule)
                            </a></li>
-                     <li><a href="#phase_1_13">Nop Eliminator (jb.ne)
+                     <li><a href="#phase_1_13">Local Packer (jb.lp)
                            </a></li>
-                     <li><a href="#phase_1_14">Unreachable Code Eliminator (jb.uce)
+                     <li><a href="#phase_1_14">Nop Eliminator (jb.ne)
                            </a></li>
-                     <li><a href="#phase_1_15">Trap Tightener (jb.tt)
+                     <li><a href="#phase_1_15">Unreachable Code Eliminator (jb.uce)
+                           </a></li>
+                     <li><a href="#phase_1_16">Trap Tightener (jb.tt)
+                           </a></li>
+                     <li><a href="#phase_1_17">Conditional Branch Folder (jb.cbf)
                            </a></li>
                   </ul>
                </li>
@@ -64,27 +68,29 @@
                      </a><ul>
                      <li><a href="#phase_2_1">Local Splitter (jj.ls)
                            </a></li>
-                     <li><a href="#phase_2_2">Jimple Local Aggregator (jj.a)
+                     <li><a href="#phase_2_2">Shared Initialization Local Splitter (jj.sils)
                            </a></li>
-                     <li><a href="#phase_2_3">Unused Local Eliminator (jj.ule)
+                     <li><a href="#phase_2_3">Jimple Local Aggregator (jj.a)
                            </a></li>
-                     <li><a href="#phase_2_4">Type Assigner (jj.tr)
+                     <li><a href="#phase_2_4">Unused Local Eliminator (jj.ule)
                            </a></li>
-                     <li><a href="#phase_2_5">Unsplit-originals Local Packer (jj.ulp)
+                     <li><a href="#phase_2_5">Type Assigner (jj.tr)
                            </a></li>
-                     <li><a href="#phase_2_6">Local Name Standardizer (jj.lns)
+                     <li><a href="#phase_2_6">Unsplit-originals Local Packer (jj.ulp)
                            </a></li>
-                     <li><a href="#phase_2_7">Copy Propagator (jj.cp)
+                     <li><a href="#phase_2_7">Local Name Standardizer (jj.lns)
                            </a></li>
-                     <li><a href="#phase_2_8">Dead Assignment Eliminator (jj.dae)
+                     <li><a href="#phase_2_8">Copy Propagator (jj.cp)
                            </a></li>
-                     <li><a href="#phase_2_9">Post-copy propagation Unused Local Eliminator (jj.cp-ule)
+                     <li><a href="#phase_2_9">Dead Assignment Eliminator (jj.dae)
                            </a></li>
-                     <li><a href="#phase_2_10">Local Packer (jj.lp)
+                     <li><a href="#phase_2_10">Post-copy propagation Unused Local Eliminator (jj.cp-ule)
                            </a></li>
-                     <li><a href="#phase_2_11">Nop Eliminator (jj.ne)
+                     <li><a href="#phase_2_11">Local Packer (jj.lp)
                            </a></li>
-                     <li><a href="#phase_2_12">Unreachable Code Eliminator (jj.uce)
+                     <li><a href="#phase_2_12">Nop Eliminator (jj.ne)
+                           </a></li>
+                     <li><a href="#phase_2_13">Unreachable Code Eliminator (jj.uce)
                            </a></li>
                   </ul>
                </li>
@@ -247,6 +253,8 @@
                      <li><a href="#phase_19_4">Unused Local Eliminator (bb.ule)
                            </a></li>
                      <li><a href="#phase_19_5">Local Packer (bb.lp)
+                           </a></li>
+                     <li><a href="#phase_19_6">Nop Eliminator (bb.ne)
                            </a></li>
                   </ul>
                </li>
@@ -510,7 +518,10 @@
          </tr>
          <tr>
             <td><tt>-weak-map-structures </tt><br></td>
-            <td colspan="2">Use weak references in Scene to prevent memory leakage when removing many classes/methods/locals</td>
+            <td colspan="2">Use weak references in Scene to prevent memory leakage when removing many
+               classes/methods/locals
+               
+            </td>
          </tr>
       </table>
       <H2><A name="section_2">Input Options</A></H2>
@@ -548,8 +559,23 @@
          </tr>
          <tr>
             <td><tt>-process-path <var>dir</var></tt><br><tt>-process-dir <var>dir</var></tt><br></td>
-            <td colspan="2">Process all classes found in
+            <td colspan="2">
+               Process all classes found in <var>dir</var> 
+               (but not classes within JAR files in <var>dir</var>, use process-jar-dir for that)
+               
+            </td>
+         </tr>
+         <tr>
+            <td><tt>-process-jar-dir <var>dir</var></tt><br></td>
+            <td colspan="2">Process all classes found in JAR files found in
                <var>dir</var>
+               
+            </td>
+         </tr>
+         <tr>
+            <td><tt>-derive-java-version </tt><br></td>
+            <td colspan="2">Java version for output and internal processing will be derived from the given input
+               classes
                
             </td>
          </tr>
@@ -614,6 +640,10 @@
          <tr>
             <td><tt>-allow-phantom-elms </tt><br></td>
             <td colspan="2">Allow phantom methods and fields in non-phantom classes</td>
+         </tr>
+         <tr>
+            <td><tt>-allow-cg-errors </tt><br></td>
+            <td colspan="2">Allow Errors during callgraph construction</td>
          </tr>
          <tr>
             <td><tt>-no-bodies-for-excluded </tt><br></td>
@@ -707,6 +737,12 @@
                   </tt><tt>8&nbsp;
                   </tt><br><tt>1.9&nbsp;
                   </tt><tt>9&nbsp;
+                  </tt><br><tt>1.10&nbsp;
+                  </tt><tt>10&nbsp;
+                  </tt><br><tt>1.11&nbsp;
+                  </tt><tt>11&nbsp;
+                  </tt><br><tt>1.12&nbsp;
+                  </tt><tt>12&nbsp;
                   </tt><br></td>
             <td colspan="1">Force Java version of bytecode generated by Soot.</td>
          </tr>
@@ -798,6 +834,12 @@
             </td>
          </tr>
          <tr>
+            <td><tt>-t <var>num</var></tt><br><tt>-num-threads <var>num</var></tt><br></td>
+            <td colspan="2">Force Soot to use <var>num</var> threads when transforming classes.
+               
+            </td>
+         </tr>
+         <tr>
             <td><tt>-O </tt><br><tt>-optimize </tt><br></td>
             <td colspan="2">Perform intraprocedural optimizations</td>
          </tr>
@@ -818,6 +860,7 @@
             <td><tt>pedantic&nbsp;
                   </tt><br><tt>unit&nbsp;
                   </tt><br><tt>dalvik&nbsp;
+                  </tt><br><tt>auto-select&nbsp;
                   </tt><br></td>
             <td colspan="1"></td>
          </tr>
@@ -1237,7 +1280,22 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_1_4">Jimple Local Aggregator (jb.a)
+      <h2><a name="phase_1_4">Shared Initialization Local Splitter (jb.sils)
+            </a></h2>
+      <p></p>
+      <h4>Accepted phase options:</h4>
+      <ul>
+         <li><b>Enabled</b>
+            (enabled)
+            <br>
+            (default value:
+            <span class="value">true</span>
+            )
+            
+            <p></p>
+         </li>
+      </ul>
+      <h2><a name="phase_1_5">Jimple Local Aggregator (jb.a)
             </a></h2>
       <p>
          
@@ -1283,7 +1341,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_5">Unused Local Eliminator (jb.ule)
+      <h2><a name="phase_1_6">Unused Local Eliminator (jb.ule)
             </a></h2>
       <p>
          The Unused Local Eliminator removes any unused locals from the
@@ -1302,7 +1360,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_1_6">Type Assigner (jb.tr)
+      <h2><a name="phase_1_7">Type Assigner (jb.tr)
             </a></h2>
       <p>
          The Type Assigner gives local variables types which will
@@ -1369,7 +1427,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_7">Unsplit-originals Local Packer (jb.ulp)
+      <h2><a name="phase_1_8">Unsplit-originals Local Packer (jb.ulp)
             </a></h2>
       <p>
          The Unsplit-originals Local Packer executes only when the
@@ -1407,7 +1465,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_8">Local Name Standardizer (jb.lns)
+      <h2><a name="phase_1_9">Local Name Standardizer (jb.lns)
             </a></h2>
       <p>
          The Local Name Standardizer assigns generic names to local variables.
@@ -1462,7 +1520,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_9">Copy Propagator (jb.cp)
+      <h2><a name="phase_1_10">Copy Propagator (jb.cp)
             </a></h2>
       <p>
          This phase performs cascaded copy propagation.
@@ -1526,7 +1584,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_10">Dead Assignment Eliminator (jb.dae)
+      <h2><a name="phase_1_11">Dead Assignment Eliminator (jb.dae)
             </a></h2>
       <p>
          The Dead Assignment Eliminator eliminates assignment statements
@@ -1560,7 +1618,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_11">Post-copy propagation Unused Local Eliminator (jb.cp-ule)
+      <h2><a name="phase_1_12">Post-copy propagation Unused Local Eliminator (jb.cp-ule)
             </a></h2>
       <p>
          This phase removes any locals that are unused after copy propagation.
@@ -1578,7 +1636,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_1_12">Local Packer (jb.lp)
+      <h2><a name="phase_1_13">Local Packer (jb.lp)
             </a></h2>
       <p>
          The Local Packer attempts to minimize the number of local
@@ -1614,7 +1672,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_13">Nop Eliminator (jb.ne)
+      <h2><a name="phase_1_14">Nop Eliminator (jb.ne)
             </a></h2>
       <p>
          The Nop Eliminator removes nop statements from the method.
@@ -1632,7 +1690,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_1_14">Unreachable Code Eliminator (jb.uce)
+      <h2><a name="phase_1_15">Unreachable Code Eliminator (jb.uce)
             </a></h2>
       <p>
          The Unreachable Code Eliminator removes unreachable code and
@@ -1664,7 +1722,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_15">Trap Tightener (jb.tt)
+      <h2><a name="phase_1_16">Trap Tightener (jb.tt)
             </a></h2>
       <p>
          The Trap Tightener changes the area protected by each exception handler,
@@ -1683,6 +1741,28 @@
             <br>
             (default value:
             <span class="value">false</span>
+            )
+            
+            <p></p>
+         </li>
+      </ul>
+      <h2><a name="phase_1_17">Conditional Branch Folder (jb.cbf)
+            </a></h2>
+      <p>
+         The Conditional Branch Folder statically evaluates the
+         conditional expression of Jimple if statements. If the
+         condition is identically true or
+         false, the Folder replaces the conditional branch
+         statement with an unconditional goto statement.
+         
+      </p>
+      <h4>Accepted phase options:</h4>
+      <ul>
+         <li><b>Enabled</b>
+            (enabled)
+            <br>
+            (default value:
+            <span class="value">true</span>
             )
             
             <p></p>
@@ -1741,7 +1821,22 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_2_2">Jimple Local Aggregator (jj.a)
+      <h2><a name="phase_2_2">Shared Initialization Local Splitter (jj.sils)
+            </a></h2>
+      <p></p>
+      <h4>Accepted phase options:</h4>
+      <ul>
+         <li><b>Enabled</b>
+            (enabled)
+            <br>
+            (default value:
+            <span class="value">true</span>
+            )
+            
+            <p></p>
+         </li>
+      </ul>
+      <h2><a name="phase_2_3">Jimple Local Aggregator (jj.a)
             </a></h2>
       <p>
          
@@ -1787,7 +1882,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_2_3">Unused Local Eliminator (jj.ule)
+      <h2><a name="phase_2_4">Unused Local Eliminator (jj.ule)
             </a></h2>
       <p>
          The Unused Local Eliminator removes any unused locals from the
@@ -1806,7 +1901,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_2_4">Type Assigner (jj.tr)
+      <h2><a name="phase_2_5">Type Assigner (jj.tr)
             </a></h2>
       <p>
          The Type Assigner gives local variables types which will
@@ -1826,7 +1921,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_2_5">Unsplit-originals Local Packer (jj.ulp)
+      <h2><a name="phase_2_6">Unsplit-originals Local Packer (jj.ulp)
             </a></h2>
       <p>
          The Unsplit-originals Local Packer executes only when the
@@ -1864,7 +1959,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_2_6">Local Name Standardizer (jj.lns)
+      <h2><a name="phase_2_7">Local Name Standardizer (jj.lns)
             </a></h2>
       <p>
          The Local Name Standardizer assigns generic names to local variables.
@@ -1897,7 +1992,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_2_7">Copy Propagator (jj.cp)
+      <h2><a name="phase_2_8">Copy Propagator (jj.cp)
             </a></h2>
       <p>
          This phase performs cascaded copy propagation.
@@ -1961,7 +2056,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_2_8">Dead Assignment Eliminator (jj.dae)
+      <h2><a name="phase_2_9">Dead Assignment Eliminator (jj.dae)
             </a></h2>
       <p>
          The Dead Assignment Eliminator eliminates assignment statements
@@ -1995,7 +2090,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_2_9">Post-copy propagation Unused Local Eliminator (jj.cp-ule)
+      <h2><a name="phase_2_10">Post-copy propagation Unused Local Eliminator (jj.cp-ule)
             </a></h2>
       <p>
          This phase removes any locals that are unused after copy propagation.
@@ -2013,7 +2108,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_2_10">Local Packer (jj.lp)
+      <h2><a name="phase_2_11">Local Packer (jj.lp)
             </a></h2>
       <p>
          The Local Packer attempts to minimize the number of local
@@ -2049,7 +2144,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_2_11">Nop Eliminator (jj.ne)
+      <h2><a name="phase_2_12">Nop Eliminator (jj.ne)
             </a></h2>
       <p>
          The Nop Eliminator removes nop statements from the method.
@@ -2067,7 +2162,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_2_12">Unreachable Code Eliminator (jj.uce)
+      <h2><a name="phase_2_13">Unreachable Code Eliminator (jj.uce)
             </a></h2>
       <p>
          The Unreachable Code Eliminator removes unreachable code and
@@ -5283,7 +5378,7 @@
             )
             
             <p>
-               If enabled, Shimple will created extended SSA (SSI) form.
+               If enabled, Shimple will create extended SSA (SSI) form.
                
             </p>
          </li>
@@ -6989,6 +7084,24 @@
                the Local Splitter.
                
             </p>
+         </li>
+      </ul>
+      <h2><a name="phase_19_6">Nop Eliminator (bb.ne)
+            </a></h2>
+      <p>
+         The Nop Eliminator removes nop instructions from the method.
+         
+      </p>
+      <h4>Accepted phase options:</h4>
+      <ul>
+         <li><b>Enabled</b>
+            (enabled)
+            <br>
+            (default value:
+            <span class="value">true</span>
+            )
+            
+            <p></p>
          </li>
       </ul>
       <h2><a name="phase_20">Baf Optimization (bop)

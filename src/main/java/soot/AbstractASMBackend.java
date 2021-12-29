@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -36,7 +36,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -48,7 +47,7 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
-
+import soot.asm.AsmUtil;
 import soot.baf.BafBody;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
@@ -74,6 +73,7 @@ import soot.tagkit.InnerClassTag;
 import soot.tagkit.OuterClassTag;
 import soot.tagkit.SignatureTag;
 import soot.tagkit.SourceFileTag;
+import soot.tagkit.SyntheticTag;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
@@ -84,18 +84,16 @@ import soot.util.backend.SootASMClassWriter;
  * dependent on the IR.
  *
  * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer
- *
  */
 public abstract class AbstractASMBackend {
 
+  private final Map<SootMethod, BafBody> bafBodyCache = new HashMap<SootMethod, BafBody>();
+  // The SootClass that is to be converted into bytecode
+  protected final SootClass sc;
+  // The Java version to be used for generating this class
+  protected final int javaVersion;
   // An ASM ClassVisitor that is used to emit the bytecode to
   protected ClassVisitor cv;
-  // The SootClass that is to be converted into bytecode
-  protected SootClass sc;
-  // The Java version to be used for generating this class
-  protected int javaVersion;
-
-  private final Map<SootMethod, BafBody> bafBodyCache = new HashMap<SootMethod, BafBody>();
 
   /**
    * Creates a new ASM backend
@@ -109,45 +107,16 @@ public abstract class AbstractASMBackend {
   public AbstractASMBackend(SootClass sc, int javaVersion) {
     this.sc = sc;
 
-    int minVersion = getMinJavaVersion(sc);
-
     if (javaVersion == 0) {
       javaVersion = Options.java_version_default;
     }
-
+    int minVersion = getMinJavaVersion(sc);
     if (javaVersion != Options.java_version_default && javaVersion < minVersion) {
       throw new IllegalArgumentException("Enforced Java version " + translateJavaVersion(javaVersion)
           + " too low to support required features (" + translateJavaVersion(minVersion) + " required)");
     }
 
-    javaVersion = Math.max(javaVersion, minVersion);
-
-    switch (javaVersion) {
-      case Options.java_version_1_1:
-        this.javaVersion = Opcodes.V1_1;
-        break;
-      case Options.java_version_1_2:
-        this.javaVersion = Opcodes.V1_2;
-        break;
-      case Options.java_version_1_3:
-        this.javaVersion = Opcodes.V1_3;
-        break;
-      case Options.java_version_1_4:
-        this.javaVersion = Opcodes.V1_4;
-        break;
-      case Options.java_version_1_5:
-        this.javaVersion = Opcodes.V1_5;
-        break;
-      case Options.java_version_1_6:
-        this.javaVersion = Opcodes.V1_6;
-        break;
-      case Options.java_version_1_7:
-        this.javaVersion = Opcodes.V1_7;
-        break;
-      case Options.java_version_1_8:
-        this.javaVersion = Opcodes.V1_8;
-        break;
-    }
+    this.javaVersion = AsmUtil.javaToBytecodeVersion(Math.max(javaVersion, minVersion));
   }
 
   /**
@@ -172,7 +141,8 @@ public abstract class AbstractASMBackend {
     if (activeBody instanceof JimpleBody) {
       body = PackManager.v().convertJimpleBodyToBaf(method);
     } else {
-      throw new RuntimeException("ASM-backend can only translate Baf- and JimpleBodies!");
+      throw new RuntimeException("ASM-backend can only translate Baf and Jimple bodies! Found "
+          + (activeBody == null ? "null" : activeBody.getClass().getName()) + '.');
     }
 
     bafBodyCache.put(method, body);
@@ -189,29 +159,20 @@ public abstract class AbstractASMBackend {
   private int getMinJavaVersion(SootClass sc) {
     int minVersion = Options.java_version_1_1;
 
-    if (sc.hasTag("SignatureTag")) {
-      if (((SignatureTag) sc.getTag("SignatureTag")).getSignature().contains("<")) {
-        minVersion = Options.java_version_1_5;
-      }
-    }
-    if (sc.hasTag("VisibilityAnnotationTag")) {
+    if (Modifier.isAnnotation(sc.getModifiers()) || sc.hasTag(VisibilityAnnotationTag.NAME)) {
       minVersion = Options.java_version_1_5;
     }
-    if (Modifier.isAnnotation(sc.getModifiers())) {
-      // Class is defining an annotation
+    if (containsGenericSignatureTag(sc)) {
       minVersion = Options.java_version_1_5;
     }
-
     for (SootField sf : sc.getFields()) {
       if (minVersion >= Options.java_version_1_5) {
         break;
       }
-      if (sf.hasTag("SignatureTag")) {
-        if (((SignatureTag) sf.getTag("SignatureTag")).getSignature().contains("<")) {
-          minVersion = Options.java_version_1_5;
-        }
+      if (sf.hasTag(VisibilityAnnotationTag.NAME)) {
+        minVersion = Options.java_version_1_5;
       }
-      if (sf.hasTag("VisibilityAnnotationTag")) {
+      if (containsGenericSignatureTag(sf)) {
         minVersion = Options.java_version_1_5;
       }
     }
@@ -219,17 +180,14 @@ public abstract class AbstractASMBackend {
     // We need to clone the method list, because it may happen during writeout
     // that we need to split methods, which are longer than the JVM spec allows.
     // This feature is work in progress.
-    List<SootMethod> clonedList = new ArrayList<>(sc.getMethods());
-    for (SootMethod sm : clonedList) {
+    for (SootMethod sm : new ArrayList<>(sc.getMethods())) {
       if (minVersion >= Options.java_version_1_8) {
         break;
       }
-      if (sm.hasTag("SignatureTag")) {
-        if (((SignatureTag) sm.getTag("SignatureTag")).getSignature().contains("<")) {
-          minVersion = Math.max(minVersion, Options.java_version_1_5);
-        }
+      if (sm.hasTag(VisibilityAnnotationTag.NAME) || sm.hasTag(VisibilityParameterAnnotationTag.NAME)) {
+        minVersion = Math.max(minVersion, Options.java_version_1_5);
       }
-      if (sm.hasTag("VisibilityAnnotationTag") || sm.hasTag("VisibilityParameterAnnotationTag")) {
+      if (containsGenericSignatureTag(sm)) {
         minVersion = Math.max(minVersion, Options.java_version_1_5);
       }
       if (sm.hasActiveBody()) {
@@ -237,6 +195,11 @@ public abstract class AbstractASMBackend {
       }
     }
     return minVersion;
+  }
+
+  private static boolean containsGenericSignatureTag(Host h) {
+    SignatureTag t = (SignatureTag) h.getTag(SignatureTag.NAME);
+    return t != null && t.getSignature().indexOf('<') >= 0;
   }
 
   /**
@@ -286,14 +249,15 @@ public abstract class AbstractASMBackend {
     generateClassHeader();
 
     // Retrieve information about the source of the class
-    if (sc.hasTag("SourceFileTag") && !Options.v().no_output_source_file_attribute()) {
-      String srcName = ((SourceFileTag) sc.getTag("SourceFileTag")).getSourceFile();
-      cv.visitSource(srcName, null); // TODO Correct value for the debug
-      // argument
+    if (!Options.v().no_output_source_file_attribute()) {
+      SourceFileTag t = (SourceFileTag) sc.getTag(SourceFileTag.NAME);
+      if (t != null) {
+        cv.visitSource(t.getSourceFile(), null); // TODO Correct value for the debug argument
+      }
     }
 
     // Retrieve information about outer class if present
-    if (sc.hasOuterClass() || sc.hasTag("EnclosingMethodTag") || sc.hasTag("OuterClassTag")) {
+    if (sc.hasOuterClass() || sc.hasTag(EnclosingMethodTag.NAME) || sc.hasTag(OuterClassTag.NAME)) {
       generateOuterClassReference();
     }
 
@@ -316,19 +280,17 @@ public abstract class AbstractASMBackend {
   }
 
   /**
-   * Comparatator that is used to sort the methods before they are written out. This is mainly used to enforce a
-   * deterministic output between runs which we need for testing.
+   * Comparator that is used to sort the methods before they are written out. This is mainly used to enforce a deterministic
+   * output between runs which we need for testing.
    *
    * @author Steven Arzt
-   *
    */
-  private class SootMethodComparator implements Comparator<SootMethod> {
+  private static class SootMethodComparator implements Comparator<SootMethod> {
 
     @Override
     public int compare(SootMethod o1, SootMethod o2) {
       return o1.getName().compareTo(o2.getName());
     }
-
   }
 
   /**
@@ -342,8 +304,9 @@ public abstract class AbstractASMBackend {
         continue;
       }
 
-      int access = getModifiers(sm.getModifiers(), sm);
-      String name = sm.getName();
+      final int access = getModifiers(sm.getModifiers(), sm);
+      final String name = sm.getName();
+
       StringBuilder descBuilder = new StringBuilder(5);
       descBuilder.append('(');
       for (Type t : sm.getParameterTypes()) {
@@ -352,18 +315,15 @@ public abstract class AbstractASMBackend {
       descBuilder.append(')');
       descBuilder.append(toTypeDesc(sm.getReturnType()));
 
-      String sig = null;
-      if (sm.hasTag("SignatureTag")) {
-        SignatureTag genericSignature = (SignatureTag) sm.getTag("SignatureTag");
-        sig = genericSignature.getSignature();
-      }
+      SignatureTag sigTag = (SignatureTag) sm.getTag(SignatureTag.NAME);
+      String sig = sigTag == null ? null : sigTag.getSignature();
 
       List<SootClass> exceptionList = sm.getExceptionsUnsafe();
       String[] exceptions;
       if (exceptionList != null) {
         exceptions = new String[exceptionList.size()];
         int i = 0;
-        for (SootClass exc : sm.getExceptions()) {
+        for (SootClass exc : exceptionList) {
           exceptions[i] = slashify(exc.getName());
           ++i;
         }
@@ -419,11 +379,10 @@ public abstract class AbstractASMBackend {
       }
       String name = f.getName();
       String desc = toTypeDesc(f.getType());
-      String sig = null;
-      if (f.hasTag("SignatureTag")) {
-        SignatureTag genericSignature = (SignatureTag) f.getTag("SignatureTag");
-        sig = genericSignature.getSignature();
-      }
+
+      SignatureTag sigTag = (SignatureTag) f.getTag(SignatureTag.NAME);
+      String sig = sigTag == null ? null : sigTag.getSignature();
+
       Object value = getDefaultValue(f);
       int access = getModifiers(f.getModifiers(), f);
       FieldVisitor fv = cv.visitField(access, name, desc, sig, value);
@@ -440,7 +399,6 @@ public abstract class AbstractASMBackend {
    * a deterministic output between runs which we need for testing.
    *
    * @author Steven Arzt
-   *
    */
   private class SootInnerClassComparator implements Comparator<InnerClassTag> {
 
@@ -448,7 +406,6 @@ public abstract class AbstractASMBackend {
     public int compare(InnerClassTag o1, InnerClassTag o2) {
       return o1.getInnerClass() == null ? 0 : o1.getInnerClass().compareTo(o2.getInnerClass());
     }
-
   }
 
   /**
@@ -456,8 +413,8 @@ public abstract class AbstractASMBackend {
    */
   protected void generateInnerClassReferences() {
     if (!Options.v().no_output_inner_classes_attribute()) {
-      if (sc.hasTag("InnerClassAttribute")) {
-        InnerClassAttribute ica = (InnerClassAttribute) sc.getTag("InnerClassAttribute");
+      InnerClassAttribute ica = (InnerClassAttribute) sc.getTag(InnerClassAttribute.NAME);
+      if (ica != null) {
         List<InnerClassTag> sortedTags = new ArrayList<InnerClassTag>(ica.getSpecs());
         Collections.sort(sortedTags, new SootInnerClassComparator());
         writeInnerClassTags(sortedTags);
@@ -510,8 +467,7 @@ public abstract class AbstractASMBackend {
   protected void generateAttributes(FieldVisitor fv, SootField f) {
     for (Tag t : f.getTags()) {
       if (t instanceof Attribute) {
-        org.objectweb.asm.Attribute a = createASMAttribute((Attribute) t);
-        fv.visitAttribute(a);
+        fv.visitAttribute(createASMAttribute((Attribute) t));
       }
     }
   }
@@ -527,8 +483,7 @@ public abstract class AbstractASMBackend {
   protected void generateAttributes(MethodVisitor mv, SootMethod m) {
     for (Tag t : m.getTags()) {
       if (t instanceof Attribute) {
-        org.objectweb.asm.Attribute a = createASMAttribute((Attribute) t);
-        mv.visitAttribute(a);
+        mv.visitAttribute(createASMAttribute((Attribute) t));
       }
     }
   }
@@ -543,8 +498,8 @@ public abstract class AbstractASMBackend {
    */
   protected void generateAnnotations(Object visitor, Host host) {
     for (Tag t : host.getTags()) {
-      // Find all VisibilityAnnotationTags
       if (t instanceof VisibilityAnnotationTag) {
+        // Find all VisibilityAnnotationTags
         VisibilityAnnotationTag vat = (VisibilityAnnotationTag) t;
         boolean runTimeVisible = (vat.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE);
         for (AnnotationTag at : vat.getAnnotations()) {
@@ -559,19 +514,16 @@ public abstract class AbstractASMBackend {
 
           generateAnnotationElems(av, at.getElems(), true);
         }
+      } else if (t instanceof AnnotationDefaultTag && host instanceof SootMethod) {
+        // Visit AnnotationDefault on methods
+        AnnotationDefaultTag adt = (AnnotationDefaultTag) t;
+        AnnotationVisitor av = ((MethodVisitor) visitor).visitAnnotationDefault();
+        generateAnnotationElems(av, Collections.singleton(adt.getDefaultVal()), true);
       }
       /*
        * Here TypeAnnotations could be visited potentially. Currently (2015/02/03) they are not supported by the
        * ASM-front-end and their information is not accessible.
        */
-
-      // Visit AnnotationDefault on methods
-      else if (host instanceof SootMethod && t instanceof AnnotationDefaultTag) {
-        AnnotationDefaultTag adt = (AnnotationDefaultTag) t;
-        AnnotationVisitor av = ((MethodVisitor) visitor).visitAnnotationDefault();
-        generateAnnotationElems(av, Collections.singleton(adt.getDefaultVal()), true);
-      }
-
     }
   }
 
@@ -587,9 +539,8 @@ public abstract class AbstractASMBackend {
    */
   protected void generateAnnotationElems(AnnotationVisitor av, Collection<AnnotationElem> elements, boolean addName) {
     if (av != null) {
-      Iterator<AnnotationElem> it = elements.iterator();
-      while (it.hasNext()) {
-        AnnotationElem elem = it.next();
+      for (AnnotationElem elem : elements) {
+        assert (elem != null);
         if (elem instanceof AnnotationEnumElem) {
           AnnotationEnumElem enumElem = (AnnotationEnumElem) elem;
           av.visitEnum(enumElem.getName(), enumElem.getTypeName(), enumElem.getConstantName());
@@ -619,6 +570,11 @@ public abstract class AbstractASMBackend {
               case 'S':
                 val = (short) value;
                 break;
+              case 'C':
+                val = (char) value;
+                break;
+              default:
+                assert false : "Unexpected kind: " + intElem.getKind() + " (in " + intElem + ")";
             }
           } else if (elem instanceof AnnotationBooleanElem) {
             AnnotationBooleanElem booleanElem = (AnnotationBooleanElem) elem;
@@ -644,7 +600,6 @@ public abstract class AbstractASMBackend {
           } else {
             av.visit(null, val);
           }
-
         }
       }
       av.visitEnd();
@@ -655,20 +610,22 @@ public abstract class AbstractASMBackend {
    * Emits the bytecode for a reference to an outer class if necessary
    */
   protected void generateOuterClassReference() {
-    SootClass outerClass = sc.getOuterClass();
-    String outerClassName = slashify(outerClass.getName());
+    String outerClassName = slashify(sc.getOuterClass().getName());
     String enclosingMethod = null;
     String enclosingMethodSig = null;
-    if (sc.hasTag("EnclosingMethodTag")) {
-      EnclosingMethodTag emTag = (EnclosingMethodTag) sc.getTag("EnclosingMethodTag");
+    EnclosingMethodTag emTag = (EnclosingMethodTag) sc.getTag(EnclosingMethodTag.NAME);
+    if (emTag != null) {
       if (!sc.hasOuterClass()) {
         outerClassName = slashify(emTag.getEnclosingClass());
       }
       enclosingMethod = emTag.getEnclosingMethod();
       enclosingMethodSig = emTag.getEnclosingMethodSig();
     }
-    if (!sc.hasOuterClass() && sc.hasTag("OuterClassTag")) {
-      outerClassName = slashify(((OuterClassTag) sc.getTag("OuterClassTag")).getName());
+    if (!sc.hasOuterClass()) {
+      OuterClassTag oct = (OuterClassTag) sc.getTag(OuterClassTag.NAME);
+      if (oct != null) {
+        outerClassName = slashify(oct.getName());
+      }
     }
     cv.visitOuterClass(outerClassName, enclosingMethod, enclosingMethodSig);
   }
@@ -680,21 +637,19 @@ public abstract class AbstractASMBackend {
     /*
      * Retrieve all modifiers
      */
-    int classModifiers = sc.getModifiers();
-    int modifier = getModifiers(classModifiers, sc);
+    int modifier = getModifiers(sc.getModifiers(), sc);
 
     // Retrieve class-name
     String className = slashify(sc.getName());
     // Retrieve generics
-    String signature = null;
-    if (sc.hasTag("SignatureTag")) {
-      signature = ((SignatureTag) sc.getTag("SignatureTag")).getSignature();
-    }
+    SignatureTag sigTag = (SignatureTag) sc.getTag(SignatureTag.NAME);
+    String sig = sigTag == null ? null : sigTag.getSignature();
+
     /*
      * Retrieve super-class. If no super-class is explicitly given, the default is java.lang.Object, except for the class
      * java.lang.Object itself, which does not have any super classes.
      */
-    String superClass = className.equals("java/lang/Object") ? null : "java/lang/Object";
+    String superClass = "java/lang/Object".equals(className) ? null : "java/lang/Object";
     SootClass csuperClass = sc.getSuperclassUnsafe();
     if (csuperClass != null) {
       superClass = slashify(csuperClass.getName());
@@ -702,15 +657,13 @@ public abstract class AbstractASMBackend {
 
     // Retrieve directly implemented interfaces
     String[] interfaces = new String[sc.getInterfaceCount()];
-    Iterator<SootClass> implementedInterfaces = sc.getInterfaces().iterator();
     int i = 0;
-    while (implementedInterfaces.hasNext()) {
-      SootClass interf = implementedInterfaces.next();
+    for (SootClass interf : sc.getInterfaces()) {
       interfaces[i] = slashify(interf.getName());
       ++i;
     }
 
-    cv.visit(javaVersion, modifier, className, signature, superClass, interfaces);
+    cv.visit(javaVersion, modifier, className, sig, superClass, interfaces);
   }
 
   /**
@@ -777,7 +730,7 @@ public abstract class AbstractASMBackend {
      * Retrieve synthetic-modifier. Class not present in source-code but generated by e.g. compiler TODO Do we need both
      * checks?
      */
-    if (Modifier.isSynthetic(modVal) || host.hasTag("SyntheticTag")) {
+    if (Modifier.isSynthetic(modVal) || host.hasTag(SyntheticTag.NAME)) {
       modifier |= Opcodes.ACC_SYNTHETIC;
     }
     // Retrieve annotation-modifier
@@ -799,6 +752,5 @@ public abstract class AbstractASMBackend {
    * @param method
    *          The SootMethod the bytecode is to be emitted for
    */
-  abstract protected void generateMethodBody(MethodVisitor mv, SootMethod method);
-
+  protected abstract void generateMethodBody(MethodVisitor mv, SootMethod method);
 }

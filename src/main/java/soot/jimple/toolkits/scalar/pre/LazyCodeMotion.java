@@ -76,6 +76,8 @@ import soot.util.UnitMap;
 public class LazyCodeMotion extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(LazyCodeMotion.class);
 
+  private static final String PREFIX = "$lcm";
+
   public LazyCodeMotion(Singletons.Global g) {
   }
 
@@ -83,11 +85,10 @@ public class LazyCodeMotion extends BodyTransformer {
     return G.v().soot_jimple_toolkits_scalar_pre_LazyCodeMotion();
   }
 
-  private static final String PREFIX = "$lcm";
-
   /**
    * performs the lazy code motion.
    */
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> opts) {
     LCMOptions options = new LCMOptions(opts);
     HashMap<EquivalentValue, Local> expToHelper = new HashMap<EquivalentValue, Local>();
@@ -105,8 +106,9 @@ public class LazyCodeMotion extends BodyTransformer {
 
     UnitGraph graph = new BriefUnitGraph(b);
 
-    /* map each unit to its RHS. only take binary expressions */
+    /* Map each unit to its RHS. Take only BinopExpr and ConcreteRef */
     Map<Unit, EquivalentValue> unitToEquivRhs = new UnitMap<EquivalentValue>(b, graph.size() + 1, 0.7f) {
+      @Override
       protected EquivalentValue mapTo(Unit unit) {
         Value tmp = SootFilter.noInvokeRhs(unit);
         Value tmp2 = SootFilter.binop(tmp);
@@ -117,12 +119,11 @@ public class LazyCodeMotion extends BodyTransformer {
       }
     };
 
-    /* same as before, but without exception-throwing expressions */
+    /* Same as before, but without exception-throwing expressions */
     Map<Unit, EquivalentValue> unitToNoExceptionEquivRhs = new UnitMap<EquivalentValue>(b, graph.size() + 1, 0.7f) {
+      @Override
       protected EquivalentValue mapTo(Unit unit) {
-        Value tmp = SootFilter.binopRhs(unit);
-        tmp = SootFilter.noExceptionThrowing(tmp);
-        return SootFilter.equiVal(tmp);
+        return SootFilter.equiVal(SootFilter.noExceptionThrowing(SootFilter.binopRhs(unit)));
       }
     };
 
@@ -130,34 +131,29 @@ public class LazyCodeMotion extends BodyTransformer {
     BoundedFlowSet<EquivalentValue> set = new ArrayPackedSet<EquivalentValue>(universe);
 
     /* if a more precise sideeffect-tester comes out, please change it here! */
-    SideEffectTester sideEffect;
-    if (Scene.v().hasCallGraph() && !options.naive_side_effect()) {
+    final SideEffectTester sideEffect;
+    final Scene sc = Scene.v();
+    if (sc.hasCallGraph() && !options.naive_side_effect()) {
       sideEffect = new PASideEffectTester();
     } else {
       sideEffect = new NaiveSideEffectTester();
     }
     sideEffect.newMethod(b.getMethod());
-    UpSafetyAnalysis upSafe;
-    DownSafetyAnalysis downSafe;
-    EarliestnessComputation earliest;
-    DelayabilityAnalysis delay;
-    NotIsolatedAnalysis notIsolated;
-    LatestComputation latest;
 
+    final UpSafetyAnalysis upSafe;
     if (options.safety() == LCMOptions.safety_safe) {
       upSafe = new UpSafetyAnalysis(graph, unitToNoExceptionEquivRhs, sideEffect, set);
     } else {
       upSafe = new UpSafetyAnalysis(graph, unitToEquivRhs, sideEffect, set);
     }
 
+    final DownSafetyAnalysis downSafe;
     if (options.safety() == LCMOptions.safety_unsafe) {
       downSafe = new DownSafetyAnalysis(graph, unitToEquivRhs, sideEffect, set);
     } else {
       downSafe = new DownSafetyAnalysis(graph, unitToNoExceptionEquivRhs, sideEffect, set);
       /* we include the exception-throwing expressions at their uses */
-      Iterator<Unit> unitIt = unitChain.iterator();
-      while (unitIt.hasNext()) {
-        Unit currentUnit = unitIt.next();
+      for (Unit currentUnit : unitChain) {
         EquivalentValue rhs = unitToEquivRhs.get(currentUnit);
         if (rhs != null) {
           downSafe.getFlowBefore(currentUnit).add(rhs);
@@ -165,12 +161,11 @@ public class LazyCodeMotion extends BodyTransformer {
       }
     }
 
-    earliest = new EarliestnessComputation(graph, upSafe, downSafe, sideEffect, set);
-    delay = new DelayabilityAnalysis(graph, earliest, unitToEquivRhs, set);
-    latest = new LatestComputation(graph, delay, unitToEquivRhs, set);
-    notIsolated = new NotIsolatedAnalysis(graph, latest, unitToEquivRhs, set);
-
-    LocalCreation localCreation = new LocalCreation(b.getLocals(), PREFIX);
+    final EarliestnessComputation earliest = new EarliestnessComputation(graph, upSafe, downSafe, sideEffect, set);
+    final DelayabilityAnalysis delay = new DelayabilityAnalysis(graph, earliest, unitToEquivRhs, set);
+    final LatestComputation latest = new LatestComputation(graph, delay, unitToEquivRhs, set);
+    final NotIsolatedAnalysis notIsolated = new NotIsolatedAnalysis(graph, latest, unitToEquivRhs, set);
+    final LocalCreation localCreation = sc.createLocalCreation(b.getLocals(), PREFIX);
 
     /* debug */
     /*
@@ -180,57 +175,49 @@ public class LazyCodeMotion extends BodyTransformer {
      * FlowSet delaySet = (FlowSet)delay.getFlowBefore(currentUnit); FlowSet earlySet =
      * ((FlowSet)earliest.getFlowBefore(currentUnit)); FlowSet upSet = (FlowSet)upSafe.getFlowBefore(currentUnit); FlowSet
      * downSet = (FlowSet)downSafe.getFlowBefore(currentUnit); logger.debug(""+currentUnit); logger.debug(" rh: " + equiVal);
-     * logger.debug(" up: " + upSet); logger.debug(" do: " + downSet); logger.debug(" is: " + notIsolatedSet);
-     * logger.debug(" ea: " + earlySet); logger.debug(" db: " + delaySet); logger.debug(" la: " + latestSet); } }
+     * logger.debug(" up: " + upSet); logger.debug(" do: " + downSet); logger.debug(" is: " + notIsolatedSet); logger.debug(
+     * " ea: " + earlySet); logger.debug(" db: " + delaySet); logger.debug(" la: " + latestSet); } }
      */
 
-    { /* insert the computations */
-      for (Iterator<Unit> unitIt = unitChain.snapshotIterator(); unitIt.hasNext();) {
-        Unit currentUnit = unitIt.next();
-        FlowSet<EquivalentValue> latestSet = latest.getFlowBefore(currentUnit);
-        FlowSet<EquivalentValue> notIsolatedSet = notIsolated.getFlowAfter(currentUnit);
-        FlowSet<EquivalentValue> insertHere = latestSet.clone();
-        insertHere.intersection(notIsolatedSet, insertHere);
+    /* insert the computations */
+    for (Iterator<Unit> unitIt = unitChain.snapshotIterator(); unitIt.hasNext();) {
+      Unit currentUnit = unitIt.next();
+      FlowSet<EquivalentValue> latestSet = latest.getFlowBefore(currentUnit);
+      FlowSet<EquivalentValue> notIsolatedSet = notIsolated.getFlowAfter(currentUnit);
+      FlowSet<EquivalentValue> insertHere = latestSet.clone();
+      insertHere.intersection(notIsolatedSet);
 
-        for (EquivalentValue equiVal : insertHere) {
-          /* get the unic helper-name for this expression */
-          Local helper = expToHelper.get(equiVal);
-          if (helper == null) {
-            helper = localCreation.newLocal(equiVal.getType());
-            expToHelper.put(equiVal, helper);
-          }
-
-          /* insert a new Assignment-stmt before the currentUnit */
-          Value insertValue = Jimple.cloneIfNecessary(equiVal.getValue());
-          Unit firstComp = Jimple.v().newAssignStmt(helper, insertValue);
-          unitChain.insertBefore(firstComp, currentUnit);
+      for (EquivalentValue equiVal : insertHere) {
+        /* get the unique helper-name for this expression */
+        Local helper = expToHelper.get(equiVal);
+        if (helper == null) {
+          helper = localCreation.newLocal(equiVal.getType());
+          expToHelper.put(equiVal, helper);
         }
+
+        /* insert a new Assignment-stmt before the currentUnit */
+        Value insertValue = Jimple.cloneIfNecessary(equiVal.getValue());
+        Unit firstComp = Jimple.v().newAssignStmt(helper, insertValue);
+        unitChain.insertBefore(firstComp, currentUnit);
       }
     }
 
-    { /* replace old computations by the helper-vars */
-      Iterator<Unit> unitIt = unitChain.iterator();
-      while (unitIt.hasNext()) {
-        Unit currentUnit = (Unit) unitIt.next();
-        EquivalentValue rhs = (EquivalentValue) unitToEquivRhs.get(currentUnit);
-        if (rhs != null) {
-          FlowSet<EquivalentValue> latestSet = latest.getFlowBefore(currentUnit);
-          FlowSet<EquivalentValue> notIsolatedSet = notIsolated.getFlowAfter(currentUnit);
-          if (!latestSet.contains(rhs) && notIsolatedSet.contains(rhs)) {
-            Local helper = expToHelper.get(rhs);
-
+    /* replace old computations by the helper-vars */
+    for (Unit currentUnit : unitChain) {
+      EquivalentValue rhs = unitToEquivRhs.get(currentUnit);
+      if (rhs != null) {
+        FlowSet<EquivalentValue> latestSet = latest.getFlowBefore(currentUnit);
+        FlowSet<EquivalentValue> notIsolatedSet = notIsolated.getFlowAfter(currentUnit);
+        if (!latestSet.contains(rhs) && notIsolatedSet.contains(rhs)) {
+          Local helper = expToHelper.get(rhs);
+          if (helper != null) {
             try {
-              if (helper != null) {
-                ((AssignStmt) currentUnit).setRightOp(helper);
-              }
+              ((AssignStmt) currentUnit).setRightOp(helper);
             } catch (RuntimeException e) {
               logger.debug("Error on " + b.getMethod().getName());
-              logger.debug("" + currentUnit.toString());
-
-              logger.debug("" + latestSet);
-
-              logger.debug("" + notIsolatedSet);
-
+              logger.debug(currentUnit.toString());
+              logger.debug(String.valueOf(latestSet));
+              logger.debug(String.valueOf(notIsolatedSet));
               throw e;
             }
           }

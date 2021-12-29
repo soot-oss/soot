@@ -30,6 +30,7 @@ package soot.toolkits.scalar;
  * @author Manu Sridharan (genericized it)
  */
 public class IdentityPair<T, U> {
+
   protected final T o1;
   protected final U o2;
   protected final int hashCode;
@@ -40,14 +41,14 @@ public class IdentityPair<T, U> {
     this.hashCode = computeHashCode();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int hashCode() {
     return hashCode;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   private int computeHashCode() {
     final int prime = 31;
     int result = 1;
@@ -59,26 +60,16 @@ public class IdentityPair<T, U> {
   /**
    * {@inheritDoc}
    */
-  @SuppressWarnings("unchecked")
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
+    if (obj == null || this.getClass() != obj.getClass()) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final IdentityPair other = (IdentityPair) obj;
-    if (o1 != other.o1) {
-      return false;
-    }
-    if (o2 != other.o2) {
-      return false;
-    }
-    return true;
+    final IdentityPair<?, ?> other = (IdentityPair<?, ?>) obj;
+    return this.o1 == other.o1 && this.o2 == other.o2;
   }
 
   public T getO1() {
@@ -89,6 +80,7 @@ public class IdentityPair<T, U> {
     return o2;
   }
 
+  @Override
   public String toString() {
     return "IdentityPair " + o1 + "," + o2;
   }

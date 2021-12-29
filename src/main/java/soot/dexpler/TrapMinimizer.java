@@ -37,6 +37,7 @@ import soot.options.Options;
 import soot.toolkits.exceptions.TrapTransformer;
 import soot.toolkits.graph.ExceptionalGraph.ExceptionDest;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 
 /**
  * Transformer that splits traps for Dalvik whenever a statements within the trap cannot reach the trap's handler.
@@ -67,7 +68,8 @@ public class TrapMinimizer extends TrapTransformer {
       return;
     }
 
-    ExceptionalUnitGraph eug = new ExceptionalUnitGraph(b, DalvikThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
+    ExceptionalUnitGraph eug = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b, DalvikThrowAnalysis.v(),
+        Options.v().omit_excepting_unit_edges());
     Set<Unit> unitsWithMonitor = getUnitsWithMonitor(eug);
 
     Map<Trap, List<Trap>> replaceTrapBy = new HashMap<Trap, List<Trap>>(b.getTraps().size());

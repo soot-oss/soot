@@ -31,6 +31,7 @@ import soot.Unit;
 
 /** The aggregator for LineNumberTable attribute. */
 public class LineNumberTagAggregator extends FirstTagAggregator {
+
   public LineNumberTagAggregator(Singletons.Global g) {
   }
 
@@ -39,10 +40,12 @@ public class LineNumberTagAggregator extends FirstTagAggregator {
   }
 
   /** Decide whether this tag should be aggregated by this aggregator. */
+  @Override
   public boolean wantTag(Tag t) {
     return (t instanceof LineNumberTag) || (t instanceof SourceLnPosTag);
   }
 
+  @Override
   public String aggregatedName() {
     return "LineNumberTable";
   }

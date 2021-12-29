@@ -52,18 +52,6 @@ public class Environment {
   private final ConstantObject stringobject = new GeneralConstObject(TypeConstants.v().STRINGCLASS, "unknownstring");
 
   /*
-   * to get finer resolution, it is worth to distinguish arrays and general scalars. WARNING: making array with
-   * java.lang.Object type may be a problem!
-   */
-  private final ConstantObject leastarray = new GeneralConstObject(TypeConstants.v().LEASTCLASS, "leastarray");
-
-  /*
-   * makes a general unknown object, WARNING: unknown object must have the least type, it won't be useful when resolve
-   * virtual calls. Null type is a good candidate for this.
-   */
-  private final ConstantObject leastobject = new GeneralConstObject(TypeConstants.v().LEASTCLASS, "leastobject");
-
-  /*
    * provides an abstract java.lang.reflect.Field object.
    */
   private final ConstantObject fieldobject = new GeneralConstObject(TypeConstants.v().FIELDCLASS, "field");
@@ -83,6 +71,13 @@ public class Environment {
    */
   private final ConstantObject privilegedActionException
       = new GeneralConstObject(TypeConstants.v().PRIVILEGEDACTIONEXCEPTION, "constructor");
+
+  private final ConstantObject accessControlContext
+      = new GeneralConstObject(TypeConstants.v().ACCESSCONTROLCONTEXT, "exception");
+  private final ConstantObject arrayFields = new GeneralConstObject(TypeConstants.v().ARRAYFIELDS, "field");
+  private final ConstantObject arrayMethods = new GeneralConstObject(TypeConstants.v().ARRAYMETHODS, "method");
+  private final ConstantObject arrayConstructors = new GeneralConstObject(TypeConstants.v().ARRAYCONSTRUCTORS, "ctor");
+  private final ConstantObject arrayClasses = new GeneralConstObject(TypeConstants.v().ARRAYCLASSES, "classes");
 
   /********************* INTERFACE to NATIVE METHODS *******************/
   public ConstantObject getClassLoaderObject() {
@@ -105,14 +100,6 @@ public class Environment {
     return stringobject;
   }
 
-  public ConstantObject getLeastArrayObject() {
-    return leastarray;
-  }
-
-  public ConstantObject getLeastObject() {
-    return leastobject;
-  }
-
   public ConstantObject getFieldObject() {
     return fieldobject;
   }
@@ -131,5 +118,25 @@ public class Environment {
 
   public ConstantObject getPrivilegedActionExceptionObject() {
     return privilegedActionException;
+  }
+
+  public ConstantObject getAccessControlContext() {
+    return accessControlContext;
+  }
+
+  public ConstantObject getArrayConstructor() {
+    return arrayConstructors;
+  }
+
+  public AbstractObject getArrayFields() {
+    return arrayFields;
+  }
+
+  public AbstractObject getArrayMethods() {
+    return arrayMethods;
+  }
+
+  public AbstractObject getArrayClasses() {
+    return arrayClasses;
   }
 }

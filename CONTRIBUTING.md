@@ -7,9 +7,9 @@ All our nightly tests and builds operate on develop branch.
 ## Pull Request  
 > Note: If you already have a fork of Soot and need to merge our formatting changes, [this](https://github.com/soot-oss/soot/wiki/Merging-changes-after-introduction-of-formatting-guidelines) might help.
 
-To fix a problem in Soot or to contribute to Soot you can fork the Soot project on GitHub. This will generate a personal cloned repository for you to work on. To reincorporate your changes into Soot after they have been completed and tested, just send us a [pull request](https://help.github.com/articles/using-pull-requests). This will allow us to review your changes and merge them into the develop branch.
-In your pull request, please include: 
+To fix a problem in Soot or to contribute to Soot you can fork the Soot project on GitHub. This will generate a personal cloned repository for you to work on. To reincorporate your changes into Soot after they have been completed and tested, just send us a [pull request](https://help.github.com/articles/using-pull-requests). This will allow us to review your changes and merge them into the develop branch. In your pull request, please include: 
 1. A description of the changes you made
+2. Tests regarding your changes 
 2. Tests regarding your changes 
 
 

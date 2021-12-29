@@ -29,6 +29,7 @@ import java.util.List;
  * describe caught exceptions.
  */
 public interface Trap extends UnitBoxOwner {
+
   /**
    * <p>
    * Returns the first trapped unit, unless this <code>Trap</code> does not trap any units at all.
@@ -61,22 +62,35 @@ public interface Trap extends UnitBoxOwner {
    */
   public Unit getEndUnit();
 
-  /** Returns the unit handling the exception being trapped. */
+  /**
+   * Returns the unit handling the exception being trapped.
+   */
   public Unit getHandlerUnit();
 
-  /** Returns the box holding the unit returned by {@link #getBeginUnit()}. */
+  /**
+   * Returns the box holding the unit returned by {@link #getBeginUnit()}.
+   */
   public UnitBox getBeginUnitBox();
 
-  /** Returns the box holding the unit returned by {@link #getEndUnit()}. */
+  /**
+   * Returns the box holding the unit returned by {@link #getEndUnit()}.
+   */
   public UnitBox getEndUnitBox();
 
-  /** Returns the box holding the exception handler's unit. */
+  /**
+   * Returns the box holding the exception handler unit.
+   */
   public UnitBox getHandlerUnitBox();
 
-  /** Returns the boxes for first, last and handler units. */
+  /**
+   * Returns the boxes for first, last, and handler units.
+   */
+  @Override
   public List<UnitBox> getUnitBoxes();
 
-  /** Returns the exception being caught. */
+  /**
+   * Returns the exception being caught.
+   */
   public SootClass getException();
 
   /**
@@ -89,12 +103,18 @@ public interface Trap extends UnitBoxOwner {
    */
   public void setEndUnit(Unit endUnit);
 
-  /** Sets the unit handling the exception to <code>handlerUnit</code>. */
+  /**
+   * Sets the unit handling the exception to <code>handlerUnit</code>.
+   */
   public void setHandlerUnit(Unit handlerUnit);
 
-  /** Sets the exception being caught to <code>exception</code>. */
+  /**
+   * Sets the exception being caught to <code>exception</code>.
+   */
   public void setException(SootClass exception);
 
-  /** Performs a shallow clone of this trap. */
+  /**
+   * Performs a shallow clone of this trap.
+   */
   public Object clone();
 }

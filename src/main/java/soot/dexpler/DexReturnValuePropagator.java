@@ -30,7 +30,9 @@ import java.util.Set;
 
 import soot.Body;
 import soot.BodyTransformer;
+import soot.G;
 import soot.Local;
+import soot.Scene;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.AssignStmt;
@@ -40,6 +42,7 @@ import soot.jimple.FieldRef;
 import soot.jimple.ReturnStmt;
 import soot.jimple.toolkits.scalar.LocalCreation;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
@@ -52,8 +55,8 @@ public class DexReturnValuePropagator extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, DalvikThrowAnalysis.v(), true);
-    LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(graph);
+    ExceptionalUnitGraph graph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, DalvikThrowAnalysis.v(), true);
+    LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph);
     LocalUses localUses = null;
     LocalCreation localCreation = null;
 
@@ -89,7 +92,7 @@ public class DexReturnValuePropagator extends BodyTransformer {
               }
               if (localUses.getUsesOf(assign).size() == 1) {
                 if (localCreation == null) {
-                  localCreation = new LocalCreation(body.getLocals(), "ret");
+                  localCreation = Scene.v().createLocalCreation(body.getLocals(), "ret");
                 }
                 Local newLocal = localCreation.newLocal(leftOp.getType());
                 assign.setLeftOp(newLocal);

@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
@@ -35,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import soot.dava.DavaBody;
 import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
-import soot.jimple.toolkits.callgraph.VirtualCalls;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
 import soot.util.IterableSet;
@@ -53,7 +53,9 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   public static final String constructorName = "<init>";
   public static final String staticInitializerName = "<clinit>";
 
-  /** Name of the current method. */
+  /**
+   * Name of the current method.
+   */
   protected String name;
 
   /**
@@ -61,7 +63,9 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    */
   protected Type[] parameterTypes;
 
-  /** The return type of this object. */
+  /**
+   * The return type of this object.
+   */
   protected Type returnType;
 
   /**
@@ -69,7 +73,9 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    */
   protected boolean isDeclared;
 
-  /** Holds the class which declares this <code>SootClass</code> method. */
+  /**
+   * Holds the class which declares this <code>SootClass</code> method.
+   */
   protected SootClass declaringClass;
 
   /**
@@ -77,20 +83,31 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    */
   protected int modifiers;
 
-  /** Is this method a phantom method? */
+  /**
+   * Is this method a phantom method?
+   */
   protected boolean isPhantom = false;
 
-  /** Declared exceptions thrown by this method. Created upon demand. */
-  protected List<SootClass> exceptions = null;
+  /**
+   * Declared exceptions thrown by this method. Created upon demand.
+   */
+  protected List<SootClass> exceptions;
 
-  /** Active body associated with this method. */
+  /**
+   * Active body associated with this method.
+   */
   protected volatile Body activeBody;
 
-  /** Tells this method how to find out where its body lives. */
+  /**
+   * Tells this method how to find out where its body lives.
+   */
   protected volatile MethodSource ms;
 
   protected volatile String sig;
   protected volatile String subSig;
+  protected NumberedString subsignature;
+
+  protected int number = 0;
 
   /**
    * Constructs a {@link SootMethod} with the given name, parameter types and return type.
@@ -120,11 +137,10 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     this.returnType = returnType;
     this.modifiers = modifiers;
 
-    if (exceptions == null && !thrownExceptions.isEmpty()) {
-      exceptions = new ArrayList<SootClass>();
-      this.exceptions.addAll(thrownExceptions);
+    if (thrownExceptions != null && !thrownExceptions.isEmpty()) {
+      this.exceptions = new ArrayList<SootClass>(thrownExceptions);
     }
-    subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
+    this.subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
   }
 
   /**
@@ -134,12 +150,17 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     return returnType.hashCode() * 101 + modifiers * 17 + name.hashCode();
   }
 
-  /** Returns the name of this method. */
+  /**
+   * Returns the name of this method.
+   */
+  @Override
   public String getName() {
     return name;
   }
 
-  /** Sets the name of this method. */
+  /**
+   * Sets the name of this method.
+   */
   public synchronized void setName(String name) {
     boolean wasDeclared = isDeclared;
     SootClass oldDeclaringClass = declaringClass;
@@ -147,15 +168,17 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
       oldDeclaringClass.removeMethod(this);
     }
     this.name = name;
-    subSig = null;
-    sig = null;
-    subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
+    this.sig = null;
+    this.subSig = null;
+    this.subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
     if (wasDeclared) {
       oldDeclaringClass.addMethod(this);
     }
   }
 
-  /** Sets the declaring class */
+  /**
+   * Sets the declaring class
+   */
   public synchronized void setDeclaringClass(SootClass declClass) {
     // There is nothing to stop this field from being null except when it actually gets in
     // other classes such as SootMethodRef (when it tries to resolve the method). However, if
@@ -166,17 +189,18 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     }
     // We could call setDeclared here, however, when SootClass adds a method, it checks isDeclared
     // and throws an exception if set. So we currently cannot call setDeclared here.
-    declaringClass = declClass;
-    sig = null;
+    this.declaringClass = declClass;
+    this.sig = null;
   }
 
-  /** Returns the class which declares the current {@link SootMethod}. */
+  /**
+   * Returns the class which declares the current {@link SootMethod}.
+   */
   @Override
   public SootClass getDeclaringClass() {
     if (!isDeclared) {
       throw new RuntimeException("not declared: " + getName());
     }
-
     return declaringClass;
   }
 
@@ -192,18 +216,24 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     return isDeclared;
   }
 
-  /** Returns true when this {@link SootMethod} object is phantom. */
+  /**
+   * Returns true when this {@link SootMethod} object is phantom.
+   */
   @Override
   public boolean isPhantom() {
     return isPhantom;
   }
 
-  /** Returns true if this method is not phantom, abstract or native, i.e. this method can have a body. */
+  /**
+   * Returns true if this method is not phantom, abstract or native, i.e. this method can have a body.
+   */
   public boolean isConcrete() {
     return !isPhantom() && !isAbstract() && !isNative();
   }
 
-  /** Sets the phantom flag on this method. */
+  /**
+   * Sets the phantom flag on this method.
+   */
   @Override
   public void setPhantom(boolean value) {
     if (value) {
@@ -214,7 +244,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
         throw new RuntimeException("Declaring class would have to be phantom");
       }
     }
-    isPhantom = value;
+    this.isPhantom = value;
   }
 
   /**
@@ -237,33 +267,43 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     this.modifiers = modifiers;
   }
 
-  /** Returns the return type of this method. */
+  /**
+   * Returns the return type of this method.
+   */
+  @Override
   public Type getReturnType() {
     return returnType;
   }
 
-  /** Sets the return type of this method. */
+  /**
+   * Sets the return type of this method.
+   */
   public synchronized void setReturnType(Type t) {
     boolean wasDeclared = isDeclared;
     SootClass oldDeclaringClass = declaringClass;
     if (wasDeclared) {
       oldDeclaringClass.removeMethod(this);
     }
-    returnType = t;
-    subSig = null;
-    sig = null;
-    subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
+    this.returnType = t;
+    this.sig = null;
+    this.subSig = null;
+    this.subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
     if (wasDeclared) {
       oldDeclaringClass.addMethod(this);
     }
   }
 
-  /** Returns the number of parameters taken by this method. */
+  /**
+   * Returns the number of parameters taken by this method.
+   */
   public int getParameterCount() {
     return parameterTypes == null ? 0 : parameterTypes.length;
   }
 
-  /** Gets the type of the <i>n</i>th parameter of this method. */
+  /**
+   * Gets the type of the <i>n</i>th parameter of this method.
+   */
+  @Override
   public Type getParameterType(int n) {
     return parameterTypes[n];
   }
@@ -271,6 +311,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   /**
    * Returns a read-only list of the parameter types of this method.
    */
+  @Override
   public List<Type> getParameterTypes() {
     return parameterTypes == null ? Collections.<Type>emptyList() : Arrays.asList(parameterTypes);
   }
@@ -285,20 +326,24 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
       oldDeclaringClass.removeMethod(this);
     }
     this.parameterTypes = l.toArray(new Type[l.size()]);
-    subSig = null;
-    sig = null;
-    subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
+    this.sig = null;
+    this.subSig = null;
+    this.subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
     if (wasDeclared) {
       oldDeclaringClass.addMethod(this);
     }
   }
 
-  /** Returns the {@link MethodSource} of the current {@link SootMethod}. */
+  /**
+   * Returns the {@link MethodSource} of the current {@link SootMethod}.
+   */
   public MethodSource getSource() {
     return ms;
   }
 
-  /** Sets the {@link MethodSource} of the current {@link SootMethod}. */
+  /**
+   * Sets the {@link MethodSource} of the current {@link SootMethod}.
+   */
   public synchronized void setSource(MethodSource ms) {
     this.ms = ms;
   }
@@ -355,8 +400,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     if (!isConcrete()) {
       throw new RuntimeException("cannot set body for non-concrete method! " + this);
     }
-
-    if (body != null && body.getMethod() != this) {
+    if (body != null) {
       body.setMethod(this);
     }
 
@@ -410,14 +454,18 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     }
   }
 
-  /** Returns true if this method has an active body. */
+  /**
+   * Returns true if this method has an active body.
+   */
   public boolean hasActiveBody() {
     return activeBody != null;
   }
 
-  /** Releases the active body associated with this method. */
+  /**
+   * Releases the active body associated with this method.
+   */
   public synchronized void releaseActiveBody() {
-    activeBody = null;
+    this.activeBody = null;
   }
 
   /**
@@ -450,39 +498,31 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   public void removeException(SootClass e) {
     logger.trace("Removing exception {}", e);
 
-    if (exceptions == null) {
-      throw new RuntimeException("does not throw exception " + e.getName());
-    }
-
-    if (!exceptions.contains(e)) {
+    if (exceptions == null || !exceptions.contains(e)) {
       throw new RuntimeException("does not throw exception " + e.getName());
     }
 
     exceptions.remove(e);
   }
 
-  /** Returns true if this method throws exception <code>e</code>. */
+  /**
+   * Returns true if this method throws exception <code>e</code>.
+   */
   public boolean throwsException(SootClass e) {
     return exceptions != null && exceptions.contains(e);
   }
 
   public void setExceptions(List<SootClass> exceptions) {
-    if (exceptions != null && !exceptions.isEmpty()) {
-      this.exceptions = new ArrayList<SootClass>(exceptions);
-    } else {
-      this.exceptions = null;
-    }
+    this.exceptions = (exceptions == null || exceptions.isEmpty()) ? null : new ArrayList<SootClass>(exceptions);
   }
 
   /**
    * Returns a backed list of the exceptions thrown by this method.
    */
-
   public List<SootClass> getExceptions() {
     if (exceptions == null) {
       exceptions = new ArrayList<SootClass>();
     }
-
     return exceptions;
   }
 
@@ -555,14 +595,8 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    * @return yes if this is the main method
    */
   public boolean isMain() {
-    if (isPublic() && isStatic()) {
-      NumberedString main_sig = Scene.v().getSubSigNumberer().findOrAdd("void main(java.lang.String[])");
-      if (main_sig.equals(subsignature)) {
-        return true;
-      }
-    }
-
-    return false;
+    return isPublic() && isStatic()
+        && Scene.v().getSubSigNumberer().findOrAdd("void main(java.lang.String[])").equals(subsignature);
   }
 
   /**
@@ -571,7 +605,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    *         method.
    */
   public boolean isConstructor() {
-    return name.equals(constructorName);
+    return constructorName.equals(name);
   }
 
   /**
@@ -579,17 +613,16 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    * @return yes, if this function is a static initializer.
    */
   public boolean isStaticInitializer() {
-    return name.equals(staticInitializerName);
+    return staticInitializerName.equals(name);
   }
 
   /**
    * @return yes, if this is a class initializer or main function.
    */
   public boolean isEntryMethod() {
-    if (isStatic() && subsignature.equals(VirtualCalls.v().sigClinit)) {
+    if (isStatic() && SootMethod.staticInitializerName.equals(subsignature.getString())) {
       return true;
     }
-
     return isMain();
   }
 
@@ -597,17 +630,15 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    * We rely on the JDK class recognition to decide if a method is JDK method.
    */
   public boolean isJavaLibraryMethod() {
-    SootClass cl = getDeclaringClass();
-    return cl.isJavaLibraryClass();
+    return getDeclaringClass().isJavaLibraryClass();
   }
 
   /**
    * Returns the parameters part of the signature in the format in which it appears in bytecode.
    */
   public String getBytecodeParms() {
-    StringBuffer buffer = new StringBuffer();
-    for (Iterator<Type> typeIt = getParameterTypes().iterator(); typeIt.hasNext();) {
-      final Type type = typeIt.next();
+    StringBuilder buffer = new StringBuilder();
+    for (Type type : getParameterTypes()) {
       buffer.append(AbstractJasminClass.jasminDescriptorOf(type));
     }
     return buffer.toString().intern();
@@ -618,25 +649,27 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    * java.lang.Object[]).
    */
   public String getBytecodeSignature() {
-    String name = getName();
-
-    StringBuffer buffer = new StringBuffer();
-    buffer.append("<" + Scene.v().quotedNameOf(getDeclaringClass().getName()) + ": ");
-    buffer.append(name);
+    StringBuilder buffer = new StringBuilder();
+    buffer.append('<');
+    buffer.append(Scene.v().quotedNameOf(getDeclaringClass().getName()));
+    buffer.append(": ");
+    buffer.append(getName());
     buffer.append(AbstractJasminClass.jasminDescriptorOf(makeRef()));
-    buffer.append(">");
-
+    buffer.append('>');
     return buffer.toString().intern();
   }
 
   /**
    * Returns the Soot signature of this method. Used to refer to methods unambiguously.
    */
+  @Override
   public String getSignature() {
+    String sig = this.sig;
     if (sig == null) {
       synchronized (this) {
+        sig = this.sig;
         if (sig == null) {
-          sig = getSignature(getDeclaringClass(), getSubSignature());
+          this.sig = sig = getSignature(getDeclaringClass(), getSubSignature());
         }
       }
     }
@@ -649,12 +682,11 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 
   public static String getSignature(SootClass cl, String subSignature) {
     StringBuilder buffer = new StringBuilder();
-    buffer.append("<");
+    buffer.append('<');
     buffer.append(Scene.v().quotedNameOf(cl.getName()));
     buffer.append(": ");
     buffer.append(subSignature);
-    buffer.append(">");
-
+    buffer.append('>');
     return buffer.toString();
   }
 
@@ -662,10 +694,12 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    * Returns the Soot subsignature of this method. Used to refer to methods unambiguously.
    */
   public String getSubSignature() {
+    String subSig = this.subSig;
     if (subSig == null) {
       synchronized (this) {
+        subSig = this.subSig;
         if (subSig == null) {
-          subSig = getSubSignatureImpl(getName(), getParameterTypes(), getReturnType());
+          this.subSig = subSig = getSubSignatureImpl(getName(), getParameterTypes(), getReturnType());
         }
       }
     }
@@ -680,31 +714,29 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     StringBuilder buffer = new StringBuilder();
 
     buffer.append(returnType.toQuotedString());
-
-    buffer.append(" ");
+    buffer.append(' ');
     buffer.append(Scene.v().quotedNameOf(name));
-    buffer.append("(");
-
+    buffer.append('(');
     if (params != null) {
-      for (int i = 0; i < params.size(); i++) {
-        buffer.append(params.get(i).toQuotedString());
-        if (i < params.size() - 1) {
-          buffer.append(",");
+      for (int i = 0, e = params.size(); i < e; i++) {
+        if (i > 0) {
+          buffer.append(',');
         }
+        buffer.append(params.get(i).toQuotedString());
       }
     }
-    buffer.append(")");
+    buffer.append(')');
 
     return buffer.toString();
   }
-
-  protected NumberedString subsignature;
 
   public NumberedString getNumberedSubSignature() {
     return subsignature;
   }
 
-  /** Returns the signature of this method. */
+  /**
+   * Returns the signature of this method.
+   */
   @Override
   public String toString() {
     return getSignature();
@@ -715,59 +747,52 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    * into creating the DavaDeclaration from within DavaBody
    */
   public String getDavaDeclaration() {
-    if (getName().equals(staticInitializerName)) {
+    if (staticInitializerName.equals(getName())) {
       return "static";
     }
 
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
 
     // modifiers
     StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
     if (st.hasMoreTokens()) {
       buffer.append(st.nextToken());
-    }
-
-    while (st.hasMoreTokens()) {
-      buffer.append(" " + st.nextToken());
+      while (st.hasMoreTokens()) {
+        buffer.append(' ').append(st.nextToken());
+      }
     }
 
     if (buffer.length() != 0) {
-      buffer.append(" ");
+      buffer.append(' ');
     }
 
     // return type + name
-
-    if (getName().equals(constructorName)) {
+    if (constructorName.equals(getName())) {
       buffer.append(getDeclaringClass().getShortJavaStyleName());
     } else {
       Type t = this.getReturnType();
 
       String tempString = t.toString();
-
       /*
        * Added code to handle RuntimeExcepotion thrown by getActiveBody
        */
       if (hasActiveBody()) {
         DavaBody body = (DavaBody) getActiveBody();
         IterableSet<String> importSet = body.getImportList();
-
         if (!importSet.contains(tempString)) {
           body.addToImportList(tempString);
         }
         tempString = RemoveFullyQualifiedName.getReducedName(importSet, tempString, t);
       }
 
-      buffer.append(tempString + " ");
-
+      buffer.append(tempString).append(' ');
       buffer.append(Scene.v().quotedNameOf(this.getName()));
     }
 
-    buffer.append("(");
-
     // parameters
-    Iterator<Type> typeIt = this.getParameterTypes().iterator();
     int count = 0;
-    while (typeIt.hasNext()) {
+    buffer.append('(');
+    for (Iterator<Type> typeIt = this.getParameterTypes().iterator(); typeIt.hasNext();) {
       Type t = typeIt.next();
       String tempString = t.toString();
 
@@ -779,63 +804,57 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
       if (hasActiveBody()) {
         DavaBody body = (DavaBody) getActiveBody();
         IterableSet<String> importSet = body.getImportList();
-
         if (!importSet.contains(tempString)) {
           body.addToImportList(tempString);
         }
         tempString = RemoveFullyQualifiedName.getReducedName(importSet, tempString, t);
       }
 
-      buffer.append(tempString + " ");
-
-      buffer.append(" ");
+      buffer.append(tempString).append(' ');
+      buffer.append(' ');
       if (hasActiveBody()) {
-        buffer.append(((DavaBody) getActiveBody()).get_ParamMap().get(new Integer(count++)));
+        buffer.append(((DavaBody) getActiveBody()).get_ParamMap().get(count++));
       } else {
         if (t == BooleanType.v()) {
-          buffer.append("z" + count++);
+          buffer.append('z').append(count++);
         } else if (t == ByteType.v()) {
-          buffer.append("b" + count++);
+          buffer.append('b').append(count++);
         } else if (t == ShortType.v()) {
-          buffer.append("s" + count++);
+          buffer.append('s').append(count++);
         } else if (t == CharType.v()) {
-          buffer.append("c" + count++);
+          buffer.append('c').append(count++);
         } else if (t == IntType.v()) {
-          buffer.append("i" + count++);
+          buffer.append('i').append(count++);
         } else if (t == LongType.v()) {
-          buffer.append("l" + count++);
+          buffer.append('l').append(count++);
         } else if (t == DoubleType.v()) {
-          buffer.append("d" + count++);
+          buffer.append('d').append(count++);
         } else if (t == FloatType.v()) {
-          buffer.append("f" + count++);
+          buffer.append('f').append(count++);
         } else if (t == StmtAddressType.v()) {
-          buffer.append("a" + count++);
+          buffer.append('a').append(count++);
         } else if (t == ErroneousType.v()) {
-          buffer.append("e" + count++);
+          buffer.append('e').append(count++);
         } else if (t == NullType.v()) {
-          buffer.append("n" + count++);
+          buffer.append('n').append(count++);
         } else {
-          buffer.append("r" + count++);
+          buffer.append('r').append(count++);
         }
       }
 
       if (typeIt.hasNext()) {
         buffer.append(", ");
       }
-
     }
-
-    buffer.append(")");
+    buffer.append(')');
 
     // Print exceptions
     if (exceptions != null) {
       Iterator<SootClass> exceptionIt = this.getExceptions().iterator();
-
       if (exceptionIt.hasNext()) {
-        buffer.append(" throws " + exceptionIt.next().getName());
-
+        buffer.append(" throws ").append(exceptionIt.next().getName());
         while (exceptionIt.hasNext()) {
-          buffer.append(", " + exceptionIt.next().getName());
+          buffer.append(", ").append(exceptionIt.next().getName());
         }
       }
     }
@@ -848,54 +867,44 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    * the code for representation.)
    */
   public String getDeclaration() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
 
     // modifiers
     StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
     if (st.hasMoreTokens()) {
       buffer.append(st.nextToken());
-    }
-
-    while (st.hasMoreTokens()) {
-      buffer.append(" " + st.nextToken());
+      while (st.hasMoreTokens()) {
+        buffer.append(' ').append(st.nextToken());
+      }
     }
 
     if (buffer.length() != 0) {
-      buffer.append(" ");
+      buffer.append(' ');
     }
 
     // return type + name
-
-    buffer.append(this.getReturnType().toQuotedString() + " ");
+    buffer.append(this.getReturnType().toQuotedString()).append(' ');
     buffer.append(Scene.v().quotedNameOf(this.getName()));
 
-    buffer.append("(");
-
     // parameters
-    Iterator<Type> typeIt = this.getParameterTypes().iterator();
-    // int count = 0;
-    while (typeIt.hasNext()) {
+    buffer.append('(');
+    for (Iterator<Type> typeIt = this.getParameterTypes().iterator(); typeIt.hasNext();) {
       Type t = typeIt.next();
 
       buffer.append(t.toQuotedString());
-
       if (typeIt.hasNext()) {
         buffer.append(", ");
       }
-
     }
-
-    buffer.append(")");
+    buffer.append(')');
 
     // Print exceptions
     if (exceptions != null) {
       Iterator<SootClass> exceptionIt = this.getExceptions().iterator();
-
       if (exceptionIt.hasNext()) {
-        buffer.append(" throws " + Scene.v().quotedNameOf(exceptionIt.next().getName()));
-
+        buffer.append(" throws ").append(Scene.v().quotedNameOf(exceptionIt.next().getName()));
         while (exceptionIt.hasNext()) {
-          buffer.append(", " + Scene.v().quotedNameOf(exceptionIt.next().getName()));
+          buffer.append(", ").append(Scene.v().quotedNameOf(exceptionIt.next().getName()));
         }
       }
     }
@@ -913,8 +922,6 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     this.number = number;
   }
 
-  protected int number = 0;
-
   @Override
   public SootMethod method() {
     return this;
@@ -930,13 +937,18 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
         returnType, isStatic());
   }
 
+  public boolean isValidResolve(SootMethodRef ref) {
+    return (this.isStatic() == ref.isStatic()) && Objects.equals(this.getDeclaringClass(), ref.getDeclaringClass())
+        && Objects.equals(this.getName(), ref.getName()) && Objects.equals(this.getReturnType(), ref.getReturnType())
+        && Objects.equals(this.getParameterTypes(), ref.getParameterTypes());
+  }
+
   @Override
   public int getJavaSourceStartLineNumber() {
     super.getJavaSourceStartLineNumber();
     // search statements for first line number
     if (line == -1 && hasActiveBody()) {
-      PatchingChain<Unit> unit = getActiveBody().getUnits();
-      for (Unit u : unit) {
+      for (Unit u : getActiveBody().getUnits()) {
         int l = u.getJavaSourceStartLineNumber();
         if (l > -1) {
           // store l-1, as method header is usually one line before
@@ -948,5 +960,4 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     }
     return line;
   }
-
 }

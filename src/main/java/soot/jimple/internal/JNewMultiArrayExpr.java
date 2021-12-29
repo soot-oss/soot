@@ -24,6 +24,7 @@ package soot.jimple.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import soot.ArrayType;
 import soot.Value;
@@ -31,22 +32,33 @@ import soot.ValueBox;
 import soot.jimple.Jimple;
 
 public class JNewMultiArrayExpr extends AbstractNewMultiArrayExpr {
+
   public JNewMultiArrayExpr(ArrayType type, List<? extends Value> sizes) {
     super(type, new ValueBox[sizes.size()]);
 
-    for (int i = 0; i < sizes.size(); i++) {
-      sizeBoxes[i] = Jimple.v().newImmediateBox(sizes.get(i));
+    final Jimple jimp = Jimple.v();
+    for (ListIterator<? extends Value> it = sizes.listIterator(); it.hasNext();) {
+      Value v = it.next();
+      sizeBoxes[it.previousIndex()] = jimp.newImmediateBox(v);
     }
   }
 
-  public Object clone() {
-    List<Value> clonedSizes = new ArrayList<Value>(getSizeCount());
+  public JNewMultiArrayExpr(ArrayType type, ValueBox[] sizes) {
+    super(type, sizes);
 
-    for (int i = 0; i < getSizeCount(); i++) {
-      clonedSizes.add(i, Jimple.cloneIfNecessary(getSize(i)));
+    for (int i = 0; i < sizes.length; i++) {
+      ValueBox v = sizes[i];
+      sizeBoxes[i] = v;
     }
+  }
 
+  @Override
+  public Object clone() {
+    final ValueBox[] boxes = this.sizeBoxes;
+    List<Value> clonedSizes = new ArrayList<Value>(boxes.length);
+    for (ValueBox vb : boxes) {
+      clonedSizes.add(Jimple.cloneIfNecessary(vb.getValue()));
+    }
     return new JNewMultiArrayExpr(baseType, clonedSizes);
   }
-
 }

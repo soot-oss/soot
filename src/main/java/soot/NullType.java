@@ -29,6 +29,7 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class NullType extends RefLikeType {
+
   public NullType(Singletons.Global g) {
   }
 
@@ -36,22 +37,27 @@ public class NullType extends RefLikeType {
     return G.v().soot_NullType();
   }
 
+  @Override
   public int hashCode() {
     return 0x9891DFE1;
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public String toString() {
     return "null_type";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseNullType(this);
   }
 
+  @Override
   public Type getArrayElementType() {
     throw new RuntimeException("Attempt to get array base type of a non-array");
   }

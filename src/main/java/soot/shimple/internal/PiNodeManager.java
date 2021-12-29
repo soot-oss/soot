@@ -37,7 +37,6 @@ import soot.UnitBox;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.AssignStmt;
-import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
 import soot.jimple.LookupSwitchStmt;
@@ -78,18 +77,19 @@ import soot.util.MultiMap;
  * @see soot.shimple.ShimpleBody
  * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
  *      the Control Dependence Graph</a>
- **/
+ */
 public class PiNodeManager {
-  protected ShimpleBody body;
-  protected ShimpleFactory sf;
-  protected DominatorTree<Block> dt;
-  protected DominanceFrontier<Block> df;
+
+  protected final ShimpleBody body;
+  protected final ShimpleFactory sf;
+  protected final boolean trimmed;
+
   protected ReversibleGraph<Block> cfg;
-  protected boolean trimmed;
+  protected MultiMap<Local, Block> varToBlocks;
 
   /**
    * Transforms the provided body to pure SSA form.
-   **/
+   */
   public PiNodeManager(ShimpleBody body, boolean trimmed, ShimpleFactory sf) {
     this.body = body;
     this.trimmed = trimmed;
@@ -97,25 +97,25 @@ public class PiNodeManager {
   }
 
   public void update() {
-    cfg = sf.getReverseBlockGraph();
-    dt = sf.getReverseDominatorTree();
-    df = sf.getReverseDominanceFrontier();
+    ReversibleGraph<Block> oldCfg = this.cfg;
+    this.cfg = sf.getReverseBlockGraph();
+    if (oldCfg != this.cfg) {
+      // If the CFG was rebuilt, clear the map because Blocks are stale
+      this.varToBlocks = null;
+    }
   }
-
-  protected MultiMap<Local, Block> varToBlocks;
 
   public boolean insertTrivialPiNodes() {
     update();
-    boolean change = false;
-    MultiMap<Local, Block> localsToUsePoints = new SHashMultiMap<Local, Block>();
-    varToBlocks = new HashMultiMap<Local, Block>();
+
+    this.varToBlocks = new HashMultiMap<Local, Block>();
+    final MultiMap<Local, Block> localsToUsePoints = new SHashMultiMap<Local, Block>();
 
     // compute localsToUsePoints and varToBlocks
     for (Block block : cfg) {
       for (Unit unit : block) {
-        List<ValueBox> useBoxes = unit.getUseBoxes();
-        for (Iterator<ValueBox> useBoxesIt = useBoxes.iterator(); useBoxesIt.hasNext();) {
-          Value use = useBoxesIt.next().getValue();
+        for (ValueBox next : unit.getUseBoxes()) {
+          Value use = next.getValue();
           if (use instanceof Local) {
             localsToUsePoints.put((Local) use, block);
           }
@@ -127,41 +127,37 @@ public class PiNodeManager {
       }
     }
 
-    /* Routine initialisations. */
-
-    int[] workFlags = new int[cfg.size()];
-    int[] hasAlreadyFlags = new int[cfg.size()];
-
-    int iterCount = 0;
-    Stack<Block> workList = new Stack<Block>();
-
-    /* Main Cytron algorithm. */
-
+    boolean change = false;
     {
+      final DominatorTree<Block> dt = sf.getReverseDominatorTree();
+      final DominanceFrontier<Block> df = sf.getReverseDominanceFrontier();
+
+      /* Routine initialisations. */
+      int iterCount = 0;
+      int[] workFlags = new int[cfg.size()];
+      int[] hasAlreadyFlags = new int[cfg.size()];
+      Stack<Block> workList = new Stack<Block>();
+
+      /* Main Cytron algorithm. */
       for (Local local : localsToUsePoints.keySet()) {
         iterCount++;
 
         // initialise worklist
-        {
-          for (Block block : localsToUsePoints.get(local)) {
-            workFlags[block.getIndexInMethod()] = iterCount;
-            workList.push(block);
-          }
+        for (Block block : localsToUsePoints.get(local)) {
+          workFlags[block.getIndexInMethod()] = iterCount;
+          workList.push(block);
         }
 
         while (!workList.empty()) {
           Block block = workList.pop();
-          DominatorNode<Block> node = dt.getDode(block);
-
-          for (DominatorNode<Block> frontierNode : df.getDominanceFrontierOf(node)) {
+          for (DominatorNode<Block> frontierNode : df.getDominanceFrontierOf(dt.getDode(block))) {
             Block frontierBlock = frontierNode.getGode();
-            int fBIndex = frontierBlock.getIndexInMethod();
 
+            int fBIndex = frontierBlock.getIndexInMethod();
             if (hasAlreadyFlags[fBIndex] < iterCount) {
+              hasAlreadyFlags[fBIndex] = iterCount;
               insertPiNodes(local, frontierBlock);
               change = true;
-
-              hasAlreadyFlags[fBIndex] = iterCount;
 
               if (workFlags[fBIndex] < iterCount) {
                 workFlags[fBIndex] = iterCount;
@@ -207,14 +203,11 @@ public class PiNodeManager {
   }
 
   public void piHandleIfStmt(Local local, IfStmt u) {
+    final PatchingChain<Unit> units = body.getUnits();
+
     Unit target = u.getTarget();
-
-    PiExpr pit = Shimple.v().newPiExpr(local, u, Boolean.TRUE);
-    PiExpr pif = Shimple.v().newPiExpr(local, u, Boolean.FALSE);
-    Unit addt = Jimple.v().newAssignStmt(local, pit);
-    Unit addf = Jimple.v().newAssignStmt(local, pif);
-
-    PatchingChain<Unit> units = body.getUnits();
+    Unit addt = Jimple.v().newAssignStmt(local, Shimple.v().newPiExpr(local, u, Boolean.TRUE));
+    Unit addf = Jimple.v().newAssignStmt(local, Shimple.v().newPiExpr(local, u, Boolean.FALSE));
 
     // insert after should be safe; a new block should result if
     // the Unit originally after the IfStmt had another predecessor.
@@ -227,21 +220,15 @@ public class PiNodeManager {
 
     // handle immediate predecessor if it falls through
     // *** FIXME: Does SPatchingChain do the right thing?
-    PREDFALLSTHROUGH: {
-      Unit predOfTarget = null;
+    {
+      Unit predOfTarget;
       try {
         predOfTarget = units.getPredOf(target);
       } catch (NoSuchElementException e) {
         predOfTarget = null;
       }
-
-      if (predOfTarget == null) {
-        break PREDFALLSTHROUGH;
-      }
-
-      if (predOfTarget.fallsThrough()) {
-        GotoStmt gotoStmt = Jimple.v().newGotoStmt(target);
-        units.insertAfter(gotoStmt, predOfTarget);
+      if (predOfTarget != null && predOfTarget.fallsThrough()) {
+        units.insertAfter(Jimple.v().newGotoStmt(target), predOfTarget);
       }
     }
 
@@ -258,7 +245,7 @@ public class PiNodeManager {
       LookupSwitchStmt lss = (LookupSwitchStmt) u;
       targetBoxes.add(lss.getDefaultTargetBox());
       targetKeys.add("default");
-      for (int i = 0; i < lss.getTargetCount(); i++) {
+      for (int i = 0, e = lss.getTargetCount(); i < e; i++) {
         targetBoxes.add(lss.getTargetBox(i));
       }
       targetKeys.addAll(lss.getLookupValues());
@@ -269,23 +256,19 @@ public class PiNodeManager {
 
       targetBoxes.add(tss.getDefaultTargetBox());
       targetKeys.add("default");
-      for (int i = 0; i <= (hi - low); i++) {
+      for (int i = 0, e = (hi - low); i <= e; i++) {
         targetBoxes.add(tss.getTargetBox(i));
       }
       for (int i = low; i <= hi; i++) {
-        targetKeys.add(new Integer(i));
+        targetKeys.add(i);
       }
     } else {
       throw new RuntimeException("Assertion failed.");
     }
 
-    for (int count = 0; count < targetBoxes.size(); count++) {
+    for (int count = 0, e = targetBoxes.size(); count < e; count++) {
       UnitBox targetBox = targetBoxes.get(count);
       Unit target = targetBox.getUnit();
-      Object targetKey = targetKeys.get(count);
-
-      PiExpr pi1 = Shimple.v().newPiExpr(local, u, targetKey);
-      Unit add1 = Jimple.v().newAssignStmt(local, pi1);
 
       PatchingChain<Unit> units = body.getUnits();
 
@@ -295,25 +278,20 @@ public class PiNodeManager {
 
       // handle immediate predecessor if it falls through
       // *** FIXME: Does SPatchingChain do the right thing?
-      PREDFALLSTHROUGH: {
-        Unit predOfTarget = null;
+      {
+        Unit predOfTarget;
         try {
-          predOfTarget = (Unit) units.getPredOf(target);
-        } catch (NoSuchElementException e) {
+          predOfTarget = units.getPredOf(target);
+        } catch (NoSuchElementException ex) {
           predOfTarget = null;
         }
-
-        if (predOfTarget == null) {
-          break PREDFALLSTHROUGH;
-        }
-
-        if (predOfTarget.fallsThrough()) {
-          GotoStmt gotoStmt = Jimple.v().newGotoStmt(target);
-          units.insertAfter(gotoStmt, predOfTarget);
+        if (predOfTarget != null && predOfTarget.fallsThrough()) {
+          units.insertAfter(Jimple.v().newGotoStmt(target), predOfTarget);
         }
       }
 
       // we do not want to move the pointers for other branching statements
+      Unit add1 = Jimple.v().newAssignStmt(local, Shimple.v().newPiExpr(local, u, targetKeys.get(count)));
       units.getNonPatchingChain().insertBefore(add1, target);
       targetBox.setUnit(add1);
     }
@@ -321,7 +299,7 @@ public class PiNodeManager {
 
   public void eliminatePiNodes(boolean smart) {
     if (smart) {
-      Map<Local, Value> newToOld = new HashMap<Local, Value>();
+      Map<Value, Value> newToOld = new HashMap<Value, Value>();
       List<ValueBox> boxes = new ArrayList<ValueBox>();
 
       for (Iterator<Unit> unitsIt = body.getUnits().iterator(); unitsIt.hasNext();) {
@@ -335,8 +313,7 @@ public class PiNodeManager {
         }
       }
 
-      for (Iterator<ValueBox> boxesIt = boxes.iterator(); boxesIt.hasNext();) {
-        ValueBox box = boxesIt.next();
+      for (ValueBox box : boxes) {
         Value value = box.getValue();
         Value old = newToOld.get(value);
         if (old != null) {
@@ -358,14 +335,10 @@ public class PiNodeManager {
   }
 
   public static List<ValueBox> getUseBoxesFromBlock(Block block) {
-    Iterator<Unit> unitsIt = block.iterator();
-
     List<ValueBox> useBoxesList = new ArrayList<ValueBox>();
-
-    while (unitsIt.hasNext()) {
-      useBoxesList.addAll(unitsIt.next().getUseBoxes());
+    for (Unit next : block) {
+      useBoxesList.addAll(next.getUseBoxes());
     }
-
     return useBoxesList;
   }
 }

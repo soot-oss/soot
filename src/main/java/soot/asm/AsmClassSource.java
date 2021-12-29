@@ -42,9 +42,11 @@ public class AsmClassSource extends ClassSource {
 
   /**
    * Constructs a new ASM class source.
-   *
-   * @param cls fully qualified name of the class.
-   * @param data stream containing data for class.
+   * 
+   * @param cls
+   *          fully qualified name of the class.
+   * @param foundFile
+   *          foundfile pointing to the data for class.
    */
   protected AsmClassSource(String cls, FoundFile foundFile) {
     super(cls);
@@ -66,8 +68,8 @@ public class AsmClassSource extends ClassSource {
       deps.typesToSignature.addAll(scb.deps);
       // add the outer class information, could not be called in the builder, since sc needs to be
       // resolved - before calling setOuterClass()
-      String outerClassName = null;
       if (!sc.hasOuterClass() && className.contains("$")) {
+        String outerClassName;
         if (className.contains("$-")) {
           /*
            * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may

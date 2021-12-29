@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import soot.Body;
 import soot.SootMethod;
+import soot.Unit;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.StmtBody;
@@ -50,31 +51,35 @@ import soot.util.HashChain;
  * @see soot.shimple.internal.ShimpleBodyBuilder
  * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
  *      the Control Dependence Graph</a>
- **/
+ */
 public class ShimpleBody extends StmtBody {
   private static final Logger logger = LoggerFactory.getLogger(ShimpleBody.class);
+
   /**
    * Holds our options map...
-   **/
+   */
   protected ShimpleOptions options;
 
   protected ShimpleBodyBuilder sbb;
 
-  protected boolean isExtendedSSA = false;
+  /**
+   * Set isSSA boolean to indicate whether a ShimpleBody is still in SSA form or not. Could be useful for book-keeping
+   * purposes.
+   */
+  protected boolean isSSA = false;
 
   /**
    * Construct an empty ShimpleBody associated with m.
-   **/
-  ShimpleBody(SootMethod m, Map options) {
+   */
+  ShimpleBody(SootMethod m, Map<String, String> options) {
     super(m);
 
     // must happen before SPatchingChain gets created
     this.options = new ShimpleOptions(options);
-    setSSA(true);
-    isExtendedSSA = this.options.extended();
 
-    unitChain = new SPatchingChain(this, new HashChain());
-    sbb = new ShimpleBodyBuilder(this);
+    setSSA(true);
+    this.unitChain = new SPatchingChain(this, new HashChain<Unit>());
+    this.sbb = new ShimpleBodyBuilder(this);
   }
 
   /**
@@ -83,12 +88,12 @@ public class ShimpleBody extends StmtBody {
    * <p>
    * Currently available option is "naive-phi-elimination", typically in the "shimple" phase (eg, -p shimple
    * naive-phi-elimination) which can be useful for understanding the effect of analyses.
-   **/
-  ShimpleBody(Body body, Map options) {
+   */
+  ShimpleBody(Body body, Map<String, String> options) {
     super(body.getMethod());
 
     if (!(body instanceof JimpleBody || body instanceof ShimpleBody)) {
-      throw new RuntimeException("Cannot construct ShimpleBody from given Body type.");
+      throw new RuntimeException("Cannot construct ShimpleBody from given Body type: " + body.getClass());
     }
 
     if (Options.v().verbose()) {
@@ -98,17 +103,12 @@ public class ShimpleBody extends StmtBody {
     // must happen before SPatchingChain gets created
     this.options = new ShimpleOptions(options);
 
-    unitChain = new SPatchingChain(this, new HashChain());
+    this.unitChain = new SPatchingChain(this, new HashChain<Unit>());
     importBodyContentsFrom(body);
 
     /* Shimplise body */
-    sbb = new ShimpleBodyBuilder(this);
-
-    if (body instanceof ShimpleBody) {
-      rebuild(true);
-    } else {
-      rebuild(false);
-    }
+    this.sbb = new ShimpleBodyBuilder(this);
+    rebuild(body instanceof ShimpleBody);
   }
 
   /**
@@ -117,7 +117,7 @@ public class ShimpleBody extends StmtBody {
    * <p>
    * Note: assumes presence of Phi nodes in body that require elimination. If you *know* there are no Phi nodes present, you
    * may prefer to use rebuild(false) in order to skip some transformations during the Phi elimination process.
-   **/
+   */
   public void rebuild() {
     rebuild(true);
   }
@@ -132,9 +132,8 @@ public class ShimpleBody extends StmtBody {
    * <p>
    * The eliminate Phi nodes stage is harmless, but if you *know* that no Phi nodes are present and you wish to avoid the
    * transformations involved in eliminating Phi nodes, use rebuild(false).
-   **/
+   */
   public void rebuild(boolean hasPhiNodes) {
-    isExtendedSSA = options.extended();
     sbb.transform();
     setSSA(true);
   }
@@ -151,7 +150,7 @@ public class ShimpleBody extends StmtBody {
    * Remember to setActiveBody() if necessary in your SootMethod.
    *
    * @see #eliminatePhiNodes()
-   **/
+   */
   public JimpleBody toJimpleBody() {
     ShimpleBody sBody = (ShimpleBody) this.clone();
 
@@ -170,7 +169,7 @@ public class ShimpleBody extends StmtBody {
    * This can be useful for understanding the effect of analyses.
    *
    * @see #toJimpleBody()
-   **/
+   */
   public void eliminatePhiNodes() {
     sbb.preElimOpt();
     sbb.eliminatePhiNodes();
@@ -185,7 +184,7 @@ public class ShimpleBody extends StmtBody {
   public void eliminateNodes() {
     sbb.preElimOpt();
     sbb.eliminatePhiNodes();
-    if (isExtendedSSA) {
+    if (options.extended()) {
       sbb.eliminatePiNodes();
     }
     sbb.postElimOpt();
@@ -194,23 +193,18 @@ public class ShimpleBody extends StmtBody {
 
   /**
    * Returns a copy of the current ShimpleBody.
-   **/
+   */
+  @Override
   public Object clone() {
-    Body b = Shimple.v().newBody(getMethod());
+    Body b = Shimple.v().newBody(getMethodUnsafe());
     b.importBodyContentsFrom(this);
     return b;
   }
 
   /**
-   * Set isSSA boolean to indicate whether a ShimpleBody is still in SSA form or not. Could be useful for book-keeping
-   * purposes.
-   **/
-  protected boolean isSSA = false;
-
-  /**
    * Sets a flag that indicates whether ShimpleBody is still in SSA form after a transformation or not. It is often up to the
    * user to indicate if a body is no longer in SSA form.
-   **/
+   */
   public void setSSA(boolean isSSA) {
     this.isSSA = isSSA;
   }
@@ -219,18 +213,18 @@ public class ShimpleBody extends StmtBody {
    * Returns value of, optional, user-maintained SSA boolean.
    *
    * @see #setSSA(boolean)
-   **/
+   */
   public boolean isSSA() {
     return isSSA;
   }
 
   public boolean isExtendedSSA() {
-    return isExtendedSSA;
+    return options.extended();
   }
 
   /**
    * Returns the Shimple options applicable to this body.
-   **/
+   */
   public ShimpleOptions getOptions() {
     return options;
   }
@@ -241,7 +235,7 @@ public class ShimpleBody extends StmtBody {
    * underscore notation is used to differentiate locals previously of the same name.
    *
    * @see soot.jimple.toolkits.scalar.LocalNameStandardizer
-   **/
+   */
   public void makeUniqueLocalNames() {
     sbb.makeUniqueLocalNames();
   }

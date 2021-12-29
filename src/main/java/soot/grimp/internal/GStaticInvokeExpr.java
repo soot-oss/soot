@@ -25,6 +25,7 @@ package soot.grimp.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import soot.SootMethodRef;
 import soot.Value;
@@ -33,22 +34,24 @@ import soot.grimp.Grimp;
 import soot.jimple.internal.AbstractStaticInvokeExpr;
 
 public class GStaticInvokeExpr extends AbstractStaticInvokeExpr {
-  public GStaticInvokeExpr(SootMethodRef methodRef, List args) {
+
+  public GStaticInvokeExpr(SootMethodRef methodRef, List<? extends Value> args) {
     super(methodRef, new ValueBox[args.size()]);
 
-    for (int i = 0; i < args.size(); i++) {
-      this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
+    final Grimp grmp = Grimp.v();
+    for (ListIterator<? extends Value> it = args.listIterator(); it.hasNext();) {
+      Value v = it.next();
+      this.argBoxes[it.previousIndex()] = grmp.newExprBox(v);
     }
   }
 
+  @Override
   public Object clone() {
-    ArrayList clonedArgs = new ArrayList(getArgCount());
-
-    for (int i = 0; i < getArgCount(); i++) {
-      clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+    final int count = getArgCount();
+    List<Value> clonedArgs = new ArrayList<Value>(count);
+    for (int i = 0; i < count; i++) {
+      clonedArgs.add(Grimp.cloneIfNecessary(getArg(i)));
     }
-
     return new GStaticInvokeExpr(methodRef, clonedArgs);
   }
-
 }

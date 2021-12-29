@@ -173,7 +173,6 @@ import soot.util.Switchable;
  *			Nomair: March 29th, 2006: dealing with trying to remove fully qualified names
  *
  */
-
 /*
  * TODO:   Nomair- February 7th. Refactor the call
  *  	    AST.perform_Analysis( UselessTryRemover.v());
@@ -184,13 +183,13 @@ import soot.util.Switchable;
  *          Specially the deobfuscate option with the boolean constant propagation analysis
  *
  */
-
 public class DavaBody extends Body {
 
   public boolean DEBUG = false;
-  private Map<Integer, Value> pMap;
 
-  private HashSet<Object> consumedConditions, thisLocals;
+  private Map<Integer, Value> pMap;
+  private Set<Object> consumedConditions;
+  private HashSet<Object> thisLocals;
 
   private IterableSet<ExceptionNode> synchronizedBlockFacts;
   private IterableSet<ExceptionNode> exceptionFacts;
@@ -209,22 +208,19 @@ public class DavaBody extends Body {
   /**
    * Construct an empty DavaBody
    */
-
   DavaBody(SootMethod m) {
     super(m);
 
-    pMap = new HashMap<Integer, Value>();
-    consumedConditions = new HashSet<Object>();
-    thisLocals = new HashSet<Object>();
-    synchronizedBlockFacts = new IterableSet<ExceptionNode>();
-    exceptionFacts = new IterableSet<ExceptionNode>();
-    monitorFacts = new IterableSet<AugmentedStmt>();
-    importList = new IterableSet<String>();
-    // packagesUsed = new IterableSet();
-    caughtrefs = new LinkedList<CaughtExceptionRef>();
-
-    controlLocal = null;
-    constructorExpr = null;
+    this.pMap = new HashMap<Integer, Value>();
+    this.consumedConditions = new HashSet<Object>();
+    this.thisLocals = new HashSet<Object>();
+    this.synchronizedBlockFacts = new IterableSet<ExceptionNode>();
+    this.exceptionFacts = new IterableSet<ExceptionNode>();
+    this.monitorFacts = new IterableSet<AugmentedStmt>();
+    this.importList = new IterableSet<String>();
+    this.caughtrefs = new LinkedList<CaughtExceptionRef>();
+    this.controlLocal = null;
+    this.constructorExpr = null;
   }
 
   public Unit get_ConstructorUnit() {
@@ -277,7 +273,7 @@ public class DavaBody extends Body {
   }
 
   public Object clone() {
-    Body b = Dava.v().newBody(getMethod());
+    Body b = Dava.v().newBody(getMethodUnsafe());
     b.importBodyContentsFrom(this);
     return b;
   }
@@ -307,7 +303,7 @@ public class DavaBody extends Body {
     Dava.v().log("\nstart method " + body.getMethod().toString());
 
     if (DEBUG) {
-      if (body.getMethod().getExceptions().size() != 0) {
+      if (!body.getMethod().getExceptions().isEmpty()) {
         debug("DavaBody", "printing NON EMPTY exception list for " + body.getMethod().toString() + " "
             + body.getMethod().getExceptions().toString());
       }
@@ -375,7 +371,7 @@ public class DavaBody extends Body {
       /*
        * January 12th, 2006 Deal with the super() problem before continuing
        */
-      Map options = PhaseOptions.v().getPhaseOptions("db.force-recompile");
+      Map<String, String> options = PhaseOptions.v().getPhaseOptions("db.force-recompile");
       boolean force = PhaseOptions.getBoolean(options, "enabled");
       // System.out.println("force is "+force);
       if (force) {
@@ -667,15 +663,13 @@ public class DavaBody extends Body {
           ts.setDefaultTarget((Unit) bindings.get(original_switch.getDefaultTarget()));
 
           LinkedList<Unit> new_target_list = new LinkedList<Unit>();
-
           int target_count = ts.getHighIndex() - ts.getLowIndex() + 1;
           for (int i = 0; i < target_count; i++) {
             new_target_list.add((Unit) bindings.get(original_switch.getTarget(i)));
           }
           ts.setTargets(new_target_list);
 
-        }
-        if (s instanceof LookupSwitchStmt) {
+        } else if (s instanceof LookupSwitchStmt) {
           LookupSwitchStmt ls = (LookupSwitchStmt) s;
 
           LookupSwitchStmt original_switch = (LookupSwitchStmt) reverse_binding.get(u);
@@ -683,7 +677,7 @@ public class DavaBody extends Body {
 
           Unit[] new_target_list = new Unit[original_switch.getTargetCount()];
           for (int i = 0; i < original_switch.getTargetCount(); i++) {
-            new_target_list[i] = (Unit) (bindings.get(original_switch.getTarget(i)));
+            new_target_list[i] = (Unit) bindings.get(original_switch.getTarget(i));
           }
           ls.setTargets(new_target_list);
 
@@ -703,19 +697,18 @@ public class DavaBody extends Body {
 
       // Patch up references within units using our (old <-> new) map.
       for (UnitBox box : getAllUnitBoxes()) {
-        Unit newObject, oldObject = box.getUnit();
-
-        // if we have a reference to an old object, replace it
-        // it's clone.
-        if ((newObject = (Unit) bindings.get(oldObject)) != null) {
+        Unit newObject = (Unit) bindings.get(box.getUnit());
+        // if we have a reference to an old object, replace it with its clone.
+        if (newObject != null) {
           box.setUnit(newObject);
         }
       }
 
       // backpatch all local variables.
       for (ValueBox vb : getUseAndDefBoxes()) {
-        if (vb.getValue() instanceof Local) {
-          vb.setValue((Value) bindings.get(vb.getValue()));
+        Value val = vb.getValue();
+        if (val instanceof Local) {
+          vb.setValue((Value) bindings.get(val));
         }
       }
 
@@ -723,9 +716,7 @@ public class DavaBody extends Body {
       for (Trap originalTrap : grimpBody.getTraps()) {
         Trap cloneTrap = (Trap) originalTrap.clone();
 
-        Unit handlerUnit = (Unit) bindings.get(originalTrap.getHandlerUnit());
-
-        cloneTrap.setHandlerUnit(handlerUnit);
+        cloneTrap.setHandlerUnit((Unit) bindings.get(originalTrap.getHandlerUnit()));
         cloneTrap.setBeginUnit((Unit) bindings.get(originalTrap.getBeginUnit()));
         cloneTrap.setEndUnit((Unit) bindings.get(originalTrap.getEndUnit()));
 
@@ -739,67 +730,58 @@ public class DavaBody extends Body {
      */
     {
       PatchingChain<Unit> units = getUnits();
-      Iterator<Unit> it = units.snapshotIterator();
-      while (it.hasNext()) {
+      for (Iterator<Unit> it = units.snapshotIterator(); it.hasNext();) {
         Unit u = it.next();
-        Stmt s = (Stmt) u;
+        if (u instanceof IfStmt) {
+          IfStmt ifs = (IfStmt) u;
 
-        if (s instanceof IfStmt) {
-          IfStmt ifs = (IfStmt) s;
-
-          JGotoStmt jgs = new JGotoStmt((Unit) units.getSuccOf(u));
+          JGotoStmt jgs = new JGotoStmt(units.getSuccOf(u));
           units.insertAfter(jgs, u);
 
-          JGotoStmt jumper = new JGotoStmt((Unit) ifs.getTarget());
+          JGotoStmt jumper = new JGotoStmt(ifs.getTarget());
           units.insertAfter(jumper, jgs);
-          ifs.setTarget((Unit) jumper);
-        }
-
-        else if (s instanceof TableSwitchStmt) {
-          TableSwitchStmt tss = (TableSwitchStmt) s;
+          ifs.setTarget(jumper);
+        } else if (u instanceof TableSwitchStmt) {
+          TableSwitchStmt tss = (TableSwitchStmt) u;
 
           int targetCount = tss.getHighIndex() - tss.getLowIndex() + 1;
           for (int i = 0; i < targetCount; i++) {
-            JGotoStmt jgs = new JGotoStmt((Unit) tss.getTarget(i));
+            JGotoStmt jgs = new JGotoStmt(tss.getTarget(i));
             units.insertAfter(jgs, tss);
-            tss.setTarget(i, (Unit) jgs);
+            tss.setTarget(i, jgs);
           }
 
-          JGotoStmt jgs = new JGotoStmt((Unit) tss.getDefaultTarget());
+          JGotoStmt jgs = new JGotoStmt(tss.getDefaultTarget());
           units.insertAfter(jgs, tss);
-          tss.setDefaultTarget((Unit) jgs);
-        }
-
-        else if (s instanceof LookupSwitchStmt) {
-          LookupSwitchStmt lss = (LookupSwitchStmt) s;
+          tss.setDefaultTarget(jgs);
+        } else if (u instanceof LookupSwitchStmt) {
+          LookupSwitchStmt lss = (LookupSwitchStmt) u;
 
           for (int i = 0; i < lss.getTargetCount(); i++) {
-            JGotoStmt jgs = new JGotoStmt((Unit) lss.getTarget(i));
+            JGotoStmt jgs = new JGotoStmt(lss.getTarget(i));
             units.insertAfter(jgs, lss);
-            lss.setTarget(i, (Unit) jgs);
+            lss.setTarget(i, jgs);
           }
 
-          JGotoStmt jgs = new JGotoStmt((Unit) lss.getDefaultTarget());
+          JGotoStmt jgs = new JGotoStmt(lss.getDefaultTarget());
           units.insertAfter(jgs, lss);
-          lss.setDefaultTarget((Unit) jgs);
+          lss.setDefaultTarget(jgs);
         }
       }
 
       for (Trap t : getTraps()) {
-        JGotoStmt jgs = new JGotoStmt((Unit) t.getHandlerUnit());
+        JGotoStmt jgs = new JGotoStmt(t.getHandlerUnit());
         units.addLast(jgs);
-        t.setHandlerUnit((Unit) jgs);
+        t.setHandlerUnit(jgs);
       }
     }
 
     /*
      * Fix up the grimp representations of statements so they can be compiled as java.
      */
-
     {
       for (Local l : getLocals()) {
         Type t = l.getType();
-
         if (t instanceof RefType) {
           RefType rt = (RefType) t;
 
@@ -807,7 +789,6 @@ public class DavaBody extends Body {
           String packageName = rt.getSootClass().getJavaPackageName();
 
           String classPackageName = packageName;
-
           if (className.lastIndexOf('.') > 0) {
             // 0 doesnt make sense
             classPackageName = className.substring(0, className.lastIndexOf('.'));
@@ -817,47 +798,42 @@ public class DavaBody extends Body {
           }
 
           addToImportList(className);
-
           // addPackage(rt.getSootClass().getJavaPackageName());
         }
       }
 
       for (Unit u : getUnits()) {
-        Stmt s = (Stmt) u;
-
-        if (s instanceof IfStmt) {
-          javafy(((IfStmt) s).getConditionBox());
-        } else if (s instanceof ThrowStmt) {
-          javafy(((ThrowStmt) s).getOpBox());
-        } else if (s instanceof TableSwitchStmt) {
-          javafy(((TableSwitchStmt) s).getKeyBox());
-        } else if (s instanceof LookupSwitchStmt) {
-          javafy(((LookupSwitchStmt) s).getKeyBox());
-        } else if (s instanceof MonitorStmt) {
-          javafy(((MonitorStmt) s).getOpBox());
-        } else if (s instanceof DefinitionStmt) {
-          DefinitionStmt ds = (DefinitionStmt) s;
+        if (u instanceof IfStmt) {
+          javafy(((IfStmt) u).getConditionBox());
+        } else if (u instanceof ThrowStmt) {
+          javafy(((ThrowStmt) u).getOpBox());
+        } else if (u instanceof TableSwitchStmt) {
+          javafy(((TableSwitchStmt) u).getKeyBox());
+        } else if (u instanceof LookupSwitchStmt) {
+          javafy(((LookupSwitchStmt) u).getKeyBox());
+        } else if (u instanceof MonitorStmt) {
+          javafy(((MonitorStmt) u).getOpBox());
+        } else if (u instanceof DefinitionStmt) {
+          DefinitionStmt ds = (DefinitionStmt) u;
 
           javafy(ds.getRightOpBox());
           javafy(ds.getLeftOpBox());
 
-          if (ds.getRightOp() instanceof IntConstant) {
-            ds.getRightOpBox().setValue(DIntConstant.v(((IntConstant) ds.getRightOp()).value, ds.getLeftOp().getType()));
+          Value rightOp = ds.getRightOp();
+          if (rightOp instanceof IntConstant) {
+            ds.getRightOpBox().setValue(DIntConstant.v(((IntConstant) rightOp).value, ds.getLeftOp().getType()));
           }
-        }
+        } else if (u instanceof ReturnStmt) {
+          ReturnStmt rs = (ReturnStmt) u;
 
-        else if (s instanceof ReturnStmt) {
-          ReturnStmt rs = (ReturnStmt) s;
-
-          if (rs.getOp() instanceof IntConstant) {
-            rs.getOpBox().setValue(DIntConstant.v(((IntConstant) rs.getOp()).value, body.getMethod().getReturnType()));
+          Value op = rs.getOp();
+          if (op instanceof IntConstant) {
+            rs.getOpBox().setValue(DIntConstant.v(((IntConstant) op).value, body.getMethod().getReturnType()));
           } else {
             javafy(rs.getOpBox());
           }
-        }
-
-        else if (s instanceof InvokeStmt) {
-          javafy(((InvokeStmt) s).getInvokeExprBox());
+        } else if (u instanceof InvokeStmt) {
+          javafy(((InvokeStmt) u).getInvokeExprBox());
         }
       }
     }
@@ -865,35 +841,28 @@ public class DavaBody extends Body {
     /*
      * Convert references to "this" and parameters.
      */
+    for (Unit u : getUnits()) {
+      if (u instanceof IdentityStmt) {
+        IdentityStmt ids = (IdentityStmt) u;
+        Value ids_rightOp = ids.getRightOp();
+        Value ids_leftOp = ids.getLeftOp();
 
-    {
-      for (Unit u : getUnits()) {
-        Stmt s = (Stmt) u;
+        if ((ids_leftOp instanceof Local) && (ids_rightOp instanceof ThisRef)) {
+          Local thisLocal = (Local) ids_leftOp;
+          thisLocals.add(thisLocal);
+          thisLocal.setName("this");
+        }
+      }
+      if (u instanceof DefinitionStmt) {
+        DefinitionStmt ds = (DefinitionStmt) u;
+        Value rightOp = ds.getRightOp();
 
-        if (s instanceof IdentityStmt) {
-          IdentityStmt ids = (IdentityStmt) s;
-          Value ids_rightOp = ids.getRightOp();
-          Value ids_leftOp = ids.getLeftOp();
-
-          if ((ids_leftOp instanceof Local) && (ids_rightOp instanceof ThisRef)) {
-            Local thisLocal = (Local) ids_leftOp;
-
-            thisLocals.add(thisLocal);
-            thisLocal.setName("this");
-          }
+        if (rightOp instanceof ParameterRef) {
+          pMap.put(((ParameterRef) rightOp).getIndex(), ds.getLeftOp());
         }
 
-        if (s instanceof DefinitionStmt) {
-          DefinitionStmt ds = (DefinitionStmt) s;
-          Value rightOp = ds.getRightOp();
-
-          if (rightOp instanceof ParameterRef) {
-            pMap.put(((ParameterRef) rightOp).getIndex(), ds.getLeftOp());
-          }
-
-          if (rightOp instanceof CaughtExceptionRef) {
-            caughtrefs.add((CaughtExceptionRef) rightOp);
-          }
+        if (rightOp instanceof CaughtExceptionRef) {
+          caughtrefs.add((CaughtExceptionRef) rightOp);
         }
       }
     }
@@ -901,34 +870,25 @@ public class DavaBody extends Body {
     /*
      * Fix up the calls to other constructors. Note, this is seriously underbuilt.
      */
+    for (Unit u : getUnits()) {
+      if (u instanceof InvokeStmt) {
+        InvokeStmt ivs = (InvokeStmt) u;
+        Value ie = ivs.getInvokeExpr();
 
-    {
-      for (Unit u : getUnits()) {
-        Stmt s = (Stmt) u;
+        if (ie instanceof InstanceInvokeExpr) {
+          InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
+          Value base = iie.getBase();
 
-        if (s instanceof InvokeStmt) {
+          if ((base instanceof Local) && "this".equals(((Local) base).getName())) {
+            String name = iie.getMethodRef().name();
 
-          InvokeStmt ivs = (InvokeStmt) s;
-          Value ie = ivs.getInvokeExpr();
-
-          if (ie instanceof InstanceInvokeExpr) {
-
-            InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
-            Value base = iie.getBase();
-
-            if ((base instanceof Local) && (((Local) base).getName().equals("this"))) {
-              SootMethodRef m = iie.getMethodRef();
-              String name = m.name();
-
-              if ((name.equals(SootMethod.constructorName)) || (name.equals(SootMethod.staticInitializerName))) {
-
-                if (constructorUnit != null) {
-                  throw new RuntimeException("More than one candidate for constructor found.");
-                }
-
-                constructorExpr = iie;
-                constructorUnit = (Unit) s;
+            if (SootMethod.constructorName.equals(name) || SootMethod.staticInitializerName.equals(name)) {
+              if (constructorUnit != null) {
+                throw new RuntimeException("More than one candidate for constructor found.");
               }
+
+              constructorExpr = iie;
+              constructorUnit = u;
             }
           }
         }
@@ -987,7 +947,6 @@ public class DavaBody extends Body {
       String packageName = fieldRef.declaringClass().getJavaPackageName();
 
       String classPackageName = packageName;
-
       if (className.lastIndexOf('.') > 0) {
         // 0 doesnt make sense
         classPackageName = className.substring(0, className.lastIndexOf('.'));
@@ -1004,17 +963,13 @@ public class DavaBody extends Body {
 
       javafy(ar.getBaseBox());
       javafy(ar.getIndexBox());
-    }
-
-    else if (r instanceof InstanceFieldRef) {
+    } else if (r instanceof InstanceFieldRef) {
       InstanceFieldRef ifr = (InstanceFieldRef) r;
 
       javafy(ifr.getBaseBox());
 
       vb.setValue(new DInstanceFieldRef(ifr.getBase(), ifr.getFieldRef(), thisLocals));
-    }
-
-    else if (r instanceof ThisRef) {
+    } else if (r instanceof ThisRef) {
       ThisRef tr = (ThisRef) r;
 
       vb.setValue(new DThisRef((RefType) tr.getType()));
@@ -1034,7 +989,7 @@ public class DavaBody extends Body {
     Value leftOp = leftOpBox.getValue(), rightOp = rightOpBox.getValue();
 
     if (rightOp instanceof IntConstant) {
-      if ((leftOp instanceof IntConstant) == false) {
+      if (!(leftOp instanceof IntConstant)) {
         javafy(leftOpBox);
         leftOp = leftOpBox.getValue();
 
@@ -1138,22 +1093,16 @@ public class DavaBody extends Body {
       if (ie instanceof VirtualInvokeExpr) {
         VirtualInvokeExpr vie = (VirtualInvokeExpr) ie;
         vb.setValue(new DVirtualInvokeExpr(vie.getBase(), vie.getMethodRef(), vie.getArgs(), thisLocals));
-      }
-
-      else if (ie instanceof SpecialInvokeExpr) {
+      } else if (ie instanceof SpecialInvokeExpr) {
         SpecialInvokeExpr sie = (SpecialInvokeExpr) ie;
         vb.setValue(new DSpecialInvokeExpr(sie.getBase(), sie.getMethodRef(), sie.getArgs()));
-      }
-
-      else if (ie instanceof InterfaceInvokeExpr) {
+      } else if (ie instanceof InterfaceInvokeExpr) {
         InterfaceInvokeExpr iie = (InterfaceInvokeExpr) ie;
         vb.setValue(new DInterfaceInvokeExpr(iie.getBase(), iie.getMethodRef(), iie.getArgs()));
       } else {
         throw new RuntimeException("InstanceInvokeExpr " + ie + " not javafied correctly");
       }
-    }
-
-    else if (ie instanceof StaticInvokeExpr) {
+    } else if (ie instanceof StaticInvokeExpr) {
       StaticInvokeExpr sie = (StaticInvokeExpr) ie;
 
       if (sie instanceof NewInvokeExpr) {
@@ -1165,7 +1114,6 @@ public class DavaBody extends Body {
         packageName = rt.getSootClass().getJavaPackageName();
 
         classPackageName = packageName;
-
         if (className.lastIndexOf('.') > 0) {
           // 0 doesnt make sense
           classPackageName = className.substring(0, className.lastIndexOf('.'));
@@ -1208,7 +1156,6 @@ public class DavaBody extends Body {
     String packageName = ne.getBaseType().getSootClass().getJavaPackageName();
 
     String classPackageName = packageName;
-
     if (className.lastIndexOf('.') > 0) {
       // 0 doesnt make sense
       classPackageName = className.substring(0, className.lastIndexOf('.'));

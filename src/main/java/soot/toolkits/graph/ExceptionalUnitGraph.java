@@ -87,25 +87,17 @@ import soot.util.Chain;
  * </p>
  */
 public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<Unit> {
-  protected Map<Unit, List<Unit>> unitToUnexceptionalSuccs; // If there are no
-  // Traps within
-  protected Map<Unit, List<Unit>> unitToUnexceptionalPreds; // the method,
-  // these will be
-  // the
-  // same maps as unitToSuccs and
-  // unitToPreds.
+  // If there are no Traps within the method, these will be the same maps as unitToSuccs and unitToPreds.
+  protected Map<Unit, List<Unit>> unitToUnexceptionalSuccs;
+  protected Map<Unit, List<Unit>> unitToUnexceptionalPreds;
 
   protected Map<Unit, List<Unit>> unitToExceptionalSuccs;
   protected Map<Unit, List<Unit>> unitToExceptionalPreds;
   protected Map<Unit, Collection<ExceptionDest>> unitToExceptionDests;
 
-  protected ThrowAnalysis throwAnalysis; // Cached reference to the
-
-  // analysis used to generate this
-  // graph, for generating responses
-  // to getExceptionDests() on the
-  // fly for nodes from which all
-  // exceptions escape the method.
+  // Cached reference to the analysis used to generate this graph, for generating responses
+  // to getExceptionDests() on the fly for nodes from which all exceptions escape the method.
+  protected ThrowAnalysis throwAnalysis;
 
   /**
    * Constructs the graph for a given Body instance, using the <code>ThrowAnalysis</code> and
@@ -205,7 +197,6 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
    */
   protected void initialize(ThrowAnalysis throwAnalysis, boolean omitExceptingUnitEdges) {
     int size = unitChain.size();
-    Set<Unit> trapUnitsThatAreHeads = Collections.emptySet();
 
     if (Options.v().time()) {
       Timers.v().graphTimer.start();
@@ -216,15 +207,15 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     buildUnexceptionalEdges(unitToUnexceptionalSuccs, unitToUnexceptionalPreds);
     this.throwAnalysis = throwAnalysis;
 
-    if (body.getTraps().size() == 0) {
-      // No handlers, so all exceptional control flow exits the
-      // method.
+    Set<Unit> trapUnitsThatAreHeads;
+    if (body.getTraps().isEmpty()) {
+      // No handlers, so all exceptional control flow exits the method.
       unitToExceptionDests = Collections.emptyMap();
       unitToExceptionalSuccs = Collections.emptyMap();
       unitToExceptionalPreds = Collections.emptyMap();
+      trapUnitsThatAreHeads = Collections.emptySet();
       unitToSuccs = unitToUnexceptionalSuccs;
       unitToPreds = unitToUnexceptionalPreds;
-
     } else {
       unitToExceptionDests = buildExceptionDests(throwAnalysis);
       unitToExceptionalSuccs = new LinkedHashMap<Unit, List<Unit>>(unitToExceptionDests.size() * 2 + 1, 0.7f);
@@ -237,7 +228,6 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
       unitToSuccs = combineMapValues(unitToUnexceptionalSuccs, unitToExceptionalSuccs);
       unitToPreds = combineMapValues(unitToUnexceptionalPreds, unitToExceptionalPreds);
     }
-
     buildHeadsAndTails(trapUnitsThatAreHeads);
 
     if (Options.v().time()) {
@@ -308,10 +298,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
         result = addDestToMap(result, unit, null, escaping);
       }
     }
-    if (result == null) {
-      result = Collections.emptyMap();
-    }
-    return result;
+    return result == null ? Collections.emptyMap() : result;
   }
 
   /**
@@ -386,6 +373,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
   protected Set<Unit> buildExceptionalEdges(ThrowAnalysis throwAnalysis,
       Map<Unit, Collection<ExceptionDest>> unitToExceptionDests, Map<Unit, List<Unit>> unitToSuccs,
       Map<Unit, List<Unit>> unitToPreds, boolean omitExceptingUnitEdges) {
+
     Set<Unit> trapsThatAreHeads = new ArraySet<Unit>();
     Unit entryPoint = unitChain.getFirst();
     for (Entry<Unit, Collection<ExceptionDest>> entry : unitToExceptionDests.entrySet()) {
@@ -595,8 +583,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
    * @return whether or not <code>u</code> may throw an exception which may be caught by a <code>Trap</code> in this method,
    */
   private boolean mightThrowToIntraproceduralCatcher(Unit u) {
-    Collection<ExceptionDest> dests = getExceptionDests(u);
-    for (ExceptionDest dest : dests) {
+    for (ExceptionDest dest : getExceptionDests(u)) {
       if (dest.getTrap() != null) {
         return true;
       }
@@ -650,9 +637,8 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
           || u instanceof soot.baf.ReturnVoidInst) {
         tails.add(u);
       } else if (u instanceof soot.jimple.ThrowStmt || u instanceof soot.baf.ThrowInst) {
-        Collection<ExceptionDest> dests = getExceptionDests(u);
         int escapeMethodCount = 0;
-        for (ExceptionDest dest : dests) {
+        for (ExceptionDest dest : getExceptionDests(u)) {
           if (dest.getTrap() == null) {
             escapeMethodCount++;
           }
@@ -703,6 +689,44 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     protected ExceptionDest(Trap trap, ThrowableSet throwables) {
       this.trap = trap;
       this.throwables = throwables;
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((throwables == null) ? 0 : throwables.hashCode());
+      result = prime * result + ((trap == null) ? 0 : trap.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      ExceptionDest other = (ExceptionDest) obj;
+      if (throwables == null) {
+        if (other.throwables != null) {
+          return false;
+        }
+      } else if (!throwables.equals(other.throwables)) {
+        return false;
+      }
+      if (trap == null) {
+        if (other.trap != null) {
+          return false;
+        }
+      } else if (!trap.equals(other.trap)) {
+        return false;
+      }
+      return true;
     }
 
     @Override
@@ -778,24 +802,23 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
    * @return the {@link ThrowAnalysis} used to generate this graph if the graph contains no {@link Trap}s, or
    *         <code>null</code> if the graph contains one or more {@link Trap}s.
    */
-  ThrowAnalysis getThrowAnalysis() {
+  public ThrowAnalysis getThrowAnalysis() {
     return throwAnalysis;
   }
 
   @Override
   public String toString() {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     for (Unit u : unitChain) {
-      buf.append("  preds: " + getPredsOf(u) + "\n");
-      buf.append("  unexceptional preds: " + getUnexceptionalPredsOf(u) + "\n");
-      buf.append("  exceptional preds: " + getExceptionalPredsOf(u) + "\n");
-      buf.append(u.toString() + '\n');
-      buf.append("  exception destinations: " + getExceptionDests(u) + "\n");
-      buf.append("  unexceptional succs: " + getUnexceptionalSuccsOf(u) + "\n");
-      buf.append("  exceptional succs: " + getExceptionalSuccsOf(u) + "\n");
-      buf.append("  succs " + getSuccsOf(u) + "\n\n");
+      buf.append("  preds: ").append(getPredsOf(u)).append('\n');
+      buf.append("  unexceptional preds: ").append(getUnexceptionalPredsOf(u)).append('\n');
+      buf.append("  exceptional preds: ").append(getExceptionalPredsOf(u)).append('\n');
+      buf.append(u.toString()).append('\n');
+      buf.append("  exception destinations: ").append(getExceptionDests(u)).append('\n');
+      buf.append("  unexceptional succs: ").append(getUnexceptionalSuccsOf(u)).append('\n');
+      buf.append("  exceptional succs: ").append(getExceptionalSuccsOf(u)).append('\n');
+      buf.append("  succs ").append(getSuccsOf(u)).append("\n\n");
     }
-
     return buf.toString();
   }
 }

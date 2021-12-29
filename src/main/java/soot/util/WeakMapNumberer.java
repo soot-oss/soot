@@ -35,12 +35,12 @@ import java.util.WeakHashMap;
  * @param <T>
  */
 public class WeakMapNumberer<T extends Numberable> implements IterableNumberer<T> {
-  Map<T, Integer> map = new WeakHashMap<T, Integer>();
-  Map<Integer, WeakReference<T>> rmap = new WeakHashMap<Integer, WeakReference<T>>();
+    
+  final Map<T, Integer> map = new WeakHashMap<T, Integer>();
+  final Map<Integer, WeakReference<T>> rmap = new WeakHashMap<Integer, WeakReference<T>>();
   int nextIndex = 1;
 
   public WeakMapNumberer() {
-
   }
 
   @Override
@@ -49,7 +49,7 @@ public class WeakMapNumberer<T extends Numberable> implements IterableNumberer<T
       return;
     }
     if (!map.containsKey(o)) {
-      Integer key = new Integer(nextIndex);
+      Integer key = nextIndex;
       map.put(o, key);
       rmap.put(key, new WeakReference<T>(o));
       o.setNumber(nextIndex++);
@@ -83,7 +83,7 @@ public class WeakMapNumberer<T extends Numberable> implements IterableNumberer<T
     if (i == null) {
       throw new RuntimeException("couldn't find " + o);
     }
-    return i.intValue();
+    return i;
   }
 
   @Override
@@ -91,7 +91,7 @@ public class WeakMapNumberer<T extends Numberable> implements IterableNumberer<T
     if (number == 0) {
       return null;
     }
-    return rmap.get(new Integer((int)number)).get();
+    return rmap.get((int)number).get();
   }
 
   @Override
@@ -107,5 +107,4 @@ public class WeakMapNumberer<T extends Numberable> implements IterableNumberer<T
   public Iterator<T> iterator() {
     return map.keySet().iterator();
   }
-
 }

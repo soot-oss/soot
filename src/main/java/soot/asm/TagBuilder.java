@@ -23,13 +23,11 @@ package soot.asm;
  */
 
 import java.lang.reflect.Field;
-
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
-
 import soot.tagkit.AnnotationConstants;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.GenericAttribute;
@@ -77,8 +75,7 @@ final class TagBuilder {
     return new AnnotationElemBuilder() {
       @Override
       public void visitEnd() {
-        AnnotationTag annotTag = new AnnotationTag(desc, elems);
-        _tag.addAnnotation(annotTag);
+        _tag.addAnnotation(new AnnotationTag(desc, elems));
       }
     };
   }
@@ -89,11 +86,11 @@ final class TagBuilder {
    * @see ClassVisitor#visitAttribute(Attribute)
    */
   public void visitAttribute(Attribute attr) {
-    // SA, 2017-07-21: As of ASM 5.1, there is no better way to obtain
-    // attribute values.
+    // SA, 2017-07-21: As of ASM 5.1, there is no better way to obtain attribute values.
+    // TH, 2021-07-14: As of ASM 8.0.1, there is still no better way, but the field name changed.
     byte[] value = null;
     try {
-      Field fld = Attribute.class.getDeclaredField("value");
+      Field fld = Attribute.class.getDeclaredField("content");
       fld.setAccessible(true);
       value = (byte[]) fld.get(attr);
     } catch (Exception ex) {

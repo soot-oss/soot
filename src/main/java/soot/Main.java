@@ -24,8 +24,6 @@ package soot;
 
 import static java.net.URLEncoder.encode;
 
-import com.google.common.base.Joiner;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,7 +38,9 @@ import soot.options.CGOptions;
 import soot.options.Options;
 import soot.toolkits.astmetrics.ClassData;
 
-/** Main class for Soot; provides Soot's command-line user interface. */
+/**
+ * Main class for Soot; provides Soot's command-line user interface.
+ */
 public class Main {
   public Main(Singletons.Global g) {
   }
@@ -80,45 +80,46 @@ public class Main {
   }
 
   private void processCmdLine(String[] args) {
+    final Options opts = Options.v();
 
-    if (!Options.v().parse(args)) {
+    if (!opts.parse(args)) {
       throw new OptionsParseException("Option parse error");
     }
 
     if (PackManager.v().onlyStandardPacks()) {
       for (Pack pack : PackManager.v().allPacks()) {
-        Options.v().warnForeignPhase(pack.getPhaseName());
+        opts.warnForeignPhase(pack.getPhaseName());
         for (Transform tr : pack) {
-          Options.v().warnForeignPhase(tr.getPhaseName());
+          opts.warnForeignPhase(tr.getPhaseName());
         }
       }
     }
-    Options.v().warnNonexistentPhase();
+    opts.warnNonexistentPhase();
 
-    if (Options.v().help()) {
-      System.out.println(Options.v().getUsage());
+    if (opts.help()) {
+      System.out.println(opts.getUsage());
       throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
     }
 
-    if (Options.v().phase_list()) {
-      System.out.println(Options.v().getPhaseList());
+    if (opts.phase_list()) {
+      System.out.println(opts.getPhaseList());
       throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
     }
 
-    if (!Options.v().phase_help().isEmpty()) {
-      for (String phase : Options.v().phase_help()) {
-        System.out.println(Options.v().getPhaseHelp(phase));
+    if (!opts.phase_help().isEmpty()) {
+      for (String phase : opts.phase_help()) {
+        System.out.println(opts.getPhaseHelp(phase));
       }
       throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
     }
 
-    if ((!Options.v().unfriendly_mode() && (args.length == 0)) || Options.v().version()) {
+    if ((!opts.unfriendly_mode() && (args.length == 0)) || opts.version()) {
       printVersion();
       throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
     }
 
-    if (Options.v().on_the_fly()) {
-      Options.v().set_whole_program(true);
+    if (opts.on_the_fly()) {
+      opts.set_whole_program(true);
       PhaseOptions.v().setPhaseOption("cg", "off");
     }
 
@@ -142,14 +143,14 @@ public class Main {
     } catch (OptionsParseException e) {
       // error message has already been printed
     } catch (StackOverflowError e) {
-      System.err.println("" + "Soot has run out of stack memory.");
-      System.err.println("" + "To allocate more stack memory to Soot, use the -Xss switch to Java.");
-      System.err.println("" + "For example (for 2MB): java -Xss2m soot.Main ...");
+      System.err.println("Soot has run out of stack memory.");
+      System.err.println("To allocate more stack memory to Soot, use the -Xss switch to Java.");
+      System.err.println("For example (for 2MB): java -Xss2m soot.Main ...");
       throw e;
     } catch (OutOfMemoryError e) {
-      System.err.println("" + "Soot has run out of the memory allocated to it by the Java VM.");
-      System.err.println("" + "To allocate more memory to Soot, use the -Xmx switch to Java.");
-      System.err.println("" + "For example (for 2GB): java -Xmx2g soot.Main ...");
+      System.err.println("Soot has run out of the memory allocated to it by the Java VM.");
+      System.err.println("To allocate more memory to Soot, use the -Xmx switch to Java.");
+      System.err.println("For example (for 2GB): java -Xmx2g soot.Main ...");
       throw e;
     } catch (RuntimeException e) {
       e.printStackTrace();
@@ -157,37 +158,49 @@ public class Main {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       e.printStackTrace(new PrintStream(bos));
       String stackStraceString = bos.toString();
+
+      final String TRACKER_URL = "https://github.com/soot-oss/soot/issues/new?";
+      String body = "Steps to reproduce:\n1.) ...\n\n"
+              + "Files used to reproduce: \n...\n\n"
+              + "Soot version: "
+              + "<pre>"
+              + escape(versionString)
+              + "</pre>\n\n"
+              + "Command line:\n"
+              + "<pre>"
+              + escape(String.join(" ", args))
+              + "</pre>\n\n"
+              + "Max Memory:\n"
+              + "<pre>"
+              + escape((Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB")
+              + "</pre>\n\n"
+              + "Stack trace:\n"
+              + "<pre>"
+              + escape(stackStraceString)
+              + "</pre>";
+      String title = e.getClass().getName() + " when ...";
+
       try {
-        final String TRACKER_URL = "https://github.com/soot-oss/soot/issues/new?";
-        String commandLineArgs = Joiner.on(" ").join(args);
-        String body = "Steps to reproduce:\n1.) ...\n\n" + "Files used to reproduce: \n...\n\n" + "Soot version: " + "<pre>"
-            + escape(versionString) + "</pre>" + "\n\n" + "Command line:\n" + "<pre>" + escape(commandLineArgs)
-            + "</pre>\n\n" + "Max Memory:\n" + "<pre>" + escape((Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB")
-            + "</pre>" + "\n\n" + "Stack trace:\n" + "<pre>" + escape(stackStraceString) + "</pre>";
-
-        String title = e.getClass().getName() + " when ...";
-
         StringBuilder sb = new StringBuilder();
         sb.append("\n\nOuuups... something went wrong! Sorry about that.\n");
         sb.append("Follow these steps to fix the problem:\n");
         sb.append("1.) Are you sure you used the right command line?\n");
         sb.append("    Click here to double-check:\n");
         sb.append("    https://github.com/soot-oss/soot/wiki/Options-and-JavaDoc\n");
-        sb.append("\n");
+        sb.append('\n');
         sb.append("2.) Not sure whether it's a bug? Feel free to discuss\n");
         sb.append("    the issue on the Soot mailing list:\n");
         sb.append("    https://github.com/soot-oss/soot/wiki/Getting-help\n");
-        sb.append("\n");
+        sb.append('\n');
         sb.append("3.) Sure it's a bug? Click this link to report it.\n");
-        sb.append("    " + TRACKER_URL + "title=" + encode(title, "UTF-8") + "&body=" + encode(body, "UTF-8") + "\n");
+        sb.append("    " + TRACKER_URL + "title=").append(encode(title, "UTF-8"));
+        sb.append("&body=").append(encode(body, "UTF-8")).append('\n');
         sb.append("    Please be as precise as possible when giving us\n");
         sb.append("    information on how to reproduce the problem. Thanks!");
-
         System.err.println(sb);
 
         // Exit with an exit code 1
         System.exit(1);
-
       } catch (UnsupportedEncodingException e1) {
 
         // Exit with an exit code 1
@@ -197,8 +210,8 @@ public class Main {
   }
 
   private static CharSequence escape(CharSequence s) {
+    final int end = s.length();
     int start = 0;
-    int end = s.length();
 
     StringBuilder sb = new StringBuilder(32 + (end - start));
     for (int i = start; i < end; i++) {
@@ -246,8 +259,7 @@ public class Main {
        * If it is set......print the astMetrics.xml file and stop executing soot
        */
       if (Options.v().ast_metrics()) {
-        try {
-          OutputStream streamOut = new FileOutputStream("../astMetrics.xml");
+        try (OutputStream streamOut = new FileOutputStream("../astMetrics.xml")) {
           PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
           writerOut.println("<?xml version='1.0'?>");
           writerOut.println("<ASTMetrics>");
@@ -259,7 +271,6 @@ public class Main {
 
           writerOut.println("</ASTMetrics>");
           writerOut.flush();
-          streamOut.close();
         } catch (IOException e) {
           throw new CompilationDeathException("Cannot output file astMetrics", e);
         }
@@ -291,26 +302,31 @@ public class Main {
 
     System.out.println("Soot finished on " + new Date());
     long runtime = (finishNano - startNano) / 1000000l;
-    System.out.println("" + "Soot has run for " + (runtime / 60000) + " min. " + ((runtime % 60000) / 1000) + " sec.");
-
+    System.out.println("Soot has run for " + (runtime / 60000) + " min. " + ((runtime % 60000) / 1000) + " sec.");
   }
 
   public void autoSetOptions() {
+    final Options opts = Options.v();
+
     // when no-bodies-for-excluded is enabled, also enable phantom refs
-    if (Options.v().no_bodies_for_excluded()) {
-      Options.v().set_allow_phantom_refs(true);
+    if (opts.no_bodies_for_excluded()) {
+      opts.set_allow_phantom_refs(true);
     }
 
     // when reflection log is enabled, also enable phantom refs
     CGOptions cgOptions = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
     String log = cgOptions.reflection_log();
-    if ((log != null) && (log.length() > 0)) {
-      Options.v().set_allow_phantom_refs(true);
+    if (log != null && !log.isEmpty()) {
+      opts.set_allow_phantom_refs(true);
     }
 
     // if phantom refs enabled, ignore wrong staticness in type assigner
-    if (Options.v().allow_phantom_refs()) {
-      Options.v().set_wrong_staticness(Options.wrong_staticness_fix);
+    if (opts.allow_phantom_refs()) {
+      opts.set_wrong_staticness(Options.wrong_staticness_fix);
+    }
+
+    if (opts.java_version() != Options.java_version_default) {
+      opts.set_derive_java_version(false);
     }
   }
 }

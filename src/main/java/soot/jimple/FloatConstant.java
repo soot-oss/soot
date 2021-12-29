@@ -31,6 +31,11 @@ import soot.util.Switch;
  */
 public class FloatConstant extends RealConstant {
 
+  private static final long serialVersionUID = 8670501761494749605L;
+
+  public static final FloatConstant ZERO = new FloatConstant(0);
+  public static final FloatConstant ONE = new FloatConstant(1);
+
   public final float value;
 
   private FloatConstant(float value) {
@@ -38,9 +43,16 @@ public class FloatConstant extends RealConstant {
   }
 
   public static FloatConstant v(float value) {
+    if (Float.compare(value, 0F) == 0) {
+      return ZERO;
+    }
+    if (Float.compare(value, 1F) == 0) {
+      return ONE;
+    }
     return new FloatConstant(value);
   }
 
+  @Override
   public boolean equals(Object c) {
     return c instanceof FloatConstant && Float.compare(((FloatConstant) c).value, value) == 0;
   }
@@ -94,6 +106,12 @@ public class FloatConstant extends RealConstant {
   public NumericConstant notEqual(NumericConstant c) {
     assertInstanceOf(c);
     return IntConstant.v(Float.compare(this.value, ((FloatConstant) c).value) != 0 ? 1 : 0);
+  }
+
+  @Override
+  public boolean isLessThan(NumericConstant c) {
+    assertInstanceOf(c);
+    return Float.compare(this.value, ((FloatConstant) c).value) < 0;
   }
 
   @Override
@@ -154,11 +172,13 @@ public class FloatConstant extends RealConstant {
   @Override
   public String toString() {
     String floatString = Float.toString(value);
-
-    if (floatString.equals("NaN") || floatString.equals("Infinity") || floatString.equals("-Infinity")) {
-      return "#" + floatString + "F";
-    } else {
-      return floatString + "F";
+    switch (floatString) {
+      case "NaN":
+      case "Infinity":
+      case "-Infinity":
+        return "#" + floatString + "F";
+      default:
+        return floatString + "F";
     }
   }
 
@@ -185,5 +205,4 @@ public class FloatConstant extends RealConstant {
       throw new IllegalArgumentException("FloatConstant expected");
     }
   }
-
 }

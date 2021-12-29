@@ -21,8 +21,10 @@ package soot.tagkit;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-/** Interface to allow display of tags. */
+/**
+ * Interface to allow display of tags.
+ */
 public interface TagPrinter {
+
   public String print(String aClassName, String aFieldOrMtdSignature, Tag aTag);
 }

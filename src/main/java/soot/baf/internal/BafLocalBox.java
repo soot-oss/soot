@@ -26,10 +26,12 @@ import soot.AbstractValueBox;
 import soot.Value;
 
 public class BafLocalBox extends AbstractValueBox {
+
   public BafLocalBox(Value value) {
     setValue(value);
   }
 
+  @Override
   public boolean canContainValue(Value value) {
     return value instanceof BafLocal;
   }

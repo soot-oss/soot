@@ -408,11 +408,14 @@
         <boolopt>
             <name>Weak Map Structures</name>
             <alias>weak-map-structures</alias>
-            <short_desc>Use weak references in Scene to prevent memory leakage when removing many classes/methods/locals</short_desc>
+            <short_desc>Use weak references in Scene to prevent memory leakage when removing many
+                classes/methods/locals
+            </short_desc>
             <long_desc>
                 If this option is set, Soot will use Maps with weak references to lower memory usage when performing
                 many additions and deletions of classes/methods/locals. Without this option, all created objects
-                are kept in memory. This has a bit larger memory footprint if only a small amount of deletions are conducted.
+                are kept in memory. This has a bit larger memory footprint if only a small amount of deletions are
+                conducted.
             </long_desc>
         </boolopt>
     </section>
@@ -539,8 +542,9 @@
             <alias>process-path</alias>
             <alias>process-dir</alias>
             <set_arg_label>dir</set_arg_label>
-            <short_desc>Process all classes found in
-                <use_arg_label/>
+            <short_desc>
+                Process all classes found in <use_arg_label/> 
+                (but not classes within JAR files in <use_arg_label/>, use <tt>process-jar-dir</tt> for that)
             </short_desc>
             <long_desc>
                 <p>
@@ -565,6 +569,40 @@
                 </p>
             </long_desc>
         </listopt>
+        <listopt>
+            <name>Process JAR Directory</name>
+            <alias>process-jar-dir</alias>
+            <set_arg_label>dir</set_arg_label>
+            <short_desc>Process all classes found in JAR files found in
+                <use_arg_label/>
+            </short_desc>
+            <long_desc>
+                <p>
+                    Add all classes found in JAR files found in
+                    <use_arg_label/>
+                    to the set of argument classes
+                    which is analyzed and transformed by Soot. You can specify the
+                    option more than once, to add argument classes from multiple directories.
+                </p>
+            </long_desc>
+        </listopt>
+        <boolopt>
+            <name>Derive Java version from input</name>
+            <alias>derive-java-version</alias>
+            <default>true</default>
+            <short_desc>Java version for output and internal processing will be derived from the given input classes
+            </short_desc>
+            <long_desc>
+                If this flag is set and the ASM frontend is uese, Soot will derive the Java bytecode version from the
+                given Java class input. It will asume the highest bycode version as the version to take.
+                Writen-out files will then be written out with this bytecode version. Also, some optimizations depend on
+                knowing the language level, e.g., interfaces will only be considered for computing static dispatch for a
+                languag level >=8.
+                <p/>
+                This option is ignored if the language level is enforced manually with the output option <t>
+                java-version</t>.
+            </long_desc>
+        </boolopt>
         <boolopt>
             <name>One at a time</name>
             <alias>oaat</alias>
@@ -765,6 +803,15 @@
                 when allow-phantom-refs is enabled. This can be used to add missing
                 methods and fields to a class that may not exactly match a similar
                 class used by other classes.
+            </long_desc>
+        </boolopt>
+        <boolopt>
+            <name>Allow Errors during callgraph construction</name>
+            <alias>allow-cg-errors</alias>
+            <short_desc>Allow Errors during callgraph construction</short_desc>
+            <long_desc>
+                Allow the callgraph construction to continue even if there are errors.
+                Errors are logged instead.
             </long_desc>
         </boolopt>
         <boolopt>
@@ -1157,7 +1204,34 @@
                 <alias>9</alias>
                 <short_desc>Force Java 1.9 as output version (Experimental).</short_desc>
                 <long_desc>
-                    Force Java 1.9 as output version.  (Experimental)
+                    Force Java 1.9 as output version. (Experimental)
+                </long_desc>
+            </value>
+            <value>
+                <name>Java 1.10</name>
+                <alias>1.10</alias>
+                <alias>10</alias>
+                <short_desc>Force Java 1.10 as output version (Experimental).</short_desc>
+                <long_desc>
+                    Force Java 1.10 as output version. (Experimental)
+                </long_desc>
+            </value>
+            <value>
+                <name>Java 1.11</name>
+                <alias>1.11</alias>
+                <alias>11</alias>
+                <short_desc>Force Java 1.11 as output version (Experimental).</short_desc>
+                <long_desc>
+                    Force Java 1.11 as output version. (Experimental)
+                </long_desc>
+            </value>
+            <value>
+                <name>Java 1.12</name>
+                <alias>1.12</alias>
+                <alias>12</alias>
+                <short_desc>Force Java 1.12 as output version (Experimental).</short_desc>
+                <long_desc>
+                    Force Java 1.12 as output version. (Experimental)
                 </long_desc>
             </value>
         </multiopt>
@@ -1606,6 +1680,16 @@
                     </long_desc>
                 </sub_phase>
                 <sub_phase>
+                    <name>Shared Initialization Local Splitter</name>
+                    <alias>jb.sils</alias>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>true</default>
+                    </boolopt>
+                    <short_desc>Splits primitive locals used as different types</short_desc>
+                </sub_phase>
+                <sub_phase>
                     <name>Jimple Local Aggregator</name>
                     <alias>jb.a</alias>
                     <short_desc>Aggregator: removes some unnecessary copies</short_desc>
@@ -1965,6 +2049,25 @@
                         <default>false</default>
                     </boolopt>
                 </sub_phase>
+                <sub_phase>
+                    <name>Conditional Branch Folder</name>
+                    <alias>jb.cbf</alias>
+                    <short_desc>Conditional branch folder</short_desc>
+                    <long_desc>
+                        The Conditional Branch Folder statically evaluates the
+                        conditional expression of Jimple <tt>if</tt> statements. If the
+                        condition is identically <tt>true</tt> or
+                        <tt>false</tt>, the Folder replaces the conditional branch
+                        statement with an unconditional <tt>goto</tt> statement.
+                    </long_desc>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>true</default>
+                        <short_desc/>
+                        <long_desc/>
+                    </boolopt>
+                </sub_phase>
             </phase>
             <phase>
                 <name>Java To Jimple Body Creation</name>
@@ -2008,6 +2111,16 @@
                         introduces new variables so that each disjoint web is associated
                         with a single local.
                     </long_desc>
+                </sub_phase>
+                <sub_phase>
+                    <name>Shared Initialization Local Splitter</name>
+                    <alias>jj.sils</alias>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>true</default>
+                    </boolopt>
+                    <short_desc>Splits primitive locals used as different types</short_desc>
                 </sub_phase>
                 <sub_phase>
                     <name>Jimple Local Aggregator</name>
@@ -5076,7 +5189,7 @@ This locking scheme aims to achieve simple fine-grained locking.
                     <default>false</default>
                     <short_desc>Compute extended SSA (SSI) form.</short_desc>
                     <long_desc>
-                        If enabled, Shimple will created extended SSA (SSI) form.
+                        If enabled, Shimple will create extended SSA (SSI) form.
                     </long_desc>
                 </boolopt>
                 <boolopt>
@@ -6564,6 +6677,19 @@ This locking scheme aims to achieve simple fine-grained locking.
                         </long_desc>
                     </boolopt>
                 </sub_phase>
+                <sub_phase>
+                    <name>Nop Eliminator</name>
+                    <alias>bb.ne</alias>
+                    <short_desc>Nop eliminator</short_desc>
+                    <long_desc>
+                        The Nop Eliminator removes <tt>nop</tt> instructions from the method.
+                    </long_desc>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>true</default>
+                    </boolopt>
+                </sub_phase>
             </phase>
             <phase>
                 <name>Baf Optimization</name>
@@ -6810,6 +6936,18 @@ This locking scheme aims to achieve simple fine-grained locking.
 
 
         </phaseopt>
+        <intopt>
+            <name>Class transformation parallelism</name>
+            <alias>t</alias>
+            <alias>num-threads</alias>
+            <set_arg_label>num</set_arg_label>
+            <short_desc>Force Soot to use <use_arg_label/> threads when transforming classes.
+            </short_desc>
+            <long_desc>
+                Force Soot to use <use_arg_label/> threads to transform classes in parallel.
+                The default behavior is to use one thread per processor.
+            </long_desc>
+        </intopt>
         <macroopt>
             <name>Optimize</name>
             <alias>O</alias>
@@ -6905,7 +7043,6 @@ This locking scheme aims to achieve simple fine-grained locking.
                 <name>Unit</name>
                 <alias>unit</alias>
                 <short_desc>Unit Throw Analysis</short_desc>
-                <default/>
                 <long_desc>
                     Says that each statement in the intermediate representation
                     may throw those exception types associated with the corresponding
@@ -6921,6 +7058,16 @@ This locking scheme aims to achieve simple fine-grained locking.
                 <long_desc>
                     Specialized throw analysis implementation that covers the semantics of the Dalvik
                     IR used for Android apps
+                </long_desc>
+            </value>
+            <value>
+                <name>AutoSelect</name>
+                <alias>auto-select</alias>
+                <default/>
+                <short_desc>Automatically Select Throw Analysis</short_desc>
+                <long_desc>
+                    When processing DEX or APK files, choose the Dalvik throw analysis. Otherwise,
+                    choose the unit throw analysis.
                 </long_desc>
             </value>
         </multiopt>
@@ -7037,7 +7184,7 @@ This locking scheme aims to achieve simple fine-grained locking.
                 <p>
                     <code>-trim-cfgs</code>
                     is shorthand for <code>-throw-analysis
-                    unit -omit-excepting-unit-edges -p jb.tt enabled:true</code>.
+                        unit -omit-excepting-unit-edges -p jb.tt enabled:true</code>.
                 </p>
             </long_desc>
         </macroopt>

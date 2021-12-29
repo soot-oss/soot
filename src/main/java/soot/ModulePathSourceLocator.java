@@ -265,7 +265,8 @@ public class ModulePathSourceLocator extends SourceLocator {
     if (p.endsWith("modules")) {
       return p;
     }
-    //Due to a bug in some JDKs, p not necessarily points to modules directly: https://bugs.openjdk.java.net/browse/JDK-8227076
+    // Due to a bug in some JDKs, p not necessarily points to modules directly:
+    // https://bugs.openjdk.java.net/browse/JDK-8227076
     return p.resolve("modules");
   }
 
@@ -586,7 +587,7 @@ public class ModulePathSourceLocator extends SourceLocator {
     return null;
   }
 
-  private FoundFile lookupInDir(String dir, String fileName) {
+  protected FoundFile lookupInDir(String dir, String fileName) {
     Path dirPath = Paths.get(dir);
     Path foundFile = dirPath.resolve(fileName);
     if (foundFile != null && Files.isRegularFile(foundFile)) {
@@ -671,7 +672,10 @@ public class ModulePathSourceLocator extends SourceLocator {
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 
-          String fileName = aPath.relativize(file).toString().replace(File.separatorChar, '.');
+          // Note that some FileSystem implementations used by Path use even on Windows
+          // "/" as path separator. Therefore we have to use the file-system specific path separator
+          // instead of the system specific one (File.separatorChar).
+          String fileName = aPath.relativize(file).toString().replace(file.getFileSystem().getSeparator(), ".");
 
           if (fileName.endsWith(".class")) {
             int index = fileName.lastIndexOf(".class");

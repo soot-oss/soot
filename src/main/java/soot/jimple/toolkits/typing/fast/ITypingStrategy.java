@@ -30,27 +30,27 @@ import soot.util.Chain;
  */
 
 /**
- * Provides a way to use different was to create and minimize typings
+ * Provides a way to use different was to create and minimize {@link Typing}s.
  * 
  * @author Marc Miltenberger
  */
 public interface ITypingStrategy {
 
   /**
-   * Creates a new typing class instance with initialized bottom types for the given locals
+   * Creates a new {@link Typing} class instance with initialized bottom types for the given locals
    * 
    * @param locals
    *          the locals
-   * @return the typing
+   * @return the {@link Typing}
    */
   public Typing createTyping(Chain<Local> locals);
 
   /**
    * Creates a new typing class as a copy from a given class
    * 
-   * @param locals
-   *          the locals
-   * @return the typing
+   * @param tg
+   *          the existing {@link Typing}
+   * @return the new {@link Typing}
    */
   public Typing createTyping(Typing tg);
 
@@ -58,9 +58,18 @@ public interface ITypingStrategy {
    * Minimize the given typing list using the hierarchy
    * 
    * @param tgs
-   *          the typign list
+   *          the {@link Typing} list
    * @param h
    *          the hierarchy
    */
   public void minimize(List<Typing> tgs, IHierarchy h);
+
+  /**
+   * Finalizes the given types, i.e., converts intermediate types such as [0..1] to final types such as <code>boolean</code>.
+   * 
+   * @param tp
+   *          The typing to finalize
+   */
+  public void finalizeTypes(Typing tp);
+
 }

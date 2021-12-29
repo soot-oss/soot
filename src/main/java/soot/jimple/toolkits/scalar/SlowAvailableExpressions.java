@@ -33,8 +33,7 @@ import soot.Unit;
 import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.Stmt;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -44,37 +43,31 @@ import soot.util.HashChain;
  * expressions available before and after it.
  */
 public class SlowAvailableExpressions implements AvailableExpressions {
-  Map<Unit, List<UnitValueBoxPair>> unitToPairsAfter;
-  Map<Unit, List<UnitValueBoxPair>> unitToPairsBefore;
 
-  Map<Unit, Chain<EquivalentValue>> unitToEquivsAfter;
-  Map<Unit, Chain<EquivalentValue>> unitToEquivsBefore;
+  protected final Map<Unit, List<UnitValueBoxPair>> unitToPairsAfter;
+  protected final Map<Unit, List<UnitValueBoxPair>> unitToPairsBefore;
+  protected final Map<Unit, Chain<EquivalentValue>> unitToEquivsAfter;
+  protected final Map<Unit, Chain<EquivalentValue>> unitToEquivsBefore;
 
   /** Wrapper for SlowAvailableExpressionsAnalysis. */
   public SlowAvailableExpressions(Body b) {
-    SlowAvailableExpressionsAnalysis analysis = new SlowAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b));
+    final Chain<Unit> units = b.getUnits();
+    this.unitToPairsAfter = new HashMap<Unit, List<UnitValueBoxPair>>(units.size() * 2 + 1, 0.7f);
+    this.unitToPairsBefore = new HashMap<Unit, List<UnitValueBoxPair>>(units.size() * 2 + 1, 0.7f);
+    this.unitToEquivsAfter = new HashMap<Unit, Chain<EquivalentValue>>(units.size() * 2 + 1, 0.7f);
+    this.unitToEquivsBefore = new HashMap<Unit, Chain<EquivalentValue>>(units.size() * 2 + 1, 0.7f);
 
-    // Build unitToExprs map
-    {
-      unitToPairsAfter = new HashMap<Unit, List<UnitValueBoxPair>>(b.getUnits().size() * 2 + 1, 0.7f);
-      unitToPairsBefore = new HashMap<Unit, List<UnitValueBoxPair>>(b.getUnits().size() * 2 + 1, 0.7f);
-      unitToEquivsAfter = new HashMap<Unit, Chain<EquivalentValue>>(b.getUnits().size() * 2 + 1, 0.7f);
-      unitToEquivsBefore = new HashMap<Unit, Chain<EquivalentValue>>(b.getUnits().size() * 2 + 1, 0.7f);
-
-      for (Unit s : b.getUnits()) {
-        FlowSet<Value> set = analysis.getFlowBefore(s);
-
+    SlowAvailableExpressionsAnalysis analysis
+        = new SlowAvailableExpressionsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
+    for (Unit s : units) {
+      {
         List<UnitValueBoxPair> pairsBefore = new ArrayList<UnitValueBoxPair>();
-        List<UnitValueBoxPair> pairsAfter = new ArrayList<UnitValueBoxPair>();
-
         Chain<EquivalentValue> equivsBefore = new HashChain<EquivalentValue>();
-        Chain<EquivalentValue> equivsAfter = new HashChain<EquivalentValue>();
 
-        for (Value v : set) {
+        for (Value v : analysis.getFlowBefore(s)) {
           Stmt containingStmt = analysis.rhsToContainingStmt.get(v);
-          UnitValueBoxPair p = new UnitValueBoxPair(containingStmt, ((AssignStmt) containingStmt).getRightOpBox());
+          pairsBefore.add(new UnitValueBoxPair(containingStmt, ((AssignStmt) containingStmt).getRightOpBox()));
           EquivalentValue ev = new EquivalentValue(v);
-          pairsBefore.add(p);
           if (!equivsBefore.contains(ev)) {
             equivsBefore.add(ev);
           }
@@ -82,12 +75,15 @@ public class SlowAvailableExpressions implements AvailableExpressions {
 
         unitToPairsBefore.put(s, pairsBefore);
         unitToEquivsBefore.put(s, equivsBefore);
+      }
+      {
+        List<UnitValueBoxPair> pairsAfter = new ArrayList<UnitValueBoxPair>();
+        Chain<EquivalentValue> equivsAfter = new HashChain<EquivalentValue>();
 
         for (Value v : analysis.getFlowAfter(s)) {
           Stmt containingStmt = analysis.rhsToContainingStmt.get(v);
-          UnitValueBoxPair p = new UnitValueBoxPair(containingStmt, ((AssignStmt) containingStmt).getRightOpBox());
+          pairsAfter.add(new UnitValueBoxPair(containingStmt, ((AssignStmt) containingStmt).getRightOpBox()));
           EquivalentValue ev = new EquivalentValue(v);
-          pairsAfter.add(p);
           if (!equivsAfter.contains(ev)) {
             equivsAfter.add(ev);
           }
@@ -100,21 +96,25 @@ public class SlowAvailableExpressions implements AvailableExpressions {
   }
 
   /** Returns a List containing the UnitValueBox pairs corresponding to expressions available before u. */
+  @Override
   public List<UnitValueBoxPair> getAvailablePairsBefore(Unit u) {
     return unitToPairsBefore.get(u);
   }
 
   /** Returns a List containing the UnitValueBox pairs corresponding to expressions available after u. */
+  @Override
   public List<UnitValueBoxPair> getAvailablePairsAfter(Unit u) {
     return unitToPairsAfter.get(u);
   }
 
   /** Returns a Chain containing the EquivalentValue objects corresponding to expressions available before u. */
+  @Override
   public Chain<EquivalentValue> getAvailableEquivsBefore(Unit u) {
     return unitToEquivsBefore.get(u);
   }
 
   /** Returns a Chain containing the EquivalentValue objects corresponding to expressions available after u. */
+  @Override
   public Chain<EquivalentValue> getAvailableEquivsAfter(Unit u) {
     return unitToEquivsAfter.get(u);
   }

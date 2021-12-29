@@ -37,6 +37,9 @@ public class XMLAttributesPrinter {
   private String useFilename;
   private String outputDir;
 
+  private FileOutputStream streamOut = null;
+  private PrintWriter writerOut = null;
+
   private void setOutputDir(String dir) {
     outputDir = dir;
   }
@@ -59,9 +62,8 @@ public class XMLAttributesPrinter {
       writerOut.println("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
       writerOut.println("<attributes>");
     } catch (IOException e1) {
-      logger.debug("" + e1.getMessage());
+      logger.debug(e1.getMessage());
     }
-
   }
 
   private void finishFile() {
@@ -91,20 +93,10 @@ public class XMLAttributesPrinter {
     finishFile();
   }
 
-  FileOutputStream streamOut = null;
-  PrintWriter writerOut = null;
-
   private void initAttributesDir() {
+    final String attrDir = "attributes";
 
-    StringBuffer sb = new StringBuffer();
-    String attrDir = "attributes";
-
-    sb.append(getOutputDir());
-    sb.append(System.getProperty("file.separator"));
-    sb.append(attrDir);
-
-    File dir = new File(sb.toString());
-
+    File dir = new File(getOutputDir() + File.separatorChar + attrDir);
     if (!dir.exists()) {
       try {
         dir.mkdirs();
@@ -113,24 +105,23 @@ public class XMLAttributesPrinter {
         // System.exit(0);
       }
     }
-
   }
 
   private void createUseFilename() {
     String tmp = getInFilename();
     // logger.debug("attribute file name: "+tmp);
     tmp = tmp.substring(0, tmp.lastIndexOf('.'));
-    int slash = tmp.lastIndexOf(System.getProperty("file.separator"));
+    int slash = tmp.lastIndexOf(File.separatorChar);
     if (slash != -1) {
-      tmp = tmp.substring((slash + 1), tmp.length());
+      tmp = tmp.substring(slash + 1, tmp.length());
     }
 
-    StringBuffer sb = new StringBuffer();
-    String attrDir = "attributes";
+    final String attrDir = "attributes";
+    StringBuilder sb = new StringBuilder();
     sb.append(getOutputDir());
-    sb.append(System.getProperty("file.separator"));
+    sb.append(File.separatorChar);
     sb.append(attrDir);
-    sb.append(System.getProperty("file.separator"));
+    sb.append(File.separatorChar);
     sb.append(tmp);
     sb.append(".xml");
     // tmp = sb.toString()+tmp+".xml";
@@ -152,5 +143,4 @@ public class XMLAttributesPrinter {
   private String getUseFilename() {
     return useFilename;
   }
-
 }

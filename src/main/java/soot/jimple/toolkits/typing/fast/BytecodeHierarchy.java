@@ -9,7 +9,6 @@ import java.util.ListIterator;
 
 import soot.ArrayType;
 import soot.FloatType;
-import soot.IntType;
 import soot.IntegerType;
 import soot.NullType;
 import soot.PrimType;
@@ -72,7 +71,7 @@ public class BytecodeHierarchy implements IHierarchy {
 
         // The superclass of all interfaces is Object
         // -- try to discard phantom interfaces.
-        if ((!sc.isInterface() || sc.getInterfaceCount() == 0) && !sc.isPhantom()) {
+        if ((!sc.isInterface() || sc.getInterfaceCount() == 0) && !sc.isPhantom() && sc.hasSuperclass()) {
           leafs.add(new AncestryTreeNode(node, sc.getSuperclass().getType()));
         }
 
@@ -92,14 +91,23 @@ public class BytecodeHierarchy implements IHierarchy {
   }
 
   public static Collection<Type> lcas_(Type a, Type b) {
+    return lcas_(a, b, false);
+  }
+
+  public static Collection<Type> lcas_(Type a, Type b, boolean useWeakObjectType) {
     if (TypeResolver.typesEqual(a, b)) {
       return Collections.<Type>singletonList(a);
     } else if (a instanceof BottomType) {
       return Collections.<Type>singletonList(b);
     } else if (b instanceof BottomType) {
       return Collections.<Type>singletonList(a);
+    } else if (a instanceof WeakObjectType && b instanceof RefType) {
+      return Collections.<Type>singletonList(b);
+    } else if (b instanceof WeakObjectType && a instanceof RefType) {
+      return Collections.<Type>singletonList(a);
     } else if (a instanceof IntegerType && b instanceof IntegerType) {
-      return Collections.<Type>singletonList(IntType.v());
+      int m = Math.max(IntUtils.getMaxValue((IntegerType) a), IntUtils.getMaxValue((IntegerType) b));
+      return Collections.<Type>singletonList((Type) IntUtils.getTypeByWidth(m));
     } else if (a instanceof IntegerType && b instanceof FloatType) {
       return Collections.<Type>singletonList(FloatType.v());
     } else if (b instanceof IntegerType && a instanceof FloatType) {
@@ -123,10 +131,14 @@ public class BytecodeHierarchy implements IHierarchy {
 
       LinkedList<Type> r = new LinkedList<Type>();
       if (ts.isEmpty()) {
-        // From Java Language Spec 2nd ed., Chapter 10, Arrays
-        r.add(RefType.v("java.lang.Object"));
-        r.add(RefType.v("java.io.Serializable"));
-        r.add(RefType.v("java.lang.Cloneable"));
+        if (useWeakObjectType) {
+          r.add(new WeakObjectType("java.lang.Object"));
+        } else {
+          // From Java Language Spec 2nd ed., Chapter 10, Arrays
+          r.add(RefType.v("java.lang.Object"));
+          r.add(RefType.v("java.io.Serializable"));
+          r.add(RefType.v("java.lang.Cloneable"));
+        }
       } else {
         for (Type t : ts) {
           r.add(t.makeArrayType());
@@ -134,29 +146,24 @@ public class BytecodeHierarchy implements IHierarchy {
       }
       return r;
     } else if (a instanceof ArrayType || b instanceof ArrayType) {
-      Type rt;
-      if (a instanceof ArrayType) {
-        rt = b;
-      } else {
-        rt = a;
-      }
-
+      Type rt = (a instanceof ArrayType) ? b : a;
       /*
        * If the reference type implements Serializable or Cloneable then these are the least common supertypes, otherwise the
        * only one is Object.
        */
-
       LinkedList<Type> r = new LinkedList<Type>();
       /*
        * Do not consider Object to be a subtype of Serializable or Cloneable (it can appear this way if phantom-refs is
        * enabled and rt.jar is not available) otherwise an infinite loop can result.
        */
       if (!TypeResolver.typesEqual(RefType.v("java.lang.Object"), rt)) {
-        if (ancestor_(RefType.v("java.io.Serializable"), rt)) {
-          r.add(RefType.v("java.io.Serializable"));
+        RefType refSerializable = RefType.v("java.io.Serializable");
+        if (ancestor_(refSerializable, rt)) {
+          r.add(refSerializable);
         }
-        if (ancestor_(RefType.v("java.lang.Cloneable"), rt)) {
-          r.add(RefType.v("java.lang.Cloneable"));
+        RefType refCloneable = RefType.v("java.lang.Cloneable");
+        if (ancestor_(refCloneable, rt)) {
+          r.add(refCloneable);
         }
       }
 
@@ -164,9 +171,8 @@ public class BytecodeHierarchy implements IHierarchy {
         r.add(RefType.v("java.lang.Object"));
       }
       return r;
-    }
-    // a and b are both RefType
-    else {
+    } else {
+      // a and b are both RefType
       Collection<AncestryTreeNode> treea = buildAncestryTree((RefType) a), treeb = buildAncestryTree((RefType) b);
 
       LinkedList<Type> r = new LinkedList<Type>();
@@ -225,9 +231,9 @@ public class BytecodeHierarchy implements IHierarchy {
     }
   }
 
-  /*
+  /**
    * Returns a list of the super classes of a given type in which the anchor will always be the first element even when the
-   * types class is phantom. Note anchor should always be type Throwable as this is the root of all exception types.
+   * types class is phantom. Note anchor should always be type {@link Throwable} as this is the root of all exception types.
    */
   private static Deque<RefType> superclassPath(RefType t, RefType anchor) {
     Deque<RefType> r = new ArrayDeque<RefType>();
@@ -237,8 +243,7 @@ public class BytecodeHierarchy implements IHierarchy {
       return r;
     }
 
-    SootClass sc = t.getSootClass();
-    while (sc.hasSuperclass()) {
+    for (SootClass sc = t.getSootClass(); sc.hasSuperclass();) {
       sc = sc.getSuperclass();
       RefType cur = sc.getType();
       r.addFirst(cur);
@@ -255,18 +260,7 @@ public class BytecodeHierarchy implements IHierarchy {
   }
 
   public static RefType lcsc(RefType a, RefType b) {
-    if (a == b) {
-      return a;
-    }
-
-    Deque<RefType> pathA = superclassPath(a, null);
-    Deque<RefType> pathB = superclassPath(b, null);
-    RefType r = null;
-    while (!(pathA.isEmpty() || pathB.isEmpty()) && TypeResolver.typesEqual(pathA.getFirst(), pathB.getFirst())) {
-      r = pathA.removeFirst();
-      pathB.removeFirst();
-    }
-    return r;
+    return lcsc(a, b, null);
   }
 
   public static RefType lcsc(RefType a, RefType b, RefType anchor) {
@@ -284,10 +278,12 @@ public class BytecodeHierarchy implements IHierarchy {
     return r;
   }
 
-  public Collection<Type> lcas(Type a, Type b) {
-    return lcas_(a, b);
+  @Override
+  public Collection<Type> lcas(Type a, Type b, boolean useWeakObjectType) {
+    return lcas_(a, b, useWeakObjectType);
   }
 
+  @Override
   public boolean ancestor(Type ancestor, Type child) {
     return ancestor_(ancestor, child);
   }
@@ -301,5 +297,4 @@ public class BytecodeHierarchy implements IHierarchy {
       this.type = type;
     }
   }
-
 }

@@ -30,51 +30,60 @@ import soot.baf.InterfaceInvokeInst;
 import soot.util.Switch;
 
 public class BInterfaceInvokeInst extends AbstractInvokeInst implements InterfaceInvokeInst {
+
   int argCount;
-
-  public int getInCount() {
-    return methodRef.parameterTypes().size() + 1;
-
-  }
-
-  public int getInMachineCount() {
-    return super.getInMachineCount() + 1;
-  }
 
   public BInterfaceInvokeInst(SootMethodRef methodRef, int argCount) {
     if (methodRef.isStatic()) {
       throw new RuntimeException("wrong static-ness");
     }
-    this.methodRef = methodRef;
+    super.methodRef = methodRef;
     this.argCount = argCount;
   }
 
+  @Override
   public Object clone() {
     return new BInterfaceInvokeInst(methodRef, getArgCount());
   }
 
+  @Override
+  public int getInCount() {
+    return methodRef.getParameterTypes().size() + 1;
+  }
+
+  @Override
+  public int getInMachineCount() {
+    return super.getInMachineCount() + 1;
+  }
+
+  @Override
   final public String getName() {
     return "interfaceinvoke";
   }
 
+  @Override
   final String getParameters() {
     return super.getParameters() + " " + argCount;
   }
 
+  @Override
   protected void getParameters(UnitPrinter up) {
     super.getParameters(up);
     up.literal(" ");
-    up.literal(new Integer(argCount).toString());
+    up.literal(Integer.toString(argCount));
   }
 
+  @Override
   public int getArgCount() {
     return argCount;
   }
 
+  @Override
   public void setArgCount(int x) {
     argCount = x;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((InstSwitch) sw).caseInterfaceInvokeInst(this);
   }
