@@ -42,7 +42,7 @@ See https://soot-oss.github.io/soot for details.
 
 We have some documentation on Soot in the [wiki](https://github.com/soot-oss/soot/wiki) and also a large range of [tutorials](https://github.com/soot-oss/soot/wiki/Tutorials) on Soot. 
 
-For detailed information please also consider the Soot's [JavaDoc and Options](https://github.com/soot-oss/soot/wiki/Options-and-JavaDoc) Documentations.
+For detailed information please also consider the Soot's [JavaDoc and Options](https://soot-oss.github.io/soot/docs) Documentations.
 
 # Including Soot in your Project
 
