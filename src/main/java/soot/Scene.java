@@ -1204,7 +1204,7 @@ public class Scene {
 
   /**
    * Returns the SootClass with the given className.
-   * 
+   *
    * @param className
    *          The name of the class to get; throws RuntimeException if this class does not exist.
    */
@@ -1758,22 +1758,18 @@ public class Scene {
             classNames.add(source.substring(0, source.lastIndexOf('.')));
             switch (kind) {
               case "Class.forName":
-                classNames.add(target);
-                break;
               case "Class.newInstance":
                 classNames.add(target);
                 break;
               case "Method.invoke":
               case "Constructor.newInstance":
-                classNames.add(signatureToClass(target));
-                break;
               case "Field.set*":
               case "Field.get*":
+              case "Method.getModifiers":
+              case "Method.getName":
                 classNames.add(signatureToClass(target));
                 break;
               default:
-          } else if (kind.equals("Method.getModifiers") || kind.equals("Method.getName")) {
-            classNames.add(signatureToClass(target));
                 throw new RuntimeException("Unknown entry kind: " + kind);
             }
           }

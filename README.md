@@ -14,7 +14,7 @@ Amazon Web Services is a Gold Sponsor. [![AWS](https://upload.wikimedia.org/wiki
 
 
 # Soot supports Java 9 modules now!
-Try and get involved in Soot's Java 9 bleeding edge developement.
+Try and get involved in Soot's Java 9 bleeding edge development.
 ## What works and is tested?
 * Automatic modules (modules automatically created from jars in the module-path)
 * Named modules
