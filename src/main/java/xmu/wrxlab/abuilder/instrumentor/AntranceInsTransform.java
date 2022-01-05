@@ -27,10 +27,12 @@ public class AntranceInsTransform {
     private static Map<Integer, String> logIdSig;
     /** AntranceIns: int[] StmtTable */
     private SootField stmtTable;
+    private SootMethod setStmtTable2;
     /** JimpleLocal r = staticFieldRef AntranceIns: int[] StmtTable */
     private AssignStmt r_StmtTable;
     /** JArrayRef r[idx] = IntConstant */
     private AssignStmt r_idx_int;
+    private Stmt setStmtTable2Stmt;
 
     private final ArrayList<SootClass> myClasses;
 
@@ -47,7 +49,7 @@ public class AntranceInsTransform {
             logIdSig = new HashMap<>();
         }
         stmtTable = antranceIns.getFieldByName("stmtTable");
-
+        setStmtTable2 = antranceIns.getMethodByName("setStmtTable2");
         this.myClasses = myClasses;
         nopStmt = Jimple.v().newNopStmt();
     }
@@ -78,6 +80,7 @@ public class AntranceInsTransform {
                         calAssign2(body, methodSig);
                         units.insertBeforeNoRedirect(r_StmtTable, stmt);
                         units.insertBeforeNoRedirect(r_idx_int, stmt);
+                        units.insertBeforeNoRedirect(setStmtTable2Stmt, stmt);
                     }
                     if (stmt instanceof IfStmt) {
                         visitIfStmt(body, methodSig, jid, units, (IfStmt) stmt);
@@ -123,6 +126,7 @@ public class AntranceInsTransform {
         calAssign2(body, methodSig+"@"+jid+"@"+getLineNumber(stmt)+"@br@1");
         units.insertAfter(r_idx_int, stmt);
         units.insertAfter(r_StmtTable, stmt);
+        units.insertAfter(setStmtTable2Stmt, stmt);
         // if false
         // 修改target+goto阻断上方语句
         GotoStmt gotoStmt = Jimple.v().newGotoStmt(nopStmt);
@@ -133,6 +137,7 @@ public class AntranceInsTransform {
         units.insertBeforeNoRedirect(gotoStmt, target);
         units.insertBeforeNoRedirect(r_StmtTable, target);
         units.insertBeforeNoRedirect(r_idx_int, target);
+        units.insertBeforeNoRedirect(setStmtTable2Stmt, stmt);
         // goto指向原target
         // 其实有noredirecrt可以直接在构造时设置target, 这里算是双保险吧
         gotoStmt.setTarget(target);
@@ -148,6 +153,7 @@ public class AntranceInsTransform {
             calAssign2(body, methodSig+"@"+jid+"@"+getLineNumber(stmt)+"@br@"+(i+1));
             units.insertBeforeNoRedirect(r_StmtTable, target);
             units.insertBeforeNoRedirect(r_idx_int, target);
+            units.insertBeforeNoRedirect(setStmtTable2Stmt, stmt);
             stmt.setTarget(i, r_StmtTable);
         }
         // default不需要goto阻断, 因为switch结束一个case一定会显示使用break
@@ -155,6 +161,7 @@ public class AntranceInsTransform {
         calAssign2(body, methodSig+"@"+jid+"@"+getLineNumber(stmt)+"@br@0");
         units.insertBeforeNoRedirect(r_StmtTable, target);
         units.insertBeforeNoRedirect(r_idx_int, target);
+        units.insertBeforeNoRedirect(setStmtTable2Stmt, stmt);
         stmt.setDefaultTarget(r_StmtTable);
     }
 
@@ -167,6 +174,7 @@ public class AntranceInsTransform {
             calAssign2(body, methodSig+"@"+jid+"@"+getLineNumber(stmt)+"@br@"+(i+1));
             units.insertBeforeNoRedirect(r_StmtTable, target);
             units.insertBeforeNoRedirect(r_idx_int, target);
+            units.insertBeforeNoRedirect(setStmtTable2Stmt, stmt);
             stmt.setTarget(i, r_StmtTable);
         }
         // default不需要goto阻断, 因为switch结束一个case一定会显示使用break
@@ -174,6 +182,7 @@ public class AntranceInsTransform {
         calAssign2(body, methodSig+"@"+jid+"@"+getLineNumber(stmt)+"@br@0");
         units.insertBeforeNoRedirect(r_StmtTable, target);
         units.insertBeforeNoRedirect(r_idx_int, target);
+        units.insertBeforeNoRedirect(setStmtTable2Stmt, stmt);
         stmt.setDefaultTarget(r_StmtTable);
     }
 
@@ -189,6 +198,9 @@ public class AntranceInsTransform {
         Local r = generateFreshLocal(body, ArrayType.v(IntType.v(), 1));
         r_StmtTable = new JAssignStmt(r, Jimple.v().newStaticFieldRef(stmtTable.makeRef()));
         r_idx_int = new JAssignStmt(new JArrayRef(r, IntConstant.v(idx)), IntConstant.v(1));
+        InvokeExpr setStmtTable2Expr = Jimple.v().newStaticInvokeExpr(setStmtTable2.makeRef(),
+                IntConstant.v(idx));
+        setStmtTable2Stmt = Jimple.v().newInvokeStmt(setStmtTable2Expr);
     }
 
     /**
