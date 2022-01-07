@@ -181,7 +181,7 @@ public abstract class AbstractTestingFramework {
    */
   protected List<String> getExcludes() {
     List<String> excludeList = new ArrayList<>();
-    excludeList.add("java.*");
+    //excludeList.add("java.*");
     excludeList.add("sun.*");
     excludeList.add("android.*");
     excludeList.add("org.apache.*");
@@ -256,22 +256,35 @@ public abstract class AbstractTestingFramework {
    * @return
    */
   public static Class<?> generateClass(SootClass sc) {
-    // First, convert all method Body instances to BafBody
-    for (SootMethod m : sc.getMethods()) {
-      convertBodyToBaf(m);
-    }
-    // Then use ASM to generate a byte[] for the classfile
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    new BafASMBackend(sc, Options.v().java_version()).generateClassFile(os);
-    final byte[] classBytes = os.toByteArray();
-
-    // NOTE: "new ClassLoader" ensures every class loaded is distinct even when they have the same name
+    final byte[] classBytes = generateBytecode(sc);
+    // Using a new ClassLoader instance for each call to this method ensures every
+    // class loaded is a distinct Class instance, even when they have the same name.
     return new ClassLoader() {
       @Override
       public Class findClass(String name) {
         return defineClass(name, classBytes, 0, classBytes.length);
       }
     }.findClass(sc.getName());
+  }
+
+  /**
+   * Convert the given {@link SootClass} to JVM bytecode.
+   * 
+   * @param sc
+   * @return
+   */
+  public static byte[] generateBytecode(SootClass sc) {
+    // First, convert all method Body instances to BafBody
+    for (SootMethod m : sc.getMethods()) {
+      if (m.isConcrete()) {
+        convertBodyToBaf(m);
+      }
+    }
+
+    // Then use ASM to generate a byte[] for the classfile
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    new BafASMBackend(sc, Options.v().java_version()).generateClassFile(os);
+    return os.toByteArray();
   }
 
   /**
@@ -297,6 +310,52 @@ public abstract class AbstractTestingFramework {
       PackManager.v().getPack("tag").apply(bafBody);
 
       m.setActiveBody(bafBody);
+    }
+  }
+
+  /**
+   * @param sc
+   * @param className
+   * @param resolvingLevel
+   *          one of the constants defined in {@link SootClass}
+   *
+   * @return the {@link SootClass} with the given name
+   *
+   * @see SootClass#DANGLING
+   * @see SootClass#HIERARCHY
+   * @see SootClass#SIGNATURES
+   * @see SootClass#BODIES
+   */
+  public static SootClass getOrResolveSootClass(Scene sc, String className, int resolvingLevel) {
+    Assert.assertNotNull(className);
+    if (sc.containsClass(className)) {
+      SootClass retVal = sc.getSootClass(className);
+      if (retVal.resolvingLevel() >= resolvingLevel && !retVal.isPhantom()) {
+        assertResolvePostConditions(retVal, resolvingLevel);
+        return retVal;
+      } else {
+        // The forceResolve(..) will not make any change if the class is
+        // phantom or the resolving level is already high enough, so ensure
+        // those two conditions will be false before trying the resolution.
+        retVal.setResolvingLevel(SootClass.DANGLING);
+        retVal.setLibraryClass();
+      }
+    }
+    SootClass retVal = sc.forceResolve(className, resolvingLevel);
+    retVal.setApplicationClass();
+    assertResolvePostConditions(retVal, resolvingLevel);
+    return retVal;
+  }
+
+  private static void assertResolvePostConditions(SootClass c, int expectLvl) {
+    Assert.assertNotNull(c);
+    Assert.assertFalse("phantom class: " + c, c.isPhantom());
+    Assert.assertTrue("insufficiently resolved: (" + c.resolvingLevel() + ") " + c, c.resolvingLevel() >= expectLvl);
+
+    for (SootMethod m : c.getMethods()) {
+      Assert.assertFalse("phantom method: " + m, m.isPhantom());
+      Assert.assertTrue("concrete method without method body/source: " + m,
+          !m.isConcrete() || m.hasActiveBody() || m.getSource() != null);
     }
   }
 }

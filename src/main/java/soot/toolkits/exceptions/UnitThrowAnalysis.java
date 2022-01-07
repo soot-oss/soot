@@ -855,123 +855,155 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     // Declared by ConstantSwitch interface:
 
+    @Override
     public void caseDoubleConstant(DoubleConstant c) {
     }
 
+    @Override
     public void caseFloatConstant(FloatConstant c) {
     }
 
+    @Override
     public void caseIntConstant(IntConstant c) {
     }
 
+    @Override
     public void caseLongConstant(LongConstant c) {
     }
 
+    @Override
     public void caseNullConstant(NullConstant c) {
     }
 
+    @Override
     public void caseStringConstant(StringConstant c) {
     }
 
+    @Override
     public void caseClassConstant(ClassConstant c) {
     }
 
+    @Override
     public void caseMethodHandle(MethodHandle handle) {
     }
 
+    @Override
     public void caseMethodType(MethodType type) {
     }
 
     // Declared by ExprSwitch interface:
 
+    @Override
     public void caseAddExpr(AddExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseAndExpr(AndExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseCmpExpr(CmpExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseCmpgExpr(CmpgExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseCmplExpr(CmplExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseDivExpr(DivExpr expr) {
       caseBinopDivExpr(expr);
     }
 
+    @Override
     public void caseEqExpr(EqExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseNeExpr(NeExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseGeExpr(GeExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseGtExpr(GtExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseLeExpr(LeExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseLtExpr(LtExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseMulExpr(MulExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseOrExpr(OrExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseRemExpr(RemExpr expr) {
       caseBinopDivExpr(expr);
     }
 
+    @Override
     public void caseShlExpr(ShlExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseShrExpr(ShrExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseUshrExpr(UshrExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseSubExpr(SubExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseXorExpr(XorExpr expr) {
       caseBinopExpr(expr);
     }
 
+    @Override
     public void caseInterfaceInvokeExpr(InterfaceInvokeExpr expr) {
       caseInstanceInvokeExpr(expr);
     }
 
+    @Override
     public void caseSpecialInvokeExpr(SpecialInvokeExpr expr) {
       caseInstanceInvokeExpr(expr);
     }
 
+    @Override
     public void caseStaticInvokeExpr(StaticInvokeExpr expr) {
       result = result.add(mgr.INITIALIZATION_ERRORS);
       for (int i = 0; i < expr.getArgCount(); i++) {
@@ -980,15 +1012,18 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
       result = result.add(mightThrow(expr.getMethodRef()));
     }
 
+    @Override
     public void caseVirtualInvokeExpr(VirtualInvokeExpr expr) {
       caseInstanceInvokeExpr(expr);
     }
 
     // INSERTED for invokedynamic UnitThrowAnalysis.java
+    @Override
     public void caseDynamicInvokeExpr(DynamicInvokeExpr expr) {
       // caseInstanceInvokeExpr(expr);
     }
 
+    @Override
     public void caseCastExpr(CastExpr expr) {
       result = result.add(mgr.RESOLVE_CLASS_ERRORS);
       Type fromType = expr.getOp().getType();
@@ -1005,29 +1040,30 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
       result = result.add(mightThrow(expr.getOp()));
     }
 
+    @Override
     public void caseInstanceOfExpr(InstanceOfExpr expr) {
       result = result.add(mgr.RESOLVE_CLASS_ERRORS);
       result = result.add(mightThrow(expr.getOp()));
     }
 
+    @Override
     public void caseNewArrayExpr(NewArrayExpr expr) {
       if (expr.getBaseType() instanceof RefLikeType) {
         result = result.add(mgr.RESOLVE_CLASS_ERRORS);
       }
       Value count = expr.getSize();
-      if ((!(count instanceof IntConstant))
-          || (((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO))) {
+      if ((!(count instanceof IntConstant)) || (((IntConstant) count).isLessThan(INT_CONSTANT_ZERO))) {
         result = result.add(mgr.NEGATIVE_ARRAY_SIZE_EXCEPTION);
       }
       result = result.add(mightThrow(count));
     }
 
+    @Override
     public void caseNewMultiArrayExpr(NewMultiArrayExpr expr) {
       result = result.add(mgr.RESOLVE_CLASS_ERRORS);
       for (int i = 0; i < expr.getSizeCount(); i++) {
         Value count = expr.getSize(i);
-        if ((!(count instanceof IntConstant))
-            || (((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO))) {
+        if ((!(count instanceof IntConstant)) || (((IntConstant) count).isLessThan(INT_CONSTANT_ZERO))) {
           result = result.add(mgr.NEGATIVE_ARRAY_SIZE_EXCEPTION);
         }
         result = result.add(mightThrow(count));
@@ -1035,25 +1071,28 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     @SuppressWarnings("rawtypes")
+    @Override
     public void caseNewExpr(NewExpr expr) {
       result = result.add(mgr.INITIALIZATION_ERRORS);
-      for (Iterator i = expr.getUseBoxes().iterator(); i.hasNext();) {
-        ValueBox box = (ValueBox) i.next();
+      for (ValueBox box : expr.getUseBoxes()) {
         result = result.add(mightThrow(box.getValue()));
       }
     }
 
+    @Override
     public void caseLengthExpr(LengthExpr expr) {
       result = result.add(mgr.NULL_POINTER_EXCEPTION);
       result = result.add(mightThrow(expr.getOp()));
     }
 
+    @Override
     public void caseNegExpr(NegExpr expr) {
       result = result.add(mightThrow(expr.getOp()));
     }
 
     // Declared by RefSwitch interface:
 
+    @Override
     public void caseArrayRef(ArrayRef ref) {
       result = result.add(mgr.NULL_POINTER_EXCEPTION);
       result = result.add(mgr.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
@@ -1061,40 +1100,48 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
       result = result.add(mightThrow(ref.getIndex()));
     }
 
+    @Override
     public void caseStaticFieldRef(StaticFieldRef ref) {
       result = result.add(mgr.INITIALIZATION_ERRORS);
     }
 
+    @Override
     public void caseInstanceFieldRef(InstanceFieldRef ref) {
       result = result.add(mgr.RESOLVE_FIELD_ERRORS);
       result = result.add(mgr.NULL_POINTER_EXCEPTION);
       result = result.add(mightThrow(ref.getBase()));
     }
 
+    @Override
     public void caseParameterRef(ParameterRef v) {
     }
 
+    @Override
     public void caseCaughtExceptionRef(CaughtExceptionRef v) {
     }
 
+    @Override
     public void caseThisRef(ThisRef v) {
     }
 
+    @Override
     public void caseLocal(Local l) {
     }
 
+    @Override
     public void caseNewInvokeExpr(NewInvokeExpr e) {
       caseStaticInvokeExpr(e);
     }
 
     @SuppressWarnings("rawtypes")
+    @Override
     public void casePhiExpr(PhiExpr e) {
-      for (Iterator i = e.getUseBoxes().iterator(); i.hasNext();) {
-        ValueBox box = (ValueBox) i.next();
+      for (ValueBox box : e.getUseBoxes()) {
         result = result.add(mightThrow(box.getValue()));
       }
     }
 
+    @Override
     public void defaultCase(Object obj) {
     }
 

@@ -36,7 +36,12 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.TypePath;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LocalVariableNode;
+import org.objectweb.asm.tree.TryCatchBlockNode;
+
 import soot.ArrayType;
+import soot.MethodSource;
 import soot.RefType;
 import soot.SootMethod;
 import soot.Type;
@@ -53,7 +58,7 @@ import soot.tagkit.VisibilityParameterAnnotationTag;
  *
  * @author Aaloan Miftah
  */
-class MethodBuilder extends JSRInlinerAdapter {
+public class MethodBuilder extends JSRInlinerAdapter {
 
   private TagBuilder tb;
   private VisibilityAnnotationTag[] visibleParamAnnotations;
@@ -65,7 +70,7 @@ class MethodBuilder extends JSRInlinerAdapter {
   private final String[] parameterNames;
   private final Map<Integer, Integer> slotToParameter;
 
-  MethodBuilder(SootMethod method, SootClassBuilder scb, String desc, String[] ex) {
+  public MethodBuilder(SootMethod method, SootClassBuilder scb, String desc, String[] ex) {
     super(Opcodes.ASM6, null, method.getModifiers(), method.getName(), desc, null, ex);
     this.method = method;
     this.scb = scb;
@@ -289,8 +294,13 @@ class MethodBuilder extends JSRInlinerAdapter {
     }
     if (method.isConcrete()) {
       method.setSource(
-          new AsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks, scb.getKlass().moduleName));
+          createAsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks, scb.getKlass().moduleName));
     }
+  }
+
+  protected MethodSource createAsmMethodSource(int maxLocals, InsnList instructions, List<LocalVariableNode> localVariables,
+      List<TryCatchBlockNode> tryCatchBlocks, String moduleName) {
+    return new AsmMethodSource(maxLocals, instructions, localVariables, tryCatchBlocks, moduleName);
   }
 
   /**

@@ -58,21 +58,22 @@ public class SmartLocalDefs implements LocalDefs {
   private static final Logger logger = LoggerFactory.getLogger(SmartLocalDefs.class);
 
   private final UnitGraph graph;
-  private final Map<Local, Set<Unit>> localToDefs; // for each local, set of units where it's defined
-  private final Map<Unit, BitSet> liveLocalsAfter;
+  private Map<Local, Set<Unit>> localToDefs; // for each local, set of units where it's defined
+  private Map<Unit, BitSet> liveLocalsAfter;
   private final Map<Cons<Unit, Local>, List<Unit>> answer;
 
   public SmartLocalDefs(UnitGraph g, LiveLocals live) {
     this.graph = g;
-    this.localToDefs = new HashMap<Local, Set<Unit>>();
-    this.liveLocalsAfter = new HashMap<Unit, BitSet>();
+    this.localToDefs = new HashMap<Local, Set<Unit>>(2 * g.getBody().getLocalCount() + 1);
+    this.liveLocalsAfter = new HashMap<Unit, BitSet>(2 * g.getBody().getUnits().size() + 1);
     this.answer = new HashMap<Cons<Unit, Local>, List<Unit>>();
 
-    if (Options.v().verbose()) {
+    final Options op = Options.v();
+    if (op.verbose()) {
       logger.debug("[" + g.getBody().getMethod().getName() + "]     Constructing SmartLocalDefs...");
     }
 
-    if (Options.v().time()) {
+    if (op.time()) {
       Timers.v().defsTimer.start();
     }
 
@@ -92,11 +93,12 @@ public class SmartLocalDefs implements LocalDefs {
         addDefOf(l, u);
       }
     }
-    if (Options.v().verbose()) {
+    if (op.verbose()) {
       logger.debug("[" + g.getBody().getMethod().getName() + "]        done localToDefs map...");
     }
 
     LocalDefsAnalysis analysis = new LocalDefsAnalysis(g);
+    liveLocalsAfter = null;
     for (Unit u : g) {
       Set<Unit> s1 = analysis.getFlowBefore(u);
       if (s1 == null || s1.isEmpty()) {
@@ -120,14 +122,15 @@ public class SmartLocalDefs implements LocalDefs {
         }
       }
     }
+    localToDefs = null;
 
     localPacker.unpack();
 
-    if (Options.v().time()) {
+    if (op.time()) {
       Timers.v().defsTimer.end();
     }
 
-    if (Options.v().verbose()) {
+    if (op.verbose()) {
       logger.debug("[" + g.getBody().getMethod().getName() + "]     SmartLocalDefs finished.");
     }
   }

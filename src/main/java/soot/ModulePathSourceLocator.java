@@ -543,9 +543,10 @@ public class ModulePathSourceLocator extends SourceLocator {
     return null;
   }
 
-  @Override
+
   protected FoundFile lookupInDir(String dir, String fileName) {
-    Path foundFile = Paths.get(dir).resolve(fileName);
+    Path dirPath = Paths.get(dir);
+    Path foundFile = dirPath.resolve(fileName);
     if (foundFile != null && Files.isRegularFile(foundFile)) {
       return new FoundFile(foundFile);
     } else {

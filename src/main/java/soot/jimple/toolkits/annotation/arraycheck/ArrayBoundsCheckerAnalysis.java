@@ -73,7 +73,7 @@ import soot.options.Options;
 import soot.toolkits.graph.ArrayRefBlockGraph;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.SlowPseudoTopologicalOrderer;
 
 class ArrayBoundsCheckerAnalysis {
@@ -124,7 +124,8 @@ class ArrayBoundsCheckerAnalysis {
       logger.debug("ArrayBoundsCheckerAnalysis started on  " + thismethod.getName());
     }
 
-    ailanalysis = new ArrayIndexLivenessAnalysis(new ExceptionalUnitGraph(body), fieldin, arrayin, csin, rectarray);
+    ailanalysis = new ArrayIndexLivenessAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body), fieldin,
+        arrayin, csin, rectarray);
 
     if (fieldin) {
       this.localToFieldRef = ailanalysis.getLocalToFieldRef();

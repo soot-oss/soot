@@ -55,7 +55,7 @@ import soot.shimple.ShimpleBody;
 import soot.shimple.toolkits.scalar.SEvaluator.BottomConstant;
 import soot.shimple.toolkits.scalar.SEvaluator.MetaConstant;
 import soot.shimple.toolkits.scalar.SEvaluator.TopConstant;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
@@ -105,7 +105,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer {
     }
 
     // *** FIXME: What happens when Shimple is built with another UnitGraph?
-    SCPFAnalysis scpf = new SCPFAnalysis(new ExceptionalUnitGraph(castBody));
+    SCPFAnalysis scpf = new SCPFAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(castBody));
     propagateResults(scpf.getResults());
     if (PhaseOptions.getBoolean(options, "prune-cfg")) {
       removeStmts(scpf.getDeadStmts());

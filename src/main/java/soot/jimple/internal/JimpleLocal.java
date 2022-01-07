@@ -48,6 +48,10 @@ public class JimpleLocal implements Local, ConvertToBaf {
   public JimpleLocal(String name, Type type) {
     setName(name);
     setType(type);
+    addToNumberer();
+  }
+
+  protected void addToNumberer() {
     Numberer<Local> numberer = Scene.v().getLocalNumberer();
     if (numberer != null) {
       numberer.add(this);
@@ -140,5 +144,11 @@ public class JimpleLocal implements Local, ConvertToBaf {
   @Override
   public void setNumber(int number) {
     this.number = number;
+  }
+
+  @Override
+  public boolean isStackLocal() {
+    String n = getName();
+    return n != null && n.charAt(0) == '$';
   }
 }

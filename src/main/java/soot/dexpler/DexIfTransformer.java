@@ -262,15 +262,11 @@ public class DexIfTransformer extends AbstractNullTransformer {
                   Value l = stmt.getLeftOp();
                   if (l instanceof StaticFieldRef && isObject(((StaticFieldRef) l).getFieldRef().type())) {
                     usedAsObject = true;
-                    if (usedAsObject) {
-                      doBreak = true;
-                    }
+                    doBreak = true;
                     return;
                   } else if (l instanceof InstanceFieldRef && isObject(((InstanceFieldRef) l).getFieldRef().type())) {
                     usedAsObject = true;
-                    if (usedAsObject) {
-                      doBreak = true;
-                    }
+                    doBreak = true;
                     return;
                   } else if (l instanceof ArrayRef) {
                     Type aType = ((ArrayRef) l).getType();
@@ -295,19 +291,16 @@ public class DexIfTransformer extends AbstractNullTransformer {
                 if (r instanceof FieldRef) {
                   usedAsObject = true; // isObject(((FieldRef)
                   // r).getFieldRef().type());
-                  if (usedAsObject) {
-                    doBreak = true;
-                  }
+                  doBreak = true;
+
                   return;
                 } else if (r instanceof ArrayRef) {
                   ArrayRef ar = (ArrayRef) r;
                   if (ar.getBase() == l) {
                     usedAsObject = true;
+                    doBreak = true;
                   } else { // used as index
                     usedAsObject = false;
-                  }
-                  if (usedAsObject) {
-                    doBreak = true;
                   }
                   return;
                 } else if (r instanceof StringConstant || r instanceof NewExpr) {

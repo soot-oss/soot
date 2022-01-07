@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import soot.LocalGenerator;
 import soot.Scene;
 import soot.tagkit.EnclosingTag;
 import soot.tagkit.QualifyingTag;

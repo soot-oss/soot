@@ -69,6 +69,7 @@ import soot.jimple.internal.StmtBox;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.FastColorer;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
@@ -266,7 +267,7 @@ public class JasminClass extends AbstractJasminClass {
     // final boolean enablePeephole = !PhaseOptions.getBoolean(options, "no-peephole");
     final boolean enablePeephole = false;
     if (enablePeephole) {
-      stmtGraph = new ExceptionalUnitGraph(body);
+      stmtGraph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body);
       ld = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(stmtGraph);
       lu = LocalUses.Factory.newLocalUses(body, ld);
     }

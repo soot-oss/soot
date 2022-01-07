@@ -36,7 +36,7 @@ import soot.jimple.toolkits.pointer.PASideEffectTester;
 import soot.jimple.toolkits.scalar.PessimisticAvailableExpressionsAnalysis;
 import soot.jimple.toolkits.scalar.SlowAvailableExpressionsAnalysis;
 import soot.options.AETOptions;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 
 /**
  * A body transformer that records avail expression information in tags. - both pessimistic and optimistic options
@@ -61,9 +61,10 @@ public class AvailExprTagger extends BodyTransformer {
 
     AETOptions options = new AETOptions(opts);
     if (options.kind() == AETOptions.kind_optimistic) {
-      new SlowAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b));
+      new SlowAvailableExpressionsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
     } else {
-      new PessimisticAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b), b.getMethod(), sideEffect);
+      new PessimisticAvailableExpressionsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b), b.getMethod(),
+          sideEffect);
     }
   }
 }

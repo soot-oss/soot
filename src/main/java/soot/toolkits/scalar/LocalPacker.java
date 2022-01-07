@@ -124,7 +124,7 @@ public class LocalPacker extends BodyTransformer {
       List<Local> originalLocals = new ArrayList<Local>(bodyLocalsRef);
       bodyLocalsRef.clear();
 
-      Set<String> usedLocalNames = new HashSet<>();
+      final Set<String> usedLocalNames = new HashSet<>();
       for (Local original : originalLocals) {
         Type group = localToGroup.get(original);
         GroupIntPair pair = new GroupIntPair(group, localToColor.get(original));
@@ -148,13 +148,18 @@ public class LocalPacker extends BodyTransformer {
           //
           // If we have a split local, let's find a better name for it
           String name = newLocal.getName();
-          int signIndex = name.indexOf('#');
-          if (signIndex >= 0) {
-            String newName = name.substring(0, signIndex);
-            if (usedLocalNames.add(newName)) {
-              newLocal.setName(newName);
+          if (name != null) {
+            int signIndex = name.indexOf('#');
+            if (signIndex >= 0) {
+              String newName = name.substring(0, signIndex);
+              if (usedLocalNames.add(newName)) {
+                newLocal.setName(newName);
+              } else {
+                // just leave it alone for now
+              }
             } else {
-              // just leave it alone for now
+              usedLocalNames.add(name);
+
             }
           }
 

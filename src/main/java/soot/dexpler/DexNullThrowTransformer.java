@@ -62,7 +62,7 @@ public class DexNullThrowTransformer extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    LocalCreation lc = new LocalCreation(b.getLocals(), "ex");
+    LocalCreation lc = Scene.v().createLocalCreation(b.getLocals(), "ex");
 
     for (Iterator<Unit> unitIt = b.getUnits().snapshotIterator(); unitIt.hasNext();) {
       Unit u = unitIt.next();

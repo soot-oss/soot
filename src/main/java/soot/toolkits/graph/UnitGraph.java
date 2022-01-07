@@ -52,11 +52,11 @@ import soot.util.Chain;
  */
 public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
   private static final Logger logger = LoggerFactory.getLogger(UnitGraph.class);
-  
+
   protected final Body body;
   protected final Chain<Unit> unitChain;
   protected final SootMethod method;
-  
+
   protected List<Unit> heads;
   protected List<Unit> tails;
 
@@ -157,6 +157,12 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
     tails = new ArrayList<Unit>();
     heads = new ArrayList<Unit>();
 
+    Unit entryPoint = null;
+    if (!unitChain.isEmpty()) {
+      entryPoint = unitChain.getFirst();
+    }
+    boolean hasEntryPoint = false;
+
     for (Unit s : unitChain) {
       List<Unit> succs = unitToSuccs.get(s);
       if (succs == null || succs.isEmpty()) {
@@ -164,14 +170,16 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
       }
       List<Unit> preds = unitToPreds.get(s);
       if (preds == null || preds.isEmpty()) {
+        if (s == entryPoint) {
+          hasEntryPoint = true;
+        }
         heads.add(s);
       }
     }
 
     // Add the first Unit, even if it is the target of a branch.
-    if (!unitChain.isEmpty()) {
-      Unit entryPoint = unitChain.getFirst();
-      if (!heads.contains(entryPoint)) {
+    if (entryPoint != null) {
+      if (!hasEntryPoint) {
         heads.add(entryPoint);
       }
     }

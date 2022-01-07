@@ -54,6 +54,11 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMe
     src.copy(dest);
   }
 
+  @Override
+  protected void copyFreshToExisting(FlowSet<SootMethod> in, FlowSet<SootMethod> dest) {
+    in.copyFreshToExisting(dest);
+  }
+
   // out(s) = in(s) intersect { target methods of s where edge kind is clinit}
   @Override
   protected void flowThrough(FlowSet<SootMethod> inVal, Unit stmt, FlowSet<SootMethod> outVal) {

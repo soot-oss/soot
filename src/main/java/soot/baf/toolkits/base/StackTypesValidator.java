@@ -121,7 +121,7 @@ import soot.baf.VirtualInvokeInst;
 import soot.baf.XorInst;
 import soot.jimple.IdentityRef;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
@@ -327,7 +327,7 @@ public enum StackTypesValidator implements BodyValidator {
     protected final BitArray initFlow;
 
     public VMStateAnalysis(BafBody body, List<ValidationException> exceptions) {
-      super(new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v(), false));
+      super(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, PedanticThrowAnalysis.v(), false));
       this.exceptions = exceptions;
       this.opStacks = OpStackCalculator.calculateStacks(body);
       assert (opStacks.keySet().equals(new HashSet<>(body.getUnits())));

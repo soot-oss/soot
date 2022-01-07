@@ -248,19 +248,15 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
     private <D, F> Entry<D, F> getEntryOf(Map<D, Entry<D, F>> visited, D d, Entry<D, F> v) {
       // either we reach a new node or a merge node, the latter one is rare
       // so put and restore should be better that a lookup
-      // putIfAbsent would be the ideal strategy
 
       // add and restore if required
       Entry<D, F> newEntry = new Entry<D, F>(d, v);
-      Entry<D, F> oldEntry = visited.put(d, newEntry);
+      Entry<D, F> oldEntry = visited.putIfAbsent(d, newEntry);
 
       // no restore required
       if (oldEntry == null) {
         return newEntry;
       }
-
-      // false prediction, restore the entry
-      visited.put(d, oldEntry);
 
       // adding self ref (real strongly connected with itself)
       if (oldEntry == v) {
@@ -579,12 +575,29 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
         return false;
       }
       // copy back the result, as it has changed
-      copy(out, d.outFlow);
+      copyFreshToExisting(out, d.outFlow);
       return true;
     }
 
     // no back-references, just calculate "flowThrough"
     flowThrough(d.inFlow, d.data, d.outFlow);
     return true;
+  }
+
+  /**
+   * Copies a *fresh* copy of in to dest. The input is not referenced somewhere else. This allows subclasses for a smarter
+   * and faster copying.
+   * 
+   * @param in
+   * @param dest
+   */
+  protected void copyFreshToExisting(A in, A dest) {
+    if (in instanceof FlowSet && dest instanceof FlowSet) {
+      FlowSet<?> fin = (FlowSet<?>) in;
+      FlowSet fdest = (FlowSet) dest;
+      fin.copyFreshToExisting(fdest);
+    } else {
+      copy(in, dest);
+    }
   }
 }

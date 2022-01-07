@@ -38,9 +38,11 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import soot.jimple.spark.internal.TypeManager;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
+import soot.util.NumberedString;
 
 /**
  * Represents the class hierarchy. It is closely linked to a Scene, and must be recreated if the Scene changes.
@@ -53,9 +55,10 @@ import soot.util.MultiMap;
  *         for overwritten return types
  */
 public class FastHierarchy {
-  protected static int USE_INTERVALS_BOUNDARY = 100;
 
-  protected Table<SootClass, String, SootMethod> typeToVtbl = HashBasedTable.create();
+  protected static final int USE_INTERVALS_BOUNDARY = 100;
+
+  protected Table<SootClass, NumberedString, SootMethod> typeToVtbl = HashBasedTable.create();
 
   /**
    * This map holds all key,value pairs such that value.getSuperclass() == key. This is one of the three maps that hold the
@@ -94,8 +97,7 @@ public class FastHierarchy {
    */
   protected Map<SootClass, Interval> classToInterval = new HashMap<SootClass, Interval>();
 
-  protected Scene sc;
-
+  protected final Scene sc;
   protected final RefType rtObject;
   protected final RefType rtSerializable;
   protected final RefType rtCloneable;
@@ -113,16 +115,8 @@ public class FastHierarchy {
     }
 
     public boolean isSubrange(Interval potentialSubrange) {
-      if (potentialSubrange == null) {
-        return false;
-      }
-      if (lower > potentialSubrange.lower) {
-        return false;
-      }
-      if (upper < potentialSubrange.upper) {
-        return false;
-      }
-      return true;
+      return (potentialSubrange == this)
+          || (potentialSubrange != null && this.lower <= potentialSubrange.lower && this.upper >= potentialSubrange.upper);
     }
   }
 
@@ -144,17 +138,17 @@ public class FastHierarchy {
     if (c.isInterface()) {
       throw new RuntimeException("Attempt to dfs visit interface " + c);
     }
-    if (!classToInterval.containsKey(c)) {
-      classToInterval.put(c, r);
-    }
+    classToInterval.putIfAbsent(c, r);
     return start;
   }
 
-  /** Constructs a hierarchy from the current scene. */
+  /**
+   * Constructs a hierarchy from the current scene.
+   */
   public FastHierarchy() {
     this.sc = Scene.v();
 
-    this.rtObject = Scene.v().getObjectType();
+    this.rtObject = sc.getObjectType();
     this.rtSerializable = RefType.v("java.io.Serializable");
     this.rtCloneable = RefType.v("java.lang.Cloneable");
 
@@ -166,7 +160,7 @@ public class FastHierarchy {
     /*
      * also have to traverse for all phantom classes because they also can be roots of the type hierarchy
      */
-    for (final Iterator<SootClass> phantomClassIt = sc.getPhantomClasses().snapshotIterator(); phantomClassIt.hasNext();) {
+    for (Iterator<SootClass> phantomClassIt = sc.getPhantomClasses().snapshotIterator(); phantomClassIt.hasNext();) {
       SootClass phantomClass = phantomClassIt.next();
       if (!phantomClass.isInterface()) {
         r = dfsVisit(r, phantomClass);
@@ -185,7 +179,7 @@ public class FastHierarchy {
           classToSubclasses.put(superClass, cl);
         }
       }
-      for (final SootClass supercl : cl.getInterfaces()) {
+      for (SootClass supercl : cl.getInterfaces()) {
         if (cl.isInterface()) {
           interfaceToSubinterfaces.put(supercl, cl);
         } else {
@@ -202,6 +196,7 @@ public class FastHierarchy {
   public boolean isSubclass(SootClass child, SootClass parent) {
     child.checkLevel(SootClass.HIERARCHY);
     parent.checkLevel(SootClass.HIERARCHY);
+
     Interval parentInterval = classToInterval.get(parent);
     Interval childInterval = classToInterval.get(child);
     return parentInterval != null && childInterval != null && parentInterval.isSubrange(childInterval);
@@ -219,8 +214,9 @@ public class FastHierarchy {
    */
   public Set<SootClass> getAllImplementersOfInterface(SootClass parent) {
     parent.checkLevel(SootClass.HIERARCHY);
+
     Set<SootClass> result = interfaceToAllImplementers.get(parent);
-    if (result.size() > 0) {
+    if (!result.isEmpty()) {
       return result;
     }
     result = new HashSet<>();
@@ -247,11 +243,12 @@ public class FastHierarchy {
    */
   public Set<SootClass> getAllSubinterfaces(SootClass parent) {
     parent.checkLevel(SootClass.HIERARCHY);
+
     if (!parent.isInterface()) {
       return Collections.emptySet();
     }
     Set<SootClass> result = interfaceToAllSubinterfaces.get(parent);
-    if (result.size() > 0) {
+    if (!result.isEmpty()) {
       return result;
     }
     result = new HashSet<>();
@@ -268,7 +265,7 @@ public class FastHierarchy {
    * is an interface that is not a subinterface of parent, this method will return false even though some objects
    * implementing the child interface may also implement the parent interface.
    */
-  public boolean canStoreType(Type child, Type parent) {
+  public boolean canStoreType(final Type child, final Type parent) {
     if (child == parent || child.equals(parent)) {
       return true;
     } else if (parent instanceof NullType) {
@@ -287,59 +284,55 @@ public class FastHierarchy {
       if (!(parent instanceof RefLikeType)) {
         throw new RuntimeException("Unhandled type " + parent);
       } else if (parent instanceof ArrayType) {
-        Type base = ((AnySubType) child).getBase();
-        // From Java Language Spec 2nd ed., Chapter 10, Arrays
-        return base == rtObject || base == rtSerializable || base == rtCloneable;
+        // SA, 2021-09-15. Someone previously misinterpreted the Java Language Spec here. All array types implement
+        // Serializable and Cloneable, and that allows you to assign an array Foo[] to a variable of type Serializable.
+        // However, it doesn't work the other way round. You can't assign a Serializable to a variable of type Foo[].
+        return false;
       } else {
-        SootClass base = ((AnySubType) child).getBase().getSootClass();
-        SootClass parentClass = ((RefType) parent).getSootClass();
         Deque<SootClass> worklist = new ArrayDeque<SootClass>();
+        SootClass base = ((AnySubType) child).getBase().getSootClass();
         if (base.isInterface()) {
           worklist.addAll(getAllImplementersOfInterface(base));
         } else {
           worklist.add(base);
         }
-        Set<SootClass> workset = new HashSet<>();
-        while (true) {
-          SootClass cl = worklist.poll();
-          if (cl == null) {
-            break;
-          } else if (!workset.add(cl)) {
-            continue;
-          } else if (cl.isConcrete() && canStoreClass(cl, parentClass)) {
-            return true;
+        final SootClass parentClass = ((RefType) parent).getSootClass();
+        {
+          Set<SootClass> workset = new HashSet<>();
+          SootClass cl;
+          while ((cl = worklist.poll()) != null) {
+            if (!workset.add(cl)) {
+              continue;
+            } else if (cl.isConcrete() && canStoreClass(cl, parentClass)) {
+              return true;
+            }
+            worklist.addAll(getSubclassesOf(cl));
           }
-          worklist.addAll(getSubclassesOf(cl));
         }
         return false;
       }
     } else if (child instanceof ArrayType) {
-      ArrayType achild = (ArrayType) child;
       if (parent instanceof RefType) {
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
         return parent == rtObject || parent == rtSerializable || parent == rtCloneable;
-      } else if (!(parent instanceof ArrayType)) {
-        return false;
-      }
-      ArrayType aparent = (ArrayType) parent;
-
-      // You can store a int[][] in a Object[]. Yuck!
-      // Also, you can store a Interface[] in a Object[]
-      if (achild.numDimensions == aparent.numDimensions) {
-        if (achild.baseType.equals(aparent.baseType)) {
-          return true;
-        } else if (!(achild.baseType instanceof RefType)) {
-          return false;
-        } else if (!(aparent.baseType instanceof RefType)) {
-          return false;
-        } else {
-          return canStoreType(achild.baseType, aparent.baseType);
-        }
-      } else if (achild.numDimensions > aparent.numDimensions) {
-        if (aparent.baseType == rtObject) {
-          return true;
-        } else if (aparent.baseType == rtSerializable || aparent.baseType == rtCloneable) {
-          return true;
+      } else if (parent instanceof ArrayType) {
+        // You can store a int[][] in a Object[]. Yuck!
+        // Also, you can store a Interface[] in a Object[]
+        final ArrayType aparent = (ArrayType) parent;
+        final ArrayType achild = (ArrayType) child;
+        if (achild.numDimensions == aparent.numDimensions) {
+          final Type pBaseType = aparent.baseType;
+          final Type cBaseType = achild.baseType;
+          if (cBaseType.equals(pBaseType)) {
+            return true;
+          } else if ((cBaseType instanceof RefType) && (pBaseType instanceof RefType)) {
+            return canStoreType(cBaseType, pBaseType);
+          } else {
+            return false;
+          }
+        } else if (achild.numDimensions > aparent.numDimensions) {
+          final Type pBaseType = aparent.baseType;
+          return pBaseType == rtObject || pBaseType == rtSerializable || pBaseType == rtCloneable;
         } else {
           return false;
         }
@@ -359,6 +352,7 @@ public class FastHierarchy {
   public boolean canStoreClass(SootClass child, SootClass parent) {
     parent.checkLevel(SootClass.HIERARCHY);
     child.checkLevel(SootClass.HIERARCHY);
+
     Interval parentInterval = classToInterval.get(parent);
     Interval childInterval = classToInterval.get(child);
     if (parentInterval != null && childInterval != null) {
@@ -416,10 +410,8 @@ public class FastHierarchy {
     final boolean parentIsInterface = parent.isInterface();
     ArrayDeque<SootClass> children = new ArrayDeque<>();
     children.add(child);
-    SootClass p;
-    while ((p = children.poll()) != null) {
-      SootClass sc = p;
-      while (sc != null) {
+    for (SootClass p; (p = children.poll()) != null;) {
+      for (SootClass sc = p; sc != null;) {
         if (sc == parent) {
           return true;
         }
@@ -440,15 +432,16 @@ public class FastHierarchy {
   public Collection<SootMethod> resolveConcreteDispatchWithoutFailing(Collection<Type> concreteTypes, SootMethod m,
       RefType declaredTypeOfBase) {
 
-    Set<SootMethod> ret = new HashSet<SootMethod>();
-    SootClass declaringClass = declaredTypeOfBase.getSootClass();
+    final SootClass declaringClass = declaredTypeOfBase.getSootClass();
     declaringClass.checkLevel(SootClass.HIERARCHY);
+
+    Set<SootMethod> ret = new HashSet<SootMethod>();
     for (final Type t : concreteTypes) {
       if (t instanceof AnySubType) {
         HashSet<SootClass> s = new HashSet<SootClass>();
         s.add(declaringClass);
         while (!s.isEmpty()) {
-          SootClass c = s.iterator().next();
+          final SootClass c = s.iterator().next();
           s.remove(c);
           if (!c.isInterface() && !c.isAbstract() && canStoreClass(c, declaringClass)) {
             SootMethod concreteM = resolveConcreteDispatch(c, m);
@@ -477,12 +470,11 @@ public class FastHierarchy {
         }
         return ret;
       } else if (t instanceof RefType) {
-        RefType concreteType = (RefType) t;
-        SootClass concreteClass = concreteType.getSootClass();
+        SootClass concreteClass = ((RefType) t).getSootClass();
         if (!canStoreClass(concreteClass, declaringClass)) {
           continue;
         }
-        SootMethod concreteM = null;
+        SootMethod concreteM;
         try {
           concreteM = resolveConcreteDispatch(concreteClass, m);
         } catch (Exception e) {
@@ -492,7 +484,7 @@ public class FastHierarchy {
           ret.add(concreteM);
         }
       } else if (t instanceof ArrayType) {
-        SootMethod concreteM = null;
+        SootMethod concreteM;
         try {
           concreteM = resolveConcreteDispatch(RefType.v("java.lang.Object").getSootClass(), m);
         } catch (Exception e) {
@@ -511,15 +503,16 @@ public class FastHierarchy {
   public Collection<SootMethod> resolveConcreteDispatch(Collection<Type> concreteTypes, SootMethod m,
       RefType declaredTypeOfBase) {
 
-    Set<SootMethod> ret = new HashSet<SootMethod>();
-    SootClass declaringClass = declaredTypeOfBase.getSootClass();
+    final SootClass declaringClass = declaredTypeOfBase.getSootClass();
     declaringClass.checkLevel(SootClass.HIERARCHY);
+
+    Set<SootMethod> ret = new HashSet<SootMethod>();
     for (final Type t : concreteTypes) {
       if (t instanceof AnySubType) {
         HashSet<SootClass> s = new HashSet<SootClass>();
         s.add(declaringClass);
         while (!s.isEmpty()) {
-          SootClass c = s.iterator().next();
+          final SootClass c = s.iterator().next();
           s.remove(c);
           if (!c.isInterface() && !c.isAbstract() && canStoreClass(c, declaringClass)) {
             SootMethod concreteM = resolveConcreteDispatch(c, m);
@@ -548,8 +541,7 @@ public class FastHierarchy {
         }
         return ret;
       } else if (t instanceof RefType) {
-        RefType concreteType = (RefType) t;
-        SootClass concreteClass = concreteType.getSootClass();
+        SootClass concreteClass = ((RefType) t).getSootClass();
         if (!canStoreClass(concreteClass, declaringClass)) {
           continue;
         }
@@ -574,6 +566,7 @@ public class FastHierarchy {
    */
   private boolean isVisible(SootClass from, SootClass declaringClass, int modifier) {
     from.checkLevel(SootClass.HIERARCHY);
+
     if (Modifier.isPublic(modifier)) {
       return true;
     }
@@ -581,20 +574,16 @@ public class FastHierarchy {
     // If two inner classes are (transitively) inside the same outer class, such as A$B$C and A$D$E they can override methods
     // from one another, even if all methods are private. In the example, it's perfectly fine for private class A$D$E to
     // extend private class A$B$C and override a method in it.
-    {
-      SootClass curDecl = declaringClass;
-      while (curDecl.hasOuterClass()) {
-        curDecl = curDecl.getOuterClass();
-        if (curDecl.equals(from)) {
-          return true;
-        }
+    for (SootClass curDecl = declaringClass; curDecl.hasOuterClass();) {
+      curDecl = curDecl.getOuterClass();
+      if (from.equals(curDecl)) {
+        return true;
+      }
 
-        SootClass curFrom = from;
-        while (curFrom.hasOuterClass()) {
-          curFrom = curFrom.getOuterClass();
-          if (curDecl.equals(curFrom)) {
-            return true;
-          }
+      for (SootClass curFrom = from; curFrom.hasOuterClass();) {
+        curFrom = curFrom.getOuterClass();
+        if (curDecl.equals(curFrom)) {
+          return true;
         }
       }
     }
@@ -628,8 +617,8 @@ public class FastHierarchy {
   public Set<SootMethod> resolveAbstractDispatch(SootClass baseType, SootMethodRef m) {
     HashSet<SootClass> resolved = new HashSet<>();
     HashSet<SootMethod> ret = new HashSet<>();
-    ArrayDeque<SootClass> worklist = new ArrayDeque<>();
 
+    ArrayDeque<SootClass> worklist = new ArrayDeque<>();
     worklist.add(baseType);
     while (true) {
       SootClass concreteType = worklist.poll();
@@ -747,7 +736,7 @@ public class FastHierarchy {
    */
   private SootMethod resolveMethod(SootClass baseType, SootMethodRef m, boolean allowAbstract, Set<SootClass> ignoreList) {
     return resolveMethod(baseType, m.getDeclaringClass(), m.getName(), m.getParameterTypes(), m.getReturnType(),
-        allowAbstract, ignoreList);
+        allowAbstract, ignoreList, m.getSubSignature());
   }
 
   /**
@@ -769,7 +758,32 @@ public class FastHierarchy {
    */
   public SootMethod resolveMethod(SootClass baseType, SootClass declaringClass, String name, List<Type> parameterTypes,
       Type returnType, boolean allowAbstract) {
-    return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>());
+    return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>(), null);
+  }
+
+  /**
+   * Conducts the actual dispatch by searching up the baseType's superclass hierarchy and interface hierarchy if the
+   * sourcecode level is beyond Java 7 (due to default interface methods.) Given an object of actual type C (o = new C()),
+   * returns the method which will be called on an o.f() invocation.
+   *
+   * <p>
+   * If abstract methods are allowed, it will just resolve to the first method found according to javas method resolution
+   * process: https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-5.html#jvms-5.4.3.3
+   *
+   * @param baseType
+   *          The type C
+   * @param declaringClass
+   *          declaring class of the method to resolve
+   * @param name
+   *          Name of the method to resolve
+   * @param subsignature
+   *          The subsignature (can be null) to speed up the resolving process.
+   * @return The concrete method o.f() to call
+   */
+  public SootMethod resolveMethod(SootClass baseType, SootClass declaringClass, String name, List<Type> parameterTypes,
+      Type returnType, boolean allowAbstract, NumberedString subsignature) {
+    return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>(),
+        subsignature);
   }
 
   /**
@@ -791,22 +805,31 @@ public class FastHierarchy {
    *          A set of classes that should be ignored during dispatch. This set will also be modified since every traversed
    *          class/interface will be added. This is required for the abstract dispatch to not do additional resolving effort
    *          by resolving the same classes multiple times.
+   * @param subsignature
+   *          The subsignature (can be null) to speed up the resolving process.
    * @return The concrete method o.f() to call
    */
-  private SootMethod resolveMethod(SootClass baseType, SootClass declaringClass, String name, List<Type> parameterTypes,
-      Type returnType, boolean allowAbstract, Set<SootClass> ignoreList) {
-    SootClass concreteType = baseType;
-
-    SootMethod candidate = null;
-    String methodSignature = SootMethod.getSubSignature(name, parameterTypes, returnType);
-    SootMethod resolvedMethod = typeToVtbl.get(baseType, methodSignature);
-    if (resolvedMethod != null) {
-      return resolvedMethod;
+  private SootMethod resolveMethod(final SootClass baseType, final SootClass declaringClass, final String name,
+      final List<Type> parameterTypes, final Type returnType, final boolean allowAbstract, final Set<SootClass> ignoreList,
+      NumberedString subsignature) {
+    final NumberedString methodSignature;
+    if (subsignature == null) {
+      methodSignature
+          = Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
+    } else {
+      methodSignature = subsignature;
     }
 
-    // When there is no proper dispatch found, we simply return null to let
-    // the caller decide what to do
-    while (concreteType != null && ignoreList.add(concreteType)) {
+    {
+      SootMethod resolvedMethod = typeToVtbl.get(baseType, methodSignature);
+      if (resolvedMethod != null) {
+        return resolvedMethod;
+      }
+    }
+
+    // When there is no proper dispatch found, we simply return null to let the caller decide what to do
+    SootMethod candidate = null;
+    for (SootClass concreteType = baseType; concreteType != null && ignoreList.add(concreteType);) {
       candidate = getSignaturePolymorphicMethod(concreteType, name, parameterTypes, returnType);
       if (candidate != null) {
         if (isVisible(declaringClass, concreteType, candidate.getModifiers())) {
@@ -829,12 +852,10 @@ public class FastHierarchy {
     // look for default methods:
     // https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-5.html#jvms-5.4.3.3
     if (isHandleDefaultMethods()) {
-      concreteType = baseType;
       // keep our own ignorelist here so we are not restricted to already hit suinterfaces when
       // determining the most specific super interface
       HashSet<SootClass> interfaceIgnoreList = new HashSet<>();
-
-      while (concreteType != null) {
+      for (SootClass concreteType = baseType; concreteType != null;) {
         Queue<SootClass> worklist = new LinkedList<>(concreteType.getInterfaces());
         // we have to determine the "most specific super interface"
         while (!worklist.isEmpty()) {
@@ -846,16 +867,11 @@ public class FastHierarchy {
           interfaceIgnoreList.add(iFace);
 
           SootMethod method = getSignaturePolymorphicMethod(iFace, name, parameterTypes, returnType);
-
           if (method != null && isVisible(declaringClass, iFace, method.getModifiers())) {
             if (!allowAbstract && method.isAbstract()) {
               // abstract method cannot be dispatched
-              method = null;
-              continue;
-            }
-
-            // check if the found method is more specific than our current candidate
-            else if (candidate == null || canStoreClass(method.getDeclaringClass(), candidate.getDeclaringClass())) {
+            } else if (candidate == null || canStoreClass(method.getDeclaringClass(), candidate.getDeclaringClass())) {
+              // the found method is more specific than our current candidate
               candidate = method;
             }
           } else {
@@ -889,14 +905,15 @@ public class FastHierarchy {
      * This is a bizarre condition! Hopefully the implementation is correct. See VM Spec, 2nd Edition, Chapter 6, in the
      * definition of invokespecial.
      */
-    if (container.getDeclaringClass().getType() != callee.getDeclaringClass().getType()
-        && canStoreType(container.getDeclaringClass().getType(), callee.getDeclaringClass().getType())
-        && !callee.getName().equals(SootMethod.constructorName) && !callee.getName().equals(SootMethod.staticInitializerName)
+    final SootClass containerClass = container.getDeclaringClass();
+    final SootClass calleeClass = callee.getDeclaringClass();
+    if (containerClass.getType() != calleeClass.getType() && canStoreType(containerClass.getType(), calleeClass.getType())
+        && !SootMethod.constructorName.equals(callee.getName()) && !SootMethod.staticInitializerName.equals(callee.getName())
         // default interface methods are explicitly dispatched to the default
         // method with a specialinvoke instruction (i.e. do not dispatch to an
         // overwritten version of that method)
-        && !callee.getDeclaringClass().isInterface()) {
-      return resolveConcreteDispatch(container.getDeclaringClass(), callee);
+        && !calleeClass.isInterface()) {
+      return resolveConcreteDispatch(containerClass, callee);
     } else {
       return callee;
     }
@@ -904,7 +921,7 @@ public class FastHierarchy {
 
   /**
    * Searches the given class for a method that is signature polymorphic according to the given facts, i.e., matches name and
-   * parameter types and ensures that the return type is a an equal or subtype of the given mehtod's subtype.
+   * parameter types and ensures that the return type is a an equal or subtype of the given method's subtype.
    *
    * @param concreteType
    * @return
@@ -931,10 +948,57 @@ public class FastHierarchy {
    */
   public Collection<SootClass> getSubclassesOf(SootClass c) {
     c.checkLevel(SootClass.HIERARCHY);
-    Collection<SootClass> ret = classToSubclasses.get(c);
-    if (ret == null) {
-      return Collections.emptyList();
-    }
-    return ret;
+    Set<SootClass> ret = classToSubclasses.get(c);
+    return (ret == null) ? Collections.emptySet() : ret;
   }
+
+  /**
+   * Returns a list of types which can be used to store the given type
+   * 
+   * @param nt
+   *          the given type
+   * @return the list of types which can be used to store the given type
+   */
+  public Iterable<Type> canStoreTypeList(final Type nt) {
+    return new Iterable<Type>() {
+
+      @Override
+      public Iterator<Type> iterator() {
+        Iterator<Type> it = Scene.v().getTypeNumberer().iterator();
+        return new Iterator<Type>() {
+
+          Type crt = null;
+
+          @Override
+          public boolean hasNext() {
+            if (crt != null) {
+              return true;
+            }
+            Type c = null;
+            while (it.hasNext()) {
+              c = it.next();
+              if (TypeManager.isUnresolved(c)) {
+                continue;
+              }
+              if (canStoreType(nt, c)) {
+                crt = c;
+                return true;
+              }
+            }
+            return false;
+          }
+
+          @Override
+          public Type next() {
+            Type old = crt;
+            crt = null;
+            hasNext();
+            return old;
+          }
+
+        };
+      }
+    };
+  }
+
 }
