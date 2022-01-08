@@ -1,14 +1,14 @@
 [全局gradle配置]
 maven {
-            url uri('/home/hzy/softwares/database/abuilder')
-}
+            url uri('/home/android/software/plugins/abuilder')
+        }
 classpath 'xmu.wrxlab:abuilder:1.0.0'
 [app gradle配置]
 apply plugin: 'abuilder'
 abuilder {
-    database "/home/hzy/hzy/projects/xmu_wrxlab/auiauto/database"
-    projectId = "de.rampro.activitydiary_118"
-    mainActivity = "de.rampro.activitydiary.ui.main.MainActivity"
+    database "/home/android/project/xmu_wrxlab/auiauto/database"
+    projectId = "APhotoManager-0.6.4.180314"
+    mainActivity = "de.k3b.android.androFotoFinder.FotoGalleryActivity"
 }
 dependencies {
     implementation'org.nanohttpd:nanohttpd:2.2.0'
