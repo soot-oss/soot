@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import soot.util.SharedCloseable;
 
-public class FoundFile {
+public class FoundFile implements IFoundFile {
   private static final Logger logger = LoggerFactory.getLogger(FoundFile.class);
 
   protected final List<InputStream> openedInputStreams = new ArrayList<InputStream>();
@@ -55,17 +55,6 @@ public class FoundFile {
 
   protected SharedCloseable<ZipFile> zipFile;
   protected ZipEntry zipEntry;
-
-  // NOTE: this constructor cannot be supported when using the SharedClosable
-  // without the risk of the ZipFile closing prematurely.
-  // public FoundFile(ZipFile file, ZipEntry entry) {
-  // this();
-  // if (file == null || entry == null) {
-  // throw new IllegalArgumentException("Error: The archive and entry cannot be null.");
-  // }
-  // this.zipFile = file;
-  // this.zipEntry = entry;
-  // }
 
   public FoundFile(String archivePath, String entryName) {
     if (archivePath == null || entryName == null) {
@@ -87,23 +76,36 @@ public class FoundFile {
     this.path = path;
   }
 
-  @Deprecated
+  @Override
   public String getFilePath() {
+    if (file == null) {
+      if (path != null) {
+        File f = path.toFile();
+        if (f != null) {
+          return f.getPath();
+        }
+      }
+      return null;
+    }
     return file.getPath();
   }
 
+  @Override
   public boolean isZipFile() {
     return entryName != null;
   }
 
+  @Override
   public ZipFile getZipFile() {
     return zipFile != null ? zipFile.get() : null;
   }
 
+  @Override
   public File getFile() {
     return file;
   }
 
+  @Override
   public String getAbsolutePath() {
     try {
       return file != null ? file.getCanonicalPath() : path.toRealPath().toString();
@@ -112,6 +114,7 @@ public class FoundFile {
     }
   }
 
+  @Override
   public InputStream inputStream() {
     InputStream ret = null;
     if (path != null) {
@@ -156,14 +159,7 @@ public class FoundFile {
     return ret;
   }
 
-  public void silentClose() {
-    try {
-      close();
-    } catch (Exception e) {
-      logger.debug(e.getMessage(), e);
-    }
-  }
-
+  @Override
   public void close() {
     // Try to close all opened input streams
     List<Exception> errs = new ArrayList<Exception>(0);

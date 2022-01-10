@@ -99,36 +99,35 @@ public class SourceLocator {
   // NOTE: Soft and weak references are useless here since the value is an
   // enum type and strings are interned.
   protected final LoadingCache<String, ClassSourceType> pathToSourceType
-        = CacheBuilder.newBuilder().initialCapacity(5).maximumSize(PATH_CACHE_CAPACITY)
-        .concurrencyLevel(Runtime.getRuntime().availableProcessors())
-        .build(new CacheLoader<String, ClassSourceType>() {
-          @Override
-          public ClassSourceType load(String path) throws Exception {
-            File f = new File(path);
-            if (!f.exists() && !Options.v().ignore_classpath_errors()) {
-              throw new Exception("Error: The path '" + path + "' does not exist.");
-            }
-            if (!f.canRead() && !Options.v().ignore_classpath_errors()) {
-              throw new Exception("Error: The path '" + path + "' exists but is not readable.");
-            }
-            if (f.isFile()) {
-              switch (path.substring(path.length() - 4)) {
-                case ".zip":
-                  return ClassSourceType.zip;
-                case ".jar":
-                  return ClassSourceType.jar;
-                case ".dex":
-                  return ClassSourceType.dex;
-                default:
-                  return Scene.isApk(new File(path)) ? ClassSourceType.apk : ClassSourceType.unknown;
+      = CacheBuilder.newBuilder().initialCapacity(5).maximumSize(PATH_CACHE_CAPACITY)
+          .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(new CacheLoader<String, ClassSourceType>() {
+            @Override
+            public ClassSourceType load(String path) throws Exception {
+              File f = new File(path);
+              if (!f.exists() && !Options.v().ignore_classpath_errors()) {
+                throw new Exception("Error: The path '" + path + "' does not exist.");
               }
-            } else if (f.isDirectory()) {
-              return ClassSourceType.directory;
-            } else {
-              throw new Exception("Error: The path '" + path + "' is neither file nor directory.");
+              if (!f.canRead() && !Options.v().ignore_classpath_errors()) {
+                throw new Exception("Error: The path '" + path + "' exists but is not readable.");
+              }
+              if (f.isFile()) {
+                switch (path.substring(path.length() - 4)) {
+                  case ".zip":
+                    return ClassSourceType.zip;
+                  case ".jar":
+                    return ClassSourceType.jar;
+                  case ".dex":
+                    return ClassSourceType.dex;
+                  default:
+                    return Scene.isApk(new File(path)) ? ClassSourceType.apk : ClassSourceType.unknown;
+                }
+              } else if (f.isDirectory()) {
+                return ClassSourceType.directory;
+              } else {
+                throw new Exception("Error: The path '" + path + "' is neither file nor directory.");
+              }
             }
-          }
-        });
+          });
 
   // NOTE: Considering that the uses of this cache hold a reference to the
   // returned value in a very limited scope combined with the softValues
@@ -136,20 +135,19 @@ public class SourceLocator {
   // reachable (and not strongly reachable) and thus could all be cleared
   // out if the garbage collector needs the memory.
   protected final LoadingCache<String, Set<String>> archivePathToEntriesCache
-        = CacheBuilder.newBuilder().initialCapacity(5).maximumSize(PATH_CACHE_CAPACITY).softValues()
-        .concurrencyLevel(Runtime.getRuntime().availableProcessors())
-        .build(new CacheLoader<String, Set<String>>() {
-          @Override
-          public Set<String> load(String archivePath) throws Exception {
-            try (SharedCloseable<ZipFile> archive = archivePathToZip.getRef(archivePath)) {
-              Set<String> ret = new HashSet<String>();
-              for (Enumeration<? extends ZipEntry> it = archive.get().entries(); it.hasMoreElements();) {
-                ret.add(it.nextElement().getName());
+      = CacheBuilder.newBuilder().initialCapacity(5).maximumSize(PATH_CACHE_CAPACITY).softValues()
+          .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(new CacheLoader<String, Set<String>>() {
+            @Override
+            public Set<String> load(String archivePath) throws Exception {
+              try (SharedCloseable<ZipFile> archive = archivePathToZip.getRef(archivePath)) {
+                Set<String> ret = new HashSet<String>();
+                for (Enumeration<? extends ZipEntry> it = archive.get().entries(); it.hasMoreElements();) {
+                  ret.add(it.nextElement().getName());
+                }
+                return Collections.unmodifiableSet(ret);
               }
-              return Collections.unmodifiableSet(ret);
             }
-          }
-        });
+          });
 
   public SourceLocator(Singletons.Global g) {
   }
@@ -606,9 +604,9 @@ public class SourceLocator {
   /**
    * Searches for a file with the given name in the exploded classPath.
    */
-  public FoundFile lookupInClassPath(String fileName) {
+  public IFoundFile lookupInClassPath(String fileName) {
     for (String dir : classPath) {
-      FoundFile ret = null;
+      IFoundFile ret = null;
       ClassSourceType cst = getClassSourceType(dir);
       if (cst == ClassSourceType.zip || cst == ClassSourceType.jar) {
         ret = lookupInArchive(dir, fileName);
@@ -622,12 +620,12 @@ public class SourceLocator {
     return null;
   }
 
-  protected FoundFile lookupInDir(String dir, String fileName) {
+  protected IFoundFile lookupInDir(String dir, String fileName) {
     File f = new File(dir, fileName);
     return (f.exists() && f.canRead()) ? new FoundFile(f) : null;
   }
 
-  protected FoundFile lookupInArchive(String archivePath, String fileName) {
+  protected IFoundFile lookupInArchive(String archivePath, String fileName) {
     Set<String> entryNames = null;
     try {
       entryNames = archivePathToEntriesCache.get(archivePath);
