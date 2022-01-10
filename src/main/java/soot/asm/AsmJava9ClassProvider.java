@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import soot.ClassProvider;
 import soot.ClassSource;
-import soot.FoundFile;
+import soot.IFoundFile;
 import soot.ModulePathSourceLocator;
 
 /**
@@ -48,7 +48,7 @@ public class AsmJava9ClassProvider implements ClassProvider {
     final String clsFile = cls.replace('.', '/') + ".class";
 
     // here we go through all modules, since we are in classpath mode
-    FoundFile file = null;
+    IFoundFile file = null;
     Path p = ModulePathSourceLocator.getRootModulesPathOfJDK();
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(p)) {
       for (Path entry : stream) {

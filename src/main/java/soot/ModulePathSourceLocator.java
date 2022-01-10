@@ -1,29 +1,5 @@
 package soot;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
-import com.google.common.base.Optional;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -50,6 +26,30 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+import com.google.common.base.Optional;
 
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmModuleClassProvider;
@@ -304,8 +304,8 @@ public class ModulePathSourceLocator extends SourceLocator {
         for (ClassProvider cp : classProviders) {
           if (cp instanceof AsmModuleClassProvider) {
             String moduleName = ((AsmModuleClassProvider) cp).getModuleName(foundFile);
-            SootModuleInfo moduleInfo =
-                (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
+            SootModuleInfo moduleInfo
+                = (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
             this.moduleNameToPath.put(moduleName, jar);
             List<String> classesInJar = super.getClassesUnder(jar.toAbsolutePath().toString());
             for (String foundClass : classesInJar) {
@@ -412,8 +412,8 @@ public class ModulePathSourceLocator extends SourceLocator {
     for (ClassProvider cp : classProviders) {
       if (cp instanceof AsmModuleClassProvider) {
         String moduleName = ((AsmModuleClassProvider) cp).getModuleName(new FoundFile(mi));
-        SootModuleInfo moduleInfo =
-            (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
+        SootModuleInfo moduleInfo
+            = (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
         this.moduleNameToPath.put(moduleName, dir);
 
         List<String> classes = getClassesUnderDirectory(dir);
@@ -465,7 +465,7 @@ public class ModulePathSourceLocator extends SourceLocator {
    * Searches for a file with the given name in the exploded modulePath.
    */
   @Override
-  public FoundFile lookupInClassPath(String fileName) {
+  public IFoundFile lookupInClassPath(String fileName) {
     return lookUpInModulePath(fileName);
   }
 
@@ -486,7 +486,7 @@ public class ModulePathSourceLocator extends SourceLocator {
     }
   }
 
-  public FoundFile lookUpInModulePath(String fileName) {
+  public IFoundFile lookUpInModulePath(String fileName) {
     String[] moduleAndClassName = fileName.split(":");
     String className = moduleAndClassName[moduleAndClassName.length - 1];
     String moduleName = moduleAndClassName[0];
@@ -543,8 +543,7 @@ public class ModulePathSourceLocator extends SourceLocator {
     return null;
   }
 
-
-  protected FoundFile lookupInDir(String dir, String fileName) {
+  protected IFoundFile lookupInDir(String dir, String fileName) {
     Path dirPath = Paths.get(dir);
     Path foundFile = dirPath.resolve(fileName);
     if (foundFile != null && Files.isRegularFile(foundFile)) {
@@ -564,7 +563,7 @@ public class ModulePathSourceLocator extends SourceLocator {
    * @return the FoundFile
    */
   @Override
-  protected FoundFile lookupInArchive(String archivePath, String fileName) {
+  protected IFoundFile lookupInArchive(String archivePath, String fileName) {
     Path archive = Paths.get(archivePath);
     try (FileSystem zipFileSystem = FileSystems.newFileSystem(archive, this.getClass().getClassLoader())) {
       Path entry = zipFileSystem.getPath(fileName);
@@ -588,7 +587,7 @@ public class ModulePathSourceLocator extends SourceLocator {
    *          the file to search
    * @return the FoundFile
    */
-  public FoundFile lookUpInVirtualFileSystem(String archivePath, String fileName) {
+  public IFoundFile lookUpInVirtualFileSystem(String archivePath, String fileName) {
     // FileSystem fs = FileSystems.getFileSystem(URI.create(archivePath));
     Path foundFile = Paths.get(URI.create(archivePath)).resolve(fileName);
     if (foundFile != null && Files.isRegularFile(foundFile)) {
