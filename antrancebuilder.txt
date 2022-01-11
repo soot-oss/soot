@@ -16,3 +16,10 @@ dependencies {
 [manifest配置]
 <uses-permission android:name="android.permission.INTERNET"/>
 android:usesCleartextTraffic="true"
+
+//apply plugin: 'abuilder'
+//abuilder {
+//    database "/home/android/project/xmu_wrxlab/auiauto/database"
+//    projectId = "Frost-for-Facebook-1323"
+//    mainActivity = "com.pitchedapps.frost.StartActivity"
+//}

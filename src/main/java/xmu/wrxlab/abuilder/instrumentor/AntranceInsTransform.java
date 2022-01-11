@@ -137,7 +137,7 @@ public class AntranceInsTransform {
         units.insertBeforeNoRedirect(gotoStmt, target);
         units.insertBeforeNoRedirect(r_StmtTable, target);
         units.insertBeforeNoRedirect(r_idx_int, target);
-        units.insertBeforeNoRedirect(setStmtTable2Stmt, stmt);
+        units.insertBeforeNoRedirect(setStmtTable2Stmt, target);
         // goto指向原target
         // 其实有noredirecrt可以直接在构造时设置target, 这里算是双保险吧
         gotoStmt.setTarget(target);
@@ -153,7 +153,7 @@ public class AntranceInsTransform {
             calAssign2(body, methodSig+"@"+jid+"@"+getLineNumber(stmt)+"@br@"+(i+1));
             units.insertBeforeNoRedirect(r_StmtTable, target);
             units.insertBeforeNoRedirect(r_idx_int, target);
-            units.insertBeforeNoRedirect(setStmtTable2Stmt, stmt);
+            units.insertBeforeNoRedirect(setStmtTable2Stmt, target);
             stmt.setTarget(i, r_StmtTable);
         }
         // default不需要goto阻断, 因为switch结束一个case一定会显示使用break
@@ -161,7 +161,7 @@ public class AntranceInsTransform {
         calAssign2(body, methodSig+"@"+jid+"@"+getLineNumber(stmt)+"@br@0");
         units.insertBeforeNoRedirect(r_StmtTable, target);
         units.insertBeforeNoRedirect(r_idx_int, target);
-        units.insertBeforeNoRedirect(setStmtTable2Stmt, stmt);
+        units.insertBeforeNoRedirect(setStmtTable2Stmt, target);
         stmt.setDefaultTarget(r_StmtTable);
     }
 
@@ -174,7 +174,7 @@ public class AntranceInsTransform {
             calAssign2(body, methodSig+"@"+jid+"@"+getLineNumber(stmt)+"@br@"+(i+1));
             units.insertBeforeNoRedirect(r_StmtTable, target);
             units.insertBeforeNoRedirect(r_idx_int, target);
-            units.insertBeforeNoRedirect(setStmtTable2Stmt, stmt);
+            units.insertBeforeNoRedirect(setStmtTable2Stmt, target);
             stmt.setTarget(i, r_StmtTable);
         }
         // default不需要goto阻断, 因为switch结束一个case一定会显示使用break
@@ -182,7 +182,7 @@ public class AntranceInsTransform {
         calAssign2(body, methodSig+"@"+jid+"@"+getLineNumber(stmt)+"@br@0");
         units.insertBeforeNoRedirect(r_StmtTable, target);
         units.insertBeforeNoRedirect(r_idx_int, target);
-        units.insertBeforeNoRedirect(setStmtTable2Stmt, stmt);
+        units.insertBeforeNoRedirect(setStmtTable2Stmt, target);
         stmt.setDefaultTarget(r_StmtTable);
     }
 
