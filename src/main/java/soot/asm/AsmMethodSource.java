@@ -570,7 +570,14 @@ public class AsmMethodSource implements MethodSource {
       return;
     }
     for (Operand opr : stack) {
-      if (opr == DWORD_DUMMY || opr.stack != null || (l == null && opr.value instanceof Local)) {
+      if (opr == DWORD_DUMMY || opr.stack != null) {
+        continue;
+      }
+      if (l == null && opr.value instanceof Local) {
+        continue;
+      }
+      int op = opr.insn.getOpcode();
+      if (l == null && op != GETFIELD && op != GETSTATIC && (op < IALOAD || op > SALOAD)) {
         continue;
       }
       if (l != null && !opr.value.equivTo(l)) {
@@ -586,10 +593,6 @@ public class AsmMethodSource implements MethodSource {
         if (noref) {
           continue;
         }
-      }
-      int op = opr.insn.getOpcode();
-      if (l == null && op != GETFIELD && op != GETSTATIC && (op < IALOAD || op > SALOAD)) {
-        continue;
       }
       Local stack = newStackLocal();
       opr.stack = stack;
