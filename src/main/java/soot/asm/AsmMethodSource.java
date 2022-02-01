@@ -566,9 +566,6 @@ public class AsmMethodSource implements MethodSource {
   }
 
   private void assignReadOps(Local l) {
-    if (stack.isEmpty()) {
-      return;
-    }
     for (Operand opr : stack) {
       if (opr == DWORD_DUMMY || opr.stack != null) {
         continue;
