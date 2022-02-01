@@ -588,7 +588,7 @@ public class AsmMethodSource implements MethodSource {
         }
       }
       int op = opr.insn.getOpcode();
-      if (l == null && op != GETFIELD && op != GETSTATIC && (op < IALOAD && op > SALOAD)) {
+      if (l == null && op != GETFIELD && op != GETSTATIC && (op < IALOAD || op > SALOAD)) {
         continue;
       }
       Local stack = newStackLocal();
