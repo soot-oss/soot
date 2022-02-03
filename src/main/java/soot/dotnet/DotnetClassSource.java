@@ -5,16 +5,14 @@ import org.slf4j.LoggerFactory;
 import soot.*;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotnetFakeLdFtnType;
 import soot.dotnet.types.DotnetType;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-
-import static soot.dotnet.types.DotnetTypeFactory.toSootType;
 
 /**
  * This ClassSource provides support for SootClass resolving
@@ -42,21 +40,20 @@ public class DotnetClassSource extends ClassSource {
      */
     @Override
     public Dependencies resolve(SootClass sc) {
-        if (Options.v().verbose()) {
-            logger.info("resolving " + className + " from file " + assemblyFile.getPath());
-        }
-
         // If Fake.LdFtn
         if (sc.getName().equals(DotnetBasicTypes.FAKE_LDFTN))
-            return resolveFakeLdFtnClass(sc);
+            return DotnetFakeLdFtnType.resolve(sc);
+
+        if (Options.v().verbose()) {
+            logger.info("resolving " + className + " type definition from file " + assemblyFile.getPath());
+        }
 
         // dependencies that might occur
         resolveSignatureDependencies();
 
-        if (Options.v().verbose())
-            logger.info("Get type definition of " + className);
         ProtoAssemblyAllTypes.TypeDefinition typeDefinition = assemblyFile.getTypeDefinition(sc.getName());
         DotnetType dotnetType = new DotnetType(typeDefinition, assemblyFile);
+
         return dotnetType.resolveSootClass(sc);
     }
 
@@ -78,24 +75,5 @@ public class DotnetClassSource extends ClassSource {
             }
             SootResolver.v().resolveClass(sootTypeName, SootClass.SIGNATURES);
         }
-    }
-
-    /**
-     * If LdFtn instruction, rewrite
-     * @param sootClass
-     * @return
-     */
-    private Dependencies resolveFakeLdFtnClass(SootClass sootClass) {
-        Dependencies deps = new Dependencies();
-        deps.typesToHierarchy.add(SootResolver.v().makeClassRef(DotnetBasicTypes.SYSTEM_OBJECT).getType());
-
-        int modifier = 0;
-        modifier |= Modifier.PUBLIC;
-        modifier |= Modifier.STATIC;
-
-        SootMethod m = Scene.v().makeSootMethod("FakeLdFtn", new ArrayList<>(), DotnetTypeFactory.toSootType(DotnetBasicTypes.SYSTEM_INTPTR), modifier);
-        sootClass.addMethod(m);
-
-        return deps;
     }
 }

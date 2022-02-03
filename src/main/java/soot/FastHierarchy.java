@@ -923,6 +923,8 @@ public class FastHierarchy {
    */
   private SootMethod getSignaturePolymorphicMethod(SootClass concreteType, String name, List<Type> parameterTypes,
       Type returnType) {
+    if (concreteType == null)
+      throw new RuntimeException("The concreteType cannot not be null!");
     SootMethod candidate = null;
     for (SootMethod method : concreteType.getMethods()) {
       if (method.getName().equals(name) && method.getParameterTypes().equals(parameterTypes)

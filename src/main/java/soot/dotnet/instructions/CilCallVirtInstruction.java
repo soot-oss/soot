@@ -8,6 +8,8 @@ import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetBasicTypes;
 import soot.dotnet.types.DotnetTypeFactory;
+import soot.jimple.AssignStmt;
+import soot.jimple.CastExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
 import soot.toolkits.scalar.Pair;
@@ -30,6 +32,19 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
         CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction, dotnetBody, cilBlock);
         Value value = cilExpr.jimplifyExpr(jb);
         InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(value);
+
+        // cast for validation
+        if (cilExpr instanceof CilCallVirtInstruction) {
+            List<Pair<Local, Local>> locals = ((CilCallVirtInstruction) cilExpr).getLocalsToCastForCall();
+            if (locals.size() != 0) {
+                for (Pair<Local, Local> pair : locals) {
+                    CastExpr castExpr = Jimple.v().newCastExpr(pair.getO1(), pair.getO2().getType());
+                    AssignStmt assignStmt = Jimple.v().newAssignStmt(pair.getO2(), castExpr);
+                    jb.getUnits().add(assignStmt);
+                }
+            }
+        }
+
         jb.getUnits().add(invokeStmt);
     }
 
@@ -59,7 +74,12 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
 
             // arguments which are passed to this function
             for (int z = 0; z < instruction.getArgumentsCount(); z++) {
-                Local variable = (Local) CilInstructionFactory.fromInstructionMsg(instruction.getArguments(z), dotnetBody, cilBlock).jimplifyExpr(jb);
+                Value variableValue = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(z), dotnetBody, cilBlock).jimplifyExpr(jb);
+                if (!(variableValue instanceof Local))
+                    throw new RuntimeException("CALL: The given argument " + z + " of invoked method " + methodName + " declared in " + clazz.getName() + " is not a local! " +
+                            "The value is: " + variableValue.toString() + " of type " + variableValue.getType() + "! " +
+                            "The resolving method body is: " + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature());
+                Local variable = (Local) variableValue;
                 argsVariables.add(variable);
             }
             // method-parameters (signature)
@@ -123,10 +143,23 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
             throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + instruction.getMethod().getName() + " of declared type " +
                     instruction.getMethod().getDeclaringType().getFullname() +
                     " has no arguments! This means there is no base variable for the virtual invoke!");
-        Local base = (Local) CilInstructionFactory.fromInstructionMsg(instruction.getArguments(0), dotnetBody, cilBlock).jimplifyExpr(jb);
+
+        Value baseValue = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(0), dotnetBody, cilBlock).jimplifyExpr(jb);
+        if (!(baseValue instanceof Local))
+            throw new RuntimeException("CALL: The given argument 0 (base variable) of invoked method " + methodName + " declared in " + clazz.getName() + " is not a local! " +
+                    "The value is: " + baseValue.toString() + " of type " + baseValue.getType() + "! " +
+                    "The resolving method body is: " + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature());
+        Local base = (Local) baseValue;
+
         if (instruction.getArgumentsCount() > 1) {
             for (int z = 1; z < instruction.getArgumentsCount(); z++) {
-                Local variable = (Local) CilInstructionFactory.fromInstructionMsg(instruction.getArguments(z), dotnetBody, cilBlock).jimplifyExpr(jb);
+
+                Value variableValue = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(z), dotnetBody, cilBlock).jimplifyExpr(jb);
+                if (!(variableValue instanceof Local))
+                    throw new RuntimeException("CALL: The given argument " + z + " of invoked method " + methodName + " declared in " + clazz.getName() + " is not a local! " +
+                            "The value is: " + baseValue.toString() + " of type " + baseValue.getType() + "! " +
+                            "The resolving method body is: " + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature());
+                Local variable = (Local) variableValue;
                 argsVariables.add(variable);
             }
             for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : instruction.getMethod().getParameterList())
@@ -136,6 +169,7 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
         // Check if cast is needed for correct validation, e.g.:
         // System.Object modifiers = null;
         // constructor = virtualinvoke type.<System.Type: ConstructorInfo GetConstructor(System.Reflection.ParameterModifier[])>(modifiers);
+        // FastHierarchy is not available at this point, check hierarchy would be easier
         for (int i = 0; i < argsVariables.size(); i++) {
             Local arg = argsVariables.get(i);
             Type methodParam = methodParamTypes.get(i);

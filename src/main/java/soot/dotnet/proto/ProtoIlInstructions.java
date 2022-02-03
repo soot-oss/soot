@@ -4319,6 +4319,14 @@ public final class ProtoIlInstructions {
        * <code>LD_TYPE_TOKEN = 70;</code>
        */
       LD_TYPE_TOKEN(70),
+      /**
+       * <code>INVALID_BRANCH = 71;</code>
+       */
+      INVALID_BRANCH(71),
+      /**
+       * <code>CALL_INDIRECT = 72;</code>
+       */
+      CALL_INDIRECT(72),
       UNRECOGNIZED(-1),
       ;
 
@@ -4594,6 +4602,14 @@ public final class ProtoIlInstructions {
        * <code>LD_TYPE_TOKEN = 70;</code>
        */
       public static final int LD_TYPE_TOKEN_VALUE = 70;
+      /**
+       * <code>INVALID_BRANCH = 71;</code>
+       */
+      public static final int INVALID_BRANCH_VALUE = 71;
+      /**
+       * <code>CALL_INDIRECT = 72;</code>
+       */
+      public static final int CALL_INDIRECT_VALUE = 72;
 
 
       public final int getNumber() {
@@ -4688,6 +4704,8 @@ public final class ProtoIlInstructions {
           case 68: return VOLATILE;
           case 69: return LD_MEMBER_TOKEN;
           case 70: return LD_TYPE_TOKEN;
+          case 71: return INVALID_BRANCH;
+          case 72: return CALL_INDIRECT;
           default: return null;
         }
       }
@@ -15853,7 +15871,7 @@ public final class ProtoIlInstructions {
       ".IlVariableMsg\"/\n\023IlBlockContainerMsg\022\030\n" +
       "\006blocks\030\001 \003(\0132\010.IlBlock\"Q\n\007IlBlock\0222\n\027li" +
       "st_of_il_instructions\030\001 \003(\0132\021.IlInstruct" +
-      "ionMsg\022\022\n\nblock_name\030\002 \001(\t\"\377\031\n\020IlInstruc" +
+      "ionMsg\022\022\n\nblock_name\030\002 \001(\t\"\246\032\n\020IlInstruc" +
       "tionMsg\022+\n\007op_code\030\001 \001(\0162\032.IlInstruction" +
       "Msg.IlOpCode\022!\n\006method\030\004 \001(\0132\021.MethodDef" +
       "inition\022$\n\targuments\030\005 \003(\0132\021.IlInstructi" +
@@ -15891,7 +15909,7 @@ public final class ProtoIlInstructions {
       "ey_instr\030) \001(\0132\021.IlInstructionMsg\022\'\n\014def" +
       "ault_inst\030* \001(\0132\021.IlInstructionMsg\022,\n\017sw" +
       "itch_sections\030+ \003(\0132\023.IlSwitchSectionMsg" +
-      "\"\244\007\n\010IlOpCode\022\013\n\007NONE_OP\020\000\022\007\n\003NOP\020\001\022\010\n\004C" +
+      "\"\313\007\n\010IlOpCode\022\013\n\007NONE_OP\020\000\022\007\n\003NOP\020\001\022\010\n\004C" +
       "ALL\020\004\022\t\n\005LEAVE\020\005\022\t\n\005LDSTR\020\006\022\t\n\005STOBJ\020\007\022\n" +
       "\n\006LDFLDA\020\010\022\n\n\006LDC_I4\020\t\022\t\n\005LDLOC\020\n\022\t\n\005LDO" +
       "BJ\020\013\022\t\n\005STLOC\020\014\022\n\n\006NEWOBJ\020\r\022\014\n\010CALLVIRT\020" +
@@ -15914,49 +15932,50 @@ public final class ProtoIlInstructions {
       "=\022\017\n\013REF_ANY_VAL\020>\022\013\n\007SIZE_OF\020?\022\013\n\007ST_SF" +
       "LD\020@\022\n\n\006SWITCH\020A\022\010\n\004TAIL\020B\022\r\n\tUNALIGNED\020" +
       "C\022\014\n\010VOLATILE\020D\022\023\n\017LD_MEMBER_TOKEN\020E\022\021\n\r" +
-      "LD_TYPE_TOKEN\020F\"\231\001\n\027IlBinaryNumericOpera" +
-      "tor\022\017\n\013NONE_BINARY\020\000\022\007\n\003Add\020\001\022\007\n\003Sub\020\002\022\007" +
-      "\n\003Mul\020\003\022\007\n\003Div\020\004\022\007\n\003Rem\020\005\022\n\n\006BitAnd\020\006\022\t\n" +
-      "\005BitOr\020\007\022\n\n\006BitXor\020\010\022\r\n\tShiftLeft\020\t\022\016\n\nS" +
-      "hiftRight\020\n\"1\n\006IlSign\022\r\n\tNONE_SIGN\020\000\022\n\n\006" +
-      "Signed\020\001\022\014\n\010Unsigned\020\002\"\213\001\n\020IlComparisonK" +
-      "ind\022\r\n\tNONE_KIND\020\000\022\014\n\010Equality\020\001\022\016\n\nIneq" +
-      "uality\020\002\022\014\n\010LessThan\020\003\022\023\n\017LessThanOrEqua" +
-      "l\020\004\022\017\n\013GreaterThan\020\005\022\026\n\022GreaterThanOrEqu" +
-      "al\020\006\"\342\001\n\020IlConversionKind\022\023\n\017NONE_CONVER" +
-      "SION\020\000\022\013\n\007Invalid\020\001\022\007\n\003Nop\020\002\022\016\n\nIntToFlo" +
-      "at\020\003\022\016\n\nFloatToInt\020\004\022\030\n\024FloatPrecisionCh" +
-      "ange\020\005\022\016\n\nSignExtend\020\006\022\016\n\nZeroExtend\020\007\022\014" +
-      "\n\010Truncate\020\010\022\022\n\016StopGCTracking\020\t\022\023\n\017Star" +
-      "tGCTracking\020\n\022\022\n\016ObjectInterior\020\013\"\216\001\n\013Il" +
-      "StackType\022\023\n\017NONE_STACK_TYPE\020\000\022\021\n\rUnknow" +
-      "n_STACK\020\001\022\014\n\010I4_STACK\020\002\022\013\n\007I_STACK\020\003\022\014\n\010" +
-      "I8_STACK\020\004\022\006\n\002F4\020\005\022\006\n\002F8\020\006\022\005\n\001O\020\007\022\r\n\tRef" +
-      "_STACK\020\010\022\010\n\004Void\020\t\"\257\001\n\017IlPrimitiveType\022\027" +
-      "\n\023NONE_PRIMITIVE_TYPE\020\000\022\010\n\004None\020\001\022\006\n\002I1\020" +
-      "\002\022\006\n\002I2\020\003\022\006\n\002I4\020\004\022\006\n\002I8\020\005\022\006\n\002R4\020\006\022\006\n\002R8\020" +
-      "\007\022\006\n\002U1\020\010\022\006\n\002U2\020\t\022\006\n\002U4\020\n\022\006\n\002U8\020\013\022\005\n\001I\020\014" +
-      "\022\005\n\001U\020\r\022\007\n\003Ref\020\016\022\005\n\001R\020\017\022\013\n\007Unknown\020\020\"\314\003\n" +
-      "\rIlVariableMsg\022\035\n\004type\030\001 \001(\0132\017.TypeDefin" +
-      "ition\022\014\n\004name\030\002 \001(\t\022\031\n\021has_initial_value" +
-      "\030\003 \001(\010\0224\n\rvariable_kind\030\004 \001(\0162\035.IlVariab" +
-      "leMsg.IlVariableKind\"\274\002\n\016IlVariableKind\022" +
-      "\010\n\004NONE\020\000\022\t\n\005LOCAL\020\001\022\020\n\014PINNED_LOCAL\020\002\022\027" +
-      "\n\023PINNED_REGION_LOCAL\020\003\022\017\n\013USING_LOCAL\020\004" +
-      "\022\021\n\rFOREACH_LOCAL\020\005\022\026\n\022INITIALIZER_TARGE" +
-      "T\020\006\022\r\n\tPARAMETER\020\007\022\030\n\024EXCEPTION_STACK_SL" +
-      "OT\020\010\022\023\n\017EXCEPTION_LOCAL\020\t\022\r\n\tSTACKSLOT\020\n" +
-      "\022\022\n\016NAMED_ARGUMENT\020\013\022\027\n\023DISPLAY_CLASS_LO" +
-      "CAL\020\014\022\021\n\rPATTERN_LOCAL\020\r\022!\n\035DECONSTRUCTI" +
-      "ON_INIT_TEMPORARY\020\016\"\226\001\n\024IlTryCatchHandle" +
-      "rMsg\022\"\n\004body\030\001 \001(\0132\024.IlBlockContainerMsg" +
-      "\022 \n\010variable\030\002 \001(\0132\016.IlVariableMsg\022$\n\006fi" +
-      "lter\030\003 \001(\0132\024.IlBlockContainerMsg\022\022\n\nhas_" +
-      "filter\030\004 \001(\010\"L\n\022IlSwitchSectionMsg\022\r\n\005la" +
-      "bel\030\001 \001(\003\022\'\n\014target_instr\030\002 \001(\0132\021.IlInst" +
-      "ructionMsgBQ\n\021soot.dotnet.protoB\023ProtoIl" +
-      "Instructions\252\002&Soot.Dotnet.Decompiler.Mo" +
-      "dels.Protobufb\006proto3"
+      "LD_TYPE_TOKEN\020F\022\022\n\016INVALID_BRANCH\020G\022\021\n\rC" +
+      "ALL_INDIRECT\020H\"\231\001\n\027IlBinaryNumericOperat" +
+      "or\022\017\n\013NONE_BINARY\020\000\022\007\n\003Add\020\001\022\007\n\003Sub\020\002\022\007\n" +
+      "\003Mul\020\003\022\007\n\003Div\020\004\022\007\n\003Rem\020\005\022\n\n\006BitAnd\020\006\022\t\n\005" +
+      "BitOr\020\007\022\n\n\006BitXor\020\010\022\r\n\tShiftLeft\020\t\022\016\n\nSh" +
+      "iftRight\020\n\"1\n\006IlSign\022\r\n\tNONE_SIGN\020\000\022\n\n\006S" +
+      "igned\020\001\022\014\n\010Unsigned\020\002\"\213\001\n\020IlComparisonKi" +
+      "nd\022\r\n\tNONE_KIND\020\000\022\014\n\010Equality\020\001\022\016\n\nInequ" +
+      "ality\020\002\022\014\n\010LessThan\020\003\022\023\n\017LessThanOrEqual" +
+      "\020\004\022\017\n\013GreaterThan\020\005\022\026\n\022GreaterThanOrEqua" +
+      "l\020\006\"\342\001\n\020IlConversionKind\022\023\n\017NONE_CONVERS" +
+      "ION\020\000\022\013\n\007Invalid\020\001\022\007\n\003Nop\020\002\022\016\n\nIntToFloa" +
+      "t\020\003\022\016\n\nFloatToInt\020\004\022\030\n\024FloatPrecisionCha" +
+      "nge\020\005\022\016\n\nSignExtend\020\006\022\016\n\nZeroExtend\020\007\022\014\n" +
+      "\010Truncate\020\010\022\022\n\016StopGCTracking\020\t\022\023\n\017Start" +
+      "GCTracking\020\n\022\022\n\016ObjectInterior\020\013\"\216\001\n\013IlS" +
+      "tackType\022\023\n\017NONE_STACK_TYPE\020\000\022\021\n\rUnknown" +
+      "_STACK\020\001\022\014\n\010I4_STACK\020\002\022\013\n\007I_STACK\020\003\022\014\n\010I" +
+      "8_STACK\020\004\022\006\n\002F4\020\005\022\006\n\002F8\020\006\022\005\n\001O\020\007\022\r\n\tRef_" +
+      "STACK\020\010\022\010\n\004Void\020\t\"\257\001\n\017IlPrimitiveType\022\027\n" +
+      "\023NONE_PRIMITIVE_TYPE\020\000\022\010\n\004None\020\001\022\006\n\002I1\020\002" +
+      "\022\006\n\002I2\020\003\022\006\n\002I4\020\004\022\006\n\002I8\020\005\022\006\n\002R4\020\006\022\006\n\002R8\020\007" +
+      "\022\006\n\002U1\020\010\022\006\n\002U2\020\t\022\006\n\002U4\020\n\022\006\n\002U8\020\013\022\005\n\001I\020\014\022" +
+      "\005\n\001U\020\r\022\007\n\003Ref\020\016\022\005\n\001R\020\017\022\013\n\007Unknown\020\020\"\314\003\n\r" +
+      "IlVariableMsg\022\035\n\004type\030\001 \001(\0132\017.TypeDefini" +
+      "tion\022\014\n\004name\030\002 \001(\t\022\031\n\021has_initial_value\030" +
+      "\003 \001(\010\0224\n\rvariable_kind\030\004 \001(\0162\035.IlVariabl" +
+      "eMsg.IlVariableKind\"\274\002\n\016IlVariableKind\022\010" +
+      "\n\004NONE\020\000\022\t\n\005LOCAL\020\001\022\020\n\014PINNED_LOCAL\020\002\022\027\n" +
+      "\023PINNED_REGION_LOCAL\020\003\022\017\n\013USING_LOCAL\020\004\022" +
+      "\021\n\rFOREACH_LOCAL\020\005\022\026\n\022INITIALIZER_TARGET" +
+      "\020\006\022\r\n\tPARAMETER\020\007\022\030\n\024EXCEPTION_STACK_SLO" +
+      "T\020\010\022\023\n\017EXCEPTION_LOCAL\020\t\022\r\n\tSTACKSLOT\020\n\022" +
+      "\022\n\016NAMED_ARGUMENT\020\013\022\027\n\023DISPLAY_CLASS_LOC" +
+      "AL\020\014\022\021\n\rPATTERN_LOCAL\020\r\022!\n\035DECONSTRUCTIO" +
+      "N_INIT_TEMPORARY\020\016\"\226\001\n\024IlTryCatchHandler" +
+      "Msg\022\"\n\004body\030\001 \001(\0132\024.IlBlockContainerMsg\022" +
+      " \n\010variable\030\002 \001(\0132\016.IlVariableMsg\022$\n\006fil" +
+      "ter\030\003 \001(\0132\024.IlBlockContainerMsg\022\022\n\nhas_f" +
+      "ilter\030\004 \001(\010\"L\n\022IlSwitchSectionMsg\022\r\n\005lab" +
+      "el\030\001 \001(\003\022\'\n\014target_instr\030\002 \001(\0132\021.IlInstr" +
+      "uctionMsgBQ\n\021soot.dotnet.protoB\023ProtoIlI" +
+      "nstructions\252\002&Soot.Dotnet.Decompiler.Mod" +
+      "els.Protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

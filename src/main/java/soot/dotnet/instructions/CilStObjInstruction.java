@@ -46,7 +46,11 @@ public class CilStObjInstruction extends AbstractCilnstruction {
 
         // if new Obj also add call of constructor - relevant for structs (System.ValueType)
         if (cilExpr instanceof AbstractNewObjInstanceInstruction) {
-            ((AbstractNewObjInstanceInstruction) cilExpr).resolveCallConstructorBody(jb, (Local)target);
+            if (!(target instanceof Local))
+                throw new RuntimeException("STOBJ: The given target is not a local! " +
+                        "The value is: " + target.toString() + " of type " + target.getType() + "! " +
+                        "The resolving method body is: " + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature());
+            ((AbstractNewObjInstanceInstruction) cilExpr).resolveCallConstructorBody(jb, (Local) target);
         }
     }
 
