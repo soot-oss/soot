@@ -17,6 +17,10 @@ import soot.jimple.JimpleBody;
 import soot.options.Options;
 import soot.tagkit.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +67,25 @@ public class DotnetMethod extends AbstractDotnetMember {
         this(protoMethod, declaringClass, DotnetMethodType.METHOD);
     }
 
+    public DotnetMethod(ProtoAssemblyAllTypes.MethodDefinition protoMethod) {
+        if (protoMethod.getIsConstructor()) {
+            // rename constructor from .ctor to <init>
+            ProtoAssemblyAllTypes.MethodDefinition.Builder builder = ProtoAssemblyAllTypes.MethodDefinition.newBuilder(protoMethod);
+            builder.setName(convertCtorName(protoMethod.getName()));
+            builder.setFullName(convertCtorName(protoMethod.getFullName()));
+            this.protoMethod = builder.build();
+        }
+        else
+            this.protoMethod = protoMethod;
+
+        if (protoMethod.hasDeclaringType())
+            this.declaringClass = SootResolver.v().makeClassRef(protoMethod.getDeclaringType().getFullname());
+        else
+            this.declaringClass = null;
+
+        this.dotnetMethodType = DotnetMethodType.METHOD;
+    }
+
     public boolean isConstructor() {
         return protoMethod.getIsConstructor();
     }
@@ -74,6 +97,10 @@ public class DotnetMethod extends AbstractDotnetMember {
     public ProtoAssemblyAllTypes.MethodDefinition getProtoMessage() {
         return protoMethod;
     }
+
+    public String getName() { return protoMethod.getName(); }
+
+    public ProtoAssemblyAllTypes.TypeDefinition getReturnType() { return protoMethod.getReturnType(); }
 
     /**
      * Create a SootMethod of this .NET Method
@@ -92,9 +119,9 @@ public class DotnetMethod extends AbstractDotnetMember {
     public SootMethod toSootMethod(MethodSource methodSource) {
         if (sootMethod != null)
             return sootMethod;
-        String name = protoMethod.getName();
-        List<Type> parameters = DotnetMethodParameter.toSootTypeParamsList(protoMethod.getParameterList());
-        Type return_type = DotnetTypeFactory.toSootType(protoMethod.getReturnType());
+        String name = getUniqueName();
+        List<Type> parameters = DotnetMethodParameter.toSootTypeParamsList(getParameterDefinitions());
+        Type return_type = DotnetTypeFactory.toSootType(getReturnType());
 
         // Only METHOD
         // There are unsafe methods which returns a void* (pointer to a unspecified type)
@@ -104,9 +131,6 @@ public class DotnetMethod extends AbstractDotnetMember {
                     && protoMethod.getReturnType().getFullname().equals(DotnetBasicTypes.SYSTEM_VOID))
                 return_type = declaringClass.getType();
         }
-
-        if (hasGenericRefParameters(protoMethod.getParameterList()))
-            name = convertGenRefMethodName(name, protoMethod.getParameterList());
 
         int modifier = DotnetModifier.toSootModifier(protoMethod);
 
@@ -140,7 +164,7 @@ public class DotnetMethod extends AbstractDotnetMember {
         return (m, phaseName) -> {
             // Get body of method
             AssemblyFile assemblyFile = (AssemblyFile) SourceLocator.v().classContainerFileClassIndex().get(declaringClass.getName());
-            ProtoIlInstructions.IlFunctionMsg ilFunctionMsg = assemblyFile.getMethodBody(declaringClass.getName(), m.getName(), m.getParameterTypes());
+            ProtoIlInstructions.IlFunctionMsg ilFunctionMsg = assemblyFile.getMethodBody(declaringClass.getName(), m.getName(), protoMethod.getPeToken());
 
             Body b = this.jimplifyMethodBody(ilFunctionMsg);
             m.setActiveBody(b);
@@ -164,13 +188,13 @@ public class DotnetMethod extends AbstractDotnetMember {
             // add the body of this code item
             DotnetBody methodBody = new DotnetBody(this, ilFunctionMsg);
             methodBody.jimplify(b);
-
         } catch (Exception e) {
             logger.warn("Error while generating jimple body of " + dotnetMethodType.name() + " " + sootMethod.getName() +
                     " declared in class " + declaringClass.getName() + "!");
             logger.warn(e.getMessage());
             if (Options.v().ignore_methodsource_error()) {
                 logger.warn("Ignore errors in generation due to the set parameter. Generate empty Jimple Body.");
+                b = Jimple.v().newBody(sootMethod);
                 DotnetBody.resolveEmptyJimpleBody(b, sootMethod);
             }
             else
@@ -249,68 +273,44 @@ public class DotnetMethod extends AbstractDotnetMember {
 
     /**
      * Check if this method contains call-by-ref parameters (e.g. MyMethod(param1&))
+     * @return bool
+     */
+    public boolean hasCallByRefParameters() {
+        return protoMethod.getParameterList().stream().anyMatch(x -> x.getIsIn() || x.getIsOut() || x.getIsRef());
+    }
+
+    /**
+     * Check whether this method has generics or call-by-ref parameters
+     * @return bool
+     */
+    public boolean hasGenericParameters() {
+        return protoMethod.getParameterList().stream().anyMatch(x -> x.getType().getFullname().contains("`"));
+    }
+
+    /**
+     * Check whether this method contains CIL primitives, such as uint sbyte
      * @return
      */
-    public boolean containsCallByRefParameter() {
-        List<ProtoAssemblyAllTypes.ParameterDefinition> parameters = getProtoMessage().getParameterList();
-        for (ProtoAssemblyAllTypes.ParameterDefinition parameter : parameters) {
-            if (parameter.getIsRef() || parameter.getIsOut() || parameter.getIsIn())
-                return true;
-        }
-        return false;
+    public boolean hasCilPrimitiveParameters() {
+        return protoMethod.getParameterList().stream().anyMatch(x ->
+                DotnetTypeFactory.listOfCilPrimitives().contains(x.getType().getFullname()));
+    }
+
+    /**
+     * Process Name Mangling to achieve a unique name in the declared class
+     * Convert method name to a unique method name if it has generics or call-by-ref as parameters
+     * @return unique name
+     */
+    public String getUniqueName() {
+        if (!(hasGenericParameters() || hasCallByRefParameters() || hasCilPrimitiveParameters()) || isConstructor())
+            return getName();
+
+        return getName() + "[[" +
+                protoMethod.getPeToken() +
+                "]]";
     }
 
     // --- static methods ---
-
-    /**
-     * Check whether the given method has generics or call-by-ref parameters
-     * @param parameters
-     * @return
-     */
-    public static boolean hasGenericRefParameters(List<ProtoAssemblyAllTypes.ParameterDefinition> parameters) {
-        return parameters.stream().anyMatch(x -> x.getType().getFullname().contains("`")
-                || x.getIsIn() || x.getIsOut() || x.getIsRef());
-    }
-
-    /**
-     * Convert method name to a unique method name if it has generics or call-by-ref as parameters
-     * @param methodName
-     * @param parameters
-     * @return
-     */
-    public static String convertGenRefMethodName(String methodName, List<ProtoAssemblyAllTypes.ParameterDefinition> parameters) {
-        StringBuilder name = new StringBuilder(methodName);
-        name.append("[[");
-        boolean firstElemSet1 = false;
-        for (ProtoAssemblyAllTypes.ParameterDefinition parameter : parameters) {
-            if (firstElemSet1)
-                name.append(",");
-            firstElemSet1 = true;
-
-            if (parameter.getIsRef() || parameter.getIsOut() || parameter.getIsIn())
-                name.append("&");
-
-            // if is generic
-            // e.g. System.Collections.Generic.List`1 or System.Collections.Generic.List`2 (two elements)
-            // does not contain something like ``0 or ``1 as T Type instead System.Object
-            if (parameter.getType().getFullname().contains("`") && !parameter.getType().getFullname().contains("``")) {
-                name.append("(");
-                boolean firstElemSet2 = false;
-                for (ProtoAssemblyAllTypes.TypeDefinition genericType : parameter.getType().getGenericTypeArgumentsList()) {
-                    if (firstElemSet2)
-                        name.append(",");
-                    name.append(genericType.getFullname());
-                    firstElemSet2 = true;
-                }
-                name.append(")");
-            }
-            else {
-                name.append("_");
-            }
-        }
-        name.append("]]");
-        return name.toString();
-    }
 
     /**
      * Convert Dotnet/CLI constructor names to java byte code constructors, if available

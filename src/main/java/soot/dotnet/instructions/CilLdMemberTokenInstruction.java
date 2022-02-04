@@ -39,28 +39,26 @@ public class CilLdMemberTokenInstruction extends AbstractCilnstruction {
             return MethodHandle.v(sootFieldRef, kind);
         }
         else if (instruction.hasMethod()) {
-            final ProtoAssemblyAllTypes.MethodDefinition method = instruction.getMethod();
-            SootClass declaringClass = SootResolver.v().makeClassRef(method.getDeclaringType().getFullname());
+            final DotnetMethod method = new DotnetMethod(instruction.getMethod());
+            SootClass declaringClass = method.getDeclaringClass();
 
-            String methodName = method.getName();
-            if (methodName.trim().isEmpty())
-                throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + instruction.getMethod().getName() + " of declared type " +
-                        instruction.getMethod().getDeclaringType().getFullname() +
+            if (method.getName().trim().isEmpty())
+                throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + method.getName() + " of declared type " +
+                        method.getDeclaringClass().getName() +
                         " has no method name!");
-            if (DotnetMethod.hasGenericRefParameters(method.getParameterList()))
-                methodName = DotnetMethod.convertGenRefMethodName(methodName, method.getParameterList());
+            String methodName = method.getUniqueName();
 
             List<Type> paramTypes = new ArrayList<>();
-            for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : method.getParameterList())
+            for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : method.getParameterDefinitions())
                 paramTypes.add(DotnetTypeFactory.toSootType(parameterDefinition.getType()));
 
             SootMethodRef methodRef = Scene.v().makeMethodRef(declaringClass, DotnetMethod.convertCtorName(methodName), paramTypes,
-                    DotnetTypeFactory.toSootType(method.getReturnType()), method.getIsStatic());
+                    DotnetTypeFactory.toSootType(method.getReturnType()), method.isStatic());
 
             int kind;
-            if (method.getIsConstructor())
+            if (method.isConstructor())
                 kind = MethodHandle.Kind.REF_INVOKE_CONSTRUCTOR.getValue();
-            else if (method.getIsStatic())
+            else if (method.isStatic())
                 kind = MethodHandle.Kind.REF_INVOKE_STATIC.getValue();
             else if (declaringClass.isInterface())
                 kind = MethodHandle.Kind.REF_INVOKE_INTERFACE.getValue();

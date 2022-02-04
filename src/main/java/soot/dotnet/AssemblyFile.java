@@ -4,13 +4,12 @@ import com.google.common.base.Strings;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.Type;
 import soot.dotnet.members.DotnetEvent;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoDotnetNativeHost;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.types.ProtoTypeConverter;
 import soot.options.Options;
+import soot.toolkits.scalar.Pair;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -91,11 +90,12 @@ public class AssemblyFile extends File {
      * @param method given method name
      * @return list/tree of il instructions otherwise null
      */
-    public ProtoIlInstructions.IlFunctionMsg getMethodBody(String className, String method, List<Type> methodArgTypes) {
+    public ProtoIlInstructions.IlFunctionMsg getMethodBody(String className, String method, int peToken) {
         ProtoDotnetNativeHost.AnalyzerParamsMsg.Builder analyzerParamsBuilder = createAnalyzerParamsBuilder(className, ProtoDotnetNativeHost.AnalyzerMethodCall.GET_METHOD_BODY);
-        analyzerParamsBuilder.setMethodName(method);
-        for (Type type : methodArgTypes)
-            analyzerParamsBuilder.addMethodParams(ProtoTypeConverter.toProtoSootTypeMsg(type));
+        Pair<String, String> methodNameSuffixPair = helperExtractMethodNameSuffix(method);
+        analyzerParamsBuilder.setMethodName(methodNameSuffixPair.getO1());
+        analyzerParamsBuilder.setMethodNameSuffix(methodNameSuffixPair.getO2());
+        analyzerParamsBuilder.setMethodPeToken(peToken);
         ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
 
         try {
@@ -107,6 +107,18 @@ public class AssemblyFile extends File {
                 logger.warn("Exception while getting method body of method " + className + "." + method + ": " + e.getMessage());
             return null;
         }
+    }
+
+    private Pair<String, String> helperExtractMethodNameSuffix(String sootMethodName) {
+        // if name mangling, extract suffix (due to cil and java bytecode differences)
+        if (!(sootMethodName.contains("[[") && sootMethodName.contains("]]")))
+            return new Pair<>(sootMethodName, "");
+
+        int startSuffix = sootMethodName.indexOf("[[");
+
+        String suffix = sootMethodName.substring(startSuffix);
+        String cilMethodName = sootMethodName.substring(0, startSuffix);
+        return new Pair<>(cilMethodName, suffix);
     }
 
     /**
@@ -149,8 +161,8 @@ public class AssemblyFile extends File {
         ProtoDotnetNativeHost.EventAccessorType accessorType;
         switch (eventDirective) {
             case ADD: accessorType = ProtoDotnetNativeHost.EventAccessorType.ADD_ACCESSOR; break;
-            case REMOVE: accessorType = ProtoDotnetNativeHost.EventAccessorType.INVOKE_ACCESSOR; break;
-            case INVOKE: accessorType = ProtoDotnetNativeHost.EventAccessorType.REMOVE_ACCESSOR; break;
+            case REMOVE: accessorType = ProtoDotnetNativeHost.EventAccessorType.REMOVE_ACCESSOR; break;
+            case INVOKE: accessorType = ProtoDotnetNativeHost.EventAccessorType.INVOKE_ACCESSOR; break;
             default: throw new RuntimeException("Wrong Event Accessor Type!");
         }
         analyzerParamsBuilder.setEventAccessorType(accessorType);

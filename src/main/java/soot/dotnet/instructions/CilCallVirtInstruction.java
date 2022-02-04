@@ -22,6 +22,9 @@ import java.util.List;
  */
 public class CilCallVirtInstruction extends AbstractCilnstruction {
 
+    private SootClass clazz;
+    private DotnetMethod method;
+
     public CilCallVirtInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
         super(instruction, dotnetBody, cilBlock);
         localsToCastForCall = new ArrayList<>();
@@ -55,43 +58,35 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
      */
     @Override
     public Value jimplifyExpr(Body jb) {
+        clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
+        method = new DotnetMethod(instruction.getMethod(), clazz);
 
-        SootClass clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
         // STATIC
-        if (instruction.getMethod().getIsStatic()) {
-            String methodName = instruction.getMethod().getName();
-            if (methodName.trim().isEmpty())
-                throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + instruction.getMethod().getName() + " of declared type " +
-                        instruction.getMethod().getDeclaringType().getFullname() +
-                        " has no method name!");
+        if (method.isStatic()) {
+            checkMethodAvailable();
             List<Local> argsVariables = new ArrayList<>();
             List<Type> argsTypes = new ArrayList<>();
 
             // If System.Array.Empty
-            Value rewriteField = AbstractDotnetMember.checkRewriteCilSpecificMember(clazz, methodName);
+            Value rewriteField = AbstractDotnetMember.checkRewriteCilSpecificMember(clazz, method.getName());
             if (rewriteField != null)
                 return rewriteField;
 
             // arguments which are passed to this function
             for (int z = 0; z < instruction.getArgumentsCount(); z++) {
                 Value variableValue = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(z), dotnetBody, cilBlock).jimplifyExpr(jb);
-                if (!(variableValue instanceof Local))
-                    throw new RuntimeException("CALL: The given argument " + z + " of invoked method " + methodName + " declared in " + clazz.getName() + " is not a local! " +
-                            "The value is: " + variableValue.toString() + " of type " + variableValue.getType() + "! " +
-                            "The resolving method body is: " + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature());
+                checkVariabelIsLocal(variableValue, z, false);
                 Local variable = (Local) variableValue;
                 argsVariables.add(variable);
             }
             // method-parameters (signature)
-            for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : instruction.getMethod().getParameterList())
+            for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : method.getParameterDefinitions())
                 argsTypes.add(DotnetTypeFactory.toSootType(parameterDefinition.getType()));
 
-            // rename invoked method if has generics as params
-            if (DotnetMethod.hasGenericRefParameters(instruction.getMethod().getParameterList()))
-                methodName = DotnetMethod.convertGenRefMethodName(methodName, instruction.getMethod().getParameterList());
+            String methodName = method.getUniqueName();
 
             SootMethodRef methodRef = Scene.v().makeMethodRef(clazz, DotnetMethod.convertCtorName(methodName), argsTypes,
-                    DotnetTypeFactory.toSootType(instruction.getMethod().getReturnType()), true);
+                    DotnetTypeFactory.toSootType(method.getReturnType()), true);
             return Jimple.v().newStaticInvokeExpr(methodRef, argsVariables);
         }
         // INTERFACE
@@ -131,34 +126,22 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
     private final List<Pair<Local, Local>> localsToCastForCall;
 
     private MethodParams getMethodCallParams(Body jb) {
-        SootClass clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
-        String methodName = instruction.getMethod().getName();
-        if (methodName.trim().isEmpty())
-            throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + instruction.getMethod().getName() + " of declared type " +
-        instruction.getMethod().getDeclaringType().getFullname() +
-                " has no method name!");
+        checkMethodAvailable();
         List<Local> argsVariables = new ArrayList<>();
         List<Type> methodParamTypes = new ArrayList<>();
         if (instruction.getArgumentsCount() == 0)
-            throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + instruction.getMethod().getName() + " of declared type " +
-                    instruction.getMethod().getDeclaringType().getFullname() +
+            throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + method.getName() + " of declared type " +
+                    method.getDeclaringClass().getName() +
                     " has no arguments! This means there is no base variable for the virtual invoke!");
 
         Value baseValue = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(0), dotnetBody, cilBlock).jimplifyExpr(jb);
-        if (!(baseValue instanceof Local))
-            throw new RuntimeException("CALL: The given argument 0 (base variable) of invoked method " + methodName + " declared in " + clazz.getName() + " is not a local! " +
-                    "The value is: " + baseValue.toString() + " of type " + baseValue.getType() + "! " +
-                    "The resolving method body is: " + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature());
+        checkVariabelIsLocal(baseValue, 0, true);
         Local base = (Local) baseValue;
 
         if (instruction.getArgumentsCount() > 1) {
             for (int z = 1; z < instruction.getArgumentsCount(); z++) {
-
                 Value variableValue = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(z), dotnetBody, cilBlock).jimplifyExpr(jb);
-                if (!(variableValue instanceof Local))
-                    throw new RuntimeException("CALL: The given argument " + z + " of invoked method " + methodName + " declared in " + clazz.getName() + " is not a local! " +
-                            "The value is: " + baseValue.toString() + " of type " + baseValue.getType() + "! " +
-                            "The resolving method body is: " + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature());
+                checkVariabelIsLocal(variableValue, z, false);
                 Local variable = (Local) variableValue;
                 argsVariables.add(variable);
             }
@@ -181,19 +164,16 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
             }
         }
 
-        // rename invoked method if has generics as params
-        if (DotnetMethod.hasGenericRefParameters(instruction.getMethod().getParameterList()))
-            methodName = DotnetMethod.convertGenRefMethodName(methodName, instruction.getMethod().getParameterList());
+        String methodName = method.getUniqueName();
 
         // return type of the method
         // due to unsafe methods with "void*" rewrite this
-        final ProtoAssemblyAllTypes.MethodDefinition protoMethod = instruction.getMethod();
         Type return_type;
-        if (protoMethod.getReturnType().getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.POINTER)
-                && protoMethod.getReturnType().getFullname().equals(DotnetBasicTypes.SYSTEM_VOID))
-            return_type = DotnetTypeFactory.toSootType(protoMethod.getDeclaringType());
+        if (method.getReturnType().getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.POINTER)
+                && method.getReturnType().getFullname().equals(DotnetBasicTypes.SYSTEM_VOID))
+            return_type = DotnetTypeFactory.toSootType(method.getProtoMessage().getDeclaringType());
         else
-            return_type = DotnetTypeFactory.toSootType(instruction.getMethod().getReturnType());
+            return_type = DotnetTypeFactory.toSootType(method.getProtoMessage().getReturnType());
 
         SootMethodRef methodRef = Scene.v().makeMethodRef(
                 clazz,
@@ -202,6 +182,27 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
                 return_type, false);
 
         return new MethodParams(base, methodRef, argsVariables);
+    }
+
+    private void checkMethodAvailable() {
+        if (method.getName().trim().isEmpty())
+            throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + method.getName() + " of declared type " +
+                    method.getDeclaringClass().getName() +
+                    " has no method name!");
+    }
+
+    private void checkVariabelIsLocal(Value var, int argPos, boolean isBase) {
+        String err = "CALL: The given argument ";
+        err += argPos;
+        err += " ";
+        if (isBase)
+            err += "(base variable)";
+        err += " of invoked method " + method.getName() + " declared in " + clazz.getName() + " is not a local! " +
+                "The value is: " + var.toString() + " of type " + var.getType() + "! " +
+                "The resolving method body is: " + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature();
+
+        if (!(var instanceof Local))
+            throw new RuntimeException(err);
     }
 
     private static class MethodParams {

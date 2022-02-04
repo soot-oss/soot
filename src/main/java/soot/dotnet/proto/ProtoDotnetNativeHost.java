@@ -336,28 +336,22 @@ public final class ProtoDotnetNativeHost {
         getMethodNameBytes();
 
     /**
-     * <code>repeated .SootTypeMsg method_params = 5;</code>
+     * <code>string method_name_suffix = 11;</code>
+     * @return The methodNameSuffix.
      */
-    java.util.List<soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg> 
-        getMethodParamsList();
+    java.lang.String getMethodNameSuffix();
     /**
-     * <code>repeated .SootTypeMsg method_params = 5;</code>
+     * <code>string method_name_suffix = 11;</code>
+     * @return The bytes for methodNameSuffix.
      */
-    soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg getMethodParams(int index);
+    com.google.protobuf.ByteString
+        getMethodNameSuffixBytes();
+
     /**
-     * <code>repeated .SootTypeMsg method_params = 5;</code>
+     * <code>int32 method_pe_token = 12;</code>
+     * @return The methodPeToken.
      */
-    int getMethodParamsCount();
-    /**
-     * <code>repeated .SootTypeMsg method_params = 5;</code>
-     */
-    java.util.List<? extends soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsgOrBuilder> 
-        getMethodParamsOrBuilderList();
-    /**
-     * <code>repeated .SootTypeMsg method_params = 5;</code>
-     */
-    soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsgOrBuilder getMethodParamsOrBuilder(
-        int index);
+    int getMethodPeToken();
 
     /**
      * <code>string property_name = 6;</code>
@@ -423,7 +417,7 @@ public final class ProtoDotnetNativeHost {
       assemblyFileAbsolutePath_ = "";
       typeReflectionName_ = "";
       methodName_ = "";
-      methodParams_ = java.util.Collections.emptyList();
+      methodNameSuffix_ = "";
       propertyName_ = "";
       eventName_ = "";
       eventAccessorType_ = 0;
@@ -449,7 +443,6 @@ public final class ProtoDotnetNativeHost {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
-      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -484,15 +477,6 @@ public final class ProtoDotnetNativeHost {
               methodName_ = s;
               break;
             }
-            case 42: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                methodParams_ = new java.util.ArrayList<soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg>();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              methodParams_.add(
-                  input.readMessage(soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.parser(), extensionRegistry));
-              break;
-            }
             case 50: {
               java.lang.String s = input.readStringRequireUtf8();
 
@@ -521,6 +505,17 @@ public final class ProtoDotnetNativeHost {
               debugMode_ = input.readBool();
               break;
             }
+            case 90: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              methodNameSuffix_ = s;
+              break;
+            }
+            case 96: {
+
+              methodPeToken_ = input.readInt32();
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -536,9 +531,6 @@ public final class ProtoDotnetNativeHost {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          methodParams_ = java.util.Collections.unmodifiableList(methodParams_);
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -689,44 +681,53 @@ public final class ProtoDotnetNativeHost {
       }
     }
 
-    public static final int METHOD_PARAMS_FIELD_NUMBER = 5;
-    private java.util.List<soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg> methodParams_;
+    public static final int METHOD_NAME_SUFFIX_FIELD_NUMBER = 11;
+    private volatile java.lang.Object methodNameSuffix_;
     /**
-     * <code>repeated .SootTypeMsg method_params = 5;</code>
+     * <code>string method_name_suffix = 11;</code>
+     * @return The methodNameSuffix.
      */
     @java.lang.Override
-    public java.util.List<soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg> getMethodParamsList() {
-      return methodParams_;
+    public java.lang.String getMethodNameSuffix() {
+      java.lang.Object ref = methodNameSuffix_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        methodNameSuffix_ = s;
+        return s;
+      }
     }
     /**
-     * <code>repeated .SootTypeMsg method_params = 5;</code>
+     * <code>string method_name_suffix = 11;</code>
+     * @return The bytes for methodNameSuffix.
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsgOrBuilder> 
-        getMethodParamsOrBuilderList() {
-      return methodParams_;
+    public com.google.protobuf.ByteString
+        getMethodNameSuffixBytes() {
+      java.lang.Object ref = methodNameSuffix_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        methodNameSuffix_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
+
+    public static final int METHOD_PE_TOKEN_FIELD_NUMBER = 12;
+    private int methodPeToken_;
     /**
-     * <code>repeated .SootTypeMsg method_params = 5;</code>
+     * <code>int32 method_pe_token = 12;</code>
+     * @return The methodPeToken.
      */
     @java.lang.Override
-    public int getMethodParamsCount() {
-      return methodParams_.size();
-    }
-    /**
-     * <code>repeated .SootTypeMsg method_params = 5;</code>
-     */
-    @java.lang.Override
-    public soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg getMethodParams(int index) {
-      return methodParams_.get(index);
-    }
-    /**
-     * <code>repeated .SootTypeMsg method_params = 5;</code>
-     */
-    @java.lang.Override
-    public soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsgOrBuilder getMethodParamsOrBuilder(
-        int index) {
-      return methodParams_.get(index);
+    public int getMethodPeToken() {
+      return methodPeToken_;
     }
 
     public static final int PROPERTY_NAME_FIELD_NUMBER = 6;
@@ -872,9 +873,6 @@ public final class ProtoDotnetNativeHost {
       if (!getMethodNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 4, methodName_);
       }
-      for (int i = 0; i < methodParams_.size(); i++) {
-        output.writeMessage(5, methodParams_.get(i));
-      }
       if (!getPropertyNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 6, propertyName_);
       }
@@ -889,6 +887,12 @@ public final class ProtoDotnetNativeHost {
       }
       if (debugMode_ != false) {
         output.writeBool(10, debugMode_);
+      }
+      if (!getMethodNameSuffixBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 11, methodNameSuffix_);
+      }
+      if (methodPeToken_ != 0) {
+        output.writeInt32(12, methodPeToken_);
       }
       unknownFields.writeTo(output);
     }
@@ -912,10 +916,6 @@ public final class ProtoDotnetNativeHost {
       if (!getMethodNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, methodName_);
       }
-      for (int i = 0; i < methodParams_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, methodParams_.get(i));
-      }
       if (!getPropertyNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, propertyName_);
       }
@@ -933,6 +933,13 @@ public final class ProtoDotnetNativeHost {
       if (debugMode_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(10, debugMode_);
+      }
+      if (!getMethodNameSuffixBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, methodNameSuffix_);
+      }
+      if (methodPeToken_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(12, methodPeToken_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -956,8 +963,10 @@ public final class ProtoDotnetNativeHost {
           .equals(other.getTypeReflectionName())) return false;
       if (!getMethodName()
           .equals(other.getMethodName())) return false;
-      if (!getMethodParamsList()
-          .equals(other.getMethodParamsList())) return false;
+      if (!getMethodNameSuffix()
+          .equals(other.getMethodNameSuffix())) return false;
+      if (getMethodPeToken()
+          != other.getMethodPeToken()) return false;
       if (!getPropertyName()
           .equals(other.getPropertyName())) return false;
       if (getPropertyIsSetter()
@@ -986,10 +995,10 @@ public final class ProtoDotnetNativeHost {
       hash = (53 * hash) + getTypeReflectionName().hashCode();
       hash = (37 * hash) + METHOD_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getMethodName().hashCode();
-      if (getMethodParamsCount() > 0) {
-        hash = (37 * hash) + METHOD_PARAMS_FIELD_NUMBER;
-        hash = (53 * hash) + getMethodParamsList().hashCode();
-      }
+      hash = (37 * hash) + METHOD_NAME_SUFFIX_FIELD_NUMBER;
+      hash = (53 * hash) + getMethodNameSuffix().hashCode();
+      hash = (37 * hash) + METHOD_PE_TOKEN_FIELD_NUMBER;
+      hash = (53 * hash) + getMethodPeToken();
       hash = (37 * hash) + PROPERTY_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getPropertyName().hashCode();
       hash = (37 * hash) + PROPERTY_IS_SETTER_FIELD_NUMBER;
@@ -1130,7 +1139,6 @@ public final class ProtoDotnetNativeHost {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getMethodParamsFieldBuilder();
         }
       }
       @java.lang.Override
@@ -1144,12 +1152,10 @@ public final class ProtoDotnetNativeHost {
 
         methodName_ = "";
 
-        if (methodParamsBuilder_ == null) {
-          methodParams_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        } else {
-          methodParamsBuilder_.clear();
-        }
+        methodNameSuffix_ = "";
+
+        methodPeToken_ = 0;
+
         propertyName_ = "";
 
         propertyIsSetter_ = false;
@@ -1186,20 +1192,12 @@ public final class ProtoDotnetNativeHost {
       @java.lang.Override
       public soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg buildPartial() {
         soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg result = new soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg(this);
-        int from_bitField0_ = bitField0_;
         result.analyzerMethodCall_ = analyzerMethodCall_;
         result.assemblyFileAbsolutePath_ = assemblyFileAbsolutePath_;
         result.typeReflectionName_ = typeReflectionName_;
         result.methodName_ = methodName_;
-        if (methodParamsBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            methodParams_ = java.util.Collections.unmodifiableList(methodParams_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.methodParams_ = methodParams_;
-        } else {
-          result.methodParams_ = methodParamsBuilder_.build();
-        }
+        result.methodNameSuffix_ = methodNameSuffix_;
+        result.methodPeToken_ = methodPeToken_;
         result.propertyName_ = propertyName_;
         result.propertyIsSetter_ = propertyIsSetter_;
         result.eventName_ = eventName_;
@@ -1268,31 +1266,12 @@ public final class ProtoDotnetNativeHost {
           methodName_ = other.methodName_;
           onChanged();
         }
-        if (methodParamsBuilder_ == null) {
-          if (!other.methodParams_.isEmpty()) {
-            if (methodParams_.isEmpty()) {
-              methodParams_ = other.methodParams_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureMethodParamsIsMutable();
-              methodParams_.addAll(other.methodParams_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.methodParams_.isEmpty()) {
-            if (methodParamsBuilder_.isEmpty()) {
-              methodParamsBuilder_.dispose();
-              methodParamsBuilder_ = null;
-              methodParams_ = other.methodParams_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              methodParamsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getMethodParamsFieldBuilder() : null;
-            } else {
-              methodParamsBuilder_.addAllMessages(other.methodParams_);
-            }
-          }
+        if (!other.getMethodNameSuffix().isEmpty()) {
+          methodNameSuffix_ = other.methodNameSuffix_;
+          onChanged();
+        }
+        if (other.getMethodPeToken() != 0) {
+          setMethodPeToken(other.getMethodPeToken());
         }
         if (!other.getPropertyName().isEmpty()) {
           propertyName_ = other.propertyName_;
@@ -1339,7 +1318,6 @@ public final class ProtoDotnetNativeHost {
         }
         return this;
       }
-      private int bitField0_;
 
       private int analyzerMethodCall_ = 0;
       /**
@@ -1623,244 +1601,111 @@ public final class ProtoDotnetNativeHost {
         return this;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg> methodParams_ =
-        java.util.Collections.emptyList();
-      private void ensureMethodParamsIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          methodParams_ = new java.util.ArrayList<soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg>(methodParams_);
-          bitField0_ |= 0x00000001;
-         }
+      private java.lang.Object methodNameSuffix_ = "";
+      /**
+       * <code>string method_name_suffix = 11;</code>
+       * @return The methodNameSuffix.
+       */
+      public java.lang.String getMethodNameSuffix() {
+        java.lang.Object ref = methodNameSuffix_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          methodNameSuffix_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string method_name_suffix = 11;</code>
+       * @return The bytes for methodNameSuffix.
+       */
+      public com.google.protobuf.ByteString
+          getMethodNameSuffixBytes() {
+        java.lang.Object ref = methodNameSuffix_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          methodNameSuffix_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string method_name_suffix = 11;</code>
+       * @param value The methodNameSuffix to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMethodNameSuffix(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        methodNameSuffix_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string method_name_suffix = 11;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMethodNameSuffix() {
+        
+        methodNameSuffix_ = getDefaultInstance().getMethodNameSuffix();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string method_name_suffix = 11;</code>
+       * @param value The bytes for methodNameSuffix to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMethodNameSuffixBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        methodNameSuffix_ = value;
+        onChanged();
+        return this;
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg, soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Builder, soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsgOrBuilder> methodParamsBuilder_;
-
+      private int methodPeToken_ ;
       /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
+       * <code>int32 method_pe_token = 12;</code>
+       * @return The methodPeToken.
        */
-      public java.util.List<soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg> getMethodParamsList() {
-        if (methodParamsBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(methodParams_);
-        } else {
-          return methodParamsBuilder_.getMessageList();
-        }
+      @java.lang.Override
+      public int getMethodPeToken() {
+        return methodPeToken_;
       }
       /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
+       * <code>int32 method_pe_token = 12;</code>
+       * @param value The methodPeToken to set.
+       * @return This builder for chaining.
        */
-      public int getMethodParamsCount() {
-        if (methodParamsBuilder_ == null) {
-          return methodParams_.size();
-        } else {
-          return methodParamsBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg getMethodParams(int index) {
-        if (methodParamsBuilder_ == null) {
-          return methodParams_.get(index);
-        } else {
-          return methodParamsBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public Builder setMethodParams(
-          int index, soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg value) {
-        if (methodParamsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureMethodParamsIsMutable();
-          methodParams_.set(index, value);
-          onChanged();
-        } else {
-          methodParamsBuilder_.setMessage(index, value);
-        }
+      public Builder setMethodPeToken(int value) {
+        
+        methodPeToken_ = value;
+        onChanged();
         return this;
       }
       /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
+       * <code>int32 method_pe_token = 12;</code>
+       * @return This builder for chaining.
        */
-      public Builder setMethodParams(
-          int index, soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Builder builderForValue) {
-        if (methodParamsBuilder_ == null) {
-          ensureMethodParamsIsMutable();
-          methodParams_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          methodParamsBuilder_.setMessage(index, builderForValue.build());
-        }
+      public Builder clearMethodPeToken() {
+        
+        methodPeToken_ = 0;
+        onChanged();
         return this;
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public Builder addMethodParams(soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg value) {
-        if (methodParamsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureMethodParamsIsMutable();
-          methodParams_.add(value);
-          onChanged();
-        } else {
-          methodParamsBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public Builder addMethodParams(
-          int index, soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg value) {
-        if (methodParamsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureMethodParamsIsMutable();
-          methodParams_.add(index, value);
-          onChanged();
-        } else {
-          methodParamsBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public Builder addMethodParams(
-          soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Builder builderForValue) {
-        if (methodParamsBuilder_ == null) {
-          ensureMethodParamsIsMutable();
-          methodParams_.add(builderForValue.build());
-          onChanged();
-        } else {
-          methodParamsBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public Builder addMethodParams(
-          int index, soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Builder builderForValue) {
-        if (methodParamsBuilder_ == null) {
-          ensureMethodParamsIsMutable();
-          methodParams_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          methodParamsBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public Builder addAllMethodParams(
-          java.lang.Iterable<? extends soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg> values) {
-        if (methodParamsBuilder_ == null) {
-          ensureMethodParamsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, methodParams_);
-          onChanged();
-        } else {
-          methodParamsBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public Builder clearMethodParams() {
-        if (methodParamsBuilder_ == null) {
-          methodParams_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          methodParamsBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public Builder removeMethodParams(int index) {
-        if (methodParamsBuilder_ == null) {
-          ensureMethodParamsIsMutable();
-          methodParams_.remove(index);
-          onChanged();
-        } else {
-          methodParamsBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Builder getMethodParamsBuilder(
-          int index) {
-        return getMethodParamsFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsgOrBuilder getMethodParamsOrBuilder(
-          int index) {
-        if (methodParamsBuilder_ == null) {
-          return methodParams_.get(index);  } else {
-          return methodParamsBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public java.util.List<? extends soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsgOrBuilder> 
-           getMethodParamsOrBuilderList() {
-        if (methodParamsBuilder_ != null) {
-          return methodParamsBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(methodParams_);
-        }
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Builder addMethodParamsBuilder() {
-        return getMethodParamsFieldBuilder().addBuilder(
-            soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Builder addMethodParamsBuilder(
-          int index) {
-        return getMethodParamsFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .SootTypeMsg method_params = 5;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Builder> 
-           getMethodParamsBuilderList() {
-        return getMethodParamsFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg, soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Builder, soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsgOrBuilder> 
-          getMethodParamsFieldBuilder() {
-        if (methodParamsBuilder_ == null) {
-          methodParamsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg, soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Builder, soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsgOrBuilder>(
-                  methodParams_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
-          methodParams_ = null;
-        }
-        return methodParamsBuilder_;
       }
 
       private java.lang.Object propertyName_ = "";
@@ -2183,1258 +2028,11 @@ public final class ProtoDotnetNativeHost {
 
   }
 
-  public interface SootTypeMsgOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:SootTypeMsg)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>.SootTypeMsg.Kind kind = 1;</code>
-     * @return The enum numeric value on the wire for kind.
-     */
-    int getKindValue();
-    /**
-     * <code>.SootTypeMsg.Kind kind = 1;</code>
-     * @return The kind.
-     */
-    soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Kind getKind();
-
-    /**
-     * <code>string type_name = 2;</code>
-     * @return The typeName.
-     */
-    java.lang.String getTypeName();
-    /**
-     * <code>string type_name = 2;</code>
-     * @return The bytes for typeName.
-     */
-    com.google.protobuf.ByteString
-        getTypeNameBytes();
-
-    /**
-     * <code>int32 num_dimensions = 3;</code>
-     * @return The numDimensions.
-     */
-    int getNumDimensions();
-
-    /**
-     * <code>bool is_call_by_ref = 4;</code>
-     * @return The isCallByRef.
-     */
-    boolean getIsCallByRef();
-
-    /**
-     * <code>bool is_generic = 5;</code>
-     * @return The isGeneric.
-     */
-    boolean getIsGeneric();
-
-    /**
-     * <code>repeated string generic_parameters = 6;</code>
-     * @return A list containing the genericParameters.
-     */
-    java.util.List<java.lang.String>
-        getGenericParametersList();
-    /**
-     * <code>repeated string generic_parameters = 6;</code>
-     * @return The count of genericParameters.
-     */
-    int getGenericParametersCount();
-    /**
-     * <code>repeated string generic_parameters = 6;</code>
-     * @param index The index of the element to return.
-     * @return The genericParameters at the given index.
-     */
-    java.lang.String getGenericParameters(int index);
-    /**
-     * <code>repeated string generic_parameters = 6;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the genericParameters at the given index.
-     */
-    com.google.protobuf.ByteString
-        getGenericParametersBytes(int index);
-  }
-  /**
-   * Protobuf type {@code SootTypeMsg}
-   */
-  public static final class SootTypeMsg extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:SootTypeMsg)
-      SootTypeMsgOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use SootTypeMsg.newBuilder() to construct.
-    private SootTypeMsg(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private SootTypeMsg() {
-      kind_ = 0;
-      typeName_ = "";
-      genericParameters_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new SootTypeMsg();
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private SootTypeMsg(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 8: {
-              int rawValue = input.readEnum();
-
-              kind_ = rawValue;
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              typeName_ = s;
-              break;
-            }
-            case 24: {
-
-              numDimensions_ = input.readInt32();
-              break;
-            }
-            case 32: {
-
-              isCallByRef_ = input.readBool();
-              break;
-            }
-            case 40: {
-
-              isGeneric_ = input.readBool();
-              break;
-            }
-            case 50: {
-              java.lang.String s = input.readStringRequireUtf8();
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                genericParameters_ = new com.google.protobuf.LazyStringArrayList();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              genericParameters_.add(s);
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          genericParameters_ = genericParameters_.getUnmodifiableView();
-        }
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return soot.dotnet.proto.ProtoDotnetNativeHost.internal_static_SootTypeMsg_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return soot.dotnet.proto.ProtoDotnetNativeHost.internal_static_SootTypeMsg_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.class, soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Builder.class);
-    }
-
-    /**
-     * Protobuf enum {@code SootTypeMsg.Kind}
-     */
-    public enum Kind
-        implements com.google.protobuf.ProtocolMessageEnum {
-      /**
-       * <code>NO_KIND = 0;</code>
-       */
-      NO_KIND(0),
-      /**
-       * <code>PRIMITIVE = 1;</code>
-       */
-      PRIMITIVE(1),
-      /**
-       * <code>REF = 2;</code>
-       */
-      REF(2),
-      /**
-       * <code>ARRAY_PRIM = 3;</code>
-       */
-      ARRAY_PRIM(3),
-      /**
-       * <code>ARRAY_REF = 4;</code>
-       */
-      ARRAY_REF(4),
-      UNRECOGNIZED(-1),
-      ;
-
-      /**
-       * <code>NO_KIND = 0;</code>
-       */
-      public static final int NO_KIND_VALUE = 0;
-      /**
-       * <code>PRIMITIVE = 1;</code>
-       */
-      public static final int PRIMITIVE_VALUE = 1;
-      /**
-       * <code>REF = 2;</code>
-       */
-      public static final int REF_VALUE = 2;
-      /**
-       * <code>ARRAY_PRIM = 3;</code>
-       */
-      public static final int ARRAY_PRIM_VALUE = 3;
-      /**
-       * <code>ARRAY_REF = 4;</code>
-       */
-      public static final int ARRAY_REF_VALUE = 4;
-
-
-      public final int getNumber() {
-        if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
-        }
-        return value;
-      }
-
-      /**
-       * @param value The numeric wire value of the corresponding enum entry.
-       * @return The enum associated with the given numeric wire value.
-       * @deprecated Use {@link #forNumber(int)} instead.
-       */
-      @java.lang.Deprecated
-      public static Kind valueOf(int value) {
-        return forNumber(value);
-      }
-
-      /**
-       * @param value The numeric wire value of the corresponding enum entry.
-       * @return The enum associated with the given numeric wire value.
-       */
-      public static Kind forNumber(int value) {
-        switch (value) {
-          case 0: return NO_KIND;
-          case 1: return PRIMITIVE;
-          case 2: return REF;
-          case 3: return ARRAY_PRIM;
-          case 4: return ARRAY_REF;
-          default: return null;
-        }
-      }
-
-      public static com.google.protobuf.Internal.EnumLiteMap<Kind>
-          internalGetValueMap() {
-        return internalValueMap;
-      }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          Kind> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<Kind>() {
-              public Kind findValueByNumber(int number) {
-                return Kind.forNumber(number);
-              }
-            };
-
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalStateException(
-              "Can't get the descriptor of an unrecognized enum value.");
-        }
-        return getDescriptor().getValues().get(ordinal());
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.getDescriptor().getEnumTypes().get(0);
-      }
-
-      private static final Kind[] VALUES = values();
-
-      public static Kind valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        if (desc.getIndex() == -1) {
-          return UNRECOGNIZED;
-        }
-        return VALUES[desc.getIndex()];
-      }
-
-      private final int value;
-
-      private Kind(int value) {
-        this.value = value;
-      }
-
-      // @@protoc_insertion_point(enum_scope:SootTypeMsg.Kind)
-    }
-
-    public static final int KIND_FIELD_NUMBER = 1;
-    private int kind_;
-    /**
-     * <code>.SootTypeMsg.Kind kind = 1;</code>
-     * @return The enum numeric value on the wire for kind.
-     */
-    @java.lang.Override public int getKindValue() {
-      return kind_;
-    }
-    /**
-     * <code>.SootTypeMsg.Kind kind = 1;</code>
-     * @return The kind.
-     */
-    @java.lang.Override public soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Kind getKind() {
-      @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Kind result = soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Kind.valueOf(kind_);
-      return result == null ? soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Kind.UNRECOGNIZED : result;
-    }
-
-    public static final int TYPE_NAME_FIELD_NUMBER = 2;
-    private volatile java.lang.Object typeName_;
-    /**
-     * <code>string type_name = 2;</code>
-     * @return The typeName.
-     */
-    @java.lang.Override
-    public java.lang.String getTypeName() {
-      java.lang.Object ref = typeName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        typeName_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string type_name = 2;</code>
-     * @return The bytes for typeName.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getTypeNameBytes() {
-      java.lang.Object ref = typeName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        typeName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int NUM_DIMENSIONS_FIELD_NUMBER = 3;
-    private int numDimensions_;
-    /**
-     * <code>int32 num_dimensions = 3;</code>
-     * @return The numDimensions.
-     */
-    @java.lang.Override
-    public int getNumDimensions() {
-      return numDimensions_;
-    }
-
-    public static final int IS_CALL_BY_REF_FIELD_NUMBER = 4;
-    private boolean isCallByRef_;
-    /**
-     * <code>bool is_call_by_ref = 4;</code>
-     * @return The isCallByRef.
-     */
-    @java.lang.Override
-    public boolean getIsCallByRef() {
-      return isCallByRef_;
-    }
-
-    public static final int IS_GENERIC_FIELD_NUMBER = 5;
-    private boolean isGeneric_;
-    /**
-     * <code>bool is_generic = 5;</code>
-     * @return The isGeneric.
-     */
-    @java.lang.Override
-    public boolean getIsGeneric() {
-      return isGeneric_;
-    }
-
-    public static final int GENERIC_PARAMETERS_FIELD_NUMBER = 6;
-    private com.google.protobuf.LazyStringList genericParameters_;
-    /**
-     * <code>repeated string generic_parameters = 6;</code>
-     * @return A list containing the genericParameters.
-     */
-    public com.google.protobuf.ProtocolStringList
-        getGenericParametersList() {
-      return genericParameters_;
-    }
-    /**
-     * <code>repeated string generic_parameters = 6;</code>
-     * @return The count of genericParameters.
-     */
-    public int getGenericParametersCount() {
-      return genericParameters_.size();
-    }
-    /**
-     * <code>repeated string generic_parameters = 6;</code>
-     * @param index The index of the element to return.
-     * @return The genericParameters at the given index.
-     */
-    public java.lang.String getGenericParameters(int index) {
-      return genericParameters_.get(index);
-    }
-    /**
-     * <code>repeated string generic_parameters = 6;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the genericParameters at the given index.
-     */
-    public com.google.protobuf.ByteString
-        getGenericParametersBytes(int index) {
-      return genericParameters_.getByteString(index);
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (kind_ != soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Kind.NO_KIND.getNumber()) {
-        output.writeEnum(1, kind_);
-      }
-      if (!getTypeNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, typeName_);
-      }
-      if (numDimensions_ != 0) {
-        output.writeInt32(3, numDimensions_);
-      }
-      if (isCallByRef_ != false) {
-        output.writeBool(4, isCallByRef_);
-      }
-      if (isGeneric_ != false) {
-        output.writeBool(5, isGeneric_);
-      }
-      for (int i = 0; i < genericParameters_.size(); i++) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, genericParameters_.getRaw(i));
-      }
-      unknownFields.writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (kind_ != soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Kind.NO_KIND.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, kind_);
-      }
-      if (!getTypeNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, typeName_);
-      }
-      if (numDimensions_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, numDimensions_);
-      }
-      if (isCallByRef_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(4, isCallByRef_);
-      }
-      if (isGeneric_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(5, isGeneric_);
-      }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < genericParameters_.size(); i++) {
-          dataSize += computeStringSizeNoTag(genericParameters_.getRaw(i));
-        }
-        size += dataSize;
-        size += 1 * getGenericParametersList().size();
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg)) {
-        return super.equals(obj);
-      }
-      soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg other = (soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg) obj;
-
-      if (kind_ != other.kind_) return false;
-      if (!getTypeName()
-          .equals(other.getTypeName())) return false;
-      if (getNumDimensions()
-          != other.getNumDimensions()) return false;
-      if (getIsCallByRef()
-          != other.getIsCallByRef()) return false;
-      if (getIsGeneric()
-          != other.getIsGeneric()) return false;
-      if (!getGenericParametersList()
-          .equals(other.getGenericParametersList())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + KIND_FIELD_NUMBER;
-      hash = (53 * hash) + kind_;
-      hash = (37 * hash) + TYPE_NAME_FIELD_NUMBER;
-      hash = (53 * hash) + getTypeName().hashCode();
-      hash = (37 * hash) + NUM_DIMENSIONS_FIELD_NUMBER;
-      hash = (53 * hash) + getNumDimensions();
-      hash = (37 * hash) + IS_CALL_BY_REF_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsCallByRef());
-      hash = (37 * hash) + IS_GENERIC_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsGeneric());
-      if (getGenericParametersCount() > 0) {
-        hash = (37 * hash) + GENERIC_PARAMETERS_FIELD_NUMBER;
-        hash = (53 * hash) + getGenericParametersList().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code SootTypeMsg}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:SootTypeMsg)
-        soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsgOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return soot.dotnet.proto.ProtoDotnetNativeHost.internal_static_SootTypeMsg_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return soot.dotnet.proto.ProtoDotnetNativeHost.internal_static_SootTypeMsg_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.class, soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Builder.class);
-      }
-
-      // Construct using soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        kind_ = 0;
-
-        typeName_ = "";
-
-        numDimensions_ = 0;
-
-        isCallByRef_ = false;
-
-        isGeneric_ = false;
-
-        genericParameters_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return soot.dotnet.proto.ProtoDotnetNativeHost.internal_static_SootTypeMsg_descriptor;
-      }
-
-      @java.lang.Override
-      public soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg getDefaultInstanceForType() {
-        return soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg build() {
-        soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg buildPartial() {
-        soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg result = new soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg(this);
-        int from_bitField0_ = bitField0_;
-        result.kind_ = kind_;
-        result.typeName_ = typeName_;
-        result.numDimensions_ = numDimensions_;
-        result.isCallByRef_ = isCallByRef_;
-        result.isGeneric_ = isGeneric_;
-        if (((bitField0_ & 0x00000001) != 0)) {
-          genericParameters_ = genericParameters_.getUnmodifiableView();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        }
-        result.genericParameters_ = genericParameters_;
-        onBuilt();
-        return result;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg) {
-          return mergeFrom((soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg other) {
-        if (other == soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.getDefaultInstance()) return this;
-        if (other.kind_ != 0) {
-          setKindValue(other.getKindValue());
-        }
-        if (!other.getTypeName().isEmpty()) {
-          typeName_ = other.typeName_;
-          onChanged();
-        }
-        if (other.getNumDimensions() != 0) {
-          setNumDimensions(other.getNumDimensions());
-        }
-        if (other.getIsCallByRef() != false) {
-          setIsCallByRef(other.getIsCallByRef());
-        }
-        if (other.getIsGeneric() != false) {
-          setIsGeneric(other.getIsGeneric());
-        }
-        if (!other.genericParameters_.isEmpty()) {
-          if (genericParameters_.isEmpty()) {
-            genericParameters_ = other.genericParameters_;
-            bitField0_ = (bitField0_ & ~0x00000001);
-          } else {
-            ensureGenericParametersIsMutable();
-            genericParameters_.addAll(other.genericParameters_);
-          }
-          onChanged();
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private int kind_ = 0;
-      /**
-       * <code>.SootTypeMsg.Kind kind = 1;</code>
-       * @return The enum numeric value on the wire for kind.
-       */
-      @java.lang.Override public int getKindValue() {
-        return kind_;
-      }
-      /**
-       * <code>.SootTypeMsg.Kind kind = 1;</code>
-       * @param value The enum numeric value on the wire for kind to set.
-       * @return This builder for chaining.
-       */
-      public Builder setKindValue(int value) {
-        
-        kind_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.SootTypeMsg.Kind kind = 1;</code>
-       * @return The kind.
-       */
-      @java.lang.Override
-      public soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Kind getKind() {
-        @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Kind result = soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Kind.valueOf(kind_);
-        return result == null ? soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Kind.UNRECOGNIZED : result;
-      }
-      /**
-       * <code>.SootTypeMsg.Kind kind = 1;</code>
-       * @param value The kind to set.
-       * @return This builder for chaining.
-       */
-      public Builder setKind(soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg.Kind value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        
-        kind_ = value.getNumber();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>.SootTypeMsg.Kind kind = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearKind() {
-        
-        kind_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object typeName_ = "";
-      /**
-       * <code>string type_name = 2;</code>
-       * @return The typeName.
-       */
-      public java.lang.String getTypeName() {
-        java.lang.Object ref = typeName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          typeName_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string type_name = 2;</code>
-       * @return The bytes for typeName.
-       */
-      public com.google.protobuf.ByteString
-          getTypeNameBytes() {
-        java.lang.Object ref = typeName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          typeName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string type_name = 2;</code>
-       * @param value The typeName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setTypeName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        typeName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string type_name = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearTypeName() {
-        
-        typeName_ = getDefaultInstance().getTypeName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string type_name = 2;</code>
-       * @param value The bytes for typeName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setTypeNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        typeName_ = value;
-        onChanged();
-        return this;
-      }
-
-      private int numDimensions_ ;
-      /**
-       * <code>int32 num_dimensions = 3;</code>
-       * @return The numDimensions.
-       */
-      @java.lang.Override
-      public int getNumDimensions() {
-        return numDimensions_;
-      }
-      /**
-       * <code>int32 num_dimensions = 3;</code>
-       * @param value The numDimensions to set.
-       * @return This builder for chaining.
-       */
-      public Builder setNumDimensions(int value) {
-        
-        numDimensions_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>int32 num_dimensions = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearNumDimensions() {
-        
-        numDimensions_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private boolean isCallByRef_ ;
-      /**
-       * <code>bool is_call_by_ref = 4;</code>
-       * @return The isCallByRef.
-       */
-      @java.lang.Override
-      public boolean getIsCallByRef() {
-        return isCallByRef_;
-      }
-      /**
-       * <code>bool is_call_by_ref = 4;</code>
-       * @param value The isCallByRef to set.
-       * @return This builder for chaining.
-       */
-      public Builder setIsCallByRef(boolean value) {
-        
-        isCallByRef_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>bool is_call_by_ref = 4;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearIsCallByRef() {
-        
-        isCallByRef_ = false;
-        onChanged();
-        return this;
-      }
-
-      private boolean isGeneric_ ;
-      /**
-       * <code>bool is_generic = 5;</code>
-       * @return The isGeneric.
-       */
-      @java.lang.Override
-      public boolean getIsGeneric() {
-        return isGeneric_;
-      }
-      /**
-       * <code>bool is_generic = 5;</code>
-       * @param value The isGeneric to set.
-       * @return This builder for chaining.
-       */
-      public Builder setIsGeneric(boolean value) {
-        
-        isGeneric_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>bool is_generic = 5;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearIsGeneric() {
-        
-        isGeneric_ = false;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.LazyStringList genericParameters_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      private void ensureGenericParametersIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          genericParameters_ = new com.google.protobuf.LazyStringArrayList(genericParameters_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-      /**
-       * <code>repeated string generic_parameters = 6;</code>
-       * @return A list containing the genericParameters.
-       */
-      public com.google.protobuf.ProtocolStringList
-          getGenericParametersList() {
-        return genericParameters_.getUnmodifiableView();
-      }
-      /**
-       * <code>repeated string generic_parameters = 6;</code>
-       * @return The count of genericParameters.
-       */
-      public int getGenericParametersCount() {
-        return genericParameters_.size();
-      }
-      /**
-       * <code>repeated string generic_parameters = 6;</code>
-       * @param index The index of the element to return.
-       * @return The genericParameters at the given index.
-       */
-      public java.lang.String getGenericParameters(int index) {
-        return genericParameters_.get(index);
-      }
-      /**
-       * <code>repeated string generic_parameters = 6;</code>
-       * @param index The index of the value to return.
-       * @return The bytes of the genericParameters at the given index.
-       */
-      public com.google.protobuf.ByteString
-          getGenericParametersBytes(int index) {
-        return genericParameters_.getByteString(index);
-      }
-      /**
-       * <code>repeated string generic_parameters = 6;</code>
-       * @param index The index to set the value at.
-       * @param value The genericParameters to set.
-       * @return This builder for chaining.
-       */
-      public Builder setGenericParameters(
-          int index, java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureGenericParametersIsMutable();
-        genericParameters_.set(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string generic_parameters = 6;</code>
-       * @param value The genericParameters to add.
-       * @return This builder for chaining.
-       */
-      public Builder addGenericParameters(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureGenericParametersIsMutable();
-        genericParameters_.add(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string generic_parameters = 6;</code>
-       * @param values The genericParameters to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllGenericParameters(
-          java.lang.Iterable<java.lang.String> values) {
-        ensureGenericParametersIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, genericParameters_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string generic_parameters = 6;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearGenericParameters() {
-        genericParameters_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated string generic_parameters = 6;</code>
-       * @param value The bytes of the genericParameters to add.
-       * @return This builder for chaining.
-       */
-      public Builder addGenericParametersBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        ensureGenericParametersIsMutable();
-        genericParameters_.add(value);
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:SootTypeMsg)
-    }
-
-    // @@protoc_insertion_point(class_scope:SootTypeMsg)
-    private static final soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg();
-    }
-
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<SootTypeMsg>
-        PARSER = new com.google.protobuf.AbstractParser<SootTypeMsg>() {
-      @java.lang.Override
-      public SootTypeMsg parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new SootTypeMsg(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<SootTypeMsg> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<SootTypeMsg> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public soot.dotnet.proto.ProtoDotnetNativeHost.SootTypeMsg getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_AnalyzerParamsMsg_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_AnalyzerParamsMsg_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_SootTypeMsg_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_SootTypeMsg_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -3444,30 +2042,25 @@ public final class ProtoDotnetNativeHost {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\026DotnetNativeHost.proto\"\317\002\n\021AnalyzerPar" +
+      "\n\026DotnetNativeHost.proto\"\337\002\n\021AnalyzerPar" +
       "amsMsg\0221\n\024analyzer_method_call\030\001 \001(\0162\023.A" +
       "nalyzerMethodCall\022#\n\033assembly_file_absol" +
       "ute_path\030\002 \001(\t\022\034\n\024type_reflection_name\030\003" +
-      " \001(\t\022\023\n\013method_name\030\004 \001(\t\022#\n\rmethod_para" +
-      "ms\030\005 \003(\0132\014.SootTypeMsg\022\025\n\rproperty_name\030" +
-      "\006 \001(\t\022\032\n\022property_is_setter\030\007 \001(\010\022\022\n\neve" +
-      "nt_name\030\010 \001(\t\022/\n\023event_accessor_type\030\t \001" +
-      "(\0162\022.EventAccessorType\022\022\n\ndebug_mode\030\n \001" +
-      "(\010\"\355\001\n\013SootTypeMsg\022\037\n\004kind\030\001 \001(\0162\021.SootT" +
-      "ypeMsg.Kind\022\021\n\ttype_name\030\002 \001(\t\022\026\n\016num_di" +
-      "mensions\030\003 \001(\005\022\026\n\016is_call_by_ref\030\004 \001(\010\022\022" +
-      "\n\nis_generic\030\005 \001(\010\022\032\n\022generic_parameters" +
-      "\030\006 \003(\t\"J\n\004Kind\022\013\n\007NO_KIND\020\000\022\r\n\tPRIMITIVE" +
-      "\020\001\022\007\n\003REF\020\002\022\016\n\nARRAY_PRIM\020\003\022\r\n\tARRAY_REF" +
-      "\020\004*\232\001\n\022AnalyzerMethodCall\022\013\n\007NO_CALL\020\000\022\021" +
-      "\n\rGET_ALL_TYPES\020\001\022\023\n\017GET_METHOD_BODY\020\002\022\037" +
-      "\n\033GET_METHOD_BODY_OF_PROPERTY\020\003\022\034\n\030GET_M" +
-      "ETHOD_BODY_OF_EVENT\020\004\022\020\n\014GET_TYPE_DEF\020\005*" +
-      "d\n\021EventAccessorType\022\023\n\017NO_EVENT_METHOD\020" +
-      "\000\022\020\n\014ADD_ACCESSOR\020\001\022\023\n\017INVOKE_ACCESSOR\020\002" +
-      "\022\023\n\017REMOVE_ACCESSOR\020\003BS\n\021soot.dotnet.pro" +
-      "toB\025ProtoDotnetNativeHost\252\002&Soot.Dotnet." +
-      "Decompiler.Models.Protobufb\006proto3"
+      " \001(\t\022\023\n\013method_name\030\004 \001(\t\022\032\n\022method_name" +
+      "_suffix\030\013 \001(\t\022\027\n\017method_pe_token\030\014 \001(\005\022\025" +
+      "\n\rproperty_name\030\006 \001(\t\022\032\n\022property_is_set" +
+      "ter\030\007 \001(\010\022\022\n\nevent_name\030\010 \001(\t\022/\n\023event_a" +
+      "ccessor_type\030\t \001(\0162\022.EventAccessorType\022\022" +
+      "\n\ndebug_mode\030\n \001(\010*\232\001\n\022AnalyzerMethodCal" +
+      "l\022\013\n\007NO_CALL\020\000\022\021\n\rGET_ALL_TYPES\020\001\022\023\n\017GET" +
+      "_METHOD_BODY\020\002\022\037\n\033GET_METHOD_BODY_OF_PRO" +
+      "PERTY\020\003\022\034\n\030GET_METHOD_BODY_OF_EVENT\020\004\022\020\n" +
+      "\014GET_TYPE_DEF\020\005*d\n\021EventAccessorType\022\023\n\017" +
+      "NO_EVENT_METHOD\020\000\022\020\n\014ADD_ACCESSOR\020\001\022\023\n\017I" +
+      "NVOKE_ACCESSOR\020\002\022\023\n\017REMOVE_ACCESSOR\020\003BS\n" +
+      "\021soot.dotnet.protoB\025ProtoDotnetNativeHos" +
+      "t\252\002&Soot.Dotnet.Decompiler.Models.Protob" +
+      "ufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3478,13 +2071,7 @@ public final class ProtoDotnetNativeHost {
     internal_static_AnalyzerParamsMsg_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_AnalyzerParamsMsg_descriptor,
-        new java.lang.String[] { "AnalyzerMethodCall", "AssemblyFileAbsolutePath", "TypeReflectionName", "MethodName", "MethodParams", "PropertyName", "PropertyIsSetter", "EventName", "EventAccessorType", "DebugMode", });
-    internal_static_SootTypeMsg_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_SootTypeMsg_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_SootTypeMsg_descriptor,
-        new java.lang.String[] { "Kind", "TypeName", "NumDimensions", "IsCallByRef", "IsGeneric", "GenericParameters", });
+        new java.lang.String[] { "AnalyzerMethodCall", "AssemblyFileAbsolutePath", "TypeReflectionName", "MethodName", "MethodNameSuffix", "MethodPeToken", "PropertyName", "PropertyIsSetter", "EventName", "EventAccessorType", "DebugMode", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

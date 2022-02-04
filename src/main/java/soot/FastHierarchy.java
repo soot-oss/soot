@@ -365,8 +365,9 @@ public class FastHierarchy {
             && parent instanceof RefType) {
       // only dotnet
       // if right type prim type struct which implements these interfaces
+      // if generic, base class System.Object is possible
       return parent == cilIcomparable || parent == cilIcomparable1 || parent == cilIconvertible
-              || parent == cilIformattable || parent == cilIequatable1;
+              || parent == cilIformattable || parent == cilIequatable1 || parent == rtObject;
     }
     else {
       return false;
@@ -931,6 +932,24 @@ public class FastHierarchy {
           && canStoreType(method.getReturnType(), returnType)) {
         candidate = method;
         returnType = method.getReturnType();
+      }
+      // if dotnet structs or generics
+      if (Options.v().src_prec() == Options.src_prec_dotnet) {
+        if (method.getName().equals(name) && method.getParameterCount() == parameterTypes.size() &&
+                canStoreType(returnType, method.getReturnType())) {
+          boolean canStore = true;
+          for (int i = 0; i < method.getParameterCount(); i++) {
+              Type methodParameter = method.getParameterType(i);
+              Type calleeParameter = parameterTypes.get(i);
+              // base class can System.Object
+              if (!(methodParameter.equals(calleeParameter) || canStoreType(calleeParameter, methodParameter)))
+                canStore = false;
+            }
+            if (canStore) {
+              candidate = method;
+              returnType = method.getReturnType();
+            }
+        }
       }
     }
     return candidate;

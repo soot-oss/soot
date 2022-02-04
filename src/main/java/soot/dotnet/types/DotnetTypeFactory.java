@@ -2,10 +2,7 @@ package soot.dotnet.types;
 
 import soot.*;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
-import soot.jimple.FloatConstant;
-import soot.jimple.IntConstant;
-import soot.jimple.LongConstant;
-import soot.jimple.NullConstant;
+import soot.jimple.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +99,8 @@ public class DotnetTypeFactory {
             return IntConstant.v(0);
         if (t instanceof FloatType)
             return FloatConstant.v(0);
+        if (t instanceof DoubleType)
+            return DoubleConstant.v(0);
         if (t instanceof LongType)
             return LongConstant.v(0);
         if (t instanceof ByteType)
@@ -115,21 +114,17 @@ public class DotnetTypeFactory {
         return NullConstant.v();
     }
 
-    /**
-     * Convert RefType System.Int32 to IntType, etc.
-     * @param type
-     * @return
-     * @deprecated Replaced by ToSootType(Type type)
-     */
-    @Deprecated
-    public static Type JimpleToDotnetType(Type type) {
-        if (type instanceof PrimType)
-            return type;
-        if (type instanceof VoidType)
-            return type;
-        if (type instanceof ArrayType)
-            return type;
-
-        return toSootType(type.toString());
+    public static List<String> listOfCilPrimitives() {
+        ArrayList<String> lst = new ArrayList<>();
+        lst.add(DotnetBasicTypes.SYSTEM_INTPTR);
+        lst.add(DotnetBasicTypes.SYSTEM_UINTPTR);
+        lst.add("nint");
+        lst.add("nuint");
+        lst.add(DotnetBasicTypes.SYSTEM_UINT32);
+        lst.add(DotnetBasicTypes.SYSTEM_SBYTE);
+        lst.add(DotnetBasicTypes.SYSTEM_DECIMAL);
+        lst.add(DotnetBasicTypes.SYSTEM_UINT64);
+        lst.add(DotnetBasicTypes.SYSTEM_UINT16);
+        return lst;
     }
 }

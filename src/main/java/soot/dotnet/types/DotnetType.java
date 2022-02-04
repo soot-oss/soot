@@ -123,7 +123,6 @@ public class DotnetType {
             // ignore unsafe or call-by-ref params methods if parameter is set
             if (!Options.v().resolve_all_dotnet_methods() &&
                     (method.getIsUnsafe()
-                            || dotnetMethod.containsCallByRefParameter()
                             // getIsUnsafe is not working right, due to the "to do" in the Soot.Dotnet.Decompiler project
                             || method.getName().equals("InternalCopy") && declaringClass.getName().equals("System.String")
                     )) {

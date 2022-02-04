@@ -1772,6 +1772,8 @@ public class Scene {
     addBasicClass(DotnetBasicTypes.SYSTEM_RUNTIMEFIELDHANDLE, SootClass.SIGNATURES);
     addBasicClass(DotnetBasicTypes.SYSTEM_RUNTIMEMETHODHANDLE, SootClass.SIGNATURES);
     addBasicClass(DotnetBasicTypes.SYSTEM_RUNTIMETYPEHANDLE, SootClass.SIGNATURES);
+
+    addBasicClass(DotnetBasicTypes.FAKE_LDFTN, SootClass.SIGNATURES);
   }
 
   public void addBasicClass(String name) {

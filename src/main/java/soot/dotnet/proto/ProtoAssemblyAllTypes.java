@@ -1792,6 +1792,16 @@ public final class ProtoAssemblyAllTypes {
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder getEventsOrBuilder(
         int index);
+
+    /**
+     * <pre>
+     *hexadecimal x8 pe token
+     * </pre>
+     *
+     * <code>int32 pe_token = 19;</code>
+     * @return The peToken.
+     */
+    int getPeToken();
   }
   /**
    * Protobuf type {@code TypeDefinition}
@@ -1977,6 +1987,11 @@ public final class ProtoAssemblyAllTypes {
               }
               events_.add(
                   input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.parser(), extensionRegistry));
+              break;
+            }
+            case 152: {
+
+              peToken_ = input.readInt32();
               break;
             }
             default: {
@@ -2562,6 +2577,21 @@ public final class ProtoAssemblyAllTypes {
       return events_.get(index);
     }
 
+    public static final int PE_TOKEN_FIELD_NUMBER = 19;
+    private int peToken_;
+    /**
+     * <pre>
+     *hexadecimal x8 pe token
+     * </pre>
+     *
+     * <code>int32 pe_token = 19;</code>
+     * @return The peToken.
+     */
+    @java.lang.Override
+    public int getPeToken() {
+      return peToken_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2629,6 +2659,9 @@ public final class ProtoAssemblyAllTypes {
       }
       for (int i = 0; i < events_.size(); i++) {
         output.writeMessage(18, events_.get(i));
+      }
+      if (peToken_ != 0) {
+        output.writeInt32(19, peToken_);
       }
       unknownFields.writeTo(output);
     }
@@ -2708,6 +2741,10 @@ public final class ProtoAssemblyAllTypes {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(18, events_.get(i));
       }
+      if (peToken_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(19, peToken_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -2757,6 +2794,8 @@ public final class ProtoAssemblyAllTypes {
           != other.getArrayDimensions()) return false;
       if (!getEventsList()
           .equals(other.getEventsList())) return false;
+      if (getPeToken()
+          != other.getPeToken()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2824,6 +2863,8 @@ public final class ProtoAssemblyAllTypes {
         hash = (37 * hash) + EVENTS_FIELD_NUMBER;
         hash = (53 * hash) + getEventsList().hashCode();
       }
+      hash = (37 * hash) + PE_TOKEN_FIELD_NUMBER;
+      hash = (53 * hash) + getPeToken();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3033,6 +3074,8 @@ public final class ProtoAssemblyAllTypes {
         } else {
           eventsBuilder_.clear();
         }
+        peToken_ = 0;
+
         return this;
       }
 
@@ -3142,6 +3185,7 @@ public final class ProtoAssemblyAllTypes {
         } else {
           result.events_ = eventsBuilder_.build();
         }
+        result.peToken_ = peToken_;
         onBuilt();
         return result;
       }
@@ -3430,6 +3474,9 @@ public final class ProtoAssemblyAllTypes {
               eventsBuilder_.addAllMessages(other.events_);
             }
           }
+        }
+        if (other.getPeToken() != 0) {
+          setPeToken(other.getPeToken());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -5871,6 +5918,49 @@ public final class ProtoAssemblyAllTypes {
         }
         return eventsBuilder_;
       }
+
+      private int peToken_ ;
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 19;</code>
+       * @return The peToken.
+       */
+      @java.lang.Override
+      public int getPeToken() {
+        return peToken_;
+      }
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 19;</code>
+       * @param value The peToken to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPeToken(int value) {
+        
+        peToken_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 19;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPeToken() {
+        
+        peToken_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -6112,6 +6202,16 @@ public final class ProtoAssemblyAllTypes {
      * <code>.TypeDefinition declaring_type = 15;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getDeclaringTypeOrBuilder();
+
+    /**
+     * <pre>
+     *hexadecimal x8 pe token
+     * </pre>
+     *
+     * <code>int32 pe_token = 20;</code>
+     * @return The peToken.
+     */
+    int getPeToken();
   }
   /**
    * Protobuf type {@code MethodDefinition}
@@ -6284,6 +6384,11 @@ public final class ProtoAssemblyAllTypes {
             case 152: {
 
               isSealed_ = input.readBool();
+              break;
+            }
+            case 160: {
+
+              peToken_ = input.readInt32();
               break;
             }
             default: {
@@ -6683,6 +6788,21 @@ public final class ProtoAssemblyAllTypes {
       return getDeclaringType();
     }
 
+    public static final int PE_TOKEN_FIELD_NUMBER = 20;
+    private int peToken_;
+    /**
+     * <pre>
+     *hexadecimal x8 pe token
+     * </pre>
+     *
+     * <code>int32 pe_token = 20;</code>
+     * @return The peToken.
+     */
+    @java.lang.Override
+    public int getPeToken() {
+      return peToken_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -6753,6 +6873,9 @@ public final class ProtoAssemblyAllTypes {
       }
       if (isSealed_ != false) {
         output.writeBool(19, isSealed_);
+      }
+      if (peToken_ != 0) {
+        output.writeInt32(20, peToken_);
       }
       unknownFields.writeTo(output);
     }
@@ -6837,6 +6960,10 @@ public final class ProtoAssemblyAllTypes {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(19, isSealed_);
       }
+      if (peToken_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(20, peToken_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -6895,6 +7022,8 @@ public final class ProtoAssemblyAllTypes {
         if (!getDeclaringType()
             .equals(other.getDeclaringType())) return false;
       }
+      if (getPeToken()
+          != other.getPeToken()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -6964,6 +7093,8 @@ public final class ProtoAssemblyAllTypes {
         hash = (37 * hash) + DECLARING_TYPE_FIELD_NUMBER;
         hash = (53 * hash) + getDeclaringType().hashCode();
       }
+      hash = (37 * hash) + PE_TOKEN_FIELD_NUMBER;
+      hash = (53 * hash) + getPeToken();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -7153,6 +7284,8 @@ public final class ProtoAssemblyAllTypes {
           declaringType_ = null;
           declaringTypeBuilder_ = null;
         }
+        peToken_ = 0;
+
         return this;
       }
 
@@ -7223,6 +7356,7 @@ public final class ProtoAssemblyAllTypes {
         } else {
           result.declaringType_ = declaringTypeBuilder_.build();
         }
+        result.peToken_ = peToken_;
         onBuilt();
         return result;
       }
@@ -7375,6 +7509,9 @@ public final class ProtoAssemblyAllTypes {
         }
         if (other.hasDeclaringType()) {
           mergeDeclaringType(other.getDeclaringType());
+        }
+        if (other.getPeToken() != 0) {
+          setPeToken(other.getPeToken());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -8701,6 +8838,49 @@ public final class ProtoAssemblyAllTypes {
         }
         return declaringTypeBuilder_;
       }
+
+      private int peToken_ ;
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 20;</code>
+       * @return The peToken.
+       */
+      @java.lang.Override
+      public int getPeToken() {
+        return peToken_;
+      }
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 20;</code>
+       * @param value The peToken to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPeToken(int value) {
+        
+        peToken_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 20;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPeToken() {
+        
+        peToken_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -9970,6 +10150,16 @@ public final class ProtoAssemblyAllTypes {
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(
         int index);
+
+    /**
+     * <pre>
+     *hexadecimal x8 pe token
+     * </pre>
+     *
+     * <code>int32 pe_token = 16;</code>
+     * @return The peToken.
+     */
+    int getPeToken();
   }
   /**
    * Protobuf type {@code FieldDefinition}
@@ -10119,6 +10309,11 @@ public final class ProtoAssemblyAllTypes {
               }
               attributes_.add(
                   input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.parser(), extensionRegistry));
+              break;
+            }
+            case 128: {
+
+              peToken_ = input.readInt32();
               break;
             }
             default: {
@@ -10450,6 +10645,21 @@ public final class ProtoAssemblyAllTypes {
       return attributes_.get(index);
     }
 
+    public static final int PE_TOKEN_FIELD_NUMBER = 16;
+    private int peToken_;
+    /**
+     * <pre>
+     *hexadecimal x8 pe token
+     * </pre>
+     *
+     * <code>int32 pe_token = 16;</code>
+     * @return The peToken.
+     */
+    @java.lang.Override
+    public int getPeToken() {
+      return peToken_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -10508,6 +10718,9 @@ public final class ProtoAssemblyAllTypes {
       }
       for (int i = 0; i < attributes_.size(); i++) {
         output.writeMessage(15, attributes_.get(i));
+      }
+      if (peToken_ != 0) {
+        output.writeInt32(16, peToken_);
       }
       unknownFields.writeTo(output);
     }
@@ -10576,6 +10789,10 @@ public final class ProtoAssemblyAllTypes {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(15, attributes_.get(i));
       }
+      if (peToken_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(16, peToken_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -10625,6 +10842,8 @@ public final class ProtoAssemblyAllTypes {
       }
       if (!getAttributesList()
           .equals(other.getAttributesList())) return false;
+      if (getPeToken()
+          != other.getPeToken()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -10680,6 +10899,8 @@ public final class ProtoAssemblyAllTypes {
         hash = (37 * hash) + ATTRIBUTES_FIELD_NUMBER;
         hash = (53 * hash) + getAttributesList().hashCode();
       }
+      hash = (37 * hash) + PE_TOKEN_FIELD_NUMBER;
+      hash = (53 * hash) + getPeToken();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -10856,6 +11077,8 @@ public final class ProtoAssemblyAllTypes {
         } else {
           attributesBuilder_.clear();
         }
+        peToken_ = 0;
+
         return this;
       }
 
@@ -10914,6 +11137,7 @@ public final class ProtoAssemblyAllTypes {
         } else {
           result.attributes_ = attributesBuilder_.build();
         }
+        result.peToken_ = peToken_;
         onBuilt();
         return result;
       }
@@ -11031,6 +11255,9 @@ public final class ProtoAssemblyAllTypes {
               attributesBuilder_.addAllMessages(other.attributes_);
             }
           }
+        }
+        if (other.getPeToken() != 0) {
+          setPeToken(other.getPeToken());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -12047,6 +12274,49 @@ public final class ProtoAssemblyAllTypes {
         }
         return attributesBuilder_;
       }
+
+      private int peToken_ ;
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 16;</code>
+       * @return The peToken.
+       */
+      @java.lang.Override
+      public int getPeToken() {
+        return peToken_;
+      }
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 16;</code>
+       * @param value The peToken to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPeToken(int value) {
+        
+        peToken_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 16;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPeToken() {
+        
+        peToken_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -12260,6 +12530,16 @@ public final class ProtoAssemblyAllTypes {
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(
         int index);
+
+    /**
+     * <pre>
+     *hexadecimal x8 pe token
+     * </pre>
+     *
+     * <code>int32 pe_token = 17;</code>
+     * @return The peToken.
+     */
+    int getPeToken();
   }
   /**
    * Protobuf type {@code PropertyDefinition}
@@ -12420,6 +12700,11 @@ public final class ProtoAssemblyAllTypes {
               }
               attributes_.add(
                   input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.parser(), extensionRegistry));
+              break;
+            }
+            case 136: {
+
+              peToken_ = input.readInt32();
               break;
             }
             default: {
@@ -12750,6 +13035,21 @@ public final class ProtoAssemblyAllTypes {
       return attributes_.get(index);
     }
 
+    public static final int PE_TOKEN_FIELD_NUMBER = 17;
+    private int peToken_;
+    /**
+     * <pre>
+     *hexadecimal x8 pe token
+     * </pre>
+     *
+     * <code>int32 pe_token = 17;</code>
+     * @return The peToken.
+     */
+    @java.lang.Override
+    public int getPeToken() {
+      return peToken_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -12811,6 +13111,9 @@ public final class ProtoAssemblyAllTypes {
       }
       for (int i = 0; i < attributes_.size(); i++) {
         output.writeMessage(16, attributes_.get(i));
+      }
+      if (peToken_ != 0) {
+        output.writeInt32(17, peToken_);
       }
       unknownFields.writeTo(output);
     }
@@ -12884,6 +13187,10 @@ public final class ProtoAssemblyAllTypes {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(16, attributes_.get(i));
       }
+      if (peToken_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(17, peToken_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -12938,6 +13245,8 @@ public final class ProtoAssemblyAllTypes {
           .equals(other.getName())) return false;
       if (!getAttributesList()
           .equals(other.getAttributesList())) return false;
+      if (getPeToken()
+          != other.getPeToken()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -12998,6 +13307,8 @@ public final class ProtoAssemblyAllTypes {
         hash = (37 * hash) + ATTRIBUTES_FIELD_NUMBER;
         hash = (53 * hash) + getAttributesList().hashCode();
       }
+      hash = (37 * hash) + PE_TOKEN_FIELD_NUMBER;
+      hash = (53 * hash) + getPeToken();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -13180,6 +13491,8 @@ public final class ProtoAssemblyAllTypes {
         } else {
           attributesBuilder_.clear();
         }
+        peToken_ = 0;
+
         return this;
       }
 
@@ -13243,6 +13556,7 @@ public final class ProtoAssemblyAllTypes {
         } else {
           result.attributes_ = attributesBuilder_.build();
         }
+        result.peToken_ = peToken_;
         onBuilt();
         return result;
       }
@@ -13362,6 +13676,9 @@ public final class ProtoAssemblyAllTypes {
               attributesBuilder_.addAllMessages(other.attributes_);
             }
           }
+        }
+        if (other.getPeToken() != 0) {
+          setPeToken(other.getPeToken());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -14451,6 +14768,49 @@ public final class ProtoAssemblyAllTypes {
           attributes_ = null;
         }
         return attributesBuilder_;
+      }
+
+      private int peToken_ ;
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 17;</code>
+       * @return The peToken.
+       */
+      @java.lang.Override
+      public int getPeToken() {
+        return peToken_;
+      }
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 17;</code>
+       * @param value The peToken to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPeToken(int value) {
+        
+        peToken_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 17;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPeToken() {
+        
+        peToken_ = 0;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -18002,6 +18362,16 @@ public final class ProtoAssemblyAllTypes {
      * <code>.MethodDefinition remove_accessor_method = 9;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder getRemoveAccessorMethodOrBuilder();
+
+    /**
+     * <pre>
+     *hexadecimal x8 pe token
+     * </pre>
+     *
+     * <code>int32 pe_token = 10;</code>
+     * @return The peToken.
+     */
+    int getPeToken();
   }
   /**
    * Protobuf type {@code EventDefinition}
@@ -18121,6 +18491,11 @@ public final class ProtoAssemblyAllTypes {
                 removeAccessorMethod_ = subBuilder.buildPartial();
               }
 
+              break;
+            }
+            case 80: {
+
+              peToken_ = input.readInt32();
               break;
             }
             default: {
@@ -18361,6 +18736,21 @@ public final class ProtoAssemblyAllTypes {
       return getRemoveAccessorMethod();
     }
 
+    public static final int PE_TOKEN_FIELD_NUMBER = 10;
+    private int peToken_;
+    /**
+     * <pre>
+     *hexadecimal x8 pe token
+     * </pre>
+     *
+     * <code>int32 pe_token = 10;</code>
+     * @return The peToken.
+     */
+    @java.lang.Override
+    public int getPeToken() {
+      return peToken_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -18401,6 +18791,9 @@ public final class ProtoAssemblyAllTypes {
       }
       if (removeAccessorMethod_ != null) {
         output.writeMessage(9, getRemoveAccessorMethod());
+      }
+      if (peToken_ != 0) {
+        output.writeInt32(10, peToken_);
       }
       unknownFields.writeTo(output);
     }
@@ -18445,6 +18838,10 @@ public final class ProtoAssemblyAllTypes {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(9, getRemoveAccessorMethod());
       }
+      if (peToken_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(10, peToken_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -18486,6 +18883,8 @@ public final class ProtoAssemblyAllTypes {
         if (!getRemoveAccessorMethod()
             .equals(other.getRemoveAccessorMethod())) return false;
       }
+      if (getPeToken()
+          != other.getPeToken()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -18524,6 +18923,8 @@ public final class ProtoAssemblyAllTypes {
         hash = (37 * hash) + REMOVE_ACCESSOR_METHOD_FIELD_NUMBER;
         hash = (53 * hash) + getRemoveAccessorMethod().hashCode();
       }
+      hash = (37 * hash) + PE_TOKEN_FIELD_NUMBER;
+      hash = (53 * hash) + getPeToken();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -18687,6 +19088,8 @@ public final class ProtoAssemblyAllTypes {
           removeAccessorMethod_ = null;
           removeAccessorMethodBuilder_ = null;
         }
+        peToken_ = 0;
+
         return this;
       }
 
@@ -18734,6 +19137,7 @@ public final class ProtoAssemblyAllTypes {
         } else {
           result.removeAccessorMethod_ = removeAccessorMethodBuilder_.build();
         }
+        result.peToken_ = peToken_;
         onBuilt();
         return result;
       }
@@ -18810,6 +19214,9 @@ public final class ProtoAssemblyAllTypes {
         }
         if (other.hasRemoveAccessorMethod()) {
           mergeRemoveAccessorMethod(other.getRemoveAccessorMethod());
+        }
+        if (other.getPeToken() != 0) {
+          setPeToken(other.getPeToken());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -19495,6 +19902,49 @@ public final class ProtoAssemblyAllTypes {
         }
         return removeAccessorMethodBuilder_;
       }
+
+      private int peToken_ ;
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 10;</code>
+       * @return The peToken.
+       */
+      @java.lang.Override
+      public int getPeToken() {
+        return peToken_;
+      }
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 10;</code>
+       * @param value The peToken to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPeToken(int value) {
+        
+        peToken_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *hexadecimal x8 pe token
+       * </pre>
+       *
+       * <code>int32 pe_token = 10;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPeToken() {
+        
+        peToken_ = 0;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -19605,7 +20055,7 @@ public final class ProtoAssemblyAllTypes {
       "\n\026AssemblyAllTypes.proto\"_\n\020AssemblyAllT" +
       "ypes\022&\n\rlist_of_types\030\001 \003(\0132\017.TypeDefini" +
       "tion\022#\n\033all_referenced_module_types\030\002 \003(" +
-      "\t\"\306\004\n\016TypeDefinition\022%\n\raccessibility\030\001 " +
+      "\t\"\330\004\n\016TypeDefinition\022%\n\raccessibility\030\001 " +
       "\001(\0162\016.Accessibility\022\020\n\010fullname\030\002 \001(\t\022\021\n" +
       "\tnamespace\030\003 \001(\t\022\023\n\013is_abstract\030\004 \001(\010\022\024\n" +
       "\014is_read_only\030\005 \001(\010\022\021\n\tis_sealed\030\006 \001(\010\022\021" +
@@ -19619,78 +20069,80 @@ public final class ProtoAssemblyAllTypes {
       "ttributes\030\017 \003(\0132\024.AttributeDefinition\022/\n" +
       "\026generic_type_arguments\030\020 \003(\0132\017.TypeDefi" +
       "nition\022\030\n\020array_dimensions\030\021 \001(\005\022 \n\006even" +
-      "ts\030\022 \003(\0132\020.EventDefinition\"\212\004\n\020MethodDef" +
-      "inition\022%\n\raccessibility\030\001 \001(\0162\016.Accessi" +
-      "bility\022\014\n\004name\030\002 \001(\t\022\020\n\010has_body\030\003 \001(\010\022\'" +
-      "\n\tparameter\030\004 \003(\0132\024.ParameterDefinition\022" +
-      "\023\n\013is_abstract\030\005 \001(\010\022\023\n\013is_accessor\030\006 \001(" +
-      "\010\022\026\n\016is_constructor\030\007 \001(\010\022\025\n\ris_destruct" +
-      "or\030\010 \001(\010\022,\n$is_explicit_interface_implem" +
-      "entation\030\t \001(\010\022\021\n\tis_static\030\n \001(\010\022\022\n\nis_" +
-      "virtual\030\013 \001(\010\022\023\n\013is_operator\030\020 \001(\010\022\021\n\tis" +
-      "_extern\030\021 \001(\010\022\021\n\tis_unsafe\030\022 \001(\010\022\021\n\tis_s" +
-      "ealed\030\023 \001(\010\022$\n\013return_type\030\014 \001(\0132\017.TypeD" +
-      "efinition\022(\n\nattributes\030\r \003(\0132\024.Attribut" +
-      "eDefinition\022\021\n\tfull_name\030\016 \001(\t\022\'\n\016declar" +
-      "ing_type\030\017 \001(\0132\017.TypeDefinition\"\220\001\n\023Para" +
-      "meterDefinition\022\035\n\004type\030\001 \001(\0132\017.TypeDefi" +
-      "nition\022\026\n\016parameter_name\030\002 \001(\t\022\016\n\006is_ref" +
-      "\030\003 \001(\010\022\016\n\006is_out\030\004 \001(\010\022\r\n\005is_in\030\005 \001(\010\022\023\n" +
-      "\013is_optional\030\006 \001(\010\"\246\003\n\017FieldDefinition\022%" +
-      "\n\raccessibility\030\001 \001(\0162\016.Accessibility\022\023\n" +
-      "\013is_abstract\030\002 \001(\010\022\021\n\tis_sealed\030\003 \001(\010\022,\n" +
-      "$is_explicit_interface_implementation\030\004 " +
-      "\001(\010\022\023\n\013is_override\030\005 \001(\010\022\022\n\nis_virtual\030\006" +
-      " \001(\010\022\020\n\010is_const\030\007 \001(\010\022\024\n\014is_read_only\030\010" +
-      " \001(\010\022\021\n\tis_static\030\t \001(\010\022\035\n\004type\030\n \001(\0132\017." +
-      "TypeDefinition\022\037\n\ttype_kind\030\016 \001(\0162\014.Type" +
-      "KindDef\022\014\n\004name\030\013 \001(\t\022\021\n\tfull_name\030\014 \001(\t" +
-      "\022\'\n\016declaring_type\030\r \001(\0132\017.TypeDefinitio" +
-      "n\022(\n\nattributes\030\017 \003(\0132\024.AttributeDefinit" +
-      "ion\"\300\003\n\022PropertyDefinition\022%\n\raccessibil" +
-      "ity\030\001 \001(\0162\016.Accessibility\022\017\n\007can_get\030\002 \001" +
-      "(\010\022\017\n\007can_set\030\003 \001(\010\022\023\n\013is_abstract\030\004 \001(\010" +
-      "\022\021\n\tis_sealed\030\005 \001(\010\022,\n$is_explicit_inter" +
-      "face_implementation\030\006 \001(\010\022\023\n\013is_override" +
-      "\030\007 \001(\010\022\022\n\nis_virtual\030\010 \001(\010\022\021\n\tis_static\030" +
-      "\t \001(\010\022\021\n\tis_extern\030\017 \001(\010\022!\n\006getter\030\n \001(\013" +
-      "2\021.MethodDefinition\022!\n\006setter\030\013 \001(\0132\021.Me" +
-      "thodDefinition\022\035\n\004type\030\014 \001(\0132\017.TypeDefin" +
-      "ition\022\037\n\ttype_kind\030\016 \001(\0162\014.TypeKindDef\022\014" +
-      "\n\004name\030\r \001(\t\022(\n\nattributes\030\020 \003(\0132\024.Attri" +
-      "buteDefinition\"\301\001\n\023AttributeDefinition\022\'" +
-      "\n\016attribute_type\030\001 \001(\0132\017.TypeDefinition\022" +
-      "\023\n\013constructor\030\002 \001(\t\0225\n\017fixed_arguments\030" +
-      "\003 \003(\0132\034.AttributeArgumentDefinition\0225\n\017n" +
-      "amed_arguments\030\004 \003(\0132\034.AttributeArgument" +
-      "Definition\"\265\001\n\033AttributeArgumentDefiniti" +
-      "on\022\035\n\004type\030\001 \001(\0132\017.TypeDefinition\022\014\n\004nam" +
-      "e\030\002 \001(\t\022\024\n\014value_string\030\003 \003(\t\022\023\n\013value_i" +
-      "nt32\030\004 \003(\005\022\023\n\013value_int64\030\005 \003(\003\022\024\n\014value" +
-      "_double\030\006 \003(\001\022\023\n\013value_float\030\007 \003(\002\"\250\002\n\017E" +
-      "ventDefinition\022%\n\raccessibility\030\001 \001(\0162\016." +
-      "Accessibility\022.\n\023add_accessor_method\030\002 \001" +
-      "(\0132\021.MethodDefinition\022\017\n\007can_add\030\003 \001(\010\022\022" +
-      "\n\ncan_invoke\030\004 \001(\010\022\022\n\ncan_remove\030\005 \001(\010\022\021" +
-      "\n\tfull_name\030\006 \001(\t\0221\n\026invoke_accessor_met" +
-      "hod\030\007 \001(\0132\021.MethodDefinition\022\014\n\004name\030\010 \001" +
-      "(\t\0221\n\026remove_accessor_method\030\t \001(\0132\021.Met" +
-      "hodDefinition*\206\001\n\rAccessibility\022\010\n\004NONE\020" +
-      "\000\022\013\n\007PRIVATE\020\001\022\n\n\006PUBLIC\020\002\022\014\n\010INTERNAL\020\003" +
-      "\022\r\n\tPROTECTED\020\004\022\032\n\026PROTECTED_AND_INTERNA" +
-      "L\020\005\022\031\n\025PROTECTED_OR_INTERNAL\020\006*\366\002\n\013TypeK" +
-      "indDef\022\013\n\007NO_TYPE\020\000\022\t\n\005OTHER\020\001\022\t\n\005CLASS\020" +
-      "\002\022\r\n\tINTERFACE\020\003\022\n\n\006STRUCT\020\004\022\014\n\010DELEGATE" +
-      "\020\005\022\010\n\004ENUM\020\006\022\010\n\004VOID\020\007\022\013\n\007UNKNOWN\020\010\022\010\n\004N" +
-      "ULL\020\t\022\r\n\tNONE_TYPE\020\n\022\013\n\007DYNAMIC\020\013\022\024\n\020UNB" +
-      "OUND_TYPE_ARG\020\014\022\022\n\016TYPE_PARAMETER\020\r\022\t\n\005A" +
-      "RRAY\020\016\022\013\n\007POINTER\020\017\022\n\n\006BY_REF\020\020\022\020\n\014INTER" +
-      "SECTION\020\021\022\014\n\010ARG_LIST\020\022\022\t\n\005TUPLE\020\023\022\013\n\007MO" +
-      "D_OPT\020\024\022\013\n\007MOD_REQ\020\025\022\t\n\005N_INT\020\026\022\n\n\006N_UIN" +
-      "T\020\027\022\024\n\020FUNCTION_POINTER\020\030\022\024\n\020BY_REF_AND_" +
-      "ARRAY\020\031BS\n\021soot.dotnet.protoB\025ProtoAssem" +
-      "blyAllTypes\252\002&Soot.Dotnet.Decompiler.Mod" +
-      "els.Protobufb\006proto3"
+      "ts\030\022 \003(\0132\020.EventDefinition\022\020\n\010pe_token\030\023" +
+      " \001(\005\"\234\004\n\020MethodDefinition\022%\n\raccessibili" +
+      "ty\030\001 \001(\0162\016.Accessibility\022\014\n\004name\030\002 \001(\t\022\020" +
+      "\n\010has_body\030\003 \001(\010\022\'\n\tparameter\030\004 \003(\0132\024.Pa" +
+      "rameterDefinition\022\023\n\013is_abstract\030\005 \001(\010\022\023" +
+      "\n\013is_accessor\030\006 \001(\010\022\026\n\016is_constructor\030\007 " +
+      "\001(\010\022\025\n\ris_destructor\030\010 \001(\010\022,\n$is_explici" +
+      "t_interface_implementation\030\t \001(\010\022\021\n\tis_s" +
+      "tatic\030\n \001(\010\022\022\n\nis_virtual\030\013 \001(\010\022\023\n\013is_op" +
+      "erator\030\020 \001(\010\022\021\n\tis_extern\030\021 \001(\010\022\021\n\tis_un" +
+      "safe\030\022 \001(\010\022\021\n\tis_sealed\030\023 \001(\010\022$\n\013return_" +
+      "type\030\014 \001(\0132\017.TypeDefinition\022(\n\nattribute" +
+      "s\030\r \003(\0132\024.AttributeDefinition\022\021\n\tfull_na" +
+      "me\030\016 \001(\t\022\'\n\016declaring_type\030\017 \001(\0132\017.TypeD" +
+      "efinition\022\020\n\010pe_token\030\024 \001(\005\"\220\001\n\023Paramete" +
+      "rDefinition\022\035\n\004type\030\001 \001(\0132\017.TypeDefiniti" +
+      "on\022\026\n\016parameter_name\030\002 \001(\t\022\016\n\006is_ref\030\003 \001" +
+      "(\010\022\016\n\006is_out\030\004 \001(\010\022\r\n\005is_in\030\005 \001(\010\022\023\n\013is_" +
+      "optional\030\006 \001(\010\"\270\003\n\017FieldDefinition\022%\n\rac" +
+      "cessibility\030\001 \001(\0162\016.Accessibility\022\023\n\013is_" +
+      "abstract\030\002 \001(\010\022\021\n\tis_sealed\030\003 \001(\010\022,\n$is_" +
+      "explicit_interface_implementation\030\004 \001(\010\022" +
+      "\023\n\013is_override\030\005 \001(\010\022\022\n\nis_virtual\030\006 \001(\010" +
+      "\022\020\n\010is_const\030\007 \001(\010\022\024\n\014is_read_only\030\010 \001(\010" +
+      "\022\021\n\tis_static\030\t \001(\010\022\035\n\004type\030\n \001(\0132\017.Type" +
+      "Definition\022\037\n\ttype_kind\030\016 \001(\0162\014.TypeKind" +
+      "Def\022\014\n\004name\030\013 \001(\t\022\021\n\tfull_name\030\014 \001(\t\022\'\n\016" +
+      "declaring_type\030\r \001(\0132\017.TypeDefinition\022(\n" +
+      "\nattributes\030\017 \003(\0132\024.AttributeDefinition\022" +
+      "\020\n\010pe_token\030\020 \001(\005\"\322\003\n\022PropertyDefinition" +
+      "\022%\n\raccessibility\030\001 \001(\0162\016.Accessibility\022" +
+      "\017\n\007can_get\030\002 \001(\010\022\017\n\007can_set\030\003 \001(\010\022\023\n\013is_" +
+      "abstract\030\004 \001(\010\022\021\n\tis_sealed\030\005 \001(\010\022,\n$is_" +
+      "explicit_interface_implementation\030\006 \001(\010\022" +
+      "\023\n\013is_override\030\007 \001(\010\022\022\n\nis_virtual\030\010 \001(\010" +
+      "\022\021\n\tis_static\030\t \001(\010\022\021\n\tis_extern\030\017 \001(\010\022!" +
+      "\n\006getter\030\n \001(\0132\021.MethodDefinition\022!\n\006set" +
+      "ter\030\013 \001(\0132\021.MethodDefinition\022\035\n\004type\030\014 \001" +
+      "(\0132\017.TypeDefinition\022\037\n\ttype_kind\030\016 \001(\0162\014" +
+      ".TypeKindDef\022\014\n\004name\030\r \001(\t\022(\n\nattributes" +
+      "\030\020 \003(\0132\024.AttributeDefinition\022\020\n\010pe_token" +
+      "\030\021 \001(\005\"\301\001\n\023AttributeDefinition\022\'\n\016attrib" +
+      "ute_type\030\001 \001(\0132\017.TypeDefinition\022\023\n\013const" +
+      "ructor\030\002 \001(\t\0225\n\017fixed_arguments\030\003 \003(\0132\034." +
+      "AttributeArgumentDefinition\0225\n\017named_arg" +
+      "uments\030\004 \003(\0132\034.AttributeArgumentDefiniti" +
+      "on\"\265\001\n\033AttributeArgumentDefinition\022\035\n\004ty" +
+      "pe\030\001 \001(\0132\017.TypeDefinition\022\014\n\004name\030\002 \001(\t\022" +
+      "\024\n\014value_string\030\003 \003(\t\022\023\n\013value_int32\030\004 \003" +
+      "(\005\022\023\n\013value_int64\030\005 \003(\003\022\024\n\014value_double\030" +
+      "\006 \003(\001\022\023\n\013value_float\030\007 \003(\002\"\272\002\n\017EventDefi" +
+      "nition\022%\n\raccessibility\030\001 \001(\0162\016.Accessib" +
+      "ility\022.\n\023add_accessor_method\030\002 \001(\0132\021.Met" +
+      "hodDefinition\022\017\n\007can_add\030\003 \001(\010\022\022\n\ncan_in" +
+      "voke\030\004 \001(\010\022\022\n\ncan_remove\030\005 \001(\010\022\021\n\tfull_n" +
+      "ame\030\006 \001(\t\0221\n\026invoke_accessor_method\030\007 \001(" +
+      "\0132\021.MethodDefinition\022\014\n\004name\030\010 \001(\t\0221\n\026re" +
+      "move_accessor_method\030\t \001(\0132\021.MethodDefin" +
+      "ition\022\020\n\010pe_token\030\n \001(\005*\206\001\n\rAccessibilit" +
+      "y\022\010\n\004NONE\020\000\022\013\n\007PRIVATE\020\001\022\n\n\006PUBLIC\020\002\022\014\n\010" +
+      "INTERNAL\020\003\022\r\n\tPROTECTED\020\004\022\032\n\026PROTECTED_A" +
+      "ND_INTERNAL\020\005\022\031\n\025PROTECTED_OR_INTERNAL\020\006" +
+      "*\366\002\n\013TypeKindDef\022\013\n\007NO_TYPE\020\000\022\t\n\005OTHER\020\001" +
+      "\022\t\n\005CLASS\020\002\022\r\n\tINTERFACE\020\003\022\n\n\006STRUCT\020\004\022\014" +
+      "\n\010DELEGATE\020\005\022\010\n\004ENUM\020\006\022\010\n\004VOID\020\007\022\013\n\007UNKN" +
+      "OWN\020\010\022\010\n\004NULL\020\t\022\r\n\tNONE_TYPE\020\n\022\013\n\007DYNAMI" +
+      "C\020\013\022\024\n\020UNBOUND_TYPE_ARG\020\014\022\022\n\016TYPE_PARAME" +
+      "TER\020\r\022\t\n\005ARRAY\020\016\022\013\n\007POINTER\020\017\022\n\n\006BY_REF\020" +
+      "\020\022\020\n\014INTERSECTION\020\021\022\014\n\010ARG_LIST\020\022\022\t\n\005TUP" +
+      "LE\020\023\022\013\n\007MOD_OPT\020\024\022\013\n\007MOD_REQ\020\025\022\t\n\005N_INT\020" +
+      "\026\022\n\n\006N_UINT\020\027\022\024\n\020FUNCTION_POINTER\020\030\022\024\n\020B" +
+      "Y_REF_AND_ARRAY\020\031BS\n\021soot.dotnet.protoB\025" +
+      "ProtoAssemblyAllTypes\252\002&Soot.Dotnet.Deco" +
+      "mpiler.Models.Protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -19707,13 +20159,13 @@ public final class ProtoAssemblyAllTypes {
     internal_static_TypeDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_TypeDefinition_descriptor,
-        new java.lang.String[] { "Accessibility", "Fullname", "Namespace", "IsAbstract", "IsReadOnly", "IsSealed", "IsStatic", "DeclaringOuterClass", "DirectBaseTypes", "TypeKind", "Methods", "Fields", "Properties", "NestedTypes", "Attributes", "GenericTypeArguments", "ArrayDimensions", "Events", });
+        new java.lang.String[] { "Accessibility", "Fullname", "Namespace", "IsAbstract", "IsReadOnly", "IsSealed", "IsStatic", "DeclaringOuterClass", "DirectBaseTypes", "TypeKind", "Methods", "Fields", "Properties", "NestedTypes", "Attributes", "GenericTypeArguments", "ArrayDimensions", "Events", "PeToken", });
     internal_static_MethodDefinition_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_MethodDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_MethodDefinition_descriptor,
-        new java.lang.String[] { "Accessibility", "Name", "HasBody", "Parameter", "IsAbstract", "IsAccessor", "IsConstructor", "IsDestructor", "IsExplicitInterfaceImplementation", "IsStatic", "IsVirtual", "IsOperator", "IsExtern", "IsUnsafe", "IsSealed", "ReturnType", "Attributes", "FullName", "DeclaringType", });
+        new java.lang.String[] { "Accessibility", "Name", "HasBody", "Parameter", "IsAbstract", "IsAccessor", "IsConstructor", "IsDestructor", "IsExplicitInterfaceImplementation", "IsStatic", "IsVirtual", "IsOperator", "IsExtern", "IsUnsafe", "IsSealed", "ReturnType", "Attributes", "FullName", "DeclaringType", "PeToken", });
     internal_static_ParameterDefinition_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_ParameterDefinition_fieldAccessorTable = new
@@ -19725,13 +20177,13 @@ public final class ProtoAssemblyAllTypes {
     internal_static_FieldDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_FieldDefinition_descriptor,
-        new java.lang.String[] { "Accessibility", "IsAbstract", "IsSealed", "IsExplicitInterfaceImplementation", "IsOverride", "IsVirtual", "IsConst", "IsReadOnly", "IsStatic", "Type", "TypeKind", "Name", "FullName", "DeclaringType", "Attributes", });
+        new java.lang.String[] { "Accessibility", "IsAbstract", "IsSealed", "IsExplicitInterfaceImplementation", "IsOverride", "IsVirtual", "IsConst", "IsReadOnly", "IsStatic", "Type", "TypeKind", "Name", "FullName", "DeclaringType", "Attributes", "PeToken", });
     internal_static_PropertyDefinition_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_PropertyDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_PropertyDefinition_descriptor,
-        new java.lang.String[] { "Accessibility", "CanGet", "CanSet", "IsAbstract", "IsSealed", "IsExplicitInterfaceImplementation", "IsOverride", "IsVirtual", "IsStatic", "IsExtern", "Getter", "Setter", "Type", "TypeKind", "Name", "Attributes", });
+        new java.lang.String[] { "Accessibility", "CanGet", "CanSet", "IsAbstract", "IsSealed", "IsExplicitInterfaceImplementation", "IsOverride", "IsVirtual", "IsStatic", "IsExtern", "Getter", "Setter", "Type", "TypeKind", "Name", "Attributes", "PeToken", });
     internal_static_AttributeDefinition_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_AttributeDefinition_fieldAccessorTable = new
@@ -19749,7 +20201,7 @@ public final class ProtoAssemblyAllTypes {
     internal_static_EventDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_EventDefinition_descriptor,
-        new java.lang.String[] { "Accessibility", "AddAccessorMethod", "CanAdd", "CanInvoke", "CanRemove", "FullName", "InvokeAccessorMethod", "Name", "RemoveAccessorMethod", });
+        new java.lang.String[] { "Accessibility", "AddAccessorMethod", "CanAdd", "CanInvoke", "CanRemove", "FullName", "InvokeAccessorMethod", "Name", "RemoveAccessorMethod", "PeToken", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
