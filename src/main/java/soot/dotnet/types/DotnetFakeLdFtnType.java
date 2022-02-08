@@ -22,13 +22,19 @@ public class DotnetFakeLdFtnType {
      */
     public static IInitialResolver.Dependencies resolve(SootClass sootClass) {
         IInitialResolver.Dependencies deps = new IInitialResolver.Dependencies();
-        deps.typesToHierarchy.add(SootResolver.v().makeClassRef(DotnetBasicTypes.SYSTEM_OBJECT).getType());
         SootClass superClass = SootResolver.v().makeClassRef(DotnetBasicTypes.SYSTEM_OBJECT);
+        deps.typesToHierarchy.add(superClass.getType());
         sootClass.setSuperclass(superClass);
+        int classModifier = 0;
+        classModifier |= Modifier.PUBLIC;
+        classModifier |= Modifier.STATIC;
+        sootClass.setModifiers(classModifier);
 
+        // add fake method
         int modifier = 0;
         modifier |= Modifier.PUBLIC;
         modifier |= Modifier.STATIC;
+        modifier |= Modifier.NATIVE;
 
         SootMethod m = Scene.v().makeSootMethod(FAKE_LDFTN_METHOD_NAME, new ArrayList<>(), DotnetTypeFactory.toSootType(DotnetBasicTypes.SYSTEM_INTPTR), modifier);
         sootClass.addMethod(m);
