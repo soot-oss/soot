@@ -1778,7 +1778,7 @@ public class Scene {
               case "Method.getName":
               case "Method.getDeclaringClass":
               case "Constructor.toString":
-              case "Method.toGenericString"
+              case "Method.toGenericString":
                 classNames.add(signatureToClass(target));
                 break;
               case "Class.getDeclaredFields":
