@@ -1,5 +1,4 @@
 package soot.toolkits.exceptions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -455,6 +454,15 @@ public class ThrowableSet {
       Manager.v().addsExclusionWithoutSearch++;
     }
     return result;
+  }
+
+  /**
+   * Returns true if the throwable set is empty and false otherwise.
+   * 
+   * @return true if the throwable set is empty.
+   */
+  public boolean isEmpty() {
+    return exceptionsIncluded.isEmpty();
   }
 
   /**
