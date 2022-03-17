@@ -1,7 +1,5 @@
 package soot.jimple.spark.solver;
 
-import java.util.ArrayList;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,6 +22,7 @@ import java.util.ArrayList;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
