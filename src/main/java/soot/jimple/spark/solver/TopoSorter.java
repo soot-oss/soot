@@ -71,7 +71,7 @@ public class TopoSorter {
       VarNode s = stack.remove(stack.size() - 1);
       if (visited.add(s)) {
         all.add(s);
-        Node[] succs = pag.simpleLookup(n);
+        Node[] succs = pag.simpleLookup(s);
         for (Node element : succs) {
           if (ignoreTypes || pag.getTypeManager().castNeverFails(n.getType(), element.getType())) {
             stack.add((VarNode) element);
