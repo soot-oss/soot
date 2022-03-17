@@ -107,7 +107,8 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
 
   @Override
   public void toString(UnitPrinter up) {
-    up.literal(Jimple.STATICINVOKE + " ");
+    up.literal(Jimple.STATICINVOKE);
+    up.literal(" ");
     up.methodRef(methodRef);
     up.literal("(");
     if (argBoxes != null) {
