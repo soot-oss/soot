@@ -1,5 +1,12 @@
 package soot.util;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,12 +30,6 @@ package soot.util;
  */
 
 import heros.solver.Pair;
-
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializable {
 
@@ -90,7 +91,7 @@ public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializ
   }
 
   @Override
-  public boolean putAll(Map<K, Set<V>> m) {
+  public boolean putAll(Map<K, Collection<V>> m) {
     boolean hasNew = false;
     for (K key : m.keySet()) {
       if (putAll(key, m.get(key))) {
