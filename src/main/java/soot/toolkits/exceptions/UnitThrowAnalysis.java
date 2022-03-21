@@ -297,7 +297,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     return sw.getResult();
   }
 
-  protected ThrowableSet mightThrow(SootMethodRef m) {
+  public ThrowableSet mightThrow(SootMethodRef m) {
     // The throw analysis is used in the front-ends. Conseqeuently, some
     // methods might not yet be loaded. If this is the case, we make
     // conservative assumptions.
@@ -317,7 +317,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
    *
    * @return a representation of the set of {@link java.lang.Throwable Throwable} types that <code>m</code> might throw.
    */
-  protected ThrowableSet mightThrow(SootMethod sm) {
+  public ThrowableSet mightThrow(SootMethod sm) {
     if (!isInterproc) {
       return ThrowableSet.Manager.v().ALL_THROWABLES;
     }
