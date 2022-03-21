@@ -1,9 +1,5 @@
 package soot.util;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,6 +23,9 @@ import java.util.Set;
  */
 
 import heros.solver.Pair;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A map with sets as values.
