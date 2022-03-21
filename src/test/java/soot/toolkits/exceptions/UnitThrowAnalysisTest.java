@@ -86,7 +86,7 @@ public class UnitThrowAnalysisTest {
 		// test that individual arguments to invocations are being
 		// examined.
 
-		protected ThrowableSet mightThrow(SootMethod m) {
+		public ThrowableSet mightThrow(SootMethod m) {
 			return ThrowableSet.Manager.v().EMPTY;
 		}
 	}
