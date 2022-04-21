@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.JavaClassProvider.JarException;
-import soot.asm.AsmClassProvider;
+import soot.asm.AllInMemoryClassProvider;
 import soot.asm.AsmJava9ClassProvider;
 import soot.dexpler.DexFileProvider;
 import soot.options.Options;
@@ -239,44 +238,11 @@ public class SourceLocator {
   }
 
   protected void setupClassProviders() {
-    classProviders = new LinkedList<ClassProvider>();
-    ClassProvider classFileClassProvider = Options.v().coffi() ? new CoffiClassProvider() : new AsmClassProvider();
+    classProviders = new ArrayList<>();
     if (this.java9Mode) {
       classProviders.add(new AsmJava9ClassProvider());
     }
-    switch (Options.v().src_prec()) {
-      case Options.src_prec_class:
-        classProviders.add(classFileClassProvider);
-        classProviders.add(new JimpleClassProvider());
-        classProviders.add(new JavaClassProvider());
-        break;
-      case Options.src_prec_only_class:
-        classProviders.add(classFileClassProvider);
-        break;
-      case Options.src_prec_java:
-        classProviders.add(new JavaClassProvider());
-        classProviders.add(classFileClassProvider);
-        classProviders.add(new JimpleClassProvider());
-        break;
-      case Options.src_prec_jimple:
-        classProviders.add(new JimpleClassProvider());
-        classProviders.add(classFileClassProvider);
-        classProviders.add(new JavaClassProvider());
-        break;
-      case Options.src_prec_apk:
-        classProviders.add(new DexClassProvider());
-        classProviders.add(classFileClassProvider);
-        classProviders.add(new JavaClassProvider());
-        classProviders.add(new JimpleClassProvider());
-        break;
-      case Options.src_prec_apk_c_j:
-        classProviders.add(new DexClassProvider());
-        classProviders.add(classFileClassProvider);
-        classProviders.add(new JimpleClassProvider());
-        break;
-      default:
-        throw new RuntimeException("Other source precedences are not currently supported.");
-    }
+    classProviders.add(new AllInMemoryClassProvider(classPath));
   }
 
   public void setClassProviders(List<ClassProvider> classProviders) {
