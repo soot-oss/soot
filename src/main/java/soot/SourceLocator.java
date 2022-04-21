@@ -58,7 +58,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.JavaClassProvider.JarException;
-import soot.asm.AsmClassProvider;
+import soot.asm.AllInMemoryClassProvider;
 import soot.asm.AsmJava9ClassProvider;
 import soot.dexpler.DexFileProvider;
 import soot.dotnet.AssemblyFile;
@@ -265,48 +265,11 @@ public class SourceLocator {
   }
 
   protected void setupClassProviders() {
-    final List<ClassProvider> classProviders = new LinkedList<ClassProvider>();
+    final List<ClassProvider> classProviders = new ArrayList<>();
     if (this.java9Mode) {
       classProviders.add(new AsmJava9ClassProvider());
     }
-    final ClassProvider classFileClassProvider = Options.v().coffi() ? new CoffiClassProvider() : new AsmClassProvider();
-    switch (Options.v().src_prec()) {
-      case Options.src_prec_class:
-        classProviders.add(classFileClassProvider);
-        classProviders.add(new JimpleClassProvider());
-        classProviders.add(new JavaClassProvider());
-        break;
-      case Options.src_prec_only_class:
-        classProviders.add(classFileClassProvider);
-        break;
-      case Options.src_prec_java:
-        classProviders.add(new JavaClassProvider());
-        classProviders.add(classFileClassProvider);
-        classProviders.add(new JimpleClassProvider());
-        break;
-      case Options.src_prec_jimple:
-        classProviders.add(new JimpleClassProvider());
-        classProviders.add(classFileClassProvider);
-        classProviders.add(new JavaClassProvider());
-        break;
-      case Options.src_prec_apk:
-        classProviders.add(new DexClassProvider());
-        classProviders.add(classFileClassProvider);
-        classProviders.add(new JavaClassProvider());
-        classProviders.add(new JimpleClassProvider());
-        break;
-      case Options.src_prec_apk_c_j:
-        classProviders.add(new DexClassProvider());
-        classProviders.add(classFileClassProvider);
-        classProviders.add(new JimpleClassProvider());
-        break;
-      case Options.src_prec_dotnet:
-        classProviders.add(new DotnetClassProvider());
-        classProviders.add(new JimpleClassProvider());
-        break;
-      default:
-        throw new RuntimeException("Other source precedences are not currently supported.");
-    }
+    classProviders.add(new AllInMemoryClassProvider(classPath));
     this.classProviders = classProviders;
   }
 

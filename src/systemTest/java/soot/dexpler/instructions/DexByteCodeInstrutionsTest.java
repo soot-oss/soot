@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import soot.ModulePathSourceLocator;
@@ -49,6 +50,7 @@ import soot.testing.framework.AbstractTestingFramework;
  * @author Manuel Benz created on 22.10.18
  */
 
+@Ignore
 public class DexByteCodeInstrutionsTest extends AbstractTestingFramework {
 
   private static final String METHOD_HANDLE_CLASS = "java.lang.invoke.MethodHandle";
