@@ -229,12 +229,12 @@ public class CallGraph implements Iterable<Edge> {
   public Edge findEdge(Unit u, SootMethod callee) {
     Edge e = srcUnitToEdge.get(u);
     if (e != null) {
-        while (e.srcUnit() == u && e.kind() != Kind.INVALID) {
-            if (e.tgt() == callee) {
-                return e;
-            }
-            e = e.nextByUnit();
+      while (e.srcUnit() == u && e.kind() != Kind.INVALID) {
+        if (e.tgt() == callee) {
+          return e;
         }
+        e = e.nextByUnit();
+      }
     }
     return null;
   }
