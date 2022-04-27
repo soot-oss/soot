@@ -30,6 +30,7 @@ package soot.dexpler;
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
 import com.google.common.collect.ArrayListMultimap;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -628,12 +629,12 @@ public class DexBody {
         dangling.finalize(this, instruction);
         dangling = null;
       }
-      instruction.jimplify(this);
       if (instruction.getLineNumber() > 0) {
         prevLineNumber = instruction.getLineNumber();
       } else {
         instruction.setLineNumber(prevLineNumber);
       }
+      instruction.jimplify(this);
     }
     if (dangling != null) {
       dangling.finalize(this, null);
