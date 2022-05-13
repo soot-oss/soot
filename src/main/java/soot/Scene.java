@@ -1154,7 +1154,7 @@ public class Scene {
    * @return The class if it exists, otherwise null
    */
   public SootClass getSootClassUnsafe(String className) {
-    return getSootClassUnsafe(className, true);
+    return getSootClassUnsafe(className, false);
   }
 
   /**
