@@ -1176,7 +1176,7 @@ public class Scene {
     RefType type = nameToClass.get(className);
     if (type != null) {
       synchronized (type) {
-        if (type.hasSootClass() || !SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME.equals(className)) {
+        if (type.hasSootClass()) {
           SootClass tsc = type.getSootClass();
           if (tsc != null) {
             return tsc;
