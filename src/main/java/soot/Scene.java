@@ -1154,7 +1154,7 @@ public class Scene {
    * @return The class if it exists, otherwise null
    */
   public SootClass getSootClassUnsafe(String className) {
-    return getSootClassUnsafe(className, false);
+    return getSootClassUnsafe(className, true);
   }
 
   /**
@@ -1177,7 +1177,7 @@ public class Scene {
     if (type != null) {
       synchronized (type) {
         if (type.hasSootClass()) {
-          SootClass tsc = type.getSootClass(); //here this will add a new (non phantom class) and invalidate the hierarchy
+          SootClass tsc = type.getSootClass();
             if (tsc != null) {
               return tsc;
             }
