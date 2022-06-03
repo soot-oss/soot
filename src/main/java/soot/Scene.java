@@ -1178,9 +1178,9 @@ public class Scene {
       synchronized (type) {
         if (type.hasSootClass()) {
           SootClass tsc = type.getSootClass();
-            if (tsc != null) {
-              return tsc;
-            }
+          if (tsc != null) {
+            return tsc;
+          }
         }
       }
     }
