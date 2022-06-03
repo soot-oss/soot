@@ -1176,11 +1176,11 @@ public class Scene {
     RefType type = nameToClass.get(className);
     if (type != null) {
       synchronized (type) {
-        if (type.hasSootClass() || !SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME.equals(className)) {
-          SootClass tsc = type.getSootClass();
-          if (tsc != null) {
-            return tsc;
-          }
+        if (type.hasSootClass()) {
+          SootClass tsc = type.getSootClass(); //here this will add a new (non phantom class) and invalidate the hierarchy
+            if (tsc != null) {
+              return tsc;
+            }
         }
       }
     }
