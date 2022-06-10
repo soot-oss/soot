@@ -588,11 +588,11 @@
             <version>3.21.2</version>
         </dependency>
     </dependencies>
-
     <distributionManagement>
         <repository>
-            <id>third-party-forks</id>
-            <url>http://10.198.126.224:8081/repository/third-party-forks</url>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/UnitTestBot/soot</url>   
         </repository>
     </distributionManagement>
     <profiles>
@@ -635,13 +635,6 @@
             </build>
         </profile>
         <profile>
-            <id>deploy</id>
-            <activation>
-                <property>
-                    <name>deploy</name>
-                    <value>true</value>
-                </property>
-            </activation>
             <build>
                 <plugins>
                     <plugin>

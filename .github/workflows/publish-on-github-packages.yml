@@ -1,0 +1,52 @@
+# This workflow will build a Java project with Maven and publish on GitHub Packages
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: "Soot: publish on GitHub Packages"
+on:
+  workflow_dispatch:
+    inputs:
+      commit-sha:
+        type: string
+        required: true
+        description: "commit SHA: e.g. cab4799c"
+
+jobs:
+  StyleAndLicense:
+    name: Check style´and license conformity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Java 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+      - name: Stylecheck
+        if: always()
+        run: |
+          mvn -B clean checkstyle:check -Dcheckstyle.failOnViolation=true
+      - name: Licensecheck
+        if: always()
+        run: |
+          mvn -B clean license:check-file-header -Dlicence-check.failOnMissingHeader=true
+    
+  BuildAndTest:
+    name: Build and Test with java 8
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Use Java 8
+      uses: actions/setup-java@v1
+      with:
+        java-version: '8'
+    - name: Build and test Java 8
+      run: |
+        set -o xtrace
+        mvn -B clean test -PJava8
+    - name: Publish package
+      run: |
+        set -o xtrace
+        mvn --batch-mode deploy
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
