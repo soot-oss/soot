@@ -580,7 +580,7 @@
         <repository>
             <id>github</id>
             <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/victoriafomina/soot</url>       
+            <url>https://maven.pkg.github.com/UnitTestBot/soot</url>   
         </repository>
     </distributionManagement>
     <profiles>
