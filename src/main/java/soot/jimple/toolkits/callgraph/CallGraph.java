@@ -197,7 +197,7 @@ public class CallGraph implements Iterable<Edge> {
    * @return whether the removal was successful.
    */
   public boolean removeEdges(Collection<Edge> edges) {
-    if (!edges.removeAll(edges)) {
+    if (!this.edges.removeAll(edges)) {
       return false;
     }
     for (Edge e : edges) {
