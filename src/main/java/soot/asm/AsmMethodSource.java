@@ -2373,10 +2373,16 @@ public class AsmMethodSource implements MethodSource {
               for (AbstractInsnNode i = lvn.start.getPrevious(); (uStart = units.get(i)) == null;) {
                 i = i.getNext();
               }
+              if (uStart instanceof UnitContainer) {
+                uStart = ((UnitContainer) uStart).getFirstUnit();
+              }
               // Get the previous real instruction before 'end'
               Unit uEnd;
               for (AbstractInsnNode i = lvn.end.getPrevious(); (uEnd = units.get(i)) == null;) {
                 i = i.getPrevious();
+              }
+              if (uEnd instanceof UnitContainer) {
+                uEnd = ((UnitContainer) uEnd).getFirstUnit();
               }
               if (newLocals == null) {
                 newLocals = HashBasedTable.create(this.maxLocals, 1);
