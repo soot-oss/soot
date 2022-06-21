@@ -324,4 +324,22 @@ public class MethodBuilder extends JSRInlinerAdapter {
     return method.toString();
   }
 
+  @Override
+  public void visitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle,
+      Object... bootstrapMethodArguments) {
+    super.visitInvokeDynamicInsn(name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments);
+
+    // convert info on bootstrap method
+    String bsmClsName = AsmUtil.toQualifiedName(bootstrapMethodHandle.getOwner());
+    scb.addDep(RefType.v(bsmClsName));
+
+    for (Object arg : bootstrapMethodArguments) {
+      if (arg instanceof Handle) {
+        Handle argHandle = (Handle) arg;
+        String handleClsName = AsmUtil.toQualifiedName(argHandle.getOwner());
+        scb.addDep(RefType.v(handleClsName));
+      }
+    }
+  }
+
 }
