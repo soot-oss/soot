@@ -1339,9 +1339,9 @@ public class AsmMethodSource implements MethodSource {
     } else if (val instanceof Handle) {
       Handle h = (Handle) val;
       if (MethodHandle.isMethodRef(h.getTag())) {
-        v = MethodHandle.v(toSootMethodRef((Handle) val), ((Handle) val).getTag());
+        v = MethodHandle.v(toSootMethodRef(h), h.getTag());
       } else {
-        v = MethodHandle.v(toSootFieldRef((Handle) val), ((Handle) val).getTag());
+        v = MethodHandle.v(toSootFieldRef(h), h.getTag());
       }
     } else {
       throw new AssertionError("Unknown constant type: " + val.getClass());
