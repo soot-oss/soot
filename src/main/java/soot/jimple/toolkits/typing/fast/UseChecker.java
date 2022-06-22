@@ -27,8 +27,10 @@ package soot.jimple.toolkits.typing.fast;
 import heros.solver.Pair;
 
 import java.util.ArrayDeque;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -294,9 +296,14 @@ public class UseChecker extends AbstractStmtSwitch {
             // First, we check the definitions. If we can see the definitions and know the array type
             // that way, we are safe.
             ArrayDeque<Pair<Unit, Local>> worklist = new ArrayDeque<Pair<Unit, Local>>();
+            Set<Pair<Unit, Local>> seen = new HashSet<>();
             worklist.add(new Pair<>(stmt, (Local) ((ArrayRef) rhs).getBase()));
             while (!worklist.isEmpty()) {
               Pair<Unit, Local> r = worklist.removeFirst();
+              if (!seen.add(r)) {
+                // Make sure we only process each entry once
+                continue;
+              }
 
               List<Unit> d = defs.getDefsOfAt(r.getO2(), r.getO1());
               if (d.isEmpty()) {

@@ -33,7 +33,7 @@ public class DotnetClassProvider implements ClassProvider {
         if (className.equals(DotnetBasicTypes.FAKE_LDFTN))
             return new DotnetClassSource(className, null);
 
-        File assemblyFile = SourceLocator.v().classContainerFileClassIndex().get(className);
+        File assemblyFile = SourceLocator.v().getDexClassIndex().get(className);
         return assemblyFile == null ? null : new DotnetClassSource(className, assemblyFile);
     }
 
@@ -41,23 +41,23 @@ public class DotnetClassProvider implements ClassProvider {
      * Generate index of all assembly files with their types. An assembly file contains several types in one file
      */
     private void ensureAssemblyIndex() {
-        Map<String, File> index = SourceLocator.v().classContainerFileClassIndex();
+        Map<String, File> index = SourceLocator.v().getDexClassIndex();
         if (index == null) {
             if (Options.v().verbose())
                 logger.info("Creating assembly index");
             index = new HashMap<>();
             buildAssemblyIndex(index, SourceLocator.v().classPath());
-            SourceLocator.v().setClassContainerFileClassIndex(index);
+            SourceLocator.v().setDexClassIndex(index);
             if (Options.v().verbose())
                 logger.info("Created assembly index");
         }
 
         // Process the classpath extensions
-        if (SourceLocator.v().getClassContainerFileClassPathExtensions() != null) {
+        if (SourceLocator.v().getDexClassPathExtensions() != null) {
             if (Options.v().verbose())
                 logger.info("Process classpath extensions");
-            buildAssemblyIndex(index, new ArrayList<>(SourceLocator.v().getClassContainerFileClassPathExtensions()));
-            SourceLocator.v().clearClassContainerFileClassPathExtensions();
+            buildAssemblyIndex(index, new ArrayList<>(SourceLocator.v().getDexClassPathExtensions()));
+            SourceLocator.v().clearDexClassPathExtensions();
         }
     }
 

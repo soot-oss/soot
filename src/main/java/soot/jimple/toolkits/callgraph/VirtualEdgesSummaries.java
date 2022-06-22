@@ -83,7 +83,11 @@ public class VirtualEdgesSummaries {
     Path summariesFile = Paths.get(SUMMARIESFILE);
     try (InputStream in = Files.exists(summariesFile) ? Files.newInputStream(summariesFile)
         : ModuleUtil.class.getResourceAsStream("/" + SUMMARIESFILE)) {
-      loadSummaries(in);
+      if (in == null) {
+        logger.error("Virtual edge summaries file not found");
+      } else {
+        loadSummaries(in);
+      }
     } catch (IOException | ParserConfigurationException | SAXException e1) {
       logger.error("An error occurred while reading in virtual edge summaries", e1);
     }
@@ -637,11 +641,15 @@ public class VirtualEdgesSummaries {
     }
 
     public void addTarget(VirtualEdgeTarget target) {
-      targets.add(target);
+      if (!targets.contains(target)) {
+        targets.add(target);
+      }
     }
 
     public void addTargets(Collection<? extends VirtualEdgeTarget> targets) {
-      this.targets.addAll(targets);
+      for (VirtualEdgeTarget target : targets) {
+        addTarget(target);
+      }
     }
 
     public List<VirtualEdgeTarget> getTargets() {

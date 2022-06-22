@@ -32,6 +32,8 @@ import soot.util.Switch;
 @SuppressWarnings("serial")
 public class BooleanType extends PrimType implements IntegerType {
 
+  public static final int HASHCODE = 0x1C4585DA;
+
   public BooleanType(Singletons.Global g) {
   }
 
@@ -46,7 +48,7 @@ public class BooleanType extends PrimType implements IntegerType {
 
   @Override
   public int hashCode() {
-    return 0x1C4585DA;
+    return HASHCODE;
   }
 
   @Override
@@ -64,5 +66,15 @@ public class BooleanType extends PrimType implements IntegerType {
     if (Options.v().src_prec() == Options.src_prec_dotnet)
       return DotnetBasicTypes.SYSTEM_BOOLEAN;
     return "java.lang.Boolean";
+  }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Boolean.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return boolean.class;
   }
 }

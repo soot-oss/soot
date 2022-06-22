@@ -65,7 +65,7 @@ public class DexClassProvider implements ClassProvider {
   public ClassSource find(String className) {
     ensureDexIndex();
 
-    File file = SourceLocator.v().classContainerFileClassIndex().get(className);
+    File file = SourceLocator.v().getDexClassIndex().get(className);
     return (file == null) ? null : new DexClassSource(className, file);
   }
 
@@ -74,18 +74,18 @@ public class DexClassProvider implements ClassProvider {
    */
   protected void ensureDexIndex() {
     final SourceLocator loc = SourceLocator.v();
-    Map<String, File> index = loc.classContainerFileClassIndex();
+    Map<String, File> index = loc.getDexClassIndex();
     if (index == null) {
       index = new HashMap<String, File>();
       buildDexIndex(index, loc.classPath());
-      loc.setClassContainerFileClassIndex(index);
+      loc.setDexClassIndex(index);
     }
 
     // Process the classpath extensions
-    Set<String> extensions = loc.getClassContainerFileClassPathExtensions();
+    Set<String> extensions = loc.getDexClassPathExtensions();
     if (extensions != null) {
       buildDexIndex(index, new ArrayList<>(extensions));
-      loc.clearClassContainerFileClassPathExtensions();
+      loc.clearDexClassPathExtensions();;
     }
   }
 

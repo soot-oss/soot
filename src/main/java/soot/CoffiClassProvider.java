@@ -33,7 +33,7 @@ public class CoffiClassProvider implements ClassProvider {
   @Override
   public ClassSource find(String className) {
     String fileName = className.replace('.', '/') + ".class";
-    FoundFile file = SourceLocator.v().lookupInClassPath(fileName);
+    IFoundFile file = SourceLocator.v().lookupInClassPath(fileName);
     return (file == null) ? null : new CoffiClassSource(className, file);
   }
 }

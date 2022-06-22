@@ -1,5 +1,7 @@
 package soot.util;
 
+import java.util.Collection;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -97,7 +99,7 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   }
 
   @Override
-  public boolean putAll(K key, Set<V> values) {
+  public boolean putAll(K key, Collection<V> values) {
     if (values == null || values.isEmpty()) {
       return false;
     }
@@ -153,7 +155,7 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   }
 
   @Override
-  public boolean removeAll(K key, Set<V> values) {
+  public boolean removeAll(K key, Collection<V> values) {
     Map<V, V> s = m.get(key);
     if (s == null) {
       return false;

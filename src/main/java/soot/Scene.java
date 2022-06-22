@@ -1176,7 +1176,7 @@ public class Scene {
     RefType type = nameToClass.get(className);
     if (type != null) {
       synchronized (type) {
-        if (type.hasSootClass() || !SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME.equals(className)) {
+        if (type.hasSootClass()) {
           SootClass tsc = type.getSootClass();
           if (tsc != null) {
             return tsc;
@@ -1850,6 +1850,8 @@ public class Scene {
             classNames.add(source.substring(0, source.lastIndexOf('.')));
             switch (kind) {
               case "Class.forName":
+              case "Class.getFields":
+              case "Class.getMethods":  
                 classNames.add(target);
                 break;
               case "Class.newInstance":
@@ -1857,11 +1859,35 @@ public class Scene {
                 break;
               case "Method.invoke":
               case "Constructor.newInstance":
+              case "Method.toString":
+              case "Class.getDeclaredField":
+              case "Class.getDeclaredMethod":
+              case "Class.getMethod":
+              case "Class.getField":
+              case "Constructor.getModifiers":
+              case "Field.getModifiers":
+              case "Method.getModifiers":
+              case "Method.getName":
+              case "Method.getDeclaringClass":
+              case "Constructor.toString":
+              case "Method.toGenericString":
                 classNames.add(signatureToClass(target));
+                break;
+              case "Class.getDeclaredFields":
+              case "Class.getDeclaredMethods":
+                if (!target.startsWith("[")) {
+                  classNames.add(target);
+                }
                 break;
               case "Field.set*":
               case "Field.get*":
+              case "Field.toString":
+              case "Field.getName":
+              case "Field.getDeclaringClass":
                 classNames.add(signatureToClass(target));
+                break;
+              case "Array.newInstance":
+                // not do anything
                 break;
               default:
                 throw new RuntimeException("Unknown entry kind: " + kind);

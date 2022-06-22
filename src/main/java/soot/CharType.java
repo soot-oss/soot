@@ -32,6 +32,8 @@ import soot.util.Switch;
 @SuppressWarnings("serial")
 public class CharType extends PrimType implements IntegerType {
 
+  public static final int HASHCODE = 0x739EA474;
+
   public CharType(Singletons.Global g) {
   }
 
@@ -51,7 +53,7 @@ public class CharType extends PrimType implements IntegerType {
 
   @Override
   public int hashCode() {
-    return 0x739EA474;
+    return HASHCODE;
   }
 
   @Override
@@ -64,5 +66,15 @@ public class CharType extends PrimType implements IntegerType {
     if (Options.v().src_prec() == Options.src_prec_dotnet)
       return DotnetBasicTypes.SYSTEM_CHAR;
     return "java.lang.Character";
+  }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Character.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return char.class;
   }
 }

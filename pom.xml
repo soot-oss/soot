@@ -6,7 +6,7 @@
     <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
     <name>Soot - a J*va Optimization Framework</name>
-    <version>4.3.1-SNAPSHOT</version>
+    <version>4.4.0-SNAPSHOT</version>
     <description>A Java Optimization Framework</description>
     <url>https://soot-oss.github.io/soot</url>
     <organization>
@@ -159,7 +159,7 @@
                             <fileMappers>
                                 <fileMapper
                                         implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
-                                    <targetName>soot_options.htm</targetName>
+                                    <targetName>soot_options.html</targetName>
                                 </fileMapper>
                             </fileMappers>
                         </transformationSet>

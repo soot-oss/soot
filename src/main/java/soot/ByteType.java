@@ -32,6 +32,8 @@ import soot.util.Switch;
 @SuppressWarnings("serial")
 public class ByteType extends PrimType implements IntegerType {
 
+  public static final int HASHCODE = 0x813D1329;
+
   public ByteType(Singletons.Global g) {
   }
 
@@ -41,7 +43,7 @@ public class ByteType extends PrimType implements IntegerType {
 
   @Override
   public int hashCode() {
-    return 0x813D1329;
+    return HASHCODE;
   }
 
   @Override
@@ -64,5 +66,15 @@ public class ByteType extends PrimType implements IntegerType {
     if (Options.v().src_prec() == Options.src_prec_dotnet)
       return DotnetBasicTypes.SYSTEM_BYTE;
     return "java.lang.Byte";
+  }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Byte.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return byte.class;
   }
 }

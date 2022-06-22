@@ -27,6 +27,7 @@ package soot.jimple.toolkits.typing.fast;
 import java.util.Collection;
 import java.util.Collections;
 
+import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -79,10 +80,37 @@ public class AugHierarchy implements IHierarchy {
   public static boolean ancestor_(Type ancestor, Type child) {
     if (TypeResolver.typesEqual(ancestor, child)) {
       return true;
+    } else if (ancestor instanceof ArrayType && child instanceof ArrayType) {
+      // Arrays are not covariant. However, we may have intermediate types that will later be replaced with actual types. In
+      // that case, we consider the temporary type as compatible with a final type of sufficient size. Note that these checks
+      // are more strict than the non-arrays checks on Integer types below.
+      Type at = ((ArrayType) ancestor).getElementType();
+      Type ct = ((ArrayType) child).getElementType();
+      if (at instanceof Integer1Type) {
+        return ct instanceof BottomType;
+      } else if (at instanceof BooleanType) {
+        return ct instanceof BottomType || ct instanceof Integer1Type;
+      } else if (at instanceof Integer127Type) {
+        return ct instanceof BottomType || ct instanceof Integer1Type;
+      } else if (at instanceof ByteType || at instanceof Integer32767Type) {
+        return ct instanceof BottomType || ct instanceof Integer1Type || ct instanceof Integer127Type;
+      } else if (at instanceof CharType) {
+        return ct instanceof BottomType || ct instanceof Integer1Type || ct instanceof Integer127Type
+            || ct instanceof Integer32767Type;
+      } else if (ancestor instanceof ShortType) {
+        return ct instanceof BottomType || ct instanceof Integer1Type || ct instanceof Integer127Type
+            || ct instanceof Integer32767Type;
+      } else if (at instanceof IntType) {
+        return ct instanceof BottomType || ct instanceof Integer1Type || ct instanceof Integer127Type
+            || ct instanceof Integer32767Type;
+      } else if (ct instanceof IntegerType) {
+        return false;
+      } else {
+        return BytecodeHierarchy.ancestor_(ancestor, child);
+      }
     } else if (ancestor instanceof IntegerType && child instanceof IntegerType) {
       return IntUtils.getMaxValue((IntegerType) ancestor) >= IntUtils.getMaxValue((IntegerType) child);
-    }
-    if (ancestor instanceof Integer1Type) {
+    } else if (ancestor instanceof Integer1Type) {
       return child instanceof BottomType;
     } else if (ancestor instanceof BooleanType) {
       return child instanceof BottomType || child instanceof Integer1Type;

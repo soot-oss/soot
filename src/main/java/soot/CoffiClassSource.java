@@ -42,12 +42,12 @@ import soot.tagkit.SourceFileTag;
 public class CoffiClassSource extends ClassSource {
   private static final Logger logger = LoggerFactory.getLogger(CoffiClassSource.class);
 
-  private FoundFile foundFile;
+  private IFoundFile foundFile;
   private InputStream classFile;
   private final String fileName;
   private final String zipFileName;
 
-  public CoffiClassSource(String className, FoundFile foundFile) {
+  public CoffiClassSource(String className, IFoundFile foundFile) {
     super(className);
     if (foundFile == null) {
       throw new IllegalStateException("Error: The FoundFile must not be null.");

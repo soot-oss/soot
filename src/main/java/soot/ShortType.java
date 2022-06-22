@@ -32,6 +32,8 @@ import soot.util.Switch;
 @SuppressWarnings("serial")
 public class ShortType extends PrimType implements IntegerType {
 
+  public static final int HASHCODE = 0x8B817DD3;
+
   public ShortType(Singletons.Global g) {
   }
 
@@ -41,7 +43,7 @@ public class ShortType extends PrimType implements IntegerType {
 
   @Override
   public int hashCode() {
-    return 0x8B817DD3;
+    return HASHCODE;
   }
 
   @Override
@@ -65,4 +67,15 @@ public class ShortType extends PrimType implements IntegerType {
       return DotnetBasicTypes.SYSTEM_INT16;
     return "java.lang.Short";
   }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Short.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return short.class;
+  }
+
 }

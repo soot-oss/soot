@@ -78,8 +78,8 @@ public class MethodSubSignature {
     this.methodName = methodName;
     this.returnType = returnType;
     this.parameterTypes = parameterTypes;
-    this.numberedSubSig
-        = new NumberedString(returnType + " " + methodName + "(" + Joiner.on(',').join(parameterTypes) + ")");
+    this.numberedSubSig = Scene.v().getSubSigNumberer()
+        .findOrAdd(returnType + " " + methodName + "(" + Joiner.on(',').join(parameterTypes) + ")");
   }
 
   /**
@@ -124,9 +124,7 @@ public class MethodSubSignature {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((methodName == null) ? 0 : methodName.hashCode());
-    result = prime * result + ((parameterTypes == null) ? 0 : parameterTypes.hashCode());
-    result = prime * result + ((returnType == null) ? 0 : returnType.hashCode());
+    result = prime * result + ((numberedSubSig == null) ? 0 : numberedSubSig.hashCode());
     return result;
   }
 
@@ -142,21 +140,11 @@ public class MethodSubSignature {
       return false;
     }
     MethodSubSignature other = (MethodSubSignature) obj;
-    if (methodName == null) {
-      if (other.methodName != null) {
+    if (numberedSubSig == null) {
+      if (other.numberedSubSig != null) {
         return false;
       }
-    } else if (!methodName.equals(other.methodName)) {
-      return false;
-    }
-    if (!parameterTypes.equals(other.parameterTypes)) {
-      return false;
-    }
-    if (returnType == null) {
-      if (other.returnType != null) {
-        return false;
-      }
-    } else if (!returnType.equals(other.returnType)) {
+    } else if (!numberedSubSig.equals(other.numberedSubSig)) {
       return false;
     }
     return true;

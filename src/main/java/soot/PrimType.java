@@ -35,6 +35,10 @@ public abstract class PrimType extends Type {
     return RefType.v(getTypeAsString());
   }
 
+  public abstract Class<?> getJavaBoxedType();
+
+  public abstract Class<?> getJavaPrimitiveType();
+
   @Override
   public boolean isAllowedInFinalCode() {
     return true;

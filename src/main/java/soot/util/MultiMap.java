@@ -23,7 +23,7 @@ package soot.util;
  */
 
 import heros.solver.Pair;
-
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,9 +45,9 @@ public interface MultiMap<K, V> extends Iterable<Pair<K, V>> {
 
   public boolean put(K key, V value);
 
-  public boolean putAll(K key, Set<V> values);
+  public boolean putAll(K key, Collection<V> values);
 
-  public boolean putAll(Map<K, Set<V>> m);
+  public boolean putAll(Map<K, Collection<V>> m);
 
   public boolean putMap(Map<K, V> m);
 
@@ -57,7 +57,7 @@ public interface MultiMap<K, V> extends Iterable<Pair<K, V>> {
 
   public boolean remove(K key);
 
-  public boolean removeAll(K key, Set<V> values);
+  public boolean removeAll(K key, Collection<V> values);
 
   public Set<V> get(K o);
 
