@@ -62,23 +62,23 @@ public abstract class AbstractFloatBinopExpr extends AbstractBinopExpr {
 
     // in dotnet enums are value types, such as myBool = 1 is allowed in CIL
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      if (t1 instanceof RefType) {
-        SootClass sootClass = ((RefType) t1).getSootClass();
-        if (sootClass != null) {
-          SootClass superclass = sootClass.getSuperclass();
-          if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM))
-            return tyInt;
-        }
-      }
-      if (t2 instanceof RefType) {
-        SootClass sootClass = ((RefType) t2).getSootClass();
-        if (sootClass != null) {
-          SootClass superclass = sootClass.getSuperclass();
-          if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM))
-            return tyInt;
-        }
-      }
+     if(isSuperclassSystemEnum(t1) || isSuperclassSystemEnum(t2))
+    	 return tyInt;
     }
     return UnknownType.v();
+}
+  
+  private boolean isSuperclassSystemEnum(Type t){
+	  if (t instanceof RefType) {
+	        SootClass sootClass = ((RefType) t).getSootClass();
+	        if (sootClass != null) {
+	          SootClass superclass = sootClass.getSuperclass();
+	          if(superclass == null)
+	        	return false;
+	          if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM))
+	            return true;
+	        }
+	      }
+	return false;
   }
 }
