@@ -22,11 +22,7 @@ package soot.jimple.spark.internal;
  * #L%
  */
 
-import soot.G;
-import soot.RefType;
-import soot.SootClass;
-import soot.SootField;
-import soot.SootMethod;
+import soot.*;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.ArrayElement;
 import soot.jimple.spark.pag.FieldRefNode;
@@ -94,17 +90,17 @@ public class SparkNativeHelper extends NativeHelper {
   }
 
   protected ReferenceVariable tempFieldImpl(String fieldsig) {
-    return pag.makeGlobalVarNode(new Pair("tempField", fieldsig), RefType.v("java.lang.Object"));
+    return pag.makeGlobalVarNode(new Pair("tempField", fieldsig), Scene.v().getObjectType());
   }
 
   protected ReferenceVariable tempVariableImpl() {
     return pag.makeGlobalVarNode(new Pair("TempVar", new Integer(++G.v().SparkNativeHelper_tempVar)),
-        RefType.v("java.lang.Object"));
+        Scene.v().getObjectType());
   }
 
   protected ReferenceVariable tempLocalVariableImpl(SootMethod method) {
     return pag.makeLocalVarNode(new Pair("TempVar", new Integer(++G.v().SparkNativeHelper_tempVar)),
-        RefType.v("java.lang.Object"), method);
+            Scene.v().getObjectType(), method);
   }
 
 }

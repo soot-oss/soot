@@ -49,6 +49,7 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
+import soot.dotnet.members.DotnetMethod;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.Main;
 import soot.jbco.util.BodyBuilder;
@@ -58,6 +59,7 @@ import soot.jimple.JimpleBody;
 import soot.jimple.NullConstant;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.ThisRef;
+import soot.options.Options;
 import soot.util.Chain;
 
 /**
@@ -126,7 +128,9 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
         }
 
         String subSig = method.getSubSignature();
-        if (subSig.equals("void main(java.lang.String[])") && method.isPublic() && method.isStatic()) {
+        if (subSig.equals(Options.v().src_prec() == Options.src_prec_dotnet ?
+                DotnetMethod.MAIN_METHOD_SIGNATURE :
+                "void main(java.lang.String[])") && method.isPublic() && method.isStatic()) {
           continue; // skip the main method - it needs to be named 'main'
         } else if (subSig.indexOf("init>(") > 0) {
           if (subSig.startsWith("void <init>(")) {

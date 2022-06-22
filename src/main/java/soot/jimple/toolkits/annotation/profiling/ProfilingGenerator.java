@@ -32,6 +32,7 @@ import soot.Scene;
 import soot.Singletons;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.dotnet.members.DotnetMethod;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
@@ -39,6 +40,7 @@ import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
+import soot.options.Options;
 import soot.options.ProfilingOptions;
 import soot.util.Chain;
 
@@ -50,7 +52,8 @@ public class ProfilingGenerator extends BodyTransformer {
     return G.v().soot_jimple_toolkits_annotation_profiling_ProfilingGenerator();
   }
 
-  public String mainSignature = "void main(java.lang.String[])";
+  public String mainSignature = Options.v().src_prec() != Options.src_prec_dotnet ?
+          "void main(java.lang.String[])" : DotnetMethod.MAIN_METHOD_SIGNATURE;
 
   // private String mainSignature = "long runBenchmark(java.lang.String[])";
 

@@ -26,6 +26,8 @@ import com.google.common.base.Optional;
 
 import java.util.ArrayDeque;
 
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
@@ -240,9 +242,13 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
   @Override
   public Type getArrayElementType() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet)
+      if (DotnetBasicTypes.SYSTEM_OBJECT.equals(className) || DotnetBasicTypes.SYSTEM_ICLONEABLE.equals(className))
+        return Scene.v().getObjectType();
+
     if ("java.lang.Object".equals(className) || "java.io.Serializable".equals(className)
         || "java.lang.Cloneable".equals(className)) {
-      return RefType.v("java.lang.Object");
+      return Scene.v().getObjectType();
     }
     throw new RuntimeException("Attempt to get array base type of a non-array");
   }

@@ -32,6 +32,16 @@ public class AnnotationEnumElem extends AnnotationElem {
   private String typeName;
   private String constantName;
 
+  /**
+   *
+   * @param typeName type of given enum (Foo.MyEnum)
+   * @param constantName name of given enum (BarEnum)
+   * @param elementName given element/parameter name
+   */
+  public AnnotationEnumElem(String typeName, String constantName, String elementName) {
+    this(typeName, constantName, 'e', elementName);
+  }
+
   public AnnotationEnumElem(String t, String c, char kind, String name) {
     super(kind, name);
     this.typeName = t;

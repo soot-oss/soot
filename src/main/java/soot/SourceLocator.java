@@ -22,35 +22,28 @@ package soot;
  * #L%
  */
 
+import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import org.jf.dexlib2.iface.DexFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmClassProvider;
 import soot.asm.AsmJava9ClassProvider;
 import soot.dexpler.DexFileProvider;
+import soot.dotnet.AssemblyFile;
+import soot.dotnet.DotnetClassProvider;
 import soot.options.Options;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Provides utility methods to retrieve an input stream for a class name, given a classfile, or jimple or baf output files.
@@ -84,7 +77,12 @@ public class SourceLocator {
                   return ClassSourceType.apk;
                 } else if (path.endsWith(".dex")) {
                   return ClassSourceType.dex;
-                } else {
+                } else if (path.endsWith(".exe")) {
+                  return ClassSourceType.exe;
+                } else if (path.endsWith(".dll")) {
+                  return ClassSourceType.dll;
+                }
+                else {
                   return ClassSourceType.unknown;
                 }
               }
@@ -116,12 +114,12 @@ public class SourceLocator {
    * Set containing all dex files that were appended to the classpath later on. The classes from these files are not yet
    * loaded and are still missing from dexClassIndex.
    */
-  private Set<String> dexClassPathExtensions;
+  private Set<String> classContainerFileClassPathExtensions; //TODO dokutext
   /**
-   * The index that maps classes to the files they are defined in. This is necessary because a dex file can hold multiple
+   * The index that maps classes to the files they are defined in. This is necessary because a dex/assembly file can hold multiple
    * classes.
    */
-  private Map<String, File> dexClassIndex;
+  private Map<String, File> classContainerFileClassIndex;
 
   public SourceLocator(Singletons.Global g) {
   }
@@ -274,6 +272,11 @@ public class SourceLocator {
         classProviders.add(classFileClassProvider);
         classProviders.add(new JimpleClassProvider());
         break;
+      case Options.src_prec_dotnet:
+        classProviders.add(new DotnetClassProvider());
+        classProviders.add(classFileClassProvider); //TODO remove
+        classProviders.add(new JimpleClassProvider());
+        break;
       default:
         throw new RuntimeException("Other source precedences are not currently supported.");
     }
@@ -289,7 +292,7 @@ public class SourceLocator {
 
   public void invalidateClassPath() {
     classPath = null;
-    dexClassIndex = null;
+    classContainerFileClassIndex = null;
   }
 
   public List<String> sourcePath() {
@@ -380,6 +383,54 @@ public class SourceLocator {
         /* Ignore unreadable files */
         logger.debug("" + e.getMessage());
       }
+    }
+    // load dotnet assemblies
+    else if ((Options.v().src_prec() == Options.src_prec_dotnet && cst == ClassSourceType.directory)
+            || cst == ClassSourceType.dll || cst == ClassSourceType.exe) {
+      if (Strings.isNullOrEmpty(Options.v().dotnet_nativehost_path()))
+        throw new RuntimeException("Dotnet NativeHost Path is not set! Use -dotnet-nativehost-path Soot parameter!");
+
+      File file = new File(aPath);
+      File[] files = new File[1];
+      if (cst == ClassSourceType.directory) {
+        File[] fileList = file.listFiles();
+
+        if (fileList == null)
+          return classes;
+        files = fileList;
+      }
+      else
+        files[0] = new File(aPath);
+
+      for (File element : files) {
+        if (element.isDirectory()) {
+          classes.addAll(getClassesUnder(aPath + File.separatorChar + element.getName()));
+        } else {
+          String fileName = element.getName();
+
+          if (fileName.endsWith(".dll") || fileName.endsWith(".exe")) {
+            try {
+              Map<String, File> classContainerIndex = SourceLocator.v().classContainerFileClassIndex();
+              AssemblyFile assemblyFile;
+              String canonicalPath = element.getCanonicalPath();
+              if (classContainerIndex.containsKey(canonicalPath))
+                assemblyFile = (AssemblyFile) classContainerIndex.get(canonicalPath);
+              else {
+                assemblyFile = new AssemblyFile(canonicalPath);
+                if (!assemblyFile.isAssembly())
+                  continue;
+              }
+              List<String> allClassNames = assemblyFile.getAllTypeNames();
+              if (allClassNames != null)
+                classes.addAll(allClassNames);
+            } catch (IOException e) {
+              /* Ignore unreadable files */
+              logger.debug("" + e.getMessage());
+            }
+          }
+        }
+      }
+
     } else if (cst == ClassSourceType.directory) {
       File file = new File(aPath);
 
@@ -662,31 +713,33 @@ public class SourceLocator {
   }
 
   /**
-   * Return the dex class index that maps class names to files
+   * Return the class index that maps class names to dex/assembly(exe/dll) files.
+   * A dex/exe/dll file contains multiple classes and is not structured as a "folder structure"
    *
    * @return the index
    */
-  public Map<String, File> dexClassIndex() {
-    return dexClassIndex;
+  public Map<String, File> classContainerFileClassIndex() {
+    return classContainerFileClassIndex;
   }
 
   /**
-   * Set the dex class index
+   * Set the class_container (dex, assembly) class index
    *
    * @param index
    *          the index
    */
-  public void setDexClassIndex(Map<String, File> index) {
-    dexClassIndex = index;
+  public void setClassContainerFileClassIndex(Map<String, File> index) {
+    classContainerFileClassIndex = index;
   }
 
   public void extendClassPath(String newPathElement) {
     classPath = null;
-    if (newPathElement.endsWith(".dex") || newPathElement.endsWith(".apk")) {
-      if (dexClassPathExtensions == null) {
-        dexClassPathExtensions = new HashSet<String>();
+    if (newPathElement.endsWith(".dex") || newPathElement.endsWith(".apk")
+            || newPathElement.endsWith(".exe") || newPathElement.endsWith(".dll")) {
+      if (classContainerFileClassPathExtensions == null) {
+        classContainerFileClassPathExtensions = new HashSet<>();
       }
-      dexClassPathExtensions.add(newPathElement);
+      classContainerFileClassPathExtensions.add(newPathElement);
     }
   }
 
@@ -694,20 +747,20 @@ public class SourceLocator {
    * Gets all files that were added to the classpath later on and that have not yet been processed for the dexClassIndex
    * mapping
    *
-   * @return The set of dex or apk files that still need to be indexed
+   * @return The set of dex or apk or assembly (exe/dll) files that still need to be indexed
    */
-  public Set<String> getDexClassPathExtensions() {
-    return this.dexClassPathExtensions;
+  public Set<String> getClassContainerFileClassPathExtensions() {
+    return this.classContainerFileClassPathExtensions;
   }
 
   /**
-   * Clears the set of dex or apk files that still need to be indexed
+   * Clears the set of dex or apk or assembly files that still need to be indexed
    */
-  public void clearDexClassPathExtensions() {
-    this.dexClassPathExtensions = null;
+  public void clearClassContainerFileClassPathExtensions() {
+    this.classContainerFileClassPathExtensions = null;
   }
 
   protected enum ClassSourceType {
-    jar, zip, apk, dex, directory, jrt, unknown
+    jar, zip, apk, dex, directory, jrt, unknown, exe, dll
   }
 }

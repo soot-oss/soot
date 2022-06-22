@@ -142,6 +142,7 @@
   <class>soot.toolkits.exceptions.PedanticThrowAnalysis</class>
   <class>soot.toolkits.exceptions.TrapTightener</class>
   <class>soot.toolkits.exceptions.DuplicateCatchAllTrapRemover</class>
+  <class>soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis</class>
   <class>soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher</class>
   <class>soot.SootResolver</class>
   <class>soot.SootModuleResolver</class>

@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
@@ -58,7 +60,9 @@ public class IntType extends PrimType implements IntegerType {
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Integer");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet)
+      return DotnetBasicTypes.SYSTEM_INT32;
+    return "java.lang.Integer";
   }
 }

@@ -37,8 +37,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-
 import soot.jimple.spark.internal.TypeManager;
+
+import soot.dotnet.types.DotnetBasicTypes;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
@@ -101,6 +102,12 @@ public class FastHierarchy {
   protected final RefType rtObject;
   protected final RefType rtSerializable;
   protected final RefType rtCloneable;
+  protected final RefType cilArray;
+  protected final RefType cilIcomparable1;
+  protected final RefType cilIcomparable;
+  protected final RefType cilIconvertible;
+  protected final RefType cilIequatable1;
+  protected final RefType cilIformattable;
 
   protected class Interval {
     int lower;
@@ -151,12 +158,19 @@ public class FastHierarchy {
     this.rtObject = sc.getObjectType();
     this.rtSerializable = RefType.v("java.io.Serializable");
     this.rtCloneable = RefType.v("java.lang.Cloneable");
+    this.cilArray = RefType.v(DotnetBasicTypes.SYSTEM_ARRAY);
+    // for CIL prim type structs, which implement these interfaces
+    this.cilIcomparable = RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE);
+    this.cilIcomparable1 = RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE_1);
+    this.cilIconvertible = RefType.v(DotnetBasicTypes.SYSTEM_ICONVERTIBLE);
+    this.cilIequatable1 = RefType.v(DotnetBasicTypes.SYSTEM_IEQUATABLE_1);
+    this.cilIformattable = RefType.v(DotnetBasicTypes.SYSTEM_IFORMATTABLE);
 
     /* First build the inverse maps. */
     buildInverseMaps();
 
     /* Now do a dfs traversal to get the Interval numbers. */
-    int r = dfsVisit(0, sc.getSootClass("java.lang.Object"));
+    int r = dfsVisit(0, sc.getObjectType().getSootClass());
     /*
      * also have to traverse for all phantom classes because they also can be roots of the type hierarchy
      */
@@ -282,12 +296,14 @@ public class FastHierarchy {
       }
     } else if (child instanceof AnySubType) {
       if (!(parent instanceof RefLikeType)) {
-        throw new RuntimeException("Unhandled type " + parent);
+        throw new RuntimeException("Unhandled type " + parent + "! Type " + child + " cannot be stored in type " + parent);
       } else if (parent instanceof ArrayType) {
-        // SA, 2021-09-15. Someone previously misinterpreted the Java Language Spec here. All array types implement
-        // Serializable and Cloneable, and that allows you to assign an array Foo[] to a variable of type Serializable.
-        // However, it doesn't work the other way round. You can't assign a Serializable to a variable of type Foo[].
-        return false;
+        Type base = ((AnySubType) child).getBase();
+        // System.Array base class of arrays in CIL
+        if (Options.v().src_prec() == Options.src_prec_dotnet)
+          return base == cilArray;
+        // From Java Language Spec 2nd ed., Chapter 10, Arrays
+        return base == rtObject || base == rtSerializable || base == rtCloneable;
       } else {
         Deque<SootClass> worklist = new ArrayDeque<SootClass>();
         SootClass base = ((AnySubType) child).getBase().getSootClass();
@@ -313,6 +329,9 @@ public class FastHierarchy {
       }
     } else if (child instanceof ArrayType) {
       if (parent instanceof RefType) {
+        // base class System.Array for all arrays
+        if (Options.v().src_prec() == Options.src_prec_dotnet)
+          return parent == cilArray;
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
         return parent == rtObject || parent == rtSerializable || parent == rtCloneable;
       } else if (parent instanceof ArrayType) {
@@ -332,6 +351,8 @@ public class FastHierarchy {
           }
         } else if (achild.numDimensions > aparent.numDimensions) {
           final Type pBaseType = aparent.baseType;
+          if (Options.v().src_prec() == Options.src_prec_dotnet)
+            return pBaseType == cilArray;
           return pBaseType == rtObject || pBaseType == rtSerializable || pBaseType == rtCloneable;
         } else {
           return false;
@@ -339,7 +360,16 @@ public class FastHierarchy {
       } else {
         return false;
       }
-    } else {
+    } else if (Options.v().src_prec() == Options.src_prec_dotnet
+            && child instanceof PrimType
+            && parent instanceof RefType) {
+      // only dotnet
+      // if right type prim type struct which implements these interfaces
+      // if generic, base class System.Object is possible
+      return parent == cilIcomparable || parent == cilIcomparable1 || parent == cilIconvertible
+              || parent == cilIformattable || parent == cilIequatable1 || parent == rtObject;
+    }
+    else {
       return false;
     }
   }
@@ -486,7 +516,7 @@ public class FastHierarchy {
       } else if (t instanceof ArrayType) {
         SootMethod concreteM;
         try {
-          concreteM = resolveConcreteDispatch(RefType.v("java.lang.Object").getSootClass(), m);
+          concreteM = resolveConcreteDispatch(sc.getObjectType().getSootClass(), m);
         } catch (Exception e) {
           concreteM = null;
         }
@@ -928,12 +958,32 @@ public class FastHierarchy {
    */
   private SootMethod getSignaturePolymorphicMethod(SootClass concreteType, String name, List<Type> parameterTypes,
       Type returnType) {
+    if (concreteType == null)
+      throw new RuntimeException("The concreteType cannot not be null!");
     SootMethod candidate = null;
     for (SootMethod method : concreteType.getMethods()) {
       if (method.getName().equals(name) && method.getParameterTypes().equals(parameterTypes)
           && canStoreType(method.getReturnType(), returnType)) {
         candidate = method;
         returnType = method.getReturnType();
+      }
+      // if dotnet structs or generics
+      if (Options.v().src_prec() == Options.src_prec_dotnet) {
+        if (method.getName().equals(name) && method.getParameterCount() == parameterTypes.size() &&
+                canStoreType(returnType, method.getReturnType())) {
+          boolean canStore = true;
+          for (int i = 0; i < method.getParameterCount(); i++) {
+              Type methodParameter = method.getParameterType(i);
+              Type calleeParameter = parameterTypes.get(i);
+              // base class can System.Object
+              if (!(methodParameter.equals(calleeParameter) || canStoreType(calleeParameter, methodParameter)))
+                canStore = false;
+            }
+            if (canStore) {
+              candidate = method;
+              returnType = method.getReturnType();
+            }
+        }
       }
     }
     return candidate;
@@ -954,7 +1004,7 @@ public class FastHierarchy {
 
   /**
    * Returns a list of types which can be used to store the given type
-   * 
+   *
    * @param nt
    *          the given type
    * @return the list of types which can be used to store the given type

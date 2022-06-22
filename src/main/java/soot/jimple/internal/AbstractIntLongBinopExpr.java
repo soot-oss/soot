@@ -22,15 +22,9 @@ package soot.jimple.internal;
  * #L%
  */
 
-import soot.BooleanType;
-import soot.ByteType;
-import soot.CharType;
-import soot.IntType;
-import soot.LongType;
-import soot.ShortType;
-import soot.Type;
-import soot.UnknownType;
-import soot.ValueBox;
+import soot.*;
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.options.Options;
 
 @SuppressWarnings("serial")
 public abstract class AbstractIntLongBinopExpr extends AbstractBinopExpr {
@@ -61,6 +55,26 @@ public abstract class AbstractIntLongBinopExpr extends AbstractBinopExpr {
     final LongType tyLong = LongType.v();
     if (tyLong.equals(t1) && tyLong.equals(t2)) {
       return tyLong;
+    }
+
+    // in dotnet enums are value types, such as myBool = 1 is allowed in CIL
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      if (t1 instanceof RefType) {
+        SootClass sootClass = ((RefType) t1).getSootClass();
+        if (sootClass != null) {
+          SootClass superclass = sootClass.getSuperclass();
+          if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM))
+            return tyInt;
+        }
+      }
+      if (t2 instanceof RefType) {
+        SootClass sootClass = ((RefType) t2).getSootClass();
+        if (sootClass != null) {
+          SootClass superclass = sootClass.getSuperclass();
+          if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM))
+            return tyInt;
+        }
+      }
     }
     return UnknownType.v();
   }

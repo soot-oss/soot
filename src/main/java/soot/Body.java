@@ -111,6 +111,8 @@ public abstract class Body extends AbstractHost implements Serializable {
   @Override
   abstract public Object clone();
 
+  abstract public Object clone(boolean noLocalsClone);
+
   /**
    * Creates a Body associated to the given method. Used by subclasses during initialization. Creation of a Body is triggered
    * by e.g. Jimple.v().newBody(options).
@@ -175,6 +177,16 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @return
    */
   public Map<Object, Object> importBodyContentsFrom(Body b) {
+    return importBodyContentsFrom(b, false);
+  }
+
+  /**
+   * Copies the contents of the given Body into this one. If bool set true, no clone for locals
+   * @param b body to clone
+   * @param noLocalsClone if true the locals are not cloned, only referenced
+   * @return cloned body
+   */
+  public Map<Object, Object> importBodyContentsFrom(Body b, boolean noLocalsClone) {
     HashMap<Object, Object> bindings = new HashMap<>();
 
     // Clone units in body's statement list
@@ -203,15 +215,24 @@ public abstract class Body extends AbstractHost implements Serializable {
       bindings.put(original, copy);
     }
 
-    // Clone local units.
-    for (Local original : b.getLocals()) {
-      Local copy = (Local) original.clone();
+    if (!noLocalsClone)
+    {
+      // Clone local units.
+      for (Local original : b.getLocals()) {
+        Local copy = (Local) original.clone();
 
-      // Add cloned unit to our trap list.
-      localChain.addLast(copy);
+        // Add cloned unit to our trap list.
+        localChain.addLast(copy);
 
-      // Build old <-> new mapping.
-      bindings.put(original, copy);
+        // Build old <-> new mapping.
+        bindings.put(original, copy);
+      }
+    }
+    else
+    {
+      // no clone, same references to existing locals
+      // important for copying jimple bodies at dotnet and try/finally
+      localChain.addAll(b.getLocals());
     }
 
     // Patch up references within units using our (old <-> new) map.
@@ -223,6 +244,7 @@ public abstract class Body extends AbstractHost implements Serializable {
       }
     }
 
+    if (!noLocalsClone)
     {
       // backpatching all local variables.
       for (ValueBox vb : getUseBoxes()) {

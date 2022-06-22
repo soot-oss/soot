@@ -25,12 +25,7 @@ package soot.jimple.toolkits.pointer;
 import java.util.Collections;
 import java.util.Set;
 
-import soot.AnySubType;
-import soot.G;
-import soot.PointsToSet;
-import soot.RefType;
-import soot.Singletons;
-import soot.Type;
+import soot.*;
 import soot.jimple.ClassConstant;
 
 public class FullObjectSet extends Union {
@@ -42,11 +37,19 @@ public class FullObjectSet extends Union {
   }
 
   public static FullObjectSet v(RefType t) {
-    return ("java.lang.Object".equals(t.getClassName())) ? v() : new FullObjectSet(t);
+    return (Scene.v().getObjectType().toString().equals(t.getClassName())) ? v() : new FullObjectSet(t);
+  }
+
+  public static FullObjectSet v(PrimType t) {
+    return new FullObjectSet(t);
   }
 
   public FullObjectSet(Singletons.Global g) {
-    this(RefType.v("java.lang.Object"));
+    this(Scene.v().getObjectType());
+  }
+
+  private FullObjectSet(PrimType declaredType) {
+    this.types = Collections.singleton(declaredType);
   }
 
   private FullObjectSet(RefType declaredType) {

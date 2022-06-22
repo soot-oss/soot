@@ -75,6 +75,7 @@ import soot.Type;
 import soot.Unit;
 import soot.UnitPatchingChain;
 import soot.Value;
+import soot.dotnet.members.DotnetMethod;
 import soot.jimple.AssignStmt;
 import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.FieldRef;
@@ -201,7 +202,10 @@ public class OnFlyCallGraphBuilder {
     final Scene sc = Scene.v();
     {
       final StringNumberer nmbr = sc.getSubSigNumberer();
-      this.sigFinalize = nmbr.findOrAdd("void finalize()");
+      if (Options.v().src_prec() == Options.src_prec_dotnet)
+        this.sigFinalize = nmbr.findOrAdd("void " + DotnetMethod.DESTRUCTOR_NAME + "()");
+      else
+        this.sigFinalize = nmbr.findOrAdd("void finalize()");
       this.sigInit = nmbr.findOrAdd("void <init>()");
       this.sigForName = nmbr.findOrAdd("java.lang.Class forName(java.lang.String)");
     }
@@ -243,7 +247,7 @@ public class OnFlyCallGraphBuilder {
   /**
    * Initializes the edge summaries that model callbacks in library classes. Custom implementations may override this method
    * to supply a specialized summary provider.
-   * 
+   *
    * @return A provider object for virtual edge summaries
    */
   protected VirtualEdgesSummaries initializeEdgeSummaries() {
@@ -1311,7 +1315,7 @@ public class OnFlyCallGraphBuilder {
           case "print":
             // logger.error(exc.getMessage(), exc);
             VirtualInvokeExpr printStackTraceExpr = jimp.newVirtualInvokeExpr(exceptionLocal, Scene.v()
-                .getSootClass("java.lang.Throwable").getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
+                .getSootClass(Scene.v().getBaseExceptionType().toString()).getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
             units.insertAfter(jimp.newInvokeStmt(printStackTraceExpr), initStmt);
             break;
           case "throw":
@@ -1368,7 +1372,7 @@ public class OnFlyCallGraphBuilder {
             return;
           }
           SootClass superclass = currClass.getSuperclass();
-          if (superclass.isPhantom() || "java.lang.Object".equals(superclass.getName())) {
+          if (superclass.isPhantom() || Scene.v().getObjectType().toString().equals(superclass.getName())) {
             methodIterator = null;
             return;
           } else {

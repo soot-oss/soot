@@ -185,7 +185,7 @@ import soot.util.Chain;
  * classes.
  * </p>
  * <p>
- * If the printer has found the original {@code APK} of an added class (via {@link SourceLocator#dexClassIndex()}), the files
+ * If the printer has found the original {@code APK} of an added class (via {@link SourceLocator#classContainerFileClassIndex()}), the files
  * in the {@code APK} are copied to a new one, replacing it's {@code classes.dex} and excluding the signature files. Note
  * that you have to sign and align the APK yourself, with jarsigner and zipalign, respectively.
  * </p>
@@ -1686,7 +1686,7 @@ public class DexPrinter {
     addAsClassDefItem(c);
     // save original APK for this class, needed to copy all the other files
     // inside
-    Map<String, File> dexClassIndex = SourceLocator.v().dexClassIndex();
+    Map<String, File> dexClassIndex = SourceLocator.v().classContainerFileClassIndex();
     if (dexClassIndex == null) {
       return; // no dex classes were loaded
     }

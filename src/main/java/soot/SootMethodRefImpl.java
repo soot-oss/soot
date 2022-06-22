@@ -28,8 +28,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import soot.javaToJimple.DefaultLocalGenerator;
+import soot.dotnet.types.DotnetBasicTypes;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
@@ -85,7 +84,8 @@ public class SootMethodRefImpl implements SootMethodRef {
       throw new IllegalArgumentException("Attempt to create SootMethodRef with null name");
     }
     if (returnType == null) {
-      throw new IllegalArgumentException("Attempt to create SootMethodRef with null returnType");
+      throw new IllegalArgumentException("Attempt to create SootMethodRef with null returnType (Method: " + name
+              + " at declaring class: " + declaringClass.getName() + ")");
     }
 
     this.declaringClass = declaringClass;
@@ -325,6 +325,8 @@ public class SootMethodRefImpl implements SootMethodRef {
 
     // exc = new Error
     RefType runtimeExceptionType = RefType.v("java.lang.Error");
+    if (Options.v().src_prec() == Options.src_prec_dotnet)
+      runtimeExceptionType = RefType.v(DotnetBasicTypes.SYSTEM_EXCEPTION);
     Local exceptionLocal = lg.generateLocal(runtimeExceptionType);
     AssignStmt assignStmt = jimp.newAssignStmt(exceptionLocal, jimp.newNewExpr(runtimeExceptionType));
     body.getUnits().add(assignStmt);
@@ -332,6 +334,9 @@ public class SootMethodRefImpl implements SootMethodRef {
     // exc.<init>(message)
     SootMethodRef cref = Scene.v().makeConstructorRef(runtimeExceptionType.getSootClass(),
         Collections.<Type>singletonList(RefType.v("java.lang.String")));
+    if (Options.v().src_prec() == Options.src_prec_dotnet)
+      cref = Scene.v().makeConstructorRef(runtimeExceptionType.getSootClass(),
+              Collections.<Type>singletonList(RefType.v(DotnetBasicTypes.SYSTEM_STRING)));
     SpecialInvokeExpr constructorInvokeExpr = jimp.newSpecialInvokeExpr(exceptionLocal, cref,
         StringConstant.v("Unresolved compilation error: Method " + getSignature() + " does not exist!"));
     InvokeStmt initStmt = jimp.newInvokeStmt(constructorInvokeExpr);
