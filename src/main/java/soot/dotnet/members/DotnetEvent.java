@@ -75,7 +75,7 @@ public class DotnetEvent extends AbstractDotnetMember {
     private MethodSource createMethodSource(EventDirective eventMethodType) {
         return (m, phaseName) -> {
             // Get body of method
-            AssemblyFile assemblyFile = (AssemblyFile) SourceLocator.v().getDexClassIndex().get(declaringClass.getName());
+            AssemblyFile assemblyFile = (AssemblyFile) SourceLocator.v().dexClassIndex().get(declaringClass.getName());
             ProtoIlInstructions.IlFunctionMsg ilFunctionMsg = assemblyFile.getMethodBodyOfEvent(declaringClass.getName(), protoEvent.getName(), eventMethodType);
 
             // add jimple body and jimplify

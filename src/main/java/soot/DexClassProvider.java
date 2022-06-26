@@ -65,7 +65,7 @@ public class DexClassProvider implements ClassProvider {
   public ClassSource find(String className) {
     ensureDexIndex();
 
-    File file = SourceLocator.v().getDexClassIndex().get(className);
+    File file = SourceLocator.v().dexClassIndex().get(className);
     return (file == null) ? null : new DexClassSource(className, file);
   }
 
@@ -74,7 +74,7 @@ public class DexClassProvider implements ClassProvider {
    */
   protected void ensureDexIndex() {
     final SourceLocator loc = SourceLocator.v();
-    Map<String, File> index = loc.getDexClassIndex();
+    Map<String, File> index = loc.dexClassIndex();
     if (index == null) {
       index = new HashMap<String, File>();
       buildDexIndex(index, loc.classPath());

@@ -1686,7 +1686,7 @@ public class DexPrinter {
     addAsClassDefItem(c);
     // save original APK for this class, needed to copy all the other files
     // inside
-    Map<String, File> dexClassIndex = SourceLocator.v().getDexClassIndex();
+    Map<String, File> dexClassIndex = SourceLocator.v().dexClassIndex();
     if (dexClassIndex == null) {
       return; // no dex classes were loaded
     }

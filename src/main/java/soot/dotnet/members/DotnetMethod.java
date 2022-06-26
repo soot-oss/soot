@@ -163,7 +163,7 @@ public class DotnetMethod extends AbstractDotnetMember {
     private MethodSource createMethodSource() {
         return (m, phaseName) -> {
             // Get body of method
-            AssemblyFile assemblyFile = (AssemblyFile) SourceLocator.v().getDexClassIndex().get(declaringClass.getName());
+            AssemblyFile assemblyFile = (AssemblyFile) SourceLocator.v().dexClassIndex().get(declaringClass.getName());
             ProtoIlInstructions.IlFunctionMsg ilFunctionMsg = assemblyFile.getMethodBody(declaringClass.getName(), m.getName(), protoMethod.getPeToken());
 
             Body b = this.jimplifyMethodBody(ilFunctionMsg);

@@ -414,7 +414,7 @@ public class SourceLocator {
 
           if (fileName.endsWith(".dll") || fileName.endsWith(".exe")) {
             try {
-              Map<String, File> classContainerIndex = SourceLocator.v().getDexClassIndex();
+              Map<String, File> classContainerIndex = SourceLocator.v().dexClassIndex();
               AssemblyFile assemblyFile;
               String canonicalPath = element.getCanonicalPath();
               if (classContainerIndex.containsKey(canonicalPath))
@@ -705,7 +705,7 @@ public class SourceLocator {
    *
    * @return the index
    */
-  public Map<String, File> getDexClassIndex() {
+  public Map<String, File> dexClassIndex() {
     return dexClassIndex;
   }
 

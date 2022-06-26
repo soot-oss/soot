@@ -33,7 +33,7 @@ public class DotnetClassProvider implements ClassProvider {
         if (className.equals(DotnetBasicTypes.FAKE_LDFTN))
             return new DotnetClassSource(className, null);
 
-        File assemblyFile = SourceLocator.v().getDexClassIndex().get(className);
+        File assemblyFile = SourceLocator.v().dexClassIndex().get(className);
         return assemblyFile == null ? null : new DotnetClassSource(className, assemblyFile);
     }
 
@@ -41,7 +41,7 @@ public class DotnetClassProvider implements ClassProvider {
      * Generate index of all assembly files with their types. An assembly file contains several types in one file
      */
     private void ensureAssemblyIndex() {
-        Map<String, File> index = SourceLocator.v().getDexClassIndex();
+        Map<String, File> index = SourceLocator.v().dexClassIndex();
         if (index == null) {
             if (Options.v().verbose())
                 logger.info("Creating assembly index");
