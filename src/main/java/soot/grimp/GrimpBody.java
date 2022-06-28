@@ -83,8 +83,11 @@ public class GrimpBody extends StmtBody {
 
   @Override
   public Object clone(boolean noLocalsClone) {
-    // not implemented
-    return null;
+    if (noLocalsClone) {
+      return new GrimpBody(this);
+    } else {
+      return this.clone();
+    }
   }
 
   /**

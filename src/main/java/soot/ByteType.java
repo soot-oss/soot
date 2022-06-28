@@ -65,7 +65,7 @@ public class ByteType extends PrimType implements IntegerType {
   public String getTypeAsString() {
     if (Options.v().src_prec() == Options.src_prec_dotnet)
       return DotnetBasicTypes.SYSTEM_BYTE;
-    return "java.lang.Byte";
+    return JavaBasicTypes.JAVA_LANG_BYTE;
   }
 
   @Override

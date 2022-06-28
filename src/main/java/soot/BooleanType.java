@@ -65,7 +65,7 @@ public class BooleanType extends PrimType implements IntegerType {
   public String getTypeAsString() {
     if (Options.v().src_prec() == Options.src_prec_dotnet)
       return DotnetBasicTypes.SYSTEM_BOOLEAN;
-    return "java.lang.Boolean";
+    return JavaBasicTypes.JAVA_LANG_BOOLEAN;
   }
 
   @Override

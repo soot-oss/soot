@@ -65,7 +65,7 @@ public class LongType extends PrimType {
   public String getTypeAsString() {
     if (Options.v().src_prec() == Options.src_prec_dotnet)
       return DotnetBasicTypes.SYSTEM_INT64;
-    return "java.lang.Long";
+    return JavaBasicTypes.JAVA_LANG_LONG;
   }
 
   @Override

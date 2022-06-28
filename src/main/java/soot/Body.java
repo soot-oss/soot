@@ -109,7 +109,9 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @return
    */
   @Override
-  abstract public Object clone();
+  public Object clone() {
+    return clone(true);
+  }
 
   abstract public Object clone(boolean noLocalsClone);
 
@@ -182,8 +184,11 @@ public abstract class Body extends AbstractHost implements Serializable {
 
   /**
    * Copies the contents of the given Body into this one. If bool set true, no clone for locals
-   * @param b body to clone
-   * @param noLocalsClone if true the locals are not cloned, only referenced
+   * 
+   * @param b
+   *          body to clone
+   * @param noLocalsClone
+   *          if true the locals are not cloned, only referenced
    * @return cloned body
    */
   public Map<Object, Object> importBodyContentsFrom(Body b, boolean noLocalsClone) {
@@ -215,8 +220,7 @@ public abstract class Body extends AbstractHost implements Serializable {
       bindings.put(original, copy);
     }
 
-    if (!noLocalsClone)
-    {
+    if (!noLocalsClone) {
       // Clone local units.
       for (Local original : b.getLocals()) {
         Local copy = (Local) original.clone();
@@ -227,9 +231,7 @@ public abstract class Body extends AbstractHost implements Serializable {
         // Build old <-> new mapping.
         bindings.put(original, copy);
       }
-    }
-    else
-    {
+    } else {
       // no clone, same references to existing locals
       // important for copying jimple bodies at dotnet and try/finally
       localChain.addAll(b.getLocals());
@@ -244,8 +246,7 @@ public abstract class Body extends AbstractHost implements Serializable {
       }
     }
 
-    if (!noLocalsClone)
-    {
+    if (!noLocalsClone) {
       // backpatching all local variables.
       for (ValueBox vb : getUseBoxes()) {
         Value val = vb.getValue();

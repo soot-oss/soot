@@ -1,5 +1,7 @@
 package soot.shimple;
 
+import java.util.HashMap;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -203,8 +205,11 @@ public class ShimpleBody extends StmtBody {
 
   @Override
   public Object clone(boolean noLocalsClone) {
-    // not implemented
-    return null;
+    if (noLocalsClone) {
+      return new ShimpleBody(this, new HashMap<String, String>());
+    } else {
+      return this.clone();
+    }
   }
 
   /**

@@ -51,6 +51,7 @@ import soot.EntryPoints;
 import soot.FastHierarchy;
 import soot.FloatType;
 import soot.IntType;
+import soot.JavaMethods;
 import soot.Kind;
 import soot.Local;
 import soot.LocalGenerator;
@@ -205,9 +206,9 @@ public class OnFlyCallGraphBuilder {
       if (Options.v().src_prec() == Options.src_prec_dotnet)
         this.sigFinalize = nmbr.findOrAdd("void " + DotnetMethod.DESTRUCTOR_NAME + "()");
       else
-        this.sigFinalize = nmbr.findOrAdd("void finalize()");
-      this.sigInit = nmbr.findOrAdd("void <init>()");
-      this.sigForName = nmbr.findOrAdd("java.lang.Class forName(java.lang.String)");
+        this.sigFinalize = nmbr.findOrAdd(JavaMethods.SIG_FINALIZE);
+      this.sigInit = nmbr.findOrAdd(JavaMethods.SIG_INIT);
+      this.sigForName = nmbr.findOrAdd(JavaMethods.SIG_INIT);
     }
     {
       this.receiverToSites = new LargeNumberedMap<Local, List<VirtualCallSite>>(sc.getLocalNumberer());
@@ -1317,8 +1318,9 @@ public class OnFlyCallGraphBuilder {
         switch (options.guards()) {
           case "print":
             // logger.error(exc.getMessage(), exc);
-            VirtualInvokeExpr printStackTraceExpr = jimp.newVirtualInvokeExpr(exceptionLocal, Scene.v()
-                .getSootClass(Scene.v().getBaseExceptionType().toString()).getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
+            VirtualInvokeExpr printStackTraceExpr = jimp.newVirtualInvokeExpr(exceptionLocal,
+                Scene.v().getSootClass(Scene.v().getBaseExceptionType().toString())
+                    .getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
             units.insertAfter(jimp.newInvokeStmt(printStackTraceExpr), initStmt);
             break;
           case "throw":

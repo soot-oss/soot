@@ -1,5 +1,32 @@
 package soot;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import org.jf.dexlib2.iface.DexFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -30,9 +57,6 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 
-import org.jf.dexlib2.iface.DexFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmClassProvider;
 import soot.asm.AsmJava9ClassProvider;
@@ -41,20 +65,6 @@ import soot.dotnet.AssemblyFile;
 import soot.dotnet.DotnetClassProvider;
 import soot.options.Options;
 import soot.util.SharedCloseable;
-
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * Provides utility methods to retrieve an input stream for a class name, given a classfile, or jimple or baf output files.
@@ -114,7 +124,7 @@ public class SourceLocator {
                   case ".exe":
                     return ClassSourceType.exe;
                   case ".dll":
-                      return ClassSourceType.dll;
+                    return ClassSourceType.dll;
                   default:
                     return Scene.isApk(new File(path)) ? ClassSourceType.apk : ClassSourceType.unknown;
                 }
@@ -292,7 +302,6 @@ public class SourceLocator {
         break;
       case Options.src_prec_dotnet:
         classProviders.add(new DotnetClassProvider());
-        classProviders.add(classFileClassProvider); //TODO remove
         classProviders.add(new JimpleClassProvider());
         break;
       default:
@@ -390,7 +399,7 @@ public class SourceLocator {
     }
     // load dotnet assemblies
     else if ((Options.v().src_prec() == Options.src_prec_dotnet && cst == ClassSourceType.directory)
-            || cst == ClassSourceType.dll || cst == ClassSourceType.exe) {
+        || cst == ClassSourceType.dll || cst == ClassSourceType.exe) {
       if (Strings.isNullOrEmpty(Options.v().dotnet_nativehost_path()))
         throw new RuntimeException("Dotnet NativeHost Path is not set! Use -dotnet-nativehost-path Soot parameter!");
 
@@ -402,8 +411,7 @@ public class SourceLocator {
         if (fileList == null)
           return classes;
         files = fileList;
-      }
-      else
+      } else
         files[0] = new File(aPath);
 
       for (File element : files) {
@@ -700,8 +708,8 @@ public class SourceLocator {
   }
 
   /**
-   * Return the class index that maps class names to dex/assembly(exe/dll) files.
-   * A dex/exe/dll file contains multiple classes and is not structured as a "folder structure"
+   * Return the class index that maps class names to dex/assembly(exe/dll) files. A dex/exe/dll file contains multiple
+   * classes and is not structured as a "folder structure"
    *
    * @return the index
    */
@@ -721,8 +729,8 @@ public class SourceLocator {
 
   public void extendClassPath(String newPathElement) {
     classPath = null;
-    if (newPathElement.endsWith(".dex") || newPathElement.endsWith(".apk")
-    || newPathElement.endsWith(".exe") || newPathElement.endsWith(".dll")) {
+    if (newPathElement.endsWith(".dex") || newPathElement.endsWith(".apk") || newPathElement.endsWith(".exe")
+        || newPathElement.endsWith(".dll")) {
       Set<String> dexClassPathExtensions = this.dexClassPathExtensions;
       if (dexClassPathExtensions == null) {
         dexClassPathExtensions = new HashSet<String>();

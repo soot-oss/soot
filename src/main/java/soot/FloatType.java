@@ -65,7 +65,7 @@ public class FloatType extends PrimType {
   public String getTypeAsString() {
     if (Options.v().src_prec() == Options.src_prec_dotnet)
       return DotnetBasicTypes.SYSTEM_SINGLE;
-    return "java.lang.Float";
+    return JavaBasicTypes.JAVA_LANG_FLOAT;
   }
 
   @Override

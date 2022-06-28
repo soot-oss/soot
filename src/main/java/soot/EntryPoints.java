@@ -1,5 +1,11 @@
 package soot;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,8 +33,6 @@ import soot.options.Options;
 import soot.util.NumberedString;
 import soot.util.StringNumberer;
 
-import java.util.*;
-
 /**
  * Returns the various potential entry points of a Java program.
  * 
@@ -53,17 +57,17 @@ public class EntryPoints {
       sigMain = subSigNumberer.findOrAdd(DotnetMethod.MAIN_METHOD_SIGNATURE);
       sigFinalize = subSigNumberer.findOrAdd("void " + DotnetMethod.DESTRUCTOR_NAME + "()");
     } else {
-      sigMain = subSigNumberer.findOrAdd("void main(java.lang.String[])");
-      sigFinalize = subSigNumberer.findOrAdd("void finalize()");
+      sigMain = subSigNumberer.findOrAdd(JavaMethods.SIG_MAIN);
+      sigFinalize = subSigNumberer.findOrAdd(JavaMethods.SIG_FINALIZE);
     }
 
-    sigExit = subSigNumberer.findOrAdd("void exit()");
-    sigClinit = subSigNumberer.findOrAdd("void <clinit>()");
-    sigInit = subSigNumberer.findOrAdd("void <init>()");
-    sigStart = subSigNumberer.findOrAdd("void start()");
-    sigRun = subSigNumberer.findOrAdd("void run()");
-    sigObjRun = subSigNumberer.findOrAdd("java.lang.Object run()");
-    sigForName = subSigNumberer.findOrAdd("java.lang.Class forName(java.lang.String)");
+    sigExit = subSigNumberer.findOrAdd(JavaMethods.SIG_EXIT);
+    sigClinit = subSigNumberer.findOrAdd(JavaMethods.SIG_CLINIT);
+    sigInit = subSigNumberer.findOrAdd(JavaMethods.SIG_INIT);
+    sigStart = subSigNumberer.findOrAdd(JavaMethods.SIG_START);
+    sigRun = subSigNumberer.findOrAdd(JavaMethods.SIG_RUN);
+    sigObjRun = subSigNumberer.findOrAdd(JavaMethods.SIG_OBJ_RUN);
+    sigForName = subSigNumberer.findOrAdd(JavaMethods.SIG_FOR_NAME);
   }
 
   public static EntryPoints v() {
@@ -108,25 +112,25 @@ public class EntryPoints {
       return ret;
     }
 
-    addMethod(ret, "<java.lang.System: void initializeSystemClass()>");
-    addMethod(ret, "<java.lang.ThreadGroup: void <init>()>");
+    addMethod(ret, JavaMethods.INITIALIZE_SYSTEM_CLASS);
+    addMethod(ret, JavaMethods.THREAD_GROUP_INIT);
     // addMethod( ret, "<java.lang.ThreadGroup: void
     // remove(java.lang.Thread)>");
-    addMethod(ret, "<java.lang.Thread: void exit()>");
-    addMethod(ret, "<java.lang.ThreadGroup: void uncaughtException(java.lang.Thread,java.lang.Throwable)>");
+    addMethod(ret, JavaMethods.THREAD_EXIT);
+    addMethod(ret, JavaMethods.THREADGROUP_UNCAUGHT_EXCEPTION);
     // addMethod( ret, "<java.lang.System: void
     // loadLibrary(java.lang.String)>");
-    addMethod(ret, "<java.lang.ClassLoader: void <init>()>");
-    addMethod(ret, "<java.lang.ClassLoader: java.lang.Class loadClassInternal(java.lang.String)>");
-    addMethod(ret, "<java.lang.ClassLoader: void checkPackageAccess(java.lang.Class,java.security.ProtectionDomain)>");
-    addMethod(ret, "<java.lang.ClassLoader: void addClass(java.lang.Class)>");
-    addMethod(ret, "<java.lang.ClassLoader: long findNative(java.lang.ClassLoader,java.lang.String)>");
-    addMethod(ret, "<java.security.PrivilegedActionException: void <init>(java.lang.Exception)>");
+    addMethod(ret, JavaMethods.CLASSLOADER_INIT);
+    addMethod(ret, JavaMethods.CLASSLOADER_LOAD_CLASS_INTERNAL);
+    addMethod(ret, JavaMethods.CLASSLOADER_CHECK_PACKAGE_ACC);
+    addMethod(ret, JavaMethods.CLASSLOADER_ADD_CLASS);
+    addMethod(ret, JavaMethods.CLASSLOADER_FIND_NATIVE);
+    addMethod(ret, JavaMethods.PRIV_ACTION_EXC_INIT);
     // addMethod( ret, "<java.lang.ref.Finalizer: void
     // register(java.lang.Object)>");
-    addMethod(ret, "<java.lang.ref.Finalizer: void runFinalizer()>");
-    addMethod(ret, "<java.lang.Thread: void <init>(java.lang.ThreadGroup,java.lang.Runnable)>");
-    addMethod(ret, "<java.lang.Thread: void <init>(java.lang.ThreadGroup,java.lang.String)>");
+    addMethod(ret, JavaMethods.RUN_FINALIZE);
+    addMethod(ret, JavaMethods.THREAD_INIT_RUNNABLE);
+    addMethod(ret, JavaMethods.THREAD_INIT_STRING);
     return ret;
   }
 
@@ -188,9 +192,9 @@ public class EntryPoints {
   public List<SootMethod> mainsOfApplicationClasses() {
     List<SootMethod> ret = new ArrayList<SootMethod>();
     for (SootClass cl : Scene.v().getApplicationClasses()) {
-      SootMethod m = Options.v().src_prec() == Options.src_prec_dotnet ?
-              cl.getMethodUnsafe(DotnetMethod.MAIN_METHOD_SIGNATURE) :
-              cl.getMethodUnsafe("void main(java.lang.String[])");
+      SootMethod m
+          = Options.v().src_prec() == Options.src_prec_dotnet ? cl.getMethodUnsafe(DotnetMethod.MAIN_METHOD_SIGNATURE)
+              : cl.getMethodUnsafe("void main(java.lang.String[])");
       if (m != null && m.isConcrete()) {
         ret.add(m);
       }
@@ -203,16 +207,16 @@ public class EntryPoints {
     // Do not create an actual list, since this method gets called quite often
     // Instead, callers usually just want to iterate over the result.
     SootMethod init = cl.getMethodUnsafe(sigClinit);
-    SootClass superClass  = cl.getSuperclassUnsafe();
-    // check super classes until finds a constructor or no super class there anymore.  
-    while (init == null && superClass != null) { 
+    SootClass superClass = cl.getSuperclassUnsafe();
+    // check super classes until finds a constructor or no super class there anymore.
+    while (init == null && superClass != null) {
       init = superClass.getMethodUnsafe(sigClinit);
       superClass = superClass.getSuperclassUnsafe();
     }
     if (init == null) {
       return Collections.emptyList();
     }
-    SootMethod initStart = init; 
+    SootMethod initStart = init;
     return new Iterable<SootMethod>() {
 
       @Override

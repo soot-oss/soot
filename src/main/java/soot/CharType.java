@@ -65,7 +65,7 @@ public class CharType extends PrimType implements IntegerType {
   public String getTypeAsString() {
     if (Options.v().src_prec() == Options.src_prec_dotnet)
       return DotnetBasicTypes.SYSTEM_CHAR;
-    return "java.lang.Character";
+    return JavaBasicTypes.JAVA_LANG_CHARACTER;
   }
 
   @Override
