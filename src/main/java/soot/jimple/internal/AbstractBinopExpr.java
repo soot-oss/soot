@@ -147,7 +147,7 @@ public abstract class AbstractBinopExpr implements Expr {
     }
   }
 
-  protected Type getType(BinopExpr exprTypes) {
+  protected Type getType(BinopExprEnum exprTypes) {
     final Type t1 = this.op1Box.getValue().getType();
     final Type t2 = this.op2Box.getValue().getType();
 
@@ -164,7 +164,7 @@ public abstract class AbstractBinopExpr implements Expr {
     if (tyLong.equals(t1) || tyLong.equals(t2)) {
       return tyLong;
     }
-    if (exprTypes.equals(BinopExpr.ABSTRACT_FLOAT_BINOP_EXPR)) {
+    if (exprTypes.equals(BinopExprEnum.ABSTRACT_FLOAT_BINOP_EXPR)) {
       final DoubleType tyDouble = DoubleType.v();
       if (tyDouble.equals(t1) || tyDouble.equals(t2)) {
         return tyDouble;
@@ -206,7 +206,7 @@ public abstract class AbstractBinopExpr implements Expr {
     return false;
   }
 
-  public enum BinopExpr {
+  public enum BinopExprEnum {
     ABASTRACT_INT_LONG_BINOP_EXPR, ABSTRACT_FLOAT_BINOP_EXPR
   }
 }

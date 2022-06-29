@@ -43,6 +43,6 @@ public abstract class AbstractIntLongBinopExpr extends AbstractBinopExpr {
 
   @Override
   public Type getType() {
-    return getType(AbstractBinopExpr.BinopExpr.ABASTRACT_INT_LONG_BINOP_EXPR);
+    return getType(AbstractBinopExpr.BinopExprEnum.ABASTRACT_INT_LONG_BINOP_EXPR);
   }
 }

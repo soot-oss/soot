@@ -83,11 +83,9 @@ public class GrimpBody extends StmtBody {
 
   @Override
   public Object clone(boolean noLocalsClone) {
-    if (noLocalsClone) {
-      return new GrimpBody(this);
-    } else {
-      return this.clone();
-    }
+    Body b = Grimp.v().newBody(getMethod());
+    b.importBodyContentsFrom(this, true);
+    return b;
   }
 
   /**

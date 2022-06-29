@@ -12,6 +12,6 @@ public abstract class AbstractFloatBinopExpr extends AbstractBinopExpr {
 
   @Override
   public Type getType() {
-    return getType(AbstractBinopExpr.BinopExpr.ABSTRACT_FLOAT_BINOP_EXPR);
+    return getType(AbstractBinopExpr.BinopExprEnum.ABSTRACT_FLOAT_BINOP_EXPR);
   }
 }
