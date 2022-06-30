@@ -22,8 +22,6 @@ package soot;
  * #L%
  */
 
-import soot.dotnet.types.DotnetBasicTypes;
-import soot.options.Options;
 import soot.util.Switch;
 
 /**
@@ -62,10 +60,8 @@ public class ShortType extends PrimType implements IntegerType {
   }
 
   @Override
-  public String getTypeAsString() {
-    if (Options.v().src_prec() == Options.src_prec_dotnet)
-      return DotnetBasicTypes.SYSTEM_INT16;
-    return JavaBasicTypes.JAVA_LANG_SHORT;
+  public RefType boxedType() {
+    return RefType.v("java.lang.Short");
   }
 
   @Override

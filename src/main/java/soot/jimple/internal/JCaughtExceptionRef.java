@@ -25,7 +25,10 @@ package soot.jimple.internal;
 import java.util.Collections;
 import java.util.List;
 
-import soot.*;
+import soot.RefType;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.ValueBox;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.RefSwitch;
 import soot.util.Switch;
@@ -68,7 +71,7 @@ public class JCaughtExceptionRef implements CaughtExceptionRef {
 
   @Override
   public Type getType() {
-    return RefType.v(Scene.v().getBaseExceptionType().getClassName());
+    return RefType.v("java.lang.Throwable");
   }
 
   @Override

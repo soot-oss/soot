@@ -201,13 +201,6 @@ public class ShimpleBody extends StmtBody {
     return b;
   }
 
-  @Override
-  public Object clone(boolean noLocalsClone) {
-    Body b = Shimple.v().newBody(getMethod());
-    b.importBodyContentsFrom(this, true);
-    return b;
-  }
-
   /**
    * Sets a flag that indicates whether ShimpleBody is still in SSA form after a transformation or not. It is often up to the
    * user to indicate if a body is no longer in SSA form.

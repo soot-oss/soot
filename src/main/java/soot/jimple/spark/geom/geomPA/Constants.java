@@ -23,7 +23,6 @@ package soot.jimple.spark.geom.geomPA;
  */
 
 import soot.RefType;
-import soot.Scene;
 
 /**
  * Named constants used in the geomPA.
@@ -58,7 +57,7 @@ public class Constants {
   public static final long MAX_CONTEXTS = Long.MAX_VALUE - 1;
 
   // Some commonly referred to information
-  public static final RefType exeception_type = Scene.v().getBaseExceptionType();
+  public static final RefType exeception_type = RefType.v("java.lang.Throwable");
 
   // The seed pointers for running constraints distillation
   public static final int seedPts_allUser = 0x0000000f;

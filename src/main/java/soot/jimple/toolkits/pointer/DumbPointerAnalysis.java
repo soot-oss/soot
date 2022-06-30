@@ -22,7 +22,15 @@ package soot.jimple.toolkits.pointer;
  * #L%
  */
 
-import soot.*;
+import soot.Context;
+import soot.G;
+import soot.Local;
+import soot.PointsToAnalysis;
+import soot.PointsToSet;
+import soot.RefType;
+import soot.Singletons;
+import soot.SootField;
+import soot.Type;
 
 /**
  * A very naive pointer analysis that just reports that any points can point to any object.
@@ -40,11 +48,7 @@ public class DumbPointerAnalysis implements PointsToAnalysis {
   @Override
   public PointsToSet reachingObjects(Local l) {
     Type t = l.getType();
-    if (t instanceof RefType)
-      return FullObjectSet.v((RefType) t);
-    if (t instanceof PrimType)
-      return FullObjectSet.v((PrimType) t);
-    return FullObjectSet.v();
+    return (t instanceof RefType) ? FullObjectSet.v((RefType) t) : FullObjectSet.v();
   }
 
   /** Returns the set of objects pointed to by variable l in context c. */
