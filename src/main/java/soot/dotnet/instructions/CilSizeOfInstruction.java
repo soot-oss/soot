@@ -1,5 +1,7 @@
 package soot.dotnet.instructions;
 
+import java.util.Collections;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -21,16 +23,18 @@ package soot.dotnet.instructions;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-import soot.*;
+import soot.Body;
+import soot.IntType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethodRef;
+import soot.Value;
 import soot.dotnet.exceptions.NoStatementInstructionException;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.soot.DotnetClassConstant;
 import soot.dotnet.types.DotnetBasicTypes;
 import soot.jimple.Jimple;
-
-import java.util.Collections;
 
 /**
  * Return size of given object/type

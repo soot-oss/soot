@@ -294,11 +294,11 @@ public class ClassInfoFlowAnalysis {
         EquivalentValue s = accessedIt2.next();
         Ref sRef = (Ref) s.getValue();
         if (rRef instanceof ThisRef && sRef instanceof InstanceFieldRef) {
-          ; // don't add this edge
+           // don't add this edge
         } else if (sRef instanceof ThisRef && rRef instanceof InstanceFieldRef) {
-          ; // don't add this edge
+           // don't add this edge
         } else if (sRef instanceof ParameterRef && dfa.includesInnerFields()) {
-          ; // don't add edges to parameters if we are including inner fields
+           // don't add edges to parameters if we are including inner fields
         } else if (sRef.getType() instanceof RefLikeType) {
           dataFlowGraph.addEdge(r, s);
         }
@@ -385,9 +385,9 @@ public class ClassInfoFlowAnalysis {
         EquivalentValue s = accessedIt2.next();
         Ref sRef = (Ref) s.getValue();
         if (rRef instanceof ThisRef && sRef instanceof InstanceFieldRef) {
-          ; // don't add this edge
+           // don't add this edge
         } else if (sRef instanceof ThisRef && rRef instanceof InstanceFieldRef) {
-          ; // don't add this edge
+           // don't add this edge
         } else if (sRef.getType() instanceof RefLikeType) {
           dataFlowGraph.addEdge(r, s);
         }

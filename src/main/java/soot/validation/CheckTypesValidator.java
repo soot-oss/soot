@@ -24,7 +24,21 @@ package soot.validation;
 
 import java.util.List;
 
-import soot.*;
+import soot.ArrayType;
+import soot.Body;
+import soot.DoubleType;
+import soot.FastHierarchy;
+import soot.FloatType;
+import soot.IntType;
+import soot.LongType;
+import soot.NullType;
+import soot.PrimType;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethodRef;
+import soot.Type;
+import soot.Unit;
 import soot.dotnet.types.DotnetBasicTypes;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.DefinitionStmt;
@@ -109,12 +123,14 @@ public enum CheckTypesValidator implements BodyValidator {
         }
         if (leftType instanceof RefType) {
           FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
-          if(fastHierarchy.canStoreClass(((RefType) leftType).getSootClass(), Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE)))
+          if(fastHierarchy.canStoreClass(((RefType) leftType).getSootClass(), Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE))) {
             return;
+          }
 
           // if lefttype is base class, all right types are legal
-          if (((RefType) leftType).getSootClass().getName().equals(DotnetBasicTypes.SYSTEM_OBJECT))
+          if (((RefType) leftType).getSootClass().getName().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
             return;
+          }
 
           // if righttype is primtype - primitive structs inherits from ValueType and
           // implements IComparable, IComparable<T>, IConvertible, IEquatable<T>, IFormattable
@@ -129,8 +145,9 @@ public enum CheckTypesValidator implements BodyValidator {
         }
         if (rightType instanceof RefType) {
           FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
-          if (fastHierarchy.canStoreClass(((RefType) rightType).getSootClass(), Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE)))
+          if (fastHierarchy.canStoreClass(((RefType) rightType).getSootClass(), Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE))) {
             return;
+          }
         }
       }
       exception.add(new ValidationException(stmt, "Warning: Bad use of primitive type" + errorSuffix +
@@ -138,11 +155,7 @@ public enum CheckTypesValidator implements BodyValidator {
       return;
     }
 
-    if (rightType instanceof NullType) {
-      return;
-    }
-
-    if (leftType instanceof RefType && Scene.v().getObjectType().toString() .equals(((RefType) leftType).getClassName())) {
+    if ((rightType instanceof NullType) || (leftType instanceof RefType && Scene.v().getObjectType().toString() .equals(((RefType) leftType).getClassName()))) {
       return;
     }
 
@@ -190,8 +203,9 @@ public enum CheckTypesValidator implements BodyValidator {
         FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
         boolean lTypeIsChild = fastHierarchy.canStoreClass(((RefType) leftType).getSootClass(), Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE));
         boolean rTypeIsChild = fastHierarchy.canStoreClass(((RefType) rightType).getSootClass(), Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE));
-        if (lTypeIsChild && rTypeIsChild)
+        if (lTypeIsChild && rTypeIsChild) {
           return;
+        }
       } else if (!Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(rightClass, leftClass)) {
         exception.add(new ValidationException(stmt, "Warning: Bad use of class type" + errorSuffix));
       }

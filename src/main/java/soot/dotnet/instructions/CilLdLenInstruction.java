@@ -47,8 +47,9 @@ public class CilLdLenInstruction extends AbstractCilnstruction {
   public Value jimplifyExpr(Body jb) {
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArray(), dotnetBody, cilBlock);
     Value arr = cilExpr.jimplifyExpr(jb);
-    if (!(arr instanceof Immediate))
+    if (!(arr instanceof Immediate)) {
       throw new RuntimeException("LdLen: Given value is no Immediate!");
+    }
     return Jimple.v().newLengthExpr(arr);
   }
 }

@@ -99,11 +99,8 @@ public class ExceptionChecker extends BodyTransformer {
     final SootClass sootClassError = Scene.v().getSootClass("java.lang.Error");
 
     // handles case when exception is RuntimeException or Error
-    if (throwClass.equals(sootClassRuntimeException) || throwClass.equals(sootClassError)) {
-      return true;
-    }
     // handles case when exception is a subclass of RuntimeException or Error
-    if (hierarchy.isSubclass(throwClass, sootClassRuntimeException) || hierarchy.isSubclass(throwClass, sootClassError)) {
+    if (throwClass.equals(sootClassRuntimeException) || throwClass.equals(sootClassError) || hierarchy.isSubclass(throwClass, sootClassRuntimeException) || hierarchy.isSubclass(throwClass, sootClassError)) {
       return true;
     }
     // handles case when exact exception is thrown

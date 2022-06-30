@@ -60,8 +60,9 @@ public class DotnetClassProvider implements ClassProvider {
     ensureAssemblyIndex();
 
     // if fake LdFtn instruction
-    if (className.equals(DotnetBasicTypes.FAKE_LDFTN))
+    if (className.equals(DotnetBasicTypes.FAKE_LDFTN)) {
       return new DotnetClassSource(className, null);
+    }
 
     File assemblyFile = SourceLocator.v().dexClassIndex().get(className);
     return assemblyFile == null ? null : new DotnetClassSource(className, assemblyFile);
@@ -73,19 +74,22 @@ public class DotnetClassProvider implements ClassProvider {
   private void ensureAssemblyIndex() {
     Map<String, File> index = SourceLocator.v().dexClassIndex();
     if (index == null) {
-      if (Options.v().verbose())
+      if (Options.v().verbose()) {
         logger.info("Creating assembly index");
+      }
       index = new HashMap<>();
       buildAssemblyIndex(index, SourceLocator.v().classPath());
       SourceLocator.v().setDexClassIndex(index);
-      if (Options.v().verbose())
+      if (Options.v().verbose()) {
         logger.info("Created assembly index");
+      }
     }
 
     // Process the classpath extensions
     if (SourceLocator.v().getDexClassPathExtensions() != null) {
-      if (Options.v().verbose())
+      if (Options.v().verbose()) {
         logger.info("Process classpath extensions");
+      }
       buildAssemblyIndex(index, new ArrayList<>(SourceLocator.v().getDexClassPathExtensions()));
       SourceLocator.v().clearDexClassPathExtensions();
     }
@@ -100,8 +104,9 @@ public class DotnetClassProvider implements ClassProvider {
    *          paths to index
    */
   private void buildAssemblyIndex(Map<String, File> index, List<String> classPath) {
-    if (Strings.isNullOrEmpty(Options.v().dotnet_nativehost_path()))
+    if (Strings.isNullOrEmpty(Options.v().dotnet_nativehost_path())) {
       throw new RuntimeException("Dotnet NativeHost Path is not set! Use -dotnet-nativehost-path Soot parameter!");
+    }
 
     for (String path : classPath) {
       try {
@@ -110,27 +115,33 @@ public class DotnetClassProvider implements ClassProvider {
           // if classpath is only directory, look for dll/exe inside dir to add to index - only one hierarchical step
           File[] listFiles = file.isDirectory() ? file.listFiles(File::isFile) : new File[] { file };
           for (File f : Objects.requireNonNull(listFiles)) {
-            if (Options.v().verbose())
+            if (Options.v().verbose()) {
               logger.info("Process " + f.getCanonicalPath() + " file");
+            }
             // Check if given assembly is dll or exe and is assembly
-            if (!f.getCanonicalPath().endsWith(".exe") && !f.getCanonicalPath().endsWith(".dll"))
+            if (!f.getCanonicalPath().endsWith(".exe") && !f.getCanonicalPath().endsWith(".dll")) {
               continue;
+            }
             AssemblyFile assemblyFile = new AssemblyFile(f.getCanonicalPath());
-            if (!assemblyFile.isAssembly())
+            if (!assemblyFile.isAssembly()) {
               continue;
+            }
 
             // Get all classes of given assembly
             ProtoAssemblyAllTypes.AssemblyAllTypes assemblyDefinition = assemblyFile.getAllTypes();
-            if (assemblyDefinition == null)
+            if (assemblyDefinition == null) {
               continue;
+            }
             // save later computation and calls of nativehost
-            if (!index.containsKey(f.getCanonicalPath()))
+            if (!index.containsKey(f.getCanonicalPath())) {
               index.put(f.getCanonicalPath(), assemblyFile);
+            }
             List<ProtoAssemblyAllTypes.TypeDefinition> allTypesOfMainModule = assemblyDefinition.getListOfTypesList();
             for (ProtoAssemblyAllTypes.TypeDefinition type : allTypesOfMainModule) {
               String typeName = type.getFullname();
-              if (Options.v().verbose())
+              if (Options.v().verbose()) {
                 logger.info("Add class " + typeName + " to index");
+              }
 
               if (!index.containsKey(typeName)) {
                 index.put(typeName, assemblyFile);

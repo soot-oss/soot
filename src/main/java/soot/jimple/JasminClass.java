@@ -303,12 +303,8 @@ public class JasminClass extends AbstractJasminClass {
         PEEP: if (enablePeephole) {
           // Test for postincrement operators ++ and --
           // We can optimize them further.
-          if (!(s instanceof AssignStmt)) {
-            break PEEP;
-          }
-
           // sanityCheck: see that we have another statement after s.
-          if (!codeIt.hasNext()) {
+          if (!(s instanceof AssignStmt) || !codeIt.hasNext()) {
             break PEEP;
           }
 

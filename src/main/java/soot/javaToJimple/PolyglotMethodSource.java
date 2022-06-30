@@ -28,7 +28,6 @@ import java.util.List;
 
 import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
-
 import soot.MethodSource;
 import soot.PackManager;
 import soot.Scene;

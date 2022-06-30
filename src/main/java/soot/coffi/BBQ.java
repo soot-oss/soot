@@ -43,7 +43,7 @@ final class BBQ {
    * @see BasicBlock#inq
    */
   public void push(BasicBlock b) {
-    if (b.inq != true) { // ensure only in queue once...
+    if (!b.inq) { // ensure only in queue once...
       b.inq = true;
       q.add(b);
     }

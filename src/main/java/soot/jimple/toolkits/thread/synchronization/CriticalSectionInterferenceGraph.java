@@ -107,9 +107,7 @@ public class CriticalSectionInterferenceGraph {
             CriticalSection tn2 = tnIt2.next();
 
             // check if this transactional region is going to be deleted
-            if (tn2.setNumber == -1) {
-              continue;
-            }
+            
 
             // check if they're already marked as having an interference
             // NOTE: this results in a sound grouping, but a badly
@@ -119,7 +117,7 @@ public class CriticalSectionInterferenceGraph {
             // continue;
 
             // check if these two transactions can't ever be in parallel
-            if (!mayHappenInParallel(tn1, tn2)) {
+            if ((tn2.setNumber == -1) || !mayHappenInParallel(tn1, tn2)) {
               continue;
             }
 

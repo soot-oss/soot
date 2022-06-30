@@ -28,7 +28,6 @@ import java.util.Iterator;
 
 import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
-
 import soot.Scene;
 import soot.SootClass;
 import soot.SootField;

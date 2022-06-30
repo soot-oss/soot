@@ -27,7 +27,6 @@ package soot.jimple.toolkits.typing.fast;
 import soot.G;
 import soot.IntegerType;
 import soot.PrimType;
-import soot.RefType;
 import soot.ShortType;
 import soot.Singletons;
 import soot.Type;

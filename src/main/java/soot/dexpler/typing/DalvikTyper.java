@@ -573,12 +573,7 @@ public class DalvikTyper implements IDalvikTyper {
     // clear constraints after local splitting and dead code eliminator
     List<Constraint> toRemove = new ArrayList<Constraint>();
     for (Constraint c : constraints) {
-      if (!vbList.contains(c.l)) {
-        // Debug.printDbg(IDalvikTyper.DEBUG, "warning: ", c.l, " not in locals! removing...");
-        toRemove.add(c);
-        continue;
-      }
-      if (!vbList.contains(c.r)) {
+      if (!vbList.contains(c.l) || !vbList.contains(c.r)) {
         // Debug.printDbg(IDalvikTyper.DEBUG, "warning: ", c.r, " not in locals! removing...");
         toRemove.add(c);
         continue;
@@ -756,10 +751,7 @@ public class DalvikTyper implements IDalvikTyper {
         continue;
       }
       AssignStmt ass = (AssignStmt) u;
-      if (!(ass.getLeftOp() instanceof Local)) {
-        continue;
-      }
-      if (!(ass.getRightOp() instanceof UntypedConstant)) {
+      if (!(ass.getLeftOp() instanceof Local) || !(ass.getRightOp() instanceof UntypedConstant)) {
         continue;
       }
       UntypedConstant uc = (UntypedConstant) ass.getRightOp();

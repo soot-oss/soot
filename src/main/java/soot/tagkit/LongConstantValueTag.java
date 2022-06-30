@@ -69,10 +69,7 @@ public class LongConstantValueTag extends ConstantValueTag {
     if (this == obj) {
       return true;
     }
-    if (!super.equals(obj)) {
-      return false;
-    }
-    if (this.getClass() != obj.getClass()) {
+    if (!super.equals(obj) || (this.getClass() != obj.getClass())) {
       return false;
     }
     LongConstantValueTag other = (LongConstantValueTag) obj;

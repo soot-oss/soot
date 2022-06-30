@@ -28,7 +28,6 @@ import polyglot.ast.ClassDecl;
 import polyglot.ast.Node;
 import polyglot.util.CodeWriter;
 import polyglot.visit.NodeVisitor;
-
 import soot.G;
 
 public abstract class ASTMetric extends NodeVisitor implements MetricInterface {

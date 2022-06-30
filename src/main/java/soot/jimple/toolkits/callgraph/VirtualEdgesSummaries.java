@@ -1,29 +1,5 @@
 package soot.jimple.toolkits.callgraph;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 2003 Ondrej Lhotak
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
-import com.google.common.collect.Iterables;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -51,6 +27,30 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+import com.google.common.collect.Iterables;
 
 import soot.Kind;
 import soot.MethodSubSignature;
@@ -386,10 +386,7 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
       }
       StaticinvokeSource other = (StaticinvokeSource) obj;
@@ -453,10 +450,7 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
       }
       InstanceinvokeSource other = (InstanceinvokeSource) obj;
@@ -521,10 +515,7 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
       }
       VirtualEdgeTarget other = (VirtualEdgeTarget) obj;
@@ -587,10 +578,7 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if (!super.equals(obj)) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if (!super.equals(obj) || (getClass() != obj.getClass())) {
         return false;
       }
       return true;
@@ -680,10 +668,7 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if (!super.equals(obj)) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if (!super.equals(obj) || (getClass() != obj.getClass())) {
         return false;
       }
       IndirectTarget other = (IndirectTarget) obj;
@@ -766,10 +751,7 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
       }
       VirtualEdge other = (VirtualEdge) obj;

@@ -1,5 +1,9 @@
 package soot.jimple.toolkits.ide.icfg;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,11 +27,6 @@ package soot.jimple.toolkits.ide.icfg;
  */
 
 import heros.InterproceduralCFG;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
 import soot.Value;
 import soot.toolkits.graph.DirectedGraph;
 

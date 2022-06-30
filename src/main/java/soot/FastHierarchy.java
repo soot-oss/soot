@@ -1,5 +1,18 @@
 package soot;
 
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,21 +38,8 @@ package soot;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import soot.jimple.spark.internal.TypeManager;
-
 import soot.dotnet.types.DotnetBasicTypes;
+import soot.jimple.spark.internal.TypeManager;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
@@ -300,8 +300,9 @@ public class FastHierarchy {
       } else if (parent instanceof ArrayType) {
         Type base = ((AnySubType) child).getBase();
         // System.Array base class of arrays in CIL
-        if (Options.v().src_prec() == Options.src_prec_dotnet)
+        if (Options.v().src_prec() == Options.src_prec_dotnet) {
           return base == cilArray;
+        }
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
         return base == rtObject || base == rtSerializable || base == rtCloneable;
       } else {
@@ -330,8 +331,9 @@ public class FastHierarchy {
     } else if (child instanceof ArrayType) {
       if (parent instanceof RefType) {
         // base class System.Array for all arrays
-        if (Options.v().src_prec() == Options.src_prec_dotnet)
+        if (Options.v().src_prec() == Options.src_prec_dotnet) {
           return parent == cilArray;
+        }
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
         return parent == rtObject || parent == rtSerializable || parent == rtCloneable;
       } else if (parent instanceof ArrayType) {
@@ -351,8 +353,9 @@ public class FastHierarchy {
           }
         } else if (achild.numDimensions > aparent.numDimensions) {
           final Type pBaseType = aparent.baseType;
-          if (Options.v().src_prec() == Options.src_prec_dotnet)
+          if (Options.v().src_prec() == Options.src_prec_dotnet) {
             return pBaseType == cilArray;
+          }
           return pBaseType == rtObject || pBaseType == rtSerializable || pBaseType == rtCloneable;
         } else {
           return false;
@@ -958,8 +961,9 @@ public class FastHierarchy {
    */
   private SootMethod getSignaturePolymorphicMethod(SootClass concreteType, String name, List<Type> parameterTypes,
       Type returnType) {
-    if (concreteType == null)
+    if (concreteType == null) {
       throw new RuntimeException("The concreteType cannot not be null!");
+    }
     SootMethod candidate = null;
     for (SootMethod method : concreteType.getMethods()) {
       if (method.getName().equals(name) && method.getParameterTypes().equals(parameterTypes)
@@ -976,8 +980,9 @@ public class FastHierarchy {
               Type methodParameter = method.getParameterType(i);
               Type calleeParameter = parameterTypes.get(i);
               // base class can System.Object
-              if (!(methodParameter.equals(calleeParameter) || canStoreType(calleeParameter, methodParameter)))
+              if (!(methodParameter.equals(calleeParameter) || canStoreType(calleeParameter, methodParameter))) {
                 canStore = false;
+              }
             }
             if (canStore) {
               candidate = method;

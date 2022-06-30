@@ -117,8 +117,9 @@ public class CilBlock implements CilInstruction {
   }
 
   public Unit getEntryUnit() {
-    if (entryUnit == null)
+    if (entryUnit == null) {
       throw new RuntimeException("getEntryUnit() was called before jimplifying!");
+    }
     return entryUnit;
   }
 }

@@ -1,6 +1,16 @@
 
 package soot.jimple.toolkits.thread.mhp;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,17 +34,6 @@ package soot.jimple.toolkits.thread.mhp;
  */
 
 import heros.util.SootThreadGroup;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import soot.Kind;
 import soot.PointsToAnalysis;
 import soot.Scene;

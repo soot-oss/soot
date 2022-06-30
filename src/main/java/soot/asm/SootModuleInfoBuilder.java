@@ -1,5 +1,8 @@
 package soot.asm;
 
+import org.objectweb.asm.ModuleVisitor;
+import org.objectweb.asm.Opcodes;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,9 +26,6 @@ package soot.asm;
  */
 
 import com.google.common.base.Optional;
-
-import org.objectweb.asm.ModuleVisitor;
-import org.objectweb.asm.Opcodes;
 
 import soot.RefType;
 import soot.SootClass;

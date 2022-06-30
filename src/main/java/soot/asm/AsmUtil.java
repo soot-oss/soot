@@ -1,5 +1,10 @@
 package soot.asm;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.objectweb.asm.Opcodes;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,11 +28,6 @@ package soot.asm;
  */
 
 import com.google.common.base.Optional;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.objectweb.asm.Opcodes;
 
 import soot.ArrayType;
 import soot.BooleanType;

@@ -1,5 +1,8 @@
 package soot.dotnet.instructions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,15 +28,12 @@ package soot.dotnet.instructions;
 import soot.Body;
 import soot.Unit;
 import soot.Value;
-import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.exceptions.NoExpressionInstructionException;
+import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.jimple.Jimple;
 import soot.jimple.NopStmt;
 import soot.jimple.TableSwitchStmt;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CilSwitchInstruction extends AbstractCilnstruction {
     public CilSwitchInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {

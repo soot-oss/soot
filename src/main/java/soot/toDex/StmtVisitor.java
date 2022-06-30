@@ -244,10 +244,7 @@ public class StmtVisitor implements StmtSwitch {
     for (int i = 0; i < this.insns.size() - 1; i++) {
       Insn curInsn = this.insns.get(i);
       // Only consider real instructions
-      if (curInsn instanceof AddressInsn) {
-        continue;
-      }
-      if (!isReducableMoveInstruction(curInsn.getOpcode())) {
+      if ((curInsn instanceof AddressInsn) || !isReducableMoveInstruction(curInsn.getOpcode())) {
         continue;
       }
 

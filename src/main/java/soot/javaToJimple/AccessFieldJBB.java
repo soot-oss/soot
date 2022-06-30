@@ -1,5 +1,8 @@
 package soot.javaToJimple;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,9 +26,6 @@ package soot.javaToJimple;
  */
 
 import soot.Scene;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AccessFieldJBB extends AbstractJimpleBodyBuilder {
 

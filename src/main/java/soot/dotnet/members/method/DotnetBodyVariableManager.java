@@ -1,5 +1,9 @@
 package soot.dotnet.members.method;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -21,8 +25,17 @@ package soot.dotnet.members.method;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-import soot.*;
+import soot.ArrayType;
+import soot.Body;
+import soot.Local;
+import soot.LocalGenerator;
+import soot.NullType;
+import soot.PrimType;
+import soot.RefType;
+import soot.Type;
+import soot.Unit;
+import soot.UnknownType;
+import soot.Value;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoIlInstructions;
@@ -35,10 +48,6 @@ import soot.jimple.Jimple;
 import soot.jimple.NullConstant;
 import soot.jimple.internal.JAssignStmt;
 import soot.jimple.internal.JimpleLocal;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * Part of the DotnetBody
@@ -87,24 +96,28 @@ public class DotnetBodyVariableManager {
     public void addInitLocalVariables(List<ProtoIlInstructions.IlVariableMsg> variableMsgList) {
         List<ProtoIlInstructions.IlVariableMsg> initLocalValueTypes = new ArrayList<>();
         for (ProtoIlInstructions.IlVariableMsg v : variableMsgList) {
-            if (v.getVariableKind() != ProtoIlInstructions.IlVariableMsg.IlVariableKind.LOCAL)
-                continue;
+            if (v.getVariableKind() != ProtoIlInstructions.IlVariableMsg.IlVariableKind.LOCAL) {
+              continue;
+            }
 
             addOrGetVariable(v, this.mainJb);
-            if (v.getHasInitialValue())
-                initLocalValueTypes.add(v);
+            if (v.getHasInitialValue()) {
+              initLocalValueTypes.add(v);
+            }
 
             // for unsafe methods, where no definition is used
-            if (!(v.getType().getFullname().equals(DotnetBasicTypes.SYSTEM_OBJECT)))
-                initLocalValueTypes.add(v);
+            if (!(v.getType().getFullname().equals(DotnetBasicTypes.SYSTEM_OBJECT))) {
+              initLocalValueTypes.add(v);
+            }
         }
         initLocalVariables(initLocalValueTypes);
     }
 
     private void initLocalVariables(List<ProtoIlInstructions.IlVariableMsg> locals) {
         for (ProtoIlInstructions.IlVariableMsg v : locals) {
-            if (v.getVariableKind() != ProtoIlInstructions.IlVariableMsg.IlVariableKind.LOCAL)
-                continue;
+            if (v.getVariableKind() != ProtoIlInstructions.IlVariableMsg.IlVariableKind.LOCAL) {
+              continue;
+            }
 
             Local variable = addOrGetVariable(v, this.mainJb);
 
@@ -146,14 +159,17 @@ public class DotnetBodyVariableManager {
      * @return
      */
     public Local addOrGetVariable(ProtoIlInstructions.IlVariableMsg v, Type type, Body jbTmp) {
-        if (v == null)
-            return null;
+        if (v == null) {
+          return null;
+        }
 
-        if (v.getName().equals("this"))
-            return this.mainJb.getThisLocal();
+        if (v.getName().equals("this")) {
+          return this.mainJb.getThisLocal();
+        }
 
-        if (this.mainJb.getLocals().stream().anyMatch(x -> x.getName().equals(v.getName())))
-            return this.mainJb.getLocals().stream().filter(x -> x.getName().equals(v.getName())).findFirst().orElse(null);
+        if (this.mainJb.getLocals().stream().anyMatch(x -> x.getName().equals(v.getName()))) {
+          return this.mainJb.getLocals().stream().filter(x -> x.getName().equals(v.getName())).findFirst().orElse(null);
+        }
 
         Type localType = (type == null || type instanceof UnknownType || type instanceof NullType) ?
                 DotnetTypeFactory.toSootType(v.getType()) :
@@ -162,13 +178,16 @@ public class DotnetBodyVariableManager {
         Local newLocal = Jimple.v().newLocal(v.getName(), localType);
         this.mainJb.getLocals().add(newLocal);
         if (jbTmp != null && jbTmp != this.mainJb)
-            jbTmp.getLocals().add(newLocal); // dummy due to clone method
+         {
+          jbTmp.getLocals().add(newLocal); // dummy due to clone method
+        }
         return newLocal;
     }
 
     public void addLocalVariable(Local local) {
-        if (this.mainJb.getLocals().contains(local))
-            return;
+        if (this.mainJb.getLocals().contains(local)) {
+          return;
+        }
         this.mainJb.getLocals().add(local);
     }
 
@@ -183,14 +202,14 @@ public class DotnetBodyVariableManager {
                 .filter(x -> x instanceof JAssignStmt && ((JAssignStmt) x).getLeftOp().equals(v))
                 .findFirst().orElse(null);
         if (unit instanceof AssignStmt) {
-            if (((AssignStmt) unit).getRightOp() instanceof JimpleLocal)
-                return inlineLocals(((JAssignStmt) unit).getRightOp(), jb);
-            else if (((AssignStmt) unit).getRightOp() instanceof CastExpr) {
+            if (((AssignStmt) unit).getRightOp() instanceof JimpleLocal) {
+              return inlineLocals(((JAssignStmt) unit).getRightOp(), jb);
+            } else if (((AssignStmt) unit).getRightOp() instanceof CastExpr) {
                 CastExpr ce = (CastExpr) ((AssignStmt) unit).getRightOp();
                 return inlineLocals(ce.getOp(), jb);
+            } else {
+              return ((AssignStmt) unit).getRightOp();
             }
-            else
-                return ((AssignStmt) unit).getRightOp();
         }
         return null;
     }

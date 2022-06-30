@@ -1,5 +1,7 @@
 package soot.dotnet.instructions;
 
+import java.util.ArrayList;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -21,16 +23,17 @@ package soot.dotnet.instructions;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-
-import soot.*;
+import soot.Body;
+import soot.Local;
+import soot.Scene;
+import soot.SootClass;
+import soot.Type;
+import soot.Value;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.jimple.Jimple;
 import soot.jimple.NewExpr;
-
-import java.util.ArrayList;
 
 /**
  * Combi instruction with instantiating a new object and calling the constructor (no structs often)
@@ -47,8 +50,9 @@ public class CilNewObjInstruction extends AbstractNewObjInstanceInstruction {
 
     @Override
     public Value jimplifyExpr(Body jb) {
-        if (!instruction.hasMethod())
-            throw new RuntimeException("NewObj: There is no method information in the method definiton!");
+        if (!instruction.hasMethod()) {
+          throw new RuntimeException("NewObj: There is no method information in the method definiton!");
+        }
         SootClass clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
         NewExpr newExpr = Jimple.v().newNewExpr(clazz.getType());
 

@@ -1,5 +1,10 @@
 package soot;
 
+import java.util.LinkedList;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,11 +28,6 @@ package soot;
  */
 
 import com.google.common.base.Optional;
-
-import java.util.LinkedList;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import soot.dotnet.types.DotnetBasicTypes;
 import soot.options.Options;
@@ -148,8 +148,9 @@ public class ModuleRefType extends RefType {
 
   @Override
   public Type getArrayElementType() {
-    if (getClassName().equals(Scene.v().getObjectType().toString()))
+    if (getClassName().equals(Scene.v().getObjectType().toString())) {
       return ModuleRefType.v(Scene.v().getObjectType().toString());
+    }
     switch (getClassName()) {
       case "java.lang.Object":
       case "java.io.Serializable":

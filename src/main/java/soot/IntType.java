@@ -63,8 +63,9 @@ public class IntType extends PrimType implements IntegerType {
 
   @Override
   public String getTypeAsString() {
-    if (Options.v().src_prec() == Options.src_prec_dotnet)
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
       return DotnetBasicTypes.SYSTEM_INT32;
+    }
     return JavaBasicTypes.JAVA_LANG_INTEGER;
   }
 

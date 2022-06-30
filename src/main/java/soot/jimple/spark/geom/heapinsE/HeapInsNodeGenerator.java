@@ -91,7 +91,7 @@ public class HeapInsNodeGenerator extends IEncodingBroker {
             for (Iterator<Edge> it = cons.interCallEdges.iterator(); it.hasNext();) {
               Edge sEdge = it.next();
               CgEdge q = ptAnalyzer.getInternalEdgeFromSootEdge(sEdge);
-              if (q.is_obsoleted == true) {
+              if (q.is_obsoleted) {
                 continue;
               }
 

@@ -57,11 +57,13 @@ public class DotnetType {
   private final ProtoAssemblyAllTypes.TypeDefinition typeDefinition;
 
   public DotnetType(ProtoAssemblyAllTypes.TypeDefinition typeDefinition, File assemblyFile) {
-    if (typeDefinition == null)
+    if (typeDefinition == null) {
       throw new NullPointerException("Passed Type Definition is null!");
+    }
     this.typeDefinition = typeDefinition;
-    if (!(assemblyFile instanceof AssemblyFile))
+    if (!(assemblyFile instanceof AssemblyFile)) {
       throw new RuntimeException("Given File object is no assembly file!");
+    }
     this.assemblyFile = (AssemblyFile) assemblyFile;
   }
 
@@ -134,8 +136,9 @@ public class DotnetType {
     for (ProtoAssemblyAllTypes.FieldDefinition field : typeDefinition.getFieldsList()) {
       DotnetField dotnetField = new DotnetField(field);
       SootField sootField = dotnetField.makeSootField();
-      if (declaringClass.declaresField(sootField.getSubSignature()))
+      if (declaringClass.declaresField(sootField.getSubSignature())) {
         continue;
+      }
       declaringClass.addField(sootField);
     }
   }
@@ -229,8 +232,9 @@ public class DotnetType {
    */
   @SuppressWarnings("DuplicatedCode")
   private void resolveAttributes(SootClass declaringClass) {
-    if (typeDefinition.getAttributesCount() == 0)
+    if (typeDefinition.getAttributesCount() == 0) {
       return;
+    }
 
     for (ProtoAssemblyAllTypes.AttributeDefinition attrMsg : typeDefinition.getAttributesList()) {
       try {
@@ -238,15 +242,18 @@ public class DotnetType {
 
         // Elements
         List<AnnotationElem> elements = new ArrayList<>();
-        for (ProtoAssemblyAllTypes.AttributeArgumentDefinition fixedArg : attrMsg.getFixedArgumentsList())
+        for (ProtoAssemblyAllTypes.AttributeArgumentDefinition fixedArg : attrMsg.getFixedArgumentsList()) {
           elements.add(DotnetAttributeArgument.toAnnotationElem(fixedArg));
-        for (ProtoAssemblyAllTypes.AttributeArgumentDefinition namedArg : attrMsg.getNamedArgumentsList())
+        }
+        for (ProtoAssemblyAllTypes.AttributeArgumentDefinition namedArg : attrMsg.getNamedArgumentsList()) {
           elements.add(DotnetAttributeArgument.toAnnotationElem(namedArg));
+        }
 
         declaringClass.addTag(new AnnotationTag(annotationType, elements));
 
-        if (annotationType.equals(DotnetBasicTypes.SYSTEM_OBSOLETEATTRIBUTE))
+        if (annotationType.equals(DotnetBasicTypes.SYSTEM_OBSOLETEATTRIBUTE)) {
           declaringClass.addTag(new DeprecatedTag());
+        }
       } catch (Exception ignore) {
       }
     }

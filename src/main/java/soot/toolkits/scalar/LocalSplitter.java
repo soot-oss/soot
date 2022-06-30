@@ -152,12 +152,8 @@ public class LocalSplitter extends BodyTransformer {
         if (defsInUnitItr.hasNext()) {
           throw new RuntimeException("stmt with more than 1 defbox!");
         }
-        if (!(singleDef instanceof Local)) {
-          continue;
-        }
-
         // we don't want to visit a node twice
-        if (visited.remove(s)) {
+        if (!(singleDef instanceof Local) || visited.remove(s)) {
           continue;
         }
 

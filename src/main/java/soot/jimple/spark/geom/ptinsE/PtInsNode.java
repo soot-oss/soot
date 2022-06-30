@@ -271,7 +271,7 @@ public class PtInsNode extends IVarAbstraction {
             break;
           }
 
-          if (objn.willUpdate == false) {
+          if (!objn.willUpdate) {
             // This must be a store constraint
             // This object field is not need for computing
             // the points-to information of the seed pointers
@@ -323,10 +323,7 @@ public class PtInsNode extends IVarAbstraction {
         obj = entry2.getKey();
         pim2 = entry2.getValue();
 
-        if (pim2 == deadManager) {
-          continue;
-        }
-        if (!ptAnalyzer.castNeverFails(obj.getType(), qn.getWrappedNode().getType())) {
+        if ((pim2 == deadManager) || !ptAnalyzer.castNeverFails(obj.getType(), qn.getWrappedNode().getType())) {
           continue;
         }
 
@@ -516,7 +513,7 @@ public class PtInsNode extends IVarAbstraction {
       SegmentNode[] int_entry = im.getFigures();
       for (int i = 0; i < PtInsIntervalManager.Divisions; ++i) {
         SegmentNode p = int_entry[i];
-        while (p != null && p.is_new == true) {
+        while (p != null && p.is_new) {
           ++ans;
           p = p.next;
         }

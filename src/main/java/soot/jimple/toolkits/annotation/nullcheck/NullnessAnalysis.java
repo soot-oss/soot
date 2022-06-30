@@ -24,7 +24,6 @@ package soot.jimple.toolkits.annotation.nullcheck;
  */
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import soot.Immediate;

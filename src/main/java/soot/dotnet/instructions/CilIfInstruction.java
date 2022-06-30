@@ -49,9 +49,9 @@ public class CilIfInstruction extends AbstractCilnstruction {
 
     // if condition only accepts ConditionExpr and not JimpleLocals
     Value eqExpr;
-    if (condition instanceof ConditionExpr)
+    if (condition instanceof ConditionExpr) {
       eqExpr = condition;
-    else {
+    } else {
       // Store expression to local variable and check if true in second instruction
       Local tmpLocalCond = dotnetBody.variableManager.localGenerator.generateLocal(condition.getType());
       jb.getUnits().add(Jimple.v().newAssignStmt(tmpLocalCond, condition));

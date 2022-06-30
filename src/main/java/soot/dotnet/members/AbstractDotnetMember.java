@@ -46,8 +46,9 @@ public abstract class AbstractDotnetMember implements DotnetTypeMember {
      * Normally System.String.Empty == Reftype(System.String), because is string, lead to errors in validation With this fix:
      * System.String.Empty == StringConstant
      */
-    if (declaringClass.getName().equals(DotnetBasicTypes.SYSTEM_STRING) && fieldMethodName.equals("Empty"))
+    if (declaringClass.getName().equals(DotnetBasicTypes.SYSTEM_STRING) && fieldMethodName.equals("Empty")) {
       return StringConstant.v("");
+    }
     /*
      * If System.Array.Empty, normal RefType(System.Array) Problem with System.Type[] = System.Array.Empty With this fix null
      * constant

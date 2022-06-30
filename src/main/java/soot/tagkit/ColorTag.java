@@ -23,6 +23,7 @@ package soot.tagkit;
  */
 
 import java.awt.Color;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

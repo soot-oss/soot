@@ -1,5 +1,10 @@
 package soot;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,11 +28,6 @@ package soot;
  */
 
 import com.google.common.base.Joiner;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import soot.jimple.Stmt;
 import soot.util.NumberedString;
@@ -133,10 +133,7 @@ public class MethodSubSignature {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if ((obj == null) || (getClass() != obj.getClass())) {
       return false;
     }
     MethodSubSignature other = (MethodSubSignature) obj;
