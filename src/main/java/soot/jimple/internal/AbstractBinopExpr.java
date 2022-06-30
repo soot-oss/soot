@@ -25,25 +25,11 @@ package soot.jimple.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import soot.BooleanType;
-import soot.ByteType;
-import soot.CharType;
-import soot.DoubleType;
-import soot.FloatType;
-import soot.IntType;
-import soot.LongType;
-import soot.RefType;
-import soot.ShortType;
-import soot.SootClass;
-import soot.Type;
 import soot.UnitPrinter;
-import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
-import soot.dotnet.types.DotnetBasicTypes;
 import soot.grimp.PrecedenceTest;
 import soot.jimple.Expr;
-import soot.options.Options;
 
 @SuppressWarnings("serial")
 public abstract class AbstractBinopExpr implements Expr {
@@ -146,6 +132,7 @@ public abstract class AbstractBinopExpr implements Expr {
       }
     }
   }
+<<<<<<< HEAD
 
   protected Type getType(BinopExprEnum exprTypes) {
     final Type t1 = this.op1Box.getValue().getType();
@@ -212,4 +199,6 @@ public abstract class AbstractBinopExpr implements Expr {
   public enum BinopExprEnum {
     ABASTRACT_INT_LONG_BINOP_EXPR, ABSTRACT_FLOAT_BINOP_EXPR
   }
+=======
+>>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 }

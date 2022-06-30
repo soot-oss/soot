@@ -73,7 +73,7 @@ public final class TypeManager {
   public TypeManager(PAG pag) {
     this.pag = pag;
 
-    this.rtObject = Scene.v().getObjectType();
+    this.rtObject = RefType.v("java.lang.Object");
     this.rtSerializable = RefType.v("java.io.Serializable");
     this.rtCloneable = RefType.v("java.lang.Cloneable");
   }
@@ -172,7 +172,7 @@ public final class TypeManager {
 
     // **
     initClass2allocs();
-    makeClassTypeMask(Scene.v().getSootClass(Scene.v().getObjectType().getClassName()));
+    makeClassTypeMask(Scene.v().getSootClass("java.lang.Object"));
     BitVector visitedTypes = new BitVector();
     {
       Iterator<Type> it = typeMask.keyIterator();

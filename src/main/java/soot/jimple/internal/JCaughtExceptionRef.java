@@ -26,7 +26,10 @@ import java.util.Collections;
 import java.util.List;
 
 import soot.RefType;
+<<<<<<< HEAD
 import soot.Scene;
+=======
+>>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.Type;
 import soot.UnitPrinter;
 import soot.ValueBox;
@@ -72,7 +75,7 @@ public class JCaughtExceptionRef implements CaughtExceptionRef {
 
   @Override
   public Type getType() {
-    return RefType.v(Scene.v().getBaseExceptionType().getClassName());
+    return RefType.v("java.lang.Throwable");
   }
 
   @Override

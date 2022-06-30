@@ -33,7 +33,10 @@ import soot.Local;
 import soot.LongType;
 import soot.NullType;
 import soot.RefType;
+<<<<<<< HEAD
 import soot.Scene;
+=======
+>>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.SootMethodRef;
 import soot.TrapManager;
 import soot.Type;
@@ -509,7 +512,7 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
         }
 
         if (uses) {
-          left.addParent(resolver.typeVariable(Scene.v().getBaseExceptionType()));
+          left.addParent(resolver.typeVariable(RefType.v("java.lang.Throwable")));
         }
       }
     }
@@ -636,7 +639,7 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
       if (stmt.getOp() instanceof Local) {
         TypeVariableBV op = resolver.typeVariable((Local) stmt.getOp());
 
-        op.addParent(resolver.typeVariable(Scene.v().getBaseExceptionType()));
+        op.addParent(resolver.typeVariable(RefType.v("java.lang.Throwable")));
       }
     }
   }

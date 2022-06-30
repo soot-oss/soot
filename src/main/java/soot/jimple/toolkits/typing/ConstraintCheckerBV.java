@@ -38,7 +38,10 @@ import soot.Local;
 import soot.LongType;
 import soot.NullType;
 import soot.RefType;
+<<<<<<< HEAD
 import soot.Scene;
+=======
+>>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.SootMethodRef;
 import soot.TrapManager;
 import soot.Type;
@@ -654,7 +657,7 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
         }
       }
 
-      if (!left.hasAncestorOrSelf(hierarchy.typeNode(Scene.v().getBaseExceptionType()))) {
+      if (!left.hasAncestorOrSelf(hierarchy.typeNode(RefType.v("java.lang.Throwable")))) {
         error("Type Error(48)");
       }
     }
@@ -785,9 +788,9 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
     if (stmt.getOp() instanceof Local) {
       TypeNode op = hierarchy.typeNode(((Local) stmt.getOp()).getType());
 
-      if (!op.hasAncestorOrSelf(hierarchy.typeNode(Scene.v().getBaseExceptionType()))) {
+      if (!op.hasAncestorOrSelf(hierarchy.typeNode(RefType.v("java.lang.Throwable")))) {
         if (fix) {
-          stmt.setOp(insertCast((Local) stmt.getOp(), Scene.v().getBaseExceptionType(), stmt));
+          stmt.setOp(insertCast((Local) stmt.getOp(), RefType.v("java.lang.Throwable"), stmt));
         } else {
           error("Type Error(53)");
         }

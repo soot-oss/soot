@@ -10,12 +10,12 @@ package soot.validation;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -27,7 +27,10 @@ import java.util.List;
 import soot.ArrayType;
 import soot.Body;
 import soot.DoubleType;
+<<<<<<< HEAD
 import soot.FastHierarchy;
+=======
+>>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.FloatType;
 import soot.IntType;
 import soot.LongType;
@@ -39,13 +42,15 @@ import soot.SootClass;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
+<<<<<<< HEAD
 import soot.dotnet.types.DotnetBasicTypes;
+=======
+>>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
-import soot.options.Options;
 
 public enum CheckTypesValidator implements BodyValidator {
   INSTANCE;
@@ -79,18 +84,18 @@ public enum CheckTypesValidator implements BodyValidator {
           if (iexpr instanceof InstanceInvokeExpr) {
             InstanceInvokeExpr iiexpr = (InstanceInvokeExpr) iexpr;
             checkCopy(stmt, exception, called.getDeclaringClass().getType(), iiexpr.getBase().getType(),
-                    " in receiver of call" + errorSuffix);
+                " in receiver of call" + errorSuffix);
           }
 
           final int argCount = iexpr.getArgCount();
           if (called.getParameterTypes().size() != argCount) {
             exception.add(new ValidationException(stmt, "Argument count does not match the signature of the called function",
-                    "Warning: Argument count doesn't match up with signature in call" + errorSuffix));
+                "Warning: Argument count doesn't match up with signature in call" + errorSuffix));
           } else {
             for (int i = 0; i < argCount; i++) {
               checkCopy(stmt, exception, Type.toMachineType(called.getParameterType(i)),
-                      Type.toMachineType(iexpr.getArg(i).getType()),
-                      " in argument " + i + " of call" + errorSuffix + " (Note: Parameters are zero-indexed)");
+                  Type.toMachineType(iexpr.getArg(i).getType()),
+                  " in argument " + i + " of call" + errorSuffix + " (Note: Parameters are zero-indexed)");
             }
           }
         }
@@ -112,6 +117,7 @@ public enum CheckTypesValidator implements BodyValidator {
       if (leftType instanceof DoubleType && rightType instanceof DoubleType) {
         return;
       }
+<<<<<<< HEAD
 
       if (Options.v().src_prec() == Options.src_prec_dotnet) {
 
@@ -156,6 +162,17 @@ public enum CheckTypesValidator implements BodyValidator {
     }
 
     if ((rightType instanceof NullType) || (leftType instanceof RefType && Scene.v().getObjectType().toString() .equals(((RefType) leftType).getClassName()))) {
+=======
+      exception.add(new ValidationException(stmt, "Warning: Bad use of primitive type" + errorSuffix));
+      return;
+    }
+
+    if (rightType instanceof NullType) {
+      return;
+    }
+
+    if (leftType instanceof RefType && "java.lang.Object".equals(((RefType) leftType).getClassName())) {
+>>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
       return;
     }
 
@@ -166,11 +183,7 @@ public enum CheckTypesValidator implements BodyValidator {
       // it is legal to assign arrays to variables of type Serializable, Cloneable or Object
       if (rightType instanceof ArrayType) {
         if (leftType.equals(RefType.v("java.io.Serializable")) || leftType.equals(RefType.v("java.lang.Cloneable"))
-                || leftType.equals(Scene.v().getObjectType())) {
-          return;
-        }
-        // Dotnet: it is legal to assign arrays to System.Array, because it is base class in CLR
-        if (leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ARRAY))) {
+            || leftType.equals(RefType.v("java.lang.Object"))) {
           return;
         }
       }
@@ -189,7 +202,7 @@ public enum CheckTypesValidator implements BodyValidator {
       if (leftClass.isInterface()) {
         if (rightClass.isInterface()) {
           if (!(leftClass.getName().equals(rightClass.getName())
-                  || Scene.v().getActiveHierarchy().isInterfaceSubinterfaceOf(rightClass, leftClass))) {
+              || Scene.v().getActiveHierarchy().isInterfaceSubinterfaceOf(rightClass, leftClass))) {
             exception.add(new ValidationException(stmt, "Warning: Bad use of interface type" + errorSuffix));
           }
         } else {
@@ -197,6 +210,7 @@ public enum CheckTypesValidator implements BodyValidator {
         }
       } else if (rightClass.isInterface()) {
         exception.add(new ValidationException(stmt,
+<<<<<<< HEAD
                 "Warning: trying to use interface type where non-Object class expected" + errorSuffix));
       } else if (Options.v().src_prec() == Options.src_prec_dotnet) {
         // if dotnet check for ValueTypes, assignment can only be correct from compiler
@@ -206,11 +220,15 @@ public enum CheckTypesValidator implements BodyValidator {
         if (lTypeIsChild && rTypeIsChild) {
           return;
         }
+=======
+            "Warning: trying to use interface type where non-Object class expected" + errorSuffix));
+>>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
       } else if (!Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(rightClass, leftClass)) {
         exception.add(new ValidationException(stmt, "Warning: Bad use of class type" + errorSuffix));
       }
       return;
     }
+
     exception.add(new ValidationException(stmt, "Warning: Bad types" + errorSuffix));
   }
 

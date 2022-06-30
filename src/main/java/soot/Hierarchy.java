@@ -651,7 +651,7 @@ public class Hierarchy {
       if (cls instanceof RefType) {
         s.add(resolveConcreteDispatch(((RefType) cls).getSootClass(), m));
       } else if (cls instanceof ArrayType) {
-        s.add(resolveConcreteDispatch(Scene.v().getObjectType().getSootClass(), m));
+        s.add(resolveConcreteDispatch(RefType.v("java.lang.Object").getSootClass(), m));
       } else {
         throw new RuntimeException("Unable to resolve concrete dispatch of type " + cls);
       }

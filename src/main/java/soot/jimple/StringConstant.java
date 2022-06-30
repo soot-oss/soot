@@ -24,8 +24,6 @@ package soot.jimple;
 
 import soot.RefType;
 import soot.Type;
-import soot.dotnet.types.DotnetBasicTypes;
-import soot.options.Options;
 import soot.util.StringTools;
 import soot.util.Switch;
 
@@ -34,7 +32,7 @@ public class StringConstant extends Constant {
   public final String value;
   public static final StringConstant EMPTY_STRING = new StringConstant("");
 
-  protected StringConstant(String s) {
+  private StringConstant(String s) {
     if (s == null) {
       throw new IllegalArgumentException("String constant cannot be null");
     }
@@ -67,9 +65,12 @@ public class StringConstant extends Constant {
 
   @Override
   public Type getType() {
+<<<<<<< HEAD
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
       return RefType.v(DotnetBasicTypes.SYSTEM_STRING);
     }
+=======
+>>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
     return RefType.v("java.lang.String");
   }
 

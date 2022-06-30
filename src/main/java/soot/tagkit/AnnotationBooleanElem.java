@@ -31,10 +31,6 @@ public class AnnotationBooleanElem extends AnnotationElem {
 
   private final boolean value;
 
-  public AnnotationBooleanElem(boolean v, String name) {
-    this(v, 'Z', name);
-  }
-
   public AnnotationBooleanElem(boolean v, char kind, String name) {
     super(kind, name);
     this.value = v;

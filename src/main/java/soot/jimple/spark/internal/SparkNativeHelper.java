@@ -21,9 +21,15 @@ package soot.jimple.spark.internal;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+<<<<<<< HEAD
 import soot.G;
 import soot.RefType;
 import soot.Scene;
+=======
+
+import soot.G;
+import soot.RefType;
+>>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
@@ -94,17 +100,17 @@ public class SparkNativeHelper extends NativeHelper {
   }
 
   protected ReferenceVariable tempFieldImpl(String fieldsig) {
-    return pag.makeGlobalVarNode(new Pair("tempField", fieldsig), Scene.v().getObjectType());
+    return pag.makeGlobalVarNode(new Pair("tempField", fieldsig), RefType.v("java.lang.Object"));
   }
 
   protected ReferenceVariable tempVariableImpl() {
     return pag.makeGlobalVarNode(new Pair("TempVar", new Integer(++G.v().SparkNativeHelper_tempVar)),
-        Scene.v().getObjectType());
+        RefType.v("java.lang.Object"));
   }
 
   protected ReferenceVariable tempLocalVariableImpl(SootMethod method) {
     return pag.makeLocalVarNode(new Pair("TempVar", new Integer(++G.v().SparkNativeHelper_tempVar)),
-            Scene.v().getObjectType(), method);
+        RefType.v("java.lang.Object"), method);
   }
 
 }

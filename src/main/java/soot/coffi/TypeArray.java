@@ -26,7 +26,6 @@ import java.io.PrintStream;
 
 import soot.ArrayType;
 import soot.RefType;
-import soot.Scene;
 import soot.Type;
 
 class TypeArray {
@@ -101,7 +100,7 @@ class TypeArray {
           && (otherArray.types[i] instanceof ArrayType || otherArray.types[i] instanceof RefType)) {
         // This type merge does not need to be accurate, because it is not really used
 
-        newArray.types[i] = Scene.v().getObjectType();
+        newArray.types[i] = RefType.v("java.lang.Object");
       } else {
         newArray.types[i] = UnusuableType.v();
       }

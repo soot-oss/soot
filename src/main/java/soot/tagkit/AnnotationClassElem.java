@@ -31,15 +31,6 @@ public class AnnotationClassElem extends AnnotationElem {
 
   private final String desc;
 
-  /**
-   *
-   * @param typeName type name
-   * @param elementName name of element
-   */
-  public AnnotationClassElem(String typeName, String elementName) {
-    this(typeName, 'c', elementName);
-  }
-
   public AnnotationClassElem(String s, char kind, String name) {
     super(kind, name);
     this.desc = s;

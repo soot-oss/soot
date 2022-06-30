@@ -51,7 +51,6 @@ public class Options extends OptionsBase {
     public static final int src_prec_apk = 5;
     public static final int src_prec_apk_class_jimple = 6;
     public static final int src_prec_apk_c_j = 6;
-    public static final int src_prec_dotnet = 7;
     public static final int output_format_J = 1;
     public static final int output_format_jimple = 1;
     public static final int output_format_j = 2;
@@ -117,13 +116,11 @@ public class Options extends OptionsBase {
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
     public static final int throw_analysis_dalvik = 3;
-    public static final int throw_analysis_dotnet = 4;
-    public static final int throw_analysis_auto_select = 5;
+    public static final int throw_analysis_auto_select = 4;
     public static final int check_init_throw_analysis_auto = 1;
     public static final int check_init_throw_analysis_pedantic = 2;
     public static final int check_init_throw_analysis_unit = 3;
     public static final int check_init_throw_analysis_dalvik = 4;
-    public static final int check_init_throw_analysis_dotnet = 5;
 
     @SuppressWarnings("unused")
     public boolean parse(String[] argv) {
@@ -265,22 +262,6 @@ public class Options extends OptionsBase {
                     soot_modulepath = value;
                 else {
                     G.v().out.println("Duplicate values " + soot_modulepath + " and " + value + " for option -" + option);
-                    return false;
-                }
-            }
-            else if (false
-                    || option.equals("dotnet-nativehost-path")
-            ) {
-                if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
-                    return false;
-                }
-
-                String value = nextOption();
-                if (dotnet_nativehost_path.isEmpty())
-                    dotnet_nativehost_path = value;
-                else {
-                    G.v().out.println("Duplicate values " + dotnet_nativehost_path + " and " + value + " for option -" + option);
                     return false;
                 }
             }
@@ -457,15 +438,6 @@ public class Options extends OptionsBase {
                     }
                     src_prec = src_prec_apk_c_j;
                 }
-                else if (false
-                        || value.equals("dotnet")
-                ) {
-                    if (src_prec != 0 && src_prec != src_prec_dotnet) {
-                        G.v().out.println("Multiple values given for option " + option);
-                        return false;
-                    }
-                    src_prec = src_prec_dotnet;
-                }
                 else {
                     G.v().out.println(String.format("Invalid value %s given for option -%s", value, option));
                     return false;
@@ -475,14 +447,6 @@ public class Options extends OptionsBase {
                     || option.equals("full-resolver")
             )
                 full_resolver = true;
-            else if (false
-                    || option.equals("ignore-methodsource-error")
-            )
-                ignore_methodsource_error = true;
-            else if (false
-                    || option.equals("no-resolve-all-dotnet-methods")
-            )
-                resolve_all_dotnet_methods = false;
             else if (false
                     || option.equals("allow-phantom-refs")
             )
@@ -1171,15 +1135,6 @@ public class Options extends OptionsBase {
                     throw_analysis = throw_analysis_dalvik;
                 }
                 else if (false
-                        || value.equals("dotnet")
-                ) {
-                    if (throw_analysis != 0 && throw_analysis != throw_analysis_dotnet) {
-                        G.v().out.println("Multiple values given for option " + option);
-                        return false;
-                    }
-                    throw_analysis = throw_analysis_dotnet;
-                }
-                else if (false
                         || value.equals("auto-select")
                 ) {
                     if (throw_analysis != 0 && throw_analysis != throw_analysis_auto_select) {
@@ -1240,15 +1195,6 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     check_init_throw_analysis = check_init_throw_analysis_dalvik;
-                }
-                else if (false
-                        || value.equals("dotnet")
-                ) {
-                    if (check_init_throw_analysis != 0 && check_init_throw_analysis != check_init_throw_analysis_dotnet) {
-                        G.v().out.println("Multiple values given for option " + option);
-                        return false;
-                    }
-                    check_init_throw_analysis = check_init_throw_analysis_dotnet;
                 }
                 else {
                     G.v().out.println(String.format("Invalid value %s given for option -%s", value, option));
@@ -1533,10 +1479,6 @@ public class Options extends OptionsBase {
     public void set_soot_modulepath(String setting) { soot_modulepath = setting; }
     private String soot_modulepath = "";
 
-    public String dotnet_nativehost_path() { return dotnet_nativehost_path; }
-    public void set_dotnet_nativehost_path(String setting) { dotnet_nativehost_path = setting; }
-    private String dotnet_nativehost_path = "";
-
     public boolean prepend_classpath() { return prepend_classpath; }
     private boolean prepend_classpath = false;
     public void set_prepend_classpath(boolean setting) { prepend_classpath = setting; }
@@ -1599,14 +1541,6 @@ public class Options extends OptionsBase {
     public boolean full_resolver() { return full_resolver; }
     private boolean full_resolver = false;
     public void set_full_resolver(boolean setting) { full_resolver = setting; }
-
-    public boolean ignore_methodsource_error() { return ignore_methodsource_error; }
-    private boolean ignore_methodsource_error = false;
-    public void set_ignore_methodsource_error(boolean setting) { ignore_methodsource_error = setting; }
-
-    public boolean resolve_all_dotnet_methods() { return resolve_all_dotnet_methods; }
-    private boolean resolve_all_dotnet_methods = true;
-    public void set_resolve_all_dotnet_methods(boolean setting) { resolve_all_dotnet_methods = setting; }
 
     public boolean allow_phantom_refs() { return allow_phantom_refs; }
     private boolean allow_phantom_refs = false;
@@ -1845,7 +1779,6 @@ public class Options extends OptionsBase {
                 + "\nInput Options:\n"
                 + padOpt("-cp ARG -soot-class-path ARG -soot-classpath ARG", "Use ARG as the classpath for finding classes.")
                 + padOpt("-soot-modulepath ARG", "Use ARG as the modulepath for finding classes.")
-                + padOpt("-dotnet-nativehost-path ARG", "Use  to locate your NativeHost Java JNI library.")
                 + padOpt("-pp, -prepend-classpath", "Prepend the given soot classpath to the default classpath.")
                 + padOpt("-ice, -ignore-classpath-errors", "Ignores invalid entries on the Soot classpath.")
                 + padOpt("-process-multiple-dex", "Process all DEX files found in APK.")
@@ -1864,10 +1797,7 @@ public class Options extends OptionsBase {
                     + padVal("java", "Favour Java files as Soot source")
                     + padVal("apk", "Favour APK files as Soot source")
                     + padVal("apk-class-jimple apk-c-j", "Favour APK files as Soot source, disregard Java files")
-                    + padVal("dotnet", "Favour .NET assemblies files as Soot source")
                 + padOpt("-full-resolver", "Force transitive resolving of referenced classes")
-                + padOpt("-ignore-methodsource-error", "Ignore errors from method source and return empty jimple body")
-                + padOpt("-resolve-all-dotnet-methods", "Resolve all dotnet methods, such as unsafe methods")
                 + padOpt("-allow-phantom-refs", "Allow unresolved classes; may cause errors")
                 + padOpt("-allow-phantom-elms", "Allow phantom methods and fields in non-phantom classes")
                 + padOpt("-allow-cg-errors", "Allow Errors during callgraph construction")
@@ -1942,14 +1872,12 @@ public class Options extends OptionsBase {
                     + padVal("pedantic", "Pedantically conservative throw analysis")
                     + padVal("unit", "Unit Throw Analysis")
                     + padVal("dalvik", "Dalvik Throw Analysis")
-                    + padVal("dotnet", "Dotnet Throw Analysis")
                     + padVal("auto-select (default)", "Automatically Select Throw Analysis")
                 + padOpt("-check-init-ta ARG -check-init-throw-analysis ARG", "")
                     + padVal("auto (default)", "Automatically select a throw analysis")
                     + padVal("pedantic", "Pedantically conservative throw analysis")
                     + padVal("unit", "Unit Throw Analysis")
                     + padVal("dalvik", "Dalvik Throw Analysis")
-                    + padVal("dotnet", "Dotnet Throw Analysis")
                 + padOpt("-omit-excepting-unit-edges", "Omit CFG edges to handlers from excepting units which lack side effects")
                 + padOpt("-trim-cfgs", "Trim unrealizable exceptional edges from CFGs")
                 + padOpt("-ire, -ignore-resolution-errors", "Does not throw an exception when a program references an undeclared field or method.")

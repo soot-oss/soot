@@ -464,7 +464,7 @@
             </long_desc>
         </stropt>
 
-        <stropt>
+			<stropt>
 			<name>Soot Modulepath</name>
 			<alias>soot-modulepath</alias>
 			<set_arg_label>modulepath</set_arg_label>
@@ -485,16 +485,6 @@
 			</long_desc>
 		</stropt>
 
-        <stropt>
-            <name>Dotnet NativeHost Path</name>
-            <alias>dotnet-nativehost-path</alias>
-            <short_desc>Use <alias/> to locate your NativeHost Java JNI library.</short_desc>
-            <long_desc>
-                <p>
-                    Use dotnet-nativehost-path to load the NativeHost library which is needed for soot.dotnet.
-                </p>
-            </long_desc>
-        </stropt>
 	
         <boolopt>
             <name>Prepend classpath</name>
@@ -776,15 +766,6 @@
                     file.
                 </long_desc>
             </value>
-            <value>
-                <name>Dotnet Assembly</name>
-                <alias>dotnet</alias>
-                <short_desc>Favour .NET assemblies files as Soot source</short_desc>
-                <long_desc>
-                    Try to resolve classes from <tt>.dll</tt> and <tt>.exe</tt> files found in
-                    the Soot classpath.
-                </long_desc>
-            </value>
         </multiopt>
         <boolopt>
             <name>Force complete resolver</name>
@@ -802,23 +783,6 @@
                 in whole-program mode, this switch has no effect, and class resolution is
                 always performed as if it were turned on.
             </long_desc>
-        </boolopt>
-        <boolopt>
-            <name>Ignore MethodSource Error</name>
-            <alias>ignore-methodsource-error</alias>
-            <short_desc>Ignore errors from method source and return empty jimple body</short_desc>
-            <long_desc>
-                Allow to ignore thrown exceptions and return an empty jimple body instead.
-            </long_desc>
-        </boolopt>
-        <boolopt>
-            <name>Resolve all Dotnet Methods</name>
-            <alias>resolve-all-dotnet-methods</alias>
-            <short_desc>Resolve all dotnet methods, such as unsafe methods</short_desc>
-            <long_desc>
-                Resolve all dotnet methods, such as unsafe methods or methods with pointers as parameter.
-            </long_desc>
-            <default>true</default>
         </boolopt>
         <boolopt>
             <name>Allow Phantom References</name>
@@ -7097,14 +7061,6 @@ This locking scheme aims to achieve simple fine-grained locking.
                 </long_desc>
             </value>
             <value>
-                <name>Dotnet</name>
-                <alias>dotnet</alias>
-                <short_desc>Dotnet Throw Analysis</short_desc>
-                <long_desc>
-                    Specialized throw analysis implementation that covers the semantics of .NET and CLR
-                </long_desc>
-            </value>
-            <value>
                 <name>AutoSelect</name>
                 <alias>auto-select</alias>
                 <default/>
@@ -7172,14 +7128,6 @@ This locking scheme aims to achieve simple fine-grained locking.
                     analysis deals with each statement in isolation, without regard
                     to the surrounding program. This is the equivalent of Unit above, but targeting
                     the Dalvik VM semantics as opposed to those of the JVM.
-                </long_desc>
-            </value>
-            <value>
-                <name>Dotnet</name>
-                <alias>dotnet</alias>
-                <short_desc>Dotnet Throw Analysis</short_desc>
-                <long_desc>
-                    Specialized throw analysis implementation that covers the semantics of .NET and CLR
                 </long_desc>
             </value>
         </multiopt>

@@ -14,12 +14,12 @@ import java.util.ArrayDeque;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -270,7 +270,7 @@ public class TypeResolver {
 
     /**
      * Creates a cast at stmt of vold to the given type.
-     *
+     * 
      * @param useType
      *          the new type
      * @param stmt
@@ -372,7 +372,7 @@ public class TypeResolver {
 
   /**
    * Allows clients to provide an own visitor for cast insertion
-   *
+   * 
    * @param tg
    *          the typing
    * @param h
@@ -468,7 +468,7 @@ public class TypeResolver {
               && (((RefType) told).getSootClass().isPhantom() || ((RefType) t_).getSootClass().isPhantom())
               && (stmt.getRightOp() instanceof CaughtExceptionRef)) {
             if (throwable == null) {
-              throwable = Collections.<Type>singleton(Scene.v().getBaseExceptionType());
+              throwable = Collections.<Type>singleton(RefType.v("java.lang.Throwable"));
             }
             lcas = throwable;
           } else {

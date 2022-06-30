@@ -28,9 +28,13 @@ import java.util.Set;
 import soot.AnySubType;
 import soot.G;
 import soot.PointsToSet;
+<<<<<<< HEAD
 import soot.PrimType;
 import soot.RefType;
 import soot.Scene;
+=======
+import soot.RefType;
+>>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.Singletons;
 import soot.Type;
 import soot.jimple.ClassConstant;
@@ -44,19 +48,11 @@ public class FullObjectSet extends Union {
   }
 
   public static FullObjectSet v(RefType t) {
-    return (Scene.v().getObjectType().toString().equals(t.getClassName())) ? v() : new FullObjectSet(t);
-  }
-
-  public static FullObjectSet v(PrimType t) {
-    return new FullObjectSet(t);
+    return ("java.lang.Object".equals(t.getClassName())) ? v() : new FullObjectSet(t);
   }
 
   public FullObjectSet(Singletons.Global g) {
-    this(Scene.v().getObjectType());
-  }
-
-  private FullObjectSet(PrimType declaredType) {
-    this.types = Collections.singleton(declaredType);
+    this(RefType.v("java.lang.Object"));
   }
 
   private FullObjectSet(RefType declaredType) {

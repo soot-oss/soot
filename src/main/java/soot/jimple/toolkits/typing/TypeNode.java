@@ -34,7 +34,10 @@ import soot.ArrayType;
 import soot.NullType;
 import soot.PrimType;
 import soot.RefType;
+<<<<<<< HEAD
 import soot.Scene;
+=======
+>>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.SootClass;
 import soot.Type;
 import soot.options.Options;
@@ -93,7 +96,7 @@ class TypeNode {
       List<TypeNode> plist = new LinkedList<TypeNode>();
 
       SootClass superclass = sClass.getSuperclassUnsafe();
-      if (superclass != null && !sClass.getName().equals(Scene.v().getObjectType().toString())) {
+      if (superclass != null && !sClass.getName().equals("java.lang.Object")) {
         TypeNode parent = hierarchy.typeNode(RefType.v(sClass.getSuperclass().getName()));
         plist.add(parent);
         parentClass = parent;
@@ -146,7 +149,7 @@ class TypeNode {
         RefType baseType = (RefType) type.baseType;
         SootClass sClass = baseType.getSootClass();
         SootClass superClass = sClass.getSuperclassUnsafe();
-        if (superClass != null && !superClass.getName().equals(Scene.v().getObjectType().toString())) {
+        if (superClass != null && !superClass.getName().equals("java.lang.Object")) {
           TypeNode parent = hierarchy.typeNode(ArrayType.v(RefType.v(sClass.getSuperclass().getName()), type.numDimensions));
           plist.add(parent);
           parentClass = parent;

@@ -1152,18 +1152,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsfull_resolver_widget().getAlias(), new Boolean(boolRes));
 		}
-		boolRes = getInput_Optionsignore_methodsource_error_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getInput_Optionsignore_methodsource_error_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getInput_Optionsresolve_all_dotnet_methods_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getInput_Optionsresolve_all_dotnet_methods_widget().getAlias(), new Boolean(boolRes));
-		}
 		boolRes = getInput_Optionsallow_phantom_refs_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -1223,12 +1211,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionssoot_modulepath_widget().getAlias(), stringRes);
-		}
-		stringRes = getInput_Optionsdotnet_nativehost_path_widget().getText().getText();
-		defStringRes = "";
-
-		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
-			getConfig().put(getInput_Optionsdotnet_nativehost_path_widget().getAlias(), stringRes);
 		}
 		stringRes = getInput_Optionsprocess_dir_widget().getText().getText();
 		defStringRes = "";
@@ -4809,26 +4791,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return Input_Optionsfull_resolver_widget;
 	}	
 	
-	private BooleanOptionWidget Input_Optionsignore_methodsource_error_widget;
-	
-	private void setInput_Optionsignore_methodsource_error_widget(BooleanOptionWidget widget) {
-		Input_Optionsignore_methodsource_error_widget = widget;
-	}
-	
-	public BooleanOptionWidget getInput_Optionsignore_methodsource_error_widget() {
-		return Input_Optionsignore_methodsource_error_widget;
-	}	
-	
-	private BooleanOptionWidget Input_Optionsresolve_all_dotnet_methods_widget;
-	
-	private void setInput_Optionsresolve_all_dotnet_methods_widget(BooleanOptionWidget widget) {
-		Input_Optionsresolve_all_dotnet_methods_widget = widget;
-	}
-	
-	public BooleanOptionWidget getInput_Optionsresolve_all_dotnet_methods_widget() {
-		return Input_Optionsresolve_all_dotnet_methods_widget;
-	}	
-	
 	private BooleanOptionWidget Input_Optionsallow_phantom_refs_widget;
 	
 	private void setInput_Optionsallow_phantom_refs_widget(BooleanOptionWidget widget) {
@@ -4954,18 +4916,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public StringOptionWidget getInput_Optionssoot_modulepath_widget() {
 		return Input_Optionssoot_modulepath_widget;
-	}
-	
-	
-	
-	private StringOptionWidget Input_Optionsdotnet_nativehost_path_widget;
-	
-	private void setInput_Optionsdotnet_nativehost_path_widget(StringOptionWidget widget) {
-		Input_Optionsdotnet_nativehost_path_widget = widget;
-	}
-	
-	public StringOptionWidget getInput_Optionsdotnet_nativehost_path_widget() {
-		return Input_Optionsdotnet_nativehost_path_widget;
 	}
 	
 	
@@ -8919,28 +8869,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		setInput_Optionsfull_resolver_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force complete resolver", "", "","full-resolver", "\nNormally, Soot resolves only that application classes and any \nclasses that they refer to, along with any classes it needs for \nthe Jimple typing, but it does not transitively resolve \nreferences in these additional classes that were resolved only \nbecause they were referenced. This switch forces full transitive \nresolution of all references found in all classes that are \nresolved, regardless of why they were resolved. In whole-program \nmode, class resolution is always fully transitive. Therefore, in \nwhole-program mode, this switch has no effect, and class \nresolution is always performed as if it were turned on.", defaultBool)));
 
-		defKey = ""+" "+""+" "+"ignore-methodsource-error";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setInput_Optionsignore_methodsource_error_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Ignore MethodSource Error", "", "","ignore-methodsource-error", "\nAllow to ignore thrown exceptions and return an empty jimple \nbody instead.", defaultBool)));
-
-		defKey = ""+" "+""+" "+"resolve-all-dotnet-methods";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setInput_Optionsresolve_all_dotnet_methods_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Resolve all Dotnet Methods", "", "","resolve-all-dotnet-methods", "\nResolve all dotnet methods, such as unsafe methods or methods \nwith pointers as parameter.", defaultBool)));
-
 		defKey = ""+" "+""+" "+"allow-phantom-refs";
 		defKey = defKey.trim();
 
@@ -9055,10 +8983,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 						"apk-class-jimple apk-c-j",
 						"\nTry to resolve classes first from .apk (Android Package) files \nfound in the Soot classpath. Fall back to .class, or .jimple \nfiles only when unable to find a class in .apk files. Never load \na .java file.",
 						false),
-				new OptionData("Dotnet Assembly",
-						"dotnet",
-						"\nTry to resolve classes from .dll and .exe files found in the \nSoot classpath.",
-						false),
 		};
 
 
@@ -9119,18 +9043,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setInput_Optionssoot_modulepath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Modulepath",  "", "","soot-modulepath", "\nUse MODULEPATH as the list of directories in which Soot should \nsearch for classes. MODULEPATH should be a series of \ndirectories, separated by the path separator character for your \nsystem. If no modulepath is set on the command line, but the \nsystem property soot.module.path has been set, Soot uses its \nvalue as the modulepath. If neither the command line nor the \nsystem properties specify a Soot classpath, Soot falls back on a \ndefault modulepath jrt:.", defaultString)));
-		
-
-		defKey = ""+" "+""+" "+"dotnet-nativehost-path";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);	
-		} else {
-			defaultString = "";
-		}
-
-		setInput_Optionsdotnet_nativehost_path_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Dotnet NativeHost Path",  "", "","dotnet-nativehost-path", "\nUse dotnet-nativehost-path to load the NativeHost library which \nis needed for soot.dotnet.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"android-jars";
@@ -9679,10 +9591,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 						"dalvik",
 						"\nSpecialized throw analysis implementation that covers the \nsemantics of the Dalvik IR used for Android apps",
 						false),
-				new OptionData("Dotnet",
-						"dotnet",
-						"\nSpecialized throw analysis implementation that covers the \nsemantics of .NET and CLR",
-						false),
 				new OptionData("AutoSelect",
 						"auto-select",
 						"\nWhen processing DEX or APK files, choose the Dalvik throw \nanalysis. Otherwise, choose the unit throw analysis.",
@@ -9718,10 +9626,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 				new OptionData("Dalvik",
 						"dalvik",
 						"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the Dalvik Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. This is the equivalent of Unit \nabove, but targeting the Dalvik VM semantics as opposed to those \nof the JVM.",
-						false),
-				new OptionData("Dotnet",
-						"dotnet",
-						"\nSpecialized throw analysis implementation that covers the \nsemantics of .NET and CLR",
 						false),
 		};
 

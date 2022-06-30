@@ -33,10 +33,6 @@ public class AnnotationArrayElem extends AnnotationElem {
 
   private final ArrayList<AnnotationElem> values;
 
-  public AnnotationArrayElem(ArrayList<AnnotationElem> types, String elemName) {
-    this(types, '[', elemName);
-  }
-
   public AnnotationArrayElem(ArrayList<AnnotationElem> t, char kind, String name) {
     super(kind, name);
     this.values = t;

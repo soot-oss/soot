@@ -55,13 +55,13 @@ public class Integer1Type extends PrimType implements IntegerType {
   }
 
   @Override
-  public boolean isAllowedInFinalCode() {
-    return false;
+  public RefType boxedType() {
+    return RefType.v("java.lang.Integer");
   }
 
   @Override
-  public String getTypeAsString() {
-    return "java.lang.Integer";
+  public boolean isAllowedInFinalCode() {
+    return false;
   }
 
   @Override

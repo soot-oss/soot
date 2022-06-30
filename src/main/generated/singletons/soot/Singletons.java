@@ -2022,20 +2022,6 @@ public class Singletons {
     	instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover = null;
     }
 
-    private soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis instance_soot_dotnet_exceptiontoolkits_DotnetThrowAnalysis;
-    public soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis soot_dotnet_exceptiontoolkits_DotnetThrowAnalysis() {
-        if (instance_soot_dotnet_exceptiontoolkits_DotnetThrowAnalysis == null) {
-	       	synchronized (this) {
-		        if (instance_soot_dotnet_exceptiontoolkits_DotnetThrowAnalysis == null)
-	        		instance_soot_dotnet_exceptiontoolkits_DotnetThrowAnalysis = new soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis(g);
-	       	}
-       	}
-        return instance_soot_dotnet_exceptiontoolkits_DotnetThrowAnalysis;
-    }
-    protected void release_soot_dotnet_exceptiontoolkits_DotnetThrowAnalysis() {
-    	instance_soot_dotnet_exceptiontoolkits_DotnetThrowAnalysis = null;
-    }
-
     private soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher;
     public soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher() {
         if (instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher == null) {

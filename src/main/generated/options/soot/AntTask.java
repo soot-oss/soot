@@ -204,11 +204,6 @@ public class AntTask extends MatchingTask {
             addArg(arg);
         }
   
-        public void setdotnet_nativehost_path(String arg) {
-            addArg("-dotnet-nativehost-path");
-            addArg(arg);
-        }
-  
         public void setprepend_classpath(boolean arg) {
             if(arg) addArg("-prepend-classpath");
         }
@@ -283,7 +278,6 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "apk" )
                 || arg.equals( "apk-class-jimple" )
                 || arg.equals( "apk-c-j" )
-                || arg.equals( "dotnet" )
                 ) {
                 addArg("-src-prec");
                 addArg(arg);
@@ -294,14 +288,6 @@ public class AntTask extends MatchingTask {
   
         public void setfull_resolver(boolean arg) {
             if(arg) addArg("-full-resolver");
-        }
-  
-        public void setignore_methodsource_error(boolean arg) {
-            if(arg) addArg("-ignore-methodsource-error");
-        }
-  
-        public void setresolve_all_dotnet_methods(boolean arg) {
-            if(arg) addArg("-resolve-all-dotnet-methods");
         }
   
         public void setallow_phantom_refs(boolean arg) {
@@ -546,7 +532,6 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "pedantic" )
                 || arg.equals( "unit" )
                 || arg.equals( "dalvik" )
-                || arg.equals( "dotnet" )
                 || arg.equals( "auto-select" )
                 ) {
                 addArg("-throw-analysis");
@@ -563,7 +548,6 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "pedantic" )
                 || arg.equals( "unit" )
                 || arg.equals( "dalvik" )
-                || arg.equals( "dotnet" )
                 ) {
                 addArg("-check-init-throw-analysis");
                 addArg(arg);

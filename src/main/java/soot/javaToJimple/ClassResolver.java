@@ -112,7 +112,7 @@ public class ClassResolver {
 
     // super class
     if (cDecl.superClass() == null) {
-      soot.SootClass superClass = soot.Scene.v().getSootClass(Scene.v().getObjectType().toString());
+      soot.SootClass superClass = soot.Scene.v().getSootClass("java.lang.Object");
       sootClass.setSuperclass(superClass);
     } else {
       sootClass.setSuperclass(((soot.RefType) Util.getSootType(cDecl.superClass().type())).getSootClass());
@@ -331,7 +331,7 @@ public class ClassResolver {
     // possibly eventually to send in the finals
 
     polyglot.types.ClassType superType = (polyglot.types.ClassType) nodeKeyType.superType();
-    while (!Util.getSootType(superType).equals(soot.Scene.v().getSootClass(Scene.v().getObjectType().toString()).getType())) {
+    while (!Util.getSootType(superType).equals(soot.Scene.v().getSootClass("java.lang.Object").getType())) {
       if (InitialResolver.v().finalLocalInfo().containsKey(new polyglot.util.IdentityKey(superType))) {
         AnonLocalClassInfo lInfo = InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(superType));
         for (IdentityKey next : lInfo.finalLocalsAvail()) {
@@ -369,7 +369,7 @@ public class ClassResolver {
     // set superclass
     if (((polyglot.types.ClassType) aNew.objectType().type()).flags().isInterface()) {
       sootClass.addInterface(typeClass);
-      sootClass.setSuperclass(soot.Scene.v().getSootClass(Scene.v().getObjectType().toString()));
+      sootClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
     } else {
       sootClass.setSuperclass(typeClass);
       if (((polyglot.types.ClassType) aNew.objectType().type()).isNested()) {
@@ -490,7 +490,7 @@ public class ClassResolver {
       soot.Scene.v().addClass(specialClass);
       specialClass.setApplicationClass();
       specialClass.addTag(new SyntheticTag());
-      specialClass.setSuperclass(soot.Scene.v().getSootClass(Scene.v().getObjectType().toString()));
+      specialClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
       Util.addInnerClassTag(addToClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
       Util.addInnerClassTag(specialClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
       InitialResolver.v().addNameToAST(specialClassName);

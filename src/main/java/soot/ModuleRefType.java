@@ -29,7 +29,15 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
 
+<<<<<<< HEAD
 import soot.dotnet.types.DotnetBasicTypes;
+=======
+import java.util.LinkedList;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+>>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.options.Options;
 
 /**
@@ -148,16 +156,17 @@ public class ModuleRefType extends RefType {
 
   @Override
   public Type getArrayElementType() {
+<<<<<<< HEAD
     if (getClassName().equals(Scene.v().getObjectType().toString())) {
       return ModuleRefType.v(Scene.v().getObjectType().toString());
     }
+=======
+>>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
     switch (getClassName()) {
       case "java.lang.Object":
       case "java.io.Serializable":
       case "java.lang.Cloneable":
         return ModuleRefType.v("java.lang.Object", Optional.of("java.base"));
-      case DotnetBasicTypes.SYSTEM_ARRAY:
-        return ModuleRefType.v(DotnetBasicTypes.SYSTEM_OBJECT);
       default:
         throw new RuntimeException("Attempt to get array base type of a non-array");
     }

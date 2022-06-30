@@ -31,9 +31,7 @@ package soot;
 @SuppressWarnings("serial")
 public abstract class PrimType extends Type {
 
-  public RefType boxedType() {
-    return RefType.v(getTypeAsString());
-  }
+  public abstract RefType boxedType();
 
   public abstract Class<?> getJavaBoxedType();
 
@@ -43,6 +41,4 @@ public abstract class PrimType extends Type {
   public boolean isAllowedInFinalCode() {
     return true;
   }
-
-  public abstract String getTypeAsString();
 }
