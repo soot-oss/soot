@@ -21,15 +21,12 @@ package soot.jimple.internal;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
 import soot.IntType;
-import soot.LongType;
 import soot.ShortType;
 import soot.Type;
-import soot.UnknownType;
 import soot.ValueBox;
 
 @SuppressWarnings("serial")
@@ -46,22 +43,6 @@ public abstract class AbstractIntLongBinopExpr extends AbstractBinopExpr {
 
   @Override
   public Type getType() {
-    final Type t1 = op1Box.getValue().getType();
-    final Type t2 = op2Box.getValue().getType();
-
-    final IntType tyInt = IntType.v();
-    final ByteType tyByte = ByteType.v();
-    final ShortType tyShort = ShortType.v();
-    final CharType tyChar = CharType.v();
-    final BooleanType tyBool = BooleanType.v();
-    if ((tyInt.equals(t1) || tyByte.equals(t1) || tyShort.equals(t1) || tyChar.equals(t1) || tyBool.equals(t1))
-        && (tyInt.equals(t2) || tyByte.equals(t2) || tyShort.equals(t2) || tyChar.equals(t2) || tyBool.equals(t2))) {
-      return tyInt;
-    }
-    final LongType tyLong = LongType.v();
-    if (tyLong.equals(t1) && tyLong.equals(t2)) {
-      return tyLong;
-    }
-    return UnknownType.v();
+    return getType(AbstractBinopExpr.BinopExprEnum.ABASTRACT_INT_LONG_BINOP_EXPR);
   }
 }

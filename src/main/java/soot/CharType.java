@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
@@ -60,8 +62,10 @@ public class CharType extends PrimType implements IntegerType {
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Character");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet)
+      return DotnetBasicTypes.SYSTEM_CHAR;
+    return JavaBasicTypes.JAVA_LANG_CHARACTER;
   }
 
   @Override

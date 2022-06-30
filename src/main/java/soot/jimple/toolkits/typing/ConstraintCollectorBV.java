@@ -25,18 +25,7 @@ package soot.jimple.toolkits.typing;
 import java.util.Iterator;
 import java.util.List;
 
-import soot.ArrayType;
-import soot.DoubleType;
-import soot.FloatType;
-import soot.IntType;
-import soot.Local;
-import soot.LongType;
-import soot.NullType;
-import soot.RefType;
-import soot.SootMethodRef;
-import soot.TrapManager;
-import soot.Type;
-import soot.Value;
+import soot.*;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
@@ -508,7 +497,7 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
         }
 
         if (uses) {
-          left.addParent(resolver.typeVariable(RefType.v("java.lang.Throwable")));
+          left.addParent(resolver.typeVariable(Scene.v().getBaseExceptionType()));
         }
       }
     }
@@ -635,7 +624,7 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
       if (stmt.getOp() instanceof Local) {
         TypeVariableBV op = resolver.typeVariable((Local) stmt.getOp());
 
-        op.addParent(resolver.typeVariable(RefType.v("java.lang.Throwable")));
+        op.addParent(resolver.typeVariable(Scene.v().getBaseExceptionType()));
       }
     }
   }

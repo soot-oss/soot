@@ -696,7 +696,7 @@ public class PAG implements PointsToAnalysis {
   public GlobalVarNode makeGlobalVarNode(Object value, Type type) {
     if (opts.rta()) {
       value = null;
-      type = RefType.v("java.lang.Object");
+      type = Scene.v().getObjectType();
     }
     GlobalVarNode ret = valToGlobalVarNode.get(value);
     if (ret == null) {
@@ -726,7 +726,7 @@ public class PAG implements PointsToAnalysis {
   public LocalVarNode makeLocalVarNode(Object value, Type type, SootMethod method) {
     if (opts.rta()) {
       value = null;
-      type = RefType.v("java.lang.Object");
+      type = Scene.v().getObjectType();
       method = null;
     } else if (value instanceof Local) {
       Local val = (Local) value;
@@ -1297,7 +1297,7 @@ public class PAG implements PointsToAnalysis {
         cls = findLocalVarNode(((VarNode) cls).getVariable());
       }
 
-      VarNode newObject = makeGlobalVarNode(cls, RefType.v("java.lang.Object"));
+      VarNode newObject = makeGlobalVarNode(cls, Scene.v().getObjectType());
       SootClass tgtClass = e.getTgt().method().getDeclaringClass();
       RefType tgtType = tgtClass.getType();
       AllocNode site = makeAllocNode(new Pair<Node, SootClass>(cls, tgtClass), tgtType, null);

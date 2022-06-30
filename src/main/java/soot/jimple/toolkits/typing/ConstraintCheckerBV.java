@@ -30,19 +30,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.ArrayType;
-import soot.DoubleType;
-import soot.FloatType;
-import soot.IntType;
-import soot.Local;
-import soot.LongType;
-import soot.NullType;
-import soot.RefType;
-import soot.SootMethodRef;
-import soot.TrapManager;
-import soot.Type;
-import soot.Unit;
-import soot.Value;
+import soot.*;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
@@ -653,7 +641,7 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
         }
       }
 
-      if (!left.hasAncestorOrSelf(hierarchy.typeNode(RefType.v("java.lang.Throwable")))) {
+      if (!left.hasAncestorOrSelf(hierarchy.typeNode(Scene.v().getBaseExceptionType()))) {
         error("Type Error(48)");
       }
     }
@@ -784,9 +772,9 @@ class ConstraintCheckerBV extends AbstractStmtSwitch {
     if (stmt.getOp() instanceof Local) {
       TypeNode op = hierarchy.typeNode(((Local) stmt.getOp()).getType());
 
-      if (!op.hasAncestorOrSelf(hierarchy.typeNode(RefType.v("java.lang.Throwable")))) {
+      if (!op.hasAncestorOrSelf(hierarchy.typeNode(Scene.v().getBaseExceptionType()))) {
         if (fix) {
-          stmt.setOp(insertCast((Local) stmt.getOp(), RefType.v("java.lang.Throwable"), stmt));
+          stmt.setOp(insertCast((Local) stmt.getOp(), Scene.v().getBaseExceptionType(), stmt));
         } else {
           error("Type Error(53)");
         }

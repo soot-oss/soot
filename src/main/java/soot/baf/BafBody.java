@@ -123,4 +123,10 @@ public class BafBody extends Body {
     b.importBodyContentsFrom(this);
     return b;
   }
+
+  @Override
+  public Object clone(boolean noLocalsClone) {
+    // not implemented
+    return null;
+  }
 }

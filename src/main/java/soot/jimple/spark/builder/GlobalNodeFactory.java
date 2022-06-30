@@ -53,12 +53,12 @@ public class GlobalNodeFactory {
   public GlobalNodeFactory(PAG pag) {
     this.pag = pag;
 
-    this.rtObject = RefType.v("java.lang.Object");
+    this.rtObject = Scene.v().getObjectType();
     this.rtClassLoader = RefType.v("java.lang.ClassLoader");
     this.rtString = RefType.v("java.lang.String");
     this.rtThread = RefType.v("java.lang.Thread");
     this.rtThreadGroup = RefType.v("java.lang.ThreadGroup");
-    this.rtThrowable = RefType.v("java.lang.Throwable");
+    this.rtThrowable = Scene.v().getBaseExceptionType();
   }
 
   final public Node caseDefaultClassLoader() {

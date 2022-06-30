@@ -27,19 +27,7 @@ import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.AnySubType;
-import soot.ArrayType;
-import soot.FastHierarchy;
-import soot.G;
-import soot.NullType;
-import soot.PhaseOptions;
-import soot.RefType;
-import soot.Scene;
-import soot.Singletons;
-import soot.SootClass;
-import soot.SootMethod;
-import soot.SootMethodRef;
-import soot.Type;
+import soot.*;
 import soot.options.CGOptions;
 import soot.toolkits.scalar.Pair;
 import soot.util.HashMultiMap;
@@ -123,13 +111,13 @@ public class VirtualCalls {
   public void resolve(Type t, Type declaredType, Type sigType, SootMethodRef callee, SootMethod container,
       ChunkedQueue<SootMethod> targets, boolean appOnly) {
     if (declaredType instanceof ArrayType) {
-      declaredType = RefType.v("java.lang.Object");
+      declaredType = Scene.v().getObjectType();
     }
     if (sigType instanceof ArrayType) {
-      sigType = RefType.v("java.lang.Object");
+      sigType = Scene.v().getObjectType();
     }
     if (t instanceof ArrayType) {
-      t = RefType.v("java.lang.Object");
+      t = Scene.v().getObjectType();
     }
     FastHierarchy fastHierachy = Scene.v().getOrMakeFastHierarchy();
     if (declaredType != null && !fastHierachy.canStoreType(t, declaredType)) {
@@ -165,6 +153,8 @@ public class VirtualCalls {
       }
     } else if (t instanceof NullType) {
       return;
+    } else if (t instanceof PrimType) {
+      return;
     } else {
       throw new RuntimeException("oops " + t);
     }
@@ -176,10 +166,10 @@ public class VirtualCalls {
       return;
     }
     if (declaredType instanceof ArrayType) {
-      declaredType = RefType.v("java.lang.Object");
+      declaredType = Scene.v().getObjectType();
     }
     if (t instanceof ArrayType) {
-      t = RefType.v("java.lang.Object");
+      t = Scene.v().getObjectType();
     }
     if (declaredType instanceof RefType) {
       RefType child;

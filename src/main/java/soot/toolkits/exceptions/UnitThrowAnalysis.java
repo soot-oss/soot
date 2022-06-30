@@ -195,6 +195,7 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
+import soot.options.Options;
 import soot.shimple.PhiExpr;
 import soot.shimple.ShimpleValueSwitch;
 import soot.toolkits.exceptions.ThrowableSet.Pair;
@@ -351,6 +352,9 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     // If we don't have body, we silently ignore the method. This is
     // unsound, but would otherwise always bloat our result set.
     if (!sm.hasActiveBody()) {
+      // if it is a dotnet project, leave all exceptions, because the method signature does not contain throwables
+      if (Options.v().src_prec() == Options.src_prec_dotnet)
+        return ThrowableSet.Manager.v().ALL_THROWABLES;
       return ThrowableSet.Manager.v().EMPTY;
     }
 

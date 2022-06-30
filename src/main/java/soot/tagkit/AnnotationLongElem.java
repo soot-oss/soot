@@ -31,6 +31,10 @@ public class AnnotationLongElem extends AnnotationElem {
 
   private final long value;
 
+  public AnnotationLongElem(long v, String name) {
+    this(v, 'J', name);
+  }
+
   public AnnotationLongElem(long v, char kind, String name) {
     super(kind, name);
     this.value = v;

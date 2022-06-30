@@ -9,12 +9,12 @@ package soot.toolkits.exceptions;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -41,6 +41,7 @@ import soot.Scene;
 import soot.Singletons;
 import soot.SootClass;
 import soot.Unit;
+import soot.dotnet.types.DotnetBasicTypes;
 import soot.options.Options;
 
 /**
@@ -201,7 +202,7 @@ public class ThrowableSet {
    * @return a set containing <code>e</code> as well as the exceptions in this set.
    *
    * @throws {@link
-   *           ThrowableSet.IllegalStateException} if this <code>ThrowableSet</code> is the result of a
+   *           ThrowableSet.AlreadyHasExclusionsException} if this <code>ThrowableSet</code> is the result of a
    *           {@link #whichCatchableAs(RefType)} operation and, thus, unable to represent the addition of <code>e</code>.
    */
   public ThrowableSet add(RefType e) throws ThrowableSet.AlreadyHasExclusionsException {
@@ -458,7 +459,7 @@ public class ThrowableSet {
 
   /**
    * Returns true if the throwable set is empty and false otherwise.
-   * 
+   *
    * @return true if the throwable set is empty.
    */
   public boolean isEmpty() {
@@ -679,7 +680,7 @@ public class ThrowableSet {
         } else {
           RefType thrownBase = ((AnySubType) thrownType).getBase();
           if (catcherHasNoHierarchy) {
-            if (thrownBase.equals(catcher) || thrownBase.getClassName().equals("java.lang.Throwable")) {
+            if (thrownBase.equals(catcher) || thrownBase.getClassName().equals(Scene.v().getBaseExceptionType().toString())) {
               return true;
             }
           }
@@ -768,7 +769,7 @@ public class ThrowableSet {
           if (base.equals(catcher)) {
             caughtIncluded = addExceptionToSet(inclusion, caughtIncluded);
           } else {
-            if (base.getClassName().equals("java.lang.Throwable")) {
+            if (base.getClassName().equals(Scene.v().getBaseExceptionType().getClassName())) {
               caughtIncluded = addExceptionToSet(catcher, caughtIncluded);
             }
             uncaughtIncluded = addExceptionToSet(inclusion, uncaughtIncluded);
@@ -1071,6 +1072,46 @@ public class ThrowableSet {
       // First ensure the Exception classes are represented in Soot. Note that Soot supports multiple target platforms such
       // as .net, which may use different exception classes. In that case, we just use null for the Java exception types.
       final Scene scene = Scene.v();
+
+      if (Options.v().src_prec() == Options.src_prec_dotnet) {
+        // TODO check if all types set right and refactor
+        RUNTIME_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_SYSTEMEXCEPTION);
+        ARITHMETIC_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_ARITHMETICEXCEPTION);
+        ARRAY_STORE_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_ARRAYTYPEMISMATCHEXCEPTION);
+        CLASS_CAST_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_INVALIDCASTEXCEPTION);
+        ILLEGAL_MONITOR_STATE_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_EXCEPTION);
+        INDEX_OUT_OF_BOUNDS_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_INDEXOUTOFRANGEEXCEPTION);
+        ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_INDEXOUTOFRANGEEXCEPTION);
+        NEGATIVE_ARRAY_SIZE_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION);
+        NULL_POINTER_EXCEPTION = scene.getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION);
+        INSTANTIATION_ERROR = scene.getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION);
+
+        EMPTY = registerSetIfNew(null, null);
+
+        Set<RefLikeType> allThrowablesSet = new HashSet<>();
+        allThrowablesSet.add(AnySubType.v(scene.getRefType(DotnetBasicTypes.SYSTEM_EXCEPTION)));
+        ALL_THROWABLES = registerSetIfNew(allThrowablesSet, null);
+
+        Set<RefLikeType> vmErrorSet = new HashSet<>();
+        vmErrorSet.add(scene.getRefType(DotnetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
+        vmErrorSet.add(scene.getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
+        VM_ERRORS = registerSetIfNew(vmErrorSet, null);
+
+        Set<RefLikeType> resolveClassErrorSet = new HashSet<>();
+        RESOLVE_CLASS_ERRORS = registerSetIfNew(resolveClassErrorSet, null);
+
+        Set<RefLikeType> resolveFieldErrorSet = new HashSet<>(resolveClassErrorSet);
+        resolveFieldErrorSet.add(scene.getRefType(DotnetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
+        RESOLVE_FIELD_ERRORS = registerSetIfNew(resolveFieldErrorSet, null);
+
+        Set<RefLikeType> resolveMethodErrorSet = new HashSet<>(resolveClassErrorSet);
+        resolveMethodErrorSet.add(scene.getRefType(DotnetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION));
+        RESOLVE_METHOD_ERRORS = registerSetIfNew(resolveMethodErrorSet, null);
+
+        Set<RefLikeType> initializationErrorSet = new HashSet<>();
+        INITIALIZATION_ERRORS = registerSetIfNew(initializationErrorSet, null);
+        return;
+      }
 
       // Runtime errors:
       RUNTIME_EXCEPTION = scene.getRefTypeUnsafe("java.lang.RuntimeException");

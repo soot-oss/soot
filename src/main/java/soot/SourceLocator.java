@@ -1,34 +1,5 @@
 package soot;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 2004 Ondrej Lhotak
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.ForwardingLoadingCache;
-import com.google.common.cache.LoadingCache;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -56,10 +27,42 @@ import org.jf.dexlib2.iface.DexFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2004 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+import com.google.common.base.Strings;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.ForwardingLoadingCache;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
+
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmClassProvider;
 import soot.asm.AsmJava9ClassProvider;
 import soot.dexpler.DexFileProvider;
+import soot.dotnet.AssemblyFile;
+import soot.dotnet.DotnetClassProvider;
 import soot.options.Options;
 import soot.util.SharedCloseable;
 
@@ -118,6 +121,10 @@ public class SourceLocator {
                     return ClassSourceType.jar;
                   case ".dex":
                     return ClassSourceType.dex;
+                  case ".exe":
+                    return ClassSourceType.exe;
+                  case ".dll":
+                    return ClassSourceType.dll;
                   default:
                     return Scene.isApk(new File(path)) ? ClassSourceType.apk : ClassSourceType.unknown;
                 }
@@ -293,6 +300,10 @@ public class SourceLocator {
         classProviders.add(classFileClassProvider);
         classProviders.add(new JimpleClassProvider());
         break;
+      case Options.src_prec_dotnet:
+        classProviders.add(new DotnetClassProvider());
+        classProviders.add(new JimpleClassProvider());
+        break;
       default:
         throw new RuntimeException("Other source precedences are not currently supported.");
     }
@@ -385,6 +396,53 @@ public class SourceLocator {
         // Ignore unreadable files
         logger.debug(e.getMessage());
       }
+    }
+    // load dotnet assemblies
+    else if ((Options.v().src_prec() == Options.src_prec_dotnet && cst == ClassSourceType.directory)
+        || cst == ClassSourceType.dll || cst == ClassSourceType.exe) {
+      if (Strings.isNullOrEmpty(Options.v().dotnet_nativehost_path()))
+        throw new RuntimeException("Dotnet NativeHost Path is not set! Use -dotnet-nativehost-path Soot parameter!");
+
+      File file = new File(aPath);
+      File[] files = new File[1];
+      if (cst == ClassSourceType.directory) {
+        File[] fileList = file.listFiles();
+
+        if (fileList == null)
+          return classes;
+        files = fileList;
+      } else
+        files[0] = new File(aPath);
+
+      for (File element : files) {
+        if (element.isDirectory()) {
+          classes.addAll(getClassesUnder(aPath + File.separatorChar + element.getName()));
+        } else {
+          String fileName = element.getName();
+
+          if (fileName.endsWith(".dll") || fileName.endsWith(".exe")) {
+            try {
+              Map<String, File> classContainerIndex = SourceLocator.v().dexClassIndex();
+              AssemblyFile assemblyFile;
+              String canonicalPath = element.getCanonicalPath();
+              if (classContainerIndex.containsKey(canonicalPath))
+                assemblyFile = (AssemblyFile) classContainerIndex.get(canonicalPath);
+              else {
+                assemblyFile = new AssemblyFile(canonicalPath);
+                if (!assemblyFile.isAssembly())
+                  continue;
+              }
+              List<String> allClassNames = assemblyFile.getAllTypeNames();
+              if (allClassNames != null)
+                classes.addAll(allClassNames);
+            } catch (IOException e) {
+              /* Ignore unreadable files */
+              logger.debug("" + e.getMessage());
+            }
+          }
+        }
+      }
+
     } else if (cst == ClassSourceType.directory) {
       File file = new File(aPath);
       File[] files = file.listFiles();
@@ -650,7 +708,8 @@ public class SourceLocator {
   }
 
   /**
-   * Return the dex class index that maps class names to files
+   * Return the class index that maps class names to dex/assembly(exe/dll) files. A dex/exe/dll file contains multiple
+   * classes and is not structured as a "folder structure"
    *
    * @return the index
    */
@@ -659,7 +718,7 @@ public class SourceLocator {
   }
 
   /**
-   * Set the dex class index
+   * Set the class_container (dex, assembly) class index
    *
    * @param index
    *          the index
@@ -670,13 +729,14 @@ public class SourceLocator {
 
   public void extendClassPath(String newPathElement) {
     classPath = null;
-    if (newPathElement.endsWith(".dex") || newPathElement.endsWith(".apk")) {
+    if (newPathElement.endsWith(".dex") || newPathElement.endsWith(".apk") || newPathElement.endsWith(".exe")
+        || newPathElement.endsWith(".dll")) {
       Set<String> dexClassPathExtensions = this.dexClassPathExtensions;
       if (dexClassPathExtensions == null) {
         dexClassPathExtensions = new HashSet<String>();
         this.dexClassPathExtensions = dexClassPathExtensions;
       }
-      dexClassPathExtensions.add(newPathElement);
+      this.dexClassPathExtensions.add(newPathElement);
     }
   }
 
@@ -684,21 +744,21 @@ public class SourceLocator {
    * Gets all files that were added to the classpath later on and that have not yet been processed for the dexClassIndex
    * mapping
    *
-   * @return The set of dex or apk files that still need to be indexed
+   * @return The set of dex or apk or assembly (exe/dll) files that still need to be indexed
    */
   public Set<String> getDexClassPathExtensions() {
     return this.dexClassPathExtensions;
   }
 
   /**
-   * Clears the set of dex or apk files that still need to be indexed
+   * Clears the set of dex or apk or assembly files that still need to be indexed
    */
   public void clearDexClassPathExtensions() {
     this.dexClassPathExtensions = null;
   }
 
-  public enum ClassSourceType {
-    jar, zip, apk, dex, directory, jrt, unknown
+  protected enum ClassSourceType {
+    jar, zip, apk, dex, directory, jrt, unknown, exe, dll
   }
 
   static class SharedZipFileCacheWrapper {

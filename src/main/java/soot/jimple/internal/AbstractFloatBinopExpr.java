@@ -4,7 +4,7 @@ package soot.jimple.internal;
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2022 Fraunhofer SIT
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,16 +22,7 @@ package soot.jimple.internal;
  * #L%
  */
 
-import soot.BooleanType;
-import soot.ByteType;
-import soot.CharType;
-import soot.DoubleType;
-import soot.FloatType;
-import soot.IntType;
-import soot.LongType;
-import soot.ShortType;
 import soot.Type;
-import soot.UnknownType;
 import soot.ValueBox;
 
 @SuppressWarnings("serial")
@@ -43,30 +34,6 @@ public abstract class AbstractFloatBinopExpr extends AbstractBinopExpr {
 
   @Override
   public Type getType() {
-    final Type t1 = op1Box.getValue().getType();
-    final Type t2 = op2Box.getValue().getType();
-
-    final IntType tyInt = IntType.v();
-    final ByteType tyByte = ByteType.v();
-    final ShortType tyShort = ShortType.v();
-    final CharType tyChar = CharType.v();
-    final BooleanType tyBool = BooleanType.v();
-    if ((tyInt.equals(t1) || tyByte.equals(t1) || tyShort.equals(t1) || tyChar.equals(t1) || tyBool.equals(t1))
-        && (tyInt.equals(t2) || tyByte.equals(t2) || tyShort.equals(t2) || tyChar.equals(t2) || tyBool.equals(t2))) {
-      return tyInt;
-    }
-    final LongType tyLong = LongType.v();
-    if (tyLong.equals(t1) || tyLong.equals(t2)) {
-      return tyLong;
-    }
-    final DoubleType tyDouble = DoubleType.v();
-    if (tyDouble.equals(t1) || tyDouble.equals(t2)) {
-      return tyDouble;
-    }
-    final FloatType tyFloat = FloatType.v();
-    if (tyFloat.equals(t1) || tyFloat.equals(t2)) {
-      return tyFloat;
-    }
-    return UnknownType.v();
+    return getType(AbstractBinopExpr.BinopExprEnum.ABSTRACT_FLOAT_BINOP_EXPR);
   }
 }
