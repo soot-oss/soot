@@ -3884,8 +3884,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   private soot.Value getCastLocal(polyglot.ast.Cast castExpr) {
 
     // if its already the right type
-    if (castExpr.expr().type().equals(castExpr.type())
-        || (castExpr.type().isClass() && Util.getSootType(castExpr.type()).toString().equals(Scene.v().getObjectType().toString()))) {
+    if (castExpr.expr().type().equals(castExpr.type()) || (castExpr.type().isClass()
+        && Util.getSootType(castExpr.type()).toString().equals(Scene.v().getObjectType().toString()))) {
       return base().createAggressiveExpr(castExpr.expr(), false, false);
     }
 

@@ -597,10 +597,10 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    */
   public boolean isMain() {
     return isPublic() && isStatic()
-        && Scene.v().getSubSigNumberer().findOrAdd(
-                Options.v().src_prec() != Options.src_prec_dotnet ?
-                        "void main(java.lang.String[])" :
-                        DotnetMethod.MAIN_METHOD_SIGNATURE).equals(subsignature);
+        && Scene.v().getSubSigNumberer()
+            .findOrAdd(Options.v().src_prec() != Options.src_prec_dotnet ? "void main(java.lang.String[])"
+                : DotnetMethod.MAIN_METHOD_SIGNATURE)
+            .equals(subsignature);
   }
 
   /**

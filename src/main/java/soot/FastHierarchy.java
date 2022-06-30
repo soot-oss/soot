@@ -1,18 +1,5 @@
 package soot;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -34,6 +21,19 @@ import java.util.Set;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -363,16 +363,13 @@ public class FastHierarchy {
       } else {
         return false;
       }
-    } else if (Options.v().src_prec() == Options.src_prec_dotnet
-            && child instanceof PrimType
-            && parent instanceof RefType) {
+    } else if (Options.v().src_prec() == Options.src_prec_dotnet && child instanceof PrimType && parent instanceof RefType) {
       // only dotnet
       // if right type prim type struct which implements these interfaces
       // if generic, base class System.Object is possible
-      return parent == cilIcomparable || parent == cilIcomparable1 || parent == cilIconvertible
-              || parent == cilIformattable || parent == cilIequatable1 || parent == rtObject;
-    }
-    else {
+      return parent == cilIcomparable || parent == cilIcomparable1 || parent == cilIconvertible || parent == cilIformattable
+          || parent == cilIequatable1 || parent == rtObject;
+    } else {
       return false;
     }
   }
@@ -973,21 +970,21 @@ public class FastHierarchy {
       }
       // if dotnet structs or generics
       if (Options.v().src_prec() == Options.src_prec_dotnet) {
-        if (method.getName().equals(name) && method.getParameterCount() == parameterTypes.size() &&
-                canStoreType(returnType, method.getReturnType())) {
+        if (method.getName().equals(name) && method.getParameterCount() == parameterTypes.size()
+            && canStoreType(returnType, method.getReturnType())) {
           boolean canStore = true;
           for (int i = 0; i < method.getParameterCount(); i++) {
-              Type methodParameter = method.getParameterType(i);
-              Type calleeParameter = parameterTypes.get(i);
-              // base class can System.Object
-              if (!(methodParameter.equals(calleeParameter) || canStoreType(calleeParameter, methodParameter))) {
-                canStore = false;
-              }
+            Type methodParameter = method.getParameterType(i);
+            Type calleeParameter = parameterTypes.get(i);
+            // base class can System.Object
+            if (!(methodParameter.equals(calleeParameter) || canStoreType(calleeParameter, methodParameter))) {
+              canStore = false;
             }
-            if (canStore) {
-              candidate = method;
-              returnType = method.getReturnType();
-            }
+          }
+          if (canStore) {
+            candidate = method;
+            returnType = method.getReturnType();
+          }
         }
       }
     }

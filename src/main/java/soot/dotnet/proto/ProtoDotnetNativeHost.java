@@ -1013,10 +1013,14 @@ public final class ProtoDotnetNativeHost {
       soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg other
           = (soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg) obj;
 
-      if ((analyzerMethodCall_ != other.analyzerMethodCall_) || !getAssemblyFileAbsolutePath().equals(other.getAssemblyFileAbsolutePath()) || !getTypeReflectionName().equals(other.getTypeReflectionName()) || !getMethodName().equals(other.getMethodName())) {
+      if ((analyzerMethodCall_ != other.analyzerMethodCall_)
+          || !getAssemblyFileAbsolutePath().equals(other.getAssemblyFileAbsolutePath())
+          || !getTypeReflectionName().equals(other.getTypeReflectionName())
+          || !getMethodName().equals(other.getMethodName())) {
         return false;
       }
-      if (!getMethodNameSuffix().equals(other.getMethodNameSuffix()) || (getMethodPeToken() != other.getMethodPeToken()) || !getPropertyName().equals(other.getPropertyName()) || (getPropertyIsSetter() != other.getPropertyIsSetter())) {
+      if (!getMethodNameSuffix().equals(other.getMethodNameSuffix()) || (getMethodPeToken() != other.getMethodPeToken())
+          || !getPropertyName().equals(other.getPropertyName()) || (getPropertyIsSetter() != other.getPropertyIsSetter())) {
         return false;
       }
       if (!getEventName().equals(other.getEventName())) {

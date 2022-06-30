@@ -189,7 +189,9 @@ public class IfElseSplitter extends DepthFirstAdapter {
 
   public boolean tryBodyPattern(List<Object> body, SETNodeLabel label, List<Object> otherBody) {
     Stmt lastStmt = getLastStmt(body);
-    if ((lastStmt == null) || !(lastStmt instanceof ReturnStmt || lastStmt instanceof ReturnVoidStmt || lastStmt instanceof DAbruptStmt) || bodyTargetsLabel(label, body) || bodyTargetsLabel(label, otherBody)) {
+    if ((lastStmt == null)
+        || !(lastStmt instanceof ReturnStmt || lastStmt instanceof ReturnVoidStmt || lastStmt instanceof DAbruptStmt)
+        || bodyTargetsLabel(label, body) || bodyTargetsLabel(label, otherBody)) {
       // one of the bodies targets the label on the ifelse cant match pattern
       return false;
     }

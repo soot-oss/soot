@@ -497,7 +497,7 @@ public class SmartMethodInfoFlowAnalysis {
             // primitives flow from the parent object
             InstanceFieldRef ifr = (InstanceFieldRef) node;
             if (ifr.getBase() instanceof FakeJimpleLocal) {
-               // sources.add(((FakeJimpleLocal) ifr.getBase()).getRealLocal());
+              // sources.add(((FakeJimpleLocal) ifr.getBase()).getRealLocal());
             } else {
               sources.add(ifr.getBase());
             }
@@ -505,7 +505,7 @@ public class SmartMethodInfoFlowAnalysis {
             // objects flow from both
             InstanceFieldRef ifr = (InstanceFieldRef) node;
             if (ifr.getBase() instanceof FakeJimpleLocal) {
-               // sources.add(((FakeJimpleLocal) ifr.getBase()).getRealLocal());
+              // sources.add(((FakeJimpleLocal) ifr.getBase()).getRealLocal());
             } else {
               sources.add(ifr.getBase());
             }
@@ -523,7 +523,7 @@ public class SmartMethodInfoFlowAnalysis {
           // primitives flow from the parent object
           InstanceFieldRef ifr = (InstanceFieldRef) node;
           if (ifr.getBase() instanceof FakeJimpleLocal) {
-             // sources.add(((FakeJimpleLocal) ifr.getBase()).getRealLocal());
+            // sources.add(((FakeJimpleLocal) ifr.getBase()).getRealLocal());
           } else {
             sources.add(ifr.getBase());
           }
@@ -531,7 +531,7 @@ public class SmartMethodInfoFlowAnalysis {
           // objects flow from both
           InstanceFieldRef ifr = (InstanceFieldRef) node;
           if (ifr.getBase() instanceof FakeJimpleLocal) {
-             // sources.add(((FakeJimpleLocal) ifr.getBase()).getRealLocal());
+            // sources.add(((FakeJimpleLocal) ifr.getBase()).getRealLocal());
           } else {
             sources.add(ifr.getBase());
           }
@@ -582,7 +582,7 @@ public class SmartMethodInfoFlowAnalysis {
                 // primitives flow to the parent object
                 InstanceFieldRef ifr = (InstanceFieldRef) sink;
                 if (ifr.getBase() instanceof FakeJimpleLocal) {
-                   // handleFlowsToDataStructure(((FakeJimpleLocal) ifr.getBase()).getRealLocal(), source);
+                  // handleFlowsToDataStructure(((FakeJimpleLocal) ifr.getBase()).getRealLocal(), source);
                 } else {
                   handleFlowsToDataStructure(ifr.getBase(), source);
                 }
@@ -607,7 +607,7 @@ public class SmartMethodInfoFlowAnalysis {
               // primitives flow to the parent object
               InstanceFieldRef ifr = (InstanceFieldRef) sink;
               if (ifr.getBase() instanceof FakeJimpleLocal) {
-                 // handleFlowsToDataStructure(((FakeJimpleLocal) ifr.getBase()).getRealLocal(), source);
+                // handleFlowsToDataStructure(((FakeJimpleLocal) ifr.getBase()).getRealLocal(), source);
               } else {
                 handleFlowsToDataStructure(ifr.getBase(), source);
               }

@@ -140,7 +140,7 @@ public class MonitorSet extends ArraySparseSet {
       Object obj = it.next();
       if (obj instanceof MonitorDepth) {
         MonitorDepth md = (MonitorDepth) obj;
-        
+
         System.out.println("obj: " + md.getObjName());
         System.out.println("depth: " + md.getDepth());
       } else {

@@ -83,39 +83,41 @@ public class InvokeCustomInstruction extends MethodInvocationInstruction {
   public void jimplify(DexBody body) {
     CallSiteReference callSiteReference = (CallSiteReference) ((ReferenceInstruction) instruction).getReference();
     Reference bootstrapRef = callSiteReference.getMethodHandle().getMemberReference();
-    
+
     // According to the specification there are two types of references for invoke-custom and method and field type
     if (bootstrapRef instanceof MethodReference) {
       SootMethodRef bootstrapMethodRef = getBootStrapSootMethodRef();
       Kind bootStrapKind = dexToSootMethodHandleKind(callSiteReference.getMethodHandle().getMethodHandleType());
-      
+
       // The bootstrap method has three required dynamic arguments and the rest are optional but
       // must always be constants
       List<Value> bootstrapValues = constantEncodedValuesToValues(callSiteReference.getExtraArguments());
       SootMethodRef methodRef = getCustomSootMethodRef();
       // The method prototype only includes the method arguments and no invoking object so treat like static
       List<Local> methodArgs = buildParameters(body, callSiteReference.getMethodProto().getParameterTypes(), true);
-      
+
       invocation = Jimple.v().newDynamicInvokeExpr(bootstrapMethodRef, bootstrapValues, methodRef, bootStrapKind.getValue(),
           methodArgs);
       body.setDanglingInstruction(this);
     } else if (bootstrapRef instanceof FieldReference) {
-      // It should not be possible for the boot strap method to be a field reference type but I 
+      // It should not be possible for the boot strap method to be a field reference type but I
       // include a separate check to alert us if this ever does occur.
       // To set/get a field using invoke-custom, a field MethodHandle must be passed into
       // the invoke custom as an extra argument and called using invoke-polymorphic inside the
-      // boot strap method. 
+      // boot strap method.
       throw new RuntimeException("Error: Unexpected FieldReference type for boot strap method.");
     } else {
-      throw new RuntimeException("Error: Unhandled MethodHandleReference of type '" 
+      throw new RuntimeException("Error: Unhandled MethodHandleReference of type '"
           + callSiteReference.getMethodHandle().getMethodHandleType() + "'");
     }
   }
-  
-  /** Convert a list of constant EncodedValues to a list of constant Values. This is used
-   * to convert the extra bootstrap args (which are all constants) into Jimple Values. 
+
+  /**
+   * Convert a list of constant EncodedValues to a list of constant Values. This is used to convert the extra bootstrap args
+   * (which are all constants) into Jimple Values.
    * 
-   * @param in A list of constant EncodedValues
+   * @param in
+   *          A list of constant EncodedValues
    * @return A list of constant Values
    */
   private List<Value> constantEncodedValuesToValues(List<? extends EncodedValue> in) {
@@ -160,13 +162,13 @@ public class InvokeCustomInstruction extends MethodInvocationInstruction {
         }
         out.add(handle);
       } else {
-        throw new RuntimeException("Error: Unhandled constant type '" + ev.getClass().toString() 
-		    + "' when parsing bootstrap arguments in the call site reference.");
+        throw new RuntimeException("Error: Unhandled constant type '" + ev.getClass().toString()
+            + "' when parsing bootstrap arguments in the call site reference.");
       }
     }
     return out;
   }
-  
+
   private Kind dexToSootMethodHandleKind(int kind) {
     switch (kind) {
       case MethodHandleType.INSTANCE_GET:
@@ -191,23 +193,23 @@ public class InvokeCustomInstruction extends MethodInvocationInstruction {
         throw new RuntimeException("Error: Unknown kind '" + kind + "' for method handle");
     }
   }
-  
-  /** Return a dummy SootMethodRef for the method invoked by a 
-   * invoke-custom instruction.
+
+  /**
+   * Return a dummy SootMethodRef for the method invoked by a invoke-custom instruction.
    */
   protected SootMethodRef getCustomSootMethodRef() {
     CallSiteReference callSiteReference = (CallSiteReference) ((ReferenceInstruction) instruction).getReference();
     SootClass dummyclass = Scene.v().getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
     String methodName = callSiteReference.getMethodName();
     MethodProtoReference methodRef = callSiteReference.getMethodProto();
-    // No reference kind stored in invoke custom instruction for the actual 
+    // No reference kind stored in invoke custom instruction for the actual
     // method being invoked so default to static
-    return getSootMethodRef(dummyclass, methodName, methodRef.getReturnType(), 
-        methodRef.getParameterTypes(), Kind.REF_INVOKE_STATIC);
+    return getSootMethodRef(dummyclass, methodName, methodRef.getReturnType(), methodRef.getParameterTypes(),
+        Kind.REF_INVOKE_STATIC);
   }
-  
-  /** Return a SootMethodRef for the bootstrap method of
-   * an invoke-custom instruction.
+
+  /**
+   * Return a SootMethodRef for the bootstrap method of an invoke-custom instruction.
    */
   protected SootMethodRef getBootStrapSootMethodRef() {
     MethodHandleReference mh = ((CallSiteReference) ((ReferenceInstruction) instruction).getReference()).getMethodHandle();

@@ -33,8 +33,11 @@ public class AnnotationIntElem extends AnnotationElem {
 
   /**
    * Annotation int element
-   * @param v value of type int
-   * @param kind I: int; B: byte; Z: boolean; C: char; S: short;
+   * 
+   * @param v
+   *          value of type int
+   * @param kind
+   *          I: int; B: byte; Z: boolean; C: char; S: short;
    * @param name
    */
   public AnnotationIntElem(int v, char kind, String name) {

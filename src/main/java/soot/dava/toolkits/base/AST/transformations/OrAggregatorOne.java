@@ -112,7 +112,7 @@ public class OrAggregatorOne extends DepthFirstAdapter {
     // create an aggregated condition
     Iterator<ASTCondition> condIt = conditions.iterator();
     ASTCondition newCond = null;
-    
+
     while (condIt.hasNext()) {
       ASTCondition next = condIt.next();
       if (newCond == null) {
@@ -226,7 +226,8 @@ public class OrAggregatorOne extends DepthFirstAdapter {
 
       // check if this is the inner label broken and is not the last in the iterator
       // check if this is the outer label broken and is the last in the iterator
-      if ((labelBroken.compareTo(innerLabel) == 0 && it.hasNext()) || (labelBroken.compareTo(outerLabel) == 0 && !it.hasNext())) {
+      if ((labelBroken.compareTo(innerLabel) == 0 && it.hasNext())
+          || (labelBroken.compareTo(outerLabel) == 0 && !it.hasNext())) {
         continue;
       }
 

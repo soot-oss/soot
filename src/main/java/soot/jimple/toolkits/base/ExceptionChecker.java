@@ -100,7 +100,8 @@ public class ExceptionChecker extends BodyTransformer {
 
     // handles case when exception is RuntimeException or Error
     // handles case when exception is a subclass of RuntimeException or Error
-    if (throwClass.equals(sootClassRuntimeException) || throwClass.equals(sootClassError) || hierarchy.isSubclass(throwClass, sootClassRuntimeException) || hierarchy.isSubclass(throwClass, sootClassError)) {
+    if (throwClass.equals(sootClassRuntimeException) || throwClass.equals(sootClassError)
+        || hierarchy.isSubclass(throwClass, sootClassRuntimeException) || hierarchy.isSubclass(throwClass, sootClassError)) {
       return true;
     }
     // handles case when exact exception is thrown
@@ -203,8 +204,9 @@ public class ExceptionChecker extends BodyTransformer {
     // actually need to look at the intersection of all declarations of
     // the method in supertypes.
     // Otherwise, we just do normal resolution.
-    List<SootClass> exceptions = (ie instanceof InterfaceInvokeExpr)
-        ? getExceptionSpec(methodRef.declaringClass(), methodRef.getSubSignature()) : ie.getMethod().getExceptionsUnsafe();
+    List<SootClass> exceptions
+        = (ie instanceof InterfaceInvokeExpr) ? getExceptionSpec(methodRef.declaringClass(), methodRef.getSubSignature())
+            : ie.getMethod().getExceptionsUnsafe();
 
     if (exceptions != null) {
       for (SootClass sc : exceptions) {

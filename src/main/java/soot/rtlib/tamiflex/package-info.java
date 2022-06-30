@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
- 
+
 /**
  * This package contains classes that may be emitted into a program during code generation. If Soot cannot find a class on
  * the soot-classpath then it automatically loads the class from Soot's own JAR file but <i>only</i> if this class is in this

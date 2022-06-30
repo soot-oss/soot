@@ -680,7 +680,8 @@ public class ThrowableSet {
         } else {
           RefType thrownBase = ((AnySubType) thrownType).getBase();
           if (catcherHasNoHierarchy) {
-            if (thrownBase.equals(catcher) || thrownBase.getClassName().equals(Scene.v().getBaseExceptionType().toString())) {
+            if (thrownBase.equals(catcher)
+                || thrownBase.getClassName().equals(Scene.v().getBaseExceptionType().toString())) {
               return true;
             }
           }

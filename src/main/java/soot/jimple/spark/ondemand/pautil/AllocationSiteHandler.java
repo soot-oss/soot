@@ -51,8 +51,10 @@ public interface AllocationSiteHandler {
   /**
    * handle a particular allocation site
    *
-   * @param allocNode the abstract location node
-   * @param callStack for context-sensitive analysis, the call site; might be null
+   * @param allocNode
+   *          the abstract location node
+   * @param callStack
+   *          for context-sensitive analysis, the call site; might be null
    * @return true if analysis should be terminated; false otherwise
    */
   public boolean handleAllocationSite(AllocNode allocNode, ImmutableStack<Integer> callStack);
@@ -124,16 +126,15 @@ public interface AllocationSiteHandler {
 
     public boolean shouldHandle(VarNode dst) {
       // TODO Auto-generated method stub
-      P2SetVisitor v =
-          new P2SetVisitor() {
+      P2SetVisitor v = new P2SetVisitor() {
 
-            @Override
-            public void visit(Node n) {
-              if (!returnValue) {
-                returnValue = !manager.castNeverFails(n.getType(), type);
-              }
-            }
-          };
+        @Override
+        public void visit(Node n) {
+          if (!returnValue) {
+            returnValue = !manager.castNeverFails(n.getType(), type);
+          }
+        }
+      };
       dst.getP2Set().forall(v);
       return v.getReturnValue();
     }

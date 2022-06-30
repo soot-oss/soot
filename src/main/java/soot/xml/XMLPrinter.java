@@ -164,8 +164,8 @@ public class XMLPrinter {
 
     // Print fields
     {
-      XMLNode xmlTempNode =
-          xmlClassNode.addChild("fields", "", new String[] { "count" }, new String[] { String.valueOf(cl.getFieldCount()) });
+      XMLNode xmlTempNode = xmlClassNode.addChild("fields", "", new String[] { "count" },
+          new String[] { String.valueOf(cl.getFieldCount()) });
 
       int i = 0;
       for (SootField f : cl.getFields()) {
@@ -185,8 +185,8 @@ public class XMLPrinter {
 
     // Print methods
     {
-      XMLNode methodsNode =
-          xmlClassNode.addChild("methods", new String[] { "count" }, new String[] { String.valueOf(cl.getMethodCount()) });
+      XMLNode methodsNode
+          = xmlClassNode.addChild("methods", new String[] { "count" }, new String[] { String.valueOf(cl.getMethodCount()) });
 
       for (Iterator<SootMethod> methodIt = cl.methodIterator(); methodIt.hasNext();) {
         SootMethod method = methodIt.next();
@@ -553,8 +553,8 @@ public class XMLPrinter {
       localsNode.addAttribute("count", String.valueOf(locals.size()));
 
       // add types node to locals node, and each type with each local per type
-      XMLNode typesNode =
-          localsNode.addChild("types", new String[] { "count" }, new String[] { String.valueOf(localTypes.size()) });
+      XMLNode typesNode
+          = localsNode.addChild("types", new String[] { "count" }, new String[] { String.valueOf(localTypes.size()) });
 
       for (ListIterator<String> it = localTypes.listIterator(); it.hasNext();) {
         int i = it.nextIndex();// index must be retrieved before 'next()'

@@ -846,7 +846,9 @@ public final class ProtoAssemblyAllTypes {
       soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes other
           = (soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes) obj;
 
-      if (!getListOfTypesList().equals(other.getListOfTypesList()) || !getAllReferencedModuleTypesList().equals(other.getAllReferencedModuleTypesList()) || !unknownFields.equals(other.unknownFields)) {
+      if (!getListOfTypesList().equals(other.getListOfTypesList())
+          || !getAllReferencedModuleTypesList().equals(other.getAllReferencedModuleTypesList())
+          || !unknownFields.equals(other.unknownFields)) {
         return false;
       }
       return true;
@@ -2914,10 +2916,12 @@ public final class ProtoAssemblyAllTypes {
       soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition other
           = (soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition) obj;
 
-      if ((accessibility_ != other.accessibility_) || !getFullname().equals(other.getFullname()) || !getNamespace().equals(other.getNamespace()) || (getIsAbstract() != other.getIsAbstract())) {
+      if ((accessibility_ != other.accessibility_) || !getFullname().equals(other.getFullname())
+          || !getNamespace().equals(other.getNamespace()) || (getIsAbstract() != other.getIsAbstract())) {
         return false;
       }
-      if ((getIsReadOnly() != other.getIsReadOnly()) || (getIsSealed() != other.getIsSealed()) || (getIsStatic() != other.getIsStatic()) || !getDeclaringOuterClass().equals(other.getDeclaringOuterClass())) {
+      if ((getIsReadOnly() != other.getIsReadOnly()) || (getIsSealed() != other.getIsSealed())
+          || (getIsStatic() != other.getIsStatic()) || !getDeclaringOuterClass().equals(other.getDeclaringOuterClass())) {
         return false;
       }
       if (!getDirectBaseTypesList().equals(other.getDirectBaseTypesList())) {
@@ -7342,10 +7346,12 @@ public final class ProtoAssemblyAllTypes {
       soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition other
           = (soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition) obj;
 
-      if ((accessibility_ != other.accessibility_) || !getName().equals(other.getName()) || (getHasBody() != other.getHasBody()) || !getParameterList().equals(other.getParameterList())) {
+      if ((accessibility_ != other.accessibility_) || !getName().equals(other.getName())
+          || (getHasBody() != other.getHasBody()) || !getParameterList().equals(other.getParameterList())) {
         return false;
       }
-      if ((getIsAbstract() != other.getIsAbstract()) || (getIsAccessor() != other.getIsAccessor()) || (getIsConstructor() != other.getIsConstructor()) || (getIsDestructor() != other.getIsDestructor())) {
+      if ((getIsAbstract() != other.getIsAbstract()) || (getIsAccessor() != other.getIsAccessor())
+          || (getIsConstructor() != other.getIsConstructor()) || (getIsDestructor() != other.getIsDestructor())) {
         return false;
       }
       if (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation()) {
@@ -9826,7 +9832,8 @@ public final class ProtoAssemblyAllTypes {
           return false;
         }
       }
-      if (!getParameterName().equals(other.getParameterName()) || (getIsRef() != other.getIsRef()) || (getIsOut() != other.getIsOut()) || (getIsIn() != other.getIsIn())) {
+      if (!getParameterName().equals(other.getParameterName()) || (getIsRef() != other.getIsRef())
+          || (getIsOut() != other.getIsOut()) || (getIsIn() != other.getIsIn())) {
         return false;
       }
       if ((getIsOptional() != other.getIsOptional()) || !unknownFields.equals(other.unknownFields)) {
@@ -11418,10 +11425,13 @@ public final class ProtoAssemblyAllTypes {
       soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition other
           = (soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition) obj;
 
-      if ((accessibility_ != other.accessibility_) || (getIsAbstract() != other.getIsAbstract()) || (getIsSealed() != other.getIsSealed()) || (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation())) {
+      if ((accessibility_ != other.accessibility_) || (getIsAbstract() != other.getIsAbstract())
+          || (getIsSealed() != other.getIsSealed())
+          || (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation())) {
         return false;
       }
-      if ((getIsOverride() != other.getIsOverride()) || (getIsVirtual() != other.getIsVirtual()) || (getIsConst() != other.getIsConst()) || (getIsReadOnly() != other.getIsReadOnly())) {
+      if ((getIsOverride() != other.getIsOverride()) || (getIsVirtual() != other.getIsVirtual())
+          || (getIsConst() != other.getIsConst()) || (getIsReadOnly() != other.getIsReadOnly())) {
         return false;
       }
       if (getIsStatic() != other.getIsStatic()) {
@@ -14003,10 +14013,13 @@ public final class ProtoAssemblyAllTypes {
       soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition other
           = (soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition) obj;
 
-      if ((accessibility_ != other.accessibility_) || (getCanGet() != other.getCanGet()) || (getCanSet() != other.getCanSet()) || (getIsAbstract() != other.getIsAbstract())) {
+      if ((accessibility_ != other.accessibility_) || (getCanGet() != other.getCanGet())
+          || (getCanSet() != other.getCanSet()) || (getIsAbstract() != other.getIsAbstract())) {
         return false;
       }
-      if ((getIsSealed() != other.getIsSealed()) || (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation()) || (getIsOverride() != other.getIsOverride()) || (getIsVirtual() != other.getIsVirtual())) {
+      if ((getIsSealed() != other.getIsSealed())
+          || (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation())
+          || (getIsOverride() != other.getIsOverride()) || (getIsVirtual() != other.getIsVirtual())) {
         return false;
       }
       if (getIsStatic() != other.getIsStatic()) {
@@ -16275,7 +16288,8 @@ public final class ProtoAssemblyAllTypes {
           return false;
         }
       }
-      if (!getConstructor().equals(other.getConstructor()) || !getFixedArgumentsList().equals(other.getFixedArgumentsList()) || !getNamedArgumentsList().equals(other.getNamedArgumentsList()) || !unknownFields.equals(other.unknownFields)) {
+      if (!getConstructor().equals(other.getConstructor()) || !getFixedArgumentsList().equals(other.getFixedArgumentsList())
+          || !getNamedArgumentsList().equals(other.getNamedArgumentsList()) || !unknownFields.equals(other.unknownFields)) {
         return false;
       }
       return true;
@@ -18253,10 +18267,13 @@ public final class ProtoAssemblyAllTypes {
           return false;
         }
       }
-      if (!getName().equals(other.getName()) || !getValueStringList().equals(other.getValueStringList()) || !getValueInt32List().equals(other.getValueInt32List()) || !getValueInt64List().equals(other.getValueInt64List())) {
+      if (!getName().equals(other.getName()) || !getValueStringList().equals(other.getValueStringList())
+          || !getValueInt32List().equals(other.getValueInt32List())
+          || !getValueInt64List().equals(other.getValueInt64List())) {
         return false;
       }
-      if (!getValueDoubleList().equals(other.getValueDoubleList()) || !getValueFloatList().equals(other.getValueFloatList()) || !unknownFields.equals(other.unknownFields)) {
+      if (!getValueDoubleList().equals(other.getValueDoubleList()) || !getValueFloatList().equals(other.getValueFloatList())
+          || !unknownFields.equals(other.unknownFields)) {
         return false;
       }
       return true;
@@ -20052,7 +20069,8 @@ public final class ProtoAssemblyAllTypes {
           return false;
         }
       }
-      if ((getCanAdd() != other.getCanAdd()) || (getCanInvoke() != other.getCanInvoke()) || (getCanRemove() != other.getCanRemove()) || !getFullName().equals(other.getFullName())) {
+      if ((getCanAdd() != other.getCanAdd()) || (getCanInvoke() != other.getCanInvoke())
+          || (getCanRemove() != other.getCanRemove()) || !getFullName().equals(other.getFullName())) {
         return false;
       }
       if (hasInvokeAccessorMethod() != other.hasInvokeAccessorMethod()) {

@@ -873,7 +873,8 @@ public class SynchronizedBlockFinder implements FactFinder {
      * reason for doing this is that synchronized blocks get converted to a try catch block with the catch , catching the
      * throwable exception and this is the ONLY catch
      */
-    if (!en.get_Body().equals(synchBody) || !en.get_Exception().getName().equals(THROWABLE) || (en.get_CatchList().size() > 1)) {
+    if (!en.get_Body().equals(synchBody) || !en.get_Exception().getName().equals(THROWABLE)
+        || (en.get_CatchList().size() > 1)) {
       // System.out.println("returning unverified here");
       return false;
     }

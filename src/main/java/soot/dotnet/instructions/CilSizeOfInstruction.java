@@ -40,29 +40,30 @@ import soot.jimple.Jimple;
  * Return size of given object/type
  */
 public class CilSizeOfInstruction extends AbstractCilnstruction {
-    public CilSizeOfInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
-        super(instruction, dotnetBody, cilBlock);
-    }
+  public CilSizeOfInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
+    super(instruction, dotnetBody, cilBlock);
+  }
 
-    @Override
-    public void jimplify(Body jb) {
-        throw new NoStatementInstructionException(instruction);
-    }
+  @Override
+  public void jimplify(Body jb) {
+    throw new NoStatementInstructionException(instruction);
+  }
 
-    @Override
-    public Value jimplifyExpr(Body jb) {
-        String typeName = instruction.getType().getFullname();
+  @Override
+  public Value jimplifyExpr(Body jb) {
+    String typeName = instruction.getType().getFullname();
 
-//        // generate dummy local with ClassConstant - may not needed
-//        LocalGenerator localGenerator = new LocalGenerator(jb);
-//        Local tmpLocalVar = localGenerator.generateLocal(RefType.v("System.Object"));
-//        Unit stmt = Jimple.v().newAssignStmt(tmpLocalVar, DotnetClassConstant.v(typeName));
-//        jb.getUnits().add(stmt);
+    // // generate dummy local with ClassConstant - may not needed
+    // LocalGenerator localGenerator = new LocalGenerator(jb);
+    // Local tmpLocalVar = localGenerator.generateLocal(RefType.v("System.Object"));
+    // Unit stmt = Jimple.v().newAssignStmt(tmpLocalVar, DotnetClassConstant.v(typeName));
+    // jb.getUnits().add(stmt);
 
-        SootClass clazz = Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_RUNTIME_INTEROPSERVICES_MARSHAL);
-        // SootMethod method = clazz.getMethod("SizeOf", Collections.singletonList(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OBJECT)));
-        SootMethodRef methodRef = Scene.v().makeMethodRef(clazz, "SizeOf",
-                Collections.singletonList(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OBJECT)), IntType.v(), true);
-        return Jimple.v().newStaticInvokeExpr(methodRef, DotnetClassConstant.v(typeName));
-    }
+    SootClass clazz = Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_RUNTIME_INTEROPSERVICES_MARSHAL);
+    // SootMethod method = clazz.getMethod("SizeOf",
+    // Collections.singletonList(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OBJECT)));
+    SootMethodRef methodRef = Scene.v().makeMethodRef(clazz, "SizeOf",
+        Collections.singletonList(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OBJECT)), IntType.v(), true);
+    return Jimple.v().newStaticInvokeExpr(methodRef, DotnetClassConstant.v(typeName));
+  }
 }

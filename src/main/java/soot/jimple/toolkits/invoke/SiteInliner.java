@@ -198,8 +198,8 @@ public class SiteInliner {
     }
 
     // Backpatch the newly-inserted units using newly-constructed maps.
-    for (Iterator<Unit> it =
-        containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); it.hasNext();) {
+    for (Iterator<Unit> it
+        = containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); it.hasNext();) {
       Unit patchee = it.next();
 
       for (ValueBox box : patchee.getUseAndDefBoxes()) {
@@ -247,8 +247,9 @@ public class SiteInliner {
     // Handle identity stmt's and returns.
     {
       ArrayList<Unit> cuCopy = new ArrayList<Unit>();
-      for (Iterator<Unit> it =
-          containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); it.hasNext();) {
+      for (Iterator<Unit> it
+          = containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); it
+              .hasNext();) {
         cuCopy.add(it.next());
       }
       for (Unit u : cuCopy) {
@@ -285,8 +286,8 @@ public class SiteInliner {
     }
 
     List<Unit> newStmts = new ArrayList<Unit>();
-    for (Iterator<Unit> i =
-        containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); i.hasNext();) {
+    for (Iterator<Unit> i
+        = containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); i.hasNext();) {
       newStmts.add(i.next());
     }
 

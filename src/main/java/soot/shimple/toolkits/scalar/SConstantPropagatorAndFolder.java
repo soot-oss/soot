@@ -395,8 +395,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis<FlowSet<Object>> {
         conservative = false;
 
         int index = ((IntConstant) keyC).value - table.getLowIndex();
-        UnitBox branchBox =
-            (index < 0 || index > table.getHighIndex()) ? table.getDefaultTargetBox() : table.getTargetBox(index);
+        UnitBox branchBox
+            = (index < 0 || index > table.getHighIndex()) ? table.getDefaultTargetBox() : table.getTargetBox(index);
 
         stmtToReplacement.put(table, Jimple.v().newGotoStmt(branchBox));
         oneBranch = branchOuts.get(table.getUnitBoxes().indexOf(branchBox));

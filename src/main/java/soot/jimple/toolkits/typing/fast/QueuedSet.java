@@ -33,7 +33,7 @@ import java.util.Set;
  * @author Ben Bellamy
  */
 public class QueuedSet<E> {
-    
+
   private final Set<E> hs;
   private final LinkedList<E> ll;
 

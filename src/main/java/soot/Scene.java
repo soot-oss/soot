@@ -215,8 +215,8 @@ public class Scene {
 
   public void setMainClass(SootClass m) {
     mainClass = m;
-    if (!m.declaresMethod(getSubSigNumberer().findOrAdd("void main(java.lang.String[])")) &&
-            !m.declaresMethod(getSubSigNumberer().findOrAdd(DotnetMethod.MAIN_METHOD_SIGNATURE))) {
+    if (!m.declaresMethod(getSubSigNumberer().findOrAdd("void main(java.lang.String[])"))
+        && !m.declaresMethod(getSubSigNumberer().findOrAdd(DotnetMethod.MAIN_METHOD_SIGNATURE))) {
       throw new RuntimeException("Main-class has no main method!");
     }
   }
@@ -310,12 +310,11 @@ public class Scene {
       throw new RuntimeException("There is no main class set!");
     }
 
-    SootMethod mainMethod =
-            Options.v().src_prec() != Options.src_prec_dotnet ?
-                    mainClass.getMethodUnsafe("main", Collections.singletonList(
-                            ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v()) :
-                    mainClass.getMethodUnsafe("Main", Collections.singletonList(
-                            ArrayType.v(RefType.v(DotnetBasicTypes.SYSTEM_STRING), 1)), VoidType.v());
+    SootMethod mainMethod = Options.v().src_prec() != Options.src_prec_dotnet
+        ? mainClass.getMethodUnsafe("main", Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
+            VoidType.v())
+        : mainClass.getMethodUnsafe("Main",
+            Collections.singletonList(ArrayType.v(RefType.v(DotnetBasicTypes.SYSTEM_STRING), 1)), VoidType.v());
     if (mainMethod == null) {
       throw new RuntimeException("Main class declares no main method!");
     }
@@ -1157,6 +1156,7 @@ public class Scene {
 
   /**
    * Returns the base class of exceptions.
+   * 
    * @return RefType with the given className
    */
   public RefType getBaseExceptionType() {
@@ -1876,7 +1876,7 @@ public class Scene {
             switch (kind) {
               case "Class.forName":
               case "Class.getFields":
-              case "Class.getMethods":  
+              case "Class.getMethods":
                 classNames.add(target);
                 break;
               case "Class.newInstance":
@@ -2133,17 +2133,15 @@ public class Scene {
       if (optsMain != null && !optsMain.isEmpty()) {
         setMainClass(getSootClass(optsMain));
       } else {
-        final List<Type> mainArgs = Collections.singletonList(ArrayType.v(
-                Options.v().src_prec() == Options.src_prec_dotnet ?
-                        RefType.v(DotnetBasicTypes.SYSTEM_STRING) :
-                        RefType.v("java.lang.String"), 1));
+        final List<Type> mainArgs = Collections.singletonList(
+            ArrayType.v(Options.v().src_prec() == Options.src_prec_dotnet ? RefType.v(DotnetBasicTypes.SYSTEM_STRING)
+                : RefType.v("java.lang.String"), 1));
         // try to infer a main class from the command line if none is given
         for (String next : Options.v().classes()) {
           SootClass c = getSootClass(next);
-          boolean declaresMethod =
-                  Options.v().src_prec() != Options.src_prec_dotnet ?
-                          c.declaresMethod("main", mainArgs, VoidType.v()) :
-                          c.declaresMethod("Main", mainArgs, VoidType.v());
+          boolean declaresMethod
+              = Options.v().src_prec() != Options.src_prec_dotnet ? c.declaresMethod("main", mainArgs, VoidType.v())
+                  : c.declaresMethod("Main", mainArgs, VoidType.v());
           if (declaresMethod) {
             logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
             setMainClass(c);
@@ -2153,10 +2151,9 @@ public class Scene {
 
         // try to infer a main class from the usual classpath if none is given
         for (SootClass c : getApplicationClasses()) {
-          boolean declaresMethod =
-                  Options.v().src_prec() != Options.src_prec_dotnet ?
-                          c.declaresMethod("main", mainArgs, VoidType.v()) :
-                          c.declaresMethod("Main", mainArgs, VoidType.v());
+          boolean declaresMethod
+              = Options.v().src_prec() != Options.src_prec_dotnet ? c.declaresMethod("main", mainArgs, VoidType.v())
+                  : c.declaresMethod("Main", mainArgs, VoidType.v());
           if (declaresMethod) {
             logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
             setMainClass(c);

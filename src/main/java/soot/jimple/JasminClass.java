@@ -177,8 +177,8 @@ public class JasminClass extends AbstractJasminClass {
       int[] paramSlots = new int[method.getParameterCount()];
       int thisSlot = 0;
       Set<Local> assignedLocals = new HashSet<Local>();
-      Map<GroupIntPair, Integer> groupColorPairToSlot =
-          new HashMap<GroupIntPair, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
+      Map<GroupIntPair, Integer> groupColorPairToSlot
+          = new HashMap<GroupIntPair, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
 
       localToSlot = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
 

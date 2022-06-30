@@ -51,5 +51,5 @@ public class InvokeStaticInstruction extends MethodInvocationInstruction {
   boolean isUsedAsFloatingPoint(DexBody body, int register) {
     return isUsedAsFloatingPoint(body, register, true);
   }
-  
+
 }

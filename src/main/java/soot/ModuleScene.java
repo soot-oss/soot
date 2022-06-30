@@ -587,8 +587,8 @@ public class ModuleScene extends Scene {
       if (optsMain != null && !optsMain.isEmpty()) {
         setMainClass(getSootClass(optsMain, null));
       } else {
-        final List<Type> mainArgs =
-            Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.of("java.base")), 1));
+        final List<Type> mainArgs
+            = Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.of("java.base")), 1));
         // try to infer a main class from the command line if none is given
         for (String s : Options.v().classes()) {
           SootClass c = getSootClass(s, null);

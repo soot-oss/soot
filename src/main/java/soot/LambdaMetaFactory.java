@@ -630,7 +630,8 @@ public class LambdaMetaFactory {
         LocalGenerator lc) {
       Type fromTy = fromLocal.getType();
       // throw new IllegalArgumentException("Expected source to have reference type");
-      if (fromTy.equals(to) || !(fromTy instanceof RefType || fromTy instanceof ArrayType) || !(to instanceof RefType || to instanceof ArrayType)) {
+      if (fromTy.equals(to) || !(fromTy instanceof RefType || fromTy instanceof ArrayType)
+          || !(to instanceof RefType || to instanceof ArrayType)) {
         return fromLocal;
         // throw new IllegalArgumentException("Expected target to have reference type");
       }

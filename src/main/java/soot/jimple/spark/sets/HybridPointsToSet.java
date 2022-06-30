@@ -100,7 +100,8 @@ public class HybridPointsToSet extends PointsToSetInternal {
    * Adds contents of other into this set, returns true if this set changed.
    */
   public boolean addAll(final PointsToSetInternal other, final PointsToSetInternal exclude) {
-    if ((other != null && !(other instanceof HybridPointsToSet)) || (exclude != null && !(exclude instanceof HybridPointsToSet))) {
+    if ((other != null && !(other instanceof HybridPointsToSet))
+        || (exclude != null && !(exclude instanceof HybridPointsToSet))) {
       return superAddAll(other, exclude);
     }
     return nativeAddAll((HybridPointsToSet) other, (HybridPointsToSet) exclude);

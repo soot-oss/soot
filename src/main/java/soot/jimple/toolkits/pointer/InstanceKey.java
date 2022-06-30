@@ -116,8 +116,8 @@ public class InstanceKey {
 
   @Override
   public String toString() {
-    String instanceKeyString =
-        stmtAfterAssignStmt != null ? lmaa.instanceKeyString(assignedLocal, stmtAfterAssignStmt) : "pts(" + hashCode + ")";
+    String instanceKeyString
+        = stmtAfterAssignStmt != null ? lmaa.instanceKeyString(assignedLocal, stmtAfterAssignStmt) : "pts(" + hashCode + ")";
     return instanceKeyString + "(" + assignedLocal.getName() + ")";
   }
 

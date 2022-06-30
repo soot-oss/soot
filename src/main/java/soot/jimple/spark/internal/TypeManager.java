@@ -96,8 +96,7 @@ public final class TypeManager {
         } else {
           rt.setSootClass(c);
         }
-      }
-      else {
+      } else {
         return true;
       }
     }

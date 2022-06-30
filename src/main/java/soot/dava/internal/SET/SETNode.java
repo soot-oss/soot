@@ -413,7 +413,8 @@ public abstract class SETNode {
       return false;
     }
     SETNode typed_other = (SETNode) other;
-    if (!body.equals(typed_other.body) || !subBodies.equals(typed_other.subBodies) || !body2childChain.equals(typed_other.body2childChain)) {
+    if (!body.equals(typed_other.body) || !subBodies.equals(typed_other.subBodies)
+        || !body2childChain.equals(typed_other.body2childChain)) {
       return false;
     }
     return true;

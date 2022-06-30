@@ -294,8 +294,8 @@ public class SynchronizerManager {
     final Scene scene = Scene.v();
 
     // Create the method
-    SootMethod method =
-        scene.makeSootMethod(methodName, Collections.singletonList(refTyString), refTypeClass, Modifier.STATIC);
+    SootMethod method
+        = scene.makeSootMethod(methodName, Collections.singletonList(refTyString), refTypeClass, Modifier.STATIC);
     c.addMethod(method);
 
     // Create the method body
@@ -322,11 +322,9 @@ public class SynchronizerManager {
 
       // add "$r2 = .staticinvoke <java.lang.Class: java.lang.Class
       // forName(java.lang.String)>(r0);
-      AssignStmt asi =
-          jimp.newAssignStmt(l_r2,
-              jimp.newStaticInvokeExpr(
-                  scene.getMethod("<java.lang.Class: java.lang.Class forName(java.lang.String)>").makeRef(),
-                  Collections.singletonList(l_r0)));
+      AssignStmt asi = jimp.newAssignStmt(l_r2,
+          jimp.newStaticInvokeExpr(scene.getMethod("<java.lang.Class: java.lang.Class forName(java.lang.String)>").makeRef(),
+              Collections.singletonList(l_r0)));
       units.add(asi);
 
       // insert "return $r2;"
@@ -416,8 +414,8 @@ public class SynchronizerManager {
       l.add(jimp.newThrowStmt(eRef));
       units.insertAfter(l, newGoto);
 
-      b.getTraps()
-          .addFirst(jimp.newTrap(Scene.v().getSootClass(Scene.v().getBaseExceptionType().toString()), stmt, units.getSuccOf(stmt), handlerStmt));
+      b.getTraps().addFirst(jimp.newTrap(Scene.v().getSootClass(Scene.v().getBaseExceptionType().toString()), stmt,
+          units.getSuccOf(stmt), handlerStmt));
     }
   }
 }

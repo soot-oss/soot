@@ -78,7 +78,8 @@ public class EBBCollapser {
       VarNode firstSucc = null;
       for (Node element0 : succs) {
         VarNode succ = (VarNode) element0;
-        if ((pag.allocInvLookup(succ).length > 1) || (pag.loadInvLookup(succ).length > 0) || (pag.simpleInvLookup(succ).length > 0)) {
+        if ((pag.allocInvLookup(succ).length > 1) || (pag.loadInvLookup(succ).length > 0)
+            || (pag.simpleInvLookup(succ).length > 0)) {
           continue;
         }
         if (ofcg && succ.isInterProcTarget()) {
@@ -109,7 +110,8 @@ public class EBBCollapser {
         for (Node element : succs) {
           VarNode succ = (VarNode) element;
           Type sType = succ.getType();
-          if (!typeManager.castNeverFails(nType, sType) || (pag.allocInvLookup(succ).length > 0) || (pag.loadInvLookup(succ).length > 0) || (pag.simpleInvLookup(succ).length > 1)) {
+          if (!typeManager.castNeverFails(nType, sType) || (pag.allocInvLookup(succ).length > 0)
+              || (pag.loadInvLookup(succ).length > 0) || (pag.simpleInvLookup(succ).length > 1)) {
             continue;
           }
           if (ofcg && (succ.isInterProcTarget() || n.isInterProcSource())) {
@@ -135,7 +137,8 @@ public class EBBCollapser {
       for (Node element : succs) {
         VarNode succ = (VarNode) element;
         Type sType = succ.getType();
-        if ((pag.allocInvLookup(succ).length > 0) || (pag.loadInvLookup(succ).length > 1) || (pag.simpleInvLookup(succ).length > 0)) {
+        if ((pag.allocInvLookup(succ).length > 0) || (pag.loadInvLookup(succ).length > 1)
+            || (pag.simpleInvLookup(succ).length > 0)) {
           continue;
         }
         if (ofcg && succ.isInterProcTarget()) {

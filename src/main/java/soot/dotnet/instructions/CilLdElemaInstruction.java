@@ -38,90 +38,91 @@ import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 
 /**
- * Load element out of an array local
- * In ILSpy/.NET instruction an element can be loaded by one instruction (e.g. elem[1,5]); unfolding it
+ * Load element out of an array local In ILSpy/.NET instruction an element can be loaded by one instruction (e.g. elem[1,5]);
+ * unfolding it
  */
 public class CilLdElemaInstruction extends AbstractCilnstruction {
-    public CilLdElemaInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
-        super(instruction, dotnetBody, cilBlock);
+  public CilLdElemaInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
+    super(instruction, dotnetBody, cilBlock);
 
-        if (instruction.getIndicesCount() > 1) {
-          isMultiArrayRef = true;
-        }
+    if (instruction.getIndicesCount() > 1) {
+      isMultiArrayRef = true;
+    }
+  }
+
+  private boolean isMultiArrayRef = false;
+
+  private final List<Value> indices = new ArrayList<>();
+
+  /**
+   * Base array value/local from where to load element
+   */
+  private Value baseArrayLocal;
+
+  @Override
+  public void jimplify(Body jb) {
+    throw new NoStatementInstructionException(instruction);
+  }
+
+  @Override
+  public Value jimplifyExpr(Body jb) {
+    CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArray(), dotnetBody, cilBlock);
+    baseArrayLocal = cilExpr.jimplifyExpr(jb);
+
+    if (instruction.getIndicesCount() == 1) {
+      Value ind = CilInstructionFactory.fromInstructionMsg(instruction.getIndices(0), dotnetBody, cilBlock).jimplifyExpr(jb);
+      Value index = ind instanceof Immediate ? ind : DotnetBodyVariableManager.inlineLocals(ind, jb);
+      return Jimple.v().newArrayRef(baseArrayLocal, index);
     }
 
-    private boolean isMultiArrayRef = false;
-
-    private final List<Value> indices = new ArrayList<>();
-
-    /**
-     * Base array value/local from where to load element
-     */
-    private Value baseArrayLocal;
-
-    @Override
-    public void jimplify(Body jb) {
-        throw new NoStatementInstructionException(instruction);
+    // if is multiArrayRef
+    for (ProtoIlInstructions.IlInstructionMsg ind : instruction.getIndicesList()) {
+      Value indExpr = CilInstructionFactory.fromInstructionMsg(ind, dotnetBody, cilBlock).jimplifyExpr(jb);
+      Value index = indExpr instanceof Immediate ? indExpr : DotnetBodyVariableManager.inlineLocals(indExpr, jb);
+      indices.add(index);
     }
+    // only temporary - MultiArrayRef is rewritten later in in StLoc with the resolveRewriteMultiArrAccess instruction
+    return Jimple.v().newArrayRef(baseArrayLocal, indices.get(0));
+  }
 
-    @Override
-    public Value jimplifyExpr(Body jb) {
-        CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArray(), dotnetBody, cilBlock);
-        baseArrayLocal = cilExpr.jimplifyExpr(jb);
+  public boolean isMultiArrayRef() {
+    return isMultiArrayRef;
+  }
 
-        if (instruction.getIndicesCount() == 1) {
-            Value ind = CilInstructionFactory.fromInstructionMsg(instruction.getIndices(0), dotnetBody, cilBlock).jimplifyExpr(jb);
-            Value index = ind instanceof Immediate ? ind : DotnetBodyVariableManager.inlineLocals(ind, jb);
-            return Jimple.v().newArrayRef(baseArrayLocal, index);
-        }
+  public Value getBaseArrayLocal() {
+    return baseArrayLocal;
+  }
 
-        // if is multiArrayRef
-        for (ProtoIlInstructions.IlInstructionMsg ind : instruction.getIndicesList()) {
-            Value indExpr = CilInstructionFactory.fromInstructionMsg(ind, dotnetBody, cilBlock).jimplifyExpr(jb);
-            Value index = indExpr instanceof Immediate ? indExpr : DotnetBodyVariableManager.inlineLocals(indExpr, jb);
-            indices.add(index);
-        }
-        // only temporary - MultiArrayRef is rewritten later in in StLoc with the resolveRewriteMultiArrAccess instruction
-        return Jimple.v().newArrayRef(baseArrayLocal, indices.get(0));
+  public List<Value> getIndices() {
+    return indices;
+  }
+
+  /**
+   * Resolve Jimple Body, rollout array access dimension for dimension and return new rValue
+   * 
+   * @param jb
+   *          Jimple Body where to insert the rewritten statements
+   */
+  public Value resolveRewriteMultiArrAccess(Body jb) {
+    // can only be >1
+    int size = getIndices().size();
+
+    Local lLocalVar;
+    Local rLocalVar = null;
+    for (int z = 0; z < size; z++) {
+      ArrayRef arrayRef;
+      if (z == 0) {
+        arrayRef = Jimple.v().newArrayRef(getBaseArrayLocal(), getIndices().get(z));
+      } else {
+        arrayRef = Jimple.v().newArrayRef(rLocalVar, getIndices().get(z));
+      }
+      Type arrayType = arrayRef.getType();
+      lLocalVar = dotnetBody.variableManager.localGenerator.generateLocal(arrayType);
+
+      AssignStmt assignStmt = Jimple.v().newAssignStmt(lLocalVar, arrayRef);
+      jb.getUnits().add(assignStmt);
+      rLocalVar = lLocalVar;
     }
-
-    public boolean isMultiArrayRef() {
-        return isMultiArrayRef;
-    }
-
-    public Value getBaseArrayLocal() {
-        return baseArrayLocal;
-    }
-
-    public List<Value> getIndices() {
-        return indices;
-    }
-
-    /**
-     * Resolve Jimple Body, rollout array access dimension for dimension and return new rValue
-     * @param jb Jimple Body where to insert the rewritten statements
-     */
-    public Value resolveRewriteMultiArrAccess(Body jb) {
-        // can only be >1
-        int size = getIndices().size();
-
-        Local lLocalVar;
-        Local rLocalVar = null;
-        for (int z = 0; z < size; z++) {
-            ArrayRef arrayRef;
-            if (z == 0) {
-                arrayRef = Jimple.v().newArrayRef(getBaseArrayLocal(), getIndices().get(z));
-            }
-            else {
-                arrayRef = Jimple.v().newArrayRef(rLocalVar, getIndices().get(z));
-            }
-            Type arrayType = arrayRef.getType();
-            lLocalVar = dotnetBody.variableManager.localGenerator.generateLocal(arrayType);
-
-            AssignStmt assignStmt = Jimple.v().newAssignStmt(lLocalVar, arrayRef);
-            jb.getUnits().add(assignStmt);
-            rLocalVar = lLocalVar;
-        }
-        return rLocalVar;
-    }
+    return rLocalVar;
+  }
 }

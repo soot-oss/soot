@@ -1498,7 +1498,7 @@ public class CFG {
 
       case ByteCode.WIDE:
         throw new RuntimeException("Wide instruction should not be encountered");
-        // break;
+      // break;
 
       case ByteCode.NEWARRAY: {
         typeStack = popSafe(typeStack, IntType.v());
@@ -2877,7 +2877,7 @@ public class CFG {
 
       case ByteCode.WIDE:
         throw new RuntimeException("WIDE instruction should not be encountered anymore");
-        // break;
+      // break;
 
       case ByteCode.NEWARRAY: {
         Type baseType = jimpleTypeOfAtype(((Instruction_Newarray) ins).atype);

@@ -396,9 +396,9 @@ public class SootUtil {
   }
 
   public static SootMethod getMainMethod() {
-    return Options.v().src_prec() != Options.src_prec_dotnet ?
-            Scene.v().getMainClass().getMethod(Scene.v().getSubSigNumberer().findOrAdd("void main(java.lang.String[])")) :
-            Scene.v().getMainClass().getMethod(Scene.v().getSubSigNumberer().findOrAdd(DotnetMethod.MAIN_METHOD_SIGNATURE));
+    return Options.v().src_prec() != Options.src_prec_dotnet
+        ? Scene.v().getMainClass().getMethod(Scene.v().getSubSigNumberer().findOrAdd("void main(java.lang.String[])"))
+        : Scene.v().getMainClass().getMethod(Scene.v().getSubSigNumberer().findOrAdd(DotnetMethod.MAIN_METHOD_SIGNATURE));
   }
 
   public static boolean isResolvableCall(SootMethod invokedMethod) {

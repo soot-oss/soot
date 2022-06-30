@@ -79,18 +79,18 @@ public enum CheckTypesValidator implements BodyValidator {
           if (iexpr instanceof InstanceInvokeExpr) {
             InstanceInvokeExpr iiexpr = (InstanceInvokeExpr) iexpr;
             checkCopy(stmt, exception, called.getDeclaringClass().getType(), iiexpr.getBase().getType(),
-                    " in receiver of call" + errorSuffix);
+                " in receiver of call" + errorSuffix);
           }
 
           final int argCount = iexpr.getArgCount();
           if (called.getParameterTypes().size() != argCount) {
             exception.add(new ValidationException(stmt, "Argument count does not match the signature of the called function",
-                    "Warning: Argument count doesn't match up with signature in call" + errorSuffix));
+                "Warning: Argument count doesn't match up with signature in call" + errorSuffix));
           } else {
             for (int i = 0; i < argCount; i++) {
               checkCopy(stmt, exception, Type.toMachineType(called.getParameterType(i)),
-                      Type.toMachineType(iexpr.getArg(i).getType()),
-                      " in argument " + i + " of call" + errorSuffix + " (Note: Parameters are zero-indexed)");
+                  Type.toMachineType(iexpr.getArg(i).getType()),
+                  " in argument " + i + " of call" + errorSuffix + " (Note: Parameters are zero-indexed)");
             }
           }
         }
@@ -100,7 +100,8 @@ public enum CheckTypesValidator implements BodyValidator {
 
   private void checkCopy(Unit stmt, List<ValidationException> exception, Type leftType, Type rightType, String errorSuffix) {
     if (leftType instanceof PrimType || rightType instanceof PrimType) {
-      if ((leftType instanceof IntType && rightType instanceof IntType) || (leftType instanceof LongType && rightType instanceof LongType)) {
+      if ((leftType instanceof IntType && rightType instanceof IntType)
+          || (leftType instanceof LongType && rightType instanceof LongType)) {
         return;
       }
       if (leftType instanceof FloatType && rightType instanceof FloatType) {
@@ -114,13 +115,15 @@ public enum CheckTypesValidator implements BodyValidator {
 
         // if left/right type type of System.ValueType == primtype, is ok
 
-        if ((leftType instanceof RefType && ((RefType) leftType).getClassName().equals(DotnetBasicTypes.SYSTEM_INTPTR)) ||
-                (rightType instanceof RefType && ((RefType) rightType).getClassName().equals(DotnetBasicTypes.SYSTEM_INTPTR))) {
+        if ((leftType instanceof RefType && ((RefType) leftType).getClassName().equals(DotnetBasicTypes.SYSTEM_INTPTR))
+            || (rightType instanceof RefType
+                && ((RefType) rightType).getClassName().equals(DotnetBasicTypes.SYSTEM_INTPTR))) {
           return;
         }
         if (leftType instanceof RefType) {
           FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
-          if(fastHierarchy.canStoreClass(((RefType) leftType).getSootClass(), Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE))) {
+          if (fastHierarchy.canStoreClass(((RefType) leftType).getSootClass(),
+              Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE))) {
             return;
           }
 
@@ -132,27 +135,29 @@ public enum CheckTypesValidator implements BodyValidator {
           // if righttype is primtype - primitive structs inherits from ValueType and
           // implements IComparable, IComparable<T>, IConvertible, IEquatable<T>, IFormattable
           if (leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE))
-                  || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE_1))
-                  || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ICONVERTIBLE))
-                  || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_IEQUATABLE_1))
-                  || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_IFORMATTABLE))) {
+              || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE_1))
+              || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ICONVERTIBLE))
+              || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_IEQUATABLE_1))
+              || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_IFORMATTABLE))) {
             return;
           }
 
         }
         if (rightType instanceof RefType) {
           FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
-          if (fastHierarchy.canStoreClass(((RefType) rightType).getSootClass(), Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE))) {
+          if (fastHierarchy.canStoreClass(((RefType) rightType).getSootClass(),
+              Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE))) {
             return;
           }
         }
       }
-      exception.add(new ValidationException(stmt, "Warning: Bad use of primitive type" + errorSuffix +
-              " - LeftType is " + leftType.getClass().getName() + " and RightType is " + rightType.getClass().getName()));
+      exception.add(new ValidationException(stmt, "Warning: Bad use of primitive type" + errorSuffix + " - LeftType is "
+          + leftType.getClass().getName() + " and RightType is " + rightType.getClass().getName()));
       return;
     }
 
-    if ((rightType instanceof NullType) || (leftType instanceof RefType && Scene.v().getObjectType().toString() .equals(((RefType) leftType).getClassName()))) {
+    if ((rightType instanceof NullType) || (leftType instanceof RefType
+        && Scene.v().getObjectType().toString().equals(((RefType) leftType).getClassName()))) {
       return;
     }
 
@@ -164,7 +169,7 @@ public enum CheckTypesValidator implements BodyValidator {
       if (rightType instanceof ArrayType) {
         // Dotnet: it is legal to assign arrays to System.Array, because it is base class in CLR
         if (leftType.equals(RefType.v("java.io.Serializable")) || leftType.equals(RefType.v("java.lang.Cloneable"))
-                || leftType.equals(Scene.v().getObjectType()) || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ARRAY))) {
+            || leftType.equals(Scene.v().getObjectType()) || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ARRAY))) {
           return;
         }
       }
@@ -183,7 +188,7 @@ public enum CheckTypesValidator implements BodyValidator {
       if (leftClass.isInterface()) {
         if (rightClass.isInterface()) {
           if (!(leftClass.getName().equals(rightClass.getName())
-                  || Scene.v().getActiveHierarchy().isInterfaceSubinterfaceOf(rightClass, leftClass))) {
+              || Scene.v().getActiveHierarchy().isInterfaceSubinterfaceOf(rightClass, leftClass))) {
             exception.add(new ValidationException(stmt, "Warning: Bad use of interface type" + errorSuffix));
           }
         } else {
@@ -191,12 +196,14 @@ public enum CheckTypesValidator implements BodyValidator {
         }
       } else if (rightClass.isInterface()) {
         exception.add(new ValidationException(stmt,
-                "Warning: trying to use interface type where non-Object class expected" + errorSuffix));
+            "Warning: trying to use interface type where non-Object class expected" + errorSuffix));
       } else if (Options.v().src_prec() == Options.src_prec_dotnet) {
         // if dotnet check for ValueTypes, assignment can only be correct from compiler
         FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
-        boolean lTypeIsChild = fastHierarchy.canStoreClass(((RefType) leftType).getSootClass(), Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE));
-        boolean rTypeIsChild = fastHierarchy.canStoreClass(((RefType) rightType).getSootClass(), Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE));
+        boolean lTypeIsChild = fastHierarchy.canStoreClass(((RefType) leftType).getSootClass(),
+            Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE));
+        boolean rTypeIsChild = fastHierarchy.canStoreClass(((RefType) rightType).getSootClass(),
+            Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE));
         if (lTypeIsChild && rTypeIsChild) {
           return;
         }

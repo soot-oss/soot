@@ -152,7 +152,7 @@ public class AugEvalFunction implements IEvalFunction {
     } else if (expr instanceof NegExpr) {
       Type t = eval_(tg, ((NegExpr) expr).getOp(), stmt, jb);
       if (t instanceof IntegerType) {
-        //The "ineg" bytecode causes and implicit widening to int type and produces an int type.
+        // The "ineg" bytecode causes and implicit widening to int type and produces an int type.
         return IntType.v();
       } else {
         return t;

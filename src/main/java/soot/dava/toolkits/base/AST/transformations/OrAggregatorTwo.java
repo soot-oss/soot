@@ -94,7 +94,6 @@ public class OrAggregatorTwo extends DepthFirstAdapter {
 
     List<Object> innerIfBody = checkElseHasOnlyIf(elseBody);
 
-    
     // pattern 1 is fine till now
     // compare the ifBody with the innerIfBody
     // They need to match exactly

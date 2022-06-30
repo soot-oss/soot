@@ -1306,7 +1306,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
       Set<SootMethod> toBeCollapsed = new ArraySet<SootMethod>();
       int callSiteInd = 0;
       for (; callSiteInd < context.size() && !context.get(callSiteInd).equals(callSite); callSiteInd++) {
-        
+
       }
       for (; callSiteInd < context.size(); callSiteInd++) {
         toBeCollapsed.add(csInfo.getInvokingMethod(context.get(callSiteInd)));
@@ -1481,7 +1481,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         Set<SootMethod> toBeCollapsed = new ArraySet<SootMethod>();
         int callSiteInd = 0;
         for (; callSiteInd < context.size() && !context.get(callSiteInd).equals(callSite); callSiteInd++) {
-          
+
         }
         // int numToPop = 0;
         for (; callSiteInd < context.size(); callSiteInd++) {

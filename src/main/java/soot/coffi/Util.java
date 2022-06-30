@@ -925,7 +925,8 @@ public class Util {
     }
     for (int i = 0; i < prospectiveName.length(); i++) {
       char c = prospectiveName.charAt(i);
-      if ((i == 0 && c >= '0' && c <= '9') || !((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c == '_' || c == '$'))) {
+      if ((i == 0 && c >= '0' && c <= '9')
+          || !((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c == '_' || c == '$'))) {
         return false;
       }
     }

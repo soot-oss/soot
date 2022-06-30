@@ -54,8 +54,8 @@ import soot.util.Chain;
 public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
   private static final Logger logger = LoggerFactory.getLogger(ConstantInvokeMethodBaseTransformer.class);
 
-  private final static String INVOKE_SIG =
-      "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>";
+  private final static String INVOKE_SIG
+      = "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>";
 
   public ConstantInvokeMethodBaseTransformer(Singletons.Global g) {
   }

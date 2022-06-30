@@ -2229,7 +2229,8 @@ public final class ProtoIlInstructions {
       }
       soot.dotnet.proto.ProtoIlInstructions.IlBlock other = (soot.dotnet.proto.ProtoIlInstructions.IlBlock) obj;
 
-      if (!getListOfIlInstructionsList().equals(other.getListOfIlInstructionsList()) || !getBlockName().equals(other.getBlockName()) || !unknownFields.equals(other.unknownFields)) {
+      if (!getListOfIlInstructionsList().equals(other.getListOfIlInstructionsList())
+          || !getBlockName().equals(other.getBlockName()) || !unknownFields.equals(other.unknownFields)) {
         return false;
       }
       return true;
@@ -14228,7 +14229,8 @@ public final class ProtoIlInstructions {
           return false;
         }
       }
-      if (!getName().equals(other.getName()) || (getHasInitialValue() != other.getHasInitialValue()) || (variableKind_ != other.variableKind_) || !unknownFields.equals(other.unknownFields)) {
+      if (!getName().equals(other.getName()) || (getHasInitialValue() != other.getHasInitialValue())
+          || (variableKind_ != other.variableKind_) || !unknownFields.equals(other.unknownFields)) {
         return false;
       }
       return true;

@@ -34,7 +34,8 @@ public class AssertStmtChecker extends polyglot.visit.NodeVisitor {
   }
 
   public polyglot.ast.Node override(polyglot.ast.Node parent, polyglot.ast.Node n) {
-    if ((n instanceof polyglot.ast.ClassDecl) || ((n instanceof polyglot.ast.New) && (((polyglot.ast.New) n).anonType() != null))) {
+    if ((n instanceof polyglot.ast.ClassDecl)
+        || ((n instanceof polyglot.ast.New) && (((polyglot.ast.New) n).anonType() != null))) {
       return n;
     }
     return null;

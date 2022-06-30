@@ -86,7 +86,7 @@ public class SootMethodRefImpl implements SootMethodRef {
     }
     if (returnType == null) {
       throw new IllegalArgumentException("Attempt to create SootMethodRef with null returnType (Method: " + name
-              + " at declaring class: " + declaringClass.getName() + ")");
+          + " at declaring class: " + declaringClass.getName() + ")");
     }
 
     this.declaringClass = declaringClass;
@@ -338,7 +338,7 @@ public class SootMethodRefImpl implements SootMethodRef {
         Collections.<Type>singletonList(RefType.v("java.lang.String")));
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
       cref = Scene.v().makeConstructorRef(runtimeExceptionType.getSootClass(),
-              Collections.<Type>singletonList(RefType.v(DotnetBasicTypes.SYSTEM_STRING)));
+          Collections.<Type>singletonList(RefType.v(DotnetBasicTypes.SYSTEM_STRING)));
     }
     SpecialInvokeExpr constructorInvokeExpr = jimp.newSpecialInvokeExpr(exceptionLocal, cref,
         StringConstant.v("Unresolved compilation error: Method " + getSignature() + " does not exist!"));

@@ -388,7 +388,7 @@ public class PtInsIntervalManager extends IFigureManager {
           && (predator.I1 + predator.L >= list.I2 + L)) {
         // The checked figure is completely contained in the predator
         // So we ignore it
-        
+
       } else {
         if (q == null) {
           p = q = list;

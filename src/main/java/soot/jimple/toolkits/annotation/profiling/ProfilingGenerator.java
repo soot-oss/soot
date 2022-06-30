@@ -52,8 +52,8 @@ public class ProfilingGenerator extends BodyTransformer {
     return G.v().soot_jimple_toolkits_annotation_profiling_ProfilingGenerator();
   }
 
-  public String mainSignature = Options.v().src_prec() != Options.src_prec_dotnet ?
-          "void main(java.lang.String[])" : DotnetMethod.MAIN_METHOD_SIGNATURE;
+  public String mainSignature = Options.v().src_prec() != Options.src_prec_dotnet ? "void main(java.lang.String[])"
+      : DotnetMethod.MAIN_METHOD_SIGNATURE;
 
   // private String mainSignature = "long runBenchmark(java.lang.String[])";
 

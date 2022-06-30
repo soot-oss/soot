@@ -33,8 +33,10 @@ public class AnnotationClassElem extends AnnotationElem {
 
   /**
    *
-   * @param typeName type name
-   * @param elementName name of element
+   * @param typeName
+   *          type name
+   * @param elementName
+   *          name of element
    */
   public AnnotationClassElem(String typeName, String elementName) {
     this(typeName, 'c', elementName);

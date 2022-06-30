@@ -107,7 +107,6 @@ public class CriticalSectionInterferenceGraph {
             CriticalSection tn2 = tnIt2.next();
 
             // check if this transactional region is going to be deleted
-            
 
             // check if they're already marked as having an interference
             // NOTE: this results in a sound grouping, but a badly

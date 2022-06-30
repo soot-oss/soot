@@ -46,5 +46,5 @@ public class InvokeInterfaceInstruction extends MethodInvocationInstruction {
   public void jimplify(DexBody body) {
     jimplifyInterface(body);
   }
-  
+
 }

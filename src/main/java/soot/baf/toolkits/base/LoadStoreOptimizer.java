@@ -77,7 +77,7 @@ import soot.util.Chain;
 
 public class LoadStoreOptimizer extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(LoadStoreOptimizer.class);
-  
+
   private static final boolean SKIP_SLOW_ASSERTS = true;
 
   public LoadStoreOptimizer(Singletons.Global g) {
@@ -645,7 +645,8 @@ public class LoadStoreOptimizer extends BodyTransformer {
       }
 
       // xxx to be safe don't mess w/ monitors. These rules could be relaxed. ? Maybe.
-      if (aUnitToGoOver instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst || aUnitToMove instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst) {
+      if (aUnitToGoOver instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst
+          || aUnitToMove instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst) {
         return false;
       }
 

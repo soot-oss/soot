@@ -81,7 +81,8 @@ public class BadFields extends SceneTransformer {
         continue;
       }
       if (f.isFinal()) {
-        if ((f.getType() instanceof PrimType) || typeName.equals("java.io.PrintStream") || typeName.equals("java.lang.String") || typeName.equals(Scene.v().getObjectType().toString())) {
+        if ((f.getType() instanceof PrimType) || typeName.equals("java.io.PrintStream")
+            || typeName.equals("java.lang.String") || typeName.equals(Scene.v().getObjectType().toString())) {
           continue;
         }
         if (typeName.equals("java.lang.Integer") || typeName.equals("java.lang.Boolean")) {
@@ -155,7 +156,10 @@ public class BadFields extends SceneTransformer {
 
   private void calls(SootMethod target) {
     if (target.getName().equals("<init>")) {
-      if (target.getDeclaringClass().getName().equals("java.io.PrintStream") || target.getDeclaringClass().getName().equals("java.lang.Boolean") || target.getDeclaringClass().getName().equals("java.lang.Integer") || target.getDeclaringClass().getName().equals("java.lang.String")) {
+      if (target.getDeclaringClass().getName().equals("java.io.PrintStream")
+          || target.getDeclaringClass().getName().equals("java.lang.Boolean")
+          || target.getDeclaringClass().getName().equals("java.lang.Integer")
+          || target.getDeclaringClass().getName().equals("java.lang.String")) {
         return;
       }
       if (target.getDeclaringClass().getName().equals(Scene.v().getObjectType().toString())) {

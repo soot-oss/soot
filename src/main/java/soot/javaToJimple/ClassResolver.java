@@ -331,7 +331,8 @@ public class ClassResolver {
     // possibly eventually to send in the finals
 
     polyglot.types.ClassType superType = (polyglot.types.ClassType) nodeKeyType.superType();
-    while (!Util.getSootType(superType).equals(soot.Scene.v().getSootClass(Scene.v().getObjectType().toString()).getType())) {
+    while (!Util.getSootType(superType)
+        .equals(soot.Scene.v().getSootClass(Scene.v().getObjectType().toString()).getType())) {
       if (InitialResolver.v().finalLocalInfo().containsKey(new polyglot.util.IdentityKey(superType))) {
         AnonLocalClassInfo lInfo = InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(superType));
         for (IdentityKey next : lInfo.finalLocalsAvail()) {
@@ -523,8 +524,8 @@ public class ClassResolver {
     String fieldName = "$assertionsDisabled";
     soot.Type fieldType = soot.BooleanType.v();
     if (!sootClass.declaresField(fieldName, fieldType)) {
-      soot.SootField assertionsDisabledField =
-          Scene.v().makeSootField(fieldName, fieldType, soot.Modifier.STATIC | soot.Modifier.FINAL);
+      soot.SootField assertionsDisabledField
+          = Scene.v().makeSootField(fieldName, fieldType, soot.Modifier.STATIC | soot.Modifier.FINAL);
       sootClass.addField(assertionsDisabledField);
       assertionsDisabledField.addTag(new SyntheticTag());
     }
@@ -816,7 +817,8 @@ public class ClassResolver {
             tag2.getInnerType() == InnerClassInfo.ANON ? null : tag2.getOuterClass().getName(),
             tag2.getInnerType() == InnerClassInfo.ANON ? null : tag2.getSimpleName(),
             tag2.getInnerType() == InnerClassInfo.ANON && soot.Modifier.isInterface(tag2.getOuterClass().getModifiers())
-                ? soot.Modifier.STATIC | soot.Modifier.PUBLIC : outerClass.getModifiers());
+                ? soot.Modifier.STATIC | soot.Modifier.PUBLIC
+                : outerClass.getModifiers());
         outerClass = tag2.getOuterClass();
       }
     }

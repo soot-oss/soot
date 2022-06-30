@@ -147,7 +147,8 @@ public class Aggregator extends BodyTransformer {
       }
 
       // Check to make sure aggregation pair in the same zone
-      if ((localDefs.getDefsOfAt(lhsLocal, usepairUnit).size() != 1) || (boxToZone.get(s.getRightOpBox()) != boxToZone.get(usepairValueBox))) {
+      if ((localDefs.getDefsOfAt(lhsLocal, usepairUnit).size() != 1)
+          || (boxToZone.get(s.getRightOpBox()) != boxToZone.get(usepairValueBox))) {
         continue;
       }
 
