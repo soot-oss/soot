@@ -378,11 +378,7 @@ public class GeomEvaluator {
               }
 
               LocalVarNode vn = ptsProvider.findLocalVarNode((Local) ifr.getBase());
-              if (vn == null) {
-                continue;
-              }
-
-              if (ptsProvider.isExceptionPointer(vn)) {
+              if ((vn == null) || ptsProvider.isExceptionPointer(vn)) {
                 continue;
               }
 

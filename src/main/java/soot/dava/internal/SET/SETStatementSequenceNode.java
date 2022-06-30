@@ -103,15 +103,7 @@ public class SETStatementSequenceNode extends SETNode {
 
           Value rightOp = ids.getRightOp(), leftOp = ids.getLeftOp();
 
-          if (davaBody.get_ThisLocals().contains(leftOp)) {
-            continue;
-          }
-
-          if (rightOp instanceof ParameterRef) {
-            continue;
-          }
-
-          if (rightOp instanceof CaughtExceptionRef) {
+          if (davaBody.get_ThisLocals().contains(leftOp) || (rightOp instanceof ParameterRef) || (rightOp instanceof CaughtExceptionRef)) {
             continue;
           }
         }

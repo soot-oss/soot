@@ -518,10 +518,7 @@ public class RectangularArrayFinder extends SceneTransformer {
           Type type = naexpr.getBaseType();
           Value size = naexpr.getSize();
 
-          if (!type.equals(baseTy)) {
-            break;
-          }
-          if (!(size instanceof IntConstant)) {
+          if (!type.equals(baseTy) || !(size instanceof IntConstant)) {
             break;
           }
 
@@ -551,15 +548,7 @@ public class RectangularArrayFinder extends SceneTransformer {
             state = 2;
           } else if (base.equals(local)) {
             /* local[?] = curtmp? */
-            if (!(idx instanceof IntConstant)) {
-              break;
-            }
-
-            if (curdim != ((IntConstant) idx).value) {
-              break;
-            }
-
-            if (!rightOp.equals(curtmp)) {
+            if (!(idx instanceof IntConstant) || (curdim != ((IntConstant) idx).value) || !rightOp.equals(curtmp)) {
               break;
             }
 

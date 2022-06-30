@@ -113,11 +113,7 @@ public class ThrowManager {
         }
 
         Value ro = ((AssignStmt) prosNew).getRightOp();
-        if (((AssignStmt) prosNew).getLeftOp() != throwee || !(ro instanceof NewExpr)) {
-          continue;
-        }
-
-        if (!((NewExpr) ro).getBaseType().equals(RefType.v("java.lang.NullPointerException"))) {
+        if (((AssignStmt) prosNew).getLeftOp() != throwee || !(ro instanceof NewExpr) || !((NewExpr) ro).getBaseType().equals(RefType.v("java.lang.NullPointerException"))) {
           continue;
         }
 

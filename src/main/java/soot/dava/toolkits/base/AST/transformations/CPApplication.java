@@ -144,10 +144,7 @@ public class CPApplication extends DepthFirstAdapter {
       List useBoxes = s.getUseBoxes();
 
       Object obj = cp.getBeforeSet(s);
-      if (obj == null) {
-        continue;
-      }
-      if (!(obj instanceof CPFlowSet)) {
+      if ((obj == null) || !(obj instanceof CPFlowSet)) {
         continue;
       }
 

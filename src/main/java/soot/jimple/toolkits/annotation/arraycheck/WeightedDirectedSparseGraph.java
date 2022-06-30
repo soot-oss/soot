@@ -420,11 +420,7 @@ class WeightedDirectedSparseGraph {
       Hashtable thistarget = sources.get(src);
       Hashtable othertarget = othersources.get(src);
 
-      if (othertarget == null) {
-        return false;
-      }
-
-      if (thistarget.size() != othertarget.size()) {
+      if ((othertarget == null) || (thistarget.size() != othertarget.size())) {
         return false;
       }
 

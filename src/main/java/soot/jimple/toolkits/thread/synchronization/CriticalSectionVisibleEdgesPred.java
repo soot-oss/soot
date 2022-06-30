@@ -67,13 +67,9 @@ public class CriticalSectionVisibleEdgesPred implements EdgePredicate {
 
     // Remove anything in java.util
     // these calls will be treated as a non-transitive RW to the receiving object
-    if (tgtClass.startsWith("java.util") || srcClass.startsWith("java.util")) {
-      return false;
-    }
-
     // Remove anything in java.lang
     // these calls will be treated as a non-transitive RW to the receiving object
-    if (tgtClass.startsWith("java.lang") || srcClass.startsWith("java.lang")) {
+    if (tgtClass.startsWith("java.util") || srcClass.startsWith("java.util") || tgtClass.startsWith("java.lang") || srcClass.startsWith("java.lang")) {
       return false;
     }
 

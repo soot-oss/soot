@@ -232,11 +232,7 @@ public class SynchronizerManager {
 
       final AssignStmt as = (AssignStmt) s;
       if (!(".staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>(" + is.getLeftOp() + ")")
-          .equals(as.getRightOp().toString())) {
-        continue;
-      }
-
-      if (!unitsIt.hasNext()) {
+          .equals(as.getRightOp().toString()) || !unitsIt.hasNext()) {
         continue;
       }
       s = (Stmt) unitsIt.next();

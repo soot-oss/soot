@@ -2917,16 +2917,7 @@ public final class ProtoAssemblyAllTypes {
       if ((accessibility_ != other.accessibility_) || !getFullname().equals(other.getFullname()) || !getNamespace().equals(other.getNamespace()) || (getIsAbstract() != other.getIsAbstract())) {
         return false;
       }
-      if (getIsReadOnly() != other.getIsReadOnly()) {
-        return false;
-      }
-      if (getIsSealed() != other.getIsSealed()) {
-        return false;
-      }
-      if (getIsStatic() != other.getIsStatic()) {
-        return false;
-      }
-      if (!getDeclaringOuterClass().equals(other.getDeclaringOuterClass())) {
+      if ((getIsReadOnly() != other.getIsReadOnly()) || (getIsSealed() != other.getIsSealed()) || (getIsStatic() != other.getIsStatic()) || !getDeclaringOuterClass().equals(other.getDeclaringOuterClass())) {
         return false;
       }
       if (!getDirectBaseTypesList().equals(other.getDirectBaseTypesList())) {
@@ -7354,16 +7345,7 @@ public final class ProtoAssemblyAllTypes {
       if ((accessibility_ != other.accessibility_) || !getName().equals(other.getName()) || (getHasBody() != other.getHasBody()) || !getParameterList().equals(other.getParameterList())) {
         return false;
       }
-      if (getIsAbstract() != other.getIsAbstract()) {
-        return false;
-      }
-      if (getIsAccessor() != other.getIsAccessor()) {
-        return false;
-      }
-      if (getIsConstructor() != other.getIsConstructor()) {
-        return false;
-      }
-      if (getIsDestructor() != other.getIsDestructor()) {
+      if ((getIsAbstract() != other.getIsAbstract()) || (getIsAccessor() != other.getIsAccessor()) || (getIsConstructor() != other.getIsConstructor()) || (getIsDestructor() != other.getIsDestructor())) {
         return false;
       }
       if (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation()) {
@@ -9847,10 +9829,7 @@ public final class ProtoAssemblyAllTypes {
       if (!getParameterName().equals(other.getParameterName()) || (getIsRef() != other.getIsRef()) || (getIsOut() != other.getIsOut()) || (getIsIn() != other.getIsIn())) {
         return false;
       }
-      if (getIsOptional() != other.getIsOptional()) {
-        return false;
-      }
-      if (!unknownFields.equals(other.unknownFields)) {
+      if ((getIsOptional() != other.getIsOptional()) || !unknownFields.equals(other.unknownFields)) {
         return false;
       }
       return true;
@@ -11442,16 +11421,7 @@ public final class ProtoAssemblyAllTypes {
       if ((accessibility_ != other.accessibility_) || (getIsAbstract() != other.getIsAbstract()) || (getIsSealed() != other.getIsSealed()) || (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation())) {
         return false;
       }
-      if (getIsOverride() != other.getIsOverride()) {
-        return false;
-      }
-      if (getIsVirtual() != other.getIsVirtual()) {
-        return false;
-      }
-      if (getIsConst() != other.getIsConst()) {
-        return false;
-      }
-      if (getIsReadOnly() != other.getIsReadOnly()) {
+      if ((getIsOverride() != other.getIsOverride()) || (getIsVirtual() != other.getIsVirtual()) || (getIsConst() != other.getIsConst()) || (getIsReadOnly() != other.getIsReadOnly())) {
         return false;
       }
       if (getIsStatic() != other.getIsStatic()) {
@@ -14036,16 +14006,7 @@ public final class ProtoAssemblyAllTypes {
       if ((accessibility_ != other.accessibility_) || (getCanGet() != other.getCanGet()) || (getCanSet() != other.getCanSet()) || (getIsAbstract() != other.getIsAbstract())) {
         return false;
       }
-      if (getIsSealed() != other.getIsSealed()) {
-        return false;
-      }
-      if (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation()) {
-        return false;
-      }
-      if (getIsOverride() != other.getIsOverride()) {
-        return false;
-      }
-      if (getIsVirtual() != other.getIsVirtual()) {
+      if ((getIsSealed() != other.getIsSealed()) || (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation()) || (getIsOverride() != other.getIsOverride()) || (getIsVirtual() != other.getIsVirtual())) {
         return false;
       }
       if (getIsStatic() != other.getIsStatic()) {
@@ -18295,13 +18256,7 @@ public final class ProtoAssemblyAllTypes {
       if (!getName().equals(other.getName()) || !getValueStringList().equals(other.getValueStringList()) || !getValueInt32List().equals(other.getValueInt32List()) || !getValueInt64List().equals(other.getValueInt64List())) {
         return false;
       }
-      if (!getValueDoubleList().equals(other.getValueDoubleList())) {
-        return false;
-      }
-      if (!getValueFloatList().equals(other.getValueFloatList())) {
-        return false;
-      }
-      if (!unknownFields.equals(other.unknownFields)) {
+      if (!getValueDoubleList().equals(other.getValueDoubleList()) || !getValueFloatList().equals(other.getValueFloatList()) || !unknownFields.equals(other.unknownFields)) {
         return false;
       }
       return true;
@@ -20097,16 +20052,7 @@ public final class ProtoAssemblyAllTypes {
           return false;
         }
       }
-      if (getCanAdd() != other.getCanAdd()) {
-        return false;
-      }
-      if (getCanInvoke() != other.getCanInvoke()) {
-        return false;
-      }
-      if (getCanRemove() != other.getCanRemove()) {
-        return false;
-      }
-      if (!getFullName().equals(other.getFullName())) {
+      if ((getCanAdd() != other.getCanAdd()) || (getCanInvoke() != other.getCanInvoke()) || (getCanRemove() != other.getCanRemove()) || !getFullName().equals(other.getFullName())) {
         return false;
       }
       if (hasInvokeAccessorMethod() != other.hasInvokeAccessorMethod()) {

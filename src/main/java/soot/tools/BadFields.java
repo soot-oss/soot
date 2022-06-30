@@ -84,10 +84,7 @@ public class BadFields extends SceneTransformer {
         if ((f.getType() instanceof PrimType) || typeName.equals("java.io.PrintStream") || typeName.equals("java.lang.String") || typeName.equals(Scene.v().getObjectType().toString())) {
           continue;
         }
-        if (typeName.equals("java.lang.Integer")) {
-          continue;
-        }
-        if (typeName.equals("java.lang.Boolean")) {
+        if (typeName.equals("java.lang.Integer") || typeName.equals("java.lang.Boolean")) {
           continue;
         }
       }

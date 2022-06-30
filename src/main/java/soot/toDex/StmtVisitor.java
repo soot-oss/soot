@@ -260,14 +260,10 @@ public class StmtVisitor implements StmtSwitch {
         nextIndex = j;
         break;
       }
-      if (nextInsn == null || !isReducableMoveInstruction(nextInsn.getOpcode())) {
-        continue;
-      }
-
       // Do not remove the last instruction in the body as we need to
       // remap
       // jump targets to the successor
-      if (nextIndex == this.insns.size() - 1) {
+      if (nextInsn == null || !isReducableMoveInstruction(nextInsn.getOpcode()) || (nextIndex == this.insns.size() - 1)) {
         continue;
       }
 

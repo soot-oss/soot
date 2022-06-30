@@ -733,10 +733,7 @@ public class OpStackCalculator {
     if ((t1 == t2) || (t1 instanceof RefLikeType && t2 instanceof RefLikeType)) {
       return true;
     }
-    if (t1 instanceof IntegerType && t2 instanceof IntegerType) {
-      return true;
-    }
-    if (t1 instanceof LongType && t2 instanceof LongType) {
+    if ((t1 instanceof IntegerType && t2 instanceof IntegerType) || (t1 instanceof LongType && t2 instanceof LongType)) {
       return true;
     }
     if (t1 instanceof DoubleType && t2 instanceof DoubleType) {

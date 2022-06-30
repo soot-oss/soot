@@ -222,10 +222,7 @@ public class ForLoopCreationHelper {
     }
 
     List<String> condUses = getCondUses();
-    if (condUses == null) {
-      return false;
-    }
-    if (condUses.size() == 0) {
+    if ((condUses == null) || (condUses.size() == 0)) {
       return false;
     }
 

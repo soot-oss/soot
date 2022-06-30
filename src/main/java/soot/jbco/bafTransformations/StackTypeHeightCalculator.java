@@ -706,11 +706,7 @@ public class StackTypeHeightCalculator {
       return true;
     }
 
-    if (t1 instanceof IntegerType && t2 instanceof IntegerType) {
-      return true;
-    }
-
-    if (t1 instanceof LongType && t2 instanceof LongType) {
+    if ((t1 instanceof IntegerType && t2 instanceof IntegerType) || (t1 instanceof LongType && t2 instanceof LongType)) {
       return true;
     }
 

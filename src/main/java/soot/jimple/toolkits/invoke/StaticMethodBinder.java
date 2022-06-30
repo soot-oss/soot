@@ -119,12 +119,8 @@ public class StaticMethodBinder extends SceneTransformer {
             continue;
           }
           final SootMethod target = (SootMethod) targets.next();
-          if (targets.hasNext()) {
-            continue;
-          }
-
           // Ok, we have an Interface or VirtualInvoke going to 1.
-          if (!AccessManager.ensureAccess(container, target, modifierOptions)) {
+          if (targets.hasNext() || !AccessManager.ensureAccess(container, target, modifierOptions)) {
             continue;
           }
           final SootClass targetDeclClass = target.getDeclaringClass();

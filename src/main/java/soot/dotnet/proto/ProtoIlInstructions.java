@@ -7696,10 +7696,7 @@ public final class ProtoIlInstructions {
           return false;
         }
       }
-      if (!getArgumentsList().equals(other.getArgumentsList())) {
-        return false;
-      }
-      if (hasValueInstruction() != other.hasValueInstruction()) {
+      if (!getArgumentsList().equals(other.getArgumentsList()) || (hasValueInstruction() != other.hasValueInstruction())) {
         return false;
       }
       if (hasValueInstruction()) {

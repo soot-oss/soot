@@ -999,13 +999,7 @@ public class SynchronizedBlockFinder implements FactFinder {
       s = as.get_Stmt();
     }
 
-    if (as.bsuccs.size() != 1) {
-      // should have one true sucessor
-      // System.out.println("here5a");
-      return false;
-    }
-
-    if (as.cpreds.size() != 1) {
+    if ((as.bsuccs.size() != 1) || (as.cpreds.size() != 1)) {
       // should have one true predecessor
       // System.out.println("here5b");
       return false;

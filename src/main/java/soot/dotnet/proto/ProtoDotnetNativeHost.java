@@ -1016,16 +1016,7 @@ public final class ProtoDotnetNativeHost {
       if ((analyzerMethodCall_ != other.analyzerMethodCall_) || !getAssemblyFileAbsolutePath().equals(other.getAssemblyFileAbsolutePath()) || !getTypeReflectionName().equals(other.getTypeReflectionName()) || !getMethodName().equals(other.getMethodName())) {
         return false;
       }
-      if (!getMethodNameSuffix().equals(other.getMethodNameSuffix())) {
-        return false;
-      }
-      if (getMethodPeToken() != other.getMethodPeToken()) {
-        return false;
-      }
-      if (!getPropertyName().equals(other.getPropertyName())) {
-        return false;
-      }
-      if (getPropertyIsSetter() != other.getPropertyIsSetter()) {
+      if (!getMethodNameSuffix().equals(other.getMethodNameSuffix()) || (getMethodPeToken() != other.getMethodPeToken()) || !getPropertyName().equals(other.getPropertyName()) || (getPropertyIsSetter() != other.getPropertyIsSetter())) {
         return false;
       }
       if (!getEventName().equals(other.getEventName())) {

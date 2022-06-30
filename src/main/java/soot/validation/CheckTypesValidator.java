@@ -100,10 +100,7 @@ public enum CheckTypesValidator implements BodyValidator {
 
   private void checkCopy(Unit stmt, List<ValidationException> exception, Type leftType, Type rightType, String errorSuffix) {
     if (leftType instanceof PrimType || rightType instanceof PrimType) {
-      if (leftType instanceof IntType && rightType instanceof IntType) {
-        return;
-      }
-      if (leftType instanceof LongType && rightType instanceof LongType) {
+      if ((leftType instanceof IntType && rightType instanceof IntType) || (leftType instanceof LongType && rightType instanceof LongType)) {
         return;
       }
       if (leftType instanceof FloatType && rightType instanceof FloatType) {
@@ -165,12 +162,9 @@ public enum CheckTypesValidator implements BodyValidator {
       }
       // it is legal to assign arrays to variables of type Serializable, Cloneable or Object
       if (rightType instanceof ArrayType) {
-        if (leftType.equals(RefType.v("java.io.Serializable")) || leftType.equals(RefType.v("java.lang.Cloneable"))
-                || leftType.equals(Scene.v().getObjectType())) {
-          return;
-        }
         // Dotnet: it is legal to assign arrays to System.Array, because it is base class in CLR
-        if (leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ARRAY))) {
+        if (leftType.equals(RefType.v("java.io.Serializable")) || leftType.equals(RefType.v("java.lang.Cloneable"))
+                || leftType.equals(Scene.v().getObjectType()) || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ARRAY))) {
           return;
         }
       }
