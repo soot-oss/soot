@@ -90,8 +90,9 @@ public class AssemblyFile extends File {
    * @return proto message with all types of this assembly
    */
   public ProtoAssemblyAllTypes.AssemblyAllTypes getAllTypes() {
-    if (protoAllTypes != null)
+    if (protoAllTypes != null) {
       return protoAllTypes;
+    }
 
     try {
       ProtoDotnetNativeHost.AnalyzerParamsMsg.Builder analyzerParamsBuilder
@@ -103,8 +104,9 @@ public class AssemblyFile extends File {
       protoAllTypes = a;
       return a;
     } catch (Exception e) {
-      if (Options.v().verbose())
+      if (Options.v().verbose()) {
         logger.warn(getAssemblyFileName() + " has no types. Error of protobuf message: " + e.getMessage());
+      }
       return null;
     }
   }
@@ -131,16 +133,18 @@ public class AssemblyFile extends File {
       byte[] protoMsgBytes = nativeGetMethodBodyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
       return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
     } catch (Exception e) {
-      if (Options.v().verbose())
+      if (Options.v().verbose()) {
         logger.warn("Exception while getting method body of method " + className + "." + method + ": " + e.getMessage());
+      }
       return null;
     }
   }
 
   private Pair<String, String> helperExtractMethodNameSuffix(String sootMethodName) {
     // if name mangling, extract suffix (due to cil and java bytecode differences)
-    if (!(sootMethodName.contains("[[") && sootMethodName.contains("]]")))
+    if (!(sootMethodName.contains("[[") && sootMethodName.contains("]]"))) {
       return new Pair<>(sootMethodName, "");
+    }
 
     int startSuffix = sootMethodName.indexOf("[[");
 
@@ -218,8 +222,9 @@ public class AssemblyFile extends File {
       byte[] protoMsgBytes = nativeGetMethodBodyOfEventMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
       return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
     } catch (Exception e) {
-      if (Options.v().verbose())
+      if (Options.v().verbose()) {
         logger.warn("Exception while getting method body of event " + className + "." + eventName + ": " + e.getMessage());
+      }
       return null;
     }
   }
@@ -241,11 +246,13 @@ public class AssemblyFile extends File {
    * @return proto message with the given type definition
    */
   public ProtoAssemblyAllTypes.TypeDefinition getTypeDefinition(String className) {
-    if (Strings.isNullOrEmpty(className))
+    if (Strings.isNullOrEmpty(className)) {
       return null;
+    }
     ProtoAssemblyAllTypes.AssemblyAllTypes allTypes = getAllTypes();
-    if (allTypes == null)
+    if (allTypes == null) {
       return null;
+    }
     List<ProtoAssemblyAllTypes.TypeDefinition> allTypesList = allTypes.getListOfTypesList();
     Optional<ProtoAssemblyAllTypes.TypeDefinition> c
         = allTypesList.stream().filter(x -> x.getFullname().equals(className)).findFirst();
@@ -259,8 +266,9 @@ public class AssemblyFile extends File {
    */
   public List<String> getAllTypeNames() {
     ProtoAssemblyAllTypes.AssemblyAllTypes allTypes = getAllTypes();
-    if (allTypes == null)
+    if (allTypes == null) {
       return null;
+    }
     List<ProtoAssemblyAllTypes.TypeDefinition> listOfTypesList = allTypes.getListOfTypesList();
     return listOfTypesList.stream().map(ProtoAssemblyAllTypes.TypeDefinition::getFullname).collect(Collectors.toList());
   }
@@ -272,8 +280,9 @@ public class AssemblyFile extends File {
    */
   public List<String> getAllReferencedModuleTypes() {
     ProtoAssemblyAllTypes.AssemblyAllTypes allTypes = getAllTypes();
-    if (allTypes == null || gotAllReferencesModuleTypes)
+    if (allTypes == null || gotAllReferencesModuleTypes) {
       return new ArrayList<>();
+    }
 
     gotAllReferencesModuleTypes = true;
     return allTypes.getAllReferencedModuleTypesList();
@@ -293,8 +302,9 @@ public class AssemblyFile extends File {
     analyzerParamsBuilder.setAnalyzerMethodCall(methodCall);
     analyzerParamsBuilder.setAssemblyFileAbsolutePath(fullyQualifiedAssemblyPathFilename);
     analyzerParamsBuilder.setTypeReflectionName(className);
-    if (Options.v().verbose() || Options.v().debug())
+    if (Options.v().verbose() || Options.v().debug()) {
       analyzerParamsBuilder.setDebugMode(true);
+    }
     return analyzerParamsBuilder;
   }
 

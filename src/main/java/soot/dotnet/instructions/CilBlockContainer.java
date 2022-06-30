@@ -97,8 +97,9 @@ public class CilBlockContainer implements CilInstruction {
       cilBlock.jimplify(jb);
     }
 
-    if (isChildBlockContainer())
+    if (isChildBlockContainer()) {
       jb.getUnits().add(skipBlockContainerStmt);
+    }
 
     // swap labels with nop stmt to the real target
     blockEntryPointsManager.swapGotoEntriesInJBody(jb);
@@ -117,8 +118,9 @@ public class CilBlockContainer implements CilInstruction {
   }
 
   public static boolean LastStmtIsNotReturn(Body jb) {
-    if (jb.getUnits().size() == 0)
+    if (jb.getUnits().size() == 0) {
       return true;
+    }
     return !isExitStmt(jb.getUnits().getLast());
   }
 

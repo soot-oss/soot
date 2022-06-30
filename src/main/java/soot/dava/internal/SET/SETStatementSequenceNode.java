@@ -67,7 +67,7 @@ public class SETStatementSequenceNode extends SETNode {
     IterableSet c = new IterableSet();
     AugmentedStmt last = (AugmentedStmt) get_Body().getLast();
 
-    if ((last.csuccs != null) && (last.csuccs.isEmpty() == false)) {
+    if ((last.csuccs != null) && !last.csuccs.isEmpty()) {
       c.add(last);
     }
 
@@ -86,15 +86,7 @@ public class SETStatementSequenceNode extends SETNode {
 
       if (davaBody != null) {
 
-        if ((s instanceof ReturnVoidStmt) && (isStaticInitializer)) {
-          continue;
-        }
-
-        if (s instanceof GotoStmt) {
-          continue;
-        }
-
-        if (s instanceof MonitorStmt) {
+        if (((s instanceof ReturnVoidStmt) && (isStaticInitializer)) || (s instanceof GotoStmt) || (s instanceof MonitorStmt)) {
           continue;
         }
 

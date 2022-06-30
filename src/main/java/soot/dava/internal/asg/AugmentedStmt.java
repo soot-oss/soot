@@ -56,7 +56,7 @@ public class AugmentedStmt {
   }
 
   public boolean add_BPred(AugmentedStmt bpred) {
-    if (add_CPred(bpred) == false) {
+    if (!add_CPred(bpred)) {
       return false;
     }
 
@@ -70,7 +70,7 @@ public class AugmentedStmt {
   }
 
   public boolean add_BSucc(AugmentedStmt bsucc) {
-    if (add_CSucc(bsucc) == false) {
+    if (!add_CSucc(bsucc)) {
       return false;
     }
 
@@ -84,7 +84,7 @@ public class AugmentedStmt {
   }
 
   public boolean add_CPred(AugmentedStmt cpred) {
-    if (cpreds.contains(cpred) == false) {
+    if (!cpreds.contains(cpred)) {
       cpreds.add(cpred);
       return true;
     }
@@ -93,7 +93,7 @@ public class AugmentedStmt {
   }
 
   public boolean add_CSucc(AugmentedStmt csucc) {
-    if (csuccs.contains(csucc) == false) {
+    if (!csuccs.contains(csucc)) {
       csuccs.add(csucc);
       return true;
     }
@@ -102,7 +102,7 @@ public class AugmentedStmt {
   }
 
   public boolean remove_BPred(AugmentedStmt bpred) {
-    if (remove_CPred(bpred) == false) {
+    if (!remove_CPred(bpred)) {
       return false;
     }
 
@@ -116,7 +116,7 @@ public class AugmentedStmt {
   }
 
   public boolean remove_BSucc(AugmentedStmt bsucc) {
-    if (remove_CSucc(bsucc) == false) {
+    if (!remove_CSucc(bsucc)) {
       return false;
     }
 

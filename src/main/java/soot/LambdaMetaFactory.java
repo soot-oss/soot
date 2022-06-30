@@ -1,5 +1,17 @@
 package soot;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,18 +36,6 @@ package soot;
  */
 
 import com.google.common.base.Optional;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import soot.asm.AsmUtil;
 import soot.jimple.ClassConstant;
@@ -521,11 +521,7 @@ public class LambdaMetaFactory {
         return fromLocal;
       }
 
-      if (from instanceof ArrayType) {
-        return wideningReferenceConversion(fromLocal);
-      }
-
-      if (from instanceof RefType && to instanceof RefType) {
+      if ((from instanceof ArrayType) || (from instanceof RefType && to instanceof RefType)) {
         return wideningReferenceConversion(fromLocal);
       }
 
@@ -633,15 +629,8 @@ public class LambdaMetaFactory {
     private Local narrowingReferenceConversion(Local fromLocal, Type to, JimpleBody jb, PatchingChain<Unit> us,
         LocalGenerator lc) {
       Type fromTy = fromLocal.getType();
-      if (fromTy.equals(to)) {
-        return fromLocal;
-      }
-
-      if (!(fromTy instanceof RefType || fromTy instanceof ArrayType)) {
-        return fromLocal;
-      }
       // throw new IllegalArgumentException("Expected source to have reference type");
-      if (!(to instanceof RefType || to instanceof ArrayType)) {
+      if (fromTy.equals(to) || !(fromTy instanceof RefType || fromTy instanceof ArrayType) || !(to instanceof RefType || to instanceof ArrayType)) {
         return fromLocal;
         // throw new IllegalArgumentException("Expected target to have reference type");
       }

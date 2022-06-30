@@ -1,5 +1,29 @@
 package soot;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,14 +51,15 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.MagicNumberFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
 import soot.dexpler.DalvikThrowAnalysis;
-import soot.javaToJimple.DefaultLocalGenerator;
 import soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.types.DotnetBasicTypes;
+import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
 import soot.jimple.spark.pag.SparkField;
@@ -50,15 +75,14 @@ import soot.options.Options;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.exceptions.UnitThrowAnalysis;
-import soot.util.*;
-
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import soot.util.ArrayNumberer;
+import soot.util.Chain;
+import soot.util.HashChain;
+import soot.util.IterableNumberer;
+import soot.util.MapNumberer;
+import soot.util.Numberer;
+import soot.util.StringNumberer;
+import soot.util.WeakMapNumberer;
 
 /**
  * Manages the SootClasses of the application being analyzed.
@@ -1538,12 +1562,13 @@ public class Scene {
           break;
 
         case Options.throw_analysis_auto_select:
-          if (Options.v().src_prec() == Options.src_prec_apk)
+          if (Options.v().src_prec() == Options.src_prec_apk) {
             defaultThrowAnalysis = DalvikThrowAnalysis.v();
-          else if (Options.v().src_prec() == Options.src_prec_dotnet)
+          } else if (Options.v().src_prec() == Options.src_prec_dotnet) {
             defaultThrowAnalysis = DotnetThrowAnalysis.v();
-          else
+          } else {
             defaultThrowAnalysis = UnitThrowAnalysis.v();
+          }
           break;
         default:
           throw new IllegalStateException("Options.v().throw_analysis() == " + Options.v().throw_analysis());
@@ -2025,8 +2050,9 @@ public class Scene {
   }
 
   public boolean isExcluded(String className) {
-    if (excludedPackages == null)
+    if (excludedPackages == null) {
       return false;
+    }
     for (String pkg : excludedPackages) {
       if (className.equals(pkg)
           || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && className.startsWith(pkg.substring(0, pkg.length() - 1)))) {

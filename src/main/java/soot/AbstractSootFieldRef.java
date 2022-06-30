@@ -250,10 +250,7 @@ public class AbstractSootFieldRef implements SootFieldRef {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if ((obj == null) || (getClass() != obj.getClass())) {
       return false;
     }
     AbstractSootFieldRef other = (AbstractSootFieldRef) obj;

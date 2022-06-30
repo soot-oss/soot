@@ -400,19 +400,22 @@ public class SourceLocator {
     // load dotnet assemblies
     else if ((Options.v().src_prec() == Options.src_prec_dotnet && cst == ClassSourceType.directory)
         || cst == ClassSourceType.dll || cst == ClassSourceType.exe) {
-      if (Strings.isNullOrEmpty(Options.v().dotnet_nativehost_path()))
+      if (Strings.isNullOrEmpty(Options.v().dotnet_nativehost_path())) {
         throw new RuntimeException("Dotnet NativeHost Path is not set! Use -dotnet-nativehost-path Soot parameter!");
+      }
 
       File file = new File(aPath);
       File[] files = new File[1];
       if (cst == ClassSourceType.directory) {
         File[] fileList = file.listFiles();
 
-        if (fileList == null)
+        if (fileList == null) {
           return classes;
+        }
         files = fileList;
-      } else
+      } else {
         files[0] = new File(aPath);
+      }
 
       for (File element : files) {
         if (element.isDirectory()) {
@@ -425,16 +428,18 @@ public class SourceLocator {
               Map<String, File> classContainerIndex = SourceLocator.v().dexClassIndex();
               AssemblyFile assemblyFile;
               String canonicalPath = element.getCanonicalPath();
-              if (classContainerIndex.containsKey(canonicalPath))
+              if (classContainerIndex.containsKey(canonicalPath)) {
                 assemblyFile = (AssemblyFile) classContainerIndex.get(canonicalPath);
-              else {
+              } else {
                 assemblyFile = new AssemblyFile(canonicalPath);
-                if (!assemblyFile.isAssembly())
+                if (!assemblyFile.isAssembly()) {
                   continue;
+                }
               }
               List<String> allClassNames = assemblyFile.getAllTypeNames();
-              if (allClassNames != null)
+              if (allClassNames != null) {
                 classes.addAll(allClassNames);
+              }
             } catch (IOException e) {
               /* Ignore unreadable files */
               logger.debug("" + e.getMessage());

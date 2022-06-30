@@ -1,5 +1,8 @@
 package soot.dotnet.members;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,27 +27,34 @@ package soot.dotnet.members;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import soot.*;
+
+import soot.Body;
+import soot.MethodSource;
+import soot.Modifier;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.SootResolver;
+import soot.SourceLocator;
+import soot.Type;
 import soot.dotnet.AssemblyFile;
 import soot.dotnet.members.method.DotnetBody;
+import soot.dotnet.members.method.DotnetMethodParameter;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.specifications.DotnetAttributeArgument;
-import soot.dotnet.members.method.DotnetMethodParameter;
 import soot.dotnet.specifications.DotnetModifier;
 import soot.dotnet.types.DotnetBasicTypes;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
-import soot.tagkit.*;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.List;
+import soot.tagkit.AnnotationConstants;
+import soot.tagkit.AnnotationElem;
+import soot.tagkit.AnnotationTag;
+import soot.tagkit.DeprecatedTag;
+import soot.tagkit.VisibilityAnnotationTag;
+import soot.tagkit.VisibilityParameterAnnotationTag;
 
 /**
  * Represents a .NET Method
@@ -68,8 +78,9 @@ public class DotnetMethod extends AbstractDotnetMember {
     }
 
     public DotnetMethod(ProtoAssemblyAllTypes.MethodDefinition protoMethod, SootClass declaringClass, DotnetMethodType declaringMemberType) {
-        if (protoMethod == null || declaringClass == null)
-            throw new NullPointerException();
+        if (protoMethod == null || declaringClass == null) {
+          throw new NullPointerException();
+        }
         this.declaringClass = declaringClass;
 
         if (protoMethod.getIsConstructor()) {
@@ -78,9 +89,9 @@ public class DotnetMethod extends AbstractDotnetMember {
             builder.setName(convertCtorName(protoMethod.getName()));
             builder.setFullName(convertCtorName(protoMethod.getFullName()));
             this.protoMethod = builder.build();
+        } else {
+          this.protoMethod = protoMethod;
         }
-        else
-            this.protoMethod = protoMethod;
 
         this.dotnetMethodType = declaringMemberType;
     }
@@ -96,14 +107,15 @@ public class DotnetMethod extends AbstractDotnetMember {
             builder.setName(convertCtorName(protoMethod.getName()));
             builder.setFullName(convertCtorName(protoMethod.getFullName()));
             this.protoMethod = builder.build();
+        } else {
+          this.protoMethod = protoMethod;
         }
-        else
-            this.protoMethod = protoMethod;
 
-        if (protoMethod.hasDeclaringType())
-            this.declaringClass = SootResolver.v().makeClassRef(protoMethod.getDeclaringType().getFullname());
-        else
-            this.declaringClass = null;
+        if (protoMethod.hasDeclaringType()) {
+          this.declaringClass = SootResolver.v().makeClassRef(protoMethod.getDeclaringType().getFullname());
+        } else {
+          this.declaringClass = null;
+        }
 
         this.dotnetMethodType = DotnetMethodType.METHOD;
     }
@@ -139,8 +151,9 @@ public class DotnetMethod extends AbstractDotnetMember {
      * @return
      */
     public SootMethod toSootMethod(MethodSource methodSource) {
-        if (sootMethod != null)
-            return sootMethod;
+        if (sootMethod != null) {
+          return sootMethod;
+        }
         String name = getUniqueName();
         List<Type> parameters = DotnetMethodParameter.toSootTypeParamsList(getParameterDefinitions());
         Type return_type = DotnetTypeFactory.toSootType(getReturnType());
@@ -150,8 +163,9 @@ public class DotnetMethod extends AbstractDotnetMember {
         // public unsafe void* ToPointer() { return this._value; }
         if (dotnetMethodType == DotnetMethodType.METHOD) {
             if (protoMethod.getReturnType().getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.POINTER)
-                    && protoMethod.getReturnType().getFullname().equals(DotnetBasicTypes.SYSTEM_VOID))
-                return_type = declaringClass.getType();
+                    && protoMethod.getReturnType().getFullname().equals(DotnetBasicTypes.SYSTEM_VOID)) {
+              return_type = declaringClass.getType();
+            }
         }
 
         int modifier = DotnetModifier.toSootModifier(protoMethod);
@@ -162,12 +176,7 @@ public class DotnetMethod extends AbstractDotnetMember {
         resolveMethodParameterRefType(sm);
 
         // if the method is abstract or native, no code needs to be transformed
-        if (Modifier.isAbstract(modifier) || Modifier.isNative(modifier)) {
-            sootMethod = sm;
-            return sm;
-        }
-
-        if (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES) {
+        if (Modifier.isAbstract(modifier) || Modifier.isNative(modifier) || (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES)) {
             sootMethod = sm;
             return sm;
         }
@@ -203,9 +212,10 @@ public class DotnetMethod extends AbstractDotnetMember {
     public Body jimplifyMethodBody(ProtoIlInstructions.IlFunctionMsg ilFunctionMsg) {
         JimpleBody b = Jimple.v().newBody(sootMethod);
         try {
-            if (ilFunctionMsg == null)
-                throw new RuntimeException("Could not resolve JimpleBody for " + dotnetMethodType.name() + " " +
-                        sootMethod.getName() + " declared in class " + declaringClass.getName());
+            if (ilFunctionMsg == null) {
+              throw new RuntimeException("Could not resolve JimpleBody for " + dotnetMethodType.name() + " " +
+                      sootMethod.getName() + " declared in class " + declaringClass.getName());
+            }
 
             // add the body of this code item
             DotnetBody methodBody = new DotnetBody(this, ilFunctionMsg);
@@ -218,9 +228,9 @@ public class DotnetMethod extends AbstractDotnetMember {
                 logger.warn("Ignore errors in generation due to the set parameter. Generate empty Jimple Body.");
                 b = Jimple.v().newBody(sootMethod);
                 DotnetBody.resolveEmptyJimpleBody(b, sootMethod);
+            } else {
+              throw e;
             }
-            else
-                throw e;
         }
         return b;
     }
@@ -232,8 +242,9 @@ public class DotnetMethod extends AbstractDotnetMember {
      */
     @SuppressWarnings("DuplicatedCode")
     private void resolveMethodAttributes(SootMethod method) {
-        if (protoMethod.getAttributesCount() == 0)
-            return;
+        if (protoMethod.getAttributesCount() == 0) {
+          return;
+        }
 
         for (ProtoAssemblyAllTypes.AttributeDefinition attrMsg :
                 protoMethod.getAttributesList()) {
@@ -243,16 +254,19 @@ public class DotnetMethod extends AbstractDotnetMember {
                 // Elements
                 List<AnnotationElem> elements = new ArrayList<>();
                 for (ProtoAssemblyAllTypes.AttributeArgumentDefinition fixedArg :
-                        attrMsg.getFixedArgumentsList())
-                    elements.add(DotnetAttributeArgument.toAnnotationElem(fixedArg));
+                        attrMsg.getFixedArgumentsList()) {
+                  elements.add(DotnetAttributeArgument.toAnnotationElem(fixedArg));
+                }
                 for (ProtoAssemblyAllTypes.AttributeArgumentDefinition namedArg :
-                        attrMsg.getNamedArgumentsList())
-                    elements.add(DotnetAttributeArgument.toAnnotationElem(namedArg));
+                        attrMsg.getNamedArgumentsList()) {
+                  elements.add(DotnetAttributeArgument.toAnnotationElem(namedArg));
+                }
 
                 method.addTag(new AnnotationTag(annotationType, elements));
 
-                if (annotationType.equals(DotnetBasicTypes.SYSTEM_OBSOLETEATTRIBUTE))
-                    method.addTag(new DeprecatedTag());
+                if (annotationType.equals(DotnetBasicTypes.SYSTEM_OBSOLETEATTRIBUTE)) {
+                  method.addTag(new DeprecatedTag());
+                }
             }
             catch (Exception ignore) { }
         }
@@ -269,10 +283,11 @@ public class DotnetMethod extends AbstractDotnetMember {
                 = new VisibilityParameterAnnotationTag(protoMethod.getParameterCount(), AnnotationConstants.RUNTIME_VISIBLE);
         for (ProtoAssemblyAllTypes.ParameterDefinition parameter : protoMethod.getParameterList()) {
             // if method parameter is a reference, tag this
-            if (parameter.getIsRef() || parameter.getIsOut() || parameter.getIsIn())
-                tag.addVisibilityAnnotation(new VisibilityAnnotationTag(1));
-            else
-                tag.addVisibilityAnnotation(new VisibilityAnnotationTag(0));
+            if (parameter.getIsRef() || parameter.getIsOut() || parameter.getIsIn()) {
+              tag.addVisibilityAnnotation(new VisibilityAnnotationTag(1));
+            } else {
+              tag.addVisibilityAnnotation(new VisibilityAnnotationTag(0));
+            }
         }
         method.addTag(tag);
     }
@@ -324,8 +339,9 @@ public class DotnetMethod extends AbstractDotnetMember {
      * @return unique name
      */
     public String getUniqueName() {
-        if (!(hasGenericParameters() || hasCallByRefParameters() || hasCilPrimitiveParameters()) || isConstructor())
-            return getName();
+        if (!(hasGenericParameters() || hasCallByRefParameters() || hasCilPrimitiveParameters()) || isConstructor()) {
+          return getName();
+        }
 
         return getName() + "[[" +
                 protoMethod.getPeToken() +

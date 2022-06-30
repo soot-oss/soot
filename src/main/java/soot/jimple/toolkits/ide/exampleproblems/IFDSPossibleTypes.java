@@ -1,5 +1,12 @@
 package soot.jimple.toolkits.ide.exampleproblems;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -28,14 +35,6 @@ import heros.FlowFunctions;
 import heros.InterproceduralCFG;
 import heros.flowfunc.Identity;
 import heros.flowfunc.KillAll;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Local;
 import soot.PointsToAnalysis;
 import soot.PointsToSet;

@@ -217,10 +217,7 @@ public class ForLoopCreationHelper {
    */
   public boolean checkPattern() {
     List<String> defs = getDefs();
-    if (defs == null) {
-      return false;
-    }
-    if (defs.size() == 0) {
+    if ((defs == null) || (defs.size() == 0)) {
       return false;
     }
 

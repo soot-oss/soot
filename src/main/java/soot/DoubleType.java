@@ -63,8 +63,9 @@ public class DoubleType extends PrimType {
 
   @Override
   public String getTypeAsString() {
-    if (Options.v().src_prec() == Options.src_prec_dotnet)
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
       return DotnetBasicTypes.SYSTEM_DOUBLE;
+    }
     return JavaBasicTypes.JAVA_LANG_DOUBLE;
   }
 

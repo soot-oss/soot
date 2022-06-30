@@ -166,7 +166,7 @@ public class MustMayInitialize extends StructuredAnalysis {
       Value leftOp = ((DefinitionStmt) s).getLeftOp();
 
       SootField field = null;
-      ;
+      
       if (leftOp instanceof Local) {
         toReturn.add(leftOp);
 

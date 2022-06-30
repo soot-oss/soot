@@ -1,5 +1,11 @@
 package soot;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,12 +29,6 @@ package soot;
  */
 
 import com.google.common.base.Optional;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 import soot.util.Chain;
 

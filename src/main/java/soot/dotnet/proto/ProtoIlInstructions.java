@@ -265,10 +265,12 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1)
+      if (isInitialized == 1) {
         return true;
-      if (isInitialized == 0)
+      }
+      if (isInitialized == 0) {
         return false;
+      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -288,8 +290,9 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1)
+      if (size != -1) {
         return size;
+      }
 
       size = 0;
       if (body_ != null) {
@@ -313,16 +316,17 @@ public final class ProtoIlInstructions {
       }
       soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg other = (soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg) obj;
 
-      if (hasBody() != other.hasBody())
+      if (hasBody() != other.hasBody()) {
         return false;
-      if (hasBody()) {
-        if (!getBody().equals(other.getBody()))
-          return false;
       }
-      if (!getVariablesList().equals(other.getVariablesList()))
+      if (hasBody()) {
+        if (!getBody().equals(other.getBody())) {
+          return false;
+        }
+      }
+      if (!getVariablesList().equals(other.getVariablesList()) || !unknownFields.equals(other.unknownFields)) {
         return false;
-      if (!unknownFields.equals(other.unknownFields))
-        return false;
+      }
       return true;
     }
 
@@ -568,8 +572,9 @@ public final class ProtoIlInstructions {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg other) {
-        if (other == soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.getDefaultInstance())
+        if (other == soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.getDefaultInstance()) {
           return this;
+        }
         if (other.hasBody()) {
           mergeBody(other.getBody());
         }
@@ -1250,10 +1255,12 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1)
+      if (isInitialized == 1) {
         return true;
-      if (isInitialized == 0)
+      }
+      if (isInitialized == 0) {
         return false;
+      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -1270,8 +1277,9 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1)
+      if (size != -1) {
         return size;
+      }
 
       size = 0;
       for (int i = 0; i < blocks_.size(); i++) {
@@ -1293,10 +1301,9 @@ public final class ProtoIlInstructions {
       soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg other
           = (soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg) obj;
 
-      if (!getBlocksList().equals(other.getBlocksList()))
+      if (!getBlocksList().equals(other.getBlocksList()) || !unknownFields.equals(other.unknownFields)) {
         return false;
-      if (!unknownFields.equals(other.unknownFields))
-        return false;
+      }
       return true;
     }
 
@@ -1528,8 +1535,9 @@ public final class ProtoIlInstructions {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg other) {
-        if (other == soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance())
+        if (other == soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance()) {
           return this;
+        }
         if (blocksBuilder_ == null) {
           if (!other.blocks_.isEmpty()) {
             if (blocks_.isEmpty()) {
@@ -2170,10 +2178,12 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1)
+      if (isInitialized == 1) {
         return true;
-      if (isInitialized == 0)
+      }
+      if (isInitialized == 0) {
         return false;
+      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -2193,8 +2203,9 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1)
+      if (size != -1) {
         return size;
+      }
 
       size = 0;
       for (int i = 0; i < listOfIlInstructions_.size(); i++) {
@@ -2218,12 +2229,9 @@ public final class ProtoIlInstructions {
       }
       soot.dotnet.proto.ProtoIlInstructions.IlBlock other = (soot.dotnet.proto.ProtoIlInstructions.IlBlock) obj;
 
-      if (!getListOfIlInstructionsList().equals(other.getListOfIlInstructionsList()))
+      if (!getListOfIlInstructionsList().equals(other.getListOfIlInstructionsList()) || !getBlockName().equals(other.getBlockName()) || !unknownFields.equals(other.unknownFields)) {
         return false;
-      if (!getBlockName().equals(other.getBlockName()))
-        return false;
-      if (!unknownFields.equals(other.unknownFields))
-        return false;
+      }
       return true;
     }
 
@@ -2458,8 +2466,9 @@ public final class ProtoIlInstructions {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoIlInstructions.IlBlock other) {
-        if (other == soot.dotnet.proto.ProtoIlInstructions.IlBlock.getDefaultInstance())
+        if (other == soot.dotnet.proto.ProtoIlInstructions.IlBlock.getDefaultInstance()) {
           return this;
+        }
         if (listOfIlInstructionsBuilder_ == null) {
           if (!other.listOfIlInstructions_.isEmpty()) {
             if (listOfIlInstructions_.isEmpty()) {
@@ -7411,10 +7420,12 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1)
+      if (isInitialized == 1) {
         return true;
-      if (isInitialized == 0)
+      }
+      if (isInitialized == 0) {
         return false;
+      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -7542,8 +7553,9 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1)
+      if (size != -1) {
         return size;
+      }
 
       size = 0;
       if (opCode_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode.NONE_OP.getNumber()) {
@@ -7676,160 +7688,214 @@ public final class ProtoIlInstructions {
       soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg other
           = (soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg) obj;
 
-      if (opCode_ != other.opCode_)
+      if ((opCode_ != other.opCode_) || (hasMethod() != other.hasMethod())) {
         return false;
-      if (hasMethod() != other.hasMethod())
-        return false;
+      }
       if (hasMethod()) {
-        if (!getMethod().equals(other.getMethod()))
+        if (!getMethod().equals(other.getMethod())) {
           return false;
+        }
       }
-      if (!getArgumentsList().equals(other.getArgumentsList()))
+      if (!getArgumentsList().equals(other.getArgumentsList())) {
         return false;
-      if (hasValueInstruction() != other.hasValueInstruction())
+      }
+      if (hasValueInstruction() != other.hasValueInstruction()) {
         return false;
+      }
       if (hasValueInstruction()) {
-        if (!getValueInstruction().equals(other.getValueInstruction()))
+        if (!getValueInstruction().equals(other.getValueInstruction())) {
           return false;
+        }
       }
-      if (!getValueConstantString().equals(other.getValueConstantString()))
+      if (!getValueConstantString().equals(other.getValueConstantString())) {
         return false;
-      if (getValueConstantInt32() != other.getValueConstantInt32())
+      }
+      if (getValueConstantInt32() != other.getValueConstantInt32()) {
         return false;
-      if (getValueConstantInt64() != other.getValueConstantInt64())
+      }
+      if (getValueConstantInt64() != other.getValueConstantInt64()) {
         return false;
+      }
       if (java.lang.Float.floatToIntBits(getValueConstantFloat()) != java.lang.Float
-          .floatToIntBits(other.getValueConstantFloat()))
+          .floatToIntBits(other.getValueConstantFloat())) {
         return false;
+      }
       if (java.lang.Double.doubleToLongBits(getValueConstantDouble()) != java.lang.Double
-          .doubleToLongBits(other.getValueConstantDouble()))
+          .doubleToLongBits(other.getValueConstantDouble())) {
         return false;
-      if (hasTarget() != other.hasTarget())
+      }
+      if (hasTarget() != other.hasTarget()) {
         return false;
+      }
       if (hasTarget()) {
-        if (!getTarget().equals(other.getTarget()))
+        if (!getTarget().equals(other.getTarget())) {
           return false;
+        }
       }
-      if (hasType() != other.hasType())
+      if (hasType() != other.hasType()) {
         return false;
+      }
       if (hasType()) {
-        if (!getType().equals(other.getType()))
+        if (!getType().equals(other.getType())) {
           return false;
+        }
       }
-      if (hasField() != other.hasField())
+      if (hasField() != other.hasField()) {
         return false;
+      }
       if (hasField()) {
-        if (!getField().equals(other.getField()))
+        if (!getField().equals(other.getField())) {
           return false;
+        }
       }
-      if (hasVariable() != other.hasVariable())
+      if (hasVariable() != other.hasVariable()) {
         return false;
+      }
       if (hasVariable()) {
-        if (!getVariable().equals(other.getVariable()))
+        if (!getVariable().equals(other.getVariable())) {
           return false;
+        }
       }
-      if (operator_ != other.operator_)
+      if (operator_ != other.operator_) {
         return false;
-      if (sign_ != other.sign_)
+      }
+      if (sign_ != other.sign_) {
         return false;
-      if (hasLeft() != other.hasLeft())
+      }
+      if (hasLeft() != other.hasLeft()) {
         return false;
+      }
       if (hasLeft()) {
-        if (!getLeft().equals(other.getLeft()))
+        if (!getLeft().equals(other.getLeft())) {
           return false;
+        }
       }
-      if (hasRight() != other.hasRight())
+      if (hasRight() != other.hasRight()) {
         return false;
+      }
       if (hasRight()) {
-        if (!getRight().equals(other.getRight()))
+        if (!getRight().equals(other.getRight())) {
           return false;
+        }
       }
-      if (!getTargetLabel().equals(other.getTargetLabel()))
+      if (!getTargetLabel().equals(other.getTargetLabel())) {
         return false;
-      if (comparisonKind_ != other.comparisonKind_)
+      }
+      if (comparisonKind_ != other.comparisonKind_) {
         return false;
-      if (hasCondition() != other.hasCondition())
+      }
+      if (hasCondition() != other.hasCondition()) {
         return false;
+      }
       if (hasCondition()) {
-        if (!getCondition().equals(other.getCondition()))
+        if (!getCondition().equals(other.getCondition())) {
           return false;
+        }
       }
-      if (hasTrueInst() != other.hasTrueInst())
+      if (hasTrueInst() != other.hasTrueInst()) {
         return false;
+      }
       if (hasTrueInst()) {
-        if (!getTrueInst().equals(other.getTrueInst()))
+        if (!getTrueInst().equals(other.getTrueInst())) {
           return false;
+        }
       }
-      if (hasFalseInst() != other.hasFalseInst())
+      if (hasFalseInst() != other.hasFalseInst()) {
         return false;
+      }
       if (hasFalseInst()) {
-        if (!getFalseInst().equals(other.getFalseInst()))
+        if (!getFalseInst().equals(other.getFalseInst())) {
           return false;
+        }
       }
-      if (hasArray() != other.hasArray())
+      if (hasArray() != other.hasArray()) {
         return false;
+      }
       if (hasArray()) {
-        if (!getArray().equals(other.getArray()))
+        if (!getArray().equals(other.getArray())) {
           return false;
+        }
       }
-      if (conversionKind_ != other.conversionKind_)
+      if (conversionKind_ != other.conversionKind_) {
         return false;
-      if (inputType_ != other.inputType_)
+      }
+      if (inputType_ != other.inputType_) {
         return false;
-      if (targetType_ != other.targetType_)
+      }
+      if (targetType_ != other.targetType_) {
         return false;
-      if (hasArgument() != other.hasArgument())
+      }
+      if (hasArgument() != other.hasArgument()) {
         return false;
+      }
       if (hasArgument()) {
-        if (!getArgument().equals(other.getArgument()))
+        if (!getArgument().equals(other.getArgument())) {
           return false;
+        }
       }
-      if (resultType_ != other.resultType_)
+      if (resultType_ != other.resultType_) {
         return false;
-      if (!getIndicesList().equals(other.getIndicesList()))
+      }
+      if (!getIndicesList().equals(other.getIndicesList())) {
         return false;
-      if (hasTryBlock() != other.hasTryBlock())
+      }
+      if (hasTryBlock() != other.hasTryBlock()) {
         return false;
+      }
       if (hasTryBlock()) {
-        if (!getTryBlock().equals(other.getTryBlock()))
+        if (!getTryBlock().equals(other.getTryBlock())) {
           return false;
+        }
       }
-      if (!getHandlersList().equals(other.getHandlersList()))
+      if (!getHandlersList().equals(other.getHandlersList())) {
         return false;
-      if (hasFinallyBlock() != other.hasFinallyBlock())
+      }
+      if (hasFinallyBlock() != other.hasFinallyBlock()) {
         return false;
+      }
       if (hasFinallyBlock()) {
-        if (!getFinallyBlock().equals(other.getFinallyBlock()))
+        if (!getFinallyBlock().equals(other.getFinallyBlock())) {
           return false;
+        }
       }
-      if (hasFaultBlock() != other.hasFaultBlock())
+      if (hasFaultBlock() != other.hasFaultBlock()) {
         return false;
+      }
       if (hasFaultBlock()) {
-        if (!getFaultBlock().equals(other.getFaultBlock()))
+        if (!getFaultBlock().equals(other.getFaultBlock())) {
           return false;
+        }
       }
-      if (hasBody() != other.hasBody())
+      if (hasBody() != other.hasBody()) {
         return false;
+      }
       if (hasBody()) {
-        if (!getBody().equals(other.getBody()))
+        if (!getBody().equals(other.getBody())) {
           return false;
+        }
       }
-      if (hasKeyInstr() != other.hasKeyInstr())
+      if (hasKeyInstr() != other.hasKeyInstr()) {
         return false;
+      }
       if (hasKeyInstr()) {
-        if (!getKeyInstr().equals(other.getKeyInstr()))
+        if (!getKeyInstr().equals(other.getKeyInstr())) {
           return false;
+        }
       }
-      if (hasDefaultInst() != other.hasDefaultInst())
+      if (hasDefaultInst() != other.hasDefaultInst()) {
         return false;
+      }
       if (hasDefaultInst()) {
-        if (!getDefaultInst().equals(other.getDefaultInst()))
+        if (!getDefaultInst().equals(other.getDefaultInst())) {
           return false;
+        }
       }
-      if (!getSwitchSectionsList().equals(other.getSwitchSectionsList()))
+      if (!getSwitchSectionsList().equals(other.getSwitchSectionsList())) {
         return false;
-      if (!unknownFields.equals(other.unknownFields))
+      }
+      if (!unknownFields.equals(other.unknownFields)) {
         return false;
+      }
       return true;
     }
 
@@ -8477,8 +8543,9 @@ public final class ProtoIlInstructions {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg other) {
-        if (other == soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance())
+        if (other == soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()) {
           return this;
+        }
         if (other.opCode_ != 0) {
           setOpCodeValue(other.getOpCodeValue());
         }
@@ -14093,10 +14160,12 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1)
+      if (isInitialized == 1) {
         return true;
-      if (isInitialized == 0)
+      }
+      if (isInitialized == 0) {
         return false;
+      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -14110,7 +14179,7 @@ public final class ProtoIlInstructions {
       if (!getNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
       }
-      if (hasInitialValue_ != false) {
+      if (hasInitialValue_) {
         output.writeBool(3, hasInitialValue_);
       }
       if (variableKind_ != soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind.NONE.getNumber()) {
@@ -14122,8 +14191,9 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1)
+      if (size != -1) {
         return size;
+      }
 
       size = 0;
       if (type_ != null) {
@@ -14132,7 +14202,7 @@ public final class ProtoIlInstructions {
       if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
       }
-      if (hasInitialValue_ != false) {
+      if (hasInitialValue_) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(3, hasInitialValue_);
       }
       if (variableKind_ != soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind.NONE.getNumber()) {
@@ -14153,20 +14223,17 @@ public final class ProtoIlInstructions {
       }
       soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg other = (soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg) obj;
 
-      if (hasType() != other.hasType())
+      if (hasType() != other.hasType()) {
         return false;
-      if (hasType()) {
-        if (!getType().equals(other.getType()))
-          return false;
       }
-      if (!getName().equals(other.getName()))
+      if (hasType()) {
+        if (!getType().equals(other.getType())) {
+          return false;
+        }
+      }
+      if (!getName().equals(other.getName()) || (getHasInitialValue() != other.getHasInitialValue()) || (variableKind_ != other.variableKind_) || !unknownFields.equals(other.unknownFields)) {
         return false;
-      if (getHasInitialValue() != other.getHasInitialValue())
-        return false;
-      if (variableKind_ != other.variableKind_)
-        return false;
-      if (!unknownFields.equals(other.unknownFields))
-        return false;
+      }
       return true;
     }
 
@@ -14406,8 +14473,9 @@ public final class ProtoIlInstructions {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg other) {
-        if (other == soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDefaultInstance())
+        if (other == soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDefaultInstance()) {
           return this;
+        }
         if (other.hasType()) {
           mergeType(other.getType());
         }
@@ -14415,7 +14483,7 @@ public final class ProtoIlInstructions {
           name_ = other.name_;
           onChanged();
         }
-        if (other.getHasInitialValue() != false) {
+        if (other.getHasInitialValue()) {
           setHasInitialValue(other.getHasInitialValue());
         }
         if (other.variableKind_ != 0) {
@@ -15107,10 +15175,12 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1)
+      if (isInitialized == 1) {
         return true;
-      if (isInitialized == 0)
+      }
+      if (isInitialized == 0) {
         return false;
+      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -15127,7 +15197,7 @@ public final class ProtoIlInstructions {
       if (filter_ != null) {
         output.writeMessage(3, getFilter());
       }
-      if (hasFilter_ != false) {
+      if (hasFilter_) {
         output.writeBool(4, hasFilter_);
       }
       unknownFields.writeTo(output);
@@ -15136,8 +15206,9 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1)
+      if (size != -1) {
         return size;
+      }
 
       size = 0;
       if (body_ != null) {
@@ -15149,7 +15220,7 @@ public final class ProtoIlInstructions {
       if (filter_ != null) {
         size += com.google.protobuf.CodedOutputStream.computeMessageSize(3, getFilter());
       }
-      if (hasFilter_ != false) {
+      if (hasFilter_) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(4, hasFilter_);
       }
       size += unknownFields.getSerializedSize();
@@ -15168,28 +15239,33 @@ public final class ProtoIlInstructions {
       soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg other
           = (soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg) obj;
 
-      if (hasBody() != other.hasBody())
+      if (hasBody() != other.hasBody()) {
         return false;
+      }
       if (hasBody()) {
-        if (!getBody().equals(other.getBody()))
+        if (!getBody().equals(other.getBody())) {
           return false;
+        }
       }
-      if (hasVariable() != other.hasVariable())
+      if (hasVariable() != other.hasVariable()) {
         return false;
+      }
       if (hasVariable()) {
-        if (!getVariable().equals(other.getVariable()))
+        if (!getVariable().equals(other.getVariable())) {
           return false;
+        }
       }
-      if (hasFilter() != other.hasFilter())
+      if (hasFilter() != other.hasFilter()) {
         return false;
+      }
       if (hasFilter()) {
-        if (!getFilter().equals(other.getFilter()))
+        if (!getFilter().equals(other.getFilter())) {
           return false;
+        }
       }
-      if (getHasFilter() != other.getHasFilter())
+      if ((getHasFilter() != other.getHasFilter()) || !unknownFields.equals(other.unknownFields)) {
         return false;
-      if (!unknownFields.equals(other.unknownFields))
-        return false;
+      }
       return true;
     }
 
@@ -15450,8 +15526,9 @@ public final class ProtoIlInstructions {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg other) {
-        if (other == soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.getDefaultInstance())
+        if (other == soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.getDefaultInstance()) {
           return this;
+        }
         if (other.hasBody()) {
           mergeBody(other.getBody());
         }
@@ -15461,7 +15538,7 @@ public final class ProtoIlInstructions {
         if (other.hasFilter()) {
           mergeFilter(other.getFilter());
         }
-        if (other.getHasFilter() != false) {
+        if (other.getHasFilter()) {
           setHasFilter(other.getHasFilter());
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -16125,10 +16202,12 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1)
+      if (isInitialized == 1) {
         return true;
-      if (isInitialized == 0)
+      }
+      if (isInitialized == 0) {
         return false;
+      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -16148,8 +16227,9 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1)
+      if (size != -1) {
         return size;
+      }
 
       size = 0;
       if (label_ != 0L) {
@@ -16174,16 +16254,17 @@ public final class ProtoIlInstructions {
       soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg other
           = (soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg) obj;
 
-      if (getLabel() != other.getLabel())
+      if ((getLabel() != other.getLabel()) || (hasTargetInstr() != other.hasTargetInstr())) {
         return false;
-      if (hasTargetInstr() != other.hasTargetInstr())
-        return false;
-      if (hasTargetInstr()) {
-        if (!getTargetInstr().equals(other.getTargetInstr()))
-          return false;
       }
-      if (!unknownFields.equals(other.unknownFields))
+      if (hasTargetInstr()) {
+        if (!getTargetInstr().equals(other.getTargetInstr())) {
+          return false;
+        }
+      }
+      if (!unknownFields.equals(other.unknownFields)) {
         return false;
+      }
       return true;
     }
 
@@ -16414,8 +16495,9 @@ public final class ProtoIlInstructions {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg other) {
-        if (other == soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.getDefaultInstance())
+        if (other == soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.getDefaultInstance()) {
           return this;
+        }
         if (other.getLabel() != 0L) {
           setLabel(other.getLabel());
         }

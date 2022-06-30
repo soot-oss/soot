@@ -83,7 +83,6 @@ import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
 import soot.options.SparkOptions;
 import soot.toolkits.scalar.Pair;
-import soot.util.NumberedString;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
@@ -277,7 +276,7 @@ public class GeomPointsTo extends PAG {
       }
 
       // We create the log file
-      File log_file = new File(dump_dir, encoding_name + (opts.geom_blocking() == true ? "_blocked" : "_unblocked") + "_frac"
+      File log_file = new File(dump_dir, encoding_name + (opts.geom_blocking() ? "_blocked" : "_unblocked") + "_frac"
           + opts.geom_frac_base() + "_runs" + opts.geom_runs() + "_log.txt");
       try {
         ps = new PrintStream(log_file);
@@ -754,7 +753,7 @@ public class GeomPointsTo extends PAG {
       CgEdge p = call_graph[i];
 
       while (p != null) {
-        if (p.scc_edge == false) {
+        if (!p.scc_edge) {
           // Consider the representative only
           j = rep_cg[p.t];
 
@@ -848,7 +847,7 @@ public class GeomPointsTo extends PAG {
           j = p.t;
           if (j != i // This is not a self-loop, and a self-loop is treated specially in the initial
               // encoding phase
-              && p.scc_edge == true) {
+              && p.scc_edge) {
             // max_context_size_block[i] == max_context_size_block[j]
             // So, we don't distinguish them
             if (context_size[j] <= Constants.MAX_CONTEXTS - max_context_size_block[i]) {
@@ -993,7 +992,7 @@ public class GeomPointsTo extends PAG {
 
         CgEdge temp = p.next;
 
-        if (p.is_obsoleted == false) {
+        if (!p.is_obsoleted) {
           p.next = q;
           q = p;
         } else {
@@ -1022,7 +1021,7 @@ public class GeomPointsTo extends PAG {
   private void prepareNextRun() {
     // Clean the context sensitive points-to results for the representative pointers
     for (IVarAbstraction pn : pointers) {
-      if (pn.willUpdate == true) {
+      if (pn.willUpdate) {
         pn.reconstruct();
       }
     }
@@ -1115,7 +1114,7 @@ public class GeomPointsTo extends PAG {
       IVarAbstraction po = it.next();
       AllocNode obj = (AllocNode) po.getWrappedNode();
       SootMethod sm = obj.getMethod();
-      if (sm != null && func2int.containsKey(sm) == false) {
+      if (sm != null && !func2int.containsKey(sm)) {
         it.remove();
       }
     }
@@ -1137,7 +1136,7 @@ public class GeomPointsTo extends PAG {
       }
 
       if (sm != null) {
-        if (func2int.containsKey(sm) == false) {
+        if (!func2int.containsKey(sm)) {
           pn.deleteAll();
           vn.discardP2Set();
           it.remove();
@@ -1386,11 +1385,11 @@ public class GeomPointsTo extends PAG {
   public void ddSolve(Set<Node> qryNodes) {
     long solve_time = 0, prepare_time = 0;
 
-    if (hasExecuted == false) {
+    if (!hasExecuted) {
       solve();
     }
 
-    if (ddPrepared == false || offlineProcessor == null) {
+    if (!ddPrepared || offlineProcessor == null) {
       offlineProcessor = new OfflineProcessor(this);
       IFigureManager.cleanCache();
       ddPrepared = true;
@@ -1534,7 +1533,7 @@ public class GeomPointsTo extends PAG {
     if (validMethods != null) {
       ps.println("\nThe following methods are not evaluated because they are unreachable:");
       for (Map.Entry<String, Boolean> entry : validMethods.entrySet()) {
-        if (entry.getValue().equals(Boolean.FALSE)) {
+        if (!entry.getValue()) {
           ps.println(entry.getKey());
         }
       }
@@ -1793,12 +1792,8 @@ public class GeomPointsTo extends PAG {
 
     // In case this pointer has no geomPTA result
     // This is perhaps a bug
-    if (pn == null) {
-      return vn.getP2Set();
-    }
-
     // Return the cached result
-    if (hasTransformed || vn.getP2Set() != EmptyPointsToSet.v()) {
+    if ((pn == null) || hasTransformed || vn.getP2Set() != EmptyPointsToSet.v()) {
       return vn.getP2Set();
     }
 
@@ -1895,12 +1890,8 @@ public class GeomPointsTo extends PAG {
     }
 
     IVarAbstraction pn = consG.get(vn);
-    if (pn == null) {
-      return vn.getP2Set();
-    }
-
     // Lookup the cache
-    if (hasTransformed || vn.getP2Set() != EmptyPointsToSet.v()) {
+    if ((pn == null) || hasTransformed || vn.getP2Set() != EmptyPointsToSet.v()) {
       return vn.getP2Set();
     }
 
@@ -1957,11 +1948,7 @@ public class GeomPointsTo extends PAG {
     }
 
     // Not seen by geomPTA
-    if (pn == null) {
-      return adf.getP2Set();
-    }
-
-    if (hasTransformed || adf.getP2Set() != EmptyPointsToSet.v()) {
+    if ((pn == null) || hasTransformed || adf.getP2Set() != EmptyPointsToSet.v()) {
       return adf.getP2Set();
     }
 

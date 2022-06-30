@@ -104,9 +104,11 @@ public class CatchFilterHandlerBody {
 
     // replace return stmts with if/goto to skip handler or execute
     ArrayList<Unit> tmpToInsert = new ArrayList<>();
-    for (Unit unit : handlerFilterContainerBlockBody.getUnits())
-      if (unit instanceof ReturnStmt)
+    for (Unit unit : handlerFilterContainerBlockBody.getUnits()) {
+      if (unit instanceof ReturnStmt) {
         tmpToInsert.add(unit);
+      }
+    }
     // will only run once or not at all
     for (Unit returnStmt : tmpToInsert) {
       // get return value and check if 0

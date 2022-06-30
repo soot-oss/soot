@@ -113,7 +113,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
       throwAnalysis = Scene.v().getDefaultThrowAnalysis();
     }
 
-    if (omitExceptingUnitEdges == false) {
+    if (!omitExceptingUnitEdges) {
       omitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
     }
 
@@ -245,10 +245,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
       }
       ConstantState other = (ConstantState) obj;

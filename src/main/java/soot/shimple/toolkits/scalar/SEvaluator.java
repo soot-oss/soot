@@ -104,11 +104,7 @@ public class SEvaluator {
       PhiExpr phi = (PhiExpr) v;
 
       for (Value arg : phi.getValues()) {
-        if (!(arg instanceof Constant)) {
-          continue;
-        }
-
-        if (arg instanceof TopConstant) {
+        if (!(arg instanceof Constant) || (arg instanceof TopConstant)) {
           continue;
         }
 

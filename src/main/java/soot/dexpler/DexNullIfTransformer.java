@@ -82,10 +82,7 @@ public class DexNullIfTransformer extends BodyTransformer {
   }
 
   private boolean isNull(Value l) {
-    if (l instanceof NullConstant) {
-      return true;
-    }
-    if (l instanceof IntConstant && ((IntConstant) l).value == 0) {
+    if ((l instanceof NullConstant) || (l instanceof IntConstant && ((IntConstant) l).value == 0)) {
       return true;
     }
     return false;

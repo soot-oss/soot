@@ -1,5 +1,8 @@
 package soot.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,9 +26,6 @@ package soot.util;
  */
 
 import heros.ThreadSafe;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A class that numbers strings, so they can be placed in bitsets.

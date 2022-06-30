@@ -50,12 +50,12 @@ public class SETIfElseNode extends SETDagNode {
     IterableSet c = new IterableSet();
 
     IterableSet ifChain = body2childChain.get(ifBody);
-    if (ifChain.isEmpty() == false) {
+    if (!ifChain.isEmpty()) {
       c.addAll(((SETNode) ifChain.getLast()).get_NaturalExits());
     }
 
     IterableSet elseChain = body2childChain.get(elseBody);
-    if (elseChain.isEmpty() == false) {
+    if (!elseChain.isEmpty()) {
       c.addAll(((SETNode) elseChain.getLast()).get_NaturalExits());
     }
 

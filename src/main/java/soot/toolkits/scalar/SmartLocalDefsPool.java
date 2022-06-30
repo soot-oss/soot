@@ -1,5 +1,7 @@
 package soot.toolkits.scalar;
 
+import java.util.Map;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,8 +25,6 @@ package soot.toolkits.scalar;
  */
 
 import com.google.common.collect.Maps;
-
-import java.util.Map;
 
 import soot.Body;
 import soot.G;

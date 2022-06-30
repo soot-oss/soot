@@ -55,7 +55,7 @@ public class PackageNamer {
   }
 
   public boolean use_ShortName(String fixedPackageName, String fixedShortClassName) {
-    if (fixed == false) {
+    if (!fixed) {
       return false;
     }
 
@@ -89,7 +89,7 @@ public class PackageNamer {
   }
 
   public String get_FixedClassName(String originalFullClassName) {
-    if (fixed == false) {
+    if (!fixed) {
       return originalFullClassName;
     }
 
@@ -105,7 +105,7 @@ public class PackageNamer {
   }
 
   public String get_FixedPackageName(String originalPackageName) {
-    if (fixed == false) {
+    if (!fixed) {
       return originalPackageName;
     }
 
@@ -159,7 +159,7 @@ public class PackageNamer {
     }
 
     public boolean is_Package() {
-      return (children.isEmpty() == false);
+      return !children.isEmpty();
     }
 
     public String get_PackageName() {
@@ -203,7 +203,7 @@ public class PackageNamer {
     }
 
     public String get_FixedName(StringTokenizer st, boolean forClass) {
-      if (st.nextToken().equals(originalName) == false) {
+      if (!st.nextToken().equals(originalName)) {
         throw new RuntimeException("Unable to resolve naming.");
       }
 
@@ -211,7 +211,7 @@ public class PackageNamer {
     }
 
     private String retrieve_FixedName(StringTokenizer st, boolean forClass) {
-      if (st.hasMoreTokens() == false) {
+      if (!st.hasMoreTokens()) {
         if (forClass) {
           return className;
         } else {
@@ -236,7 +236,7 @@ public class PackageNamer {
     }
 
     public String get_OriginalPackageName(StringTokenizer st) {
-      if (st.hasMoreTokens() == false) {
+      if (!st.hasMoreTokens()) {
         return get_OriginalName();
       }
 
@@ -261,7 +261,7 @@ public class PackageNamer {
     }
 
     public boolean contains_OriginalName(StringTokenizer st, boolean forClass) {
-      if (get_OriginalName().equals(st.nextToken()) == false) {
+      if (!get_OriginalName().equals(st.nextToken())) {
         return false;
       }
 
@@ -269,7 +269,7 @@ public class PackageNamer {
     }
 
     private boolean finds_OriginalName(StringTokenizer st, boolean forClass) {
-      if (st.hasMoreTokens() == false) {
+      if (!st.hasMoreTokens()) {
         return (((forClass) && (is_Class())) || ((!forClass) && (is_Package())));
       }
 
@@ -307,7 +307,7 @@ public class PackageNamer {
     }
 
     public void fix_PackageNames() {
-      if ((is_Package()) && (verify_PackageName() == false)) {
+      if ((is_Package()) && !verify_PackageName()) {
         String tPackageName = packageName;
 
         if (Character.isUpperCase(packageName.charAt(0))) {
@@ -315,7 +315,7 @@ public class PackageNamer {
           packageName = tPackageName;
         }
 
-        for (int i = 0; verify_PackageName() == false; i++) {
+        for (int i = 0; !verify_PackageName(); i++) {
           packageName = tPackageName + "_p" + i;
         }
       }
@@ -327,8 +327,8 @@ public class PackageNamer {
     }
 
     public boolean verify_PackageName() {
-      return ((keywords.contains(packageName) == false) && (siblingClashes(packageName) == false)
-          && ((is_Class() == false) || (className.equals(packageName) == false)));
+      return (!keywords.contains(packageName) && !siblingClashes(packageName)
+          && (!is_Class() || !className.equals(packageName)));
     }
 
     public boolean siblingClashes(String name) {
@@ -444,7 +444,7 @@ public class PackageNamer {
 
         if (child.get_OriginalName().equals(curName)) {
 
-          if (st.hasMoreTokens() == false) {
+          if (!st.hasMoreTokens()) {
             child.set_ClassAttr();
           }
 
@@ -454,7 +454,7 @@ public class PackageNamer {
       }
 
       if (!found) {
-        child = new NameHolder(curName, curNode, st.hasMoreTokens() == false);
+        child = new NameHolder(curName, curNode, !st.hasMoreTokens());
         children.add(child);
       }
 
@@ -466,7 +466,7 @@ public class PackageNamer {
   public boolean package_ContainsClass(String classpathDir, String packageName, String className) {
     File p = new File(classpathDir);
 
-    if (p.exists() == false) {
+    if (!p.exists()) {
       return false;
     }
 
@@ -507,7 +507,7 @@ public class PackageNamer {
 
       StringTokenizer st = new StringTokenizer(currentPackage, ".");
 
-      if (st.hasMoreTokens() == false) {
+      if (!st.hasMoreTokens()) {
         newContext.add(currentPackage);
         continue;
       }

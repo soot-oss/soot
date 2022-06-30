@@ -1,5 +1,16 @@
 package soot.jimple.spark.pag;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,17 +35,6 @@ package soot.jimple.spark.pag;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import soot.Context;
 import soot.FastHierarchy;
@@ -1114,7 +1114,7 @@ public class PAG implements PointsToAnalysis {
       pval = addInterproceduralAssignment(base, thiz, e);
       if (callAssigns != null) {
         boolean virtualCall = !callAssigns.put(ie, pval);
-        assert virtualCall == true;
+        assert virtualCall;
         callToMethod.put(ie, srcmpag.getMethod());
         virtualCallsToReceivers.put(ie, base);
       }
@@ -1380,10 +1380,7 @@ public class PAG implements PointsToAnalysis {
     int numArgs = ie.getArgCount();
     for (int i = 0; i < numArgs; i++) {
       Value arg = ie.getArg(i);
-      if (!(arg.getType() instanceof RefLikeType)) {
-        continue;
-      }
-      if (arg instanceof NullConstant) {
+      if (!(arg.getType() instanceof RefLikeType) || (arg instanceof NullConstant)) {
         continue;
       }
 

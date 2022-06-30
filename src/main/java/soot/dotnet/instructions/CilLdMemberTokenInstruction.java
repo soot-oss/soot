@@ -1,5 +1,8 @@
 package soot.dotnet.instructions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -21,8 +24,14 @@ package soot.dotnet.instructions;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-import soot.*;
+import soot.Body;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootFieldRef;
+import soot.SootMethodRef;
+import soot.SootResolver;
+import soot.Type;
+import soot.Value;
 import soot.dotnet.exceptions.NoStatementInstructionException;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.members.method.DotnetBody;
@@ -31,9 +40,6 @@ import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.jimple.MethodHandle;
 import soot.jimple.StringConstant;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * ldtoken was split up by ILspy: LdMemberToken for Method and Field handles and LdTypeToken
@@ -64,31 +70,34 @@ public class CilLdMemberTokenInstruction extends AbstractCilnstruction {
             final DotnetMethod method = new DotnetMethod(instruction.getMethod());
             SootClass declaringClass = method.getDeclaringClass();
 
-            if (method.getName().trim().isEmpty())
-                throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + method.getName() + " of declared type " +
-                        method.getDeclaringClass().getName() +
-                        " has no method name!");
+            if (method.getName().trim().isEmpty()) {
+              throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + method.getName() + " of declared type " +
+                      method.getDeclaringClass().getName() +
+                      " has no method name!");
+            }
             String methodName = method.getUniqueName();
 
             List<Type> paramTypes = new ArrayList<>();
-            for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : method.getParameterDefinitions())
-                paramTypes.add(DotnetTypeFactory.toSootType(parameterDefinition.getType()));
+            for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : method.getParameterDefinitions()) {
+              paramTypes.add(DotnetTypeFactory.toSootType(parameterDefinition.getType()));
+            }
 
             SootMethodRef methodRef = Scene.v().makeMethodRef(declaringClass, DotnetMethod.convertCtorName(methodName), paramTypes,
                     DotnetTypeFactory.toSootType(method.getReturnType()), method.isStatic());
 
             int kind;
-            if (method.isConstructor())
-                kind = MethodHandle.Kind.REF_INVOKE_CONSTRUCTOR.getValue();
-            else if (method.isStatic())
-                kind = MethodHandle.Kind.REF_INVOKE_STATIC.getValue();
-            else if (declaringClass.isInterface())
-                kind = MethodHandle.Kind.REF_INVOKE_INTERFACE.getValue();
-            else
-                kind = MethodHandle.Kind.REF_INVOKE_VIRTUAL.getValue();
+            if (method.isConstructor()) {
+              kind = MethodHandle.Kind.REF_INVOKE_CONSTRUCTOR.getValue();
+            } else if (method.isStatic()) {
+              kind = MethodHandle.Kind.REF_INVOKE_STATIC.getValue();
+            } else if (declaringClass.isInterface()) {
+              kind = MethodHandle.Kind.REF_INVOKE_INTERFACE.getValue();
+            } else {
+              kind = MethodHandle.Kind.REF_INVOKE_VIRTUAL.getValue();
+            }
             return MethodHandle.v(methodRef, kind);
+        } else {
+          return StringConstant.v(instruction.getValueConstantString());
         }
-        else
-            return StringConstant.v(instruction.getValueConstantString());
     }
 }

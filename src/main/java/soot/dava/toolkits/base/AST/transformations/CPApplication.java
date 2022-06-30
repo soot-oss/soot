@@ -90,10 +90,7 @@ public class CPApplication extends DepthFirstAdapter {
 
   public void inASTSwitchNode(ASTSwitchNode node) {
     Object obj = cp.getBeforeSet(node);
-    if (obj == null) {
-      return;
-    }
-    if (!(obj instanceof CPFlowSet)) {
+    if ((obj == null) || !(obj instanceof CPFlowSet)) {
       return;
     }
 
@@ -169,10 +166,7 @@ public class CPApplication extends DepthFirstAdapter {
     // get after set for the condition and update
     Object obj = cp.getAfterSet(node);
 
-    if (obj == null) {
-      return;
-    }
-    if (!(obj instanceof CPFlowSet)) {
+    if ((obj == null) || !(obj instanceof CPFlowSet)) {
       return;
     }
 
@@ -207,10 +201,7 @@ public class CPApplication extends DepthFirstAdapter {
   public void inASTWhileNode(ASTWhileNode node) {
     Object obj = cp.getAfterSet(node);
 
-    if (obj == null) {
-      return;
-    }
-    if (!(obj instanceof CPFlowSet)) {
+    if ((obj == null) || !(obj instanceof CPFlowSet)) {
       return;
     }
 
@@ -228,10 +219,7 @@ public class CPApplication extends DepthFirstAdapter {
   public void inASTDoWhileNode(ASTDoWhileNode node) {
     Object obj = cp.getAfterSet(node);
 
-    if (obj == null) {
-      return;
-    }
-    if (!(obj instanceof CPFlowSet)) {
+    if ((obj == null) || !(obj instanceof CPFlowSet)) {
       return;
     }
 
@@ -250,10 +238,7 @@ public class CPApplication extends DepthFirstAdapter {
     // System.out.println(node);
     Object obj = cp.getBeforeSet(node);
 
-    if (obj == null) {
-      return;
-    }
-    if (!(obj instanceof CPFlowSet)) {
+    if ((obj == null) || !(obj instanceof CPFlowSet)) {
       return;
     }
 
@@ -273,10 +258,7 @@ public class CPApplication extends DepthFirstAdapter {
   public void inASTIfElseNode(ASTIfElseNode node) {
     Object obj = cp.getBeforeSet(node);
 
-    if (obj == null) {
-      return;
-    }
-    if (!(obj instanceof CPFlowSet)) {
+    if ((obj == null) || !(obj instanceof CPFlowSet)) {
       return;
     }
 
@@ -360,10 +342,7 @@ public class CPApplication extends DepthFirstAdapter {
 
       Object obj = cp.getBeforeSet(s);
 
-      if (obj == null) {
-        continue;
-      }
-      if (!(obj instanceof CPFlowSet)) {
+      if ((obj == null) || !(obj instanceof CPFlowSet)) {
         continue;
       }
 

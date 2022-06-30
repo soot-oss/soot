@@ -75,7 +75,7 @@ public class SETTryNode extends SETNode {
 
         Iterator pit = as.cpreds.iterator();
         while (pit.hasNext()) {
-          if (body.contains(pit.next()) == false) {
+          if (!body.contains(pit.next())) {
             entryStmt = as;
             break getEntryStmt;
           }
@@ -105,7 +105,7 @@ public class SETTryNode extends SETNode {
       while (eit.hasNext()) {
         Object o = eit.next();
 
-        if (c.contains(o) == false) {
+        if (!c.contains(o)) {
           c.add(o);
         }
       }
@@ -175,7 +175,7 @@ public class SETTryNode extends SETNode {
           SETNode child = (SETNode) ccit.next();
           IterableSet childBody = child.get_Body();
 
-          if ((childBody.intersects(en.get_TryBody()) == false) || (childBody.isSubsetOf(en.get_TryBody()))) {
+          if (!childBody.intersects(en.get_TryBody()) || (childBody.isSubsetOf(en.get_TryBody()))) {
             continue;
           }
 
@@ -202,9 +202,9 @@ public class SETTryNode extends SETNode {
             while (bit.hasNext()) {
               AugmentedStmt as = (AugmentedStmt) bit.next();
 
-              if (childBody.contains(as) == false) {
+              if (!childBody.contains(as)) {
                 remove_AugmentedStmt(as);
-              } else if ((child instanceof SETControlFlowNode) && ((child instanceof SETUnconditionalWhileNode) == false)) {
+              } else if ((child instanceof SETControlFlowNode) && !(child instanceof SETUnconditionalWhileNode)) {
                 SETControlFlowNode scfn = (SETControlFlowNode) child;
 
                 if ((scfn.get_CharacterizingStmt() == as) || ((as.cpreds.size() == 1) && (as.get_Stmt() instanceof GotoStmt)

@@ -21,8 +21,12 @@ package soot.jimple.spark.internal;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-import soot.*;
+import soot.G;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.ArrayElement;
 import soot.jimple.spark.pag.FieldRefNode;

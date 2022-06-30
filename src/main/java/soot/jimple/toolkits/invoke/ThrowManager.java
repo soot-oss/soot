@@ -108,11 +108,7 @@ public class ThrowManager {
         }
 
         InvokeExpr ie = ((InvokeStmt) prosInvoke).getInvokeExpr();
-        if (!(ie instanceof SpecialInvokeExpr)) {
-          continue;
-        }
-
-        if (((SpecialInvokeExpr) ie).getBase() != throwee || !"<init>".equals(ie.getMethodRef().name())) {
+        if (!(ie instanceof SpecialInvokeExpr) || ((SpecialInvokeExpr) ie).getBase() != throwee || !"<init>".equals(ie.getMethodRef().name())) {
           continue;
         }
 

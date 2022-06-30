@@ -84,7 +84,7 @@ public class ASTMethodNode extends ASTNode {
   }
 
   public void storeLocals(Body OrigBody) {
-    if ((OrigBody instanceof DavaBody) == false) {
+    if (!(OrigBody instanceof DavaBody)) {
       throw new RuntimeException("Only DavaBodies should invoke this method");
     }
 
@@ -366,11 +366,7 @@ public class ASTMethodNode extends ASTNode {
             break;
           }
         }
-        if (!shouldContinue) {
-          // shouldnt print this declaration stmt
-          continue;
-        }
-        if (localDeclarations.size() == 0) {
+        if (!shouldContinue || (localDeclarations.size() == 0)) {
           continue;
         }
 

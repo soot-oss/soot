@@ -49,12 +49,8 @@ public class VoidReturnRemover {
 
   private static void removeReturn(SootMethod method) {
     // check if this is a void method
-    if (!(method.getReturnType() instanceof VoidType)) {
-      return;
-    }
-
     // get the methodnode
-    if (!method.hasActiveBody()) {
+    if (!(method.getReturnType() instanceof VoidType) || !method.hasActiveBody()) {
       return;
     }
 

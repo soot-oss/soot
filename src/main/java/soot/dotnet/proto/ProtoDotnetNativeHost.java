@@ -907,10 +907,12 @@ public final class ProtoDotnetNativeHost {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1)
+      if (isInitialized == 1) {
         return true;
-      if (isInitialized == 0)
+      }
+      if (isInitialized == 0) {
         return false;
+      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -933,7 +935,7 @@ public final class ProtoDotnetNativeHost {
       if (!getPropertyNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 6, propertyName_);
       }
-      if (propertyIsSetter_ != false) {
+      if (propertyIsSetter_) {
         output.writeBool(7, propertyIsSetter_);
       }
       if (!getEventNameBytes().isEmpty()) {
@@ -942,7 +944,7 @@ public final class ProtoDotnetNativeHost {
       if (eventAccessorType_ != soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType.NO_EVENT_METHOD.getNumber()) {
         output.writeEnum(9, eventAccessorType_);
       }
-      if (debugMode_ != false) {
+      if (debugMode_) {
         output.writeBool(10, debugMode_);
       }
       if (!getMethodNameSuffixBytes().isEmpty()) {
@@ -957,8 +959,9 @@ public final class ProtoDotnetNativeHost {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1)
+      if (size != -1) {
         return size;
+      }
 
       size = 0;
       if (analyzerMethodCall_ != soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall.NO_CALL.getNumber()) {
@@ -976,7 +979,7 @@ public final class ProtoDotnetNativeHost {
       if (!getPropertyNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, propertyName_);
       }
-      if (propertyIsSetter_ != false) {
+      if (propertyIsSetter_) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(7, propertyIsSetter_);
       }
       if (!getEventNameBytes().isEmpty()) {
@@ -985,7 +988,7 @@ public final class ProtoDotnetNativeHost {
       if (eventAccessorType_ != soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType.NO_EVENT_METHOD.getNumber()) {
         size += com.google.protobuf.CodedOutputStream.computeEnumSize(9, eventAccessorType_);
       }
-      if (debugMode_ != false) {
+      if (debugMode_) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(10, debugMode_);
       }
       if (!getMethodNameSuffixBytes().isEmpty()) {
@@ -1010,30 +1013,33 @@ public final class ProtoDotnetNativeHost {
       soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg other
           = (soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg) obj;
 
-      if (analyzerMethodCall_ != other.analyzerMethodCall_)
+      if ((analyzerMethodCall_ != other.analyzerMethodCall_) || !getAssemblyFileAbsolutePath().equals(other.getAssemblyFileAbsolutePath()) || !getTypeReflectionName().equals(other.getTypeReflectionName()) || !getMethodName().equals(other.getMethodName())) {
         return false;
-      if (!getAssemblyFileAbsolutePath().equals(other.getAssemblyFileAbsolutePath()))
+      }
+      if (!getMethodNameSuffix().equals(other.getMethodNameSuffix())) {
         return false;
-      if (!getTypeReflectionName().equals(other.getTypeReflectionName()))
+      }
+      if (getMethodPeToken() != other.getMethodPeToken()) {
         return false;
-      if (!getMethodName().equals(other.getMethodName()))
+      }
+      if (!getPropertyName().equals(other.getPropertyName())) {
         return false;
-      if (!getMethodNameSuffix().equals(other.getMethodNameSuffix()))
+      }
+      if (getPropertyIsSetter() != other.getPropertyIsSetter()) {
         return false;
-      if (getMethodPeToken() != other.getMethodPeToken())
+      }
+      if (!getEventName().equals(other.getEventName())) {
         return false;
-      if (!getPropertyName().equals(other.getPropertyName()))
+      }
+      if (eventAccessorType_ != other.eventAccessorType_) {
         return false;
-      if (getPropertyIsSetter() != other.getPropertyIsSetter())
+      }
+      if (getDebugMode() != other.getDebugMode()) {
         return false;
-      if (!getEventName().equals(other.getEventName()))
+      }
+      if (!unknownFields.equals(other.unknownFields)) {
         return false;
-      if (eventAccessorType_ != other.eventAccessorType_)
-        return false;
-      if (getDebugMode() != other.getDebugMode())
-        return false;
-      if (!unknownFields.equals(other.unknownFields))
-        return false;
+      }
       return true;
     }
 
@@ -1299,8 +1305,9 @@ public final class ProtoDotnetNativeHost {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg other) {
-        if (other == soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.getDefaultInstance())
+        if (other == soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.getDefaultInstance()) {
           return this;
+        }
         if (other.analyzerMethodCall_ != 0) {
           setAnalyzerMethodCallValue(other.getAnalyzerMethodCallValue());
         }
@@ -1327,7 +1334,7 @@ public final class ProtoDotnetNativeHost {
           propertyName_ = other.propertyName_;
           onChanged();
         }
-        if (other.getPropertyIsSetter() != false) {
+        if (other.getPropertyIsSetter()) {
           setPropertyIsSetter(other.getPropertyIsSetter());
         }
         if (!other.getEventName().isEmpty()) {
@@ -1337,7 +1344,7 @@ public final class ProtoDotnetNativeHost {
         if (other.eventAccessorType_ != 0) {
           setEventAccessorTypeValue(other.getEventAccessorTypeValue());
         }
-        if (other.getDebugMode() != false) {
+        if (other.getDebugMode()) {
           setDebugMode(other.getDebugMode());
         }
         this.mergeUnknownFields(other.unknownFields);

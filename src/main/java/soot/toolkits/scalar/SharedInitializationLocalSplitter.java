@@ -131,7 +131,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       throwAnalysis = Scene.v().getDefaultThrowAnalysis();
     }
 
-    if (omitExceptingUnitEdges == false) {
+    if (!omitExceptingUnitEdges) {
       omitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
     }
 
@@ -161,11 +161,8 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
         if (v instanceof Local) {
           Local luse = (Local) v;
           List<Unit> allAffectingDefs = defs.getDefsOfAt(luse, s);
-          if (allAffectingDefs.isEmpty()) {
-            continue;
-          }
           // Make sure we are only affected by Constant definitions via AssignStmt
-          if (!allAffectingDefs.stream()
+          if (allAffectingDefs.isEmpty() || !allAffectingDefs.stream()
               .allMatch(u -> (u instanceof AssignStmt) && (((AssignStmt) u).getRightOp() instanceof Constant))) {
             continue;
           }

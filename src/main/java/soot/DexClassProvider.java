@@ -85,7 +85,7 @@ public class DexClassProvider implements ClassProvider {
     Set<String> extensions = loc.getDexClassPathExtensions();
     if (extensions != null) {
       buildDexIndex(index, new ArrayList<>(extensions));
-      loc.clearDexClassPathExtensions();;
+      loc.clearDexClassPathExtensions();
     }
   }
 

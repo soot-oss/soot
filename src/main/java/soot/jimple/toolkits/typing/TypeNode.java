@@ -30,7 +30,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.*;
+import soot.ArrayType;
+import soot.NullType;
+import soot.PrimType;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.Type;
 import soot.options.Options;
 import soot.util.BitVector;
 

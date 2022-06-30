@@ -1,5 +1,8 @@
 package soot.dotnet.members.method;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,9 +28,6 @@ package soot.dotnet.members.method;
 import soot.Type;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.types.DotnetTypeFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Converter for .NET Method Parameters

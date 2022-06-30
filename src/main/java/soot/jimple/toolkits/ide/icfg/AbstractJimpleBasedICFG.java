@@ -1,5 +1,14 @@
 package soot.jimple.toolkits.ide.icfg;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -28,16 +37,6 @@ import com.google.common.cache.LoadingCache;
 import heros.DontSynchronize;
 import heros.SynchronizedBy;
 import heros.solver.IDESolver;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.PatchingChain;
 import soot.SootMethod;

@@ -774,12 +774,8 @@ class ArrayBoundsCheckerAnalysis {
       }
     }
 
-    if (!livelocals.contains(leftOp) && !livelocals.contains(rightOp)) {
-      return;
-    }
-
     // i = i;
-    if (rightOp.equals(leftOp)) {
+    if ((!livelocals.contains(leftOp) && !livelocals.contains(rightOp)) || rightOp.equals(leftOp)) {
       return;
     }
 
@@ -1000,12 +996,8 @@ class ArrayBoundsCheckerAnalysis {
     // take out the condition.
     Value cmpcond = ifstmt.getCondition();
 
-    if (!(cmpcond instanceof ConditionExpr)) {
-      return false;
-    }
-
     // how may succs?
-    if (succs.size() != 2) {
+    if (!(cmpcond instanceof ConditionExpr) || (succs.size() != 2)) {
       return false;
     }
 

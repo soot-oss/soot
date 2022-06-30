@@ -25,7 +25,14 @@ package soot.jimple.toolkits.pointer;
 import java.util.Collections;
 import java.util.Set;
 
-import soot.*;
+import soot.AnySubType;
+import soot.G;
+import soot.PointsToSet;
+import soot.PrimType;
+import soot.RefType;
+import soot.Scene;
+import soot.Singletons;
+import soot.Type;
 import soot.jimple.ClassConstant;
 
 public class FullObjectSet extends Union {
