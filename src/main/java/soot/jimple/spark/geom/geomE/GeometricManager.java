@@ -69,7 +69,7 @@ public class GeometricManager extends IFigureManager {
 
     for (int i = 0; i < Divisions; ++i) {
       SegmentNode p = header[i];
-      while (p != null && p.is_new) {
+      while (p != null && p.is_new == true) {
         p.is_new = false;
         p = p.next;
       }
@@ -121,7 +121,7 @@ public class GeometricManager extends IFigureManager {
     for (int i = 0; i < Divisions; ++i) {
       p = null;
 
-      if (size[i] > buget_size && header[i].is_new) {
+      if (size[i] > buget_size && header[i].is_new == true) {
         // Merging is finding the bounding rectangles for every type of objects
 
         switch (i) {
@@ -289,7 +289,7 @@ public class GeometricManager extends IFigureManager {
             break;
         }
 
-        if (!flag) {
+        if (flag == false) {
           // We keep this figure
           if (q_head == null) {
             q_head = pold;

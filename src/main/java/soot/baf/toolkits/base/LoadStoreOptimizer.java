@@ -645,7 +645,11 @@ public class LoadStoreOptimizer extends BodyTransformer {
       }
 
       // xxx to be safe don't mess w/ monitors. These rules could be relaxed. ? Maybe.
-      if (aUnitToGoOver instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst || aUnitToMove instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst) {
+      if (aUnitToGoOver instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst) {
+        return false;
+      }
+
+      if (aUnitToMove instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst) {
         return false;
       }
 
@@ -729,7 +733,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
         }
         h += ((Inst) current).getInCount();
 
-        if (h == 0 && reachedStore) {
+        if (h == 0 && reachedStore == true) {
           if (!isRequiredByFollowingUnits(unitToMove, to)) {
             if (debug) {
               logger.debug(

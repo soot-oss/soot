@@ -1,13 +1,5 @@
 package soot.toolkits.exceptions;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -34,6 +26,15 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import heros.solver.IDESolver;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.FastHierarchy;
 import soot.G;
@@ -352,9 +353,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     // unsound, but would otherwise always bloat our result set.
     if (!sm.hasActiveBody()) {
       // if it is a dotnet project, leave all exceptions, because the method signature does not contain throwables
-      if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      if (Options.v().src_prec() == Options.src_prec_dotnet)
         return ThrowableSet.Manager.v().ALL_THROWABLES;
-      }
       return ThrowableSet.Manager.v().EMPTY;
     }
 

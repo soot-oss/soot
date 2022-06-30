@@ -177,9 +177,8 @@ public abstract class AbstractBinopExpr implements Expr {
 
     // in dotnet enums are value types, such as myBool = 1 is allowed in CIL
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      if (isSuperclassSystemEnum(t1) || isSuperclassSystemEnum(t2)) {
+      if (isSuperclassSystemEnum(t1) || isSuperclassSystemEnum(t2))
         return tyInt;
-      }
     }
     return UnknownType.v();
 
@@ -192,20 +191,18 @@ public abstract class AbstractBinopExpr implements Expr {
    * @return
    */
   public boolean isSuperclassSystemEnum(Type t) {
-    if ((Options.v().src_prec() != Options.src_prec_dotnet) || !(t instanceof RefType)) {
+    if (Options.v().src_prec() != Options.src_prec_dotnet)
       return false;
-    }
+    if (!(t instanceof RefType))
+      return false;
     SootClass sootClass = ((RefType) t).getSootClass();
-    if (sootClass == null) {
+    if (sootClass == null)
       return false;
-    }
     SootClass superclass = sootClass.getSuperclass();
-    if (superclass == null) {
+    if (superclass == null)
       return false;
-    }
-    if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM)) {
+    if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM))
       return true;
-    }
     return false;
   }
 

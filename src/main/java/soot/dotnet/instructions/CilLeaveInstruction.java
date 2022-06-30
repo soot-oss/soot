@@ -44,9 +44,9 @@ public class CilLeaveInstruction extends AbstractCilnstruction {
   @Override
   public void jimplify(Body jb) {
     // void
-    if (instruction.getValueInstruction().getOpCode().equals(ProtoIlInstructions.IlInstructionMsg.IlOpCode.NOP)) {
+    if (instruction.getValueInstruction().getOpCode().equals(ProtoIlInstructions.IlInstructionMsg.IlOpCode.NOP))
       jb.getUnits().add(Jimple.v().newReturnVoidStmt());
-    } else {
+    else {
       CilInstruction cilValueExpr
           = CilInstructionFactory.fromInstructionMsg(instruction.getValueInstruction(), dotnetBody, cilBlock);
       Value value = cilValueExpr.jimplifyExpr(jb);

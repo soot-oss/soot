@@ -23,7 +23,6 @@ package soot.jimple.toolkits.callgraph;
  */
 
 import java.util.Iterator;
-
 import soot.Unit;
 
 /**

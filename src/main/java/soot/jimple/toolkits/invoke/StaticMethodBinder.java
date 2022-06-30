@@ -97,7 +97,10 @@ public class StaticMethodBinder extends SceneTransformer {
 
       while (!methodsList.isEmpty()) {
         SootMethod container = methodsList.removeFirst();
-        if (!container.isConcrete() || !instanceInvokesFilter.wrap(cg.edgesOutOf(container)).hasNext()) {
+        if (!container.isConcrete()) {
+          continue;
+        }
+        if (!instanceInvokesFilter.wrap(cg.edgesOutOf(container)).hasNext()) {
           continue;
         }
 

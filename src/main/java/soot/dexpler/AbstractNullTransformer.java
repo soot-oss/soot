@@ -51,7 +51,10 @@ public abstract class AbstractNullTransformer extends DexTransformer {
    */
   protected boolean isZeroComparison(ConditionExpr expr) {
     if (expr instanceof EqExpr || expr instanceof NeExpr) {
-      if ((expr.getOp2() instanceof IntConstant && ((IntConstant) expr.getOp2()).value == 0) || (expr.getOp2() instanceof LongConstant && ((LongConstant) expr.getOp2()).value == 0)) {
+      if (expr.getOp2() instanceof IntConstant && ((IntConstant) expr.getOp2()).value == 0) {
+        return true;
+      }
+      if (expr.getOp2() instanceof LongConstant && ((LongConstant) expr.getOp2()).value == 0) {
         return true;
       }
     }

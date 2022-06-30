@@ -1,9 +1,5 @@
 package soot.dotnet.members.method;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -31,6 +27,10 @@ import soot.Unit;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.TableSwitchStmt;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Part of DotnetBody
@@ -73,24 +73,20 @@ public class BlockEntryPointsManager {
         for (Unit unit : jb.getUnits()) {
             if (unit instanceof GotoStmt) {
                 String entryPointString = gotoTargetsInBody.get(((GotoStmt) unit).getTarget());
-                if (entryPointString == null) {
-                  continue;
-                }
+                if (entryPointString == null)
+                    continue;
                 Unit unitToSwap = methodBlockEntryPoints.get(entryPointString);
-                if (unitToSwap == null) {
-                  continue;
-                }
+                if (unitToSwap == null)
+                    continue;
                 ((GotoStmt) unit).setTarget(unitToSwap);
             }
             if (unit instanceof IfStmt) {
                 String entryPointString = gotoTargetsInBody.get(((IfStmt) unit).getTarget());
-                if (entryPointString == null) {
-                  continue;
-                }
+                if (entryPointString == null)
+                    continue;
                 Unit unitToSwap = methodBlockEntryPoints.get(entryPointString);
-                if (unitToSwap == null) {
-                  continue;
-                }
+                if (unitToSwap == null)
+                    continue;
                 ((IfStmt) unit).setTarget(unitToSwap);
             }
             if (unit instanceof TableSwitchStmt) {
@@ -100,25 +96,21 @@ public class BlockEntryPointsManager {
                 for (int i = 0; i < targets.size(); i++) {
                     Unit target = targets.get(i);
                     String entryPointString = gotoTargetsInBody.get(target);
-                    if (entryPointString == null) {
-                      continue;
-                    }
+                    if (entryPointString == null)
+                        continue;
                     Unit unitToSwap = methodBlockEntryPoints.get(entryPointString);
-                    if (unitToSwap == null) {
-                      continue;
-                    }
+                    if (unitToSwap == null)
+                        continue;
                     tableSwitchStmt.setTarget(i, unitToSwap);
                 }
 
                 // swap default target
                 String entryPointStringDefault = gotoTargetsInBody.get(tableSwitchStmt.getDefaultTarget());
-                if (entryPointStringDefault == null) {
-                  continue;
-                }
+                if (entryPointStringDefault == null)
+                    continue;
                 Unit unitToSwap = methodBlockEntryPoints.get(entryPointStringDefault);
-                if (unitToSwap == null) {
-                  continue;
-                }
+                if (unitToSwap == null)
+                    continue;
                 tableSwitchStmt.setDefaultTarget(unitToSwap);
             }
         }

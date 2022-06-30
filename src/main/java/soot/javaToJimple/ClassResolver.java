@@ -37,6 +37,7 @@ import polyglot.ast.FieldDecl;
 import polyglot.ast.Node;
 import polyglot.types.Type;
 import polyglot.util.IdentityKey;
+
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
@@ -194,7 +195,10 @@ public class ClassResolver {
 
     for (Type type : typeListBuilder.getList()) {
 
-      if (type.isPrimitive() || !type.isClass()) {
+      if (type.isPrimitive()) {
+        continue;
+      }
+      if (!type.isClass()) {
         continue;
       }
       polyglot.types.ClassType classType = (polyglot.types.ClassType) type;

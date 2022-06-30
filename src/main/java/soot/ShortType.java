@@ -63,9 +63,8 @@ public class ShortType extends PrimType implements IntegerType {
 
   @Override
   public String getTypeAsString() {
-    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+    if (Options.v().src_prec() == Options.src_prec_dotnet)
       return DotnetBasicTypes.SYSTEM_INT16;
-    }
     return JavaBasicTypes.JAVA_LANG_SHORT;
   }
 

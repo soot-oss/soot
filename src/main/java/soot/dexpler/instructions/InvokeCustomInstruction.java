@@ -122,7 +122,7 @@ public class InvokeCustomInstruction extends MethodInvocationInstruction {
     List<Value> out = new ArrayList<>();
     for (EncodedValue ev : in) {
       if (ev instanceof BooleanEncodedValue) {
-        out.add(IntConstant.v(((BooleanEncodedValue) ev).getValue() ? 1 : 0));
+        out.add(IntConstant.v(((BooleanEncodedValue) ev).getValue() == true ? 1 : 0));
       } else if (ev instanceof ByteEncodedValue) {
         out.add(IntConstant.v(((ByteEncodedValue) ev).getValue()));
       } else if (ev instanceof CharEncodedValue) {

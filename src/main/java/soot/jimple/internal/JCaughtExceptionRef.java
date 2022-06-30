@@ -25,11 +25,7 @@ package soot.jimple.internal;
 import java.util.Collections;
 import java.util.List;
 
-import soot.RefType;
-import soot.Scene;
-import soot.Type;
-import soot.UnitPrinter;
-import soot.ValueBox;
+import soot.*;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.RefSwitch;
 import soot.util.Switch;

@@ -1,11 +1,5 @@
 package soot.jimple.toolkits.ide.icfg.dotexport;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -29,6 +23,13 @@ import org.slf4j.LoggerFactory;
  */
 
 import heros.InterproceduralCFG;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.SootMethod;
 import soot.Unit;
 import soot.util.dot.DotGraph;

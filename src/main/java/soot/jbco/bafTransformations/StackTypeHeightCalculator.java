@@ -702,7 +702,11 @@ public class StackTypeHeightCalculator {
   }
 
   private static boolean checkTypes(Type t1, Type t2) {
-    if ((t1 == t2) || (t1 instanceof RefLikeType && t2 instanceof RefLikeType)) {
+    if (t1 == t2) {
+      return true;
+    }
+
+    if (t1 instanceof RefLikeType && t2 instanceof RefLikeType) {
       return true;
     }
 

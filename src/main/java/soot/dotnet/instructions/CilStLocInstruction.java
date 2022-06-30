@@ -1,7 +1,5 @@
 package soot.dotnet.instructions;
 
-import java.util.List;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -35,6 +33,8 @@ import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
 import soot.toolkits.scalar.Pair;
+
+import java.util.List;
 
 /**
  * AssignStmt - Store a expression to a local
@@ -80,15 +80,13 @@ public class CilStLocInstruction extends AbstractCilnstruction {
         // create this cast, to validate successfully
         if (value instanceof Local
                 && !variable.getType().toString().equals(value.getType().toString())
-                && dotnetBody.variableManager.localsToCastContains(((Local)value).getName())) {
-          value = Jimple.v().newCastExpr(value, variable.getType());
-        }
+                && dotnetBody.variableManager.localsToCastContains(((Local)value).getName()))
+            value = Jimple.v().newCastExpr(value, variable.getType());
         // for validation, because array = obj, where array typeof byte[] and obj typeof System.Object
         if (value instanceof Local
                 && value.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)
-                && !variable.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
-          value = Jimple.v().newCastExpr(value, variable.getType());
-        }
+                && !variable.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT))
+            value = Jimple.v().newCastExpr(value, variable.getType());
 
         AssignStmt astm = Jimple.v().newAssignStmt(variable, value);
         jb.getUnits().add(astm);

@@ -102,7 +102,7 @@ public class GeomQueries {
       int rep = rep_cg[i];
       while (p != null) {
         // To speedup context searching, SCC edges are all removed
-        if (!p.scc_edge) {
+        if (p.scc_edge == false) {
           CgEdge q = p.duplicate();
 
           // The non-SCC edge is attached to the SCC representative
@@ -200,7 +200,7 @@ public class GeomQueries {
     while (p != null) {
       int t = p.t;
       int rep_t = rep_cg[t];
-      if (in_degree[rep_t] != 0 || (top_rank[rep_t] <= top_rank[rep_target] && dfsScanSubgraph(t, target))) {
+      if (in_degree[rep_t] != 0 || (top_rank[rep_t] <= top_rank[rep_target] && dfsScanSubgraph(t, target) == true)) {
         in_degree[rep_t]++;
         reachable = true;
       }
@@ -344,7 +344,7 @@ public class GeomQueries {
   public boolean contextsGoBy(Edge sootEdge, Local l, PtSensVisitor visitor) {
     // Obtain the internal representation of specified context
     CgEdge ctxt = geomPTA.getInternalEdgeFromSootEdge(sootEdge);
-    if (ctxt == null || ctxt.is_obsoleted) {
+    if (ctxt == null || ctxt.is_obsoleted == true) {
       return false;
     }
 
@@ -415,7 +415,7 @@ public class GeomQueries {
   @SuppressWarnings("rawtypes")
   public boolean contextsGoBy(Edge sootEdge, Local l, SparkField field, PtSensVisitor visitor) {
     Obj_full_extractor pts_l = new Obj_full_extractor();
-    if (!contextsGoBy(sootEdge, l, pts_l)) {
+    if (contextsGoBy(sootEdge, l, pts_l) == false) {
       return false;
     }
 
@@ -500,7 +500,7 @@ public class GeomQueries {
     for (int i = 0; i < callEdgeChain.length; ++i) {
       Edge sootEdge = callEdgeChain[i];
       CgEdge ctxt = geomPTA.getInternalEdgeFromSootEdge(sootEdge);
-      if (ctxt == null || ctxt.is_obsoleted) {
+      if (ctxt == null || ctxt.is_obsoleted == true) {
         return false;
       }
 
@@ -543,7 +543,7 @@ public class GeomQueries {
   public boolean kCFA(Edge[] callEdgeChain, Local l, SparkField field, PtSensVisitor visitor) {
     // We first obtain the points-to information for l
     Obj_full_extractor pts_l = new Obj_full_extractor();
-    if (!kCFA(callEdgeChain, l, pts_l)) {
+    if (kCFA(callEdgeChain, l, pts_l) == false) {
       return false;
     }
 

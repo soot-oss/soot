@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,8 +113,12 @@ public class LoopInvariantFinder extends BodyTransformer {
     }
 
     // ignore goto stmts
+    if (s instanceof GotoStmt) {
+      return;
+    }
+
     // ignore invoke stmts
-    if ((s instanceof GotoStmt) || (s instanceof InvokeStmt)) {
+    if (s instanceof InvokeStmt) {
       return;
     }
 

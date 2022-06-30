@@ -750,7 +750,10 @@ public class CFG {
   }
 
   private void adjustLineNumberTable() {
-    if (!Options.v().keep_line_number() || (method.code_attr == null)) {
+    if (!Options.v().keep_line_number()) {
+      return;
+    }
+    if (method.code_attr == null) {
       return;
     }
 
@@ -1287,7 +1290,10 @@ public class CFG {
         Tag tag = stmtstags.get(stmt);
         while (true) {
           pred = (Stmt) units.getPredOf(pred);
-          if ((pred == null) || !(pred instanceof IdentityStmt)) {
+          if (pred == null) {
+            break;
+          }
+          if (!(pred instanceof IdentityStmt)) {
             break;
           }
           stmtstags.put(pred, tag);

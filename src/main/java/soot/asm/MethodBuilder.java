@@ -1,21 +1,5 @@
 package soot.asm;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.Attribute;
-import org.objectweb.asm.Handle;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.TypePath;
-import org.objectweb.asm.commons.JSRInlinerAdapter;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.LocalVariableNode;
-import org.objectweb.asm.tree.TryCatchBlockNode;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -39,6 +23,22 @@ import org.objectweb.asm.tree.TryCatchBlockNode;
  */
 
 import com.google.common.base.Optional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Attribute;
+import org.objectweb.asm.Handle;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.TypePath;
+import org.objectweb.asm.commons.JSRInlinerAdapter;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LocalVariableNode;
+import org.objectweb.asm.tree.TryCatchBlockNode;
 
 import soot.ArrayType;
 import soot.MethodSource;

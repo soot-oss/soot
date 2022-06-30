@@ -47,7 +47,6 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
-
 import soot.asm.AsmUtil;
 import soot.baf.BafBody;
 import soot.jimple.JimpleBody;

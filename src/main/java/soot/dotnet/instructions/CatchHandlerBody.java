@@ -123,9 +123,8 @@ public class CatchHandlerBody {
   }
 
   private boolean lastStmtIsNotReturn(Body handlerBody) {
-    if (handlerBody.getUnits().size() == 0) {
+    if (handlerBody.getUnits().size() == 0)
       return true;
-    }
     return !isExitStmt(handlerBody.getUnits().getLast());
   }
 

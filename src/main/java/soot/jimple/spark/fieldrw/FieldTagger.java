@@ -59,7 +59,10 @@ public class FieldTagger extends BodyTransformer {
       return;
     }
     processedMethods.add(m);
-    if (!m.isConcrete() || m.isPhantom()) {
+    if (!m.isConcrete()) {
+      return;
+    }
+    if (m.isPhantom()) {
       return;
     }
     for (Iterator sIt = m.retrieveActiveBody().getUnits().iterator(); sIt.hasNext();) {
@@ -93,7 +96,10 @@ public class FieldTagger extends BodyTransformer {
       while (it.hasNext()) {
         SootMethod target = (SootMethod) it.next();
         ensureProcessed(target);
-        if (target.isNative() || target.isPhantom()) {
+        if (target.isNative()) {
+          continue statement;
+        }
+        if (target.isPhantom()) {
           continue statement;
         }
         read.addAll(methodToRead.get(target));

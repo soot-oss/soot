@@ -23,7 +23,6 @@ package soot.jimple.toolkits.annotation.arraycheck;
  */
 
 import java.util.ArrayList;
-
 import soot.toolkits.graph.HashMutableDirectedGraph;
 
 /**

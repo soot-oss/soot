@@ -350,7 +350,10 @@ public class TightestQualifiersTagger extends SceneTransformer {
       Iterator mIt = appClass.getMethods().iterator();
       while (mIt.hasNext()) {
         SootMethod sm = (SootMethod) mIt.next();
-        if (!sm.hasActiveBody() || !Scene.v().getReachableMethods().contains(sm)) {
+        if (!sm.hasActiveBody()) {
+          continue;
+        }
+        if (!Scene.v().getReachableMethods().contains(sm)) {
           continue;
         }
         Body b = sm.getActiveBody();

@@ -34,21 +34,16 @@ public class DotnetModifier {
 
     int modifier = convertAccessibility(protoType.getAccessibility());
 
-    if (protoType.getIsAbstract()) {
+    if (protoType.getIsAbstract())
       modifier |= Modifier.ABSTRACT;
-    }
-    if (protoType.getIsStatic()) {
+    if (protoType.getIsStatic())
       modifier |= Modifier.STATIC;
-    }
-    if (protoType.getIsSealed()) {
+    if (protoType.getIsSealed())
       modifier |= Modifier.FINAL;
-    }
-    if (protoType.getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.INTERFACE)) {
+    if (protoType.getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.INTERFACE))
       modifier |= Modifier.INTERFACE;
-    }
-    if (protoType.getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.ENUM)) {
+    if (protoType.getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.ENUM))
       modifier |= Modifier.ENUM;
-    }
 
     return modifier;
   }
@@ -57,21 +52,17 @@ public class DotnetModifier {
 
     int modifier = convertAccessibility(methodDefinition.getAccessibility());
 
-    if (methodDefinition.getIsAbstract()) {
+    if (methodDefinition.getIsAbstract())
       modifier |= Modifier.ABSTRACT;
-    }
-    if (methodDefinition.getIsStatic()) {
+    if (methodDefinition.getIsStatic())
       modifier |= Modifier.STATIC;
-    }
     // cannot do this due to hiding property of c#
     // if (!methodDefinition.getIsVirtual())
     // modifier |= Modifier.FINAL;
-    if (methodDefinition.getIsSealed()) {
+    if (methodDefinition.getIsSealed())
       modifier |= Modifier.FINAL;
-    }
-    if (methodDefinition.getIsExtern()) {
+    if (methodDefinition.getIsExtern())
       modifier |= Modifier.NATIVE;
-    }
 
     return modifier;
   }
@@ -80,15 +71,12 @@ public class DotnetModifier {
 
     int modifier = convertAccessibility(fieldDefinition.getAccessibility());
 
-    if (fieldDefinition.getIsAbstract() || fieldDefinition.getIsVirtual()) {
+    if (fieldDefinition.getIsAbstract() || fieldDefinition.getIsVirtual())
       modifier |= Modifier.ABSTRACT;
-    }
-    if (fieldDefinition.getIsStatic()) {
+    if (fieldDefinition.getIsStatic())
       modifier |= Modifier.STATIC;
-    }
-    if (fieldDefinition.getIsReadOnly()) {
+    if (fieldDefinition.getIsReadOnly())
       modifier |= Modifier.FINAL;
-    }
 
     return modifier;
   }

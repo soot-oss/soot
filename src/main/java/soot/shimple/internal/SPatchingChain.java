@@ -283,8 +283,12 @@ public class SPatchingChain extends UnitPatchingChain {
     PhiExpr phi = Shimple.getPhiExpr(phiNode);
 
     // not a Phi node
+    if (phi == null) {
+      return;
+    }
+
     // already processed previously, unit chain manipulations?
-    if ((phi == null) || phiNodeSet.contains(phiNode)) {
+    if (phiNodeSet.contains(phiNode)) {
       return;
     }
 

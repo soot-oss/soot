@@ -327,8 +327,12 @@ public class SPhiExpr implements PhiExpr {
   @Override
   public boolean addArg(Value arg, Unit predTailUnit) {
     // Do not allow phi nodes for dummy blocks
+    if (predTailUnit == null) {
+      return false;
+    }
+
     // we disallow duplicate arguments
-    if ((predTailUnit == null) || predToPair.containsKey(predTailUnit)) {
+    if (predToPair.containsKey(predTailUnit)) {
       return false;
     }
 

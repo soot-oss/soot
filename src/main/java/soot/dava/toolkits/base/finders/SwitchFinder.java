@@ -67,7 +67,7 @@ public class SwitchFinder implements FactFinder {
 
       Stmt s = as.get_Stmt();
 
-      if (!(s instanceof TableSwitchStmt) && !(s instanceof LookupSwitchStmt)) {
+      if (((s instanceof TableSwitchStmt) == false) && ((s instanceof LookupSwitchStmt) == false)) {
         continue;
       }
 
@@ -132,7 +132,7 @@ public class SwitchFinder implements FactFinder {
         LinkedList worklist = new LinkedList();
         worklist.addAll(sng.getHeads());
 
-        while (!worklist.isEmpty()) {
+        while (worklist.isEmpty() == false) {
           SwitchNode sn = (SwitchNode) worklist.removeFirst();
 
           snTargetList.addLast(sn);
@@ -172,9 +172,9 @@ public class SwitchFinder implements FactFinder {
 
       // Now, merge the targetHeads list and the killBodies list, keeping bundles of case fall throughs from the node graph.
       {
-        while (!targetHeads.isEmpty() || !killBodies.isEmpty()) {
+        while ((targetHeads.isEmpty() == false) || (killBodies.isEmpty() == false)) {
 
-          if ((targetHeads.isEmpty()) || (!targetHeads.isEmpty() && !killBodies.isEmpty()
+          if ((targetHeads.isEmpty()) || ((targetHeads.isEmpty() == false) && (killBodies.isEmpty() == false)
               && (((SwitchNode) targetHeads.first()).compareTo(killBodies.first()) > 0))) {
 
             SwitchNode nextNode = (SwitchNode) killBodies.first();
@@ -220,7 +220,7 @@ public class SwitchFinder implements FactFinder {
           while (fbit.hasNext()) {
             AugmentedStmt fbas = (AugmentedStmt) fbit.next();
 
-            if (!tryBody.contains(fbas)) {
+            if (tryBody.contains(fbas) == false) {
               body.remove(fbas);
 
               for (SwitchNode sn : switchNodeList) {
@@ -252,14 +252,14 @@ public class SwitchFinder implements FactFinder {
       subBody.add(branchS);
     }
 
-    while (!worklist.isEmpty()) {
+    while (worklist.isEmpty() == false) {
       AugmentedStmt as = worklist.removeFirst();
 
       Iterator sit = as.csuccs.iterator();
       while (sit.hasNext()) {
         AugmentedStmt sas = (AugmentedStmt) sit.next();
 
-        if (!subBody.contains(sas) && (sas.get_Dominators().contains(branchS))) {
+        if ((subBody.contains(sas) == false) && (sas.get_Dominators().contains(branchS))) {
           worklist.addLast(sas);
           subBody.add(sas);
         }

@@ -36,7 +36,10 @@ public class CastInsertionVisitor extends polyglot.visit.AscriptionVisitor {
     polyglot.types.Type fromType = e.type();
     // System.out.println("from type: "+fromType);
 
-    if ((toType == null) || toType.isVoid()) {
+    if (toType == null) {
+      return e;
+    }
+    if (toType.isVoid()) {
       return e;
     }
 

@@ -244,7 +244,10 @@ public class SparkTransformer extends SceneTransformer {
     final Map<Node, Tag> nodeToTag = pag.getNodeTags();
     for (final SootClass c : Scene.v().getClasses()) {
       for (final SootMethod m : c.getMethods()) {
-        if (!m.isConcrete() || !m.hasActiveBody()) {
+        if (!m.isConcrete()) {
+          continue;
+        }
+        if (!m.hasActiveBody()) {
           continue;
         }
         for (final Unit u : m.getActiveBody().getUnits()) {

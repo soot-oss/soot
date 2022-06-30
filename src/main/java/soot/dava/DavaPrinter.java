@@ -180,7 +180,12 @@ public class DavaPrinter {
           }
         }
 
-        if ((!curPackage.isEmpty() && temp.contains(curPackage)) || cl.toString().equals(temp)) {
+        if (!curPackage.isEmpty() && temp.contains(curPackage)) {
+          // System.out.println("here "+temp);
+          continue;
+        }
+
+        if (cl.toString().equals(temp)) {
           continue;
         }
 

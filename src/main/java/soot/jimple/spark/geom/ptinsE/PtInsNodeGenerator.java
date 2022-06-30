@@ -91,7 +91,7 @@ public class PtInsNodeGenerator extends IEncodingBroker {
             for (Iterator<Edge> it = cons.interCallEdges.iterator(); it.hasNext();) {
               Edge sEdge = it.next();
               q = ptAnalyzer.getInternalEdgeFromSootEdge(sEdge);
-              if (q.is_obsoleted) {
+              if (q.is_obsoleted == true) {
                 continue;
               }
 

@@ -50,12 +50,10 @@ public class CilStObjInstruction extends AbstractCilnstruction {
     Value value = cilExpr.jimplifyExpr(jb);
 
     // create this cast, to validate successfully
-    if (value instanceof Local && !target.getType().toString().equals(value.getType().toString())) {
+    if (value instanceof Local && !target.getType().toString().equals(value.getType().toString()))
       if (value.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)
-          && !target.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
+          && !target.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT))
         value = Jimple.v().newCastExpr(value, target.getType());
-      }
-    }
 
     // if rvalue is not single value and lvalue is static-ref, rewrite with a local variable to meet three address
     // requirement
@@ -71,11 +69,10 @@ public class CilStObjInstruction extends AbstractCilnstruction {
 
     // if new Obj also add call of constructor - relevant for structs (System.ValueType)
     if (cilExpr instanceof AbstractNewObjInstanceInstruction) {
-      if (!(target instanceof Local)) {
+      if (!(target instanceof Local))
         throw new RuntimeException("STOBJ: The given target is not a local! " + "The value is: " + target.toString()
             + " of type " + target.getType() + "! " + "The resolving method body is: "
             + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature());
-      }
       ((AbstractNewObjInstanceInstruction) cilExpr).resolveCallConstructorBody(jb, (Local) target);
     }
   }

@@ -74,6 +74,7 @@ import soot.jimple.spark.sets.PointsToSetEqualsWrapper;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
 import soot.toolkits.scalar.Pair;
+import soot.util.NumberedString;
 
 /**
  * Tries to find imprecision in points-to sets from a previously run analysis. Requires that all sub-results of previous
@@ -379,7 +380,10 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     PointsToSet contextSensitiveResult = null;
     while (true) {
       numPasses++;
-      if ((DEBUG_PASS != -1 && numPasses > DEBUG_PASS) || (numPasses > maxPasses)) {
+      if (DEBUG_PASS != -1 && numPasses > DEBUG_PASS) {
+        break;
+      }
+      if (numPasses > maxPasses) {
         break;
       }
       if (DEBUG) {
@@ -480,7 +484,10 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     numPasses = 0;
     while (true) {
       numPasses++;
-      if ((DEBUG_PASS != -1 && numPasses > DEBUG_PASS) || (numPasses > maxPasses)) {
+      if (DEBUG_PASS != -1 && numPasses > DEBUG_PASS) {
+        return true;
+      }
+      if (numPasses > maxPasses) {
         return true;
       }
       if (DEBUG) {
@@ -580,7 +587,10 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     Set<VarNode> smallest = null;
     while (true) {
       numPasses++;
-      if ((DEBUG_PASS != -1 && numPasses > DEBUG_PASS) || (numPasses > maxPasses)) {
+      if (DEBUG_PASS != -1 && numPasses > DEBUG_PASS) {
+        return smallest;
+      }
+      if (numPasses > maxPasses) {
         return smallest;
       }
       if (DEBUG) {
@@ -971,6 +981,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
             if (upContext.size() < ImmutableStack.getMaxSize()) {
               newUpContext = pushWithRecursionCheck(upContext, assignEdge);
             }
+            ;
           }
           p.prop(new VarContextAndUp(newVarAndContext.var, newVarAndContext.context, newUpContext));
         }
@@ -988,6 +999,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         }
 
       }
+      ;
       UpContextEdgeHandler edgeHandler = new UpContextEdgeHandler();
       processIncomingEdges(edgeHandler, worklist);
       nesting--;
@@ -1306,7 +1318,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
       Set<SootMethod> toBeCollapsed = new ArraySet<SootMethod>();
       int callSiteInd = 0;
       for (; callSiteInd < context.size() && !context.get(callSiteInd).equals(callSite); callSiteInd++) {
-        
+        ;
       }
       for (; callSiteInd < context.size(); callSiteInd++) {
         toBeCollapsed.add(csInfo.getInvokingMethod(context.get(callSiteInd)));
@@ -1481,7 +1493,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         Set<SootMethod> toBeCollapsed = new ArraySet<SootMethod>();
         int callSiteInd = 0;
         for (; callSiteInd < context.size() && !context.get(callSiteInd).equals(callSite); callSiteInd++) {
-          
+          ;
         }
         // int numToPop = 0;
         for (; callSiteInd < context.size(); callSiteInd++) {
@@ -1511,7 +1523,10 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
   }
 
   protected boolean refineAlias(VarNode v1, VarNode v2, PointsToSetInternal intersection, HeuristicType heuristic) {
-    if (refineAliasInternal(v1, v2, intersection, heuristic) || refineAliasInternal(v2, v1, intersection, heuristic)) {
+    if (refineAliasInternal(v1, v2, intersection, heuristic)) {
+      return true;
+    }
+    if (refineAliasInternal(v2, v1, intersection, heuristic)) {
       return true;
     }
     return false;
@@ -1522,7 +1537,10 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     numPasses = 0;
     while (true) {
       numPasses++;
-      if ((DEBUG_PASS != -1 && numPasses > DEBUG_PASS) || (numPasses > maxPasses)) {
+      if (DEBUG_PASS != -1 && numPasses > DEBUG_PASS) {
+        return false;
+      }
+      if (numPasses > maxPasses) {
         return false;
       }
       if (DEBUG) {
@@ -1597,6 +1615,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         }
       }
     }
+    ;
     final Helper h = new Helper();
     h.prop(new VarAndContext(receiver, origContext));
     while (!worklist.isEmpty()) {
@@ -1816,7 +1835,10 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
       numPasses = 0;
       while (true) {
         numPasses++;
-        if ((DEBUG_PASS != -1 && numPasses > DEBUG_PASS) || (numPasses > maxPasses)) {
+        if (DEBUG_PASS != -1 && numPasses > DEBUG_PASS) {
+          return false;
+        }
+        if (numPasses > maxPasses) {
           return false;
         }
         if (DEBUG) {

@@ -730,7 +730,10 @@ public class OpStackCalculator {
   }
 
   private static boolean typesAreCompatible(Type t1, Type t2) {
-    if ((t1 == t2) || (t1 instanceof RefLikeType && t2 instanceof RefLikeType)) {
+    if (t1 == t2) {
+      return true;
+    }
+    if (t1 instanceof RefLikeType && t2 instanceof RefLikeType) {
       return true;
     }
     if (t1 instanceof IntegerType && t2 instanceof IntegerType) {

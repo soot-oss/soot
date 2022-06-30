@@ -32,6 +32,7 @@ import polyglot.ast.New;
 import polyglot.ast.Node;
 import polyglot.types.ConstructorInstance;
 import polyglot.util.IdentityKey;
+
 import soot.FastHierarchy;
 import soot.SootClass;
 import soot.SootMethod;

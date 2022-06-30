@@ -179,7 +179,10 @@ public class JimpleConstructorFolder extends BodyTransformer {
         return false;
       }
       Fact o = (Fact) other;
-      if ((this.alloc == null && o.alloc != null) || (this.alloc != null && o.alloc == null)) {
+      if (this.alloc == null && o.alloc != null) {
+        return false;
+      }
+      if (this.alloc != null && o.alloc == null) {
         return false;
       }
       return (this.alloc == null || this.alloc.equals(o.alloc)) && this.stmtToVar.equals(o.stmtToVar);

@@ -930,7 +930,11 @@ public class DexPrinter {
   }
 
   private Annotation buildEnclosingMethodTag(EnclosingMethodTag t, Set<String> skipList) {
-    if (!skipList.add("Ldalvik/annotation/EnclosingMethod;") || (t.getEnclosingMethod() == null)) {
+    if (!skipList.add("Ldalvik/annotation/EnclosingMethod;")) {
+      return null;
+    }
+
+    if (t.getEnclosingMethod() == null) {
       return null;
     }
 

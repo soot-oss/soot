@@ -226,12 +226,12 @@ public class OfflineProcessor {
         case Constants.LOAD_CONS: {
           rep = lhs.getRepresentative();
 
-          if (!rep.hasPTResult()) {
+          if (rep.hasPTResult() == false) {
             lhs.getWrappedNode().getP2Set().forall(new P2SetVisitor() {
               @Override
               public void visit(Node n) {
                 IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) n, field);
-                if (padf == null || !padf.reachable()) {
+                if (padf == null || padf.reachable() == false) {
                   return;
                 }
                 off_graph_edge e = add_graph_edge(rhs.id, padf.id);
@@ -242,7 +242,7 @@ public class OfflineProcessor {
             // Use geom
             for (AllocNode o : rep.get_all_points_to_objects()) {
               IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) o, field);
-              if (padf == null || !padf.reachable()) {
+              if (padf == null || padf.reachable() == false) {
                 continue;
               }
               off_graph_edge e = add_graph_edge(rhs.id, padf.id);
@@ -257,12 +257,12 @@ public class OfflineProcessor {
         case Constants.STORE_CONS: {
           rep = rhs.getRepresentative();
 
-          if (!rep.hasPTResult()) {
+          if (rep.hasPTResult() == false) {
             rhs.getWrappedNode().getP2Set().forall(new P2SetVisitor() {
               @Override
               public void visit(Node n) {
                 IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) n, field);
-                if (padf == null || !padf.reachable()) {
+                if (padf == null || padf.reachable() == false) {
                   return;
                 }
                 off_graph_edge e = add_graph_edge(padf.id, lhs.id);
@@ -273,7 +273,7 @@ public class OfflineProcessor {
             // use geom
             for (AllocNode o : rep.get_all_points_to_objects()) {
               IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) o, field);
-              if (padf == null || !padf.reachable()) {
+              if (padf == null || padf.reachable() == false) {
                 continue;
               }
               off_graph_edge e = add_graph_edge(padf.id, lhs.id);
@@ -338,7 +338,7 @@ public class OfflineProcessor {
     queue.clear();
     for (i = 0; i < n_var; ++i) {
       pn = int2var.get(i);
-      if (pn.willUpdate) {
+      if (pn.willUpdate == true) {
         queue.add(i);
       }
     }
@@ -351,13 +351,13 @@ public class OfflineProcessor {
       p = varGraph.get(i);
       while (p != null) {
         pn = int2var.get(p.t);
-        if (!pn.willUpdate) {
+        if (pn.willUpdate == false) {
           pn.willUpdate = true;
           queue.add(p.t);
         }
 
         pn = p.base_var;
-        if (pn != null && !pn.willUpdate) {
+        if (pn != null && pn.willUpdate == false) {
           pn.willUpdate = true;
           queue.add(pn.id);
         }
@@ -399,7 +399,7 @@ public class OfflineProcessor {
            */
           pn = pn.getRepresentative();
 
-          if (!pn.hasPTResult()) {
+          if (pn.hasPTResult() == false) {
             pn.getWrappedNode().getP2Set().forall(new P2SetVisitor() {
               @Override
               public void visit(Node n) {
@@ -407,7 +407,7 @@ public class OfflineProcessor {
                   return;
                 }
                 IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) n, field);
-                if (padf == null || !padf.reachable()) {
+                if (padf == null || padf.reachable() == false) {
                   return;
                 }
                 visitedFlag |= padf.willUpdate;
@@ -417,7 +417,7 @@ public class OfflineProcessor {
             // Use the geometric points-to result
             for (AllocNode o : pn.get_all_points_to_objects()) {
               IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) o, field);
-              if (padf == null || !padf.reachable()) {
+              if (padf == null || padf.reachable() == false) {
                 continue;
               }
               visitedFlag |= padf.willUpdate;
@@ -468,12 +468,12 @@ public class OfflineProcessor {
         case Constants.LOAD_CONS:
           rep = lhs.getRepresentative();
 
-          if (!rep.hasPTResult()) {
+          if (rep.hasPTResult() == false) {
             lhs.getWrappedNode().getP2Set().forall(new P2SetVisitor() {
               @Override
               public void visit(Node n) {
                 IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) n, field);
-                if (padf == null || !padf.reachable()) {
+                if (padf == null || padf.reachable() == false) {
                   return;
                 }
                 add_graph_edge(padf.id, rhs.id);
@@ -483,7 +483,7 @@ public class OfflineProcessor {
             // use geomPA
             for (AllocNode o : rep.get_all_points_to_objects()) {
               IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) o, field);
-              if (padf == null || !padf.reachable()) {
+              if (padf == null || padf.reachable() == false) {
                 continue;
               }
               add_graph_edge(padf.id, rhs.id);
@@ -494,12 +494,12 @@ public class OfflineProcessor {
         case Constants.STORE_CONS:
           rep = rhs.getRepresentative();
 
-          if (!rep.hasPTResult()) {
+          if (rep.hasPTResult() == false) {
             rhs.getWrappedNode().getP2Set().forall(new P2SetVisitor() {
               @Override
               public void visit(Node n) {
                 IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) n, field);
-                if (padf == null || !padf.reachable()) {
+                if (padf == null || padf.reachable() == false) {
                   return;
                 }
                 add_graph_edge(lhs.id, padf.id);
@@ -509,7 +509,7 @@ public class OfflineProcessor {
             // use geomPA
             for (AllocNode o : rep.get_all_points_to_objects()) {
               IVarAbstraction padf = geomPTA.findInstanceField((AllocNode) o, field);
-              if (padf == null || !padf.reachable()) {
+              if (padf == null || padf.reachable() == false) {
                 continue;
               }
               add_graph_edge(lhs.id, padf.id);

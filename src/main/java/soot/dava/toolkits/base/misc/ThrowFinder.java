@@ -202,7 +202,7 @@ public class ThrowFinder {
             if (t instanceof RefType) {
               SootClass c = ((RefType) t).getSootClass();
 
-              if (!handled_Exception(handled, c) && !exceptionSet.contains(c)) {
+              if ((handled_Exception(handled, c) == false) && (exceptionSet.contains(c) == false)) {
                 /*
                  * Nomair A Naeem 7th April HACK TRYING TO MATCH PATTERN label0: r3 = r0; entermonitor r0; label1: r1.up();
                  * r0.wait(); exitmonitor r3; label2: goto label6; label3: $r5 := @caughtexception; label4: r4 = $r5;
@@ -245,7 +245,7 @@ public class ThrowFinder {
           while (exceptionIt.hasNext()) {
             SootClass exception = exceptionIt.next();
 
-            if (!handled_Exception(handled, exception) && !exceptionSet.contains(exception)) {
+            if ((handled_Exception(handled, exception) == false) && (exceptionSet.contains(exception) == false)) {
               exceptionSet.add(exception);
               changed = true;
             }
@@ -264,7 +264,7 @@ public class ThrowFinder {
     }
 
     // Perform worklist algorithm to propegate the throws information.
-    while (!worklist.isEmpty()) {
+    while (worklist.isEmpty() == false) {
 
       SootMethod m = (SootMethod) worklist.getFirst();
       worklist.removeFirst();
@@ -283,7 +283,7 @@ public class ThrowFinder {
           while (exceptionIt.hasNext()) {
             SootClass exception = exceptionIt.next();
 
-            if (!otherExceptionSet.contains(exception)) {
+            if (otherExceptionSet.contains(exception) == false) {
               otherExceptionSet.add(exception);
               changed = true;
             }
@@ -293,7 +293,7 @@ public class ThrowFinder {
             otherExceptionsList.clear();
             otherExceptionsList.addAll(otherExceptionSet);
 
-            if (!worklist.contains(otherMethod)) {
+            if (worklist.contains(otherMethod) == false) {
               worklist.addLast(otherMethod);
             }
           }
@@ -318,7 +318,7 @@ public class ThrowFinder {
         while (exceptionIt.hasNext()) {
           SootClass exception = exceptionIt.next();
 
-          if (!handled_Exception(handled, exception) && !exceptionSet.contains(exception)) {
+          if ((handled_Exception(handled, exception) == false) && (exceptionSet.contains(exception) == false)) {
             exceptionSet.add(exception);
             changed = true;
           }
@@ -328,7 +328,7 @@ public class ThrowFinder {
           exceptionList.clear();
           exceptionList.addAll(exceptionSet);
 
-          if (!worklist.contains(callingMethod)) {
+          if (worklist.contains(callingMethod) == false) {
             worklist.addLast(callingMethod);
           }
         }
@@ -346,11 +346,11 @@ public class ThrowFinder {
 
     String signature = startingMethod.getSubSignature();
 
-    while (!worklist.isEmpty()) {
+    while (worklist.isEmpty() == false) {
       SootClass currentClass = (SootClass) worklist.getFirst();
       worklist.removeFirst();
 
-      if (!applicationClasses.contains(currentClass)) {
+      if (applicationClasses.contains(currentClass) == false) {
         continue;
       }
 
@@ -371,7 +371,7 @@ public class ThrowFinder {
           while (ocit.hasNext()) {
             SootClass otherClass = (SootClass) ocit.next();
 
-            if (!touchSet.contains(otherClass)) {
+            if (touchSet.contains(otherClass) == false) {
               worklist.addLast(otherClass);
               touchSet.add(otherClass);
             }
@@ -388,7 +388,7 @@ public class ThrowFinder {
 
     registeredMethods.add(m);
 
-    if (!m.hasActiveBody()) {
+    if (m.hasActiveBody() == false) {
       return;
     }
 
@@ -410,7 +410,7 @@ public class ThrowFinder {
           protectionSet.put(s, handled);
         }
 
-        if (!handled.contains(exception)) {
+        if (handled.contains(exception) == false) {
           handled.add(exception);
         }
       }
@@ -433,7 +433,7 @@ public class ThrowFinder {
         return true;
       }
 
-      if (!thrownException.hasSuperclass()) {
+      if (thrownException.hasSuperclass() == false) {
         return false;
       }
 
@@ -450,7 +450,7 @@ public class ThrowFinder {
         return true;
       }
 
-      if (!thrownException.hasSuperclass()) {
+      if (thrownException.hasSuperclass() == false) {
         return false;
       }
 

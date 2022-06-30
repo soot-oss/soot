@@ -193,7 +193,10 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
           break;
         }
         final Value conditionOp2 = c.getOp2();
-        if (!(conditionOp2 instanceof IntConstant) || (((IntConstant) conditionOp2).value != 0)) {
+        if (!(conditionOp2 instanceof IntConstant)) {
+          break;
+        }
+        if (((IntConstant) conditionOp2).value != 0) {
           break;
         }
         if (c instanceof NeExpr) {

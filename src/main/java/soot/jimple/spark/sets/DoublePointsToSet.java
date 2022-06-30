@@ -116,7 +116,10 @@ public class DoublePointsToSet extends PointsToSetInternal {
       throw new RuntimeException("NYI");
     }
     final DoublePointsToSet o = (DoublePointsToSet) other;
-    if ((other.type != null && !(other.type.equals(type))) || (other.type == null && type != null)) {
+    if (other.type != null && !(other.type.equals(type))) {
+      throw new RuntimeException("different types " + type + " and " + other.type);
+    }
+    if (other.type == null && type != null) {
       throw new RuntimeException("different types " + type + " and " + other.type);
     }
     final PointsToSetInternal newNewSet = G.v().newSetFactory.newSet(type, pag);

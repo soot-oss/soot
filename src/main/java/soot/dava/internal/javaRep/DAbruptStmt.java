@@ -58,7 +58,7 @@ public class DAbruptStmt extends AbstractStmt {
 
     b.append(command);
 
-    if (!surpressDestinationLabel && (label.toString() != null)) {
+    if ((surpressDestinationLabel == false) && (label.toString() != null)) {
       b.append(" ");
       b.append(label.toString());
     }
@@ -68,7 +68,7 @@ public class DAbruptStmt extends AbstractStmt {
 
   public void toString(UnitPrinter up) {
     up.literal(command);
-    if (!surpressDestinationLabel && (label.toString() != null)) {
+    if ((surpressDestinationLabel == false) && (label.toString() != null)) {
       up.literal(" ");
       up.literal(label.toString());
     }

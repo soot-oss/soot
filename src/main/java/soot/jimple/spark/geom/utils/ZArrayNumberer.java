@@ -118,7 +118,10 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
   @Override
   public boolean remove(E o) {
     int id = o.getNumber();
-    if ((id < 0) || (numberToObj[id] != o)) {
+    if (id < 0) {
+      return false;
+    }
+    if (numberToObj[id] != o) {
       return false;
     }
 

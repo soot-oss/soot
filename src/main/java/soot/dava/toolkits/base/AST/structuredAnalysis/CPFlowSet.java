@@ -256,8 +256,12 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
 
         // check that the two tuples have the same class
         String tempClass = otherTuple.getSootClassName();
+        if (!tempClass.equals(className)) {
+          continue;
+        }
+
         // Check that the variable contained is the same name and type (local or sootfield)
-        if (!tempClass.equals(className) || !otherTuple.getVariable().equals(thisVar)) {
+        if (!otherTuple.getVariable().equals(thisVar)) {
           continue;
         }
 
@@ -336,7 +340,11 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
         String thisClassName = thisTuple.getSootClassName();
         CPVariable thisVar = thisTuple.getVariable();
 
-        if (!otherClassName.equals(thisClassName) || !thisVar.equals(otherVar)) {
+        if (!otherClassName.equals(thisClassName)) {
+          continue;
+        }
+
+        if (!thisVar.equals(otherVar)) {
           continue;
         }
 

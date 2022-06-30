@@ -1,8 +1,5 @@
 package soot.dotnet;
 
-import java.io.File;
-import java.util.List;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,14 +24,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import soot.ClassSource;
-import soot.PrimType;
-import soot.Scene;
-import soot.SootClass;
-import soot.SootResolver;
-import soot.Type;
-import soot.VoidType;
+import soot.*;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.types.DotnetBasicTypes;
 import soot.dotnet.types.DotnetFakeLdFtnType;
@@ -42,6 +32,9 @@ import soot.dotnet.types.DotnetType;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * This ClassSource provides support for SootClass resolving
@@ -55,12 +48,10 @@ public class DotnetClassSource extends ClassSource {
     public DotnetClassSource(String className, File path) {
         super(className);
         // if LdFtn fake, is ok
-        if (className.equals(DotnetBasicTypes.FAKE_LDFTN)) {
-          return;
-        }
-        if (!(path instanceof AssemblyFile)) {
-          throw new RuntimeException("Given File object is no assembly file!");
-        }
+        if (className.equals(DotnetBasicTypes.FAKE_LDFTN))
+            return;
+        if (!(path instanceof AssemblyFile))
+            throw new RuntimeException("Given File object is no assembly file!");
         this.assemblyFile = (AssemblyFile) path;
     }
 
@@ -72,9 +63,8 @@ public class DotnetClassSource extends ClassSource {
     @Override
     public Dependencies resolve(SootClass sc) {
         // If Fake.LdFtn
-        if (sc.getName().equals(DotnetBasicTypes.FAKE_LDFTN)) {
-          return DotnetFakeLdFtnType.resolve(sc);
-        }
+        if (sc.getName().equals(DotnetBasicTypes.FAKE_LDFTN))
+            return DotnetFakeLdFtnType.resolve(sc);
 
         if (Options.v().verbose()) {
             logger.info("resolving " + className + " type definition from file " + assemblyFile.getPath());

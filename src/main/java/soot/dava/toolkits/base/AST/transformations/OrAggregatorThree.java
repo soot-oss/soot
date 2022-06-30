@@ -204,9 +204,14 @@ public class OrAggregatorThree {
 
     // get the next node that should also be an ASTIfNode
     ASTNode isItIfTwo = (ASTNode) it.next();
+    if (!(isItIfTwo instanceof ASTIfNode)) {
+      // something is wrong
+      return null;
+    }
+
     // double check by invoking matchPattern on these
     // if speed is an issue this check can be removed
-    if (!(isItIfTwo instanceof ASTIfNode) || !matchPattern((ASTIfNode) isItIfOne, (ASTIfNode) isItIfTwo)) {
+    if (!matchPattern((ASTIfNode) isItIfOne, (ASTIfNode) isItIfTwo)) {
       // pattern did not match
       return null;
     }

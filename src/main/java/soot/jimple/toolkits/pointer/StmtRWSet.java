@@ -139,7 +139,10 @@ public class StmtRWSet extends RWSet {
       return false;
     }
     StmtRWSet o = (StmtRWSet) other;
-    if ((this.callsNative != o.callsNative) || !this.field.equals(o.field)) {
+    if (this.callsNative != o.callsNative) {
+      return false;
+    }
+    if (!this.field.equals(o.field)) {
       return false;
     }
     if (this.base instanceof FullObjectSet && o.base instanceof FullObjectSet) {

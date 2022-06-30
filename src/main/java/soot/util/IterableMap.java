@@ -188,7 +188,7 @@ public class IterableMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean remove(Object o) {
-          if (!value_chain.contains(o)) {
+          if (value_chain.contains(o) == false) {
             return false;
           }
 

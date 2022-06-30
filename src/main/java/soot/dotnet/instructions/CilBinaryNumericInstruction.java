@@ -93,9 +93,8 @@ public class CilBinaryNumericInstruction extends AbstractCilnstruction {
       case ShiftLeft:
         return Jimple.v().newShlExpr(left, right);
       case ShiftRight:
-        if (instruction.getSign().equals(ProtoIlInstructions.IlInstructionMsg.IlSign.Signed)) {
+        if (instruction.getSign().equals(ProtoIlInstructions.IlInstructionMsg.IlSign.Signed))
           return Jimple.v().newShrExpr(left, right);
-        }
         return Jimple.v().newUshrExpr(left, right);
       default:
         return null;

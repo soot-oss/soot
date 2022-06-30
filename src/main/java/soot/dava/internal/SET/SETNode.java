@@ -121,7 +121,7 @@ public abstract class SETNode {
   }
 
   public boolean remove_Child(SETNode child, IterableSet children) {
-    if ((this == child) || !children.contains(child)) {
+    if ((this == child) || (children.contains(child) == false)) {
       return false;
     }
 
@@ -131,7 +131,7 @@ public abstract class SETNode {
   }
 
   public boolean insert_ChildBefore(SETNode child, SETNode point, IterableSet children) {
-    if ((this == child) || (this == point) || !children.contains(point)) {
+    if ((this == child) || (this == point) || (children.contains(point) == false)) {
       return false;
     }
 
@@ -298,7 +298,7 @@ public abstract class SETNode {
   }
 
   public boolean nest(SETNode other) {
-    if (!other.resolve(this)) {
+    if (other.resolve(this) == false) {
       return false;
     }
 
@@ -395,7 +395,7 @@ public abstract class SETNode {
 
       Iterator bit = body.iterator();
       while (bit.hasNext()) {
-        if (!(bit.next() instanceof AugmentedStmt)) {
+        if ((bit.next() instanceof AugmentedStmt) == false) {
           logger.debug("Error in body: " + getClass());
         }
       }
@@ -409,11 +409,17 @@ public abstract class SETNode {
 
   @Override
   public boolean equals(Object other) {
-    if (!(other instanceof SETNode)) {
+    if (other instanceof SETNode == false) {
       return false;
     }
     SETNode typed_other = (SETNode) other;
-    if (!body.equals(typed_other.body) || !subBodies.equals(typed_other.subBodies) || !body2childChain.equals(typed_other.body2childChain)) {
+    if (body.equals(typed_other.body) == false) {
+      return false;
+    }
+    if (subBodies.equals(typed_other.subBodies) == false) {
+      return false;
+    }
+    if (body2childChain.equals(typed_other.body2childChain) == false) {
       return false;
     }
     return true;

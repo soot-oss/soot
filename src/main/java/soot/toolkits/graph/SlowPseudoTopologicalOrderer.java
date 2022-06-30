@@ -48,7 +48,7 @@ public class SlowPseudoTopologicalOrderer<N> implements Orderer<N> {
 
   private static abstract class AbstractOrderBuilder<N> {
 
-    protected static enum Color { WHITE, GRAY, BLACK }
+    protected static enum Color { WHITE, GRAY, BLACK };
 
     protected final Map<N, Color> stmtToColor = new HashMap<N, Color>();
     protected final LinkedList<N> order = new LinkedList<N>();

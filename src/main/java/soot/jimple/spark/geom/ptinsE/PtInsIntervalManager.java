@@ -62,7 +62,7 @@ public class PtInsIntervalManager extends IFigureManager {
 
     for (int i = 0; i < Divisions; ++i) {
       SegmentNode p = header[i];
-      while (p != null && p.is_new) {
+      while (p != null && p.is_new == true) {
         p.is_new = false;
         p = p.next;
       }
@@ -144,7 +144,7 @@ public class PtInsIntervalManager extends IFigureManager {
   }
 
   public void mergeFigures(int upperSize) {
-    if (size[ONE_TO_ONE] > upperSize && header[ONE_TO_ONE].is_new) {
+    if (size[ONE_TO_ONE] > upperSize && header[ONE_TO_ONE].is_new == true) {
       // After the merging, we must propagate this interval, thus it has to be a new interval
 
       SegmentNode p = generate_all_to_many(header[ONE_TO_ONE]);
@@ -156,13 +156,13 @@ public class PtInsIntervalManager extends IFigureManager {
       size[ONE_TO_ONE] = 0;
     }
 
-    if (size[MANY_TO_ALL] > upperSize && header[MANY_TO_ALL].is_new) {
+    if (size[MANY_TO_ALL] > upperSize && header[MANY_TO_ALL].is_new == true) {
 
       header[MANY_TO_ALL] = generate_many_to_all(header[MANY_TO_ALL]);
       size[MANY_TO_ALL] = 1;
     }
 
-    if (size[ALL_TO_MANY] > upperSize && header[ALL_TO_MANY].is_new) {
+    if (size[ALL_TO_MANY] > upperSize && header[ALL_TO_MANY].is_new == true) {
 
       header[0] = generate_all_to_many(header[ALL_TO_MANY]);
       size[ALL_TO_MANY] = 1;
@@ -193,7 +193,7 @@ public class PtInsIntervalManager extends IFigureManager {
       }
 
       temp = p.next;
-      if (!contained) {
+      if (contained == false) {
         p.next = q;
         q = p;
         ++size[ONE_TO_ONE];
@@ -388,7 +388,7 @@ public class PtInsIntervalManager extends IFigureManager {
           && (predator.I1 + predator.L >= list.I2 + L)) {
         // The checked figure is completely contained in the predator
         // So we ignore it
-        
+        ;
       } else {
         if (q == null) {
           p = q = list;

@@ -91,7 +91,19 @@ public class RectangleNode extends SegmentNode {
       // If the segment is not entirely above, below, to the left, to the right of this rectangle
       // then, they must intersect
 
-      if ((p.I2 >= rect_q.I2 + rect_q.L_prime) || (p.I2 + p.L_prime <= rect_q.I2) || (p.I1 + p.L <= rect_q.I1) || (p.I1 >= rect_q.I1 + rect_q.L)) {
+      if (p.I2 >= rect_q.I2 + rect_q.L_prime) {
+        return false;
+      }
+
+      if (p.I2 + p.L_prime <= rect_q.I2) {
+        return false;
+      }
+
+      if (p.I1 + p.L <= rect_q.I1) {
+        return false;
+      }
+
+      if (p.I1 >= rect_q.I1 + rect_q.L) {
         return false;
       }
 

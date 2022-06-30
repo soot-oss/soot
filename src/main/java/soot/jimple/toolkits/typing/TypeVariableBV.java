@@ -99,7 +99,11 @@ class TypeVariableBV implements Comparable<Object> {
       return ecr().equals(obj);
     }
 
-    if ((obj == null) || !obj.getClass().equals(getClass())) {
+    if (obj == null) {
+      return false;
+    }
+
+    if (!obj.getClass().equals(getClass())) {
       return false;
     }
 

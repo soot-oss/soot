@@ -395,7 +395,11 @@ public class CP extends StructuredAnalysis {
     }
 
     CPFlowSet inSet = (CPFlowSet) input;
-    if ((inSet == NOPATH) || !(s instanceof DefinitionStmt)) {
+    if (inSet == NOPATH) {
+      return inSet;
+    }
+
+    if (!(s instanceof DefinitionStmt)) {
       return inSet;
     }
 
@@ -653,6 +657,7 @@ public class CP extends StructuredAnalysis {
     if (DEBUG_IF) {
       System.out.println("Processing if node using over-ridden process if method" + input.toString());
     }
+    ;
 
     input = processCondition(node.get_Condition(), input);
 
@@ -689,6 +694,7 @@ public class CP extends StructuredAnalysis {
     if (DEBUG_IF) {
       System.out.println("Exiting if node" + temp.toString());
     }
+    ;
 
     return temp;
   }
@@ -698,6 +704,7 @@ public class CP extends StructuredAnalysis {
     if (DEBUG_IF) {
       System.out.println("Processing IF-ELSE node using over-ridden process if method" + input.toString());
     }
+    ;
 
     if (!(input instanceof CPFlowSet)) {
       throw new DavaFlowAnalysisException("not a flow set");
@@ -751,7 +758,7 @@ public class CP extends StructuredAnalysis {
     output1 = handleBreak(label, temp, node);
     if (DEBUG_IF) {
       System.out.println("Exiting ifelse node" + output1.toString());
-      
+      ;
     }
 
     return output1;

@@ -210,7 +210,17 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
 
         // newASTPreInitMethod should be non null if we can go ahead
 
-        if ((newASTPreInitMethod == null) || !finalizePreInitMethod()) {
+        if (newASTPreInitMethod == null) {
+          // could not create ASTMethodNode for some reason or the
+          // other
+          // just silently return
+          // System.out.println(">>>>>>>>>>>>>>>>Couldnt not create
+          // ASTMethodNode for the new PreInitMethod");
+          removeInit();
+          return;
+        }
+
+        if (!finalizePreInitMethod()) {
           // shouldnt be creating PreInit
           // System.out.println(">>>>>>>>>>>>>>SHOULDNT BE CREATING
           // PREINIT");

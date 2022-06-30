@@ -1,8 +1,5 @@
 package soot.dotnet.instructions;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,11 +21,8 @@ import java.util.List;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import soot.Body;
-import soot.Immediate;
-import soot.Local;
-import soot.Type;
-import soot.Value;
+
+import soot.*;
 import soot.dotnet.exceptions.NoStatementInstructionException;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.members.method.DotnetBodyVariableManager;
@@ -36,6 +30,9 @@ import soot.dotnet.proto.ProtoIlInstructions;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Load element out of an array local
@@ -45,9 +42,8 @@ public class CilLdElemaInstruction extends AbstractCilnstruction {
     public CilLdElemaInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
         super(instruction, dotnetBody, cilBlock);
 
-        if (instruction.getIndicesCount() > 1) {
-          isMultiArrayRef = true;
-        }
+        if (instruction.getIndicesCount() > 1)
+            isMultiArrayRef = true;
     }
 
     private boolean isMultiArrayRef = false;

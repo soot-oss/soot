@@ -90,7 +90,10 @@ class TypeVariable implements Comparable<Object> {
     if (rep != this) {
       return ecr().equals(obj);
     }
-    if ((obj == null) || !obj.getClass().equals(this.getClass())) {
+    if (obj == null) {
+      return false;
+    }
+    if (!obj.getClass().equals(this.getClass())) {
       return false;
     }
     return ((TypeVariable) obj).ecr() == this;

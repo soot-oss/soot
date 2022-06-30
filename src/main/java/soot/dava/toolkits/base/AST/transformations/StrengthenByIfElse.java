@@ -162,7 +162,12 @@ public class StrengthenByIfElse {
         } // end of break stmt
       } // stmt is an abrupt stmt
       else if (stmt instanceof ReturnStmt || stmt instanceof ReturnVoidStmt) {
-        if (!(loopNode instanceof ASTUnconditionalLoopNode) || stmtIt.hasNext()) {
+        if (!(loopNode instanceof ASTUnconditionalLoopNode)) {
+          // this pattern is only possible for while(true)
+          return null;
+        }
+
+        if (stmtIt.hasNext()) {
           // returns should come in the end
           return null;
         }

@@ -1,7 +1,5 @@
 package soot.jimple.toolkits.ide;
 
-import java.util.Map;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -26,6 +24,9 @@ import java.util.Map;
 
 import heros.IFDSTabulationProblem;
 import heros.InterproceduralCFG;
+
+import java.util.Map;
+
 import soot.PackManager;
 import soot.SceneTransformer;
 import soot.SootMethod;

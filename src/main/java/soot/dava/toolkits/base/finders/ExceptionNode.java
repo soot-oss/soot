@@ -64,7 +64,7 @@ public class ExceptionNode {
 
   public boolean add_TryStmts(Collection<AugmentedStmt> c) {
     for (AugmentedStmt as : c) {
-      if (!add_TryStmt(as)) {
+      if (add_TryStmt(as) == false) {
         return false;
       }
     }
@@ -105,7 +105,7 @@ public class ExceptionNode {
   }
 
   public boolean remove(AugmentedStmt as) {
-    if (!body.contains(as)) {
+    if (body.contains(as) == false) {
       return false;
     }
 
@@ -134,7 +134,7 @@ public class ExceptionNode {
 
       for (AugmentedStmt as : catchBody) {
         for (AugmentedStmt succ : as.bsuccs) {
-          if (!catchBody.contains(succ)) {
+          if (catchBody.contains(succ) == false) {
             exitList.add(as);
             break;
           }
@@ -154,7 +154,7 @@ public class ExceptionNode {
     oldBody.addAll(body);
 
     for (AugmentedStmt as : newTryBody) {
-      if (!remove(as)) {
+      if (remove(as) == false) {
 
         StringBuffer b = new StringBuffer();
         for (AugmentedStmt auBody : newTryBody) {

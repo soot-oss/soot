@@ -1,11 +1,5 @@
 package soot.util.annotations;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -29,6 +23,12 @@ import java.util.Map;
  */
 
 import com.google.common.reflect.AbstractInvocationHandler;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationEnumElem;

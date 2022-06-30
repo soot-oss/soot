@@ -53,14 +53,12 @@ public class DotnetProperty extends AbstractDotnetMember {
   }
 
   private void initDotnetMethods() {
-    if (getCanGet() && protoProperty.hasGetter()) {
+    if (getCanGet() && protoProperty.hasGetter())
       this.getterMethod
           = new DotnetMethod(protoProperty.getGetter(), declaringClass, DotnetMethod.DotnetMethodType.PROPERTY);
-    }
-    if (getCanSet() && protoProperty.hasSetter()) {
+    if (getCanSet() && protoProperty.hasSetter())
       this.setterMethod
           = new DotnetMethod(protoProperty.getSetter(), declaringClass, DotnetMethod.DotnetMethodType.PROPERTY);
-    }
   }
 
   public boolean getCanGet() {
@@ -72,16 +70,14 @@ public class DotnetProperty extends AbstractDotnetMember {
   }
 
   public SootMethod makeSootMethodGetter() {
-    if (!protoProperty.getCanGet() || !protoProperty.hasGetter()) {
+    if (!protoProperty.getCanGet() || !protoProperty.hasGetter())
       return null;
-    }
     return getterMethod.toSootMethod(createPropertyMethodSource(false));
   }
 
   public SootMethod makeSootMethodSetter() {
-    if (!protoProperty.getCanSet() || !protoProperty.hasSetter()) {
+    if (!protoProperty.getCanSet() || !protoProperty.hasSetter())
       return null;
-    }
     return setterMethod.toSootMethod(createPropertyMethodSource(true));
   }
 

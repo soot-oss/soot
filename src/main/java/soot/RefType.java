@@ -242,11 +242,9 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
   @Override
   public Type getArrayElementType() {
-    if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      if (DotnetBasicTypes.SYSTEM_OBJECT.equals(className) || DotnetBasicTypes.SYSTEM_ICLONEABLE.equals(className)) {
+    if (Options.v().src_prec() == Options.src_prec_dotnet)
+      if (DotnetBasicTypes.SYSTEM_OBJECT.equals(className) || DotnetBasicTypes.SYSTEM_ICLONEABLE.equals(className))
         return Scene.v().getObjectType();
-      }
-    }
 
     if (JavaBasicTypes.JAVA_LANG_OBJECT.equals(className) || JavaBasicTypes.JAVA_IO_SERIALIZABLE.equals(className)
         || JavaBasicTypes.JAVA_LANG_CLONABLE.equals(className)) {

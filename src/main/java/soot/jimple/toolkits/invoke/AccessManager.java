@@ -140,7 +140,10 @@ public class AccessManager {
   public static void createAccessorMethods(final Body body, final Stmt before, final Stmt after) {
     final Chain<Unit> units = body.getUnits();
 
-    if ((before != null && !units.contains(before)) || (after != null && !units.contains(after))) {
+    if (before != null && !units.contains(before)) {
+      throw new RuntimeException();
+    }
+    if (after != null && !units.contains(after)) {
       throw new RuntimeException();
     }
 

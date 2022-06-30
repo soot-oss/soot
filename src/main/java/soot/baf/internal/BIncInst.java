@@ -24,7 +24,6 @@ package soot.baf.internal;
 
 import java.util.Collections;
 import java.util.List;
-
 import soot.Local;
 import soot.UnitPrinter;
 import soot.ValueBox;

@@ -97,7 +97,10 @@ public class RectangularArrayFinder extends SceneTransformer {
     for (SootClass c : sc.getApplicationClasses()) {
       for (Iterator<SootMethod> methodIt = c.methodIterator(); methodIt.hasNext();) {
         SootMethod method = methodIt.next();
-        if (!method.isConcrete() || !sc.getReachableMethods().contains(method)) {
+        if (!method.isConcrete()) {
+          continue;
+        }
+        if (!sc.getReachableMethods().contains(method)) {
           continue;
         }
 
@@ -154,7 +157,10 @@ public class RectangularArrayFinder extends SceneTransformer {
       while (!changedNodeList.isEmpty()) {
         Object node = changedNodeList.remove(0);
         for (Object succ : agraph.getSuccsOf(node)) {
-          if (falseSet.contains(succ) || trueSet.contains(succ)) {
+          if (falseSet.contains(succ)) {
+            continue;
+          }
+          if (trueSet.contains(succ)) {
             continue;
           }
 
@@ -431,8 +437,12 @@ public class RectangularArrayFinder extends SceneTransformer {
 
     Chain<Unit> units = body.getUnits();
     for (Stmt stmt = (Stmt) units.getFirst(); true;) {
+      if (stmt == null) {
+        break;
+      }
+
       /* only deal with the first block */
-      if ((stmt == null) || !stmt.fallsThrough()) {
+      if (!stmt.fallsThrough()) {
         break;
       }
 
@@ -494,7 +504,10 @@ public class RectangularArrayFinder extends SceneTransformer {
     int state = 1;
     while (true) {
       curstmt = (Stmt) units.getSuccOf(curstmt);
-      if ((curstmt == null) || !(curstmt instanceof AssignStmt)) {
+      if (curstmt == null) {
+        return -1;
+      }
+      if (!(curstmt instanceof AssignStmt)) {
         return -1;
       }
 

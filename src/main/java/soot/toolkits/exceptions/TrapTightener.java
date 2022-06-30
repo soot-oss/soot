@@ -110,9 +110,14 @@ public final class TrapTightener extends TrapTransformer {
         }
         if (firstTrappedThrower != null) {
           for (Unit u = lastTrappedUnit; u != null; u = unitChain.getPredOf(u)) {
+            if (mightThrowTo(graph, u, trap)) {
+              lastTrappedThrower = u;
+              break;
+            }
+
             // If this is the catch-all block and the current unit
             // has an, active monitor, we need to keep the block
-            if (mightThrowTo(graph, u, trap) || (isCatchAll && unitsWithMonitor.contains(u))) {
+            if (isCatchAll && unitsWithMonitor.contains(u)) {
               lastTrappedThrower = u;
               break;
             }

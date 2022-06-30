@@ -399,7 +399,10 @@ public class DexNullTransformer extends AbstractNullTransformer {
       }
 
       private boolean isConstZero(Value rightOp) {
-        if ((rightOp instanceof IntConstant && ((IntConstant) rightOp).value == 0) || (rightOp instanceof LongConstant && ((LongConstant) rightOp).value == 0)) {
+        if (rightOp instanceof IntConstant && ((IntConstant) rightOp).value == 0) {
+          return true;
+        }
+        if (rightOp instanceof LongConstant && ((LongConstant) rightOp).value == 0) {
           return true;
         }
         return false;

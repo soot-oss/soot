@@ -1,6 +1,8 @@
 
 package soot.jimple.toolkits.thread.mhp;
 
+import heros.solver.Pair;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -30,7 +32,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import heros.solver.Pair;
 import soot.toolkits.graph.DirectedGraph;
 import soot.util.FastStack;
 

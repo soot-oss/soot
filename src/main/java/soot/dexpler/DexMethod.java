@@ -94,7 +94,11 @@ public class DexMethod {
 
     // if the method is abstract or native, no code needs to be transformed
     int flags = method.getAccessFlags();
-    if (Modifier.isAbstract(flags) || Modifier.isNative(flags) || (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES)) {
+    if (Modifier.isAbstract(flags) || Modifier.isNative(flags)) {
+      return sm;
+    }
+
+    if (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES) {
       return sm;
     }
 

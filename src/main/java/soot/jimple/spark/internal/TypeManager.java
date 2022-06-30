@@ -119,7 +119,13 @@ public final class TypeManager {
         types = Scene.v().getOrMakeFastHierarchy().canStoreTypeList(nt);
       }
       for (final Type t : types) {
-        if (!(t instanceof RefLikeType) || (t instanceof AnySubType) || isUnresolved(t)) {
+        if (!(t instanceof RefLikeType)) {
+          continue;
+        }
+        if (t instanceof AnySubType) {
+          continue;
+        }
+        if (isUnresolved(t)) {
           continue;
         }
 
@@ -184,7 +190,13 @@ public final class TypeManager {
     // **
     ArrayNumberer<AllocNode> allocNodes = pag.getAllocNodeNumberer();
     for (Type t : Scene.v().getTypeNumberer()) {
-      if (!(t instanceof RefLikeType) || (t instanceof AnySubType) || isUnresolved(t)) {
+      if (!(t instanceof RefLikeType)) {
+        continue;
+      }
+      if (t instanceof AnySubType) {
+        continue;
+      }
+      if (isUnresolved(t)) {
         continue;
       }
       // **

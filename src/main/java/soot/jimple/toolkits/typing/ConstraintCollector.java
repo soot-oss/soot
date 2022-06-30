@@ -21,20 +21,8 @@ package soot.jimple.toolkits.typing;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import soot.ArrayType;
-import soot.DoubleType;
-import soot.FloatType;
-import soot.IntType;
-import soot.Local;
-import soot.LongType;
-import soot.NullType;
-import soot.RefType;
-import soot.Scene;
-import soot.SootField;
-import soot.SootMethodRef;
-import soot.TrapManager;
-import soot.Type;
-import soot.Value;
+
+import soot.*;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;

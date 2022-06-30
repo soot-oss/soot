@@ -189,7 +189,17 @@ public class IfElseSplitter extends DepthFirstAdapter {
 
   public boolean tryBodyPattern(List<Object> body, SETNodeLabel label, List<Object> otherBody) {
     Stmt lastStmt = getLastStmt(body);
-    if ((lastStmt == null) || !(lastStmt instanceof ReturnStmt || lastStmt instanceof ReturnVoidStmt || lastStmt instanceof DAbruptStmt) || bodyTargetsLabel(label, body) || bodyTargetsLabel(label, otherBody)) {
+    if (lastStmt == null) {
+      // dont have a last stmt so cant match pattern
+      return false;
+    }
+
+    if (!(lastStmt instanceof ReturnStmt || lastStmt instanceof ReturnVoidStmt || lastStmt instanceof DAbruptStmt)) {
+      // lastStmt is not an abrupt stmt
+      return false;
+    }
+
+    if (bodyTargetsLabel(label, body) || bodyTargetsLabel(label, otherBody)) {
       // one of the bodies targets the label on the ifelse cant match pattern
       return false;
     }
@@ -205,8 +215,12 @@ public class IfElseSplitter extends DepthFirstAdapter {
    */
   public boolean bodyTargetsLabel(SETNodeLabel label, List<Object> body) {
     // no SETNodeLabel is good
+    if (label == null) {
+      return false;
+    }
+
     // SETNodeLabel but with no string is also good
-    if ((label == null) || (label.toString() == null)) {
+    if (label.toString() == null) {
       return false;
     }
 

@@ -435,17 +435,17 @@ public class EliminateConditions extends DepthFirstAdapter {
           }
         }
         return true;
-      } else if (temp instanceof ASTWhileNode && !returned.booleanValue()) {
+      } else if (temp instanceof ASTWhileNode && returned.booleanValue() == false) {
         // notice we only remove if ASTWhileNode has false condition
         bodyContainingNode.remove(temp);
         return true;
-      } else if (temp instanceof ASTDoWhileNode && !returned.booleanValue()) {
+      } else if (temp instanceof ASTDoWhileNode && returned.booleanValue() == false) {
         // System.out.println("in try dowhile false");
         // remove the loop copy the body out since it gets executed once
         bodyContainingNode.remove(temp);
         bodyContainingNode.addAll(index, (List) temp.get_SubBodies().get(0));
         return true;
-      } else if (temp instanceof ASTForLoopNode && !returned.booleanValue()) {
+      } else if (temp instanceof ASTForLoopNode && returned.booleanValue() == false) {
         bodyContainingNode.remove(temp);
         ASTStatementSequenceNode newNode = new ASTStatementSequenceNode(((ASTForLoopNode) temp).getInit());
         bodyContainingNode.add(index, newNode);

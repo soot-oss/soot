@@ -21,6 +21,8 @@ package soot.toolkits.exceptions;
  * #L%
  */
 
+import com.google.common.cache.CacheBuilder;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,8 +31,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import com.google.common.cache.CacheBuilder;
 
 import soot.AnySubType;
 import soot.FastHierarchy;
@@ -977,7 +977,10 @@ public class ThrowableSet {
     if (this == obj) {
       return true;
     }
-    if ((obj == null) || (getClass() != obj.getClass())) {
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
       return false;
     }
     ThrowableSet other = (ThrowableSet) obj;

@@ -105,11 +105,11 @@ public class SwitchNode implements Comparable {
       SwitchNode pred = binding.get(rit.next());
 
       if (pred != null) {
-        if (!preds.contains(pred)) {
+        if (preds.contains(pred) == false) {
           preds.add(pred);
         }
 
-        if (!pred.succs.contains(this)) {
+        if (pred.succs.contains(this) == false) {
           pred.succs.add(this);
         }
       }

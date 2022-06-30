@@ -21,16 +21,8 @@ package soot.jimple.toolkits.pointer;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import soot.Context;
-import soot.G;
-import soot.Local;
-import soot.PointsToAnalysis;
-import soot.PointsToSet;
-import soot.PrimType;
-import soot.RefType;
-import soot.Singletons;
-import soot.SootField;
-import soot.Type;
+
+import soot.*;
 
 /**
  * A very naive pointer analysis that just reports that any points can point to any object.
@@ -48,12 +40,10 @@ public class DumbPointerAnalysis implements PointsToAnalysis {
   @Override
   public PointsToSet reachingObjects(Local l) {
     Type t = l.getType();
-    if (t instanceof RefType) {
+    if (t instanceof RefType)
       return FullObjectSet.v((RefType) t);
-    }
-    if (t instanceof PrimType) {
+    if (t instanceof PrimType)
       return FullObjectSet.v((PrimType) t);
-    }
     return FullObjectSet.v();
   }
 

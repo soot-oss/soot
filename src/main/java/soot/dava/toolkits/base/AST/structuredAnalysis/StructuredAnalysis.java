@@ -354,7 +354,7 @@ public abstract class StructuredAnalysis<E> {
       output = process(s, output);
       if (DEBUG_STATEMENTS) {
         System.out.println("After Processing statement " + s + output.toString());
-        
+        ;
       }
     }
     return output;

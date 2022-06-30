@@ -32,6 +32,7 @@ import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
 import polyglot.ast.Try;
 import polyglot.util.IdentityKey;
+
 import soot.Local;
 import soot.LocalGenerator;
 import soot.Scene;

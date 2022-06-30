@@ -94,12 +94,19 @@ public class OrAggregatorTwo extends DepthFirstAdapter {
 
     List<Object> innerIfBody = checkElseHasOnlyIf(elseBody);
 
-    
+    if (innerIfBody == null) {
+      // pattern 1 did not match
+
+      // check for pattern 2
+      matchPatternTwo(node);
+
+      return;
+    }
     // pattern 1 is fine till now
     // compare the ifBody with the innerIfBody
     // They need to match exactly
 
-    if ((innerIfBody == null) || (ifBody.toString().compareTo(innerIfBody.toString()) != 0)) {
+    if (ifBody.toString().compareTo(innerIfBody.toString()) != 0) {
       matchPatternTwo(node);
       return;
     }

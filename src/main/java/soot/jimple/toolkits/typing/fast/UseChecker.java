@@ -1,14 +1,5 @@
 package soot.jimple.toolkits.typing.fast;
 
-import java.util.ArrayDeque;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -34,6 +25,16 @@ import org.slf4j.LoggerFactory;
  */
 
 import heros.solver.Pair;
+
+import java.util.ArrayDeque;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.G;

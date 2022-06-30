@@ -36,9 +36,8 @@ public class CilInstructionFactory {
 
   public static CilInstruction fromInstructionMsg(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody,
       CilBlock cilBlock) {
-    if (instruction == null) {
+    if (instruction == null)
       throw new RuntimeException("Cannot instantiate null instruction!");
-    }
 
     switch (instruction.getOpCode()) {
       case CALL:

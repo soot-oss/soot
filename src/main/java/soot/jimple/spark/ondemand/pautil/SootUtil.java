@@ -403,7 +403,10 @@ public class SootUtil {
 
   public static boolean isResolvableCall(SootMethod invokedMethod) {
     // TODO make calls through invokespecial resolvable
-    if (invokedMethod.isStatic() || isConstructor(invokedMethod)) {
+    if (invokedMethod.isStatic()) {
+      return true;
+    }
+    if (isConstructor(invokedMethod)) {
       return true;
     }
     return false;

@@ -222,7 +222,14 @@ public class SynchronizerManager {
 
       final IdentityStmt is = (IdentityStmt) s;
       final Value ro = is.getRightOp();
-      if (!(ro instanceof ParameterRef) || (((ParameterRef) ro).getIndex() != 0) || !unitsIt.hasNext()) {
+      if (!(ro instanceof ParameterRef)) {
+        continue;
+      }
+      if (((ParameterRef) ro).getIndex() != 0) {
+        continue;
+      }
+
+      if (!unitsIt.hasNext()) {
         continue;
       }
       s = (Stmt) unitsIt.next();

@@ -54,8 +54,15 @@ public class CriticalSectionVisibleEdgesPred implements EdgePredicate {
     String srcClass = e.src().getDeclaringClass().toString();
 
     // Remove Deep Library Calls
+    if (tgtClass.startsWith("sun.")) {
+      return false;
+    }
+    if (tgtClass.startsWith("com.sun.")) {
+      return false;
+    }
+
     // Remove static initializers
-    if (tgtClass.startsWith("sun.") || tgtClass.startsWith("com.sun.") || tgtMethod.endsWith("void <clinit>()>")) {
+    if (tgtMethod.endsWith("void <clinit>()>")) {
       return false;
     }
 

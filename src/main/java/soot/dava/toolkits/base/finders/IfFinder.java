@@ -91,7 +91,7 @@ public class IfFinder implements FactFinder {
             while (fbit.hasNext()) {
               AugmentedStmt fbas = (AugmentedStmt) fbit.next();
 
-              if (!tryBody.contains(fbas)) {
+              if (tryBody.contains(fbas) == false) {
                 fullBody.remove(fbas);
 
                 if (ifBody.contains(fbas)) {
@@ -121,17 +121,17 @@ public class IfFinder implements FactFinder {
     LinkedList<AugmentedStmt> worklist = new LinkedList<AugmentedStmt>();
     worklist.addLast(targetBranch);
 
-    while (!worklist.isEmpty()) {
+    while (worklist.isEmpty() == false) {
       AugmentedStmt as = worklist.removeFirst();
 
-      if (!body.contains(as)) {
+      if (body.contains(as) == false) {
         body.add(as);
 
         Iterator sit = as.csuccs.iterator();
         while (sit.hasNext()) {
           AugmentedStmt sas = (AugmentedStmt) sit.next();
 
-          if (!sas.get_Reachers().contains(otherBranch) && sas.get_Dominators().contains(targetBranch)) {
+          if ((sas.get_Reachers().contains(otherBranch) == false) && (sas.get_Dominators().contains(targetBranch) == true)) {
             worklist.addLast(sas);
           }
         }

@@ -90,9 +90,8 @@ public class DotnetBody {
   }
 
   private void addThisStmt() {
-    if (dotnetMethodSig.isStatic()) {
+    if (dotnetMethodSig.isStatic())
       return;
-    }
     RefType thisType = dotnetMethodSig.getDeclaringClass().getType();
     Local l = Jimple.v().newLocal("this", thisType);
     IdentityStmt identityStmt = Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef(thisType));
@@ -107,12 +106,10 @@ public class DotnetBody {
    * @return
    */
   public static Value inlineCastExpr(Value v) {
-    if (v instanceof Immediate) {
+    if (v instanceof Immediate)
       return v;
-    }
-    if (v instanceof CastExpr) {
+    if (v instanceof CastExpr)
       return inlineCastExpr(((CastExpr) v).getOp());
-    }
     return v;
   }
 
@@ -140,13 +137,12 @@ public class DotnetBody {
     }
     LocalGenerator lg = Scene.v().createLocalGenerator(b);
     b.getUnits().add(Jimple.v().newThrowStmt(lg.generateLocal(soot.RefType.v("java.lang.Throwable"))));
-    if (m.getReturnType() instanceof VoidType) {
+    if (m.getReturnType() instanceof VoidType)
       b.getUnits().add(Jimple.v().newReturnVoidStmt());
-    } else if (m.getReturnType() instanceof PrimType) {
+    else if (m.getReturnType() instanceof PrimType)
       b.getUnits().add(Jimple.v().newReturnStmt(DotnetTypeFactory.initType(m.getReturnType())));
-    } else {
+    else
       b.getUnits().add(Jimple.v().newReturnStmt(NullConstant.v()));
-    }
   }
 
 }

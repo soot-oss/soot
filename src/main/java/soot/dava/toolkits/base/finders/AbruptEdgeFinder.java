@@ -52,7 +52,7 @@ public class AbruptEdgeFinder implements FactFinder {
   }
 
   public void find_Continues(SETNode SETParent, IterableSet body, IterableSet children) {
-    if (!(SETParent instanceof SETCycleNode)) {
+    if ((SETParent instanceof SETCycleNode) == false) {
       return;
     }
 
@@ -63,7 +63,7 @@ public class AbruptEdgeFinder implements FactFinder {
     while (pit.hasNext()) {
       AugmentedStmt pas = (AugmentedStmt) pit.next();
 
-      if ((body.contains(pas)) && !naturalPreds.contains(pas)) {
+      if ((body.contains(pas)) && (naturalPreds.contains(pas) == false)) {
         ((SETStatementSequenceNode) pas.myNode).insert_AbruptStmt(new DAbruptStmt("continue", scn.get_Label()));
       }
     }
@@ -76,11 +76,11 @@ public class AbruptEdgeFinder implements FactFinder {
     while (pit.hasNext()) {
       AugmentedStmt pas = (AugmentedStmt) pit.next();
 
-      if (!prev.get_Body().contains(pas)) {
+      if (prev.get_Body().contains(pas) == false) {
         continue;
       }
 
-      if (!naturalPreds.contains(pas)) {
+      if (naturalPreds.contains(pas) == false) {
         Object temp = pas.myNode;
         /*
          * Nomair debugging bug number 29

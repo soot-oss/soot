@@ -29,6 +29,7 @@ import soot.ByteType;
 import soot.G;
 import soot.IntegerType;
 import soot.PrimType;
+import soot.RefType;
 import soot.Singletons;
 import soot.Type;
 

@@ -59,7 +59,13 @@ public class ContextInsensitiveBuilder {
       for (Iterator<SootClass> cIt = new ArrayList<>(Scene.v().getClasses()).iterator(); cIt.hasNext();) {
         final SootClass c = cIt.next();
         for (final SootMethod m : c.getMethods()) {
-          if (!m.isConcrete() || m.isNative() || m.isPhantom()) {
+          if (!m.isConcrete()) {
+            continue;
+          }
+          if (m.isNative()) {
+            continue;
+          }
+          if (m.isPhantom()) {
             continue;
           }
           if (!m.hasActiveBody()) {

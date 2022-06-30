@@ -192,9 +192,8 @@ public class ClassConstant extends Constant {
 
   @Override
   public Type getType() {
-    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+    if (Options.v().src_prec() == Options.src_prec_dotnet)
       return RefType.v(DotnetBasicTypes.SYSTEM_RUNTIMETYPEHANDLE);
-    }
     return RefType.v("java.lang.Class");
   }
 

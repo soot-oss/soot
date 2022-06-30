@@ -73,7 +73,10 @@ public final class BitPointsToSet extends PointsToSetInternal {
    * Adds contents of other into this set, returns true if this set changed.
    */
   public final boolean addAll(PointsToSetInternal other, PointsToSetInternal exclude) {
-    if ((other != null && !(other instanceof BitPointsToSet)) || (exclude != null && !(exclude instanceof BitPointsToSet))) {
+    if (other != null && !(other instanceof BitPointsToSet)) {
+      return superAddAll(other, exclude);
+    }
+    if (exclude != null && !(exclude instanceof BitPointsToSet)) {
       return superAddAll(other, exclude);
     }
     return nativeAddAll((BitPointsToSet) other, (BitPointsToSet) exclude);

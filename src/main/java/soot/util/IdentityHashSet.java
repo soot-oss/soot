@@ -125,7 +125,10 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
     if (this == obj) {
       return true;
     }
-    if ((obj == null) || (getClass() != obj.getClass())) {
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
       return false;
     }
     final IdentityHashSet<?> other = (IdentityHashSet<?>) obj;

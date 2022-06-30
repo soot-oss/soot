@@ -91,7 +91,7 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
     RWSet stmtRead = sea.readSet(body.getMethod(), (Stmt) unit);
     RWSet stmtWrite = sea.writeSet(body.getMethod(), (Stmt) unit);
 
-    boolean addSelf = Boolean.FALSE;
+    Boolean addSelf = Boolean.FALSE;
 
     Iterator tnIt = tns.iterator();
     while (tnIt.hasNext()) {
@@ -103,7 +103,7 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
     }
 
     in.copy(out);
-    if (addSelf) {
+    if (addSelf.booleanValue()) {
       CriticalSection tn = new CriticalSection(false, body.getMethod(), 0);
       tn.entermonitor = (Stmt) unit;
       tn.units.add((Unit) unit);

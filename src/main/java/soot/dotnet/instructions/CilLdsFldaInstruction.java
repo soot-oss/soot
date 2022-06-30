@@ -56,9 +56,8 @@ public class CilLdsFldaInstruction extends AbstractCilnstruction {
     // If System.String.Empty
     Value rewriteField
         = AbstractDotnetMember.checkRewriteCilSpecificMember(declaringClass, instruction.getField().getName());
-    if (rewriteField != null) {
+    if (rewriteField != null)
       return rewriteField;
-    }
 
     SootFieldRef fieldRef = Scene.v().makeFieldRef(declaringClass, instruction.getField().getName(),
         DotnetTypeFactory.toSootType(instruction.getField().getType()), true);

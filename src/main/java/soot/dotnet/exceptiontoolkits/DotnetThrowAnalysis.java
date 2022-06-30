@@ -619,9 +619,8 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
         for (int i = 0; i < expr.getArgCount(); i++) {
           result = result.add(mightThrow(expr.getArg(i)));
         }
-        if (!staticInvoke) {
+        if (!staticInvoke)
           result = result.add(mightThrow(((InstanceInvokeExpr) expr).getBase()));
-        }
         result = result.add(mightThrow(expr.getMethodRef()));
       }
     };

@@ -789,12 +789,10 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) {
+      if (isInitialized == 1)
         return true;
-      }
-      if (isInitialized == 0) {
+      if (isInitialized == 0)
         return false;
-      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -814,9 +812,8 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) {
+      if (size != -1)
         return size;
-      }
 
       size = 0;
       for (int i = 0; i < listOfTypes_.size(); i++) {
@@ -846,9 +843,12 @@ public final class ProtoAssemblyAllTypes {
       soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes other
           = (soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes) obj;
 
-      if (!getListOfTypesList().equals(other.getListOfTypesList()) || !getAllReferencedModuleTypesList().equals(other.getAllReferencedModuleTypesList()) || !unknownFields.equals(other.unknownFields)) {
+      if (!getListOfTypesList().equals(other.getListOfTypesList()))
         return false;
-      }
+      if (!getAllReferencedModuleTypesList().equals(other.getAllReferencedModuleTypesList()))
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -1095,9 +1095,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes.getDefaultInstance()) {
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes.getDefaultInstance())
           return this;
-        }
         if (listOfTypesBuilder_ == null) {
           if (!other.listOfTypes_.isEmpty()) {
             if (listOfTypes_.isEmpty()) {
@@ -2760,12 +2759,10 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) {
+      if (isInitialized == 1)
         return true;
-      }
-      if (isInitialized == 0) {
+      if (isInitialized == 0)
         return false;
-      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -2782,16 +2779,16 @@ public final class ProtoAssemblyAllTypes {
       if (!getNamespaceBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, namespace_);
       }
-      if (isAbstract_) {
+      if (isAbstract_ != false) {
         output.writeBool(4, isAbstract_);
       }
-      if (isReadOnly_) {
+      if (isReadOnly_ != false) {
         output.writeBool(5, isReadOnly_);
       }
-      if (isSealed_) {
+      if (isSealed_ != false) {
         output.writeBool(6, isSealed_);
       }
-      if (isStatic_) {
+      if (isStatic_ != false) {
         output.writeBool(7, isStatic_);
       }
       if (!getDeclaringOuterClassBytes().isEmpty()) {
@@ -2836,9 +2833,8 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) {
+      if (size != -1)
         return size;
-      }
 
       size = 0;
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
@@ -2850,16 +2846,16 @@ public final class ProtoAssemblyAllTypes {
       if (!getNamespaceBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, namespace_);
       }
-      if (isAbstract_) {
+      if (isAbstract_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(4, isAbstract_);
       }
-      if (isReadOnly_) {
+      if (isReadOnly_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(5, isReadOnly_);
       }
-      if (isSealed_) {
+      if (isSealed_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(6, isSealed_);
       }
-      if (isStatic_) {
+      if (isStatic_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(7, isStatic_);
       }
       if (!getDeclaringOuterClassBytes().isEmpty()) {
@@ -2914,57 +2910,46 @@ public final class ProtoAssemblyAllTypes {
       soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition other
           = (soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition) obj;
 
-      if ((accessibility_ != other.accessibility_) || !getFullname().equals(other.getFullname()) || !getNamespace().equals(other.getNamespace()) || (getIsAbstract() != other.getIsAbstract())) {
+      if (accessibility_ != other.accessibility_)
         return false;
-      }
-      if (getIsReadOnly() != other.getIsReadOnly()) {
+      if (!getFullname().equals(other.getFullname()))
         return false;
-      }
-      if (getIsSealed() != other.getIsSealed()) {
+      if (!getNamespace().equals(other.getNamespace()))
         return false;
-      }
-      if (getIsStatic() != other.getIsStatic()) {
+      if (getIsAbstract() != other.getIsAbstract())
         return false;
-      }
-      if (!getDeclaringOuterClass().equals(other.getDeclaringOuterClass())) {
+      if (getIsReadOnly() != other.getIsReadOnly())
         return false;
-      }
-      if (!getDirectBaseTypesList().equals(other.getDirectBaseTypesList())) {
+      if (getIsSealed() != other.getIsSealed())
         return false;
-      }
-      if (typeKind_ != other.typeKind_) {
+      if (getIsStatic() != other.getIsStatic())
         return false;
-      }
-      if (!getMethodsList().equals(other.getMethodsList())) {
+      if (!getDeclaringOuterClass().equals(other.getDeclaringOuterClass()))
         return false;
-      }
-      if (!getFieldsList().equals(other.getFieldsList())) {
+      if (!getDirectBaseTypesList().equals(other.getDirectBaseTypesList()))
         return false;
-      }
-      if (!getPropertiesList().equals(other.getPropertiesList())) {
+      if (typeKind_ != other.typeKind_)
         return false;
-      }
-      if (!getNestedTypesList().equals(other.getNestedTypesList())) {
+      if (!getMethodsList().equals(other.getMethodsList()))
         return false;
-      }
-      if (!getAttributesList().equals(other.getAttributesList())) {
+      if (!getFieldsList().equals(other.getFieldsList()))
         return false;
-      }
-      if (!getGenericTypeArgumentsList().equals(other.getGenericTypeArgumentsList())) {
+      if (!getPropertiesList().equals(other.getPropertiesList()))
         return false;
-      }
-      if (getArrayDimensions() != other.getArrayDimensions()) {
+      if (!getNestedTypesList().equals(other.getNestedTypesList()))
         return false;
-      }
-      if (!getEventsList().equals(other.getEventsList())) {
+      if (!getAttributesList().equals(other.getAttributesList()))
         return false;
-      }
-      if (getPeToken() != other.getPeToken()) {
+      if (!getGenericTypeArgumentsList().equals(other.getGenericTypeArgumentsList()))
         return false;
-      }
-      if (!unknownFields.equals(other.unknownFields)) {
+      if (getArrayDimensions() != other.getArrayDimensions())
         return false;
-      }
+      if (!getEventsList().equals(other.getEventsList()))
+        return false;
+      if (getPeToken() != other.getPeToken())
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -3391,9 +3376,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()) {
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance())
           return this;
-        }
         if (other.accessibility_ != 0) {
           setAccessibilityValue(other.getAccessibilityValue());
         }
@@ -3405,16 +3389,16 @@ public final class ProtoAssemblyAllTypes {
           namespace_ = other.namespace_;
           onChanged();
         }
-        if (other.getIsAbstract()) {
+        if (other.getIsAbstract() != false) {
           setIsAbstract(other.getIsAbstract());
         }
-        if (other.getIsReadOnly()) {
+        if (other.getIsReadOnly() != false) {
           setIsReadOnly(other.getIsReadOnly());
         }
-        if (other.getIsSealed()) {
+        if (other.getIsSealed() != false) {
           setIsSealed(other.getIsSealed());
         }
-        if (other.getIsStatic()) {
+        if (other.getIsStatic() != false) {
           setIsStatic(other.getIsStatic());
         }
         if (!other.getDeclaringOuterClass().isEmpty()) {
@@ -7191,12 +7175,10 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) {
+      if (isInitialized == 1)
         return true;
-      }
-      if (isInitialized == 0) {
+      if (isInitialized == 0)
         return false;
-      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -7210,31 +7192,31 @@ public final class ProtoAssemblyAllTypes {
       if (!getNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
       }
-      if (hasBody_) {
+      if (hasBody_ != false) {
         output.writeBool(3, hasBody_);
       }
       for (int i = 0; i < parameter_.size(); i++) {
         output.writeMessage(4, parameter_.get(i));
       }
-      if (isAbstract_) {
+      if (isAbstract_ != false) {
         output.writeBool(5, isAbstract_);
       }
-      if (isAccessor_) {
+      if (isAccessor_ != false) {
         output.writeBool(6, isAccessor_);
       }
-      if (isConstructor_) {
+      if (isConstructor_ != false) {
         output.writeBool(7, isConstructor_);
       }
-      if (isDestructor_) {
+      if (isDestructor_ != false) {
         output.writeBool(8, isDestructor_);
       }
-      if (isExplicitInterfaceImplementation_) {
+      if (isExplicitInterfaceImplementation_ != false) {
         output.writeBool(9, isExplicitInterfaceImplementation_);
       }
-      if (isStatic_) {
+      if (isStatic_ != false) {
         output.writeBool(10, isStatic_);
       }
-      if (isVirtual_) {
+      if (isVirtual_ != false) {
         output.writeBool(11, isVirtual_);
       }
       if (returnType_ != null) {
@@ -7249,16 +7231,16 @@ public final class ProtoAssemblyAllTypes {
       if (declaringType_ != null) {
         output.writeMessage(15, getDeclaringType());
       }
-      if (isOperator_) {
+      if (isOperator_ != false) {
         output.writeBool(16, isOperator_);
       }
-      if (isExtern_) {
+      if (isExtern_ != false) {
         output.writeBool(17, isExtern_);
       }
-      if (isUnsafe_) {
+      if (isUnsafe_ != false) {
         output.writeBool(18, isUnsafe_);
       }
-      if (isSealed_) {
+      if (isSealed_ != false) {
         output.writeBool(19, isSealed_);
       }
       if (peToken_ != 0) {
@@ -7270,9 +7252,8 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) {
+      if (size != -1)
         return size;
-      }
 
       size = 0;
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
@@ -7281,31 +7262,31 @@ public final class ProtoAssemblyAllTypes {
       if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
       }
-      if (hasBody_) {
+      if (hasBody_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(3, hasBody_);
       }
       for (int i = 0; i < parameter_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream.computeMessageSize(4, parameter_.get(i));
       }
-      if (isAbstract_) {
+      if (isAbstract_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(5, isAbstract_);
       }
-      if (isAccessor_) {
+      if (isAccessor_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(6, isAccessor_);
       }
-      if (isConstructor_) {
+      if (isConstructor_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(7, isConstructor_);
       }
-      if (isDestructor_) {
+      if (isDestructor_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(8, isDestructor_);
       }
-      if (isExplicitInterfaceImplementation_) {
+      if (isExplicitInterfaceImplementation_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(9, isExplicitInterfaceImplementation_);
       }
-      if (isStatic_) {
+      if (isStatic_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(10, isStatic_);
       }
-      if (isVirtual_) {
+      if (isVirtual_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(11, isVirtual_);
       }
       if (returnType_ != null) {
@@ -7320,16 +7301,16 @@ public final class ProtoAssemblyAllTypes {
       if (declaringType_ != null) {
         size += com.google.protobuf.CodedOutputStream.computeMessageSize(15, getDeclaringType());
       }
-      if (isOperator_) {
+      if (isOperator_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(16, isOperator_);
       }
-      if (isExtern_) {
+      if (isExtern_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(17, isExtern_);
       }
-      if (isUnsafe_) {
+      if (isUnsafe_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(18, isUnsafe_);
       }
-      if (isSealed_) {
+      if (isSealed_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(19, isSealed_);
       }
       if (peToken_ != 0) {
@@ -7351,70 +7332,56 @@ public final class ProtoAssemblyAllTypes {
       soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition other
           = (soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition) obj;
 
-      if ((accessibility_ != other.accessibility_) || !getName().equals(other.getName()) || (getHasBody() != other.getHasBody()) || !getParameterList().equals(other.getParameterList())) {
+      if (accessibility_ != other.accessibility_)
         return false;
-      }
-      if (getIsAbstract() != other.getIsAbstract()) {
+      if (!getName().equals(other.getName()))
         return false;
-      }
-      if (getIsAccessor() != other.getIsAccessor()) {
+      if (getHasBody() != other.getHasBody())
         return false;
-      }
-      if (getIsConstructor() != other.getIsConstructor()) {
+      if (!getParameterList().equals(other.getParameterList()))
         return false;
-      }
-      if (getIsDestructor() != other.getIsDestructor()) {
+      if (getIsAbstract() != other.getIsAbstract())
         return false;
-      }
-      if (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation()) {
+      if (getIsAccessor() != other.getIsAccessor())
         return false;
-      }
-      if (getIsStatic() != other.getIsStatic()) {
+      if (getIsConstructor() != other.getIsConstructor())
         return false;
-      }
-      if (getIsVirtual() != other.getIsVirtual()) {
+      if (getIsDestructor() != other.getIsDestructor())
         return false;
-      }
-      if (getIsOperator() != other.getIsOperator()) {
+      if (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation())
         return false;
-      }
-      if (getIsExtern() != other.getIsExtern()) {
+      if (getIsStatic() != other.getIsStatic())
         return false;
-      }
-      if (getIsUnsafe() != other.getIsUnsafe()) {
+      if (getIsVirtual() != other.getIsVirtual())
         return false;
-      }
-      if (getIsSealed() != other.getIsSealed()) {
+      if (getIsOperator() != other.getIsOperator())
         return false;
-      }
-      if (hasReturnType() != other.hasReturnType()) {
+      if (getIsExtern() != other.getIsExtern())
         return false;
-      }
+      if (getIsUnsafe() != other.getIsUnsafe())
+        return false;
+      if (getIsSealed() != other.getIsSealed())
+        return false;
+      if (hasReturnType() != other.hasReturnType())
+        return false;
       if (hasReturnType()) {
-        if (!getReturnType().equals(other.getReturnType())) {
+        if (!getReturnType().equals(other.getReturnType()))
           return false;
-        }
       }
-      if (!getAttributesList().equals(other.getAttributesList())) {
+      if (!getAttributesList().equals(other.getAttributesList()))
         return false;
-      }
-      if (!getFullName().equals(other.getFullName())) {
+      if (!getFullName().equals(other.getFullName()))
         return false;
-      }
-      if (hasDeclaringType() != other.hasDeclaringType()) {
+      if (hasDeclaringType() != other.hasDeclaringType())
         return false;
-      }
       if (hasDeclaringType()) {
-        if (!getDeclaringType().equals(other.getDeclaringType())) {
+        if (!getDeclaringType().equals(other.getDeclaringType()))
           return false;
-        }
       }
-      if (getPeToken() != other.getPeToken()) {
+      if (getPeToken() != other.getPeToken())
         return false;
-      }
-      if (!unknownFields.equals(other.unknownFields)) {
+      if (!unknownFields.equals(other.unknownFields))
         return false;
-      }
       return true;
     }
 
@@ -7776,9 +7743,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance()) {
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance())
           return this;
-        }
         if (other.accessibility_ != 0) {
           setAccessibilityValue(other.getAccessibilityValue());
         }
@@ -7786,7 +7752,7 @@ public final class ProtoAssemblyAllTypes {
           name_ = other.name_;
           onChanged();
         }
-        if (other.getHasBody()) {
+        if (other.getHasBody() != false) {
           setHasBody(other.getHasBody());
         }
         if (parameterBuilder_ == null) {
@@ -7814,37 +7780,37 @@ public final class ProtoAssemblyAllTypes {
             }
           }
         }
-        if (other.getIsAbstract()) {
+        if (other.getIsAbstract() != false) {
           setIsAbstract(other.getIsAbstract());
         }
-        if (other.getIsAccessor()) {
+        if (other.getIsAccessor() != false) {
           setIsAccessor(other.getIsAccessor());
         }
-        if (other.getIsConstructor()) {
+        if (other.getIsConstructor() != false) {
           setIsConstructor(other.getIsConstructor());
         }
-        if (other.getIsDestructor()) {
+        if (other.getIsDestructor() != false) {
           setIsDestructor(other.getIsDestructor());
         }
-        if (other.getIsExplicitInterfaceImplementation()) {
+        if (other.getIsExplicitInterfaceImplementation() != false) {
           setIsExplicitInterfaceImplementation(other.getIsExplicitInterfaceImplementation());
         }
-        if (other.getIsStatic()) {
+        if (other.getIsStatic() != false) {
           setIsStatic(other.getIsStatic());
         }
-        if (other.getIsVirtual()) {
+        if (other.getIsVirtual() != false) {
           setIsVirtual(other.getIsVirtual());
         }
-        if (other.getIsOperator()) {
+        if (other.getIsOperator() != false) {
           setIsOperator(other.getIsOperator());
         }
-        if (other.getIsExtern()) {
+        if (other.getIsExtern() != false) {
           setIsExtern(other.getIsExtern());
         }
-        if (other.getIsUnsafe()) {
+        if (other.getIsUnsafe() != false) {
           setIsUnsafe(other.getIsUnsafe());
         }
-        if (other.getIsSealed()) {
+        if (other.getIsSealed() != false) {
           setIsSealed(other.getIsSealed());
         }
         if (other.hasReturnType()) {
@@ -9760,12 +9726,10 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) {
+      if (isInitialized == 1)
         return true;
-      }
-      if (isInitialized == 0) {
+      if (isInitialized == 0)
         return false;
-      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -9779,16 +9743,16 @@ public final class ProtoAssemblyAllTypes {
       if (!getParameterNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, parameterName_);
       }
-      if (isRef_) {
+      if (isRef_ != false) {
         output.writeBool(3, isRef_);
       }
-      if (isOut_) {
+      if (isOut_ != false) {
         output.writeBool(4, isOut_);
       }
-      if (isIn_) {
+      if (isIn_ != false) {
         output.writeBool(5, isIn_);
       }
-      if (isOptional_) {
+      if (isOptional_ != false) {
         output.writeBool(6, isOptional_);
       }
       unknownFields.writeTo(output);
@@ -9797,9 +9761,8 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) {
+      if (size != -1)
         return size;
-      }
 
       size = 0;
       if (type_ != null) {
@@ -9808,16 +9771,16 @@ public final class ProtoAssemblyAllTypes {
       if (!getParameterNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, parameterName_);
       }
-      if (isRef_) {
+      if (isRef_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(3, isRef_);
       }
-      if (isOut_) {
+      if (isOut_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(4, isOut_);
       }
-      if (isIn_) {
+      if (isIn_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(5, isIn_);
       }
-      if (isOptional_) {
+      if (isOptional_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(6, isOptional_);
       }
       size += unknownFields.getSerializedSize();
@@ -9836,23 +9799,24 @@ public final class ProtoAssemblyAllTypes {
       soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition other
           = (soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition) obj;
 
-      if (hasType() != other.hasType()) {
+      if (hasType() != other.hasType())
         return false;
-      }
       if (hasType()) {
-        if (!getType().equals(other.getType())) {
+        if (!getType().equals(other.getType()))
           return false;
-        }
       }
-      if (!getParameterName().equals(other.getParameterName()) || (getIsRef() != other.getIsRef()) || (getIsOut() != other.getIsOut()) || (getIsIn() != other.getIsIn())) {
+      if (!getParameterName().equals(other.getParameterName()))
         return false;
-      }
-      if (getIsOptional() != other.getIsOptional()) {
+      if (getIsRef() != other.getIsRef())
         return false;
-      }
-      if (!unknownFields.equals(other.unknownFields)) {
+      if (getIsOut() != other.getIsOut())
         return false;
-      }
+      if (getIsIn() != other.getIsIn())
+        return false;
+      if (getIsOptional() != other.getIsOptional())
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -10108,9 +10072,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.getDefaultInstance()) {
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.getDefaultInstance())
           return this;
-        }
         if (other.hasType()) {
           mergeType(other.getType());
         }
@@ -10118,16 +10081,16 @@ public final class ProtoAssemblyAllTypes {
           parameterName_ = other.parameterName_;
           onChanged();
         }
-        if (other.getIsRef()) {
+        if (other.getIsRef() != false) {
           setIsRef(other.getIsRef());
         }
-        if (other.getIsOut()) {
+        if (other.getIsOut() != false) {
           setIsOut(other.getIsOut());
         }
-        if (other.getIsIn()) {
+        if (other.getIsIn() != false) {
           setIsIn(other.getIsIn());
         }
-        if (other.getIsOptional()) {
+        if (other.getIsOptional() != false) {
           setIsOptional(other.getIsOptional());
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -11303,12 +11266,10 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) {
+      if (isInitialized == 1)
         return true;
-      }
-      if (isInitialized == 0) {
+      if (isInitialized == 0)
         return false;
-      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -11319,28 +11280,28 @@ public final class ProtoAssemblyAllTypes {
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
         output.writeEnum(1, accessibility_);
       }
-      if (isAbstract_) {
+      if (isAbstract_ != false) {
         output.writeBool(2, isAbstract_);
       }
-      if (isSealed_) {
+      if (isSealed_ != false) {
         output.writeBool(3, isSealed_);
       }
-      if (isExplicitInterfaceImplementation_) {
+      if (isExplicitInterfaceImplementation_ != false) {
         output.writeBool(4, isExplicitInterfaceImplementation_);
       }
-      if (isOverride_) {
+      if (isOverride_ != false) {
         output.writeBool(5, isOverride_);
       }
-      if (isVirtual_) {
+      if (isVirtual_ != false) {
         output.writeBool(6, isVirtual_);
       }
-      if (isConst_) {
+      if (isConst_ != false) {
         output.writeBool(7, isConst_);
       }
-      if (isReadOnly_) {
+      if (isReadOnly_ != false) {
         output.writeBool(8, isReadOnly_);
       }
-      if (isStatic_) {
+      if (isStatic_ != false) {
         output.writeBool(9, isStatic_);
       }
       if (type_ != null) {
@@ -11370,36 +11331,35 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) {
+      if (size != -1)
         return size;
-      }
 
       size = 0;
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
         size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, accessibility_);
       }
-      if (isAbstract_) {
+      if (isAbstract_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(2, isAbstract_);
       }
-      if (isSealed_) {
+      if (isSealed_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(3, isSealed_);
       }
-      if (isExplicitInterfaceImplementation_) {
+      if (isExplicitInterfaceImplementation_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(4, isExplicitInterfaceImplementation_);
       }
-      if (isOverride_) {
+      if (isOverride_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(5, isOverride_);
       }
-      if (isVirtual_) {
+      if (isVirtual_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(6, isVirtual_);
       }
-      if (isConst_) {
+      if (isConst_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(7, isConst_);
       }
-      if (isReadOnly_) {
+      if (isReadOnly_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(8, isReadOnly_);
       }
-      if (isStatic_) {
+      if (isStatic_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(9, isStatic_);
       }
       if (type_ != null) {
@@ -11439,58 +11399,48 @@ public final class ProtoAssemblyAllTypes {
       soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition other
           = (soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition) obj;
 
-      if ((accessibility_ != other.accessibility_) || (getIsAbstract() != other.getIsAbstract()) || (getIsSealed() != other.getIsSealed()) || (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation())) {
+      if (accessibility_ != other.accessibility_)
         return false;
-      }
-      if (getIsOverride() != other.getIsOverride()) {
+      if (getIsAbstract() != other.getIsAbstract())
         return false;
-      }
-      if (getIsVirtual() != other.getIsVirtual()) {
+      if (getIsSealed() != other.getIsSealed())
         return false;
-      }
-      if (getIsConst() != other.getIsConst()) {
+      if (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation())
         return false;
-      }
-      if (getIsReadOnly() != other.getIsReadOnly()) {
+      if (getIsOverride() != other.getIsOverride())
         return false;
-      }
-      if (getIsStatic() != other.getIsStatic()) {
+      if (getIsVirtual() != other.getIsVirtual())
         return false;
-      }
-      if (hasType() != other.hasType()) {
+      if (getIsConst() != other.getIsConst())
         return false;
-      }
+      if (getIsReadOnly() != other.getIsReadOnly())
+        return false;
+      if (getIsStatic() != other.getIsStatic())
+        return false;
+      if (hasType() != other.hasType())
+        return false;
       if (hasType()) {
-        if (!getType().equals(other.getType())) {
+        if (!getType().equals(other.getType()))
           return false;
-        }
       }
-      if (typeKind_ != other.typeKind_) {
+      if (typeKind_ != other.typeKind_)
         return false;
-      }
-      if (!getName().equals(other.getName())) {
+      if (!getName().equals(other.getName()))
         return false;
-      }
-      if (!getFullName().equals(other.getFullName())) {
+      if (!getFullName().equals(other.getFullName()))
         return false;
-      }
-      if (hasDeclaringType() != other.hasDeclaringType()) {
+      if (hasDeclaringType() != other.hasDeclaringType())
         return false;
-      }
       if (hasDeclaringType()) {
-        if (!getDeclaringType().equals(other.getDeclaringType())) {
+        if (!getDeclaringType().equals(other.getDeclaringType()))
           return false;
-        }
       }
-      if (!getAttributesList().equals(other.getAttributesList())) {
+      if (!getAttributesList().equals(other.getAttributesList()))
         return false;
-      }
-      if (getPeToken() != other.getPeToken()) {
+      if (getPeToken() != other.getPeToken())
         return false;
-      }
-      if (!unknownFields.equals(other.unknownFields)) {
+      if (!unknownFields.equals(other.unknownFields))
         return false;
-      }
       return true;
     }
 
@@ -11817,34 +11767,33 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.getDefaultInstance()) {
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.getDefaultInstance())
           return this;
-        }
         if (other.accessibility_ != 0) {
           setAccessibilityValue(other.getAccessibilityValue());
         }
-        if (other.getIsAbstract()) {
+        if (other.getIsAbstract() != false) {
           setIsAbstract(other.getIsAbstract());
         }
-        if (other.getIsSealed()) {
+        if (other.getIsSealed() != false) {
           setIsSealed(other.getIsSealed());
         }
-        if (other.getIsExplicitInterfaceImplementation()) {
+        if (other.getIsExplicitInterfaceImplementation() != false) {
           setIsExplicitInterfaceImplementation(other.getIsExplicitInterfaceImplementation());
         }
-        if (other.getIsOverride()) {
+        if (other.getIsOverride() != false) {
           setIsOverride(other.getIsOverride());
         }
-        if (other.getIsVirtual()) {
+        if (other.getIsVirtual() != false) {
           setIsVirtual(other.getIsVirtual());
         }
-        if (other.getIsConst()) {
+        if (other.getIsConst() != false) {
           setIsConst(other.getIsConst());
         }
-        if (other.getIsReadOnly()) {
+        if (other.getIsReadOnly() != false) {
           setIsReadOnly(other.getIsReadOnly());
         }
-        if (other.getIsStatic()) {
+        if (other.getIsStatic() != false) {
           setIsStatic(other.getIsStatic());
         }
         if (other.hasType()) {
@@ -13891,12 +13840,10 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) {
+      if (isInitialized == 1)
         return true;
-      }
-      if (isInitialized == 0) {
+      if (isInitialized == 0)
         return false;
-      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -13907,28 +13854,28 @@ public final class ProtoAssemblyAllTypes {
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
         output.writeEnum(1, accessibility_);
       }
-      if (canGet_) {
+      if (canGet_ != false) {
         output.writeBool(2, canGet_);
       }
-      if (canSet_) {
+      if (canSet_ != false) {
         output.writeBool(3, canSet_);
       }
-      if (isAbstract_) {
+      if (isAbstract_ != false) {
         output.writeBool(4, isAbstract_);
       }
-      if (isSealed_) {
+      if (isSealed_ != false) {
         output.writeBool(5, isSealed_);
       }
-      if (isExplicitInterfaceImplementation_) {
+      if (isExplicitInterfaceImplementation_ != false) {
         output.writeBool(6, isExplicitInterfaceImplementation_);
       }
-      if (isOverride_) {
+      if (isOverride_ != false) {
         output.writeBool(7, isOverride_);
       }
-      if (isVirtual_) {
+      if (isVirtual_ != false) {
         output.writeBool(8, isVirtual_);
       }
-      if (isStatic_) {
+      if (isStatic_ != false) {
         output.writeBool(9, isStatic_);
       }
       if (getter_ != null) {
@@ -13946,7 +13893,7 @@ public final class ProtoAssemblyAllTypes {
       if (typeKind_ != soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.NO_TYPE.getNumber()) {
         output.writeEnum(14, typeKind_);
       }
-      if (isExtern_) {
+      if (isExtern_ != false) {
         output.writeBool(15, isExtern_);
       }
       for (int i = 0; i < attributes_.size(); i++) {
@@ -13961,36 +13908,35 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) {
+      if (size != -1)
         return size;
-      }
 
       size = 0;
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
         size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, accessibility_);
       }
-      if (canGet_) {
+      if (canGet_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(2, canGet_);
       }
-      if (canSet_) {
+      if (canSet_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(3, canSet_);
       }
-      if (isAbstract_) {
+      if (isAbstract_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(4, isAbstract_);
       }
-      if (isSealed_) {
+      if (isSealed_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(5, isSealed_);
       }
-      if (isExplicitInterfaceImplementation_) {
+      if (isExplicitInterfaceImplementation_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(6, isExplicitInterfaceImplementation_);
       }
-      if (isOverride_) {
+      if (isOverride_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(7, isOverride_);
       }
-      if (isVirtual_) {
+      if (isVirtual_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(8, isVirtual_);
       }
-      if (isStatic_) {
+      if (isStatic_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(9, isStatic_);
       }
       if (getter_ != null) {
@@ -14008,7 +13954,7 @@ public final class ProtoAssemblyAllTypes {
       if (typeKind_ != soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.NO_TYPE.getNumber()) {
         size += com.google.protobuf.CodedOutputStream.computeEnumSize(14, typeKind_);
       }
-      if (isExtern_) {
+      if (isExtern_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(15, isExtern_);
       }
       for (int i = 0; i < attributes_.size(); i++) {
@@ -14033,66 +13979,54 @@ public final class ProtoAssemblyAllTypes {
       soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition other
           = (soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition) obj;
 
-      if ((accessibility_ != other.accessibility_) || (getCanGet() != other.getCanGet()) || (getCanSet() != other.getCanSet()) || (getIsAbstract() != other.getIsAbstract())) {
+      if (accessibility_ != other.accessibility_)
         return false;
-      }
-      if (getIsSealed() != other.getIsSealed()) {
+      if (getCanGet() != other.getCanGet())
         return false;
-      }
-      if (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation()) {
+      if (getCanSet() != other.getCanSet())
         return false;
-      }
-      if (getIsOverride() != other.getIsOverride()) {
+      if (getIsAbstract() != other.getIsAbstract())
         return false;
-      }
-      if (getIsVirtual() != other.getIsVirtual()) {
+      if (getIsSealed() != other.getIsSealed())
         return false;
-      }
-      if (getIsStatic() != other.getIsStatic()) {
+      if (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation())
         return false;
-      }
-      if (getIsExtern() != other.getIsExtern()) {
+      if (getIsOverride() != other.getIsOverride())
         return false;
-      }
-      if (hasGetter() != other.hasGetter()) {
+      if (getIsVirtual() != other.getIsVirtual())
         return false;
-      }
+      if (getIsStatic() != other.getIsStatic())
+        return false;
+      if (getIsExtern() != other.getIsExtern())
+        return false;
+      if (hasGetter() != other.hasGetter())
+        return false;
       if (hasGetter()) {
-        if (!getGetter().equals(other.getGetter())) {
+        if (!getGetter().equals(other.getGetter()))
           return false;
-        }
       }
-      if (hasSetter() != other.hasSetter()) {
+      if (hasSetter() != other.hasSetter())
         return false;
-      }
       if (hasSetter()) {
-        if (!getSetter().equals(other.getSetter())) {
+        if (!getSetter().equals(other.getSetter()))
           return false;
-        }
       }
-      if (hasType() != other.hasType()) {
+      if (hasType() != other.hasType())
         return false;
-      }
       if (hasType()) {
-        if (!getType().equals(other.getType())) {
+        if (!getType().equals(other.getType()))
           return false;
-        }
       }
-      if (typeKind_ != other.typeKind_) {
+      if (typeKind_ != other.typeKind_)
         return false;
-      }
-      if (!getName().equals(other.getName())) {
+      if (!getName().equals(other.getName()))
         return false;
-      }
-      if (!getAttributesList().equals(other.getAttributesList())) {
+      if (!getAttributesList().equals(other.getAttributesList()))
         return false;
-      }
-      if (getPeToken() != other.getPeToken()) {
+      if (getPeToken() != other.getPeToken())
         return false;
-      }
-      if (!unknownFields.equals(other.unknownFields)) {
+      if (!unknownFields.equals(other.unknownFields))
         return false;
-      }
       return true;
     }
 
@@ -14434,37 +14368,36 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.getDefaultInstance()) {
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.getDefaultInstance())
           return this;
-        }
         if (other.accessibility_ != 0) {
           setAccessibilityValue(other.getAccessibilityValue());
         }
-        if (other.getCanGet()) {
+        if (other.getCanGet() != false) {
           setCanGet(other.getCanGet());
         }
-        if (other.getCanSet()) {
+        if (other.getCanSet() != false) {
           setCanSet(other.getCanSet());
         }
-        if (other.getIsAbstract()) {
+        if (other.getIsAbstract() != false) {
           setIsAbstract(other.getIsAbstract());
         }
-        if (other.getIsSealed()) {
+        if (other.getIsSealed() != false) {
           setIsSealed(other.getIsSealed());
         }
-        if (other.getIsExplicitInterfaceImplementation()) {
+        if (other.getIsExplicitInterfaceImplementation() != false) {
           setIsExplicitInterfaceImplementation(other.getIsExplicitInterfaceImplementation());
         }
-        if (other.getIsOverride()) {
+        if (other.getIsOverride() != false) {
           setIsOverride(other.getIsOverride());
         }
-        if (other.getIsVirtual()) {
+        if (other.getIsVirtual() != false) {
           setIsVirtual(other.getIsVirtual());
         }
-        if (other.getIsStatic()) {
+        if (other.getIsStatic() != false) {
           setIsStatic(other.getIsStatic());
         }
-        if (other.getIsExtern()) {
+        if (other.getIsExtern() != false) {
           setIsExtern(other.getIsExtern());
         }
         if (other.hasGetter()) {
@@ -16242,12 +16175,10 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) {
+      if (isInitialized == 1)
         return true;
-      }
-      if (isInitialized == 0) {
+      if (isInitialized == 0)
         return false;
-      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -16273,9 +16204,8 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) {
+      if (size != -1)
         return size;
-      }
 
       size = 0;
       if (attributeType_ != null) {
@@ -16306,17 +16236,20 @@ public final class ProtoAssemblyAllTypes {
       soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition other
           = (soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition) obj;
 
-      if (hasAttributeType() != other.hasAttributeType()) {
+      if (hasAttributeType() != other.hasAttributeType())
         return false;
-      }
       if (hasAttributeType()) {
-        if (!getAttributeType().equals(other.getAttributeType())) {
+        if (!getAttributeType().equals(other.getAttributeType()))
           return false;
-        }
       }
-      if (!getConstructor().equals(other.getConstructor()) || !getFixedArgumentsList().equals(other.getFixedArgumentsList()) || !getNamedArgumentsList().equals(other.getNamedArgumentsList()) || !unknownFields.equals(other.unknownFields)) {
+      if (!getConstructor().equals(other.getConstructor()))
         return false;
-      }
+      if (!getFixedArgumentsList().equals(other.getFixedArgumentsList()))
+        return false;
+      if (!getNamedArgumentsList().equals(other.getNamedArgumentsList()))
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -16592,9 +16525,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance()) {
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance())
           return this;
-        }
         if (other.hasAttributeType()) {
           mergeAttributeType(other.getAttributeType());
         }
@@ -18148,12 +18080,10 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) {
+      if (isInitialized == 1)
         return true;
-      }
-      if (isInitialized == 0) {
+      if (isInitialized == 0)
         return false;
-      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -18205,9 +18135,8 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) {
+      if (size != -1)
         return size;
-      }
 
       size = 0;
       if (type_ != null) {
@@ -18284,26 +18213,26 @@ public final class ProtoAssemblyAllTypes {
       soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition other
           = (soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition) obj;
 
-      if (hasType() != other.hasType()) {
+      if (hasType() != other.hasType())
         return false;
-      }
       if (hasType()) {
-        if (!getType().equals(other.getType())) {
+        if (!getType().equals(other.getType()))
           return false;
-        }
       }
-      if (!getName().equals(other.getName()) || !getValueStringList().equals(other.getValueStringList()) || !getValueInt32List().equals(other.getValueInt32List()) || !getValueInt64List().equals(other.getValueInt64List())) {
+      if (!getName().equals(other.getName()))
         return false;
-      }
-      if (!getValueDoubleList().equals(other.getValueDoubleList())) {
+      if (!getValueStringList().equals(other.getValueStringList()))
         return false;
-      }
-      if (!getValueFloatList().equals(other.getValueFloatList())) {
+      if (!getValueInt32List().equals(other.getValueInt32List()))
         return false;
-      }
-      if (!unknownFields.equals(other.unknownFields)) {
+      if (!getValueInt64List().equals(other.getValueInt64List()))
         return false;
-      }
+      if (!getValueDoubleList().equals(other.getValueDoubleList()))
+        return false;
+      if (!getValueFloatList().equals(other.getValueFloatList()))
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -18590,9 +18519,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.getDefaultInstance()) {
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.getDefaultInstance())
           return this;
-        }
         if (other.hasType()) {
           mergeType(other.getType());
         }
@@ -19989,12 +19917,10 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) {
+      if (isInitialized == 1)
         return true;
-      }
-      if (isInitialized == 0) {
+      if (isInitialized == 0)
         return false;
-      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -20008,13 +19934,13 @@ public final class ProtoAssemblyAllTypes {
       if (addAccessorMethod_ != null) {
         output.writeMessage(2, getAddAccessorMethod());
       }
-      if (canAdd_) {
+      if (canAdd_ != false) {
         output.writeBool(3, canAdd_);
       }
-      if (canInvoke_) {
+      if (canInvoke_ != false) {
         output.writeBool(4, canInvoke_);
       }
-      if (canRemove_) {
+      if (canRemove_ != false) {
         output.writeBool(5, canRemove_);
       }
       if (!getFullNameBytes().isEmpty()) {
@@ -20038,9 +19964,8 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) {
+      if (size != -1)
         return size;
-      }
 
       size = 0;
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
@@ -20049,13 +19974,13 @@ public final class ProtoAssemblyAllTypes {
       if (addAccessorMethod_ != null) {
         size += com.google.protobuf.CodedOutputStream.computeMessageSize(2, getAddAccessorMethod());
       }
-      if (canAdd_) {
+      if (canAdd_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(3, canAdd_);
       }
-      if (canInvoke_) {
+      if (canInvoke_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(4, canInvoke_);
       }
-      if (canRemove_) {
+      if (canRemove_ != false) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(5, canRemove_);
       }
       if (!getFullNameBytes().isEmpty()) {
@@ -20089,51 +20014,40 @@ public final class ProtoAssemblyAllTypes {
       soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition other
           = (soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition) obj;
 
-      if ((accessibility_ != other.accessibility_) || (hasAddAccessorMethod() != other.hasAddAccessorMethod())) {
+      if (accessibility_ != other.accessibility_)
         return false;
-      }
+      if (hasAddAccessorMethod() != other.hasAddAccessorMethod())
+        return false;
       if (hasAddAccessorMethod()) {
-        if (!getAddAccessorMethod().equals(other.getAddAccessorMethod())) {
+        if (!getAddAccessorMethod().equals(other.getAddAccessorMethod()))
           return false;
-        }
       }
-      if (getCanAdd() != other.getCanAdd()) {
+      if (getCanAdd() != other.getCanAdd())
         return false;
-      }
-      if (getCanInvoke() != other.getCanInvoke()) {
+      if (getCanInvoke() != other.getCanInvoke())
         return false;
-      }
-      if (getCanRemove() != other.getCanRemove()) {
+      if (getCanRemove() != other.getCanRemove())
         return false;
-      }
-      if (!getFullName().equals(other.getFullName())) {
+      if (!getFullName().equals(other.getFullName()))
         return false;
-      }
-      if (hasInvokeAccessorMethod() != other.hasInvokeAccessorMethod()) {
+      if (hasInvokeAccessorMethod() != other.hasInvokeAccessorMethod())
         return false;
-      }
       if (hasInvokeAccessorMethod()) {
-        if (!getInvokeAccessorMethod().equals(other.getInvokeAccessorMethod())) {
+        if (!getInvokeAccessorMethod().equals(other.getInvokeAccessorMethod()))
           return false;
-        }
       }
-      if (!getName().equals(other.getName())) {
+      if (!getName().equals(other.getName()))
         return false;
-      }
-      if (hasRemoveAccessorMethod() != other.hasRemoveAccessorMethod()) {
+      if (hasRemoveAccessorMethod() != other.hasRemoveAccessorMethod())
         return false;
-      }
       if (hasRemoveAccessorMethod()) {
-        if (!getRemoveAccessorMethod().equals(other.getRemoveAccessorMethod())) {
+        if (!getRemoveAccessorMethod().equals(other.getRemoveAccessorMethod()))
           return false;
-        }
       }
-      if (getPeToken() != other.getPeToken()) {
+      if (getPeToken() != other.getPeToken())
         return false;
-      }
-      if (!unknownFields.equals(other.unknownFields)) {
+      if (!unknownFields.equals(other.unknownFields))
         return false;
-      }
       return true;
     }
 
@@ -20424,22 +20338,21 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.getDefaultInstance()) {
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.getDefaultInstance())
           return this;
-        }
         if (other.accessibility_ != 0) {
           setAccessibilityValue(other.getAccessibilityValue());
         }
         if (other.hasAddAccessorMethod()) {
           mergeAddAccessorMethod(other.getAddAccessorMethod());
         }
-        if (other.getCanAdd()) {
+        if (other.getCanAdd() != false) {
           setCanAdd(other.getCanAdd());
         }
-        if (other.getCanInvoke()) {
+        if (other.getCanInvoke() != false) {
           setCanInvoke(other.getCanInvoke());
         }
-        if (other.getCanRemove()) {
+        if (other.getCanRemove() != false) {
           setCanRemove(other.getCanRemove());
         }
         if (!other.getFullName().isEmpty()) {
