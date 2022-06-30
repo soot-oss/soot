@@ -45,7 +45,8 @@ import soot.jimple.NopStmt;
  *
  */
 public class CilTryCatchInstruction extends AbstractCilnstruction {
-  public CilTryCatchInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
+  public CilTryCatchInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody,
+      CilBlock cilBlock) {
     super(instruction, dotnetBody, cilBlock);
   }
 

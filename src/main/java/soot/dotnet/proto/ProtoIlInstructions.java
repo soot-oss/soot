@@ -135,8 +135,8 @@ public final class ProtoIlInstructions {
               if (body_ != null) {
                 subBuilder = body_.toBuilder();
               }
-              body_
-                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
+              body_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(),
+                  extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(body_);
                 body_ = subBuilder.buildPartial();
@@ -1879,7 +1879,8 @@ public final class ProtoIlInstructions {
        * <code>repeated .IlBlock blocks = 1;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder addBlocksBuilder(int index) {
-        return getBlocksFieldBuilder().addBuilder(index, soot.dotnet.proto.ProtoIlInstructions.IlBlock.getDefaultInstance());
+        return getBlocksFieldBuilder().addBuilder(index,
+            soot.dotnet.proto.ProtoIlInstructions.IlBlock.getDefaultInstance());
       }
 
       /**
@@ -3588,7 +3589,8 @@ public final class ProtoIlInstructions {
     /**
      * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder> getHandlersOrBuilderList();
+    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder>
+        getHandlersOrBuilderList();
 
     /**
      * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
@@ -3894,7 +3896,8 @@ public final class ProtoIlInstructions {
               if (variable_ != null) {
                 subBuilder = variable_.toBuilder();
               }
-              variable_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.parser(), extensionRegistry);
+              variable_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(variable_);
                 variable_ = subBuilder.buildPartial();
@@ -3926,7 +3929,8 @@ public final class ProtoIlInstructions {
               if (right_ != null) {
                 subBuilder = right_.toBuilder();
               }
-              right_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
+              right_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(right_);
                 right_ = subBuilder.buildPartial();
@@ -4042,7 +4046,8 @@ public final class ProtoIlInstructions {
               if (array_ != null) {
                 subBuilder = array_.toBuilder();
               }
-              array_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
+              array_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(array_);
                 array_ = subBuilder.buildPartial();
@@ -4064,8 +4069,8 @@ public final class ProtoIlInstructions {
               if (tryBlock_ != null) {
                 subBuilder = tryBlock_.toBuilder();
               }
-              tryBlock_
-                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
+              tryBlock_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(),
+                  extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(tryBlock_);
                 tryBlock_ = subBuilder.buildPartial();
@@ -4078,8 +4083,8 @@ public final class ProtoIlInstructions {
                 handlers_ = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg>();
                 mutable_bitField0_ |= 0x00000004;
               }
-              handlers_.add(
-                  input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.parser(), extensionRegistry));
+              handlers_.add(input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.parser(),
+                  extensionRegistry));
               break;
             }
             case 274: {
@@ -4087,8 +4092,8 @@ public final class ProtoIlInstructions {
               if (finallyBlock_ != null) {
                 subBuilder = finallyBlock_.toBuilder();
               }
-              finallyBlock_
-                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
+              finallyBlock_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(),
+                  extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(finallyBlock_);
                 finallyBlock_ = subBuilder.buildPartial();
@@ -4101,8 +4106,8 @@ public final class ProtoIlInstructions {
               if (faultBlock_ != null) {
                 subBuilder = faultBlock_.toBuilder();
               }
-              faultBlock_
-                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
+              faultBlock_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(),
+                  extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(faultBlock_);
                 faultBlock_ = subBuilder.buildPartial();
@@ -4115,8 +4120,8 @@ public final class ProtoIlInstructions {
               if (body_ != null) {
                 subBuilder = body_.toBuilder();
               }
-              body_
-                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
+              body_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(),
+                  extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(body_);
                 body_ = subBuilder.buildPartial();
@@ -7480,7 +7485,8 @@ public final class ProtoIlInstructions {
       if (sign_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign.NONE_SIGN.getNumber()) {
         output.writeEnum(20, sign_);
       }
-      if (comparisonKind_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind.NONE_KIND.getNumber()) {
+      if (comparisonKind_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind.NONE_KIND
+          .getNumber()) {
         output.writeEnum(21, comparisonKind_);
       }
       if (condition_ != null) {
@@ -7605,7 +7611,8 @@ public final class ProtoIlInstructions {
       if (sign_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign.NONE_SIGN.getNumber()) {
         size += com.google.protobuf.CodedOutputStream.computeEnumSize(20, sign_);
       }
-      if (comparisonKind_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind.NONE_KIND.getNumber()) {
+      if (comparisonKind_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind.NONE_KIND
+          .getNumber()) {
         size += com.google.protobuf.CodedOutputStream.computeEnumSize(21, comparisonKind_);
       }
       if (condition_ != null) {
@@ -9750,8 +9757,8 @@ public final class ProtoIlInstructions {
       public Builder mergeTarget(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (targetBuilder_ == null) {
           if (target_ != null) {
-            target_
-                = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(target_).mergeFrom(value).buildPartial();
+            target_ = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(target_).mergeFrom(value)
+                .buildPartial();
           } else {
             target_ = value;
           }
@@ -9911,7 +9918,8 @@ public final class ProtoIlInstructions {
       public Builder mergeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (typeBuilder_ == null) {
           if (type_ != null) {
-            type_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
+            type_
+                = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
             type_ = value;
           }
@@ -10071,8 +10079,8 @@ public final class ProtoIlInstructions {
       public Builder mergeField(soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition value) {
         if (fieldBuilder_ == null) {
           if (field_ != null) {
-            field_
-                = soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.newBuilder(field_).mergeFrom(value).buildPartial();
+            field_ = soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.newBuilder(field_).mergeFrom(value)
+                .buildPartial();
           } else {
             field_ = value;
           }
@@ -10530,7 +10538,8 @@ public final class ProtoIlInstructions {
       public Builder mergeLeft(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (leftBuilder_ == null) {
           if (left_ != null) {
-            left_ = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(left_).mergeFrom(value).buildPartial();
+            left_
+                = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(left_).mergeFrom(value).buildPartial();
           } else {
             left_ = value;
           }
@@ -11070,7 +11079,8 @@ public final class ProtoIlInstructions {
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTrueInst() {
         if (trueInstBuilder_ == null) {
-          return trueInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : trueInst_;
+          return trueInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : trueInst_;
         } else {
           return trueInstBuilder_.getMessage();
         }
@@ -11157,7 +11167,8 @@ public final class ProtoIlInstructions {
         if (trueInstBuilder_ != null) {
           return trueInstBuilder_.getMessageOrBuilder();
         } else {
-          return trueInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : trueInst_;
+          return trueInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : trueInst_;
         }
       }
 
@@ -11637,7 +11648,8 @@ public final class ProtoIlInstructions {
         @SuppressWarnings("deprecation")
         soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType result
             = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType.valueOf(targetType_);
-        return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType.UNRECOGNIZED : result;
+        return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType.UNRECOGNIZED
+            : result;
       }
 
       /**
@@ -11696,7 +11708,8 @@ public final class ProtoIlInstructions {
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getArgument() {
         if (argumentBuilder_ == null) {
-          return argument_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : argument_;
+          return argument_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : argument_;
         } else {
           return argumentBuilder_.getMessage();
         }
@@ -11807,7 +11820,8 @@ public final class ProtoIlInstructions {
         if (argumentBuilder_ != null) {
           return argumentBuilder_.getMessageOrBuilder();
         } else {
-          return argument_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : argument_;
+          return argument_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : argument_;
         }
       }
 
@@ -13089,7 +13103,8 @@ public final class ProtoIlInstructions {
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getKeyInstr() {
         if (keyInstrBuilder_ == null) {
-          return keyInstr_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : keyInstr_;
+          return keyInstr_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : keyInstr_;
         } else {
           return keyInstrBuilder_.getMessage();
         }
@@ -13200,7 +13215,8 @@ public final class ProtoIlInstructions {
         if (keyInstrBuilder_ != null) {
           return keyInstrBuilder_.getMessageOrBuilder();
         } else {
-          return keyInstr_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : keyInstr_;
+          return keyInstr_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : keyInstr_;
         }
       }
 
@@ -14577,7 +14593,8 @@ public final class ProtoIlInstructions {
       public Builder mergeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (typeBuilder_ == null) {
           if (type_ != null) {
-            type_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
+            type_
+                = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
             type_ = value;
           }
@@ -14993,8 +15010,8 @@ public final class ProtoIlInstructions {
               if (body_ != null) {
                 subBuilder = body_.toBuilder();
               }
-              body_
-                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
+              body_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(),
+                  extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(body_);
                 body_ = subBuilder.buildPartial();
@@ -15007,7 +15024,8 @@ public final class ProtoIlInstructions {
               if (variable_ != null) {
                 subBuilder = variable_.toBuilder();
               }
-              variable_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.parser(), extensionRegistry);
+              variable_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(variable_);
                 variable_ = subBuilder.buildPartial();
@@ -15020,8 +15038,8 @@ public final class ProtoIlInstructions {
               if (filter_ != null) {
                 subBuilder = filter_.toBuilder();
               }
-              filter_
-                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
+              filter_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(),
+                  extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(filter_);
                 filter_ = subBuilder.buildPartial();

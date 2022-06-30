@@ -32,7 +32,8 @@ import soot.dotnet.proto.ProtoIlInstructions;
  * Local allocate instruction - pass argument
  */
 public class CilLocAllocInstruction extends AbstractCilnstruction {
-  public CilLocAllocInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
+  public CilLocAllocInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody,
+      CilBlock cilBlock) {
     super(instruction, dotnetBody, cilBlock);
   }
 

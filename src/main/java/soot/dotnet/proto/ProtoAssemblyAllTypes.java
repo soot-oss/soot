@@ -2054,8 +2054,8 @@ public final class ProtoAssemblyAllTypes {
                 properties_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition>();
                 mutable_bitField0_ |= 0x00000008;
               }
-              properties_.add(
-                  input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.parser(), extensionRegistry));
+              properties_.add(input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.parser(),
+                  extensionRegistry));
               break;
             }
             case 114: {
@@ -4354,7 +4354,8 @@ public final class ProtoAssemblyAllTypes {
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder> getDirectBaseTypesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder>
+          getDirectBaseTypesBuilderList() {
         return getDirectBaseTypesFieldBuilder().getBuilderList();
       }
 
@@ -5075,8 +5076,8 @@ public final class ProtoAssemblyAllTypes {
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
-      public Builder
-          addAllProperties(java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition> values) {
+      public Builder addAllProperties(
+          java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition> values) {
         if (propertiesBuilder_ == null) {
           ensurePropertiesIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(values, properties_);
@@ -5660,7 +5661,8 @@ public final class ProtoAssemblyAllTypes {
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder> getAttributesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder>
+          getAttributesBuilderList() {
         return getAttributesFieldBuilder().getBuilderList();
       }
 
@@ -7039,7 +7041,8 @@ public final class ProtoAssemblyAllTypes {
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getReturnType() {
-      return returnType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : returnType_;
+      return returnType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()
+          : returnType_;
     }
 
     /**
@@ -8233,8 +8236,8 @@ public final class ProtoAssemblyAllTypes {
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
-      public Builder
-          addAllParameter(java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition> values) {
+      public Builder addAllParameter(
+          java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition> values) {
         if (parameterBuilder_ == null) {
           ensureParameterIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(values, parameter_);
@@ -9115,7 +9118,8 @@ public final class ProtoAssemblyAllTypes {
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder> getAttributesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder>
+          getAttributesBuilderList() {
         return getAttributesFieldBuilder().getBuilderList();
       }
 
@@ -10205,7 +10209,8 @@ public final class ProtoAssemblyAllTypes {
       public Builder mergeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (typeBuilder_ == null) {
           if (type_ != null) {
-            type_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
+            type_
+                = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
             type_ = value;
           }
@@ -12335,7 +12340,8 @@ public final class ProtoAssemblyAllTypes {
       public Builder mergeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (typeBuilder_ == null) {
           if (type_ != null) {
-            type_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
+            type_
+                = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
             type_ = value;
           }
@@ -12988,7 +12994,8 @@ public final class ProtoAssemblyAllTypes {
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder> getAttributesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder>
+          getAttributesBuilderList() {
         return getAttributesFieldBuilder().getBuilderList();
       }
 
@@ -15236,7 +15243,8 @@ public final class ProtoAssemblyAllTypes {
       public Builder mergeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (typeBuilder_ == null) {
           if (type_ != null) {
-            type_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
+            type_
+                = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
             type_ = value;
           }
@@ -15680,7 +15688,8 @@ public final class ProtoAssemblyAllTypes {
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder> getAttributesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder>
+          getAttributesBuilderList() {
         return getAttributesFieldBuilder().getBuilderList();
       }
 
@@ -18713,7 +18722,8 @@ public final class ProtoAssemblyAllTypes {
       public Builder mergeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (typeBuilder_ == null) {
           if (type_ != null) {
-            type_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
+            type_
+                = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
             type_ = value;
           }
@@ -20564,7 +20574,8 @@ public final class ProtoAssemblyAllTypes {
       /**
        * <code>.MethodDefinition add_accessor_method = 2;</code>
        */
-      public Builder setAddAccessorMethod(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
+      public Builder
+          setAddAccessorMethod(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
         if (addAccessorMethodBuilder_ == null) {
           addAccessorMethod_ = builderForValue.build();
           onChanged();

@@ -42,7 +42,8 @@ import soot.jimple.ThrowStmt;
  * Check for finite value otherwise infinity exception instruction
  */
 public class CilCkFiniteInstruction extends AbstractCilnstruction {
-  public CilCkFiniteInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
+  public CilCkFiniteInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody,
+      CilBlock cilBlock) {
     super(instruction, dotnetBody, cilBlock);
   }
 

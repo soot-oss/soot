@@ -40,7 +40,8 @@ import soot.dotnet.proto.ProtoIlInstructions;
  * Execute Fault Block only if an exception was thrown, if try-block succeed no execution of fault-block
  */
 public class CilTryFaultInstruction extends AbstractCilnstruction {
-  public CilTryFaultInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
+  public CilTryFaultInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody,
+      CilBlock cilBlock) {
     super(instruction, dotnetBody, cilBlock);
   }
 

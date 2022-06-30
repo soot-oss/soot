@@ -34,8 +34,8 @@ import soot.jimple.StringConstant;
 public abstract class AbstractDotnetMember implements DotnetTypeMember {
 
   /**
-   * If we have specific return or assignment characteristics, rewrite it (mostly reftypes) Due to the different eco system
-   * of .NET and unsafe methods
+   * If we have specific return or assignment characteristics, rewrite it (mostly reftypes) Due to the different eco system of
+   * .NET and unsafe methods
    * 
    * @param declaringClass
    * @param fieldMethodName

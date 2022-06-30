@@ -70,7 +70,8 @@ public class CilLdElemaInstruction extends AbstractCilnstruction {
     baseArrayLocal = cilExpr.jimplifyExpr(jb);
 
     if (instruction.getIndicesCount() == 1) {
-      Value ind = CilInstructionFactory.fromInstructionMsg(instruction.getIndices(0), dotnetBody, cilBlock).jimplifyExpr(jb);
+      Value ind
+          = CilInstructionFactory.fromInstructionMsg(instruction.getIndices(0), dotnetBody, cilBlock).jimplifyExpr(jb);
       Value index = ind instanceof Immediate ? ind : DotnetBodyVariableManager.inlineLocals(ind, jb);
       return Jimple.v().newArrayRef(baseArrayLocal, index);
     }

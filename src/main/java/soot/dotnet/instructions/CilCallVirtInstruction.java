@@ -74,7 +74,8 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
   private SootClass clazz;
   private DotnetMethod method;
 
-  public CilCallVirtInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
+  public CilCallVirtInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody,
+      CilBlock cilBlock) {
     super(instruction, dotnetBody, cilBlock);
     localsToCastForCall = new ArrayList<>();
   }

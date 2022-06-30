@@ -45,8 +45,8 @@ public class BlockEntryPointsManager {
   private final HashMap<String, Unit> methodBlockEntryPoints = new HashMap<>();
 
   /**
-   * first goto targets are nop stmts, mapped to the real entry point string_names. These are swapped afterwards with the
-   * real goto values, after all method blocks are visited.
+   * first goto targets are nop stmts, mapped to the real entry point string_names. These are swapped afterwards with the real
+   * goto values, after all method blocks are visited.
    */
   public final HashMap<Unit, String> gotoTargetsInBody = new HashMap<>();
 

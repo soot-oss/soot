@@ -506,7 +506,8 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
       public void caseNewArrayExpr(NewArrayExpr expr) {
         result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
         Value count = expr.getSize();
-        if (!(count instanceof IntConstant) || ((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO)) {
+        if (!(count instanceof IntConstant)
+            || ((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO)) {
           result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
         }
         result = result.add(mightThrow(count));

@@ -83,8 +83,8 @@ public class CilLdMemberTokenInstruction extends AbstractCilnstruction {
         paramTypes.add(DotnetTypeFactory.toSootType(parameterDefinition.getType()));
       }
 
-      SootMethodRef methodRef = Scene.v().makeMethodRef(declaringClass, DotnetMethod.convertCtorName(methodName), paramTypes,
-          DotnetTypeFactory.toSootType(method.getReturnType()), method.isStatic());
+      SootMethodRef methodRef = Scene.v().makeMethodRef(declaringClass, DotnetMethod.convertCtorName(methodName),
+          paramTypes, DotnetTypeFactory.toSootType(method.getReturnType()), method.isStatic());
 
       int kind;
       if (method.isConstructor()) {

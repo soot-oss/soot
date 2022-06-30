@@ -47,7 +47,8 @@ public class CilBranchInstruction extends AbstractCilnstruction {
     jb.getUnits().add(gotoStmt);
     // goto target will be changed later
     dotnetBody.blockEntryPointsManager.gotoTargetsInBody.put(target, instruction.getTargetLabel());
-    cilBlock.getDeclaredBlockContainer().blockEntryPointsManager.gotoTargetsInBody.put(target, instruction.getTargetLabel());
+    cilBlock.getDeclaredBlockContainer().blockEntryPointsManager.gotoTargetsInBody.put(target,
+        instruction.getTargetLabel());
   }
 
   @Override

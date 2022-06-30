@@ -151,8 +151,8 @@ public class DotnetMethod extends AbstractDotnetMember {
   }
 
   /**
-   * Create SootMethod with specific MethodSource (used by Events and Properties) Events and Properties have other sources
-   * for method bodies
+   * Create SootMethod with specific MethodSource (used by Events and Properties) Events and Properties have other sources for
+   * method bodies
    * 
    * @param methodSource
    * @return
@@ -225,8 +225,8 @@ public class DotnetMethod extends AbstractDotnetMember {
     JimpleBody b = Jimple.v().newBody(sootMethod);
     try {
       if (ilFunctionMsg == null) {
-        throw new RuntimeException("Could not resolve JimpleBody for " + dotnetMethodType.name() + " " + sootMethod.getName()
-            + " declared in class " + declaringClass.getName());
+        throw new RuntimeException("Could not resolve JimpleBody for " + dotnetMethodType.name() + " "
+            + sootMethod.getName() + " declared in class " + declaringClass.getName());
       }
 
       // add the body of this code item
@@ -350,8 +350,8 @@ public class DotnetMethod extends AbstractDotnetMember {
   }
 
   /**
-   * Process Name Mangling to achieve a unique name in the declared class Convert method name to a unique method name if it
-   * has generics or call-by-ref as parameters
+   * Process Name Mangling to achieve a unique name in the declared class Convert method name to a unique method name if it has
+   * generics or call-by-ref as parameters
    * 
    * @return unique name
    */
